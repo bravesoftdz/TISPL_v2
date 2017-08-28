@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
-#ifndef vozikyH
-#define vozikyH
+#ifndef superformH
+#define superformH
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -12,6 +12,11 @@
 #include <Vcl.ColorGrd.hpp>
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ValEdit.hpp>
+#include "rHTMLLabel.hpp"
+#include "rImprovedComps.hpp"
+#include "rStringGridEd.hpp"
+#include "scControls.hpp"
+#include "scGPControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_vozik_nastaveni : public TForm
 {
@@ -28,6 +33,23 @@ __published:	// IDE-managed Components
 	TMemo *Memo2;
 	TMemo *Memo3;
 	TButton *Button_DEL;
+	TrHTMLLabel *rHTMLLabel1;
+	TrHTMLLabel *rHTMLLabel2;
+	TrHTMLLabel *rHTMLLabel3;
+	TrHTMLLabel *rHTMLLabel4;
+	TrHTMLLabel *rHTMLLabel5;
+	TrHTMLLabel *rHTMLLabel6;
+	TrHTMLLabel *rHTMLLabel7;
+	TrStringGridEd *rStringGridEd1;
+	TrEditNum *rEditNum1;
+	TrEditNum *rEditNum2;
+	TrEditNum *rEditNum3;
+	TrEditNum *rEditNum4;
+	TrButton *rButton1;
+	TscGPButton *scGPButton2;
+	TButton *Button5;
+	TscGPButton *scGPButton4;
+	TscGPButton *scGPButton3;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
@@ -44,6 +66,8 @@ __published:	// IDE-managed Components
 	void __fastcall Button_DELClick(TObject *Sender);
 	void __fastcall RzStringGrid1Click(TObject *Sender);
 	void __fastcall Button_OKKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rStringGridEd1Click(TObject *Sender);
+	void __fastcall rButton1Click(TObject *Sender);
 
 
 

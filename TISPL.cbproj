@@ -49,7 +49,7 @@
         <VerInfo_Locale>1029</VerInfo_Locale>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <Multithreaded>true</Multithreaded>
-        <AllPackageLibs>rtl.lib;vcl.lib;RaizeComponentsVcl.lib;vclx.lib;vclimg.lib;Tee.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;dbrtl.lib;vclFireDAC.lib;FireDAC.lib;FireDACSqliteDriver.lib;FireDACCommonDriver.lib;FireDACCommon.lib;xmlrtl.lib;vcldb.lib;FireDACMySQLDriver.lib;dbexpress.lib;DbxCommonDriver.lib;DBXMySQLDriver.lib</AllPackageLibs>
+        <AllPackageLibs>rtl.lib;vcl.lib;RaizeComponentsVcl.lib;vclx.lib;vclimg.lib;Tee.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;dbrtl.lib;vclFireDAC.lib;FireDAC.lib;FireDACSqliteDriver.lib;FireDACCommonDriver.lib;FireDACCommon.lib;xmlrtl.lib;vcldb.lib;FireDACMySQLDriver.lib;dbexpress.lib;DbxCommonDriver.lib;DBXMySQLDriver.lib;RosiComp_CX100.lib;stylecontrols_cbx10Seattle.lib;vclactnband.lib;vclie.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD;$(IncludePath)</IncludePath>
         <ILINK_LibraryPath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD;$(ILINK_LibraryPath)</ILINK_LibraryPath>
@@ -106,13 +106,14 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <LinkPackageStatics>RosiComp_CX100.lib;stylecontrols_cbx10Seattle.lib</LinkPackageStatics>
         <ILINK_LibraryPath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD</ILINK_LibraryPath>
         <IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD</IncludePath>
         <Debugger_CWD>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD</Debugger_CWD>
         <Debugger_DebugSourcePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
         <BRCC_IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD;$(BRCC_IncludePath)</BRCC_IncludePath>
         <BCC_IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD</BCC_IncludePath>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;dbrtl.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACSqliteDriver.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vcldb.bpi;FireDACMySQLDriver.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DBXMySQLDriver.bpi</LinkPackageImports>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;dbrtl.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACSqliteDriver.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vcldb.bpi;FireDACMySQLDriver.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DBXMySQLDriver.bpi;vclactnband.bpi;vclie.bpi</LinkPackageImports>
         <VerInfo_Build>12</VerInfo_Build>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
@@ -124,11 +125,11 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppEnableHighDPI>true</AppEnableHighDPI>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!='' And '$(FileToCompile)'=='superform.cpp'">
+        <BCC_IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KODGit</BCC_IncludePath>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!='' And '$(FileToCompile)'=='TT_kalkulator.cpp'">
         <ILINK_LibraryPath>D:\SOFTWARE\TISPL\TISPL_sdilena\KODGit</ILINK_LibraryPath>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_1)'!='' And '$(FileToCompile)'=='voziky.cpp'">
-        <BCC_IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KODGit</BCC_IncludePath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=1.0.0.0;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o. 2016;LegalTrademarks=© ELTEP, s.r.o. 2016;OriginalFilename=;ProductName=Eltep - TISPl;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -153,6 +154,12 @@
             <DependentOn>antialiasing.h</DependentOn>
             <BuildOrder>17</BuildOrder>
         </CppCompile>
+        <CppCompile Include="cesty.cpp">
+            <Form>Form_cesty</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>cesty.h</DependentOn>
+            <BuildOrder>18</BuildOrder>
+        </CppCompile>
         <None Include="CTpointD.h">
             <BuildOrder>7</BuildOrder>
         </None>
@@ -165,7 +172,12 @@
         <CppCompile Include="grafy.cpp">
             <DependentOn>grafy.h</DependentOn>
             <BuildOrder>16</BuildOrder>
-            <OptionOverrides>true</OptionOverrides>
+        </CppCompile>
+        <CppCompile Include="jig.cpp">
+            <Form>Form_jig</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>jig.h</DependentOn>
+            <BuildOrder>19</BuildOrder>
         </CppCompile>
         <None Include="knihovna_objektu.h">
             <BuildOrder>3</BuildOrder>
@@ -192,6 +204,13 @@
             <FormType>dfm</FormType>
             <DependentOn>parametry.h</DependentOn>
             <BuildOrder>11</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="superform.cpp">
+            <Form>Form_vozik_nastaveni</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>superform.h</DependentOn>
+            <BuildOrder>15</BuildOrder>
+            <OptionOverrides>true</OptionOverrides>
         </CppCompile>
         <CppCompile Include="TISPL.cpp">
             <BuildOrder>0</BuildOrder>
@@ -223,24 +242,19 @@
             <DependentOn>vektory.h</DependentOn>
             <BuildOrder>5</BuildOrder>
         </CppCompile>
-        <CppCompile Include="voziky.cpp">
-            <Form>Form_vozik_nastaveni</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>voziky.h</DependentOn>
-            <BuildOrder>15</BuildOrder>
-            <OptionOverrides>true</OptionOverrides>
-        </CppCompile>
         <CppCompile Include="vykresli.cpp">
             <DependentOn>vykresli.h</DependentOn>
             <BuildOrder>6</BuildOrder>
         </CppCompile>
-        <FormResources Include="TT_kalkulator.dfm"/>
+        <FormResources Include="superform.dfm"/>
         <FormResources Include="parametry.dfm"/>
-        <FormResources Include="Unit1.dfm"/>
-        <FormResources Include="voziky.dfm"/>
         <FormResources Include="uvod.dfm"/>
+        <FormResources Include="TT_kalkulator.dfm"/>
+        <FormResources Include="Unit1.dfm"/>
         <FormResources Include="dopravniky.dfm"/>
+        <FormResources Include="cesty.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="jig.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -9,6 +9,9 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.Grids.hpp>
 #include <Vcl.ValEdit.hpp>
+#include "rHTMLLabel.hpp"
+#include "rImprovedComps.hpp"
+#include "rStringGridEd.hpp"
 //---------------------------------------------------------------------------
 class TForm_dopravnik : public TForm
 {
@@ -17,6 +20,14 @@ __published:	// IDE-managed Components
 	TButton *Button_ADD;
 	TButton *Button_DEL;
 	TButton *Button_OK;
+	TStaticText *StaticText1;
+	TStaticText *StaticText2;
+	TrHTMLLabel *rHTMLLabel4;
+	TrEditNum *rEditNum2;
+	TrStringGridEd *rStringGridEd1;
+	TButton *Button1;
+	TrHTMLLabel *rHTMLLabel5;
+	TButton *Button2;
 	void __fastcall Button_ADDClick(TObject *Sender);
 	void __fastcall Button_DELClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);

@@ -3,11 +3,20 @@
 #include <vcl.h>
 #pragma hdrstop
 
-#include "voziky.h"
+#include "superform.h"
 #include "unit1.h"
+#include "dopravniky.h"
+#include "cesty.h"
+#include "jig.h"
+
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzGrids"
+#pragma link "rHTMLLabel"
+#pragma link "rImprovedComps"
+#pragma link "rStringGridEd"
+#pragma link "scControls"
+#pragma link "scGPControls"
 #pragma resource "*.dfm"
 TForm_vozik_nastaveni *Form_vozik_nastaveni;
 
@@ -138,6 +147,38 @@ void TForm_vozik_nastaveni::vymaz_barvu() {
 void __fastcall TForm_vozik_nastaveni::FormShow(TObject *Sender)
 {
  nacti_voziky();
+ Form_vozik_nastaveni->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
+ rHTMLLabel1->Font->Color=(TColor)RGB(89,89,89);
+ rHTMLLabel2->Font->Color=rHTMLLabel1->Font->Color;
+// rHTMLLabel3->Font->Color=rHTMLLabel1->Font->Color;   velky nadpis
+ rHTMLLabel4->Font->Color=rHTMLLabel1->Font->Color;
+ rHTMLLabel5->Font->Color=rHTMLLabel1->Font->Color;
+ rHTMLLabel6->Font->Color=rHTMLLabel1->Font->Color;
+
+	rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
+	 rHTMLLabel7->Font->Color=rHTMLLabel3->Font->Color;  //velky nadpis  2
+
+ //Button_OK->Font->Color=(TColor)RGB(226,122,21);
+ scGPButton2->Options->NormalColor=(TColor)RGB(226,122,21);
+ scGPButton2->Options->FocusedColor=(TColor)RGB(255,141,28);
+ scGPButton2->Options->HotColor=(TColor)RGB(255,141,28);
+ scGPButton2->Options->PressedColor=(TColor)RGB(255,141,28);
+
+ scGPButton3->Options->NormalColor=(TColor)RGB(226,122,21);
+ scGPButton3->Options->FocusedColor=(TColor)RGB(255,141,28);
+ scGPButton3->Options->HotColor=(TColor)RGB(255,141,28);
+ scGPButton3->Options->PressedColor=(TColor)RGB(255,141,28);
+
+ scGPButton4->Options->NormalColor=(TColor)RGB(226,122,21);
+ scGPButton4->Options->FocusedColor=(TColor)RGB(255,141,28);
+ scGPButton4->Options->HotColor=(TColor)RGB(255,141,28);
+ scGPButton4->Options->PressedColor=(TColor)RGB(255,141,28);
+
+
+
+
+
+
 }
 // ---------------------------------------------------------------------------
 void TForm_vozik_nastaveni::nacti_voziky()
@@ -165,6 +206,36 @@ void TForm_vozik_nastaveni::nacti_voziky()
 	RzStringGrid1->Rows[0]->Add("Výška Max");
 	RzStringGrid1->Rows[0]->Add("Barva");
 	RzStringGrid1->Rows[0]->Add("Stav");
+
+
+ /*	rStringGridEd1->Cols[0]->Add("Zakázka");
+	rStringGridEd1->Cols[0]->Add("1");
+	rStringGridEd1->Rows[0]->Add("ID");
+	rStringGridEd1->Rows[0]->Add("Typ");
+	rStringGridEd1->Rows[0]->Add("Název");
+	rStringGridEd1->Rows[0]->Add("Barva");
+	rStringGridEd1->Rows[0]->Add("Pomìr");
+	rStringGridEd1->Rows[0]->Add("Jigy");
+	rStringGridEd1->Rows[0]->Add("Poèet");
+	rStringGridEd1->Rows[0]->Add("Poè.serv.voz");
+	rStringGridEd1->Rows[0]->Add("Opakování");
+	rStringGridEd1->Rows[0]->Add("Technologie");
+	rStringGridEd1->Rows[0]->Add("Takt");
+				*/
+
+			rStringGridEd1->Cells[5][1]="NASTAVIT";
+			rStringGridEd1->Cells[9][1]="NASTAVIT";
+
+		 //	scGPButton5->Options->FocusedColor=(TColor)RGB(255,140,0);
+		 //	scGPButton5->Options->NormalColor=(TColor)RGB(255,140,0);
+
+
+
+
+
+
+
+
 
 	Color_status = false;
 
@@ -512,6 +583,7 @@ void __fastcall TForm_vozik_nastaveni::Button_DELClick(TObject *Sender) {
 
 	// Tlaèítko na smazání øádku
 	RzStringGrid1->Rows[RzStringGrid1->Row]->Clear();
+	rStringGridEd1->Rows[rStringGridEd1->Row]->Clear();
 
 	TForm_vozik_nastaveni::TBarva *ukaz = BARVY->dalsi;
 	// ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
@@ -613,4 +685,47 @@ void __fastcall TForm_vozik_nastaveni::Button_OKKeyDown(TObject *Sender, WORD &K
 	}
 }
 //---------------------------------------------------------------------------
+
+
+void __fastcall TForm_vozik_nastaveni::rStringGridEd1Click(TObject *Sender)
+{
+if(rStringGridEd1->Col==5){
+	Form_jig->ShowModal();
+}
+
+if(rStringGridEd1->Col==9){
+	Form_cesty->ShowModal();
+}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_vozik_nastaveni::rButton1Click(TObject *Sender)
+{
+rStringGridEd1->RowCount++;
+
+	rStringGridEd1->Cols[0]->Add(rStringGridEd1->RowCount - 1);
+
+	if (rStringGridEd1->RowCount > 2) {
+	
+		int i = rStringGridEd1->RowCount - 1;
+
+		rStringGridEd1->Cells[1][i] = i;
+		rStringGridEd1->Cells[2][i] = rStringGridEd1->Cells[2][i - 1];
+		rStringGridEd1->Cells[3][i] = rStringGridEd1->Cells[3][i - 1];
+		rStringGridEd1->Cells[4][i] = rStringGridEd1->Cells[4][i - 1];
+		rStringGridEd1->Cells[5][i] = rStringGridEd1->Cells[5][i - 1];
+		rStringGridEd1->Cells[6][i] = rStringGridEd1->Cells[6][i - 1];
+		rStringGridEd1->Cells[7][i] = rStringGridEd1->Cells[7][i - 1];
+		rStringGridEd1->Cells[8][i] = rStringGridEd1->Cells[8][i - 1];
+		rStringGridEd1->Cells[9][i] = rStringGridEd1->Cells[9][i - 1];
+		rStringGridEd1->Cells[10][i] = rStringGridEd1->Cells[10][i - 1];
+		rStringGridEd1->Cells[11][i] = rStringGridEd1->Cells[11][i - 1];
+		rStringGridEd1->Cells[12][i] = rStringGridEd1->Cells[12][i - 1];
+	}
+}
+//---------------------------------------------------------------------------
+
+
+
+
 

@@ -201,7 +201,7 @@ void __fastcall TForm_TT_kalkulator::FormCloseQuery(TObject *Sender, bool &CanCl
 			Form1->PP.dni=Form1->ms.MyToDouble(Edit_dni->Text);
 			Form1->PP.produktu_vozik=Form1->ms.u2i(Edit_produktu_na_vozik->Text);
 			Form1->PP.TT=TT;
-			Form1->Edit_takt_time->Text=TT;
+		 //	Form1->Edit_takt_time->Text=TT;
 			Form1->DuvodUlozit(true);
 			CanClose=true;
 		}
@@ -225,7 +225,7 @@ void TForm_TT_kalkulator::kontrola_zadani()
 //---------------------------------------------------------------------------
 void __fastcall TForm_TT_kalkulator::Button_zamek_TTClick(TObject *Sender)
 {
-	Form1->Edit_takt_time->Enabled=!Form1->Edit_takt_time->Enabled;
+ //	Form1->Edit_takt_time->Enabled=!Form1->Edit_takt_time->Enabled;
 	Edit_TT->Enabled=!Edit_TT->Enabled;
 	Edit_TP->Enabled=!Edit_TP->Enabled;
 	Edit_TT_produktu->Enabled=!Edit_TT_produktu->Enabled;

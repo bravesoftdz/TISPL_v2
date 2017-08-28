@@ -7,6 +7,9 @@
 #include "unit1.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+#pragma link "rHTMLLabel"
+#pragma link "rImprovedComps"
+#pragma link "rStringGridEd"
 #pragma resource "*.dfm"
 TForm_dopravnik *Form_dopravnik;
 //---------------------------------------------------------------------------
@@ -21,41 +24,52 @@ __fastcall TForm_dopravnik::TForm_dopravnik(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_dopravnik::FormShow(TObject *Sender)
 {
-	OK_status=false;
-	if(Form1->d.v.seznam_dopravniku!="")//pokud jsou data dopravníkù k dispozici
-	{
-		ValueListEditor->Strings->SetText(Form1->d.v.seznam_dopravniku.c_str());
-		//ShowMessage(ValueListEditor->RowCount-3);
-		Button_ADD->Top=63+19*(ValueListEditor->RowCount-3);
-		Button_DEL->Top=63+19*(ValueListEditor->RowCount-3);
-		Button_OK->Top=107+19*(ValueListEditor->RowCount-3);
-		ValueListEditor->Height=57+19*(ValueListEditor->RowCount-3);
-		Form_dopravnik->Height=165+19*(ValueListEditor->RowCount-3);
-		offsetcomponents=0;
-	}
-	else//pro pøípad, že není nic naèteno nebo se jedná o nový soubor, tak zobrazí implicitní informace
-	{
-		ValueListEditor->Strings->SetText(L"hlavní dopravník=5\nvedlejší dopravník=3\n");
-		Button_ADD->Top=63;
-		Button_DEL->Top=63;
-		Button_OK->Top=107;
-		ValueListEditor->Height=57;
-		Form_dopravnik->Height=165;
-		offsetcomponents=0;
-	}
+			rStringGridEd1->Cells[0][1]="1";
+			rStringGridEd1->Cells[1][1]="Hlavní dopravník";
+			rStringGridEd1->Cells[2][1]="2-5";
+			rStringGridEd1->Cells[3][1]="540";
 
-	origSL=new TStringList();
-	origSL->Assign(ValueListEditor->Strings);
-	if(offsetcomponents)//v pøípadì stisku storna pøi pøedcházejícím zobrazení vrácí pùvodní polohu komponent
-	{
-		ValueListEditor->Height-=offsetcomponents;
-		Form_dopravnik->Height-=offsetcomponents;
-		Button_ADD->Top-=offsetcomponents;
-		Button_DEL->Top-=offsetcomponents;
-		Button_OK->Top-=offsetcomponents;
-		offsetcomponents-=offsetcomponents;
-	}
-	offsetcomponents=0;
+			rStringGridEd1->Cells[0][2]="2";
+			rStringGridEd1->Cells[1][2]="Vedlejší dopravník";
+			rStringGridEd1->Cells[2][2]="1-4";
+			rStringGridEd1->Cells[3][2]="360";
+
+
+//	OK_status=false;
+//	if(Form1->d.v.seznam_dopravniku!="")//pokud jsou data dopravníkù k dispozici
+//	{
+//		ValueListEditor->Strings->SetText(Form1->d.v.seznam_dopravniku.c_str());
+//		//ShowMessage(ValueListEditor->RowCount-3);
+//	 //	Button_ADD->Top=63+19*(ValueListEditor->RowCount-3);
+//	 //	Button_DEL->Top=63+19*(ValueListEditor->RowCount-3);
+//	 //	Button_OK->Top=107+19*(ValueListEditor->RowCount-3);
+//	 //	ValueListEditor->Height=57+19*(ValueListEditor->RowCount-3);
+//	 //	Form_dopravnik->Height=165+19*(ValueListEditor->RowCount-3);
+//		offsetcomponents=0;
+//	}
+//	else//pro pøípad, že není nic naèteno nebo se jedná o nový soubor, tak zobrazí implicitní informace
+//	{
+//		ValueListEditor->Strings->SetText(L"hlavní dopravník=5\nvedlejší dopravník=3\n");
+//	 //	Button_ADD->Top=63;
+//	 //	Button_DEL->Top=63;
+//	 //	Button_OK->Top=107;
+//	 //	ValueListEditor->Height=57;
+//	 //	Form_dopravnik->Height=165;
+//		offsetcomponents=0;
+//	}
+//
+//	origSL=new TStringList();
+//	origSL->Assign(ValueListEditor->Strings);
+//	if(offsetcomponents)//v pøípadì stisku storna pøi pøedcházejícím zobrazení vrácí pùvodní polohu komponent
+//	{
+//		ValueListEditor->Height-=offsetcomponents;
+//		Form_dopravnik->Height-=offsetcomponents;
+//	 //	Button_ADD->Top-=offsetcomponents;
+//	 //	Button_DEL->Top-=offsetcomponents;
+//	 //	Button_OK->Top-=offsetcomponents;
+//		offsetcomponents-=offsetcomponents;
+//	}
+//	offsetcomponents=0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_dopravnik::Button_ADDClick(TObject *Sender)
@@ -67,9 +81,9 @@ void __fastcall TForm_dopravnik::Button_ADDClick(TObject *Sender)
 		{
 				ValueListEditor->Height+=19;
 				Form_dopravnik->Height+=19;
-				Button_ADD->Top+=19;
-				Button_DEL->Top+=19;
-				Button_OK->Top+=19;
+			 //	Button_ADD->Top+=19;
+			 //	Button_DEL->Top+=19;
+			 //	Button_OK->Top+=19;
 				//Button_CANCEL->Top+=19;
 				offsetcomponents+=19;
 				//ValueListEditor->InsertRow("","",true);//false pro insert + ->ADD
@@ -100,9 +114,9 @@ void __fastcall TForm_dopravnik::Button_DELClick(TObject *Sender)
 				ValueListEditor->DeleteRow(ValueListEditor->Row);
 				ValueListEditor->Height-=19;
 				Form_dopravnik->Height-=19;
-				Button_ADD->Top-=19;
-				Button_DEL->Top-=19;
-				Button_OK->Top-=19;
+			//	Button_ADD->Top-=19;
+			//	Button_DEL->Top-=19;
+			//	Button_OK->Top-=19;
 				offsetcomponents-=19;
 				//Button_CANCEL->Top-=19;
 			}
@@ -128,8 +142,4 @@ void __fastcall TForm_dopravnik::FormClose(TObject *Sender, TCloseAction &Action
 	}
 }
 //---------------------------------------------------------------------------
-
-
-
-
 

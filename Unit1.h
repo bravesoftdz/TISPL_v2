@@ -75,6 +75,17 @@
 #include <IdSSL.hpp>
 #include <IdSSLOpenSSL.hpp>
 #include "rImprovedComps.hpp"
+#include "rStringGridEd.hpp"
+#include "scControls.hpp"
+#include "scGPControls.hpp"
+#include "scStyledForm.hpp"
+#include "scAdvancedControls.hpp"
+#include "scExtControls.hpp"
+#include "scModernControls.hpp"
+#include <Vcl.Mask.hpp>
+#include <Vcl.WinXCtrls.hpp>
+#include "scDrawUtils.hpp"
+#include "scGPImages.hpp"
 //#include "vektory.h" //už vkládám přes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám přes vykresli.h resp. vektory.h
 
@@ -82,57 +93,21 @@
 class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
-	TMainMenu *MainMenu1;
 	TPopupMenu *PopupMenu1;
 	TRzToolbar *RzToolbar1;
 	TRzStatusBar *RzStatusBar1;
-	TMenuItem *Projekt1;
-	TMenuItem *Pohled1;
-	TMenuItem *Knihovna1;
-	TMenuItem *Npovda1;
-	TMenuItem *NovySoubor;
-	TMenuItem *Otevrit;
-	TMenuItem *Ulozit;
-	TMenuItem *Ulozitjako;
-	TMenuItem *N1;
-	TMenuItem *Konec1;
-	TRzSizePanel *RzSizePanel_knihovna_objektu;
-	TMenuItem *Nastaven1;
-	TMenuItem *Vzhled1;
-	TMenuItem *Klasick1;
-	TMenuItem *WinXP1;
-	TMenuItem *Gradientn1;
 	TRzStatusPane *RzStatusPane1;
 	TRzStatusPane *RzStatusPane2;
 	TMenuItem *Nastvitparametry1;
 	TMenuItem *Smazat1;
-	TRzSizePanel *RzSizePanel_parametry_projekt;
 	TRzStatusPane *RzStatusPane3;
 	TRzStatusPane *RzStatusPane4;
 	TDrawGrid *DrawGrid_knihovna;
-	TLabel *Label1;
 	TLabel *Label2;
-	TEdit *Edit_takt_time;
-	TLabel *Label3;
-	TLabel *Label4;
-	TMenuItem *Md1;
-	TMenuItem *editacelinky1;
-	TMenuItem *testovnkapacity1;
-	TMenuItem *casoverezervy1;
-	TLabel *Label5;
-	TMenuItem *Mrizka;
 	TButton *Button1;
-	TMenuItem *Piblit1;
-	TMenuItem *Oddlit1;
-	TMenuItem *N4;
-	TMenuItem *Predchozipohled1;
 	TMenuItem *N5;
 	TMenuItem *Priblizit2;
 	TMenuItem *Oddalit2;
-	TMenuItem *Posunout2;
-	TMenuItem *Posouvat1;
-	TMenuItem *N6;
-	TMenuItem *Vybratoknem1;
 	TMenuItem *Posouvat2;
 	TMenuItem *Posunout3;
 	TMenuItem *Vybratoknem2;
@@ -152,26 +127,13 @@ __published:	// IDE-managed Components
 	TRzToolButton *RzToolButton11;
 	TRzToolButton *RzToolButton12;
 	TMemo *Memo1;
-	TMenuItem *Ve1;
 	TRzStatusPane *RzStatusPane5;
 	TSaveDialog *SaveDialog;
 	TOpenDialog *OpenDialog1;
 	TTimer *Timer_backup;
-	TMenuItem *Obnovitzezlohy1;
-	TMenuItem *Otevritsablonu;
-	TMenuItem *Export1;
 	TSavePictureDialog *SavePictureDialog1;
-	TButton *Button_kalkulatorTT;
 	TLabel *Label8;
-	TButton *Button_dopravnik_parametry;
-	TButton *Button_vozik_parametry;
-	TMenuItem *Obnovitobraz1;
-	TMenuItem *Report1;
-	TMenuItem *csv1;
-	TMenuItem *html1;
-	TMenuItem *simulace1;
 	TTimer *Timer_simulace;
-	TMenuItem *Vypicestuktempu1;
 	TButton *Button3;
 	TButton *Button4;
 	TButton *Button5;
@@ -180,7 +142,6 @@ __published:	// IDE-managed Components
 	TButton *Button8;
 	TButton *Button9;
 	TButton *Button10;
-	TMenuItem *casovosa1;
 	TChart *Chart1;
 	TChart *Chart2;
 	TChart *Chart3;
@@ -189,14 +150,8 @@ __published:	// IDE-managed Components
 	TGanttSeries *Series1;
 	TBarSeries *Series5;
 	TBarSeries *Series6;
-	TMenuItem *technologickprocesy1;
 	TMenuItem *Rychlexport1;
 	TMenuItem *Zobrazitparametry1;
-	TMenuItem *N2;
-	TMenuItem *Magna;
-	TMenuItem *SPPP1;
-	TMenuItem *Boskovice1;
-	TMenuItem *eXtreme1;
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
 	TButton *ButtonPLAY;
@@ -215,7 +170,6 @@ __published:	// IDE-managed Components
 	TTeeGDIPlus *TeeGDIPlus5;
 	TComboBox *ComboBoxDOmin;
 	TComboBox *ComboBoxODmin;
-	TMenuItem *antialiasing1;
 	TLabel *LabelRoletka;
 	TBarSeries *Series2;
 	TBarSeries *Series3;
@@ -232,6 +186,84 @@ __published:	// IDE-managed Components
 	TFDQuery *FDQuery2;
 	TrComboBoxEx *rComboBoxKrok;
 	TrComboBoxEx *ComboBoxCekani;
+	TscGPPanel *scGPPanel2;
+	TscGPGlyphButton *Konec;
+	TscGPGlyphButton *MinButton;
+	TscGPButton *editacelinky1;
+	TscLabel *scLabel1;
+	TscGPButton *PopupMenuButton;
+	TscGPButton *casovosa1;
+	TscGPButton *technologickprocesy1;
+	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *Ulozit;
+	TscGPGlyphButton *NovySoubor;
+	TscGPGlyphButton *Otevrit;
+	TscGPGlyphButton *MaxButton;
+	TscGPGlyphButton *DetailsButton;
+	TscGPPanel *scGPPanel3;
+	TscGPTrackBar *scGPTrackBar1;
+	TscGPGlyphButton *scGPGlyphButton5;
+	TscGPGlyphButton *scGPGlyphButton6;
+	TscGPSizeBox *scGPSizeBox1;
+	TscCheckBox *scCheckBox2;
+	TscSplitView *scSplitView1;
+	TscLabel *scLabel4;
+	TscScrollBox *scScrollBox1;
+	TscListGroupPanel *scListGroupPanel1;
+	TscLabel *scLabel5;
+	TscLabel *scLabel6;
+	TscLabel *scLabel9;
+	TscGPSwitch *scGPSwitch1;
+	TscGPSwitch *scGPSwitch2;
+	TscGPSwitch *scGPSwitch3;
+	TscListGroupPanel *scListGroupPanel3;
+	TscLabel *scLabel12;
+	TscLabel *scLabel17;
+	TscPasswordEdit *scPasswordEdit1;
+	TscEdit *scEdit2;
+	TscListGroupPanel *scListGroupPanel4;
+	TscLabel *scLabel18;
+	TscAdvancedComboBox *scAdvancedComboBox1;
+	TscCheckBox *scCheckBox5;
+	TscCheckBox *scCheckBox6;
+	TscCheckBox *scCheckBox1;
+	TPopupMenu *PopupMenu2;
+	TMenuItem *Open1;
+	TMenuItem *New1;
+	TMenuItem *Save1;
+	TMenuItem *SaveAs1;
+	TMenuItem *MenuItem1;
+	TMenuItem *Print1;
+	TMenuItem *PrintSetup1;
+	TMenuItem *MenuItem2;
+	TMenuItem *Exit1;
+	TscStyledForm *scStyledForm1;
+	TscRadioGroup *scRadioGroup1;
+	TscListGroupPanel *RzSizePanel_parametry_projekt;
+	TscListGroupPanel *RzSizePanel_knihovna_objektu;
+	TscSplitView *scSplitView2;
+	TscGPGlyphButton *Button_dopravnik_parametry;
+	TscGPGlyphButton *Button_vozik_parametry;
+	TscGPGlyphButton *scGPGlyphButton2;
+	TscGPButton *scGPButton1;
+	TscGPButton *scGPButton2;
+	TscButton *scButton3;
+	TscButton *scButton1;
+	TscButton *scButton4;
+	TscButton *scButton5;
+	TscGPSwitch *scGPSwitch4;
+	TscLabel *scLabel11;
+	TscLabel *scLabel16;
+	TscGPSwitch *scGPSwitch5;
+	TscGPGlyphButton *scGPGlyphButton15;
+	TImageList *ImageList48;
+	TscGPVirtualImageList *scGPVirtualImageList1;
+	TscButton *scButton2;
+	TscButton *scButton6;
+	TscSplitView *scSplitView4;
+	TscButton *scButton7;
+	TscButton *scButton8;
+	TscButton *scButton9;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall Klasick1Click(TObject *Sender);
 	void __fastcall WinXP1Click(TObject *Sender);
@@ -266,7 +298,7 @@ __published:	// IDE-managed Components
 	void __fastcall DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
-	void __fastcall RzSizePanel_knihovna_objektuMouseEnter(TObject *Sender);
+	void __fastcall RzSizePanel_knihovna_objektu_OLDMouseEnter(TObject *Sender);
 	void __fastcall Piblit1Click(TObject *Sender);
 	void __fastcall Oddlit1Click(TObject *Sender);
 	void __fastcall Predchozipohled1Click(TObject *Sender);
@@ -296,8 +328,8 @@ __published:	// IDE-managed Components
 	void __fastcall OtevritsablonuClick(TObject *Sender);
 	void __fastcall Export1Click(TObject *Sender);
 	void __fastcall Button_kalkulatorTTClick(TObject *Sender);
-	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
-	void __fastcall Button_vozik_parametryClick(TObject *Sender);
+	void __fastcall Button_dopravnik_parametry_OLDClick(TObject *Sender);
+	void __fastcall Button_vozik_parametry_OLDClick(TObject *Sender);
 	void __fastcall Edit_takt_timeEnter(TObject *Sender);
 	void __fastcall Obnovitobraz1Click(TObject *Sender);
 	void __fastcall csv1Click(TObject *Sender);
@@ -342,6 +374,19 @@ __published:	// IDE-managed Components
 	void __fastcall CheckBox_pouzit_zadane_kapacityClick(TObject *Sender);
 	void __fastcall Button11Click(TObject *Sender);
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
+	void __fastcall Button12Click(TObject *Sender);
+	void __fastcall MaxButtonClick(TObject *Sender);
+	void __fastcall PopupMenuButtonClick(TObject *Sender);
+	void __fastcall scGPGlyphButton1Click(TObject *Sender);
+	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall scGPGlyphButton5Click(TObject *Sender);
+	void __fastcall scGPGlyphButton6Click(TObject *Sender);
+	void __fastcall scLabel1DblClick(TObject *Sender);
+	void __fastcall MinButtonClick(TObject *Sender);
+	void __fastcall scGPGlyphButton2Click(TObject *Sender);
+	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
+	void __fastcall Button_vozik_parametryClick(TObject *Sender);
+	void __fastcall DetailsButtonClick(TObject *Sender);
 
 
 

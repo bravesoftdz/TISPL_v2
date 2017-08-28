@@ -4,13 +4,15 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
+USEFORM("parametry.cpp", Form_parametry);
+USEFORM("superform.cpp", Form_vozik_nastaveni);
 USEFORM("TT_kalkulator.cpp", Form_TT_kalkulator);
-USEFORM("voziky.cpp", Form_vozik_nastaveni);
 USEFORM("Unit1.cpp", Form1);
 USEFORM("uvod.cpp", Form_uvod);
 USEFORM("dopravniky.cpp", Form_dopravnik);
-USEFORM("parametry.cpp", Form_parametry);
 USEFORM("MyMessageBox.cpp", MyMessageBox);
+USEFORM("cesty.cpp", Form_cesty);
+USEFORM("jig.cpp", Form_jig);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -25,6 +27,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_TT_kalkulator), &Form_TT_kalkulator);
 		Application->CreateForm(__classid(TForm_dopravnik), &Form_dopravnik);
 		Application->CreateForm(__classid(TForm_vozik_nastaveni), &Form_vozik_nastaveni);
+		Application->CreateForm(__classid(TForm_cesty), &Form_cesty);
+		Application->CreateForm(__classid(TForm_jig), &Form_jig);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}

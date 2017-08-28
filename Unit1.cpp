@@ -12,7 +12,7 @@
 #include "parametry.h"
 #include "TT_kalkulator.h"
 #include "dopravniky.h"
-#include "voziky.h"
+#include "superform.h"
 #include "uvod.h"
 #include "antialiasing.h"
 
@@ -27,9 +27,20 @@
 #pragma link "RzGrids"
 #pragma link "RzLabel"
 #pragma link "rStringGridEd"
+#pragma link "rStringGridEd"
+#pragma link "scControls"
+#pragma link "scGPControls"
+#pragma link "scStyledForm"
+#pragma link "scAdvancedControls"
+#pragma link "scExtControls"
+#pragma link "scModernControls"
+#pragma link "scDrawUtils"
+#pragma link "scGPImages"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
+bool FMaximized;
+TRect FOldBoundsRect;
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
@@ -37,7 +48,11 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	srand(time(NULL));
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 
-
+  PopupMenuButton->Left = 0;
+	PopupMenuButton->Visible = false;
+	DetailsButton->Left = 0;
+	DetailsButton->Visible = true;
+	scSplitView4->Opened=false;
 	
 
 	//vytvoření TEMP adresáře (pro ini)
@@ -45,8 +60,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	////nastavení aplikace
 	//pozice ovládacích prvků
-	RzSizePanel_parametry_projekt->Left=0;RzSizePanel_parametry_projekt->Top=0+RzToolbar1->Height;
-	RzSizePanel_knihovna_objektu->Left=0;RzSizePanel_knihovna_objektu->Top=3+RzSizePanel_parametry_projekt->Height+0+RzToolbar1->Height;
+	RzSizePanel_parametry_projekt->Left=0;RzSizePanel_parametry_projekt->Top=0;
+	RzSizePanel_knihovna_objektu->Left=0;RzSizePanel_knihovna_objektu->Top=0+RzSizePanel_parametry_projekt->Height+0;
 	RzSizePanel_knihovna_objektu->Height=RzStatusBar1->Top-(2+RzSizePanel_parametry_projekt->Height+0+RzToolbar1->Height);
 	vyska_menu=0;
 	upozornovat_na_zmenu_TT_parametru=true;
@@ -124,30 +139,30 @@ void TForm1::edice()
 				Edice_caption="VIEWER - DEMO";
 				NovySoubor->Enabled=false;
 				Otevrit->Enabled=false;
-				Otevritsablonu->Enabled=false;
+			//	Otevritsablonu->Enabled=false;
 				Ulozit->Enabled=false;
-				Ulozitjako->Enabled=false;
-				Export1->Enabled=false;
-				Report1->Enabled=false;
-				Obnovitzezlohy1->Enabled=false;
-				SPPP1->Enabled=false;
-				Boskovice1->Enabled=false;
-				eXtreme1->Enabled=false;
-				casoverezervy1->Enabled=false;
-				testovnkapacity1->Enabled=false;
-				simulace1->Enabled=false;
-				Vzhled1->Enabled=false;
-				Button_kalkulatorTT->Enabled=false;
+			//	Ulozitjako->Enabled=false;
+			//	Export1->Enabled=false;
+			//	Report1->Enabled=false;
+			//	Obnovitzezlohy1->Enabled=false;
+			//	SPPP1->Enabled=false;
+		 //		Boskovice1->Enabled=false;
+			 //	eXtreme1->Enabled=false;
+		 //		casoverezervy1->Enabled=false;
+		 //		testovnkapacity1->Enabled=false;
+			//	simulace1->Enabled=false;
+			//	Vzhled1->Enabled=false;
+			 //	Button_kalkulatorTT->Enabled=false;
 				Button_vozik_parametry->Enabled=false;
 				DrawGrid_knihovna->Enabled=false;
-				Nastvitparametry1->Enabled=false;
+			//	Nastvitparametry1->Enabled=false;
 				Smazat1->Enabled=false;
 
 				RzToolButton1->Enabled=false;
 				RzToolButton2->Enabled=false;
 				RzToolButton3->Enabled=false;
 
-				Edit_takt_time->Enabled=false;
+				//Edit_takt_time->Enabled=false;
 				Button_dopravnik_parametry->Enabled=false;
 				break;
 			default:
@@ -160,7 +175,9 @@ void TForm1::edice()
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
-}
+
+
+	}
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //založí nový soubor, nastavení souboru, nastevení aplikace v konstruktoru
@@ -194,7 +211,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 doba_neotaceni_mysi=0;
 
 
-			 PP.TT=0;Edit_takt_time->Text=PP.TT;
+			// PP.TT=0;Edit_takt_time->Text=PP.TT;
 			 PP.hodin=8;
 			 PP.smen=1;
 			 PP.dni=21;
@@ -464,16 +481,16 @@ void __fastcall TForm1::Gradientn1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::setVisualStyle(TRzVisualStyle VisualStyle)
 {
-	RzSizePanel_knihovna_objektu->VisualStyle=VisualStyle;
-	RzSizePanel_parametry_projekt->VisualStyle=VisualStyle;
+	//RzSizePanel_knihovna_objektu->VisualStyle=VisualStyle;
+	//RzSizePanel_parametry_projekt->VisualStyle=VisualStyle;
 	RzToolbar1->VisualStyle=VisualStyle;
 	RzStatusBar1->VisualStyle=VisualStyle;
 
 	switch(VisualStyle)
 	{
-		case vsClassic: Klasick1->Checked=true;WinXP1->Checked=false;Gradientn1->Checked=false;Edit_takt_time->Ctl3D=true;break;
-		case vsGradient: Klasick1->Checked=false;WinXP1->Checked=false;Gradientn1->Checked=true;Edit_takt_time->Ctl3D=false;break;
-		case vsWinXP: Klasick1->Checked=false;WinXP1->Checked=true;Gradientn1->Checked=false;Edit_takt_time->Ctl3D=true;break;
+	//stary design //	case vsClassic: Klasick1->Checked=true;WinXP1->Checked=false;Gradientn1->Checked=false;Edit_takt_time->Ctl3D=true;break;
+	 //	case vsGradient: Klasick1->Checked=false;WinXP1->Checked=false;Gradientn1->Checked=true;Edit_takt_time->Ctl3D=false;break;
+	 //	case vsWinXP: Klasick1->Checked=false;WinXP1->Checked=true;Gradientn1->Checked=false;Edit_takt_time->Ctl3D=true;break;
 	}
 }
 //---------------------------------------------------------------------------
@@ -483,12 +500,13 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	SB("editace linky",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
-	editacelinky1->Checked=true;
-	testovnkapacity1->Checked=false;
-	simulace1->Checked=false;
-	casoverezervy1->Checked=false;
-	casovosa1->Checked=false;
-	technologickprocesy1->Checked=false;
+	//editacelinky1->Checked=true;          //zakomentovano - novy design, nepouzivaji se checkboxy
+	//testovnkapacity1->Checked=false;
+	//simulace1->Checked=false;
+	//casoverezervy1->Checked=false;
+	//casovosa1->Checked=false;
+	//technologickprocesy1->Checked=false;
+
 	RzSizePanel_parametry_projekt->Visible=true;
 	RzSizePanel_knihovna_objektu->Visible=true;
 	PopupMenu1->AutoPopup=true;
@@ -518,12 +536,12 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 	if(!zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=true;}
 	Timer_simulace->Enabled=false;
 	DuvodUlozit(true);
-	editacelinky1->Checked=false;
-	testovnkapacity1->Checked=true;
-	casoverezervy1->Checked=false;
-	simulace1->Checked=false;
-	casovosa1->Checked=false;
-	technologickprocesy1->Checked=false;
+	//editacelinky1->Checked=false;
+	//testovnkapacity1->Checked=true;
+	//casoverezervy1->Checked=false;
+	//simulace1->Checked=false;
+	//casovosa1->Checked=false;
+	//technologickprocesy1->Checked=false;
 	RzSizePanel_parametry_projekt->Visible=true;
 	RzSizePanel_knihovna_objektu->Visible=true;
 	PopupMenu1->AutoPopup=true;
@@ -552,12 +570,12 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 	SB("časové rezervy",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
-	testovnkapacity1->Checked=false;
-	editacelinky1->Checked=false;
-	casoverezervy1->Checked=true;
-	simulace1->Checked=false;
-	casovosa1->Checked=false;
-	technologickprocesy1->Checked=false;
+	//testovnkapacity1->Checked=false;
+	//editacelinky1->Checked=false;
+	//casoverezervy1->Checked=true;
+	//simulace1->Checked=false;
+	//casovosa1->Checked=false;
+	//technologickprocesy1->Checked=false;
 	DuvodUlozit(true);
 	RzSizePanel_parametry_projekt->Visible=false;
 	RzSizePanel_knihovna_objektu->Visible=false;
@@ -591,16 +609,18 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			SB("zobrazení časové osy technologických procesů",1);
 			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 			Timer_simulace->Enabled=false;
-			testovnkapacity1->Checked=false;
-			editacelinky1->Checked=false;
-			casoverezervy1->Checked=false;
-			simulace1->Checked=false;
-			casovosa1->Checked=true;
-			technologickprocesy1->Checked=false;
+			//testovnkapacity1->Checked=false;
+			//editacelinky1->Checked=false;
+			//casoverezervy1->Checked=false;
+			//simulace1->Checked=false;
+			//casovosa1->Checked=true;
+			//technologickprocesy1->Checked=false;
 			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 			d.PosunT.y=0;
 			//zneplatnit_minulesouradnice();//zrušeno test
 			DuvodUlozit(true);
+			scSplitView2->Visible=false;
+
 			RzSizePanel_parametry_projekt->Visible=false;
 			RzSizePanel_knihovna_objektu->Visible=false;
 			PopupMenu1->AutoPopup=true;
@@ -643,11 +663,11 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	SB("zobrazení technologických procesů v čase",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
-	testovnkapacity1->Checked=false;
-	editacelinky1->Checked=false;
-	casoverezervy1->Checked=false;
-	simulace1->Checked=false;
-	technologickprocesy1->Checked=true;
+	//testovnkapacity1->Checked=false;
+	//editacelinky1->Checked=false;
+	//casoverezervy1->Checked=false;
+	//simulace1->Checked=false;
+	//technologickprocesy1->Checked=true;
 	d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 	d.PosunT.y=0;
 	zneplatnit_minulesouradnice();
@@ -723,12 +743,12 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	ESC();//zruší případně rozdělanou akci
 	SB("zobrazení animované simulace",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
-	testovnkapacity1->Checked=false;
-	editacelinky1->Checked=false;
-	casoverezervy1->Checked=false;
-	simulace1->Checked=true;
-	casovosa1->Checked=false;
-	CheckBoxPALCE->Visible=false;
+	//testovnkapacity1->Checked=false;
+	//editacelinky1->Checked=false;
+	//casoverezervy1->Checked=false;
+	//simulace1->Checked=true;
+	//casovosa1->Checked=false;
+	//CheckBoxPALCE->Visible=false;
 	g.ShowGrafy(false);
 	DuvodUlozit(true);
 	RzSizePanel_parametry_projekt->Visible=false;
@@ -877,7 +897,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
 		case CASOVAOSA:
 		{
-		  /*	if(!antialiasing)d.vykresli_casove_osy(Canvas);
+			/*	if(!antialiasing)d.vykresli_casove_osy(Canvas);
 			else
 			{
 				Cantialising a;
@@ -1158,10 +1178,10 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 					int W=RzSizePanel_knihovna_objektu->Width;
 					if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
-					short H=RzToolbar1->Height;
+					short H=scLabel1->Height;// zmena designu RzToolbar1->Height;
 					int Gh=vrat_max_vysku_grafu();
 					Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh+10;//velikost pan plochy
-					Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-RzStatusBar1->Height-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-RzStatusBar1->Height-Gh));//uloží pan výřez
+					Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-scLabel1->Height-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-scLabel1->Height-Gh));//uloží pan výřez
 					//Pan_bmp->SaveToFile("test.bmp");
 					break;
 				}
@@ -1461,7 +1481,7 @@ void __fastcall TForm1::Predchozipohled1Click(TObject *Sender)
 {
 	Zoom=Zoom_predchozi;
 	Posun=Posun_predchozi;
-	Predchozipohled1->Enabled=false;
+	//Predchozipohled1->Enabled=false;
 	RzToolButton12->Enabled=false;
 	REFRESH();
 	DuvodUlozit(true);
@@ -1470,7 +1490,7 @@ void TForm1::Uloz_predchozi_pohled()
 {
 	Zoom_predchozi=Zoom;
 	Posun_predchozi=Posun;
-	Predchozipohled1->Enabled=true;
+	//Predchozipohled1->Enabled=true;
 	RzToolButton12->Enabled=true;
 	DuvodUlozit(true);
 }
@@ -1866,7 +1886,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftSta
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::RzSizePanel_knihovna_objektuMouseEnter(TObject *Sender)
+void __fastcall TForm1::RzSizePanel_knihovna_objektu_OLDMouseEnter(TObject *Sender)
 {
 //DrawGrid_knihovna->Enabled=true;
 
@@ -2155,30 +2175,30 @@ void __fastcall TForm1::Button_kalkulatorTTClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Edit_takt_timeChange(TObject *Sender)
 {
-	if(Edit_takt_time->Focused())
-	{
-		PP.TT=ms.MyToDouble(Edit_takt_time->Text);
-		if(Edit_takt_time->Text!="" && zobrazit_barvy_casovych_rezerv)//pokud má smysl překreslit
-		REFRESH();
-		DuvodUlozit(true);
-  }
+//	if(Edit_takt_time->Focused())
+//	{
+//		PP.TT=ms.MyToDouble(Edit_takt_time->Text);
+//		if(Edit_takt_time->Text!="" && zobrazit_barvy_casovych_rezerv)//pokud má smysl překreslit
+//		REFRESH();
+//		DuvodUlozit(true);
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Edit_takt_timeEnter(TObject *Sender)
 {
-	if(Edit_takt_time->Text!="" && Edit_takt_time->Text!=0 && upozornovat_na_zmenu_TT_parametru)
-	{
-		MyMessageBox->Button_Yes->Visible=false;
-		MyMessageBox->Button_No->Visible=false;
-		MyMessageBox->Button_OK->Visible=true;
-		MyMessageBox->CheckBox_pamatovat->Checked=false;
-		MyMessageBox->ShowMyMessageBox(0,0+vyska_menu+RzToolbar1->Height,"TISPL - Eltep","Při změně hodnoty Takt Timu, dojde ke změně parametrů, z kterých se Takt Time vypočítává!");
-		MyMessageBox->Button_Yes->Visible=true;
-		MyMessageBox->Button_No->Visible=true;
-		MyMessageBox->Button_OK->Visible=false;
-		if(MyMessageBox->CheckBox_pamatovat->Checked)upozornovat_na_zmenu_TT_parametru=false;
-		MyMessageBox->CheckBox_pamatovat->Checked=false;
-	}
+//	if(Edit_takt_time->Text!="" && Edit_takt_time->Text!=0 && upozornovat_na_zmenu_TT_parametru)
+//	{
+//		MyMessageBox->Button_Yes->Visible=false;
+//		MyMessageBox->Button_No->Visible=false;
+//		MyMessageBox->Button_OK->Visible=true;
+//		MyMessageBox->CheckBox_pamatovat->Checked=false;
+//		MyMessageBox->ShowMyMessageBox(0,0+vyska_menu+RzToolbar1->Height,"TISPL - Eltep","Při změně hodnoty Takt Timu, dojde ke změně parametrů, z kterých se Takt Time vypočítává!");
+//		MyMessageBox->Button_Yes->Visible=true;
+//		MyMessageBox->Button_No->Visible=true;
+//		MyMessageBox->Button_OK->Visible=false;
+//		if(MyMessageBox->CheckBox_pamatovat->Checked)upozornovat_na_zmenu_TT_parametru=false;
+//		MyMessageBox->CheckBox_pamatovat->Checked=false;
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Edit_pocet_vozikuChange(TObject *Sender)
@@ -2188,7 +2208,7 @@ void __fastcall TForm1::Edit_pocet_vozikuChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //volá dialog k nastavení parametrů voziku
-void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
+void __fastcall TForm1::Button_vozik_parametry_OLDClick(TObject *Sender)
 {
 //	if(d.v.VOZIKY->dalsi->cesta==NULL)
   //	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
@@ -2198,7 +2218,7 @@ void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //volá dialog k nastavení dopravníků
-void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
+void __fastcall TForm1::Button_dopravnik_parametry_OLDClick(TObject *Sender)
 {
 	Form_dopravnik->Left=0;
 	Form_dopravnik->Top=0+vyska_menu+RzToolbar1->Height;
@@ -2323,7 +2343,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 			Posun.x=d.v.File_hlavicka.PosunutiX;
 			Posun.y=d.v.File_hlavicka.PosunutiY;
 			PP.TT=d.v.File_hlavicka.TT;
-			Edit_takt_time->Text=PP.TT;
+		 //	Edit_takt_time->Text=PP.TT;
 			PP.hodin=d.v.File_hlavicka.hodin;
 			PP.smen=d.v.File_hlavicka.smen;
 			PP.dni=d.v.File_hlavicka.dni;
@@ -3362,6 +3382,129 @@ void __fastcall TForm1::rComboBoxKrokChange(TObject *Sender)
 		d.TP.K=ms.MyToDouble(rComboBoxKrok->Text);
 		Invalidate();
 
+}
+//---------------------------------------------------------------------------
+
+
+
+
+void __fastcall TForm1::Button12Click(TObject *Sender)
+{
+ //	WindowState = wsMaximized;
+ scSplitView2->Opened = !scSplitView2->Opened;
+
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::MaxButtonClick(TObject *Sender)
+{
+	if (FMaximized) {
+	 BoundsRect =  FOldBoundsRect;
+	 FMaximized = false;
+	 scLabel1->DragForm = true;
+	 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
+	 scGPSizeBox1->Visible = scCheckBox2->Checked;
+	}
+	else
+	{
+	FOldBoundsRect = BoundsRect;
+	BoundsRect = scStyledForm1->GetMaximizeBounds();
+
+ //ShowMessage(scStyledForm1->GetMaximizeBounds().);
+	FMaximized = true;
+	scLabel1->DragForm = false;
+	MaxButton->GlyphOptions->Kind = scgpbgkRestore;
+	scGPSizeBox1->Visible = False;
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::PopupMenuButtonClick(TObject *Sender)
+{
+	//Projekt1();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
+{
+scSplitView1->Opened = !scSplitView1->Opened;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::KonecClick(TObject *Sender)
+{
+Close();//ukončí aplikaci
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scGPGlyphButton5Click(TObject *Sender)
+{
+	vycentrovat=false;
+	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+	ZOOM_OUT();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPGlyphButton6Click(TObject *Sender)
+{
+ vycentrovat=false;
+ akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+ ZOOM_IN();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scLabel1DblClick(TObject *Sender)
+{
+ if (!scCheckBox1->Checked) { exit;}
+	Form1->MaxButtonClick(Form1);
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::MinButtonClick(TObject *Sender)
+{
+Application->Minimize();
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
+{
+ scSplitView2->Opened = !scSplitView2->Opened;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
+{
+
+	Form_dopravnik->Left=0;
+	Form_dopravnik->Top=0+vyska_menu+RzToolbar1->Height;
+	if(IDOK==Form_dopravnik->ShowModal())DuvodUlozit(true);
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
+{
+//	if(d.v.VOZIKY->dalsi->cesta==NULL)
+  //	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
+	Form_vozik_nastaveni->Left=0;
+	Form_vozik_nastaveni->Top=0+vyska_menu+RzToolbar1->Height;
+	if(IDOK==Form_vozik_nastaveni->ShowModal())DuvodUlozit(true);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
+{
+
+ scSplitView4->Opened = !scSplitView4->Opened;
 }
 //---------------------------------------------------------------------------
 
