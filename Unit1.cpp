@@ -1836,8 +1836,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	if(antialiasing)C->Font->Size=11;else C->Font->Size=10;
 	C->Font->Name="Arial";
 	C->Pen->Width=1;
-	C->Pen->Color=clBtnShadow;//M (TColor)RGB(150,150,150);//(TColor)RGB(19,115,169);
-	C->Brush->Color=clBtnShadow;//M (TColor)RGB(150,150,150);//(TColor)RGB(19,115,169);
+	C->Pen->Color=(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
+	C->Brush->Color=clBtnShadow;(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
 	C->Font->Color=clWhite;
 	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 	{
@@ -3572,13 +3572,14 @@ void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
 	scGPGlyphButton8->Top=80;
 	scGPGlyphButton7->Height=30;
 	scGPGlyphButton8->Height=scGPGlyphButton7->Height;
-	scGPGlyphButton7->Options->NormalColor=(TColor)RGB(226,122,21);
+	scGPGlyphButton7->Options->NormalColor=clBtnShadow;;
 	scGPGlyphButton8->Options->NormalColor=scGPGlyphButton7->Options->NormalColor;
 	DrawGrid_knihovna->Top=37;
 	scGPGlyphButton7->Options->ShapeStyle=scgpRoundedRect;
 	scGPGlyphButton8->Options->ShapeStyle=scGPGlyphButton7->Options->ShapeStyle;
 	scListGroupNastavProjektu->RowLineMargin=scListGroupNastavProjektu->Width;
 	scListGroupKnihovObjektu->Top=115;
+	scListGroupNastavProjektu->Height=115;
 
 }
 //---------------------------------------------------------------------------
