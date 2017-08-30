@@ -11,7 +11,7 @@ TForm_uvod *Form_uvod;
 __fastcall TForm_uvod::TForm_uvod(TComponent* Owner)
   : TForm(Owner)
 {
-	Form_uvod->Color=(TColor)RGB(44,82,157);
+	Form_uvod->Color=(TColor)RGB(43,87,154);//pùvodní eltep barvy:(TColor)RGB(44,82,157);
 	n=0;
 }
 //---------------------------------------------------------------------------
@@ -20,7 +20,7 @@ void __fastcall TForm_uvod::CreateParams(TCreateParams &Params)
 {
  TForm::CreateParams(Params);
  Params.Style=WS_POPUP|WS_DISABLED;
- Form_uvod->Color=(TColor)RGB(44,82,157);
+ Form_uvod->Color=(TColor)RGB(43,87,154);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_uvod::Timer1Timer(TObject *Sender)

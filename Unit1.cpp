@@ -1837,7 +1837,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	C->Font->Name="Arial";
 	C->Pen->Width=1;
 	C->Pen->Color=(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
-	C->Brush->Color=clBtnShadow;(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
+	C->Brush->Color=(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
 	C->Font->Color=clWhite;
 	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 	{
