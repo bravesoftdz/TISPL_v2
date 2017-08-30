@@ -102,8 +102,6 @@ __published:	// IDE-managed Components
 	TMenuItem *Smazat1;
 	TRzStatusPane *RzStatusPane3;
 	TRzStatusPane *RzStatusPane4;
-	TDrawGrid *DrawGrid_knihovna;
-	TLabel *Label2;
 	TButton *Button1;
 	TMenuItem *N5;
 	TMenuItem *Priblizit2;
@@ -132,7 +130,6 @@ __published:	// IDE-managed Components
 	TOpenDialog *OpenDialog1;
 	TTimer *Timer_backup;
 	TSavePictureDialog *SavePictureDialog1;
-	TLabel *Label8;
 	TTimer *Timer_simulace;
 	TButton *Button3;
 	TButton *Button4;
@@ -206,7 +203,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton6;
 	TscGPSizeBox *scGPSizeBox1;
 	TscCheckBox *scCheckBox2;
-	TscSplitView *scSplitView1;
+	TscSplitView *scSplitView_OPTIONS;
 	TscLabel *scLabel4;
 	TscScrollBox *scScrollBox1;
 	TscListGroupPanel *scListGroupPanel1;
@@ -239,11 +236,6 @@ __published:	// IDE-managed Components
 	TMenuItem *Exit1;
 	TscStyledForm *scStyledForm1;
 	TscRadioGroup *scRadioGroup1;
-	TscListGroupPanel *RzSizePanel_parametry_projekt;
-	TscListGroupPanel *RzSizePanel_knihovna_objektu;
-	TscSplitView *scSplitView2;
-	TscGPGlyphButton *Button_dopravnik_parametry;
-	TscGPGlyphButton *Button_vozik_parametry;
 	TscGPGlyphButton *scGPGlyphButton2;
 	TscGPButton *scGPButton1;
 	TscGPButton *scGPButton2;
@@ -260,10 +252,38 @@ __published:	// IDE-managed Components
 	TscGPVirtualImageList *scGPVirtualImageList1;
 	TscButton *scButton2;
 	TscButton *scButton6;
-	TscSplitView *scSplitView4;
+	TscSplitView *scSplitView_MENU;
 	TscButton *scButton7;
 	TscButton *scButton8;
 	TscButton *scButton9;
+	TscScrollBox *scScrollBox2;
+	TscListGroupPanel *scListGroupPanel2;
+	TscLabel *scLabel2;
+	TscLabel *scLabel3;
+	TscLabel *scLabel7;
+	TscGPSwitch *scGPSwitch6;
+	TscGPSwitch *scGPSwitch7;
+	TscGPSwitch *scGPSwitch8;
+	TscListGroupPanel *scListGroupPanel5;
+	TscLabel *scLabel8;
+	TscLabel *scLabel10;
+	TscPasswordEdit *scPasswordEdit2;
+	TscEdit *scEdit1;
+	TscListGroupPanel *scListGroupPanel6;
+	TscLabel *scLabel13;
+	TscAdvancedComboBox *scAdvancedComboBox2;
+	TscCheckBox *scCheckBox3;
+	TscCheckBox *scCheckBox4;
+	TscSplitView *scSplitView_LEFTTOOLBAR;
+	TscListGroupPanel *scListGroupKnihovObjektu;
+	TscListGroupPanel *scListGroupNastavProjektu;
+	TscLabel *scLabel14;
+	TscLabel *scLabel15;
+	TscGPGlyphButton *scGPGlyphButton7;
+	TscGPGlyphButton *scGPGlyphButton8;
+	TDrawGrid *DrawGrid_knihovna;
+	TscGPSwitch *scGPSwitch9;
+	TscLabel *scLabel19;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall Klasick1Click(TObject *Sender);
 	void __fastcall WinXP1Click(TObject *Sender);
@@ -278,7 +298,6 @@ __published:	// IDE-managed Components
 	void __fastcall DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall FormResize(TObject *Sender);
-	void __fastcall MrizkaClick(TObject *Sender);
 	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall Button1Click(TObject *Sender);
@@ -354,8 +373,8 @@ __published:	// IDE-managed Components
 	void __fastcall technologickprocesy1Click(TObject *Sender);
 	void __fastcall PopupMenu1Popup(TObject *Sender);
 	void __fastcall Zobrazitparametry1Click(TObject *Sender);
-	void __fastcall MagnaClick(TObject *Sender);
 	void __fastcall Rychlexport1Click(TObject *Sender);
+	void __fastcall MagnaClick(TObject *Sender);
 	void __fastcall SPPP1Click(TObject *Sender);
 	void __fastcall Boskovice1Click(TObject *Sender);
 	void __fastcall eXtreme1Click(TObject *Sender);
@@ -368,7 +387,6 @@ __published:	// IDE-managed Components
 	void __fastcall CheckBoxVymena_barevClick(TObject *Sender);
 	void __fastcall ComboBoxODminChange(TObject *Sender);
 	void __fastcall ComboBoxDOminChange(TObject *Sender);
-	void __fastcall antialiasing1Click(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
 	void __fastcall Timer_trTimer(TObject *Sender);
 	void __fastcall CheckBox_pouzit_zadane_kapacityClick(TObject *Sender);
@@ -387,6 +405,11 @@ __published:	// IDE-managed Components
 	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
 	void __fastcall Button_vozik_parametryClick(TObject *Sender);
 	void __fastcall DetailsButtonClick(TObject *Sender);
+	void __fastcall scGPTrackBar1Change(TObject *Sender);
+	void __fastcall scGPSwitch4ChangeState(TObject *Sender);
+	void __fastcall scGPSwitch5ChangeState(TObject *Sender);
+	void __fastcall scGPSwitch9ChangeState(TObject *Sender);
+
 
 
 
@@ -417,6 +440,7 @@ private:	// User declarations
 	void ZOOM_OUT();//oddálení
 	void ZOOM();//samotný ZOOM
 	void ZOOM_WINDOW();//přiblížení oknem
+	void on_change_zoom_change_scGPTrackBar();
 	void zneplatnit_minulesouradnice();
 	void kurzor(TKurzory typ_kurzor);
 	void pan_map(TCanvas * canv, int X, int Y);

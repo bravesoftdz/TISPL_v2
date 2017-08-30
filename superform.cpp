@@ -164,16 +164,18 @@ void __fastcall TForm_vozik_nastaveni::FormShow(TObject *Sender)
  scGPButton2->Options->HotColor=(TColor)RGB(255,141,28);
  scGPButton2->Options->PressedColor=(TColor)RGB(255,141,28);
 
- scGPButton3->Options->NormalColor=(TColor)RGB(226,122,21);
- scGPButton3->Options->FocusedColor=(TColor)RGB(255,141,28);
- scGPButton3->Options->HotColor=(TColor)RGB(255,141,28);
- scGPButton3->Options->PressedColor=(TColor)RGB(255,141,28);
+ //scGPButton3->Options->NormalColor=(TColor)RGB(226,122,21);
+ //scGPButton3->Options->FocusedColor=(TColor)RGB(255,141,28);
+ //scGPButton3->Options->HotColor=(TColor)RGB(255,141,28);
+ //scGPButton3->Options->PressedColor=(TColor)RGB(255,141,28);
 
  scGPButton4->Options->NormalColor=(TColor)RGB(226,122,21);
  scGPButton4->Options->FocusedColor=(TColor)RGB(255,141,28);
  scGPButton4->Options->HotColor=(TColor)RGB(255,141,28);
  scGPButton4->Options->PressedColor=(TColor)RGB(255,141,28);
 
+	rStringGridEd1->Cells[5][1]="NASTAVIT";
+	rStringGridEd1->Cells[9][1]="NASTAVIT";
 
 
 
@@ -724,6 +726,7 @@ rStringGridEd1->RowCount++;
 	}
 }
 //---------------------------------------------------------------------------
+
 
 
 

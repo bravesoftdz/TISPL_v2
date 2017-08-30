@@ -45,29 +45,31 @@ TRect FOldBoundsRect;
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
-	srand(time(NULL));
+	srand(time(NULL));//nutno tady
+
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 
-  PopupMenuButton->Left = 0;
+  //záležitost s novým designem
+	PopupMenuButton->Left = 0;
 	PopupMenuButton->Visible = false;
 	DetailsButton->Left = 0;
 	DetailsButton->Visible = true;
-	scSplitView4->Opened=false;
-	
+	scSplitView_OPTIONS->Opened=false;
+	scGPGlyphButton8->Options->NormalColor=(TColor)RGB(0,120,215);
+	scListGroupNastavProjektu->HeaderAutoColor=true;
+	scListGroupKnihovObjektu->HeaderAutoColor=true;
 
 	//vytvoření TEMP adresáře (pro ini)
 	MkDir(get_temp_dir()+"TISPL");
 
 	////nastavení aplikace
 	//pozice ovládacích prvků
-	RzSizePanel_parametry_projekt->Left=0;RzSizePanel_parametry_projekt->Top=0;
-	RzSizePanel_knihovna_objektu->Left=0;RzSizePanel_knihovna_objektu->Top=0+RzSizePanel_parametry_projekt->Height+0;
-	RzSizePanel_knihovna_objektu->Height=RzStatusBar1->Top-(2+RzSizePanel_parametry_projekt->Height+0+RzToolbar1->Height);
+	scListGroupNastavProjektu->Left=0;scListGroupNastavProjektu->Top=0;
+	scListGroupKnihovObjektu->Left=0;scListGroupKnihovObjektu->Top=2+scListGroupNastavProjektu->Height+0;
+	scListGroupKnihovObjektu->Height=RzStatusBar1->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
 	vyska_menu=0;
 	upozornovat_na_zmenu_TT_parametru=true;
 
-	//nastavení vizuálního stylu
-	setVisualStyle();
 	//nastavení knihovnky
 	//DrawGrid_knihovna->Enabled=false;
 	DrawGrid_knihovna->RowCount=pocet_objektu_knihovny/2;//velikosti buněk
@@ -153,7 +155,7 @@ void TForm1::edice()
 			//	simulace1->Enabled=false;
 			//	Vzhled1->Enabled=false;
 			 //	Button_kalkulatorTT->Enabled=false;
-				Button_vozik_parametry->Enabled=false;
+			//M	Button_vozik_parametry->Enabled=false;
 				DrawGrid_knihovna->Enabled=false;
 			//	Nastvitparametry1->Enabled=false;
 				Smazat1->Enabled=false;
@@ -163,7 +165,7 @@ void TForm1::edice()
 				RzToolButton3->Enabled=false;
 
 				//Edit_takt_time->Enabled=false;
-				Button_dopravnik_parametry->Enabled=false;
+		 //M			Button_dopravnik_parametry->Enabled=false;
 				break;
 			default:
 				break;
@@ -205,7 +207,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
     	 Zoom=1.0; SB(Zoom,2);
     	 Zoom_predchozi=1.0;
-			 Posun.x=-RzSizePanel_parametry_projekt->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
+			 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
 			 Posun_predchozi.x=Posun.x;Posun_predchozi.y=Posun.y;
 			 jedno_ze_tri_otoceni_koleckem_mysi=1;
 			 doba_neotaceni_mysi=0;
@@ -252,7 +254,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 //		Close();
 //	}
 //	else
-	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
+ //	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
 		startUP();
 }
 //---------------------------------------------------------------------------
@@ -344,7 +346,7 @@ bool TForm1::ttr(UnicodeString Text)
 void TForm1::startUP()
 {
 	//////otevrení posledního souboru
-	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat ini z filu
+	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
 
 	UnicodeString user_file=ms.delete_repeat(ms.delete_repeat(Parametry,"\"",2),"\"").Trim();
 	if(user_file!="")//pokud zkouší uživatel otevřít přímo soubor kliknutím na něj mimo aplikaci
@@ -460,7 +462,7 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
-	RzSizePanel_knihovna_objektu->Height=RzStatusBar1->Top-(2+RzSizePanel_parametry_projekt->Height+0+RzToolbar1->Height);
+	scListGroupKnihovObjektu->Height=RzStatusBar1->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
 	if(MOD==REZERVY || MOD==CASOVAOSA)Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -507,8 +509,8 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	//casovosa1->Checked=false;
 	//technologickprocesy1->Checked=false;
 
-	RzSizePanel_parametry_projekt->Visible=true;
-	RzSizePanel_knihovna_objektu->Visible=true;
+	scListGroupNastavProjektu->Visible=true;
+	scListGroupKnihovObjektu->Visible=true;
 	PopupMenu1->AutoPopup=true;
 	DuvodUlozit(true);
 	ButtonPLAY->Visible=false;
@@ -542,8 +544,8 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 	//simulace1->Checked=false;
 	//casovosa1->Checked=false;
 	//technologickprocesy1->Checked=false;
-	RzSizePanel_parametry_projekt->Visible=true;
-	RzSizePanel_knihovna_objektu->Visible=true;
+	scListGroupNastavProjektu->Visible=true;
+	scListGroupKnihovObjektu->Visible=true;
 	PopupMenu1->AutoPopup=true;
 	Timer_neaktivity->Enabled=false;
 	Timer_animace->Enabled=false;
@@ -577,8 +579,8 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 	//casovosa1->Checked=false;
 	//technologickprocesy1->Checked=false;
 	DuvodUlozit(true);
-	RzSizePanel_parametry_projekt->Visible=false;
-	RzSizePanel_knihovna_objektu->Visible=false;
+	scListGroupNastavProjektu->Visible=false;
+	scListGroupKnihovObjektu->Visible=false;
 	PopupMenu1->AutoPopup=false;
 	Timer_animace->Enabled=false;
 	ButtonPLAY->Visible=false;
@@ -619,10 +621,10 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			d.PosunT.y=0;
 			//zneplatnit_minulesouradnice();//zrušeno test
 			DuvodUlozit(true);
-			scSplitView2->Visible=false;
+			scSplitView_LEFTTOOLBAR->Visible=false;
 
-			RzSizePanel_parametry_projekt->Visible=false;
-			RzSizePanel_knihovna_objektu->Visible=false;
+			scListGroupNastavProjektu->Visible=false;
+			scListGroupKnihovObjektu->Visible=false;
 			PopupMenu1->AutoPopup=true;
 			Button3->Visible=false;
 			Timer_neaktivity->Enabled=true;
@@ -674,8 +676,8 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	CheckBoxPALCE->Visible=false;
 	g.ShowGrafy(false);
 	DuvodUlozit(true);
-	RzSizePanel_parametry_projekt->Visible=false;
-	RzSizePanel_knihovna_objektu->Visible=false;
+	scListGroupNastavProjektu->Visible=false;
+	scListGroupKnihovObjektu->Visible=false;
 	PopupMenu1->AutoPopup=false;
 	Button3->Visible=false;
 	Timer_neaktivity->Enabled=false;
@@ -751,8 +753,8 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	//CheckBoxPALCE->Visible=false;
 	g.ShowGrafy(false);
 	DuvodUlozit(true);
-	RzSizePanel_parametry_projekt->Visible=false;
-	RzSizePanel_knihovna_objektu->Visible=false;
+	scListGroupNastavProjektu->Visible=false;
+	scListGroupKnihovObjektu->Visible=false;
 	PopupMenu1->AutoPopup=false;
 	Button3->Visible=true;
 	d.cas=0;
@@ -809,7 +811,8 @@ void __fastcall TForm1::PopupMenu1Popup(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::MrizkaClick(TObject *Sender)
+//skryje či zobrazí mřížku
+void __fastcall TForm1::scGPSwitch5ChangeState(TObject *Sender)
 {
 	grid=!grid;
 	if(!grid)SB("mřížka skryta",5);
@@ -1176,7 +1179,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 				case PAN:
 				{
 					kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
-					int W=RzSizePanel_knihovna_objektu->Width;
+					int W=167;//M	RzSizePanel_knihovna_objektu->Width;
 					if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
 					short H=scLabel1->Height;// zmena designu RzToolbar1->Height;
 					int Gh=vrat_max_vysku_grafu();
@@ -1368,7 +1371,7 @@ void __fastcall TForm1::Priblizit2Click(TObject *Sender)
 void __fastcall TForm1::RzToolButton8Click(TObject *Sender)//Zoom in z toolbaru
 {
  vycentrovat=false;
- akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+ //M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
  ZOOM_IN();
 }
 //---------------------------------------------------------------------------
@@ -1383,7 +1386,7 @@ void __fastcall TForm1::Oddalit2Click(TObject *Sender)
 void __fastcall TForm1::RzToolButton9Click(TObject *Sender)//Zoom out z toolbaru
 {
 	vycentrovat=false;
-	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+	//M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
 	ZOOM_OUT();
 }
 //---------------------------------------------------------------------------
@@ -1434,9 +1437,10 @@ void TForm1::ZOOM()
 		zneplatnit_minulesouradnice();
 
 		//je to nějaké nepřesné
-		Posun.x=m.round(akt_souradnice_kurzoru.x/m2px-(ClientWidth+RzSizePanel_knihovna_objektu->Width)/2/Zoom);
+		//M	Posun.x=m.round(akt_souradnice_kurzoru.x/m2px-(ClientWidth+RzSizePanel_knihovna_objektu->Width)/2/Zoom);
 		Posun.y=m.round(-akt_souradnice_kurzoru.y/m2px-(ClientHeight)/2/Zoom);
 		SB(Zoom,2);
+		on_change_zoom_change_scGPTrackBar();
 
 		//vycentruje kurzor na střed monitoru - na X nefunguje přesně
 		//Mouse->CursorPos=TPoint(ClientWidth/2,(ClientHeight-RzStatusBar1->Height)/2); - špatně
@@ -1466,7 +1470,7 @@ void TForm1::ZOOM_WINDOW()
 	}
 
 	//vycentrování obrazu
-	Posun.x=m.round(Centr.x/m2px-(ClientWidth+RzSizePanel_knihovna_objektu->Width)/2/Zoom);
+	//M	Posun.x=m.round(Centr.x/m2px-(ClientWidth+RzSizePanel_knihovna_objektu->Width)/2/Zoom);
 	Posun.y=m.round(-Centr.y/m2px-(ClientHeight)/2/Zoom);
 	SB(Zoom,2);
 
@@ -1656,7 +1660,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 			ukaz=ukaz->dalsi;//posun na další prvek
 	}
 
-	int PD_x=ClientWidth-RzSizePanel_knihovna_objektu->Width;
+	int PD_x=ClientWidth;//M	-RzSizePanel_knihovna_objektu->Width;
 	int PD_y=ClientHeight-vyska_menu-RzStatusBar1->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
 
 	if((MaxX-MinX)!=0 && (MaxX+MinX)!=0)
@@ -1680,7 +1684,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 
 	if(MaxX+MinX==0)//v případě, že není objekt
 	{
-		Posun.x=-RzSizePanel_parametry_projekt->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
+		 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
 	}
 
 	SB(Zoom,2);
@@ -1832,8 +1836,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	if(antialiasing)C->Font->Size=11;else C->Font->Size=10;
 	C->Font->Name="Arial";
 	C->Pen->Width=1;
-	C->Pen->Color=(TColor)RGB(150,150,150);//(TColor)RGB(19,115,169);
-	C->Brush->Color=(TColor)RGB(150,150,150);//(TColor)RGB(19,115,169);
+	C->Pen->Color=clBtnShadow;//M (TColor)RGB(150,150,150);//(TColor)RGB(19,115,169);
+	C->Brush->Color=clBtnShadow;//M (TColor)RGB(150,150,150);//(TColor)RGB(19,115,169);
 	C->Font->Color=clWhite;
 	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 	{
@@ -1973,7 +1977,7 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 void TForm1::zobraz_tip(UnicodeString text)
 {
 	Canvas->Font->Color=clRed;
-	Canvas->TextOutW(RzSizePanel_knihovna_objektu->Width+10,RzStatusBar1->Top-RzStatusBar1->Height,text);
+	//M	Canvas->TextOutW(RzSizePanel_knihovna_objektu->Width+10,RzStatusBar1->Top-RzStatusBar1->Height,text);
 	Canvas->Font->Color=clBlack;
 }
 //---------------------------------------------------------------------------
@@ -3324,7 +3328,7 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //zapne či vypne antialiasing
-void __fastcall TForm1::antialiasing1Click(TObject *Sender)
+void __fastcall TForm1::scGPSwitch4ChangeState(TObject *Sender)
 {
 	antialiasing=!antialiasing;
 	DrawGrid_knihovna->Invalidate();
@@ -3391,7 +3395,7 @@ void __fastcall TForm1::rComboBoxKrokChange(TObject *Sender)
 void __fastcall TForm1::Button12Click(TObject *Sender)
 {
  //	WindowState = wsMaximized;
- scSplitView2->Opened = !scSplitView2->Opened;
+ scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
 
 }
 //---------------------------------------------------------------------------
@@ -3429,7 +3433,10 @@ void __fastcall TForm1::PopupMenuButtonClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
 {
-scSplitView1->Opened = !scSplitView1->Opened;
+	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
+
+//M if(scSplitView1->Opened && antialiasing) antialiasing=false;
+//M else antialiasing=true;
 }
 //---------------------------------------------------------------------------
 
@@ -3443,7 +3450,7 @@ Close();//ukončí aplikaci
 void __fastcall TForm1::scGPGlyphButton5Click(TObject *Sender)
 {
 	vycentrovat=false;
-	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+	//M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
 	ZOOM_OUT();
 }
 //---------------------------------------------------------------------------
@@ -3451,7 +3458,7 @@ void __fastcall TForm1::scGPGlyphButton5Click(TObject *Sender)
 void __fastcall TForm1::scGPGlyphButton6Click(TObject *Sender)
 {
  vycentrovat=false;
- akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+ //M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
  ZOOM_IN();
 }
 //---------------------------------------------------------------------------
@@ -3476,7 +3483,7 @@ Application->Minimize();
 
 void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 {
- scSplitView2->Opened = !scSplitView2->Opened;
+ scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
 }
 //---------------------------------------------------------------------------
 
@@ -3504,9 +3511,75 @@ void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
 {
 
- scSplitView4->Opened = !scSplitView4->Opened;
+  scSplitView_MENU->Opened = !scSplitView_MENU->Opened;
+}
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+//při změnně palce na tracBaru aktualizuje zoom a zavolá překreslení obrazu
+void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
+{
+		switch(scGPTrackBar1->Value)
+		{
+			case 0:Zoom=0.25;break;
+			case 1:Zoom=0.5;break;
+			case 2:Zoom=1;break;
+			case 3:Zoom=1.5;break;
+			case 4:Zoom=2;break;
+			case 5:Zoom=2.5;break;
+			case 6:Zoom=3;break;
+			case 7:Zoom=3.5;break;
+			case 8:Zoom=4;break;
+			case 9:Zoom=4.5;break;
+			case 10:Zoom=5;break;
+		}
+		SB(Zoom,2);
+		REFRESH();
+}
+//---------------------------------------------------------------------------
+//při změně zoomu aktulizuje palec na trackBaru, inverzní funkce k funkci předchozí
+void TForm1::on_change_zoom_change_scGPTrackBar()
+{
+	if(Zoom==0.25)	scGPTrackBar1->Value=0;
+	if(Zoom==0.5)		scGPTrackBar1->Value=1;
+	if(Zoom==1)			scGPTrackBar1->Value=2;
+	if(Zoom==1.5)		scGPTrackBar1->Value=3;
+	if(Zoom==2)			scGPTrackBar1->Value=4;
+	if(Zoom==2.5)		scGPTrackBar1->Value=5;
+	if(Zoom==3)			scGPTrackBar1->Value=6;
+	if(Zoom==3.5)		scGPTrackBar1->Value=7;
+	if(Zoom==4)			scGPTrackBar1->Value=8;
+	if(Zoom==4.5)		scGPTrackBar1->Value=9;
+	if(Zoom==5)			scGPTrackBar1->Value=10;
 }
 //---------------------------------------------------------------------------
 
 
+void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
+{
+	scSplitView_MENU->Opened=false;
+	if(scLabel19->Caption=="M-design")scLabel19->Caption="R-design";
+	else scLabel19->Caption="M-design";
+		scListGroupNastavProjektu->HeaderAutoColor=false;
+		scListGroupKnihovObjektu->HeaderAutoColor=scListGroupNastavProjektu->HeaderAutoColor;
+	scListGroupNastavProjektu->HeaderFont->Color=clWhite;
+	scListGroupNastavProjektu->Color=(TColor)RGB(43,87,154);
+	scListGroupKnihovObjektu->Color=scListGroupNastavProjektu->Color;
+	scListGroupKnihovObjektu->HeaderFont->Color=scListGroupNastavProjektu->HeaderFont->Color;
+	scListGroupNastavProjektu->HeaderHeight=35;
+	scListGroupKnihovObjektu->HeaderHeight=scListGroupNastavProjektu->HeaderHeight;
+	scGPGlyphButton7->Top=41;
+	scGPGlyphButton8->Top=80;
+	scGPGlyphButton7->Height=30;
+	scGPGlyphButton8->Height=scGPGlyphButton7->Height;
+	scGPGlyphButton7->Options->NormalColor=(TColor)RGB(226,122,21);
+	scGPGlyphButton8->Options->NormalColor=scGPGlyphButton7->Options->NormalColor;
+	DrawGrid_knihovna->Top=37;
+	scGPGlyphButton7->Options->ShapeStyle=scgpRoundedRect;
+	scGPGlyphButton8->Options->ShapeStyle=scGPGlyphButton7->Options->ShapeStyle;
+	scListGroupNastavProjektu->RowLineMargin=scListGroupNastavProjektu->Width;
+	scListGroupKnihovObjektu->Top=115;
+
+}
+//---------------------------------------------------------------------------
 

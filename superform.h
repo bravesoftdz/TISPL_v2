@@ -49,7 +49,16 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton2;
 	TButton *Button5;
 	TscGPButton *scGPButton4;
-	TscGPButton *scGPButton3;
+	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *scGPGlyphButton2;
+	TscGPGlyphButton *scGPGlyphButton4;
+	TscGPPanel *scGPPanel2;
+	TscGPGlyphButton *Konec;
+	TscGPGlyphButton *MinButton;
+	TscLabel *scLabel1;
+	TscGPGlyphButton *MaxButton;
+	TscGPGlyphButton *scGPGlyphButton15;
+	TrHTMLLabel *rHTMLLabel8;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);

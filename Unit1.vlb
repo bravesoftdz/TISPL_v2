@@ -67,9 +67,6 @@ Coordinates=695,10,115,58
 [Button6]
 Coordinates=820,10,59,58
 
-[Label8]
-Coordinates=79,212,53,58
-
 [scGPGlyphButton1]
 Coordinates=514,556,124,36
 
@@ -211,9 +208,6 @@ Coordinates=301,212,218,58
 [scListGroupPanel4]
 Coordinates=105,510,123,36
 
-[Label2]
-Coordinates=838,212,53,58
-
 [Rychlexport1]
 Coordinates=353,631,90,36
 
@@ -280,9 +274,6 @@ Coordinates=1297,606,61,36
 [Posouvat2]
 Coordinates=1297,661,75,36
 
-[DrawGrid_knihovna]
-Coordinates=331,464,127,36
-
 [PopupMenu2]
 Coordinates=1179,705,90,36
 
@@ -339,9 +330,6 @@ Coordinates=1457,1,58,36
 
 [Chart1]
 Coordinates=769,144,53,58
-
-[scSplitView1]
-Coordinates=540,418,88,36
 
 [scListGroupPanel1]
 Coordinates=407,418,123,36
@@ -439,12 +427,6 @@ Coordinates=90,779,97,36
 [scGPButton1]
 Coordinates=841,326,90,36
 
-[scSplitView2]
-Coordinates=743,326,88,36
-
-[RzSizePanel_knihovna_objektu]
-Coordinates=538,326,195,36
-
 [scLabel16]
 Coordinates=455,326,73,36
 
@@ -475,25 +457,19 @@ Coordinates=1619,661,85,36
 [scButton1]
 Coordinates=699,280,72,36
 
-[Button_vozik_parametry]
-Coordinates=536,280,153,36
-
 [scLabel11]
 Coordinates=453,280,73,36
 
 [scGPGlyphButton2]
 Coordinates=319,280,124,36
 
-[RzSizePanel_parametry_projekt]
-Coordinates=110,280,199,36
-
 [scGPButton2]
 Coordinates=10,280,90,36
 
-[Button_dopravnik_parametry]
-Coordinates=1039,212,180,36
-
 []
-Coordinates=92,326,88,36
+Coordinates=743,326,88,36
 Visible=True
+
+[scSplitView_OPTIONS]
+Coordinates=540,418,88,36
 
