@@ -1437,7 +1437,7 @@ void TForm1::ZOOM()
 		zneplatnit_minulesouradnice();
 
 		//je to nějaké nepřesné
-		//M	Posun.x=m.round(akt_souradnice_kurzoru.x/m2px-(ClientWidth+RzSizePanel_knihovna_objektu->Width)/2/Zoom);
+		Posun.x=m.round(akt_souradnice_kurzoru.x/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
 		Posun.y=m.round(-akt_souradnice_kurzoru.y/m2px-(ClientHeight)/2/Zoom);
 		SB(Zoom,2);
 		on_change_zoom_change_scGPTrackBar();

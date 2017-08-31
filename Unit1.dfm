@@ -993,7 +993,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -1118,7 +1118,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -1211,7 +1211,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -1303,7 +1303,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -1865,7 +1865,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -1957,7 +1957,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -2443,7 +2443,7 @@ object Form1: TForm1
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -2501,7 +2501,7 @@ object Form1: TForm1
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -2543,7 +2543,7 @@ object Form1: TForm1
     AutoEnabledControls = False
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -2556,7 +2556,7 @@ object Form1: TForm1
       'SplitView')
     ButtonsGlowEffect.Enabled = False
     ButtonsGlowEffect.Color = clHighlight
-    ButtonsGlowEffect.AlphaValue = 175
+    ButtonsGlowEffect.AlphaValue = 95
     ButtonsGlowEffect.GlowSize = 7
     ButtonsGlowEffect.Offset = 0
     ButtonsGlowEffect.Intensive = True
@@ -3491,7 +3491,7 @@ object Form1: TForm1
           SelectionTextColor = clHighlightText
           SelectionGlow.Enabled = False
           SelectionGlow.Color = clHighlight
-          SelectionGlow.AlphaValue = 175
+          SelectionGlow.AlphaValue = 95
           SelectionGlow.GlowSize = 7
           SelectionGlow.Offset = 0
           SelectionGlow.Intensive = True
@@ -3594,7 +3594,7 @@ object Form1: TForm1
           ImageIndex = -1
           GlowEffect.Enabled = False
           GlowEffect.Color = clHighlight
-          GlowEffect.AlphaValue = 175
+          GlowEffect.AlphaValue = 95
           GlowEffect.GlowSize = 7
           GlowEffect.Offset = 0
           GlowEffect.Intensive = True
@@ -3638,7 +3638,7 @@ object Form1: TForm1
           ImageIndex = -1
           GlowEffect.Enabled = False
           GlowEffect.Color = clHighlight
-          GlowEffect.AlphaValue = 175
+          GlowEffect.AlphaValue = 95
           GlowEffect.GlowSize = 7
           GlowEffect.Offset = 0
           GlowEffect.Intensive = True
@@ -4098,7 +4098,7 @@ object Form1: TForm1
             SelectionTextColor = clHighlightText
             SelectionGlow.Enabled = False
             SelectionGlow.Color = clHighlight
-            SelectionGlow.AlphaValue = 175
+            SelectionGlow.AlphaValue = 95
             SelectionGlow.GlowSize = 7
             SelectionGlow.Offset = 0
             SelectionGlow.Intensive = True
@@ -4201,7 +4201,7 @@ object Form1: TForm1
             ImageIndex = -1
             GlowEffect.Enabled = False
             GlowEffect.Color = clHighlight
-            GlowEffect.AlphaValue = 175
+            GlowEffect.AlphaValue = 95
             GlowEffect.GlowSize = 7
             GlowEffect.Offset = 0
             GlowEffect.Intensive = True
@@ -4245,7 +4245,7 @@ object Form1: TForm1
             ImageIndex = -1
             GlowEffect.Enabled = False
             GlowEffect.Color = clHighlight
-            GlowEffect.AlphaValue = 175
+            GlowEffect.AlphaValue = 95
             GlowEffect.GlowSize = 7
             GlowEffect.Offset = 0
             GlowEffect.Intensive = True
@@ -4377,7 +4377,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -4469,7 +4469,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -4561,7 +4561,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -4653,7 +4653,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -4745,7 +4745,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -4837,7 +4837,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -5033,7 +5033,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -5125,7 +5125,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -5217,7 +5217,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -5394,7 +5394,7 @@ object Form1: TForm1
     Left = 592
     Top = 96
     Bitmap = {
-      494C01011800E802E80210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800EC02EC0210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6544,7 +6544,7 @@ object Form1: TForm1
     Left = 503
     Top = 438
     Bitmap = {
-      494C01010600B000B00030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010600B400B40030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006000000001002000000000000020
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8938,7 +8938,7 @@ object Form1: TForm1
     Left = 575
     Top = 462
     Bitmap = {
-      494C010106009000900018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C010106009400940018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000003000000001000400000000000009
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
