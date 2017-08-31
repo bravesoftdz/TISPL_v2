@@ -13,7 +13,7 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = PopupMenu1
-  Position = poScreenCenter
+  Position = poDesigned
   StyleElements = [seFont, seClient]
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
@@ -1043,7 +1043,7 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'TISPL'
+      Caption = 'ELTEP - tispl'
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -2089,9 +2089,9 @@ object Form1: TForm1
     TransparentBackground = False
     StorePaintBuffer = True
     object RzStatusPane1: TRzStatusPane
-      Left = 158
+      Left = 213
       Top = 0
-      Width = 127
+      Width = 96
       Height = 28
       Hint = 'Kliknut'#237'm lze p'#345'epnout m'#243'd zobrazen'#237
       Margins.Left = 0
@@ -2113,12 +2113,10 @@ object Form1: TForm1
       BlinkColor = 10114859
       Caption = ''
       DefaultWidth = 50
-      ExplicitLeft = 161
-      ExplicitTop = 6
-      ExplicitHeight = 24
+      ExplicitLeft = 189
     end
     object RzStatusPane2: TRzStatusPane
-      Left = 285
+      Left = 309
       Top = 0
       Width = 77
       Height = 28
@@ -2141,7 +2139,7 @@ object Form1: TForm1
       ExplicitHeight = 24
     end
     object RzStatusPane3: TRzStatusPane
-      Left = 362
+      Left = 386
       Top = 0
       Height = 28
       Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
@@ -2163,9 +2161,9 @@ object Form1: TForm1
       ExplicitHeight = 24
     end
     object RzStatusPane4: TRzStatusPane
-      Left = 538
+      Left = 562
       Top = 0
-      Width = 462
+      Width = 438
       Height = 28
       Hint = 'Rychl'#225' n'#225'pov'#283'da aplikace'
       BorderWidth = 0
@@ -2182,12 +2180,11 @@ object Form1: TForm1
       BlinkColor = 10114859
       Caption = ''
       DefaultWidth = 200
-      ExplicitLeft = 462
-      ExplicitWidth = 283
-      ExplicitHeight = 24
+      ExplicitLeft = 539
+      ExplicitWidth = 461
     end
     object RzStatusPane5: TRzStatusPane
-      Left = 462
+      Left = 486
       Top = 0
       Width = 76
       Height = 28
@@ -2212,7 +2209,7 @@ object Form1: TForm1
     end
     object scGPTrackBar1: TscGPTrackBar
       AlignWithMargins = True
-      Left = 29
+      Left = 84
       Top = 3
       Width = 100
       Height = 23
@@ -2244,10 +2241,11 @@ object Form1: TForm1
       ThumbShapeStyle = scgptssRoundRect
       ThumbCursor = crDefault
       ThumbUseCursor = False
+      ExplicitLeft = 29
     end
     object scGPGlyphButton5: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1
+      Left = 56
       Top = 1
       Width = 27
       Height = 27
@@ -2322,10 +2320,11 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1
     end
     object scGPGlyphButton6: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 130
+      Left = 185
       Top = 1
       Width = 27
       Height = 27
@@ -2400,6 +2399,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 130
     end
     object scGPSizeBox1: TscGPSizeBox
       Left = 1000
@@ -2412,6 +2412,33 @@ object Form1: TForm1
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
+    end
+    object scLabel_ZOOM: TscLabel
+      Left = 0
+      Top = 0
+      Width = 55
+      Height = 28
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      DragForm = False
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = True
+      Alignment = taRightJustify
+      VertAlignment = scvtaCenter
+      UseFontColorToStyleColor = False
+      Caption = '100 %'
     end
   end
   object scCheckBox2: TscCheckBox
@@ -5394,7 +5421,7 @@ object Form1: TForm1
     Left = 592
     Top = 96
     Bitmap = {
-      494C01011800EC02EC0210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800F002F00210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6544,7 +6571,7 @@ object Form1: TForm1
     Left = 503
     Top = 438
     Bitmap = {
-      494C01010600B400B40030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010600B800B80030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006000000001002000000000000020
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8938,7 +8965,7 @@ object Form1: TForm1
     Left = 575
     Top = 462
     Bitmap = {
-      494C010106009400940018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C010106009800980018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000003000000001000400000000000009
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

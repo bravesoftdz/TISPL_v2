@@ -284,6 +284,7 @@ __published:	// IDE-managed Components
 	TDrawGrid *DrawGrid_knihovna;
 	TscGPSwitch *scGPSwitch9;
 	TscLabel *scLabel19;
+	TscLabel *scLabel_ZOOM;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall Klasick1Click(TObject *Sender);
 	void __fastcall WinXP1Click(TObject *Sender);

@@ -3534,6 +3534,7 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 			case 10:Zoom=5;break;
 		}
 		SB(Zoom,2);
+		scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 		REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -3551,6 +3552,7 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 	if(Zoom==4)			scGPTrackBar1->Value=8;
 	if(Zoom==4.5)		scGPTrackBar1->Value=9;
 	if(Zoom==5)			scGPTrackBar1->Value=10;
+	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 }
 //---------------------------------------------------------------------------
 
