@@ -17,6 +17,8 @@
 #include "rStringGridEd.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
+#include <System.ImageList.hpp>
+#include <Vcl.ImgList.hpp>
 //---------------------------------------------------------------------------
 class TForm_vozik_nastaveni : public TForm
 {
@@ -59,6 +61,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton15;
 	TrHTMLLabel *rHTMLLabel8;
+	TImageList *ImageList1;
+	TscGPPanel *scGPPanel1;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);

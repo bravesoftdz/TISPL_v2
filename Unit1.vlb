@@ -10,9 +10,6 @@ Coordinates=0,137,43,36
 [RzStatusPane3]
 Coordinates=175,602,104,36
 
-[scAdvancedComboBox1]
-Coordinates=10,602,155,36
-
 [Button7]
 Coordinates=970,212,59,58
 
@@ -24,9 +21,6 @@ Coordinates=980,556,91,36
 
 [RzToolbar1]
 Coordinates=604,10,81,58
-
-[scListGroupPanel3]
-Coordinates=847,556,123,36
 
 [Button3]
 Coordinates=353,144,59,58
@@ -58,9 +52,6 @@ Coordinates=179,144,64,58
 [Series1]
 Coordinates=969,276,58,36
 
-[scCheckBox6]
-Coordinates=648,556,93,36
-
 [CheckBoxPALCE]
 Coordinates=695,10,115,58
 
@@ -87,9 +78,6 @@ Coordinates=910,557,58,36
 
 [casovosa1]
 Coordinates=318,556,76,36
-
-[scLabel17]
-Coordinates=235,556,73,36
 
 [Timer_tr]
 Coordinates=683,557,63,36
@@ -160,17 +148,11 @@ Coordinates=1135,331,90,36
 [Label_wip]
 Coordinates=832,144,72,58
 
-[scGPSwitch2]
-Coordinates=748,510,91,36
-
 [TeeGDIPlus2]
 Coordinates=1135,496,91,36
 
 [Priblizit2]
 Coordinates=1135,551,64,36
-
-[scPasswordEdit1]
-Coordinates=625,510,113,36
 
 [ButtonPLAY]
 Coordinates=510,10,84,58
@@ -187,23 +169,14 @@ Coordinates=838,631,80,36
 [scRadioGroup1]
 Coordinates=397,510,104,36
 
-[scLabel6]
-Coordinates=321,510,66,36
-
 [Button9]
 Coordinates=617,144,59,58
 
 [CheckBoxVytizenost]
 Coordinates=529,212,132,58
 
-[scLabel12]
-Coordinates=238,510,73,36
-
 [CheckBox_pouzit_zadane_kapacity]
 Coordinates=301,212,218,58
-
-[scListGroupPanel4]
-Coordinates=105,510,123,36
 
 [Rychlexport1]
 Coordinates=353,631,90,36
@@ -223,14 +196,8 @@ Coordinates=1297,1,58,36
 [ImageList1]
 Coordinates=1297,111,77,36
 
-[scLabel9]
-Coordinates=941,464,66,36
-
 [scCheckBox2]
 Coordinates=838,464,93,36
-
-[scEdit2]
-Coordinates=771,464,57,36
 
 [RzToolButton8]
 Coordinates=661,464,100,36
@@ -246,9 +213,6 @@ Coordinates=551,464,100,36
 
 [Chart2]
 Coordinates=889,10,53,58
-
-[scLabel18]
-Coordinates=468,464,73,36
 
 [Label_zamerovac]
 Coordinates=422,144,116,58
@@ -270,9 +234,6 @@ Coordinates=1297,661,75,36
 
 [PopupMenu2]
 Coordinates=1179,705,90,36
-
-[scGPSwitch3]
-Coordinates=230,464,91,36
 
 [SaveAs1]
 Coordinates=1011,705,66,36
@@ -325,20 +286,11 @@ Coordinates=1457,1,58,36
 [Chart1]
 Coordinates=769,144,53,58
 
-[scListGroupPanel1]
-Coordinates=407,418,123,36
-
 [RzToolButton11]
 Coordinates=290,418,107,36
 
 [scLabel4]
 Coordinates=214,418,66,36
-
-[scGPSwitch1]
-Coordinates=113,418,91,36
-
-[scCheckBox5]
-Coordinates=10,418,93,36
 
 [Timer_simulace]
 Coordinates=1457,386,105,36
@@ -397,14 +349,8 @@ Coordinates=219,372,104,36
 [Print1]
 Coordinates=605,779,48,36
 
-[scScrollBox1]
-Coordinates=120,372,89,36
-
 [RzToolButton6]
 Coordinates=10,372,100,36
-
-[scLabel5]
-Coordinates=1089,326,66,36
 
 [technologickprocesy1]
 Coordinates=941,326,138,36
@@ -455,7 +401,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=695,372,104,36
+Coordinates=120,372,89,36
 Visible=True
 
 [scSplitView_OPTIONS]

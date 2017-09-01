@@ -47,17 +47,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 {
 	srand(time(NULL));//nutno tady
 
+	NewDesignSettings();//záležitost s novým designem
+
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 
-  //záležitost s novým designem
-	PopupMenuButton->Left = 0;
-	PopupMenuButton->Visible = false;
-	DetailsButton->Left = 0;
-	DetailsButton->Visible = true;
-	scSplitView_OPTIONS->Opened=false;
-	scGPGlyphButton8->Options->NormalColor=(TColor)RGB(0,120,215);
-	scListGroupNastavProjektu->HeaderAutoColor=true;
-	scListGroupKnihovObjektu->HeaderAutoColor=true;
 
 	//vytvoření TEMP adresáře (pro ini)
 	MkDir(get_temp_dir()+"TISPL");
@@ -124,6 +117,36 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	LICENCE="TRIAL_VIEWER_GALATEK";
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
+
+}
+//---------------------------------------------------------------------------
+//záležitost s novým designem
+void TForm1::NewDesignSettings()
+{
+	PopupMenuButton->Left = 0;
+	PopupMenuButton->Visible = false;
+	DetailsButton->Left = 0;
+	DetailsButton->Visible = true;
+	scSplitView_OPTIONS->Opened=false;
+	scGPGlyphButton8->Options->NormalColor=(TColor)RGB(0,120,215);
+	scGPGlyphButton7->Options->NormalColor=scGPGlyphButton8->Options->NormalColor;
+	scListGroupNastavProjektu->HeaderAutoColor=true;
+	scListGroupKnihovObjektu->HeaderAutoColor=true;
+	scListGroupNastavProjektu->Color=(TColor)RGB(240,240,240);
+	scListGroupKnihovObjektu->Color=scListGroupNastavProjektu->Color;
+
+	//nastaveni barvy prepinacu modu
+	editacelinky1->Options->PressedColor=(TColor)RGB(240,240,240);
+	layout->Options->PressedColor=editacelinky1->Options->PressedColor;
+	casovosa1->Options->PressedColor=editacelinky1->Options->PressedColor;
+	technologickprocesy1->Options->PressedColor=editacelinky1->Options->PressedColor;
+	simulace->Options->PressedColor=editacelinky1->Options->PressedColor;
+
+	scExPanel1_ostatni->Top=72+27;
+
+
+
+
 
 }
 //---------------------------------------------------------------------------

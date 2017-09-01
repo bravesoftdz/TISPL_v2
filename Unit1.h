@@ -204,24 +204,6 @@ __published:	// IDE-managed Components
 	TscCheckBox *scCheckBox2;
 	TscSplitView *scSplitView_OPTIONS;
 	TscLabel *scLabel4;
-	TscScrollBox *scScrollBox1;
-	TscListGroupPanel *scListGroupPanel1;
-	TscLabel *scLabel5;
-	TscLabel *scLabel6;
-	TscLabel *scLabel9;
-	TscGPSwitch *scGPSwitch1;
-	TscGPSwitch *scGPSwitch2;
-	TscGPSwitch *scGPSwitch3;
-	TscListGroupPanel *scListGroupPanel3;
-	TscLabel *scLabel12;
-	TscLabel *scLabel17;
-	TscPasswordEdit *scPasswordEdit1;
-	TscEdit *scEdit2;
-	TscListGroupPanel *scListGroupPanel4;
-	TscLabel *scLabel18;
-	TscAdvancedComboBox *scAdvancedComboBox1;
-	TscCheckBox *scCheckBox5;
-	TscCheckBox *scCheckBox6;
 	TscCheckBox *scCheckBox1;
 	TPopupMenu *PopupMenu2;
 	TMenuItem *Open1;
@@ -236,8 +218,8 @@ __published:	// IDE-managed Components
 	TscStyledForm *scStyledForm1;
 	TscRadioGroup *scRadioGroup1;
 	TscGPGlyphButton *scGPGlyphButton2;
-	TscGPButton *scGPButton1;
-	TscGPButton *scGPButton2;
+	TscGPButton *layout;
+	TscGPButton *simulace;
 	TscButton *scButton3;
 	TscButton *scButton1;
 	TscButton *scButton4;
@@ -255,24 +237,6 @@ __published:	// IDE-managed Components
 	TscButton *scButton7;
 	TscButton *scButton8;
 	TscButton *scButton9;
-	TscScrollBox *scScrollBox2;
-	TscListGroupPanel *scListGroupPanel2;
-	TscLabel *scLabel2;
-	TscLabel *scLabel3;
-	TscLabel *scLabel7;
-	TscGPSwitch *scGPSwitch6;
-	TscGPSwitch *scGPSwitch7;
-	TscGPSwitch *scGPSwitch8;
-	TscListGroupPanel *scListGroupPanel5;
-	TscLabel *scLabel8;
-	TscLabel *scLabel10;
-	TscPasswordEdit *scPasswordEdit2;
-	TscEdit *scEdit1;
-	TscListGroupPanel *scListGroupPanel6;
-	TscLabel *scLabel13;
-	TscAdvancedComboBox *scAdvancedComboBox2;
-	TscCheckBox *scCheckBox3;
-	TscCheckBox *scCheckBox4;
 	TscSplitView *scSplitView_LEFTTOOLBAR;
 	TscListGroupPanel *scListGroupKnihovObjektu;
 	TscListGroupPanel *scListGroupNastavProjektu;
@@ -284,6 +248,10 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch9;
 	TscLabel *scLabel19;
 	TscLabel *scLabel_ZOOM;
+	TscExPanel *scExPanel1_vrstvy;
+	TscLabel *scLabel2;
+	TscExPanel *scExPanel1_ostatni;
+	TscLabel *scLabel3;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall Klasick1Click(TObject *Sender);
 	void __fastcall WinXP1Click(TObject *Sender);
@@ -470,6 +438,7 @@ private:	// User declarations
 	void log2web(UnicodeString Text);//automaticky přidá parametry (čas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void startUP();//při aktivaci formuláře, pro zpřehlednění kodu
+	void NewDesignSettings();
 
 	TDateTime TIME;
 	UnicodeString LICENCE;
