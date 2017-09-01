@@ -157,9 +157,6 @@ Coordinates=1135,276,63,36
 [PopupMenu1]
 Coordinates=1135,331,90,36
 
-[scGPGlyphButton5]
-Coordinates=849,510,124,36
-
 [Label_wip]
 Coordinates=832,144,72,58
 
@@ -364,9 +361,6 @@ Coordinates=0,595,47,36
 [scCheckBox1]
 Coordinates=1004,372,93,36
 
-[scGPGlyphButton6]
-Coordinates=870,372,124,36
-
 [Konec]
 Coordinates=809,372,51,36
 
@@ -378,9 +372,6 @@ Coordinates=1457,716,58,36
 
 [IdHTTP1]
 Coordinates=1457,771,66,36
-
-[RzStatusPane2]
-Coordinates=695,372,104,36
 
 [ComboBoxODmin]
 Coordinates=10,10,117,124
@@ -467,9 +458,15 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=743,326,88,36
+Coordinates=695,372,104,36
 Visible=True
 
 [scSplitView_OPTIONS]
 Coordinates=540,418,88,36
+
+[scGPGlyphButton_ZOOM_MINUS]
+Coordinates=849,510,124,36
+
+[scGPGlyphButton_ZOOM_PLUS]
+Coordinates=870,372,124,36
 

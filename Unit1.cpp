@@ -226,7 +226,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.hlavicka_palce();
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
-    	 Zoom=1.0; SB(Zoom,2);
+    	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
     	 Zoom_predchozi=1.0;
 			 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
 			 Posun_predchozi.x=Posun.x;Posun_predchozi.y=Posun.y;
@@ -843,13 +843,10 @@ void __fastcall TForm1::scGPSwitch5ChangeState(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::SB(UnicodeString Text, unsigned short Pane)
 {
-	//zatim provizorně
-	//RzStatusPane4->Caption="Kliknutím na libovolné místo přidáte objekt z knihovny";
-
 	switch(Pane)
 	{
-		case 1:RzStatusPane1->Caption="Mód: "+Text;break;
-		case 2:RzStatusPane2->Caption="Zoom: "+Text+"x";break;
+		case 1:RzStatusPane1->Caption=Text;break;
+		//case 2:RzStatusPane2->Caption="Zoom: "+Text+"x";break; už se nepoužívá
 		case 3:RzStatusPane3->Caption="["+Text+"] m";break;
 		case 4:RzStatusPane4->Caption=Text;break;
 		case 5:RzStatusPane5->Caption=Text;break;
@@ -921,7 +918,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
 		case CASOVAOSA:
 		{
-			/*	if(!antialiasing)d.vykresli_casove_osy(Canvas);
+			/* v přípravě	if(!antialiasing)d.vykresli_casove_osy(Canvas);
 			else
 			{
 				Cantialising a;
@@ -1392,7 +1389,7 @@ void __fastcall TForm1::Priblizit2Click(TObject *Sender)
 void __fastcall TForm1::RzToolButton8Click(TObject *Sender)//Zoom in z toolbaru
 {
  vycentrovat=false;
- //M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+ akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
  ZOOM_IN();
 }
 //---------------------------------------------------------------------------
@@ -1407,7 +1404,7 @@ void __fastcall TForm1::Oddalit2Click(TObject *Sender)
 void __fastcall TForm1::RzToolButton9Click(TObject *Sender)//Zoom out z toolbaru
 {
 	vycentrovat=false;
-	//M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+	akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
 	ZOOM_OUT();
 }
 //---------------------------------------------------------------------------
@@ -1460,7 +1457,7 @@ void TForm1::ZOOM()
 		//je to nějaké nepřesné
 		Posun.x=m.round(akt_souradnice_kurzoru.x/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
 		Posun.y=m.round(-akt_souradnice_kurzoru.y/m2px-(ClientHeight)/2/Zoom);
-		SB(Zoom,2);
+		//SB(Zoom,2); už se nepoužívá
 		on_change_zoom_change_scGPTrackBar();
 
 		//vycentruje kurzor na střed monitoru - na X nefunguje přesně
@@ -1491,9 +1488,10 @@ void TForm1::ZOOM_WINDOW()
 	}
 
 	//vycentrování obrazu
-	//M	Posun.x=m.round(Centr.x/m2px-(ClientWidth+RzSizePanel_knihovna_objektu->Width)/2/Zoom);
+	Posun.x=m.round(Centr.x/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
 	Posun.y=m.round(-Centr.y/m2px-(ClientHeight)/2/Zoom);
-	SB(Zoom,2);
+	//SB(Zoom,2);už se nepoužívá
+	on_change_zoom_change_scGPTrackBar();
 
 	REFRESH();
 	//aktualizace_statusbaru(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
@@ -3445,19 +3443,14 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::PopupMenuButtonClick(TObject *Sender)
 {
 	//Projekt1();
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
 {
 	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
-
-//M if(scSplitView1->Opened && antialiasing) antialiasing=false;
-//M else antialiasing=true;
 }
 //---------------------------------------------------------------------------
 
@@ -3466,20 +3459,17 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 Close();//ukončí aplikaci
 }
 //---------------------------------------------------------------------------
-
-
-void __fastcall TForm1::scGPGlyphButton5Click(TObject *Sender)
+void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
 {
 	vycentrovat=false;
-	//M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+	akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
 	ZOOM_OUT();
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm1::scGPGlyphButton6Click(TObject *Sender)
+void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
 {
  vycentrovat=false;
- //M	akt_souradnice_kurzoru=m.P2L(TPoint((ClientWidth+RzSizePanel_knihovna_objektu->Width)/2,ClientHeight/2));
+ akt_souradnice_kurzoru=m.P2L(ClientWidth/2+scSplitView_LEFTTOOLBAR->Width,ClientHeight/2);
  ZOOM_IN();
 }
 //---------------------------------------------------------------------------
@@ -3555,6 +3545,7 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 			case 10:Zoom=5;break;
 		}
 		SB(Zoom,2);
+		scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 		REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -3572,6 +3563,7 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 	if(Zoom==4)			scGPTrackBar1->Value=8;
 	if(Zoom==4.5)		scGPTrackBar1->Value=9;
 	if(Zoom==5)			scGPTrackBar1->Value=10;
+	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 }
 //---------------------------------------------------------------------------
 
@@ -3602,6 +3594,25 @@ void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
 	scListGroupKnihovObjektu->Top=115;
 	scListGroupNastavProjektu->Height=115;
 
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scSplitView_OPTIONSClosing(TObject *Sender)
+{
+	if(antialiasing)
+	{
+		antialiasing=false;
+		REFRESH();
+
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scSplitView_OPTIONSClosed(TObject *Sender)
+{
+		antialiasing=true;
+		REFRESH();
 }
 //---------------------------------------------------------------------------
 
