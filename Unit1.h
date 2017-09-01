@@ -379,6 +379,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch9ChangeState(TObject *Sender);
 	void __fastcall scSplitViewsClosing(TObject *Sender);
 	void __fastcall scSplitViewsClosed(TObject *Sender);
+	void __fastcall scExPanel1_ostatniClick(TObject *Sender);
+	void __fastcall scExPanel1_vrstvyClick(TObject *Sender);
 
 
 

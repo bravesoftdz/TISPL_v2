@@ -134,6 +134,9 @@ void TForm1::NewDesignSettings()
 	scListGroupKnihovObjektu->HeaderAutoColor=true;
 	scListGroupNastavProjektu->Color=(TColor)RGB(240,240,240);
 	scListGroupKnihovObjektu->Color=scListGroupNastavProjektu->Color;
+	scSplitView_OPTIONS->Color=scListGroupNastavProjektu->Color;
+	scExPanel1_vrstvy->Color=scListGroupNastavProjektu->Color;
+	scExPanel1_ostatni->Color=scListGroupNastavProjektu->Color;
 
 	//nastaveni barvy prepinacu modu
 	editacelinky1->Options->PressedColor=(TColor)RGB(240,240,240);
@@ -143,11 +146,6 @@ void TForm1::NewDesignSettings()
 	simulace->Options->PressedColor=editacelinky1->Options->PressedColor;
 
 	scExPanel1_ostatni->Top=72+27;
-
-
-
-
-
 }
 //---------------------------------------------------------------------------
 //zakázání či povolení grafických uživatelských prvků dle úrovně edice
@@ -956,6 +954,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			break;
 		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
+	//grafické měřítko
+	Canvas->TextOutW(scSplitView_LEFTTOOLBAR->Width+5,scGPPanel_statusbar->Top-20,"tady bude grafické měřítko");
 }
 //---------------------------------------------------------------------------
 //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing)
@@ -3624,5 +3624,16 @@ void __fastcall TForm1::scSplitViewsClosed(TObject *Sender)
 		if(scSplitViews_closing_on_AA)antialiasing=true;
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::scExPanel1_vrstvyClick(TObject *Sender)
+{
+	scExPanel1_vrstvy->RollUpState=!scExPanel1_vrstvy->RollUpState;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::scExPanel1_ostatniClick(TObject *Sender)
+{
+	scExPanel1_ostatni->RollUpState=!scExPanel1_ostatni->RollUpState;
+}
+//---------------------------------------------------------------------------
+
 
 

@@ -2729,6 +2729,7 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+      OnClick = scExPanel1_vrstvyClick
       BackgroundStyle = scexbgsPanel
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = 10
@@ -2770,7 +2771,7 @@ object Form1: TForm1
       Left = 1
       Top = 80
       Width = 249
-      Height = 27
+      Height = 30
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2781,6 +2782,7 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
+      OnClick = scExPanel1_ostatniClick
       BackgroundStyle = scexbgsPanel
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = 3
@@ -2791,7 +2793,7 @@ object Form1: TForm1
       RealHeight = 209
       ShowRollButton = True
       ShowCloseButton = False
-      CaptionHeight = 27
+      CaptionHeight = 30
       RollKind = scrkRollVertical
       RollUpState = True
       Moveable = False
