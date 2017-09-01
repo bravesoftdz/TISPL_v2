@@ -220,9 +220,6 @@ Coordinates=1113,464,89,36
 [Series7]
 Coordinates=1297,1,58,36
 
-[scGPPanel3]
-Coordinates=1017,464,86,36
-
 [ImageList1]
 Coordinates=1297,111,77,36
 
@@ -469,4 +466,7 @@ Coordinates=849,510,124,36
 
 [scGPGlyphButton_ZOOM_PLUS]
 Coordinates=870,372,124,36
+
+[scGPPanel_statusbar]
+Coordinates=1017,464,86,36
 

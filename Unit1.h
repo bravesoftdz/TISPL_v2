@@ -196,7 +196,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Otevrit;
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *DetailsButton;
-	TscGPPanel *scGPPanel3;
+	TscGPPanel *scGPPanel_statusbar;
 	TscGPTrackBar *scGPTrackBar1;
 	TscGPGlyphButton *scGPGlyphButton_ZOOM_MINUS;
 	TscGPGlyphButton *scGPGlyphButton_ZOOM_PLUS;
@@ -409,8 +409,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch4ChangeState(TObject *Sender);
 	void __fastcall scGPSwitch5ChangeState(TObject *Sender);
 	void __fastcall scGPSwitch9ChangeState(TObject *Sender);
-	void __fastcall scSplitView_OPTIONSClosing(TObject *Sender);
-	void __fastcall scSplitView_OPTIONSClosed(TObject *Sender);
+	void __fastcall scSplitViewsClosing(TObject *Sender);
+	void __fastcall scSplitViewsClosed(TObject *Sender);
 
 
 
@@ -501,6 +501,7 @@ private:	// User declarations
 	bool probehl_zoom;
 	bool add_posledni;
 	bool upozornovat_na_zmenu_TT_parametru;
+	bool scSplitViews_closing_on_AA;
 
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;

@@ -882,6 +882,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 					d.vykresli_grid(bmp_grid->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 				}
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+        //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_vektory(bmp_in->Canvas);
@@ -1176,13 +1177,13 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 				case PAN:
 				{
 					kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
-					int W=167;//M	RzSizePanel_knihovna_objektu->Width;
+					int W=scSplitView_LEFTTOOLBAR->Width;
 					if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
 					short H=scLabel1->Height;// zmena designu RzToolbar1->Height;
 					int Gh=vrat_max_vysku_grafu();
-					Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh+10;//velikost pan plochy
-					Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-scLabel1->Height-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-scLabel1->Height-Gh));//uloží pan výřez
-					//Pan_bmp->SaveToFile("test.bmp");
+					Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
+					Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
+					//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
 					break;
 				}
 				case ZOOM_W:
@@ -1658,7 +1659,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 			ukaz=ukaz->dalsi;//posun na další prvek
 	}
 
-	int PD_x=ClientWidth;//M	-RzSizePanel_knihovna_objektu->Width;
+	int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
 	int PD_y=ClientHeight-vyska_menu-RzStatusBar1->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
 
 	if((MaxX-MinX)!=0 && (MaxX+MinX)!=0)
@@ -1685,7 +1686,8 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 		 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
 	}
 
-	SB(Zoom,2);
+	//SB(Zoom,2); už se používá jinak
+	on_change_zoom_change_scGPTrackBar();
 
   }catch(...){};
 
@@ -1975,7 +1977,7 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 void TForm1::zobraz_tip(UnicodeString text)
 {
 	Canvas->Font->Color=clRed;
-	//M	Canvas->TextOutW(RzSizePanel_knihovna_objektu->Width+10,RzStatusBar1->Top-RzStatusBar1->Height,text);
+	Canvas->TextOutW(scSplitView_LEFTTOOLBAR->Width+10,scGPPanel_statusbar->Top-scGPPanel_statusbar->Height,text);
 	Canvas->Font->Color=clBlack;
 }
 //---------------------------------------------------------------------------
@@ -2365,7 +2367,8 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 			}
 			DuvodUlozit(false);
 			//aktualizace statusbaru
-			SB(Zoom,2);
+			//SB(Zoom,2); už se používá jinak
+			on_change_zoom_change_scGPTrackBar();
 
 			return 1;
 		}break;
@@ -3523,7 +3526,6 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 			case 9:Zoom=4.5;break;
 			case 10:Zoom=5;break;
 		}
-		SB(Zoom,2);
 		scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 		REFRESH();
 }
@@ -3546,14 +3548,13 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 }
 //---------------------------------------------------------------------------
 
-
 void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
 	if(scLabel19->Caption=="M-design")scLabel19->Caption="R-design";
 	else scLabel19->Caption="M-design";
-		scListGroupNastavProjektu->HeaderAutoColor=false;
-		scListGroupKnihovObjektu->HeaderAutoColor=scListGroupNastavProjektu->HeaderAutoColor;
+	scListGroupNastavProjektu->HeaderAutoColor=false;
+	scListGroupKnihovObjektu->HeaderAutoColor=scListGroupNastavProjektu->HeaderAutoColor;
 	scListGroupNastavProjektu->HeaderFont->Color=clWhite;
 	scListGroupNastavProjektu->Color=(TColor)RGB(43,87,154);
 	scListGroupKnihovObjektu->Color=scListGroupNastavProjektu->Color;
@@ -3575,23 +3576,29 @@ void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-
-
-void __fastcall TForm1::scSplitView_OPTIONSClosing(TObject *Sender)
+//pokud je při zavírání okna aktivní AA, tak udělá kopii pracovní oblasti AA vypne a zavře okno, bez toho by se zavíralo trhaně
+void __fastcall TForm1::scSplitViewsClosing(TObject *Sender)
 {
-	if(antialiasing)
+	scSplitViews_closing_on_AA=false;
+	if(antialiasing || CASOVAOSA || TECHNOPROCESY)
 	{
+		scSplitViews_closing_on_AA=true;
+		int W=scSplitView_LEFTTOOLBAR->Width;
+		short H=scLabel1->Height;
+		int Gh=vrat_max_vysku_grafu();
+		Graphics::TBitmap *bmp_OPT_CLOSE=new Graphics::TBitmap;
+		bmp_OPT_CLOSE->Width=ClientWidth-W;bmp_OPT_CLOSE->Height=ClientHeight-H-Gh;
+		bmp_OPT_CLOSE->Canvas->CopyRect(Rect(0,0,ClientWidth-W,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-Gh));//zkopíruje aktuální výřez
 		antialiasing=false;
-		REFRESH();
-
+		Canvas->Draw(0+W,0+H,bmp_OPT_CLOSE);
+		delete (bmp_OPT_CLOSE);//velice nutné
 	}
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm1::scSplitView_OPTIONSClosed(TObject *Sender)
+//pokud byl AA zapnutý, tak navrácení do původního stavu na true
+void __fastcall TForm1::scSplitViewsClosed(TObject *Sender)
 {
-		antialiasing=true;
-		REFRESH();
+		if(scSplitViews_closing_on_AA)antialiasing=true;
 }
 //---------------------------------------------------------------------------
 

@@ -2057,7 +2057,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
   end
-  object scGPPanel3: TscGPPanel
+  object scGPPanel_statusbar: TscGPPanel
     Left = 0
     Top = 698
     Width = 1026
@@ -2085,7 +2085,6 @@ object Form1: TForm1
     CaptionGlowEffect.Intensive = True
     CaptionGlowEffect.StyleColors = True
     Color = clBtnFace
-    Caption = 'scGPPanel3'
     TransparentBackground = False
     StorePaintBuffer = True
     object RzStatusPane1: TRzStatusPane
@@ -3021,8 +3020,8 @@ object Form1: TForm1
     HideControls = False
     Animation = True
     DisplayMode = scsvmOverlay
-    OnClosed = scSplitView_OPTIONSClosed
-    OnClosing = scSplitView_OPTIONSClosing
+    OnClosed = scSplitViewsClosed
+    OnClosing = scSplitViewsClosing
     object scLabel4: TscLabel
       AlignWithMargins = True
       Left = 11
@@ -4312,6 +4311,8 @@ object Form1: TForm1
     HideControls = False
     Animation = True
     DisplayMode = scsvmOverlay
+    OnClosed = scSplitViewsClosed
+    OnClosing = scSplitViewsClosing
     object scButton1: TscButton
       Left = 0
       Top = 571
