@@ -2089,7 +2089,7 @@ object Form1: TForm1
     TransparentBackground = False
     StorePaintBuffer = True
     object RzStatusPane1: TRzStatusPane
-      Left = 213
+      Left = 207
       Top = 0
       Width = 96
       Height = 28
@@ -2115,31 +2115,8 @@ object Form1: TForm1
       DefaultWidth = 50
       ExplicitLeft = 189
     end
-    object RzStatusPane2: TRzStatusPane
-      Left = 309
-      Top = 0
-      Width = 77
-      Height = 28
-      Hint = 'Aktu'#225'ln'#237' '#250'rove'#328' p'#345'ibl'#237#382'en'#237' obrazu'
-      BorderWidth = 0
-      FlatColor = 10114859
-      Align = alLeft
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      BlinkColor = 10114859
-      Caption = ''
-      ExplicitLeft = 356
-      ExplicitTop = -3
-      ExplicitHeight = 24
-    end
     object RzStatusPane3: TRzStatusPane
-      Left = 386
+      Left = 303
       Top = 0
       Height = 28
       Hint = 'Aktu'#225'ln'#237' polohu kurzoru v sou'#345'adnic'#237'ch aplikace'
@@ -2161,9 +2138,9 @@ object Form1: TForm1
       ExplicitHeight = 24
     end
     object RzStatusPane4: TRzStatusPane
-      Left = 562
+      Left = 479
       Top = 0
-      Width = 438
+      Width = 521
       Height = 28
       Hint = 'Rychl'#225' n'#225'pov'#283'da aplikace'
       BorderWidth = 0
@@ -2184,7 +2161,7 @@ object Form1: TForm1
       ExplicitWidth = 461
     end
     object RzStatusPane5: TRzStatusPane
-      Left = 486
+      Left = 403
       Top = 0
       Width = 76
       Height = 28
@@ -2209,7 +2186,7 @@ object Form1: TForm1
     end
     object scGPTrackBar1: TscGPTrackBar
       AlignWithMargins = True
-      Left = 84
+      Left = 78
       Top = 3
       Width = 100
       Height = 23
@@ -2241,11 +2218,11 @@ object Form1: TForm1
       ThumbShapeStyle = scgptssRoundRect
       ThumbCursor = crDefault
       ThumbUseCursor = False
-      ExplicitLeft = 29
+      ExplicitLeft = 66
     end
-    object scGPGlyphButton5: TscGPGlyphButton
+    object scGPGlyphButton_ZOOM_MINUS: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 56
+      Left = 50
       Top = 1
       Width = 27
       Height = 27
@@ -2255,7 +2232,7 @@ object Form1: TForm1
       Margins.Bottom = 0
       Align = alLeft
       TabOrder = 1
-      OnClick = scGPGlyphButton5Click
+      OnClick = scGPGlyphButton_ZOOM_MINUSClick
       Animation = True
       Caption = 'scGPGlyphButton1'
       CanFocused = False
@@ -2320,11 +2297,11 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1
+      ExplicitLeft = 38
     end
-    object scGPGlyphButton6: TscGPGlyphButton
+    object scGPGlyphButton_ZOOM_PLUS: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 185
+      Left = 179
       Top = 1
       Width = 27
       Height = 27
@@ -2334,7 +2311,7 @@ object Form1: TForm1
       Margins.Bottom = 0
       Align = alLeft
       TabOrder = 2
-      OnClick = scGPGlyphButton6Click
+      OnClick = scGPGlyphButton_ZOOM_PLUSClick
       Animation = True
       Caption = 'scGPGlyphButton1'
       CanFocused = False
@@ -2399,7 +2376,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 130
+      ExplicitLeft = 167
     end
     object scGPSizeBox1: TscGPSizeBox
       Left = 1000
@@ -2416,7 +2393,7 @@ object Form1: TForm1
     object scLabel_ZOOM: TscLabel
       Left = 0
       Top = 0
-      Width = 55
+      Width = 49
       Height = 28
       Align = alLeft
       Font.Charset = DEFAULT_CHARSET
@@ -2434,8 +2411,8 @@ object Form1: TForm1
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
       GlowEffect.StyleColors = True
-      AutoSize = True
-      Alignment = taRightJustify
+      AutoSize = False
+      Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = False
       Caption = '100 %'
@@ -3044,6 +3021,8 @@ object Form1: TForm1
     HideControls = False
     Animation = True
     DisplayMode = scsvmOverlay
+    OnClosed = scSplitView_OPTIONSClosed
+    OnClosing = scSplitView_OPTIONSClosing
     object scLabel4: TscLabel
       AlignWithMargins = True
       Left = 11
@@ -5321,8 +5300,8 @@ object Form1: TForm1
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
-    Left = 688
-    Top = 184
+    Left = 536
+    Top = 40
     object Nastvitparametry1: TMenuItem
       Caption = 'Nastavit parametry'
       Visible = False
@@ -5418,10 +5397,10 @@ object Form1: TForm1
     end
   end
   object ImageList1: TImageList
-    Left = 592
-    Top = 96
+    Left = 216
+    Top = 40
     Bitmap = {
-      494C01011800F002F00210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800F402F40210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6354,18 +6333,18 @@ object Form1: TForm1
   end
   object SaveDialog: TSaveDialog
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
-    Left = 624
-    Top = 96
+    Left = 248
+    Top = 40
   end
   object OpenDialog1: TOpenDialog
-    Left = 656
-    Top = 96
+    Left = 280
+    Top = 40
   end
   object Timer_backup: TTimer
     Interval = 120000
     OnTimer = Timer_backupTimer
-    Left = 720
-    Top = 96
+    Left = 344
+    Top = 40
   end
   object SavePictureDialog1: TSavePictureDialog
     DefaultExt = '*.bmp'
@@ -6377,76 +6356,76 @@ object Form1: TForm1
       'Bitmaps (*.bmp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.t' +
       'iff)|*.tiff|Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf' +
       '|Metafiles (*.wmf)|*.wmf'
-    Left = 688
-    Top = 96
+    Left = 312
+    Top = 40
   end
   object Timer_simulace: TTimer
     Enabled = False
     Interval = 17
     OnTimer = Timer_simulaceTimer
-    Left = 816
-    Top = 96
+    Left = 440
+    Top = 40
   end
   object Timer_neaktivity: TTimer
     Enabled = False
     OnTimer = Timer_neaktivityTimer
-    Left = 784
-    Top = 96
+    Left = 408
+    Top = 40
   end
   object Timer_animace: TTimer
     Enabled = False
     Interval = 40
     OnTimer = Timer_animaceTimer
-    Left = 848
-    Top = 96
+    Left = 472
+    Top = 40
   end
   object TeeGDIPlus1: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart1
-    Left = 808
-    Top = 216
+    Left = 632
+    Top = 40
   end
   object TeeGDIPlus2: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart2
-    Left = 936
-    Top = 216
+    Left = 760
+    Top = 40
   end
   object TeeGDIPlus3: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart3
-    Left = 904
-    Top = 216
+    Left = 728
+    Top = 40
   end
   object TeeGDIPlus4: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart4
-    Left = 872
-    Top = 216
+    Left = 696
+    Top = 40
   end
   object TeeGDIPlus5: TTeeGDIPlus
     Active = True
     AntiAliasText = gpfBest
     TeePanel = Chart6
-    Left = 840
-    Top = 216
+    Left = 664
+    Top = 40
   end
   object TimerMouseWheel: TTimer
     Interval = 250
     OnTimer = TimerMouseWheelTimer
-    Left = 880
-    Top = 96
+    Left = 504
+    Top = 40
   end
   object IdTime1: TIdTime
     Timeout = 500
     Host = '129.6.15.28'
     BaseDate = 2.000000000000000000
-    Left = 767
-    Top = 168
+    Left = 567
+    Top = 40
   end
   object IdHTTP1: TIdHTTP
     AllowCookies = True
@@ -6462,15 +6441,15 @@ object Form1: TForm1
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 799
-    Top = 168
+    Left = 599
+    Top = 40
   end
   object Timer_tr: TTimer
     Enabled = False
     Interval = 130000
     OnTimer = Timer_trTimer
-    Left = 752
-    Top = 96
+    Left = 376
+    Top = 40
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
@@ -6571,7 +6550,7 @@ object Form1: TForm1
     Left = 503
     Top = 438
     Bitmap = {
-      494C01010600B800B80030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010600BC00BC0030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000006000000001002000000000000020
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8965,7 +8944,7 @@ object Form1: TForm1
     Left = 575
     Top = 462
     Bitmap = {
-      494C010106009800980018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C010106009C009C0018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000003000000001000400000000000009
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

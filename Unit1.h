@@ -97,7 +97,6 @@ __published:	// IDE-managed Components
 	TRzToolbar *RzToolbar1;
 	TRzStatusBar *RzStatusBar1;
 	TRzStatusPane *RzStatusPane1;
-	TRzStatusPane *RzStatusPane2;
 	TMenuItem *Nastvitparametry1;
 	TMenuItem *Smazat1;
 	TRzStatusPane *RzStatusPane3;
@@ -199,8 +198,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *DetailsButton;
 	TscGPPanel *scGPPanel3;
 	TscGPTrackBar *scGPTrackBar1;
-	TscGPGlyphButton *scGPGlyphButton5;
-	TscGPGlyphButton *scGPGlyphButton6;
+	TscGPGlyphButton *scGPGlyphButton_ZOOM_MINUS;
+	TscGPGlyphButton *scGPGlyphButton_ZOOM_PLUS;
 	TscGPSizeBox *scGPSizeBox1;
 	TscCheckBox *scCheckBox2;
 	TscSplitView *scSplitView_OPTIONS;
@@ -398,8 +397,8 @@ __published:	// IDE-managed Components
 	void __fastcall PopupMenuButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton1Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
-	void __fastcall scGPGlyphButton5Click(TObject *Sender);
-	void __fastcall scGPGlyphButton6Click(TObject *Sender);
+	void __fastcall scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender);
 	void __fastcall scLabel1DblClick(TObject *Sender);
 	void __fastcall MinButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton2Click(TObject *Sender);
@@ -410,6 +409,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch4ChangeState(TObject *Sender);
 	void __fastcall scGPSwitch5ChangeState(TObject *Sender);
 	void __fastcall scGPSwitch9ChangeState(TObject *Sender);
+	void __fastcall scSplitView_OPTIONSClosing(TObject *Sender);
+	void __fastcall scSplitView_OPTIONSClosed(TObject *Sender);
 
 
 
