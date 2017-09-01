@@ -142,6 +142,8 @@ void TForm1::NewDesignSettings()
 	technologickprocesy1->Options->PressedColor=editacelinky1->Options->PressedColor;
 	simulace->Options->PressedColor=editacelinky1->Options->PressedColor;
 
+	scExPanel1_ostatni->Top=72+27;
+
 
 
 
