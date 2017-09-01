@@ -225,8 +225,7 @@ void TForm_vozik_nastaveni::nacti_voziky()
 	rStringGridEd1->Rows[0]->Add("Takt");
 				*/
 
-			rStringGridEd1->Cells[5][1]="NASTAVIT";
-			rStringGridEd1->Cells[9][1]="NASTAVIT";
+
 
 		 //	scGPButton5->Options->FocusedColor=(TColor)RGB(255,140,0);
 		 //	scGPButton5->Options->NormalColor=(TColor)RGB(255,140,0);

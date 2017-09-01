@@ -237,8 +237,8 @@ __published:	// IDE-managed Components
 	TscStyledForm *scStyledForm1;
 	TscRadioGroup *scRadioGroup1;
 	TscGPGlyphButton *scGPGlyphButton2;
-	TscGPButton *scGPButton1;
-	TscGPButton *scGPButton2;
+	TscGPButton *layout;
+	TscGPButton *simulace;
 	TscButton *scButton3;
 	TscButton *scButton1;
 	TscButton *scButton4;
@@ -468,6 +468,7 @@ private:	// User declarations
 	void log2web(UnicodeString Text);//automaticky přidá parametry (čas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void startUP();//při aktivaci formuláře, pro zpřehlednění kodu
+	void NewDesignSettings();
 
 	TDateTime TIME;
 	UnicodeString LICENCE;
