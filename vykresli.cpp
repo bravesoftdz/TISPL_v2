@@ -1618,7 +1618,7 @@ void Cvykresli::SG(Cvektory::TVozik *ukaz)//zajištuje základní funkcionalitu 
 bool Cvykresli::KOLIZE(Cvektory::TVozik *V1,Cvektory::TVozik *V2)//vrací logickou hodnotu zda došlo či nedošlo ke kolizi s jiným vozíkem
 {  //provizorní algoritmus není dotažený
 	 if(m.delka(V1->X,V1->Y,V2->X,V2->Y) <= V1->delka+V2->delka)//zatím nedokonalá detekce konfliktu
-	 	return true;
+		return true;
 	 else
 		return false;
 }
@@ -1627,87 +1627,57 @@ bool Cvykresli::KOLIZE(Cvektory::TVozik *V1,Cvektory::TVozik *V2)//vrací logick
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykresluje měřítko
-/*
-void Cvykresli::vykresli_meritko(TCanvas * canv, unsigned short Level, unsigned short ID_podklad, TPoint WH)
+void Cvykresli::meritko(TCanvas *canv)
 {
- if(Level>3)//zde měřítko příliš vizuálně záleželo na pozici od rovníku (rovník malé, poly - velké a vzhledem k umístění na obrazovce to mátlo)
- {
-  unsigned short int X=10;// na monitoru na ose X umístění
-  if(ID_podklad<=8)X=135;//v případě googlovských map až za nápisem GOOGLE
-  unsigned short int Y=WH.y-15;// na monitoru na ose Y umístění
-  unsigned short int rozsah=1;//rozsah na ose X,počet políček na ose X
-  unsigned int faktorX=1000;//velikost jednoho políčka v METRECH na ose X
-  unsigned short int faktorY=8;//velikost měřítka v px na ose Y
-  //TColor barva=(TColor)RGB(0,128,192);//nastavení barva měřítka
-  //TColor barva=(TColor)RGB(0,0,0);//nastavení barva měřítka
+	//proměnné nastavení měřítka
+	int L=Form1->scSplitView_LEFTTOOLBAR->Width+5;//umístění na X - levého výchozího kraje měřítka
+	int T=Form1->scGPPanel_statusbar->Top-20;//umistění na Y - horního výchozího kraje měřítka
+	int H=5;//výška měřítka
+	int K=1;//krok v metrech
+	if(Form1->Zoom==0.5)K=2;
+	if(Form1->Zoom==0.25)K=5;
+	int M=10;//MAX políček
+	TColor barva_meritko=(TColor)RGB(128,128,128);//barva měřítka
+	//TColor barva_meritko=(TColor)RGB(43,87,154);//(0,120,215);barva měřítka
 
-  //nastavení rozsahu měřítka
-  switch(Level)
-  {     //x políček//políčko metrů
-   case 1:rozsah=1;faktorX=1000000;break;
-   case 2:rozsah=2;faktorX=1000000;break;
-   case 3:rozsah=2;faktorX=1000000;break;
-   case 4:rozsah=2;faktorX=500000;break;
-   case 5:rozsah=2;faktorX=250000;break;
-   case 6:rozsah=2;faktorX=100000;break;
-   case 7:rozsah=2;faktorX=50000;break;
-   case 8:rozsah=2;faktorX=25000;break;
-   case 9:rozsah=2;faktorX=10000;break;
-   case 10:rozsah=2;faktorX=5000;break;
-   case 11:rozsah=2;faktorX=2000;break;
-   case 12:rozsah=3;faktorX=1000;break;
-   case 13:rozsah=4;faktorX=500;break;
-   case 14:rozsah=4;faktorX=250;break;
-   case 15:rozsah=5;faktorX=100;break;
-   case 16:rozsah=4;faktorX=50;break;
-   case 17:rozsah=4;faktorX=25;break;
-   case 18:rozsah=5;faktorX=10;break;
-   case 19:rozsah=4;faktorX=5;break;
-   case 20:rozsah=5;faktorX=2;break;
-
-  }
-
-  //nastavení fontu
-  canv->Font->Color=barva_meritko;
-  canv->Font->Name="Tahoma";
-  canv->Font->Size=8;
-	//canv->Font->Style = TFontStyles() /*<< fsItalic *//*<< fsBold;
-  canv->Brush->Style=bsClear;
-
-  //samotné měřítko
-  for(unsigned short int i=0;i<=rozsah;i++)//i je jedno políčko
-  {
-	//výplň
-	if(i!=rozsah)//mimo poslední, je totiž o krok dál než pismo (indexace od nuly+konec dílku)
-	{
-	   if(i%2)canv->Brush->Color=barva_meritko;//výplň barevna
-	   else canv->Brush->Color=clWhite;//výplň bílá
-	   canv->FillRect(TRect(m.px_offset(X,Y,faktorX*i),Y,m.px_offset(X,Y,faktorX+faktorX*i),Y-faktorY));
-	}
-	//text
-	int delit_jednotky=1000.0;//v případě použí kilometrů
-	AnsiString jednotky="";
-    if(faktorX<1000)
-	{
-      delit_jednotky=1;
-	  if(i==rozsah)jednotky=" m";
-    }
-	else if(i==rozsah)jednotky=" km";//v případě přepnutí do metrů //pokud se jedná o poslední popisek přidá i km
-	AnsiString text=faktorX*i/delit_jednotky;
-	canv->Brush->Style=bsClear;
-	canv->TextOutA(m.px_offset(X-canv->TextWidth(text)/2,Y,faktorX*i),Y,text+jednotky);
-  }
-
-  //oramávání
-  canv->Pen->Width=1;
-  //canv->Brush->Style=bsSolid;
+	//nastavení pera a fontu canvasu
+	canv->Pen->Color=barva_meritko;
+	canv->Pen->Width=1;
 	canv->Pen->Style=psSolid;
+	canv->Brush->Style=bsSolid;
 	canv->Pen->Mode=pmCopy;
-  canv->Pen->Color=barva_meritko;
-  canv->Rectangle(m.px_offset(X,Y,0),Y,m.px_offset(X,Y,rozsah*faktorX),Y-faktorY);
- }
-}*/
+	canv->Font->Size=8;
+	canv->Font->Name="Arial";
+	canv->Font->Color=barva_meritko;
+
+	//popisek 0
+	canv->MoveTo(L,T+5);canv->LineTo(L,T+7);//spojnice
+	SetBkMode(canv->Handle,TRANSPARENT);//musí být zde znovu, nastavení transparentního pozadí
+	canv->TextOutW(L-canv->TextWidth("0")/2+1,T+5,"0");
+
+	//vykreslení políček měřítka
+	int i=0;
+	for(;i<M;i+=K)
+	{
+		if(i%(2*K))canv->Brush->Color=barva_meritko;//výplň barevna
+		else canv->Brush->Color=clWhite;//výplň bílá                 //+1 pouze grafická korekce
+		canv->Rectangle(m.L2Px(m.P2Lx(L)+i),T,m.L2Px(m.P2Lx(L)+(i+K))+1,T+H);
+	}
+
+	//musí být zde znovu, nastavení transparentního pozadí
+	SetBkMode(canv->Handle,TRANSPARENT);
+	//popisek polovina
+	if(Form1->Zoom>=1)
+	{
+		canv->MoveTo(m.L2Px(m.P2Lx(L)+i/2),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i/2),T+7);
+		canv->TextOutW(m.L2Px(m.P2Lx(L)+i/2)-canv->TextWidth(M/2)/2,T+5,AnsiString(M/2));
+	}
+	//popisek MAX
+	canv->MoveTo(m.L2Px(m.P2Lx(L)+i),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i),T+7);
+	canv->TextOutW(m.L2Px(m.P2Lx(L)+i)-canv->TextWidth(M)/2,T+5,AnsiString(M)+" m");
+}
 //------------------------------------------------------------------------------------------------------------------------------------------------------
+//vytvoří zvuk
 void Cvykresli::sound()
 {
 	Beep(400,250);	// 440 hertz (A4) for half a second

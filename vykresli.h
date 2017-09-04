@@ -67,6 +67,7 @@ class Cvykresli
 	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p);
 	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y);
 	void sound();
+	void meritko(TCanvas *canv);
 
 
 

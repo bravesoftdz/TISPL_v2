@@ -248,10 +248,14 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch9;
 	TscLabel *scLabel19;
 	TscLabel *scLabel_ZOOM;
-	TscExPanel *scExPanel1_vrstvy;
+	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel2;
-	TscExPanel *scExPanel1_ostatni;
+	TscExPanel *scExPanel_ostatni;
 	TscLabel *scLabel3;
+	TMenuItem *Celpohled1;
+	TscGPSwitch *scGPSwitch_meritko;
+	TscLabel *scLabel5;
+	TscButton *scButton_ulozit;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall Klasick1Click(TObject *Sender);
 	void __fastcall WinXP1Click(TObject *Sender);
@@ -379,8 +383,9 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch9ChangeState(TObject *Sender);
 	void __fastcall scSplitViewsClosing(TObject *Sender);
 	void __fastcall scSplitViewsClosed(TObject *Sender);
-	void __fastcall scExPanel1_ostatniClick(TObject *Sender);
-	void __fastcall scExPanel1_vrstvyClick(TObject *Sender);
+	void __fastcall scExPanel_ostatniClick(TObject *Sender);
+	void __fastcall scExPanel_vrstvyClick(TObject *Sender);
+	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 
 
 
@@ -391,7 +396,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	////struktury, výčty
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
-	enum Tmod{NO=0,EDITACE,TESTOVANI,REZERVY,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
+	enum Tmod{NO=0,SCHEMA,TESTOVANI,REZERVY,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
 	//enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce; muselo být přesunutu do public sekce kvůli AA ve vykresli
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
@@ -473,6 +478,7 @@ private:	// User declarations
 	bool add_posledni;
 	bool upozornovat_na_zmenu_TT_parametru;
 	bool scSplitViews_closing_on_AA;
+	bool SplitViewOpen;
 
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;

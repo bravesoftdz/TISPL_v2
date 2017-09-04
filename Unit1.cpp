@@ -123,29 +123,39 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 //záležitost s novým designem
 void TForm1::NewDesignSettings()
 {
+	//maximalizace formuláře jinak to s novým designem nejde
+	Form1->Width=Screen->WorkAreaWidth;
+	Form1->Height=Screen->WorkAreaHeight;
+
+	//nastavení globálních barev
+	TColor light_gray=(TColor)RGB(240,240,240);
+	TColor active_blue=(TColor)RGB(0,120,215);
+
 	PopupMenuButton->Left = 0;
 	PopupMenuButton->Visible = false;
 	DetailsButton->Left = 0;
 	DetailsButton->Visible = true;
 	scSplitView_OPTIONS->Opened=false;
-	scGPGlyphButton8->Options->NormalColor=(TColor)RGB(0,120,215);
-	scGPGlyphButton7->Options->NormalColor=scGPGlyphButton8->Options->NormalColor;
+	scSplitView_OPTIONS->Align=alRight;
+
+	scGPGlyphButton8->Options->NormalColor=active_blue;
+	scGPGlyphButton7->Options->NormalColor=active_blue;
 	scListGroupNastavProjektu->HeaderAutoColor=true;
 	scListGroupKnihovObjektu->HeaderAutoColor=true;
-	scListGroupNastavProjektu->Color=(TColor)RGB(240,240,240);
-	scListGroupKnihovObjektu->Color=scListGroupNastavProjektu->Color;
-	scSplitView_OPTIONS->Color=scListGroupNastavProjektu->Color;
-	scExPanel1_vrstvy->Color=scListGroupNastavProjektu->Color;
-	scExPanel1_ostatni->Color=scListGroupNastavProjektu->Color;
+	scListGroupNastavProjektu->Color=light_gray;
+	scListGroupKnihovObjektu->Color=light_gray;
+	scSplitView_OPTIONS->Color=light_gray;
+	scExPanel_vrstvy->Color=light_gray;
+	scExPanel_ostatni->Color=light_gray;
 
 	//nastaveni barvy prepinacu modu
-	editacelinky1->Options->PressedColor=(TColor)RGB(240,240,240);
-	layout->Options->PressedColor=editacelinky1->Options->PressedColor;
-	casovosa1->Options->PressedColor=editacelinky1->Options->PressedColor;
-	technologickprocesy1->Options->PressedColor=editacelinky1->Options->PressedColor;
-	simulace->Options->PressedColor=editacelinky1->Options->PressedColor;
+	editacelinky1->Options->PressedColor=light_gray;
+	layout->Options->PressedColor=light_gray;
+	casovosa1->Options->PressedColor=light_gray;
+	technologickprocesy1->Options->PressedColor=light_gray;
+	simulace->Options->PressedColor=light_gray;
 
-	scExPanel1_ostatni->Top=72+27;
+	scExPanel_ostatni->Top=72+27;
 }
 //---------------------------------------------------------------------------
 //zakázání či povolení grafických uživatelských prvků dle úrovně edice
@@ -164,6 +174,7 @@ void TForm1::edice()
 				Otevrit->Enabled=false;
 			//	Otevritsablonu->Enabled=false;
 				Ulozit->Enabled=false;
+				scButton_ulozit->Enabled=false;
 			//	Ulozitjako->Enabled=false;
 			//	Export1->Enabled=false;
 			//	Report1->Enabled=false;
@@ -198,14 +209,13 @@ void TForm1::edice()
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
-
-
-	}
+}
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //založí nový soubor, nastavení souboru, nastevení aplikace v konstruktoru
 void __fastcall TForm1::NovySouborClick(TObject *Sender)
 {
+   scSplitView_MENU->Opened=false;
 	 bool novy=true;
 	 if(duvod_k_ulozeni)
 	 {
@@ -485,6 +495,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 {
 	scListGroupKnihovObjektu->Height=RzStatusBar1->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
 	if(MOD==REZERVY || MOD==CASOVAOSA)Invalidate();
+	else REFRESH();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Klasick1Click(TObject *Sender)
@@ -519,7 +530,7 @@ void TForm1::setVisualStyle(TRzVisualStyle VisualStyle)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 {
-	MOD=EDITACE;
+	MOD=SCHEMA;
 	SB("editace linky",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
@@ -802,7 +813,7 @@ void __fastcall TForm1::PopupMenu1Popup(TObject *Sender)
 	//dle modu
 	switch(MOD)
 	{
-		case EDITACE:
+		case SCHEMA:
 		case TESTOVANI:
 			Nastvitparametry1->Visible=true;
 			Smazat1->Visible=true;
@@ -835,6 +846,7 @@ void __fastcall TForm1::PopupMenu1Popup(TObject *Sender)
 //skryje či zobrazí mřížku
 void __fastcall TForm1::scGPSwitch5ChangeState(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	grid=!grid;
 	if(!grid)SB("mřížka skryta",5);
 	else akutalizace_stavu_prichytavani_vSB();
@@ -888,7 +900,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
 	switch(MOD)
 	{
-		case EDITACE: /*záměrně tu není break...*/ ///vykreslování všech vektorů
+		case SCHEMA: /*záměrně tu není break...*/ ///vykreslování všech vektorů
 		case TESTOVANI: ////vykreslování všech vektorů
 		{
 			if(!antialiasing)d.vykresli_vektory(Canvas);
@@ -914,6 +926,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_grid);//velice nutné
 				delete (bmp_in);//velice nutné
 			}
+			//grafické měřítko
+			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
 		}
 		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
@@ -935,27 +949,30 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			}
 			break;
 			*/
-				//d.vykresli_casove_osy(Canvas);  //puvodni konstrukce
-			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-			bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
-			d.vykresli_casove_osy(bmp_in->Canvas);
-			Canvas->Draw(0,RzToolbar1->Height,bmp_in);
-			delete (bmp_in);//velice nutné
+			if(SplitViewOpen==false)
+			{
+				//d.vykresli_casove_osy(Canvas);  //puvodni konstrukce ověřit proč nemůže být použita a místo toho se používá ta bitmapa
+				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+				bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
+				d.vykresli_casove_osy(bmp_in->Canvas);
+				Canvas->Draw(0,RzToolbar1->Height,bmp_in);
+				delete (bmp_in);//velice nutné
+			}
 			d.vykresli_svislici_na_casove_osy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 			break;
 		}
 		case TECHNOPROCESY:	//d.vykresli_technologicke_procesy(Canvas); break; puvodni konstrukce
-
+		if(SplitViewOpen==false)
+		{
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 			bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
 			d.vykresli_technologicke_procesy(bmp_in->Canvas);
 			Canvas->Draw(0,RzToolbar1->Height,bmp_in);
 			delete (bmp_in);//velice nutné
+		}
 			break;
 		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
-	//grafické měřítko
-	Canvas->TextOutW(scSplitView_LEFTTOOLBAR->Width+5,scGPPanel_statusbar->Top-20,"tady bude grafické měřítko");
 }
 //---------------------------------------------------------------------------
 //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing)
@@ -1184,7 +1201,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			//aktivuje POSUN OBJEKTU,pokud je kliknuto v místě objektu (v jeho vnitřku)
 			if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
 			{
-				if(MOD==EDITACE || MOD==TESTOVANI)
+				if(MOD==SCHEMA || MOD==TESTOVANI)
 				{
 					pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 					if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
@@ -2263,6 +2280,7 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	SaveDialog->Title="Uložit soubor jako";
 	SaveDialog->DefaultExt="*.tispl";
 	SaveDialog->Filter="Soubory formátu TISPL (*.tispl)|*.tispl|Soubory šablon TISPL (*.tisplTemp)|*.tisplTemp";
@@ -2319,6 +2337,7 @@ void TForm1::vytvor_hlavicku_souboru()
 //otevře soubor
 void __fastcall TForm1::OtevritClick(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
   {
 		int result=MessageBox(Handle,UnicodeString(FileName+" byl změněn. Chcete ho před ukončením uložit?").c_str(),L"TISPL",MB_YESNOCANCEL|MB_ICONQUESTION|MB_DEFBUTTON1);
@@ -2381,12 +2400,12 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 			switch(MOD)
 			{
 					case NO:REFRESH();break; //překreslí obraz pro ostatní případy
-					case EDITACE: 	editacelinky1Click(this);break;
+					case SCHEMA: 	editacelinky1Click(this);break;
 					case TESTOVANI:	testovnkapacity1Click(this);break;
 					case REZERVY:		casoverezervy1Click(this);break;
-					case CASOVAOSA:	editacelinky1Click(this);MOD=EDITACE;/*casovosa1Click(this);*/break;
-					case TECHNOPROCESY:editacelinky1Click(this);MOD=EDITACE;break;
-					case SIMULACE:	editacelinky1Click(this);MOD=EDITACE;/*simulace1Click(this);*/break;
+					case CASOVAOSA:	editacelinky1Click(this);MOD=SCHEMA;/*casovosa1Click(this);*/break;
+					case TECHNOPROCESY:editacelinky1Click(this);MOD=SCHEMA;break;
+					case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
 			}
 			DuvodUlozit(false);
 			//aktualizace statusbaru
@@ -2408,6 +2427,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Obnovitzezlohy1Click(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	OpenDialog1->Title="Otevřít soubor ze zálohy";
 	OpenDialog1->DefaultExt="*tispl.bac_"+get_user_name()+"_"+get_computer_name();
 	AnsiString nazev="Soubory zálohy TISPL (*.tispl.bac_"+get_user_name()+"_"+get_computer_name()+")|*.tispl.bac_"+get_user_name()+"_"+get_computer_name();
@@ -2577,6 +2597,7 @@ void TForm1::DuvodUlozit(bool stav)
 	 //nastavení stavu ovládacích prvků
 	 RzToolButton3->Enabled=stav;
 	 Ulozit->Enabled=stav;
+	 scButton_ulozit->Enabled=stav;
 	 //samotný indikátor změny a důvodu k uložení
 	 duvod_k_ulozeni=stav;
 }
@@ -2585,6 +2606,7 @@ void TForm1::DuvodUlozit(bool stav)
 //zajistí export do rastrového formátu
 void __fastcall TForm1::Export1Click(TObject *Sender)
 {
+   scSplitView_MENU->Opened=false;
 	 SavePictureDialog1->Filter="Soubory formátu BMP (*.bmp)|*.bmp|Soubory formátu JPG (*.jpg)|*.jpg|Soubory formátu PNG (*.png)|*.png";
 
 	 //předvyplnění názvem stejnojmeným souboru
@@ -2611,7 +2633,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 
 			switch(MOD)//uloží obraz dle daného modu zobrazení
 			{
-				case EDITACE: //zaměrně tu není break;
+				case SCHEMA: //zaměrně tu není break;
 				case TESTOVANI:
 				if(!antialiasing)d.vykresli_vektory(Bitmap->Canvas);//vykreslování všech vektorů
 				else
@@ -2766,6 +2788,7 @@ void __fastcall TForm1::csv1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::html1Click(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
 		S("Žádná data k exportu!");
 	else
@@ -3043,6 +3066,7 @@ void __fastcall TForm1::Chart1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::MagnaClick(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	//otevřít soubor
 	OtevritSoubor(FileName);
 	d.v.hlavicka_seznamu_cest();
@@ -3354,6 +3378,7 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 //zapne či vypne antialiasing
 void __fastcall TForm1::scGPSwitch4ChangeState(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	antialiasing=!antialiasing;
 	DrawGrid_knihovna->Invalidate();
 	REFRESH();
@@ -3603,7 +3628,8 @@ void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
 void __fastcall TForm1::scSplitViewsClosing(TObject *Sender)
 {
 	scSplitViews_closing_on_AA=false;
-	if(antialiasing || CASOVAOSA || TECHNOPROCESY)
+	SplitViewOpen=true;
+	if(antialiasing)
 	{
 		scSplitViews_closing_on_AA=true;
 		int W=scSplitView_LEFTTOOLBAR->Width;
@@ -3622,18 +3648,26 @@ void __fastcall TForm1::scSplitViewsClosing(TObject *Sender)
 void __fastcall TForm1::scSplitViewsClosed(TObject *Sender)
 {
 		if(scSplitViews_closing_on_AA)antialiasing=true;
+		SplitViewOpen=false;
+		if(MOD==CASOVAOSA || TECHNOPROCESY)REFRESH();
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::scExPanel1_vrstvyClick(TObject *Sender)
+void __fastcall TForm1::scExPanel_vrstvyClick(TObject *Sender)
 {
-	scExPanel1_vrstvy->RollUpState=!scExPanel1_vrstvy->RollUpState;
+	scExPanel_vrstvy->RollUpState=!scExPanel_vrstvy->RollUpState;
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::scExPanel1_ostatniClick(TObject *Sender)
+void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 {
-	scExPanel1_ostatni->RollUpState=!scExPanel1_ostatni->RollUpState;
+	scExPanel_ostatni->RollUpState=!scExPanel_ostatni->RollUpState;
 }
 //---------------------------------------------------------------------------
-
+//vypnutí měřítko
+void __fastcall TForm1::scGPSwitch_meritkoChangeState(TObject *Sender)
+{
+	 scSplitView_MENU->Opened=false;
+	 REFRESH();
+}
+//---------------------------------------------------------------------------
 
 
