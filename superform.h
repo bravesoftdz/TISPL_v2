@@ -41,7 +41,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel4;
 	TrHTMLLabel *rHTMLLabel5;
 	TrHTMLLabel *rHTMLLabel6;
-	TrHTMLLabel *rHTMLLabel7;
 	TrStringGridEd *rStringGridEd1;
 	TrEditNum *rEditNum1;
 	TrEditNum *rEditNum2;
@@ -60,9 +59,8 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel1;
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton15;
-	TrHTMLLabel *rHTMLLabel8;
 	TImageList *ImageList1;
-	TscGPPanel *scGPPanel1;
+	TrHTMLLabel *rHTMLLabel9;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
@@ -81,6 +79,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button_OKKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rStringGridEd1Click(TObject *Sender);
 	void __fastcall rButton1Click(TObject *Sender);
+	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 
 
 

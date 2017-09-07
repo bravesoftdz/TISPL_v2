@@ -33,7 +33,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
   end
   object rHTMLLabel3: TrHTMLLabel
     Left = 23
-    Top = 8
+    Top = 1
     Width = 172
     Height = 27
     Caption = 'Parametry v'#253'roby'
@@ -45,36 +45,74 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel7: TrHTMLLabel
-    Left = 8
-    Top = 296
-    Width = 113
-    Height = 27
-    Caption = 'Pl'#225'n v'#253'roby'
-    Color = clBlack
+  object rHTMLLabel2: TrHTMLLabel
+    Left = 15
+    Top = 7
+    Width = 152
+    Height = 19
+    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = 27
+    Font.Color = clGray
+    Font.Height = 19
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
-    ParentColor = False
     ParentFont = False
   end
-  object rHTMLLabel8: TrHTMLLabel
+  object rHTMLLabel4: TrHTMLLabel
     Left = 8
-    Top = 58
-    Width = 172
-    Height = 27
-    Caption = 'Parametry v'#253'roby'
-    Color = clBlack
+    Top = 174
+    Width = 150
+    Height = 19
+    Caption = 'Po'#269'et prac.hodin/den'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = 27
+    Font.Color = clGray
+    Font.Height = 19
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
-    ParentColor = False
+    ParentFont = False
+  end
+  object rHTMLLabel5: TrHTMLLabel
+    Left = 8
+    Top = 97
+    Width = 134
+    Height = 19
+    Caption = 'Po'#269'et prac.dn'#367'/rok'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel6: TrHTMLLabel
+    Left = 207
+    Top = 174
+    Width = 64
+    Height = 19
+    Caption = 'Efektivita'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel9: TrHTMLLabel
+    Left = 207
+    Top = 97
+    Width = 152
+    Height = 19
+    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
     ParentFont = False
   end
   object Button_OK: TButton
@@ -461,30 +499,30 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     OnClick = rButton1Click
   end
   object scGPButton2: TscGPButton
-    Left = 798
-    Top = 64
-    Width = 75
+    Left = 0
+    Top = 56
+    Width = 209
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
-    Font.Height = 17
+    Font.Height = -17
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
     TabOrder = 13
     TabStop = True
-    Visible = False
     Animation = False
-    Caption = 'OK'
+    Caption = '   Parametry v'#253'roby'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
-    ImageIndex = -1
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 16
     ImageMargin = 0
     TransparentBackground = True
-    Options.NormalColor = clMaroon
+    Options.NormalColor = clSilver
     Options.HotColor = clPurple
     Options.PressedColor = clRed
     Options.FocusedColor = clRed
@@ -513,7 +551,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
+    Options.ShapeStyle = scgpTabRight
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
@@ -558,30 +596,30 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Visible = False
   end
   object scGPButton4: TscGPButton
-    Left = 900
-    Top = 62
-    Width = 75
+    Left = -1
+    Top = 288
+    Width = 158
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
-    Font.Height = 17
+    Font.Height = -17
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
     TabOrder = 15
     TabStop = True
-    Visible = False
     Animation = False
-    Caption = 'Storno'
+    Caption = '   Pl'#225'n v'#253'roby'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
-    ImageIndex = -1
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 14
     ImageMargin = 0
     TransparentBackground = True
-    Options.NormalColor = clMaroon
+    Options.NormalColor = clSilver
     Options.HotColor = clPurple
     Options.PressedColor = clRed
     Options.FocusedColor = clRed
@@ -610,7 +648,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
+    Options.ShapeStyle = scgpTabRight
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
@@ -646,10 +684,10 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     AllowAllUp = False
   end
   object scGPGlyphButton1: TscGPGlyphButton
-    Left = 133
-    Top = 296
+    Left = 171
+    Top = 304
     Width = 24
-    Height = 27
+    Height = 19
     TabOrder = 16
     TabStop = True
     Animation = False
@@ -799,7 +837,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Align = alCustom
     TabOrder = 18
     TabStop = True
-    OnClick = Button_OKClick
+    OnClick = scGPGlyphButton4Click
     Animation = False
     Caption = 'OK'
     CanFocused = True
@@ -896,7 +934,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 1101
+    ExplicitTop = -7
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 966
@@ -973,7 +1011,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1051
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1051,7 +1088,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 951
     end
     object scLabel1: TscLabel
       Left = 0
@@ -1083,7 +1119,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
-      ExplicitWidth = 914
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1161,7 +1196,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1001
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 829
@@ -1240,151 +1274,67 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 914
     end
   end
-  object scGPPanel1: TscGPPanel
-    Left = 8
-    Top = 91
-    Width = 489
-    Height = 182
+  object rEditNum1: TrEditNum
+    Left = 207
+    Top = 122
+    Width = 101
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
     TabOrder = 20
-    FillGradientAngle = 90
-    FillGradientBeginAlpha = 255
-    FillGradientEndAlpha = 255
-    FillGradientBeginColorOffset = 25
-    FillGradientEndColorOffset = 25
-    FrameWidth = 2
-    FillColor = clWhite
-    FillColorAlpha = 225
-    FillColor2 = clNone
-    FrameColor = clBtnShadow
-    FrameColorAlpha = 255
-    FrameRadius = 0
-    ShowCaption = False
-    CaptionGlowEffect.Enabled = False
-    CaptionGlowEffect.Color = clBtnShadow
-    CaptionGlowEffect.AlphaValue = 255
-    CaptionGlowEffect.GlowSize = 7
-    CaptionGlowEffect.Offset = 0
-    CaptionGlowEffect.Intensive = True
-    CaptionGlowEffect.StyleColors = True
-    Color = clWhite
-    Caption = 'scGPPanel1'
-    TransparentBackground = True
-    StorePaintBuffer = True
-    object rHTMLLabel2: TrHTMLLabel
-      Left = 15
-      Top = 14
-      Width = 152
-      Height = 19
-      Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clGray
-      Font.Height = 19
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-    end
-    object rHTMLLabel4: TrHTMLLabel
-      Left = 15
-      Top = 81
-      Width = 150
-      Height = 19
-      Caption = 'Po'#269'et prac.hodin/den'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clGray
-      Font.Height = 19
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-    end
-    object rHTMLLabel5: TrHTMLLabel
-      Left = 15
-      Top = 48
-      Width = 134
-      Height = 19
-      Caption = 'Po'#269'et prac.dn'#367'/rok'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clGray
-      Font.Height = 19
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-    end
-    object rHTMLLabel6: TrHTMLLabel
-      Left = 15
-      Top = 118
-      Width = 64
-      Height = 19
-      Caption = 'Efektivita'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clGray
-      Font.Height = 19
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-    end
-    object rEditNum1: TrEditNum
-      Left = 220
-      Top = 10
-      Width = 101
-      Height = 28
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 20
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-      TabOrder = 0
-    end
-    object rEditNum2: TrEditNum
-      Left = 220
-      Top = 78
-      Width = 65
-      Height = 28
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 20
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-      TabOrder = 1
-    end
-    object rEditNum3: TrEditNum
-      Left = 220
-      Top = 112
-      Width = 65
-      Height = 28
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 20
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-      TabOrder = 2
-    end
-    object rEditNum4: TrEditNum
-      Left = 220
-      Top = 44
-      Width = 65
-      Height = 28
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 20
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-      TabOrder = 3
-    end
+    Value = 5000000.000000000000000000
+  end
+  object rEditNum2: TrEditNum
+    Left = 8
+    Top = 197
+    Width = 150
+    Height = 30
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 21
+    Value = 8.000000000000000000
+  end
+  object rEditNum3: TrEditNum
+    Left = 207
+    Top = 199
+    Width = 65
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 22
+    Value = 95.000000000000000000
+  end
+  object rEditNum4: TrEditNum
+    Left = 8
+    Top = 122
+    Width = 149
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 23
+    Value = 235.000000000000000000
   end
   object ColorDialog1: TColorDialog
     Left = 592

@@ -147,6 +147,10 @@ void TForm_vozik_nastaveni::vymaz_barvu() {
 void __fastcall TForm_vozik_nastaveni::FormShow(TObject *Sender)
 {
  nacti_voziky();
+ 	//nastavení globálních barev
+	TColor light_gray=(TColor)RGB(240,240,240);
+	TColor active_blue=(TColor)RGB(43,87,154);
+
  Form_vozik_nastaveni->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
  rHTMLLabel1->Font->Color=(TColor)RGB(89,89,89);
  rHTMLLabel2->Font->Color=rHTMLLabel1->Font->Color;
@@ -156,23 +160,26 @@ void __fastcall TForm_vozik_nastaveni::FormShow(TObject *Sender)
  rHTMLLabel6->Font->Color=rHTMLLabel1->Font->Color;
 
 	rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
-	 rHTMLLabel7->Font->Color=rHTMLLabel3->Font->Color;  //velky nadpis  2
+ //	 rHTMLLabel7->Font->Color=rHTMLLabel3->Font->Color;  //velky nadpis  2
 
  //Button_OK->Font->Color=(TColor)RGB(226,122,21);
- scGPButton2->Options->NormalColor=(TColor)RGB(226,122,21);
- scGPButton2->Options->FocusedColor=(TColor)RGB(255,141,28);
- scGPButton2->Options->HotColor=(TColor)RGB(255,141,28);
- scGPButton2->Options->PressedColor=(TColor)RGB(255,141,28);
+ scGPButton2->Options->NormalColor=Form_vozik_nastaveni->Color;
+ scGPButton2->Options->FocusedColor=Form_vozik_nastaveni->Color;
+ scGPButton2->Options->HotColor=Form_vozik_nastaveni->Color;
+ scGPButton2->Options->PressedColor=Form_vozik_nastaveni->Color;
+ scGPButton2->Options->FrameNormalColor=Form_vozik_nastaveni->Color;
 
  //scGPButton3->Options->NormalColor=(TColor)RGB(226,122,21);
  //scGPButton3->Options->FocusedColor=(TColor)RGB(255,141,28);
  //scGPButton3->Options->HotColor=(TColor)RGB(255,141,28);
  //scGPButton3->Options->PressedColor=(TColor)RGB(255,141,28);
 
- scGPButton4->Options->NormalColor=(TColor)RGB(226,122,21);
- scGPButton4->Options->FocusedColor=(TColor)RGB(255,141,28);
- scGPButton4->Options->HotColor=(TColor)RGB(255,141,28);
- scGPButton4->Options->PressedColor=(TColor)RGB(255,141,28);
+ scGPButton4->Options->NormalColor=Form_vozik_nastaveni->Color;
+ scGPButton4->Options->FocusedColor=Form_vozik_nastaveni->Color;
+ scGPButton4->Options->HotColor=Form_vozik_nastaveni->Color;
+ scGPButton4->Options->PressedColor=Form_vozik_nastaveni->Color;
+ scGPButton4->Options->FrameNormalColor=Form_vozik_nastaveni->Color;
+
 
 	rStringGridEd1->Cells[5][1]="NASTAVIT";
 	rStringGridEd1->Cells[9][1]="NASTAVIT";
@@ -730,4 +737,10 @@ rStringGridEd1->RowCount++;
 
 
 
+
+void __fastcall TForm_vozik_nastaveni::scGPGlyphButton4Click(TObject *Sender)
+{
+	Form_vozik_nastaveni->Close();
+}
+//---------------------------------------------------------------------------
 
