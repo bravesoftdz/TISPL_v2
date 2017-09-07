@@ -2644,7 +2644,7 @@ object Form1: TForm1
     AllowAllUp = False
   end
   object scSplitView_OPTIONS: TscSplitView
-    Left = 776
+    Left = 526
     Top = 34
     Width = 250
     Height = 621
@@ -2685,7 +2685,7 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
-    ExplicitLeft = 526
+    ExplicitLeft = 776
     object scLabel4: TscLabel
       AlignWithMargins = True
       Left = 11
@@ -3292,7 +3292,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton2: TscButton
       Left = 0
@@ -3385,7 +3384,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton3: TscButton
       Left = 0
@@ -3478,7 +3476,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton4: TscButton
       Left = 0
@@ -3571,8 +3568,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 250
-      ExplicitWidth = 0
     end
     object scButton5: TscButton
       Left = 0
@@ -3665,7 +3660,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton6: TscButton
       Left = 0
@@ -3758,8 +3752,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 150
-      ExplicitWidth = 0
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -3865,12 +3857,13 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       Caption = 'M'#345#237#382'ka'
     end
-    object scButton7: TscButton
+    object scButton_ulozit: TscButton
       Left = 0
-      Top = 150
+      Top = 100
       Width = 180
       Height = 50
       Align = alTop
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -3878,9 +3871,9 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 10
-      OnClick = UlozitjakoClick
+      OnClick = UlozitClick
       Animation = False
-      Caption = 'Ulo'#382'it jako...'
+      Caption = 'Ulo'#382'it'
       CanFocused = False
       CustomDropDown = False
       Margin = 0
@@ -3893,7 +3886,7 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
+      ColorOptions.DisabledColor = 8538404
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
@@ -3956,8 +3949,8 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 100
-      ExplicitWidth = 0
+      ExplicitLeft = 3
+      ExplicitTop = 126
     end
     object scButton8: TscButton
       Left = 0
@@ -4050,8 +4043,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 200
-      ExplicitWidth = 0
     end
     object scButton9: TscButton
       Left = 0
@@ -4144,7 +4135,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch9: TscGPSwitch
       Left = 100
@@ -4250,13 +4240,12 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       Caption = 'M'#283#345#237'tko'
     end
-    object scButton_ulozit: TscButton
+    object scButton10: TscButton
       Left = 0
-      Top = 100
+      Top = 150
       Width = 180
       Height = 50
       Align = alTop
-      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -4264,9 +4253,9 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 17
-      OnClick = UlozitClick
+      OnClick = UlozitjakoClick
       Animation = False
-      Caption = 'Ulo'#382'it'
+      Caption = 'Ulo'#382'it jako...'
       CanFocused = False
       CustomDropDown = False
       Margin = 0
@@ -4279,12 +4268,12 @@ object Form1: TForm1
       ColorOptions.HotColor = 7159583
       ColorOptions.PressedColor = 5648664
       ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
+      ColorOptions.DisabledColor = 657930
       ColorOptions.FrameNormalColor = clNone
       ColorOptions.FrameHotColor = clNone
       ColorOptions.FramePressedColor = clNone
       ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = 8538404
+      ColorOptions.FrameDisabledColor = clBtnShadow
       ColorOptions.FrameWidth = 0
       ColorOptions.FontNormalColor = clWhite
       ColorOptions.FontHotColor = clWhite
@@ -4319,18 +4308,18 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       RepeatClick = False
       RepeatClickInterval = 100
-      GlowEffect.Enabled = True
+      GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
       GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
       GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clHighlight
-      GlowEffect.PressedColor = clHighlight
-      GlowEffect.FocusedColor = clHighlight
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
       GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 205
+      GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
       ShowGalleryMenuFromTop = False
@@ -4342,7 +4331,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
   end
   object PopupMenu1: TPopupMenu
@@ -4455,12 +4443,18 @@ object Form1: TForm1
       Caption = 'Cel'#253' pohled'
       OnClick = RzToolButton11Click
     end
+    object Uloit1: TMenuItem
+      Caption = 'Ulo'#382'it'
+      ShortCut = 16467
+      Visible = False
+      OnClick = UlozitClick
+    end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000003000310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118000403040310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5610,7 +5604,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01010B00E000E00030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010B00E400E40030003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000090000000010020000000000000B0
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9192,7 +9186,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01010B00A800A80018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01010B00AC00AC0018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000480000000100040000000000800D
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

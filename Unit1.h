@@ -234,7 +234,7 @@ __published:	// IDE-managed Components
 	TscButton *scButton2;
 	TscButton *scButton6;
 	TscSplitView *scSplitView_MENU;
-	TscButton *scButton7;
+	TscButton *scButton_ulozit;
 	TscButton *scButton8;
 	TscButton *scButton9;
 	TscSplitView *scSplitView_LEFTTOOLBAR;
@@ -255,7 +255,8 @@ __published:	// IDE-managed Components
 	TMenuItem *Celpohled1;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
-	TscButton *scButton_ulozit;
+	TscButton *scButton10;
+	TMenuItem *Uloit1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall Klasick1Click(TObject *Sender);
 	void __fastcall WinXP1Click(TObject *Sender);
