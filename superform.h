@@ -61,6 +61,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton15;
 	TImageList *ImageList1;
 	TrHTMLLabel *rHTMLLabel9;
+	TscGPButton *scGPButton1;
+	TscGPButton *scGPButton3;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);

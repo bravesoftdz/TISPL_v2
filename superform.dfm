@@ -5,8 +5,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
   BorderStyle = bsNone
   BorderWidth = 1
   Caption = 'Definice zak'#225'zek'
-  ClientHeight = 614
-  ClientWidth = 1016
+  ClientHeight = 533
+  ClientWidth = 999
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clDefault
@@ -60,8 +60,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     ParentFont = False
   end
   object rHTMLLabel4: TrHTMLLabel
-    Left = 8
-    Top = 174
+    Left = 53
+    Top = 165
     Width = 150
     Height = 19
     Caption = 'Po'#269'et prac.hodin/den'
@@ -74,7 +74,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     ParentFont = False
   end
   object rHTMLLabel5: TrHTMLLabel
-    Left = 8
+    Left = 53
     Top = 97
     Width = 134
     Height = 19
@@ -88,8 +88,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     ParentFont = False
   end
   object rHTMLLabel6: TrHTMLLabel
-    Left = 207
-    Top = 174
+    Left = 247
+    Top = 165
     Width = 64
     Height = 19
     Caption = 'Efektivita'
@@ -102,7 +102,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     ParentFont = False
   end
   object rHTMLLabel9: TrHTMLLabel
-    Left = 207
+    Left = 247
     Top = 97
     Width = 152
     Height = 19
@@ -255,8 +255,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     OnClick = Button_DELClick
   end
   object rStringGridEd1: TrStringGridEd
-    Left = 8
-    Top = 329
+    Left = 0
+    Top = 300
     Width = 1000
     Height = 186
     Align = alCustom
@@ -477,6 +477,18 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
         TitleAlignment = taCenter
       end>
     AutoAddNewRow = True
+    ColWidths = (
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90)
     RowHeights = (
       30
       30)
@@ -500,12 +512,12 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
   end
   object scGPButton2: TscGPButton
     Left = 0
-    Top = 56
+    Top = 50
     Width = 209
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
-    Font.Height = -17
+    Font.Height = -19
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
@@ -519,7 +531,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 16
+    ImageIndex = 15
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = clSilver
@@ -543,7 +555,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clWhite
+    Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
     Options.FontPressedColor = clWhite
     Options.FontFocusedColor = clWhite
@@ -551,7 +563,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpTabRight
+    Options.ShapeStyle = scgpRect
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
@@ -596,13 +608,13 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Visible = False
   end
   object scGPButton4: TscGPButton
-    Left = -1
-    Top = 288
+    Left = 0
+    Top = 248
     Width = 158
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
-    Font.Height = -17
+    Font.Height = -19
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
@@ -616,7 +628,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 14
+    ImageIndex = 12
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = clSilver
@@ -630,9 +642,9 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
+    Options.FrameHotColor = clGray
     Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clSilver
+    Options.FrameFocusedColor = clGray
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -640,7 +652,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clWhite
+    Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
     Options.FontPressedColor = clWhite
     Options.FontFocusedColor = clWhite
@@ -648,7 +660,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpTabRight
+    Options.ShapeStyle = scgpRect
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
@@ -684,12 +696,13 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     AllowAllUp = False
   end
   object scGPGlyphButton1: TscGPGlyphButton
-    Left = 171
-    Top = 304
+    Left = 153
+    Top = 257
     Width = 24
     Height = 19
     TabOrder = 16
     TabStop = True
+    Visible = False
     Animation = False
     Caption = 'scGPGlyphButton1'
     CanFocused = True
@@ -707,13 +720,13 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.PressedColorAlpha = 30
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 5
-    Options.FrameNormalColor = clBtnText
+    Options.FrameNormalColor = clSilver
     Options.FrameHotColor = clBtnText
     Options.FramePressedColor = clBtnText
     Options.FrameFocusedColor = clHighlight
     Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 70
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 0
     Options.FrameHotColorAlpha = 100
     Options.FramePressedColorAlpha = 150
     Options.FrameFocusedColorAlpha = 255
@@ -740,7 +753,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     GlyphOptions.FocusedColorAlpha = 255
     GlyphOptions.DisabledColorAlpha = 100
     GlyphOptions.Kind = scgpbgkPlus
-    GlyphOptions.Thickness = 2
+    GlyphOptions.Thickness = 1
     GlyphOptions.StyleColors = True
     TextMargin = -1
     WidthWithCaption = 0
@@ -756,13 +769,14 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     AllowAllUp = False
   end
   object scGPGlyphButton2: TscGPGlyphButton
-    Left = 410
-    Top = 539
-    Width = 65
+    Left = 8
+    Top = 492
+    Width = 70
     Height = 35
     Align = alCustom
     TabOrder = 17
     TabStop = True
+    Visible = False
     OnClick = Button_OKClick
     Animation = False
     Caption = 'OK'
@@ -830,13 +844,14 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     AllowAllUp = False
   end
   object scGPGlyphButton4: TscGPGlyphButton
-    Left = 493
-    Top = 539
-    Width = 68
+    Left = 84
+    Top = 492
+    Width = 70
     Height = 35
     Align = alCustom
     TabOrder = 18
     TabStop = True
+    Visible = False
     OnClick = scGPGlyphButton4Click
     Animation = False
     Caption = 'OK'
@@ -906,7 +921,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 1016
+    Width = 999
     Height = 34
     Align = alTop
     TabOrder = 19
@@ -935,9 +950,10 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     TransparentBackground = True
     StorePaintBuffer = True
     ExplicitTop = -7
+    ExplicitWidth = 1016
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 966
+      Left = 949
       Top = 0
       Width = 50
       Height = 33
@@ -1011,10 +1027,11 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 966
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 866
+      Left = 849
       Top = 0
       Width = 50
       Height = 33
@@ -1088,11 +1105,12 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 866
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 829
+      Width = 812
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1119,10 +1137,11 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
+      ExplicitWidth = 829
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 916
+      Left = 899
       Top = 0
       Width = 50
       Height = 33
@@ -1196,9 +1215,10 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 916
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 829
+      Left = 812
       Top = 0
       Width = 37
       Height = 34
@@ -1274,10 +1294,11 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 829
     end
   end
   object rEditNum1: TrEditNum
-    Left = 207
+    Left = 247
     Top = 122
     Width = 101
     Height = 28
@@ -1292,8 +1313,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Value = 5000000.000000000000000000
   end
   object rEditNum2: TrEditNum
-    Left = 8
-    Top = 197
+    Left = 53
+    Top = 190
     Width = 150
     Height = 30
     Font.Charset = DEFAULT_CHARSET
@@ -1307,8 +1328,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Value = 8.000000000000000000
   end
   object rEditNum3: TrEditNum
-    Left = 207
-    Top = 199
+    Left = 247
+    Top = 190
     Width = 65
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -1322,7 +1343,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Value = 95.000000000000000000
   end
   object rEditNum4: TrEditNum
-    Left = 8
+    Left = 53
     Top = 122
     Width = 149
     Height = 28
@@ -1335,6 +1356,183 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     ParentFont = False
     TabOrder = 23
     Value = 235.000000000000000000
+  end
+  object scGPButton1: TscGPButton
+    Left = 307
+    Top = 492
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 24
+    TabStop = True
+    Animation = False
+    Caption = '  Ulo'#382'it'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 18
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = clRed
+    Options.DisabledColor = clPurple
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clGray
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clGray
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object scGPButton3: TscGPButton
+    Left = 440
+    Top = 492
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 25
+    TabStop = True
+    OnClick = scGPGlyphButton4Click
+    Animation = False
+    Caption = '  Storno'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 17
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = clRed
+    Options.DisabledColor = clPurple
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clGray
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clGray
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
   object ColorDialog1: TColorDialog
     Left = 592

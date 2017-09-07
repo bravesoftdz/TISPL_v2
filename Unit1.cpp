@@ -126,7 +126,6 @@ void TForm1::NewDesignSettings()
 	//maximalizace formuláře jinak to s novým designem nejde
 	Form1->Width=Screen->WorkAreaWidth;
 	Form1->Height=Screen->WorkAreaHeight;
-	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
@@ -216,8 +215,7 @@ void __fastcall TForm1::FormShow(TObject *Sender)
 //založí nový soubor, nastavení souboru, nastevení aplikace v konstruktoru
 void __fastcall TForm1::NovySouborClick(TObject *Sender)
 {
-	 scSplitView_OPTIONS->Opened=false;
-	 scSplitView_MENU->Opened=false;
+   scSplitView_MENU->Opened=false;
 	 bool novy=true;
 	 if(duvod_k_ulozeni)
 	 {
@@ -496,7 +494,6 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
 	scListGroupKnihovObjektu->Height=RzStatusBar1->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
-	scSplitView_OPTIONS->Align=alRight;
 	if(MOD==REZERVY || MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
 }
@@ -546,8 +543,6 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 
 	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
-	scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
 	PopupMenu1->AutoPopup=true;
 	DuvodUlozit(true);
 	ButtonPLAY->Visible=false;
@@ -662,8 +657,6 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 
 			scListGroupNastavProjektu->Visible=false;
 			scListGroupKnihovObjektu->Visible=false;
-			scSplitView_OPTIONS->Opened=false;
-			scSplitView_MENU->Opened=false;
 			PopupMenu1->AutoPopup=true;
 			Button3->Visible=false;
 			Timer_neaktivity->Enabled=true;
@@ -717,8 +710,6 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	DuvodUlozit(true);
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
-	scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
 	PopupMenu1->AutoPopup=false;
 	Button3->Visible=false;
 	Timer_neaktivity->Enabled=false;
@@ -1094,9 +1085,6 @@ void __fastcall TForm1::FormShortCut(TWMKey &Msg, bool &Handled)
 			Button9->Visible=false;
 			Button5->Visible=false;
 		}*/
-		scSplitView_OPTIONS->Opened=false;
-		scSplitView_MENU->Opened=false;
-
 }
 //---------------------------------------------------------------------------
 //zatím nelze používat, protože se metody na odchytávání točení kolečka volají z metod točení kolečka nad knihovnou (RzDrawGrid)
@@ -2286,8 +2274,6 @@ void __fastcall TForm1::Button_dopravnik_parametry_OLDClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
-	scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
 	if(FileName=="Nový.tispl" || FileName.Pos(".tisplTemp"))UlozitjakoClick(this);
 	else if(duvod_k_ulozeni)Ulozit_soubor();else SB("Soubor byl již uložen...");
 }
@@ -2351,8 +2337,7 @@ void TForm1::vytvor_hlavicku_souboru()
 //otevře soubor
 void __fastcall TForm1::OtevritClick(TObject *Sender)
 {
-	scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
+  scSplitView_MENU->Opened=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
   {
 		int result=MessageBox(Handle,UnicodeString(FileName+" byl změněn. Chcete ho před ukončením uložit?").c_str(),L"TISPL",MB_YESNOCANCEL|MB_ICONQUESTION|MB_DEFBUTTON1);
@@ -3463,30 +3448,28 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+
+
+
 void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 {
-	if (FMaximized)
-	{
-			 BoundsRect =  FOldBoundsRect;
-			 FMaximized = false;
-			 scLabel1->DragForm = true;
-			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-			 scGPSizeBox1->Visible = scCheckBox2->Checked;
-			 Form1->Width=Screen->Width/3*2;//zmenší formulář na 2/3 jeho velikosti
-			 Form1->Height=Screen->Height/3*2;//zmenší formulář na 2/3 jeho velikosti
-			 scSplitView_OPTIONS->Opened=false;
-			 scSplitView_MENU->Opened=false;
+	if (FMaximized) {
+	 BoundsRect =  FOldBoundsRect;
+	 FMaximized = false;
+	 scLabel1->DragForm = true;
+	 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
+	 scGPSizeBox1->Visible = scCheckBox2->Checked;
 	}
 	else
 	{
-			FOldBoundsRect = BoundsRect;
-			BoundsRect = scStyledForm1->GetMaximizeBounds();
-			FMaximized = true;
-			scLabel1->DragForm = false;
-			MaxButton->GlyphOptions->Kind = scgpbgkRestore;
-			scGPSizeBox1->Visible = False;
-			scSplitView_OPTIONS->Opened=false;
-			scSplitView_MENU->Opened=false;
+	FOldBoundsRect = BoundsRect;
+	BoundsRect = scStyledForm1->GetMaximizeBounds();
+
+ //ShowMessage(scStyledForm1->GetMaximizeBounds().);
+	FMaximized = true;
+	scLabel1->DragForm = false;
+	MaxButton->GlyphOptions->Kind = scgpbgkRestore;
+	scGPSizeBox1->Visible = False;
 	}
 }
 //---------------------------------------------------------------------------
@@ -3520,17 +3503,25 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
  ZOOM_IN();
 }
 //---------------------------------------------------------------------------
+
+
 void __fastcall TForm1::scLabel1DblClick(TObject *Sender)
 {
  if (!scCheckBox1->Checked) { exit;}
 	Form1->MaxButtonClick(Form1);
 }
 //---------------------------------------------------------------------------
+
+
+
 void __fastcall TForm1::MinButtonClick(TObject *Sender)
 {
-	Application->Minimize();
+Application->Minimize();
 }
 //---------------------------------------------------------------------------
+
+
+
 void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 {
  scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
