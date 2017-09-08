@@ -10,6 +10,8 @@
 #pragma link "rHTMLLabel"
 #pragma link "rImprovedComps"
 #pragma link "rStringGridEd"
+#pragma link "scControls"
+#pragma link "scGPControls"
 #pragma resource "*.dfm"
 TForm_dopravnik *Form_dopravnik;
 //---------------------------------------------------------------------------
@@ -26,13 +28,37 @@ void __fastcall TForm_dopravnik::FormShow(TObject *Sender)
 {
 			rStringGridEd1->Cells[0][1]="1";
 			rStringGridEd1->Cells[1][1]="Hlavní dopravník";
-			rStringGridEd1->Cells[2][1]="2-5";
-			rStringGridEd1->Cells[3][1]="540";
+			rStringGridEd1->Cells[2][1]="2";
+			rStringGridEd1->Cells[3][1]="5";
+			rStringGridEd1->Cells[4][1]="540";
 
 			rStringGridEd1->Cells[0][2]="2";
 			rStringGridEd1->Cells[1][2]="Vedlejší dopravník";
-			rStringGridEd1->Cells[2][2]="1-4";
-			rStringGridEd1->Cells[3][2]="360";
+			rStringGridEd1->Cells[2][2]="1";
+			rStringGridEd1->Cells[3][2]="4";
+			rStringGridEd1->Cells[4][2]="360";
+
+			 Form_dopravnik->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
+
+scGPButton1->Options->NormalColor=Form_dopravnik->Color;
+ scGPButton1->Options->FocusedColor=Form_dopravnik->Color;
+ scGPButton1->Options->HotColor=Form_dopravnik->Color;
+ scGPButton1->Options->PressedColor=Form_dopravnik->Color;
+ scGPButton1->Options->FrameNormalColor=Form_dopravnik->Color;
+
+
+ scGPButton2->Options->NormalColor=Form_dopravnik->Color;
+ scGPButton2->Options->FocusedColor=Form_dopravnik->Color;
+ scGPButton2->Options->HotColor=Form_dopravnik->Color;
+ scGPButton2->Options->PressedColor=Form_dopravnik->Color;
+ scGPButton2->Options->FrameNormalColor=Form_dopravnik->Color;
+
+ scGPButton3->Options->NormalColor=Form_dopravnik->Color;
+ scGPButton3->Options->FocusedColor=Form_dopravnik->Color;
+ scGPButton3->Options->HotColor=Form_dopravnik->Color;
+ scGPButton3->Options->PressedColor=Form_dopravnik->Color;
+ scGPButton3->Options->FrameNormalColor=Form_dopravnik->Color;
+
 
 
 //	OK_status=false;
@@ -140,6 +166,13 @@ void __fastcall TForm_dopravnik::FormClose(TObject *Sender, TCloseAction &Action
 	{
 		Form1->d.v.seznam_dopravniku=ValueListEditor->Strings->GetText();
 	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_dopravnik::dopravnik_stornoClick(TObject *Sender)
+{
+Form_dopravnik->Close();
 }
 //---------------------------------------------------------------------------
 

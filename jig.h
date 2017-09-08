@@ -9,15 +9,24 @@
 #include <Vcl.Forms.hpp>
 #include "rHTMLLabel.hpp"
 #include "rImprovedComps.hpp"
+#include "scControls.hpp"
+#include "scGPControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_jig : public TForm
 {
 __published:	// IDE-managed Components
-	TrHTMLLabel *rHTMLLabel3;
-	TrHTMLLabel *rHTMLLabel2;
-	TrEditNum *rEditNum1;
-	TButton *Button_OK;
-	TButton *Button1;
+	TscGPPanel *scGPPanel2;
+	TscGPGlyphButton *Konec;
+	TscGPGlyphButton *MinButton;
+	TscGPGlyphButton *MaxButton;
+	TscGPButton *jig_storno;
+	TscGPButton *jig_save;
+	TrHTMLLabel *rHTMLLabel5;
+	TrEditNum *rEditNum4;
+	TscLabel *scLabel1;
+	TscGPButton *scGPButton2;
+	void __fastcall jig_stornoClick(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_jig(TComponent* Owner);

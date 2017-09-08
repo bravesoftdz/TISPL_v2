@@ -8,9 +8,6 @@ Coordinates=97,10,86,58
 Coordinates=104,78,101,36
 Visible=True
 
-[Button_OK]
-Coordinates=10,10,77,58
-
 []
-Coordinates=243,1,91,36
+Coordinates=10,10,77,58
 

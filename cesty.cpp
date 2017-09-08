@@ -9,6 +9,8 @@
 #pragma link "rHTMLLabel"
 #pragma link "rStringGridEd"
 #pragma link "RzButton"
+#pragma link "scControls"
+#pragma link "scGPControls"
 #pragma resource "*.dfm"
 TForm_cesty *Form_cesty;
 //---------------------------------------------------------------------------
@@ -17,3 +19,20 @@ __fastcall TForm_cesty::TForm_cesty(TComponent* Owner)
 {
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_cesty::FormShow(TObject *Sender)
+{
+ Form_cesty->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
+ scGPButton2->Options->NormalColor=Form_cesty->Color;
+ scGPButton2->Options->FocusedColor=Form_cesty->Color;
+ scGPButton2->Options->HotColor=Form_cesty->Color;
+ scGPButton2->Options->PressedColor=Form_cesty->Color;
+ scGPButton2->Options->FrameNormalColor=Form_cesty->Color;
+
+ scGPButton1->Options->NormalColor=Form_cesty->Color;
+ scGPButton1->Options->FocusedColor=Form_cesty->Color;
+ scGPButton1->Options->HotColor=Form_cesty->Color;
+ scGPButton1->Options->PressedColor=Form_cesty->Color;
+ scGPButton1->Options->FrameNormalColor=Form_cesty->Color;
+}
+//---------------------------------------------------------------------------
+

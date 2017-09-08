@@ -12,6 +12,8 @@
 #include "rHTMLLabel.hpp"
 #include "rImprovedComps.hpp"
 #include "rStringGridEd.hpp"
+#include "scControls.hpp"
+#include "scGPControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_dopravnik : public TForm
 {
@@ -19,20 +21,27 @@ __published:	// IDE-managed Components
 	TValueListEditor *ValueListEditor;
 	TButton *Button_ADD;
 	TButton *Button_DEL;
-	TButton *Button_OK;
-	TStaticText *StaticText1;
-	TStaticText *StaticText2;
-	TrHTMLLabel *rHTMLLabel4;
-	TrEditNum *rEditNum2;
 	TrStringGridEd *rStringGridEd1;
 	TButton *Button1;
+	TscGPButton *dopravnik_save;
+	TscGPButton *dopravnik_storno;
+	TscGPPanel *scGPPanel2;
+	TscGPGlyphButton *Konec;
+	TscGPGlyphButton *MinButton;
+	TscLabel *scLabel1;
+	TscGPGlyphButton *MaxButton;
+	TscGPGlyphButton *scGPGlyphButton15;
+	TscGPButton *scGPButton2;
 	TrHTMLLabel *rHTMLLabel5;
-	TButton *Button2;
+	TrEditNum *rEditNum4;
+	TscGPButton *scGPButton1;
+	TscGPButton *scGPButton3;
 	void __fastcall Button_ADDClick(TObject *Sender);
 	void __fastcall Button_DELClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
+	void __fastcall dopravnik_stornoClick(TObject *Sender);
 
 private:	// User declarations
 	unsigned int count;
