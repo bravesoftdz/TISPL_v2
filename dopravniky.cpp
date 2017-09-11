@@ -45,6 +45,8 @@ scGPButton1->Options->NormalColor=Form_dopravnik->Color;
  scGPButton1->Options->HotColor=Form_dopravnik->Color;
  scGPButton1->Options->PressedColor=Form_dopravnik->Color;
  scGPButton1->Options->FrameNormalColor=Form_dopravnik->Color;
+	scGPButton1->Options->PressedColor=Form_dopravnik->Color;
+ scGPButton1->Options->FramePressedColor=Form_dopravnik->Color;
 
 
  scGPButton2->Options->NormalColor=Form_dopravnik->Color;
@@ -52,12 +54,16 @@ scGPButton1->Options->NormalColor=Form_dopravnik->Color;
  scGPButton2->Options->HotColor=Form_dopravnik->Color;
  scGPButton2->Options->PressedColor=Form_dopravnik->Color;
  scGPButton2->Options->FrameNormalColor=Form_dopravnik->Color;
+ scGPButton2->Options->PressedColor=Form_dopravnik->Color;
+ scGPButton2->Options->FramePressedColor=Form_dopravnik->Color;
 
  scGPButton3->Options->NormalColor=Form_dopravnik->Color;
  scGPButton3->Options->FocusedColor=Form_dopravnik->Color;
  scGPButton3->Options->HotColor=Form_dopravnik->Color;
  scGPButton3->Options->PressedColor=Form_dopravnik->Color;
  scGPButton3->Options->FrameNormalColor=Form_dopravnik->Color;
+ scGPButton3->Options->PressedColor=Form_dopravnik->Color;
+ scGPButton3->Options->FramePressedColor=Form_dopravnik->Color;
 
 
 
@@ -175,4 +181,5 @@ void __fastcall TForm_dopravnik::dopravnik_stornoClick(TObject *Sender)
 Form_dopravnik->Close();
 }
 //---------------------------------------------------------------------------
+
 

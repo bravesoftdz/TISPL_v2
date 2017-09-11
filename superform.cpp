@@ -167,7 +167,10 @@ void __fastcall TForm_vozik_nastaveni::FormShow(TObject *Sender)
  scGPButton2->Options->FocusedColor=Form_vozik_nastaveni->Color;
  scGPButton2->Options->HotColor=Form_vozik_nastaveni->Color;
  scGPButton2->Options->PressedColor=Form_vozik_nastaveni->Color;
- scGPButton2->Options->FrameNormalColor=Form_vozik_nastaveni->Color;
+ scGPButton2->Options->FramePressedColor=Form_vozik_nastaveni->Color;
+ //scGPButton2->Options->FrameNormalColor=Form_vozik_nastaveni->Color;
+ //scGPButton2->Options->FrameFocusedColor=Form_vozik_nastaveni->Color;
+ //scGPButton2->Options->FontFocusedColor=clBlack;
 
  //scGPButton3->Options->NormalColor=(TColor)RGB(226,122,21);
  //scGPButton3->Options->FocusedColor=(TColor)RGB(255,141,28);
@@ -179,7 +182,7 @@ void __fastcall TForm_vozik_nastaveni::FormShow(TObject *Sender)
  scGPButton4->Options->HotColor=Form_vozik_nastaveni->Color;
  scGPButton4->Options->PressedColor=Form_vozik_nastaveni->Color;
  scGPButton4->Options->FrameNormalColor=Form_vozik_nastaveni->Color;
-
+ scGPButton4->Options->FramePressedColor=Form_vozik_nastaveni->Color;
 
 	rStringGridEd1->Cells[5][1]="NASTAVIT";
 	rStringGridEd1->Cells[9][1]="NASTAVIT";
@@ -743,4 +746,6 @@ void __fastcall TForm_vozik_nastaveni::scGPGlyphButton4Click(TObject *Sender)
 	Form_vozik_nastaveni->Close();
 }
 //---------------------------------------------------------------------------
+
+
 

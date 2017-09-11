@@ -32,6 +32,8 @@ void __fastcall TForm_jig::FormShow(TObject *Sender)
  scGPButton2->Options->HotColor=Form_jig->Color;
  scGPButton2->Options->PressedColor=Form_jig->Color;
  scGPButton2->Options->FrameNormalColor=Form_jig->Color;
+ scGPButton2->Options->PressedColor=Form_jig->Color;
+ scGPButton2->Options->FramePressedColor=Form_jig->Color;
 
 }
 //---------------------------------------------------------------------------

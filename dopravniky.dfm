@@ -806,10 +806,9 @@ object Form_dopravnik: TForm_dopravnik
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 8
-    TabStop = True
     Animation = False
     Caption = '  Voz'#237'k'
-    CanFocused = True
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
@@ -820,7 +819,7 @@ object Form_dopravnik: TForm_dopravnik
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clRed
+    Options.PressedColor = clSilver
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -841,7 +840,7 @@ object Form_dopravnik: TForm_dopravnik
     Options.FrameDisabledColorAlpha = 255
     Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
+    Options.FontPressedColor = clBlack
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -878,7 +877,7 @@ object Form_dopravnik: TForm_dopravnik
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end
@@ -910,10 +909,9 @@ object Form_dopravnik: TForm_dopravnik
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 10
-    TabStop = True
     Animation = False
     Caption = '  Dopravn'#237'k'
-    CanFocused = True
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
@@ -924,7 +922,7 @@ object Form_dopravnik: TForm_dopravnik
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clRed
+    Options.PressedColor = clSilver
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -945,7 +943,7 @@ object Form_dopravnik: TForm_dopravnik
     Options.FrameDisabledColorAlpha = 255
     Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
+    Options.FontPressedColor = clBlack
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -982,7 +980,7 @@ object Form_dopravnik: TForm_dopravnik
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end
@@ -999,10 +997,9 @@ object Form_dopravnik: TForm_dopravnik
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 11
-    TabStop = True
     Animation = False
     Caption = '   Geometrie'
-    CanFocused = True
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
@@ -1013,7 +1010,7 @@ object Form_dopravnik: TForm_dopravnik
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clRed
+    Options.PressedColor = clSilver
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -1034,7 +1031,7 @@ object Form_dopravnik: TForm_dopravnik
     Options.FrameDisabledColorAlpha = 255
     Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
+    Options.FontPressedColor = clBlack
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -1071,7 +1068,7 @@ object Form_dopravnik: TForm_dopravnik
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end

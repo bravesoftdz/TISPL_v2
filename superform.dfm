@@ -477,18 +477,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
         TitleAlignment = taCenter
       end>
     AutoAddNewRow = True
-    ColWidths = (
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90)
     RowHeights = (
       30
       30)
@@ -512,7 +500,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
   end
   object scGPButton2: TscGPButton
     Left = 0
-    Top = 50
+    Top = 56
     Width = 209
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -522,10 +510,9 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Font.Style = []
     ParentFont = False
     TabOrder = 13
-    TabStop = True
     Animation = False
     Caption = '   Parametry v'#253'roby'
-    CanFocused = True
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
@@ -536,7 +523,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clRed
+    Options.PressedColor = clSilver
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -556,9 +543,9 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 255
     Options.FontNormalColor = clBlack
-    Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
-    Options.FontFocusedColor = clWhite
+    Options.FontHotColor = clBlack
+    Options.FontPressedColor = clBlack
+    Options.FontFocusedColor = clBlack
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
@@ -594,7 +581,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end
@@ -619,10 +606,9 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Font.Style = []
     ParentFont = False
     TabOrder = 15
-    TabStop = True
     Animation = False
     Caption = '   Pl'#225'n v'#253'roby'
-    CanFocused = True
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
@@ -633,7 +619,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clRed
+    Options.PressedColor = clSilver
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -654,7 +640,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.FrameDisabledColorAlpha = 255
     Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
+    Options.FontPressedColor = clBlack
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -691,7 +677,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end
@@ -949,8 +935,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitTop = -7
-    ExplicitWidth = 1016
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 949
@@ -1027,7 +1011,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 966
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1105,7 +1088,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 866
     end
     object scLabel1: TscLabel
       Left = 0
@@ -1137,7 +1119,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
-      ExplicitWidth = 829
+      ExplicitLeft = -3
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1215,7 +1197,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 916
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 812
@@ -1294,7 +1275,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 829
     end
   end
   object rEditNum1: TrEditNum
@@ -1316,7 +1296,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Left = 53
     Top = 190
     Width = 150
-    Height = 30
+    Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -1473,7 +1453,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clBlack
-    Options.FocusedColor = clRed
+    Options.FocusedColor = 33023
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255

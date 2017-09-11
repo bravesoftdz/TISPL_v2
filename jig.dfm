@@ -360,7 +360,7 @@ object Form_jig: TForm_jig
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clBlack
-    Options.FocusedColor = clRed
+    Options.FocusedColor = 33023
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
@@ -536,10 +536,9 @@ object Form_jig: TForm_jig
     Font.Style = []
     ParentFont = False
     TabOrder = 4
-    TabStop = True
     Animation = False
     Caption = '   Nastaven'#237' jigu'
-    CanFocused = True
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
@@ -550,7 +549,7 @@ object Form_jig: TForm_jig
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clRed
+    Options.PressedColor = clSilver
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -571,7 +570,7 @@ object Form_jig: TForm_jig
     Options.FrameDisabledColorAlpha = 255
     Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
+    Options.FontPressedColor = clBlack
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -608,7 +607,7 @@ object Form_jig: TForm_jig
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end
