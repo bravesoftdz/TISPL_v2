@@ -4,8 +4,8 @@ object Form_cesty: TForm_cesty
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Zad'#225'n'#237' cesty'
-  ClientHeight = 458
-  ClientWidth = 613
+  ClientHeight = 589
+  ClientWidth = 650
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,40 +19,44 @@ object Form_cesty: TForm_cesty
   object rStringGridEd1: TrStringGridEd
     Left = 6
     Top = 105
-    Width = 603
-    Height = 62
+    Width = 640
+    Height = 440
     BorderStyle = bsNone
-    Color = clMenu
-    ColCount = 6
-    DefaultColWidth = 99
+    Color = clWhite
+    ColCount = 7
+    Ctl3D = False
+    DefaultColWidth = 90
     DefaultRowHeight = 30
     DefaultDrawing = False
-    RowCount = 2
+    RowCount = 14
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
-    Font.Height = -17
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
+    ParentCtl3D = False
     ParentFont = False
     TabOrder = 0
     Columns = <
       item
+        MinValue = 1.000000000000000000
+        MaxValue = 10.000000000000000000
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'N'#225'zev'
+        TitleCaption = 'ID'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -17
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
-        TitleFont.Quality = fqAntialiased
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
       end
@@ -64,14 +68,31 @@ object Form_cesty: TForm_cesty
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
-        Font.Height = -17
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TitleCaption = 'N'#225'zev'
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        TitleParentFont = False
+        TitleAlignment = taCenter
+      end
+      item
+        Color = clMenu
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = cl3DDkShadow
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
         TitleCaption = 'Cycle Time'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -17
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
@@ -81,31 +102,14 @@ object Form_cesty: TForm_cesty
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
         TitleCaption = 'Rychlost dopravn'#237'ku'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -17
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taCenter
-      end
-      item
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -17
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = #268'as v'#253'm'#283'ny barev'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -17
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
@@ -115,14 +119,14 @@ object Form_cesty: TForm_cesty
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = #268'as '#269'i'#353't'#283'n'#237
+        TitleCaption = #268'as v'#253'm'#283'ny barev'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -17
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
@@ -131,35 +135,55 @@ object Form_cesty: TForm_cesty
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
-        Font.Height = -17
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TitleCaption = #268'as '#269'i'#353't'#283'n'#237
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        TitleParentFont = False
+        TitleAlignment = taCenter
+      end
+      item
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
         TitleCaption = 'Opakov'#225'n'#237
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -17
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
-        TitleAlignment = taCenter
       end>
-    AutoAddNewRow = True
-    ColWidths = (
-      99
-      99
-      99
-      99
-      99
-      99)
     RowHeights = (
+      30
+      30
+      30
+      30
+      30
+      30
+      30
+      30
+      30
+      30
+      30
+      30
       30
       30)
   end
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 613
+    Width = 650
     Height = 34
     Align = alTop
     TabOrder = 1
@@ -190,7 +214,7 @@ object Form_cesty: TForm_cesty
     ExplicitWidth = 600
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 563
+      Left = 600
       Top = 0
       Width = 50
       Height = 33
@@ -268,7 +292,7 @@ object Form_cesty: TForm_cesty
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 463
+      Left = 500
       Top = 0
       Width = 50
       Height = 33
@@ -346,7 +370,7 @@ object Form_cesty: TForm_cesty
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 513
+      Left = 550
       Top = 0
       Width = 50
       Height = 33
@@ -425,7 +449,7 @@ object Form_cesty: TForm_cesty
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 463
+      Width = 500
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -544,8 +568,8 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object cesta_storno: TscGPButton
-    Left = 315
-    Top = 419
+    Left = 339
+    Top = 551
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -633,8 +657,8 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object cesta_save: TscGPButton
-    Left = 190
-    Top = 419
+    Left = 213
+    Top = 551
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -721,7 +745,7 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object scGPButton1: TscGPButton
-    Left = 352
+    Left = 396
     Top = 50
     Width = 248
     Height = 35
