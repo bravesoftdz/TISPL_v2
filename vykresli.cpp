@@ -245,7 +245,7 @@ void Cvykresli::vykresli_graf_rezervy(TCanvas *canv)
 	 UnicodeString text_vertical="TAKT TIME [čas na vozík]";
 	 unsigned int L=/*Form1->RzSizePanel_knihovna_objektu->Width+*/canv->TextHeight(text_vertical)+3;
 	 unsigned int P=Form1->ClientWidth-1;
-	 unsigned int D=Form1->ClientHeight-Form1->RzStatusBar1->Height-canv->TextHeight(text_horizontal)-1;
+	 unsigned int D=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-canv->TextHeight(text_horizontal)-1;
 	 unsigned int H=Form1->RzToolbar1->Height;
 	 unsigned int offset_horizont=0;//bylo 20 - nyní nepoužívám, pouze vizuální záležitost na ose X, pro graf, aby nebyl až ke kraji
 	 unsigned int offset_vertical=100;

@@ -2459,25 +2459,12 @@ object Form1: TForm1
     State = cbChecked
     ShowFocusRect = True
   end
-  object RzStatusBar1: TRzStatusBar
-    Left = 0
-    Top = 655
-    Width = 1026
-    Height = 19
-    BorderInner = fsNone
-    BorderOuter = fsNone
-    BorderSides = [sdLeft, sdTop, sdRight, sdBottom]
-    BorderWidth = 0
-    TabOrder = 32
-    Visible = False
-    VisualStyle = vsGradient
-  end
   object scCheckBox1: TscCheckBox
     Left = 299
     Top = 349
     Width = 140
     Height = 30
-    TabOrder = 33
+    TabOrder = 32
     TabStop = True
     Visible = False
     CustomCheckedImageIndex = -1
@@ -2522,7 +2509,7 @@ object Form1: TForm1
     Top = 469
     Width = 132
     Height = 64
-    TabOrder = 34
+    TabOrder = 33
     Visible = False
     FramePosition = scgfpDefault
     CustomImageIndex = -1
@@ -2575,7 +2562,7 @@ object Form1: TForm1
     Top = 34
     Width = 30
     Height = 30
-    TabOrder = 35
+    TabOrder = 34
     Visible = False
     OnClick = scGPGlyphButton2Click
     Animation = True
@@ -2647,7 +2634,7 @@ object Form1: TForm1
     Left = 776
     Top = 34
     Width = 250
-    Height = 621
+    Height = 640
     Anchors = [akTop, akRight, akBottom]
     TabOrder = 31
     CustomImageIndex = -1
@@ -2685,6 +2672,7 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
+    ExplicitHeight = 621
     object scLabel4: TscLabel
       AlignWithMargins = True
       Left = 11
@@ -2826,7 +2814,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 167
-    Height = 621
+    Height = 640
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -2834,7 +2822,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 39
+    TabOrder = 38
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -2868,6 +2856,7 @@ object Form1: TForm1
     HideControls = False
     Animation = True
     DisplayMode = scsvmOverlay
+    ExplicitHeight = 621
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
       Top = 110
@@ -3160,10 +3149,10 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 0
-    Height = 621
+    Height = 640
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
-    TabOrder = 36
+    TabOrder = 35
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -3200,9 +3189,10 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
+    ExplicitHeight = 621
     object scButton1: TscButton
       Left = 0
-      Top = 571
+      Top = 590
       Width = 0
       Height = 50
       Align = alBottom
@@ -3292,6 +3282,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 571
     end
     object scButton2: TscButton
       Left = 0
@@ -3571,7 +3562,7 @@ object Form1: TForm1
     end
     object scButton5: TscButton
       Left = 0
-      Top = 521
+      Top = 540
       Width = 0
       Height = 50
       Align = alBottom
@@ -3660,6 +3651,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 521
     end
     object scButton6: TscButton
       Left = 0
@@ -4043,7 +4035,7 @@ object Form1: TForm1
     end
     object scButton9: TscButton
       Left = 0
-      Top = 471
+      Top = 490
       Width = 0
       Height = 50
       Align = alBottom
@@ -4132,6 +4124,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 471
     end
     object scGPSwitch9: TscGPSwitch
       Left = 100
@@ -4317,7 +4310,7 @@ object Form1: TForm1
       GlowEffect.PressedColor = clHighlight
       GlowEffect.FocusedColor = clHighlight
       GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 205
+      GlowEffect.PressedAlphaValue = 155
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
       ShowGalleryMenuFromTop = False
@@ -4446,7 +4439,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000003080310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118000C030C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5596,7 +5589,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C00E000540130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C005801580130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15118,10 +15111,10 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00B000B00018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00B400B40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
-      8000800000008000800080800000C0C0C000808080000000FF0000FF000000FF
+      800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
       FF00FF000000FF00FF00FFFF0000FFFFFF000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

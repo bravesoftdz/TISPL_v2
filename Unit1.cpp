@@ -59,7 +59,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	//pozice ovládacích prvků
 	scListGroupNastavProjektu->Left=0;scListGroupNastavProjektu->Top=0;
 	scListGroupKnihovObjektu->Left=0;scListGroupKnihovObjektu->Top=2+scListGroupNastavProjektu->Height+0;
-	scListGroupKnihovObjektu->Height=RzStatusBar1->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
+	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
 	vyska_menu=0;
 	upozornovat_na_zmenu_TT_parametru=true;
 
@@ -493,39 +493,9 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
-	scListGroupKnihovObjektu->Height=RzStatusBar1->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
+	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
 	if(MOD==REZERVY || MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Klasick1Click(TObject *Sender)
-{
-	setVisualStyle(vsClassic);
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::WinXP1Click(TObject *Sender)
-{
-	setVisualStyle(vsWinXP);
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Gradientn1Click(TObject *Sender)
-{
-	setVisualStyle(vsGradient);
-}
-//---------------------------------------------------------------------------
-void TForm1::setVisualStyle(TRzVisualStyle VisualStyle)
-{
-	//RzSizePanel_knihovna_objektu->VisualStyle=VisualStyle;
-	//RzSizePanel_parametry_projekt->VisualStyle=VisualStyle;
-	RzToolbar1->VisualStyle=VisualStyle;
-	RzStatusBar1->VisualStyle=VisualStyle;
-
-	switch(VisualStyle)
-	{
-	//stary design //	case vsClassic: Klasick1->Checked=true;WinXP1->Checked=false;Gradientn1->Checked=false;Edit_takt_time->Ctl3D=true;break;
-	 //	case vsGradient: Klasick1->Checked=false;WinXP1->Checked=false;Gradientn1->Checked=true;Edit_takt_time->Ctl3D=false;break;
-	 //	case vsWinXP: Klasick1->Checked=false;WinXP1->Checked=true;Gradientn1->Checked=false;Edit_takt_time->Ctl3D=true;break;
-	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::editacelinky1Click(TObject *Sender)
@@ -1700,7 +1670,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 	}
 
 	int PD_x=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
-	int PD_y=ClientHeight-vyska_menu-RzStatusBar1->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
+	int PD_y=ClientHeight-vyska_menu-scGPPanel_statusbar->Height;//-vyska_menu-RzStatusBar1->Height je navíc nemá tam co dělat
 
 	if((MaxX-MinX)!=0 && (MaxX+MinX)!=0)
 	Zoom=
@@ -2162,7 +2132,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 			Form_parametry->Left=Form1->Width-Form_parametry->Width-10;
 		if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->Height<Form1->Height)
 			Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
-		else 	Form_parametry->Top=Form1->Height-Form_parametry->Height-RzStatusBar1->Height-10;
+		else 	Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
 			Form_parametry->Caption=p->name+" - parametry";
 
 		//předání hodnoto objektů ze souboru resp. strukutry do Form_Parametry

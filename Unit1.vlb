@@ -25,9 +25,6 @@ Coordinates=604,10,81,58
 [Button3]
 Coordinates=353,144,59,58
 
-[RzStatusBar1]
-Coordinates=734,212,94,58
-
 [SavePictureDialog1]
 Coordinates=969,111,128,36
 
@@ -401,7 +398,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=120,372,89,36
+Coordinates=734,212,94,58
 Visible=True
 
 [scSplitView_OPTIONS]

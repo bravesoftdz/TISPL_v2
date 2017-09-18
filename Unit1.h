@@ -95,7 +95,6 @@ class TForm1 : public TForm
 __published:	// IDE-managed Components
 	TPopupMenu *PopupMenu1;
 	TRzToolbar *RzToolbar1;
-	TRzStatusBar *RzStatusBar1;
 	TRzStatusPane *RzStatusPane1;
 	TMenuItem *Nastvitparametry1;
 	TMenuItem *Smazat1;
@@ -257,9 +256,6 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel5;
 	TscButton *scButton_ulozit;
 	void __fastcall Konec1Click(TObject *Sender);
-	void __fastcall Klasick1Click(TObject *Sender);
-	void __fastcall WinXP1Click(TObject *Sender);
-	void __fastcall Gradientn1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
@@ -408,7 +404,6 @@ private:	// User declarations
 
 	////metody
 	void edice();
-	void setVisualStyle(TRzVisualStyle VisualStyle=vsClassic);
 	short int MB(UnicodeString text, unsigned short int typ=0,UnicodeString titulek="TISPL - Eltep");//vola rychle messabox
 	void REFRESH(bool invalidate=true); //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do větve else
 	void ESC();
