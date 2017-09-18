@@ -36,3 +36,9 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_cesty::cesta_stornoClick(TObject *Sender)
+{
+	Form_cesty->Close();
+}
+//---------------------------------------------------------------------------
+

@@ -1119,7 +1119,6 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
-      ExplicitLeft = -3
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1338,8 +1337,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     Value = 235.000000000000000000
   end
   object scGPButton1: TscGPButton
-    Left = 307
-    Top = 492
+    Left = 371
+    Top = 490
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1351,14 +1350,14 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     TabOrder = 24
     TabStop = True
     Animation = False
-    Caption = '  Ulo'#382'it'
+    Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 18
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023
@@ -1426,8 +1425,8 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     AllowAllUp = False
   end
   object scGPButton3: TscGPButton
-    Left = 440
-    Top = 492
+    Left = 496
+    Top = 490
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1440,14 +1439,14 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
     TabStop = True
     OnClick = scGPGlyphButton4Click
     Animation = False
-    Caption = '  Storno'
+    Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 17
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023

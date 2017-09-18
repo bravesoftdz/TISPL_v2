@@ -28,6 +28,7 @@ __published:	// IDE-managed Components
 	TscGPButton *cesta_save;
 	TscGPButton *scGPButton1;
 	void __fastcall FormShow(TObject *Sender);
+	void __fastcall cesta_stornoClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_cesty(TComponent* Owner);

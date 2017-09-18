@@ -62,8 +62,6 @@ object Form_jig: TForm_jig
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitTop = 42
-    ExplicitWidth = 708
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 398
@@ -140,7 +138,6 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 949
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -218,7 +215,6 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 849
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -296,7 +292,6 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 899
     end
     object scLabel1: TscLabel
       Left = 0
@@ -328,8 +323,6 @@ object Form_jig: TForm_jig
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Jig'
-      ExplicitLeft = 8
-      ExplicitWidth = 558
     end
   end
   object jig_storno: TscGPButton
@@ -347,14 +340,14 @@ object Form_jig: TForm_jig
     TabStop = True
     OnClick = jig_stornoClick
     Animation = False
-    Caption = '  Storno'
+    Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 17
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023
@@ -435,14 +428,14 @@ object Form_jig: TForm_jig
     TabOrder = 2
     TabStop = True
     Animation = False
-    Caption = '  Ulo'#382'it'
+    Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 18
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023

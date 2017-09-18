@@ -20,9 +20,9 @@ object Form_dopravnik: TForm_dopravnik
   object rHTMLLabel5: TrHTMLLabel
     Left = 53
     Top = 97
-    Width = 39
+    Width = 70
     Height = 19
-    Caption = 'D'#233'lka'
+    Caption = 'D'#233'lka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -233,8 +233,8 @@ object Form_dopravnik: TForm_dopravnik
     OnClick = Button_ADDClick
   end
   object dopravnik_save: TscGPButton
-    Left = 139
-    Top = 364
+    Left = 163
+    Top = 365
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -248,14 +248,14 @@ object Form_dopravnik: TForm_dopravnik
     TabStop = True
     OnClick = Button_OKClick
     Animation = False
-    Caption = '  Ulo'#382'it'
+    Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 18
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023
@@ -323,8 +323,8 @@ object Form_dopravnik: TForm_dopravnik
     AllowAllUp = False
   end
   object dopravnik_storno: TscGPButton
-    Left = 261
-    Top = 364
+    Left = 281
+    Top = 365
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -338,14 +338,14 @@ object Form_dopravnik: TForm_dopravnik
     TabStop = True
     OnClick = dopravnik_stornoClick
     Animation = False
-    Caption = '  Storno'
+    Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 17
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023
@@ -443,8 +443,6 @@ object Form_dopravnik: TForm_dopravnik
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitLeft = -387
-    ExplicitWidth = 999
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 530
@@ -521,7 +519,6 @@ object Form_dopravnik: TForm_dopravnik
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 949
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -599,7 +596,6 @@ object Form_dopravnik: TForm_dopravnik
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 849
     end
     object scLabel1: TscLabel
       Left = 0
@@ -632,7 +628,6 @@ object Form_dopravnik: TForm_dopravnik
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 812
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -710,7 +705,6 @@ object Form_dopravnik: TForm_dopravnik
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 899
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 393
@@ -790,7 +784,6 @@ object Form_dopravnik: TForm_dopravnik
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 812
     end
   end
   object scGPButton2: TscGPButton
@@ -814,7 +807,7 @@ object Form_dopravnik: TForm_dopravnik
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 24
+    ImageIndex = 21
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = clSilver
@@ -894,7 +887,7 @@ object Form_dopravnik: TForm_dopravnik
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 9
-    Value = 2.000000000000000000
+    Value = 1.000000000000000000
   end
   object scGPButton1: TscGPButton
     Left = 0
@@ -1005,7 +998,7 @@ object Form_dopravnik: TForm_dopravnik
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 23
+    ImageIndex = 24
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = clSilver

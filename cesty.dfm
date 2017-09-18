@@ -4,8 +4,8 @@ object Form_cesty: TForm_cesty
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Zad'#225'n'#237' cesty'
-  ClientHeight = 462
-  ClientWidth = 600
+  ClientHeight = 458
+  ClientWidth = 613
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,9 +17,9 @@ object Form_cesty: TForm_cesty
   PixelsPerInch = 96
   TextHeight = 21
   object rStringGridEd1: TrStringGridEd
-    Left = 0
+    Left = 6
     Top = 105
-    Width = 600
+    Width = 603
     Height = 62
     BorderStyle = bsNone
     Color = clMenu
@@ -34,7 +34,7 @@ object Form_cesty: TForm_cesty
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentFont = False
     TabOrder = 0
     Columns = <
@@ -144,6 +144,14 @@ object Form_cesty: TForm_cesty
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
+    AutoAddNewRow = True
+    ColWidths = (
+      99
+      99
+      99
+      99
+      99
+      99)
     RowHeights = (
       30
       30)
@@ -151,7 +159,7 @@ object Form_cesty: TForm_cesty
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 600
+    Width = 613
     Height = 34
     Align = alTop
     TabOrder = 1
@@ -179,11 +187,10 @@ object Form_cesty: TForm_cesty
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitTop = 42
-    ExplicitWidth = 708
+    ExplicitWidth = 600
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 550
+      Left = 563
       Top = 0
       Width = 50
       Height = 33
@@ -257,11 +264,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 398
+      ExplicitLeft = 550
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 450
+      Left = 463
       Top = 0
       Width = 50
       Height = 33
@@ -335,11 +342,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 298
+      ExplicitLeft = 450
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 500
+      Left = 513
       Top = 0
       Width = 50
       Height = 33
@@ -413,12 +420,12 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 348
+      ExplicitLeft = 500
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 450
+      Width = 463
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -445,7 +452,7 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
-      ExplicitWidth = 298
+      ExplicitWidth = 450
     end
   end
   object scGPButton2: TscGPButton
@@ -469,7 +476,7 @@ object Form_cesty: TForm_cesty
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 21
+    ImageIndex = 26
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = clSilver
@@ -537,7 +544,7 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object cesta_storno: TscGPButton
-    Left = 235
+    Left = 315
     Top = 419
     Width = 100
     Height = 35
@@ -549,15 +556,16 @@ object Form_cesty: TForm_cesty
     ParentFont = False
     TabOrder = 3
     TabStop = True
+    OnClick = cesta_stornoClick
     Animation = False
-    Caption = '  Storno'
+    Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 17
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023
@@ -625,7 +633,7 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object cesta_save: TscGPButton
-    Left = 118
+    Left = 190
     Top = 419
     Width = 100
     Height = 35
@@ -638,14 +646,14 @@ object Form_cesty: TForm_cesty
     TabOrder = 4
     TabStop = True
     Animation = False
-    Caption = '  Ulo'#382'it'
+    Caption = 'Ulo'#382'it'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 18
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 33023
@@ -713,9 +721,9 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object scGPButton1: TscGPButton
-    Left = 432
+    Left = 352
     Top = 50
-    Width = 168
+    Width = 248
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
@@ -726,14 +734,14 @@ object Form_cesty: TForm_cesty
     TabOrder = 5
     TabStop = True
     Animation = False
-    Caption = '   Nov'#253' z'#225'znam'
+    Caption = '   Nov'#225' technolog.cesta'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 22
+    ImageIndex = 27
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = clSilver

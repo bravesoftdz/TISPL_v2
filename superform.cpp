@@ -151,7 +151,8 @@ void __fastcall TForm_vozik_nastaveni::FormShow(TObject *Sender)
 	TColor light_gray=(TColor)RGB(240,240,240);
 	TColor active_blue=(TColor)RGB(43,87,154);
 
- Form_vozik_nastaveni->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
+
+ Form_vozik_nastaveni->Color=light_gray;//RGB(43,87,154);
  rHTMLLabel1->Font->Color=(TColor)RGB(89,89,89);
  rHTMLLabel2->Font->Color=rHTMLLabel1->Font->Color;
 // rHTMLLabel3->Font->Color=rHTMLLabel1->Font->Color;   velky nadpis
