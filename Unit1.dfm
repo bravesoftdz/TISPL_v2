@@ -342,6 +342,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 11
+    Visible = False
     OnClick = Chart1Click
     DefaultCanvas = 'TGDIPlusCanvas'
     PrintMargins = (
@@ -391,6 +392,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 12
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
     object Series2: TBarSeries
@@ -443,6 +445,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 13
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
     object Series5: TBarSeries
@@ -497,6 +500,7 @@ object Form1: TForm1
     View3DOptions.Perspective = 0
     View3DOptions.Rotation = 360
     TabOrder = 14
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
     object Series7: TPieSeries
@@ -563,6 +567,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 17
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     PrintMargins = (
       15
@@ -682,7 +687,7 @@ object Form1: TForm1
       '50'
       '100')
   end
-  object scGPPanel2: TscGPPanel
+  object scGPPanel_mainmenu: TscGPPanel
     Left = 0
     Top = 0
     Width = 1026
@@ -710,7 +715,7 @@ object Form1: TForm1
     CaptionGlowEffect.Intensive = True
     CaptionGlowEffect.StyleColors = True
     Color = clBtnFace
-    Caption = 'scGPPanel2'
+    Caption = 'scGPPanel_mainmenu'
     TransparentBackground = True
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
@@ -961,7 +966,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
     end
-    object scLabel1: TscLabel
+    object scLabel_titulek: TscLabel
       Left = 242
       Top = 0
       Width = 162
@@ -978,7 +983,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 3
-      OnDblClick = scLabel1DblClick
+      OnDblClick = scLabel_titulekDblClick
       DragForm = True
       GlowEffect.Enabled = False
       GlowEffect.Color = clBtnShadow
@@ -991,7 +996,7 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'ELTEP - tispl'
+      Caption = 'ELTEP - TISPL'
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1078,7 +1083,6 @@ object Form1: TForm1
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
-      DropDownMenu = PopupMenu2
       ShowGalleryMenuFromTop = False
       ShowGalleryMenuFromRight = False
       ShowMenuArrow = False
@@ -2407,25 +2411,12 @@ object Form1: TForm1
     State = cbChecked
     ShowFocusRect = True
   end
-  object RzStatusBar1: TRzStatusBar
-    Left = 0
-    Top = 655
-    Width = 1026
-    Height = 19
-    BorderInner = fsNone
-    BorderOuter = fsNone
-    BorderSides = [sdLeft, sdTop, sdRight, sdBottom]
-    BorderWidth = 0
-    TabOrder = 28
-    Visible = False
-    VisualStyle = vsGradient
-  end
   object scCheckBox1: TscCheckBox
     Left = 299
     Top = 349
     Width = 140
     Height = 30
-    TabOrder = 29
+    TabOrder = 32
     TabStop = True
     Visible = False
     CustomCheckedImageIndex = -1
@@ -2470,7 +2461,7 @@ object Form1: TForm1
     Top = 555
     Width = 132
     Height = 64
-    TabOrder = 30
+    TabOrder = 33
     Visible = False
     FramePosition = scgfpDefault
     CustomImageIndex = -1
@@ -2595,7 +2586,14 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 167
-    Height = 621
+    Height = 640
+    Anchors = [akLeft, akTop, akBottom]
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNone
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -2929,7 +2927,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 0
-    Height = 621
+    Height = 640
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     TabOrder = 32
@@ -2971,7 +2969,7 @@ object Form1: TForm1
     OnClosing = scSplitViewsClosing
     object scButton1: TscButton
       Left = 0
-      Top = 571
+      Top = 590
       Width = 0
       Height = 50
       Align = alBottom
@@ -3340,7 +3338,7 @@ object Form1: TForm1
     end
     object scButton5: TscButton
       Left = 0
-      Top = 521
+      Top = 540
       Width = 0
       Height = 50
       Align = alBottom
@@ -3812,7 +3810,7 @@ object Form1: TForm1
     end
     object scButton9: TscButton
       Left = 0
-      Top = 471
+      Top = 490
       Width = 0
       Height = 50
       Align = alBottom
@@ -4086,7 +4084,7 @@ object Form1: TForm1
       GlowEffect.PressedColor = clHighlight
       GlowEffect.FocusedColor = clHighlight
       GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 205
+      GlowEffect.PressedAlphaValue = 155
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
       ShowGalleryMenuFromTop = False
@@ -5760,37 +5758,6 @@ object Form1: TForm1
     Connection = FDConnection1
     Left = 616
     Top = 160
-  end
-  object PopupMenu2: TPopupMenu
-    Left = 511
-    Top = 296
-    object Open1: TMenuItem
-      Caption = '&Open...'
-    end
-    object New1: TMenuItem
-      Caption = '&New'
-    end
-    object Save1: TMenuItem
-      Caption = '&Save'
-    end
-    object SaveAs1: TMenuItem
-      Caption = 'Save &As...'
-    end
-    object MenuItem1: TMenuItem
-      Caption = '-'
-    end
-    object Print1: TMenuItem
-      Caption = '&Print...'
-    end
-    object PrintSetup1: TMenuItem
-      Caption = 'P&rint Setup...'
-    end
-    object MenuItem2: TMenuItem
-      Caption = '-'
-    end
-    object Exit1: TMenuItem
-      Caption = 'E&xit'
-    end
   end
   object scStyledForm1: TscStyledForm
     DWMClientShadow = False

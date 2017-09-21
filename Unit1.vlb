@@ -4,9 +4,6 @@ Coordinates=0,233,58,36
 [Timer_neaktivity]
 Coordinates=268,461,109,36
 
-[Exit1]
-Coordinates=0,137,43,36
-
 [RzStatusPane3]
 Coordinates=175,602,104,36
 
@@ -25,9 +22,6 @@ Coordinates=604,10,81,58
 [Button3]
 Coordinates=353,144,59,58
 
-[RzStatusBar1]
-Coordinates=734,212,94,58
-
 [SavePictureDialog1]
 Coordinates=969,111,128,36
 
@@ -40,9 +34,6 @@ Coordinates=10,212,59,58
 [Button5]
 Coordinates=901,212,59,58
 
-[scGPPanel2]
-Coordinates=751,556,86,36
-
 [Memo1]
 Coordinates=179,144,64,58
 
@@ -54,9 +45,6 @@ Coordinates=820,10,59,58
 
 [scGPGlyphButton1]
 Coordinates=514,556,124,36
-
-[Save1]
-Coordinates=969,441,51,36
 
 [Chart6]
 Coordinates=1122,144,53,58
@@ -79,14 +67,8 @@ Coordinates=683,557,63,36
 [RzToolButton3]
 Coordinates=125,556,100,36
 
-[Open1]
-Coordinates=515,557,53,36
-
 [scGPTrackBar1]
 Coordinates=10,556,105,36
-
-[MenuItem1]
-Coordinates=317,557,79,36
 
 [Posunout3]
 Coordinates=238,557,76,36
@@ -114,9 +96,6 @@ Coordinates=1046,510,47,36
 
 [Smazat1]
 Coordinates=1135,1,65,36
-
-[MenuItem2]
-Coordinates=1135,56,79,36
 
 [OpenDialog1]
 Coordinates=1135,111,90,36
@@ -220,12 +199,6 @@ Coordinates=1297,606,61,36
 [Posouvat2]
 Coordinates=1297,661,75,36
 
-[PopupMenu2]
-Coordinates=1179,705,90,36
-
-[SaveAs1]
-Coordinates=1011,705,66,36
-
 [scGPSizeBox1]
 Coordinates=120,464,100,36
 
@@ -238,14 +211,8 @@ Coordinates=137,10,117,124
 [RzToolButton1]
 Coordinates=10,464,100,36
 
-[PrintSetup1]
-Coordinates=704,705,82,36
-
 [RzToolButton5]
 Coordinates=1111,418,100,36
-
-[scLabel1]
-Coordinates=1035,418,66,36
 
 [MinButton]
 Coordinates=953,418,72,36
@@ -289,9 +256,6 @@ Coordinates=142,212,73,58
 [Button1]
 Coordinates=977,144,59,58
 
-[New1]
-Coordinates=0,595,47,36
-
 [scCheckBox1]
 Coordinates=1004,372,93,36
 
@@ -330,9 +294,6 @@ Coordinates=548,144,59,58
 
 [RzStatusPane1]
 Coordinates=219,372,104,36
-
-[Print1]
-Coordinates=605,779,48,36
 
 [RzToolButton6]
 Coordinates=10,372,100,36
@@ -400,4 +361,6 @@ Coordinates=870,372,124,36
 
 [scGPPanel_statusbar]
 Coordinates=1017,464,86,36
+
+
 

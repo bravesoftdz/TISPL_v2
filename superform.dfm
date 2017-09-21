@@ -1,4 +1,4 @@
-object Form_vozik_nastaveni: TForm_vozik_nastaveni
+object Form_definice_zakazek: TForm_definice_zakazek
   Left = 0
   Top = 0
   BorderIcons = []
@@ -947,6 +947,7 @@ object Form_vozik_nastaveni: TForm_vozik_nastaveni
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False

@@ -125,12 +125,6 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppEnableHighDPI>true</AppEnableHighDPI>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_1)'!='' And '$(FileToCompile)'=='superform.cpp'">
-        <BCC_IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KODGit</BCC_IncludePath>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_1)'!='' And '$(FileToCompile)'=='TT_kalkulator.cpp'">
-        <ILINK_LibraryPath>D:\SOFTWARE\TISPL\TISPL_sdilena\KODGit</ILINK_LibraryPath>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=1.0.0.0;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o. 2016;LegalTrademarks=© ELTEP, s.r.o. 2016;OriginalFilename=;ProductName=Eltep - TISPl;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -158,26 +152,16 @@
             <Form>Form_cesty</Form>
             <FormType>dfm</FormType>
             <DependentOn>cesty.h</DependentOn>
-            <BuildOrder>18</BuildOrder>
+            <BuildOrder>17</BuildOrder>
         </CppCompile>
         <None Include="CTpointD.h">
             <BuildOrder>7</BuildOrder>
         </None>
-        <CppCompile Include="dopravniky.cpp">
-            <Form>Form_dopravnik</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>dopravniky.h</DependentOn>
-            <BuildOrder>14</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="grafy.cpp">
-            <DependentOn>grafy.h</DependentOn>
-            <BuildOrder>16</BuildOrder>
-        </CppCompile>
         <CppCompile Include="jig.cpp">
             <Form>Form_jig</Form>
             <FormType>dfm</FormType>
             <DependentOn>jig.h</DependentOn>
-            <BuildOrder>19</BuildOrder>
+            <BuildOrder>16</BuildOrder>
         </CppCompile>
         <None Include="knihovna_objektu.h">
             <BuildOrder>3</BuildOrder>
@@ -203,14 +187,19 @@
             <Form>Form_parametry</Form>
             <FormType>dfm</FormType>
             <DependentOn>parametry.h</DependentOn>
-            <BuildOrder>11</BuildOrder>
+            <BuildOrder>13</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="parametry_linky.cpp">
+            <Form>Form_parametry_linky</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>parametry_linky.h</DependentOn>
+            <BuildOrder>17</BuildOrder>
         </CppCompile>
         <CppCompile Include="superform.cpp">
-            <Form>Form_vozik_nastaveni</Form>
+            <Form>Form_definice_zakazek</Form>
             <FormType>dfm</FormType>
             <DependentOn>superform.h</DependentOn>
             <BuildOrder>15</BuildOrder>
-            <OptionOverrides>true</OptionOverrides>
         </CppCompile>
         <CppCompile Include="TISPL.cpp">
             <BuildOrder>0</BuildOrder>
@@ -219,13 +208,6 @@
             <BuildOrder>1</BuildOrder>
             <PCH>true</PCH>
         </PCHCompile>
-        <CppCompile Include="TT_kalkulator.cpp">
-            <Form>Form_TT_kalkulator</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>TT_kalkulator.h</DependentOn>
-            <BuildOrder>13</BuildOrder>
-            <OptionOverrides>true</OptionOverrides>
-        </CppCompile>
         <CppCompile Include="Unit1.cpp">
             <Form>Form1</Form>
             <FormType>dfm</FormType>
@@ -240,21 +222,20 @@
         </CppCompile>
         <CppCompile Include="vektory.cpp">
             <DependentOn>vektory.h</DependentOn>
-            <BuildOrder>5</BuildOrder>
+            <BuildOrder>11</BuildOrder>
         </CppCompile>
         <CppCompile Include="vykresli.cpp">
             <DependentOn>vykresli.h</DependentOn>
-            <BuildOrder>6</BuildOrder>
+            <BuildOrder>12</BuildOrder>
         </CppCompile>
-        <FormResources Include="superform.dfm"/>
-        <FormResources Include="parametry.dfm"/>
         <FormResources Include="uvod.dfm"/>
-        <FormResources Include="TT_kalkulator.dfm"/>
         <FormResources Include="Unit1.dfm"/>
-        <FormResources Include="dopravniky.dfm"/>
-        <FormResources Include="cesty.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="parametry.dfm"/>
+        <FormResources Include="superform.dfm"/>
         <FormResources Include="jig.dfm"/>
+        <FormResources Include="cesty.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -345,27 +326,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
+                <DeployClass Name="ProjectiOSDeviceResourceRules">
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
@@ -719,12 +685,27 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules">
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>

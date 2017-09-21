@@ -13,15 +13,11 @@
 #include "RzSplit.hpp"
 #include "RzStatus.hpp"
 #include <Vcl.Grids.hpp>
-#include "my.h"
-#include "vykresli.h"
-#include "grafy.h"
 #include "RzButton.hpp"
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
 #include "RzBorder.hpp"
 #include <Vcl.Dialogs.hpp>
-#include "MyString.h"
 #include <Vcl.ExtDlgs.hpp>
 #include "RzBHints.hpp"
 #include "RzGrids.hpp"
@@ -86,9 +82,12 @@
 #include <Vcl.WinXCtrls.hpp>
 #include "scDrawUtils.hpp"
 #include "scGPImages.hpp"
-#include <FireDAC.Phys.ODBC.hpp>
-#include <FireDAC.Phys.ODBCBase.hpp>
-#include <FireDAC.Phys.ODBCDef.hpp>
+
+#include "MyString.h"
+#include "my.h"
+#include "vykresli.h"
+//ZDM #include "grafy.h"
+
 //#include "vektory.h" //už vkládám přes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám přes vykresli.h resp. vektory.h
 
@@ -98,7 +97,6 @@ class TForm1 : public TForm
 __published:	// IDE-managed Components
 	TPopupMenu *PopupMenu1;
 	TRzToolbar *RzToolbar1;
-	TRzStatusBar *RzStatusBar1;
 	TRzStatusPane *RzStatusPane1;
 	TMenuItem *Nastvitparametry1;
 	TMenuItem *Smazat1;
@@ -181,11 +179,11 @@ __published:	// IDE-managed Components
 	TButton *Button11;
 	TFDQuery *FDQuery2;
 	TrComboBoxEx *rComboBoxKrok;
-	TscGPPanel *scGPPanel2;
+	TscGPPanel *scGPPanel_mainmenu;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
 	TscGPButton *editacelinky1;
-	TscLabel *scLabel1;
+	TscLabel *scLabel_titulek;
 	TscGPButton *PopupMenuButton;
 	TscGPButton *casovosa1;
 	TscGPButton *technologickprocesy1;
@@ -203,16 +201,6 @@ __published:	// IDE-managed Components
 	TscCheckBox *scCheckBox2;
 	TscSplitView *scSplitView_OPTIONS;
 	TscCheckBox *scCheckBox1;
-	TPopupMenu *PopupMenu2;
-	TMenuItem *Open1;
-	TMenuItem *New1;
-	TMenuItem *Save1;
-	TMenuItem *SaveAs1;
-	TMenuItem *MenuItem1;
-	TMenuItem *Print1;
-	TMenuItem *PrintSetup1;
-	TMenuItem *MenuItem2;
-	TMenuItem *Exit1;
 	TscStyledForm *scStyledForm1;
 	TscRadioGroup *scRadioGroup1;
 	TscGPGlyphButton *scGPGlyphButton2;
@@ -259,9 +247,6 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel4;
 	void __fastcall Konec1Click(TObject *Sender);
-	void __fastcall Klasick1Click(TObject *Sender);
-	void __fastcall WinXP1Click(TObject *Sender);
-	void __fastcall Gradientn1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
@@ -373,7 +358,7 @@ __published:	// IDE-managed Components
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender);
-	void __fastcall scLabel1DblClick(TObject *Sender);
+	void __fastcall scLabel_titulekDblClick(TObject *Sender);
 	void __fastcall MinButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton2Click(TObject *Sender);
 	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
@@ -389,17 +374,11 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_vrstvyClick(TObject *Sender);
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 
-
-
-
-
-
-
 private:	// User declarations
 	////struktury, výčty
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
-	enum Tmod{NO=0,SCHEMA,TESTOVANI,REZERVY,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
-	//enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce; muselo být přesunutu do public sekce kvůli AA ve vykresli
+	enum Tmod{NO=0,SCHEMA,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
+	//enum Takce - muselo být přesunutu do public sekce kvůli AA ve vykresli
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
@@ -410,7 +389,6 @@ private:	// User declarations
 
 	////metody
 	void edice();
-	void setVisualStyle(TRzVisualStyle VisualStyle=vsClassic);
 	short int MB(UnicodeString text, unsigned short int typ=0,UnicodeString titulek="TISPL - Eltep");//vola rychle messabox
 	void REFRESH(bool invalidate=true); //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do větve else
 	void ESC();
@@ -492,12 +470,11 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
-  struct T_parametry_projektu{double TT;double hodin;double smen;double dni;unsigned int produktu_vozik;double delka_voziku;double sirka_voziku;};T_parametry_projektu PP;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 	TMyString ms;
 	Cmy m;
 	Cvykresli d;
-	Cgrafy g;
+	//ZDM Cgrafy g;
   UnicodeString FileName;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
 	double Zoom; //proměnná uchovávajicí velikost Zoomu

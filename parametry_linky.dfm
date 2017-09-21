@@ -1,11 +1,11 @@
-object Form_dopravnik: TForm_dopravnik
+object Form_parametry_linky: TForm_parametry_linky
   Left = 0
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
   ClientHeight = 408
   ClientWidth = 580
-  Color = clActiveCaption
+  Color = clActiveBorder
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clActiveCaption
   Font.Height = -11
@@ -13,7 +13,6 @@ object Form_dopravnik: TForm_dopravnik
   Font.Style = []
   Font.Quality = fqClearType
   OldCreateOrder = False
-  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -23,20 +22,6 @@ object Form_dopravnik: TForm_dopravnik
     Width = 70
     Height = 19
     Caption = 'D'#233'lka [m]'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel1: TrHTMLLabel
-    Left = 163
-    Top = 97
-    Width = 27
-    Height = 19
-    Caption = 'Typ'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -92,7 +77,6 @@ object Form_dopravnik: TForm_dopravnik
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 1
-    OnClick = Button_ADDClick
   end
   object Button_DEL: TButton
     Left = 176
@@ -109,7 +93,6 @@ object Form_dopravnik: TForm_dopravnik
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 2
-    OnClick = Button_DELClick
   end
   object rStringGridEd1: TrStringGridEd
     Left = 0
@@ -229,7 +212,23 @@ object Form_dopravnik: TForm_dopravnik
       30
       30)
   end
-  object dopravnik_save: TscGPButton
+  object Button1: TButton
+    Left = 261
+    Top = 59
+    Width = 120
+    Height = 32
+    Caption = 'Pokro'#269'il'#233
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 4
+    Visible = False
+  end
+  object Button_save: TscGPButton
     Left = 163
     Top = 365
     Width = 100
@@ -241,9 +240,9 @@ object Form_dopravnik: TForm_dopravnik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 5
     TabStop = True
-    OnClick = Button_OKClick
+    OnClick = Button_saveClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -319,7 +318,7 @@ object Form_dopravnik: TForm_dopravnik
     GroupIndex = 0
     AllowAllUp = False
   end
-  object dopravnik_storno: TscGPButton
+  object Button_storno: TscGPButton
     Left = 281
     Top = 365
     Width = 100
@@ -331,9 +330,9 @@ object Form_dopravnik: TForm_dopravnik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 6
     TabStop = True
-    OnClick = dopravnik_stornoClick
+    OnClick = Button_stornoClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
@@ -415,7 +414,7 @@ object Form_dopravnik: TForm_dopravnik
     Width = 580
     Height = 34
     Align = alTop
-    TabOrder = 6
+    TabOrder = 7
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -452,6 +451,7 @@ object Form_dopravnik: TForm_dopravnik
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -795,9 +795,9 @@ object Form_dopravnik: TForm_dopravnik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 8
     Animation = False
-    Caption = '  Voz'#237'ky'
+    Caption = '  Voz'#237'k'
     CanFocused = False
     CustomDropDown = False
     Margin = -1
@@ -871,7 +871,7 @@ object Form_dopravnik: TForm_dopravnik
     GroupIndex = 0
     AllowAllUp = False
   end
-  object rEditNum4: TrEditNum
+  object rEditNum_delkavoziku: TrEditNum
     Left = 53
     Top = 122
     Width = 84
@@ -883,7 +883,7 @@ object Form_dopravnik: TForm_dopravnik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 9
     Value = 1.000000000000000000
   end
   object scGPButton1: TscGPButton
@@ -898,9 +898,9 @@ object Form_dopravnik: TForm_dopravnik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 10
     Animation = False
-    Caption = '  Pohony'
+    Caption = '  Dopravn'#237'k'
     CanFocused = False
     CustomDropDown = False
     Margin = -1
@@ -986,7 +986,7 @@ object Form_dopravnik: TForm_dopravnik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 11
     Animation = False
     Caption = '   Geometrie'
     CanFocused = False
@@ -1061,112 +1061,5 @@ object Form_dopravnik: TForm_dopravnik
     Down = True
     GroupIndex = 0
     AllowAllUp = False
-  end
-  object scGPComboBox1: TscGPComboBox
-    Left = 163
-    Top = 122
-    Width = 120
-    Height = 28
-    TabOrder = 11
-    ContentMargin = 0
-    AutoComplete = False
-    Animation = False
-    CheckedListMode = False
-    CheckedListWrap = True
-    Items = <
-      item
-        Header = False
-        Enabled = True
-        Caption = 'Norm'#225'ln'#237
-        Checked = True
-      end
-      item
-        Header = False
-        Enabled = True
-        Caption = 'Z'#225'v'#283'sn'#253
-        Checked = False
-      end>
-    ItemIndex = -1
-    DropDownCount = 7
-    Options.NormalColor = clBtnFace
-    Options.HotColor = clBtnFace
-    Options.PressedColor = clBtnShadow
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnFace
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clBtnShadow
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clHighlight
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpcssRect
-    Options.ScaleFrameWidth = False
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    ShowItemImage = True
-    ShowItemText = True
-    ShowItemDetail = False
-    ListBoxHeaderFont.Charset = DEFAULT_CHARSET
-    ListBoxHeaderFont.Color = clWindowText
-    ListBoxHeaderFont.Height = -11
-    ListBoxHeaderFont.Name = 'Tahoma'
-    ListBoxHeaderFont.Style = [fsBold]
-    ListBoxHeaderOptions.Color = clBtnFace
-    ListBoxHeaderOptions.ColorAlpha = 220
-    ListBoxHeaderOptions.FillStyle = scgpsfColor
-    ListBoxHeaderOptions.GradientAngle = 90
-    ListBoxHeaderOptions.Margin = 5
-    DetailFont.Charset = DEFAULT_CHARSET
-    DetailFont.Color = clWindowText
-    DetailFont.Height = -11
-    DetailFont.Name = 'Tahoma'
-    DetailFont.Style = []
-    ListBoxLineColor = clWindowText
-    ListBoxWidth = 0
-    ListBoxHeight = 0
-    ListBoxShowItemDetails = False
-    ListBoxShowLines = False
-    ListBoxItemHeight = 30
-    ListBoxHeaderHeight = 20
-    ListBoxItemSpacing = 5
-    ListBoxItemMargin = 5
-    ListBoxIndentMargin = 10
-    ListBoxScrollBarOptions.BorderWidth = 0
-    ListBoxScrollBarOptions.FillColor = clBtnFace
-    ListBoxScrollBarOptions.FillColorAlpha = 100
-    ListBoxScrollBarOptions.ThumbColor = clWindowText
-    ListBoxScrollBarOptions.ThumbColorAlpha = 50
-    ListBoxScrollBarOptions.ThumbColorHotAlpha = 100
-    ListBoxScrollBarOptions.ThumbColorPressedAlpha = 150
-    ListBoxScrollBarOptions.ThumbRounded = False
-    ListBoxScrollBarOptions.Position = scgpsbDefault
-    ListBoxScrollBarOptions.Size = 11
-    ListBoxOptions.FillColor = clWindow
-    ListBoxOptions.FillColor2 = clWindow
-    ListBoxOptions.FillColorAlpha = 255
-    ListBoxOptions.FillColor2Alpha = 255
-    ListBoxOptions.FillGradientAngle = 90
-    ListBoxOptions.FrameColor = clBtnShadow
-    ListBoxOptions.FrameColorAlpha = 255
-    ListBoxOptions.FrameWidth = 2
-    ListBoxOptions.FrameScaleWidth = False
   end
 end

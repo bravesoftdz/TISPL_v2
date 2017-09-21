@@ -222,11 +222,11 @@ void Cgrafy::graf2() {
 	// defaultní vykreslení grafu (checkbox reší událost onclick)
 
 	if (Form1->Memo1->Visible) {
-		Form1->Chart2->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Memo1->Height - Form1->Chart1->Height;
 	}
 	else {
-		Form1->Chart2->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Chart1->Height;
 	}
 
@@ -275,11 +275,11 @@ void Cgrafy::graf2() {
 void Cgrafy::graf6() { // Kapacity
 
 	if (Form1->Memo1->Visible) {
-		Form1->Chart6->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart6->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Memo1->Height - Form1->Chart1->Height;
 	}
 	else {
-		Form1->Chart6->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart6->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Chart1->Height;
 	}
 
@@ -325,11 +325,11 @@ void Cgrafy::graf3() {
 	// defaultní vykreslení grafu (checkbox reší událost onclick)
 
 	if (Form1->Memo1->Visible) {
-		Form1->Chart3->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart3->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Memo1->Height - Form1->Chart1->Height;
 	}
 	else {
-		Form1->Chart3->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart3->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Chart1->Height;
 	}
 
@@ -369,11 +369,11 @@ void Cgrafy::graf4() {
 	// defaultní vykreslení grafu (checkbox reší událost onclick)
 
 	if (Form1->Memo1->Visible) {
-		Form1->Chart4->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart4->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Memo1->Height - Form1->Chart1->Height;
 	}
 	else {
-		Form1->Chart4->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart4->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Chart1->Height;
 	}
 	Form1->Chart4->Title->Caption = "Pomìr vozíkù";
@@ -406,11 +406,11 @@ void Cgrafy::graf4() {
 void Cgrafy::graf5() {
 
   /*	if (Form1->Memo1->Visible) {
-		Form1->Chart5->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart5->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Memo1->Height - Form1->Chart1->Height;
 	}
 	else {
-		Form1->Chart5->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart5->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Chart1->Height;
 	}
 
@@ -446,11 +446,11 @@ void Cgrafy::graf1() {
 	Form1->Chart1->Title->Caption = "Èasové stavy zakázek";
 
 	if (Form1->Memo1->Visible) {
-		Form1->Chart1->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart1->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Memo1->Height - Form1->Chart1->Height;
 	}
 	else {
-		Form1->Chart1->Top = Form1->ClientHeight - Form1->RzStatusBar1->Height -
+		Form1->Chart1->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
 			Form1->Chart1->Height;
 	}
 
