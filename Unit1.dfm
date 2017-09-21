@@ -342,6 +342,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 11
+    Visible = False
     OnClick = Chart1Click
     DefaultCanvas = 'TGDIPlusCanvas'
     PrintMargins = (
@@ -391,6 +392,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 12
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
     object Series2: TBarSeries
@@ -443,6 +445,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 13
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
     object Series5: TBarSeries
@@ -497,6 +500,7 @@ object Form1: TForm1
     View3DOptions.Perspective = 0
     View3DOptions.Rotation = 360
     TabOrder = 14
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
     object Series7: TPieSeries
@@ -563,6 +567,7 @@ object Form1: TForm1
     Panning.MouseWheel = pmwNone
     View3D = False
     TabOrder = 17
+    Visible = False
     DefaultCanvas = 'TGDIPlusCanvas'
     PrintMargins = (
       15
@@ -734,7 +739,7 @@ object Form1: TForm1
       'n'#225'hodn'#253
       'maxim'#225'ln'#237)
   end
-  object scGPPanel2: TscGPPanel
+  object scGPPanel_mainmenu: TscGPPanel
     Left = 0
     Top = 0
     Width = 1026
@@ -762,7 +767,7 @@ object Form1: TForm1
     CaptionGlowEffect.Intensive = True
     CaptionGlowEffect.StyleColors = True
     Color = clBtnFace
-    Caption = 'scGPPanel2'
+    Caption = 'scGPPanel_mainmenu'
     TransparentBackground = True
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
@@ -1013,7 +1018,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
     end
-    object scLabel1: TscLabel
+    object scLabel_titulek: TscLabel
       Left = 242
       Top = 0
       Width = 162
@@ -1030,7 +1035,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 3
-      OnDblClick = scLabel1DblClick
+      OnDblClick = scLabel_titulekDblClick
       DragForm = True
       GlowEffect.Enabled = False
       GlowEffect.Color = clBtnShadow
@@ -1043,7 +1048,7 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'ELTEP - tispl'
+      Caption = 'ELTEP - TISPL'
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1130,7 +1135,6 @@ object Form1: TForm1
       GlowEffect.PressedAlphaValue = 255
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
-      DropDownMenu = PopupMenu2
       ShowGalleryMenuFromTop = False
       ShowGalleryMenuFromRight = False
       ShowMenuArrow = False
@@ -2672,7 +2676,6 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
-    ExplicitHeight = 621
     object scLabel4: TscLabel
       AlignWithMargins = True
       Left = 11
@@ -2856,7 +2859,6 @@ object Form1: TForm1
     HideControls = False
     Animation = True
     DisplayMode = scsvmOverlay
-    ExplicitHeight = 621
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
       Top = 110
@@ -3189,7 +3191,6 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
-    ExplicitHeight = 621
     object scButton1: TscButton
       Left = 0
       Top = 590
@@ -3282,7 +3283,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 571
     end
     object scButton2: TscButton
       Left = 0
@@ -3651,7 +3651,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 521
     end
     object scButton6: TscButton
       Left = 0
@@ -4124,7 +4123,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 471
     end
     object scGPSwitch9: TscGPSwitch
       Left = 100
@@ -4439,7 +4437,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000C030C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001003100310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5512,37 +5510,6 @@ object Form1: TForm1
     Left = 616
     Top = 160
   end
-  object PopupMenu2: TPopupMenu
-    Left = 511
-    Top = 296
-    object Open1: TMenuItem
-      Caption = '&Open...'
-    end
-    object New1: TMenuItem
-      Caption = '&New'
-    end
-    object Save1: TMenuItem
-      Caption = '&Save'
-    end
-    object SaveAs1: TMenuItem
-      Caption = 'Save &As...'
-    end
-    object MenuItem1: TMenuItem
-      Caption = '-'
-    end
-    object Print1: TMenuItem
-      Caption = '&Print...'
-    end
-    object PrintSetup1: TMenuItem
-      Caption = 'P&rint Setup...'
-    end
-    object MenuItem2: TMenuItem
-      Caption = '-'
-    end
-    object Exit1: TMenuItem
-      Caption = 'E&xit'
-    end
-  end
   object scStyledForm1: TscStyledForm
     DWMClientShadow = False
     DropDownForm = False
@@ -5589,7 +5556,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C005801580130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C005C015C0130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15111,7 +15078,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00B400B40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00B800B80018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

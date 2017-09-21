@@ -20,7 +20,7 @@
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
 //---------------------------------------------------------------------------
-class TForm_vozik_nastaveni : public TForm
+class TForm_definice_zakazek : public TForm
 {
 __published:	// IDE-managed Components
 	TButton *Button_OK;
@@ -82,6 +82,7 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd1Click(TObject *Sender);
 	void __fastcall rButton1Click(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
+	void __fastcall KonecClick(TObject *Sender);
 
 
 
@@ -94,7 +95,7 @@ private:	// User declarations
 	bool Color_status;
 	bool RowMoved;
 public:		// User declarations
-	__fastcall TForm_vozik_nastaveni(TComponent* Owner);
+	__fastcall TForm_definice_zakazek(TComponent* Owner);
 
 		short offset;
 		short Pocet_radku;
@@ -123,6 +124,6 @@ public:		// User declarations
 
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm_vozik_nastaveni *Form_vozik_nastaveni;
+extern PACKAGE TForm_definice_zakazek *Form_definice_zakazek;
 //---------------------------------------------------------------------------
 #endif

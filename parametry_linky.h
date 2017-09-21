@@ -1,30 +1,31 @@
 //---------------------------------------------------------------------------
 
-#ifndef dopravnikyH
-#define dopravnikyH
+#ifndef parametry_linkyH
+#define parametry_linkyH
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include <Vcl.Grids.hpp>
-#include <Vcl.ValEdit.hpp>
 #include "rHTMLLabel.hpp"
 #include "rImprovedComps.hpp"
 #include "rStringGridEd.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
+#include <Vcl.Grids.hpp>
+#include <Vcl.ValEdit.hpp>
 //---------------------------------------------------------------------------
-class TForm_dopravnik : public TForm
+class TForm_parametry_linky : public TForm
 {
 __published:	// IDE-managed Components
+	TrHTMLLabel *rHTMLLabel5;
 	TValueListEditor *ValueListEditor;
 	TButton *Button_ADD;
 	TButton *Button_DEL;
 	TrStringGridEd *rStringGridEd1;
 	TButton *Button1;
-	TscGPButton *dopravnik_save;
-	TscGPButton *dopravnik_storno;
+	TscGPButton *Button_save;
+	TscGPButton *Button_storno;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
@@ -32,26 +33,18 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton15;
 	TscGPButton *scGPButton2;
-	TrHTMLLabel *rHTMLLabel5;
-	TrEditNum *rEditNum4;
+	TrEditNum *rEditNum_delkavoziku;
 	TscGPButton *scGPButton1;
 	TscGPButton *scGPButton3;
-	void __fastcall Button_ADDClick(TObject *Sender);
-	void __fastcall Button_DELClick(TObject *Sender);
-	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
-	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall dopravnik_stornoClick(TObject *Sender);
-
+	void __fastcall Button_stornoClick(TObject *Sender);
+	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall Button_saveClick(TObject *Sender);
 private:	// User declarations
-	unsigned int count;
-	bool OK_status;
-	TStringList *origSL;
-	unsigned int offsetcomponents;
 public:		// User declarations
-	__fastcall TForm_dopravnik(TComponent* Owner);
+	__fastcall TForm_parametry_linky(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm_dopravnik *Form_dopravnik;
+extern PACKAGE TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
 #endif

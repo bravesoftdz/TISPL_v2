@@ -222,9 +222,6 @@ object Form_parametry: TForm_parametry
       ' '#269'as [min/voz'#237'k]')
     OnClick = ValueListEditorClick
     OnStringsChange = ValueListEditorStringsChange
-    ColWidths = (
-      192
-      77)
   end
   object ComboBox_druh_objektu: TComboBox
     Left = 2

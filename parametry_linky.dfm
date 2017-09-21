@@ -1,84 +1,27 @@
-object Form_definice_zakazek: TForm_definice_zakazek
+object Form_parametry_linky: TForm_parametry_linky
   Left = 0
   Top = 0
-  BorderIcons = []
   BorderStyle = bsNone
-  BorderWidth = 1
-  Caption = 'Definice zak'#225'zek'
-  ClientHeight = 533
-  ClientWidth = 999
-  Color = clSilver
+  Caption = 'Parametry linky'
+  ClientHeight = 408
+  ClientWidth = 580
+  Color = clActiveBorder
   Font.Charset = DEFAULT_CHARSET
-  Font.Color = clDefault
-  Font.Height = 20
+  Font.Color = clActiveCaption
+  Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Font.Quality = fqClearType
   OldCreateOrder = False
-  Position = poDesigned
-  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 20
-  object rHTMLLabel1: TrHTMLLabel
-    Left = 0
-    Top = 0
-    Width = 17
-    Height = 30
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 30
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-  end
-  object rHTMLLabel3: TrHTMLLabel
-    Left = 23
-    Top = 1
-    Width = 172
-    Height = 27
-    Caption = 'Parametry v'#253'roby'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = 27
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel2: TrHTMLLabel
-    Left = 15
-    Top = 7
-    Width = 152
-    Height = 19
-    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel4: TrHTMLLabel
-    Left = 53
-    Top = 165
-    Width = 150
-    Height = 19
-    Caption = 'Po'#269'et prac.hodin/den'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
+  TextHeight = 13
   object rHTMLLabel5: TrHTMLLabel
     Left = 53
     Top = 97
-    Width = 134
+    Width = 70
     Height = 19
-    Caption = 'Po'#269'et prac.dn'#367'/rok'
+    Caption = 'D'#233'lka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -87,196 +30,90 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel6: TrHTMLLabel
-    Left = 247
-    Top = 165
-    Width = 64
-    Height = 19
-    Caption = 'Efektivita'
+  object ValueListEditor: TValueListEditor
+    Left = 422
+    Top = 311
+    Width = 150
+    Height = 89
+    Align = alCustom
+    BiDiMode = bdLeftToRight
+    BorderStyle = bsNone
+    DefaultRowHeight = 25
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
+    Font.Color = cl3DDkShadow
+    Font.Height = -17
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    KeyOptions = [keyEdit, keyUnique]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goTabs, goAlwaysShowEditor, goThumbTracking, goFixedColClick, goFixedRowClick, goFixedHotTrack]
+    ParentBiDiMode = False
     ParentFont = False
-  end
-  object rHTMLLabel9: TrHTMLLabel
-    Left = 247
-    Top = 97
-    Width = 152
-    Height = 19
-    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object Button_OK: TButton
-    Left = 619
-    Top = 523
-    Width = 95
-    Height = 33
-    Caption = 'OK'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMaroon
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ModalResult = 1
-    ParentFont = False
+    ScrollBars = ssNone
+    Strings.Strings = (
+      'hlavn'#237' dopravn'#237'k=5'
+      'vedlej'#353#237' dopravn'#237'k=3')
     TabOrder = 0
+    TitleCaptions.Strings = (
+      ' n'#225'zev'
+      ' rychlost [m/min]')
     Visible = False
-    OnClick = Button_OKClick
-    OnKeyDown = Button_OKKeyDown
+    ColWidths = (
+      150
+      -2)
   end
-  object RzStringGrid1: TRzStringGrid
-    Left = 72
-    Top = 496
-    Width = 221
-    Height = 36
-    ColCount = 14
-    RowCount = 2
+  object Button_ADD: TButton
+    Left = 139
+    Top = 182
+    Width = 31
+    Height = 25
+    Hint = 'P'#345'idat pohon'
+    Caption = '+'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -27
+    Font.Color = clActiveCaption
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs]
+    Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 1
-    Visible = False
-    OnClick = RzStringGrid1Click
-    OnDrawCell = RzStringGrid1DrawCell
-    OnGetEditMask = RzStringGrid1GetEditMask
-    OnMouseDown = RzStringGrid1MouseDown
-    OnRowMoved = RzStringGrid1RowMoved
-  end
-  object Button1: TButton
-    Left = 709
-    Top = 523
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 2
-    Visible = False
-    OnClick = Button1Click
-  end
-  object Button2: TButton
-    Left = 639
-    Top = 31
-    Width = 75
-    Height = 25
-    Caption = 'Button2'
-    TabOrder = 3
-    Visible = False
-    OnClick = Button2Click
-  end
-  object Button3: TButton
-    Left = 824
-    Top = 223
-    Width = 75
-    Height = 25
-    Caption = 'P'#345'idat voz'#237'k'
-    TabOrder = 4
-    Visible = False
-    OnClick = Button3Click
-  end
-  object Button4: TButton
-    Left = 639
-    Top = 62
-    Width = 75
-    Height = 25
-    Caption = 'Button4'
-    TabOrder = 5
-    Visible = False
-  end
-  object Memo1: TMemo
-    Left = 838
-    Top = 508
-    Width = 128
-    Height = 49
-    Lines.Strings = (
-      'Memo1')
-    TabOrder = 6
-    Visible = False
-  end
-  object Memo_spojak: TButton
-    Left = 628
-    Top = 492
-    Width = 75
-    Height = 25
-    Caption = 'spojacek-color'
-    TabOrder = 7
-    Visible = False
-    OnClick = Memo_spojakClick
-  end
-  object Memo2: TMemo
-    Left = 824
-    Top = 476
-    Width = 167
-    Height = 26
-    Lines.Strings = (
-      'Memo2')
-    TabOrder = 8
-    Visible = False
-  end
-  object Memo3: TMemo
-    Left = 709
-    Top = 492
-    Width = 97
-    Height = 25
-    Lines.Strings = (
-      'Memo3')
-    TabOrder = 9
-    Visible = False
   end
   object Button_DEL: TButton
-    Left = 915
-    Top = 179
-    Width = 15
-    Height = 15
-    Hint = 'Sma'#382'e '#345#225'dek'
-    Caption = 'X'
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Verdana'
+    Left = 176
+    Top = 182
+    Width = 28
+    Height = 25
+    Hint = 'Odebrat pohon'
+    Caption = '-'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = -15
+    Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearType
     ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 10
-    Visible = False
-    OnClick = Button_DELClick
+    TabOrder = 2
   end
   object rStringGridEd1: TrStringGridEd
     Left = 0
-    Top = 300
-    Width = 1000
-    Height = 186
-    Align = alCustom
+    Top = 219
+    Width = 609
+    Height = 94
     BorderStyle = bsNone
-    Color = clWhite
-    ColCount = 11
-    DefaultColWidth = 90
+    Color = clMenu
+    DefaultColWidth = 120
     DefaultRowHeight = 30
     DefaultDrawing = False
-    RowCount = 2
+    RowCount = 3
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
-    Font.Height = -15
+    Font.Height = -17
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor]
     ParentFont = False
-    TabOrder = 11
-    OnClick = rStringGridEd1Click
+    TabOrder = 3
     Columns = <
       item
         Alignment = taCenter
@@ -290,14 +127,14 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleCaption = 'ID'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
       end
       item
-        ButtonStyle = sgbDropDownList
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -308,154 +145,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
         PickList.Strings = (
           're'#225'ln'#225
           'servisn'#237)
-        TitleCaption = 'Typ'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taCenter
-      end
-      item
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         TitleCaption = 'N'#225'zev'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taCenter
-      end
-      item
-        ButtonStyle = sgbDropDownColor
-        MinValue = 1.000000000000000000
-        MaxValue = 10.000000000000000000
-        OutOfLimitDataColor = clPurple
-        DropDownRows = 15
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'Barva'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taCenter
-        FieldName = 'Polozky'
-      end
-      item
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'Pom'#283'r'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taCenter
-      end
-      item
-        ButtonStyle = sgbButton
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'Jig'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taRightJustify
-      end
-      item
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = '/Po'#269'et'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-      end
-      item
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'Po'#269'et serv.voz'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taRightJustify
-      end
-      item
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = '/Opakov'#225'n'#237
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-      end
-      item
-        ButtonStyle = sgbButton
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'Cesta'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
       end
@@ -467,159 +163,100 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'TakTime'
+        TitleCaption = 'Rychlost od'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -13
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        TitleFont.Quality = fqClearType
+        TitleParentFont = False
+        TitleAlignment = taCenter
+      end
+      item
+        Color = clMenu
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = cl3DDkShadow
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TitleCaption = 'do [m/min]'
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        TitleFont.Quality = fqClearType
+        TitleParentFont = False
+      end
+      item
+        Color = clMenu
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = cl3DDkShadow
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        TitleCaption = 'Rozte'#269' [mm]'
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
-        TitleAlignment = taCenter
       end>
-    AutoAddNewRow = True
     RowHeights = (
+      30
       30
       30)
   end
-  object rButton1: TrButton
-    Left = 689
-    Top = 168
-    Width = 129
-    Height = 33
-    Caption = 'P'#345'idat zak'#225'zku'
+  object Button1: TButton
+    Left = 261
+    Top = 59
+    Width = 120
+    Height = 32
+    Caption = 'Pokro'#269'il'#233
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = clActiveCaption
     Font.Height = 20
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 12
+    TabOrder = 4
     Visible = False
-    OnClick = rButton1Click
   end
-  object scGPButton2: TscGPButton
-    Left = 0
-    Top = 56
-    Width = 209
+  object Button_save: TscGPButton
+    Left = 163
+    Top = 365
+    Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
-    Font.Height = -19
+    Font.Height = -17
     Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 5
+    TabStop = True
+    OnClick = Button_saveClick
     Animation = False
-    Caption = '   Parametry v'#253'roby'
-    CanFocused = False
+    Caption = 'Ulo'#382'it'
+    CanFocused = True
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 15
+    ImageIndex = -1
     ImageMargin = 0
     TransparentBackground = True
-    Options.NormalColor = clSilver
-    Options.HotColor = clPurple
-    Options.PressedColor = clSilver
-    Options.FocusedColor = clRed
-    Options.DisabledColor = clPurple
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clSilver
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBlack
-    Options.FontHotColor = clBlack
-    Options.FontPressedColor = clBlack
-    Options.FontFocusedColor = clBlack
-    Options.FontDisabledColor = clAqua
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    HotImageIndex = -1
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clMaroon
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 1
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clRed
-    GlowEffect.FocusedColor = clRed
-    GlowEffect.PressedGlowSize = 1
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = True
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object Button5: TButton
-    Left = 824
-    Top = 172
-    Width = 75
-    Height = 25
-    Caption = 'Button5'
-    TabOrder = 14
-    Visible = False
-  end
-  object scGPButton4: TscGPButton
-    Left = 0
-    Top = 248
-    Width = 158
-    Height = 35
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMenuBar
-    Font.Height = -19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 15
-    Animation = False
-    Caption = '   Pl'#225'n v'#253'roby'
-    CanFocused = False
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    Images = Form1.scGPVirtualImageList1
-    ImageIndex = 12
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = clSilver
-    Options.HotColor = clPurple
-    Options.PressedColor = clSilver
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -638,9 +275,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBlack
+    Options.FontNormalColor = clWhite
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clBlack
+    Options.FontPressedColor = clWhite
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -677,225 +314,92 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = True
+    Down = False
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPGlyphButton1: TscGPGlyphButton
-    Left = 153
-    Top = 257
-    Width = 24
-    Height = 19
-    TabOrder = 16
+  object Button_storno: TscGPButton
+    Left = 281
+    Top = 365
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 6
     TabStop = True
-    Visible = False
+    OnClick = Button_stornoClick
     Animation = False
-    Caption = 'scGPGlyphButton1'
+    Caption = 'Storno'
     CanFocused = True
     CustomDropDown = False
+    Margin = -1
+    Spacing = 1
     Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = -1
+    ImageMargin = 0
     TransparentBackground = True
-    ColorValue = clRed
-    Options.NormalColor = clBtnText
-    Options.HotColor = clBtnText
-    Options.PressedColor = clBtnText
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnText
-    Options.NormalColorAlpha = 10
-    Options.HotColorAlpha = 20
-    Options.PressedColorAlpha = 30
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = 33023
+    Options.DisabledColor = clPurple
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.FrameNormalColor = clSilver
-    Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = clBtnText
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clGray
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clGray
+    Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 0
-    Options.FrameHotColorAlpha = 100
-    Options.FramePressedColorAlpha = 150
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 10
     Options.ShapeStyle = scgpRect
     Options.ArrowSize = 9
     Options.StyleColors = True
-    GlyphOptions.NormalColor = clBtnText
-    GlyphOptions.HotColor = clBtnText
-    GlyphOptions.PressedColor = clBtnText
-    GlyphOptions.FocusedColor = clBtnText
-    GlyphOptions.DisabledColor = clBtnText
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 100
-    GlyphOptions.Kind = scgpbgkPlus
-    GlyphOptions.Thickness = 1
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
     WidthWithCaption = 0
     WidthWithoutCaption = 0
     RepeatClick = False
     RepeatClickInterval = 100
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object scGPGlyphButton2: TscGPGlyphButton
-    Left = 8
-    Top = 492
-    Width = 70
-    Height = 35
-    Align = alCustom
-    TabOrder = 17
-    TabStop = True
-    Visible = False
-    OnClick = Button_OKClick
-    Animation = False
-    Caption = 'OK'
-    CanFocused = True
-    CustomDropDown = False
-    Layout = blGlyphLeft
-    TransparentBackground = True
-    ColorValue = clRed
-    Options.NormalColor = 33023
-    Options.HotColor = 1871359
-    Options.PressedColor = clBtnText
-    Options.FocusedColor = 33023
-    Options.DisabledColor = clBtnText
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 200
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.FrameNormalColor = clBtnText
-    Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = clBtnText
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 70
-    Options.FrameHotColorAlpha = 100
-    Options.FramePressedColorAlpha = 150
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = 33023
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    GlyphOptions.NormalColor = clWhite
-    GlyphOptions.HotColor = clWhite
-    GlyphOptions.PressedColor = clWhite
-    GlyphOptions.FocusedColor = clWhite
-    GlyphOptions.DisabledColor = clWhite
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 100
-    GlyphOptions.Kind = scgpbgkOk
-    GlyphOptions.Thickness = 2
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object scGPGlyphButton4: TscGPGlyphButton
-    Left = 84
-    Top = 492
-    Width = 70
-    Height = 35
-    Align = alCustom
-    TabOrder = 18
-    TabStop = True
-    Visible = False
-    OnClick = scGPGlyphButton4Click
-    Animation = False
-    Caption = 'OK'
-    CanFocused = True
-    CustomDropDown = False
-    Layout = blGlyphLeft
-    TransparentBackground = True
-    ColorValue = clRed
-    Options.NormalColor = 33023
-    Options.HotColor = 1871359
-    Options.PressedColor = clBtnText
-    Options.FocusedColor = 33023
-    Options.DisabledColor = clBtnText
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 200
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.FrameNormalColor = clBtnText
-    Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = clBtnText
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 70
-    Options.FrameHotColorAlpha = 100
-    Options.FramePressedColorAlpha = 150
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = 33023
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    GlyphOptions.NormalColor = clWhite
-    GlyphOptions.HotColor = clWhite
-    GlyphOptions.PressedColor = clWhite
-    GlyphOptions.FocusedColor = clWhite
-    GlyphOptions.DisabledColor = clWhite
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 100
-    GlyphOptions.Kind = scgpbgkCancel
-    GlyphOptions.Thickness = 2
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
     ShowGalleryMenuFromTop = False
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
@@ -907,10 +411,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 999
+    Width = 580
     Height = 34
     Align = alTop
-    TabOrder = 19
+    TabOrder = 7
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -937,7 +441,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 949
+      Left = 530
       Top = 0
       Width = 50
       Height = 33
@@ -1015,7 +519,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 849
+      Left = 430
       Top = 0
       Width = 50
       Height = 33
@@ -1093,7 +597,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 812
+      Width = 393
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1105,6 +609,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearType
       ParentFont = False
       TabOrder = 2
       DragForm = True
@@ -1119,11 +624,11 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Definice zak'#225'zek'
+      Caption = 'Parametry linky'
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 899
+      Left = 480
       Top = 0
       Width = 50
       Height = 33
@@ -1199,7 +704,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       AllowAllUp = False
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 812
+      Left = 393
       Top = 0
       Width = 37
       Height = 34
@@ -1209,6 +714,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
+      Font.Quality = fqClearType
       ParentFont = False
       TabOrder = 4
       Animation = True
@@ -1277,93 +783,33 @@ object Form_definice_zakazek: TForm_definice_zakazek
       AllowAllUp = False
     end
   end
-  object rEditNum1: TrEditNum
-    Left = 247
-    Top = 122
-    Width = 101
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 20
-    Value = 5000000.000000000000000000
-  end
-  object rEditNum2: TrEditNum
-    Left = 53
-    Top = 190
-    Width = 150
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 21
-    Value = 8.000000000000000000
-  end
-  object rEditNum3: TrEditNum
-    Left = 247
-    Top = 190
-    Width = 65
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 22
-    Value = 95.000000000000000000
-  end
-  object rEditNum4: TrEditNum
-    Left = 53
-    Top = 122
-    Width = 149
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 23
-    Value = 235.000000000000000000
-  end
-  object scGPButton1: TscGPButton
-    Left = 371
-    Top = 490
-    Width = 100
+  object scGPButton2: TscGPButton
+    Left = 0
+    Top = 56
+    Width = 105
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
-    Font.Height = -17
+    Font.Height = -19
     Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 24
-    TabStop = True
+    TabOrder = 8
     Animation = False
-    Caption = 'Ulo'#382'it'
-    CanFocused = True
+    Caption = '  Voz'#237'k'
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = -1
+    ImageIndex = 21
     ImageMargin = 0
     TransparentBackground = True
-    Options.NormalColor = 33023
-    Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.NormalColor = clSilver
+    Options.HotColor = clPurple
+    Options.PressedColor = clSilver
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -1372,9 +818,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clGray
+    Options.FrameHotColor = clHighlight
     Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clGray
+    Options.FrameFocusedColor = clSilver
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -1382,9 +828,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clWhite
+    Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
+    Options.FontPressedColor = clBlack
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -1421,39 +867,53 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPButton3: TscGPButton
-    Left = 496
-    Top = 490
-    Width = 100
+  object rEditNum_delkavoziku: TrEditNum
+    Left = 53
+    Top = 122
+    Width = 84
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 9
+    Value = 1.000000000000000000
+  end
+  object scGPButton1: TscGPButton
+    Left = 0
+    Top = 172
+    Width = 137
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
-    Font.Height = -17
+    Font.Height = -19
     Font.Name = 'Tahoma'
     Font.Style = []
+    Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 25
-    TabStop = True
-    OnClick = scGPGlyphButton4Click
+    TabOrder = 10
     Animation = False
-    Caption = 'Storno'
-    CanFocused = True
+    Caption = '  Dopravn'#237'k'
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = -1
+    ImageIndex = 25
     ImageMargin = 0
     TransparentBackground = True
-    Options.NormalColor = 33023
-    Options.HotColor = 1871359
-    Options.PressedColor = clBlack
-    Options.FocusedColor = 33023
+    Options.NormalColor = clSilver
+    Options.HotColor = clPurple
+    Options.PressedColor = clSilver
+    Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
@@ -1461,9 +921,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clGray
+    Options.FrameHotColor = clHighlight
     Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clGray
+    Options.FrameFocusedColor = clSilver
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -1471,9 +931,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clWhite
+    Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
+    Options.FontPressedColor = clBlack
     Options.FontFocusedColor = clWhite
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
@@ -1510,16 +970,96 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
     ShowFocusRect = True
-    Down = False
+    Down = True
     GroupIndex = 0
     AllowAllUp = False
   end
-  object ColorDialog1: TColorDialog
-    Left = 592
-    Top = 46
-  end
-  object ImageList1: TImageList
-    Left = 944
-    Top = 200
+  object scGPButton3: TscGPButton
+    Left = 443
+    Top = 56
+    Width = 137
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 11
+    Animation = False
+    Caption = '   Geometrie'
+    CanFocused = False
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 24
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = clSilver
+    Options.HotColor = clPurple
+    Options.PressedColor = clSilver
+    Options.FocusedColor = clRed
+    Options.DisabledColor = clPurple
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clSilver
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clBlack
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = True
+    GroupIndex = 0
+    AllowAllUp = False
   end
 end

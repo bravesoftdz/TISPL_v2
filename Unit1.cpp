@@ -10,8 +10,8 @@
 #include <pngimage.hpp>
 #include "MyMessageBox.h"
 #include "parametry.h"
-#include "TT_kalkulator.h"
-#include "dopravniky.h"
+//#include "TT_kalkulator.h"
+#include "parametry_linky.h"
 #include "superform.h"
 #include "uvod.h"
 #include "antialiasing.h"
@@ -51,16 +51,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 
-
 	//vytvoření TEMP adresáře (pro ini)
 	MkDir(get_temp_dir()+"TISPL");
 
 	////nastavení aplikace
-	//pozice ovládacích prvků
-	scListGroupNastavProjektu->Left=0;scListGroupNastavProjektu->Top=0;
-	scListGroupKnihovObjektu->Left=0;scListGroupKnihovObjektu->Top=2+scListGroupNastavProjektu->Height+0;
-	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
-	vyska_menu=0;
 	upozornovat_na_zmenu_TT_parametru=true;
 
 	//nastavení knihovnky
@@ -156,20 +150,27 @@ void TForm1::NewDesignSettings()
 	simulace->Options->PressedColor=light_gray;
 
 	scExPanel_ostatni->Top=72+27;
+
+	//pozice ovládacích prvků
+	scListGroupNastavProjektu->Left=0;scListGroupNastavProjektu->Top=0;
+	scListGroupKnihovObjektu->Left=0;scListGroupKnihovObjektu->Top=2+scListGroupNastavProjektu->Height+0;
+	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
+	vyska_menu=0;
 }
 //---------------------------------------------------------------------------
 //zakázání či povolení grafických uživatelských prvků dle úrovně edice
 void TForm1::edice()
 {
+	Edice_caption="";
 	//switch na jednotlivé edice v kterém bude následné povolení či zakázání patřičných ovládacíh prvků
 	switch (EDICE)
-	{
-			//case DEVELOPER: Edice_caption="DEVELOPER";break;
-			case ARCHITECT: Edice_caption="ARCHITECT";break;
-			case CLIENT:		Edice_caption="CLIENT";break;
-			case VIEWER: 		Edice_caption="VIEWER";break;
+	{                            //edice_caption je ještě zakomentováno v scLabel_titulek->Caption...
+			//case DEVELOPER: Edice_caption="DEVELOPER";*/break;
+			case ARCHITECT: /*Edice_caption="ARCHITECT";*/break;
+			case CLIENT:		/*Edice_caption="CLIENT";*/break;
+			case VIEWER: 		/*Edice_caption="VIEWER";*/break;
 			case DEMO:  //demo
-				Edice_caption="VIEWER - DEMO";
+				/*Edice_caption="VIEWER - DEMO";*/
 				NovySoubor->Enabled=false;
 				Otevrit->Enabled=false;
 			//	Otevritsablonu->Enabled=false;
@@ -202,7 +203,7 @@ void TForm1::edice()
 			default:
 				break;
 	}
-	Form1->Caption=Form1->Caption+" | "+Edice_caption;//vypis edice v titulku programu
+	//scLabel_titulek->Caption=scLabel_titulek->Caption+" | "+Edice_caption;//vypis edice v titulku programu
 
 }
 //---------------------------------------------------------------------------
@@ -232,8 +233,9 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 	 {
 			 vse_odstranit();
 			 d.v.hlavicka_objekty();//založení spojového seznamu pro technologické objekty
-			 d.v.hlavicka_voziky();
-			 d.v.hlavicka_palce();
+			 d.v.hlavicka_pohony();//založení spojového seznamu pro pohony
+			 //ZDM d.v.hlavicka_voziky();
+			 //ZDM d.v.hlavicka_palce();
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
@@ -243,14 +245,13 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 jedno_ze_tri_otoceni_koleckem_mysi=1;
 			 doba_neotaceni_mysi=0;
 
-
-			// PP.TT=0;Edit_takt_time->Text=PP.TT;
-			 PP.hodin=8;
-			 PP.smen=1;
-			 PP.dni=21;
-			 PP.produktu_vozik=1;
-			 PP.delka_voziku=1;
-			 PP.sirka_voziku=1;
+			 d.v.PP.cas_start=0;
+			 d.v.PP.mnozstvi=0;
+			 d.v.PP.hod_den=8;
+			 d.v.PP.dni_rok=365;
+			 d.v.PP.efektivita=95;
+			 d.v.PP.delka_voziku=1;
+			 d.v.PP.typ_voziku=0;
 
 
 			 Akce=NIC;Screen->Cursor=crDefault;//změní kurzor na default
@@ -272,7 +273,8 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 
 			 SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 
-			 FileName="Nový.tispl";if(Form1->Caption.Pos(" - ["))Form1->Caption=Form1->Caption.SubString(1,Form1->Caption.Pos(" - [")-1)+" - ["+FileName+"]"+" | "+Edice_caption;else Form1->Caption=Form1->Caption+" - ["+FileName+"]"+" | "+Edice_caption;
+			 FileName="Nový.tispl";
+			 if(Form1->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName+"]"/*+" | "+Edice_caption*/;
 			 Invalidate();
 	 }
 }
@@ -394,14 +396,15 @@ void TForm1::startUP()
 		}
 	}
 
-	//automatické načtení projektu magna včetně definice cest a vozíků, jen pro účely demo viewera  či abych si ušetřil počet kliknutí při testování
-	if(FileName.Pos("magna.tisp"))
-	{
-		MagnaClick(this);
-		//Button_vozik_parametryClick(this);//automatické volání
-		Form_vozik_nastaveni->nacti_voziky();
-		Form_vozik_nastaveni->uloz_voziky_a_nastav_zakazky();
-	}
+//ZDM
+//	//automatické načtení projektu magna včetně definice cest a vozíků, jen pro účely demo viewera  či abych si ušetřil počet kliknutí při testování
+//	if(FileName.Pos("magna.tisp"))
+//	{
+//		MagnaClick(this);
+//		//Button_vozik_parametryClick(this);//automatické volání
+//		Form_vozik_nastaveni->nacti_voziky();
+//		Form_vozik_nastaveni->uloz_voziky_a_nastav_zakazky();
+//	}
 
 
 	//////automatický BACKUP
@@ -494,7 +497,7 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
 	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
-	if(MOD==REZERVY || MOD==CASOVAOSA)Invalidate();
+	if(/*MOD==REZERVY ||*/ MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -528,84 +531,84 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	rComboBoxKrok->Visible=false;
 	LabelRoletka->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=false;
-	g.ShowGrafy(false);
+	//ZDM g.ShowGrafy(false);
 	ComboBoxCekani->Visible=false;
 	Invalidate();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 {
-	MOD=TESTOVANI;
-	SB("testování kapacity",1);
-	if(!zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=true;}
-	Timer_simulace->Enabled=false;
-	DuvodUlozit(true);
-	//editacelinky1->Checked=false;
-	//testovnkapacity1->Checked=true;
-	//casoverezervy1->Checked=false;
-	//simulace1->Checked=false;
-	//casovosa1->Checked=false;
-	//technologickprocesy1->Checked=false;
-	scListGroupNastavProjektu->Visible=true;
-	scListGroupKnihovObjektu->Visible=true;
-	PopupMenu1->AutoPopup=true;
-	Timer_neaktivity->Enabled=false;
-	Timer_animace->Enabled=false;
-	CheckBoxVytizenost->Visible=false;
-	CheckBoxAnimovatSG->Visible=false;
-	CheckBoxPALCE->Visible=false;
-	CheckBoxVymena_barev->Visible=false;
-	ButtonPLAY->Visible=false;
-	Label_zamerovac->Visible=false;
-	ComboBoxODmin->Visible=false;
-	ComboBoxDOmin->Visible=false;
-	rComboBoxKrok->Visible=false;
-	LabelRoletka->Visible=false;
-	CheckBox_pouzit_zadane_kapacity->Visible=false;
-	g.ShowGrafy(false);
-	ComboBoxCekani->Visible=false;
-	Invalidate();
+//	MOD=TESTOVANI;
+//	SB("testování kapacity",1);
+//	if(!zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=true;}
+//	Timer_simulace->Enabled=false;
+//	DuvodUlozit(true);
+//	//editacelinky1->Checked=false;
+//	//testovnkapacity1->Checked=true;
+//	//casoverezervy1->Checked=false;
+//	//simulace1->Checked=false;
+//	//casovosa1->Checked=false;
+//	//technologickprocesy1->Checked=false;
+//	scListGroupNastavProjektu->Visible=true;
+//	scListGroupKnihovObjektu->Visible=true;
+//	PopupMenu1->AutoPopup=true;
+//	Timer_neaktivity->Enabled=false;
+//	Timer_animace->Enabled=false;
+//	CheckBoxVytizenost->Visible=false;
+//	CheckBoxAnimovatSG->Visible=false;
+//	CheckBoxPALCE->Visible=false;
+//	CheckBoxVymena_barev->Visible=false;
+//	ButtonPLAY->Visible=false;
+//	Label_zamerovac->Visible=false;
+//	ComboBoxODmin->Visible=false;
+//	ComboBoxDOmin->Visible=false;
+//	rComboBoxKrok->Visible=false;
+//	LabelRoletka->Visible=false;
+//	CheckBox_pouzit_zadane_kapacity->Visible=false;
+//	//ZDM g.ShowGrafy(false);
+//	ComboBoxCekani->Visible=false;
+//	Invalidate();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 {
-	MOD=REZERVY;
-	ESC();//zruší případně rozdělanou akci
-	SB("časové rezervy",1);
-	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
-	Timer_simulace->Enabled=false;
-	//testovnkapacity1->Checked=false;
-	//editacelinky1->Checked=false;
-	//casoverezervy1->Checked=true;
-	//simulace1->Checked=false;
-	//casovosa1->Checked=false;
-	//technologickprocesy1->Checked=false;
-	DuvodUlozit(true);
-	scListGroupNastavProjektu->Visible=false;
-	scListGroupKnihovObjektu->Visible=false;
-	PopupMenu1->AutoPopup=false;
-	Timer_animace->Enabled=false;
-	ButtonPLAY->Visible=false;
-	CheckBoxVytizenost->Visible=false;
-	CheckBoxAnimovatSG->Visible=false;
-	CheckBoxPALCE->Visible=false;
-	CheckBoxVymena_barev->Visible=false;
-	Label_zamerovac->Visible=false;
-	ComboBoxODmin->Visible=false;
-	ComboBoxDOmin->Visible=false;
-	rComboBoxKrok->Visible=false;
-	LabelRoletka->Visible=false;
-	CheckBox_pouzit_zadane_kapacity->Visible=false;
-	g.ShowGrafy(false);
-	ComboBoxCekani->Visible=false;
-	Invalidate();
+//	MOD=REZERVY;
+//	ESC();//zruší případně rozdělanou akci
+//	SB("časové rezervy",1);
+//	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
+//	Timer_simulace->Enabled=false;
+//	//testovnkapacity1->Checked=false;
+//	//editacelinky1->Checked=false;
+//	//casoverezervy1->Checked=true;
+//	//simulace1->Checked=false;
+//	//casovosa1->Checked=false;
+//	//technologickprocesy1->Checked=false;
+//	DuvodUlozit(true);
+//	scListGroupNastavProjektu->Visible=false;
+//	scListGroupKnihovObjektu->Visible=false;
+//	PopupMenu1->AutoPopup=false;
+//	Timer_animace->Enabled=false;
+//	ButtonPLAY->Visible=false;
+//	CheckBoxVytizenost->Visible=false;
+//	CheckBoxAnimovatSG->Visible=false;
+//	CheckBoxPALCE->Visible=false;
+//	CheckBoxVymena_barev->Visible=false;
+//	Label_zamerovac->Visible=false;
+//	ComboBoxODmin->Visible=false;
+//	ComboBoxDOmin->Visible=false;
+//	rComboBoxKrok->Visible=false;
+//	LabelRoletka->Visible=false;
+//	CheckBox_pouzit_zadane_kapacity->Visible=false;
+//	//ZDM g.ShowGrafy(false);
+//	ComboBoxCekani->Visible=false;
+//	Invalidate();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::casovosa1Click(TObject *Sender)
 {
-	if(d.v.VOZIKY->dalsi->cesta==NULL)
-	ShowMessage("Pozor, nejdříve je nutné v definici zakázek zadat plán výroby!");
-	else
+//ZDM 	if(d.v.VOZIKY->dalsi->cesta==NULL)
+//ZDM 	ShowMessage("Pozor, nejdříve je nutné v definici zakázek zadat plán výroby!");
+//ZDM 	else
 	{ if(MOD!=CASOVAOSA)
 		{
 			MOD=CASOVAOSA;
@@ -676,7 +679,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	d.PosunT.y=0;
 	zneplatnit_minulesouradnice();
 	CheckBoxPALCE->Visible=false;
-	g.ShowGrafy(false);
+	//ZDM g.ShowGrafy(false);
 	DuvodUlozit(true);
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
@@ -693,7 +696,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	//filtrace
 	d.TP.K=0.5;//Krok po kolika minutach se bude zobrazovat
 	d.TP.OD=0;//od které min se proces začne vypisovat
-	d.TP.KZ=d.v.vrat_nejpozdejsi_konec_zakazek();//konec zakazky v min
+//ZDM 	d.TP.KZ=d.v.vrat_nejpozdejsi_konec_zakazek();//konec zakazky v min
 	d.TP.DO=d.TP.KZ;
 	d.TP.Nod=0;//rozmezí Jaký se vypíše vozik,
 	d.TP.Ndo=0;//rozmezí Jaký se vypíše vozik, pokud bude 0 vypisují se všechny
@@ -714,7 +717,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	rComboBoxKrok->Left=ButtonPLAY->Left+ButtonPLAY->Width+20;
 
 
-	double konec_cas=d.v.vrat_nejpozdejsi_konec_zakazek()/10;
+	double konec_cas=0;//ZDM d.v.vrat_nejpozdejsi_konec_zakazek()/10;
 	for (int i = 1; i <= 10; i++) {
 		int val=konec_cas*i;
 		ComboBoxODmin->Items->Add(val);
@@ -753,14 +756,14 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	//simulace1->Checked=true;
 	//casovosa1->Checked=false;
 	//CheckBoxPALCE->Visible=false;
-	g.ShowGrafy(false);
+	//ZDM g.ShowGrafy(false);
 	DuvodUlozit(true);
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
 	PopupMenu1->AutoPopup=false;
 	Button3->Visible=true;
 	d.cas=0;
-	d.priprav_palce();
+	//ZDM d.priprav_palce();
 	Timer_simulace->Enabled=true;
 	Timer_neaktivity->Enabled=false;
 	Timer_animace->Enabled=false;
@@ -784,7 +787,6 @@ void __fastcall TForm1::PopupMenu1Popup(TObject *Sender)
 	switch(MOD)
 	{
 		case SCHEMA:
-		case TESTOVANI:
 			Nastvitparametry1->Visible=true;
 			Smazat1->Visible=true;
 			Zobrazitparametry1->Visible=false;
@@ -795,7 +797,7 @@ void __fastcall TForm1::PopupMenu1Popup(TObject *Sender)
 			Oddalit2->Visible=true;
 			Vybratoknem2->Visible=true;
 			break;
-		case REZERVY:Zobrazitparametry1->Visible=false;break;
+		//case REZERVY:Zobrazitparametry1->Visible=false;break;
 		case CASOVAOSA:
 		{
 			Nastvitparametry1->Visible=false;
@@ -864,14 +866,13 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
 	//vykreslení gridu
-	if(grid && Zoom>0.5 && !antialiasing && MOD!=REZERVY && MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
+	if(grid && Zoom>0.5 && !antialiasing && /*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
 
 	//jednoltivé mody
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
 	switch(MOD)
 	{
-		case SCHEMA: /*záměrně tu není break...*/ ///vykreslování všech vektorů
-		case TESTOVANI: ////vykreslování všech vektorů
+		case SCHEMA://vykreslování všech vektorů ve schématu
 		{
 			if(!antialiasing)d.vykresli_vektory(Canvas);
 			else
@@ -900,48 +901,48 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
 		}
-		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
-		case CASOVAOSA:
-		{
-			/* v přípravě	if(!antialiasing)d.vykresli_casove_osy(Canvas);
-			else
-			{
-				Cantialising a;
-				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;
-				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-				d.vykresli_casove_osy(bmp_in->Canvas);
-				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Canvas->Draw(0,0,a.antialiasing(bmp_grid,bmp_in));
-				delete (bmp_grid);bmp_grid=NULL;//velice nutné
-				delete (bmp_in);bmp_in= NULL;//velice nutné
-			}
-			break;
-			*/
-			if(SplitViewOpen==false)
-			{
-				//d.vykresli_casove_osy(Canvas);  //puvodni konstrukce ověřit proč nemůže být použita a místo toho se používá ta bitmapa
-				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-				bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
-				d.vykresli_casove_osy(bmp_in->Canvas);
-				Canvas->Draw(0,RzToolbar1->Height,bmp_in);
-				delete (bmp_in);//velice nutné
-			}
-			d.vykresli_svislici_na_casove_osy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-			break;
-		}
-		case TECHNOPROCESY:	//d.vykresli_technologicke_procesy(Canvas); break; puvodni konstrukce
-		if(SplitViewOpen==false)
-		{
-			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-			bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
-			d.vykresli_technologicke_procesy(bmp_in->Canvas);
-			Canvas->Draw(0,RzToolbar1->Height,bmp_in);
-			delete (bmp_in);//velice nutné
-		}
-			break;
-		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
+//		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
+//		case CASOVAOSA:
+//		{
+//			/* v přípravě	if(!antialiasing)d.vykresli_casove_osy(Canvas);
+//			else
+//			{
+//				Cantialising a;
+//				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;
+//				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//				d.vykresli_casove_osy(bmp_in->Canvas);
+//				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+//				Canvas->Draw(0,0,a.antialiasing(bmp_grid,bmp_in));
+//				delete (bmp_grid);bmp_grid=NULL;//velice nutné
+//				delete (bmp_in);bmp_in= NULL;//velice nutné
+//			}
+//			break;
+//			*/
+//			if(SplitViewOpen==false)
+//			{
+//				//d.vykresli_casove_osy(Canvas);  //puvodni konstrukce ověřit proč nemůže být použita a místo toho se používá ta bitmapa
+//				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//				bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
+//				d.vykresli_casove_osy(bmp_in->Canvas);
+//				Canvas->Draw(0,RzToolbar1->Height,bmp_in);
+//				delete (bmp_in);//velice nutné
+//			}
+//			d.vykresli_svislici_na_casove_osy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+//			break;
+//		}
+//		case TECHNOPROCESY:	//d.vykresli_technologicke_procesy(Canvas); break; puvodni konstrukce
+//		if(SplitViewOpen==false)
+//		{
+//			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//			bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
+//			d.vykresli_technologicke_procesy(bmp_in->Canvas);
+//			Canvas->Draw(0,RzToolbar1->Height,bmp_in);
+//			delete (bmp_in);//velice nutné
+//		}
+//			break;
+//		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
 }
 //---------------------------------------------------------------------------
@@ -1163,7 +1164,7 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y)
 {
-	 if(Button==mbLeft && MOD!=REZERVY)//je stisknuto levé tlačítko myši
+	 if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
 	 {
 			stisknute_leve_tlacitko_mysi=true;
 			vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
@@ -1171,7 +1172,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			//aktivuje POSUN OBJEKTU,pokud je kliknuto v místě objektu (v jeho vnitřku)
 			if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
 			{
-				if(MOD==SCHEMA || MOD==TESTOVANI)
+				if(MOD==SCHEMA)
 				{
 					pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 					if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
@@ -1189,7 +1190,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 					int W=scSplitView_LEFTTOOLBAR->Width;
 					if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
-					short H=scLabel1->Height;// zmena designu RzToolbar1->Height;
+					short H=scLabel_titulek->Height;// zmena designu RzToolbar1->Height;
 					int Gh=vrat_max_vysku_grafu();
 					Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
 					Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
@@ -1213,16 +1214,16 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			{
 				//case EDITACE:break;
 				//case TESTOVANI:break;
-				case REZERVY:break;
+				//case REZERVY:break;
 				case CASOVAOSA:
 				{                              //min                  //vozik
-					proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN,ceil((Y+d.PosunT.y-d.KrokY/2-RzToolbar1->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+					//ZDM proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN,ceil((Y+d.PosunT.y-d.KrokY/2-RzToolbar1->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
 					if(proces_pom!=NULL && !d.mod_vytizenost_objektu)Zobrazitparametry1->Visible=true;
 					else Zobrazitparametry1->Visible=false;
 				}break;
 				case TECHNOPROCESY:break;
 				case SIMULACE:break;
-				default://pro editaci a testovani
+				default://pro SCHEMA
 				{
 					//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt //přídáno 19.4.2017 - zeefktivnění
 					pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
@@ -1250,9 +1251,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 
 	if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
 	{
-			d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
+			//ZDM d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			d.vykresli_svislici_na_casove_osy(Canvas,X,Y);
+			//ZDM d.vykresli_svislici_na_casove_osy(Canvas,X,Y);
 			SB(UnicodeString((X+d.PosunT.x)/d.PX2MIN)+" min",6);//výpis času na ose procesů dle kurzoru
 			//SB(UnicodeString(minule_souradnice_kurzoru.x)+" "+UnicodeString(akt_souradnice_kurzoru_PX.x));
 			//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
@@ -1618,7 +1619,7 @@ void __fastcall TForm1::Posouvat1Click(TObject *Sender)
 {
 	Akce=PAN;
 	kurzor(pan);
-	zobraz_tip("TIP: Posun obrazu lze také vykonat pomocí stisknutého mezerníku a posunem myši při stisknutém levém tlačítku.");
+	zobraz_tip("TIP: Posun obrazu lze také vykonat pomocí stisknutého levého tlačítka myší a posunem myši požadovaným směrem.");
 }
 void __fastcall TForm1::Posouvat2Click(TObject *Sender)
 {
@@ -1712,7 +1713,8 @@ void TForm1::ESC()
 	//vymaže, překreslí, odznačí provizorní lini
 	if(Akce==MOVE)d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);
 	if(Akce==ADD)
-	{ if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+	{
+		if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 		else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
 	}
 	pom=NULL;
@@ -1987,7 +1989,11 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 void TForm1::zobraz_tip(UnicodeString text)
 {
 	Canvas->Font->Color=clRed;
-	Canvas->TextOutW(scSplitView_LEFTTOOLBAR->Width+10,scGPPanel_statusbar->Top-scGPPanel_statusbar->Height,text);
+	SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
+	Canvas->Font->Size=9;
+	Canvas->Font->Name="Arial";
+	Canvas->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+	Canvas->TextOutW(ClientWidth-Canvas->TextWidth(text)-10,Form1->scGPPanel_statusbar->Top-20,text);
 	Canvas->Font->Color=clBlack;
 }
 //---------------------------------------------------------------------------
@@ -2086,38 +2092,39 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 //zobrazí paramety jednoho procesu na časových osách
 void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 {
-	double prozatim_delka_voziku=PP.delka_voziku;
-	AnsiString rezim="";
-	AnsiString delka="v tuto chvíli neznamá";
-	AnsiString delka_dop=delka;
-	switch(proces_pom->cesta->objekt->rezim)
-	{
-			case 0:rezim="stop & go";break;
-			case 1:rezim="kontinuální";delka=proces_pom->cesta->RD*proces_pom->cesta->CT;delka_dop=delka;break;
-			case 2:
-				rezim="postprocesní";
-				delka=proces_pom->cesta->objekt->kapacita_objektu*prozatim_delka_voziku;
-				delka_dop=proces_pom->cesta->objekt->dop_kapacita_objektu*prozatim_delka_voziku;
-			break;
-	}
-
-	S(/*"n_procesu: "+AnsiString(proces_pom->n)+*/
-	"číslo vozíku v zakázce: "+AnsiString(proces_pom->n_v_zakazce)+
-	"\nnázev: "+AnsiString(proces_pom->cesta->objekt->name)+
-	"\nzkratka: "+AnsiString(proces_pom->cesta->objekt->short_name)+
-	"\nrežim: "+AnsiString(rezim)+
-	"\nrychlost dopravníku: "+AnsiString(proces_pom->cesta->RD)+" m/min"+
-	"\nrozteč palců: "+AnsiString(proces_pom->cesta->R)+" mm"+
-	"\nstřední hodnota doby čekání na palec: "+AnsiString(m.cekani_na_palec(0,proces_pom->cesta->R,proces_pom->cesta->RD,1))+" min"+
-	"\nmax. hodnota doby čekání na palec: "+AnsiString(proces_pom->cesta->R/1000.0/proces_pom->cesta->RD)+" min"+
-	"\nTpoc: "+AnsiString(proces_pom->Tpoc)+" | Tkon: "+AnsiString(proces_pom->Tkon)+" | Tdor: "+AnsiString(proces_pom->Tdor)+" | Tpre: "+AnsiString(proces_pom->Tpre)+" | Tcek: "+AnsiString(proces_pom->Tcek)+
-	"\nPT: "+AnsiString(proces_pom->Tkon-proces_pom->Tpoc)+" min"+
-	"\nMT: "+AnsiString(proces_pom->Tpre-proces_pom->Tkon)+" min"+
-	"\nWT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpre)+" min"+
-	"\nCT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpoc)+" min"+
-	"\nzadaný CT: "+AnsiString(proces_pom->cesta->CT)+" min"+
-	"\ndoporučená kapacita: "+AnsiString(proces_pom->cesta->objekt->dop_kapacita_objektu)+", délka objektu: "+delka_dop+" m"+
-	"\npožadovaná kapacita: "+AnsiString(proces_pom->cesta->objekt->kapacita_objektu)+	", délka objektu: "+delka+" m");
+//ZDM
+//	double prozatim_delka_voziku=PP.delka_voziku;
+//	AnsiString rezim="";
+//	AnsiString delka="v tuto chvíli neznamá";
+//	AnsiString delka_dop=delka;
+//	switch(proces_pom->cesta->objekt->rezim)
+//	{
+//			case 0:rezim="stop & go";break;
+//			case 1:rezim="kontinuální";delka=proces_pom->cesta->RD*proces_pom->cesta->CT;delka_dop=delka;break;
+//			case 2:
+//				rezim="postprocesní";
+//				delka=proces_pom->cesta->objekt->kapacita_objektu*prozatim_delka_voziku;
+//				delka_dop=proces_pom->cesta->objekt->dop_kapacita_objektu*prozatim_delka_voziku;
+//			break;
+//	}
+//
+//	S(/*"n_procesu: "+AnsiString(proces_pom->n)+*/
+//	"číslo vozíku v zakázce: "+AnsiString(proces_pom->n_v_zakazce)+
+//	"\nnázev: "+AnsiString(proces_pom->cesta->objekt->name)+
+//	"\nzkratka: "+AnsiString(proces_pom->cesta->objekt->short_name)+
+//	"\nrežim: "+AnsiString(rezim)+
+//	"\nrychlost dopravníku: "+AnsiString(proces_pom->cesta->RD)+" m/min"+
+//	"\nrozteč palců: "+AnsiString(proces_pom->cesta->R)+" mm"+
+//	"\nstřední hodnota doby čekání na palec: "+AnsiString(m.cekani_na_palec(0,proces_pom->cesta->R,proces_pom->cesta->RD,1))+" min"+
+//	"\nmax. hodnota doby čekání na palec: "+AnsiString(proces_pom->cesta->R/1000.0/proces_pom->cesta->RD)+" min"+
+//	"\nTpoc: "+AnsiString(proces_pom->Tpoc)+" | Tkon: "+AnsiString(proces_pom->Tkon)+" | Tdor: "+AnsiString(proces_pom->Tdor)+" | Tpre: "+AnsiString(proces_pom->Tpre)+" | Tcek: "+AnsiString(proces_pom->Tcek)+
+//	"\nPT: "+AnsiString(proces_pom->Tkon-proces_pom->Tpoc)+" min"+
+//	"\nMT: "+AnsiString(proces_pom->Tpre-proces_pom->Tkon)+" min"+
+//	"\nWT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpre)+" min"+
+//	"\nCT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpoc)+" min"+
+//	"\nzadaný CT: "+AnsiString(proces_pom->cesta->CT)+" min"+
+//	"\ndoporučená kapacita: "+AnsiString(proces_pom->cesta->objekt->dop_kapacita_objektu)+", délka objektu: "+delka_dop+" m"+
+//	"\npožadovaná kapacita: "+AnsiString(proces_pom->cesta->objekt->kapacita_objektu)+	", délka objektu: "+delka+" m");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
@@ -2139,16 +2146,18 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 		Form_parametry->vykresli_vozik(Form_parametry->RadioButton_na_delku->Checked);//nutno zde
 		Form_parametry->Edit_name->Text=p->name;
 		Form_parametry->Edit_shortname->Text=p->short_name;
-		Form_parametry->Label_TT_hodnota->Caption=p->TTo;
-		Form_parametry->Label_CT_hodnota->Caption=p->CT;
-		Form_parametry->Label_kapacita_hodnota->Caption=p->kapacita_objektu;
+		//ZDM Form_parametry->Label_TT_hodnota->Caption=p->TTo;
+		//ZDM Form_parametry->Label_CT_hodnota->Caption=p->CT;
+		Form_parametry->Label_kapacita_hodnota->Caption=p->kapacita;
 		//nefunguje Form_parametry->ComboBox_dopravnik->ItemIndex=p->typ_dopravniku;
-		Form_parametry->dopravnik_typ=p->typ_dopravniku;
-		Form_parametry->Label_delka_prepravniku_hodnota->Caption=p->delka_dopravniku;
-		Form_parametry->Edit_vzdalenost_voziku->Text=p->vzdalenost;
-		if(p->orientace_voziku==0)Form_parametry->RadioButton_na_delku->Checked=true;else Form_parametry->RadioButton_na_sirku->Checked=true;
-		if(p->techn_parametry!="")Form_parametry->ValueListEditor->Strings->SetText(p->techn_parametry.c_str());
-		Form_parametry->ComboBox_druh_objektu->ItemIndex=p->rezim;if(p->techn_parametry=="")Form_parametry->setForm4Rezim(p->rezim,true);else Form_parametry->setForm4Rezim(p->rezim,false);
+		//ZDM Form_parametry->dopravnik_typ=p->typ_dopravniku;
+		//ZDM Form_parametry->Label_delka_prepravniku_hodnota->Caption=p->delka_dopravniku;
+		//ZDM Form_parametry->Edit_vzdalenost_voziku->Text=p->vzdalenost;
+		//ZDM if(p->orientace_voziku==0)Form_parametry->RadioButton_na_delku->Checked=true;else Form_parametry->RadioButton_na_sirku->Checked=true;
+		//ZDM if(p->techn_parametry!="")Form_parametry->ValueListEditor->Strings->SetText(p->techn_parametry.c_str());
+		//ZDM Form_parametry->ComboBox_druh_objektu->ItemIndex=p->rezim;if(p->techn_parametry=="")
+		//ZDM Form_parametry->setForm4Rezim(p->rezim,true);
+		//ZDM else Form_parametry->setForm4Rezim(p->rezim,false);
 
 		if(idOK==Form_parametry->ShowModal())
 		{
@@ -2157,15 +2166,15 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					//navrácení hodnot z Form_Parametry, v případě stisku OK
 					p->name=Form_parametry->Edit_name->Text;
 					p->short_name=Form_parametry->Edit_shortname->Text;
-					p->TTo=Form_parametry->Label_TT_hodnota->Caption.ToDouble();
-					p->CT=Form_parametry->Label_CT_hodnota->Caption.ToDouble();
-					p->kapacita_objektu=Form_parametry->Label_kapacita_hodnota->Caption.ToDouble();
-					p->typ_dopravniku=Form_parametry->ComboBox_dopravnik->ItemIndex;
-					p->delka_dopravniku=Form_parametry->Label_delka_prepravniku_hodnota->Caption.ToDouble();
-					p->vzdalenost=Form_parametry->Edit_vzdalenost_voziku->Text.ToDouble();
-					if(Form_parametry->RadioButton_na_delku->Checked)p->orientace_voziku=0;else p->orientace_voziku=1;
+					//ZDM p->TTo=Form_parametry->Label_TT_hodnota->Caption.ToDouble();
+					//ZDM p->CT=Form_parametry->Label_CT_hodnota->Caption.ToDouble();
+					p->kapacita=Form_parametry->Label_kapacita_hodnota->Caption.ToDouble();
+					//ZDM p->typ_dopravniku=Form_parametry->ComboBox_dopravnik->ItemIndex;
+					//ZDM p->delka_dopravniku=Form_parametry->Label_delka_prepravniku_hodnota->Caption.ToDouble();
+					//ZDM p->vzdalenost=Form_parametry->Edit_vzdalenost_voziku->Text.ToDouble();
+					//ZDM if(Form_parametry->RadioButton_na_delku->Checked)p->orientace_voziku=0;else p->orientace_voziku=1;
 					p->rezim=Form_parametry->ComboBox_druh_objektu->ItemIndex;
-					p->techn_parametry=Form_parametry->ValueListEditor->Strings->GetText();
+					//ZDM p->techn_parametry=Form_parametry->ValueListEditor->Strings->GetText();
 
 					DuvodUlozit(true);
 					REFRESH();
@@ -2182,9 +2191,10 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 //volá dialog kalkulátor TT
 void __fastcall TForm1::Button_kalkulatorTTClick(TObject *Sender)
 {
-	Form_TT_kalkulator->Left=0;//akt_souradnice_kurzoru_PX.x+0;
-	Form_TT_kalkulator->Top=0+vyska_menu+RzToolbar1->Height;//akt_souradnice_kurzoru_PX.y+0;
-	Form_TT_kalkulator->ShowModal();
+//ZDM
+//	Form_TT_kalkulator->Left=0;//akt_souradnice_kurzoru_PX.x+0;
+//	Form_TT_kalkulator->Top=0+vyska_menu+RzToolbar1->Height;//akt_souradnice_kurzoru_PX.y+0;
+//	Form_TT_kalkulator->ShowModal();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Edit_takt_timeChange(TObject *Sender)
@@ -2225,18 +2235,20 @@ void __fastcall TForm1::Edit_pocet_vozikuChange(TObject *Sender)
 void __fastcall TForm1::Button_vozik_parametry_OLDClick(TObject *Sender)
 {
 //	if(d.v.VOZIKY->dalsi->cesta==NULL)
-  //	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
-	Form_vozik_nastaveni->Left=0;
-	Form_vozik_nastaveni->Top=0+vyska_menu+RzToolbar1->Height;
-	if(IDOK==Form_vozik_nastaveni->ShowModal())DuvodUlozit(true);
+//	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
+	//ZDM
+//	Form_vozik_nastaveni->Left=0;
+//	Form_vozik_nastaveni->Top=0+vyska_menu+RzToolbar1->Height;
+//	if(IDOK==Form_vozik_nastaveni->ShowModal())DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
 //volá dialog k nastavení dopravníků
 void __fastcall TForm1::Button_dopravnik_parametry_OLDClick(TObject *Sender)
 {
-	Form_dopravnik->Left=0;
-	Form_dopravnik->Top=0+vyska_menu+RzToolbar1->Height;
-	if(IDOK==Form_dopravnik->ShowModal())DuvodUlozit(true);
+//ZDM
+//	Form_dopravnik->Left=0;
+//	Form_dopravnik->Top=0+vyska_menu+RzToolbar1->Height;
+//	if(IDOK==Form_dopravnik->ShowModal())DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2263,7 +2275,8 @@ void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 		duvod_k_ulozeni=true;
 		Ulozit_soubor();
 		if(FileName.Pos(".tisplTemp")){FileName=origFileName;DuvodUlozit(true);}
-		if(Form1->Caption.Pos(" - ["))Form1->Caption=Form1->Caption.SubString(1,Form1->Caption.Pos(" - [")-1)+" - ["+FileName+"]"+" | "+Edice_caption;else Form1->Caption=Form1->Caption+" - ["+FileName+"]"+" | "+Edice_caption;
+		AnsiString FileName_short=ms.delete_repeat_all(FileName,"\\");
+		if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;
 	}
 	else//stisknuto storno
 	stisknuto_storno=true;
@@ -2289,18 +2302,18 @@ void TForm1::Ulozit_soubor()
 //zapis hlavičky souboru
 void TForm1::vytvor_hlavicku_souboru()
 {
-		d.v.File_hlavicka.Verze=1;
+		d.v.File_hlavicka.Verze=0.9;
 		d.v.File_hlavicka.Mod=MOD;
 		d.v.File_hlavicka.Zoom=Zoom;
 		d.v.File_hlavicka.PosunutiX=Posun.x;
 		d.v.File_hlavicka.PosunutiY=Posun.y;
-		d.v.File_hlavicka.TT=PP.TT;
-		d.v.File_hlavicka.hodin=PP.hodin;
-		d.v.File_hlavicka.smen=PP.smen;
-		d.v.File_hlavicka.dni=PP.dni;
-		d.v.File_hlavicka.produktu_vozik=PP.produktu_vozik;
-		d.v.File_hlavicka.delka_voziku=PP.delka_voziku;
-		d.v.File_hlavicka.sirka_voziku=PP.sirka_voziku;
+		d.v.File_hlavicka.cas_start=d.v.PP.cas_start;
+		d.v.File_hlavicka.mnozstvi=d.v.PP.mnozstvi;
+		d.v.File_hlavicka.hod_den=d.v.PP.hod_den;
+		d.v.File_hlavicka.dni_rok=d.v.PP.dni_rok;
+		d.v.File_hlavicka.efektivita=d.v.PP.efektivita;
+		d.v.File_hlavicka.delka_voziku=d.v.PP.delka_voziku;
+		d.v.File_hlavicka.typ_voziku=d.v.PP.typ_voziku;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2319,7 +2332,7 @@ void __fastcall TForm1::OtevritClick(TObject *Sender)
     }
 	}
   else
-  OtevritSoubor();
+	OtevritSoubor();
 }
 //---------------------------------------------------------------------------
 void TForm1::OtevritSoubor()//realizuje otevření opendialogu s následným voláním realizace samotného otevření souboru
@@ -2327,10 +2340,10 @@ void TForm1::OtevritSoubor()//realizuje otevření opendialogu s následným vol
   OpenDialog1->Title="Otevřít soubor";
 	OpenDialog1->DefaultExt="*.tispl";
 	OpenDialog1->Filter="Soubory formátu TISPL (*.tispl)|*.tispl";
-  if(OpenDialog1->Execute())
-  {
-    //zavolá nový soubor/smaže stávajicí
-    NovySouborClick(this);
+	if(OpenDialog1->Execute())
+	{
+		//zavolá nový soubor/smaže stávajicí
+		NovySouborClick(this);
 
 		//otevrení souboru
 		OtevritSoubor(OpenDialog1->FileName);
@@ -2353,33 +2366,32 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 		case 1://Soubor byl nalezen
 		{
 			FileName=soubor;//pro globální využití
-			if(Form1->Caption.Pos(" - ["))Form1->Caption=Form1->Caption.SubString(1,Form1->Caption.Pos(" - [")-1)+" - ["+FileName+"]"+" | "+Edice_caption;else Form1->Caption=Form1->Caption+" - ["+FileName+"]"+" | "+Edice_caption;
+			AnsiString FileName_short=ms.delete_repeat_all(FileName,"\\");
+			if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"+" | "/*+Edice_caption*/;
 			//načtení dat z hlavičky souboru
 			Zoom=d.v.File_hlavicka.Zoom;
 			Posun.x=d.v.File_hlavicka.PosunutiX;
 			Posun.y=d.v.File_hlavicka.PosunutiY;
-			PP.TT=d.v.File_hlavicka.TT;
-		 //	Edit_takt_time->Text=PP.TT;
-			PP.hodin=d.v.File_hlavicka.hodin;
-			PP.smen=d.v.File_hlavicka.smen;
-			PP.dni=d.v.File_hlavicka.dni;
-			PP.produktu_vozik=d.v.File_hlavicka.produktu_vozik;
-			PP.delka_voziku=d.v.File_hlavicka.delka_voziku;
-			PP.sirka_voziku=d.v.File_hlavicka.sirka_voziku;
+			d.v.PP.cas_start=d.v.File_hlavicka.cas_start;
+			d.v.PP.mnozstvi=d.v.File_hlavicka.mnozstvi;
+			d.v.PP.hod_den=d.v.File_hlavicka.hod_den;
+			d.v.PP.dni_rok=d.v.File_hlavicka.dni_rok;
+			d.v.PP.efektivita=d.v.File_hlavicka.efektivita;
+			d.v.PP.delka_voziku=d.v.File_hlavicka.delka_voziku;
+			d.v.PP.typ_voziku=d.v.File_hlavicka.typ_voziku;
 			MOD=d.v.File_hlavicka.Mod;
 			switch(MOD)
 			{
 					case NO:REFRESH();break; //překreslí obraz pro ostatní případy
 					case SCHEMA: 	editacelinky1Click(this);break;
-					case TESTOVANI:	testovnkapacity1Click(this);break;
-					case REZERVY:		casoverezervy1Click(this);break;
-					case CASOVAOSA:	editacelinky1Click(this);MOD=SCHEMA;/*casovosa1Click(this);*/break;
-					case TECHNOPROCESY:editacelinky1Click(this);MOD=SCHEMA;break;
-					case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
+					//ZDM case TESTOVANI:	testovnkapacity1Click(this);break;
+					//ZDM case REZERVY:		casoverezervy1Click(this);break;
+					//ZDM case CASOVAOSA:	editacelinky1Click(this);MOD=SCHEMA;/*casovosa1Click(this);*/break;
+					//ZDM case TECHNOPROCESY:editacelinky1Click(this);MOD=SCHEMA;break;
+					//ZDM case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
 			}
 			DuvodUlozit(false);
 			//aktualizace statusbaru
-			//SB(Zoom,2); už se používá jinak
 			on_change_zoom_change_scGPTrackBar();
 
 			return 1;
@@ -2397,7 +2409,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Obnovitzezlohy1Click(TObject *Sender)
 {
-  scSplitView_MENU->Opened=false;
+	scSplitView_MENU->Opened=false;
 	OpenDialog1->Title="Otevřít soubor ze zálohy";
 	OpenDialog1->DefaultExt="*tispl.bac_"+get_user_name()+"_"+get_computer_name();
 	AnsiString nazev="Soubory zálohy TISPL (*.tispl.bac_"+get_user_name()+"_"+get_computer_name()+")|*.tispl.bac_"+get_user_name()+"_"+get_computer_name();
@@ -2603,8 +2615,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 
 			switch(MOD)//uloží obraz dle daného modu zobrazení
 			{
-				case SCHEMA: //zaměrně tu není break;
-				case TESTOVANI:
+				case SCHEMA:
 				if(!antialiasing)d.vykresli_vektory(Bitmap->Canvas);//vykreslování všech vektorů
 				else
 				{
@@ -2620,7 +2631,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 					delete (bmp_in);bmp_in=NULL;//velice nutné
 				}
 				break;
-				case REZERVY: d.vykresli_graf_rezervy(Bitmap->Canvas);break;//vykreslení grafu rezerv
+				//ZDM case REZERVY: d.vykresli_graf_rezervy(Bitmap->Canvas);break;//vykreslení grafu rezerv
 				case CASOVAOSA:	nastaveni_grafickeho_vystupu(Bitmap);break;
 			}
 
@@ -2697,7 +2708,7 @@ void TForm1::nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap)
 	 Bitmap_MARO->Height=d.HeightCanvasCasoveOsy;
 	 TPointD puvPosunT=d.PosunT;//zazálohování aktuálního posunu
 	 d.PosunT.x=0;d.PosunT.y=0;//provizorní navrácení na výchozí pozici
-	 d.vykresli_casove_osy(Bitmap_MARO->Canvas);
+	 //ZDM d.vykresli_casove_osy(Bitmap_MARO->Canvas);
 	 d.PosunT=puvPosunT;//navrácení do stavu, aby uživatel posun do výchozí pozice nezaznamenal
 
 	 //vstupně/výstupní bitmapa
@@ -2836,11 +2847,11 @@ void __fastcall TForm1::Timer_simulaceTimer(TObject *Sender)
 			ukaz=d.v.VOZIKY->dalsi;//přeskočí hlavičku
 			while (ukaz!=NULL)
 			{
-				if(ukaz->stav==-1){ukaz->segment=d.v.OBJEKTY->dalsi; ukaz->stav=1;break;}//vozík bude čekat na "oranžovou" na palec
+				//ZDM if(ukaz->stav==-1){ukaz->segment=d.v.OBJEKTY->dalsi; ukaz->stav=1;break;}//vozík bude čekat na "oranžovou" na palec
 				ukaz=ukaz->dalsi;//posun na další prvek
 			}
 	 }
-	 d.vykresli_simulaci(Canvas);
+	 //ZDM d.vykresli_simulaci(Canvas);
 	 d.cas++;
 }
 //---------------------------------------------------------------------------
@@ -2863,7 +2874,7 @@ void __fastcall TForm1::Button3Click(TObject *Sender)
 	ukaz=d.v.VOZIKY->dalsi;//přeskočí hlavičku
 	while (ukaz!=NULL)
 	{
-			if(ukaz->stav==0){ukaz->segment=d.v.OBJEKTY->dalsi; ukaz->stav=1;break;}//pustí vozík
+			//ZDM if(ukaz->stav==0){ukaz->segment=d.v.OBJEKTY->dalsi; ukaz->stav=1;break;}//pustí vozík
 			ukaz=ukaz->dalsi;//posun na další prvek
 	}
 
@@ -2890,16 +2901,18 @@ void __fastcall TForm1::Button4Click(TObject *Sender)
 
 void __fastcall TForm1::Button5Click(TObject *Sender)
 {
-	Cvektory::TObjekt *ukaz=d.v.OBJEKTY->predchozi->predchozi;//přeskočí hlavičku
-	if(ukaz->stav==0)ukaz->stav=1;
-	else ukaz->stav=0;
+//ZDM
+//	Cvektory::TObjekt *ukaz=d.v.OBJEKTY->predchozi->predchozi;//přeskočí hlavičku
+//	ZDM if(ukaz->stav==0)ukaz->stav=1;
+//	else ukaz->stav=0;
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button6Click(TObject *Sender)
 {
-	Cvektory::TVozik *ukaz=d.v.VOZIKY->dalsi;//přeskočí hlavičku
-	if(ukaz->stav==0)ukaz->stav=1;
+	//ZDM
+//	Cvektory::TVozik *ukaz=d.v.VOZIKY->dalsi;//přeskočí hlavičku
+//	if(ukaz->stav==0)ukaz->stav=1;
 }
 //---------------------------------------------------------------------------
 
@@ -2923,8 +2936,9 @@ void __fastcall TForm1::Button7Click(TObject *Sender)
 
 void __fastcall TForm1::Button8Click(TObject *Sender)
 {
-	ShowMessage("Délka dopravníku je: "+AnsiString(d.v.delka_dopravniku(d.v.OBJEKTY))+" metrů");
-	Memo1->Lines->Add("Délka dopravníku je: "+AnsiString(d.v.delka_dopravniku(d.v.OBJEKTY))+" metrů");
+//ZDM
+//	ShowMessage("Délka dopravníku je: "+AnsiString(d.v.delka_dopravniku(d.v.OBJEKTY))+" metrů");
+//	Memo1->Lines->Add("Délka dopravníku je: "+AnsiString(d.v.delka_dopravniku(d.v.OBJEKTY))+" metrů");
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button9Click(TObject *Sender)
@@ -2968,26 +2982,26 @@ void __fastcall TForm1::Button9Click(TObject *Sender)
 
 					 //	Pan_bmp->SaveToFile("test.bmp");
 
-		Memo1->Lines->Add("vypis spojáku PROCESY:");
-		Cvektory::TProces *ukaz=d.v.PROCESY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-		while (ukaz!=NULL)
-		{
-			//akce s ukazatelem
-      //if(ukaz->vozik->n==2)
-			Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" | n_v_zakazce: ")+ukaz->n_v_zakazce+AnsiString(" | Tpoc: ")+ukaz->Tpoc+AnsiString(" | Tkon: ")+ukaz->Tkon+AnsiString(" | Tdor: ")+ukaz->Tdor+AnsiString(" | Tpre: ")+ukaz->Tpre+AnsiString(" | Tcek: ")+ukaz->Tcek+AnsiString(" | Shortname: ")+ukaz->cesta->objekt->short_name);
-			//posun na další prvek v seznamu
-			ukaz=ukaz->dalsi;
-		}
+//		Memo1->Lines->Add("vypis spojáku PROCESY:");
+//		Cvektory::TProces *ukaz=d.v.PROCESY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+//		while (ukaz!=NULL)
+//		{
+//			//akce s ukazatelem
+//			//if(ukaz->vozik->n==2)
+//			Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" | n_v_zakazce: ")+ukaz->n_v_zakazce+AnsiString(" | Tpoc: ")+ukaz->Tpoc+AnsiString(" | Tkon: ")+ukaz->Tkon+AnsiString(" | Tdor: ")+ukaz->Tdor+AnsiString(" | Tpre: ")+ukaz->Tpre+AnsiString(" | Tcek: ")+ukaz->Tcek+AnsiString(" | Shortname: ")+ukaz->cesta->objekt->short_name);
+//			//posun na další prvek v seznamu
+//			ukaz=ukaz->dalsi;
+//		}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button10Click(TObject *Sender)
 {
-	TPointDbool N=m.zkratit_polygon_na_roztec(d.v.delka_dopravniku(d.v.OBJEKTY),10.0,d.v.OBJEKTY->predchozi->X,d.v.OBJEKTY->predchozi->Y,d.v.OBJEKTY->predchozi->predchozi->X,d.v.OBJEKTY->predchozi->predchozi->Y,d.v.OBJEKTY->dalsi->X,d.v.OBJEKTY->dalsi->Y);
-	if(N.b)
-	{
-		 d.v.OBJEKTY->predchozi->X=N.x;
-		 d.v.OBJEKTY->predchozi->Y=N.y;
-	}
+//	TPointDbool N=m.zkratit_polygon_na_roztec(d.v.delka_dopravniku(d.v.OBJEKTY),10.0,d.v.OBJEKTY->predchozi->X,d.v.OBJEKTY->predchozi->Y,d.v.OBJEKTY->predchozi->predchozi->X,d.v.OBJEKTY->predchozi->predchozi->Y,d.v.OBJEKTY->dalsi->X,d.v.OBJEKTY->dalsi->Y);
+//	if(N.b)
+//	{
+//		 d.v.OBJEKTY->predchozi->X=N.x;
+//		 d.v.OBJEKTY->predchozi->Y=N.y;
+//	}
 
 	//
 	//d.v.OBJEKTY->predchozi->X=46.25575147;
@@ -3035,194 +3049,194 @@ void __fastcall TForm1::Chart1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::MagnaClick(TObject *Sender)
-{
-  scSplitView_MENU->Opened=false;
-	//otevřít soubor
-	OtevritSoubor(FileName);
-	d.v.hlavicka_seznamu_cest();
-
-	//definice pohonů
-	double D1v=4;/*4.5*/ 		double D1r=540;
-	double D2v=1.89;/*4.5*/ double D2r=378;
-	double D3v=0.75;/*4.5*/ double D3r=1620;
-	double D4v=0.75;/*4.5*/ double D4r=1620;
-	double D5v=0.75;/*4.5*/ double D5r=1620;
-
-	//načíst plán výroby
-	///////MAGNA//////////////////////////////
-	//cesta 1
-	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
-	d.v.hlavicka_jedne_cesty(cesta_pom);
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav - režim,kapacita,ct
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,1,1,4.345,D1v,D1r);//pre1
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//pow
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre2  = souset dilcich vzd 1,25m+1,25m
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ofuk
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.34,D1v,D1r);//pre3  - stoupaní před sušením
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,10,20,D1v,D1r);//sus1
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz1
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.35,D1v,D1r);//pre4
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ion
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre5
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D3v,D3r);//PRIMER
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,7,10,D1v,D1r);//vyt1
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,15,30,D1v,D1r);//sus2
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,10,D1v,D1r);//chlaz2
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,4,14.66,D4v,D4r);//BASECOAT
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt2
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D5v,D5r);//CLEARCOAT
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt3
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,15,30,D1v,D1r);//sus3
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz3
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.79,D1v,D1r);//pr6
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//sves
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,3,4.87,D1v,D1r);//pre7
-
-
-	//cesta 2
-	Cvektory::TSeznam_cest *cesta_pom2=new Cvektory::TSeznam_cest;
-	d.v.hlavicka_jedne_cesty(cesta_pom2);
-
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav - režim,kapacita,ct
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi,1,1,4.345,D1v,D1r);//pre1
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//pow
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre2  = souset dilcich vzd 1,25m+1,25m
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ofuk
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.34,D1v,D1r);//pre3  - stoupaní před sušením
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,10,20,D1v,D1r);//sus1
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz1
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.35,D1v,D1r);//pre4
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ion
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre5
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D3v,D3r);//PRIMER
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,7,10,D1v,D1r);//vyt1
-//d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,30,D1v,D1r);//sus2
-//d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,10,D1v,D1r);//chlaz2
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,4,14.66,D4v,D4r);//BASECOAT
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt2
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D5v,D5r);//CLEARCOAT
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt3
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,15,30,D1v,D1r);//sus3
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz3
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.79,D1v,D1r);//pr6
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//sves
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,3,4.87,D1v,D1r);//pre7
-
-
-	//vloží novou hotovou cestu do spoj.seznamu cest   */
-	d.v.vloz_cestu(cesta_pom2);//vloží novou hotovou cestu do spoj.seznamu cest
-	d.v.vloz_cestu(cesta_pom);
-
-  //automatické volání z historie - PROZATIM
-	Form_vozik_nastaveni->nacti_voziky();
-	Form_vozik_nastaveni->uloz_voziky_a_nastav_zakazky();
+{ //ZDM
+//	scSplitView_MENU->Opened=false;
+//	//otevřít soubor
+//	OtevritSoubor(FileName);
+//	d.v.hlavicka_seznamu_cest();
+//
+//	//definice pohonů
+//	double D1v=4;/*4.5*/ 		double D1r=540;
+//	double D2v=1.89;/*4.5*/ double D2r=378;
+//	double D3v=0.75;/*4.5*/ double D3r=1620;
+//	double D4v=0.75;/*4.5*/ double D4r=1620;
+//	double D5v=0.75;/*4.5*/ double D5r=1620;
+//
+//	//načíst plán výroby
+//	///////MAGNA//////////////////////////////
+//	//cesta 1
+//	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
+//	d.v.hlavicka_jedne_cesty(cesta_pom);
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav - režim,kapacita,ct
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,1,1,4.345,D1v,D1r);//pre1
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//pow
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre2  = souset dilcich vzd 1,25m+1,25m
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ofuk
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.34,D1v,D1r);//pre3  - stoupaní před sušením
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,10,20,D1v,D1r);//sus1
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz1
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.35,D1v,D1r);//pre4
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ion
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre5
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D3v,D3r);//PRIMER
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,7,10,D1v,D1r);//vyt1
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,15,30,D1v,D1r);//sus2
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,10,D1v,D1r);//chlaz2
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,4,14.66,D4v,D4r);//BASECOAT
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt2
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D5v,D5r);//CLEARCOAT
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt3
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,15,30,D1v,D1r);//sus3
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz3
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.79,D1v,D1r);//pr6
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//sves
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,3,4.87,D1v,D1r);//pre7
+//
+//
+//	//cesta 2
+//	Cvektory::TSeznam_cest *cesta_pom2=new Cvektory::TSeznam_cest;
+//	d.v.hlavicka_jedne_cesty(cesta_pom2);
+//
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav - režim,kapacita,ct
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi,1,1,4.345,D1v,D1r);//pre1
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//pow
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre2  = souset dilcich vzd 1,25m+1,25m
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ofuk
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.34,D1v,D1r);//pre3  - stoupaní před sušením
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,10,20,D1v,D1r);//sus1
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz1
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.35,D1v,D1r);//pre4
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D2v,D2r);//ion
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,1.64,D2v,D2r);//pre5
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D3v,D3r);//PRIMER
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,7,10,D1v,D1r);//vyt1
+////d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,30,D1v,D1r);//sus2
+////d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,10,D1v,D1r);//chlaz2
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,4,14.66,D4v,D4r);//BASECOAT
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt2
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,2,14.66,D5v,D5r);//CLEARCOAT
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//vyt3
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,15,30,D1v,D1r);//sus3
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,5,10,D1v,D1r);//chlaz3
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,0.79,D1v,D1r);//pr6
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//sves
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,3,4.87,D1v,D1r);//pre7
+//
+//
+//	//vloží novou hotovou cestu do spoj.seznamu cest   */
+//	d.v.vloz_cestu(cesta_pom2);//vloží novou hotovou cestu do spoj.seznamu cest
+//	d.v.vloz_cestu(cesta_pom);
+//
+//	//automatické volání z historie - PROZATIM
+//	Form_vozik_nastaveni->nacti_voziky();
+//	Form_vozik_nastaveni->uloz_voziky_a_nastav_zakazky();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::SPPP1Click(TObject *Sender)
 {
-	OtevritSoubor("SPPP.tispl");
-	d.v.hlavicka_seznamu_cest();
-
-	//definice pohonů
-	double D1v=2;double D1r=32.5;
-
-	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
-
-	d.v.hlavicka_jedne_cesty(cesta_pom);
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r); //nav - režim,kapacita,ct
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,0,1,2,D1v,D1r);//ion
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//otoč
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,30,D1v,D1r);//ion
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//primer
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,10,13.3,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,10,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base2
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,10,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//CLEARCOAT
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,6,10,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//vytah
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,40,D1v,D1r);//suš
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,8.5,5,D1v,D1r);//chlaz
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//svěšování
-
-	d.v.vloz_cestu(cesta_pom);
-
-	Cvektory::TSeznam_cest *cesta_pom2=new Cvektory::TSeznam_cest;
-	d.v.hlavicka_jedne_cesty(cesta_pom2);
-
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r); //nav - režim,kapacita,ct
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi,0,1,2,D1v,D1r);//ion
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//otoč
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//ion
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//primer
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,10,13.3,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,10,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base2
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,10,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//clear
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,6,10,D1v,D1r);//vyt
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//vytah
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,40,D1v,D1r);//suš
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,8.5,5,D1v,D1r);//chlaz
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//svěšování
-
-	d.v.vloz_cestu(cesta_pom2);
+//	OtevritSoubor("SPPP.tispl");
+//	d.v.hlavicka_seznamu_cest();
+//
+//	//definice pohonů
+//	double D1v=2;double D1r=32.5;
+//
+//	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
+//
+//	d.v.hlavicka_jedne_cesty(cesta_pom);
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r); //nav - režim,kapacita,ct
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,0,1,2,D1v,D1r);//ion
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//otoč
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,30,D1v,D1r);//ion
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//primer
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,10,13.3,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,10,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base2
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,10,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//CLEARCOAT
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,6,10,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//vytah
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,40,D1v,D1r);//suš
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,8.5,5,D1v,D1r);//chlaz
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//svěšování
+//
+//	d.v.vloz_cestu(cesta_pom);
+//
+//	Cvektory::TSeznam_cest *cesta_pom2=new Cvektory::TSeznam_cest;
+//	d.v.hlavicka_jedne_cesty(cesta_pom2);
+//
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r); //nav - režim,kapacita,ct
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi,0,1,2,D1v,D1r);//ion
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//otoč
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//ion
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//primer
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,10,13.3,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,10,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//base2
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,10,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//clear
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,6,10,D1v,D1r);//vyt
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//vytah
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,18,40,D1v,D1r);//suš
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,8.5,5,D1v,D1r);//chlaz
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//svěšování
+//
+//	d.v.vloz_cestu(cesta_pom2);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Boskovice1Click(TObject *Sender)
 {
-	OtevritSoubor("boskovice.tispl");
-	d.v.hlavicka_seznamu_cest();
-
-	//definice pohonů
-	double D1v=2;double D1r=32.5;
-
-
-	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
-	d.v.hlavicka_jedne_cesty(cesta_pom);
-
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r); //nav - režim,kapacita,ct
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,0,1,2,D1v,D1r);//ožeh
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//ion
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//lak1
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,6.5,D1v,D1r);//vyt1
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//lak2
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,3.5,D1v,D1r);//vyt2
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,17,30,D1v,D1r);//SUŠ
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,9,2,D1v,D1r);//CHLAZ
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//SVĚŠ
-	d.v.vloz_cestu(cesta_pom);
+//	OtevritSoubor("boskovice.tispl");
+//	d.v.hlavicka_seznamu_cest();
+//
+//	//definice pohonů
+//	double D1v=2;double D1r=32.5;
+//
+//
+//	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
+//	d.v.hlavicka_jedne_cesty(cesta_pom);
+//
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r); //nav - režim,kapacita,ct
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,0,1,2,D1v,D1r);//ožeh
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//ion
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//lak1
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,6.5,D1v,D1r);//vyt1
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,1,1,2,D1v,D1r);//lak2
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,4,3.5,D1v,D1r);//vyt2
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,17,30,D1v,D1r);//SUŠ
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,2,9,2,D1v,D1r);//CHLAZ
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi->dalsi,0,1,2,D1v,D1r);//SVĚŠ
+//	d.v.vloz_cestu(cesta_pom);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::eXtreme1Click(TObject *Sender)
 {
-	OtevritSoubor("extreme.tispl");
-	d.v.hlavicka_seznamu_cest();
-
-	//definice pohonů
-	double D1v=2;double D1r=32.5;
-
-	//cesta 1
-	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
-	d.v.hlavicka_jedne_cesty(cesta_pom);
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,1,1,5,D1v,D1r);//co2
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,1,1,8,D1v,D1r);//ION
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,4,D1v,D1r);//lak
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,4,D1v,D1r);//vyť
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,4,D1v,D1r);//lak
-	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,4,D1v,D1r);//vyť
-	d.v.vloz_cestu(cesta_pom);//vloží novou hotovou cestu do spoj.seznamu cest
-	//cesta 2
-	Cvektory::TSeznam_cest *cesta_pom2=new Cvektory::TSeznam_cest;
-	d.v.hlavicka_jedne_cesty(cesta_pom2);
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi,1,1,2.0,D1v,D1r);//co2
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,4,D1v,D1r);//lak
-	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,4,D1v,D1r);//vyť
-	d.v.vloz_cestu(cesta_pom2);//vloží novou hotovou cestu do spoj.seznamu cest
+//	OtevritSoubor("extreme.tispl");
+//	d.v.hlavicka_seznamu_cest();
+//
+//	//definice pohonů
+//	double D1v=2;double D1r=32.5;
+//
+//	//cesta 1
+//	Cvektory::TSeznam_cest *cesta_pom=new Cvektory::TSeznam_cest;
+//	d.v.hlavicka_jedne_cesty(cesta_pom);
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi,1,1,5,D1v,D1r);//co2
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi,1,1,8,D1v,D1r);//ION
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,4,D1v,D1r);//lak
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,4,D1v,D1r);//vyť
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,4,D1v,D1r);//lak
+//	d.v.vloz_segment_cesty(cesta_pom,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,4,D1v,D1r);//vyť
+//	d.v.vloz_cestu(cesta_pom);//vloží novou hotovou cestu do spoj.seznamu cest
+//	//cesta 2
+//	Cvektory::TSeznam_cest *cesta_pom2=new Cvektory::TSeznam_cest;
+//	d.v.hlavicka_jedne_cesty(cesta_pom2);
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi,0,1,2,D1v,D1r);//nav
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi,1,1,2.0,D1v,D1r);//co2
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi,0,1,4,D1v,D1r);//lak
+//	d.v.vloz_segment_cesty(cesta_pom2,d.v.OBJEKTY->dalsi->dalsi->dalsi->dalsi->dalsi,2,2,4,D1v,D1r);//vyť
+//	d.v.vloz_cestu(cesta_pom2);//vloží novou hotovou cestu do spoj.seznamu cest
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button2Click(TObject *Sender)
@@ -3242,7 +3256,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		if(MOD==CASOVAOSA && ++pocitadlo_doby_neaktivity==2)
 		{
 			Timer_neaktivity->Enabled=false;
-			d.zobrazit_label_zamerovac(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+			//ZDM d.zobrazit_label_zamerovac(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 		}
 }
 //---------------------------------------------------------------------------
@@ -3370,20 +3384,20 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		FDQuery1->Active = True;
 
 
-	 if(get_computer_name()!=FDQuery1->Fields->Fields[2]->AsAnsiString || get_user_name()!=FDQuery1->Fields->Fields[3]->AsAnsiString) {
-	 ShowMessage("neplatne udaje v PC a na serveru");
-	 }
+	 //ZDM if(get_computer_name()!=FDQuery1->Fields->Fields[2]->AsAnsiString || get_user_name()!=FDQuery1->Fields->Fields[3]->AsAnsiString) {
+	 //ZDM ShowMessage("neplatne udaje v PC a na serveru");
+	 //ZDM }
 
-	AnsiString send_log_time= TIME.CurrentDateTime();
+	//ZDM AnsiString send_log_time= TIME.CurrentDateTime();
 	AnsiString relation_id=GetCurrentProcessId();
 
 
  //	AnsiString date= TIME.CurrentDate();
-		AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,app_stop,send_log_time,command,relation_id) VALUES (\""+FDQuery1->Fields->Fields[0]->AsAnsiString+"\",\""+send_log_time+"\",\"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+ //ZDM 		AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,app_stop,send_log_time,command,relation_id) VALUES (\""+FDQuery1->Fields->Fields[0]->AsAnsiString+"\",\""+send_log_time+"\",\"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
 		//S(strSQL);
 
 
-		FDConnection1->ExecSQL(strSQL);
+		//ZDM FDConnection1->ExecSQL(strSQL);
 
 
 
@@ -3426,7 +3440,7 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 	if (FMaximized) {
 	 BoundsRect =  FOldBoundsRect;
 	 FMaximized = false;
-	 scLabel1->DragForm = true;
+	 scLabel_titulek->DragForm = true;
 	 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
 	 scGPSizeBox1->Visible = scCheckBox2->Checked;
 	}
@@ -3437,7 +3451,7 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 
  //ShowMessage(scStyledForm1->GetMaximizeBounds().);
 	FMaximized = true;
-	scLabel1->DragForm = false;
+	scLabel_titulek->DragForm = false;
 	MaxButton->GlyphOptions->Kind = scgpbgkRestore;
 	scGPSizeBox1->Visible = False;
 	}
@@ -3475,7 +3489,7 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm1::scLabel1DblClick(TObject *Sender)
+void __fastcall TForm1::scLabel_titulekDblClick(TObject *Sender)
 {
  if (!scCheckBox1->Checked) { exit;}
 	Form1->MaxButtonClick(Form1);
@@ -3500,21 +3514,19 @@ void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
-
-	Form_dopravnik->Left=0;
-	Form_dopravnik->Top=0+vyska_menu+RzToolbar1->Height;
-	if(IDOK==Form_dopravnik->ShowModal())DuvodUlozit(true);
-
+	Form_parametry_linky->Left=0+scGPPanel_mainmenu->Height
+	Form_parametry_linky->Top=0+scGPPanel_mainmenu->Height*2;
+	if(IDOK==Form_parametry_linky->ShowModal())DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 {
 //	if(d.v.VOZIKY->dalsi->cesta==NULL)
-  //	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
-	Form_vozik_nastaveni->Left=0;
-	Form_vozik_nastaveni->Top=0+vyska_menu+RzToolbar1->Height;
-	if(IDOK==Form_vozik_nastaveni->ShowModal())DuvodUlozit(true);
+//	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
+	Form_definice_zakazek->Left=0;
+	Form_definice_zakazek->Top=0+scGPPanel_mainmenu->Height;
+	if(IDOK==Form_definice_zakazek->ShowModal())DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
 
@@ -3603,7 +3615,7 @@ void __fastcall TForm1::scSplitViewsClosing(TObject *Sender)
 	{
 		scSplitViews_closing_on_AA=true;
 		int W=scSplitView_LEFTTOOLBAR->Width;
-		short H=scLabel1->Height;
+		short H=scLabel_titulek->Height;
 		int Gh=vrat_max_vysku_grafu();
 		Graphics::TBitmap *bmp_OPT_CLOSE=new Graphics::TBitmap;
 		bmp_OPT_CLOSE->Width=ClientWidth-W;bmp_OPT_CLOSE->Height=ClientHeight-H-Gh;

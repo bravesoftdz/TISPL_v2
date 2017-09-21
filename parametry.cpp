@@ -5,7 +5,7 @@
 
 #include "parametry.h"
 #include "unit1.h"
-#include "dopravniky.h"
+//#include "dopravniky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -37,36 +37,37 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 	{ComboBox_druh_objektu->ItemIndex=2;ComboBox_druh_objektuChange(Sender);}
 	*/
 
-	ComboBox_dopravnik->Items->Clear();
-	Form_dopravnik->ValueListEditor->Strings->SetText(Form1->d.v.seznam_dopravniku.c_str());
-	unsigned int n=Form_dopravnik->ValueListEditor->Strings->Count;
-	UnicodeString S=Form1->d.v.seznam_dopravniku; //Form_dopravnik->ValueListEditor->Strings->Text;
-	for(unsigned int i=0;i<n;i++)
-	{
-		ComboBox_dopravnik->Items->Add(Form1->ms.TrimRightFrom(S,"=")+" - "+Form1->ms.EP(S,"=","\n").TrimRight()+" [metrù/min]");
-		S=Form1->ms.delete_repeat(S,"\n",1);
-	}
-	ComboBox_dopravnik->ItemIndex=dopravnik_typ;
-	if(ComboBox_dopravnik->ItemIndex==-1){ComboBox_dopravnik->ItemIndex=0;dopravnik_typ=0;}//v pøípadì, že byl dopravník smazán odkáže se na hlavní dopravník
-
-	ValueListEditorStringsChange(Sender);
+//ZDM
+//	ComboBox_dopravnik->Items->Clear();
+//	Form_dopravnik->ValueListEditor->Strings->SetText(Form1->d.v.seznam_dopravniku.c_str());
+//	unsigned int n=Form_dopravnik->ValueListEditor->Strings->Count;
+//	UnicodeString S=Form1->d.v.seznam_dopravniku; //Form_dopravnik->ValueListEditor->Strings->Text;
+//	for(unsigned int i=0;i<n;i++)
+//	{
+//		ComboBox_dopravnik->Items->Add(Form1->ms.TrimRightFrom(S,"=")+" - "+Form1->ms.EP(S,"=","\n").TrimRight()+" [metrù/min]");
+//		S=Form1->ms.delete_repeat(S,"\n",1);
+//	}
+//	ComboBox_dopravnik->ItemIndex=dopravnik_typ;
+//	if(ComboBox_dopravnik->ItemIndex==-1){ComboBox_dopravnik->ItemIndex=0;dopravnik_typ=0;}//v pøípadì, že byl dopravník smazán odkáže se na hlavní dopravník
+//
+//	ValueListEditorStringsChange(Sender);
 }
 //---------------------------------------------------------------------------
 void TForm_parametry::vykresli_vozik(bool na_delku)
-{
+{ /*ZDM
 	Image_vozik->Canvas->Pen->Color=clBtnFace;
 	Image_vozik->Canvas->Pen->Width=1;
 	Image_vozik->Canvas->Brush->Color=clBtnFace;
 	Image_vozik->Canvas->Rectangle(0,0,Image_vozik->Width,Image_vozik->Height);//vybarvení celého
 	TPoint stred; stred.x=Image_vozik->Width/2;stred.y=Image_vozik->Height/2;
 	double D,S;
-	unsigned short meritko=(Image_vozik->Width-6)/Form1->PP.delka_voziku;
-	if(meritko>(Image_vozik->Width-6)/Form1->PP.sirka_voziku)meritko=(Image_vozik->Width-6)/Form1->PP.sirka_voziku;
-	if(meritko>(Image_vozik->Height-6)/Form1->PP.delka_voziku)meritko=(Image_vozik->Height-6)/Form1->PP.delka_voziku;
-	if(meritko>(Image_vozik->Height-6)/Form1->PP.sirka_voziku)meritko=(Image_vozik->Height-6)/Form1->PP.sirka_voziku;
+	unsigned short meritko=(Image_vozik->Width-6)/Form1->d.v.PP.delka_voziku;
+	if(meritko>(Image_vozik->Width-6)/Form1->d.v.PP.sirka_voziku)meritko=(Image_vozik->Width-6)/Form1->PP.sirka_voziku;
+	if(meritko>(Image_vozik->Height-6)/Form1->d.v.PP.delka_voziku)meritko=(Image_vozik->Height-6)/Form1->PP.delka_voziku;
+	if(meritko>(Image_vozik->Height-6)/Form1->d.v.PP.sirka_voziku)meritko=(Image_vozik->Height-6)/Form1->PP.sirka_voziku;
 
-	if(na_delku){D=Form1->PP.delka_voziku;S=Form1->PP.sirka_voziku;}
-	else{S=Form1->PP.delka_voziku;D=Form1->PP.sirka_voziku;}
+	if(na_delku){D=Form1->PP.delka_voziku;S=Form1->d.v.PP.sirka_voziku;}
+	else{S=Form1->PP.delka_voziku;D=Form1->d.v.PP.sirka_voziku;}
 
 	//packy
 	Image_vozik->Canvas->Pen->Color=clBlack;
@@ -92,6 +93,7 @@ void TForm_parametry::vykresli_vozik(bool na_delku)
 	Image_vozik->Canvas->Font->Size=7;
 	Image_vozik->Canvas->TextOutW(stred.x-Image_vozik->Canvas->TextWidth(D)/2,stred.y+S/2*meritko-Image_vozik->Canvas->TextHeight(D)-2,D);
 	Image_vozik->Canvas->TextOutW(stred.x-D/2*meritko+2,stred.y-Image_vozik->Canvas->TextHeight(S)/2,S);
+	*/
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -126,9 +128,9 @@ void TForm_parametry::get_capacity(unsigned int input)
 			{
 				case 1://kontinual, line tracking
 				{
-					if(Form1->PP.delka_voziku!=0)
+					if(Form1->d.v.PP.delka_voziku!=0)
 					{
-						double sirka_delka=Form1->PP.sirka_voziku;if(RadioButton_na_delku->Checked)sirka_delka=Form1->PP.delka_voziku;//podle nastavene orientace vozíku
+						double sirka_delka=Form1->d.v.PP.delka_voziku;//ZDMForm1->PP.sirka_voziku;if(RadioButton_na_delku->Checked)sirka_delka=Form1->PP.delka_voziku;//podle nastavene orientace vozíku
 						if(ValueListEditor->Cells[1][1].ToDouble()>=sirka_delka)
 						{
 							Label_kapacita_hodnota->Font->Color=clBlack;
@@ -146,22 +148,22 @@ void TForm_parametry::get_capacity(unsigned int input)
 
 				case 2://postprocesní
 				{
-					if(Form1->PP.TT!=0)
+					//ZDM if(Form1->PP.TT!=0)
 					{
 						unsigned short sm=1;if(minsec==SEC)sm=60;//pouze pro zkrácení zapisu
-						if(ValueListEditor->Cells[1][1].ToDouble()>=Form1->PP.TT*sm){Label_kapacita_hodnota->Font->Color=clBlack;Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
-						else	{Label_kapacita_hodnota->Font->Color=clRed;/*Label_kapacita_hodnota->Caption="Nepl. doba!";*/Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
+						//ZDM if(ValueListEditor->Cells[1][1].ToDouble()>=Form1->PP.TT*sm){Label_kapacita_hodnota->Font->Color=clBlack;Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
+						//ZDM else	{Label_kapacita_hodnota->Font->Color=clRed;/*Label_kapacita_hodnota->Caption="Nepl. doba!";*/Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
 
 						if(Label_kapacita_hodnota->Caption=="0")Label_delka_prepravniku_hodnota->Caption="0";
 						else
 						{
-							if(RadioButton_na_delku->Checked)
-								Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.delka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
-							else
-								Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.sirka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
+							//ZDM if(RadioButton_na_delku->Checked)
+							 //ZDM 	Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.delka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
+							//ZDM else
+							//ZDM 	Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.sirka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
             }
 					}
-					else {Label_kapacita_hodnota->Font->Color=clRed;Label_kapacita_hodnota->Caption="Zadejte TT!";}
+					//ZDM else {Label_kapacita_hodnota->Font->Color=clRed;Label_kapacita_hodnota->Caption="Zadejte TT!";}
 				}break;
 			}
 
@@ -179,7 +181,7 @@ void __fastcall TForm_parametry::ValueListEditorStringsChange(TObject *Sender)
 		{
 			Label_CT_hodnota->Caption=get_sum();Label_kapacita_hodnota->Font->Color=clBlack;
 			Label_TT_hodnota->Caption=Label_CT_hodnota->Caption;
-			if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
+			//ZDM if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
 		}
 		break;
 		case 1://kontinual
@@ -189,7 +191,7 @@ void __fastcall TForm_parametry::ValueListEditorStringsChange(TObject *Sender)
 					Label_CT_hodnota->Caption=ValueListEditor->Cells[1][1].ToDouble()/Form1->ms.EP(ComboBox_dopravnik->Items->operator[](ComboBox_dopravnik->ItemIndex),"- "," [").ToDouble();
 					get_capacity(1);
 					Label_TT_hodnota->Caption=Label_CT_hodnota->Caption.ToDouble()/Label_kapacita_hodnota->Caption.ToDouble();
-					if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
+					//ZDM if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
 			}catch(...){;};
 		}
 		break;
@@ -197,7 +199,7 @@ void __fastcall TForm_parametry::ValueListEditorStringsChange(TObject *Sender)
 		{
 			get_capacity(2);
 			Label_CT_hodnota->Caption=get_sum();
-			Label_TT_hodnota->Caption=Form1->PP.TT*sm;
+			//ZDM Label_TT_hodnota->Caption=Form1->PP.TT*sm;
 		}
 		break;
 	}

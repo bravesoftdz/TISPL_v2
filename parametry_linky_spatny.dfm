@@ -1,11 +1,11 @@
-object Form_dopravnik: TForm_dopravnik
+object Form_parametry_linky: TForm_parametry_linky
   Left = 0
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
   ClientHeight = 408
   ClientWidth = 580
-  Color = clActiveCaption
+  Color = clActiveBorder
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clActiveCaption
   Font.Height = -11
@@ -59,9 +59,6 @@ object Form_dopravnik: TForm_dopravnik
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
-    ColWidths = (
-      150
-      -2)
   end
   object Button_ADD: TButton
     Left = 139
@@ -232,7 +229,7 @@ object Form_dopravnik: TForm_dopravnik
     Visible = False
     OnClick = Button_ADDClick
   end
-  object dopravnik_save: TscGPButton
+  object Button_save: TscGPButton
     Left = 163
     Top = 365
     Width = 100
@@ -322,7 +319,7 @@ object Form_dopravnik: TForm_dopravnik
     GroupIndex = 0
     AllowAllUp = False
   end
-  object dopravnik_storno: TscGPButton
+  object Button_storno: TscGPButton
     Left = 281
     Top = 365
     Width = 100
@@ -336,7 +333,7 @@ object Form_dopravnik: TForm_dopravnik
     ParentFont = False
     TabOrder = 6
     TabStop = True
-    OnClick = dopravnik_stornoClick
+    OnClick = Button_stornoClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
