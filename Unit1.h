@@ -86,6 +86,9 @@
 #include <Vcl.WinXCtrls.hpp>
 #include "scDrawUtils.hpp"
 #include "scGPImages.hpp"
+#include <FireDAC.Phys.ODBC.hpp>
+#include <FireDAC.Phys.ODBCBase.hpp>
+#include <FireDAC.Phys.ODBCDef.hpp>
 //#include "vektory.h" //už vkládám přes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám přes vykresli.h resp. vektory.h
 
@@ -153,11 +156,8 @@ __published:	// IDE-managed Components
 	TButton *ButtonPLAY;
 	TTimer *Timer_animace;
 	TChart *Chart6;
-	TCheckBox *CheckBoxVytizenost;
 	TCheckBox *CheckBoxAnimovatSG;
-	TCheckBox *CheckBoxPALCE;
 	TLabel *Label_zamerovac;
-	TCheckBox *CheckBoxVymena_barev;
 	TPieSeries *Series7;
 	TTeeGDIPlus *TeeGDIPlus1;
 	TTeeGDIPlus *TeeGDIPlus2;
@@ -181,7 +181,6 @@ __published:	// IDE-managed Components
 	TButton *Button11;
 	TFDQuery *FDQuery2;
 	TrComboBoxEx *rComboBoxKrok;
-	TrComboBoxEx *ComboBoxCekani;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
@@ -203,7 +202,6 @@ __published:	// IDE-managed Components
 	TscGPSizeBox *scGPSizeBox1;
 	TscCheckBox *scCheckBox2;
 	TscSplitView *scSplitView_OPTIONS;
-	TscLabel *scLabel4;
 	TscCheckBox *scCheckBox1;
 	TPopupMenu *PopupMenu2;
 	TMenuItem *Open1;
@@ -248,14 +246,18 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch9;
 	TscLabel *scLabel19;
 	TscLabel *scLabel_ZOOM;
-	TscExPanel *scExPanel_vrstvy;
-	TscLabel *scLabel2;
-	TscExPanel *scExPanel_ostatni;
-	TscLabel *scLabel3;
 	TMenuItem *Celpohled1;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
 	TscButton *scButton_ulozit;
+	TscGPCheckBox *CheckBoxPALCE;
+	TscGPCheckBox *CheckBoxVymena_barev;
+	TscGPCheckBox *CheckBoxVytizenost;
+	TscComboBox *ComboBoxCekani;
+	TscGPLabel *pravyoption_nadpis;
+	TscExPanel *scExPanel_ostatni;
+	TscExPanel *scExPanel_vrstvy;
+	TscLabel *scLabel4;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall Klasick1Click(TObject *Sender);
 	void __fastcall WinXP1Click(TObject *Sender);
@@ -340,7 +342,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button10Click(TObject *Sender);
 	void __fastcall casovosa1Click(TObject *Sender);
 	void __fastcall FormShortCut(TWMKey &Msg, bool &Handled);
-	void __fastcall CheckBoxPALCEClick(TObject *Sender);
+	void __fastcall CheckBoxPALCE_Click(TObject *Sender);
 	void __fastcall Chart1Click(TObject *Sender);
 	void __fastcall technologickprocesy1Click(TObject *Sender);
 	void __fastcall PopupMenu1Popup(TObject *Sender);
@@ -354,9 +356,9 @@ __published:	// IDE-managed Components
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
 	void __fastcall ButtonPLAYClick(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
-	void __fastcall CheckBoxVytizenostClick(TObject *Sender);
+	void __fastcall CheckBoxVytizenost_Click(TObject *Sender);
 	void __fastcall Button13Click(TObject *Sender);
-	void __fastcall CheckBoxVymena_barevClick(TObject *Sender);
+	void __fastcall CheckBoxVymena_barev_Click(TObject *Sender);
 	void __fastcall ComboBoxODminChange(TObject *Sender);
 	void __fastcall ComboBoxDOminChange(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);

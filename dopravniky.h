@@ -14,6 +14,7 @@
 #include "rStringGridEd.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
+#include "scGPExtControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_dopravnik : public TForm
 {
@@ -22,7 +23,6 @@ __published:	// IDE-managed Components
 	TButton *Button_ADD;
 	TButton *Button_DEL;
 	TrStringGridEd *rStringGridEd1;
-	TButton *Button1;
 	TscGPButton *dopravnik_save;
 	TscGPButton *dopravnik_storno;
 	TscGPPanel *scGPPanel2;
@@ -36,6 +36,8 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum4;
 	TscGPButton *scGPButton1;
 	TscGPButton *scGPButton3;
+	TscGPComboBox *scGPComboBox1;
+	TrHTMLLabel *rHTMLLabel1;
 	void __fastcall Button_ADDClick(TObject *Sender);
 	void __fastcall Button_DELClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);

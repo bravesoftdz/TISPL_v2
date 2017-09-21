@@ -11,6 +11,10 @@
 #include <Vcl.ValEdit.hpp>
 #include <Vcl.Menus.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include "rHTMLLabel.hpp"
+#include "rImprovedComps.hpp"
+#include "scControls.hpp"
+#include "scGPControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_parametry : public TForm
 {
@@ -19,8 +23,6 @@ __published:	// IDE-managed Components
 	TValueListEditor *ValueListEditor;
 	TLabel *Label_CT;
 	TComboBox *ComboBox_druh_objektu;
-	TLabel *Label_rezim;
-	TLabel *Label_technologicke_parametry;
 	TLabel *Label_kapacita;
 	TLabel *Label_kapacita_hodnota;
 	TLabel *Label_CT_hodnota;
@@ -28,14 +30,6 @@ __published:	// IDE-managed Components
 	TLabel *Label_vypis;
 	TLabel *Label_TT;
 	TLabel *Label_TT_hodnota;
-	TGroupBox *GroupBox_voziky;
-	TGroupBox *GroupBox_orientace_voziku;
-	TImage *Image_vozik;
-	TRadioButton *RadioButton_na_delku;
-	TRadioButton *RadioButton_na_sirku;
-	TGroupBox *GroupBox_vzdalenost;
-	TEdit *Edit_vzdalenost_voziku;
-	TLabel *Label3;
 	TButton *Button_min_sec;
 	TLabel *Label_delka_prepravniku;
 	TLabel *Label_delka_prepravniku_hodnota;
@@ -44,6 +38,21 @@ __published:	// IDE-managed Components
 	TEdit *Edit_shortname;
 	TLabel *Label1;
 	TLabel *Label2;
+	TscGPPanel *scGPPanel2;
+	TscGPGlyphButton *Konec;
+	TscGPGlyphButton *MinButton;
+	TscLabel *scLabel1;
+	TscGPGlyphButton *MaxButton;
+	TscGPGlyphButton *scGPGlyphButton15;
+	TrHTMLLabel *rHTMLLabel5_rezim;
+	TrHTMLLabel *rHTMLLabel1_tech_param;
+	TrEditNum *rEditNum4;
+	TscGPButton *scGPButton1_OK;
+	TscGPButton *scGPButton3;
+	TRadioButton *RadioButton_na_delku;
+	TEdit *Edit_vzdalenost_voziku;
+	TRadioButton *RadioButton_na_sirku;
+	TImage *Image_vozik;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);
@@ -59,6 +68,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall Edit_nameChange(TObject *Sender);
 	void __fastcall Edit_vzdalenost_vozikuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scGPButton3Click(TObject *Sender);
 
 
 

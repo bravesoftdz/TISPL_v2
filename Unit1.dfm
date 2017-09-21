@@ -602,18 +602,6 @@ object Form1: TForm1
       YValues.Order = loNone
     end
   end
-  object CheckBoxVytizenost: TCheckBox
-    Left = 285
-    Top = 228
-    Width = 152
-    Height = 20
-    Caption = 'zobrazit vyt'#237#382'enost objekt'#367
-    Color = clBtnFace
-    ParentColor = False
-    TabOrder = 18
-    Visible = False
-    OnClick = CheckBoxVytizenostClick
-  end
   object CheckBoxAnimovatSG: TCheckBox
     Left = 285
     Top = 249
@@ -624,42 +612,16 @@ object Form1: TForm1
     Color = clBtnFace
     ParentColor = False
     State = cbChecked
-    TabOrder = 19
+    TabOrder = 18
     Visible = False
-    OnClick = CheckBoxVytizenostClick
-  end
-  object CheckBoxPALCE: TCheckBox
-    Left = 285
-    Top = 186
-    Width = 163
-    Height = 20
-    Caption = 'zohlednit rozte'#269' palc'#367' '#345'et'#283'zu'
-    Color = clBtnFace
-    ParentColor = False
-    TabOrder = 20
-    Visible = False
-    OnClick = CheckBoxPALCEClick
-  end
-  object CheckBoxVymena_barev: TCheckBox
-    Left = 285
-    Top = 207
-    Width = 211
-    Height = 20
-    Caption = 'zohlednit '#269'i'#353't'#283'n'#237' pistole a v'#253'm'#283'nu barev'
-    Color = clBtnFace
-    Ctl3D = False
-    ParentColor = False
-    ParentCtl3D = False
-    TabOrder = 21
-    Visible = False
-    OnClick = CheckBoxVymena_barevClick
+    OnClick = CheckBoxVytizenost_Click
   end
   object ComboBoxDOmin: TComboBox
     Left = 299
     Top = 157
     Width = 40
     Height = 21
-    TabOrder = 22
+    TabOrder = 19
     Text = 'Do'
     Visible = False
     OnChange = ComboBoxDOminChange
@@ -672,7 +634,7 @@ object Form1: TForm1
     Top = 157
     Width = 40
     Height = 21
-    TabOrder = 23
+    TabOrder = 20
     Text = 'Od'
     Visible = False
     OnChange = ComboBoxODminChange
@@ -685,7 +647,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Button11'
-    TabOrder = 25
+    TabOrder = 22
     Visible = False
     OnClick = Button11Click
   end
@@ -697,7 +659,7 @@ object Form1: TForm1
     Caption = 'pou'#382#237't zadan'#233' kapacity objekt'#367
     Color = clBtnFace
     ParentColor = False
-    TabOrder = 24
+    TabOrder = 21
     Visible = False
     OnClick = CheckBox_pouzit_zadane_kapacityClick
   end
@@ -706,7 +668,7 @@ object Form1: TForm1
     Top = 159
     Width = 75
     Height = 21
-    TabOrder = 26
+    TabOrder = 23
     Text = 'Krok [min]'
     OnChange = rComboBoxKrokChange
     Items.Strings = (
@@ -720,27 +682,13 @@ object Form1: TForm1
       '50'
       '100')
   end
-  object ComboBoxCekani: TrComboBoxEx
-    Left = 285
-    Top = 294
-    Width = 145
-    Height = 21
-    TabOrder = 27
-    Text = #268'as '#269'ek'#225'n'#237' na palec'
-    Visible = False
-    Items.Strings = (
-      'nulov'#253
-      'st'#345'edn'#237
-      'n'#225'hodn'#253
-      'maxim'#225'ln'#237)
-  end
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
     Width = 1026
     Height = 34
     Align = alTop
-    TabOrder = 28
+    TabOrder = 24
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -2063,7 +2011,7 @@ object Form1: TForm1
     Width = 1026
     Height = 28
     Align = alBottom
-    TabOrder = 29
+    TabOrder = 25
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -2419,7 +2367,7 @@ object Form1: TForm1
     Top = 321
     Width = 131
     Height = 27
-    TabOrder = 30
+    TabOrder = 26
     TabStop = True
     Visible = False
     CustomCheckedImageIndex = -1
@@ -2468,7 +2416,7 @@ object Form1: TForm1
     BorderOuter = fsNone
     BorderSides = [sdLeft, sdTop, sdRight, sdBottom]
     BorderWidth = 0
-    TabOrder = 32
+    TabOrder = 28
     Visible = False
     VisualStyle = vsGradient
   end
@@ -2477,7 +2425,7 @@ object Form1: TForm1
     Top = 349
     Width = 140
     Height = 30
-    TabOrder = 33
+    TabOrder = 29
     TabStop = True
     Visible = False
     CustomCheckedImageIndex = -1
@@ -2518,11 +2466,11 @@ object Form1: TForm1
     ShowFocusRect = True
   end
   object scRadioGroup1: TscRadioGroup
-    Left = 727
-    Top = 469
+    Left = 618
+    Top = 555
     Width = 132
     Height = 64
-    TabOrder = 34
+    TabOrder = 30
     Visible = False
     FramePosition = scgfpDefault
     CustomImageIndex = -1
@@ -2575,7 +2523,7 @@ object Form1: TForm1
     Top = 34
     Width = 30
     Height = 30
-    TabOrder = 35
+    TabOrder = 31
     Visible = False
     OnClick = scGPGlyphButton2Click
     Animation = True
@@ -2643,185 +2591,6 @@ object Form1: TForm1
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scSplitView_OPTIONS: TscSplitView
-    Left = 776
-    Top = 34
-    Width = 250
-    Height = 621
-    Anchors = [akTop, akRight, akBottom]
-    TabOrder = 31
-    CustomImageIndex = -1
-    StyleKind = scpsPanel
-    ShowCaption = False
-    BorderStyle = scpbsLeftShadowLine
-    WallpaperIndex = -1
-    LightBorderColor = clBtnHighlight
-    ShadowBorderColor = clBtnShadow
-    CaptionGlowEffect.Enabled = False
-    CaptionGlowEffect.Color = clBtnShadow
-    CaptionGlowEffect.AlphaValue = 255
-    CaptionGlowEffect.GlowSize = 7
-    CaptionGlowEffect.Offset = 0
-    CaptionGlowEffect.Intensive = True
-    CaptionGlowEffect.StyleColors = True
-    Color = clSilver
-    StorePaintBuffer = False
-    AnimationStep = 25
-    CompactWidth = 0
-    CompactHeight = 20
-    GripSize = 0
-    Opened = True
-    OpenedWidth = 250
-    OpenedHeight = 50
-    OpenedMinWidth = 0
-    OpenedMaxWidth = 0
-    OpenedMinHeight = 0
-    OpenedMaxHeight = 0
-    ParentBackground = False
-    ParentColor = False
-    Placement = scsvpRight
-    HideControls = False
-    Animation = True
-    DisplayMode = scsvmOverlay
-    OnClosed = scSplitViewsClosed
-    OnClosing = scSplitViewsClosing
-    object scLabel4: TscLabel
-      AlignWithMargins = True
-      Left = 11
-      Top = 10
-      Width = 229
-      Height = 30
-      Margins.Left = 10
-      Margins.Top = 10
-      Margins.Right = 10
-      Margins.Bottom = 10
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBtnText
-      Font.Height = -19
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      DragForm = False
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = True
-      UseFontColorToStyleColor = False
-      Caption = 'Nastaven'#237
-    end
-    object scExPanel_vrstvy: TscExPanel
-      Left = 1
-      Top = 50
-      Width = 249
-      Height = 30
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 1
-      OnClick = scExPanel_vrstvyClick
-      BackgroundStyle = scexbgsTransparent
-      CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 10
-      Color = clGradientInactiveCaption
-      Spacing = 5
-      ShowFrame = False
-      RealWidth = 0
-      RealHeight = 209
-      ShowRollButton = True
-      ShowCloseButton = False
-      CaptionHeight = 30
-      RollKind = scrkRollVertical
-      RollUpState = True
-      Moveable = False
-      Sizeable = True
-      HideControlsInRollUpState = False
-      StorePaintBuffer = False
-      Caption = 'Vrstvy'
-      object scLabel3: TscLabel
-        Left = 90
-        Top = 30
-        Width = 55
-        Height = 18
-        TabOrder = 0
-        DragForm = False
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = True
-        UseFontColorToStyleColor = False
-        Caption = 'scLabel2'
-      end
-    end
-    object scExPanel_ostatni: TscExPanel
-      Left = 1
-      Top = 80
-      Width = 249
-      Height = 30
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 2
-      OnClick = scExPanel_ostatniClick
-      BackgroundStyle = scexbgsPanel
-      CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 3
-      Color = clBtnShadow
-      Spacing = 5
-      ShowFrame = False
-      RealWidth = 0
-      RealHeight = 209
-      ShowRollButton = True
-      ShowCloseButton = False
-      CaptionHeight = 30
-      RollKind = scrkRollVertical
-      RollUpState = True
-      Moveable = False
-      Sizeable = True
-      HideControlsInRollUpState = False
-      StorePaintBuffer = False
-      Caption = 'Ostatn'#237
-      object scLabel2: TscLabel
-        Left = 99
-        Top = 30
-        Width = 55
-        Height = 18
-        TabOrder = 0
-        DragForm = False
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = True
-        UseFontColorToStyleColor = False
-        Caption = 'scLabel2'
-      end
-    end
-  end
   object scSplitView_LEFTTOOLBAR: TscSplitView
     Left = 0
     Top = 34
@@ -2834,7 +2603,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 39
+    TabOrder = 35
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -3163,7 +2932,7 @@ object Form1: TForm1
     Height = 621
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
-    TabOrder = 36
+    TabOrder = 32
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -4331,6 +4100,475 @@ object Form1: TForm1
       WordWrap = False
     end
   end
+  object scSplitView_OPTIONS: TscSplitView
+    Left = 1026
+    Top = 34
+    Width = 0
+    Height = 621
+    Anchors = [akTop, akRight, akBottom]
+    Enabled = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBtnText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 27
+    CustomImageIndex = -1
+    StyleKind = scpsPanel
+    ShowCaption = False
+    BorderStyle = scpbsLeftShadowLine
+    WallpaperIndex = -1
+    LightBorderColor = clBtnHighlight
+    ShadowBorderColor = clBtnShadow
+    CaptionGlowEffect.Enabled = False
+    CaptionGlowEffect.Color = clBtnShadow
+    CaptionGlowEffect.AlphaValue = 255
+    CaptionGlowEffect.GlowSize = 7
+    CaptionGlowEffect.Offset = 0
+    CaptionGlowEffect.Intensive = True
+    CaptionGlowEffect.StyleColors = True
+    Color = 10114859
+    StorePaintBuffer = False
+    AnimationStep = 25
+    CompactWidth = 0
+    CompactHeight = 20
+    GripSize = 0
+    Opened = False
+    OpenedWidth = 250
+    OpenedHeight = 50
+    OpenedMinWidth = 0
+    OpenedMaxWidth = 0
+    OpenedMinHeight = 0
+    OpenedMaxHeight = 0
+    ParentBackground = False
+    ParentColor = False
+    Placement = scsvpRight
+    HideControls = False
+    Animation = True
+    DisplayMode = scsvmOverlay
+    OnClosed = scSplitViewsClosed
+    OnClosing = scSplitViewsClosing
+    object pravyoption_nadpis: TscGPLabel
+      Left = 1
+      Top = 0
+      Width = 0
+      Height = 32
+      Align = alTop
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -17
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      DragForm = False
+      ContentMarginLeft = 5
+      ContentMarginRight = 5
+      ContentMarginTop = 5
+      ContentMarginBottom = 5
+      FrameWidth = 0
+      FillColor = clBtnHighlight
+      FillColorAlpha = 20
+      FrameColor = clBtnText
+      FrameColorAlpha = 40
+      FrameRadius = 0
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = True
+      Caption = 'Nastaven'#237
+      ExplicitWidth = 249
+    end
+    object scExPanel_ostatni: TscExPanel
+      Left = 1
+      Top = 32
+      Width = 249
+      Height = 195
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = scExPanel_ostatniClick
+      BackgroundStyle = scexbgsPanel
+      HeaderColor = 10114859
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = 3
+      Color = 10114859
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 0
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = False
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = 'Obecn'#233
+      object ComboBoxCekani: TscComboBox
+        Left = 5
+        Top = 42
+        Width = 194
+        Height = 26
+        ItemIndex = -1
+        Items.Strings = (
+          #382#225'dn'#233
+          'st'#345'edn'#237' '
+          'n'#225'hodn'#233
+          'maxim'#225'ln'#237)
+        WordBreak = False
+        SelectionStyle = scstStyled
+        SelectionColor = clGrayText
+        SelectionTextColor = clHighlightText
+        ImageIndex = -1
+        ItemHeight = 20
+        Align = alCustom
+        Color = 10114859
+        TabOrder = 0
+        Text = #268'as '#269'ek'#225'n'#237' na palec'
+        StyleKind = scscbDefault
+        ShowFocusRect = True
+      end
+      object CheckBoxVytizenost: TscGPCheckBox
+        Left = 5
+        Top = 152
+        Width = 244
+        Height = 25
+        Align = alCustom
+        TabOrder = 1
+        TabStop = True
+        OnClick = CheckBoxVytizenost_Click
+        Animation = False
+        Caption = 'Zobrazit vyt'#237#382'enost objekt'#367
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = False
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+      end
+      object CheckBoxVymena_barev: TscGPCheckBox
+        Left = 5
+        Top = 110
+        Width = 246
+        Height = 36
+        Align = alCustom
+        TabOrder = 2
+        TabStop = True
+        OnClick = CheckBoxVymena_barev_Click
+        Animation = False
+        Caption = 'Zohlednit '#269'i'#353't'#283'n'#237' pistole a v'#253'm'#283'nu barev'
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = False
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+      end
+      object CheckBoxPALCE: TscGPCheckBox
+        Left = 5
+        Top = 75
+        Width = 222
+        Height = 32
+        Align = alCustom
+        TabOrder = 3
+        TabStop = True
+        OnClick = CheckBoxPALCE_Click
+        Animation = False
+        Caption = 'Zohlednit rozte'#269' palc'#367' '#345'et'#283'zu'
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = False
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+      end
+    end
+    object scExPanel_vrstvy: TscExPanel
+      Left = 1
+      Top = 227
+      Width = 249
+      Height = 30
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = scExPanel_vrstvyClick
+      BackgroundStyle = scexbgsPanel
+      HeaderColor = 10114859
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = 9
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 206
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = True
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = 'Vrstvy'
+      object scLabel4: TscLabel
+        Left = 3
+        Top = 39
+        Width = 136
+        Height = 18
+        TabOrder = 0
+        DragForm = False
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'Zobrazit/Skr'#253't vrstvy'
+      end
+    end
+  end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
     Left = 536
@@ -4446,7 +4684,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000003080310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118000003180310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5499,6 +5737,10 @@ object Form1: TForm1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
+      'Database=tispl_app'
+      'User_Name=tispl_app'
+      'Password=.tisplEltep2'
+      'Server=85.255.0.237'
       'ConnectionDef=Mysql')
     FetchOptions.AssignedValues = [evCursorKind]
     FetchOptions.CursorKind = ckDefault
@@ -5596,7 +5838,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C00E000540130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C00E000640130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15118,10 +15360,10 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00B000B00018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00C000C00018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
-      8000800000008000800080800000C0C0C000808080000000FF0000FF000000FF
+      800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
       FF00FF000000FF00FF00FFFF0000FFFFFF000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

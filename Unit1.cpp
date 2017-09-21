@@ -144,9 +144,9 @@ void TForm1::NewDesignSettings()
 	scListGroupKnihovObjektu->HeaderAutoColor=true;
 	scListGroupNastavProjektu->Color=light_gray;
 	scListGroupKnihovObjektu->Color=light_gray;
-	scSplitView_OPTIONS->Color=light_gray;
-	scExPanel_vrstvy->Color=light_gray;
-	scExPanel_ostatni->Color=light_gray;
+	//scSplitView_OPTIONS->Color=light_gray;
+ //	scExPanel_vrstvy->Color=light_gray;
+ //	scExPanel_ostatni->Color=light_gray;
 
 	//nastaveni barvy prepinacu modu
 	editacelinky1->Options->PressedColor=light_gray;
@@ -258,7 +258,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 DuvodUlozit(false);
 			 RzToolButton4->Enabled=false;
 			 RzToolButton5->Enabled=false;
-    	 uchop_zobrazen=false;
+			 uchop_zobrazen=false;
     	 vycentrovat=true;
     	 posun_objektu=false;//nutnost, aby se během realizace posunu neaktivoval další posun
     	 zneplatnit_minulesouradnice();
@@ -279,12 +279,12 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {     //toto odkomentovat pro spuštění TTR
-//	if(!ttr("start"))
-//	{
-//		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-//		Close();
-//	}
-//	else
+	if(!ttr("start"))
+	{
+		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+		Close();
+	}
+	else
  //	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
 		startUP();
 }
@@ -540,7 +540,7 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	//casoverezervy1->Checked=false;
 	//casovosa1->Checked=false;
 	//technologickprocesy1->Checked=false;
-
+  scSplitView_LEFTTOOLBAR->Visible=true;
 	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
 	PopupMenu1->AutoPopup=true;
@@ -559,7 +559,7 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	LabelRoletka->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=false;
 	g.ShowGrafy(false);
-	ComboBoxCekani->Visible=false;
+ 	ComboBoxCekani->Visible=false;
 	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -665,14 +665,10 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			Timer_animace->Enabled=false;
 			ButtonPLAY->Visible=false;
 			CheckBoxPALCE->Visible=true;
-			CheckBoxPALCE->Left=326;
-			CheckBoxPALCE->Top=5;
 			CheckBoxVymena_barev->Visible=true;
-			CheckBoxVymena_barev->Left=CheckBoxPALCE->Left+170;
-			CheckBoxVymena_barev->Top=CheckBoxPALCE->Top;
 			CheckBoxVytizenost->Visible=true;
-			CheckBoxVytizenost->Left=CheckBoxPALCE->Left+CheckBoxVymena_barev->Left-100;
-			CheckBoxVytizenost->Top=CheckBoxPALCE->Top;
+
+
 			CheckBoxAnimovatSG->Visible=false;
 			ComboBoxODmin->Visible=false;
 			ComboBoxDOmin->Visible=false;
@@ -680,8 +676,6 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			LabelRoletka->Visible=false;
 			CheckBox_pouzit_zadane_kapacity->Visible=false;
 			ComboBoxCekani->Visible=true;
-			ComboBoxCekani->Top=CheckBoxPALCE->Top;
-			ComboBoxCekani->Left=CheckBoxVytizenost->Left+CheckBoxVytizenost->Width+5;
 			d.PROZATIM=true;
 
 			Label_zamerovac->Visible=false;
@@ -716,8 +710,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	CheckBoxPALCE->Visible=false;
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=true;
-	CheckBoxAnimovatSG->Top=CheckBoxPALCE->Top;
-	CheckBoxAnimovatSG->Left=LabelRoletka->Left+LabelRoletka->Width+ComboBoxODmin->Width+ComboBoxDOmin->Width+7;
+
 	CheckBoxVymena_barev->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=true;
 	//filtrace
@@ -734,14 +727,9 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	LabelRoletka->Visible=true;
 	LabelRoletka->Caption="Filtr minut";
 	LabelRoletka->Font->Color=clBlack;
-	LabelRoletka->Top=20; //LABELROLETKA_POZICETOP
-	//LabelRoletka->Left=CheckBoxPALCE->Left+CheckBoxPALCE->Width;
-	ComboBoxODmin->Top=CheckBoxPALCE->Top;
-	ComboBoxODmin->Left=LabelRoletka->Left+LabelRoletka->Width+2;
 	ComboBoxODmin->Visible=true;
 	rComboBoxKrok->Visible=true;
-	rComboBoxKrok->Top=CheckBoxPALCE->Top;
-	rComboBoxKrok->Left=ButtonPLAY->Left+ButtonPLAY->Width+20;
+
 
 
 	double konec_cas=d.v.vrat_nejpozdejsi_konec_zakazek()/10;
@@ -755,11 +743,6 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	ComboBoxDOmin->Top=CheckBoxPALCE->Top;
 	ComboBoxDOmin->Left=ComboBoxODmin->Left+40+2;
 	//ComboBoxDOmin->Items->Add(d.TP.KZ);//plnění komba max časem
-
-
-
-	ButtonPLAY->Top=CheckBoxPALCE->Top-1;
-	ButtonPLAY->Left=CheckBoxAnimovatSG->Left+CheckBoxAnimovatSG->Width+200;
 
 	CheckBox_pouzit_zadane_kapacity->Visible=true;
 	CheckBox_pouzit_zadane_kapacity->Top=CheckBoxPALCE->Top;
@@ -3032,7 +3015,7 @@ void __fastcall TForm1::Button10Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void __fastcall TForm1::CheckBoxPALCEClick(TObject *Sender)
+void __fastcall TForm1::CheckBoxPALCE_Click(TObject *Sender)
 {
  d.PROZATIM=true;
  Invalidate();
@@ -3311,7 +3294,7 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::CheckBoxVytizenostClick(TObject *Sender)
+void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 {
 	if(d.v.PROCESY!=NULL && d.v.PROCESY->predchozi->n>0)//pokud je více objektů
 	{
@@ -3351,7 +3334,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm1::CheckBoxVymena_barevClick(TObject *Sender)
+void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
 	 d.PROZATIM=true;
 	 Invalidate();
@@ -3660,6 +3643,16 @@ void __fastcall TForm1::scExPanel_vrstvyClick(TObject *Sender)
 void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 {
 	scExPanel_ostatni->RollUpState=!scExPanel_ostatni->RollUpState;
+
+	 if(MOD==CASOVAOSA){
+
+
+			CheckBoxVytizenost->Visible=true;
+			CheckBoxPALCE->Visible=true;
+			CheckBoxVymena_barev->Visible=true;
+			ComboBoxCekani->Visible=true;
+	}
+
 }
 //---------------------------------------------------------------------------
 //vypnutí měřítko
@@ -3669,5 +3662,8 @@ void __fastcall TForm1::scGPSwitch_meritkoChangeState(TObject *Sender)
 	 REFRESH();
 }
 //---------------------------------------------------------------------------
+
+
+
 
 

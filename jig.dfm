@@ -17,12 +17,54 @@ object Form_jig: TForm_jig
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object rHTMLLabel5: TrHTMLLabel
+  object rHTMLLabel_jig_sirka: TrHTMLLabel
+    Left = 52
+    Top = 177
+    Width = 35
+    Height = 19
+    Caption = #352#237#345'ka'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_jig_vyska: TrHTMLLabel
+    Left = 227
+    Top = 97
+    Width = 41
+    Height = 19
+    Caption = 'V'#253#353'ka'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_jig_pocetks: TrHTMLLabel
     Left = 52
     Top = 97
     Width = 82
     Height = 19
     Caption = 'Po'#269'et ks/jig'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_jig_delka: TrHTMLLabel
+    Left = 227
+    Top = 177
+    Width = 39
+    Height = 19
+    Caption = 'D'#233'lka'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -502,7 +544,7 @@ object Form_jig: TForm_jig
     GroupIndex = 0
     AllowAllUp = False
   end
-  object rEditNum4: TrEditNum
+  object jig_pocet_ks: TrEditNum
     Left = 52
     Top = 122
     Width = 149
@@ -603,5 +645,50 @@ object Form_jig: TForm_jig
     Down = True
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object jig_vyska: TrEditNum
+    Left = 227
+    Top = 122
+    Width = 149
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 5
+    Value = 1.000000000000000000
+  end
+  object rEditNum2: TrEditNum
+    Left = 52
+    Top = 202
+    Width = 149
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 6
+    Value = 1.000000000000000000
+  end
+  object rEditNum3: TrEditNum
+    Left = 227
+    Top = 202
+    Width = 149
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 7
+    Value = 1.000000000000000000
   end
 end

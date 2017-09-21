@@ -43,17 +43,11 @@ Coordinates=901,212,59,58
 [scGPPanel2]
 Coordinates=751,556,86,36
 
-[ComboBoxCekani]
-Coordinates=382,10,118,124
-
 [Memo1]
 Coordinates=179,144,64,58
 
 [Series1]
 Coordinates=969,276,58,36
-
-[CheckBoxPALCE]
-Coordinates=695,10,115,58
 
 [Button6]
 Coordinates=820,10,59,58
@@ -96,9 +90,6 @@ Coordinates=317,557,79,36
 
 [Posunout3]
 Coordinates=238,557,76,36
-
-[CheckBoxVymena_barev]
-Coordinates=10,144,159,58
 
 [TeeGDIPlus4]
 Coordinates=139,557,91,36
@@ -171,9 +162,6 @@ Coordinates=397,510,104,36
 
 [Button9]
 Coordinates=617,144,59,58
-
-[CheckBoxVytizenost]
-Coordinates=529,212,132,58
 
 [CheckBox_pouzit_zadane_kapacity]
 Coordinates=301,212,218,58
@@ -289,9 +277,6 @@ Coordinates=769,144,53,58
 [RzToolButton11]
 Coordinates=290,418,107,36
 
-[scLabel4]
-Coordinates=214,418,66,36
-
 [Timer_simulace]
 Coordinates=1457,386,105,36
 
@@ -401,7 +386,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=120,372,89,36
+Coordinates=382,10,118,124
 Visible=True
 
 [scSplitView_OPTIONS]

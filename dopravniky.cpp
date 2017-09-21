@@ -12,6 +12,7 @@
 #pragma link "rStringGridEd"
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "scGPExtControls"
 #pragma resource "*.dfm"
 TForm_dopravnik *Form_dopravnik;
 //---------------------------------------------------------------------------

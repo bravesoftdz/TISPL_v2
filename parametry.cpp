@@ -8,6 +8,10 @@
 #include "dopravniky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+#pragma link "rHTMLLabel"
+#pragma link "rImprovedComps"
+#pragma link "scControls"
+#pragma link "scGPControls"
 #pragma resource "*.dfm"
 TForm_parametry *Form_parametry;
 //---------------------------------------------------------------------------
@@ -215,9 +219,9 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim,bool default_text)
 		 case 0://STOP & GO
 		 {
 			ComboBox_dopravnik->Visible=false;
-			GroupBox_vzdalenost->Left=0;
-			GroupBox_vzdalenost->Visible=false;
-			GroupBox_orientace_voziku->Width=262;
+		//	GroupBox_vzdalenost->Left=0;
+		//	GroupBox_vzdalenost->Visible=false;
+		//	GroupBox_orientace_voziku->Width=262;
 			Button_DEL->Visible=false;
 			Image_vozik->Width=185;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
 			if(default_text)ValueListEditor->Strings->SetText(SG.c_str());
@@ -232,9 +236,9 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim,bool default_text)
 		 case 1://KONTINUÁLNÍ
 		 {
 			ComboBox_dopravnik->Visible=true;
-			GroupBox_vzdalenost->Visible=true;
-			GroupBox_vzdalenost->Left=195;
-			GroupBox_orientace_voziku->Width=187;
+		//	GroupBox_vzdalenost->Visible=true;
+		//	GroupBox_vzdalenost->Left=195;
+		//	GroupBox_orientace_voziku->Width=187;
 			Button_DEL->Visible=false;
 			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
 			if(default_text)ValueListEditor->Strings->SetText(K.c_str());
@@ -247,10 +251,10 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim,bool default_text)
 		 }break;
 		 case 2://POSTPROCESNÍ
 		 {
-			GroupBox_vzdalenost->Visible=true;
-			GroupBox_vzdalenost->Left=195;
+		//	GroupBox_vzdalenost->Visible=true;
+	 //		GroupBox_vzdalenost->Left=195;
 			ComboBox_dopravnik->Visible=false;
-			GroupBox_orientace_voziku->Width=187;
+		//	GroupBox_orientace_voziku->Width=187;
 			Button_DEL->Visible=false;
 			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
 			if(default_text)ValueListEditor->Strings->SetText(P.c_str());
@@ -378,6 +382,12 @@ void __fastcall TForm_parametry::Edit_vzdalenost_vozikuKeyDown(TObject *Sender, 
 {
 	 if(Key==13)
 	 ComboBox_dopravnik->SetFocus();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPButton3Click(TObject *Sender)
+{
+	Form_parametry->Close();
 }
 //---------------------------------------------------------------------------
 
