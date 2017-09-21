@@ -13,15 +13,11 @@
 #include "RzSplit.hpp"
 #include "RzStatus.hpp"
 #include <Vcl.Grids.hpp>
-#include "my.h"
-#include "vykresli.h"
-#include "grafy.h"
 #include "RzButton.hpp"
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
 #include "RzBorder.hpp"
 #include <Vcl.Dialogs.hpp>
-#include "MyString.h"
 #include <Vcl.ExtDlgs.hpp>
 #include "RzBHints.hpp"
 #include "RzGrids.hpp"
@@ -32,6 +28,72 @@
 #include <VCLTee.TeEngine.hpp>
 #include <VCLTee.TeeProcs.hpp>
 #include "RzLabel.hpp"
+#include <IdBaseComponent.hpp>
+#include <IdComponent.hpp>
+#include <IdDayTime.hpp>
+#include <IdTCPClient.hpp>
+#include <IdTCPConnection.hpp>
+#include <IdTime.hpp>
+#include <IdSNTP.hpp>
+#include <IdUDPBase.hpp>
+#include <IdUDPClient.hpp>
+#include <IdHTTP.hpp>
+#include <Data.DB.hpp>
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Comp.DataSet.hpp>
+#include <FireDAC.DApt.hpp>
+#include <FireDAC.DApt.Intf.hpp>
+#include <FireDAC.DatS.hpp>
+#include <FireDAC.Phys.hpp>
+#include <FireDAC.Phys.Intf.hpp>
+#include <FireDAC.Phys.MySQL.hpp>
+#include <FireDAC.Phys.MySQLDef.hpp>
+#include <FireDAC.Stan.Async.hpp>
+#include <FireDAC.Stan.Def.hpp>
+#include <FireDAC.Stan.Error.hpp>
+#include <FireDAC.Stan.Intf.hpp>
+#include <FireDAC.Stan.Option.hpp>
+#include <FireDAC.Stan.Param.hpp>
+#include <FireDAC.Stan.Pool.hpp>
+#include <FireDAC.UI.Intf.hpp>
+#include <FireDAC.VCLUI.Wait.hpp>
+#include <Data.FMTBcd.hpp>
+#include <Data.SqlExpr.hpp>
+#include <Data.DBXMySQL.hpp>
+#include <FireDAC.Comp.Script.hpp>
+#include <FireDAC.Comp.ScriptCommands.hpp>
+#include <FireDAC.Stan.Util.hpp>
+#include <FireDAC.Comp.UI.hpp>
+#include <FireDAC.VCLUI.Script.hpp>
+#include <IdIOHandler.hpp>
+#include <IdIOHandlerSocket.hpp>
+#include <IdIOHandlerStack.hpp>
+#include <IdSSL.hpp>
+#include <IdSSLOpenSSL.hpp>
+#include "rImprovedComps.hpp"
+#include "rStringGridEd.hpp"
+#include "scControls.hpp"
+#include "scGPControls.hpp"
+#include "scStyledForm.hpp"
+#include "scAdvancedControls.hpp"
+#include "scExtControls.hpp"
+#include "scModernControls.hpp"
+#include <Vcl.Mask.hpp>
+#include <Vcl.WinXCtrls.hpp>
+#include "scDrawUtils.hpp"
+#include "scGPImages.hpp"
+<<<<<<< HEAD
+#include <FireDAC.Phys.ODBC.hpp>
+#include <FireDAC.Phys.ODBCBase.hpp>
+#include <FireDAC.Phys.ODBCDef.hpp>
+=======
+
+#include "MyString.h"
+#include "my.h"
+#include "vykresli.h"
+//ZDM #include "grafy.h"
+
+>>>>>>> 4e82051b4f9ebf2afa774f0f12d265f90e6ccdc3
 //#include "vektory.h" //už vkládám přes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám přes vykresli.h resp. vektory.h
 
@@ -39,57 +101,17 @@
 class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
-	TMainMenu *MainMenu1;
 	TPopupMenu *PopupMenu1;
 	TRzToolbar *RzToolbar1;
-	TRzStatusBar *RzStatusBar1;
-	TMenuItem *Projekt1;
-	TMenuItem *Pohled1;
-	TMenuItem *Knihovna1;
-	TMenuItem *Npovda1;
-	TMenuItem *NovySoubor;
-	TMenuItem *Otevrit;
-	TMenuItem *Ulozit;
-	TMenuItem *Ulozitjako;
-	TMenuItem *N1;
-	TMenuItem *Konec1;
-	TRzSizePanel *RzSizePanel_knihovna_objektu;
-	TMenuItem *Nastaven1;
-	TMenuItem *Vzhled1;
-	TMenuItem *Klasick1;
-	TMenuItem *WinXP1;
-	TMenuItem *Gradientn1;
 	TRzStatusPane *RzStatusPane1;
-	TRzStatusPane *RzStatusPane2;
 	TMenuItem *Nastvitparametry1;
 	TMenuItem *Smazat1;
-	TRzSizePanel *RzSizePanel_parametry_projekt;
 	TRzStatusPane *RzStatusPane3;
 	TRzStatusPane *RzStatusPane4;
-	TDrawGrid *DrawGrid_knihovna;
-	TLabel *Label1;
-	TLabel *Label2;
-	TEdit *Edit_takt_time;
-	TLabel *Label3;
-	TLabel *Label4;
-	TMenuItem *Md1;
-	TMenuItem *editacelinky1;
-	TMenuItem *testovnkapacity1;
-	TMenuItem *casoverezervy1;
-	TLabel *Label5;
-	TMenuItem *Mrizka;
 	TButton *Button1;
-	TMenuItem *Piblit1;
-	TMenuItem *Oddlit1;
-	TMenuItem *N4;
-	TMenuItem *Predchozipohled1;
 	TMenuItem *N5;
 	TMenuItem *Priblizit2;
 	TMenuItem *Oddalit2;
-	TMenuItem *Posunout2;
-	TMenuItem *Posouvat1;
-	TMenuItem *N6;
-	TMenuItem *Vybratoknem1;
 	TMenuItem *Posouvat2;
 	TMenuItem *Posunout3;
 	TMenuItem *Vybratoknem2;
@@ -109,26 +131,12 @@ __published:	// IDE-managed Components
 	TRzToolButton *RzToolButton11;
 	TRzToolButton *RzToolButton12;
 	TMemo *Memo1;
-	TMenuItem *Ve1;
 	TRzStatusPane *RzStatusPane5;
 	TSaveDialog *SaveDialog;
 	TOpenDialog *OpenDialog1;
 	TTimer *Timer_backup;
-	TMenuItem *Obnovitzezlohy1;
-	TMenuItem *Otevritsablonu;
-	TMenuItem *Export1;
 	TSavePictureDialog *SavePictureDialog1;
-	TButton *Button_kalkulatorTT;
-	TLabel *Label8;
-	TButton *Button_dopravnik_parametry;
-	TButton *Button_vozik_parametry;
-	TMenuItem *Obnovitobraz1;
-	TMenuItem *Report1;
-	TMenuItem *csv1;
-	TMenuItem *html1;
-	TMenuItem *simulace1;
 	TTimer *Timer_simulace;
-	TMenuItem *Vypicestuktempu1;
 	TButton *Button3;
 	TButton *Button4;
 	TButton *Button5;
@@ -137,33 +145,23 @@ __published:	// IDE-managed Components
 	TButton *Button8;
 	TButton *Button9;
 	TButton *Button10;
-	TMenuItem *casovosa1;
 	TChart *Chart1;
 	TChart *Chart2;
 	TChart *Chart3;
 	TChart *Chart4;
-	TLabel *wip;
+	TLabel *Label_wip;
 	TGanttSeries *Series1;
 	TBarSeries *Series5;
 	TBarSeries *Series6;
-	TMenuItem *technologickprocesy1;
 	TMenuItem *Rychlexport1;
 	TMenuItem *Zobrazitparametry1;
-	TMenuItem *N2;
-	TMenuItem *Magna;
-	TMenuItem *SPPP1;
-	TMenuItem *Boskovice1;
-	TMenuItem *eXtreme1;
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
 	TButton *ButtonPLAY;
 	TTimer *Timer_animace;
 	TChart *Chart6;
-	TCheckBox *CheckBoxVytizenost;
 	TCheckBox *CheckBoxAnimovatSG;
-	TCheckBox *CheckBoxPALCE;
 	TLabel *Label_zamerovac;
-	TCheckBox *CheckBoxVymena_barev;
 	TPieSeries *Series7;
 	TTeeGDIPlus *TeeGDIPlus1;
 	TTeeGDIPlus *TeeGDIPlus2;
@@ -172,20 +170,94 @@ __published:	// IDE-managed Components
 	TTeeGDIPlus *TeeGDIPlus5;
 	TComboBox *ComboBoxDOmin;
 	TComboBox *ComboBoxODmin;
-	TMenuItem *antialiasing1;
 	TLabel *LabelRoletka;
 	TBarSeries *Series2;
 	TBarSeries *Series3;
-<<<<<<< HEAD
 	TTimer *TimerMouseWheel;
-=======
 	TBarSeries *Series9;
 	TBarSeries *Series10;
->>>>>>> 65a0dc61fd706252cd6e09a2d083cb77392489c7
+	TIdTime *IdTime1;
+	TIdHTTP *IdHTTP1;
+	TTimer *Timer_tr;
+	TFDConnection *FDConnection1;
+	TCheckBox *CheckBox_pouzit_zadane_kapacity;
+	TFDQuery *FDQuery1;
+	TButton *Button11;
+	TFDQuery *FDQuery2;
+	TrComboBoxEx *rComboBoxKrok;
+<<<<<<< HEAD
+	TscGPPanel *scGPPanel2;
+=======
+	TrComboBoxEx *ComboBoxCekani;
+	TscGPPanel *scGPPanel_mainmenu;
+>>>>>>> 4e82051b4f9ebf2afa774f0f12d265f90e6ccdc3
+	TscGPGlyphButton *Konec;
+	TscGPGlyphButton *MinButton;
+	TscGPButton *editacelinky1;
+	TscLabel *scLabel_titulek;
+	TscGPButton *PopupMenuButton;
+	TscGPButton *casovosa1;
+	TscGPButton *technologickprocesy1;
+	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *Ulozit;
+	TscGPGlyphButton *NovySoubor;
+	TscGPGlyphButton *Otevrit;
+	TscGPGlyphButton *MaxButton;
+	TscGPGlyphButton *DetailsButton;
+	TscGPPanel *scGPPanel_statusbar;
+	TscGPTrackBar *scGPTrackBar1;
+	TscGPGlyphButton *scGPGlyphButton_ZOOM_MINUS;
+	TscGPGlyphButton *scGPGlyphButton_ZOOM_PLUS;
+	TscGPSizeBox *scGPSizeBox1;
+	TscCheckBox *scCheckBox2;
+	TscSplitView *scSplitView_OPTIONS;
+	TscCheckBox *scCheckBox1;
+	TscStyledForm *scStyledForm1;
+	TscRadioGroup *scRadioGroup1;
+	TscGPGlyphButton *scGPGlyphButton2;
+	TscGPButton *layout;
+	TscGPButton *simulace;
+	TscButton *scButton3;
+	TscButton *scButton1;
+	TscButton *scButton4;
+	TscButton *scButton5;
+	TscGPSwitch *scGPSwitch4;
+	TscLabel *scLabel11;
+	TscLabel *scLabel16;
+	TscGPSwitch *scGPSwitch5;
+	TscGPGlyphButton *scGPGlyphButton15;
+	TImageList *ImageList48;
+	TscGPVirtualImageList *scGPVirtualImageList1;
+	TscButton *scButton2;
+	TscButton *scButton6;
+	TscSplitView *scSplitView_MENU;
+	TscButton *scButton7;
+	TscButton *scButton8;
+	TscButton *scButton9;
+	TscSplitView *scSplitView_LEFTTOOLBAR;
+	TscListGroupPanel *scListGroupKnihovObjektu;
+	TscListGroupPanel *scListGroupNastavProjektu;
+	TscLabel *scLabel14;
+	TscLabel *scLabel15;
+	TscGPGlyphButton *scGPGlyphButton7;
+	TscGPGlyphButton *scGPGlyphButton8;
+	TDrawGrid *DrawGrid_knihovna;
+	TscGPSwitch *scGPSwitch9;
+	TscLabel *scLabel19;
+	TscLabel *scLabel_ZOOM;
+	TMenuItem *Celpohled1;
+	TscGPSwitch *scGPSwitch_meritko;
+	TscLabel *scLabel5;
+	TscButton *scButton_ulozit;
+	TscGPCheckBox *CheckBoxPALCE;
+	TscGPCheckBox *CheckBoxVymena_barev;
+	TscGPCheckBox *CheckBoxVytizenost;
+	TscComboBox *ComboBoxCekani;
+	TscGPLabel *pravyoption_nadpis;
+	TscExPanel *scExPanel_ostatni;
+	TscExPanel *scExPanel_vrstvy;
+	TscLabel *scLabel4;
 	void __fastcall Konec1Click(TObject *Sender);
-	void __fastcall Klasick1Click(TObject *Sender);
-	void __fastcall WinXP1Click(TObject *Sender);
-	void __fastcall Gradientn1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
@@ -196,7 +268,6 @@ __published:	// IDE-managed Components
 	void __fastcall DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall FormResize(TObject *Sender);
-	void __fastcall MrizkaClick(TObject *Sender);
 	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall Button1Click(TObject *Sender);
@@ -216,7 +287,7 @@ __published:	// IDE-managed Components
 	void __fastcall DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
-	void __fastcall RzSizePanel_knihovna_objektuMouseEnter(TObject *Sender);
+	void __fastcall RzSizePanel_knihovna_objektu_OLDMouseEnter(TObject *Sender);
 	void __fastcall Piblit1Click(TObject *Sender);
 	void __fastcall Oddlit1Click(TObject *Sender);
 	void __fastcall Predchozipohled1Click(TObject *Sender);
@@ -246,8 +317,8 @@ __published:	// IDE-managed Components
 	void __fastcall OtevritsablonuClick(TObject *Sender);
 	void __fastcall Export1Click(TObject *Sender);
 	void __fastcall Button_kalkulatorTTClick(TObject *Sender);
-	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
-	void __fastcall Button_vozik_parametryClick(TObject *Sender);
+	void __fastcall Button_dopravnik_parametry_OLDClick(TObject *Sender);
+	void __fastcall Button_vozik_parametry_OLDClick(TObject *Sender);
 	void __fastcall Edit_takt_timeEnter(TObject *Sender);
 	void __fastcall Obnovitobraz1Click(TObject *Sender);
 	void __fastcall csv1Click(TObject *Sender);
@@ -267,13 +338,13 @@ __published:	// IDE-managed Components
 	void __fastcall Button10Click(TObject *Sender);
 	void __fastcall casovosa1Click(TObject *Sender);
 	void __fastcall FormShortCut(TWMKey &Msg, bool &Handled);
-	void __fastcall CheckBoxPALCEClick(TObject *Sender);
+	void __fastcall CheckBoxPALCE_Click(TObject *Sender);
 	void __fastcall Chart1Click(TObject *Sender);
 	void __fastcall technologickprocesy1Click(TObject *Sender);
 	void __fastcall PopupMenu1Popup(TObject *Sender);
 	void __fastcall Zobrazitparametry1Click(TObject *Sender);
-	void __fastcall MagnaClick(TObject *Sender);
 	void __fastcall Rychlexport1Click(TObject *Sender);
+	void __fastcall MagnaClick(TObject *Sender);
 	void __fastcall SPPP1Click(TObject *Sender);
 	void __fastcall Boskovice1Click(TObject *Sender);
 	void __fastcall eXtreme1Click(TObject *Sender);
@@ -281,20 +352,44 @@ __published:	// IDE-managed Components
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
 	void __fastcall ButtonPLAYClick(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
-	void __fastcall CheckBoxVytizenostClick(TObject *Sender);
+	void __fastcall CheckBoxVytizenost_Click(TObject *Sender);
 	void __fastcall Button13Click(TObject *Sender);
-	void __fastcall CheckBoxVymena_barevClick(TObject *Sender);
+	void __fastcall CheckBoxVymena_barev_Click(TObject *Sender);
 	void __fastcall ComboBoxODminChange(TObject *Sender);
 	void __fastcall ComboBoxDOminChange(TObject *Sender);
-	void __fastcall antialiasing1Click(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
-
+	void __fastcall Timer_trTimer(TObject *Sender);
+	void __fastcall CheckBox_pouzit_zadane_kapacityClick(TObject *Sender);
+	void __fastcall Button11Click(TObject *Sender);
+	void __fastcall rComboBoxKrokChange(TObject *Sender);
+	void __fastcall Button12Click(TObject *Sender);
+	void __fastcall MaxButtonClick(TObject *Sender);
+	void __fastcall PopupMenuButtonClick(TObject *Sender);
+	void __fastcall scGPGlyphButton1Click(TObject *Sender);
+	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender);
+	void __fastcall scLabel_titulekDblClick(TObject *Sender);
+	void __fastcall MinButtonClick(TObject *Sender);
+	void __fastcall scGPGlyphButton2Click(TObject *Sender);
+	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
+	void __fastcall Button_vozik_parametryClick(TObject *Sender);
+	void __fastcall DetailsButtonClick(TObject *Sender);
+	void __fastcall scGPTrackBar1Change(TObject *Sender);
+	void __fastcall scGPSwitch4ChangeState(TObject *Sender);
+	void __fastcall scGPSwitch5ChangeState(TObject *Sender);
+	void __fastcall scGPSwitch9ChangeState(TObject *Sender);
+	void __fastcall scSplitViewsClosing(TObject *Sender);
+	void __fastcall scSplitViewsClosed(TObject *Sender);
+	void __fastcall scExPanel_ostatniClick(TObject *Sender);
+	void __fastcall scExPanel_vrstvyClick(TObject *Sender);
+	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 
 private:	// User declarations
 	////struktury, výčty
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
-	enum Tmod{NO=0,EDITACE,TESTOVANI,REZERVY,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
-	//enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce; muselo být přesunutu do public sekce kvůli AA ve vykresli
+	enum Tmod{NO=0,SCHEMA,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
+	//enum Takce - muselo být přesunutu do public sekce kvůli AA ve vykresli
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
@@ -305,7 +400,6 @@ private:	// User declarations
 
 	////metody
 	void edice();
-	void setVisualStyle(TRzVisualStyle VisualStyle=vsClassic);
 	short int MB(UnicodeString text, unsigned short int typ=0,UnicodeString titulek="TISPL - Eltep");//vola rychle messabox
 	void REFRESH(bool invalidate=true); //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do větve else
 	void ESC();
@@ -314,6 +408,7 @@ private:	// User declarations
 	void ZOOM_OUT();//oddálení
 	void ZOOM();//samotný ZOOM
 	void ZOOM_WINDOW();//přiblížení oknem
+	void on_change_zoom_change_scGPTrackBar();
 	void zneplatnit_minulesouradnice();
 	void kurzor(TKurzory typ_kurzor);
 	void pan_map(TCanvas * canv, int X, int Y);
@@ -337,6 +432,14 @@ private:	// User declarations
 	void zavrit_uvod();//zavře úvodní dialog
 	int vrat_max_vysku_grafu();
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap);
+	bool ttr(UnicodeString Text);
+	void log2web(UnicodeString Text);//automaticky přidá parametry (čas, uživatel, licence)
+	void log2webOnlyText(UnicodeString Text);//pouze text
+	void startUP();//při aktivaci formuláře, pro zpřehlednění kodu
+	void NewDesignSettings();
+
+	TDateTime TIME;
+	UnicodeString LICENCE;
 
 	////proměnné
 	int size_grid;
@@ -365,6 +468,8 @@ private:	// User declarations
 	bool probehl_zoom;
 	bool add_posledni;
 	bool upozornovat_na_zmenu_TT_parametru;
+	bool scSplitViews_closing_on_AA;
+	bool SplitViewOpen;
 
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
@@ -376,12 +481,11 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
-  struct T_parametry_projektu{double TT;double hodin;double smen;double dni;unsigned int produktu_vozik;double delka_voziku;double sirka_voziku;};T_parametry_projektu PP;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 	TMyString ms;
 	Cmy m;
 	Cvykresli d;
-	Cgrafy g;
+	//ZDM Cgrafy g;
   UnicodeString FileName;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
 	double Zoom; //proměnná uchovávajicí velikost Zoomu
