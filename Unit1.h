@@ -176,7 +176,7 @@ __published:	// IDE-managed Components
 	TFDConnection *FDConnection1;
 	TCheckBox *CheckBox_pouzit_zadane_kapacity;
 	TFDQuery *FDQuery1;
-	TButton *Button11;
+	TButton *SQL_processID;
 	TFDQuery *FDQuery2;
 	TrComboBoxEx *rComboBoxKrok;
 	TscGPPanel *scGPPanel_mainmenu;
@@ -349,7 +349,7 @@ __published:	// IDE-managed Components
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
 	void __fastcall Timer_trTimer(TObject *Sender);
 	void __fastcall CheckBox_pouzit_zadane_kapacityClick(TObject *Sender);
-	void __fastcall Button11Click(TObject *Sender);
+	void __fastcall SQL_processIDClick(TObject *Sender);
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
 	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);

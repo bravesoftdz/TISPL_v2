@@ -223,9 +223,6 @@ Coordinates=843,418,100,36
 [FDConnection1]
 Coordinates=229,705,104,36
 
-[Button11]
-Coordinates=1046,144,66,58
-
 [RzSpacer1]
 Coordinates=755,418,78,36
 
@@ -361,4 +358,7 @@ Coordinates=870,372,124,36
 
 [scGPPanel_statusbar]
 Coordinates=1017,464,86,36
+
+[SQL_processID]
+Coordinates=1046,144,66,58
 

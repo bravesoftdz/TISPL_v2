@@ -152,10 +152,12 @@ void TForm1::NewDesignSettings()
 	scExPanel_ostatni->Top=72+27;
 
 	//pozice ovládacích prvků
-	scListGroupNastavProjektu->Left=0;scListGroupNastavProjektu->Top=0;
-	scListGroupKnihovObjektu->Left=0;scListGroupKnihovObjektu->Top=2+scListGroupNastavProjektu->Height+0;
+//	scListGroupNastavProjektu->Left=0;
+//	scListGroupNastavProjektu->Top=0;
+//	scListGroupKnihovObjektu->Left=0;
+ /*	scListGroupKnihovObjektu->Top=2+scListGroupNastavProjektu->Height+0;
 	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
-	vyska_menu=0;
+	vyska_menu=0;  */
 }
 //---------------------------------------------------------------------------
 //zakázání či povolení grafických uživatelských prvků dle úrovně edice
@@ -514,8 +516,10 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	//casovosa1->Checked=false;
 	//technologickprocesy1->Checked=false;
 	scSplitView_LEFTTOOLBAR->Visible=true;
+	scListGroupNastavProjektu->Top=0;
 	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
+	scListGroupKnihovObjektu->Top=scListGroupNastavProjektu->Height;
 	PopupMenu1->AutoPopup=true;
 	DuvodUlozit(true);
 	ButtonPLAY->Visible=false;
@@ -532,7 +536,8 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	LabelRoletka->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=false;
 	//ZDM g.ShowGrafy(false);
- 	ComboBoxCekani->Visible=false;
+	ComboBoxCekani->Visible=false;
+
 	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -3293,7 +3298,12 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-  /*	Memo1->Visible=true;
+
+	ShowMessage(scListGroupNastavProjektu->TabOrder);
+	ShowMessage(scListGroupKnihovObjektu->TabOrder);
+ //	scListGroupNastavProjektu->TabOrder;
+
+	/*	Memo1->Visible=true;
 
 	Memo1->Lines->Add("Výpis OBJEKTY:");
 	Cvektory::TObjekt *ukaz=d.v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
@@ -3359,7 +3369,7 @@ void __fastcall TForm1::Timer_trTimer(TObject *Sender)
 
 
 
-void __fastcall TForm1::Button11Click(TObject *Sender)
+void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 {
 
 		FDQuery1->Active = False;
