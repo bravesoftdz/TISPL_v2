@@ -205,7 +205,7 @@ void TForm1::edice()
 			default:
 				break;
 	}
-	//scLabel_titulek->Caption=scLabel_titulek->Caption+" | "+Edice_caption;//vypis edice v titulku programu
+	scLabel_titulek->Caption=scLabel_titulek->Caption+" | "+Edice_caption;//vypis edice v titulku programu
 
 }
 //---------------------------------------------------------------------------
@@ -276,7 +276,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 
 			 FileName="Nový.tispl";
-			 if(Form1->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName+"]"/*+" | "+Edice_caption*/;
+		 	 if(Form1->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName+"]"/*+" | "+Edice_caption*/;
 			 Invalidate();
 	 }
 }
@@ -1178,7 +1178,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 					int W=scSplitView_LEFTTOOLBAR->Width;
 					if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
-					short H=scLabel_titulek->Height;// zmena designu RzToolbar1->Height;
+					short H=scGPPanel_mainmenu->Height;// zmena designu RzToolbar1->Height;
 					int Gh=vrat_max_vysku_grafu();
 					Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
 					Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
@@ -2264,7 +2264,7 @@ void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 		Ulozit_soubor();
 		if(FileName.Pos(".tisplTemp")){FileName=origFileName;DuvodUlozit(true);}
 		AnsiString FileName_short=ms.delete_repeat_all(FileName,"\\");
-		if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;
+	 //TODO_R_TITULEK	if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;
 	}
 	else//stisknuto storno
 	stisknuto_storno=true;
@@ -2355,7 +2355,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 		{
 			FileName=soubor;//pro globální využití
 			AnsiString FileName_short=ms.delete_repeat_all(FileName,"\\");
-			if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"+" | "/*+Edice_caption*/;
+		 //TODO_R_TITULEK	if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"+" | "/*+Edice_caption*/;
 			//načtení dat z hlavičky souboru
 			Zoom=d.v.File_hlavicka.Zoom;
 			Posun.x=d.v.File_hlavicka.PosunutiX;

@@ -183,7 +183,6 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
 	TscGPButton *editacelinky1;
-	TscLabel *scLabel_titulek;
 	TscGPButton *PopupMenuButton;
 	TscGPButton *casovosa1;
 	TscGPButton *technologickprocesy1;
@@ -246,6 +245,7 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_ostatni;
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel4;
+	TscLabel *scLabel_titulek;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

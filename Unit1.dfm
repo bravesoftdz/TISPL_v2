@@ -966,39 +966,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
     end
-    object scLabel_titulek: TscLabel
-      Left = 242
-      Top = 0
-      Width = 162
-      Height = 34
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 1
-      Align = alClient
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-      Visible = False
-      OnDblClick = scLabel_titulekDblClick
-      DragForm = True
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 2
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = False
-      Alignment = taCenter
-      VertAlignment = scvtaCenter
-      UseFontColorToStyleColor = True
-      Caption = 'ELTEP - TISPL'
-    end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
       Left = 0
@@ -1016,7 +983,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 3
       OnClick = PopupMenuButtonClick
       Animation = True
       Caption = 'Menu'
@@ -1108,7 +1075,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 5
+      TabOrder = 4
       OnClick = casovosa1Click
       Animation = True
       Caption = #268'asov'#225' osa'
@@ -1200,7 +1167,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 6
+      TabOrder = 5
       OnClick = technologickprocesy1Click
       Animation = True
       Caption = 'Procesy'
@@ -1287,7 +1254,7 @@ object Form1: TForm1
       Margins.Right = 5
       Margins.Bottom = 1
       Align = alRight
-      TabOrder = 7
+      TabOrder = 6
       OnClick = scGPGlyphButton1Click
       Animation = True
       Caption = 'scGPGlyphButton1'
@@ -1365,7 +1332,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alLeft
-      TabOrder = 8
+      TabOrder = 7
       OnClick = UlozitClick
       Animation = True
       Caption = 'Ulozit'
@@ -1443,7 +1410,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alLeft
-      TabOrder = 9
+      TabOrder = 8
       OnClick = NovySouborClick
       Animation = True
       Caption = 'scGPGlyphButton1'
@@ -1521,7 +1488,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alLeft
-      TabOrder = 10
+      TabOrder = 9
       OnClick = OtevritClick
       Animation = True
       Caption = 'Otev'#345#237't'
@@ -1599,7 +1566,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alRight
-      TabOrder = 11
+      TabOrder = 10
       OnClick = MaxButtonClick
       Animation = True
       Caption = 'scGPGlyphButton1'
@@ -1678,7 +1645,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 0
       Align = alLeft
-      TabOrder = 12
+      TabOrder = 11
       Visible = False
       OnClick = DetailsButtonClick
       Animation = True
@@ -1762,7 +1729,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 13
+      TabOrder = 12
       OnClick = casovosa1Click
       Animation = True
       Caption = 'Layout'
@@ -1854,7 +1821,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 14
+      TabOrder = 13
       OnClick = casovosa1Click
       Animation = True
       Caption = 'Simulace'
@@ -1942,7 +1909,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 15
+      TabOrder = 14
       OnClick = Vypicestuktempu1Click
       Animation = True
       Caption = 'scGPGlyphButton1'
@@ -2008,6 +1975,29 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+    end
+    object scLabel_titulek: TscLabel
+      Left = 242
+      Top = 0
+      Width = 162
+      Height = 34
+      Align = alClient
+      TabOrder = 15
+      DragForm = False
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = True
+      UseFontColorToStyleColor = False
+      Caption = 'scLabel_titulek'
+      ExplicitLeft = 264
+      ExplicitTop = 3
+      ExplicitWidth = 107
+      ExplicitHeight = 31
     end
   end
   object scGPPanel_statusbar: TscGPPanel
