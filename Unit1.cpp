@@ -513,7 +513,7 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	//casoverezervy1->Checked=false;
 	//casovosa1->Checked=false;
 	//technologickprocesy1->Checked=false;
-  	scSplitView_LEFTTOOLBAR->Visible=true;
+	scSplitView_LEFTTOOLBAR->Visible=true;
 	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
 	PopupMenu1->AutoPopup=true;
@@ -3497,7 +3497,7 @@ void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
-	Form_parametry_linky->Left=0+scGPPanel_mainmenu->Height
+	Form_parametry_linky->Left=0+scGPPanel_mainmenu->Height;
 	Form_parametry_linky->Top=0+scGPPanel_mainmenu->Height*2;
 	if(IDOK==Form_parametry_linky->ShowModal())DuvodUlozit(true);
 }

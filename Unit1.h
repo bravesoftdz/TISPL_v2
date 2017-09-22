@@ -1,4 +1,4 @@
-ï»¿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #ifndef Unit1H
 #define Unit1H
@@ -88,8 +88,8 @@
 #include "vykresli.h"
 //ZDM #include "grafy.h"
 
-//#include "vektory.h" //uÅ¾ vklÃ¡dÃ¡m pÅ™es vykresli.h
-//#include "knihovna_objektu.h" //uÅ¾ vklÃ¡dÃ¡m pÅ™es vykresli.h resp. vektory.h
+//#include "vektory.h" //u vkládám pøes vykresli.h
+//#include "knihovna_objektu.h" //u vkládám pøes vykresli.h resp. vektory.h
 
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
@@ -375,10 +375,10 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 
 private:	// User declarations
-	////struktury, vÃ½Äty
+	////struktury, vıèty
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum Tmod{NO=0,SCHEMA,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
-	//enum Takce - muselo bÃ½t pÅ™esunutu do public sekce kvÅ¯li AA ve vykresli
+	//enum Takce - muselo bıt pøesunutu do public sekce kvùli AA ve vykresli
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
@@ -390,13 +390,13 @@ private:	// User declarations
 	////metody
 	void edice();
 	short int MB(UnicodeString text, unsigned short int typ=0,UnicodeString titulek="TISPL - Eltep");//vola rychle messabox
-	void REFRESH(bool invalidate=true); //vybere buÄ Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy kdyÅ¾ bude zapnutÃ½ antialising jde vÅ¾dy do vÄ›tve else
+	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy kdy bude zapnutı antialising jde vdy do vìtve else
 	void ESC();
-	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizujÃ­ posuny obrazu
-	void ZOOM_IN();//pÅ™iblÃ­Å¾enÃ­
-	void ZOOM_OUT();//oddÃ¡lenÃ­
-	void ZOOM();//samotnÃ½ ZOOM
-	void ZOOM_WINDOW();//pÅ™iblÃ­Å¾enÃ­ oknem
+	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizují posuny obrazu
+	void ZOOM_IN();//pøiblíení
+	void ZOOM_OUT();//oddálení
+	void ZOOM();//samotnı ZOOM
+	void ZOOM_WINDOW();//pøiblíení oknem
 	void on_change_zoom_change_scGPTrackBar();
 	void zneplatnit_minulesouradnice();
 	void kurzor(TKurzory typ_kurzor);
@@ -408,42 +408,42 @@ private:	// User declarations
 	void zobraz_tip(UnicodeString text);
 	void akutalizace_stavu_prichytavani_vSB();
 	void vytvor_hlavicku_souboru();
-	void Ulozit_soubor();//samotnÃ© uloÅ¾enÃ­
-	void OtevritSoubor();//realizuje otevÅ™enÃ­ opendialogu s nÃ¡slednÃ½m volÃ¡nÃ­m realizace samotnÃ©ho otevÅ™enÃ­ souboru
-	unsigned short int OtevritSoubor(UnicodeString soubor);//realizuje samotnÃ© otevÅ™enÃ­ souboru
-	void ulozit_posledni_otevreny();//uloÅ¾Ã­ do ini nazev poslednÃ­ho pracovnÃ­ho souboru
+	void Ulozit_soubor();//samotné uloení
+	void OtevritSoubor();//realizuje otevøení opendialogu s následnım voláním realizace samotného otevøení souboru
+	unsigned short int OtevritSoubor(UnicodeString soubor);//realizuje samotné otevøení souboru
+	void ulozit_posledni_otevreny();//uloí do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
 	UnicodeString get_temp_dir();
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
-	void zavrit_uvod();//zavÅ™e ÃºvodnÃ­ dialog
+	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap);
 	bool ttr(UnicodeString Text);
-	void log2web(UnicodeString Text);//automaticky pÅ™idÃ¡ parametry (Äas, uÅ¾ivatel, licence)
+	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uivatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
-	void startUP();//pÅ™i aktivaci formulÃ¡Å™e, pro zpÅ™ehlednÄ›nÃ­ kodu
+	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
 	void NewDesignSettings();
 
 	TDateTime TIME;
 	UnicodeString LICENCE;
 
-	////promÄ›nnÃ©
+	////promìnné
 	int size_grid;
 
 	int vybrany_objekt;
 
-	TPoint akt_souradnice_kurzoru_PX;//uchovÃ¡ aktuÃ¡lnÃ­ pozici kurzoru
-	TPointD akt_souradnice_kurzoru;//uchovÃ¡ aktuÃ¡lnÃ­ pozici kurzoru v logickÃ½ch jednotkÃ¡ch, resp. souÅ™adnicÃ­ch
-	TPoint vychozi_souradnice_kurzoru;//uchovÃ¡ vÃ½chozÃ­ pozici kurzoru
-	TPoint predchozi_souradnice_kurzoru;//uchovÃ¡ pÅ¯vodnÃ­ pozici kurzoru pÅ™i stisku tlaÄÃ­tka myÅ¡i
-	TPoint minule_souradnice_kurzoru;//uchovÃ¡ pÅ¯vodnÃ­ souÅ™adnice pÅ™i posunu
+	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
+	TPointD akt_souradnice_kurzoru;//uchová aktuální pozici kurzoru v logickıch jednotkách, resp. souøadnicích
+	TPoint vychozi_souradnice_kurzoru;//uchová vıchozí pozici kurzoru
+	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
+	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
 
 	bool pan_non_locked;
-	bool stisknute_leve_tlacitko_mysi;//uchovÃ¡vÃ¡ stav levÃ©ho tlaÄÃ­tka myÅ¡i
-	unsigned short int funkcni_klavesa;//uchovÃ¡vÃ¡ stav poslednÃ­ stisknutÃ© funkÄnÃ­ klÃ¡vesy
+	bool stisknute_leve_tlacitko_mysi;//uchovává stav levého tlaèítka myši
+	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 	unsigned short int vyska_menu;
 
 	double Zoom_predchozi;
@@ -470,27 +470,27 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
-	double m2px;//uchovÃ¡vÃ¡ hodnotu prostorovÃ©ho rozliÅ¡enÃ­ programu, nativnÃ­ rozliÅ¡enÃ­ 0,1 m na 1 pixel pÅ™i zoomu 1x
+	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
 	TMyString ms;
 	Cmy m;
 	Cvykresli d;
 	//ZDM Cgrafy g;
   UnicodeString FileName;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
-	double Zoom; //promÄ›nnÃ¡ uchovÃ¡vajicÃ­ velikost Zoomu
-	TPointD Posun;//promÄ›nnÃ© uchovÃ¡vajicÃ­ velikost posunu obrazu (pro scrollovÃ¡nÃ­ atp.), je to ve fyzickÃ½ch souÅ™adnicÃ­ch zaÅ™Ã­zenÃ­
+	double Zoom; //promìnná uchovávajicí velikost Zoomu
+	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzickıch souøadnicích zaøízení
   bool grid;
 	bool zobrazit_barvy_casovych_rezerv;
 	bool antialiasing;
-	double Zoom_predchozi_AA;//pÅ™i antialiasingu
+	double Zoom_predchozi_AA;//pøi antialiasingu
 
 
 	void DuvodUlozit(bool stav);
-	void SB(UnicodeString Text, unsigned short Pane=4);//domnÃ­vÃ¡m se, Å¾e zde mÃ¡ bÃ½t hodnota 5
-	void S(UnicodeString Text="");//UsnadÅˆuje pÅ™Ã­stup k ShowMessage
+	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, e zde má bıt hodnota 5
+	void S(UnicodeString Text="");//Usnadòuje pøístup k ShowMessage
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
-extern AnsiString Parametry; //pÅ™Ã­jÃ­mÃ¡ parametry programu, dÅ¯leÅ¾itÃ© pro otevÃ­rÃ¡nÃ­ programu konrkÃ©tnÃ­m souborem
+extern AnsiString Parametry; //pøíjímá parametry programu, dùleité pro otevírání programu konrkétním souborem
 //---------------------------------------------------------------------------
 #endif

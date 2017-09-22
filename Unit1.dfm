@@ -983,6 +983,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      Visible = False
       OnDblClick = scLabel_titulekDblClick
       DragForm = True
       GlowEffect.Enabled = False
@@ -2416,7 +2417,7 @@ object Form1: TForm1
     Top = 349
     Width = 140
     Height = 30
-    TabOrder = 32
+    TabOrder = 28
     TabStop = True
     Visible = False
     CustomCheckedImageIndex = -1
@@ -2461,7 +2462,7 @@ object Form1: TForm1
     Top = 555
     Width = 132
     Height = 64
-    TabOrder = 33
+    TabOrder = 31
     Visible = False
     FramePosition = scgfpDefault
     CustomImageIndex = -1
@@ -2514,7 +2515,7 @@ object Form1: TForm1
     Top = 34
     Width = 30
     Height = 30
-    TabOrder = 31
+    TabOrder = 29
     Visible = False
     OnClick = scGPGlyphButton2Click
     Animation = True
@@ -2594,13 +2595,6 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    Anchors = [akLeft, akTop, akBottom]
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNone
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
     TabOrder = 35
     CustomImageIndex = -1
     StyleKind = scpsPanel
@@ -2645,7 +2639,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 0
       Align = alTop
-      TabOrder = 0
+      TabOrder = 1
       AutoSize = True
       RowCount = 1
       RowLineMargin = 10
@@ -2705,7 +2699,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 0
       Align = alTop
-      TabOrder = 1
+      TabOrder = 0
       AutoSize = True
       RowCount = 2
       RowLineMargin = 10
@@ -2930,7 +2924,7 @@ object Form1: TForm1
     Height = 640
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
-    TabOrder = 32
+    TabOrder = 30
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -4102,7 +4096,7 @@ object Form1: TForm1
     Left = 1026
     Top = 34
     Width = 0
-    Height = 621
+    Height = 640
     Anchors = [akTop, akRight, akBottom]
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
@@ -4181,7 +4175,6 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Caption = 'Nastaven'#237
-      ExplicitWidth = 249
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
@@ -4203,7 +4196,6 @@ object Form1: TForm1
       HeaderStyle = scexphsColor
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = 3
-      Color = 10114859
       Spacing = 5
       ShowFrame = False
       RealWidth = 0
@@ -4682,7 +4674,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000003180310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180000032C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5805,7 +5797,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C00E000640130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C00E000780130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15327,7 +15319,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00C000C00018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00D400D40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
