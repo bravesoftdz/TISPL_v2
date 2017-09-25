@@ -22,7 +22,7 @@ __published:	// IDE-managed Components
 	TValueListEditor *ValueListEditor;
 	TButton *Button_ADD;
 	TButton *Button_DEL;
-	TrStringGridEd *rStringGridEd1;
+	TrStringGridEd *rStringGridEd_tab_dopravniky;
 	TButton *Button1;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
@@ -40,6 +40,8 @@ __published:	// IDE-managed Components
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall Button_saveClick(TObject *Sender);
+	void __fastcall Button_ADDClick(TObject *Sender);
+	void __fastcall Button_DELClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
