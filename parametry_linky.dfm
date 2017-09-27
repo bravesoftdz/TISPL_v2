@@ -58,9 +58,6 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
-    ColWidths = (
-      150
-      -2)
   end
   object Button_ADD: TButton
     Left = 139
@@ -107,7 +104,6 @@ object Form_parametry_linky: TForm_parametry_linky
     DefaultRowHeight = 30
     DefaultDrawing = False
     RowCount = 3
-    FixedRows = 2
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
     Font.Height = -17
@@ -910,7 +906,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 10
     Animation = False
-    Caption = '  Dopravn'#237'k'
+    Caption = '  Pohon'
     CanFocused = False
     CustomDropDown = False
     Margin = -1
@@ -1071,5 +1067,14 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = True
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Vypis_pohony: TButton
+    Left = 30
+    Top = 423
+    Width = 75
+    Height = 25
+    Caption = 'Vypis_pohony'
+    TabOrder = 12
+    OnClick = Vypis_pohonyClick
   end
 end

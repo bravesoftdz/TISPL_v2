@@ -36,15 +36,22 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum_delkavoziku;
 	TscGPButton *scGPButton1;
 	TscGPButton *scGPButton3;
+	TButton *Vypis_pohony;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall Button_saveClick(TObject *Sender);
 	void __fastcall Button_ADDClick(TObject *Sender);
 	void __fastcall Button_DELClick(TObject *Sender);
+	void __fastcall Vypis_pohonyClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
+
+	bool data_nalezena;
+
+	void  nacti_pohony();
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry_linky *Form_parametry_linky;
