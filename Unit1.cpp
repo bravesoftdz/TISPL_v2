@@ -36,6 +36,8 @@
 #pragma link "scModernControls"
 #pragma link "scDrawUtils"
 #pragma link "scGPImages"
+#pragma link "rImprovedComps"
+#pragma link "rImprovedComps"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
@@ -234,8 +236,8 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 	 if(novy)
 	 {
 			 vse_odstranit();
-			 d.v.hlavicka_objekty();//založení spojového seznamu pro technologické objekty
-			 d.v.hlavicka_pohony();//založení spojového seznamu pro pohony
+			 d.v.hlavicka_OBJEKTY();//založení spojového seznamu pro technologické objekty
+			 d.v.hlavicka_POHONY();//založení spojového seznamu pro pohony
 			 //ZDM d.v.hlavicka_voziky();
 			 //ZDM d.v.hlavicka_palce();
 
@@ -283,14 +285,14 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {     //toto odkomentovat pro spuštění TTR
-	if(!ttr("start"))
-	{
-		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-		Close();
-	}
-	else
- //	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
-		startUP();
+//	if(!ttr("start"))
+//	{
+//		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+//		Close();
+//	}
+//	else
+	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
+	startUP();//tento řadek vždy
 }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi

@@ -8,14 +8,14 @@
 ////konstruktor
 Cvektory::Cvektory()
 {
-	hlavicka_objekty();//vytvoří novou hlavičku pro objekty
-	hlavicka_pohony();//vytvoří novou hlavičku pro pohony
+	hlavicka_OBJEKTY();//vytvoří novou hlavičku pro objekty
+	hlavicka_POHONY();//vytvoří novou hlavičku pro pohony
 	//	hlavicka_voziky();
 	//	hlavicka_palce();
 }
 ////---------------------------------------------------------------------------
 ////vytvoří novou hlavičku pro objekty
-void Cvektory::hlavicka_objekty()
+void Cvektory::hlavicka_OBJEKTY()
 {
 	TObjekt *novy=new TObjekt;
 	novy->n=0;
@@ -157,7 +157,7 @@ void Cvektory::zvys_indexy(TObjekt *Objekt)//zvýší indexy NÁSLEDUJICÍCH bod
 }
 ////---------------------------------------------------------------------------
 ////smaze body z pameti
-long Cvektory::vymaz_seznam_objekty()
+long Cvektory::vymaz_seznam_OBJEKTY()
 {
 	long pocet_smazanych_objektu=0;
 	while (OBJEKTY!=NULL)
@@ -172,9 +172,10 @@ long Cvektory::vymaz_seznam_objekty()
 };
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
 //POHONY
 ////vytvoří novou hlavičku pro pohonů
-void Cvektory::hlavicka_pohony()
+void Cvektory::hlavicka_POHONY()
 {
 	TPohon *novy=new TPohon;
 	novy->n=0;
@@ -213,7 +214,7 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
 }
 ////---------------------------------------------------------------------------
 ////smaze body z pameti
-long Cvektory::vymaz_seznam_pohony()
+long Cvektory::vymaz_seznam_POHONY()
 {
 	long pocet_smazanych_pohonu=0;
 	while (POHONY!=NULL)
@@ -275,66 +276,126 @@ long Cvektory::vymaz_seznam_pohony()
 //	}
 //	return RET;
 //}
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
-////vytvoří novou hlavičku pro spojový seznam cest
-//void Cvektory::hlavicka_seznamu_cest()
-//{
-//	TSeznam_cest *nova=new TSeznam_cest;
-//	nova->n=0;
-//	nova->cesta=new TCesta;
-//	nova->barva=clWhite;
-//
-//	nova->predchozi=nova;//ukazuje sam na sebe
-//	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
-//	CESTY=nova;//nahraje ukazatel na hlavičku spojového seznamu na ukazatel CESTY
-//}
-////---------------------------------------------------------------------------
-////vytvoří novou hlavičku pro spojový seznam konkrétní cesty
-//void Cvektory::hlavicka_jedne_cesty(TSeznam_cest *jaka)
-//{
-//	jaka->cesta=new TCesta;
-//	TCesta *nova=jaka->cesta;
-//	nova->n=0;
-//	nova->predchozi=nova;//ukazuje sam na sebe
-//	nova->dalsi=NULL;
-//}
-////---------------------------------------------------------------------------
-////do konkrétní cesty vloží segmenty cesty
-//void Cvektory::vloz_segment_cesty(TSeznam_cest *C,TObjekt *Objekt,unsigned short R,double K,double CT,double RD,double RP)
-//{
-//	TCesta *segment=new TCesta;
-//
-//	segment->n=C->cesta->predchozi->n+1;//navýším počítadlo prvku o jedničku
-//	segment->objekt=Objekt;
-//	//--prozatim
-//  C->barva=clGray;//defaultní barva cesty
-//	if(CT==0) segment->CT=Objekt->CT;//pokud přijde CT 0, která je i implicitní, tak se převezme automaticky CT objektu nastavené ve form parametry
-//	else segment->CT=CT;//zohlední se explicitní hodnota CT, předaná paremetrem metody
-//	segment->RD=RD;
-//	segment->R=RP;
-//	Objekt->rezim=R;
-//	Objekt->kapacita_objektu=K;
-//	//---
-//	C->cesta->predchozi->dalsi=segment;//poslednímu prvku přiřadím ukazatel na nový prvek
-//	segment->predchozi=C->cesta->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-//	C->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-//}
-////---------------------------------------------------------------------------
-////vloží novou cestu do spojového seznamu CESTY
-//void Cvektory::vloz_cestu(TSeznam_cest *Cesta)
-//{
-//	TSeznam_cest *nova=new TSeznam_cest;
-//	nova=Cesta;//novy bude ukazovat tam kam prvek Cesta
-//	nova->n=CESTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
-//	CESTY->predchozi->dalsi=nova;//poslednímu prvku přiřadím ukazatel na nový prvek
-//	nova->predchozi=CESTY->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-//	CESTY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-//}
-////---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//ZAKÁZKY
+//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
+void Cvektory::hlavicka_ZAKAZKY()
+{
+	TZakazka *nova=new TZakazka;
+	nova->n=0;
+	nova->id="hlavička";
+	nova->name="hlavička";
+	nova->barva=clWhite;
+	nova->pomer=0;
+	nova->TT=0;
+	nova->jig.sirka=0;nova->jig.delka=0;nova->jig.vyska=0;nova->jig.ks=0;
+	nova->pocet_voziku=0;
+	nova->serv_vozik_pocet=0;
+	nova->opakov_servis=0;
+	nova->cesta=new TCesta;
+
+	nova->predchozi=nova;//ukazuje sam na sebe
+	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
+	ZAKAZKY=nova;//nahraje ukazatel na hlavičku spojového seznamu na ukazatel CESTY
+}
+//---------------------------------------------------------------------------
+//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+void Cvektory::vloz_zakazku(TZakazka *Zakazka)
+{
+	TZakazka *nova=new TZakazka;
+
+	nova=Zakazka;//novy bude ukazovat tam kam prvek Zakazka
+	nova->n=ZAKAZKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	ZAKAZKY->predchozi->dalsi=nova;//poslednímu prvku přiřadím ukazatel na nový prvek
+	nova->predchozi=ZAKAZKY->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
+	ZAKAZKY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+void Cvektory::vloz_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta)
+{
+	TZakazka *nova=new TZakazka;
+	nova->id=id;
+	nova->name=name;
+	nova->barva=barva;
+	nova->pomer=pomer;
+	nova->TT=TT;
+	nova->jig=jig;
+	nova->pocet_voziku=pocet_voziku;
+	nova->serv_vozik_pocet=serv_vozik_pocet;
+	nova->opakov_servis=opakov_servis;
+	nova->cesta=Cesta;
+
+	vloz_zakazku(nova);
+}
+//---------------------------------------------------------------------------
+//smaze seznam ZAKAZKY z paměti v četně přidružených cest
+long Cvektory::vymaz_seznam_ZAKAZKY()
+{
+	long pocet_smazanych_objektu=0;
+	while (ZAKAZKY!=NULL)
+	{
+		//mazání jednotlivých cest
+		while (ZAKAZKY->cesta!=NULL)
+		{
+			ZAKAZKY->cesta->predchozi=NULL;
+			delete ZAKAZKY->cesta->predchozi;
+			ZAKAZKY->cesta=ZAKAZKY->cesta->dalsi;
+		};
+		ZAKAZKY->predchozi=NULL;
+		delete ZAKAZKY->predchozi;
+		ZAKAZKY=ZAKAZKY->dalsi;
+		pocet_smazanych_objektu++;
+	};
+
+	return pocet_smazanych_objektu;
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
+void Cvektory::hlavicka_cesta_zakazky(TZakazka *Zakazka)
+{
+	Zakazka->cesta=new TCesta;
+	TCesta *nova=Zakazka->cesta;
+	nova->n=0;
+	nova->objekt=NULL;
+	nova->CT=0;
+	nova->Tc=0;
+	nova->Tv=0;
+	nova->RD=0;
+
+	nova->predchozi=nova;//ukazuje sam na sebe
+	nova->dalsi=NULL;
+}
+//---------------------------------------------------------------------------
+//do konkrétní cesty vloží segmenty cesty
+void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty)
+{
+	TCesta *segment=new TCesta;
+	segment=Segment_cesty;
+	segment->n=Zakazka->cesta->predchozi->n+1;//navýším počítadlo prvku o jedničku
+
+	Zakazka->cesta->predchozi->dalsi=segment;//poslednímu prvku přiřadím ukazatel na nový prvek
+	segment->predchozi=Zakazka->cesta->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
+	Zakazka->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,double Tc,double Tv,double RD)
+{
+	TCesta *segment=new TCesta;
+
+	segment->n=Zakazka->cesta->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	segment->objekt=Objekt;
+	segment->CT=CT;
+	segment->Tc=Tc;
+	segment->Tv=Tv;
+	segment->RD;
+
+	vloz_segment_cesty(Zakazka,segment);
+}
+//---------------------------------------------------------------------------
 //Cvektory::TSeznam_cest *Cvektory::vrat_cestu(unsigned int ID_cesty)
 //{
 //	Cvektory::TSeznam_cest *ukaz=CESTY->dalsi;
@@ -350,28 +411,7 @@ long Cvektory::vymaz_seznam_pohony()
 //	}
 //	return ret;
 //}
-////---------------------------------------------------------------------------
-////smaze seznam cesty z pameti v četně jednotlivých cest
-//long Cvektory::vymaz_cesty()
-//{
-//	long pocet_smazanych_objektu=0;
-//	while (CESTY!=NULL)
-//	{
-//		//mazání jednotlivých cest
-//		while (CESTY->cesta!=NULL)
-//		{
-//			CESTY->cesta->predchozi=NULL;
-//			delete CESTY->cesta->predchozi;
-//			CESTY->cesta=CESTY->cesta->dalsi;
-//		};
-//		CESTY->predchozi=NULL;
-//		delete CESTY->predchozi;
-//		CESTY=CESTY->dalsi;
-//		pocet_smazanych_objektu++;
-//	};
-//
-//	return pocet_smazanych_objektu;
-//};
+
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //void Cvektory::hlavicka_procesy()
@@ -602,8 +642,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//vytvoří nové hlavičky pro spojové seznamy
-			hlavicka_objekty();
-			hlavicka_pohony();
+			hlavicka_OBJEKTY();
+			hlavicka_POHONY();
 			//ZDM hlavicka_voziky();
 
 			//ZDM //načte seznam dopravníků
@@ -1349,14 +1389,14 @@ void Cvektory::vse_odstranit()
 		//objekty
 		if(OBJEKTY->predchozi->n>0)//pokud je více objektů
 		{
-			vymaz_seznam_objekty();//vymaze objekty z paměti
+			vymaz_seznam_OBJEKTY();//vymaze objekty z paměti
 			delete OBJEKTY; OBJEKTY=NULL;
 		}
 
 		//pohony
 		if(POHONY->predchozi->n>0)//pokud je více objektů
 		{
-			vymaz_seznam_pohony();//vymaze pohony z paměti
+			vymaz_seznam_POHONY();//vymaze pohony z paměti
 			delete POHONY; POHONY=NULL;
 		}
 

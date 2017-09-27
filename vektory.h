@@ -63,8 +63,8 @@ class Cvektory
 		 unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
 		 unsigned long opakov_servis;//cyklus opakování servisních vozíku
 		 struct TCesta *cesta;//ukazatel na první segment cesty
-		 struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		 struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+		 struct TZakazka *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		 struct TZakazka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TZakazka *ZAKAZKY;//spojový seznam zakázek
 
@@ -325,7 +325,7 @@ class Cvektory
 //
 		Cvektory();//konstruktor
 		//metody pro OBJEKTY
-		void hlavicka_objekty();
+		void hlavicka_OBJEKTY();
 		short vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu
 		short vloz_objekt(TObjekt *Objekt);//přetížená fce
 		short vloz_objekt(unsigned int id, double X, double Y,TObjekt *p);//přetížená fce vkládá mezi objekty
@@ -333,28 +333,34 @@ class Cvektory
 		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu
 		void sniz_indexy(TObjekt *Objekt);
 		void zvys_indexy(TObjekt *Objekt);
-		long vymaz_seznam_objekty();
+		long vymaz_seznam_OBJEKTY();
 		//metody pro POHONY
-		void hlavicka_pohony();
+		void hlavicka_POHONY();
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
-		long vymaz_seznam_pohony();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
+		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 //		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
 //		void aktualizace_indexu_uzitych_dopravniku(short item_index);
 //		bool kontrola_existence_dopravniku(short item_index);
+		//metody pro ZAKAZKY
+		void hlavicka_ZAKAZKY();
+		void vloz_zakazku(TZakazka *Zakazka);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+		void vloz_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta=NULL);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+		long vymaz_seznam_ZAKAZKY();
+		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
+		void vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty);//do konkrétní cesty vloží segmenty cesty
+		void vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty
 
-//		void hlavicka_seznamu_cest();
-//		void hlavicka_jedne_cesty(TSeznam_cest *jaka);
-//		void vloz_segment_cesty(TSeznam_cest *C,TObjekt *Objekt,unsigned short R,double K,double CT,double RD,double RP);//do konkrétní cesty vloží segmenty cesty
-//		void vloz_cestu(TSeznam_cest *Cesta);//vloží hotovou cestu do spojového seznamu cesty
 //		TSeznam_cest *vrat_cestu(unsigned int ID_cesty);
-//		long vymaz_cesty();
+
+		//metody pro PROCESY
 //		void hlavicka_procesy();
 //		void vloz_proces(TProces *Proces);
 //		TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
 //		TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
 //		long vymaz_seznam_procesu();
+		//metody pro VOZIKY
 //		void hlavicka_voziky();
 //		void vloz_vozik();//přidá nový prázdný - nedefinovaný vozík do seznamu VOZIKY
 //		void vloz_vozik(TVozik *Vozik);
@@ -401,8 +407,8 @@ class Cvektory
 		{
 				unsigned int n;
 				unsigned int id;
-				//UnicodeString short_name;
-				//UnicodeString name;
+				//UnicodeString short_name; nelze
+				//UnicodeString name; nelze
 				unsigned int text_length;
 				double X, Y;
 				unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
