@@ -195,7 +195,7 @@ void Cvektory::vloz_pohon(TPohon *pohon)
 	TPohon *novy=new TPohon;
 
 	novy=pohon;//novy bude ukazovat tam kam prvek Objekt
-	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	novy->n=POHONY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	POHONY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=POHONY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
