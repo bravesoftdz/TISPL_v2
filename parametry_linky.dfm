@@ -3,8 +3,8 @@ object Form_parametry_linky: TForm_parametry_linky
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
-  ClientHeight = 408
-  ClientWidth = 580
+  ClientHeight = 456
+  ClientWidth = 648
   Color = clActiveBorder
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clActiveCaption
@@ -31,8 +31,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
   end
   object ValueListEditor: TValueListEditor
-    Left = 422
-    Top = 311
+    Left = 448
+    Top = 351
     Width = 150
     Height = 89
     Align = alCustom
@@ -58,9 +58,6 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
-    ColWidths = (
-      150
-      -2)
   end
   object Button_ADD: TButton
     Left = 139
@@ -77,6 +74,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 1
+    OnClick = Button_ADDClick
   end
   object Button_DEL: TButton
     Left = 176
@@ -93,12 +91,13 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 2
+    OnClick = Button_DELClick
   end
-  object rStringGridEd1: TrStringGridEd
-    Left = 0
+  object rStringGridEd_tab_dopravniky: TrStringGridEd
+    Left = 8
     Top = 219
-    Width = 609
-    Height = 94
+    Width = 605
+    Height = 126
     BorderStyle = bsNone
     Color = clMenu
     DefaultColWidth = 120
@@ -113,6 +112,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor]
     ParentFont = False
+    ScrollBars = ssVertical
     TabOrder = 3
     Columns = <
       item
@@ -230,7 +230,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_save: TscGPButton
     Left = 163
-    Top = 365
+    Top = 413
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -320,7 +320,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_storno: TscGPButton
     Left = 281
-    Top = 365
+    Top = 413
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -411,7 +411,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 580
+    Width = 648
     Height = 34
     Align = alTop
     TabOrder = 7
@@ -439,9 +439,10 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 702
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 530
+      Left = 598
       Top = 0
       Width = 50
       Height = 33
@@ -516,10 +517,11 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 652
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 430
+      Left = 498
       Top = 0
       Width = 50
       Height = 33
@@ -593,11 +595,12 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 552
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 393
+      Width = 461
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -625,10 +628,11 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
+      ExplicitWidth = 515
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 480
+      Left = 548
       Top = 0
       Width = 50
       Height = 33
@@ -702,9 +706,10 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 602
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 393
+      Left = 461
       Top = 0
       Width = 37
       Height = 34
@@ -781,6 +786,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 515
     end
   end
   object scGPButton2: TscGPButton
@@ -900,7 +906,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 10
     Animation = False
-    Caption = '  Dopravn'#237'k'
+    Caption = '  Pohon'
     CanFocused = False
     CustomDropDown = False
     Margin = -1
@@ -1061,5 +1067,14 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = True
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Vypis_pohony: TButton
+    Left = 30
+    Top = 423
+    Width = 75
+    Height = 25
+    Caption = 'Vypis_pohony'
+    TabOrder = 12
+    OnClick = Vypis_pohonyClick
   end
 end

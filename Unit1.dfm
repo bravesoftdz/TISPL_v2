@@ -1981,19 +1981,31 @@ object Form1: TForm1
       Top = 0
       Width = 162
       Height = 34
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 1
       Align = alClient
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 15
-      DragForm = False
+      DragForm = True
       GlowEffect.Enabled = False
       GlowEffect.Color = clBtnShadow
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
+      GlowEffect.Offset = 2
       GlowEffect.Intensive = True
       GlowEffect.StyleColors = True
-      AutoSize = True
-      UseFontColorToStyleColor = False
-      Caption = 'scLabel_titulek'
+      AutoSize = False
+      Alignment = taCenter
+      VertAlignment = scvtaCenter
+      UseFontColorToStyleColor = True
+      Caption = 'ELTEP - tispl'
     end
   end
   object scGPPanel_statusbar: TscGPPanel
