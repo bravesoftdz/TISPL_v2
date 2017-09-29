@@ -426,6 +426,8 @@ private:	// User declarations
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
 	void NewDesignSettings();
+	bool FMaximized;
+	TRect FOldBoundsRect;
 
 	TDateTime TIME;
 	UnicodeString LICENCE;
