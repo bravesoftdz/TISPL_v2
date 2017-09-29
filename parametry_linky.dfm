@@ -58,6 +58,9 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
+    ColWidths = (
+      150
+      -2)
   end
   object Button_ADD: TButton
     Left = 139
@@ -439,7 +442,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 702
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 598
@@ -517,7 +519,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 652
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -595,7 +596,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 552
     end
     object scLabel1: TscLabel
       Left = 0
@@ -628,7 +628,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 515
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -706,7 +705,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 602
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 461
@@ -786,7 +784,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 515
     end
   end
   object scGPButton2: TscGPButton

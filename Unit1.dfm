@@ -4189,9 +4189,9 @@ object Form1: TForm1
       TabOrder = 1
       OnClick = scExPanel_ostatniClick
       BackgroundStyle = scexbgsPanel
-      HeaderColor = clBtnFace
-      ButtonGlyphColor = clBtnText
-      HeaderStyle = scexphsHeader
+      HeaderColor = 10114859
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = 3
       Spacing = 5
@@ -4249,7 +4249,7 @@ object Form1: TForm1
         ImageIndex = -1
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
+        GlowEffect.AlphaValue = 255
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -4339,7 +4339,7 @@ object Form1: TForm1
         ImageIndex = -1
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
+        GlowEffect.AlphaValue = 255
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -4429,7 +4429,7 @@ object Form1: TForm1
         ImageIndex = -1
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 95
+        GlowEffect.AlphaValue = 255
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -4518,9 +4518,9 @@ object Form1: TForm1
       TabOrder = 2
       OnClick = scExPanel_vrstvyClick
       BackgroundStyle = scexbgsPanel
-      HeaderColor = clBtnFace
-      ButtonGlyphColor = clBtnText
-      HeaderStyle = scexphsHeader
+      HeaderColor = 10114859
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
       CaptionImages = scGPVirtualImageList1
       CaptionImageIndex = 9
       Spacing = 5
@@ -4672,7 +4672,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004003400310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118000003380310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5795,7 +5795,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C008C018C0130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C00E000840130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15317,7 +15317,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00E800E80018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00E000E00018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

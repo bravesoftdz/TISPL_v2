@@ -36,8 +36,6 @@
 #pragma link "scModernControls"
 #pragma link "scDrawUtils"
 #pragma link "scGPImages"
-#pragma link "rImprovedComps"
-#pragma link "rImprovedComps"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
@@ -285,14 +283,14 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {     //toto odkomentovat pro spuštění TTR
-//	if(!ttr("start"))
-//	{
-//		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-//		Close();
-//	}
-//	else
-	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
-	startUP();//tento řadek vždy
+	if(!ttr("start"))
+	{
+		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+		Close();
+	}
+	else
+ //	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
+		startUP();
 }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi

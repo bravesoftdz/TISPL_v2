@@ -25,7 +25,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		nacti_pohony();
 
-		//	Form1->d.v.vymaz_seznam_pohony();
+		//	Form1->d.v.vymaz_seznam_POHONY();
 
 	
 
@@ -67,6 +67,7 @@ void TForm_parametry_linky::nacti_pohony (){
 
 	 if (ukaz!=NULL) {
 
+				rStringGridEd_tab_dopravniky->RowCount = Form1->d.v.POHONY->predchozi->n + 1;
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
 				 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)  {
 
@@ -120,8 +121,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 //	Form1->d.v.PP.delka_voziku=rEditNum_delkavoziku->Text.ToDouble();
 
 
-	Form1->d.v.vymaz_seznam_pohony();
-	Form1->d.v.hlavicka_pohony();
+	Form1->d.v.vymaz_seznam_POHONY();
+	Form1->d.v.hlavicka_POHONY();
 
 					for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 		{
