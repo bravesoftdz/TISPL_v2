@@ -39,8 +39,8 @@
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
-
-
+bool FMaximized;
+TRect FOldBoundsRect;
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
@@ -120,7 +120,6 @@ void TForm1::NewDesignSettings()
 	//maximalizace formuláře jinak to s novým designem nejde
 	Form1->Width=Screen->WorkAreaWidth;
 	Form1->Height=Screen->WorkAreaHeight;
-	FMaximized = true;
 
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
@@ -290,8 +289,8 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		Close();
 	}
 	else
-	//Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
-	startUP();//tento nechat vždy
+ //	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
+		startUP();
 }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi
@@ -1919,6 +1918,7 @@ void __fastcall TForm1::DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TSh
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
 
+
 				/*HRGN hreg=CreateEllipticRgn(100,100,300,200);
 				Canvas->Brush->Color=clRed;
 				FillRgn(Canvas->Handle,hreg,Canvas->Brush->Handle);
@@ -3352,9 +3352,9 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 //zapne či vypne antialiasing
 void __fastcall TForm1::scGPSwitch4ChangeState(TObject *Sender)
 {
+  scSplitView_MENU->Opened=false;
 	antialiasing=!antialiasing;
 	DrawGrid_knihovna->Invalidate();
-	scSplitView_MENU->Opened=false;
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -3427,40 +3427,24 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 
 void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 {
-		if(FMaximized)
-		{
-			FMaximized = false;
-			ClientWidth=ClientWidth*2/3;
-			ClientHeight=ClientHeight*2/3;
-			MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-		}
-		else
-		{
-			FMaximized = true;
-			Form1->Width=Screen->WorkAreaWidth;
-			Form1->Height=Screen->WorkAreaHeight;
-			MaxButton->GlyphOptions->Kind = scgpbgkRestore;
-		}
-//	if (FMaximized)
-//	{
-//			 BoundsRect =  FOldBoundsRect;
-//			 FMaximized = false;
-//			 scLabel_titulek->DragForm = true;
-//			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-//			 scGPSizeBox1->Visible = scCheckBox2->Checked;
-//			 MessageBeep(0);
-//	}
-//	else
-//	{
-//			FOldBoundsRect = BoundsRect;
-//			BoundsRect = scStyledForm1->GetMaximizeBounds();
-//
-//		 //ShowMessage(scStyledForm1->GetMaximizeBounds().);
-//			FMaximized = true;
-//			scLabel_titulek->DragForm = false;
-//			MaxButton->GlyphOptions->Kind = scgpbgkRestore;
-//			scGPSizeBox1->Visible = False;
-//	}
+	if (FMaximized) {
+	 BoundsRect =  FOldBoundsRect;
+	 FMaximized = false;
+	 scLabel_titulek->DragForm = true;
+	 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
+	 scGPSizeBox1->Visible = scCheckBox2->Checked;
+	}
+	else
+	{
+	FOldBoundsRect = BoundsRect;
+	BoundsRect = scStyledForm1->GetMaximizeBounds();
+
+ //ShowMessage(scStyledForm1->GetMaximizeBounds().);
+	FMaximized = true;
+	scLabel_titulek->DragForm = false;
+	MaxButton->GlyphOptions->Kind = scgpbgkRestore;
+	scGPSizeBox1->Visible = False;
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::PopupMenuButtonClick(TObject *Sender)

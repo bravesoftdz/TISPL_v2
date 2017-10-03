@@ -236,6 +236,20 @@ object Form_parametry: TForm_parametry
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel3: TrHTMLLabel
+    Left = 163
+    Top = 185
+    Width = 100
+    Height = 19
+    Caption = 'V'#253'b'#283'r pohonu'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
   object Button_OK: TButton
     Left = 203
     Top = 367
