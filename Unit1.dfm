@@ -251,7 +251,6 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
-    ExplicitWidth = 1026
   end
   object Button3: TButton
     Left = 183
@@ -719,7 +718,6 @@ object Form1: TForm1
     Caption = 'scGPPanel_mainmenu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 1026
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 984
@@ -797,7 +795,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 976
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -876,7 +873,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 876
     end
     object editacelinky1: TscGPButton
       Left = 412
@@ -969,7 +965,6 @@ object Form1: TForm1
       Down = True
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 404
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1155,7 +1150,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 560
     end
     object technologickprocesy1: TscGPButton
       Left = 646
@@ -1248,7 +1242,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 638
     end
     object scGPGlyphButton1: TscGPGlyphButton
       AlignWithMargins = True
@@ -1327,7 +1320,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 2
       AllowAllUp = True
-      ExplicitLeft = 836
     end
     object Ulozit: TscGPGlyphButton
       AlignWithMargins = True
@@ -1640,7 +1632,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 926
     end
     object DetailsButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1813,7 +1804,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 482
     end
     object simulace: TscGPButton
       Left = 724
@@ -1906,7 +1896,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 716
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 802
@@ -1986,7 +1975,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 794
     end
     object scLabel_titulek: TscLabel
       Left = 242
@@ -2005,6 +1993,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 15
+      OnDblClick = scLabel_titulekDblClick
       DragForm = True
       GlowEffect.Enabled = False
       GlowEffect.Color = clBtnShadow
@@ -2018,7 +2007,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'ELTEP - tispl'
-      ExplicitWidth = 162
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -2051,7 +2039,6 @@ object Form1: TForm1
     Color = clBtnFace
     TransparentBackground = False
     StorePaintBuffer = True
-    ExplicitWidth = 1026
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -2339,7 +2326,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scGPSizeBox1: TscGPSizeBox
+    object scGPSizeBox: TscGPSizeBox
       Left = 1008
       Top = 0
       Width = 26
@@ -2350,7 +2337,6 @@ object Form1: TForm1
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
-      ExplicitLeft = 1000
     end
     object scLabel_ZOOM: TscLabel
       Left = 0
@@ -2380,155 +2366,12 @@ object Form1: TForm1
       Caption = '100 %'
     end
   end
-  object scCheckBox2: TscCheckBox
-    Left = 299
-    Top = 321
-    Width = 131
-    Height = 27
-    TabOrder = 26
-    TabStop = True
-    Visible = False
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    CustomGrayedImageIndex = -1
-    CustomGrayedImageHotIndex = -1
-    CustomGrayedImagePressedIndex = -1
-    CustomGrayedImageDisabledIndex = -1
-    UseFontColorToStyleColor = False
-    Animation = False
-    Caption = 'Show TscGPSizeBox'
-    CanFocused = True
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    Checked = True
-    State = cbChecked
-    ShowFocusRect = True
-  end
-  object scCheckBox1: TscCheckBox
-    Left = 299
-    Top = 349
-    Width = 140
-    Height = 30
-    TabOrder = 28
-    TabStop = True
-    Visible = False
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    CustomGrayedImageIndex = -1
-    CustomGrayedImageHotIndex = -1
-    CustomGrayedImagePressedIndex = -1
-    CustomGrayedImageDisabledIndex = -1
-    UseFontColorToStyleColor = False
-    Animation = False
-    Caption = 'Show maximize button'
-    CanFocused = True
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    Checked = True
-    State = cbChecked
-    ShowFocusRect = True
-  end
-  object scRadioGroup1: TscRadioGroup
-    Left = 618
-    Top = 555
-    Width = 132
-    Height = 64
-    TabOrder = 31
-    Visible = False
-    FramePosition = scgfpDefault
-    CustomImageIndex = -1
-    CustomImageDisabledIndex = -1
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    Alignment = taLeftJustify
-    Caption = 'Menu type'
-    ImageIndex = -1
-    ShowCheckBox = False
-    Checked = False
-    AutoEnabledControls = False
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    ImageGlow = True
-    StorePaintBuffer = True
-    ItemIndex = 0
-    Items.Strings = (
-      'PopupMenu'
-      'SplitView')
-    ButtonsGlowEffect.Enabled = False
-    ButtonsGlowEffect.Color = clHighlight
-    ButtonsGlowEffect.AlphaValue = 95
-    ButtonsGlowEffect.GlowSize = 7
-    ButtonsGlowEffect.Offset = 0
-    ButtonsGlowEffect.Intensive = True
-    ButtonsGlowEffect.StyleColors = True
-    ButtonsGlowEffect.HotColor = clNone
-    ButtonsGlowEffect.PressedColor = clNone
-    ButtonsGlowEffect.FocusedColor = clNone
-    ButtonsGlowEffect.PressedGlowSize = 7
-    ButtonsGlowEffect.PressedAlphaValue = 255
-    ButtonsGlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ButtonsAnimation = False
-    ShowFocusRect = True
-  end
   object scGPGlyphButton2: TscGPGlyphButton
     Left = 175
     Top = 34
     Width = 30
     Height = 30
-    TabOrder = 29
+    TabOrder = 27
     Visible = False
     OnClick = scGPGlyphButton2Click
     Animation = True
@@ -2608,7 +2451,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 35
+    TabOrder = 32
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -2936,7 +2779,7 @@ object Form1: TForm1
     Width = 180
     Height = 640
     Anchors = [akLeft, akTop, akBottom]
-    TabOrder = 30
+    TabOrder = 28
     OnMouseLeave = scSplitView_MENUMouseLeave
     CustomImageIndex = -1
     StyleKind = scpsPanel
@@ -3066,7 +2909,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton2: TscButton
       Left = 0
@@ -3159,7 +3001,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton3: TscButton
       Left = 0
@@ -3252,7 +3093,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton4: TscButton
       Left = 0
@@ -3345,7 +3185,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton5: TscButton
       Left = 0
@@ -3438,7 +3277,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton6: TscButton
       Left = 0
@@ -3531,7 +3369,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -3728,7 +3565,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton8: TscButton
       Left = 0
@@ -3821,7 +3657,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton9: TscButton
       Left = 0
@@ -3914,7 +3749,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch9: TscGPSwitch
       Left = 100
@@ -4112,7 +3946,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
   end
   object scSplitView_OPTIONS: TscSplitView
@@ -4128,7 +3961,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 27
+    TabOrder = 26
     OnMouseLeave = scSplitView_OPTIONSMouseLeave
     CustomImageIndex = -1
     StyleKind = scpsPanel
@@ -4275,7 +4108,7 @@ object Form1: TForm1
         ImageIndex = -1
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 255
+        GlowEffect.AlphaValue = 175
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -4365,7 +4198,7 @@ object Form1: TForm1
         ImageIndex = -1
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 255
+        GlowEffect.AlphaValue = 175
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -4467,7 +4300,6 @@ object Form1: TForm1
         VertAlignment = scvtaCenter
         UseFontColorToStyleColor = True
         Caption = ' Doba '#269'ek'#225'n'#237' na palec'
-        ExplicitWidth = 153
       end
     end
     object scExPanel_vrstvy: TscExPanel
@@ -4504,7 +4336,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Vrstvy'
-      ExplicitTop = 215
       object scLabel4: TscLabel
         Left = 3
         Top = 39
@@ -4640,7 +4471,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000003380310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003C033C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5763,7 +5594,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C00E000840130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C008801880130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15285,7 +15116,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00E000E00018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00E400E40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

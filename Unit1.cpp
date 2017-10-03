@@ -39,8 +39,6 @@
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
-bool FMaximized;
-TRect FOldBoundsRect;
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
@@ -120,6 +118,7 @@ void TForm1::NewDesignSettings()
 	//maximalizace formuláře jinak to s novým designem nejde
 	Form1->Width=Screen->WorkAreaWidth;
 	Form1->Height=Screen->WorkAreaHeight;
+	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
@@ -3411,10 +3410,6 @@ void __fastcall TForm1::rComboBoxKrokChange(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-
-
-
-
 void __fastcall TForm1::Button12Click(TObject *Sender)
 {
  //	WindowState = wsMaximized;
@@ -3422,28 +3417,30 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-
-
-
 void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 {
-	if (FMaximized) {
-	 BoundsRect =  FOldBoundsRect;
-	 FMaximized = false;
-	 scLabel_titulek->DragForm = true;
-	 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-	 scGPSizeBox1->Visible = scCheckBox2->Checked;
-	}
-	else
+	if (FMaximized)//zmenšení
 	{
-	FOldBoundsRect = BoundsRect;
-	BoundsRect = scStyledForm1->GetMaximizeBounds();
-
- //ShowMessage(scStyledForm1->GetMaximizeBounds().);
-	FMaximized = true;
-	scLabel_titulek->DragForm = false;
-	MaxButton->GlyphOptions->Kind = scgpbgkRestore;
-	scGPSizeBox1->Visible = False;
+			 //BoundsRect =  FOldBoundsRect;
+			 FMaximized = false;
+			 scLabel_titulek->DragForm = true;
+			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
+			 scGPSizeBox->Visible = true;
+			 Form1->Width=Screen->Width/3*2;//zmenší formulář na 2/3 jeho velikosti
+			 Form1->Height=Screen->Height/3*2;//zmenší formulář na 2/3 jeho velikosti
+			 scSplitView_OPTIONS->Opened=false;
+			 scSplitView_MENU->Opened=false;
+	}
+	else //maximalizace
+	{
+			//FOldBoundsRect = BoundsRect;
+			BoundsRect = scStyledForm1->GetMaximizeBounds();
+			FMaximized = true;
+			scLabel_titulek->DragForm = false;
+			MaxButton->GlyphOptions->Kind = scgpbgkRestore;
+			scGPSizeBox->Visible = false;
+			scSplitView_OPTIONS->Opened=false;
+			scSplitView_MENU->Opened=false;
 	}
 }
 //---------------------------------------------------------------------------
@@ -3477,31 +3474,22 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender)
  ZOOM_IN();
 }
 //---------------------------------------------------------------------------
-
-
 void __fastcall TForm1::scLabel_titulekDblClick(TObject *Sender)
 {
- if (!scCheckBox1->Checked) { exit;}
-	Form1->MaxButtonClick(Form1);
+  //zajistí maximalizaci či zmenšení okna po double clicku na titulek
+	MaxButtonClick(Sender);
 }
 //---------------------------------------------------------------------------
-
-
-
 void __fastcall TForm1::MinButtonClick(TObject *Sender)
 {
-Application->Minimize();
+	Application->Minimize();
 }
 //---------------------------------------------------------------------------
-
-
-
 void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 {
- scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
+	scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
 	Form_parametry_linky->Left=0+scGPPanel_mainmenu->Height;
@@ -3509,7 +3497,6 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 	if(IDOK==Form_parametry_linky->ShowModal())DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 {
 //	if(d.v.VOZIKY->dalsi->cesta==NULL)
@@ -3519,15 +3506,11 @@ void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 	if(IDOK==Form_definice_zakazek->ShowModal())DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
-
-
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
 {
-
-  scSplitView_MENU->Opened = !scSplitView_MENU->Opened;
+	scSplitView_MENU->Opened = !scSplitView_MENU->Opened;
 }
 //---------------------------------------------------------------------------
-
 //---------------------------------------------------------------------------
 //při změnně palce na tracBaru aktualizuje zoom a zavolá překreslení obrazu
 void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
@@ -3650,11 +3633,6 @@ void __fastcall TForm1::scGPSwitch_meritkoChangeState(TObject *Sender)
 	 REFRESH();
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
 void __fastcall TForm1::scSplitView_OPTIONSMouseLeave(TObject *Sender)
 {
 //    scSplitView_OPTIONS->Close();

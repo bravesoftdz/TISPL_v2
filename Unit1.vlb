@@ -136,9 +136,6 @@ Coordinates=511,510,104,36
 [SaveDialog]
 Coordinates=838,631,80,36
 
-[scRadioGroup1]
-Coordinates=397,510,104,36
-
 [Button9]
 Coordinates=617,144,59,58
 
@@ -162,9 +159,6 @@ Coordinates=1297,1,58,36
 
 [ImageList1]
 Coordinates=1297,111,77,36
-
-[scCheckBox2]
-Coordinates=838,464,93,36
 
 [RzToolButton8]
 Coordinates=661,464,100,36
@@ -198,9 +192,6 @@ Coordinates=1297,606,61,36
 
 [Posouvat2]
 Coordinates=1297,661,75,36
-
-[scGPSizeBox1]
-Coordinates=120,464,100,36
 
 [Button10]
 Coordinates=225,212,66,58
@@ -252,9 +243,6 @@ Coordinates=142,212,73,58
 
 [Button1]
 Coordinates=977,144,59,58
-
-[scCheckBox1]
-Coordinates=1004,372,93,36
 
 [Konec]
 Coordinates=809,372,51,36
@@ -344,7 +332,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=382,10,118,124
+Coordinates=397,510,104,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -361,4 +349,7 @@ Coordinates=1017,464,86,36
 
 [SQL_processID]
 Coordinates=1046,144,66,58
+
+[scGPSizeBox]
+Coordinates=120,464,100,36
 

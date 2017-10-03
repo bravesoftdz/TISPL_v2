@@ -196,12 +196,9 @@ __published:	// IDE-managed Components
 	TscGPTrackBar *scGPTrackBar1;
 	TscGPGlyphButton *scGPGlyphButton_ZOOM_MINUS;
 	TscGPGlyphButton *scGPGlyphButton_ZOOM_PLUS;
-	TscGPSizeBox *scGPSizeBox1;
-	TscCheckBox *scCheckBox2;
+	TscGPSizeBox *scGPSizeBox;
 	TscSplitView *scSplitView_OPTIONS;
-	TscCheckBox *scCheckBox1;
 	TscStyledForm *scStyledForm1;
-	TscRadioGroup *scRadioGroup1;
 	TscGPGlyphButton *scGPGlyphButton2;
 	TscGPButton *layout;
 	TscGPButton *simulace;
@@ -468,6 +465,9 @@ private:	// User declarations
 	UnicodeString Edice_caption;
 
 	short pocitadlo_doby_neaktivity;
+
+	bool FMaximized;
+	TRect FOldBoundsRect;
 
 
 public:		// User declarations
