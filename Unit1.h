@@ -237,7 +237,6 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
 	TscButton *scButton_ulozit;
-	TscGPCheckBox *CheckBoxPALCE;
 	TscGPCheckBox *CheckBoxVymena_barev;
 	TscGPCheckBox *CheckBoxVytizenost;
 	TscComboBox *ComboBoxCekani;
@@ -246,6 +245,7 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel4;
 	TscLabel *scLabel_titulek;
+	TscLabel *scLabel1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -373,6 +373,8 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_ostatniClick(TObject *Sender);
 	void __fastcall scExPanel_vrstvyClick(TObject *Sender);
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
+	void __fastcall scSplitView_OPTIONSMouseLeave(TObject *Sender);
+	void __fastcall scSplitView_MENUMouseLeave(TObject *Sender);
 
 private:	// User declarations
 	////struktury, výèty

@@ -4,7 +4,7 @@ object Form_parametry: TForm_parametry
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
   ClientHeight = 284
-  ClientWidth = 325
+  ClientWidth = 337
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -185,9 +185,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel1_tech_param: TrHTMLLabel
     Left = 8
     Top = 123
-    Width = 116
+    Width = 204
     Height = 19
-    Caption = 'Kapacita objektu'
+    Caption = 'Po'#382'adovan'#225' kapacita objektu'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -207,6 +207,34 @@ object Form_parametry: TForm_parametry
     Transparent = True
     Visible = False
     OnClick = Image_vozikClick
+  end
+  object rHTMLLabel1: TrHTMLLabel
+    Left = 94
+    Top = 50
+    Width = 134
+    Height = 19
+    Caption = 'Name a shortname'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel2: TrHTMLLabel
+    Left = 163
+    Top = 160
+    Width = 166
+    Height = 19
+    Caption = #268'ekat na palec - roletka'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
   end
   object Button_OK: TButton
     Left = 203
@@ -244,6 +272,9 @@ object Form_parametry: TForm_parametry
     Visible = False
     OnClick = ValueListEditorClick
     OnStringsChange = ValueListEditorStringsChange
+    ColWidths = (
+      192
+      77)
   end
   object ComboBox_druh_objektu: TComboBox
     Left = 8
@@ -349,7 +380,7 @@ object Form_parametry: TForm_parametry
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 325
+    Width = 337
     Height = 34
     Align = alTop
     TabOrder = 8
@@ -377,11 +408,10 @@ object Form_parametry: TForm_parametry
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitLeft = -723
-    ExplicitWidth = 999
+    ExplicitWidth = 325
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 275
+      Left = 287
       Top = 0
       Width = 50
       Height = 33
@@ -455,11 +485,11 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 949
+      ExplicitLeft = 275
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 175
+      Left = 187
       Top = 0
       Width = 50
       Height = 33
@@ -533,12 +563,12 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 849
+      ExplicitLeft = 175
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 138
+      Width = 150
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -565,11 +595,11 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 812
+      ExplicitWidth = 138
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 225
+      Left = 237
       Top = 0
       Width = 50
       Height = 33
@@ -643,10 +673,10 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 899
+      ExplicitLeft = 225
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 138
+      Left = 150
       Top = 0
       Width = 37
       Height = 34
@@ -722,7 +752,7 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 812
+      ExplicitLeft = 138
     end
   end
   object rEditNum4: TrEditNum

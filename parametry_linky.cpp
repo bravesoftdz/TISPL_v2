@@ -47,13 +47,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton2->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton2->Options->FramePressedColor=Form_parametry_linky->Color;
 
-	 scGPButton3->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton3->Options->FocusedColor=Form_parametry_linky->Color;
-	 scGPButton3->Options->HotColor=Form_parametry_linky->Color;
-	 scGPButton3->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton3->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton3->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton3->Options->FramePressedColor=Form_parametry_linky->Color;
 
 	 //nahrání hodnot
 	 rEditNum_delkavoziku->Text=Form1->d.v.PP.delka_voziku;

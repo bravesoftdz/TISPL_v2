@@ -527,7 +527,7 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=false;
 
-	CheckBoxPALCE->Visible=false;
+
 	CheckBoxVymena_barev->Visible=false;
 	Label_zamerovac->Visible=false;
 	ComboBoxODmin->Visible=false;
@@ -642,7 +642,6 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			technologickprocesy1->Enabled=true;
 			Timer_animace->Enabled=false;
 			ButtonPLAY->Visible=false;
-			CheckBoxPALCE->Visible=true;
 			CheckBoxVymena_barev->Visible=true;
 			CheckBoxVytizenost->Visible=true;
 
@@ -677,7 +676,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 	d.PosunT.y=0;
 	zneplatnit_minulesouradnice();
-	CheckBoxPALCE->Visible=false;
+
 	//ZDM g.ShowGrafy(false);
 	DuvodUlozit(true);
 	scListGroupNastavProjektu->Visible=false;
@@ -685,7 +684,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	PopupMenu1->AutoPopup=false;
 	Button3->Visible=false;
 	Timer_neaktivity->Enabled=false;
-	CheckBoxPALCE->Visible=false;
+
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=true;
 
@@ -718,12 +717,12 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	}
 	//ComboBoxODmin->Items->Add(d.v.vrat_nejpozdejsi_konec_zakazek());
 	ComboBoxDOmin->Visible=true;
-	ComboBoxDOmin->Top=CheckBoxPALCE->Top;
+	//ComboBoxDOmin->Top=CheckBoxPALCE->Top;
 	ComboBoxDOmin->Left=ComboBoxODmin->Left+40+2;
 	//ComboBoxDOmin->Items->Add(d.TP.KZ);//plnění komba max časem
 
 	CheckBox_pouzit_zadane_kapacity->Visible=true;
-	CheckBox_pouzit_zadane_kapacity->Top=CheckBoxPALCE->Top;
+ //	CheckBox_pouzit_zadane_kapacity->Top=CheckBoxPALCE->Top;
 	CheckBox_pouzit_zadane_kapacity->Left=CheckBoxAnimovatSG->Left+CheckBoxAnimovatSG->Width+7;
 
 	//---
@@ -758,7 +757,6 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	ButtonPLAY->Visible=false;
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=false;
-	CheckBoxPALCE->Visible=false;
 	CheckBoxVymena_barev->Visible=false;
 	Label_zamerovac->Visible=false;
 	ComboBoxODmin->Visible=false;
@@ -3288,7 +3286,6 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 	if(d.v.PROCESY!=NULL && d.v.PROCESY->predchozi->n>0)//pokud je více objektů
 	{
 		d.mod_vytizenost_objektu=!d.mod_vytizenost_objektu;
-		CheckBoxPALCE->Visible=!CheckBoxPALCE->Visible;
 		CheckBoxVymena_barev->Visible=!CheckBoxVymena_barev->Visible;
 		SB("");
 		Invalidate();
@@ -3640,7 +3637,6 @@ void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 
 
 			CheckBoxVytizenost->Visible=true;
-			CheckBoxPALCE->Visible=true;
 			CheckBoxVymena_barev->Visible=true;
 			ComboBoxCekani->Visible=true;
 	}
@@ -3658,4 +3654,16 @@ void __fastcall TForm1::scGPSwitch_meritkoChangeState(TObject *Sender)
 
 
 
+
+void __fastcall TForm1::scSplitView_OPTIONSMouseLeave(TObject *Sender)
+{
+//    scSplitView_OPTIONS->Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scSplitView_MENUMouseLeave(TObject *Sender)
+{
+//   scSplitView_MENU->Close();
+}
+//---------------------------------------------------------------------------
 

@@ -215,22 +215,6 @@ object Form_parametry_linky: TForm_parametry_linky
       30
       30)
   end
-  object Button1: TButton
-    Left = 261
-    Top = 59
-    Width = 120
-    Height = 32
-    Caption = 'Pokro'#269'il'#233
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clActiveCaption
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 4
-    Visible = False
-  end
   object Button_save: TscGPButton
     Left = 163
     Top = 413
@@ -243,7 +227,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 4
     TabStop = True
     OnClick = Button_saveClick
     Animation = False
@@ -333,7 +317,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 5
     TabStop = True
     OnClick = Button_stornoClick
     Animation = False
@@ -417,7 +401,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 648
     Height = 34
     Align = alTop
-    TabOrder = 7
+    TabOrder = 6
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -798,7 +782,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 7
     Animation = False
     Caption = '  Voz'#237'k'
     CanFocused = False
@@ -886,7 +870,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 8
     Value = 1.000000000000000000
   end
   object scGPButton1: TscGPButton
@@ -901,7 +885,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 9
     Animation = False
     Caption = '  Pohon'
     CanFocused = False
@@ -977,101 +961,73 @@ object Form_parametry_linky: TForm_parametry_linky
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPButton3: TscGPButton
-    Left = 443
-    Top = 56
-    Width = 137
-    Height = 35
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMenuBar
-    Font.Height = -19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 11
-    Animation = False
-    Caption = '   Geometrie'
-    CanFocused = False
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    Images = Form1.scGPVirtualImageList1
-    ImageIndex = 24
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = clSilver
-    Options.HotColor = clPurple
-    Options.PressedColor = clSilver
-    Options.FocusedColor = clRed
-    Options.DisabledColor = clPurple
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clSilver
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBlack
-    Options.FontHotColor = clWhite
-    Options.FontPressedColor = clBlack
-    Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clAqua
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    HotImageIndex = -1
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clMaroon
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 1
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clRed
-    GlowEffect.FocusedColor = clRed
-    GlowEffect.PressedGlowSize = 1
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = True
-    GroupIndex = 0
-    AllowAllUp = False
-  end
   object Vypis_pohony: TButton
     Left = 30
     Top = 423
     Width = 75
     Height = 25
     Caption = 'Vypis_pohony'
-    TabOrder = 12
+    TabOrder = 10
     OnClick = Vypis_pohonyClick
+  end
+  object scRadioGroup1: TscRadioGroup
+    Left = 176
+    Top = 97
+    Width = 193
+    Height = 53
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 11
+    FramePosition = scgfpDefault
+    CustomImageIndex = -1
+    CustomImageDisabledIndex = -1
+    CustomCheckedImageIndex = -1
+    CustomCheckedImageHotIndex = -1
+    CustomCheckedImagePressedIndex = -1
+    CustomCheckedImageDisabledIndex = -1
+    CustomUnCheckedImageIndex = -1
+    CustomUnCheckedImageHotIndex = -1
+    CustomUnCheckedImagePressedIndex = -1
+    CustomUnCheckedImageDisabledIndex = -1
+    Alignment = taLeftJustify
+    Caption = 'Typ'
+    ImageIndex = -1
+    ShowCheckBox = False
+    Checked = True
+    AutoEnabledControls = False
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    ImageGlow = True
+    StorePaintBuffer = True
+    Columns = 2
+    ItemIndex = 0
+    Items.Strings = (
+      'Norm'#225'ln'#237
+      'Z'#225'v'#283'sn'#253)
+    ButtonsGlowEffect.Enabled = False
+    ButtonsGlowEffect.Color = clHighlight
+    ButtonsGlowEffect.AlphaValue = 255
+    ButtonsGlowEffect.GlowSize = 7
+    ButtonsGlowEffect.Offset = 0
+    ButtonsGlowEffect.Intensive = True
+    ButtonsGlowEffect.StyleColors = True
+    ButtonsGlowEffect.HotColor = clNone
+    ButtonsGlowEffect.PressedColor = clNone
+    ButtonsGlowEffect.FocusedColor = clNone
+    ButtonsGlowEffect.PressedGlowSize = 7
+    ButtonsGlowEffect.PressedAlphaValue = 255
+    ButtonsGlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ButtonsAnimation = False
+    ShowFocusRect = True
   end
 end

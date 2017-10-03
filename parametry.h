@@ -53,6 +53,8 @@ __published:	// IDE-managed Components
 	TEdit *Edit_vzdalenost_voziku;
 	TRadioButton *RadioButton_na_sirku;
 	TImage *Image_vozik;
+	TrHTMLLabel *rHTMLLabel1;
+	TrHTMLLabel *rHTMLLabel2;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);

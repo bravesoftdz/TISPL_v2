@@ -23,7 +23,6 @@ __published:	// IDE-managed Components
 	TButton *Button_ADD;
 	TButton *Button_DEL;
 	TrStringGridEd *rStringGridEd_tab_dopravniky;
-	TButton *Button1;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
 	TscGPPanel *scGPPanel2;
@@ -35,8 +34,8 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton2;
 	TrEditNum *rEditNum_delkavoziku;
 	TscGPButton *scGPButton1;
-	TscGPButton *scGPButton3;
 	TButton *Vypis_pohony;
+	TscRadioGroup *scRadioGroup1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
