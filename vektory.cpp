@@ -313,7 +313,7 @@ void Cvektory::vloz_zakazku(TZakazka *Zakazka)
 	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	ZAKAZKY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
-//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
 void Cvektory::vloz_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta)
 {
 	TZakazka *nova=new TZakazka;

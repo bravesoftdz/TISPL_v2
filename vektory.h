@@ -346,7 +346,7 @@ class Cvektory
 		//metody pro ZAKAZKY
 		void hlavicka_ZAKAZKY();
 		void vloz_zakazku(TZakazka *Zakazka);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
-		void vloz_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta=NULL);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+		void vloz_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta=NULL);//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
 		long vymaz_seznam_ZAKAZKY();
 		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
 		void vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty);//do konkrétní cesty vloží segmenty cesty
