@@ -1625,9 +1625,9 @@ object Form1: TForm1
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
       GlyphOptions.DisabledColorAlpha = 100
-      GlyphOptions.Kind = scgpbgkMaximize
+      GlyphOptions.Kind = scgpbgkRestore
       GlyphOptions.Thickness = 1
-      GlyphOptions.StyleColors = True
+      GlyphOptions.StyleColors = False
       TextMargin = -1
       WidthWithCaption = 0
       WidthWithoutCaption = 0
@@ -3341,6 +3341,63 @@ object Form1: TForm1
       end
     end
   end
+        ShowFocusRect = True
+      end
+    end
+    object scExPanel_vrstvy: TscExPanel
+      Left = 1
+      Top = 227
+      Width = 249
+      Height = 30
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = scExPanel_vrstvyClick
+      BackgroundStyle = scexbgsPanel
+      HeaderColor = 10114859
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = 9
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 206
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = True
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = 'Vrstvy'
+      object scLabel4: TscLabel
+        Left = 3
+        Top = 39
+        Width = 136
+        Height = 18
+        TabOrder = 0
+        DragForm = False
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'Zobrazit/Skr'#253't vrstvy'
+      end
+    end
+  end
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
@@ -4525,7 +4582,6 @@ object Form1: TForm1
       WordWrap = False
       ExplicitWidth = 0
     end
-  end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
     Left = 536
@@ -4641,7 +4697,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000003380310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003C033C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5764,7 +5820,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C00E000840130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C008801880130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15286,7 +15342,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00E000E00018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00E400E40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
