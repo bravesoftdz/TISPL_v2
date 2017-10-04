@@ -970,7 +970,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 10
     OnClick = Vypis_pohonyClick
   end
-  object scRadioGroup1: TscRadioGroup
+  object scRadioGroup_typVoziku: TscRadioGroup
     Left = 176
     Top = 97
     Width = 193
