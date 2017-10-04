@@ -2776,11 +2776,11 @@ object Form1: TForm1
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
-    Width = 180
+    Width = 0
     Height = 640
     Anchors = [akLeft, akTop, akBottom]
-    TabOrder = 28
-    OnMouseLeave = scSplitView_MENUMouseLeave
+    Enabled = False
+    TabOrder = 30
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -2802,7 +2802,7 @@ object Form1: TForm1
     CompactWidth = 0
     CompactHeight = 20
     GripSize = 0
-    Opened = True
+    Opened = False
     OpenedWidth = 180
     OpenedHeight = 50
     OpenedMinWidth = 0
@@ -2820,7 +2820,7 @@ object Form1: TForm1
     object scButton1: TscButton
       Left = 0
       Top = 590
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -2913,7 +2913,7 @@ object Form1: TForm1
     object scButton2: TscButton
       Left = 0
       Top = 0
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3005,7 +3005,7 @@ object Form1: TForm1
     object scButton3: TscButton
       Left = 0
       Top = 50
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3097,7 +3097,7 @@ object Form1: TForm1
     object scButton4: TscButton
       Left = 0
       Top = 300
-      Width = 180
+      Width = 0
       Height = 64
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3189,7 +3189,7 @@ object Form1: TForm1
     object scButton5: TscButton
       Left = 0
       Top = 540
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -3281,7 +3281,7 @@ object Form1: TForm1
     object scButton6: TscButton
       Left = 0
       Top = 200
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3477,7 +3477,7 @@ object Form1: TForm1
     object scButton7: TscButton
       Left = 0
       Top = 150
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3569,7 +3569,7 @@ object Form1: TForm1
     object scButton8: TscButton
       Left = 0
       Top = 250
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3661,7 +3661,7 @@ object Form1: TForm1
     object scButton9: TscButton
       Left = 0
       Top = 490
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -3857,7 +3857,7 @@ object Form1: TForm1
     object scButton_ulozit: TscButton
       Left = 0
       Top = 100
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Enabled = False
@@ -4471,7 +4471,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118003C033C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003C03400310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5594,7 +5594,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C008801880130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C0088018C0130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15116,7 +15116,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00E400E40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00E800E80018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
