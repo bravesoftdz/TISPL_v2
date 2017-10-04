@@ -82,6 +82,7 @@ object Form_cesty: TForm_cesty
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -99,6 +100,7 @@ object Form_cesty: TForm_cesty
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -116,6 +118,7 @@ object Form_cesty: TForm_cesty
         TitleAlignment = taRightJustify
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -132,6 +135,7 @@ object Form_cesty: TForm_cesty
         TitleParentFont = False
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -149,6 +153,7 @@ object Form_cesty: TForm_cesty
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -211,7 +216,6 @@ object Form_cesty: TForm_cesty
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 600
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 600
@@ -288,7 +292,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 550
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -366,7 +369,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 450
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -444,7 +446,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 500
     end
     object scLabel1: TscLabel
       Left = 0
@@ -476,7 +477,6 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
-      ExplicitWidth = 450
     end
   end
   object scGPButton2: TscGPButton
@@ -702,94 +702,6 @@ object Form_cesty: TForm_cesty
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 255
     Options.FontNormalColor = clWhite
-    Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
-    Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clAqua
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    HotImageIndex = -1
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clMaroon
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 1
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clRed
-    GlowEffect.FocusedColor = clRed
-    GlowEffect.PressedGlowSize = 1
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object scGPButton1: TscGPButton
-    Left = 396
-    Top = 50
-    Width = 248
-    Height = 35
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMenuBar
-    Font.Height = -19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 5
-    TabStop = True
-    Animation = False
-    Caption = '   Nov'#225' technolog.cesta'
-    CanFocused = True
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    Images = Form1.scGPVirtualImageList1
-    ImageIndex = 27
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = clSilver
-    Options.HotColor = clPurple
-    Options.PressedColor = clRed
-    Options.FocusedColor = clRed
-    Options.DisabledColor = clPurple
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clSilver
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBlack
     Options.FontHotColor = clWhite
     Options.FontPressedColor = clWhite
     Options.FontFocusedColor = clWhite

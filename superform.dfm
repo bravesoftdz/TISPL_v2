@@ -358,6 +358,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         FieldName = 'Polozky'
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -393,6 +394,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleAlignment = taRightJustify
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -409,6 +411,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleParentFont = False
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -426,6 +429,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleAlignment = taRightJustify
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -460,6 +464,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
