@@ -17,6 +17,7 @@
 #pragma link "rStringGridEd"
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "scGPExtControls"
 #pragma resource "*.dfm"
 TForm_definice_zakazek *Form_definice_zakazek;
 
@@ -25,6 +26,27 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
 	: TForm(Owner) {
 
 	offset = 0;
+
+}
+
+void TForm_definice_zakazek::nacti_defaulni_PP(){
+
+		rEditNum_pozad_mnozstvi->Text=200;
+		rEditNum_pocet_dnu->Text=5;
+		rEditNum_effektivita->Text=99;
+		rEditNum_pocet_prac_hod->Text=8;
+
+	}
+
+void TForm_definice_zakazek::nacti_PP(){
+
+		rEditNum_pozad_mnozstvi->Text=Form1->d.v.PP.mnozstvi;
+		rEditNum_pocet_dnu->Text=Form1->d.v.PP.dni_rok;
+		rEditNum_effektivita->Text=Form1->d.v.PP.efektivita;
+		rEditNum_pocet_prac_hod->Text=Form1->d.v.PP.hod_den;
+
+		Form1->d.v.PP.cas_start;
+		Form1->d.v.PP.typ_voziku;
 
 }
 
@@ -55,6 +77,7 @@ void TForm_definice_zakazek::uloz_barvu() {
 	// nový poslední prvek zápis do hlavièky,body->predchozi zápis do hlavièky odkaz na poslední prvek seznamu "predchozi" v tomto pøípadì zavádìjicí
 
 }
+
 
 void TForm_definice_zakazek::uloz_barvu(TColor barva, int i) {
 	TBarva *novy = new TBarva;
@@ -146,21 +169,28 @@ void TForm_definice_zakazek::vymaz_barvu() {
 // ---------------------------------------------------------------------------
 void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 {
+
+	if(!Form1->d.v.PP.mnozstvi){
+
+	nacti_defaulni_PP();
+	}
+
+	else {nacti_PP();}
+
+
+
 	//ZDM nacti_voziky();
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
 	TColor active_blue=(TColor)RGB(43,87,154);
 
 	Form_definice_zakazek->Color=light_gray;//RGB(43,87,154);
-	rHTMLLabel1->Font->Color=(TColor)RGB(89,89,89);
-	rHTMLLabel2->Font->Color=rHTMLLabel1->Font->Color;
-	// rHTMLLabel3->Font->Color=rHTMLLabel1->Font->Color;   velky nadpis
-	rHTMLLabel4->Font->Color=rHTMLLabel1->Font->Color;
-	rHTMLLabel5->Font->Color=rHTMLLabel1->Font->Color;
-	rHTMLLabel6->Font->Color=rHTMLLabel1->Font->Color;
+	rHTMLLabel_effektivita->Font->Color=(TColor)RGB(89,89,89);
+	rHTMLLabel_pocet_dnu->Font->Color=rHTMLLabel_effektivita->Font->Color;
+	rHTMLLabel_pocet_prac_hod->Font->Color=rHTMLLabel_effektivita->Font->Color;
+	rHTMLLabel_pozad_mnozstvi->Font->Color=rHTMLLabel_effektivita->Font->Color;
 
-	rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
- //	 rHTMLLabel7->Font->Color=rHTMLLabel3->Font->Color;  //velky nadpis  2
+ //	rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
 
  //Button_OK->Font->Color=(TColor)RGB(226,122,21);
  scGPButton2->Options->NormalColor=Form_definice_zakazek->Color;
@@ -168,14 +198,6 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
  scGPButton2->Options->HotColor=Form_definice_zakazek->Color;
  scGPButton2->Options->PressedColor=Form_definice_zakazek->Color;
  scGPButton2->Options->FramePressedColor=Form_definice_zakazek->Color;
- //scGPButton2->Options->FrameNormalColor=Form_vozik_nastaveni->Color;
- //scGPButton2->Options->FrameFocusedColor=Form_vozik_nastaveni->Color;
- //scGPButton2->Options->FontFocusedColor=clBlack;
-
- //scGPButton3->Options->NormalColor=(TColor)RGB(226,122,21);
- //scGPButton3->Options->FocusedColor=(TColor)RGB(255,141,28);
- //scGPButton3->Options->HotColor=(TColor)RGB(255,141,28);
- //scGPButton3->Options->PressedColor=(TColor)RGB(255,141,28);
 
  scGPButton4->Options->NormalColor=Form_definice_zakazek->Color;
  scGPButton4->Options->FocusedColor=Form_definice_zakazek->Color;
@@ -749,6 +771,21 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
 void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 {
 	Form_definice_zakazek->Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
+{
+
+		Form1->d.v.PP.mnozstvi=Form1->ms.MyToDouble(rEditNum_pozad_mnozstvi->Text);
+		Form1->d.v.PP.dni_rok=Form1->ms.MyToDouble(rEditNum_pocet_dnu->Text);
+		Form1->d.v.PP.efektivita=Form1->ms.MyToDouble(rEditNum_effektivita->Text);
+		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
+
+				Form1->DuvodUlozit(true);
+				Form_definice_zakazek->Close();
+
+
 }
 //---------------------------------------------------------------------------
 

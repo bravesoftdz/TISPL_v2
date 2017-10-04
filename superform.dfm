@@ -19,47 +19,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 20
-  object rHTMLLabel1: TrHTMLLabel
-    Left = 0
-    Top = 0
-    Width = 17
-    Height = 30
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 30
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-  end
-  object rHTMLLabel3: TrHTMLLabel
-    Left = 23
-    Top = 1
-    Width = 172
-    Height = 27
-    Caption = 'Parametry v'#253'roby'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = 27
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel2: TrHTMLLabel
-    Left = 15
-    Top = 7
-    Width = 152
-    Height = 19
-    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel4: TrHTMLLabel
+  object rHTMLLabel_pocet_prac_hod: TrHTMLLabel
     Left = 53
     Top = 165
     Width = 150
@@ -73,7 +33,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel5: TrHTMLLabel
+  object rHTMLLabel_pocet_dnu: TrHTMLLabel
     Left = 53
     Top = 97
     Width = 134
@@ -87,7 +47,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel6: TrHTMLLabel
+  object rHTMLLabel_effektivita: TrHTMLLabel
     Left = 247
     Top = 165
     Width = 64
@@ -101,7 +61,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel9: TrHTMLLabel
+  object rHTMLLabel_pozad_mnozstvi: TrHTMLLabel
     Left = 247
     Top = 97
     Width = 152
@@ -1282,7 +1242,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       AllowAllUp = False
     end
   end
-  object rEditNum1: TrEditNum
+  object rEditNum_pozad_mnozstvi: TrEditNum
     Left = 247
     Top = 122
     Width = 101
@@ -1295,9 +1255,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 20
-    Value = 5000000.000000000000000000
+    Value = 200.000000000000000000
   end
-  object rEditNum2: TrEditNum
+  object rEditNum_pocet_prac_hod: TrEditNum
     Left = 53
     Top = 190
     Width = 150
@@ -1312,7 +1272,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     TabOrder = 21
     Value = 8.000000000000000000
   end
-  object rEditNum3: TrEditNum
+  object rEditNum_effektivita: TrEditNum
     Left = 247
     Top = 190
     Width = 65
@@ -1325,9 +1285,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 22
-    Value = 95.000000000000000000
+    Value = 90.000000000000000000
   end
-  object rEditNum4: TrEditNum
+  object rEditNum_pocet_dnu: TrEditNum
     Left = 53
     Top = 122
     Width = 149
@@ -1340,9 +1300,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 23
-    Value = 235.000000000000000000
+    Style = enFloat
+    Value = 5.000000000000000000
   end
-  object scGPButton1: TscGPButton
+  object scGPButton_Ulozit: TscGPButton
     Left = 371
     Top = 490
     Width = 100
@@ -1355,6 +1316,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ParentFont = False
     TabOrder = 24
     TabStop = True
+    OnClick = scGPButton_UlozitClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
