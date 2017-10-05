@@ -52,7 +52,6 @@ __published:	// IDE-managed Components
 	TEdit *Edit_vzdalenost_voziku;
 	TRadioButton *RadioButton_na_sirku;
 	TImage *Image_vozik;
-	TrHTMLLabel *rHTMLLabel_cekani_doporuc;
 	TrHTMLLabel *rHTMLLabel_pohon;
 	TscCheckBox *scCheckBox_stopky;
 	TrHTMLLabel *rHTMLLabel_odchylkaCT;
@@ -61,12 +60,13 @@ __published:	// IDE-managed Components
 	TscEdit *scEdit_shortname;
 	TrHTMLLabel *rHTMLLabel_name;
 	TrHTMLLabel *rHTMLLabel_shortname;
-	TrHTMLLabel *rHTMLLabel_stopky;
 	TrHTMLLabel *rHTMLLabel_cekani;
 	TscComboBox *scComboBox1;
 	TrHTMLLabel *rHTMLLabel_doporuc_cekani_value;
 	TrEditNum *rEditNum_delka_dopravniku;
 	TrEditNum *rEditNum_odchylka;
+	TscComboBox *scComboBox2;
+	TscComboBox *scComboBox3;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);

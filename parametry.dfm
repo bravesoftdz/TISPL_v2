@@ -3,7 +3,7 @@ object Form_parametry: TForm_parametry
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
-  ClientHeight = 387
+  ClientHeight = 376
   ClientWidth = 348
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -170,10 +170,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel5_rezim: TrHTMLLabel
     Left = 8
-    Top = 105
-    Width = 43
+    Top = 76
+    Width = 49
     Height = 19
-    Caption = 'Re'#382'im'
+    Caption = 'Re'#382'im:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -183,11 +183,11 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_kapacita: TrHTMLLabel
-    Left = 182
-    Top = 105
-    Width = 146
+    Left = 8
+    Top = 241
+    Width = 214
     Height = 19
-    Caption = 'Po'#382'adovan'#225' kapacita'
+    Caption = 'Po'#382'adovan'#225' kapacita [voz'#237'k'#367']:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -208,26 +208,12 @@ object Form_parametry: TForm_parametry
     Visible = False
     OnClick = Image_vozikClick
   end
-  object rHTMLLabel_cekani_doporuc: TrHTMLLabel
-    Left = 182
-    Top = 219
-    Width = 85
-    Height = 19
-    Caption = 'Doporu'#269'en'#233
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
   object rHTMLLabel_pohon: TrHTMLLabel
     Left = 8
-    Top = 162
-    Width = 45
+    Top = 107
+    Width = 51
     Height = 19
-    Caption = 'Pohon'
+    Caption = 'Pohon:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -237,11 +223,11 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_odchylkaCT: TrHTMLLabel
-    Left = 182
-    Top = 271
-    Width = 90
+    Left = 8
+    Top = 207
+    Width = 207
     Height = 19
-    Caption = 'Odchylka CT'
+    Caption = 'Povolen'#225' odchylka z CT [%]:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -252,10 +238,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_delka_dopravniku: TrHTMLLabel
     Left = 8
-    Top = 271
-    Width = 123
+    Top = 140
+    Width = 160
     Height = 19
-    Caption = 'D'#233'lka dopravn'#237'ku'
+    Caption = 'D'#233'lka dopravn'#237'ku [m]:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -266,10 +252,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_name: TrHTMLLabel
     Left = 8
-    Top = 40
-    Width = 42
+    Top = 45
+    Width = 48
     Height = 19
-    Caption = 'N'#225'zev'
+    Caption = 'N'#225'zev:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -279,25 +265,11 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_shortname: TrHTMLLabel
-    Left = 182
-    Top = 38
-    Width = 52
+    Left = 221
+    Top = 45
+    Width = 58
     Height = 19
-    Caption = 'Zkratka'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-  end
-  object rHTMLLabel_stopky: TrHTMLLabel
-    Left = 8
-    Top = 220
-    Width = 162
-    Height = 19
-    Caption = 'Uva'#382'ovat STOP stanice'
+    Caption = 'Zkratka:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -307,11 +279,11 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_cekani: TrHTMLLabel
-    Left = 182
-    Top = 164
-    Width = 110
+    Left = 8
+    Top = 174
+    Width = 116
     Height = 19
-    Caption = #268'ek'#225'n'#237' na palec'
+    Caption = #268'ek'#225'n'#237' na palec:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -321,10 +293,11 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_doporuc_cekani_value: TrHTMLLabel
-    Left = 182
-    Top = 244
-    Width = 110
+    Left = 8
+    Top = 301
+    Width = 327
     Height = 19
+    Caption = 'Upozorn'#283'n'#237':'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -340,7 +313,7 @@ object Form_parametry: TForm_parametry
     Height = 25
     Caption = 'OK'
     ModalResult = 1
-    TabOrder = 2
+    TabOrder = 4
     Visible = False
   end
   object ValueListEditor: TValueListEditor
@@ -362,7 +335,7 @@ object Form_parametry: TForm_parametry
       'IT - doba kontroly voz'#237'ku=0'
       'QT - doba '#269'ek'#225'n'#237' ve front'#283'=0'
       '...=')
-    TabOrder = 1
+    TabOrder = 2
     TitleCaptions.Strings = (
       ' n'#225'zev'
       ' '#269'as [min/voz'#237'k]')
@@ -374,9 +347,9 @@ object Form_parametry: TForm_parametry
       77)
   end
   object ComboBox_druh_objektu: TComboBox
-    Left = 8
-    Top = 130
-    Width = 151
+    Left = 43
+    Top = 411
+    Width = 267
     Height = 21
     Hint = 'Volba re'#382'imu objektu'
     Style = csDropDownList
@@ -392,15 +365,15 @@ object Form_parametry: TForm_parametry
       'POSTPROCESN'#205)
   end
   object ComboBox_dopravnik: TComboBox
-    Left = 8
-    Top = 187
-    Width = 151
+    Left = 43
+    Top = 432
+    Width = 229
     Height = 21
     Hint = 'Volba dopravn'#237'ku'
     Style = csDropDownList
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 5
     OnChange = ComboBox_dopravnikChange
   end
   object Button_min_sec: TButton
@@ -418,7 +391,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 8
     Visible = False
     OnClick = Button_min_secClick
   end
@@ -437,7 +410,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 12
     Visible = False
     OnClick = Button_DELClick
   end
@@ -453,7 +426,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 13
     OnChange = Edit_nameChange
   end
   object Edit_shortname: TEdit
@@ -471,7 +444,7 @@ object Form_parametry: TForm_parametry
     Font.Style = [fsBold]
     MaxLength = 4
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 14
   end
   object scGPPanel2: TscGPPanel
     Left = 0
@@ -479,7 +452,7 @@ object Form_parametry: TForm_parametry
     Width = 348
     Height = 34
     Align = alTop
-    TabOrder = 8
+    TabOrder = 15
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -504,7 +477,6 @@ object Form_parametry: TForm_parametry
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 337
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 298
@@ -582,7 +554,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 287
     end
     object scLabel1: TscLabel
       Left = 0
@@ -614,7 +585,7 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 150
+      ExplicitWidth = 348
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 261
@@ -693,26 +664,27 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 150
     end
   end
   object rEditNum4: TrEditNum
-    Left = 182
-    Top = 130
-    Width = 149
+    Left = 227
+    Top = 237
+    Width = 108
     Height = 28
+    BiDiMode = bdRightToLeft
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 16
   end
   object scGPButton1_OK: TscGPButton
-    Left = 59
-    Top = 341
+    Left = 61
+    Top = 332
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -721,7 +693,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 9
     TabStop = True
     Animation = False
     Caption = 'Ulo'#382'it'
@@ -799,8 +771,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPButton3: TscGPButton
-    Left = 182
-    Top = 341
+    Left = 184
+    Top = 332
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -809,7 +781,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 10
     TabStop = True
     OnClick = scGPButton3Click
     Animation = False
@@ -893,7 +865,7 @@ object Form_parametry: TForm_parametry
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_delku'
-    TabOrder = 12
+    TabOrder = 17
     Visible = False
   end
   object Edit_vzdalenost_voziku: TEdit
@@ -901,7 +873,7 @@ object Form_parametry: TForm_parametry
     Top = 635
     Width = 121
     Height = 21
-    TabOrder = 13
+    TabOrder = 18
     Text = 'Edit_vzdalenost_voziku'
     Visible = False
   end
@@ -911,21 +883,23 @@ object Form_parametry: TForm_parametry
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_sirku'
-    TabOrder = 14
+    TabOrder = 19
     Visible = False
   end
   object scCheckBox_stopky: TscCheckBox
-    Left = 8
-    Top = 245
-    Width = 82
+    Left = 2
+    Top = 271
+    Width = 338
     Height = 17
+    BiDiMode = bdRightToLeft
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGrayText
-    Font.Height = -15
+    Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
+    ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 11
     TabStop = True
     CustomCheckedImageIndex = -1
     CustomCheckedImageHotIndex = -1
@@ -941,14 +915,14 @@ object Form_parametry: TForm_parametry
     CustomGrayedImageDisabledIndex = -1
     UseFontColorToStyleColor = False
     Animation = False
-    Caption = 'Ano/Ne'
+    Caption = 'STOP stanice na konci objektu '
     CanFocused = True
-    Spacing = 1
+    Spacing = 0
     Layout = blGlyphLeft
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -964,10 +938,10 @@ object Form_parametry: TForm_parametry
     ShowFocusRect = True
   end
   object scEdit_name: TscEdit
-    Left = 8
-    Top = 65
-    Width = 151
-    Height = 29
+    Left = 61
+    Top = 42
+    Width = 158
+    Height = 27
     UseFontColorToStyleColor = False
     ContentMarginLeft = 0
     ContentMarginRight = 0
@@ -1013,14 +987,20 @@ object Form_parametry: TForm_parametry
     BorderKind = scebFrame
     FrameColor = clBtnShadow
     FrameActiveColor = clHighlight
-    Text = 'scEdit_name'
-    TabOrder = 16
+    Text = ''
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
   end
   object scEdit_shortname: TscEdit
-    Left = 182
-    Top = 63
-    Width = 149
-    Height = 29
+    Left = 281
+    Top = 41
+    Width = 54
+    Height = 27
     UseFontColorToStyleColor = False
     ContentMarginLeft = 0
     ContentMarginRight = 0
@@ -1066,14 +1046,20 @@ object Form_parametry: TForm_parametry
     BorderKind = scebFrame
     FrameColor = clBtnShadow
     FrameActiveColor = clHighlight
-    Text = 'scEdit_shortname'
-    TabOrder = 17
+    Text = ''
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 20
   end
   object scComboBox1: TscComboBox
-    Left = 182
-    Top = 185
-    Width = 149
-    Height = 28
+    Left = 227
+    Top = 171
+    Width = 108
+    Height = 27
     ItemIndex = 2
     Items.Strings = (
       'ne'
@@ -1084,42 +1070,96 @@ object Form_parametry: TForm_parametry
     SelectionColor = clNone
     SelectionTextColor = clHighlightText
     ImageIndex = -1
-    ItemHeight = 22
-    TabOrder = 18
+    ItemHeight = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 6
     Text = 'automaticky'
     StyleKind = scscbDefault
     ShowFocusRect = True
   end
   object rEditNum_delka_dopravniku: TrEditNum
-    Left = 5
-    Top = 296
-    Width = 154
+    Left = 227
+    Top = 138
+    Width = 108
     Height = 28
+    BiDiMode = bdRightToLeft
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    NumbersOnly = True
+    ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 19
-    Value = 2.000000000000000000
+    TabOrder = 21
   end
   object rEditNum_odchylka: TrEditNum
-    Left = 182
-    Top = 296
-    Width = 149
+    Left = 227
+    Top = 203
+    Width = 108
     Height = 28
     Hint = #218'prava CT v objektu za '#250#269'elem srovn'#225'n'#237' TT linky'
+    BiDiMode = bdRightToLeft
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 20
+    TabOrder = 7
+  end
+  object scComboBox2: TscComboBox
+    Left = 61
+    Top = 74
+    Width = 275
+    Height = 27
+    ItemIndex = -1
+    WordBreak = False
+    SelectionStyle = scstStyled
+    SelectionColor = clNone
+    SelectionTextColor = clHighlightText
+    ImageIndex = -1
+    ItemHeight = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+    StyleKind = scscbDefault
+    ShowFocusRect = True
+  end
+  object scComboBox3: TscComboBox
+    Left = 61
+    Top = 106
+    Width = 275
+    Height = 27
+    ItemIndex = -1
+    WordBreak = False
+    SelectionStyle = scstStyled
+    SelectionColor = clNone
+    SelectionTextColor = clHighlightText
+    ImageIndex = -1
+    ItemHeight = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 22
+    StyleKind = scscbDefault
+    ShowFocusRect = True
   end
 end

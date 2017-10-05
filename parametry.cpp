@@ -18,6 +18,9 @@ TForm_parametry *Form_parametry;
 __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 	: TForm(Owner)
 {
+  //nové nastavení barvy formuláøe
+	Form_parametry->Color=(TColor)RGB(240,240,240);
+
 	SG="PT - èistý technologický výrobní èas=0\nMT - èas pøesouvání produktu=0\nWT - doba èekání vozíku=0\nIT - doba kontroly vozíku=0\nQT - doba èekání ve frontì=0\n...=""";
 	K="délka dopravníku [m]=0";
 	P="WT - doba èekání vozíku=0";
@@ -403,5 +406,6 @@ void __fastcall TForm_parametry::KonecClick(TObject *Sender)
 	Close();
 }
 //---------------------------------------------------------------------------
+
 
 
