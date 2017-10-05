@@ -224,10 +224,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel2: TrHTMLLabel
     Left = 163
-    Top = 160
-    Width = 166
-    Height = 19
-    Caption = #268'ekat na palec - roletka'
+    Top = 148
+    Width = 332
+    Height = 36
+    Caption = #268'ekat na palec - roletka, v'#253'pis oproti algoritmu'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -237,8 +237,8 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel3: TrHTMLLabel
-    Left = 163
-    Top = 185
+    Left = 36
+    Top = 190
     Width = 100
     Height = 19
     Caption = 'V'#253'b'#283'r pohonu'
@@ -422,7 +422,6 @@ object Form_parametry: TForm_parametry
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 325
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 287
@@ -499,7 +498,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 275
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -577,7 +575,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 175
     end
     object scLabel1: TscLabel
       Left = 0
@@ -609,7 +606,6 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 138
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -687,7 +683,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 225
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 150
@@ -766,7 +761,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 138
     end
   end
   object rEditNum4: TrEditNum
@@ -786,7 +780,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPButton1_OK: TscGPButton
     Left = 36
-    Top = 219
+    Top = 241
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -873,8 +867,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPButton3: TscGPButton
-    Left = 160
-    Top = 219
+    Left = 163
+    Top = 241
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -987,5 +981,48 @@ object Form_parametry: TForm_parametry
     Caption = 'RadioButton_na_sirku'
     TabOrder = 14
     Visible = False
+  end
+  object scCheckBox1: TscCheckBox
+    Left = 163
+    Top = 200
+    Width = 124
+    Height = 35
+    TabOrder = 15
+    TabStop = True
+    CustomCheckedImageIndex = -1
+    CustomCheckedImageHotIndex = -1
+    CustomCheckedImagePressedIndex = -1
+    CustomCheckedImageDisabledIndex = -1
+    CustomUnCheckedImageIndex = -1
+    CustomUnCheckedImageHotIndex = -1
+    CustomUnCheckedImagePressedIndex = -1
+    CustomUnCheckedImageDisabledIndex = -1
+    CustomGrayedImageIndex = -1
+    CustomGrayedImageHotIndex = -1
+    CustomGrayedImagePressedIndex = -1
+    CustomGrayedImageDisabledIndex = -1
+    UseFontColorToStyleColor = False
+    Animation = False
+    Caption = 'scCheckBox_stopka'
+    CanFocused = True
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    Checked = False
+    ShowFocusRect = True
   end
 end

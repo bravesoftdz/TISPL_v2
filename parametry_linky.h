@@ -35,7 +35,7 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum_delkavoziku;
 	TscGPButton *scGPButton1;
 	TButton *Vypis_pohony;
-	TscRadioGroup *scRadioGroup1;
+	TscRadioGroup *scRadioGroup_typVoziku;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

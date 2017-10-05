@@ -25,9 +25,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		nacti_pohony();
 
-		//	Form1->d.v.vymaz_seznam_POHONY();
+		if (!data_nalezena) {
+		rStringGridEd_tab_dopravniky->RowCount=3;    //defaultní poèet øádkù - hlavièka, hl.dopravník,vedl.dopravník
+		}
 
-	
+		//	Form1->d.v.vymaz_seznam_POHONY();
 
 	 Form_parametry_linky->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
 
@@ -50,6 +52,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	 //nahrání hodnot
 	 rEditNum_delkavoziku->Text=Form1->d.v.PP.delka_voziku;
+	 scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
 }
 //---------------------------------------------------------------------------
 
@@ -124,11 +127,14 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]),    //rychlost do
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
 
-					ShowMessage(rStringGridEd_tab_dopravniky->Cells[1][i]);
-					ShowMessage(rStringGridEd_tab_dopravniky->Cells[2][i]);
-					ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]));
-					ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));
+//					ShowMessage(rStringGridEd_tab_dopravniky->Cells[1][i]);
+//					ShowMessage(rStringGridEd_tab_dopravniky->Cells[2][i]);
+//					ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]));
+//					ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));
 				 }
+
+				 Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
+				 Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
 
 				 Form1->DuvodUlozit(true);
 				 Form_parametry_linky->Close();
@@ -162,7 +168,7 @@ void __fastcall TForm_parametry_linky::Button_ADDClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 {
 			//	rStringGridEd_tab_dopravniky->RowCount - 1;
-				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount-1]->Clear();
+				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
 				if(rStringGridEd_tab_dopravniky->RowCount>=4)
 				{

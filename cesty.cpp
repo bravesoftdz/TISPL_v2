@@ -28,11 +28,6 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
  scGPButton2->Options->PressedColor=Form_cesty->Color;
  scGPButton2->Options->FrameNormalColor=Form_cesty->Color;
 
- scGPButton1->Options->NormalColor=Form_cesty->Color;
- scGPButton1->Options->FocusedColor=Form_cesty->Color;
- scGPButton1->Options->HotColor=Form_cesty->Color;
- scGPButton1->Options->PressedColor=Form_cesty->Color;
- scGPButton1->Options->FrameNormalColor=Form_cesty->Color;
 }
 //---------------------------------------------------------------------------
 

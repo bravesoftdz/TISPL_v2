@@ -159,6 +159,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -177,6 +178,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -194,6 +196,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleParentFont = False
       end
       item
+        DataType = sgdNumber
         Color = clMenu
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -970,14 +973,14 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 10
     OnClick = Vypis_pohonyClick
   end
-  object scRadioGroup1: TscRadioGroup
+  object scRadioGroup_typVoziku: TscRadioGroup
     Left = 176
     Top = 97
     Width = 193
     Height = 53
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
-    Font.Height = -15
+    Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType

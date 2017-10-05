@@ -19,6 +19,8 @@
 #include "scGPControls.hpp"
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
+#include "scGPExtControls.hpp"
+#include <Vcl.Mask.hpp>
 //---------------------------------------------------------------------------
 class TForm_definice_zakazek : public TForm
 {
@@ -35,17 +37,14 @@ __published:	// IDE-managed Components
 	TMemo *Memo2;
 	TMemo *Memo3;
 	TButton *Button_DEL;
-	TrHTMLLabel *rHTMLLabel1;
-	TrHTMLLabel *rHTMLLabel2;
-	TrHTMLLabel *rHTMLLabel3;
-	TrHTMLLabel *rHTMLLabel4;
-	TrHTMLLabel *rHTMLLabel5;
-	TrHTMLLabel *rHTMLLabel6;
+	TrHTMLLabel *rHTMLLabel_pocet_prac_hod;
+	TrHTMLLabel *rHTMLLabel_pocet_dnu;
+	TrHTMLLabel *rHTMLLabel_effektivita;
 	TrStringGridEd *rStringGridEd1;
-	TrEditNum *rEditNum1;
-	TrEditNum *rEditNum2;
-	TrEditNum *rEditNum3;
-	TrEditNum *rEditNum4;
+	TrEditNum *rEditNum_pozad_mnozstvi;
+	TrEditNum *rEditNum_pocet_prac_hod;
+	TrEditNum *rEditNum_effektivita;
+	TrEditNum *rEditNum_pocet_dnu;
 	TrButton *rButton1;
 	TscGPButton *scGPButton2;
 	TButton *Button5;
@@ -60,8 +59,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton15;
 	TImageList *ImageList1;
-	TrHTMLLabel *rHTMLLabel9;
-	TscGPButton *scGPButton1;
+	TrHTMLLabel *rHTMLLabel_pozad_mnozstvi;
+	TscGPButton *scGPButton_Ulozit;
 	TscGPButton *scGPButton3;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
@@ -83,6 +82,7 @@ __published:	// IDE-managed Components
 	void __fastcall rButton1Click(TObject *Sender);
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall scGPButton_UlozitClick(TObject *Sender);
 
 
 
@@ -121,6 +121,9 @@ public:		// User declarations
 		void sniz_indexy(TBarva *Barva);
 		void nacti_voziky();
 		void uloz_voziky_a_nastav_zakazky();
+		void nacti_defaulni_PP();
+		void nacti_PP();
+		void nacti_nastaveni_formu();
 
 };
 //---------------------------------------------------------------------------
