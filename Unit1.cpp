@@ -282,14 +282,14 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {     //toto odkomentovat pro spuštění TTR
-	if(!ttr("start"))
-	{
-		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-		Close();
-	}
-	else
- //	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
-		startUP();
+//	if(!ttr("start"))
+//	{
+//		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+//		Close();
+//	}
+//	else
+ Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
+	startUP();//TOTO JE VŽDY ODKOMENTOVÁNO
 }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi
