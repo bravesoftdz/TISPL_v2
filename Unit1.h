@@ -243,7 +243,6 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel4;
 	TscLabel *scLabel_titulek;
 	TscLabel *scLabel1;
-	TLabel *Label1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -373,10 +372,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSMouseLeave(TObject *Sender);
 	void __fastcall scSplitView_MENUMouseLeave(TObject *Sender);
-	void __fastcall scGPSizeBoxCanResize(TObject *Sender, int &NewWidth, int &NewHeight,
-          bool &Resize);
-	void __fastcall scGPSizeBoxMouseActivate(TObject *Sender, TMouseButton Button, TShiftState Shift,
-          int X, int Y, int HitTest, TMouseActivate &MouseActivate);
 
 
 private:	// User declarations

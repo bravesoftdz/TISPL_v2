@@ -27,6 +27,10 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->rezim=0;
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
+	novy->pohon=NULL;//ukazatel na použitý pohon
+	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
+	novy->stopka=false;//zda následuje na konci objektu stopka
 	//novy->obsazenost=0;
 
 	novy->predchozi=novy;//ukazuje sam na sebe
@@ -49,6 +53,10 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
+	novy->pohon=new TPohon;//ukazatel na použitý pohon
+	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
+	novy->stopka=false;//zda následuje na konci objektu stopka
 	//novy->obsazenost=0;
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -70,6 +78,11 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->Y=Y;//přiřadím Y osu
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
+	novy->pohon=new TPohon;//ukazatel na použitý pohon
+	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
+	novy->stopka=false;//zda následuje na konci objektu stopka
+
 	//novy->obsazenost=0;
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -213,7 +226,19 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
 	vloz_pohon(novy);
 }
 ////---------------------------------------------------------------------------
-////smaze body z pameti
+//vrátí ukazatel na pohon dle n pohonu
+Cvektory::TPohon *Cvektory::vrat_pohon(unsigned long n)
+{
+	TPohon *p=POHONY->dalsi;//přeskočí hlavičku
+	while (p!=NULL)
+	{
+		if(p->n==n)break;//akce s ukazatelem
+		else p=p->dalsi;//posun na další prvek v seznamu
+	}
+	return p;
+}
+////---------------------------------------------------------------------------
+//smaze body z pameti
 long Cvektory::vymaz_seznam_POHONY()
 {
 	long pocet_smazanych_pohonu=0;
@@ -502,61 +527,14 @@ void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,do
 short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 {
      TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
-		 //optimalizace_seznamu();
+		 //optimalizace_seznamu();  asi možno smazat, myslím, že nepoužívám
 
 		 //zapiše hlavičku do souboru
-		 File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
 		 File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
+		 File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
 		 //ZDM File_hlavicka.pocet_voziku=VOZIKY->predchozi->n;
 		 //ZDM File_hlavicka.delka_textu_prepravniky=seznam_dopravniku.Length()+1;
 		 FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
-
-		 //ZDM //uloží seznam dopravníků
-		 //ZDM wchar_t *DOP=new wchar_t[seznam_dopravniku.Length()+1];
-		 //ZDM DOP=seznam_dopravniku.c_str();
-		 //ZDM FileStream->Write(DOP,(seznam_dopravniku.Length()+1)*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-		 //ZDM DOP=NULL; delete[] DOP;
-
-		 //uložení seznamu technologických objektů
-		 TObjekt *ukaz=OBJEKTY->dalsi;
-		 while (ukaz!=NULL)
-		 {
-			 ////překopírování dat do pomocného objektu uložitelného do bináru
-			 C_objekt *c_ukaz=new C_objekt;
-
-			 if(ukaz->n>0 && File_hlavicka.pocet_objektu>=ukaz->n)//mimo hlavičky či shitu
-			 {
-					//samotná data
-					c_ukaz->n=ukaz->n;
-					c_ukaz->id=ukaz->id;
-					c_ukaz->X=ukaz->X;
-					c_ukaz->Y=ukaz->Y;
-					c_ukaz->rezim=ukaz->rezim;
-					c_ukaz->kapacita_dop=ukaz->kapacita_dop;
-					c_ukaz->kapacita=ukaz->kapacita;
-					c_ukaz->text_length=ukaz->name.Length()+1;
-					//ZDM c_ukaz->paremetry_text_length=ukaz->techn_parametry.Length()+1;
-					FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
-					//text - short name
-					wchar_t *short_name=new wchar_t[5];//max 4 znaky
-					short_name=ukaz->short_name.c_str();
-					FileStream->Write(short_name,5*sizeof(wchar_t));//zapiše jeden řetězec za prvek bod
-					short_name=NULL; delete[] short_name;
-					//text - name
-					wchar_t *name=new wchar_t [c_ukaz->text_length];
-					name=ukaz->name.c_str();
-					FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
-					name=NULL; delete[] name;
-					//ZDM //text - parametry
-					//ZDM wchar_t *parametry=new wchar_t [c_ukaz->paremetry_text_length];
-					//ZDM parametry=ukaz->techn_parametry.c_str();
-					//ZDM FileStream->Write(parametry,c_ukaz->paremetry_text_length*sizeof(wchar_t));//zapiše třetí řetězec za prvek bod
-					//ZDM parametry=NULL; delete[] parametry;
-			 }
-			 c_ukaz=NULL;delete c_ukaz;
-			 ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
-		 };
-		 ukaz=NULL;delete ukaz;
 
 		 //uložení pohonu
 		 TPohon *ukaz1=POHONY->dalsi;
@@ -582,6 +560,51 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 ukaz1=ukaz1->dalsi;//posunutí na další pozici v seznamu
 		 };
 		 ukaz1=NULL;delete ukaz1;
+
+		 //uložení seznamu technologických objektů
+		 TObjekt *ukaz=OBJEKTY->dalsi;
+		 while (ukaz!=NULL)
+		 {
+			 ////překopírování dat do pomocného objektu uložitelného do bináru
+			 C_objekt *c_ukaz=new C_objekt;
+
+			 if(ukaz->n>0 && File_hlavicka.pocet_objektu>=ukaz->n)//mimo hlavičky či shitu
+			 {
+					//samotná data
+					c_ukaz->n=ukaz->n;
+					c_ukaz->id=ukaz->id;
+					c_ukaz->X=ukaz->X;
+					c_ukaz->Y=ukaz->Y;
+					c_ukaz->rezim=ukaz->rezim;
+					c_ukaz->kapacita_dop=ukaz->kapacita_dop;
+					c_ukaz->kapacita=ukaz->kapacita;
+					c_ukaz->pohon=ukaz->pohon->n;
+					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
+					c_ukaz->cekat_na_palce=ukaz->cekat_na_palce;
+					c_ukaz->stopka=ukaz->stopka;
+					c_ukaz->text_length=ukaz->name.Length()+1;
+					//ZDM c_ukaz->paremetry_text_length=ukaz->techn_parametry.Length()+1;
+					FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
+					//text - short name
+					wchar_t *short_name=new wchar_t[5];//max 4 znaky
+					short_name=ukaz->short_name.c_str();
+					FileStream->Write(short_name,5*sizeof(wchar_t));//zapiše jeden řetězec za prvek bod
+					short_name=NULL; delete[] short_name;
+					//text - name
+					wchar_t *name=new wchar_t [c_ukaz->text_length];
+					name=ukaz->name.c_str();
+					FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+					name=NULL; delete[] name;
+					//ZDM //text - parametry
+					//ZDM wchar_t *parametry=new wchar_t [c_ukaz->paremetry_text_length];
+					//ZDM parametry=ukaz->techn_parametry.c_str();
+					//ZDM FileStream->Write(parametry,c_ukaz->paremetry_text_length*sizeof(wchar_t));//zapiše třetí řetězec za prvek bod
+					//ZDM parametry=NULL; delete[] parametry;
+			 }
+			 c_ukaz=NULL;delete c_ukaz;
+			 ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
+		 };
+		 ukaz=NULL;delete ukaz;
 
 //ZDM
 //		 //uložení vozíků
@@ -642,61 +665,11 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//vytvoří nové hlavičky pro spojové seznamy
-			hlavicka_OBJEKTY();
 			hlavicka_POHONY();
+			hlavicka_OBJEKTY();
 			//ZDM hlavicka_voziky();
 
-			//ZDM //načte seznam dopravníků
-			//ZDM wchar_t *DOP=new wchar_t[File_hlavicka.delka_textu_prepravniky];
-			//ZDM FileStream->Read(DOP,File_hlavicka.delka_textu_prepravniky*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
-			//ZDM seznam_dopravniku=DOP;
-			//ZDM DOP=NULL; delete[] DOP;
-
-			//bohužel nutno takto rozepisovat, problem s AnsiStringem, ukazoval jen na misto do paměti neukladali se data, proto konverze z jedne struktury na druhou a z toho pramenící dlouhý zápis
-			//technologické objekty
-			for(unsigned int i=1;i<=File_hlavicka.pocet_objektu;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
-			{
-				TObjekt *ukaz=new TObjekt;
-				C_objekt *c_ukaz=new C_objekt;
-				FileStream->Read(c_ukaz,sizeof(C_objekt));//načte jeden prvek ze souboru
-
-				if(c_ukaz->n!=0 && File_hlavicka.pocet_objektu>=c_ukaz->n)//pokud nenačte hlavičku či nějaký shit
-				{
-						//ShowMessage(c_ukaz->n);
-						//samotná data
-						ukaz->n=c_ukaz->n;
-						ukaz->id=c_ukaz->id;
-						ukaz->X=c_ukaz->X;
-						ukaz->Y=c_ukaz->Y;
-						ukaz->rezim=c_ukaz->rezim;
-						ukaz->kapacita=c_ukaz->kapacita;
-						ukaz->kapacita_dop=c_ukaz->kapacita_dop;
-
-						//zkratku
-						wchar_t *short_name=new wchar_t [5];
-						FileStream->Read(short_name,5*sizeof(wchar_t));//načte popisek umístěný za strukturou bod
-						ukaz->short_name=short_name;
-						short_name=NULL; delete[] short_name;
-						//popisek
-						wchar_t *name=new wchar_t[c_ukaz->text_length];
-						FileStream->Read(name,c_ukaz->text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
-						ukaz->name=name;
-						name=NULL; delete[] name;
-
-						//ZDM //data pro Valuelisteditor, paremetry
-						//ZDM wchar_t *parametry=new wchar_t[c_ukaz->paremetry_text_length];
-						//ZDM FileStream->Read(parametry,c_ukaz->paremetry_text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
-						//ZDM ukaz->techn_parametry=parametry;
-						//ZDM parametry=NULL; delete[] parametry;
-
-						//vloží prvek do spojového seznamu
-						vloz_objekt(ukaz);
-				}
-				ukaz=NULL; delete ukaz;
-				c_ukaz=NULL; delete c_ukaz;
-			};
-
-			//pohony
+			//pohony - musí být nad objekty
 			for(unsigned int i=1;i<=File_hlavicka.pocet_pohonu;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
 			{
 				TPohon *ukaz1=new TPohon;
@@ -722,6 +695,53 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 				}
 				ukaz1=NULL; delete ukaz1;
 				c_ukaz1=NULL; delete c_ukaz1;
+			};
+
+			//technologické objekty
+			for(unsigned int i=1;i<=File_hlavicka.pocet_objektu;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
+			{
+				TObjekt *ukaz=new TObjekt;
+				C_objekt *c_ukaz=new C_objekt;
+				FileStream->Read(c_ukaz,sizeof(C_objekt));//načte jeden prvek ze souboru
+
+				if(c_ukaz->n!=0 && File_hlavicka.pocet_objektu>=c_ukaz->n)//pokud nenačte hlavičku či nějaký shit
+				{
+						//ShowMessage(c_ukaz->n);
+						//samotná data
+						ukaz->n=c_ukaz->n;
+						ukaz->id=c_ukaz->id;
+						ukaz->X=c_ukaz->X;
+						ukaz->Y=c_ukaz->Y;
+						ukaz->rezim=c_ukaz->rezim;
+						ukaz->kapacita=c_ukaz->kapacita;
+						ukaz->kapacita_dop=c_ukaz->kapacita_dop;
+						ukaz->pohon=vrat_pohon(c_ukaz->pohon);
+						ukaz->delka_dopravniku=c_ukaz->delka_dopravniku;
+						ukaz->cekat_na_palce=c_ukaz->cekat_na_palce;
+						ukaz->stopka=c_ukaz->stopka;
+
+						//zkratku
+						wchar_t *short_name=new wchar_t [5];
+						FileStream->Read(short_name,5*sizeof(wchar_t));//načte popisek umístěný za strukturou bod
+						ukaz->short_name=short_name;
+						short_name=NULL; delete[] short_name;
+						//popisek
+						wchar_t *name=new wchar_t[c_ukaz->text_length];
+						FileStream->Read(name,c_ukaz->text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+						ukaz->name=name;
+						name=NULL; delete[] name;
+
+						//ZDM //data pro Valuelisteditor, paremetry
+						//ZDM wchar_t *parametry=new wchar_t[c_ukaz->paremetry_text_length];
+						//ZDM FileStream->Read(parametry,c_ukaz->paremetry_text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+						//ZDM ukaz->techn_parametry=parametry;
+						//ZDM parametry=NULL; delete[] parametry;
+
+						//vloží prvek do spojového seznamu
+						vloz_objekt(ukaz);
+				}
+				ukaz=NULL; delete ukaz;
+				c_ukaz=NULL; delete c_ukaz;
 			};
 
 			//ZDM
