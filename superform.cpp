@@ -170,6 +170,8 @@ void TForm_definice_zakazek::vymaz_barvu() {
 void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 {
 
+	nacti_nastaveni_formu(); // nacteni def. barvicek
+
 	if(!Form1->d.v.PP.mnozstvi){
 
 	nacti_defaulni_PP();
@@ -178,39 +180,8 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 	else {nacti_PP();}
 
 
-
-	//ZDM nacti_voziky();
-	//nastavení globálních barev
-	TColor light_gray=(TColor)RGB(240,240,240);
-	TColor active_blue=(TColor)RGB(43,87,154);
-
-	Form_definice_zakazek->Color=light_gray;//RGB(43,87,154);
-	rHTMLLabel_effektivita->Font->Color=(TColor)RGB(89,89,89);
-	rHTMLLabel_pocet_dnu->Font->Color=rHTMLLabel_effektivita->Font->Color;
-	rHTMLLabel_pocet_prac_hod->Font->Color=rHTMLLabel_effektivita->Font->Color;
-	rHTMLLabel_pozad_mnozstvi->Font->Color=rHTMLLabel_effektivita->Font->Color;
-
- //	rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
-
- //Button_OK->Font->Color=(TColor)RGB(226,122,21);
- scGPButton2->Options->NormalColor=Form_definice_zakazek->Color;
- scGPButton2->Options->FocusedColor=Form_definice_zakazek->Color;
- scGPButton2->Options->HotColor=Form_definice_zakazek->Color;
- scGPButton2->Options->PressedColor=Form_definice_zakazek->Color;
- scGPButton2->Options->FramePressedColor=Form_definice_zakazek->Color;
-
- scGPButton4->Options->NormalColor=Form_definice_zakazek->Color;
- scGPButton4->Options->FocusedColor=Form_definice_zakazek->Color;
- scGPButton4->Options->HotColor=Form_definice_zakazek->Color;
- scGPButton4->Options->PressedColor=Form_definice_zakazek->Color;
- scGPButton4->Options->FrameNormalColor=Form_definice_zakazek->Color;
- scGPButton4->Options->FramePressedColor=Form_definice_zakazek->Color;
-
 	rStringGridEd1->Cells[5][1]="NASTAVIT";
 	rStringGridEd1->Cells[9][1]="NASTAVIT";
-
-
-
 
 
 }
@@ -788,4 +759,36 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+
+void TForm_definice_zakazek::nacti_nastaveni_formu(){
+
+	//nastavení globálních barev
+	TColor light_gray=(TColor)RGB(240,240,240);
+	TColor active_blue=(TColor)RGB(43,87,154);
+
+	Form_definice_zakazek->Color=light_gray;//RGB(43,87,154);
+	rHTMLLabel_effektivita->Font->Color=(TColor)RGB(89,89,89);
+	rHTMLLabel_pocet_dnu->Font->Color=rHTMLLabel_effektivita->Font->Color;
+	rHTMLLabel_pocet_prac_hod->Font->Color=rHTMLLabel_effektivita->Font->Color;
+	rHTMLLabel_pozad_mnozstvi->Font->Color=rHTMLLabel_effektivita->Font->Color;
+
+ //	rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
+
+ //Button_OK->Font->Color=(TColor)RGB(226,122,21);
+ scGPButton2->Options->NormalColor=Form_definice_zakazek->Color;
+ scGPButton2->Options->FocusedColor=Form_definice_zakazek->Color;
+ scGPButton2->Options->HotColor=Form_definice_zakazek->Color;
+ scGPButton2->Options->PressedColor=Form_definice_zakazek->Color;
+ scGPButton2->Options->FramePressedColor=Form_definice_zakazek->Color;
+
+ scGPButton4->Options->NormalColor=Form_definice_zakazek->Color;
+ scGPButton4->Options->FocusedColor=Form_definice_zakazek->Color;
+ scGPButton4->Options->HotColor=Form_definice_zakazek->Color;
+ scGPButton4->Options->PressedColor=Form_definice_zakazek->Color;
+ scGPButton4->Options->FrameNormalColor=Form_definice_zakazek->Color;
+ scGPButton4->Options->FramePressedColor=Form_definice_zakazek->Color;
+
+
+
+}
 

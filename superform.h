@@ -123,6 +123,7 @@ public:		// User declarations
 		void uloz_voziky_a_nastav_zakazky();
 		void nacti_defaulni_PP();
 		void nacti_PP();
+		void nacti_nastaveni_formu();
 
 };
 //---------------------------------------------------------------------------
