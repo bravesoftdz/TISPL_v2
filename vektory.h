@@ -340,6 +340,7 @@ class Cvektory
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 //		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
+
 		//metody pro ZAKAZKY
 		void hlavicka_ZAKAZKY();
 		void vloz_zakazku(TZakazka *Zakazka);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
