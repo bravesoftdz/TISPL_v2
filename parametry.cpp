@@ -32,6 +32,11 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
 
+	scEdit_name->Text=Form_parametry->Edit_name->Text;
+	scEdit_shortname->Text=Form_parametry->Edit_shortname->Text;
+	//cekat_na_palce
+
+
 	//Form_paremetry->Edit1->SetFocus();
 	//Form_paremetry->Edit1->SelectAll();
 
@@ -392,4 +397,11 @@ void __fastcall TForm_parametry::scGPButton3Click(TObject *Sender)
 	Form_parametry->Close();
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::KonecClick(TObject *Sender)
+{
+	Close();
+}
+//---------------------------------------------------------------------------
+
 

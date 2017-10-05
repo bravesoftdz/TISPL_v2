@@ -15,6 +15,7 @@
 #include "rImprovedComps.hpp"
 #include "scControls.hpp"
 #include "scGPControls.hpp"
+#include <Vcl.Mask.hpp>
 //---------------------------------------------------------------------------
 class TForm_parametry : public TForm
 {
@@ -40,12 +41,10 @@ __published:	// IDE-managed Components
 	TLabel *Label2;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
-	TscGPGlyphButton *MinButton;
 	TscLabel *scLabel1;
-	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton15;
 	TrHTMLLabel *rHTMLLabel5_rezim;
-	TrHTMLLabel *rHTMLLabel1_tech_param;
+	TrHTMLLabel *rHTMLLabel_kapacita;
 	TrEditNum *rEditNum4;
 	TscGPButton *scGPButton1_OK;
 	TscGPButton *scGPButton3;
@@ -53,10 +52,21 @@ __published:	// IDE-managed Components
 	TEdit *Edit_vzdalenost_voziku;
 	TRadioButton *RadioButton_na_sirku;
 	TImage *Image_vozik;
-	TrHTMLLabel *rHTMLLabel1;
-	TrHTMLLabel *rHTMLLabel2;
-	TrHTMLLabel *rHTMLLabel3;
-	TscCheckBox *scCheckBox1;
+	TrHTMLLabel *rHTMLLabel_cekani_doporuc;
+	TrHTMLLabel *rHTMLLabel_pohon;
+	TscCheckBox *scCheckBox_stopky;
+	TrHTMLLabel *rHTMLLabel_odchylkaCT;
+	TrHTMLLabel *rHTMLLabel_delka_dopravniku;
+	TscEdit *scEdit_name;
+	TscEdit *scEdit_shortname;
+	TrHTMLLabel *rHTMLLabel_name;
+	TrHTMLLabel *rHTMLLabel_shortname;
+	TrHTMLLabel *rHTMLLabel_stopky;
+	TrHTMLLabel *rHTMLLabel_cekani;
+	TscComboBox *scComboBox1;
+	TrHTMLLabel *rHTMLLabel_doporuc_cekani_value;
+	TrEditNum *rEditNum_delka_dopravniku;
+	TrEditNum *rEditNum_odchylka;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);
@@ -73,6 +83,7 @@ __published:	// IDE-managed Components
 	void __fastcall Edit_nameChange(TObject *Sender);
 	void __fastcall Edit_vzdalenost_vozikuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scGPButton3Click(TObject *Sender);
+	void __fastcall KonecClick(TObject *Sender);
 
 
 
