@@ -321,7 +321,6 @@ class Cvektory
 		};
 		TFile_hlavicka File_hlavicka;
 
-//		UnicodeString seznam_dopravniku;
 //
 		Cvektory();//konstruktor
 		//metody pro OBJEKTY
@@ -341,13 +340,12 @@ class Cvektory
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 //		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
-//		void aktualizace_indexu_uzitych_dopravniku(short item_index);
-//		bool kontrola_existence_dopravniku(short item_index);
 		//metody pro ZAKAZKY
 		void hlavicka_ZAKAZKY();
 		void vloz_zakazku(TZakazka *Zakazka);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 		void vloz_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta=NULL);//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
 		long vymaz_seznam_ZAKAZKY();
+		//metody pro cesta konkrétní zakázky
 		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
 		void vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty);//do konkrétní cesty vloží segmenty cesty
 		void vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty
