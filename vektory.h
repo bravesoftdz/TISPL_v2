@@ -15,16 +15,32 @@ class Cvektory
 
 	public:
 
+	struct TPohon
+	{
+		unsigned long n; //pořadí objektu ve spoj.seznamu
+		UnicodeString name;//název
+		double rychlost_od;//minimální pracovní rychlost dopravníku
+		double rychlost_do;//maximální pracovní rychlost dopravníku
+		double roztec;//rozteč palců v mm
+		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
+	TPohon *POHONY;//spojový seznam pohonů
+
 	struct TObjekt
 	{
 			unsigned long n; //pořadí objektu ve spoj.seznamu
 			unsigned int id; //id typu objektu
-			UnicodeString short_name;//krátký název
+			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
 			double X, Y;//umístění objektu
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
+			TPohon *pohon;//ukazatel na použitý pohon
+			double delka_dopravniku;//delka dopravníku v rámci objektu
+			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
+			bool stopka;//zda následuje na konci objektu stopka
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -118,18 +134,6 @@ class Cvektory
 		struct TG_Objekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TG_objekt *G_OBJEKTY;//spojový seznam
-
-	struct TPohon
-	{
-		unsigned long n; //pořadí objektu ve spoj.seznamu
-		UnicodeString name;//název
-		double rychlost_od;//minimální pracovní rychlost dopravníku
-		double rychlost_do;//maximální pracovní rychlost dopravníku
-		double roztec;//rozteč palců v mm
-		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-	TPohon *POHONY;//spojový seznam pohonů
 
 	struct TDopravnik
 	{
@@ -323,6 +327,7 @@ class Cvektory
 
 //
 		Cvektory();//konstruktor
+
 		//metody pro OBJEKTY
 		void hlavicka_OBJEKTY();
 		short vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu
@@ -333,10 +338,12 @@ class Cvektory
 		void sniz_indexy(TObjekt *Objekt);
 		void zvys_indexy(TObjekt *Objekt);
 		long vymaz_seznam_OBJEKTY();
+
 		//metody pro POHONY
 		void hlavicka_POHONY();
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
+		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 //		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
@@ -353,13 +360,14 @@ class Cvektory
 
 //		TSeznam_cest *vrat_cestu(unsigned int ID_cesty);
 
-		//metody pro PROCESY
+			//metody pro PROCESY
 //		void hlavicka_procesy();
 //		void vloz_proces(TProces *Proces);
 //		TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
 //		TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
 //		long vymaz_seznam_procesu();
-		//metody pro VOZIKY
+
+			//metody pro VOZIKY
 //		void hlavicka_voziky();
 //		void vloz_vozik();//přidá nový prázdný - nedefinovaný vozík do seznamu VOZIKY
 //		void vloz_vozik(TVozik *Vozik);
@@ -368,7 +376,9 @@ class Cvektory
 //		void hlavicka_palce();
 //		void vloz_palec();//přidá nový vozík do seznamu PALCE
 //		long vymaz_seznam_palcu();
-		void vse_odstranit();//odstraní všechny vektory (všechny globální spojáky)
+
+    //odstraní všechny vektory (všechny globální spojáky)
+		void vse_odstranit();
 
 		//souborové operace
 		short int uloz_do_souboru(UnicodeString FileName);
@@ -413,6 +423,10 @@ class Cvektory
 				unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 				double kapacita;
 				double kapacita_dop;
+				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
+				double delka_dopravniku;//delka dopravníku v rámci objektu
+				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
+				bool stopka;//zda následuje na konci objektu stopka
 		};
 		struct C_pohon//pro konverzi do bináru
 		{
