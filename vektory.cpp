@@ -132,17 +132,17 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 		Objekt->dalsi->predchozi=Objekt->predchozi;
 	}
 	else//poslední prvek
-  {
+	{
 		if(Objekt->n==1)//pokud je mazaný prvek hned za hlavičkou
-    {
+		{
 			OBJEKTY->predchozi=Objekt->predchozi; //popř hlavička bude ukazovat sama na sebe
 			OBJEKTY->dalsi=NULL;
 		}
-    else
+		else
 		{
 			Objekt->predchozi->dalsi=NULL;
 			OBJEKTY->predchozi=Objekt->predchozi;//zapis do hlavičky poslední prvek seznamu
-    }
+		}
 	}
 
 	Objekt=NULL;delete Objekt;//smaže mazaný prvek
@@ -319,7 +319,7 @@ void Cvektory::hlavicka_ZAKAZKY()
 	nova->pocet_voziku=0;
 	nova->serv_vozik_pocet=0;
 	nova->opakov_servis=0;
-	nova->cesta=new TCesta;
+	nova->cesta=NULL;//new TCesta;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
@@ -339,7 +339,7 @@ void Cvektory::hlavicka_ZAKAZKY_temp()
 	nova->pocet_voziku=0;
 	nova->serv_vozik_pocet=0;
 	nova->opakov_servis=0;
-	nova->cesta=new TCesta;
+	nova->cesta=NULL;//new TCesta;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
@@ -347,19 +347,19 @@ void Cvektory::hlavicka_ZAKAZKY_temp()
 }
 //---------------------------------------------------------------------------
 //vloží hotovou zakázku do spojového seznamu ZAKÁZKY
-void Cvektory::vloz_zakazku(TZakazka *Zakazka)
+void Cvektory::vloz_temp_zakazku(TZakazka *Zakazka_temp)
 {
 	TZakazka *nova=new TZakazka;
 
-	nova=Zakazka;//novy bude ukazovat tam kam prvek Zakazka
-	nova->n=ZAKAZKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
-	ZAKAZKY->predchozi->dalsi=nova;//poslednímu prvku přiřadím ukazatel na nový prvek
-	nova->predchozi=ZAKAZKY->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	nova=Zakazka_temp;//novy bude ukazovat tam kam prvek Zakazka
+	nova->n=ZAKAZKY_temp->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	ZAKAZKY_temp->predchozi->dalsi=nova;//poslednímu prvku přiřadím ukazatel na nový prvek
+	nova->predchozi=ZAKAZKY_temp->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-	ZAKAZKY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	ZAKAZKY_temp->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
-void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta)
+void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
 {
 	TZakazka *nova=new TZakazka;
 	nova->id=id;
@@ -371,9 +371,79 @@ void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barv
 	nova->pocet_voziku=pocet_voziku;
 	nova->serv_vozik_pocet=serv_vozik_pocet;
 	nova->opakov_servis=opakov_servis;
-	nova->cesta=Cesta;
+	nova->cesta=NULL;//new TCesta;
 
-	vloz_zakazku(nova);
+	vloz_temp_zakazku(nova);
+}
+//---------------------------------------------------------------------------
+//provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
+void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
+{
+	if(ZAKAZKY_temp->dalsi!=NULL && n>0)
+	{
+			TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+			while (ukaz!=NULL)
+			{
+				if(ukaz->n==n)//zakázka nalezena
+				{
+					//editace parametrů
+					ukaz->id=id;
+					ukaz->name=name;
+					ukaz->barva=barva;
+					ukaz->pomer=pomer;
+					ukaz->TT=TT;
+					ukaz->jig=jig;
+					ukaz->pocet_voziku=pocet_voziku;
+					ukaz->serv_vozik_pocet=serv_vozik_pocet;
+					ukaz->opakov_servis=opakov_servis;
+					break;
+				}
+				else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+			}
+	}
+}
+//---------------------------------------------------------------------------
+//smaže zakázku s uvedeným “n” ze spojového seznamu ZAKAZKY_temp včetně přidružených cest
+void Cvektory::smaz_temp_zakazku(unsigned long n)
+{
+	if(ZAKAZKY_temp->dalsi!=NULL && n>0)
+	{
+			TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+			while (ukaz!=NULL)
+			{
+				//akce s ukazatelem
+				if(ukaz->n==n)break;
+				else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+			}
+
+			//samotné mazání
+			//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
+			if(ukaz->dalsi!=NULL)//ošetření proti poslednímu prvku
+			{
+				ukaz->predchozi->dalsi=ukaz->dalsi;
+				ukaz->dalsi->predchozi=ukaz->predchozi;
+			}
+			else//poslední prvek
+			{
+				if(ukaz->n==1)//pokud je mazaný prvek hned za hlavičkou
+				{
+					ZAKAZKY_temp->predchozi=ZAKAZKY_temp->predchozi; //popř hlavička bude ukazovat sama na sebe
+					ZAKAZKY_temp->dalsi=NULL;
+				}
+				else
+				{
+					ukaz->predchozi->dalsi=NULL;
+					ZAKAZKY_temp->predchozi=ukaz->predchozi;//zapis do hlavičky poslední prvek seznamu
+				}
+			}
+
+			ukaz=NULL;delete ukaz;//smaže mazaný prvek
+	}
+}
+//---------------------------------------------------------------------------
+//změní zařazení zakázky ve spojovém seznamu
+void Cvektory::zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned long nove_poradi)
+{
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
@@ -392,6 +462,27 @@ long Cvektory::vymaz_seznam_ZAKAZKY()
 		ZAKAZKY->predchozi=NULL;
 		delete ZAKAZKY->predchozi;
 		ZAKAZKY=ZAKAZKY->dalsi;
+		pocet_smazanych_objektu++;
+	};
+
+	return pocet_smazanych_objektu;
+}
+//pro temp
+long Cvektory::vymaz_seznam_ZAKAZKY_temp()
+{
+	long pocet_smazanych_objektu=0;
+	while (ZAKAZKY_temp!=NULL)
+	{
+		//mazání jednotlivých cest
+		while (ZAKAZKY_temp->cesta!=NULL)
+		{
+			ZAKAZKY_temp->cesta->predchozi=NULL;
+			delete ZAKAZKY_temp->cesta->predchozi;
+			ZAKAZKY_temp->cesta=ZAKAZKY_temp->cesta->dalsi;
+		};
+		ZAKAZKY_temp->predchozi=NULL;
+		delete ZAKAZKY_temp->predchozi;
+		ZAKAZKY_temp=ZAKAZKY_temp->dalsi;
 		pocet_smazanych_objektu++;
 	};
 
