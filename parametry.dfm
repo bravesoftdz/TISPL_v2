@@ -265,7 +265,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_shortname: TrHTMLLabel
-    Left = 221
+    Left = 225
     Top = 45
     Width = 58
     Height = 19
@@ -997,9 +997,9 @@ object Form_parametry: TForm_parametry
     TabOrder = 1
   end
   object scEdit_shortname: TscEdit
-    Left = 281
+    Left = 285
     Top = 41
-    Width = 54
+    Width = 50
     Height = 27
     UseFontColorToStyleColor = False
     ContentMarginLeft = 0
@@ -1052,6 +1052,7 @@ object Form_parametry: TForm_parametry
     Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
+    MaxLength = 4
     ParentFont = False
     TabOrder = 20
   end

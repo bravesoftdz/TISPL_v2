@@ -325,6 +325,26 @@ void Cvektory::hlavicka_ZAKAZKY()
 	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
 	ZAKAZKY=nova;//nahraje ukazatel na hlavičku spojového seznamu na ukazatel CESTY
 }
+//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp
+void Cvektory::hlavicka_ZAKAZKY_temp()
+{
+	TZakazka *nova=new TZakazka;
+	nova->n=0;
+	nova->id="hlavička_temp";
+	nova->name="hlavička_temp";
+	nova->barva=clWhite;
+	nova->pomer=0;
+	nova->TT=0;
+	nova->jig.sirka=0;nova->jig.delka=0;nova->jig.vyska=0;nova->jig.ks=0;
+	nova->pocet_voziku=0;
+	nova->serv_vozik_pocet=0;
+	nova->opakov_servis=0;
+	nova->cesta=new TCesta;
+
+	nova->predchozi=nova;//ukazuje sam na sebe
+	nova->dalsi=NULL;//další prvek zatím není ukazuje na nul
+	ZAKAZKY_temp=nova;//nahraje ukazatel na hlavičku spojového seznamu na ukazatel CESTY
+}
 //---------------------------------------------------------------------------
 //vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 void Cvektory::vloz_zakazku(TZakazka *Zakazka)
