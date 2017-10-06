@@ -359,7 +359,7 @@ void Cvektory::vloz_zakazku(TZakazka *Zakazka)
 	ZAKAZKY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
-void Cvektory::vloz_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta)
+void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta)
 {
 	TZakazka *nova=new TZakazka;
 	nova->id=id;
@@ -427,7 +427,10 @@ void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty)
 	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	Zakazka->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
-void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,double Tc,double Tv,double RD)
+void Cvektory::vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+{
+}
+/*void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,double Tc,double Tv,double RD)
 {
 	TCesta *segment=new TCesta;
 
@@ -439,7 +442,7 @@ void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,do
 	segment->RD;
 
 	vloz_segment_cesty(Zakazka,segment);
-}
+}*/
 //---------------------------------------------------------------------------
 //Cvektory::TSeznam_cest *Cvektory::vrat_cestu(unsigned int ID_cesty)
 //{

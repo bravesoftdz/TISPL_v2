@@ -83,6 +83,7 @@ class Cvektory
 		 struct TZakazka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TZakazka *ZAKAZKY;//spojový seznam zakázek
+	TZakazka *ZAKAZKY_temp;//spojový seznam zakázek
 
 	struct TVozik
 	{
@@ -349,7 +350,7 @@ class Cvektory
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
 
 		//metody pro ZAKAZKY
-		void hlavicka_ZAKAZKY;//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
+		void hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
 		void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
 		void vloz_zakazku(TZakazka *Zakazka);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 		void vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis,TCesta *Cesta=NULL);//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
@@ -360,7 +361,7 @@ class Cvektory
 		long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti v četně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
 		//metody pro cesta konkrétní zakázky
 		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
-		TZakazka *vrat_editovanou_zakazku(unsigned long n_editovane_zakazky); vrátí ukazatel (resp. data) na editovanou zakázku
+		TZakazka *vrat_editovanou_zakazku(unsigned long n_editovane_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
     inicializace_cesty(TZakazka *Editovana_zakazka);//volat pouze jednou v počátku metody při stisku OK, vymaže předchozí cestu - pokud existuje, vytvoří hlavičku cesty. Příklad použití metody: inicializace_cesty(Editovana_zakazka);
 		void vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 		void vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty);//do konkrétní cesty vloží segmenty cesty
