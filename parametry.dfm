@@ -3,7 +3,7 @@ object Form_parametry: TForm_parametry
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
-  ClientHeight = 710
+  ClientHeight = 433
   ClientWidth = 348
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
