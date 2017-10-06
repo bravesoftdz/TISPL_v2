@@ -408,7 +408,7 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 {
 	if(ZAKAZKY_temp->dalsi!=NULL && n>0)
 	{
-			TZakazky *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+			TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 			while (ukaz!=NULL)
 			{
 				//akce s ukazatelem
