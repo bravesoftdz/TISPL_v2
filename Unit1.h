@@ -373,7 +373,6 @@ __published:	// IDE-managed Components
 	void __fastcall scSplitView_OPTIONSMouseLeave(TObject *Sender);
 	void __fastcall scSplitView_MENUMouseLeave(TObject *Sender);
 
-
 private:	// User declarations
 	////struktury, výèty
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
@@ -468,7 +467,8 @@ private:	// User declarations
 	short pocitadlo_doby_neaktivity;
 
 	bool FMaximized;
-	//TRect FOldBoundsRect;
+	TRect FOldBoundsRect;
+
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);

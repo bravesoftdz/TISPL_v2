@@ -45,7 +45,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton15;
 	TrHTMLLabel *rHTMLLabel5_rezim;
 	TrHTMLLabel *rHTMLLabel_kapacita;
-	TrEditNum *rEditNum4;
+	TrEditNum *rEditNum_kapacita;
 	TscGPButton *scGPButton1_OK;
 	TscGPButton *scGPButton3;
 	TRadioButton *RadioButton_na_delku;
@@ -65,8 +65,9 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_doporuc_cekani_value;
 	TrEditNum *rEditNum_delka_dopravniku;
 	TrEditNum *rEditNum_odchylka;
-	TscComboBox *scComboBox2;
-	TscComboBox *scComboBox3;
+	TscComboBox *scComboBox_rezim;
+	TscComboBox *scComboBox_pohon;
+	TscGPGlyphButton *scGPGlyphButton1;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);
@@ -84,6 +85,7 @@ __published:	// IDE-managed Components
 	void __fastcall Edit_vzdalenost_vozikuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scGPButton3Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall scGPButton1_OKClick(TObject *Sender);
 
 
 
@@ -102,6 +104,7 @@ public:		// User declarations
 	void vykresli_vozik(bool na_delku=true);
 	void setForm4Rezim(unsigned short rezim,bool default_text=true);
 	short dopravnik_typ;
+	void nacist_data();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry *Form_parametry;

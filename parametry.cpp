@@ -30,14 +30,44 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 
 
 }
+
+void TForm_parametry::nacist_data(){
+
+// Cvektory::TObjekt *ukaz=Form1->d.v.OBJEKTY->dalsi;
+//
+//
+//				scEdit_name->Text=Form_parametry->Edit_name->Text;
+//				scEdit_shortname->Text=Form_parametry->Edit_shortname->Text;
+//				rEditNum_delka_dopravniku->Text=ukaz->delka_dopravniku;
+//				scComboBox_pohon->ItemIndex=ukaz->pohon->n;
+//				scComboBox_rezim->ItemIndex=ukaz->rezim;
+//				rEditNum_kapacita->Text=ukaz->kapacita;
+
+
+}
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
 
-	scEdit_name->Text=Form_parametry->Edit_name->Text;
-	scEdit_shortname->Text=Form_parametry->Edit_shortname->Text;
-	//cekat_na_palce
+	scGPButton1_OK->Enabled=true;
+  scComboBox_pohon->Items->Clear();
+
+	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na první objekt v seznamu POHONY, pøeskoèí hlavièku
+		while (ukaz!=NULL)
+		{
+
+			scComboBox_pohon->Items->Add(ukaz->name);
+
+			ukaz=ukaz->dalsi;
+		}
+
+		if(Form1->d.v.POHONY->dalsi==NULL) {
+
+		ShowMessage("Nejsou nastaveny Parametry linky->Pohony,formuláø nepùjde uložit");  //prozatimni reseni
+		scGPButton1_OK->Enabled=false;
+		}
+
 
 
 	//Form_paremetry->Edit1->SetFocus();
@@ -407,5 +437,14 @@ void __fastcall TForm_parametry::KonecClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm_parametry::scGPButton1_OKClick(TObject *Sender)
+{
+
+	Form1->DuvodUlozit(true);
+	Close(); // veškeré ukládání je øešeno v Unit1 metoda  Nastvitparametry1Click
+
+}
+//---------------------------------------------------------------------------
 
 

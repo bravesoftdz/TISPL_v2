@@ -3,7 +3,7 @@ object Form_parametry: TForm_parametry
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
-  ClientHeight = 376
+  ClientHeight = 710
   ClientWidth = 348
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,7 +18,7 @@ object Form_parametry: TForm_parametry
   TextHeight = 13
   object Label_CT: TLabel
     Left = 32
-    Top = 400
+    Top = 448
     Width = 140
     Height = 13
     Caption = 'CYCLE TIME [min/voz'#237'k] :'
@@ -32,7 +32,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_kapacita: TLabel
     Left = 32
-    Top = 440
+    Top = 488
     Width = 152
     Height = 13
     Caption = 'Kapacita objektu [voz'#237'k'#367']: '
@@ -46,7 +46,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_kapacita_hodnota: TLabel
     Left = 227
-    Top = 438
+    Top = 486
     Width = 7
     Height = 13
     Caption = '1'
@@ -60,7 +60,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_CT_hodnota: TLabel
     Left = 227
-    Top = 400
+    Top = 448
     Width = 7
     Height = 13
     Caption = '0'
@@ -74,7 +74,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_vypis: TLabel
     Left = 71
-    Top = 459
+    Top = 507
     Width = 194
     Height = 13
     Caption = 'TT objektu nen'#237' toto'#382'n'#253' s TT linky!'
@@ -88,7 +88,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_TT: TLabel
     Left = 32
-    Top = 419
+    Top = 467
     Width = 183
     Height = 13
     Caption = 'TAKT TIME objektu [min/voz'#237'k] :'
@@ -102,7 +102,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_TT_hodnota: TLabel
     Left = 227
-    Top = 419
+    Top = 467
     Width = 7
     Height = 13
     Caption = '0'
@@ -116,7 +116,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_delka_prepravniku: TLabel
     Left = 32
-    Top = 478
+    Top = 526
     Width = 124
     Height = 13
     Caption = 'D'#233'lka koleje [metry]: '
@@ -130,7 +130,7 @@ object Form_parametry: TForm_parametry
   end
   object Label_delka_prepravniku_hodnota: TLabel
     Left = 227
-    Top = 478
+    Top = 526
     Width = 7
     Height = 13
     Caption = '0'
@@ -170,10 +170,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel5_rezim: TrHTMLLabel
     Left = 8
-    Top = 76
-    Width = 49
+    Top = 93
+    Width = 43
     Height = 19
-    Caption = 'Re'#382'im:'
+    Caption = 'Re'#382'im'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -184,10 +184,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_kapacita: TrHTMLLabel
     Left = 8
-    Top = 241
-    Width = 214
+    Top = 281
+    Width = 208
     Height = 19
-    Caption = 'Po'#382'adovan'#225' kapacita [voz'#237'k'#367']:'
+    Caption = 'Po'#382'adovan'#225' kapacita [voz'#237'k'#367']'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -198,7 +198,7 @@ object Form_parametry: TForm_parametry
   end
   object Image_vozik: TImage
     Left = 99
-    Top = 438
+    Top = 486
     Width = 91
     Height = 34
     Hint = 'Kliknut'#237'm lze zm'#283'nit orientaci voz'#237'ku'
@@ -210,10 +210,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_pohon: TrHTMLLabel
     Left = 8
-    Top = 107
-    Width = 51
+    Top = 133
+    Width = 45
     Height = 19
-    Caption = 'Pohon:'
+    Caption = 'Pohon'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -224,10 +224,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_odchylkaCT: TrHTMLLabel
     Left = 8
-    Top = 207
-    Width = 207
+    Top = 247
+    Width = 201
     Height = 19
-    Caption = 'Povolen'#225' odchylka z CT [%]:'
+    Caption = 'Povolen'#225' odchylka z CT [%]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -238,10 +238,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_delka_dopravniku: TrHTMLLabel
     Left = 8
-    Top = 140
-    Width = 160
+    Top = 174
+    Width = 154
     Height = 19
-    Caption = 'D'#233'lka dopravn'#237'ku [m]:'
+    Caption = 'D'#233'lka dopravn'#237'ku [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -252,10 +252,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_name: TrHTMLLabel
     Left = 8
-    Top = 45
-    Width = 48
+    Top = 53
+    Width = 42
     Height = 19
-    Caption = 'N'#225'zev:'
+    Caption = 'N'#225'zev'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -265,11 +265,11 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_shortname: TrHTMLLabel
-    Left = 225
-    Top = 45
-    Width = 58
+    Left = 232
+    Top = 53
+    Width = 52
     Height = 19
-    Caption = 'Zkratka:'
+    Caption = 'Zkratka'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -280,10 +280,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_cekani: TrHTMLLabel
     Left = 8
-    Top = 174
-    Width = 116
+    Top = 211
+    Width = 110
     Height = 19
-    Caption = #268'ek'#225'n'#237' na palec:'
+    Caption = #268'ek'#225'n'#237' na palec'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -294,10 +294,10 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_doporuc_cekani_value: TrHTMLLabel
     Left = 8
-    Top = 301
-    Width = 327
+    Top = 355
+    Width = 81
     Height = 19
-    Caption = 'Upozorn'#283'n'#237':'
+    Caption = 'Upozorn'#283'n'#237
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -308,7 +308,7 @@ object Form_parametry: TForm_parametry
   end
   object Button_OK: TButton
     Left = 221
-    Top = 438
+    Top = 486
     Width = 95
     Height = 25
     Caption = 'OK'
@@ -318,7 +318,7 @@ object Form_parametry: TForm_parametry
   end
   object ValueListEditor: TValueListEditor
     Left = 32
-    Top = 528
+    Top = 576
     Width = 271
     Height = 55
     BiDiMode = bdLeftToRight
@@ -347,8 +347,8 @@ object Form_parametry: TForm_parametry
       77)
   end
   object ComboBox_druh_objektu: TComboBox
-    Left = 43
-    Top = 411
+    Left = 31
+    Top = 668
     Width = 267
     Height = 21
     Hint = 'Volba re'#382'imu objektu'
@@ -366,7 +366,7 @@ object Form_parametry: TForm_parametry
   end
   object ComboBox_dopravnik: TComboBox
     Left = 43
-    Top = 432
+    Top = 545
     Width = 229
     Height = 21
     Hint = 'Volba dopravn'#237'ku'
@@ -378,7 +378,7 @@ object Form_parametry: TForm_parametry
   end
   object Button_min_sec: TButton
     Left = 196
-    Top = 476
+    Top = 524
     Width = 50
     Height = 16
     Hint = 'P'#345'epo'#269#237't'#225' hodnoty z minut na sekundy a obr'#225'cen'#283
@@ -397,7 +397,7 @@ object Form_parametry: TForm_parametry
   end
   object Button_DEL: TButton
     Left = 264
-    Top = 480
+    Top = 528
     Width = 15
     Height = 15
     Hint = 'Sma'#382'e '#345#225'dek'
@@ -585,7 +585,6 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 348
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 261
@@ -666,9 +665,9 @@ object Form_parametry: TForm_parametry
       AllowAllUp = False
     end
   end
-  object rEditNum4: TrEditNum
-    Left = 227
-    Top = 237
+  object rEditNum_kapacita: TrEditNum
+    Left = 232
+    Top = 277
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
@@ -683,8 +682,8 @@ object Form_parametry: TForm_parametry
     TabOrder = 16
   end
   object scGPButton1_OK: TscGPButton
-    Left = 61
-    Top = 332
+    Left = 62
+    Top = 383
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -695,6 +694,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 9
     TabStop = True
+    OnClick = scGPButton1_OKClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -710,12 +710,12 @@ object Form_parametry: TForm_parametry
     Options.HotColor = 1871359
     Options.PressedColor = clBlack
     Options.FocusedColor = clRed
-    Options.DisabledColor = clPurple
+    Options.DisabledColor = clBlack
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
+    Options.DisabledColorAlpha = 200
     Options.FrameNormalColor = clGray
     Options.FrameHotColor = clGray
     Options.FramePressedColor = clGray
@@ -772,7 +772,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPButton3: TscGPButton
     Left = 184
-    Top = 332
+    Top = 383
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -860,8 +860,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object RadioButton_na_delku: TRadioButton
-    Left = 32
-    Top = 610
+    Left = 216
+    Top = 444
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_delku'
@@ -888,7 +888,7 @@ object Form_parametry: TForm_parametry
   end
   object scCheckBox_stopky: TscCheckBox
     Left = 2
-    Top = 271
+    Top = 319
     Width = 338
     Height = 17
     BiDiMode = bdRightToLeft
@@ -938,8 +938,8 @@ object Form_parametry: TForm_parametry
     ShowFocusRect = True
   end
   object scEdit_name: TscEdit
-    Left = 61
-    Top = 42
+    Left = 65
+    Top = 50
     Width = 158
     Height = 27
     UseFontColorToStyleColor = False
@@ -997,8 +997,8 @@ object Form_parametry: TForm_parametry
     TabOrder = 1
   end
   object scEdit_shortname: TscEdit
-    Left = 285
-    Top = 41
+    Left = 290
+    Top = 50
     Width = 50
     Height = 27
     UseFontColorToStyleColor = False
@@ -1057,8 +1057,8 @@ object Form_parametry: TForm_parametry
     TabOrder = 20
   end
   object scComboBox1: TscComboBox
-    Left = 227
-    Top = 171
+    Left = 232
+    Top = 208
     Width = 108
     Height = 27
     ItemIndex = 2
@@ -1084,8 +1084,8 @@ object Form_parametry: TForm_parametry
     ShowFocusRect = True
   end
   object rEditNum_delka_dopravniku: TrEditNum
-    Left = 227
-    Top = 138
+    Left = 232
+    Top = 174
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
@@ -1101,8 +1101,8 @@ object Form_parametry: TForm_parametry
     TabOrder = 21
   end
   object rEditNum_odchylka: TrEditNum
-    Left = 227
-    Top = 203
+    Left = 232
+    Top = 243
     Width = 108
     Height = 28
     Hint = #218'prava CT v objektu za '#250#269'elem srovn'#225'n'#237' TT linky'
@@ -1119,12 +1119,17 @@ object Form_parametry: TForm_parametry
     ShowHint = True
     TabOrder = 7
   end
-  object scComboBox2: TscComboBox
-    Left = 61
-    Top = 74
+  object scComboBox_rezim: TscComboBox
+    Left = 65
+    Top = 90
     Width = 275
     Height = 27
-    ItemIndex = -1
+    ItemIndex = 0
+    Items.Strings = (
+      'STOP&GO'
+      'Kontinu'#225'ln'#237' (line tracking)'
+      'Postprocesn'#237
+      'Stopka')
     WordBreak = False
     SelectionStyle = scstStyled
     SelectionColor = clNone
@@ -1138,12 +1143,13 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentFont = False
     TabOrder = 3
+    Text = 'STOP&GO'
     StyleKind = scscbDefault
     ShowFocusRect = True
   end
-  object scComboBox3: TscComboBox
-    Left = 61
-    Top = 106
+  object scComboBox_pohon: TscComboBox
+    Left = 65
+    Top = 130
     Width = 275
     Height = 27
     ItemIndex = -1
@@ -1162,5 +1168,82 @@ object Form_parametry: TForm_parametry
     TabOrder = 22
     StyleKind = scscbDefault
     ShowFocusRect = True
+  end
+  object scGPGlyphButton1: TscGPGlyphButton
+    Left = 95
+    Top = 345
+    Width = 34
+    Height = 32
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNone
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 23
+    Animation = True
+    Caption = 'scGPGlyphButton1'
+    CanFocused = False
+    CustomDropDown = False
+    Layout = blGlyphLeft
+    TransparentBackground = True
+    ColorValue = clRed
+    Options.NormalColor = clBtnText
+    Options.HotColor = clBtnText
+    Options.PressedColor = clBtnText
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnText
+    Options.NormalColorAlpha = 0
+    Options.HotColorAlpha = 20
+    Options.PressedColorAlpha = 30
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 5
+    Options.FrameNormalColor = clBtnText
+    Options.FrameHotColor = clBtnText
+    Options.FramePressedColor = clBtnText
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 0
+    Options.FrameHotColorAlpha = 0
+    Options.FramePressedColorAlpha = 0
+    Options.FrameFocusedColorAlpha = 0
+    Options.FrameDisabledColorAlpha = 0
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 5
+    Options.ShapeStyle = scgpRoundedRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    GlyphOptions.NormalColor = 16744448
+    GlyphOptions.HotColor = 16744448
+    GlyphOptions.PressedColor = clBtnText
+    GlyphOptions.FocusedColor = 16744448
+    GlyphOptions.DisabledColor = 16744448
+    GlyphOptions.NormalColorAlpha = 200
+    GlyphOptions.HotColorAlpha = 255
+    GlyphOptions.PressedColorAlpha = 255
+    GlyphOptions.FocusedColorAlpha = 255
+    GlyphOptions.DisabledColorAlpha = 150
+    GlyphOptions.Kind = scgpbgkInfo
+    GlyphOptions.Thickness = 2
+    GlyphOptions.StyleColors = True
+    TextMargin = -1
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = False
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
 end

@@ -84,15 +84,15 @@ void TForm_parametry_linky::nacti_pohony (){
 
    rStringGridEd_tab_dopravniky->Cells[0][1]="1";
 	 rStringGridEd_tab_dopravniky->Cells[1][1]="Hlavní dopravník";
-	 rStringGridEd_tab_dopravniky->Cells[2][1]="2";
-	 rStringGridEd_tab_dopravniky->Cells[3][1]="5";
-	 rStringGridEd_tab_dopravniky->Cells[4][1]="540";
+	 rStringGridEd_tab_dopravniky->Cells[2][1]="";
+	 rStringGridEd_tab_dopravniky->Cells[3][1]="";
+	 rStringGridEd_tab_dopravniky->Cells[4][1]="";
 
 	 rStringGridEd_tab_dopravniky->Cells[0][2]="2";
 	 rStringGridEd_tab_dopravniky->Cells[1][2]="Vedlejší dopravník";
-	 rStringGridEd_tab_dopravniky->Cells[2][2]="1";
-	 rStringGridEd_tab_dopravniky->Cells[3][2]="4";
-	 rStringGridEd_tab_dopravniky->Cells[4][2]="360";
+	 rStringGridEd_tab_dopravniky->Cells[2][2]="";
+	 rStringGridEd_tab_dopravniky->Cells[3][2]="";
+	 rStringGridEd_tab_dopravniky->Cells[4][2]="";
 
 
 	}
