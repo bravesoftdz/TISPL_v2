@@ -2128,10 +2128,9 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 			Form_parametry->Caption=p->name+" - parametry";
 
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
-		Form_parametry->vykresli_vozik(Form_parametry->RadioButton_na_delku->Checked);//nutno zde
-		Form_parametry->Edit_name->Text=p->name;
-		Form_parametry->Edit_shortname->Text=p->short_name;
-
+		//Form_parametry->vykresli_vozik(Form_parametry->RadioButton_na_delku->Checked);//nutno zde
+		//Form_parametry->Edit_name->Text=p->name;
+		//Form_parametry->Edit_shortname->Text=p->short_name;
 		Form_parametry->scEdit_name->Text=p->name;
 		Form_parametry->scEdit_shortname->Text=p->short_name;
 		Form_parametry->rEditNum_delka_dopravniku->Text=p->delka_dopravniku;
@@ -2140,8 +2139,9 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 		Form_parametry->rEditNum_kapacita->Text=p->kapacita;
 		Form_parametry->rEditNum_odchylka->Text=p->odchylka;
 
-		Form_parametry->ShowModal()
-		if(Form_parametry->returnOk)
+
+		Form_parametry->ShowModal();
+		if(Form_parametry->returnOk)//kvůli tomu, že button nevrací mrOK
 		{
 				try
 				{
@@ -2149,11 +2149,10 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					p->name=Form_parametry->scEdit_name->Text;
 					p->short_name=Form_parametry->scEdit_shortname->Text;
 					p->delka_dopravniku=ms.MyToDouble(Form_parametry->rEditNum_delka_dopravniku->Text);
-					p->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
+					p->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
 					p->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
 					p->kapacita=Form_parametry->rEditNum_kapacita->Text.ToDouble();
 					p->odchylka=Form_parametry->rEditNum_odchylka->Text.ToDouble();
-
 					DuvodUlozit(true);
 					REFRESH();
 				}
