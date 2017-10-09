@@ -65,7 +65,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 
 		if(Form1->d.v.POHONY->dalsi==NULL) {
 
-		ShowMessage("Nejsou nastaveny Parametry linky->Pohony,formuláø nepùjde uloit");  //prozatimni reseni
+		ShowMessage("Nejsou nastaveny pohony v parametrech linky. Následující formuláø nebude moné uloit.");  //prozatimni reseni
 		scGPButton1_OK->Enabled=false;
 		}
 

@@ -211,7 +211,9 @@ void TForm1::edice()
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
-}
+
+
+	}
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //založí nový soubor, nastavení souboru, nastevení aplikace v konstruktoru
@@ -3444,6 +3446,8 @@ void __fastcall TForm1::PopupMenuButtonClick(TObject *Sender)
 void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
 {
 	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
+
+		if(scSplitView_MENU->Opened) scSplitView_MENU->Close();
 }
 //---------------------------------------------------------------------------
 
@@ -3500,7 +3504,8 @@ void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
 {
-	scSplitView_MENU->Opened = !scSplitView_MENU->Opened;
+		scSplitView_MENU->Opened = !scSplitView_MENU->Opened;
+		if(scSplitView_OPTIONS->Opened) scSplitView_OPTIONS->Close();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -68,7 +68,6 @@ __published:	// IDE-managed Components
 	TscComboBox *scComboBox_rezim;
 	TscComboBox *scComboBox_pohon;
 	TscGPGlyphButton *scGPGlyphButton1;
-	TButton *Button1;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);

@@ -313,7 +313,7 @@ object Form_parametry: TForm_parametry
     Height = 25
     Caption = 'OK'
     ModalResult = 1
-    TabOrder = 4
+    TabOrder = 11
     Visible = False
   end
   object ValueListEditor: TValueListEditor
@@ -335,7 +335,7 @@ object Form_parametry: TForm_parametry
       'IT - doba kontroly voz'#237'ku=0'
       'QT - doba '#269'ek'#225'n'#237' ve front'#283'=0'
       '...=')
-    TabOrder = 2
+    TabOrder = 10
     TitleCaptions.Strings = (
       ' n'#225'zev'
       ' '#269'as [min/voz'#237'k]')
@@ -373,7 +373,7 @@ object Form_parametry: TForm_parametry
     Style = csDropDownList
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 12
     OnChange = ComboBox_dopravnikChange
   end
   object Button_min_sec: TButton
@@ -391,7 +391,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 13
     Visible = False
     OnClick = Button_min_secClick
   end
@@ -410,7 +410,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 12
+    TabOrder = 16
     Visible = False
     OnClick = Button_DELClick
   end
@@ -426,7 +426,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 17
     OnChange = Edit_nameChange
   end
   object Edit_shortname: TEdit
@@ -444,7 +444,7 @@ object Form_parametry: TForm_parametry
     Font.Style = [fsBold]
     MaxLength = 4
     ParentFont = False
-    TabOrder = 14
+    TabOrder = 18
   end
   object scGPPanel2: TscGPPanel
     Left = 0
@@ -452,7 +452,7 @@ object Form_parametry: TForm_parametry
     Width = 348
     Height = 34
     Align = alTop
-    TabOrder = 15
+    TabOrder = 19
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -679,7 +679,7 @@ object Form_parametry: TForm_parametry
     Font.Quality = fqClearType
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 16
+    TabOrder = 8
   end
   object scGPButton1_OK: TscGPButton
     Left = 62
@@ -692,7 +692,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 14
     TabStop = True
     OnClick = scGPButton1_OKClick
     Animation = False
@@ -782,7 +782,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 15
     TabStop = True
     OnClick = scGPButton3Click
     Animation = False
@@ -867,7 +867,7 @@ object Form_parametry: TForm_parametry
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_delku'
-    TabOrder = 17
+    TabOrder = 20
     Visible = False
   end
   object Edit_vzdalenost_voziku: TEdit
@@ -875,7 +875,7 @@ object Form_parametry: TForm_parametry
     Top = 635
     Width = 121
     Height = 21
-    TabOrder = 18
+    TabOrder = 21
     Text = 'Edit_vzdalenost_voziku'
     Visible = False
   end
@@ -885,7 +885,7 @@ object Form_parametry: TForm_parametry
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_sirku'
-    TabOrder = 19
+    TabOrder = 22
     Visible = False
   end
   object scCheckBox_stopky: TscCheckBox
@@ -901,7 +901,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 9
     TabStop = True
     CustomCheckedImageIndex = -1
     CustomCheckedImageHotIndex = -1
@@ -1056,7 +1056,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     MaxLength = 4
     ParentFont = False
-    TabOrder = 20
+    TabOrder = 2
   end
   object scComboBox1: TscComboBox
     Left = 232
@@ -1100,7 +1100,7 @@ object Form_parametry: TForm_parametry
     NumbersOnly = True
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 21
+    TabOrder = 5
   end
   object rEditNum_odchylka: TrEditNum
     Left = 232
@@ -1167,7 +1167,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 22
+    TabOrder = 4
     StyleKind = scscbDefault
     ShowFocusRect = True
   end
@@ -1247,14 +1247,5 @@ object Form_parametry: TForm_parametry
     Down = False
     GroupIndex = 0
     AllowAllUp = False
-  end
-  object Button1: TButton
-    Left = 208
-    Top = 352
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    ModalResult = 1
-    TabOrder = 24
   end
 end
