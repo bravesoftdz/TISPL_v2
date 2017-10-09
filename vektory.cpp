@@ -31,6 +31,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
+	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	//novy->obsazenost=0;
 
 	novy->predchozi=novy;//ukazuje sam na sebe
@@ -57,6 +58,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
+	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	//novy->obsazenost=0;
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -82,6 +84,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
+	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 
 	//novy->obsazenost=0;
 
@@ -696,6 +699,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
 					c_ukaz->cekat_na_palce=ukaz->cekat_na_palce;
 					c_ukaz->stopka=ukaz->stopka;
+					c_ukaz->odchylka=ukaz->odchylka;
 					c_ukaz->text_length=ukaz->name.Length()+1;
 					//ZDM c_ukaz->paremetry_text_length=ukaz->techn_parametry.Length()+1;
 					FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
@@ -833,6 +837,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->delka_dopravniku=c_ukaz->delka_dopravniku;
 						ukaz->cekat_na_palce=c_ukaz->cekat_na_palce;
 						ukaz->stopka=c_ukaz->stopka;
+						ukaz->odchylka=c_ukaz->odchylka;
 
 						//zkratku
 						wchar_t *short_name=new wchar_t [5];

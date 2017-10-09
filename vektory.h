@@ -41,6 +41,7 @@ class Cvektory
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			bool stopka;//zda následuje na konci objektu stopka
+			double odchylka;
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -435,6 +436,7 @@ class Cvektory
 				double delka_dopravniku;//delka dopravníku v rámci objektu
 				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 				bool stopka;//zda následuje na konci objektu stopka
+				double odchylka;//povolená odchylka z CT (hlavně užito u PP)
 		};
 		struct C_pohon//pro konverzi do bináru
 		{

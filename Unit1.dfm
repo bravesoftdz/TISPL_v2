@@ -226,8 +226,8 @@ object Form1: TForm1
     end
   end
   object Button1: TButton
-    Left = 207
-    Top = 508
+    Left = 183
+    Top = 432
     Width = 75
     Height = 25
     Caption = 'Button1'
@@ -303,7 +303,7 @@ object Form1: TForm1
     OnClick = Button7Click
   end
   object Button8: TButton
-    Left = 197
+    Left = 183
     Top = 339
     Width = 85
     Height = 25
@@ -313,8 +313,8 @@ object Form1: TForm1
     OnClick = Button8Click
   end
   object Button9: TButton
-    Left = 207
-    Top = 464
+    Left = 183
+    Top = 401
     Width = 129
     Height = 25
     Caption = 'vypsat spoj'#225'k VOZIKY'
@@ -323,8 +323,8 @@ object Form1: TForm1
     OnClick = Button9Click
   end
   object Button10: TButton
-    Left = 207
-    Top = 421
+    Left = 183
+    Top = 370
     Width = 110
     Height = 25
     Caption = 'zkr'#225'tit linky dle palc'#367
@@ -2780,7 +2780,7 @@ object Form1: TForm1
     Height = 640
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
-    TabOrder = 30
+    TabOrder = 29
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -4108,7 +4108,7 @@ object Form1: TForm1
         ImageIndex = -1
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 175
+        GlowEffect.AlphaValue = 95
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -4198,7 +4198,7 @@ object Form1: TForm1
         ImageIndex = -1
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 175
+        GlowEffect.AlphaValue = 95
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -4471,7 +4471,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118003C03400310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004403440310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5594,7 +5594,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C0088018C0130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011C009001900130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15116,7 +15116,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00E800E80018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011C00EC00EC0018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

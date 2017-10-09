@@ -282,14 +282,14 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormActivate(TObject *Sender)
 {     //toto odkomentovat pro spuštění TTR
-	if(!ttr("start"))
-	{
-		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-		Close();
-	}
-	else
- //	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
-		startUP();
+//	if(!ttr("start"))
+//	{
+//		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+//		Close();
+//	}
+//	else
+ 	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
+		startUP();//toto vždy odkomentované
 }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi
@@ -2127,55 +2127,31 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 		else 	Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
 			Form_parametry->Caption=p->name+" - parametry";
 
-		//předání hodnoto objektů ze souboru resp. strukutry do Form_Parametry
+		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
 		Form_parametry->vykresli_vozik(Form_parametry->RadioButton_na_delku->Checked);//nutno zde
 		Form_parametry->Edit_name->Text=p->name;
 		Form_parametry->Edit_shortname->Text=p->short_name;
 
-				Form_parametry->scEdit_name->Text=p->name;
-				Form_parametry->scEdit_shortname->Text=p->short_name;
-				Form_parametry->rEditNum_delka_dopravniku->Text=p->delka_dopravniku;
-				Form_parametry->scComboBox_pohon->ItemIndex=p->pohon->n;
-				Form_parametry->scComboBox_rezim->ItemIndex=p->rezim;
-				Form_parametry->rEditNum_kapacita->Text=p->kapacita;
-		//tento param neexistuje zatim		Form_parametry->rEditNum_odchylka->Text=p->odchylka;
+		Form_parametry->scEdit_name->Text=p->name;
+		Form_parametry->scEdit_shortname->Text=p->short_name;
+		Form_parametry->rEditNum_delka_dopravniku->Text=p->delka_dopravniku;
+		Form_parametry->scComboBox_pohon->ItemIndex=p->pohon->n;
+		Form_parametry->scComboBox_rezim->ItemIndex=p->rezim;
+		Form_parametry->rEditNum_kapacita->Text=p->kapacita;
+		Form_parametry->rEditNum_odchylka->Text=p->odchylka;
 
-		//ZDM Form_parametry->Label_TT_hodnota->Caption=p->TTo;
-		//ZDM Form_parametry->Label_CT_hodnota->Caption=p->CT;
-	 //	Form_parametry->Label_kapacita_hodnota->Caption=p->kapacita;
-		//nefunguje Form_parametry->ComboBox_dopravnik->ItemIndex=p->typ_dopravniku;
-		//ZDM Form_parametry->dopravnik_typ=p->typ_dopravniku;
-		//ZDM Form_parametry->Label_delka_prepravniku_hodnota->Caption=p->delka_dopravniku;
-		//ZDM Form_parametry->Edit_vzdalenost_voziku->Text=p->vzdalenost;
-		//ZDM if(p->orientace_voziku==0)Form_parametry->RadioButton_na_delku->Checked=true;else Form_parametry->RadioButton_na_sirku->Checked=true;
-		//ZDM if(p->techn_parametry!="")Form_parametry->ValueListEditor->Strings->SetText(p->techn_parametry.c_str());
-		//ZDM Form_parametry->ComboBox_druh_objektu->ItemIndex=p->rezim;if(p->techn_parametry=="")
-		//ZDM Form_parametry->setForm4Rezim(p->rezim,true);
-		//ZDM else Form_parametry->setForm4Rezim(p->rezim,false);
-
-		if(idOK==Form_parametry->ShowModal())
-		{
+		if(mrOk==Form_parametry->ShowModal())
+		{     ShowMessage(p->name);
 				try
 				{
 					//navrácení hodnot z Form_Parametry, v případě stisku OK
-//					p->name=Form_parametry->Edit_name->Text;
-//					p->short_name=Form_parametry->Edit_shortname->Text;
-					//ZDM p->TTo=Form_parametry->Label_TT_hodnota->Caption.ToDouble();
-					//ZDM p->CT=Form_parametry->Label_CT_hodnota->Caption.ToDouble();
-				 //	p->kapacita=Form_parametry->Label_kapacita_hodnota->Caption.ToDouble();
-					//ZDM p->typ_dopravniku=Form_parametry->ComboBox_dopravnik->ItemIndex;
-					//ZDM p->delka_dopravniku=Form_parametry->Label_delka_prepravniku_hodnota->Caption.ToDouble();
-					//ZDM p->vzdalenost=Form_parametry->Edit_vzdalenost_voziku->Text.ToDouble();
-					//ZDM if(Form_parametry->RadioButton_na_delku->Checked)p->orientace_voziku=0;else p->orientace_voziku=1;
-				 //	p->rezim=Form_parametry->ComboBox_druh_objektu->ItemIndex;
-					//ZDM p->techn_parametry=Form_parametry->ValueListEditor->Strings->GetText();
-
-						p->name=Form_parametry->scEdit_name->Text;
-						p->short_name=Form_parametry->scEdit_shortname->Text;
-						p->delka_dopravniku=ms.MyToDouble(Form_parametry->rEditNum_delka_dopravniku->Text);
-						p->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
-						p->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
-						p->kapacita=Form_parametry->rEditNum_kapacita->Text.ToDouble();
+					p->name=Form_parametry->scEdit_name->Text;
+					p->short_name=Form_parametry->scEdit_shortname->Text;
+					p->delka_dopravniku=ms.MyToDouble(Form_parametry->rEditNum_delka_dopravniku->Text);
+					p->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
+					p->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
+					p->kapacita=Form_parametry->rEditNum_kapacita->Text.ToDouble();
+					p->odchylka=Form_parametry->rEditNum_odchylka->Text.ToDouble();
 
 					DuvodUlozit(true);
 					REFRESH();
