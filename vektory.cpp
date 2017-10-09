@@ -379,6 +379,19 @@ void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barv
 	vloz_temp_zakazku(nova);
 }
 //---------------------------------------------------------------------------
+// vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
+Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
+{
+	 TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	 while (ukaz!=NULL)
+	 {
+	 	//akce s ukazatelem
+		if(ukaz->n==n_zakazky)break;
+		else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+	 }
+	 return ukaz;
+}
+//---------------------------------------------------------------------------
 //provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
 void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
 {
@@ -447,6 +460,44 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 //změní zařazení zakázky ve spojovém seznamu
 void Cvektory::zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned long nove_poradi)
 {
+	if(aktualni_poradi!=nove_poradi)
+	{
+		TZakazka *ukaz_ap=vrat_temp_zakazku(aktualni_poradi);
+		if(ukaz_ap!=NULL)
+		{
+			//vyjmutí ze spojáku
+			if(ukaz_ap->dalsi=NULL)//pokud se nejedná o poslední prvek
+			{
+
+				ukaz_ap->predchozi->dalsi=ukaz_ap->dalsi;
+				ukaz_ap->dalsi->predchozi=ukaz_ap->predchozi;
+			}
+			else//pokud se jedná o poslední prvek
+			{
+				ZAKAZKY_temp->predchozi=ukaz_ap->predchozi;
+				ukaz_ap->predchozi->dalsi=NULL;
+			}
+			//vložení na novou pozici
+			TZakazka *ukaz_np=vrat_temp_zakazku(nove_poradi);
+			if(aktualni_poradi<nove_poradi)
+			{
+						ukaz_np->predchozi->dalsi=ukaz_ap;
+						ukaz_ap->predchozi=ukaz_np->predchozi;
+						ukaz_ap->dalsi=ukaz_np;
+						ukaz_np->predchozi=ukaz_ap;
+			}
+			else
+			{
+						ukaz_ap->predchozi=ukaz_np;
+						ukaz_ap->dalsi=ukaz_np->dalsi;
+						ukaz_np->dalsi=ukaz_ap
+			}
+		}
+			//přeindexování (N-hodnoty) vcelém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
+			TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+			unsigned long i=1;
+			while (ukaz!=NULL) ukaz->n=i++;
+	}
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
@@ -523,6 +574,7 @@ void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty)
 }
 void Cvektory::vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 {
+
 }
 /*void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,double Tc,double Tv,double RD)
 {

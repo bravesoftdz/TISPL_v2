@@ -362,8 +362,8 @@ class Cvektory
 		long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti v četně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
 		//metody pro cesta konkrétní zakázky
 		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
-		TZakazka *vrat_editovanou_zakazku(unsigned long n_editovane_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
-    inicializace_cesty(TZakazka *Editovana_zakazka);//volat pouze jednou v počátku metody při stisku OK, vymaže předchozí cestu - pokud existuje, vytvoří hlavičku cesty. Příklad použití metody: inicializace_cesty(Editovana_zakazka);
+		TZakazka *vrat_temp_zakazku(unsigned long n_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
+		inicializace_cesty(TZakazka *Editovana_zakazka);//volat pouze jednou v počátku metody při stisku OK, vymaže předchozí cestu - pokud existuje, vytvoří hlavičku cesty. Příklad použití metody: inicializace_cesty(Editovana_zakazka);
 		void vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 		void vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty);//do konkrétní cesty vloží segmenty cesty
 
