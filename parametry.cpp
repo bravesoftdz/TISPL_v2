@@ -49,6 +49,7 @@ void TForm_parametry::nacist_data(){
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
+	returnOk=false;
 
 	scGPButton1_OK->Enabled=true;
   scComboBox_pohon->Items->Clear();
@@ -433,6 +434,7 @@ void __fastcall TForm_parametry::scGPButton3Click(TObject *Sender)
 
 void __fastcall TForm_parametry::KonecClick(TObject *Sender)
 {
+	returnOk=false;
 	Close();
 }
 //---------------------------------------------------------------------------
@@ -440,8 +442,7 @@ void __fastcall TForm_parametry::KonecClick(TObject *Sender)
 
 void __fastcall TForm_parametry::scGPButton1_OKClick(TObject *Sender)
 {
-
-	Form1->DuvodUlozit(true);
+	returnOk=true;
 	Close(); // veškeré ukládání je øešeno v Unit1 metoda  Nastvitparametry1Click
 
 }

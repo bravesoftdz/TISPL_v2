@@ -739,6 +739,7 @@ object Form_parametry: TForm_parametry
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 1
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -828,6 +829,7 @@ object Form_parametry: TForm_parametry
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 2
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -922,7 +924,7 @@ object Form_parametry: TForm_parametry
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -1245,5 +1247,14 @@ object Form_parametry: TForm_parametry
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Button1: TButton
+    Left = 208
+    Top = 352
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    ModalResult = 1
+    TabOrder = 24
   end
 end

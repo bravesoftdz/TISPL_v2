@@ -2140,8 +2140,9 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 		Form_parametry->rEditNum_kapacita->Text=p->kapacita;
 		Form_parametry->rEditNum_odchylka->Text=p->odchylka;
 
-		if(mrOk==Form_parametry->ShowModal())
-		{     ShowMessage(p->name);
+		Form_parametry->ShowModal()
+		if(Form_parametry->returnOk)
+		{
 				try
 				{
 					//navrácení hodnot z Form_Parametry, v případě stisku OK
