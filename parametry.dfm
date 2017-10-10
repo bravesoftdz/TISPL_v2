@@ -170,7 +170,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel5_rezim: TrHTMLLabel
     Left = 8
-    Top = 93
+    Top = 95
     Width = 43
     Height = 19
     Caption = 'Re'#382'im'
@@ -184,7 +184,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_kapacita: TrHTMLLabel
     Left = 8
-    Top = 281
+    Top = 295
     Width = 208
     Height = 19
     Caption = 'Po'#382'adovan'#225' kapacita [voz'#237'k'#367']'
@@ -210,7 +210,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_pohon: TrHTMLLabel
     Left = 8
-    Top = 133
+    Top = 135
     Width = 45
     Height = 19
     Caption = 'Pohon'
@@ -224,7 +224,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_odchylkaCT: TrHTMLLabel
     Left = 8
-    Top = 247
+    Top = 255
     Width = 201
     Height = 19
     Caption = 'Povolen'#225' odchylka z CT [%]'
@@ -238,7 +238,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_delka_dopravniku: TrHTMLLabel
     Left = 8
-    Top = 174
+    Top = 175
     Width = 154
     Height = 19
     Caption = 'D'#233'lka dopravn'#237'ku [m]'
@@ -252,7 +252,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_name: TrHTMLLabel
     Left = 8
-    Top = 53
+    Top = 55
     Width = 42
     Height = 19
     Caption = 'N'#225'zev'
@@ -266,7 +266,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_shortname: TrHTMLLabel
     Left = 232
-    Top = 53
+    Top = 55
     Width = 52
     Height = 19
     Caption = 'Zkratka'
@@ -280,7 +280,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_cekani: TrHTMLLabel
     Left = 8
-    Top = 211
+    Top = 215
     Width = 110
     Height = 19
     Caption = #268'ek'#225'n'#237' na palec'
@@ -293,8 +293,8 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_doporuc_cekani_value: TrHTMLLabel
-    Left = 8
-    Top = 355
+    Left = 43
+    Top = 365
     Width = 81
     Height = 19
     Caption = 'Upozorn'#283'n'#237
@@ -667,7 +667,7 @@ object Form_parametry: TForm_parametry
   end
   object rEditNum_kapacita: TrEditNum
     Left = 232
-    Top = 277
+    Top = 290
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
@@ -683,7 +683,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPButton1_OK: TscGPButton
     Left = 62
-    Top = 383
+    Top = 390
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -773,7 +773,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPButton3: TscGPButton
     Left = 184
-    Top = 383
+    Top = 390
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -890,7 +890,7 @@ object Form_parametry: TForm_parametry
   end
   object scCheckBox_stopky: TscCheckBox
     Left = 2
-    Top = 319
+    Top = 335
     Width = 338
     Height = 17
     BiDiMode = bdRightToLeft
@@ -1058,9 +1058,9 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 2
   end
-  object scComboBox1: TscComboBox
+  object scComboBox_cekani_pacel: TscComboBox
     Left = 232
-    Top = 208
+    Top = 210
     Width = 108
     Height = 27
     ItemIndex = 2
@@ -1087,7 +1087,7 @@ object Form_parametry: TForm_parametry
   end
   object rEditNum_delka_dopravniku: TrEditNum
     Left = 232
-    Top = 174
+    Top = 170
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
@@ -1104,7 +1104,7 @@ object Form_parametry: TForm_parametry
   end
   object rEditNum_odchylka: TrEditNum
     Left = 232
-    Top = 243
+    Top = 250
     Width = 108
     Height = 28
     Hint = #218'prava CT v objektu za '#250#269'elem srovn'#225'n'#237' TT linky'
@@ -1123,9 +1123,10 @@ object Form_parametry: TForm_parametry
   end
   object scComboBox_rezim: TscComboBox
     Left = 65
-    Top = 90
+    Top = 96
     Width = 275
-    Height = 27
+    Height = 28
+    Style = csOwnerDrawFixed
     ItemIndex = 0
     Items.Strings = (
       'STOP&GO'
@@ -1137,7 +1138,7 @@ object Form_parametry: TForm_parametry
     SelectionColor = clNone
     SelectionTextColor = clHighlightText
     ImageIndex = -1
-    ItemHeight = 21
+    ItemHeight = 22
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
@@ -1154,6 +1155,7 @@ object Form_parametry: TForm_parametry
     Top = 130
     Width = 275
     Height = 27
+    Style = csOwnerDrawFixed
     ItemIndex = -1
     WordBreak = False
     SelectionStyle = scstStyled
@@ -1171,11 +1173,12 @@ object Form_parametry: TForm_parametry
     StyleKind = scscbDefault
     ShowFocusRect = True
   end
-  object scGPGlyphButton1: TscGPGlyphButton
-    Left = 95
-    Top = 345
-    Width = 34
-    Height = 32
+  object scGPGlyphButton_InfoIcon: TscGPGlyphButton
+    Left = 0
+    Top = 358
+    Width = 37
+    Height = 34
+    Align = alCustom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -11
@@ -1184,7 +1187,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 23
     Animation = True
-    Caption = 'scGPGlyphButton1'
+    Caption = 'scGPGlyphButton_InfoIcon'
     CanFocused = False
     CustomDropDown = False
     Layout = blGlyphLeft

@@ -2116,7 +2116,10 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 {
-	Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+ Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+ Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na první objekt v seznamu POHONY, přeskočí hlavičku
+
+
 	if(p!=NULL)
 	{
 		//ošetření aby zůstal dialog na monitoru
@@ -2129,6 +2132,13 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 		else 	Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
 			Form_parametry->Caption=p->name+" - parametry";
 
+      Form_parametry->scComboBox_pohon->Items->Clear();
+		while (ukaz!=NULL)
+		{
+			Form_parametry->scComboBox_pohon->Items->Add(ukaz->name);
+			ukaz=ukaz->dalsi;
+		}
+
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
 		//Form_parametry->vykresli_vozik(Form_parametry->RadioButton_na_delku->Checked);//nutno zde
 		//Form_parametry->Edit_name->Text=p->name;
@@ -2136,10 +2146,11 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 		Form_parametry->scEdit_name->Text=p->name;
 		Form_parametry->scEdit_shortname->Text=p->short_name;
 		Form_parametry->rEditNum_delka_dopravniku->Text=p->delka_dopravniku;
-		Form_parametry->scComboBox_pohon->ItemIndex=p->pohon->n;
+		Form_parametry->scComboBox_pohon->ItemIndex=p->pohon->n-1;
 		Form_parametry->scComboBox_rezim->ItemIndex=p->rezim;
 		Form_parametry->rEditNum_kapacita->Text=p->kapacita;
 		Form_parametry->rEditNum_odchylka->Text=p->odchylka;
+    Form_parametry->scCheckBox_stopky->Checked=p->stopka;
 
 
 		Form_parametry->ShowModal();
@@ -2153,8 +2164,10 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					p->delka_dopravniku=ms.MyToDouble(Form_parametry->rEditNum_delka_dopravniku->Text);
 					p->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
 					p->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
+					p->cekat_na_palce=Form_parametry->scComboBox_cekani_pacel->ItemIndex;
 					p->kapacita=Form_parametry->rEditNum_kapacita->Text.ToDouble();
 					p->odchylka=Form_parametry->rEditNum_odchylka->Text.ToDouble();
+					p->stopka=Form_parametry->scCheckBox_stopky->Checked;
 					DuvodUlozit(true);
 					REFRESH();
 				}
@@ -3639,6 +3652,16 @@ void __fastcall TForm1::scSplitView_OPTIONSMouseLeave(TObject *Sender)
 void __fastcall TForm1::scSplitView_MENUMouseLeave(TObject *Sender)
 {
 //   scSplitView_MENU->Close();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::Button11Click(TObject *Sender)
+{
+	Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+
+	Memo2->Lines->Add(AnsiString(p->name)+";"+AnsiString(p->short_name)+";"+AnsiString(p->rezim)+";"+AnsiString(p->pohon->n)+";"+AnsiString(p->delka_dopravniku)+";"+AnsiString(p->cekat_na_palce)+";"+AnsiString(p->odchylka)+";"+AnsiString(p->kapacita));
+
 }
 //---------------------------------------------------------------------------
 

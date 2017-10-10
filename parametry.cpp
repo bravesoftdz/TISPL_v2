@@ -45,28 +45,24 @@ void TForm_parametry::nacist_data(){
 
 
 }
+
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
 	returnOk=false;
+	scGPGlyphButton_InfoIcon->Visible=false;
+	rHTMLLabel_doporuc_cekani_value->Visible=false;
 
 	scGPButton1_OK->Enabled=true;
-  scComboBox_pohon->Items->Clear();
-
-	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na první objekt v seznamu POHONY, pøeskoèí hlavièku
-		while (ukaz!=NULL)
-		{
-
-			scComboBox_pohon->Items->Add(ukaz->name);
-
-			ukaz=ukaz->dalsi;
-		}
 
 		if(Form1->d.v.POHONY->dalsi==NULL) {
 
-		ShowMessage("Nejsou nastaveny pohony v parametrech linky. Následující formuláø nebude možné uložit.");  //prozatimni reseni
+		//ShowMessage("Nejsou nastaveny pohony v parametrech linky. Následující formuláø nebude možné uložit.");  //prozatimni reseni
 		scGPButton1_OK->Enabled=false;
+		scGPGlyphButton_InfoIcon->Visible=true;
+		rHTMLLabel_doporuc_cekani_value->Visible=true;
+		rHTMLLabel_doporuc_cekani_value->Caption="Nastavte pohony v parametrech linky";
 		}
 
 
@@ -447,5 +443,6 @@ void __fastcall TForm_parametry::scGPButton1_OKClick(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+
 
 

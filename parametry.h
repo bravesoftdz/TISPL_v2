@@ -61,13 +61,13 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_name;
 	TrHTMLLabel *rHTMLLabel_shortname;
 	TrHTMLLabel *rHTMLLabel_cekani;
-	TscComboBox *scComboBox1;
-	TrHTMLLabel *rHTMLLabel_doporuc_cekani_value;
+	TscComboBox *scComboBox_cekani_pacel;
 	TrEditNum *rEditNum_delka_dopravniku;
 	TrEditNum *rEditNum_odchylka;
 	TscComboBox *scComboBox_rezim;
 	TscComboBox *scComboBox_pohon;
-	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *scGPGlyphButton_InfoIcon;
+	TrHTMLLabel *rHTMLLabel_doporuc_cekani_value;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);
