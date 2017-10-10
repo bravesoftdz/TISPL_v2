@@ -1970,6 +1970,72 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 	R->SaveToFile("smazat.bmp");*/
 	//Canvas->Draw(0,0,R);
 
+////////////---ZKOUŠKA ZAKÁZKY
+////////////---ZKOUŠKA ZAKÁZKY
+/*
+	//zkouška hlavičky
+	//d.v.vymaz_seznam_ZAKAZKY_temp(); - UŽ NENÍ POTŘEBA, VOLÁ SE AUTOMATICKY PŘI KOPIROVÁNÍ kopirujZAKAZKY_temp2ZAKAZKY();
+	//d.v.hlavicka_ZAKAZKY_temp();- UŽ NENÍ POTŘEBA, VOLÁ SE VE VLOZ_TEMP_ZAKAZKU, JE-LI TŘEBA
+	Cvektory::TJig j;
+
+	//zkouška vkládání jednotlivých zakázek
+	d.v.vloz_temp_zakazku("prvni","prvni_zakazka",clRed,50,2.0,j,30,0,0);
+	d.v.vloz_temp_zakazku("druha","druha_zakazka",clGreen,50,2.0,j,30,0,0);
+	d.v.vloz_temp_zakazku("treti","treti_zakazka",clBlue,50,2.0,j,30,0,0);
+	d.v.vloz_temp_zakazku("ctvrta","ctvrta_zakazka",clBlue,50,2.0,j,30,0,0);
+	d.v.vloz_temp_zakazku("pata","pata_zakazka",clBlue,50,2.0,j,30,0,0);
+
+	//zkouška editace
+	d.v.edituj_temp_zakazku(2,"druha_edit","druha_zakazka_edit",clBlue,50,2.0,j,30,0,0);
+
+	//zkouška výpisu ZAKAZKY_temp
+	Memo2->Clear();
+	Memo2->Visible=true;
+	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY_temp;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	int i=0;
+	while (ukaz!=NULL)
+	{
+		if(i==0)Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name));
+		else
+		Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
+		ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+	}
+
+	//zkouška změny pořadí
+	//d.v.zmen_poradi_temp_zakazky(1,5);
+	//d.v.zmen_poradi_temp_zakazky(1,3);
+	Memo2->Lines->Add("zmena poradi:");
+	d.v.zmen_poradi_temp_zakazky(Edit1->Text.ToInt(),Edit2->Text.ToInt());
+	ukaz=d.v.ZAKAZKY_temp;
+	i=0;
+	while (ukaz!=NULL)
+	{
+		if(i==0)Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name));
+		else
+		Memo2->Lines->Add(AnsiString(i++)+": "+AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
+		ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+	}
+
+	//zkouška uložení do ZAKAZKY
+	d.v.kopirujZAKAZKY_temp2ZAKAZKY();
+	Memo2->Lines->Add("ZAKAZKY:");
+	ukaz=d.v.ZAKAZKY->dalsi;
+	while (ukaz!=NULL)
+	{
+		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
+		ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+	}
+	Memo2->Lines->Add("ZAKAZKY_temp:");
+	if(d.v.ZAKAZKY_temp!=NULL)
+	{
+		ukaz=d.v.ZAKAZKY_temp->dalsi;
+		while (ukaz!=NULL)
+		{
+			Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name);//akce s ukazatelem
+			ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+		}
+	}
+*/
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3641,4 +3707,5 @@ void __fastcall TForm1::scSplitView_MENUMouseLeave(TObject *Sender)
 //   scSplitView_MENU->Close();
 }
 //---------------------------------------------------------------------------
+
 

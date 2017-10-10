@@ -350,17 +350,21 @@ class Cvektory
 //		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
 
-		//metody pro ZAKAZKY
-		void hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
-		void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
-		void vloz_temp_zakazku(TZakazka *Zakazka_temp);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+//metody pro ZAKAZKY
+public:
 		void vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
 		void edituj_temp_zakazku(unsigned long n,UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
 		void smaz_temp_zakazku(unsigned long n);//smaže zakázku s uvedeným “n” ze spojového seznamu ZAKAZKY_temp včetně přidružených cest
 		void zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned long nove_poradi);//změní zařazení zakázky ve spojovém seznamu
+		void kopirujZAKAZKY_temp2ZAKAZKY();//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
+private:
+		void hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
+		void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
+		void vloz_temp_zakazku(TZakazka *Zakazka_temp);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 		long vymaz_seznam_ZAKAZKY();//smaze seznam ZAKAZKY z paměti v četně přidružených cest, pokud následuje další práce se seznamem (např. nové vkládání), je nutné založit nejdříve hlavičku pomocí hlavicka_ZAKAZKY()
-		long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti v četně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
-		//metody pro cesta konkrétní zakázky
+		long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti včetně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
+//metody pro cesta konkrétní zakázky
+public:
 		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
 		TZakazka *vrat_temp_zakazku(unsigned long n_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
 		inicializace_cesty(TZakazka *Editovana_zakazka);//volat pouze jednou v počátku metody při stisku OK, vymaže předchozí cestu - pokud existuje, vytvoří hlavičku cesty. Příklad použití metody: inicializace_cesty(Editovana_zakazka);

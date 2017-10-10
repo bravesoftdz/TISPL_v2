@@ -349,18 +349,6 @@ void Cvektory::hlavicka_ZAKAZKY_temp()
 	ZAKAZKY_temp=nova;//nahraje ukazatel na hlavičku spojového seznamu na ukazatel CESTY
 }
 //---------------------------------------------------------------------------
-//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
-void Cvektory::vloz_temp_zakazku(TZakazka *Zakazka_temp)
-{
-	TZakazka *nova=new TZakazka;
-
-	nova=Zakazka_temp;//novy bude ukazovat tam kam prvek Zakazka
-	nova->n=ZAKAZKY_temp->predchozi->n+1;//navýším počítadlo prvku o jedničku
-	ZAKAZKY_temp->predchozi->dalsi=nova;//poslednímu prvku přiřadím ukazatel na nový prvek
-	nova->predchozi=ZAKAZKY_temp->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-	ZAKAZKY_temp->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-}
 //vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
 void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
 {
@@ -377,6 +365,20 @@ void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barv
 	nova->cesta=NULL;//new TCesta;
 
 	vloz_temp_zakazku(nova);
+}
+//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+void Cvektory::vloz_temp_zakazku(TZakazka *Zakazka_temp)
+{
+  if(ZAKAZKY_temp==NULL)hlavicka_ZAKAZKY_temp();//POKUD HLAVIČKA NEEXISTUJE, TAK JI ZALOŽÍ
+
+	TZakazka *nova=new TZakazka;
+
+	nova=Zakazka_temp;//novy bude ukazovat tam kam prvek Zakazka
+	nova->n=ZAKAZKY_temp->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	ZAKAZKY_temp->predchozi->dalsi=nova;//poslednímu prvku přiřadím ukazatel na nový prvek
+	nova->predchozi=ZAKAZKY_temp->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
+	ZAKAZKY_temp->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
 // vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
@@ -460,17 +462,17 @@ void Cvektory::smaz_temp_zakazku(unsigned long n)
 //změní zařazení zakázky ve spojovém seznamu
 void Cvektory::zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned long nove_poradi)
 {
-	if(aktualni_poradi!=nove_poradi)
+	if(aktualni_poradi!=nove_poradi && nove_poradi<=ZAKAZKY_temp->predchozi->n)//pokud jsou zadaná pořadí rozdílná a zároveň není zadáváno větší číslo než n posledního prvku
 	{
 		TZakazka *ukaz_ap=vrat_temp_zakazku(aktualni_poradi);
-		if(ukaz_ap!=NULL)
+		TZakazka *ukaz_np=vrat_temp_zakazku(nove_poradi);//musí být tu, aby byl uložen aktuální seznam, ne po vyjmutí
+		if(ukaz_ap!=NULL && ukaz_np!=NULL)
 		{
 			//vyjmutí ze spojáku
-			if(ukaz_ap->dalsi=NULL)//pokud se nejedná o poslední prvek
+			if(ukaz_ap->dalsi!=NULL)//pokud se nejedná o poslední prvek
 			{
-
-				ukaz_ap->predchozi->dalsi=ukaz_ap->dalsi;
-				ukaz_ap->dalsi->predchozi=ukaz_ap->predchozi;
+				ukaz_ap->predchozi->dalsi=ukaz_ap->dalsi;//předchozí bude ukazovat na následující
+				ukaz_ap->dalsi->predchozi=ukaz_ap->predchozi; //následující bude ukazovat na další
 			}
 			else//pokud se jedná o poslední prvek
 			{
@@ -478,26 +480,47 @@ void Cvektory::zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned l
 				ukaz_ap->predchozi->dalsi=NULL;
 			}
 			//vložení na novou pozici
-			TZakazka *ukaz_np=vrat_temp_zakazku(nove_poradi);
-			if(aktualni_poradi<nove_poradi)
+			if(aktualni_poradi<nove_poradi)//vložení za ukaz_np
 			{
-						ukaz_np->predchozi->dalsi=ukaz_ap;
-						ukaz_ap->predchozi=ukaz_np->predchozi;
-						ukaz_ap->dalsi=ukaz_np;
-						ukaz_np->predchozi=ukaz_ap;
+				ukaz_ap->predchozi=ukaz_np;
+				if(ukaz_np->dalsi!=NULL)//pokud se nejedná o poslední prvek
+				{
+					ukaz_ap->dalsi=ukaz_np->dalsi;
+					ukaz_np->dalsi->predchozi=ukaz_ap;
+				}
+				else//pokud se jedná o poslední prvek
+				{
+					ukaz_ap->dalsi=NULL;
+					ZAKAZKY_temp->predchozi=ukaz_ap;
+				}
+				ukaz_np->dalsi=ukaz_ap;
 			}
-			else
+			else//vložení před ukaz_np
 			{
-						ukaz_ap->predchozi=ukaz_np;
-						ukaz_ap->dalsi=ukaz_np->dalsi;
-						ukaz_np->dalsi=ukaz_ap
+				ukaz_np->predchozi->dalsi=ukaz_ap;//přechozí budu ukazovat na vkládaný
+				ukaz_ap->predchozi=ukaz_np->predchozi; //vkládaný bude mít jako předchozí původní předchozí
+				ukaz_ap->dalsi=ukaz_np;//vkládaný bude ukazovat na následující na původní
+				ukaz_np->predchozi=ukaz_ap;//původní bude mít před sebou vkládaný
 			}
 		}
-			//přeindexování (N-hodnoty) vcelém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
-			TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-			unsigned long i=1;
-			while (ukaz!=NULL) ukaz->n=i++;
+		//přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
+		TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+		unsigned long i=1;
+		while (ukaz!=NULL)
+		{
+			ukaz->n=i++;
+			ukaz=ukaz->dalsi;
+		}
 	}
+}
+//---------------------------------------------------------------------------
+//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
+void Cvektory::kopirujZAKAZKY_temp2ZAKAZKY()
+{
+	vymaz_seznam_ZAKAZKY();//vymazání původního seznamu
+	hlavicka_ZAKAZKY();//založení hlavičky
+	ZAKAZKY=ZAKAZKY_temp;//zkopírování ukazatelů mezi spojáky
+	vymaz_seznam_ZAKAZKY_temp();//smazání již nepotřebného spojáku temp
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
