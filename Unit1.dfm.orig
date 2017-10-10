@@ -226,13 +226,12 @@ object Form1: TForm1
     end
   end
   object Button1: TButton
-    Left = 207
-    Top = 508
+    Left = 183
+    Top = 432
     Width = 75
     Height = 25
     Caption = 'Button1'
     TabOrder = 1
-    Visible = False
     OnClick = Button1Click
   end
   object Memo1: TMemo
@@ -251,7 +250,6 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
-    ExplicitWidth = 1026
   end
   object Button3: TButton
     Left = 183
@@ -304,7 +302,7 @@ object Form1: TForm1
     OnClick = Button7Click
   end
   object Button8: TButton
-    Left = 197
+    Left = 183
     Top = 339
     Width = 85
     Height = 25
@@ -314,8 +312,8 @@ object Form1: TForm1
     OnClick = Button8Click
   end
   object Button9: TButton
-    Left = 207
-    Top = 464
+    Left = 183
+    Top = 401
     Width = 129
     Height = 25
     Caption = 'vypsat spoj'#225'k VOZIKY'
@@ -324,8 +322,8 @@ object Form1: TForm1
     OnClick = Button9Click
   end
   object Button10: TButton
-    Left = 207
-    Top = 421
+    Left = 183
+    Top = 370
     Width = 110
     Height = 25
     Caption = 'zkr'#225'tit linky dle palc'#367
@@ -719,7 +717,6 @@ object Form1: TForm1
     Caption = 'scGPPanel_mainmenu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 1026
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 984
@@ -797,7 +794,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 976
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -876,7 +872,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 876
     end
     object editacelinky1: TscGPButton
       Left = 412
@@ -969,7 +964,6 @@ object Form1: TForm1
       Down = True
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 404
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1155,7 +1149,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 560
     end
     object technologickprocesy1: TscGPButton
       Left = 646
@@ -1248,7 +1241,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 638
     end
     object scGPGlyphButton1: TscGPGlyphButton
       AlignWithMargins = True
@@ -1327,7 +1319,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 2
       AllowAllUp = True
-      ExplicitLeft = 836
     end
     object Ulozit: TscGPGlyphButton
       AlignWithMargins = True
@@ -1625,9 +1616,9 @@ object Form1: TForm1
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
       GlyphOptions.DisabledColorAlpha = 100
-      GlyphOptions.Kind = scgpbgkRestore
+      GlyphOptions.Kind = scgpbgkMaximize
       GlyphOptions.Thickness = 1
-      GlyphOptions.StyleColors = False
+      GlyphOptions.StyleColors = True
       TextMargin = -1
       WidthWithCaption = 0
       WidthWithoutCaption = 0
@@ -1640,7 +1631,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 926
     end
     object DetailsButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1813,7 +1803,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 482
     end
     object simulace: TscGPButton
       Left = 724
@@ -1906,7 +1895,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 716
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 802
@@ -1986,7 +1974,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 794
     end
     object scLabel_titulek: TscLabel
       Left = 242
@@ -2005,6 +1992,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 15
+      OnDblClick = scLabel_titulekDblClick
       DragForm = True
       GlowEffect.Enabled = False
       GlowEffect.Color = clBtnShadow
@@ -2018,7 +2006,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'ELTEP - tispl'
-      ExplicitWidth = 162
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -2051,7 +2038,6 @@ object Form1: TForm1
     Color = clBtnFace
     TransparentBackground = False
     StorePaintBuffer = True
-    ExplicitWidth = 1026
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -2339,7 +2325,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scGPSizeBox1: TscGPSizeBox
+    object scGPSizeBox: TscGPSizeBox
       Left = 1008
       Top = 0
       Width = 26
@@ -2350,7 +2336,6 @@ object Form1: TForm1
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
-      ExplicitLeft = 1000
     end
     object scLabel_ZOOM: TscLabel
       Left = 0
@@ -2380,155 +2365,12 @@ object Form1: TForm1
       Caption = '100 %'
     end
   end
-  object scCheckBox2: TscCheckBox
-    Left = 299
-    Top = 321
-    Width = 131
-    Height = 27
-    TabOrder = 26
-    TabStop = True
-    Visible = False
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    CustomGrayedImageIndex = -1
-    CustomGrayedImageHotIndex = -1
-    CustomGrayedImagePressedIndex = -1
-    CustomGrayedImageDisabledIndex = -1
-    UseFontColorToStyleColor = False
-    Animation = False
-    Caption = 'Show TscGPSizeBox'
-    CanFocused = True
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    Checked = True
-    State = cbChecked
-    ShowFocusRect = True
-  end
-  object scCheckBox1: TscCheckBox
-    Left = 299
-    Top = 349
-    Width = 140
-    Height = 30
-    TabOrder = 28
-    TabStop = True
-    Visible = False
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    CustomGrayedImageIndex = -1
-    CustomGrayedImageHotIndex = -1
-    CustomGrayedImagePressedIndex = -1
-    CustomGrayedImageDisabledIndex = -1
-    UseFontColorToStyleColor = False
-    Animation = False
-    Caption = 'Show maximize button'
-    CanFocused = True
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    Checked = True
-    State = cbChecked
-    ShowFocusRect = True
-  end
-  object scRadioGroup1: TscRadioGroup
-    Left = 618
-    Top = 555
-    Width = 132
-    Height = 64
-    TabOrder = 31
-    Visible = False
-    FramePosition = scgfpDefault
-    CustomImageIndex = -1
-    CustomImageDisabledIndex = -1
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    Alignment = taLeftJustify
-    Caption = 'Menu type'
-    ImageIndex = -1
-    ShowCheckBox = False
-    Checked = False
-    AutoEnabledControls = False
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    ImageGlow = True
-    StorePaintBuffer = True
-    ItemIndex = 0
-    Items.Strings = (
-      'PopupMenu'
-      'SplitView')
-    ButtonsGlowEffect.Enabled = False
-    ButtonsGlowEffect.Color = clHighlight
-    ButtonsGlowEffect.AlphaValue = 95
-    ButtonsGlowEffect.GlowSize = 7
-    ButtonsGlowEffect.Offset = 0
-    ButtonsGlowEffect.Intensive = True
-    ButtonsGlowEffect.StyleColors = True
-    ButtonsGlowEffect.HotColor = clNone
-    ButtonsGlowEffect.PressedColor = clNone
-    ButtonsGlowEffect.FocusedColor = clNone
-    ButtonsGlowEffect.PressedGlowSize = 7
-    ButtonsGlowEffect.PressedAlphaValue = 255
-    ButtonsGlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ButtonsAnimation = False
-    ShowFocusRect = True
-  end
   object scGPGlyphButton2: TscGPGlyphButton
     Left = 175
     Top = 34
     Width = 30
     Height = 30
-    TabOrder = 29
+    TabOrder = 27
     Visible = False
     OnClick = scGPGlyphButton2Click
     Animation = True
@@ -2608,7 +2450,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 35
+    TabOrder = 32
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -2930,1574 +2772,6 @@ object Form1: TForm1
       end
     end
   end
-  object scSplitView_OPTIONS: TscSplitView
-<<<<<<< HEAD
-    Left = 784
-=======
-    Left = 1026
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
-    Top = 34
-    Width = 250
-    Height = 640
-    Anchors = [akTop, akRight, akBottom]
-<<<<<<< HEAD
-=======
-    Enabled = False
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBtnText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 27
-<<<<<<< HEAD
-    OnMouseLeave = scSplitView_OPTIONSMouseLeave
-=======
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
-    CustomImageIndex = -1
-    StyleKind = scpsPanel
-    ShowCaption = False
-    BorderStyle = scpbsLeftShadowLine
-    WallpaperIndex = -1
-    LightBorderColor = clBtnHighlight
-    ShadowBorderColor = clBtnShadow
-    CaptionGlowEffect.Enabled = False
-    CaptionGlowEffect.Color = clBtnShadow
-    CaptionGlowEffect.AlphaValue = 255
-    CaptionGlowEffect.GlowSize = 7
-    CaptionGlowEffect.Offset = 0
-    CaptionGlowEffect.Intensive = True
-    CaptionGlowEffect.StyleColors = True
-    Color = 10114859
-    StorePaintBuffer = False
-    AnimationStep = 25
-    CompactWidth = 0
-    CompactHeight = 20
-    GripSize = 0
-<<<<<<< HEAD
-    Opened = True
-=======
-    Opened = False
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
-    OpenedWidth = 250
-    OpenedHeight = 50
-    OpenedMinWidth = 0
-    OpenedMaxWidth = 0
-    OpenedMinHeight = 0
-    OpenedMaxHeight = 0
-    ParentBackground = False
-    ParentColor = False
-    Placement = scsvpRight
-    HideControls = False
-    Animation = True
-    DisplayMode = scsvmOverlay
-    OnClosed = scSplitViewsClosed
-    OnClosing = scSplitViewsClosing
-<<<<<<< HEAD
-    ExplicitLeft = 776
-=======
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
-    object pravyoption_nadpis: TscGPLabel
-      Left = 1
-      Top = 0
-      Width = 249
-      Height = 32
-      Align = alTop
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -17
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      DragForm = False
-      ContentMarginLeft = 5
-      ContentMarginRight = 5
-      ContentMarginTop = 5
-      ContentMarginBottom = 5
-      FrameWidth = 0
-      FillColor = clBtnHighlight
-      FillColorAlpha = 20
-      FrameColor = clBtnText
-      FrameColorAlpha = 40
-      FrameRadius = 0
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = True
-      Caption = 'Nastaven'#237
-      ExplicitWidth = 0
-    end
-    object scExPanel_ostatni: TscExPanel
-      Left = 1
-      Top = 32
-      Width = 249
-<<<<<<< HEAD
-      Height = 174
-=======
-      Height = 195
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-      OnClick = scExPanel_ostatniClick
-      BackgroundStyle = scexbgsPanel
-      HeaderColor = 10114859
-      ButtonGlyphColor = clWhite
-      HeaderStyle = scexphsColor
-      CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 3
-      Spacing = 5
-      ShowFrame = False
-      RealWidth = 0
-      RealHeight = 0
-      ShowRollButton = True
-      ShowCloseButton = False
-      CaptionHeight = 30
-      RollKind = scrkRollVertical
-      RollUpState = False
-      Moveable = False
-      Sizeable = False
-      HideControlsInRollUpState = True
-      StorePaintBuffer = False
-      Caption = 'Obecn'#233
-      object ComboBoxCekani: TscComboBox
-        Left = 3
-        Top = 55
-        Width = 194
-        Height = 26
-        ItemIndex = -1
-        Items.Strings = (
-          #382#225'dn'#225
-          'st'#345'edn'#237' hodnota'
-          'n'#225'hodn'#225' hodnota'
-          'maxim'#225'ln'#237' hodnota')
-        WordBreak = False
-        SelectionStyle = scstStyled
-        SelectionColor = clGrayText
-        SelectionTextColor = clHighlightText
-        ImageIndex = -1
-        ItemHeight = 20
-        Align = alCustom
-        Color = 10114859
-        TabOrder = 0
-        Text = ' hodnota'
-        StyleKind = scscbDefault
-        ShowFocusRect = True
-      end
-      object CheckBoxVytizenost: TscGPCheckBox
-        Left = 3
-        Top = 135
-        Width = 244
-        Height = 25
-        Align = alCustom
-        TabOrder = 1
-        TabStop = True
-        OnClick = CheckBoxVytizenost_Click
-        Animation = False
-        Caption = 'Zobrazit vyt'#237#382'enost objekt'#367
-<<<<<<< HEAD
-=======
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 175
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-      end
-      object CheckBoxVymena_barev: TscGPCheckBox
-        Left = 5
-        Top = 110
-        Width = 246
-        Height = 36
-        Align = alCustom
-        TabOrder = 2
-        TabStop = True
-        OnClick = CheckBoxVymena_barev_Click
-        Animation = False
-        Caption = 'Zohlednit '#269'i'#353't'#283'n'#237' pistole a v'#253'm'#283'nu barev'
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 175
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-      end
-      object CheckBoxVymena_barev: TscGPCheckBox
-        Left = 3
-        Top = 93
-        Width = 246
-        Height = 36
-        Align = alCustom
-        TabOrder = 2
-        TabStop = True
-        OnClick = CheckBoxVymena_barev_Click
-        Animation = False
-        Caption = 'Zohlednit '#269'i'#353't'#283'n'#237' pistole a v'#253'm'#283'nu barev'
-        CanFocused = True
-        Spacing = 1
-        Layout = blGlyphLeft
-        ImageIndex = -1
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 175
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        GlowEffect.HotColor = clNone
-        GlowEffect.PressedColor = clNone
-        GlowEffect.FocusedColor = clNone
-        GlowEffect.PressedGlowSize = 7
-        GlowEffect.PressedAlphaValue = 255
-        GlowEffect.States = [scsHot, scsPressed, scsFocused]
-        ImageGlow = True
-        Options.NormalColor = clWindow
-        Options.HotColor = clWindow
-        Options.PressedColor = clWindow
-        Options.DisabledColor = clWindow
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 255
-        Options.PressedColorAlpha = 200
-        Options.DisabledColorAlpha = 125
-        Options.FrameNormalColor = clBtnShadow
-        Options.FrameHotColor = clHighlight
-        Options.FramePressedColor = clHighlight
-        Options.FrameDisabledColor = clBtnShadow
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 255
-        Options.FrameHotColorAlpha = 255
-        Options.FramePressedColorAlpha = 255
-        Options.FrameDisabledColorAlpha = 255
-        Options.CheckMarkNormalColor = clWindowText
-        Options.CheckMarkHotColor = clWindowText
-        Options.CheckMarkPressedColor = clWindowText
-        Options.CheckMarkDisabledColor = clWindowText
-        Options.CheckMarkNormalColorAlpha = 255
-        Options.CheckMarkHotColorAlpha = 255
-        Options.CheckMarkPressedColorAlpha = 255
-        Options.CheckMarkDisabledColorAlpha = 125
-        Options.ShapeSize = 20
-        Options.CheckMarkThickness = 2
-        Options.StyleColors = True
-        OptionsChecked.NormalColor = clWindow
-        OptionsChecked.HotColor = clWindow
-        OptionsChecked.PressedColor = clWindow
-        OptionsChecked.DisabledColor = clWindow
-        OptionsChecked.NormalColorAlpha = 255
-        OptionsChecked.HotColorAlpha = 255
-        OptionsChecked.PressedColorAlpha = 200
-        OptionsChecked.DisabledColorAlpha = 125
-        OptionsChecked.FrameNormalColor = clBtnShadow
-        OptionsChecked.FrameHotColor = clHighlight
-        OptionsChecked.FramePressedColor = clHighlight
-        OptionsChecked.FrameDisabledColor = clBtnShadow
-        OptionsChecked.FrameWidth = 2
-        OptionsChecked.FrameNormalColorAlpha = 255
-        OptionsChecked.FrameHotColorAlpha = 255
-        OptionsChecked.FramePressedColorAlpha = 255
-        OptionsChecked.FrameDisabledColorAlpha = 255
-        OptionsChecked.CheckMarkNormalColor = clWindowText
-        OptionsChecked.CheckMarkHotColor = clWindowText
-        OptionsChecked.CheckMarkPressedColor = clWindowText
-        OptionsChecked.CheckMarkDisabledColor = clWindowText
-        OptionsChecked.CheckMarkNormalColorAlpha = 255
-        OptionsChecked.CheckMarkHotColorAlpha = 255
-        OptionsChecked.CheckMarkPressedColorAlpha = 255
-        OptionsChecked.CheckMarkDisabledColorAlpha = 125
-        OptionsChecked.ShapeSize = 20
-        OptionsChecked.CheckMarkThickness = 2
-        OptionsChecked.StyleColors = True
-        Checked = False
-        ScaleFrameWidth = True
-        ScaleCheckMarkThickness = True
-        ShowFocusRect = True
-      end
-      object scLabel1: TscLabel
-        Left = 0
-        Top = 30
-        Width = 249
-        Height = 21
-        Margins.Left = 0
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 1
-        Align = alTop
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 3
-        DragForm = True
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 2
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = False
-        VertAlignment = scvtaCenter
-        UseFontColorToStyleColor = True
-        Caption = ' Doba '#269'ek'#225'n'#237' na palec'
-        ExplicitWidth = 153
-      end
-    end
-    object scExPanel_vrstvy: TscExPanel
-      Left = 1
-      Top = 206
-      Width = 249
-      Height = 30
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-      OnClick = scExPanel_vrstvyClick
-      BackgroundStyle = scexbgsPanel
-      HeaderColor = 10114859
-      ButtonGlyphColor = clWhite
-      HeaderStyle = scexphsColor
-      CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 9
-      Spacing = 5
-      ShowFrame = False
-      RealWidth = 0
-      RealHeight = 206
-      ShowRollButton = True
-      ShowCloseButton = False
-      CaptionHeight = 30
-      RollKind = scrkRollVertical
-      RollUpState = True
-      Moveable = False
-      Sizeable = False
-      HideControlsInRollUpState = True
-      StorePaintBuffer = False
-      Caption = 'Vrstvy'
-      ExplicitTop = 215
-      object scLabel4: TscLabel
-        Left = 3
-        Top = 39
-        Width = 136
-        Height = 18
-        TabOrder = 0
-        DragForm = False
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = True
-        UseFontColorToStyleColor = False
-        Caption = 'Zobrazit/Skr'#253't vrstvy'
-      end
-    end
-  end
-  object scSplitView_MENU: TscSplitView
-    Left = 0
-    Top = 34
-    Width = 180
-    Height = 640
-    Anchors = [akLeft, akTop, akBottom]
-    TabOrder = 30
-    OnMouseLeave = scSplitView_MENUMouseLeave
-    CustomImageIndex = -1
-    StyleKind = scpsPanel
-    ShowCaption = False
-    BorderStyle = scpbsNone
-    WallpaperIndex = -1
-    LightBorderColor = clBtnHighlight
-    ShadowBorderColor = clBtnShadow
-    CaptionGlowEffect.Enabled = False
-    CaptionGlowEffect.Color = clBtnShadow
-    CaptionGlowEffect.AlphaValue = 255
-    CaptionGlowEffect.GlowSize = 7
-    CaptionGlowEffect.Offset = 0
-    CaptionGlowEffect.Intensive = True
-    CaptionGlowEffect.StyleColors = True
-    Alignment = taLeftJustify
-    Color = 8538404
-    StorePaintBuffer = False
-    AnimationStep = 25
-    CompactWidth = 0
-    CompactHeight = 20
-    GripSize = 0
-    Opened = True
-    OpenedWidth = 180
-    OpenedHeight = 50
-    OpenedMinWidth = 0
-    OpenedMaxWidth = 0
-    OpenedMinHeight = 0
-    OpenedMaxHeight = 0
-    ParentBackground = False
-    ParentColor = False
-    Placement = scsvpLeft
-    HideControls = False
-    Animation = True
-    DisplayMode = scsvmOverlay
-    OnClosed = scSplitViewsClosed
-    OnClosing = scSplitViewsClosing
-    object scButton1: TscButton
-      Left = 0
-      Top = 590
-      Width = 180
-      Height = 50
-      Align = alBottom
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      OnClick = KonecClick
-      Animation = False
-      Caption = 'Konec'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      Images = scGPVirtualImageList1
-      ImageIndex = 4
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = clRed
-      ColorOptions.PressedColor = 191
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 0
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scButton2: TscButton
-      Left = 0
-      Top = 0
-      Width = 180
-      Height = 50
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-      OnClick = NovySouborClick
-      Animation = False
-      Caption = 'Nov'#253' projekt'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 2
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scButton3: TscButton
-      Left = 0
-      Top = 50
-      Width = 180
-      Height = 50
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-      OnClick = OtevritClick
-      Animation = False
-      Caption = 'Otev'#345#237't'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 2
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scButton4: TscButton
-      Left = 0
-      Top = 300
-      Width = 180
-      Height = 64
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-      Animation = False
-      Caption = 'Nastaven'#237
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      Images = scGPVirtualImageList1
-      ImageIndex = 3
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 0
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scButton5: TscButton
-      Left = 0
-      Top = 540
-      Width = 180
-      Height = 50
-      Align = alBottom
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 4
-      OnClick = Obnovitzezlohy1Click
-      Animation = False
-      Caption = 'Obnovit ze z'#225'lohy'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 5
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = clGreen
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 0
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scButton6: TscButton
-      Left = 0
-      Top = 200
-      Width = 180
-      Height = 50
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 5
-      OnClick = html1Click
-      Animation = False
-      Caption = 'Report'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 2
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scGPSwitch4: TscGPSwitch
-      Left = 100
-      Top = 357
-      Width = 42
-      Height = 20
-      TabOrder = 6
-      Animation = True
-      FrameColor = clWhite
-      FrameOnColor = clWhite
-      FramePressedColor = 5912332
-      ParentColor = True
-      State = scswOn
-      StyleKind = scswsStyled
-      ThumbColor = clWhite
-      ThumbOnColor = 8538404
-      ThumbPressedColor = clWhite
-      FrameColorAlpha = 255
-      FrameOnColorAlpha = 255
-      FramePressedColorAlpha = 255
-      ThumbColorAlpha = 255
-      ThumbOnColorAlpha = 255
-      ThumbPressedColorAlpha = 255
-      ThumbShadow = False
-      FrameSolid = False
-      FrameOnSolid = True
-      FrameInside = False
-      OnChangeState = scGPSwitch4ChangeState
-    end
-    object scGPSwitch5: TscGPSwitch
-      Left = 100
-      Top = 387
-      Width = 42
-      Height = 20
-      TabOrder = 7
-      Animation = True
-      FrameColor = clWhite
-      FrameOnColor = clWhite
-      FramePressedColor = 5912332
-      ParentColor = True
-      State = scswOn
-      StyleKind = scswsStyled
-      ThumbColor = clWhite
-      ThumbOnColor = 8538404
-      ThumbPressedColor = clWhite
-      FrameColorAlpha = 255
-      FrameOnColorAlpha = 255
-      FramePressedColorAlpha = 255
-      ThumbColorAlpha = 255
-      ThumbOnColorAlpha = 255
-      ThumbPressedColorAlpha = 255
-      ThumbShadow = False
-      FrameSolid = False
-      FrameOnSolid = True
-      FrameInside = False
-      OnChangeState = scGPSwitch5ChangeState
-    end
-    object scLabel11: TscLabel
-      Left = 3
-      Top = 357
-      Width = 65
-      Height = 16
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 8
-      DragForm = False
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = True
-      UseFontColorToStyleColor = False
-      Caption = 'Antialiasing'
-    end
-    object scLabel16: TscLabel
-      Left = 3
-      Top = 387
-      Width = 37
-      Height = 16
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 9
-      DragForm = False
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
-      GlowEffect.AlphaValue = 255
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      AutoSize = True
-      UseFontColorToStyleColor = False
-      Caption = 'M'#345#237#382'ka'
-    end
-    object scButton7: TscButton
-      Left = 0
-      Top = 150
-      Width = 180
-      Height = 50
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 10
-      OnClick = UlozitjakoClick
-      Animation = False
-      Caption = 'Ulo'#382'it jako...'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 2
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scButton8: TscButton
-      Left = 0
-      Top = 250
-      Width = 180
-      Height = 50
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 11
-      OnClick = Export1Click
-      Animation = False
-      Caption = 'Export...'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 2
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-    object scButton9: TscButton
-      Left = 0
-      Top = 490
-      Width = 180
-      Height = 50
-      Align = alBottom
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 12
-      OnClick = MagnaClick
-      Animation = False
-      Caption = 'Naposledy otev'#345'en'#253
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 5
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 657930
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 0
-      AllowAllUp = False
-      WordWrap = False
-      ExplicitWidth = 0
-    end
-<<<<<<< HEAD
-=======
-    object scExPanel_vrstvy: TscExPanel
-      Left = 1
-      Top = 227
-      Width = 249
-      Height = 30
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -15
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-      OnClick = scExPanel_vrstvyClick
-      BackgroundStyle = scexbgsPanel
-      HeaderColor = 10114859
-      ButtonGlyphColor = clWhite
-      HeaderStyle = scexphsColor
-      CaptionImages = scGPVirtualImageList1
-      CaptionImageIndex = 9
-      Spacing = 5
-      ShowFrame = False
-      RealWidth = 0
-      RealHeight = 206
-      ShowRollButton = True
-      ShowCloseButton = False
-      CaptionHeight = 30
-      RollKind = scrkRollVertical
-      RollUpState = True
-      Moveable = False
-      Sizeable = False
-      HideControlsInRollUpState = True
-      StorePaintBuffer = False
-      Caption = 'Vrstvy'
-      object scLabel4: TscLabel
-        Left = 3
-        Top = 39
-        Width = 136
-        Height = 18
-        TabOrder = 0
-        DragForm = False
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 0
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = True
-        UseFontColorToStyleColor = False
-        Caption = 'Zobrazit/Skr'#253't vrstvy'
-      end
-    end
-  end
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
@@ -4505,7 +2779,7 @@ object Form1: TForm1
     Height = 640
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
-    TabOrder = 30
+    TabOrder = 28
     CustomImageIndex = -1
     StyleKind = scpsPanel
     ShowCaption = False
@@ -5475,7 +3749,6 @@ object Form1: TForm1
       AllowAllUp = False
       WordWrap = False
     end
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
     object scGPSwitch9: TscGPSwitch
       Left = 100
       Top = 447
@@ -5583,11 +3856,7 @@ object Form1: TForm1
     object scButton_ulozit: TscButton
       Left = 0
       Top = 100
-<<<<<<< HEAD
-      Width = 180
-=======
       Width = 0
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
       Height = 50
       Align = alTop
       Enabled = False
@@ -5676,11 +3945,435 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-<<<<<<< HEAD
-      ExplicitWidth = 0
-=======
->>>>>>> 33df096f24d2a15be1f792af9461d7c3502de895
     end
+  end
+  object scSplitView_OPTIONS: TscSplitView
+    Left = 1034
+    Top = 34
+    Width = 0
+    Height = 640
+    Anchors = [akTop, akRight, akBottom]
+    Enabled = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBtnText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 26
+    OnMouseLeave = scSplitView_OPTIONSMouseLeave
+    CustomImageIndex = -1
+    StyleKind = scpsPanel
+    ShowCaption = False
+    BorderStyle = scpbsLeftShadowLine
+    WallpaperIndex = -1
+    LightBorderColor = clBtnHighlight
+    ShadowBorderColor = clBtnShadow
+    CaptionGlowEffect.Enabled = False
+    CaptionGlowEffect.Color = clBtnShadow
+    CaptionGlowEffect.AlphaValue = 255
+    CaptionGlowEffect.GlowSize = 7
+    CaptionGlowEffect.Offset = 0
+    CaptionGlowEffect.Intensive = True
+    CaptionGlowEffect.StyleColors = True
+    Color = 10114859
+    StorePaintBuffer = False
+    AnimationStep = 25
+    CompactWidth = 0
+    CompactHeight = 20
+    GripSize = 0
+    Opened = False
+    OpenedWidth = 250
+    OpenedHeight = 50
+    OpenedMinWidth = 0
+    OpenedMaxWidth = 0
+    OpenedMinHeight = 0
+    OpenedMaxHeight = 0
+    ParentBackground = False
+    ParentColor = False
+    Placement = scsvpRight
+    HideControls = False
+    Animation = True
+    DisplayMode = scsvmOverlay
+    OnClosed = scSplitViewsClosed
+    OnClosing = scSplitViewsClosing
+    object pravyoption_nadpis: TscGPLabel
+      Left = 1
+      Top = 0
+      Width = 0
+      Height = 32
+      Align = alTop
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -17
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      DragForm = False
+      ContentMarginLeft = 5
+      ContentMarginRight = 5
+      ContentMarginTop = 5
+      ContentMarginBottom = 5
+      FrameWidth = 0
+      FillColor = clBtnHighlight
+      FillColorAlpha = 20
+      FrameColor = clBtnText
+      FrameColorAlpha = 40
+      FrameRadius = 0
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = True
+      Caption = 'Nastaven'#237
+    end
+    object scExPanel_ostatni: TscExPanel
+      Left = 1
+      Top = 32
+      Width = 249
+      Height = 174
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = scExPanel_ostatniClick
+      BackgroundStyle = scexbgsPanel
+      HeaderColor = 10114859
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = 3
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 0
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = False
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = 'Obecn'#233
+      object ComboBoxCekani: TscComboBox
+        Left = 3
+        Top = 55
+        Width = 194
+        Height = 26
+        ItemIndex = -1
+        Items.Strings = (
+          #382#225'dn'#225
+          'st'#345'edn'#237' hodnota'
+          'n'#225'hodn'#225' hodnota'
+          'maxim'#225'ln'#237' hodnota')
+        WordBreak = False
+        SelectionStyle = scstStyled
+        SelectionColor = clGrayText
+        SelectionTextColor = clHighlightText
+        ImageIndex = -1
+        ItemHeight = 20
+        Align = alCustom
+        Color = 10114859
+        TabOrder = 0
+        Text = ' hodnota'
+        StyleKind = scscbDefault
+        ShowFocusRect = True
+      end
+      object CheckBoxVytizenost: TscGPCheckBox
+        Left = 3
+        Top = 135
+        Width = 244
+        Height = 25
+        Align = alCustom
+        TabOrder = 1
+        TabStop = True
+        OnClick = CheckBoxVytizenost_Click
+        Animation = False
+        Caption = 'Zobrazit vyt'#237#382'enost objekt'#367
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = False
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+      end
+      object CheckBoxVymena_barev: TscGPCheckBox
+        Left = 3
+        Top = 93
+        Width = 246
+        Height = 36
+        Align = alCustom
+        TabOrder = 2
+        TabStop = True
+        OnClick = CheckBoxVymena_barev_Click
+        Animation = False
+        Caption = 'Zohlednit '#269'i'#353't'#283'n'#237' pistole a v'#253'm'#283'nu barev'
+        CanFocused = True
+        Spacing = 1
+        Layout = blGlyphLeft
+        ImageIndex = -1
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clHighlight
+        GlowEffect.AlphaValue = 95
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        GlowEffect.HotColor = clNone
+        GlowEffect.PressedColor = clNone
+        GlowEffect.FocusedColor = clNone
+        GlowEffect.PressedGlowSize = 7
+        GlowEffect.PressedAlphaValue = 255
+        GlowEffect.States = [scsHot, scsPressed, scsFocused]
+        ImageGlow = True
+        Options.NormalColor = clWindow
+        Options.HotColor = clWindow
+        Options.PressedColor = clWindow
+        Options.DisabledColor = clWindow
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 255
+        Options.PressedColorAlpha = 200
+        Options.DisabledColorAlpha = 125
+        Options.FrameNormalColor = clBtnShadow
+        Options.FrameHotColor = clHighlight
+        Options.FramePressedColor = clHighlight
+        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 255
+        Options.FrameHotColorAlpha = 255
+        Options.FramePressedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 255
+        Options.CheckMarkNormalColor = clWindowText
+        Options.CheckMarkHotColor = clWindowText
+        Options.CheckMarkPressedColor = clWindowText
+        Options.CheckMarkDisabledColor = clWindowText
+        Options.CheckMarkNormalColorAlpha = 255
+        Options.CheckMarkHotColorAlpha = 255
+        Options.CheckMarkPressedColorAlpha = 255
+        Options.CheckMarkDisabledColorAlpha = 125
+        Options.ShapeSize = 20
+        Options.CheckMarkThickness = 2
+        Options.StyleColors = True
+        OptionsChecked.NormalColor = clWindow
+        OptionsChecked.HotColor = clWindow
+        OptionsChecked.PressedColor = clWindow
+        OptionsChecked.DisabledColor = clWindow
+        OptionsChecked.NormalColorAlpha = 255
+        OptionsChecked.HotColorAlpha = 255
+        OptionsChecked.PressedColorAlpha = 200
+        OptionsChecked.DisabledColorAlpha = 125
+        OptionsChecked.FrameNormalColor = clBtnShadow
+        OptionsChecked.FrameHotColor = clHighlight
+        OptionsChecked.FramePressedColor = clHighlight
+        OptionsChecked.FrameDisabledColor = clBtnShadow
+        OptionsChecked.FrameWidth = 2
+        OptionsChecked.FrameNormalColorAlpha = 255
+        OptionsChecked.FrameHotColorAlpha = 255
+        OptionsChecked.FramePressedColorAlpha = 255
+        OptionsChecked.FrameDisabledColorAlpha = 255
+        OptionsChecked.CheckMarkNormalColor = clWindowText
+        OptionsChecked.CheckMarkHotColor = clWindowText
+        OptionsChecked.CheckMarkPressedColor = clWindowText
+        OptionsChecked.CheckMarkDisabledColor = clWindowText
+        OptionsChecked.CheckMarkNormalColorAlpha = 255
+        OptionsChecked.CheckMarkHotColorAlpha = 255
+        OptionsChecked.CheckMarkPressedColorAlpha = 255
+        OptionsChecked.CheckMarkDisabledColorAlpha = 125
+        OptionsChecked.ShapeSize = 20
+        OptionsChecked.CheckMarkThickness = 2
+        OptionsChecked.StyleColors = True
+        Checked = False
+        ScaleFrameWidth = True
+        ScaleCheckMarkThickness = True
+        ShowFocusRect = True
+      end
+      object scLabel1: TscLabel
+        Left = 0
+        Top = 30
+        Width = 249
+        Height = 21
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 1
+        Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        DragForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 2
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = False
+        VertAlignment = scvtaCenter
+        UseFontColorToStyleColor = True
+        Caption = ' Doba '#269'ek'#225'n'#237' na palec'
+      end
+    end
+    object scExPanel_vrstvy: TscExPanel
+      Left = 1
+      Top = 206
+      Width = 249
+      Height = 30
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = scExPanel_vrstvyClick
+      BackgroundStyle = scexbgsPanel
+      HeaderColor = 10114859
+      ButtonGlyphColor = clWhite
+      HeaderStyle = scexphsColor
+      CaptionImages = scGPVirtualImageList1
+      CaptionImageIndex = 9
+      Spacing = 5
+      ShowFrame = False
+      RealWidth = 0
+      RealHeight = 206
+      ShowRollButton = True
+      ShowCloseButton = False
+      CaptionHeight = 30
+      RollKind = scrkRollVertical
+      RollUpState = True
+      Moveable = False
+      Sizeable = False
+      HideControlsInRollUpState = True
+      StorePaintBuffer = False
+      Caption = 'Vrstvy'
+      object scLabel4: TscLabel
+        Left = 3
+        Top = 39
+        Width = 136
+        Height = 18
+        TabOrder = 0
+        DragForm = False
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 0
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = True
+        UseFontColorToStyleColor = False
+        Caption = 'Zobrazit/Skr'#253't vrstvy'
+      end
+    end
+  end
+  object Button11: TButton
+    Left = 183
+    Top = 463
+    Width = 75
+    Height = 25
+    Caption = 'Button11'
+    TabOrder = 33
+    Visible = False
+    OnClick = Button11Click
+  end
+  object Memo2: TMemo
+    Left = 183
+    Top = 507
+    Width = 134
+    Height = 67
+    Lines.Strings = (
+      'Memo2')
+    TabOrder = 34
+    Visible = False
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
@@ -5797,7 +4490,11 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118003C033C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+<<<<<<< HEAD
+      494C0101180044034C0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+=======
+      494C010118005403540310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+>>>>>>> 3b94766bd799667d0781f457d65078ec79ddcbc0
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6920,7 +5617,11 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011C008801880130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+<<<<<<< HEAD
+      494C01011D009001A40130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+=======
+      494C01011C00A001A00130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+>>>>>>> 3b94766bd799667d0781f457d65078ec79ddcbc0
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7021,6 +5722,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      002000000060000000C0000000E0000000FF000000FF000000FF000000E00000
+      0090000000600000002000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7042,6 +5745,9 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000030000000E00000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF00000090000000300000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7063,6 +5769,9 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000030000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000C0000000300000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7084,6 +5793,10 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000090000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000AF0000003F00000030000000000000000000000000000000300000
+      007F000000BF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      0090000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7104,7 +5817,10 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000D0000000FF000000FF000000FF000000FF000000FF0000005F0000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000AF000000FF000000FF000000FF000000FF0000
+      00FF000000200000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7124,7 +5840,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000400000
+      00F0000000FF000000FF000000FF000000400000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000DF000000FF0000
+      00FF000000FF000000F000000030000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7144,7 +5864,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000030000000F00000
+      00FF000000FF000000FF0000009F000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000100000009F0000
+      00FF000000FF000000FF000000F0000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7164,8 +5888,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000F0000000FF0000
+      00FF000000FF0000006F00000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      006F000000FF000000FF000000FF000000200000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7185,8 +5912,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000090000000FF000000FF0000
+      00FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000070000000FF000000FF000000FF0000009000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7206,8 +5936,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000030000000FF000000FF000000FF0000
+      009F000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000009F000000FF000000FF000000FF00000030000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7227,8 +5960,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000C0000000FF000000FF000000DF0000
+      0010000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000010000000DF000000FF000000FF000000C0000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7248,8 +5984,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000C0000000FF000000FF000000AF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7269,8 +6008,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FF000000FF00000020000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000300000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7290,8 +6032,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FF000000FF00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000B0000000FF000000FF000000900000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7311,9 +6056,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000020000000FF000000FF000000FF00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000FF000000FF000000FF0000
+      0020000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7332,9 +6080,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000060000000FF000000FF000000B000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000C0000000FF000000FF0000
+      0060000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7353,9 +6104,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000090000000FF000000FF0000008000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000080000000FF000000FF0000
+      0090000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7374,8 +6128,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000E0000000FF000000FF0000003000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000030000000FF000000FF0000
+      00E0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7394,8 +6152,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000FF000000FF000000FF0000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000FF0000
+      00FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7414,8 +6176,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000FF000000FF000000FF0000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000FF0000
+      00FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7434,8 +6200,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000FF000000FF000000FF0000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000FF0000
+      00FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7454,8 +6224,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000DF000000FF000000FF0000003000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000030000000FF000000FF0000
+      00DF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7474,8 +6248,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000C0000000FF000000FF0000004000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000040000000FF000000FF0000
+      00C0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7494,8 +6272,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000060000000FF000000FF000000B000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000C0000000FF000000FF0000
+      0060000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7514,8 +6296,12 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000020000000FF000000FF000000F000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000FF000000FF000000FF0000
+      0020000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7534,8 +6320,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FF000000FF00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000060000000FF000000FF000000DF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7555,8 +6344,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FF000000FF00000020000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000300000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7576,8 +6368,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000BF000000FF000000FF000000A0000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7597,8 +6392,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000040000000FF000000FF000000FF000000400000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000040000000FF000000FF000000FF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7618,8 +6416,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000030000000FF000000FF000000FF0000
+      00A0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000A0000000FF000000FF000000FF00000030000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7639,8 +6440,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000090000000FF000000FF0000
+      00FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000070000000FF000000FF000000FF0000009000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7660,8 +6464,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000FF0000
+      00FF000000600000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000FF000000FF000000FF000000CF0000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7681,7 +6488,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000030000000EF0000
+      00FF000000FF000000FF000000A0000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000010000000A00000
+      00FF000000FF000000FF000000EF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7701,7 +6512,11 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000400000
+      00EF000000FF000000FF000000FF000000400000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000E0000000FF0000
+      00FF000000FF000000EF00000040000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7722,7 +6537,10 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0030000000FF000000FF000000FF000000FF000000B000000020000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000020000000B0000000FF000000FF0000
+      00FF000000EF0000003000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7743,6 +6561,10 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000008F000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000B00000004000000030000000000000000000000000000000300000
+      0080000000B0000000FF000000FF000000FF000000FF000000FF000000FF0000
+      008F000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7763,6 +6585,9 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000030000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000BF000000300000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7784,6 +6609,9 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000040000000BF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000BF00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7806,135 +6634,8 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      00200000005F000000BF000000DF000000FF000000FF000000FF000000DF0000
+      008F0000005F0000002000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -16442,46 +15143,50 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011C00E400E40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+<<<<<<< HEAD
+      494C01011D00F400F40018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+=======
+      494C01011C00FC00FC0018001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+>>>>>>> 3b94766bd799667d0781f457d65078ec79ddcbc0
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
-      FF00FF000000FF00FF00FFFF0000FFFFFF000000000000000000000000000000
+      FF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
       000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
