@@ -105,7 +105,7 @@ class Cvektory
 
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
-		double cas_start;//začátek výroby v SEČ (resp. LSEČ)
+		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 		unsigned long  mnozstvi;//požadované množství
 		double hod_den;//počet hodin za den
 		double dni_rok;//počet hodin za den
@@ -316,9 +316,10 @@ class Cvektory
 					long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
 					unsigned int pocet_objektu;
 					unsigned int pocet_pohonu;
-					//unsigned int pocet_voziku;
-					//parametry projektu:
-					double cas_start;//začátek výroby v SEČ (resp. LSEČ)
+					unsigned int pocet_zakazek;
+					unsigned int pocet_voziku;
+					//parametry projektu (PP):
+					TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
 					unsigned long  mnozstvi;//požadované množství
 					double hod_den;//počet hodin za den
 					double dni_rok;//počet hodin za den
@@ -354,6 +355,7 @@ class Cvektory
 
 //metody pro ZAKAZKY
 public:
+		void hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
 		void vloz_temp_zakazku(UnicodeString id,unsigned short typ, UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
 		void edituj_temp_zakazku(unsigned long n,UnicodeString id,unsigned short typ,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
 		void smaz_temp_zakazku(unsigned long n);//smaže zakázku s uvedeným “n” ze spojového seznamu ZAKAZKY_temp včetně přidružených cest
@@ -361,7 +363,6 @@ public:
 		TZakazka *vrat_temp_zakazku(unsigned long n_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
 		void kopirujZAKAZKY_temp2ZAKAZKY();//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
 private:
-		void hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
 		void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
 		void vloz_temp_zakazku(TZakazka *Zakazka_temp);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 		long vymaz_seznam_ZAKAZKY();//smaze seznam ZAKAZKY z paměti v četně přidružených cest, pokud následuje další práce se seznamem (např. nové vkládání), je nutné založit nejdříve hlavičku pomocí hlavicka_ZAKAZKY()
@@ -402,6 +403,7 @@ public:
 		void vse_odstranit();
 
 		//souborové operace
+		void vytvor_hlavicku_souboru();
 		short int uloz_do_souboru(UnicodeString FileName);
 		short int nacti_ze_souboru(UnicodeString FileName);
 		short int ulozit_report(UnicodeString FileName);

@@ -376,13 +376,16 @@ __published:	// IDE-managed Components
 	void __fastcall scSplitView_MENUMouseLeave(TObject *Sender);
 	void __fastcall Button11Click(TObject *Sender);
 
-private:	// User declarations
+// User declarations
 	////struktury, výèty
-	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
+public:
 	enum Tmod{NO=0,SCHEMA,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
-	//enum Takce - muselo být pøesunutu do public sekce kvùli AA ve vykresli
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
+private:
+	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
+
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
@@ -409,7 +412,6 @@ private:	// User declarations
 	void move_objekt(int X, int Y);
 	void zobraz_tip(UnicodeString text);
 	void akutalizace_stavu_prichytavani_vSB();
-	void vytvor_hlavicku_souboru();
 	void Ulozit_soubor();//samotné uložení
 	void OtevritSoubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
 	unsigned short int OtevritSoubor(UnicodeString soubor);//realizuje samotné otevøení souboru
@@ -480,8 +482,7 @@ public:		// User declarations
 	Cmy m;
 	Cvykresli d;
 	//ZDM Cgrafy g;
-  UnicodeString FileName;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
+	UnicodeString FileName;
 	double Zoom; //promìnná uchovávajicí velikost Zoomu
 	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
   bool grid;

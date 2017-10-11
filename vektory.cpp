@@ -10,7 +10,8 @@ Cvektory::Cvektory()
 {
 	hlavicka_OBJEKTY();//vytvoří novou hlavičku pro objekty
 	hlavicka_POHONY();//vytvoří novou hlavičku pro pohony
-	//	hlavicka_voziky();
+	hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro zakazky
+	hlavicka_VOZIKY();//vytvoří novou hlavičku pro vozíky
 	//	hlavicka_palce();
 }
 ////---------------------------------------------------------------------------
@@ -813,17 +814,35 @@ long Cvektory::vymaz_seznam_VOZIKY()
 //PRÁCE ZE SOUBORY
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+//zapis hlavičky souboru
+void Cvektory::vytvor_hlavicku_souboru()
+{
+		File_hlavicka.Verze=0.9;
+		File_hlavicka.Mod=Form1->MOD;
+		File_hlavicka.Zoom=Form1->Zoom;
+		File_hlavicka.PosunutiX=Form1->Posun.x;
+		File_hlavicka.PosunutiY=Form1->Posun.y;
+		File_hlavicka.cas_start=PP.cas_start;
+		File_hlavicka.mnozstvi=PP.mnozstvi;
+		File_hlavicka.hod_den=PP.hod_den;
+		File_hlavicka.dni_rok=PP.dni_rok;
+		File_hlavicka.efektivita=PP.efektivita;
+		File_hlavicka.delka_voziku=PP.delka_voziku;
+		File_hlavicka.typ_voziku=PP.typ_voziku;
+		//objektové záležitosti
+		File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
+		File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
+		File_hlavicka.pocet_zakazek=ZAKAZKY->predchozi->n;
+		File_hlavicka.pocet_voziku=VOZIKY->predchozi->n;
+}
+//---------------------------------------------------------------------------
 //Uloží vektorová data do souboru
 short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 {
-     TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
-		 //optimalizace_seznamu();  asi možno smazat, myslím, že nepoužívám
+		 TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
 
-		 //zapiše hlavičku do souboru
-		 File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
-		 File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;
-		 //ZDM File_hlavicka.pocet_voziku=VOZIKY->predchozi->n;
-		 //ZDM File_hlavicka.delka_textu_prepravniky=seznam_dopravniku.Length()+1;
+		 //zapiše hlavičku do souboru //už neplatí:+ zbylé atributy a PP se do hlavičky zapisují v unit1
+		 vytvor_hlavicku_souboru();
 		 FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
 
 		 //uložení pohonu
@@ -886,11 +905,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					name=ukaz->name.c_str();
 					FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
 					name=NULL; delete[] name;
-					//ZDM //text - parametry
-					//ZDM wchar_t *parametry=new wchar_t [c_ukaz->paremetry_text_length];
-					//ZDM parametry=ukaz->techn_parametry.c_str();
-					//ZDM FileStream->Write(parametry,c_ukaz->paremetry_text_length*sizeof(wchar_t));//zapiše třetí řetězec za prvek bod
-					//ZDM parametry=NULL; delete[] parametry;
 			 }
 			 c_ukaz=NULL;delete c_ukaz;
 			 ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
@@ -1589,12 +1603,20 @@ void Cvektory::vse_odstranit()
 			delete POHONY; POHONY=NULL;
 		}
 
- /*		//vozíky
+		//vozíky
 		if(VOZIKY->predchozi->n>0)//pokud je více objektů
 		{
-			vymaz_seznam_VOZIKY();//vymaze body z paměti
+			vymaz_seznam_VOZIKY();//vymaze vozíky z paměti
 			delete VOZIKY; VOZIKY=NULL;
-		} */
+		}
+
+		//zakazky
+		if(ZAKAZKY!=NULL && ZAKAZKY->predchozi->n>0)//pokud je více objektů
+		{
+			vymaz_seznam_ZAKAZKY();//byla zde poznámka, že před zdm padalo
+			delete ZAKAZKY; ZAKAZKY=NULL;
+		}
+
 //
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů
@@ -1603,12 +1625,6 @@ void Cvektory::vse_odstranit()
 //			delete PALCE; PALCE=NULL;
 //		}
 //
-//		//cesty
-//		if(CESTY!=NULL && CESTY->predchozi->n>0)//pokud je více objektů
-//		{
-//			//vymaz_cesty();   padá dodělat
-//			delete CESTY; CESTY=NULL;
-//		}
 //
 //		//procesy
 //		if(PROCESY!=NULL && PROCESY->predchozi->n>0)//pokud je více objektů

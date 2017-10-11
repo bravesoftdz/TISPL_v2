@@ -237,7 +237,8 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 vse_odstranit();
 			 d.v.hlavicka_OBJEKTY();//založení spojového seznamu pro technologické objekty
 			 d.v.hlavicka_POHONY();//založení spojového seznamu pro pohony
-			 //d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
+       d.v.hlavicka_ZAKAZKY();//založení spojového seznamu pro zakázky
+			 d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
 			 //ZDM d.v.hlavicka_palce();
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
@@ -1918,9 +1919,7 @@ void __fastcall TForm1::DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TSh
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
-
-
-				/*HRGN hreg=CreateEllipticRgn(100,100,300,200);
+			/*HRGN hreg=CreateEllipticRgn(100,100,300,200);
 				Canvas->Brush->Color=clRed;
 				FillRgn(Canvas->Handle,hreg,Canvas->Brush->Handle);
 				FrameRgn(Canvas->Handle,hreg,Canvas->Brush->Handle,2,2);
@@ -2343,9 +2342,6 @@ void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 //samotné uložení
 void TForm1::Ulozit_soubor()
 {
-		//zapis hlavičky do souboru
-    vytvor_hlavicku_souboru();
-
     //zapis dat do souboru
 		d.v.uloz_do_souboru(FileName);
 
@@ -2357,22 +2353,6 @@ void TForm1::Ulozit_soubor()
 		//Zpet->Enabled=false;//přepne příslušně nabídky menu
 }
 //---------------------------------------------------------------------------
-//zapis hlavičky souboru
-void TForm1::vytvor_hlavicku_souboru()
-{
-		d.v.File_hlavicka.Verze=0.9;
-		d.v.File_hlavicka.Mod=MOD;
-		d.v.File_hlavicka.Zoom=Zoom;
-		d.v.File_hlavicka.PosunutiX=Posun.x;
-		d.v.File_hlavicka.PosunutiY=Posun.y;
-		d.v.File_hlavicka.cas_start=d.v.PP.cas_start;
-		d.v.File_hlavicka.mnozstvi=d.v.PP.mnozstvi;
-		d.v.File_hlavicka.hod_den=d.v.PP.hod_den;
-		d.v.File_hlavicka.dni_rok=d.v.PP.dni_rok;
-		d.v.File_hlavicka.efektivita=d.v.PP.efektivita;
-		d.v.File_hlavicka.delka_voziku=d.v.PP.delka_voziku;
-		d.v.File_hlavicka.typ_voziku=d.v.PP.typ_voziku;
-}
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //otevře soubor
@@ -2531,7 +2511,7 @@ void TForm1::zavrit_uvod()
 void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 {
 		 //zapis hlavičky do souboru
-		vytvor_hlavicku_souboru();
+		//test vytvor_hlavicku_souboru();
 
 		//nastevení adresáře bac souboru k adresáři aplikace pokud se jedná o nový soubor, ještě neuložen pod novým názvem//přidáno 3.6 důsledky neověřeny
 		if(FileName=="Nový.omap")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
