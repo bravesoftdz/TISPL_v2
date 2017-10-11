@@ -364,7 +364,8 @@ public:
 		void kopirujZAKAZKY_temp2ZAKAZKY();//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
 private:
 		void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
-		void vloz_temp_zakazku(TZakazka *Zakazka_temp);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+		void vloz_temp_zakazku(TZakazka *Zakazka_temp);//vloží vytvořenéu zakázku do spojového seznamu ZAKÁZKY_temp
+		void vloz_zakazku(TZakazka *Zakazka);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 		long vymaz_seznam_ZAKAZKY();//smaze seznam ZAKAZKY z paměti v četně přidružených cest, pokud následuje další práce se seznamem (např. nové vkládání), je nutné založit nejdříve hlavičku pomocí hlavicka_ZAKAZKY()
 		long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti včetně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
 //metody pro cesta konkrétní zakázky
@@ -460,6 +461,22 @@ private:
 				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 				bool stopka;//zda následuje na konci objektu stopka
 				double odchylka;//povolená odchylka z CT (hlavně užito u PP)
+		};
+		struct C_zakazka
+		{
+				unsigned long n;//pořadí objektu ve spoj.seznamu
+				//UnicodeString id;//uživatelské ID objektu - nelze
+				unsigned int id_length;
+				unsigned short typ;//0- realná,1-servisní
+				//UnicodeString name;//název zakázky nelze
+				unsigned int name_length;
+				TColor barva;//barva zakáky
+				double pomer;//poměr z celkového množství výrobků
+				double TT;
+				TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozíku
+				unsigned long pocet_voziku;//počet vozíků v zakázce
+				unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
+				unsigned long opakov_servis;//cyklus opakování servisních vozíku
 		};
 //		struct C_vozik//pro konverzi do bináru
 //		{

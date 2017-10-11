@@ -385,7 +385,7 @@ void Cvektory::vloz_temp_zakazku(UnicodeString id,unsigned short typ, UnicodeStr
 //vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 void Cvektory::vloz_temp_zakazku(TZakazka *Zakazka_temp)
 {
-  if(ZAKAZKY_temp==NULL)hlavicka_ZAKAZKY_temp();//POKUD HLAVIČKA NEEXISTUJE, TAK JI ZALOŽÍ
+	if(ZAKAZKY_temp==NULL)hlavicka_ZAKAZKY_temp();//POKUD HLAVIČKA NEEXISTUJE, TAK JI ZALOŽÍ
 
 	TZakazka *nova=new TZakazka;
 
@@ -395,6 +395,19 @@ void Cvektory::vloz_temp_zakazku(TZakazka *Zakazka_temp)
 	nova->predchozi=ZAKAZKY_temp->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	ZAKAZKY_temp->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//---------------------------------------------------------------------------
+//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+void Cvektory::vloz_zakazku(TZakazka *Zakazka)
+{
+	TZakazka *nova=new TZakazka;
+
+	nova=Zakazka;//novy bude ukazovat tam kam prvek Zakazka
+	nova->n=ZAKAZKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	ZAKAZKY->predchozi->dalsi=nova;//poslednímu prvku přiřadím ukazatel na nový prvek
+	nova->predchozi=ZAKAZKY->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	nova->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
+	ZAKAZKY->predchozi=nova;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
 // vrátí ukazatel (resp. data) na temp zakázku, nejčastěji editovanou
@@ -911,6 +924,42 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 };
 		 ukaz=NULL;delete ukaz;
 
+		 //uložení zakázek
+		 TZakazka *ukaz2=ZAKAZKY->dalsi;
+		 while (ukaz2!=NULL)
+		 {
+			 ////překopírování dat do pomocného objektu uložitelného do bináru
+			 C_zakazka *c_ukaz2=new C_zakazka;
+
+			 //samotná data
+			 c_ukaz2->n=ukaz2->n;
+			 c_ukaz2->id_length=ukaz2->id.Length()+1;
+			 c_ukaz2->typ=ukaz2->typ;
+			 c_ukaz2->name_length=ukaz2->name.Length()+1;
+			 c_ukaz2->barva=ukaz2->barva;
+			 c_ukaz2->pomer=ukaz2->pomer;
+			 c_ukaz2->TT=ukaz2->TT;
+			 c_ukaz2->jig=ukaz2->jig;
+			 c_ukaz2->pocet_voziku=ukaz2->pocet_voziku;
+			 c_ukaz2->serv_vozik_pocet=ukaz2->serv_vozik_pocet;
+			 c_ukaz2->opakov_servis=ukaz2->opakov_servis;
+			 FileStream->Write(c_ukaz2,sizeof(C_pohon));//zapiše jeden prvek do souboru
+			 //text - id
+			 wchar_t *id=new wchar_t [c_ukaz2->id_length];
+			 id=ukaz2->id.c_str();
+			 FileStream->Write(id,c_ukaz2->id_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+			 id=NULL; delete[] id;
+			 //text - name
+			 wchar_t *name=new wchar_t [c_ukaz2->name_length];
+			 name=ukaz2->name.c_str();
+			 FileStream->Write(name,c_ukaz2->name_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+			 name=NULL; delete[] name;
+
+			 c_ukaz2=NULL;delete c_ukaz2;
+			 ukaz2=ukaz2->dalsi;//posunutí na další pozici v seznamu
+		 };
+		 ukaz2=NULL;delete ukaz2;
+
 //ZDM
 //		 //uložení vozíků
 //		 TVozik *ukaz1=VOZIKY->dalsi;
@@ -996,7 +1045,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 
 					//vloží finální prvek do spojového seznamu
 					vloz_pohon(ukaz1);
-					(ukaz1);
 				}
 				ukaz1=NULL; delete ukaz1;
 				c_ukaz1=NULL; delete c_ukaz1;
@@ -1037,18 +1085,51 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->name=name;
 						name=NULL; delete[] name;
 
-						//ZDM //data pro Valuelisteditor, paremetry
-						//ZDM wchar_t *parametry=new wchar_t[c_ukaz->paremetry_text_length];
-						//ZDM FileStream->Read(parametry,c_ukaz->paremetry_text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
-						//ZDM ukaz->techn_parametry=parametry;
-						//ZDM parametry=NULL; delete[] parametry;
-
 						//vloží prvek do spojového seznamu
 						vloz_objekt(ukaz);
 				}
 				ukaz=NULL; delete ukaz;
 				c_ukaz=NULL; delete c_ukaz;
 			};
+
+			//zakázky
+			for(unsigned int i=1;i<=File_hlavicka.pocet_zakazek;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
+			{
+				TZakazka *ukaz2=new TZakazka;
+				C_zakazka *c_ukaz2=new C_zakazka;
+				FileStream->Read(c_ukaz2,sizeof(C_pohon));//načte jeden prvek ze souboru
+				if(c_ukaz2->n!=0 && File_hlavicka.pocet_pohonu>=c_ukaz2->n)//pokud nenačte hlavičku či nějaký shit
+				{
+					//samotná data
+					ukaz2->n=c_ukaz2->n;
+					ukaz2->typ=c_ukaz2->typ;
+					ukaz2->barva=c_ukaz2->barva;
+					ukaz2->pomer=c_ukaz2->pomer;
+					ukaz2->TT=c_ukaz2->TT;
+					ukaz2->jig=c_ukaz2->jig;
+					ukaz2->pocet_voziku=c_ukaz2->pocet_voziku;
+					ukaz2->serv_vozik_pocet=c_ukaz2->serv_vozik_pocet;
+					ukaz2->opakov_servis=c_ukaz2->opakov_servis;
+
+					//id
+					wchar_t *id=new wchar_t[c_ukaz2->id_length];
+					FileStream->Read(id,c_ukaz2->id_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+					ukaz2->id=id;
+					id=NULL; delete[] id;
+
+					//popisek
+					wchar_t *name=new wchar_t[c_ukaz2->name_length];
+					FileStream->Read(name,c_ukaz2->name_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+					ukaz2->name=name;
+					name=NULL; delete[] name;
+
+					//vloží finální prvek do spojového seznamu
+					vloz_zakazku(ukaz2);
+				}
+				ukaz2=NULL; delete ukaz2;
+				c_ukaz2=NULL; delete c_ukaz2;
+			};
+
 
 			//ZDM
 //			for(unsigned int i=1;i<=File_hlavicka.pocet_voziku;i++)//možno řešit sice while, po strukturách, ale toto je připravené pro případ, kdy budu načítat i objekty jiného typu než objekt
