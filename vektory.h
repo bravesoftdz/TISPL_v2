@@ -357,6 +357,7 @@ public:
 		void edituj_temp_zakazku(unsigned long n,UnicodeString id,unsigned short typ,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
 		void smaz_temp_zakazku(unsigned long n);//smaže zakázku s uvedeným “n” ze spojového seznamu ZAKAZKY_temp včetně přidružených cest
 		void zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned long nove_poradi);//změní zařazení zakázky ve spojovém seznamu
+		TZakazka *vrat_temp_zakazku(unsigned long n_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
 		void kopirujZAKAZKY_temp2ZAKAZKY();//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
 private:
 		void hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY
@@ -367,26 +368,29 @@ private:
 //metody pro cesta konkrétní zakázky
 public:
 		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
-		TZakazka *vrat_temp_zakazku(unsigned long n_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
 		inicializace_cesty(TZakazka *Editovana_zakazka);//volat pouze jednou v počátku metody při stisku OK, vymaže předchozí cestu - pokud existuje, vytvoří hlavičku cesty. Příklad použití metody: inicializace_cesty(Editovana_zakazka);
 		void vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+private:
 		void vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty);//do konkrétní cesty vloží segmenty cesty
+		//ZDM		TSeznam_cest *vrat_cestu(unsigned int ID_cesty);
 
-//		TSeznam_cest *vrat_cestu(unsigned int ID_cesty);
+//metody pro VOZIKY
+public:
+		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků
+private:
+		void hlavicka_VOZIKY();
+		void vloz_vozik(TZakazka *zakazka);
+		long vymaz_seznam_VOZIKY();
 
-			//metody pro PROCESY
+
+//metody pro PROCESY
 //		void hlavicka_procesy();
 //		void vloz_proces(TProces *Proces);
 //		TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
 //		TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
 //		long vymaz_seznam_procesu();
 
-			//metody pro VOZIKY
-//		void hlavicka_voziky();
-//		void vloz_vozik();//přidá nový prázdný - nedefinovaný vozík do seznamu VOZIKY
-//		void vloz_vozik(TVozik *Vozik);
-//		void vloz_vozik(unsigned long n,UnicodeString id,double delka,double sirka,double vyska,double rotace,UnicodeString nazev_vyrobku,double max_vyrobku,double akt_vyrobku,double delka_vcetne_vyrobku,double sirka_vcetne_vyrobku,double vyska_vcetne_vyrobku,TColor barva,TSeznam_cest *cesta);
-//    long vymaz_seznam_voziku();
+//metody pro PALCE
 //		void hlavicka_palce();
 //		void vloz_palec();//přidá nový vozík do seznamu PALCE
 //		long vymaz_seznam_palcu();

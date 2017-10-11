@@ -632,7 +632,87 @@ void Cvektory::vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vy
 //	}
 //	return ret;
 //}
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+//VOZIKY
+void Cvektory::hlavicka_VOZIKY()
+{
+	TVozik *novy=new TVozik;
+	novy->n=0;
+	novy->zakazka=NULL;
 
+	novy->predchozi=novy;//ukazuje sam na sebe
+	novy->dalsi=NULL;
+	VOZIKY=novy;
+}
+////---------------------------------------------------------------------------
+//vygeneruje podle zadaných zakázek seznam vozíků
+void Cvektory::generuj_VOZIKY()
+{
+	 if(ZAKAZKY!=NULL)
+	 if(ZAKAZKY->dalsi!=NULL && ZAKAZKY->predchozi->n>0)//záměrně do dvou podmínek
+	 {
+			vymaz_seznam_VOZIKY();
+			hlavicka_VOZIKY();
+			TZakazka *zakazka=ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu ZAKAZKY, přeskočí hlavičku
+			while (zakazka!=NULL)//projíždí jednotlivé zakázky
+			{
+				for(unsigned long i=1;i<=zakazka->pocet_voziku;i++)//v rámci zakázky generuje zadaný počet vozíků
+				vloz_vozik(zakazka);
+				ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+			}
+	 }
+}
+////---------------------------------------------------------------------------
+//uloží ukazatel na vozík do spojového seznamu voziků
+void Cvektory::vloz_vozik(TZakazka *zakazka)
+{
+	TVozik *novy=new TVozik;
+	novy=Vozik;//novy bude ukazovat tam kam prvek data
+
+	//ZDM pozor v případě načítání existujícího stavu ze souboru změnitm toto je výchozí pozice na lince
+	//ZDM novy->segment=NULL;novy->pozice=-1;novy->stav=-1;
+	//ZDM novy->X=0;novy->Y=0;novy->timer=0;novy->start=0;
+
+	novy->zakazka=zakazka;//přiřazení zakázky
+
+	novy->n=VOZIKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	VOZIKY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+	novy->predchozi=VOZIKY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje)
+	VOZIKY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+};
+////---------------------------------------------------------------------------
+long Cvektory::vymaz_seznam_voziku()
+{
+	long pocet_smazanych_objektu=0;
+	while (VOZIKY!=NULL)
+	{
+		pocet_smazanych_objektu++;
+		VOZIKY->predchozi=NULL;
+		delete VOZIKY->predchozi;
+		VOZIKY=VOZIKY->dalsi;
+	};
+
+	return pocet_smazanych_objektu;
+};
+////---------------------------------------------------------------------------
+//void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik)
+//{
+//	TObjekt *ukaz=Objekt->dalsi;
+//	while (ukaz!=NULL)
+//	{
+//		ukaz->obsazenost=0;
+//		ukaz=ukaz->dalsi;
+//	};
+//	TVozik *ukaz1=Vozik->dalsi;
+//	while (ukaz1!=NULL)
+//	{
+//		ukaz1->pozice=-1;
+//		ukaz1=ukaz1->dalsi;
+//	};
+//}
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //void Cvektory::hlavicka_procesy()
@@ -1142,129 +1222,6 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-//void Cvektory::hlavicka_voziky()
-//{
-//	TVozik *novy=new TVozik;
-//	novy->n=0;
-//	novy->id=0;
-//	novy->delka=0;
-//	novy->sirka=0;
-//	novy->vyska=0;
-//	novy->rotace=0;
-//	novy->nazev_vyrobku="hlavicka";
-//	novy->max_vyrobku=0;
-//	novy->akt_vyrobku=0;
-//	novy->delka_vcetne_vyrobku=0;
-//	novy->sirka_vcetne_vyrobku=0;
-//	novy->vyska_vcetne_vyrobku=0;
-//	novy->stav=-1;
-//	novy->pozice=0;
-//	novy->start=0;
-//	novy->X=0;novy->Y=0;
-//	novy->timer=0;
-//	novy->segment=NULL;
-//	novy->cesta=NULL;
-//
-//	novy->predchozi=novy;//ukazuje sam na sebe
-//	novy->dalsi=NULL;
-//	VOZIKY=novy;
-//}
-////---------------------------------------------------------------------------
-//void Cvektory::vloz_vozik()//přidá nový vozík do seznamu VOZIKY
-//{
-//	TVozik *novy=new TVozik;
-//
-//	novy->n=VOZIKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
-//	novy->segment=NULL;novy->pozice=-1;novy->stav=-1;
-//	novy->X=0;novy->Y=0;novy->timer=0;novy->start=0;
-//
-//	VOZIKY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
-//	novy->predchozi=VOZIKY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	novy->dalsi=NULL;
-//	VOZIKY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-//}
-////---------------------------------------------------------------------------
-////uloží ukazatel na vozík do spojového seznamu voziku přetížená fce
-//void Cvektory::vloz_vozik(TVozik *Vozik)
-//{
-//	TVozik *novy=new TVozik;
-//	novy=Vozik;//novy bude ukazovat tam kam prvek data
-//
-//	//pozor v případě načítání existujícího stavu ze souboru změnitm toto je výchozí pozice na lince
-//	novy->segment=NULL;novy->pozice=-1;novy->stav=-1;
-//	novy->X=0;novy->Y=0;novy->timer=0;novy->start=0;
-//
-//	novy->n=VOZIKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
-//	VOZIKY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
-//	novy->predchozi=VOZIKY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-//	VOZIKY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-//};
-////---------------------------------------------------------------------------
-//void Cvektory::vloz_vozik(unsigned long n,UnicodeString id,double delka,double sirka,double vyska,double rotace,UnicodeString nazev_vyrobku,double max_vyrobku,double akt_vyrobku,double delka_vcetne_vyrobku,double sirka_vcetne_vyrobku,double vyska_vcetne_vyrobku,TColor barva,TSeznam_cest *cesta)
-//{
-// 	TVozik *novy=new TVozik;
-//
-//	novy->n=n;//navýším počítadlo prvku o jedničku
-//	novy->id=id;
-//	novy->delka=delka;
-//	novy->sirka=sirka;
-//	novy->vyska=vyska;
-//	novy->rotace=rotace;
-//	novy->nazev_vyrobku=nazev_vyrobku;
-//	novy->max_vyrobku=max_vyrobku;
-//	novy->akt_vyrobku=akt_vyrobku;
-//	novy->delka_vcetne_vyrobku=delka_vcetne_vyrobku;
-//	novy->sirka_vcetne_vyrobku=sirka_vcetne_vyrobku;
-//	novy->vyska_vcetne_vyrobku=vyska_vcetne_vyrobku;
-//	novy->barva=barva;
-//	novy->pozice=-1;novy->stav=-1;
-//	novy->start=0;
-//	novy->X=0;novy->Y=0;
-//	novy->timer=0;
-//	novy->segment=NULL;
-//	novy->cesta=cesta;
-//
-//
-//	VOZIKY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
-//	novy->predchozi=VOZIKY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	novy->dalsi=NULL;
-//	VOZIKY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-//
-//}
-////---------------------------------------------------------------------------
-//long Cvektory::vymaz_seznam_voziku()
-//{
-//	long pocet_smazanych_objektu=0;
-//	while (VOZIKY!=NULL)
-//	{
-//		pocet_smazanych_objektu++;
-//		VOZIKY->predchozi=NULL;
-//		delete VOZIKY->predchozi;
-//		VOZIKY=VOZIKY->dalsi;
-//	};
-//
-//	return pocet_smazanych_objektu;
-//};
-////---------------------------------------------------------------------------
-//void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik)
-//{
-//	TObjekt *ukaz=Objekt->dalsi;
-//	while (ukaz!=NULL)
-//	{
-//		ukaz->obsazenost=0;
-//		ukaz=ukaz->dalsi;
-//	};
-//	TVozik *ukaz1=Vozik->dalsi;
-//	while (ukaz1!=NULL)
-//	{
-//		ukaz1->pozice=-1;
-//		ukaz1=ukaz1->dalsi;
-//	};
-//}
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
 //void Cvektory::hlavicka_palce()
 //{
 //	TPalec *novy_uzel=new TPalec;
@@ -1618,12 +1575,12 @@ void Cvektory::vse_odstranit()
 			delete POHONY; POHONY=NULL;
 		}
 
-//		//voziky
-//		if(VOZIKY->predchozi->n>0)//pokud je více objektů
-//		{
-//			vymaz_seznam_voziku();//vymaze body z paměti
-//			delete VOZIKY; VOZIKY=NULL;
-//		}
+		//vozíky
+		if(VOZIKY->predchozi->n>0)//pokud je více objektů
+		{
+			vymaz_seznam_voziku();//vymaze body z paměti
+			delete VOZIKY; VOZIKY=NULL;
+		}
 //
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů
