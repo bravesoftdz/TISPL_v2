@@ -314,6 +314,7 @@ void Cvektory::hlavicka_ZAKAZKY()
 	TZakazka *nova=new TZakazka;
 	nova->n=0;
 	nova->id="hlavička";
+	nova->typ=1;
 	nova->name="hlavička";
 	nova->barva=clWhite;
 	nova->pomer=0;
@@ -334,6 +335,7 @@ void Cvektory::hlavicka_ZAKAZKY_temp()
 	TZakazka *nova=new TZakazka;
 	nova->n=0;
 	nova->id="hlavička_temp";
+	nova->typ=1;
 	nova->name="hlavička_temp";
 	nova->barva=clWhite;
 	nova->pomer=0;
@@ -350,10 +352,11 @@ void Cvektory::hlavicka_ZAKAZKY_temp()
 }
 //---------------------------------------------------------------------------
 //vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
-void Cvektory::vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
+void Cvektory::vloz_temp_zakazku(UnicodeString id,unsigned short typ, UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
 {
 	TZakazka *nova=new TZakazka;
 	nova->id=id;
+	nova->typ=typ;
 	nova->name=name;
 	nova->barva=barva;
 	nova->pomer=pomer;
@@ -395,7 +398,7 @@ Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
 }
 //---------------------------------------------------------------------------
 //provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
-void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
+void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id, unsigned short typ, UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
 {
 	if(ZAKAZKY_temp->dalsi!=NULL && n>0)
 	{
@@ -406,6 +409,7 @@ void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id,UnicodeStrin
 				{
 					//editace parametrů
 					ukaz->id=id;
+					ukaz->typ=typ;
 					ukaz->name=name;
 					ukaz->barva=barva;
 					ukaz->pomer=pomer;

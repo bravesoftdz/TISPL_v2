@@ -71,6 +71,7 @@ class Cvektory
 	{
 		 unsigned long n;//pořadí objektu ve spoj.seznamu
 		 UnicodeString id;//uživatelské ID objektu
+		 unsigned short typ;//0- realná,1-servisní
 		 UnicodeString name;//název zakázky
 		 TColor barva;//barva zakáky
 		 double pomer;//poměr z celkového množství výrobků
@@ -327,10 +328,10 @@ class Cvektory
 		};
 		TFile_hlavicka File_hlavicka;
 
-//
-		Cvektory();//konstruktor
+//konstruktor
+		Cvektory();
 
-		//metody pro OBJEKTY
+//metody pro OBJEKTY
 		void hlavicka_OBJEKTY();
 		short vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu
 		short vloz_objekt(TObjekt *Objekt);//přetížená fce
@@ -341,7 +342,7 @@ class Cvektory
 		void zvys_indexy(TObjekt *Objekt);
 		long vymaz_seznam_OBJEKTY();
 
-		//metody pro POHONY
+//metody pro POHONY
 		void hlavicka_POHONY();
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
@@ -352,8 +353,8 @@ class Cvektory
 
 //metody pro ZAKAZKY
 public:
-		void vloz_temp_zakazku(UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
-		void edituj_temp_zakazku(unsigned long n,UnicodeString id,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
+		void vloz_temp_zakazku(UnicodeString id,unsigned short typ, UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//vytvoří zakázku dle zadaných parametru do spojového seznamu ZAKÁZKY
+		void edituj_temp_zakazku(unsigned long n,UnicodeString id,unsigned short typ,UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis);//provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
 		void smaz_temp_zakazku(unsigned long n);//smaže zakázku s uvedeným “n” ze spojového seznamu ZAKAZKY_temp včetně přidružených cest
 		void zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned long nove_poradi);//změní zařazení zakázky ve spojovém seznamu
 		void kopirujZAKAZKY_temp2ZAKAZKY();//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
@@ -423,8 +424,17 @@ public:
 //		unsigned int vrat_pocet_voziku_zakazky(unsigned int n_zakazky);
 //		unsigned int WIP();//vrátí max. počet vozíků na lince
 //		void uloz_doporucene_kapacity_objetku();
-//
-	private:
+
+//pomocné struktury pro ukládání do bináru
+private:
+		struct C_pohon//pro konverzi do bináru
+		{
+				unsigned int n;
+				unsigned int text_length;
+				double rychlost_od;//minimální pracovní rychlost dopravníku
+				double rychlost_do;//maximální pracovní rychlost dopravníku
+				double roztec;//rozteč palců v mm
+		};
 		struct C_objekt//pro konverzi do bináru
 		{
 				unsigned int n;
@@ -442,15 +452,6 @@ public:
 				bool stopka;//zda následuje na konci objektu stopka
 				double odchylka;//povolená odchylka z CT (hlavně užito u PP)
 		};
-		struct C_pohon//pro konverzi do bináru
-		{
-				unsigned int n;
-				unsigned int text_length;
-				double rychlost_od;//minimální pracovní rychlost dopravníku
-				double rychlost_do;//maximální pracovní rychlost dopravníku
-				double roztec;//rozteč palců v mm
-		};
-
 //		struct C_vozik//pro konverzi do bináru
 //		{
 //			unsigned int n; //pořadí objektu ve spoj.seznamu
