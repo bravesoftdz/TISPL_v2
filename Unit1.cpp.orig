@@ -237,7 +237,11 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 vse_odstranit();
 			 d.v.hlavicka_OBJEKTY();//založení spojového seznamu pro technologické objekty
 			 d.v.hlavicka_POHONY();//založení spojového seznamu pro pohony
+<<<<<<< HEAD
 			 //ZDM d.v.hlavicka_voziky();
+=======
+			 //d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
+>>>>>>> 6fb5c13645c1b37e27b05704c6396f9575046bbb
 			 //ZDM d.v.hlavicka_palce();
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
@@ -3722,7 +3726,6 @@ void __fastcall TForm1::scSplitView_MENUMouseLeave(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-<<<<<<< HEAD
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
 	Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
@@ -3732,5 +3735,4 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-=======
->>>>>>> 3b94766bd799667d0781f457d65078ec79ddcbc0
+
