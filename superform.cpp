@@ -170,14 +170,38 @@ void TForm_definice_zakazek::vymaz_barvu() {
 void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 {
 
-	rStringGridEd1->RowCount-1;
+
 	nacti_nastaveni_formu(); // nacteni def. barvicek
 
 	if(!Form1->d.v.PP.mnozstvi){
 
-	nacti_defaulni_PP();
-  rStringGridEd1->RowCount-1; // prazdna zakazka, zadny radek
-	}
+	nacti_defaulni_PP(); // prazdna zakazka
+
+		Cvektory::TJig j;
+
+	rStringGridEd1->Cells[0][1]="1";
+	rStringGridEd1->Cells[1][1]="1";
+	rStringGridEd1->Cells[2][1]="Nova zakazka";
+ //	rStringGridEd1->Cells[3][1]="255";
+	rStringGridEd1->Cells[4][1]="100";  //pomer
+ //	rStringGridEd1->Cells[5][1]=j;
+	rStringGridEd1->Cells[6][1]="200";
+	rStringGridEd1->Cells[7][1]="5";
+	rStringGridEd1->Cells[8][1]="50";
+	rStringGridEd1->Cells[10][1]="2";   //vytvoøim defaultní øadek se zakázkou a hned ji našiju do spojáku
+
+			Form1->d.v.vloz_temp_zakazku (rStringGridEd1->Cells[0][1],
+																		rStringGridEd1->Cells[1][1].ToInt(),
+																		rStringGridEd1->Cells[2][1],
+																		clRed,
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][1]),
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][1]),
+																		j,
+																		rStringGridEd1->Cells[6][1].ToInt(),
+																		rStringGridEd1->Cells[7][1].ToInt(),
+																		rStringGridEd1->Cells[8][1].ToInt());
+																		}
+
 
 	else {nacti_PP();}
 
@@ -761,23 +785,10 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.PP.efektivita=Form1->ms.MyToDouble(rEditNum_effektivita->Text);
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 
-		 if(rStringGridEd1->RowCount==2){   //potreba doresit kdyz klikne pak rovnou na Ulozit bez +
-			Cvektory::TJig j;
-			Form1->d.v.vloz_temp_zakazku (rStringGridEd1->Cells[0][1],
-																		rStringGridEd1->Cells[1][1],
-																		rStringGridEd1->Cells[2][1],
-																		clRed,
-																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][1]),
-																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][1]),
-																		j,
-																		rStringGridEd1->Cells[6][1].ToInt(),
-																		rStringGridEd1->Cells[7][1].ToInt(),
-																		rStringGridEd1->Cells[8][1].ToInt());
-																		}
-
+	
 				Form1->DuvodUlozit(true);
 				Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
-			 //	generuj_VOZIKY();   odkomentovat po aktualizaci kodu z git
+			 	//generuj_VOZIKY();
 				Form_definice_zakazek->Close();
 
 
@@ -822,7 +833,7 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 		Cvektory::TJig j;
 
 			Form1->d.v.vloz_temp_zakazku(rStringGridEd1->Cells[0][i],
-																		rStringGridEd1->Cells[1][i],
+																		rStringGridEd1->Cells[1][i].ToInt(),
 																		rStringGridEd1->Cells[2][i],
 																		clRed,
 																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
@@ -861,7 +872,7 @@ void TForm_definice_zakazek::nacti_zakazky(){
 			//posun na další prvek v seznamu                    //pri nacteni radku zakazky zaroven i musim nove ulozit do temp spojaku zakazek
 
 			 Form1->d.v.vloz_temp_zakazku(rStringGridEd1->Cells[0][i],
-			 															rStringGridEd1->Cells[1][i],
+			 															rStringGridEd1->Cells[1][i].ToInt(),
 																		rStringGridEd1->Cells[2][i],
 																		clRed,
 																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
