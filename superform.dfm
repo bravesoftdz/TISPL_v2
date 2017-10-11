@@ -215,7 +215,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnClick = Button_DELClick
   end
   object rStringGridEd1: TrStringGridEd
-    Left = 0
+    Left = -1
     Top = 300
     Width = 1000
     Height = 186
@@ -441,7 +441,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
-    AutoAddNewRow = True
     RowHeights = (
       30
       30)
@@ -646,16 +645,16 @@ object Form_definice_zakazek: TForm_definice_zakazek
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPGlyphButton1: TscGPGlyphButton
-    Left = 153
-    Top = 257
+  object scGPGlyphButton_add_zakazka: TscGPGlyphButton
+    Left = 164
+    Top = 264
     Width = 24
     Height = 19
     TabOrder = 16
     TabStop = True
-    Visible = False
+    OnClick = scGPGlyphButton_add_zakazkaClick
     Animation = False
-    Caption = 'scGPGlyphButton1'
+    Caption = 'scGPGlyphButton_add_zakazka'
     CanFocused = True
     CustomDropDown = False
     Layout = blGlyphLeft
@@ -1480,6 +1479,24 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object button_zakazky_temp: TButton
+    Left = 200
+    Top = 232
+    Width = 185
+    Height = 25
+    Caption = 'button_zakazky_temp'
+    TabOrder = 26
+    OnClick = button_zakazky_tempClick
+  end
+  object Memo4: TMemo
+    Left = 411
+    Top = 170
+    Width = 254
+    Height = 113
+    Lines.Strings = (
+      'Memo4')
+    TabOrder = 27
   end
   object ColorDialog1: TColorDialog
     Left = 592

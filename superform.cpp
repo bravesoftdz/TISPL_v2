@@ -170,11 +170,13 @@ void TForm_definice_zakazek::vymaz_barvu() {
 void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 {
 
+	rStringGridEd1->RowCount-1;
 	nacti_nastaveni_formu(); // nacteni def. barvicek
 
 	if(!Form1->d.v.PP.mnozstvi){
 
 	nacti_defaulni_PP();
+  rStringGridEd1->RowCount-1; // prazdna zakazka, zadny radek
 	}
 
 	else {nacti_PP();}
@@ -182,6 +184,11 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 
 	rStringGridEd1->Cells[5][1]="NASTAVIT";
 	rStringGridEd1->Cells[9][1]="NASTAVIT";
+
+	if(Form1->d.v.ZAKAZKY->dalsi->n=!NULL) { //pokud je uloženo nìco v zakázkách tak je naètu
+
+		nacti_zakazky();
+		}
 
 
 }
@@ -700,7 +707,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 {
 if(rStringGridEd1->Col==5){
 	Form_jig->ShowModal();
-}
+}                // zde volat metodu vrat_temp_zakazku
 
 if(rStringGridEd1->Col==9){
 	Form_cesty->ShowModal();
@@ -748,12 +755,29 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
 
+
 		Form1->d.v.PP.mnozstvi=Form1->ms.MyToDouble(rEditNum_pozad_mnozstvi->Text);
 		Form1->d.v.PP.dni_rok=Form1->ms.MyToDouble(rEditNum_pocet_dnu->Text);
 		Form1->d.v.PP.efektivita=Form1->ms.MyToDouble(rEditNum_effektivita->Text);
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 
+		 if(rStringGridEd1->RowCount==2){   //potreba doresit kdyz klikne pak rovnou na Ulozit bez +
+			Cvektory::TJig j;
+			Form1->d.v.vloz_temp_zakazku (rStringGridEd1->Cells[0][1],
+																		rStringGridEd1->Cells[1][1],
+																		rStringGridEd1->Cells[2][1],
+																		clRed,
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][1]),
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][1]),
+																		j,
+																		rStringGridEd1->Cells[6][1].ToInt(),
+																		rStringGridEd1->Cells[7][1].ToInt(),
+																		rStringGridEd1->Cells[8][1].ToInt());
+																		}
+
 				Form1->DuvodUlozit(true);
+				Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
+			 //	generuj_VOZIKY();   odkomentovat po aktualizaci kodu z git
 				Form_definice_zakazek->Close();
 
 
@@ -788,7 +812,82 @@ void TForm_definice_zakazek::nacti_nastaveni_formu(){
  scGPButton4->Options->FrameNormalColor=Form_definice_zakazek->Color;
  scGPButton4->Options->FramePressedColor=Form_definice_zakazek->Color;
 
+}
 
+void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject *Sender)
+{
+
+	
+		int i=rStringGridEd1->RowCount;
+		Cvektory::TJig j;
+
+			Form1->d.v.vloz_temp_zakazku(rStringGridEd1->Cells[0][i],
+																		rStringGridEd1->Cells[1][i],
+																		rStringGridEd1->Cells[2][i],
+																		clRed,
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][i]),
+																		j,
+																		rStringGridEd1->Cells[6][i].ToInt(),
+																		rStringGridEd1->Cells[7][i].ToInt(),
+																		rStringGridEd1->Cells[8][i].ToInt());
+
+	rStringGridEd1->RowCount++;
+}
+//---------------------------------------------------------------------------
+
+
+void TForm_definice_zakazek::nacti_zakazky(){
+
+
+		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
+		Cvektory::TJig j;
+
+	  int	i=1;
+
+		//Memo4->Lines->Add(AnsiString(ukaz->id));
+		while (ukaz!=NULL)
+		{
+			rStringGridEd1->Cells[0][i] = ukaz->id;
+			rStringGridEd1->Cells[1][i] = ukaz->typ;
+			rStringGridEd1->Cells[2][i] = ukaz->name;
+			rStringGridEd1->Cells[3][i] = ukaz->barva;
+			rStringGridEd1->Cells[4][i] = ukaz->pomer;
+		//	rStringGridEd1->Cells[5][i] = NULL;
+			rStringGridEd1->Cells[6][i] = ukaz->pocet_voziku;
+			rStringGridEd1->Cells[7][i] = ukaz->serv_vozik_pocet;
+		 //	rStringGridEd1->Cells[8][i] = NULL;
+			rStringGridEd1->Cells[9][i] = ukaz->TT;
+			//posun na další prvek v seznamu                    //pri nacteni radku zakazky zaroven i musim nove ulozit do temp spojaku zakazek
+
+			 Form1->d.v.vloz_temp_zakazku(rStringGridEd1->Cells[0][i],
+			 															rStringGridEd1->Cells[1][i],
+																		rStringGridEd1->Cells[2][i],
+																		clRed,
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][i]),
+																		j,
+																		rStringGridEd1->Cells[6][i].ToInt(),
+																		rStringGridEd1->Cells[7][i].ToInt(),
+																		rStringGridEd1->Cells[8][i].ToInt());
+
+
+			i++;
+			ukaz=ukaz->dalsi;
+		}
 
 }
+void __fastcall TForm_definice_zakazek::button_zakazky_tempClick(TObject *Sender)
+{
+	Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY_temp->dalsi;
+		while (ukaz!=NULL)
+		{
+
+	Memo4->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
+
+	ukaz=ukaz->dalsi;
+
+			 }
+}
+//---------------------------------------------------------------------------
 

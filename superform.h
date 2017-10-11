@@ -49,7 +49,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton2;
 	TButton *Button5;
 	TscGPButton *scGPButton4;
-	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *scGPGlyphButton_add_zakazka;
 	TscGPGlyphButton *scGPGlyphButton2;
 	TscGPGlyphButton *scGPGlyphButton4;
 	TscGPPanel *scGPPanel2;
@@ -62,6 +62,8 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_pozad_mnozstvi;
 	TscGPButton *scGPButton_Ulozit;
 	TscGPButton *scGPButton3;
+	TButton *button_zakazky_temp;
+	TMemo *Memo4;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
@@ -83,6 +85,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton4Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPButton_UlozitClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_add_zakazkaClick(TObject *Sender);
+	void __fastcall button_zakazky_tempClick(TObject *Sender);
 
 
 
@@ -100,6 +104,7 @@ public:		// User declarations
 		short offset;
 		short Pocet_radku;
 		bool data_nalezena;  //jsou-li data ve spojaku, nastavi se na true
+
 
 
 		struct TBarva
@@ -124,6 +129,7 @@ public:		// User declarations
 		void nacti_defaulni_PP();
 		void nacti_PP();
 		void nacti_nastaveni_formu();
+		void nacti_zakazky();
 
 };
 //---------------------------------------------------------------------------

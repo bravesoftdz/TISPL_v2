@@ -115,8 +115,6 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
 //	Form1->d.v.PP.delka_voziku=rEditNum_delkavoziku->Text.ToDouble();
-
-
 	Form1->d.v.vymaz_seznam_POHONY();
 	Form1->d.v.hlavicka_POHONY();
 
@@ -126,11 +124,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]),        //rychlost od
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]),    //rychlost do
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
-
-//					ShowMessage(rStringGridEd_tab_dopravniky->Cells[1][i]);
-//					ShowMessage(rStringGridEd_tab_dopravniky->Cells[2][i]);
-//					ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]));
-//					ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));
 				 }
 
 				 Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);

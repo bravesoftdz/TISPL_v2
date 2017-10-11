@@ -237,7 +237,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 vse_odstranit();
 			 d.v.hlavicka_OBJEKTY();//založení spojového seznamu pro technologické objekty
 			 d.v.hlavicka_POHONY();//založení spojového seznamu pro pohony
-			 d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
+			 //ZDM d.v.hlavicka_voziky();
 			 //ZDM d.v.hlavicka_palce();
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
