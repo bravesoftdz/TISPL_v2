@@ -125,6 +125,18 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 	return ret;
 }
 //---------------------------------------------------------------------------
+//vrátí ukazatel na objekt dle n objektu
+Cvektory::TObjekt *Cvektory::vrat_objekt(unsigned int n)
+{
+	TObjekt *p=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (p!=NULL)
+	{
+		if(p->n==n)break;//akce s ukazatelem
+		else p=p->dalsi;//posun na další prvek v seznamu
+	}
+	return p;
+}
+//---------------------------------------------------------------------------
 //smaze objekt ze seznamu
 short int Cvektory::smaz_objekt(TObjekt *Objekt)
 {
@@ -533,13 +545,7 @@ long Cvektory::vymaz_seznam_ZAKAZKY()
 	long pocet_smazanych_objektu=0;
 	while (ZAKAZKY!=NULL)
 	{
-		//mazání jednotlivých cest
-		while (ZAKAZKY->cesta!=NULL)
-		{
-			ZAKAZKY->cesta->predchozi=NULL;
-			delete ZAKAZKY->cesta->predchozi;
-			ZAKAZKY->cesta=ZAKAZKY->cesta->dalsi;
-		};
+		vymaz_cestu_zakazky(ZAKAZKY);//mazání jednotlivých cest
 		ZAKAZKY->predchozi=NULL;
 		delete ZAKAZKY->predchozi;
 		ZAKAZKY=ZAKAZKY->dalsi;
@@ -554,13 +560,7 @@ long Cvektory::vymaz_seznam_ZAKAZKY_temp()
 	long pocet_smazanych_objektu=0;
 	while (ZAKAZKY_temp!=NULL)
 	{
-		//mazání jednotlivých cest
-		while (ZAKAZKY_temp->cesta!=NULL)
-		{
-			ZAKAZKY_temp->cesta->predchozi=NULL;
-			delete ZAKAZKY_temp->cesta->predchozi;
-			ZAKAZKY_temp->cesta=ZAKAZKY_temp->cesta->dalsi;
-		};
+		vymaz_cestu_zakazky(ZAKAZKY_temp);//mazání jednotlivých cest
 		ZAKAZKY_temp->predchozi=NULL;
 		delete ZAKAZKY_temp->predchozi;
 		ZAKAZKY_temp=ZAKAZKY_temp->dalsi;
@@ -571,11 +571,12 @@ long Cvektory::vymaz_seznam_ZAKAZKY_temp()
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+//cesta dané zakázky
 //vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
-void Cvektory::hlavicka_cesta_zakazky(TZakazka *Zakazka)
+void Cvektory::hlavicka_cesta_zakazky(TZakazka *zakazka)
 {
-	Zakazka->cesta=new TCesta;
-	TCesta *nova=Zakazka->cesta;
+	zakazka->cesta=new TCesta;
+	TCesta *nova=zakazka->cesta;
 	nova->n=0;
 	nova->objekt=NULL;
 	nova->CT=0;
@@ -587,35 +588,49 @@ void Cvektory::hlavicka_cesta_zakazky(TZakazka *Zakazka)
 	nova->dalsi=NULL;
 }
 //---------------------------------------------------------------------------
-//do konkrétní cesty vloží segmenty cesty
-void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty)
+//vymaže předchozí cestu a zavolá hlavičku cesty nové
+void Cvektory::inicializace_cesty(TZakazka *zakazka)
 {
-	TCesta *segment=new TCesta;
-	segment=Segment_cesty;
-	segment->n=Zakazka->cesta->predchozi->n+1;//navýším počítadlo prvku o jedničku
-
-	Zakazka->cesta->predchozi->dalsi=segment;//poslednímu prvku přiřadím ukazatel na nový prvek
-	segment->predchozi=Zakazka->cesta->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-	Zakazka->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+		vymaz_cestu_zakazky(zakazka);
+		hlavicka_cesta_zakazky(zakazka);
 }
-void Cvektory::vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
-{
-
-}
-/*void Cvektory::vloz_segment_cesty(TZakazka *Zakazka,TObjekt *Objekt,double CT,double Tc,double Tv,double RD)
+//---------------------------------------------------------------------------
+//do konkrétní zakázky vloží segmenty cesty
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 {
 	TCesta *segment=new TCesta;
 
-	segment->n=Zakazka->cesta->predchozi->n+1;//navýším počítadlo prvku o jedničku
-	segment->objekt=Objekt;
+	segment->objekt=vrat_objekt(n_vybraneho_objektu);
 	segment->CT=CT;
 	segment->Tc=Tc;
 	segment->Tv=Tv;
 	segment->RD;
 
-	vloz_segment_cesty(Zakazka,segment);
-}*/
+	vloz_segment_cesty(zakazka,segment);
+}
+//přetížená funkce, zajišťuje samotné uložení
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty)
+{
+	TCesta *segment=new TCesta;
+	segment=segment_cesty;
+	segment->n=zakazka->cesta->predchozi->n+1;//navýším počítadlo prvku o jedničku
+
+	zakazka->cesta->predchozi->dalsi=segment;//poslednímu prvku přiřadím ukazatel na nový prvek
+	segment->predchozi=zakazka->cesta->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
+	zakazka->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//---------------------------------------------------------------------------
+//vymaže celou cestu dané zakázky
+void Cvektory::vymaz_cestu_zakazky(TZakazka *zakazka)
+{
+		while (zakazka->cesta!=NULL)
+		{
+			zakazka->cesta->predchozi=NULL;
+			delete zakazka->cesta->predchozi;
+			zakazka->cesta=zakazka->cesta->dalsi;
+		};
+}
 //---------------------------------------------------------------------------
 //Cvektory::TSeznam_cest *Cvektory::vrat_cestu(unsigned int ID_cesty)
 //{
@@ -660,7 +675,7 @@ void Cvektory::generuj_VOZIKY()
 			{
 				for(unsigned long i=1;i<=zakazka->pocet_voziku;i++)//v rámci zakázky generuje zadaný počet vozíků
 				vloz_vozik(zakazka);
-				ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+				zakazka=zakazka->dalsi;//posun na další prvek v seznamu
 			}
 	 }
 }
@@ -669,7 +684,6 @@ void Cvektory::generuj_VOZIKY()
 void Cvektory::vloz_vozik(TZakazka *zakazka)
 {
 	TVozik *novy=new TVozik;
-	novy=Vozik;//novy bude ukazovat tam kam prvek data
 
 	//ZDM pozor v případě načítání existujícího stavu ze souboru změnitm toto je výchozí pozice na lince
 	//ZDM novy->segment=NULL;novy->pozice=-1;novy->stav=-1;
@@ -684,7 +698,7 @@ void Cvektory::vloz_vozik(TZakazka *zakazka)
 	VOZIKY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 };
 ////---------------------------------------------------------------------------
-long Cvektory::vymaz_seznam_voziku()
+long Cvektory::vymaz_seznam_VOZIKY()
 {
 	long pocet_smazanych_objektu=0;
 	while (VOZIKY!=NULL)
@@ -1575,12 +1589,12 @@ void Cvektory::vse_odstranit()
 			delete POHONY; POHONY=NULL;
 		}
 
-		//vozíky
+ /*		//vozíky
 		if(VOZIKY->predchozi->n>0)//pokud je více objektů
 		{
-			vymaz_seznam_voziku();//vymaze body z paměti
+			vymaz_seznam_VOZIKY();//vymaze body z paměti
 			delete VOZIKY; VOZIKY=NULL;
-		}
+		} */
 //
 //		//palce
 //		if(PALCE->predchozi->n>0)//pokud je více objektů

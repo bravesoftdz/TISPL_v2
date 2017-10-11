@@ -337,6 +337,7 @@ class Cvektory
 		short vloz_objekt(TObjekt *Objekt);//přetížená fce
 		short vloz_objekt(unsigned int id, double X, double Y,TObjekt *p);//přetížená fce vkládá mezi objekty
 		TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY);//hledá bod v dané oblasti
+		TObjekt *vrat_objekt(unsigned int n);
 		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu
 		void sniz_indexy(TObjekt *Objekt);
 		void zvys_indexy(TObjekt *Objekt);
@@ -367,23 +368,25 @@ private:
 		long vymaz_seznam_ZAKAZKY_temp();//smaze seznam ZAKAZKY_temp z paměti včetně přidružených cest, nutno implementovat při close() superformu (ať už při OK, storna, či křížku formu)
 //metody pro cesta konkrétní zakázky
 public:
-		void hlavicka_cesta_zakazky(TZakazka *Zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
-		inicializace_cesty(TZakazka *Editovana_zakazka);//volat pouze jednou v počátku metody při stisku OK, vymaže předchozí cestu - pokud existuje, vytvoří hlavičku cesty. Příklad použití metody: inicializace_cesty(Editovana_zakazka);
-		void vloz_segment_cesty(TZakazka *Editovana_zakazka,unsigned long n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+		void inicializace_cesty(TZakazka *zakazka);//vymaže předchozí cestu a zavolá hlavičku cesty nové
+		void vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 private:
-		void vloz_segment_cesty(TZakazka *Zakazka,TCesta *Segment_cesty);//do konkrétní cesty vloží segmenty cesty
+		void hlavicka_cesta_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
+		void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
+		void vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty);//do konkrétní zakázky vloží segmenty cesty
 		//ZDM		TSeznam_cest *vrat_cestu(unsigned int ID_cesty);
 
 //metody pro VOZIKY
 public:
 		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků
-private:
 		void hlavicka_VOZIKY();
+private:
 		void vloz_vozik(TZakazka *zakazka);
 		long vymaz_seznam_VOZIKY();
 
 
 //metody pro PROCESY
+public:
 //		void hlavicka_procesy();
 //		void vloz_proces(TProces *Proces);
 //		TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
