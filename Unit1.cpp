@@ -1813,7 +1813,59 @@ void TForm1::move_objekt(int X, int Y)
 			}
 			akutalizace_stavu_prichytavani_vSB();
 		}
-		pom=NULL;posun_objektu=false;Akce=NIC;kurzor(standard);REFRESH();DuvodUlozit(true);
+		posun_objektu=false;Akce=NIC;kurzor(standard);//REFRESH();DuvodUlozit(true);
+		zmen_poradi_objektu(X,Y);//testuje zda se nejedná o změnu pořadí (to musí ještě uživatel potvrdit), pokud ano, vrácí true
+		REFRESH();DuvodUlozit(true);
+		pom=NULL;
+}
+//---------------------------------------------------------------------------
+void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu pořadí (to musí ještě uživatel potvrdit)
+{
+		unsigned short presnost=4;
+		bool RET=false;
+		Cvektory::TObjekt *ukaz=d.v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+		while (ukaz!=NULL)//mimo posledního prvku
+		{
+			if(ukaz!=pom/* && ukaz!=pom->predchozi && ukaz->dalsi!=pom->dalsi*/)//přeskakuje situaci, pokud by se chtěl vkládat na původní pozici
+			{
+					if(ukaz==d.v.OBJEKTY->predchozi)//poslední prvek versus první prvek
+					{
+						//if(m.LeziVblizkostiUsecky(m.P2Lx(X),m.P2Ly(Y),d.v.OBJEKTY->predchozi->X,d.v.OBJEKTY->predchozi->Y,ukaz->X,ukaz->Y)<=presnost)
+						if(d.lezi_v_pasmu_poslednim(Canvas,X,Y,false))
+						{
+							RET=TRUE;
+							break;
+						}
+					}
+					else//ostatní situace
+					{
+						//if(m.LeziVblizkostiUsecky(m.P2Lx(X),m.P2Ly(Y),ukaz->X,ukaz->Y,ukaz->dalsi->X,ukaz->dalsi->Y)<=presnost)
+						if(d.lezi_v_pasmu(Canvas,X,Y,ukaz,false))
+						{
+							RET=TRUE;
+							break;
+						}
+					}
+			}
+			ukaz=ukaz->dalsi;//posun na další prvek v seznamu
+		}
+		if(RET)//pokud se může jednat o snahu o vložení ještě se na to dotazuje u uživatele
+		{
+			if(ukaz==d.v.OBJEKTY->predchozi)//první prvek versus poslední
+			{
+				if(idYes==MyMessageBox->ShowMyMessageBox(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,Form1->Caption,"Chcete objekt "+AnsiString(pom->name.UpperCase())+" umístit v pořadí mezi objekty "+AnsiString(ukaz->name.UpperCase())+" a "+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"?",false))
+				{
+					d.v.zmen_poradi_objektu(pom,d.v.OBJEKTY->predchozi);//volání realizace samotné záměny
+				}
+			}
+			else//ostatní situace
+			{
+				if(idYes==MyMessageBox->ShowMyMessageBox(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,Form1->Caption,"Chcete objekt "+AnsiString(pom->name.UpperCase())+" umístit v pořadí mezi objekty "+AnsiString(ukaz->name.UpperCase())+" a "+AnsiString(ukaz->dalsi->name.UpperCase())+"?",false))
+				{
+					d.v.zmen_poradi_objektu(pom,ukaz->dalsi);//volání realizace samotné záměny
+				}
+			}
+		}
 }
 //---------------------------------------------------------------------------
 void TForm1::zneplatnit_minulesouradnice()
@@ -1919,6 +1971,14 @@ void __fastcall TForm1::DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TSh
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
+Cvektory::TObjekt *ukaz=d.v.OBJEKTY->dalsi;
+Memo2->Visible=true;
+while(ukaz!=NULL)
+{
+		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name);
+		ukaz=ukaz->dalsi;
+}
+//S(m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.v.OBJEKTY->dalsi->X,d.v.OBJEKTY->dalsi->Y,d.v.OBJEKTY->dalsi->dalsi->X,d.v.OBJEKTY->dalsi->dalsi->Y));
 			/*HRGN hreg=CreateEllipticRgn(100,100,300,200);
 				Canvas->Brush->Color=clRed;
 				FillRgn(Canvas->Handle,hreg,Canvas->Brush->Handle);

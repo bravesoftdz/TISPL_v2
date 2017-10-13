@@ -167,6 +167,67 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 
 };
 //---------------------------------------------------------------------------
+//změní zařazení objektů ve spojovém seznamu
+//přetížená funkce
+void Cvektory::zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi)
+{
+	 zmen_poradi_objektu(vrat_objekt(aktualni_poradi),vrat_objekt(nove_poradi));
+}
+//změní zařazení objektů ve spojovém seznamu
+void Cvektory::zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi)
+{
+	if(aktualni_poradi->n!=nove_poradi->n && nove_poradi->n<=OBJEKTY->predchozi->n)//pokud jsou zadaná pořadí rozdílná a zároveň není zadáváno větší číslo než n posledního prvku
+	{
+		TObjekt *ukaz_ap=aktualni_poradi;
+		TObjekt *ukaz_np=nove_poradi;//musí být tu, aby byl uložen aktuální seznam, ne po vyjmutí
+		if(ukaz_ap!=NULL && ukaz_np!=NULL)
+		{
+			//vyjmutí ze spojáku
+			if(ukaz_ap->dalsi!=NULL)//pokud se nejedná o poslední prvek
+			{
+				ukaz_ap->predchozi->dalsi=ukaz_ap->dalsi;//předchozí bude ukazovat na následující
+				ukaz_ap->dalsi->predchozi=ukaz_ap->predchozi; //následující bude ukazovat na další
+			}
+			else//pokud se jedná o poslední prvek
+			{
+				OBJEKTY->predchozi=ukaz_ap->predchozi;
+				ukaz_ap->predchozi->dalsi=NULL;
+			}
+			//vložení na novou pozici
+			if(aktualni_poradi->n<nove_poradi->n)//vložení za ukaz_np
+			{
+				ukaz_ap->predchozi=ukaz_np;
+				if(ukaz_np->dalsi!=NULL)//pokud se nejedná o poslední prvek
+				{
+					ukaz_ap->dalsi=ukaz_np->dalsi;
+					ukaz_np->dalsi->predchozi=ukaz_ap;
+				}
+				else//pokud se jedná o poslední prvek
+				{
+					ukaz_ap->dalsi=NULL;
+					OBJEKTY->predchozi=ukaz_ap;
+				}
+				ukaz_np->dalsi=ukaz_ap;
+			}
+			else//vložení před ukaz_np
+			{
+				ukaz_np->predchozi->dalsi=ukaz_ap;//přechozí budu ukazovat na vkládaný
+				ukaz_ap->predchozi=ukaz_np->predchozi; //vkládaný bude mít jako předchozí původní předchozí
+				ukaz_ap->dalsi=ukaz_np;//vkládaný bude ukazovat na následující na původní
+				ukaz_np->predchozi=ukaz_ap;//původní bude mít před sebou vkládaný
+			}
+		}
+		//přeindexování (N-hodnoty) v celém seznamu, možno řešit sepáratáně, ale takto to bylo rychleji napsané
+		TObjekt *ukaz=OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+		unsigned long i=1;
+		while (ukaz!=NULL)
+		{
+			ukaz->n=i++;
+			ukaz=ukaz->dalsi;
+		}
+	}
+}
+//---------------------------------------------------------------------------
 void Cvektory::sniz_indexy(TObjekt *Objekt)
 {
 	while (Objekt!=NULL)
@@ -545,12 +606,12 @@ void Cvektory::zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned l
 }
 //---------------------------------------------------------------------------
 //po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
-void Cvektory::kopirujZAKAZKY_temp2ZAKAZKY()
+void Cvektory::kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp)
 {
 	vymaz_seznam_ZAKAZKY();//vymazání původního seznamu
 	hlavicka_ZAKAZKY();//založení hlavičky
 	ZAKAZKY=ZAKAZKY_temp;//zkopírování ukazatelů mezi spojáky
-	vymaz_seznam_ZAKAZKY_temp();//smazání již nepotřebného spojáku temp
+	if(mazat_ZAKAZKY_temp)vymaz_seznam_ZAKAZKY_temp();//smazání již nepotřebného spojáku temp
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
@@ -852,6 +913,8 @@ void Cvektory::vytvor_hlavicku_souboru()
 //Uloží vektorová data do souboru
 short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 {
+	try
+	{
 		 TFileStream *FileStream=new TFileStream(FileName,fmOpenWrite|fmCreate);
 
 		 //zapiše hlavičku do souboru //už neplatí:+ zbylé atributy a PP se do hlavičky zapisují v unit1
@@ -1003,6 +1066,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 
 		 delete FileStream;
 		 return 1;
+	}
+	catch(...){return 2;}
 }
 //---------------------------------------------------------------------------
 //načte vektorová data ze souboru

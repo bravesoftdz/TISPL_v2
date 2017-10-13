@@ -1220,7 +1220,7 @@ void Cvykresli::odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::T
 		editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p)
+bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p,bool odecti_region)
 {
 		bool ret=false;
 
@@ -1228,15 +1228,15 @@ bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p)
 		int H=m.round(O_height*Form1->Zoom);
 
 		if((p->X<=p->dalsi->X && p->Y<p->dalsi->Y)||(p->X>p->dalsi->X && p->Y>=p->dalsi->Y))
-		ret=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y),m.L2Px(p->X)+W,m.L2Py(p->Y)+H,m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y)+H,m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y));
+		ret=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y),m.L2Px(p->X)+W,m.L2Py(p->Y)+H,m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y)+H,m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y),odecti_region);
 
 		if((p->X>p->dalsi->X && p->Y<p->dalsi->Y)||(p->X<=p->dalsi->X && p->Y>=p->dalsi->Y))
-		ret=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y)+H,m.L2Px(p->X)+W,m.L2Py(p->Y),m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y),m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y)+H);
+		ret=lezi_v_pasmu(c,X,Y,m.L2Px(p->X),m.L2Py(p->Y)+H,m.L2Px(p->X)+W,m.L2Py(p->Y),m.L2Px(p->dalsi->X)+W,m.L2Py(p->dalsi->Y),m.L2Px(p->dalsi->X),m.L2Py(p->dalsi->Y)+H,odecti_region);
 
 		return ret;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-bool Cvykresli::lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y)
+bool Cvykresli::lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region)
 {
 		bool ret=false;
 		if(v.OBJEKTY->predchozi!=NULL)
@@ -1245,15 +1245,15 @@ bool Cvykresli::lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y)
 			int H=m.round(O_height*Form1->Zoom);
 
 			if((v.OBJEKTY->predchozi->X<=v.OBJEKTY->dalsi->X && v.OBJEKTY->predchozi->Y<v.OBJEKTY->dalsi->Y)||(v.OBJEKTY->predchozi->X>v.OBJEKTY->dalsi->X && v.OBJEKTY->predchozi->Y>=v.OBJEKTY->dalsi->Y))
-			ret=lezi_v_pasmu(c,X,Y,m.L2Px(v.OBJEKTY->predchozi->X),m.L2Py(v.OBJEKTY->predchozi->Y),m.L2Px(v.OBJEKTY->predchozi->X)+W,m.L2Py(v.OBJEKTY->predchozi->Y)+H,m.L2Px(v.OBJEKTY->dalsi->X)+W,m.L2Py(v.OBJEKTY->dalsi->Y)+H,m.L2Px(v.OBJEKTY->dalsi->X),m.L2Py(v.OBJEKTY->dalsi->Y));
+			ret=lezi_v_pasmu(c,X,Y,m.L2Px(v.OBJEKTY->predchozi->X),m.L2Py(v.OBJEKTY->predchozi->Y),m.L2Px(v.OBJEKTY->predchozi->X)+W,m.L2Py(v.OBJEKTY->predchozi->Y)+H,m.L2Px(v.OBJEKTY->dalsi->X)+W,m.L2Py(v.OBJEKTY->dalsi->Y)+H,m.L2Px(v.OBJEKTY->dalsi->X),m.L2Py(v.OBJEKTY->dalsi->Y),odecti_region);
 
 			if((v.OBJEKTY->predchozi->X>v.OBJEKTY->dalsi->X && v.OBJEKTY->predchozi->Y<v.OBJEKTY->dalsi->Y)||(v.OBJEKTY->predchozi->X<=v.OBJEKTY->dalsi->X && v.OBJEKTY->predchozi->Y>=v.OBJEKTY->dalsi->Y))
-			ret=lezi_v_pasmu(c,X,Y,m.L2Px(v.OBJEKTY->predchozi->X),m.L2Py(v.OBJEKTY->predchozi->Y)+H,m.L2Px(v.OBJEKTY->predchozi->X)+W,m.L2Py(v.OBJEKTY->predchozi->Y),m.L2Px(v.OBJEKTY->dalsi->X)+W,m.L2Py(v.OBJEKTY->dalsi->Y),m.L2Px(v.OBJEKTY->dalsi->X),m.L2Py(v.OBJEKTY->dalsi->Y)+H);
+			ret=lezi_v_pasmu(c,X,Y,m.L2Px(v.OBJEKTY->predchozi->X),m.L2Py(v.OBJEKTY->predchozi->Y)+H,m.L2Px(v.OBJEKTY->predchozi->X)+W,m.L2Py(v.OBJEKTY->predchozi->Y),m.L2Px(v.OBJEKTY->dalsi->X)+W,m.L2Py(v.OBJEKTY->dalsi->Y),m.L2Px(v.OBJEKTY->dalsi->X),m.L2Py(v.OBJEKTY->dalsi->Y)+H,odecti_region);
 		}
 		return ret;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,long y2,long x3,long y3,long x4,long y4)
+bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,long y2,long x3,long y3,long x4,long y4,bool odecti_region)
 {
 		POINT *body=new POINT[4];
 		body[0].x=x1;body[0].y=y1;
@@ -1262,14 +1262,17 @@ bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,lo
 		body[3].x=x4;body[3].y=y4;
 
 		HRGN hreg=CreatePolygonRgn(body,4,WINDING);//vytvoření regionu
-		HRGN hregO=CreateRectRgn(x1,y1,x2,y2);
-		HRGN hregO1=CreateRectRgn(x3,y3,x4,y4);
-		CombineRgn(hreg,hreg,hregO,RGN_DIFF);//aby neoznačoval objekt, tento region odečtu
-		DeleteObject(hregO);
-		CombineRgn(hreg,hreg,hregO1,RGN_DIFF);//aby neoznačoval objekt, tento region odečtu
-		DeleteObject(hregO1);
-		//c->Brush->Color = RGB(96, 96, 96);
-		//FrameRgn(c->Handle,hreg,c->Brush->Handle,5,5);
+		if(odecti_region)//aby nevybíral oblast i samotných objektů, tento region odečtu
+		{
+				HRGN hregO=CreateRectRgn(x1,y1,x2,y2);
+				HRGN hregO1=CreateRectRgn(x3,y3,x4,y4);
+				CombineRgn(hreg,hreg,hregO,RGN_DIFF);
+				DeleteObject(hregO);
+				CombineRgn(hreg,hreg,hregO1,RGN_DIFF);
+				DeleteObject(hregO1);
+		}
+		//c->Brush->Color = RGB(96, 96, 96);  //testovací
+		//FrameRgn(c->Handle,hreg,c->Brush->Handle,5,5);//testovací
 		bool ret=PtInRegion(hreg,X,Y);
 		delete body;body=NULL;
 		DeleteObject(hreg);

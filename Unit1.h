@@ -412,6 +412,7 @@ private:
 	void add_objekt(int X, int Y);
 	Cvektory::TObjekt *add_objekt_za();
 	void move_objekt(int X, int Y);
+	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text);
 	void akutalizace_stavu_prichytavani_vSB();
 	void Ulozit_soubor();//samotné uložení
