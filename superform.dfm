@@ -229,34 +229,47 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnClick = Button_DELClick
   end
   object rStringGridEd1: TrStringGridEd
-    Left = -1
-    Top = 300
+    Left = -6
+    Top = 301
     Width = 1000
     Height = 186
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
     Align = alCustom
+    BevelEdges = []
+    BevelInner = bvNone
+    BevelOuter = bvNone
     BorderStyle = bsNone
     Color = clWhite
     ColCount = 11
+    Ctl3D = False
     DefaultColWidth = 90
     DefaultRowHeight = 30
     DefaultDrawing = False
+    DrawingStyle = gdsGradient
+    FixedColor = clWhite
     RowCount = 2
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = cl3DDkShadow
+    Font.Color = clGray
     Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    GradientEndColor = clWhite
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor]
+    ParentCtl3D = False
     ParentFont = False
     TabOrder = 11
+    StyleElements = [seFont, seClient]
     OnClick = rStringGridEd1Click
     Columns = <
       item
         Alignment = taCenter
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGrayText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -272,9 +285,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         ButtonStyle = sgbDropDownList
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGrayText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -293,9 +306,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleAlignment = taCenter
       end
       item
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGrayText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -315,9 +328,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
         MaxValue = 10.000000000000000000
         OutOfLimitDataColor = clPurple
         DropDownRows = 15
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGrayText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -334,9 +347,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGrayText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -352,9 +365,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         ButtonStyle = sgbButton
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGrayText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -366,13 +379,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
-        TitleAlignment = taRightJustify
+        TitleAlignment = taCenter
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGrayText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -384,12 +397,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGray
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -401,13 +415,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
-        TitleAlignment = taRightJustify
+        TitleAlignment = taCenter
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGray
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -422,9 +436,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         ButtonStyle = sgbButton
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGray
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -440,9 +454,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clGray
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -456,6 +470,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
+    ChangedCellsBkColor = clWhite
     RowHeights = (
       30
       30)

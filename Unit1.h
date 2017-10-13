@@ -386,6 +386,7 @@ public:
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
+	enum T_mbTYPE{OK=0,OKCANCEL,YESNO,YESNOCANCEL};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
 
@@ -396,7 +397,6 @@ private:
 
 	////metody
 	void edice();
-	short int MB(UnicodeString text, unsigned short int typ=0,UnicodeString titulek="TISPL - Eltep");//vola rychle messabox
 	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
 	void ESC();
 	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizují posuny obrazu
@@ -423,6 +423,7 @@ private:
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
 	UnicodeString get_temp_dir();
+	AnsiString FileName_short(AnsiString FileName);
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
@@ -497,6 +498,9 @@ public:		// User declarations
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//Usnadòuje pøístup k ShowMessage
+	int MB(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text="",UnicodeString Caption_text="", T_mbTYPE mbTYPE=OK,bool checkbox_zobrazit=false);
+	int MB(UnicodeString Label1_text,T_mbTYPE mbTYPE=OK);
+	int MB(UnicodeString Label1_text,UnicodeString Label2_text,T_mbTYPE mbTYPE=OK);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

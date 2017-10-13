@@ -1,9 +1,9 @@
-object MyMessageBox: TMyMessageBox
+object myMessageBox: TmyMessageBox
   Left = 0
   Top = 0
   BorderStyle = bsNone
   ClientHeight = 151
-  ClientWidth = 354
+  ClientWidth = 348
   Color = clBtnFace
   Font.Charset = EASTEUROPE_CHARSET
   Font.Color = clWindowText
@@ -11,14 +11,15 @@ object MyMessageBox: TMyMessageBox
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TrHTMLLabel
     Left = 8
     Top = 40
-    Width = 137
+    Width = 195
     Height = 19
-    Caption = 'Zde je v'#253'pis dotazu'
+    Caption = 'Zde je v'#253'pis dotazu '#345#225'dek 1'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -27,44 +28,27 @@ object MyMessageBox: TMyMessageBox
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object Button_Yes: TButton
-    Left = 75
-    Top = 69
-    Width = 70
-    Height = 25
-    Align = alCustom
-    Caption = 'Ano'
-    ModalResult = 6
-    TabOrder = 0
-  end
-  object Button_No: TButton
-    Left = 179
-    Top = 69
-    Width = 70
-    Height = 25
-    Align = alCustom
-    Caption = 'Ne'
-    ModalResult = 7
-    TabOrder = 1
-  end
-  object Button_OK: TButton
-    Left = 123
-    Top = 69
-    Width = 75
-    Height = 25
-    Align = alCustom
-    Caption = 'OK'
-    ModalResult = 1
-    TabOrder = 2
-    Visible = False
+  object Label2: TrHTMLLabel
+    Left = 8
+    Top = 65
+    Width = 195
+    Height = 19
+    Caption = 'Zde je v'#253'pis dotazu '#345#225'dek 2'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
   end
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 354
+    Width = 348
     Height = 34
     Align = alTop
-    TabOrder = 3
+    TabOrder = 0
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -91,7 +75,7 @@ object MyMessageBox: TMyMessageBox
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 304
+      Left = 298
       Top = 0
       Width = 50
       Height = 33
@@ -167,10 +151,10 @@ object MyMessageBox: TMyMessageBox
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scLabel1: TscLabel
+    object scLabel_caption: TscLabel
       Left = 0
       Top = 0
-      Width = 267
+      Width = 261
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -198,8 +182,8 @@ object MyMessageBox: TMyMessageBox
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
     end
-    object scGPGlyphButton15: TscGPGlyphButton
-      Left = 267
+    object scGPGlyph_info: TscGPGlyphButton
+      Left = 261
       Top = 0
       Width = 37
       Height = 34
@@ -277,8 +261,8 @@ object MyMessageBox: TMyMessageBox
       AllowAllUp = False
     end
   end
-  object scGPButton1_OK: TscGPButton
-    Left = 51
+  object Button_Yes: TscGPButton
+    Left = 49
     Top = 93
     Width = 100
     Height = 35
@@ -288,9 +272,8 @@ object MyMessageBox: TMyMessageBox
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 1
     TabStop = True
-    OnClick = scGPButton1_OKClick
     Animation = False
     Caption = 'Ano'
     CanFocused = True
@@ -305,7 +288,7 @@ object MyMessageBox: TMyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clBlack
-    Options.FocusedColor = clRed
+    Options.FocusedColor = 33023
     Options.DisabledColor = clBlack
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
@@ -335,7 +318,8 @@ object MyMessageBox: TMyMessageBox
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
-    ModalResult = 1
+    ModalResult = 6
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -367,8 +351,8 @@ object MyMessageBox: TMyMessageBox
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPButton3: TscGPButton
-    Left = 183
+  object Button_No: TscGPButton
+    Left = 199
     Top = 93
     Width = 100
     Height = 35
@@ -378,9 +362,8 @@ object MyMessageBox: TMyMessageBox
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 2
     TabStop = True
-    OnClick = scGPButton3Click
     Animation = False
     Caption = 'Ne'
     CanFocused = True
@@ -425,7 +408,8 @@ object MyMessageBox: TMyMessageBox
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
-    ModalResult = 2
+    ModalResult = 7
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -458,9 +442,10 @@ object MyMessageBox: TMyMessageBox
     AllowAllUp = False
   end
   object CheckBox_pamatovat: TscCheckBox
-    Left = 0
-    Top = 134
-    Width = 354
+    AlignWithMargins = True
+    Left = 3
+    Top = 131
+    Width = 342
     Height = 17
     Align = alBottom
     BiDiMode = bdLeftToRight
@@ -471,7 +456,7 @@ object MyMessageBox: TMyMessageBox
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 3
     TabStop = True
     CustomCheckedImageIndex = -1
     CustomCheckedImageHotIndex = -1
@@ -490,7 +475,7 @@ object MyMessageBox: TMyMessageBox
     Caption = 'Pamatovat si volbu po dobu spu'#353't'#283'n'#237' aplikace'
     CanFocused = True
     Spacing = 0
-    Layout = blGlyphTop
+    Layout = blGlyphLeft
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
@@ -507,6 +492,186 @@ object MyMessageBox: TMyMessageBox
     GlowEffect.States = [scsHot, scsPressed, scsFocused]
     ImageGlow = True
     Checked = False
+    ShowFocusRect = False
+  end
+  object Button_OK: TscGPButton
+    Left = 121
+    Top = 93
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    TabStop = True
+    Animation = False
+    Caption = 'OK'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = 33023
+    Options.DisabledColor = clBlack
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 200
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clGray
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clGray
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    ModalResult = 1
+    ModalSetting = True
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
     ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object Button_Cancel: TscGPButton
+    Left = 261
+    Top = 93
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 5
+    TabStop = True
+    Animation = False
+    Caption = 'Storno'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = 33023
+    Options.DisabledColor = clBlack
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 200
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clGray
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clGray
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    ModalResult = 2
+    ModalSetting = True
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
 end

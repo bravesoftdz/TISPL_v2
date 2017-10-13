@@ -23,8 +23,9 @@ TForm_definice_zakazek *Form_definice_zakazek;
 
 // ---------------------------------------------------------------------------
 __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
-	: TForm(Owner) {
-
+	: TForm(Owner)
+{
+	rStringGridEd1->Color=clWhite;//nastavení pozadí barvy formuláøe
 	offset = 0;
 
 }

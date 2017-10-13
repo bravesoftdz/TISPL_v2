@@ -15,31 +15,31 @@
 #include "scGPControls.hpp"
 #include "rHTMLLabel.hpp"
 //---------------------------------------------------------------------------
-class TMyMessageBox : public TForm
+class TmyMessageBox : public TForm
 {
 __published:	// IDE-managed Components
-	TButton *Button_Yes;
-	TButton *Button_No;
-	TButton *Button_OK;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
-	TscLabel *scLabel1;
-	TscGPGlyphButton *scGPGlyphButton15;
-	TscGPButton *scGPButton1_OK;
-	TscGPButton *scGPButton3;
+	TscLabel *scLabel_caption;
+	TscGPGlyphButton *scGPGlyph_info;
+	TscGPButton *Button_Yes;
+	TscGPButton *Button_No;
 	TscCheckBox *CheckBox_pamatovat;
 	TrHTMLLabel *Label1;
+	TrHTMLLabel *Label2;
+	TscGPButton *Button_OK;
+	TscGPButton *Button_Cancel;
 	void __fastcall KonecClick(TObject *Sender);
-	void __fastcall scGPButton3Click(TObject *Sender);
-	void __fastcall scGPButton1_OKClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
-	void dynamicka_velikost_formulare();
+	enum T_mbTYPE{OK=0,OKCANCEL,YESNO,YESNOCANCEL};
 public:		// User declarations
-	__fastcall TMyMessageBox(TComponent* Owner);
-	bool ModalResult;
-	int ShowMyMessageBox(long Left,long Top,UnicodeString Caption_text, UnicodeString Label1_text,bool checkbox_zobrazit=true);
+	__fastcall TmyMessageBox(TComponent* Owner);
+	int Show(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text="",UnicodeString Caption_text="",int mbTYPE=OK,bool checkbox_zobrazit=false);
+	int Show(UnicodeString Label1_text,int mbTYPE=OK);
+	int Show(UnicodeString Label1_text,UnicodeString Label2_text,int mbTYPE=OK);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TMyMessageBox *MyMessageBox;
+extern PACKAGE TmyMessageBox *myMessageBox;
 //---------------------------------------------------------------------------
 #endif
