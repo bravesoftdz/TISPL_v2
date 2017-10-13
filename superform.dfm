@@ -75,6 +75,20 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_zacatek: TrHTMLLabel
+    Left = 421
+    Top = 97
+    Width = 53
+    Height = 19
+    Caption = 'Za'#269#225'tek'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
   object Button_OK: TButton
     Left = 619
     Top = 523
@@ -266,8 +280,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Style = []
         ParentFont = False
         PickList.Strings = (
-          're'#225'ln'#225
-          'servisn'#237)
+          '0'
+          '1'
+          '')
         TitleCaption = 'Typ'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
@@ -446,8 +461,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
       30)
   end
   object rButton1: TrButton
-    Left = 689
-    Top = 168
+    Left = 729
+    Top = 40
     Width = 129
     Height = 33
     Caption = 'P'#345'idat zak'#225'zku'
@@ -1490,13 +1505,92 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnClick = button_zakazky_tempClick
   end
   object Memo4: TMemo
-    Left = 411
+    Left = 410
     Top = 170
     Width = 254
     Height = 113
     Lines.Strings = (
       'Memo4')
     TabOrder = 27
+  end
+  object scEdit_zacatek: TscEdit
+    Left = 421
+    Top = 122
+    Width = 110
+    Height = 28
+    UseFontColorToStyleColor = False
+    ContentMarginLeft = 0
+    ContentMarginRight = 0
+    ContentMarginTop = 0
+    ContentMarginBottom = 0
+    CustomBackgroundImageNormalIndex = -1
+    CustomBackgroundImageHotIndex = -1
+    CustomBackgroundImageDisabledIndex = -1
+    WallpaperIndex = -1
+    LeftButton.ComboButton = False
+    LeftButton.Enabled = True
+    LeftButton.Visible = False
+    LeftButton.ShowHint = False
+    LeftButton.ShowEllipses = False
+    LeftButton.StyleKind = scbsPushButton
+    LeftButton.Width = 18
+    LeftButton.ImageIndex = -1
+    LeftButton.ImageHotIndex = -1
+    LeftButton.ImagePressedIndex = -1
+    LeftButton.RepeatClick = False
+    LeftButton.RepeatClickInterval = 200
+    LeftButton.CustomImageNormalIndex = -1
+    LeftButton.CustomImageHotIndex = -1
+    LeftButton.CustomImagePressedIndex = -1
+    LeftButton.CustomImageDisabledIndex = -1
+    RightButton.ComboButton = False
+    RightButton.Enabled = True
+    RightButton.Visible = False
+    RightButton.ShowHint = False
+    RightButton.ShowEllipses = False
+    RightButton.StyleKind = scbsPushButton
+    RightButton.Width = 18
+    RightButton.ImageIndex = -1
+    RightButton.ImageHotIndex = -1
+    RightButton.ImagePressedIndex = -1
+    RightButton.RepeatClick = False
+    RightButton.RepeatClickInterval = 200
+    RightButton.CustomImageNormalIndex = -1
+    RightButton.CustomImageHotIndex = -1
+    RightButton.CustomImagePressedIndex = -1
+    RightButton.CustomImageDisabledIndex = -1
+    Transparent = False
+    BorderKind = scebFrame
+    FrameColor = clBtnShadow
+    FrameActiveColor = clHighlight
+    Text = ''
+    TabOrder = 28
+  end
+  object zakazky_hlavni_spojak: TButton
+    Left = 200
+    Top = 263
+    Width = 185
+    Height = 25
+    Caption = 'zakazky_hlavni_spojak'
+    TabOrder = 29
+    OnClick = zakazky_hlavni_spojakClick
+  end
+  object smaz_temp: TButton
+    Left = 670
+    Top = 172
+    Width = 89
+    Height = 25
+    Caption = 'smaz_temp'
+    TabOrder = 30
+    OnClick = smaz_tempClick
+  end
+  object Edit_smaz_temp: TEdit
+    Left = 670
+    Top = 203
+    Width = 89
+    Height = 28
+    TabOrder = 31
+    Text = '1'
   end
   object ColorDialog1: TColorDialog
     Left = 592

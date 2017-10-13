@@ -243,8 +243,9 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel4;
 	TscLabel *scLabel_titulek;
 	TscLabel *scLabel1;
-	TButton *Button11;
+	TButton *hl_spojak_zakazky;
 	TMemo *Memo2;
+	TButton *button_zakazky_temp;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -374,7 +375,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPSwitch_meritkoChangeState(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSMouseLeave(TObject *Sender);
 	void __fastcall scSplitView_MENUMouseLeave(TObject *Sender);
-	void __fastcall Button11Click(TObject *Sender);
+	void __fastcall hl_spojak_zakazkyClick(TObject *Sender);
+	void __fastcall button_zakazky_tempClick(TObject *Sender);
 
 // User declarations
 	////struktury, výèty
