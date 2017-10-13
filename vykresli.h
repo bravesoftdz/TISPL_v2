@@ -10,7 +10,7 @@ class Cvykresli
 {
 	private:
 
-	bool lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,long y2,long x3,long y3,long x4,long y4);
+	bool lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,long y2,long x3,long y3,long x4,long y4,bool odecti_region=true);
 //ZDM
 //	void SG(Cvektory::TVozik *ukaz);//zajištuje základní funkcionalitu technologického objektu v režimu S&G pøi vykreslování simulaci
 //	void STOPKA(Cvektory::TVozik *ukaz);//zajištuje základní funkcionalitu technologického objektu STOPKA pøi vykreslování simulaci
@@ -66,8 +66,8 @@ class Cvykresli
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
-	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p);
-	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y);
+	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p, bool odecti_region=true);
+	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region=true);
 	void sound();
 	void meritko(TCanvas *canv);
 

@@ -340,6 +340,8 @@ class Cvektory
 		TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY);//hledá bod v dané oblasti
 		TObjekt *vrat_objekt(unsigned int n);
 		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu
+		void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
+		void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);
 		void sniz_indexy(TObjekt *Objekt);
 		void zvys_indexy(TObjekt *Objekt);
 		long vymaz_seznam_OBJEKTY();
@@ -361,7 +363,7 @@ public:
 		void smaz_temp_zakazku(unsigned long n);//smaže zakázku s uvedeným “n” ze spojového seznamu ZAKAZKY_temp včetně přidružených cest
 		void zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned long nove_poradi);//změní zařazení zakázky ve spojovém seznamu
 		TZakazka *vrat_temp_zakazku(unsigned long n_zakazky);// vrátí ukazatel (resp. data) na editovanou zakázku
-		void kopirujZAKAZKY_temp2ZAKAZKY();//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY
+		void kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp=true);//po stisku OK v superformu zkopíruje data z ZAKAZKY_temp do ZAKAZKY, implicitně následně smaže ZAKAZKY_temp
 private:
 		void hlavicka_ZAKAZKY_temp();//vytvoří novou hlavičku pro spojový seznam ZAKAZKY_temp, nutná volat při on_show superformuláře
 		void vloz_temp_zakazku(TZakazka *Zakazka_temp);//vloží vytvořenéu zakázku do spojového seznamu ZAKÁZKY_temp
