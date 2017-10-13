@@ -18,6 +18,7 @@ __fastcall TMyMessageBox::TMyMessageBox(TComponent* Owner)
 {
 	//nové nastavení barvy formuláøe
 	MyMessageBox->Color=(TColor)RGB(240,240,240);
+	ModalResult=false;
 }
 //---------------------------------------------------------------------------
 void TMyMessageBox::dynamicka_velikost_formulare()
@@ -44,13 +45,23 @@ int TMyMessageBox::ShowMyMessageBox(long Left,long Top,UnicodeString Caption_tex
 	return ShowModal();
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
+//Køížek
 void __fastcall TMyMessageBox::KonecClick(TObject *Sender)
 {
+	ModalResult=false;
+	Close();
+}
+//---------------------------------------------------------------------------
+//NE
+void __fastcall TMyMessageBox::scGPButton3Click(TObject *Sender)
+{
+	KonecClick(Sender);
+}
+//---------------------------------------------------------------------------
+//ANO
+void __fastcall TMyMessageBox::scGPButton1_OKClick(TObject *Sender)
+{
+	ModalResult=true;
 	Close();
 }
 //---------------------------------------------------------------------------

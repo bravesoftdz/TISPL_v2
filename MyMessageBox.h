@@ -30,10 +30,13 @@ __published:	// IDE-managed Components
 	TscCheckBox *CheckBox_pamatovat;
 	TrHTMLLabel *Label1;
 	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall scGPButton3Click(TObject *Sender);
+	void __fastcall scGPButton1_OKClick(TObject *Sender);
 private:	// User declarations
 	void dynamicka_velikost_formulare();
 public:		// User declarations
 	__fastcall TMyMessageBox(TComponent* Owner);
+	bool ModalResult;
 	int ShowMyMessageBox(long Left,long Top,UnicodeString Caption_text, UnicodeString Label1_text,bool checkbox_zobrazit=true);
 };
 //---------------------------------------------------------------------------

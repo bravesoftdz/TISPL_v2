@@ -89,8 +89,6 @@ object MyMessageBox: TMyMessageBox
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitLeft = -100
-    ExplicitWidth = 348
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 304
@@ -168,7 +166,6 @@ object MyMessageBox: TMyMessageBox
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 298
     end
     object scLabel1: TscLabel
       Left = 0
@@ -200,7 +197,6 @@ object MyMessageBox: TMyMessageBox
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitWidth = 261
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 267
@@ -279,7 +275,6 @@ object MyMessageBox: TMyMessageBox
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 261
     end
   end
   object scGPButton1_OK: TscGPButton
@@ -295,6 +290,7 @@ object MyMessageBox: TMyMessageBox
     ParentFont = False
     TabOrder = 4
     TabStop = True
+    OnClick = scGPButton1_OKClick
     Animation = False
     Caption = 'Ano'
     CanFocused = True
@@ -384,6 +380,7 @@ object MyMessageBox: TMyMessageBox
     ParentFont = False
     TabOrder = 5
     TabStop = True
+    OnClick = scGPButton3Click
     Animation = False
     Caption = 'Ne'
     CanFocused = True
@@ -511,6 +508,5 @@ object MyMessageBox: TMyMessageBox
     ImageGlow = True
     Checked = False
     ShowFocusRect = True
-    ExplicitWidth = 341
   end
 end
