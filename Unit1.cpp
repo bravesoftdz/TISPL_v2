@@ -3702,13 +3702,39 @@ void __fastcall TForm1::scSplitView_MENUMouseLeave(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm1::Button11Click(TObject *Sender)
+void __fastcall TForm1::hl_spojak_zakazkyClick(TObject *Sender)
 {
-	Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+//	Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+//
+//	Memo2->Lines->Add(AnsiString(p->name)+";"+AnsiString(p->short_name)+";"+AnsiString(p->rezim)+";"+AnsiString(p->pohon->n)+";"+AnsiString(p->delka_dopravniku)+";"+AnsiString(p->cekat_na_palce)+";"+AnsiString(p->odchylka)+";"+AnsiString(p->kapacita));
 
-	Memo2->Lines->Add(AnsiString(p->name)+";"+AnsiString(p->short_name)+";"+AnsiString(p->rezim)+";"+AnsiString(p->pohon->n)+";"+AnsiString(p->delka_dopravniku)+";"+AnsiString(p->cekat_na_palce)+";"+AnsiString(p->odchylka)+";"+AnsiString(p->kapacita));
+		Cvektory::TZakazka *ukaz=d.v.ZAKAZKY->dalsi;
+		while (ukaz!=NULL)
+		{
+
+	Memo2->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
+
+	ukaz=ukaz->dalsi;
+
+			 }
 
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
+{
+
+  	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY_temp->dalsi;
+		while (ukaz!=NULL)
+		{
+
+	Memo2->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
+
+	ukaz=ukaz->dalsi;
+
+			 }
+
+}
+//---------------------------------------------------------------------------
 

@@ -35,6 +35,7 @@ void TForm_definice_zakazek::nacti_defaulni_PP(){
 		rEditNum_pocet_dnu->Text=5;
 		rEditNum_effektivita->Text=99;
 		rEditNum_pocet_prac_hod->Text=8;
+		scEdit_zacatek->Text="20:00:00";
 
 	}
 
@@ -44,8 +45,9 @@ void TForm_definice_zakazek::nacti_PP(){
 		rEditNum_pocet_dnu->Text=Form1->d.v.PP.dni_rok;
 		rEditNum_effektivita->Text=Form1->d.v.PP.efektivita;
 		rEditNum_pocet_prac_hod->Text=Form1->d.v.PP.hod_den;
+		scEdit_zacatek->Text=Form1->d.v.PP.cas_start;
 
-		Form1->d.v.PP.cas_start;
+	//	Form1->d.v.PP.cas_start;
 		Form1->d.v.PP.typ_voziku;
 
 }
@@ -166,51 +168,60 @@ void TForm_definice_zakazek::vymaz_barvu() {
 
 };
 
-// ---------------------------------------------------------------------------
-void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
-{
-
-
-	nacti_nastaveni_formu(); // nacteni def. barvicek
-
-	if(!Form1->d.v.PP.mnozstvi){
-
-	nacti_defaulni_PP(); // prazdna zakazka
-
-		Cvektory::TJig j;
+void TForm_definice_zakazek:: nacti_default_zakazku(){
 
 	rStringGridEd1->Cells[0][1]="1";
 	rStringGridEd1->Cells[1][1]="1";
 	rStringGridEd1->Cells[2][1]="Nova zakazka";
- //	rStringGridEd1->Cells[3][1]="255";
+	rStringGridEd1->Cells[3][1]=clBlue;
 	rStringGridEd1->Cells[4][1]="100";  //pomer
+	rStringGridEd1->Cells[5][1]="NASTAVIT";
  //	rStringGridEd1->Cells[5][1]=j;
 	rStringGridEd1->Cells[6][1]="200";
 	rStringGridEd1->Cells[7][1]="5";
 	rStringGridEd1->Cells[8][1]="50";
-	rStringGridEd1->Cells[10][1]="2";   //vytvoøim defaultní øadek se zakázkou a hned ji našiju do spojáku
+	rStringGridEd1->Cells[9][1]="NASTAVIT";
+	rStringGridEd1->Cells[10][1]="2";
 
+
+}
+
+void TForm_definice_zakazek:: uloz_Defaulttemp_zakazku(){
+
+				Cvektory::TJig j;
 			Form1->d.v.vloz_temp_zakazku (rStringGridEd1->Cells[0][1],
 																		rStringGridEd1->Cells[1][1].ToInt(),
 																		rStringGridEd1->Cells[2][1],
 																		clRed,
 																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][1]),
-																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][1]),
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[10][1]),
 																		j,
 																		rStringGridEd1->Cells[6][1].ToInt(),
 																		rStringGridEd1->Cells[7][1].ToInt(),
 																		rStringGridEd1->Cells[8][1].ToInt());
-																		}
 
+}
 
-	else {nacti_PP();}
+// ---------------------------------------------------------------------------
+void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
+{
 
+	nacti_nastaveni_formu(); // nacteni def. barvicek
 
-	rStringGridEd1->Cells[5][1]="NASTAVIT";
-	rStringGridEd1->Cells[9][1]="NASTAVIT";
+	if(!Form1->d.v.PP.mnozstvi) nacti_defaulni_PP(); // prazdna zakazka - defaultni PP
+	else nacti_PP();
 
-	if(Form1->d.v.ZAKAZKY->dalsi->n=!NULL) { //pokud je uloženo nìco v zakázkách tak je naètu
+	if(Form1->d.v.ZAKAZKY->dalsi==NULL){ //kdyz je spojak prazdny
 
+		 nacti_default_zakazku();
+		//vytvoøim defaultní øadek se zakázkou a hned ji našiju do temp spojáku
+		 uloz_Defaulttemp_zakazku();
+		 Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
+		// po uložení do hl.spojaku zakázek potøebuji stejnì znovu uložit øádek do temp_zakazek
+			uloz_Defaulttemp_zakazku();
+
+				 }
+		else { //pokud je uloženo nìco v zakázkách tak je naètu
 		nacti_zakazky();
 		}
 
@@ -767,12 +778,25 @@ rStringGridEd1->RowCount++;
 //Zavøení formuláøe
 void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
 {
+
+	for(int i=1;i<=	rStringGridEd1->RowCount;i++){
+
+	 rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
+	 Form1->d.v.smaz_temp_zakazku(i); //promaznuti temp_spojaku
+	}
+
 	Form_definice_zakazek->Close();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 {
-	Form_definice_zakazek->Close();
+	for(int i=1;i<=	rStringGridEd1->RowCount;i++){
+
+	 rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
+	 Form1->d.v.smaz_temp_zakazku(i); //promaznuti temp_spojaku
+	}
+
+		Form_definice_zakazek->Close();
 }
 //---------------------------------------------------------------------------
 
@@ -784,6 +808,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.PP.dni_rok=Form1->ms.MyToDouble(rEditNum_pocet_dnu->Text);
 		Form1->d.v.PP.efektivita=Form1->ms.MyToDouble(rEditNum_effektivita->Text);
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
+		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
 	
 				Form1->DuvodUlozit(true);
@@ -828,22 +853,49 @@ void TForm_definice_zakazek::nacti_nastaveni_formu(){
 void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject *Sender)
 {
 
-	
-		int i=rStringGridEd1->RowCount;
+		rStringGridEd1->RowCount++;
+
+		int i=rStringGridEd1->RowCount-1;
 		Cvektory::TJig j;
+
+
+		if(i>1) {// defaultní zakázka je uložena hned v temp_spojaku + hlavnim pri form_show, èili tady ukládám až další øádky
+	
+	rStringGridEd1->Cells[0][i]=i;
+	rStringGridEd1->Cells[1][i]="1";
+	rStringGridEd1->Cells[2][i]="Nova zakazka";
+	rStringGridEd1->Cells[3][i]=clBlue;
+	rStringGridEd1->Cells[4][i]="0";  //pomer
+ //	rStringGridEd1->Cells[5][1]=j;
+	rStringGridEd1->Cells[6][i]="0";
+	rStringGridEd1->Cells[7][i]="0";
+	rStringGridEd1->Cells[8][i]="0";
+	rStringGridEd1->Cells[10][i]="0";
+
+	Memo4->Lines->Add(AnsiString(rStringGridEd1->Cells[0][i])+";"
+										+AnsiString(rStringGridEd1->Cells[1][i])+";"
+										+AnsiString(rStringGridEd1->Cells[2][i])+";"
+										+AnsiString(rStringGridEd1->Cells[4][i])+";"
+										+AnsiString(rStringGridEd1->Cells[6][i])+";"
+										+AnsiString(rStringGridEd1->Cells[7][i])+";"
+										+AnsiString(rStringGridEd1->Cells[8][i])+";"
+										+AnsiString(rStringGridEd1->Cells[10][i]));
+
 
 			Form1->d.v.vloz_temp_zakazku(rStringGridEd1->Cells[0][i],
 																		rStringGridEd1->Cells[1][i].ToInt(),
 																		rStringGridEd1->Cells[2][i],
 																		clRed,
 																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
-																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][i]),
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
 																		j,
 																		rStringGridEd1->Cells[6][i].ToInt(),
 																		rStringGridEd1->Cells[7][i].ToInt(),
 																		rStringGridEd1->Cells[8][i].ToInt());
+																			}
 
-	rStringGridEd1->RowCount++;
+
+
 }
 //---------------------------------------------------------------------------
 
@@ -854,36 +906,39 @@ void TForm_definice_zakazek::nacti_zakazky(){
 		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
 		Cvektory::TJig j;
 
-	  int	i=1;
+		int	i=0;
 
 		//Memo4->Lines->Add(AnsiString(ukaz->id));
 		while (ukaz!=NULL)
 		{
+			i++;
+
+			rStringGridEd1->RowCount=i+1; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
+
 			rStringGridEd1->Cells[0][i] = ukaz->id;
 			rStringGridEd1->Cells[1][i] = ukaz->typ;
 			rStringGridEd1->Cells[2][i] = ukaz->name;
 			rStringGridEd1->Cells[3][i] = ukaz->barva;
 			rStringGridEd1->Cells[4][i] = ukaz->pomer;
-		//	rStringGridEd1->Cells[5][i] = NULL;
+		//	rStringGridEd1->Cells[5][i] = NULL; jig
 			rStringGridEd1->Cells[6][i] = ukaz->pocet_voziku;
 			rStringGridEd1->Cells[7][i] = ukaz->serv_vozik_pocet;
-		 //	rStringGridEd1->Cells[8][i] = NULL;
-			rStringGridEd1->Cells[9][i] = ukaz->TT;
-			//posun na další prvek v seznamu                    //pri nacteni radku zakazky zaroven i musim nove ulozit do temp spojaku zakazek
+			rStringGridEd1->Cells[8][i] = ukaz->opakov_servis;
+		 //	rStringGridEd1->Cells[9][i] = NULL; //cesta
+			rStringGridEd1->Cells[10][i] = ukaz->TT;
+//			//posun na další prvek v seznamu
 
+		//pri nacteni radku zakazky zaroven i musim nove ulozit kazdy radek do temp spojaku zakazek
 			 Form1->d.v.vloz_temp_zakazku(rStringGridEd1->Cells[0][i],
-			 															rStringGridEd1->Cells[1][i].ToInt(),
+																		rStringGridEd1->Cells[1][i].ToInt(),
 																		rStringGridEd1->Cells[2][i],
 																		clRed,
 																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
-																		Form1->ms.MyToDouble(rStringGridEd1->Cells[9][i]),
+																		Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
 																		j,
 																		rStringGridEd1->Cells[6][i].ToInt(),
 																		rStringGridEd1->Cells[7][i].ToInt(),
 																		rStringGridEd1->Cells[8][i].ToInt());
-
-
-			i++;
 			ukaz=ukaz->dalsi;
 		}
 
@@ -894,11 +949,34 @@ void __fastcall TForm_definice_zakazek::button_zakazky_tempClick(TObject *Sender
 		while (ukaz!=NULL)
 		{
 
-	Memo4->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->TT));
+	Memo4->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->opakov_servis)+";"+AnsiString(ukaz->TT));
 
 	ukaz=ukaz->dalsi;
 
 			 }
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::zakazky_hlavni_spojakClick(TObject *Sender)
+{
+
+	Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;
+		while (ukaz!=NULL)
+		{
+
+	Memo4->Lines->Add(AnsiString(ukaz->name)+";"+AnsiString(ukaz->barva)+";"+AnsiString(ukaz->pomer)+";"+AnsiString(ukaz->pocet_voziku)+";"+AnsiString(ukaz->serv_vozik_pocet)+";"+AnsiString(ukaz->opakov_servis)+";"+AnsiString(ukaz->TT));
+
+	ukaz=ukaz->dalsi;
+
+			 }
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_definice_zakazek::smaz_tempClick(TObject *Sender)
+{
+	Form1->d.v.smaz_temp_zakazku(Edit_smaz_temp->Text.ToInt());
+}
+//---------------------------------------------------------------------------
+
 

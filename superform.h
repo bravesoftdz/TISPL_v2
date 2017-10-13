@@ -64,6 +64,11 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton3;
 	TButton *button_zakazky_temp;
 	TMemo *Memo4;
+	TrHTMLLabel *rHTMLLabel_zacatek;
+	TscEdit *scEdit_zacatek;
+	TButton *zakazky_hlavni_spojak;
+	TButton *smaz_temp;
+	TEdit *Edit_smaz_temp;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
@@ -87,6 +92,9 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_UlozitClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_zakazkaClick(TObject *Sender);
 	void __fastcall button_zakazky_tempClick(TObject *Sender);
+	void __fastcall zakazky_hlavni_spojakClick(TObject *Sender);
+	void __fastcall smaz_tempClick(TObject *Sender);
+
 
 
 
@@ -130,6 +138,8 @@ public:		// User declarations
 		void nacti_PP();
 		void nacti_nastaveni_formu();
 		void nacti_zakazky();
+		void nacti_default_zakazku();
+		void uloz_Defaulttemp_zakazku();
 
 };
 //---------------------------------------------------------------------------
