@@ -2,7 +2,7 @@
 Coordinates=0,233,58,36
 
 [Timer_neaktivity]
-Coordinates=268,461,109,36
+Coordinates=268,461,108,36
 
 [RzStatusPane3]
 Coordinates=175,602,104,36
@@ -11,7 +11,7 @@ Coordinates=175,602,104,36
 Coordinates=970,212,59,58
 
 [RzToolButton2]
-Coordinates=1081,556,100,36
+Coordinates=1081,556,99,36
 
 [DetailsButton]
 Coordinates=980,556,91,36
@@ -50,7 +50,7 @@ Coordinates=514,556,124,36
 Coordinates=1122,144,53,58
 
 [RzToolButton4]
-Coordinates=404,556,100,36
+Coordinates=404,556,99,36
 
 [Series2]
 Coordinates=969,551,58,36
@@ -62,10 +62,10 @@ Coordinates=910,557,58,36
 Coordinates=318,556,76,36
 
 [Timer_tr]
-Coordinates=683,557,63,36
+Coordinates=683,557,62,36
 
 [RzToolButton3]
-Coordinates=125,556,100,36
+Coordinates=125,556,99,36
 
 [scGPTrackBar1]
 Coordinates=10,556,105,36
@@ -98,7 +98,7 @@ Coordinates=1046,510,47,36
 Coordinates=1135,1,65,36
 
 [OpenDialog1]
-Coordinates=1135,111,90,36
+Coordinates=1135,111,89,36
 
 [Nastvitparametry1]
 Coordinates=1135,166,119,36
@@ -161,7 +161,7 @@ Coordinates=1297,1,58,36
 Coordinates=1297,111,77,36
 
 [RzToolButton8]
-Coordinates=661,464,100,36
+Coordinates=661,464,99,36
 
 [Chart3]
 Coordinates=671,212,53,58
@@ -170,7 +170,7 @@ Coordinates=671,212,53,58
 Coordinates=1297,386,65,36
 
 [RzToolButton7]
-Coordinates=551,464,100,36
+Coordinates=551,464,99,36
 
 [Chart2]
 Coordinates=889,10,53,58
@@ -200,16 +200,16 @@ Coordinates=225,212,66,58
 Coordinates=137,10,117,124
 
 [RzToolButton1]
-Coordinates=10,464,100,36
+Coordinates=10,464,99,36
 
 [RzToolButton5]
-Coordinates=1111,418,100,36
+Coordinates=1111,418,99,36
 
 [MinButton]
 Coordinates=953,418,72,36
 
 [RzToolButton9]
-Coordinates=843,418,100,36
+Coordinates=843,418,99,36
 
 [FDConnection1]
 Coordinates=229,705,104,36
@@ -260,7 +260,7 @@ Coordinates=1457,771,66,36
 Coordinates=10,10,117,124
 
 [PopupMenuButton]
-Coordinates=564,372,121,36
+Coordinates=564,372,120,36
 
 [Zobrazitparametry1]
 Coordinates=1090,779,126,36
@@ -281,7 +281,7 @@ Coordinates=548,144,59,58
 Coordinates=219,372,104,36
 
 [RzToolButton6]
-Coordinates=10,372,100,36
+Coordinates=10,372,99,36
 
 [technologickprocesy1]
 Coordinates=941,326,138,36
@@ -314,7 +314,7 @@ Coordinates=863,280,131,36
 Coordinates=781,280,72,36
 
 [scGPVirtualImageList1]
-Coordinates=1619,606,146,36
+Coordinates=1619,606,145,36
 
 [ImageList48]
 Coordinates=1619,661,85,36
@@ -332,24 +332,135 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=397,510,104,36
+Coordinates=1032,221,91,36
 Visible=True
 
 [scSplitView_OPTIONS]
-Coordinates=540,418,88,36
+Coordinates=540,418,145,36
 
 [scGPGlyphButton_ZOOM_MINUS]
-Coordinates=849,510,124,36
+Coordinates=849,510,210,36
 
 [scGPGlyphButton_ZOOM_PLUS]
-Coordinates=870,372,124,36
+Coordinates=870,372,202,36
 
 [scGPPanel_statusbar]
-Coordinates=1017,464,86,36
+Coordinates=1017,464,139,36
 
 [SQL_processID]
-Coordinates=1046,144,66,58
+Coordinates=1046,144,105,58
 
 [scGPSizeBox]
-Coordinates=120,464,100,36
+Coordinates=120,464,93,36
+
+[hl_spojak_zakazky]
+Coordinates=411,446,122,58
+
+[CheckBoxVymena_barev]
+Coordinates=576,87,159,36
+
+[scLabel15]
+Coordinates=557,221,73,36
+
+[scExPanel_vrstvy]
+Coordinates=381,1,116,36
+
+[scLabel14]
+Coordinates=557,276,73,36
+
+[scListGroupKnihovObjektu]
+Coordinates=1412,56,167,36
+
+[ComboBoxCekani]
+Coordinates=410,87,118,36
+
+[scButton_ulozit]
+Coordinates=557,331,102,36
+
+[pravyoption_nadpis]
+Coordinates=809,87,126,36
+
+[scGPSwitch_meritko]
+Coordinates=1292,166,133,36
+
+[scLabel_titulek]
+Coordinates=110,354,100,36
+
+[scGPSwitch9]
+Coordinates=773,221,91,36
+
+[scLabel_ZOOM]
+Coordinates=773,335,104,36
+
+[DrawGrid_knihovna]
+Coordinates=1292,221,127,36
+
+[simulace]
+Coordinates=73,249,65,36
+
+[scButton7]
+Coordinates=770,542,72,36
+
+[scButton8]
+Coordinates=1204,1,72,36
+
+[Memo2]
+Coordinates=35,153,64,58
+
+[Celpohled1]
+Coordinates=1204,56,80,36
+
+[scSplitView_MENU]
+Coordinates=1322,276,125,36
+
+[scSplitView_LEFTTOOLBAR]
+Coordinates=1463,111,180,36
+
+[CheckBoxVytizenost]
+Coordinates=1322,331,132,36
+
+[scButton2]
+Coordinates=1204,276,72,36
+
+[scButton6]
+Coordinates=1204,551,72,36
+
+[scLabel19]
+Coordinates=1204,606,73,36
+
+[scGPPanel_mainmenu]
+Coordinates=1322,441,145,36
+
+[scButton9]
+Coordinates=957,631,72,36
+
+[button_zakazky_temp]
+Coordinates=104,153,139,58
+
+[scListGroupNastavProjektu]
+Coordinates=1463,166,170,36
+
+[scExPanel_ostatni]
+Coordinates=1322,496,120,36
+
+[scGPGlyphButton7]
+Coordinates=709,631,124,36
+
+[layout]
+Coordinates=1145,631,49,36
+
+[scLabel5]
+Coordinates=640,631,66,36
+
+[scGPGlyphButton8]
+Coordinates=511,631,124,36
+
+[scLabel4]
+Coordinates=284,631,66,36
+
+[scLabel1]
+Coordinates=86,631,66,36
+
+[(TMenuItem)]
+Coordinates=1463,331,88,36
 

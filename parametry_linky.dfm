@@ -58,6 +58,9 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
+    ColWidths = (
+      150
+      -2)
   end
   object Button_ADD: TButton
     Left = 139
@@ -99,10 +102,13 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 605
     Height = 126
     BorderStyle = bsNone
-    Color = clMenu
+    Color = clWhite
+    Ctl3D = False
     DefaultColWidth = 120
     DefaultRowHeight = 30
     DefaultDrawing = False
+    DrawingStyle = gdsGradient
+    FixedColor = clWhite
     RowCount = 3
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
@@ -110,14 +116,16 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    GradientEndColor = clWhite
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor]
+    ParentCtl3D = False
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 3
     Columns = <
       item
         Alignment = taCenter
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -135,7 +143,8 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end
       item
-        Color = clMenu
+        Alignment = taCenter
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -157,7 +166,8 @@ object Form_parametry_linky: TForm_parametry_linky
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Alignment = taCenter
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -176,7 +186,8 @@ object Form_parametry_linky: TForm_parametry_linky
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Alignment = taCenter
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -191,10 +202,12 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleFont.Style = []
         TitleFont.Quality = fqClearType
         TitleParentFont = False
+        TitleAlignment = taCenter
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Alignment = taCenter
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -209,6 +222,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end>
     RowHeights = (
       30
@@ -1002,7 +1016,7 @@ object Form_parametry_linky: TForm_parametry_linky
     AutoEnabledControls = False
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -1016,7 +1030,7 @@ object Form_parametry_linky: TForm_parametry_linky
       'Z'#225'v'#283'sn'#253)
     ButtonsGlowEffect.Enabled = False
     ButtonsGlowEffect.Color = clHighlight
-    ButtonsGlowEffect.AlphaValue = 255
+    ButtonsGlowEffect.AlphaValue = 95
     ButtonsGlowEffect.GlowSize = 7
     ButtonsGlowEffect.Offset = 0
     ButtonsGlowEffect.Intensive = True

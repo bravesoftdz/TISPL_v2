@@ -15,6 +15,7 @@
 #include "superform.h"
 #include "uvod.h"
 #include "antialiasing.h"
+#include "popUP_menu.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -284,15 +285,20 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormActivate(TObject *Sender)
-{     //toto odkomentovat pro spuštění TTR
+{
+	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
+	else
+	{
+//toto odkomentovat pro spuštění TTR
 //	if(!ttr("start"))
 //	{
 //		Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
 //		Close();
 //	}
 //	else
- 	Timer_tr->Enabled=false;//prozatim, toto zakomentovat po spuštění TTR
+		Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
 		startUP();//toto vždy odkomentované
+  }
 }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi
@@ -522,7 +528,7 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
 	scListGroupKnihovObjektu->Top=scListGroupNastavProjektu->Height;
-	PopupMenu1->AutoPopup=true;
+	//PopupMenu1->AutoPopup=true;
 	DuvodUlozit(true);
 	ButtonPLAY->Visible=false;
 	Timer_neaktivity->Enabled=false;
@@ -637,7 +643,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 
 			scListGroupNastavProjektu->Visible=false;
 			scListGroupKnihovObjektu->Visible=false;
-			PopupMenu1->AutoPopup=true;
+			//PopupMenu1->AutoPopup=true;
 			Button3->Visible=false;
 			Timer_neaktivity->Enabled=true;
 			pocitadlo_doby_neaktivity=0;//implicitní hodnota
@@ -683,7 +689,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	DuvodUlozit(true);
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
-	PopupMenu1->AutoPopup=false;
+	//PopupMenu1->AutoPopup=false;
 	Button3->Visible=false;
 	Timer_neaktivity->Enabled=false;
 
@@ -749,7 +755,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	DuvodUlozit(true);
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
-	PopupMenu1->AutoPopup=false;
+	//PopupMenu1->AutoPopup=false;
 	Button3->Visible=true;
 	d.cas=0;
 	//ZDM d.priprav_palce();
@@ -1219,14 +1225,32 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
 					if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
 					{
-						Nastvitparametry1->Visible=true;Nastvitparametry1->Caption="Nastavit parametry \""+pom->name.UpperCase()+"\"";
-						Smazat1->Visible=true;Smazat1->Caption="Smazat objekt \""+pom->name.UpperCase()+"\"";
+						//new
+						PopUPmenu->Item_smazat->Visible=true;PopUPmenu->scLabel_smazat->Caption="  Smazat \""+pom->name.UpperCase()+"\"";
+						PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit parametry \""+pom->name.UpperCase()+"\"";
+						//old
+						//Nastvitparametry1->Visible=true;Nastvitparametry1->Caption="Nastavit parametry \""+pom->name.UpperCase()+"\"";
+						//Smazat1->Visible=true;Smazat1->Caption="  Smazat \""+pom->name.UpperCase()+"\"";
 					}
 					else
 					{
-						Nastvitparametry1->Visible=false;
-						Smazat1->Visible=false;
+						//new
+						PopUPmenu->Item_smazat->Visible=false;
+						PopUPmenu->Item_nastavit_parametry->Visible=false;
+						//old
+						//Nastvitparametry1->Visible=false;
+						//Smazat1->Visible=false;
 					}
+					//umístění popup menu
+					PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;
+					PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;
+					//ošetření, pokud je mimo obrazovku
+					if(PopUPmenu->Left>=Form1->ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo částečně)
+					PopUPmenu->Left=Form1->ClientWidth-PopUPmenu->Width-5;
+					if(PopUPmenu->Top>=Form1->ClientHeight-PopUPmenu->Height)
+					PopUPmenu->Top=Form1->ClientHeight-PopUPmenu->Height-5;
+					//volání vlastního popup menu
+					PopUPmenu->Show();
 				}break;
 			}
 	 }
@@ -1971,7 +1995,8 @@ void __fastcall TForm1::DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TSh
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
-S(MB_RETRYCANCEL);
+
+//
 //Cvektory::TObjekt *ukaz=d.v.OBJEKTY->dalsi;
 //Memo2->Clear();
 //Memo2->Visible=true;
@@ -2199,6 +2224,8 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			DuvodUlozit(true);
 		}
 	}
+	else
+	S("nenalezen");
 }
 //---------------------------------------------------------------------------
 //zobrazí paramety jednoho procesu na časových osách
@@ -3802,4 +3829,5 @@ void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+
 

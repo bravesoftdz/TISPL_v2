@@ -12,6 +12,7 @@ USEFORM("uvod.cpp", Form_uvod);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("cesty.cpp", Form_cesty);
 USEFORM("MyMessageBox.cpp", myMessageBox);
+USEFORM("popUP_menu.cpp", PopUPmenu);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -27,6 +28,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_jig), &Form_jig);
 		Application->CreateForm(__classid(TForm_cesty), &Form_cesty);
 		Application->CreateForm(__classid(TForm_parametry_linky), &Form_parametry_linky);
+		Application->CreateForm(__classid(TPopUPmenu), &PopUPmenu);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}

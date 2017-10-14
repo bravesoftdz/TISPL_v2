@@ -191,3 +191,4 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
