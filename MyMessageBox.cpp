@@ -35,13 +35,24 @@ int TmyMessageBox::Show(long Left,long Top,UnicodeString Label1_text,UnicodeStri
 	Label1->Caption=Label1_text;
 	Label2->Caption=Label2_text;
 
-	////volání nastavení dynamická velikost formuláøe podle písma
-	/*//porovná, co je delší, zda Label èi Checkbox, podle toho s okrajem nastaví šíøku formuláøe
-	if(Label1->Width+Label1->Left>CheckBox_pamatovat->Left+CheckBox_pamatovat->Width)
-		MyMessageBox->Width=Label1->Width+(Label1->Left*2);
-	else
-		MyMessageBox->Width=(CheckBox_pamatovat->Width+(CheckBox_pamatovat->Left*2));
-	*/
+	//pokud je text delší odøádkuje    //pokud druhý øádek je volný //pokud vùbec má smysl øetìzez zalamovat
+	if(Label1->Width>=myMessageBox->Width && Label2->Caption=="" && Label1->Caption.Length()>44)
+	{
+		 int Pos=0;int Pos_min=Pos;
+		 AnsiString t=Label1->Caption;
+		 while(t.Pos(" ") && Pos_min+t.Pos(" ")<44)//dìlá dokud øetìze obsahuje mezeru nebo dokud je mezera na nižším poøadí v øetìzci než 44
+		 {
+ 				Pos=t.Pos(" ");
+				Pos_min+=Pos;
+				t=t.SubString(Pos+1,t.Length());
+		 }
+
+		 if(Pos==0)Pos_min=44;//pokud text neobsahuje mezeru, rozdìlí umìle
+
+		 //samotné rozdìlení
+		 Label2->Caption=Label1->Caption.SubString(Pos_min+1,Label1->Caption.Length());
+		 Label1->Caption=Label1->Caption.SubString(1,Pos_min-1);
+	}
 
 	//zobrazení komponent + pøípadnì jejich pozice
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;

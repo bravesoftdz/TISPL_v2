@@ -56,6 +56,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
 	novy->pohon=new TPohon;//ukazatel na použitý pohon
+	novy->pohon->n=1;//na default
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
@@ -82,6 +83,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
 	novy->pohon=new TPohon;//ukazatel na použitý pohon
+	novy->pohon->n=1;//na default
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
