@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.097,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
+<BorlandProject/>
     <Transaction>1899.12.30 00:00:00.000.109,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.322,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\popUP_menu.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.h</Transaction>
     <Transaction>1899.12.30 00:00:00.000.868,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\qDesign.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
@@ -19,5 +17,3 @@
     <Transaction>2017.10.16 17:12:22.835,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\kalendar.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
     <Transaction>2017.10.16 17:12:22.835,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\kalendar.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.h</Transaction>
     <Transaction>2017.10.16 17:12:22.835,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\kalendar.dfm=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.dfm</Transaction>
-  </Transactions>
-</BorlandProject>

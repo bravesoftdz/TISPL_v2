@@ -218,9 +218,9 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 		 nacti_default_zakazku();
 		//vytvoøim defaultní øadek se zakázkou a hned ji našiju do temp spojáku
 		 uloz_Defaulttemp_zakazku();
-		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
+		 Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
 		// po uložení do hl.spojaku zakázek potøebuji stejnì znovu uložit øádek do temp_zakazek
-			uloz_Defaulttemp_zakazku();
+		 uloz_Defaulttemp_zakazku();
 
 				 }
 		else { //pokud je uloženo nìco v zakázkách tak je naètu
@@ -744,11 +744,46 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 {
 if(rStringGridEd1->Col==5){
 	Form_jig->ShowModal();
-}                // zde volat metodu vrat_temp_zakazku   - M opravdu? spíš níže cestu
+}                // zde volat metodu vrat_temp_zakazku   - M opravdu? spíš níže cestu  -// ne R ma pravdu
 
 if(rStringGridEd1->Col==9){
 	Form_cesty->ShowModal();
-}
+
+
+
+																																				 //zatim podle cisla radku, nikoliv primo N
+	 Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
+	//naèítání dat
+		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+
+	int i=0;
+	while(ukaz!=NULL)
+  {
+    i++;
+		Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->id;
+		Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->name;
+		Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->CT;
+
+			Form_cesty->rStringGridEd_cesty->RowCount++;
+
+			ukaz=ukaz->dalsi;
+
+  }
+  //ukládání dat
+	//if(mrOK==Form_cesty->ShowModal())//+poøešit ten problém s návratovou hodnotou mrOK toho použivaného buttonu
+	//{
+		/* inicializace_cesty(zakazka);
+     for(od 1 do poètu øádku stringgrid_technologicke_cesty)
+		 vloz_segment_cesty(zakazka, a parametry z stringgrid_technologicke_cesty->bunkaX);  */
+
+		// ShowMessage("mam ukladat");
+	//}
+
+
+
+
+	}
+
 }
 //---------------------------------------------------------------------------
 
@@ -809,6 +844,26 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.PP.efektivita=Form1->ms.MyToDouble(rEditNum_effektivita->Text);
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
+
+//		Cvektory::TJig j;   //rozepsana editace zakazek
+//
+//	 for (int i = 1; i<= rStringGridEd1->RowCount; i++) {
+//
+//		Form1->d.v.edituj_temp_zakazku(rStringGridEd1->Cells[0][i].ToInt(),
+//																	 rStringGridEd1->Cells[0][i],
+//																	 rStringGridEd1->Cells[1][i].ToInt(),
+//																	 rStringGridEd1->Cells[2][i],
+//																	 clBlue,
+//																	 Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
+//																	 Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
+//																	 j,
+//																	 rStringGridEd1->Cells[6][i].ToInt(),
+//																	 rStringGridEd1->Cells[7][i].ToInt(),
+//																	 rStringGridEd1->Cells[8][i].ToInt());
+//
+//
+//	 }
+
 
 		Form1->DuvodUlozit(true);
 		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();

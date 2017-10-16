@@ -17,7 +17,7 @@
 class TForm_cesty : public TForm
 {
 __published:	// IDE-managed Components
-	TrStringGridEd *rStringGridEd1;
+	TrStringGridEd *rStringGridEd_cesty;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
@@ -26,10 +26,13 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton2;
 	TscGPButton *cesta_storno;
 	TscGPButton *cesta_save;
-	void __fastcall FormShow(TObject *Sender);
 	void __fastcall cesta_stornoClick(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
+
+		void nactiNastaveni();
+
 	__fastcall TForm_cesty(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
