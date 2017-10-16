@@ -476,9 +476,19 @@ private:
 				double pomer;//poměr z celkového množství výrobků
 				double TT;
 				TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozíku
+				unsigned long pocet_segmentu_cesty;//udržuje počet jednotlivých segmentů cesty, slouží kvůli tomu, aby se vědělo, kolikrát cyklem načítat strukturu která načítá jednotlivé segmenty konkrétně objekty typu TCesta dané zakázky
 				unsigned long pocet_voziku;//počet vozíků v zakázce
 				unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
 				unsigned long opakov_servis;//cyklus opakování servisních vozíku
+		};
+		struct C_cesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
+		{
+				unsigned long n;//n segmentu cesty
+				unsigned long n_objekt;//n na vybraný objekt
+		  	double CT; //cycle time
+		  	double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+				double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+				double RD;//rychlost dopravníku
 		};
 //		struct C_vozik//pro konverzi do bináru
 //		{
