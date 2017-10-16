@@ -28,6 +28,15 @@ __fastcall TPopUPmenu::TPopUPmenu(TComponent* Owner)
 	pasiveColor();
 }
 //---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::FormShow(TObject *Sender)
+{
+	//ošetøení, pokud je mimo obrazovku + 5 px okraj
+	if(PopUPmenu->Left>=Form1->ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
+	PopUPmenu->Left=Form1->ClientWidth-PopUPmenu->Width-5;
+	if(PopUPmenu->Top>=Form1->ClientHeight-PopUPmenu->Height)
+	PopUPmenu->Top=Form1->ClientHeight-PopUPmenu->Height-5;
+}
+//---------------------------------------------------------------------------
 void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default barvu
 {
 	Item_zobrazit_parametry->FillColor=clBg;
@@ -449,6 +458,8 @@ void __fastcall TPopUPmenu::scLabel_cely_pohledClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+
+
 
 
 

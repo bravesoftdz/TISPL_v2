@@ -386,7 +386,6 @@ public:
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
-	enum T_mbTYPE{OK=0,OKCANCEL,YESNO,YESNOCANCEL};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
 
@@ -494,13 +493,12 @@ public:		// User declarations
 	bool antialiasing;
 	double Zoom_predchozi_AA;//pøi antialiasingu
 
-
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//Usnadòuje pøístup k ShowMessage
-	int MB(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text="",UnicodeString Caption_text="", T_mbTYPE mbTYPE=OK,bool checkbox_zobrazit=false);
-	int MB(UnicodeString Label1_text,T_mbTYPE mbTYPE=OK);
-	int MB(UnicodeString Label1_text,UnicodeString Label2_text,T_mbTYPE mbTYPE=OK);
+	int MB(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text="",UnicodeString Caption_text="", int mbTYPE=MB_OK,bool checkbox_zobrazit=false);
+	int MB(UnicodeString Label1_text,int mbTYPE=MB_OK);
+	int MB(UnicodeString Label1_text,UnicodeString Label2_text,int mbTYPE=MB_OK);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

@@ -98,6 +98,7 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_oddálitClick(TObject *Sender);
 	void __fastcall scLabel_vybrat_oknemClick(TObject *Sender);
 	void __fastcall scLabel_cely_pohledClick(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations
 	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;
 	void pasiveColor();

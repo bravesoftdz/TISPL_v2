@@ -16,6 +16,7 @@
   PopupMode = pmExplicit
   Position = poDesigned
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Item_zobrazit_parametry: TscGPPanel
@@ -1053,7 +1054,6 @@
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitTop = -3
     end
   end
   object Item_oddalit: TscGPPanel

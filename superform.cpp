@@ -36,7 +36,8 @@ void TForm_definice_zakazek::nacti_defaulni_PP(){
 		rEditNum_pocet_dnu->Text=5;
 		rEditNum_effektivita->Text=99;
 		rEditNum_pocet_prac_hod->Text=8;
-		scEdit_zacatek->Text="20:00:00";
+		TDateTime TIME;
+		scEdit_zacatek->Text=TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");//defaultnì dnes v 8:00
 
 	}
 
@@ -217,7 +218,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 		 nacti_default_zakazku();
 		//vytvoøim defaultní øadek se zakázkou a hned ji našiju do temp spojáku
 		 uloz_Defaulttemp_zakazku();
-		 Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
+		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
 		// po uložení do hl.spojaku zakázek potøebuji stejnì znovu uložit øádek do temp_zakazek
 			uloz_Defaulttemp_zakazku();
 
@@ -743,7 +744,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 {
 if(rStringGridEd1->Col==5){
 	Form_jig->ShowModal();
-}                // zde volat metodu vrat_temp_zakazku
+}                // zde volat metodu vrat_temp_zakazku   - M opravdu? spíš níže cestu
 
 if(rStringGridEd1->Col==9){
 	Form_cesty->ShowModal();
@@ -803,21 +804,16 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
-
-
 		Form1->d.v.PP.mnozstvi=Form1->ms.MyToDouble(rEditNum_pozad_mnozstvi->Text);
 		Form1->d.v.PP.dni_rok=Form1->ms.MyToDouble(rEditNum_pocet_dnu->Text);
 		Form1->d.v.PP.efektivita=Form1->ms.MyToDouble(rEditNum_effektivita->Text);
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
-	
-				Form1->DuvodUlozit(true);
-				Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
-			 	//generuj_VOZIKY();
-				Form_definice_zakazek->Close();
-
-
+		Form1->DuvodUlozit(true);
+		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
+		Form1->d.v.generuj_VOZIKY();
+		Form_definice_zakazek->Close();
 }
 //---------------------------------------------------------------------------
 
@@ -979,5 +975,7 @@ void __fastcall TForm_definice_zakazek::smaz_tempClick(TObject *Sender)
 	Form1->d.v.smaz_temp_zakazku(Edit_smaz_temp->Text.ToInt());
 }
 //---------------------------------------------------------------------------
+
+
 
 

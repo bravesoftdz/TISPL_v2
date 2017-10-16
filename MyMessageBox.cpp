@@ -19,6 +19,15 @@ __fastcall TmyMessageBox::TmyMessageBox(TComponent* Owner)
 	myMessageBox->Color=(TColor)RGB(240,240,240);//nastavení pozadí barvy formuláøe
 }
 //---------------------------------------------------------------------------
+void __fastcall TmyMessageBox::FormShow(TObject *Sender)
+{
+	//ošetøení, pokud je mimo obrazovku + 5 px okraj
+	if(myMessageBox->Left>=Form1->ClientWidth-myMessageBox->Width)//nastala situace že je mimo obraz (nebo èásteènì)
+	myMessageBox->Left=Form1->ClientWidth-myMessageBox->Width-5;
+	if(myMessageBox->Top>=Form1->ClientHeight-myMessageBox->Height)
+	myMessageBox->Top=Form1->ClientHeight-myMessageBox->Height-5;
+}
+//---------------------------------------------------------------------------
 //pøetížená metoda
 int TmyMessageBox::Show(UnicodeString Label1_text,int mbTYPE)
 {
@@ -134,6 +143,8 @@ void __fastcall TmyMessageBox::FormKeyDown(TObject *Sender, WORD &Key, TShiftSta
 	}
 }
 //---------------------------------------------------------------------------
+
+
 
 
 

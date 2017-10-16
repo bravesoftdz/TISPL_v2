@@ -12,6 +12,7 @@ object myMessageBox: TmyMessageBox
   Font.Style = []
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TrHTMLLabel
@@ -287,7 +288,7 @@ object myMessageBox: TmyMessageBox
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.PressedColor = clLime
     Options.FocusedColor = 33023
     Options.DisabledColor = clBlack
     Options.NormalColorAlpha = 255
@@ -377,7 +378,7 @@ object myMessageBox: TmyMessageBox
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.PressedColor = clRed
     Options.FocusedColor = 33023
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -520,7 +521,7 @@ object myMessageBox: TmyMessageBox
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.PressedColor = clLime
     Options.FocusedColor = 33023
     Options.DisabledColor = clBlack
     Options.NormalColorAlpha = 255

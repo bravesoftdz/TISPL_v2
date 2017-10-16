@@ -611,9 +611,13 @@ void Cvektory::zmen_poradi_temp_zakazky(unsigned long aktualni_poradi,unsigned l
 void Cvektory::kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp)
 {
 	vymaz_seznam_ZAKAZKY();//vymazání původního seznamu
-	hlavicka_ZAKAZKY();//založení hlavičky
-	ZAKAZKY=ZAKAZKY_temp;//zkopírování ukazatelů mezi spojáky
-	if(mazat_ZAKAZKY_temp)vymaz_seznam_ZAKAZKY_temp();//smazání již nepotřebného spojáku temp
+	//hlavicka_ZAKAZKY();//založení hlavičky - není potřeba vzhledem k následující kontrukci, kdy se předává hlavička z ZAKAZKY_temp
+	ZAKAZKY=ZAKAZKY_temp;//zkopírování ukazatele na hlavičku spojaku ZAKAZKY_temp, touto konstrukcí ZAKAZKY ukazují tam, kam ZAKAZKY_temp
+	if(mazat_ZAKAZKY_temp)//smazání již nepotřebné hlavičky spojaku ZAKAZKY_temp, nepoužívat metodu vymaz_temp_zakazky(), protože ta maže i jednotlivé objekty a ty jsou již v ostrém spojáku ZAKAZKY
+	{
+		ZAKAZKY_temp=NULL;
+		delete ZAKAZKY_temp;
+  }
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
@@ -628,8 +632,7 @@ long Cvektory::vymaz_seznam_ZAKAZKY()
 		ZAKAZKY=ZAKAZKY->dalsi;
 		pocet_smazanych_objektu++;
 	};
-
-	return pocet_smazanych_objektu;
+	return pocet_smazanych_objektu;//vrací hodnotu včetně hlavičky
 }
 //pro temp
 long Cvektory::vymaz_seznam_ZAKAZKY_temp()
@@ -644,7 +647,7 @@ long Cvektory::vymaz_seznam_ZAKAZKY_temp()
 		pocet_smazanych_objektu++;
 	};
 
-	return pocet_smazanych_objektu;
+	return pocet_smazanych_objektu;//vrací hodnotu včetně hlavičky
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -742,8 +745,8 @@ void Cvektory::hlavicka_VOZIKY()
 //vygeneruje podle zadaných zakázek seznam vozíků
 void Cvektory::generuj_VOZIKY()
 {
-	 if(ZAKAZKY!=NULL)
-	 if(ZAKAZKY->dalsi!=NULL && ZAKAZKY->predchozi->n>0)//záměrně do dvou podmínek
+	 if(ZAKAZKY!=NULL)//záměrně do dvou podmínek
+	 if(ZAKAZKY->dalsi!=NULL && ZAKAZKY->predchozi->n>0)
 	 {
 			vymaz_seznam_VOZIKY();
 			hlavicka_VOZIKY();
@@ -1008,7 +1011,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 c_ukaz2->pocet_voziku=ukaz2->pocet_voziku;
 			 c_ukaz2->serv_vozik_pocet=ukaz2->serv_vozik_pocet;
 			 c_ukaz2->opakov_servis=ukaz2->opakov_servis;
-			 FileStream->Write(c_ukaz2,sizeof(C_pohon));//zapiše jeden prvek do souboru
+			 FileStream->Write(c_ukaz2,sizeof(C_zakazka));//zapiše jeden prvek do souboru
 			 //text - id
 			 wchar_t *id=new wchar_t [c_ukaz2->id_length];
 			 id=ukaz2->id.c_str();
@@ -1019,7 +1022,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 name=ukaz2->name.c_str();
 			 FileStream->Write(name,c_ukaz2->name_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
 			 name=NULL; delete[] name;
-
 			 c_ukaz2=NULL;delete c_ukaz2;
 			 ukaz2=ukaz2->dalsi;//posunutí na další pozici v seznamu
 		 };
@@ -1164,8 +1166,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			{
 				TZakazka *ukaz2=new TZakazka;
 				C_zakazka *c_ukaz2=new C_zakazka;
-				FileStream->Read(c_ukaz2,sizeof(C_pohon));//načte jeden prvek ze souboru
-				if(c_ukaz2->n!=0 && File_hlavicka.pocet_pohonu>=c_ukaz2->n)//pokud nenačte hlavičku či nějaký shit
+				FileStream->Read(c_ukaz2,sizeof(C_zakazka));//načte jeden prvek ze souboru
+				if(c_ukaz2->n!=0 && File_hlavicka.pocet_zakazek>=c_ukaz2->n)//pokud nenačte hlavičku či nějaký shit
 				{
 					//samotná data
 					ukaz2->n=c_ukaz2->n;
@@ -1759,7 +1761,7 @@ void Cvektory::vse_odstranit()
 		}
 
 		//zakazky
-		if(ZAKAZKY!=NULL && ZAKAZKY->predchozi->n>0)//pokud je více objektů
+		if(ZAKAZKY->predchozi->n>0)//pokud je více objektů
 		{
 			vymaz_seznam_ZAKAZKY();//byla zde poznámka, že před zdm padalo
 			delete ZAKAZKY; ZAKAZKY=NULL;

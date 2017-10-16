@@ -31,8 +31,9 @@ __published:	// IDE-managed Components
 	TscGPButton *Button_Cancel;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations
-	enum T_mbTYPE{OK=0,OKCANCEL,YESNO,YESNOCANCEL};
+	enum T_mbTYPE{OK=0,OKCANCEL=1,YESNO=4,YESNOCANCEL=3};
 public:		// User declarations
 	__fastcall TmyMessageBox(TComponent* Owner);
 	int Show(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text="",UnicodeString Caption_text="",int mbTYPE=OK,bool checkbox_zobrazit=false);

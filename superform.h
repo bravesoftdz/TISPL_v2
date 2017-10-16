@@ -101,6 +101,7 @@ __published:	// IDE-managed Components
 
 
 
+
 	//void __fastcall DrawGrid1Click(TObject *Sender);
 private:	// User declarations
 	bool OK_status;

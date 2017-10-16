@@ -5,14 +5,15 @@
 #include <tchar.h>
 //---------------------------------------------------------------------------
 USEFORM("superform.cpp", Form_definice_zakazek);
-USEFORM("parametry.cpp", Form_parametry);
 USEFORM("parametry_linky.cpp", Form_parametry_linky);
+USEFORM("popUP_menu.cpp", PopUPmenu);
 USEFORM("Unit1.cpp", Form1);
 USEFORM("uvod.cpp", Form_uvod);
+USEFORM("parametry.cpp", Form_parametry);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("cesty.cpp", Form_cesty);
 USEFORM("MyMessageBox.cpp", myMessageBox);
-USEFORM("popUP_menu.cpp", PopUPmenu);
+USEFORM("qDesign.cpp", Form2);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -29,6 +30,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_cesty), &Form_cesty);
 		Application->CreateForm(__classid(TForm_parametry_linky), &Form_parametry_linky);
 		Application->CreateForm(__classid(TPopUPmenu), &PopUPmenu);
+		Application->CreateForm(__classid(TForm2), &Form2);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}

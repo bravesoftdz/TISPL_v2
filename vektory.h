@@ -348,8 +348,8 @@ class Cvektory
 
 //metody pro POHONY
 		void hlavicka_POHONY();
-		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
+		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 //		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
@@ -467,10 +467,10 @@ private:
 		struct C_zakazka
 		{
 				unsigned long n;//pořadí objektu ve spoj.seznamu
-				//UnicodeString id;//uživatelské ID objektu - nelze
+				//UnicodeString id;//uživatelské ID objektu - nelze UnicodeString
 				unsigned int id_length;
 				unsigned short typ;//0- realná,1-servisní
-				//UnicodeString name;//název zakázky nelze
+				//UnicodeString name;//název zakázky nelze jako UnicodeString
 				unsigned int name_length;
 				TColor barva;//barva zakáky
 				double pomer;//poměr z celkového množství výrobků
