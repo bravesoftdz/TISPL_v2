@@ -1,13 +1,2 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.322,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\popUP_menu.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.097,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.322,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\popUP_menu.dfm=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.322,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\popUP_menu.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
-    <Transaction>2017.10.15 10:02:18.109,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
-    <Transaction>2017.10.15 10:31:02.868,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\qDesign.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
-    <Transaction>2017.10.15 10:31:02.868,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\qDesign.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.h</Transaction>
-    <Transaction>2017.10.15 10:31:02.868,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\qDesign.dfm=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.dfm</Transaction>
-  </Transactions>
-</BorlandProject>
+<BorlandProject/>
