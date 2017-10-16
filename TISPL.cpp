@@ -5,15 +5,16 @@
 #include <tchar.h>
 //---------------------------------------------------------------------------
 USEFORM("superform.cpp", Form_definice_zakazek);
+USEFORM("eDesigner.cpp", Form_eDesigner);
 USEFORM("parametry_linky.cpp", Form_parametry_linky);
 USEFORM("popUP_menu.cpp", PopUPmenu);
-USEFORM("Unit1.cpp", Form1);
 USEFORM("uvod.cpp", Form_uvod);
-USEFORM("parametry.cpp", Form_parametry);
+USEFORM("Unit1.cpp", Form1);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("cesty.cpp", Form_cesty);
+USEFORM("parametry.cpp", Form_parametry);
 USEFORM("MyMessageBox.cpp", myMessageBox);
-USEFORM("qDesign.cpp", Form2);
+USEFORM("kalendar.cpp", Form_kalendar);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -30,7 +31,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_cesty), &Form_cesty);
 		Application->CreateForm(__classid(TForm_parametry_linky), &Form_parametry_linky);
 		Application->CreateForm(__classid(TPopUPmenu), &PopUPmenu);
-		Application->CreateForm(__classid(TForm2), &Form2);
+		Application->CreateForm(__classid(TForm_eDesigner), &Form_eDesigner);
+		Application->CreateForm(__classid(TForm_kalendar), &Form_kalendar);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}

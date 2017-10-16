@@ -157,11 +157,23 @@
         <None Include="CTpointD.h">
             <BuildOrder>7</BuildOrder>
         </None>
+        <CppCompile Include="eDesigner.cpp">
+            <Form>Form_eDesigner</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>eDesigner.h</DependentOn>
+            <BuildOrder>19</BuildOrder>
+        </CppCompile>
         <CppCompile Include="jig.cpp">
             <Form>Form_jig</Form>
             <FormType>dfm</FormType>
             <DependentOn>jig.h</DependentOn>
             <BuildOrder>16</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="kalendar.cpp">
+            <Form>Form_kalendar</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>kalendar.h</DependentOn>
+            <BuildOrder>20</BuildOrder>
         </CppCompile>
         <None Include="knihovna_objektu.h">
             <BuildOrder>3</BuildOrder>
@@ -201,12 +213,6 @@
             <DependentOn>popUP_menu.h</DependentOn>
             <BuildOrder>18</BuildOrder>
         </CppCompile>
-        <CppCompile Include="qDesign.cpp">
-            <Form>Form2</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>qDesign.h</DependentOn>
-            <BuildOrder>19</BuildOrder>
-        </CppCompile>
         <CppCompile Include="superform.cpp">
             <Form>Form_definice_zakazek</Form>
             <FormType>dfm</FormType>
@@ -241,15 +247,16 @@
             <BuildOrder>12</BuildOrder>
         </CppCompile>
         <FormResources Include="superform.dfm"/>
+        <FormResources Include="eDesigner.dfm"/>
         <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="popUP_menu.dfm"/>
-        <FormResources Include="Unit1.dfm"/>
         <FormResources Include="uvod.dfm"/>
-        <FormResources Include="parametry.dfm"/>
+        <FormResources Include="Unit1.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="cesty.dfm"/>
+        <FormResources Include="parametry.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
-        <FormResources Include="qDesign.dfm"/>
+        <FormResources Include="kalendar.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -340,27 +347,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
+                <DeployClass Name="ProjectiOSDeviceResourceRules">
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
@@ -714,12 +706,27 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules">
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>

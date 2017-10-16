@@ -16,6 +16,7 @@
 #include "uvod.h"
 #include "antialiasing.h"
 #include "popUP_menu.h"
+#include "eDesigner.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -1996,7 +1997,6 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 {
 
 
-
 //TDateTime TIME;
 //TIME=TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");
 //S(TIME);
@@ -3841,6 +3841,11 @@ void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
-
-
+//volání eDesignera
+void __fastcall TForm1::scButton2Click(TObject *Sender)
+{
+		Form_eDesigner->Show();
+		scSplitView_MENU->Close();
+}
+//---------------------------------------------------------------------------
 

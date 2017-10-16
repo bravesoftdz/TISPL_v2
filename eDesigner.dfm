@@ -1,9 +1,9 @@
-object Form2: TForm2
+object Form_eDesigner: TForm_eDesigner
   Left = 0
   Top = 0
-  Caption = 'Form2'
-  ClientHeight = 337
-  ClientWidth = 618
+  Caption = 'Form_eDesigner'
+  ClientHeight = 239
+  ClientWidth = 600
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,14 +11,15 @@ object Form2: TForm2
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 0
     Top = 0
-    Width = 618
-    Height = 337
-    Align = alClient
+    Width = 601
+    Height = 121
+    Align = alCustom
     BorderStyle = bsNone
     Color = clWhite
     Ctl3D = False
@@ -144,10 +145,6 @@ object Form2: TForm2
         TitleAlignment = taCenter
       end>
     AutoAddNewRow = True
-    ExplicitLeft = 5
-    ExplicitTop = 3
-    ExplicitWidth = 605
-    ExplicitHeight = 126
     RowHeights = (
       30
       30)
