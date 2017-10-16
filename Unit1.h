@@ -86,6 +86,7 @@
 #include "MyString.h"
 #include "my.h"
 #include "vykresli.h"
+#include <Vcl.ComCtrls.hpp>
 //ZDM #include "grafy.h"
 
 //#include "vektory.h" //už vkládám pøes vykresli.h
