@@ -47,6 +47,25 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 {
 //zobraz data
 
+	/*Cvektory::TObjekt *ukaz=Form1->d.v.OBJEKTY->dalsi;
+
+	int i=0;
+
+	while(ukaz!=NULL){
+					i++;
+
+			rStringGridEd_cesty->Cells[0][i]=ukaz->id;
+			rStringGridEd_cesty->Cells[1][i]=ukaz->name;
+			rStringGridEd_cesty->Cells[2][i]=ukaz->delka_dopravniku;
+
+
+		 rStringGridEd_cesty->RowCount++;
+
+		 ukaz=ukaz->dalsi;
+     	}
+   */
+
+
 
 }
 //---------------------------------------------------------------------------

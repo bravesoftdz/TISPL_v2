@@ -17,7 +17,7 @@
 class TForm_cesty : public TForm
 {
 __published:	// IDE-managed Components
-	TrStringGridEd *rStringGridEd1;
+	TrStringGridEd *rStringGridEd_cesty;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
@@ -31,7 +31,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 public:		// User declarations
 
-		nactiNastaveni();
+		void nactiNastaveni();
 
 	__fastcall TForm_cesty(TComponent* Owner);
 };

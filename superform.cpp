@@ -748,7 +748,42 @@ if(rStringGridEd1->Col==5){
 
 if(rStringGridEd1->Col==9){
 	Form_cesty->ShowModal();
-}
+
+
+
+																																				 //zatim podle cisla radku, nikoliv primo N
+	 Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
+	//naèítání dat
+		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+
+	int i=0;
+	while(ukaz!=NULL)
+  {
+    i++;
+		Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->id;
+		Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->name;
+		Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->CT;
+
+			Form_cesty->rStringGridEd_cesty->RowCount++;
+
+			ukaz=ukaz->dalsi;
+
+  }
+  //ukládání dat
+	//if(mrOK==Form_cesty->ShowModal())//+poøešit ten problém s návratovou hodnotou mrOK toho použivaného buttonu
+	//{
+		/* inicializace_cesty(zakazka);
+     for(od 1 do poètu øádku stringgrid_technologicke_cesty)
+		 vloz_segment_cesty(zakazka, a parametry z stringgrid_technologicke_cesty->bunkaX);  */
+
+		// ShowMessage("mam ukladat");
+	//}
+
+
+
+
+	}
+
 }
 //---------------------------------------------------------------------------
 

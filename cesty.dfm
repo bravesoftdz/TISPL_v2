@@ -16,7 +16,7 @@ object Form_cesty: TForm_cesty
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 21
-  object rStringGridEd1: TrStringGridEd
+  object rStringGridEd_cesty: TrStringGridEd
     Left = 6
     Top = 105
     Width = 640
@@ -28,7 +28,7 @@ object Form_cesty: TForm_cesty
     DefaultColWidth = 90
     DefaultRowHeight = 30
     DefaultDrawing = False
-    RowCount = 14
+    RowCount = 2
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
     Font.Height = -15
@@ -170,18 +170,6 @@ object Form_cesty: TForm_cesty
         TitleParentFont = False
       end>
     RowHeights = (
-      30
-      30
-      30
-      30
-      30
-      30
-      30
-      30
-      30
-      30
-      30
-      30
       30
       30)
   end
