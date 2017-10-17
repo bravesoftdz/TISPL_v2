@@ -3851,3 +3851,29 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm1::Button11Click(TObject *Sender)
+{
+		Cvektory::TZakazka *zakazka=d.v.ZAKAZKY->dalsi;
+		//načítání dat
+		if(zakazka!=NULL)
+		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
+		{
+			ShowMessage(zakazka->name);
+			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//přeskočí hlavičku, jde rovnou na první segment cesty
+			while(ukaz!=NULL)
+			{
+				Memo1->Lines->Add
+				(
+						AnsiString(ukaz->n)+","+
+						AnsiString(ukaz->objekt->short_name)+","+
+						AnsiString(ukaz->CT)+","+
+						AnsiString(ukaz->RD)+","+
+						AnsiString(ukaz->Tc)+","+
+						AnsiString(ukaz->Tv)
+				);
+				ukaz=ukaz->dalsi;
+			}
+		}
+}
+//---------------------------------------------------------------------------
+

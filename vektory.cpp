@@ -1008,7 +1008,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 c_ukaz2->pomer=ukaz2->pomer;
 			 c_ukaz2->TT=ukaz2->TT;
 			 c_ukaz2->jig=ukaz2->jig;
-			 if(ukaz2->cesta!=NULL && ukaz2->cesta->predchozi->n>=0)c_ukaz2->pocet_segmentu_cesty=ukaz2->cesta->predchozi->n;
+			 if(ukaz2->cesta!=NULL && ukaz2->cesta->predchozi->n>=0){c_ukaz2->pocet_segmentu_cesty=ukaz2->cesta->predchozi->n;/*ShowMessage("Cvectory 1011: "+AnsiString(c_ukaz2->pocet_segmentu_cesty));*/}
 			 else c_ukaz2->pocet_segmentu_cesty=0;
 			 c_ukaz2->pocet_voziku=ukaz2->pocet_voziku;
 			 c_ukaz2->serv_vozik_pocet=ukaz2->serv_vozik_pocet;
@@ -1042,7 +1042,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 				 FileStream->Write(c_c,sizeof(C_cesta));//zapiše jeden prvek do souboru
 				 //posun na další segment cesty
 				 c=c->dalsi;
-				 c_c=NULL; delete c_c;
+				 //c_c=NULL; delete c_c;
 			 }
 			 //?c=NULL; delete c;
 			 ukaz2=ukaz2->dalsi;//posunutí na další pozici v seznamu
@@ -1215,6 +1215,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					name=NULL; delete[] name;
 
 					//segmenty cesty
+					//ShowMessage("Cvectory 1218:"+AnsiString(c_ukaz2->pocet_segmentu_cesty));
 					for(unsigned int j=1;j<=c_ukaz2->pocet_segmentu_cesty;j++)
 					{
 						C_cesta *c_c=new C_cesta;
@@ -1226,7 +1227,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					//vloží finální prvek do spojového seznamu
 					vloz_zakazku(ukaz2);
 				}
-				ukaz2=NULL; delete ukaz2;
+				//ukaz2=NULL; delete ukaz2;
 				c_ukaz2=NULL; delete c_ukaz2;
 			};
 

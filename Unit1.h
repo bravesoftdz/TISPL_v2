@@ -248,6 +248,7 @@ __published:	// IDE-managed Components
 	TMemo *Memo2;
 	TButton *button_zakazky_temp;
 	TscButton *scButton10;
+	TButton *Button11;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -380,6 +381,7 @@ __published:	// IDE-managed Components
 	void __fastcall hl_spojak_zakazkyClick(TObject *Sender);
 	void __fastcall button_zakazky_tempClick(TObject *Sender);
 	void __fastcall scButton2Click(TObject *Sender);
+	void __fastcall Button11Click(TObject *Sender);
 
 // User declarations
 	////struktury, výèty
