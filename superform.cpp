@@ -852,8 +852,9 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
 		//uložení editovaných zakázek
-		for (int i = 1; i<= rStringGridEd1->RowCount; i++)
+		for (int i = 1; i< rStringGridEd1->RowCount; i++)
 		{    //pozor zatím z nìjakého dùvodu padá pøi konverzích do INTu - odhalit pøíèinu
+
 			Form1->d.v.edituj_temp_zakazku(
 			i,//n
 			rStringGridEd1->Cells[0][i],//ID
@@ -867,7 +868,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 			rStringGridEd1->Cells[7][i].ToInt(),//n-servis vozíkù
 			rStringGridEd1->Cells[8][i].ToInt());//n-opak vozíkù
 		}
-    //uložení do ostrého spojáku ZAKAZKY
+		//uložení do ostrého spojáku ZAKAZKY
 		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
 		Form1->d.v.generuj_VOZIKY();
 		Form1->DuvodUlozit(true);
