@@ -42,6 +42,7 @@ object Form_cesty: TForm_cesty
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
+    ScrollBars = ssVertical
     TabOrder = 0
     Columns = <
       item
@@ -68,6 +69,7 @@ object Form_cesty: TForm_cesty
         MaxValue = 10.000000000000000000
         OutOfLimitDataColor = clPurple
         DropDownRows = 10
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -86,6 +88,7 @@ object Form_cesty: TForm_cesty
         ColumnGroup = 1
       end
       item
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -105,6 +108,7 @@ object Form_cesty: TForm_cesty
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -123,6 +127,7 @@ object Form_cesty: TForm_cesty
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -140,6 +145,7 @@ object Form_cesty: TForm_cesty
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
@@ -158,6 +164,7 @@ object Form_cesty: TForm_cesty
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

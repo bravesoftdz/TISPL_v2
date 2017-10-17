@@ -851,27 +851,26 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
-		//editace zakázek
-		Cvektory::TJig j;
-		for (int i = 1; i<= rStringGridEd1->RowCount; i++) {
-
+		//uložení editovaných zakázek
+		for (int i = 1; i<= rStringGridEd1->RowCount; i++)
+		{    //pozor zatím z nìjakého dùvodu padá pøi konverzích do INTu - odhalit pøíèinu
 			Form1->d.v.edituj_temp_zakazku(
-			rStringGridEd1->Cells[0][i].ToInt(),
-			rStringGridEd1->Cells[0][i],
-			rStringGridEd1->Cells[1][i].ToInt(),
-			rStringGridEd1->Cells[2][i],
-			clBlue,
-			Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
-			Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
-			j,
-			rStringGridEd1->Cells[6][i].ToInt(),
-			rStringGridEd1->Cells[7][i].ToInt(),
-			rStringGridEd1->Cells[8][i].ToInt());
+			i,//n
+			rStringGridEd1->Cells[0][i],//ID
+			rStringGridEd1->Cells[1][i].ToInt(),//TYP
+			rStringGridEd1->Cells[2][i],//NAME
+			clBlue,//COLOR
+			Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),//POMER
+			Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),//TT
+			//JIG se už jako parametr nepožaduje, stejnì jako cesta, jedná se o pøedávání ukazatelem pøi zavírání patøièného formuláøe
+			rStringGridEd1->Cells[6][i].ToInt(),//n-vozíku
+			rStringGridEd1->Cells[7][i].ToInt(),//n-servis vozíkù
+			rStringGridEd1->Cells[8][i].ToInt());//n-opak vozíkù
 		}
-
-		Form1->DuvodUlozit(true);
+    //uložení do ostrého spojáku ZAKAZKY
 		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
 		Form1->d.v.generuj_VOZIKY();
+		Form1->DuvodUlozit(true);
 		Form_definice_zakazek->Close();
 }
 //---------------------------------------------------------------------------

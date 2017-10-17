@@ -487,7 +487,7 @@ Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
 }
 //---------------------------------------------------------------------------
 //provede editaci zakázky s uvedeným “n” ze spojového seznamu ZAKAZKY_temp
-void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id, unsigned short typ, UnicodeString name,TColor barva,double pomer,double TT,TJig jig,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
+void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id, unsigned short typ, UnicodeString name,TColor barva,double pomer,double TT,unsigned long pocet_voziku,unsigned long serv_vozik_pocet,unsigned long opakov_servis)
 {
 	if(ZAKAZKY_temp->dalsi!=NULL && n>0)
 	{
@@ -503,7 +503,7 @@ void Cvektory::edituj_temp_zakazku(unsigned long n,UnicodeString id, unsigned sh
 					ukaz->barva=barva;
 					ukaz->pomer=pomer;
 					ukaz->TT=TT;
-					ukaz->jig=jig;
+					//ukaz->jig=jig;//JIG se už jako parametr nepožaduje, stejně jako cesta, jedná se o předávání ukazatelem při zavírání patřičného formuláře
 					ukaz->pocet_voziku=pocet_voziku;
 					ukaz->serv_vozik_pocet=serv_vozik_pocet;
 					ukaz->opakov_servis=opakov_servis;

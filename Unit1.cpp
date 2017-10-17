@@ -2078,7 +2078,7 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 	d.v.vloz_temp_zakazku("pata",0,"pata_zakazka",clBlue,50,2.0,j,30,0,0);
 
 	//zkouška editace
-	d.v.edituj_temp_zakazku(2,"druha_edit",0,"druha_zakazka_edit",clBlue,50,2.0,j,30,0,0);
+	d.v.edituj_temp_zakazku(2,"druha_edit",0,"druha_zakazka_edit",clBlue,50,2.0,30,0,0);
 
 	//zkouška výpisu ZAKAZKY_temp
 	Memo2->Clear();
