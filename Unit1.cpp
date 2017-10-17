@@ -2094,8 +2094,6 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 	}
 
 	//zkouška změny pořadí
-	//d.v.zmen_poradi_temp_zakazky(1,5);
-	//d.v.zmen_poradi_temp_zakazky(1,3);
 	Memo2->Lines->Add("zmena poradi:");
 	//d.v.zmen_poradi_temp_zakazky(Edit1->Text.ToInt(),Edit2->Text.ToInt());
 	d.v.zmen_poradi_temp_zakazky(5,3);

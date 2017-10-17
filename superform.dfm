@@ -285,6 +285,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         ButtonStyle = sgbDropDownList
+        DataType = sgdInteger
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -306,6 +308,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleAlignment = taCenter
       end
       item
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -328,6 +331,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         MaxValue = 10.000000000000000000
         OutOfLimitDataColor = clPurple
         DropDownRows = 15
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -347,6 +351,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -365,6 +370,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         ButtonStyle = sgbButton
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -383,6 +389,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -401,6 +408,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
@@ -419,6 +427,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
@@ -436,6 +445,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         ButtonStyle = sgbButton
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
@@ -454,6 +464,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       end
       item
         DataType = sgdNumber
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
