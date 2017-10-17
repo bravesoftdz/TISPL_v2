@@ -760,12 +760,12 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			int i=0;
 			while(ukaz!=NULL)
 			{
-				i++;
-				Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->n;
-				Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->CT;
-				Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->RD;
-				Form_cesty->rStringGridEd_cesty->Cells[3][i]=ukaz->Tc;
-				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tv;
+				Form_cesty->rStringGridEd_cesty->Cells[0][i++]=ukaz->objekt->n;
+				Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->n;
+				Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->CT;
+				Form_cesty->rStringGridEd_cesty->Cells[3][i]=ukaz->RD;
+				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tc;
+				Form_cesty->rStringGridEd_cesty->Cells[5][i]=ukaz->Tv;
 				Form_cesty->rStringGridEd_cesty->RowCount++;
 				ukaz=ukaz->dalsi;
 			}
@@ -780,11 +780,12 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			for(int i=1;i<Form_cesty->rStringGridEd_cesty->RowCount;i++)
 			{
 					Form1->d.v.vloz_segment_cesty(zakazka,
-					Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),
-					Form_cesty->rStringGridEd_cesty->Cells[1][i].ToDouble(),
+					/*sloupec poøadí se neukládá*/
+					Form_cesty->rStringGridEd_cesty->Cells[1][i].ToInt(),
 					Form_cesty->rStringGridEd_cesty->Cells[2][i].ToDouble(),
 					Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),
-					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble()
+					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),
+					Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble()
 					);
 			}
 		}
@@ -841,7 +842,7 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 		Form_definice_zakazek->Close();
 }
 //---------------------------------------------------------------------------
-
+//TLAÈÍTKO ULOŽIT
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
 		Form1->d.v.PP.mnozstvi=Form1->ms.MyToDouble(rEditNum_pozad_mnozstvi->Text);
@@ -850,25 +851,23 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
-//		Cvektory::TJig j;   //rozepsana editace zakazek
-//
-//	 for (int i = 1; i<= rStringGridEd1->RowCount; i++) {
-//
-//		Form1->d.v.edituj_temp_zakazku(rStringGridEd1->Cells[0][i].ToInt(),
-//																	 rStringGridEd1->Cells[0][i],
-//																	 rStringGridEd1->Cells[1][i].ToInt(),
-//																	 rStringGridEd1->Cells[2][i],
-//																	 clBlue,
-//																	 Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
-//																	 Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
-//																	 j,
-//																	 rStringGridEd1->Cells[6][i].ToInt(),
-//																	 rStringGridEd1->Cells[7][i].ToInt(),
-//																	 rStringGridEd1->Cells[8][i].ToInt());
-//
-//
-//	 }
+		//editace zakázek
+		Cvektory::TJig j;
+		for (int i = 1; i<= rStringGridEd1->RowCount; i++) {
 
+			Form1->d.v.edituj_temp_zakazku(
+			rStringGridEd1->Cells[0][i].ToInt(),
+			rStringGridEd1->Cells[0][i],
+			rStringGridEd1->Cells[1][i].ToInt(),
+			rStringGridEd1->Cells[2][i],
+			clBlue,
+			Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
+			Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
+			j,
+			rStringGridEd1->Cells[6][i].ToInt(),
+			rStringGridEd1->Cells[7][i].ToInt(),
+			rStringGridEd1->Cells[8][i].ToInt());
+		}
 
 		Form1->DuvodUlozit(true);
 		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();

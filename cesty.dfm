@@ -19,20 +19,21 @@ object Form_cesty: TForm_cesty
   object rStringGridEd_cesty: TrStringGridEd
     Left = 8
     Top = 105
-    Width = 640
+    Width = 634
     Height = 440
     BorderStyle = bsNone
     Color = clWhite
-    ColCount = 6
+    ColCount = 7
     Ctl3D = False
     DefaultColWidth = 90
     DefaultRowHeight = 30
     DefaultDrawing = False
+    DrawingStyle = gdsGradient
     FixedColor = clWhite
     FixedCols = 0
     RowCount = 2
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = cl3DDkShadow
+    Font.Color = clGray
     Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
@@ -43,6 +44,25 @@ object Form_cesty: TForm_cesty
     ParentFont = False
     TabOrder = 0
     Columns = <
+      item
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = cl3DDkShadow
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TitleCaption = 'po'#345'ad'#237
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        TitleParentFont = False
+        TitleAlignment = taCenter
+        ColumnGroup = 1
+      end
       item
         MinValue = 1.000000000000000000
         MaxValue = 10.000000000000000000
