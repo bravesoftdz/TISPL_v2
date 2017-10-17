@@ -682,7 +682,7 @@ object Form_parametry: TForm_parametry
     TabOrder = 8
   end
   object scGPButton1_OK: TscGPButton
-    Left = 62
+    Left = 65
     Top = 390
     Width = 100
     Height = 35
@@ -772,7 +772,7 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPButton3: TscGPButton
-    Left = 184
+    Left = 187
     Top = 390
     Width = 100
     Height = 35
@@ -1123,7 +1123,7 @@ object Form_parametry: TForm_parametry
   end
   object scComboBox_rezim: TscComboBox
     Left = 65
-    Top = 96
+    Top = 90
     Width = 275
     Height = 28
     Style = csOwnerDrawFixed
