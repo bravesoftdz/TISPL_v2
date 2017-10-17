@@ -2073,6 +2073,10 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 	//d.v.vymaz_seznam_ZAKAZKY_temp(); - UŽ NENÍ POTŘEBA, VOLÁ SE AUTOMATICKY PŘI KOPIROVÁNÍ kopirujZAKAZKY_temp2ZAKAZKY();
 	//d.v.hlavicka_ZAKAZKY_temp();- UŽ NENÍ POTŘEBA, VOLÁ SE VE VLOZ_TEMP_ZAKAZKU, JE-LI TŘEBA
 	Cvektory::TJig j;
+	j.sirka=1;
+	j.delka=2;
+	j.vyska=3;
+  j.ks=4;
 
 	//zkouška vkládání jednotlivých zakázek
 	d.v.vloz_temp_zakazku("prvni",0,"prvni_zakazka",clRed,50,2.0,j,30,0,0);
@@ -2117,7 +2121,7 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 	ukaz=d.v.ZAKAZKY->dalsi;
 	while (ukaz!=NULL)
 	{
-		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name));//akce s ukazatelem
+		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name+" /"+AnsiString(ukaz->predchozi->name)+" "+ukaz->jig.vyska);//akce s ukazatelem
 		ukaz=ukaz->dalsi;//posun na další prvek v seznamu
 	}
 	Memo2->Lines->Add("ZAKAZKY_temp:");
@@ -3862,7 +3866,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//přeskočí hlavičku, jde rovnou na první segment cesty
 			while(ukaz!=NULL)
 			{
-				Memo1->Lines->Add
+				Memo2->Lines->Add
 				(
 						AnsiString(ukaz->n)+","+
 						AnsiString(ukaz->objekt->short_name)+","+
