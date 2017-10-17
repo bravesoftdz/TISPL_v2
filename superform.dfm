@@ -1594,7 +1594,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     FrameActiveColor = clHighlight
     Text = ''
     TabOrder = 28
-    Visible = False
   end
   object zakazky_hlavni_spojak: TButton
     Left = 200
