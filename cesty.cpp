@@ -54,6 +54,10 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 {
 
 	nactiNastaveni();
+//
+	
+	//	rStringGridEd_cesty->Columns[1].Items->PickList->Add("èau");
+		//rStringGridEd_cesty->Columns[1].Items->PickList->Add("hu");
 
 
 //zobraz data

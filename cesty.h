@@ -26,6 +26,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton2;
 	TscGPButton *cesta_storno;
 	TscGPButton *Button_ulozit;
+	TscGPGlyphButton *scGPGlyphButton_add_zakazka;
 	void __fastcall cesta_stornoClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations

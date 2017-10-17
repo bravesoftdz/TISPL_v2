@@ -142,6 +142,7 @@ public:		// User declarations
 		void nacti_zakazky();
 		void nacti_default_zakazku();
 		void uloz_Defaulttemp_zakazku();
+		void zobraz_vsechny_objekty();
 
 };
 //---------------------------------------------------------------------------

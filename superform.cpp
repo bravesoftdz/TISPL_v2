@@ -758,11 +758,12 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
 			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
-			int i=1;
+			int i=0;
 			while(ukaz!=NULL)
 			{
-				Form_cesty->rStringGridEd_cesty->Cells[0][i++]=ukaz->objekt->n;
-				Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->n;
+				i++;
+				Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->n;
+			 //	Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->n;
 				Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->CT;
 				Form_cesty->rStringGridEd_cesty->Cells[3][i]=ukaz->RD;
 				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tc;
@@ -771,8 +772,12 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				ukaz=ukaz->dalsi;
 			}
 		}
-		//else
-		//zde v else vìtvi pøípadnì prostor pro kód zajištijící pøedvyplnìní default cestou
+		else {
+
+			zobraz_vsechny_objekty();
+
+
+		}
 
 		//ukládání dat
 		if(mrOk==Form_cesty->ShowModal())
@@ -782,7 +787,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			{
 					Form1->d.v.vloz_segment_cesty(zakazka,
 					/*sloupec poøadí se neukládá*/
-					Form_cesty->rStringGridEd_cesty->Cells[1][i].ToInt(),
+					Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),
 					Form_cesty->rStringGridEd_cesty->Cells[2][i].ToDouble(),
 					Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),
 					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),
@@ -822,14 +827,14 @@ rStringGridEd1->RowCount++;
 //Zavøení formuláøe
 void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
 {
+    for(int i=1;i<=    rStringGridEd1->RowCount;i++){
 
-	for(int i=1;i<=	rStringGridEd1->RowCount;i++){
+     rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
+		 //Form1->d.v.smaz_temp_zakazku(i); //promaznuti temp_spojaku
+    }
+		Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
 
-	 rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
-	 Form1->d.v.smaz_temp_zakazku(i); //promaznuti temp_spojaku
-	}
-
-	Form_definice_zakazek->Close();
+		Form_definice_zakazek->Close();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
@@ -969,9 +974,7 @@ void TForm_definice_zakazek::nacti_zakazky(){
 		{
 			i++;
 
-
-
-			rStringGridEd1->RowCount=i+1; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
+		rStringGridEd1->RowCount=i+1; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
 
 
 		 //	ShowMessage(rStringGridEd1->RowCount);
@@ -1067,4 +1070,22 @@ void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
+void TForm_definice_zakazek::zobraz_vsechny_objekty() {
+
+		Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+		 int i=0;
+			while(objekt!=NULL)
+			{
+						i++;
+					Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
+
+        	Form_cesty->rStringGridEd_cesty->RowCount=i+1;
+
+					objekt=objekt->dalsi;
+
+
+			}
+
+}
 
