@@ -742,48 +742,53 @@ void __fastcall TForm_definice_zakazek::Button_OKKeyDown(TObject *Sender, WORD &
 
 void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 {
-if(rStringGridEd1->Col==5){
-	Form_jig->ShowModal();
-}                // zde volat metodu vrat_temp_zakazku   - M opravdu? spíš níže cestu  -// ne R ma pravdu
-
-if(rStringGridEd1->Col==9){
-	Form_cesty->ShowModal();
-
-
-
-																																				 //zatim podle cisla radku, nikoliv primo N
-	 Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
-	//naèítání dat
-		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
-
-	int i=0;
-	while(ukaz!=NULL)
-  {
-    i++;
-		Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->id;
-		Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->name;
-		Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->CT;
-
-			Form_cesty->rStringGridEd_cesty->RowCount++;
-
-			ukaz=ukaz->dalsi;
-
-  }
-  //ukládání dat
-	//if(mrOK==Form_cesty->ShowModal())//+poøešit ten problém s návratovou hodnotou mrOK toho použivaného buttonu
-	//{
-		/* inicializace_cesty(zakazka);
-     for(od 1 do poètu øádku stringgrid_technologicke_cesty)
-		 vloz_segment_cesty(zakazka, a parametry z stringgrid_technologicke_cesty->bunkaX);  */
-
-		// ShowMessage("mam ukladat");
-	//}
-
-
-
-
+	//jig form
+	if(rStringGridEd1->Col==5)
+	{
+		Form_jig->ShowModal();
 	}
 
+	//cesty form
+	if(rStringGridEd1->Col==9)
+	{
+		//definice ukazatele aktuálnì editované zakázky
+		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
+		//naèítání dat
+		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
+		{
+			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+			int i=0;
+			while(ukaz!=NULL)
+			{
+				i++;
+				Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->n;
+				Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->CT;
+				Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->RD;
+				Form_cesty->rStringGridEd_cesty->Cells[3][i]=ukaz->Tc;
+				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tv;
+				Form_cesty->rStringGridEd_cesty->RowCount++;
+				ukaz=ukaz->dalsi;
+			}
+		}
+		//else
+		//zde v else vìtvi pøípadnì prostor pro kód zajištijící pøedvyplnìní default cestou
+
+		//ukládání dat
+		if(mrOk==Form_cesty->ShowModal())
+		{
+			Form1->d.v.inicializace_cesty(zakazka);
+			for(int i=1;i<Form_cesty->rStringGridEd_cesty->RowCount;i++)
+			{
+					Form1->d.v.vloz_segment_cesty(zakazka,
+					Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),
+					Form_cesty->rStringGridEd_cesty->Cells[1][i].ToDouble(),
+					Form_cesty->rStringGridEd_cesty->Cells[2][i].ToDouble(),
+					Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),
+					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble()
+					);
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------
 
@@ -1033,4 +1038,30 @@ void __fastcall TForm_definice_zakazek::smaz_tempClick(TObject *Sender)
 
 
 
+
+void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
+{
+		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
+		//naèítání dat
+		if(zakazka!=NULL)
+		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
+		{
+			ShowMessage(zakazka->name);
+			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+			while(ukaz!=NULL)
+			{
+				Memo4->Lines->Add
+				(
+						AnsiString(ukaz->n)+","+
+						AnsiString(ukaz->objekt->short_name)+","+
+						AnsiString(ukaz->CT)+","+
+						AnsiString(ukaz->RD)+","+
+						AnsiString(ukaz->Tc)+","+
+						AnsiString(ukaz->Tv)
+				);
+				ukaz=ukaz->dalsi;
+			}
+		}
+}
+//---------------------------------------------------------------------------
 

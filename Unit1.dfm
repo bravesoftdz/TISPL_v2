@@ -3434,7 +3434,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 0
     end
     object scButton3: TscButton
       Left = 0
@@ -3527,7 +3526,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 50
     end
     object scButton4: TscButton
       Left = 0
@@ -3620,7 +3618,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 300
     end
     object scButton5: TscButton
       Left = 0
@@ -3805,7 +3802,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 200
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -4002,7 +3998,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 150
     end
     object scButton8: TscButton
       Left = 0
@@ -4095,7 +4090,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 250
     end
     object scButton9: TscButton
       Left = 0
@@ -4385,7 +4379,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 100
     end
     object scButton10: TscButton
       Left = 0
@@ -4478,8 +4471,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 8
-      ExplicitWidth = 180
     end
   end
   object PopupMenu1: TPopupMenu
@@ -4598,7 +4589,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118007403740310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118007803780310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5721,7 +5712,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D00CC01CC0130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D00D001D00130003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15243,7 +15234,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011D001C011C0118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011D002001200118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

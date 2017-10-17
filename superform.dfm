@@ -580,13 +580,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
     AllowAllUp = False
   end
   object Button5: TButton
-    Left = 824
-    Top = 172
-    Width = 75
+    Left = 664
+    Top = 124
+    Width = 225
     Height = 25
-    Caption = 'Button5'
+    Caption = 'Vypi'#353' cestu aktualni zakazky'
     TabOrder = 14
-    Visible = False
+    OnClick = Button5Click
   end
   object scGPButton4: TscGPButton
     Left = 0

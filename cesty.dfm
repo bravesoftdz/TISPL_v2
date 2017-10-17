@@ -17,17 +17,19 @@ object Form_cesty: TForm_cesty
   PixelsPerInch = 96
   TextHeight = 21
   object rStringGridEd_cesty: TrStringGridEd
-    Left = 6
+    Left = 8
     Top = 105
     Width = 640
     Height = 440
     BorderStyle = bsNone
     Color = clWhite
-    ColCount = 7
+    ColCount = 6
     Ctl3D = False
     DefaultColWidth = 90
     DefaultRowHeight = 30
     DefaultDrawing = False
+    FixedColor = clWhite
+    FixedCols = 0
     RowCount = 2
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
@@ -35,6 +37,7 @@ object Form_cesty: TForm_cesty
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    GradientEndColor = clWhite
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
@@ -43,36 +46,16 @@ object Form_cesty: TForm_cesty
       item
         MinValue = 1.000000000000000000
         MaxValue = 10.000000000000000000
-        Color = clMenu
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'ID'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
-        TitleAlignment = taCenter
-      end
-      item
-        MinValue = 1.000000000000000000
-        MaxValue = 10.000000000000000000
         OutOfLimitDataColor = clPurple
         DropDownRows = 10
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'N'#225'zev'
+        TitleCaption = 'Objekt'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -80,17 +63,17 @@ object Form_cesty: TForm_cesty
         TitleFont.Style = []
         TitleParentFont = False
         TitleAlignment = taCenter
+        ColumnGroup = 1
       end
       item
-        DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
+        Font.Color = clWindowText
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'Cycle Time'
+        TitleCaption = 'CT'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -98,10 +81,11 @@ object Form_cesty: TForm_cesty
         TitleFont.Style = []
         TitleParentFont = False
         TitleAlignment = taCenter
+        ColumnGroup = 1
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -119,7 +103,7 @@ object Form_cesty: TForm_cesty
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -136,7 +120,7 @@ object Form_cesty: TForm_cesty
       end
       item
         DataType = sgdNumber
-        Color = clMenu
+        Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = cl3DDkShadow
         Font.Height = -15
@@ -168,6 +152,7 @@ object Form_cesty: TForm_cesty
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end>
     RowHeights = (
       30
@@ -613,6 +598,8 @@ object Form_cesty: TForm_cesty
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 2
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -644,7 +631,7 @@ object Form_cesty: TForm_cesty
     GroupIndex = 0
     AllowAllUp = False
   end
-  object cesta_save: TscGPButton
+  object Button_ulozit: TscGPButton
     Left = 213
     Top = 551
     Width = 100
@@ -701,6 +688,8 @@ object Form_cesty: TForm_cesty
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 1
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False

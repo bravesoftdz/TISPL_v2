@@ -94,6 +94,7 @@ __published:	// IDE-managed Components
 	void __fastcall button_zakazky_tempClick(TObject *Sender);
 	void __fastcall zakazky_hlavni_spojakClick(TObject *Sender);
 	void __fastcall smaz_tempClick(TObject *Sender);
+	void __fastcall Button5Click(TObject *Sender);
 
 
 

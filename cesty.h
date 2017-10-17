@@ -25,7 +25,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel1;
 	TscGPButton *scGPButton2;
 	TscGPButton *cesta_storno;
-	TscGPButton *cesta_save;
+	TscGPButton *Button_ulozit;
 	void __fastcall cesta_stornoClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations

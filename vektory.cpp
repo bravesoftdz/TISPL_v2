@@ -684,7 +684,7 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_obj
 	segment->CT=CT;
 	segment->Tc=Tc;
 	segment->Tv=Tv;
-	segment->RD;
+	segment->RD=RD;
 
 	vloz_segment_cesty(zakazka,segment);
 }
