@@ -191,7 +191,7 @@ void TForm_definice_zakazek:: nacti_default_zakazku(){
 void TForm_definice_zakazek:: uloz_Defaulttemp_zakazku(){
 
 				Cvektory::TJig j;
-			 //	j.
+			 j.sirka=1;j.delka=1;j.vyska=1;j.ks=1;//defaultní hodnoty
 			Form1->d.v.vloz_temp_zakazku (rStringGridEd1->Cells[0][1],
 																		rStringGridEd1->Cells[1][1].ToInt(),
 																		rStringGridEd1->Cells[2][1],
@@ -824,28 +824,20 @@ rStringGridEd1->RowCount++;
 	}
 }
 //---------------------------------------------------------------------------
-//Zavøení formuláøe
+//Zavøení formuláøe (storno a køížek je to samé)
 void __fastcall TForm_definice_zakazek::scGPGlyphButton4Click(TObject *Sender)
 {
-    for(int i=1;i<=    rStringGridEd1->RowCount;i++){
-
-     rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
-		 //Form1->d.v.smaz_temp_zakazku(i); //promaznuti temp_spojaku
-    }
-		Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
-
-		Form_definice_zakazek->Close();
+   KonecClick(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 {
-	for(int i=1;i<=	rStringGridEd1->RowCount;i++){
-
-	 rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
-	 Form1->d.v.smaz_temp_zakazku(i); //promaznuti temp_spojaku
-	}
-
-		Form_definice_zakazek->Close();
+	 for(int i=1;i<=rStringGridEd1->RowCount;i++)
+	 {
+	  rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
+	 }
+	 Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
+	 Form_definice_zakazek->Close();
 }
 //---------------------------------------------------------------------------
 //TLAÈÍTKO ULOŽIT
@@ -919,6 +911,7 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 
 		int i=rStringGridEd1->RowCount-1;
 		Cvektory::TJig j;
+		j.sirka=1;j.delka=1;j.vyska=1;j.ks=1;
 
 
 		if(i>1) {// defaultní zakázka je uložena hned v temp_spojaku + hlavnim pri form_show, èili tady ukládám až další øádky
