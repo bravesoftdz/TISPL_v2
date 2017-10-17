@@ -440,7 +440,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 648
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 566
@@ -518,7 +517,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 598
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -596,7 +594,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 498
     end
     object scLabel1: TscLabel
       Left = 0
@@ -629,7 +626,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 461
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -707,7 +703,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 548
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 429
@@ -787,7 +782,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 461
     end
   end
   object scGPButton2: TscGPButton
@@ -988,6 +982,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Height = 25
     Caption = 'Vypis_pohony'
     TabOrder = 10
+    Visible = False
     OnClick = Vypis_pohonyClick
   end
   object scRadioGroup_typVoziku: TscRadioGroup

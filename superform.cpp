@@ -758,6 +758,18 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
 			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+			Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+
+			int j=0;
+			while(objekt!=NULL) //tvrdy vypis objektu do tabulky
+			{
+					j++;
+					Form_cesty->rStringGridEd_cesty->Cells[1][j]=objekt->name;
+					Form_cesty->rStringGridEd_cesty->RowCount=j+1;
+
+					objekt=objekt->dalsi;
+			}
+
 			int i=0;
 			while(ukaz!=NULL)
 			{
@@ -858,7 +870,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 			rStringGridEd1->Cells[0][i],//ID
 			rStringGridEd1->Cells[1][i].ToInt(),//TYP
 			rStringGridEd1->Cells[2][i],//NAME
-			clBlue,//COLOR
+			TColor (rStringGridEd1->Cells[3][i].ToInt()),//COLOR
 			Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),//POMER
 			Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),//TT
 			//JIG se už jako parametr nepožaduje, stejnì jako cesta, jedná se o pøedávání ukazatelem pøi zavírání patøièného formuláøe
@@ -1070,7 +1082,8 @@ void TForm_definice_zakazek::zobraz_vsechny_objekty() {
 		 int i=0;
 			while(objekt!=NULL)
 			{
-						i++;
+						i++;    //natvrdo generovane i do ID
+					Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;
 					Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
 
         	Form_cesty->rStringGridEd_cesty->RowCount=i+1;
