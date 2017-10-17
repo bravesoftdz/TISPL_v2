@@ -33,7 +33,10 @@ void __fastcall TForm_cesty::cesta_stornoClick(TObject *Sender)
 
 void TForm_cesty::nactiNastaveni (){
 
-		 Form_cesty->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
+     	TColor light_gray=(TColor)RGB(240,240,240);
+			TColor active_blue=(TColor)RGB(43,87,154);
+
+		 Form_cesty->Color=light_gray;//RGB(43,87,154);
 		 scGPButton2->Options->NormalColor=Form_cesty->Color;
 		 scGPButton2->Options->FocusedColor=Form_cesty->Color;
 		 scGPButton2->Options->HotColor=Form_cesty->Color;
@@ -41,10 +44,18 @@ void TForm_cesty::nactiNastaveni (){
 		 scGPButton2->Options->FrameNormalColor=Form_cesty->Color;
 
 
+
+	Form_definice_zakazek->Color=light_gray;
+
+
 }
 
 void __fastcall TForm_cesty::FormShow(TObject *Sender)
 {
+
+	nactiNastaveni();
+
+
 //zobraz data
 
 	/*Cvektory::TObjekt *ukaz=Form1->d.v.OBJEKTY->dalsi;

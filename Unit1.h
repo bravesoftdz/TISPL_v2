@@ -243,7 +243,7 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel4;
 	TscLabel *scLabel_titulek;
-	TscLabel *scLabel1;
+	TscLabel *scLabel_doba_cekani;
 	TButton *hl_spojak_zakazky;
 	TMemo *Memo2;
 	TButton *button_zakazky_temp;

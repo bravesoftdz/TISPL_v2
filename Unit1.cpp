@@ -539,6 +539,7 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	Timer_neaktivity->Enabled=false;
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=false;
+	scLabel_doba_cekani->Visible=false;
 
 
 	CheckBoxVymena_barev->Visible=false;
@@ -657,6 +658,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ButtonPLAY->Visible=false;
 			CheckBoxVymena_barev->Visible=true;
 			CheckBoxVytizenost->Visible=true;
+			scLabel_doba_cekani->Visible=true;
 
 
 			CheckBoxAnimovatSG->Visible=false;
@@ -702,6 +704,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	CheckBoxAnimovatSG->Visible=true;
 
 	CheckBoxVymena_barev->Visible=false;
+	scLabel_doba_cekani->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=true;
 	//filtrace
 	d.TP.K=0.5;//Krok po kolika minutach se bude zobrazovat
@@ -771,6 +774,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=false;
 	CheckBoxVymena_barev->Visible=false;
+	scLabel_doba_cekani->Visible=false;
 	Label_zamerovac->Visible=false;
 	ComboBoxODmin->Visible=false;
 	ComboBoxDOmin->Visible=false;

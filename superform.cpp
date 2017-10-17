@@ -191,6 +191,7 @@ void TForm_definice_zakazek:: nacti_default_zakazku(){
 void TForm_definice_zakazek:: uloz_Defaulttemp_zakazku(){
 
 				Cvektory::TJig j;
+			 //	j.
 			Form1->d.v.vloz_temp_zakazku (rStringGridEd1->Cells[0][1],
 																		rStringGridEd1->Cells[1][1].ToInt(),
 																		rStringGridEd1->Cells[2][1],
@@ -757,7 +758,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
 			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
-			int i=0;
+			int i=1;
 			while(ukaz!=NULL)
 			{
 				Form_cesty->rStringGridEd_cesty->Cells[0][i++]=ukaz->objekt->n;
@@ -960,7 +961,6 @@ void TForm_definice_zakazek::nacti_zakazky(){
 
 
 		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
-		Cvektory::TJig j;
 
 		int	i=0;
 
@@ -969,8 +969,12 @@ void TForm_definice_zakazek::nacti_zakazky(){
 		{
 			i++;
 
+
+
 			rStringGridEd1->RowCount=i+1; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
 
+
+		 //	ShowMessage(rStringGridEd1->RowCount);
 			rStringGridEd1->Cells[0][i] = ukaz->id;
 			rStringGridEd1->Cells[1][i] = ukaz->typ;
 			rStringGridEd1->Cells[2][i] = ukaz->name;
@@ -991,7 +995,7 @@ void TForm_definice_zakazek::nacti_zakazky(){
 																		clRed,
 																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
 																		Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
-																		j,
+																		ukaz->jig,
 																		rStringGridEd1->Cells[6][i].ToInt(),
 																		rStringGridEd1->Cells[7][i].ToInt(),
 																		rStringGridEd1->Cells[8][i].ToInt());
