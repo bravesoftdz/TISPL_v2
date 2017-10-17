@@ -4473,6 +4473,15 @@ object Form1: TForm1
       WordWrap = False
     end
   end
+  object Button11: TButton
+    Left = 280
+    Top = 432
+    Width = 75
+    Height = 25
+    Caption = 'Button11'
+    TabOrder = 36
+    OnClick = Button11Click
+  end
   object PopupMenu1: TPopupMenu
     AutoPopup = False
     OnPopup = PopupMenu1Popup
