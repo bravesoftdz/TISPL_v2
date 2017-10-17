@@ -5,7 +5,7 @@ object Form_cesty: TForm_cesty
   BorderStyle = bsNone
   Caption = 'Zad'#225'n'#237' cesty'
   ClientHeight = 589
-  ClientWidth = 650
+  ClientWidth = 751
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,11 +19,11 @@ object Form_cesty: TForm_cesty
   object rStringGridEd_cesty: TrStringGridEd
     Left = 8
     Top = 105
-    Width = 634
+    Width = 735
     Height = 440
     BorderStyle = bsNone
     Color = clWhite
-    ColCount = 7
+    ColCount = 8
     Ctl3D = False
     DefaultColWidth = 90
     DefaultRowHeight = 30
@@ -39,7 +39,7 @@ object Form_cesty: TForm_cesty
     Font.Style = []
     Font.Quality = fqClearType
     GradientEndColor = clWhite
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSizing, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
     ScrollBars = ssVertical
@@ -54,7 +54,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'Po'#345'ad'#237
+        TitleCaption = 'ID'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -185,6 +185,18 @@ object Form_cesty: TForm_cesty
         TitleFont.Style = []
         TitleParentFont = False
         TitleAlignment = taCenter
+      end
+      item
+        ButtonStyle = sgbCheckbox
+        Alignment = taCenter
+        Color = clWhite
+        TitleCaption = 'Neproch'#225'zet'
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        TitleParentFont = False
       end>
     RowHeights = (
       30
@@ -193,7 +205,7 @@ object Form_cesty: TForm_cesty
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 650
+    Width = 751
     Height = 34
     Align = alTop
     TabOrder = 1
@@ -221,9 +233,10 @@ object Form_cesty: TForm_cesty
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 650
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 600
+      Left = 701
       Top = 0
       Width = 50
       Height = 33
@@ -297,10 +310,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 600
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 500
+      Left = 601
       Top = 0
       Width = 50
       Height = 33
@@ -374,10 +388,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 500
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 550
+      Left = 651
       Top = 0
       Width = 50
       Height = 33
@@ -451,11 +466,12 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 550
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 500
+      Width = 601
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -482,6 +498,7 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
+      ExplicitWidth = 500
     end
   end
   object scGPButton2: TscGPButton
@@ -496,10 +513,9 @@ object Form_cesty: TForm_cesty
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    TabStop = True
     Animation = False
     Caption = '   Cesta pro zak'#225'zku '
-    CanFocused = True
+    CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
@@ -745,78 +761,6 @@ object Form_cesty: TForm_cesty
     GlowEffect.PressedAlphaValue = 255
     GlowEffect.States = [scsHot, scsPressed, scsFocused]
     ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object scGPGlyphButton_add_zakazka: TscGPGlyphButton
-    Left = 239
-    Top = 66
-    Width = 24
-    Height = 19
-    TabOrder = 5
-    TabStop = True
-    Animation = False
-    Caption = 'scGPGlyphButton_add_zakazka'
-    CanFocused = True
-    CustomDropDown = False
-    Layout = blGlyphLeft
-    TransparentBackground = True
-    ColorValue = clRed
-    Options.NormalColor = clBtnText
-    Options.HotColor = clBtnText
-    Options.PressedColor = clBtnText
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnText
-    Options.NormalColorAlpha = 10
-    Options.HotColorAlpha = 20
-    Options.PressedColorAlpha = 30
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.FrameNormalColor = clSilver
-    Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = clBtnText
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 0
-    Options.FrameHotColorAlpha = 100
-    Options.FramePressedColorAlpha = 150
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    GlyphOptions.NormalColor = clBtnText
-    GlyphOptions.HotColor = clBtnText
-    GlyphOptions.PressedColor = clBtnText
-    GlyphOptions.FocusedColor = clBtnText
-    GlyphOptions.DisabledColor = clBtnText
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 100
-    GlyphOptions.Kind = scgpbgkPlus
-    GlyphOptions.Thickness = 1
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
     ShowGalleryMenuFromTop = False
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = True
