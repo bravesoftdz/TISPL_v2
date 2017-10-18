@@ -3850,6 +3850,7 @@ void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
 //volání eDesignera
 void __fastcall TForm1::scButton2Click(TObject *Sender)
 {
+		OtevritSoubor("schemaW.tispl"); //schemaW.tispl musí být tam, kde exe tisplu nebo zadat adresu
 		Form_eDesigner->Show();
 		scSplitView_MENU->Close();
 }

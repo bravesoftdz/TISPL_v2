@@ -401,8 +401,8 @@ private:
 
 	////metody
 	void edice();
-	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
-	void ESC();
+public:	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
+private:	void ESC();
 	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizují posuny obrazu
 	void ZOOM_IN();//pøiblížení
 	void ZOOM_OUT();//oddálení

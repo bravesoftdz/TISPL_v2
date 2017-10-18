@@ -883,6 +883,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.generuj_VOZIKY();
 		Form1->DuvodUlozit(true);
 		Form_definice_zakazek->Close();
+		Form1->REFRESH();
 }
 //---------------------------------------------------------------------------
 
