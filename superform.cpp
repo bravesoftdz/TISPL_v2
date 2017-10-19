@@ -850,7 +850,7 @@ void __fastcall TForm_definice_zakazek::KonecClick(TObject *Sender)
 {
 	 for(int i=1;i<=rStringGridEd1->RowCount;i++)
 	 {
-	  rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
+		rStringGridEd1->Rows[i]->Clear();   //promaznuti radku, ktere nebudou ulozeny
 	 }
 	 Form1->d.v.vymaz_seznam_ZAKAZKY_temp();
 	 Form_definice_zakazek->Close();
@@ -1139,10 +1139,13 @@ void TForm_definice_zakazek::uloz_Default_cestu() {
 	 Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
 	 Cvektory::TZakazka *default_zakazka=Form1->d.v.vrat_temp_zakazku(1);
 	 Form1->d.v.inicializace_cesty(default_zakazka);
+	 int i=0;
 	 while(objekt!=NULL)
 	 {  //vložení defaulní cesty
 			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/objekt->n,0,0,0,0);
 			objekt=objekt->dalsi;
+
+			//Form_cesty->rStringGridEd_cesty->Rows[i]->Clear();
 	 }
 }
 //----------------------------------------------------------------------------

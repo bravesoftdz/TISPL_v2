@@ -3675,9 +3675,16 @@ void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 {
 //	if(d.v.VOZIKY->dalsi->cesta==NULL)
 //	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
+
+if(d.v.OBJEKTY->dalsi==NULL){
+ MB("Nejdříve musíte zakreslit schéma",MB_OK);
+
+ 	}
+	 else {
 	Form_definice_zakazek->Left=0;
 	Form_definice_zakazek->Top=0+scGPPanel_mainmenu->Height;
 	if(IDOK==Form_definice_zakazek->ShowModal())DuvodUlozit(true);
+				}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
@@ -3881,4 +3888,5 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
 
