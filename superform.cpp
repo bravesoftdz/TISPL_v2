@@ -219,11 +219,11 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 		 //predvypln - zmena nazvu metody TODO
 		 nacti_default_zakazku();
 		 predvypln_cestu();
-		//vytvoøim defaultní øadek se zakázkou a hned ji našiju do temp spojáku
+		 //vytvoøim defaultní øadek se zakázkou a hned ji našiju do temp spojáku
 		 uloz_Defaulttemp_zakazku();
 		 uloz_Default_cestu();
 		 Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
-		// po uložení do hl.spojaku zakázek potøebuji stejnì znovu uložit øádek do temp_zakazek
+		 //po uložení do hl.spojaku zakázek potøebuji stejnì znovu uložit øádek do temp_zakazek
 		 uloz_Defaulttemp_zakazku();
 		 uloz_Default_cestu();
 	}
@@ -970,52 +970,35 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 
 }
 //---------------------------------------------------------------------------
-
-
-void TForm_definice_zakazek::nacti_zakazky(){
-
-
+void TForm_definice_zakazek::nacti_zakazky()
+{
+		//vyplnìní stringgridu
 		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
-
 		int	i=0;
-
 		//Memo4->Lines->Add(AnsiString(ukaz->id));
 		while (ukaz!=NULL)
 		{
-			i++;
-
-		rStringGridEd1->RowCount=i+1; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
-
-
-		 //	ShowMessage(rStringGridEd1->RowCount);
+			rStringGridEd1->RowCount=++i; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
+			//ShowMessage(rStringGridEd1->RowCount);
 			rStringGridEd1->Cells[0][i] = ukaz->id;
 			rStringGridEd1->Cells[1][i] = ukaz->typ;
 			rStringGridEd1->Cells[2][i] = ukaz->name;
 			rStringGridEd1->Cells[3][i] = ukaz->barva;
 			rStringGridEd1->Cells[4][i] = ukaz->pomer;
-		//	rStringGridEd1->Cells[5][i] = NULL; jig
+			//rStringGridEd1->Cells[5][i] = NULL; jig
 			rStringGridEd1->Cells[6][i] = ukaz->pocet_voziku;
 			rStringGridEd1->Cells[7][i] = ukaz->serv_vozik_pocet;
 			rStringGridEd1->Cells[8][i] = ukaz->opakov_servis;
-		 //	rStringGridEd1->Cells[9][i] = NULL; //cesta
+			//rStringGridEd1->Cells[9][i] = NULL; //cesta
 			rStringGridEd1->Cells[10][i] = ukaz->TT;
-//			//posun na další prvek v seznamu
-
-		//pri nacteni radku zakazky zaroven i musim nove ulozit kazdy radek do temp spojaku zakazek
-			 Form1->d.v.vloz_temp_zakazku(rStringGridEd1->Cells[0][i],
-																		rStringGridEd1->Cells[1][i].ToInt(),
-																		rStringGridEd1->Cells[2][i],
-																		clRed,
-																		Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),
-																		Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),
-																		ukaz->jig,
-																		rStringGridEd1->Cells[6][i].ToInt(),
-																		rStringGridEd1->Cells[7][i].ToInt(),
-																		rStringGridEd1->Cells[8][i].ToInt());
+			//posun na další prvek v seznamu
 			ukaz=ukaz->dalsi;
 		}
 
+		//uložení ZAKAZKY do ZAKAZKYtemp
+		Form1->d.v.kopirujZAKAZKY2ZAKAZKY_temp();//pouze ZAKAZKY_temp=ZAKAZKY
 }
+//---------------------------------------------------------------------------
 void __fastcall TForm_definice_zakazek::button_zakazky_tempClick(TObject *Sender)
 {
 	Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY_temp->dalsi;
@@ -1134,8 +1117,8 @@ void TForm_definice_zakazek::predvypln_cestu()	{
 			}
 }
 //----------------------------------------------------------------------------
-void TForm_definice_zakazek::uloz_Default_cestu() {
-
+void TForm_definice_zakazek::uloz_Default_cestu()
+{
 	 Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
 	 Cvektory::TZakazka *default_zakazka=Form1->d.v.vrat_temp_zakazku(1);
 	 Form1->d.v.inicializace_cesty(default_zakazka);
@@ -1144,8 +1127,6 @@ void TForm_definice_zakazek::uloz_Default_cestu() {
 	 {  //vložení defaulní cesty
 			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/objekt->n,0,0,0,0);
 			objekt=objekt->dalsi;
-
-			//Form_cesty->rStringGridEd_cesty->Rows[i]->Clear();
 	 }
 }
 //----------------------------------------------------------------------------

@@ -29,42 +29,61 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda
-int TmyMessageBox::Show(UnicodeString Label1_text,int mbTYPE)
+int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text)
 {
-	 return Show(-1,-1,Label1_text,"","",mbTYPE);
+	 return Show(-1,-1,text,"",mbTYPE,centrovat_text);
 }
-int TmyMessageBox::Show(UnicodeString Label1_text,UnicodeString Label2_text,int mbTYPE)
+int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit)
 {
-	 return Show(-1,-1,Label1_text,Label2_text,"",mbTYPE);
-}
-int TmyMessageBox::Show(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text,UnicodeString Caption_text,int mbTYPE,bool checkbox_zobrazit)
-{
-	//naplnìní daty
-	if(Caption_text!="")scLabel_caption->Caption=Caption_text;else scLabel_caption->Caption="TISPL"; //hlídání zda nepøijde prázdný øetezec
-	Label1->Caption=Label1_text;
-	Label2->Caption=Label2_text;
-
-	//pokud je text delší odøádkuje    //pokud druhý øádek je volný //pokud vùbec má smysl øetìzez zalamovat
-	if(Label1->Width>=myMessageBox->Width && Label2->Caption=="" && Label1->Caption.Length()>44)
+	////naplnìní daty
+	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption="TISPL"; //hlídání zda nepøijde prázdný øetezec
+	//pokud text obsahuje enter, tak odøákuje
+	if(text.Pos("\n"))
 	{
-		 int Pos=0;int Pos_min=Pos;
-		 AnsiString t=Label1->Caption;
-		 while(t.Pos(" ") && Pos_min+t.Pos(" ")<44)//dìlá dokud øetìze obsahuje mezeru nebo dokud je mezera na nižším poøadí v øetìzci než 44
-		 {
- 				Pos=t.Pos(" ");
-				Pos_min+=Pos;
-				t=t.SubString(Pos+1,t.Length());
-		 }
+		Label1->Caption=text.SubString(1,text.Pos("\n")-1);
+		Label2->Caption=text.SubString(text.Pos("\n")+1,text.Length());
+	}
+	else//snaha nacpat vše do jednoho øádku pøípadnì automaticky odøákuje
+	{
+		Label1->Caption=text;
+		Label2->Caption="";//nutné vymazání
+		////pokud je text delší odøádkuje    //pokud druhý øádek je volný //pokud vùbec má smysl øetìzez zalamovat
+		if(Label1->Width>=myMessageBox->Width && Label1->Caption.Length()>44)
+		{
+	 		 int Pos=0;int Pos_min=Pos;
+	 		 AnsiString t=Label1->Caption;
+	 		 while(t.Pos(" ") && Pos_min+t.Pos(" ")<44)//dìlá dokud øetìze obsahuje mezeru nebo dokud je mezera na nižším poøadí v øetìzci než 44
+	 		 {
+	 				Pos=t.Pos(" ");
+	 				Pos_min+=Pos;
+	 				t=t.SubString(Pos+1,t.Length());
+	 		 }
 
-		 if(Pos==0)Pos_min=44;//pokud text neobsahuje mezeru, rozdìlí umìle
+	 		 if(Pos==0)Pos_min=44;//pokud text neobsahuje mezeru, rozdìlí umìle
 
-		 //samotné rozdìlení
-		 Label2->Caption=Label1->Caption.SubString(Pos_min+1,Label1->Caption.Length());
-		 Label1->Caption=Label1->Caption.SubString(1,Pos_min-1);
+	 		 //samotné rozdìlení
+	 		 Label2->Caption=Label1->Caption.SubString(Pos_min+1,Label1->Caption.Length());
+	 		 Label1->Caption=Label1->Caption.SubString(1,Pos_min-1);
+		}
 	}
 
-	//zobrazení komponent + pøípadnì jejich pozice
+	////zobrazení komponent + pøípadnì jejich pozice
+	if(centrovat_text)//pokud je požadováno centrování
+	{
+			if(Label1->Width>Label2->Width)//podle toho, který label je delší, tak se oba vycentrují
+			{
+				Label1->Left=myMessageBox->Width/2-Label1->Width/2;
+				Label2->Left=Label1->Left;
+			}
+			else
+			{
+				Label2->Left=myMessageBox->Width/2-Label2->Width/2;
+				Label1->Left=Label2->Left;
+			}
+	}
+	//checkbox
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;
+	//tlaèítka
 	switch(mbTYPE) //OK=0,OKCANCEL,YESNO,YESNOCANCEL
 	{
 			case OK:
@@ -105,19 +124,19 @@ int TmyMessageBox::Show(long Left,long Top,UnicodeString Label1_text,UnicodeStri
 			}break;
 	}
 
-	//pozice formuláøe
-	if(Left<0 && Top<0)//na støed, pokud se zadá libovolné záporné èíslo
+	////pozice formuláøe
+	if(left<0 && top<0)//na støed, pokud se zadá libovolné záporné èíslo
 	{
 		myMessageBox->Left=Form1->ClientWidth/2-myMessageBox->Width/2;
 		myMessageBox->Top=Form1->ClientHeight/2-myMessageBox->Height/2;
 	}
 	else//dle zadaných souøadnic
 	{ //doøešit hlídání mimo monitor
-		myMessageBox->Left=Left;
-		myMessageBox->Top=Top;
+		myMessageBox->Left=left;
+		myMessageBox->Top=top;
 	}
 
-	//volá samotné zobrazení
+	////volá samotné zobrazení
 	return ShowModal();
 }
 //---------------------------------------------------------------------------

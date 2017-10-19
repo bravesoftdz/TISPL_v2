@@ -620,6 +620,12 @@ void Cvektory::kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp)
   }
 }
 //---------------------------------------------------------------------------
+//zkopíruje ukazatel na ZAKAZEK do ZAKAZKY_temp, slouží v momentu načítání SF
+void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
+{
+	ZAKAZKY_temp=ZAKAZKY;//zkopírování ukazatele na hlavičku spojaku ZAKAZKY_temp, touto konstrukcí ZAKAZKY ukazují tam, kam ZAKAZKY_temp
+}
+//---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
 long Cvektory::vymaz_seznam_ZAKAZKY()
 {

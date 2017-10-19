@@ -225,7 +225,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 	 bool novy=true;
 	 if(duvod_k_ulozeni)
 	 {
-			int result=MB(FileName_short(FileName)+" byl změněn.","Chcete ho před ukončením uložit?",MB_YESNOCANCEL);
+			int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
 			switch(result)
 			{
 				case mrYes:     UlozitClick(this); if(!stisknuto_storno)novy=true;else novy=false; break;
@@ -445,7 +445,7 @@ void TForm1::startUP()
 		if(ftWrite.dwHighDateTime>=ftWrite_bac.dwHighDateTime)MB("Aplikace nebyla řádně ukončena. Byl obnoven poslední Vámi uložený soubor.");//pokud je uložený soubor mladší nebo stejně starý jako jeho BAC
 		else
 		{
-			if(ID_YES==MB("Aplikace nebyla řádně ukončena. Chcete ze","zálohy obnovit poslední neuložený soubor?",MB_YESNO))
+			if(ID_YES==MB("Aplikace nebyla řádně ukončena. Chcete ze zálohy obnovit poslední neuložený soubor?",MB_YESNO))
 			{
 				if(OtevritSoubor(FileName+".bac_"+get_user_name()+"_"+get_computer_name())==1)
         {
@@ -847,17 +847,13 @@ void TForm1::S(UnicodeString Text)
 }
 //---------------------------------------------------------------------------
 //vola rychle myMessageBox
-int TForm1::MB(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text,UnicodeString Caption_text,int mbTYPE,bool checkbox_zobrazit)
+int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit)
 {
-	return myMessageBox->Show(Left,Top,Label1_text,Label2_text,Caption_text,mbTYPE,checkbox_zobrazit);
+	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit);
 }
-int TForm1::MB(UnicodeString Label1_text,int mbTYPE)
+int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text)
 {
-	return myMessageBox->Show(Label1_text,mbTYPE);
-}
-int TForm1::MB(UnicodeString Label1_text,UnicodeString Label2_text,int mbTYPE)
-{
-	return myMessageBox->Show(Label1_text,Label2_text,mbTYPE);
+	return myMessageBox->Show(text,mbTYPE,centrovat_text);
 }
 //---------------------------------------------------------------------------
 //metoda volá kurzory aplikace
@@ -1753,7 +1749,7 @@ void TForm1::add_objekt(int X, int Y)
 			{
 					case 0:
 					{
-						if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete přichytit objekt k mřížce?","","",MB_YESNO,true))
+						if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete přichytit objekt k mřížce?","",MB_YESNO,true,true))
 						{
 							if(myMessageBox->CheckBox_pamatovat->Checked)prichytavat_k_mrizce=1;
 							souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;
@@ -1824,7 +1820,7 @@ void TForm1::move_objekt(int X, int Y)
 					//přichytávat dotaz
 					case 0:
 					{ //ano
-						if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt přichytit k mřížce?","","",MB_YESNO,true))
+						if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt přichytit k mřížce?","",MB_YESNO,true,true))
 						{
 							if(myMessageBox->CheckBox_pamatovat->Checked)prichytavat_k_mrizce=1;//pamatovat ano
 							pom->X=m.round(pom->X/(size_grid*1.0*m2px))*size_grid*m2px;pom->Y=m.round(pom->Y/(size_grid*1.0*m2px))*size_grid*m2px;
@@ -1880,7 +1876,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		{
 			if(ukaz==d.v.OBJEKTY->predchozi)//první prvek versus poslední
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí","mezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
 				{
 					d.v.zmen_poradi_objektu(pom,d.v.OBJEKTY->predchozi);//volání realizace samotné záměny
 				}
@@ -1888,7 +1884,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 			else//ostatní situace
 			{
 
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí","mezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(ukaz->dalsi->name.UpperCase())+"\"?","",MB_YESNO))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(ukaz->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
 				{
 					d.v.zmen_poradi_objektu(pom,ukaz->dalsi);//volání realizace samotné záměny
 				}
@@ -2204,7 +2200,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 {
 	if(duvod_k_ulozeni)
 	{
-		int result=MB(FileName_short(FileName)+" byl změněn.","Chcete ho před ukončením uložit?",MB_YESNOCANCEL);
+		int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
 		switch(result)
 		{
 			case mrYes:     UlozitClick(this); if(!stisknuto_storno){/*ulozit_posledni_otevreny();*/ vse_odstranit(); CanClose=true;}else CanClose=false; break;
@@ -2238,7 +2234,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 	if(pom!=NULL)//pokud byl prvek nalezen
 	{
-		if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","","",MB_YESNO))
+		if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
 		{
 			d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
 			d.v.sniz_indexy(pom);
@@ -2481,7 +2477,7 @@ void __fastcall TForm1::OtevritClick(TObject *Sender)
   scSplitView_MENU->Opened=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
   {
-		int result=MB(FileName_short(FileName)+" byl změněn.","Chcete ho před ukončením uložit?",MB_YESNOCANCEL);
+		int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
 		switch(result)
 		{
 			case mrYes:     UlozitClick(this); if(!stisknuto_storno){OtevritSoubor();}break;
@@ -2516,7 +2512,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 		case 0://Soubor nebyl nalezen
 		{
 			zavrit_uvod();//v případě chybové situace, např. soubor nenalezen, nebo špatný formát souboru zavře úvodní dialog
-			MB("Soubor "+FileName_short(FileName)," nebyl nalezen!");
+			MB("Soubor "+FileName_short(FileName)+" nebyl nalezen!");
 			//zavrit_uvod();
 			FileName="Nový.tispl";
 			return 0;
@@ -2846,7 +2842,7 @@ void __fastcall TForm1::Rychlexport1Click(TObject *Sender)
 	 Graphics::TBitmap * Bitmap = new Graphics::TBitmap;
 	 nastaveni_grafickeho_vystupu(Bitmap);
 
-	 //uložení z Bitmapy do Png (do Jpg dělalo drobnou grafickou chybu
+	 //uložení z Bitmapy do Png (do Jpg dělalo drobnou grafickou chybu)
 	 TPngImage* Png=new TPngImage;
 	 Png->Assign(Bitmap);
 	 delete Bitmap;
@@ -3673,18 +3669,16 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 {
-//	if(d.v.VOZIKY->dalsi->cesta==NULL)
-//	Button2Click(Sender);//zatím provizorní záležitost načtení pálnu výroby
-
-if(d.v.OBJEKTY->dalsi==NULL){
- MB("Nejdříve musíte zakreslit schéma",MB_OK);
-
- 	}
-	 else {
-	Form_definice_zakazek->Left=0;
-	Form_definice_zakazek->Top=0+scGPPanel_mainmenu->Height;
-	if(IDOK==Form_definice_zakazek->ShowModal())DuvodUlozit(true);
-				}
+	if(d.v.OBJEKTY->dalsi==NULL)
+	{
+		MB("Nejdříve je nutné zakreslit schéma linky!");
+	}
+	else
+	{
+		Form_definice_zakazek->Left=0;
+		Form_definice_zakazek->Top=0+scGPPanel_mainmenu->Height;
+		if(IDOK==Form_definice_zakazek->ShowModal())DuvodUlozit(true);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
