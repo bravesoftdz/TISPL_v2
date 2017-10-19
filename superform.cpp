@@ -974,7 +974,7 @@ void TForm_definice_zakazek::nacti_zakazky()
 {
 		//vyplnìní stringgridu
 		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
-		int	i=0;
+		int	i=1;
 		//Memo4->Lines->Add(AnsiString(ukaz->id));
 		while (ukaz!=NULL)
 		{
@@ -982,6 +982,7 @@ void TForm_definice_zakazek::nacti_zakazky()
 			//ShowMessage(rStringGridEd1->RowCount);
 			rStringGridEd1->Cells[0][i] = ukaz->id;
 			rStringGridEd1->Cells[1][i] = ukaz->typ;
+			//ShowMessage(ukaz->name);
 			rStringGridEd1->Cells[2][i] = ukaz->name;
 			rStringGridEd1->Cells[3][i] = ukaz->barva;
 			rStringGridEd1->Cells[4][i] = ukaz->pomer;

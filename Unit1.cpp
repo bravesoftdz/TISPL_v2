@@ -2507,7 +2507,7 @@ void TForm1::OtevritSoubor()//realizuje otevření opendialogu s následným vol
 unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotné otevření souboru
 {
 	//načte data ze souboru a reaguje na návratovou hodnotu
-	switch(d.v.nacti_ze_souboru(soubor)==1)
+	switch(d.v.nacti_ze_souboru(soubor))
 	{
 		case 0://Soubor nebyl nalezen
 		{
@@ -3859,6 +3859,7 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
+    Memo2->Visible=true;
 		Cvektory::TZakazka *zakazka=d.v.ZAKAZKY->dalsi;
 		//načítání dat
 		if(zakazka!=NULL)

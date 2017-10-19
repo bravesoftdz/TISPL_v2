@@ -700,7 +700,6 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty)
 	TCesta *segment=new TCesta;
 	segment=segment_cesty;
 	segment->n=zakazka->cesta->predchozi->n+1;//navýším počítadlo prvku o jedničku
-
 	zakazka->cesta->predchozi->dalsi=segment;//poslednímu prvku přiřadím ukazatel na nový prvek
 	segment->predchozi=zakazka->cesta->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
@@ -1111,7 +1110,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 //načte vektorová data ze souboru
 short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 {
-	if(!FileExists(FileName))return 0;
+	if(!FileExists(FileName)){return 0;}
 	else
 	{
 			try
@@ -1226,17 +1225,16 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz2->name=name;
 					name=NULL; delete[] name;
 
-					//segmenty cesty
-					//ShowMessage("Cvectory 1218:"+AnsiString(c_ukaz2->pocet_segmentu_cesty));
+					//přiřazení segmenty cesty
+					hlavicka_cesta_zakazky(ukaz2);
 					for(unsigned int j=1;j<=c_ukaz2->pocet_segmentu_cesty;j++)
 					{
-						C_cesta *c_c=new C_cesta;
-						FileStream->Read(c_c,sizeof(C_cesta));//načte jeden prvek ze souboru
-						vloz_segment_cesty(ukaz2,c_c->n_objekt,c_c->CT,c_c->Tc,c_c->Tv,c_c->RD);
-						c_c=NULL; delete c_c;
+						C_cesta c_c;//=new C_cesta;
+						FileStream->Read(&c_c,sizeof(C_cesta));//načte jeden prvek ze souboru
+						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD);
 					}
 
-					//vloží finální prvek do spojového seznamu
+					//vloží zakazku do spojového seznamu ZAKAZKY
 					vloz_zakazku(ukaz2);
 				}
 				//ukaz2=NULL; delete ukaz2;
@@ -1289,7 +1287,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			delete FileStream;
 			return 1;
 			}
-			catch(...){return 2;}//jiná chyba, např. špatný formát souboru
+			catch(...){ShowMessage("ko");return 2;}//jiná chyba, např. špatný formát souboru
 	}
 }
 ////---------------------------------------------------------------------------
