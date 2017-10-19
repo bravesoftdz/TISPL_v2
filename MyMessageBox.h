@@ -36,9 +36,8 @@ private:	// User declarations
 	enum T_mbTYPE{OK=0,OKCANCEL=1,YESNO=4,YESNOCANCEL=3};
 public:		// User declarations
 	__fastcall TmyMessageBox(TComponent* Owner);
-	int Show(long Left,long Top,UnicodeString Label1_text,UnicodeString Label2_text="",UnicodeString Caption_text="",int mbTYPE=OK,bool checkbox_zobrazit=false);
-	int Show(UnicodeString Label1_text,int mbTYPE=OK);
-	int Show(UnicodeString Label1_text,UnicodeString Label2_text,int mbTYPE=OK);
+	int Show(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=OK,bool centrovat_text=true,bool checkbox_zobrazit=false);
+	int Show(UnicodeString text,int mbTYPE=OK,bool centrovat_text=true);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TmyMessageBox *myMessageBox;
