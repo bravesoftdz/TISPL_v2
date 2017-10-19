@@ -671,6 +671,7 @@ object Form_parametry: TForm_parametry
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
+    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -1109,6 +1110,7 @@ object Form_parametry: TForm_parametry
     Height = 28
     Hint = #218'prava CT v objektu za '#250#269'elem srovn'#225'n'#237' TT linky'
     BiDiMode = bdRightToLeft
+    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -1149,6 +1151,7 @@ object Form_parametry: TForm_parametry
     Text = 'STOP&GO'
     StyleKind = scscbDefault
     ShowFocusRect = True
+    OnChange = scComboBox_rezimChange
   end
   object scComboBox_pohon: TscComboBox
     Left = 65

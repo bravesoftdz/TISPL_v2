@@ -988,7 +988,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scRadioGroup_typVoziku: TscRadioGroup
     Left = 176
     Top = 97
-    Width = 193
+    Width = 225
     Height = 53
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
@@ -1027,8 +1027,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Columns = 2
     ItemIndex = 0
     Items.Strings = (
-      'Norm'#225'ln'#237
-      'Z'#225'v'#283'sn'#253)
+      'Podlahov'#253
+      'Podv'#283'sn'#253)
     ButtonsGlowEffect.Enabled = False
     ButtonsGlowEffect.Color = clHighlight
     ButtonsGlowEffect.AlphaValue = 95

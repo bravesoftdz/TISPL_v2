@@ -80,7 +80,7 @@ void TForm_parametry_linky::nacti_pohony (){
 	}
 	else {  //pokud je spoják prázdný, zobrazím tyto pøednastavené hodnoty
 
-	data_nalezena=false;
+	data_nalezena=false; // default se nepoužívá - bere se pøímo z binárky
 
    rStringGridEd_tab_dopravniky->Cells[0][1]="1";
 	 rStringGridEd_tab_dopravniky->Cells[1][1]="Hlavní dopravník";
@@ -190,5 +190,6 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 				 }
 }
 //---------------------------------------------------------------------------
+
 
 

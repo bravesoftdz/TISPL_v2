@@ -67,6 +67,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 
 
 
+
 	//Form_paremetry->Edit1->SetFocus();
 	//Form_paremetry->Edit1->SelectAll();
 
@@ -444,5 +445,25 @@ void __fastcall TForm_parametry::scGPButton1_OKClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
+{
+				switch(scComboBox_rezim->ItemIndex)
+	{
+		case 2://postprocesni - povoleni a zakazani editboxu pro rezimy
+		{
+			rEditNum_odchylka->Enabled=true;
+			rEditNum_kapacita->Enabled=true;
+		}
+		break;
+		default :
+		{
+			rEditNum_odchylka->Enabled=false;
+			rEditNum_kapacita->Enabled=false;
 
+		}
+		break;
+
+		}
+}
+//---------------------------------------------------------------------------
 

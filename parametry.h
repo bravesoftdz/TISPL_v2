@@ -86,6 +86,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton3Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPButton1_OKClick(TObject *Sender);
+	void __fastcall scComboBox_rezimChange(TObject *Sender);
 
 
 
