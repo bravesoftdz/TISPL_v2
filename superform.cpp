@@ -214,7 +214,8 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 	if(!Form1->d.v.PP.mnozstvi) nacti_defaulni_PP(); // prazdna zakazka - defaultni PP
 	else nacti_PP();
 
-	if(Form1->d.v.ZAKAZKY->dalsi==NULL){ //kdyz je spojak prazdny
+	if(Form1->d.v.ZAKAZKY->dalsi==NULL)
+	{ //kdyz je spojak prazdny
 		 //predvypln - zmena nazvu metody TODO
 		 nacti_default_zakazku();
 		 predvypln_cestu();
@@ -224,11 +225,12 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 		 Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
 		// po uložení do hl.spojaku zakázek potøebuji stejnì znovu uložit øádek do temp_zakazek
 		 uloz_Defaulttemp_zakazku();
-
-				 }
-		else { //pokud je uloženo nìco v zakázkách tak je naètu
+		 uloz_Default_cestu();
+	}
+	else
+	{ //pokud je uloženo nìco v zakázkách tak je naètu
 		nacti_zakazky();
-		}
+	}
 
 
 }
@@ -1055,8 +1057,9 @@ void __fastcall TForm_definice_zakazek::smaz_tempClick(TObject *Sender)
 
 void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 {
-		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
+		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(1);//inicializace
 		//naèítání dat
+
 		if(zakazka!=NULL)
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
@@ -1138,7 +1141,7 @@ void TForm_definice_zakazek::uloz_Default_cestu() {
 	 Form1->d.v.inicializace_cesty(default_zakazka);
 	 while(objekt!=NULL)
 	 {  //vložení defaulní cesty
-			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/,objekt->n,0,0,0,0);
+			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/objekt->n,0,0,0,0);
 			objekt=objekt->dalsi;
 	 }
 }
