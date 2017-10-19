@@ -1130,27 +1130,16 @@ void TForm_definice_zakazek::predvypln_cestu()	{
 					objekt=objekt->dalsi;
 			}
 }
-
+//----------------------------------------------------------------------------
 void TForm_definice_zakazek::uloz_Default_cestu() {
 
-    	Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
-		 int i=0;
-			while(objekt!=NULL)
-			{
-						i++;
-
-Form1->d.v.vloz_segment_cesty(Form1->d.v.vrat_temp_zakazku(1),
-					/*sloupec poøadí se neukládá*/
-					Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),
-					Form_cesty->rStringGridEd_cesty->Cells[2][i].ToDouble(),
-					Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),
-					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),
-					Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble()
-					);
-						objekt=objekt->dalsi;
-		}
-
-
-
+	 Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+	 Cvektory::TZakazka *default_zakazka=Form1->d.v.vrat_temp_zakazku(1);
+	 Form1->d.v.inicializace_cesty(default_zakazka);
+	 while(objekt!=NULL)
+	 {  //vložení defaulní cesty
+			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/,objekt->n,0,0,0,0);
+			objekt=objekt->dalsi;
+	 }
 }
-
+//----------------------------------------------------------------------------
