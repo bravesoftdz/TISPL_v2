@@ -230,7 +230,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   end
   object rStringGridEd1: TrStringGridEd
     Left = -6
-    Top = 301
+    Top = 303
     Width = 1000
     Height = 186
     Margins.Left = 0
@@ -597,7 +597,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Height = 25
     Caption = 'Vypi'#353' cestu aktualni zakazky'
     TabOrder = 14
-    Visible = False
     OnClick = Button5Click
   end
   object scGPButton4: TscGPButton
@@ -1529,7 +1528,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Height = 25
     Caption = 'button_zakazky_temp'
     TabOrder = 26
-    Visible = False
     OnClick = button_zakazky_tempClick
   end
   object Memo4: TMemo
@@ -1540,7 +1538,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Lines.Strings = (
       'Memo4')
     TabOrder = 27
-    Visible = False
   end
   object scEdit_zacatek: TscEdit
     Left = 421
@@ -1602,7 +1599,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Height = 25
     Caption = 'zakazky_hlavni_spojak'
     TabOrder = 29
-    Visible = False
     OnClick = zakazky_hlavni_spojakClick
   end
   object smaz_temp: TButton

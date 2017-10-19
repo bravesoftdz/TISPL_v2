@@ -112,7 +112,6 @@ object Form_cesty: TForm_cesty
         ColumnGroup = 1
       end
       item
-        DataType = sgdNumber
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
@@ -233,7 +232,6 @@ object Form_cesty: TForm_cesty
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 650
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 701
@@ -310,7 +308,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 600
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -388,7 +385,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 500
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -466,7 +462,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 550
     end
     object scLabel1: TscLabel
       Left = 0
@@ -498,7 +493,6 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
-      ExplicitWidth = 500
     end
   end
   object scGPButton2: TscGPButton

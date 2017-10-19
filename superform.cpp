@@ -215,10 +215,12 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 	else nacti_PP();
 
 	if(Form1->d.v.ZAKAZKY->dalsi==NULL){ //kdyz je spojak prazdny
-
+		 //predvypln - zmena nazvu metody TODO
 		 nacti_default_zakazku();
+		 predvypln_cestu();
 		//vytvoøim defaultní øadek se zakázkou a hned ji našiju do temp spojáku
 		 uloz_Defaulttemp_zakazku();
+		 uloz_Default_cestu();
 		 Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY(); // defaultni zakazku vlozim do hl.spojaku - nesmim mast uzivatele pri zobrazeni dialogu
 		// po uložení do hl.spojaku zakázek potøebuji stejnì znovu uložit øádek do temp_zakazek
 		 uloz_Defaulttemp_zakazku();
@@ -1087,12 +1089,68 @@ void TForm_definice_zakazek::zobraz_vsechny_objekty() {
 					Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;
 					Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
 
-        	Form_cesty->rStringGridEd_cesty->RowCount=i+1;
+					Form_cesty->rStringGridEd_cesty->RowCount=i+1;
 
 					objekt=objekt->dalsi;
 
 
 			}
+
+}
+//----------------------------------------------------------------------------
+
+void TForm_definice_zakazek::predvypln_cestu()	{
+
+	Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+		 int i=0;
+			while(objekt!=NULL)
+			{
+						i++;
+					Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;
+					Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
+					Form_cesty->rStringGridEd_cesty->Cells[2][i]="2";    //CT
+					Form_cesty->rStringGridEd_cesty->Cells[3][i]="3,3";    //Rychlost dopravniku
+
+					if(objekt->short_name=="LAK") {  //pokud jde o lakovani, predvyplnim hodnoty jinak jsou 0 pro ostatni objekty
+
+					Form_cesty->rStringGridEd_cesty->Cells[4][i]="3";  //Cas vymeny
+					Form_cesty->rStringGridEd_cesty->Cells[5][i]="1";  //Cas cisteni
+					Form_cesty->rStringGridEd_cesty->Cells[6][i]="20";  //Opakovani
+						}
+						else    {
+
+					Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
+					Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
+					Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
+
+						}
+
+					Form_cesty->rStringGridEd_cesty->RowCount=i+1;
+
+					objekt=objekt->dalsi;
+			}
+}
+
+void TForm_definice_zakazek::uloz_Default_cestu() {
+
+    	Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+		 int i=0;
+			while(objekt!=NULL)
+			{
+						i++;
+
+Form1->d.v.vloz_segment_cesty(Form1->d.v.vrat_temp_zakazku(1),
+					/*sloupec poøadí se neukládá*/
+					Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),
+					Form_cesty->rStringGridEd_cesty->Cells[2][i].ToDouble(),
+					Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),
+					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),
+					Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble()
+					);
+						objekt=objekt->dalsi;
+		}
+
+
 
 }
 

@@ -143,6 +143,8 @@ public:		// User declarations
 		void nacti_default_zakazku();
 		void uloz_Defaulttemp_zakazku();
 		void zobraz_vsechny_objekty();
+		void predvypln_cestu();
+		void uloz_Default_cestu();
 
 };
 //---------------------------------------------------------------------------
