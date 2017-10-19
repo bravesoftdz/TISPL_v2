@@ -107,7 +107,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	duvod_k_ulozeni=false;
 	NovySouborClick(this);
 
-
+	Caption="ELTEP - tispl";
 	LICENCE="TRIAL_VIEWER_GALATEK";
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
@@ -164,7 +164,6 @@ void TForm1::NewDesignSettings()
 //zakázání či povolení grafických uživatelských prvků dle úrovně edice
 void TForm1::edice()
 {
-	Edice_caption="";
 	//switch na jednotlivé edice v kterém bude následné povolení či zakázání patřičných ovládacíh prvků
 	switch (EDICE)
 	{                            //edice_caption je ještě zakomentováno v scLabel_titulek->Caption...
@@ -206,8 +205,6 @@ void TForm1::edice()
 			default:
 				break;
 	}
-	scLabel_titulek->Caption=scLabel_titulek->Caption+" | "+Edice_caption;//vypis edice v titulku programu
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormShow(TObject *Sender)
@@ -284,8 +281,8 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 
 			 FileName="Nový.tispl";
-		 	 if(Form1->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName+"]"/*+" | "+Edice_caption*/;
-			 Invalidate();
+			 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
+			 Invalidate();//vhodnější invalidate než refresh
 	 }
 }
 //---------------------------------------------------------------------------
@@ -2448,8 +2445,7 @@ void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 		duvod_k_ulozeni=true;
 		Ulozit_soubor();
 		if(FileName.Pos(".tisplTemp")){FileName=origFileName;DuvodUlozit(true);}
-		FileName_short(FileName);
-	 //TODO_R_TITULEK	if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;
+		scLabel_titulek->Caption=Caption+" - ["+FileName_short(FileName)+"]";
 	}
 	else//stisknuto storno
 	stisknuto_storno=true;
@@ -2520,8 +2516,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 		case 1://Soubor byl nalezen
 		{
 			FileName=soubor;//pro globální využití
-			AnsiString FileName_short=ms.delete_repeat_all(FileName,"\\");
-		 //TODO_R_TITULEK	if(scLabel_titulek->Caption.Pos(" - ["))scLabel_titulek->Caption=scLabel_titulek->Caption.SubString(1,scLabel_titulek->Caption.Pos(" - [")-1)+" - ["+FileName_short+"]"/*+" | "+Edice_caption*/;else scLabel_titulek->Caption=scLabel_titulek->Caption+" - ["+FileName_short+"]"+" | "/*+Edice_caption*/;
+			scLabel_titulek->Caption=Caption+" - ["+FileName_short(FileName)+"]";
 			//načtení dat z hlavičky souboru
 			Zoom=d.v.File_hlavicka.Zoom;
 			Posun.x=d.v.File_hlavicka.PosunutiX;
@@ -3520,10 +3515,11 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 //zapne či vypne antialiasing
 void __fastcall TForm1::scGPSwitch4ChangeState(TObject *Sender)
 {
-  scSplitView_MENU->Opened=false;
+	scSplitView_MENU->Opened=false;
 	antialiasing=!antialiasing;
 	DrawGrid_knihovna->Invalidate();
-	REFRESH();
+	Invalidate();
+	//REFRESH();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_trTimer(TObject *Sender)
@@ -3883,5 +3879,6 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
 
 

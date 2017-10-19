@@ -475,7 +475,7 @@ private:	void ESC();
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
 
-	UnicodeString Edice_caption;
+	AnsiString Caption;
 
 	short pocitadlo_doby_neaktivity;
 
