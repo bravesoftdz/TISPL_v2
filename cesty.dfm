@@ -763,4 +763,24 @@ object Form_cesty: TForm_cesty
     GroupIndex = 0
     AllowAllUp = False
   end
+  object Memo1: TMemo
+    Left = 480
+    Top = 24
+    Width = 185
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 5
+    Visible = False
+  end
+  object vypis_objekty: TButton
+    Left = 304
+    Top = 60
+    Width = 113
+    Height = 25
+    Caption = 'vypis_cestu'
+    TabOrder = 6
+    Visible = False
+    OnClick = vypis_objektyClick
+  end
 end

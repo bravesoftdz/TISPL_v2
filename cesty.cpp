@@ -87,3 +87,28 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 
 
 
+void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)
+{
+		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(1);//inicializace
+		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+		Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+
+			while(ukaz!=NULL)
+			{
+				Memo1->Lines->Add
+				(
+						AnsiString(ukaz->n)+","+
+						AnsiString(ukaz->objekt->short_name)+","+
+						AnsiString(ukaz->CT)+","+
+						AnsiString(ukaz->RD)+","+
+						AnsiString(ukaz->Tc)+","+
+						AnsiString(ukaz->Tv)
+				);
+				ukaz=ukaz->dalsi;
+			}
+
+
+}
+//---------------------------------------------------------------------------
+
+

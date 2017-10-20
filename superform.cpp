@@ -758,13 +758,14 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	{
 		//definice ukazatele aktuálnì editované zakázky
 		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
+		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+		Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+
 		//naèítání dat
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
-			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
-			Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
 
-			int j=0;
+		int j=0;
 			while(objekt!=NULL) //tvrdy vypis objektu do tabulky
 			{
 					j++;
@@ -784,7 +785,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				Form_cesty->rStringGridEd_cesty->Cells[3][i]=ukaz->RD;
 				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tc;
 				Form_cesty->rStringGridEd_cesty->Cells[5][i]=ukaz->Tv;
-				Form_cesty->rStringGridEd_cesty->RowCount++;
+				Form_cesty->rStringGridEd_cesty->RowCount=i+1;
 				ukaz=ukaz->dalsi;
 			}
 		}
@@ -964,7 +965,23 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 																		rStringGridEd1->Cells[6][i].ToInt(),
 																		rStringGridEd1->Cells[7][i].ToInt(),
 																		rStringGridEd1->Cells[8][i].ToInt());
-																			}
+
+		int j=rStringGridEd1->RowCount-1;
+    	ShowMessage(j);
+
+		 //pøi pøidání další zakázky uložím do cesty defaultní hodnoty
+	 Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+	 Cvektory::TZakazka *nova_zakazka=Form1->d.v.vrat_temp_zakazku(j);
+	 Form1->d.v.inicializace_cesty(nova_zakazka);
+	 while(objekt!=NULL)
+	 {  //vložení defaulní cesty
+			Form1->d.v.vloz_segment_cesty(nova_zakazka,/*sloupec poøadí se neukládá*/objekt->n,0,0,0,0);
+			objekt=objekt->dalsi;
+
+
+	 }
+
+	 }
 
 
 
@@ -974,12 +991,13 @@ void TForm_definice_zakazek::nacti_zakazky()
 {
 		//vyplnìní stringgridu
 		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
-		int	i=1;
+		int	i=0;
 		//Memo4->Lines->Add(AnsiString(ukaz->id));
 		while (ukaz!=NULL)
 		{
-			rStringGridEd1->RowCount=++i; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
-			//ShowMessage(rStringGridEd1->RowCount);
+		i++;              //NESAHAT DO KONSTRUKCE i++!!!
+			rStringGridEd1->RowCount=i+1; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
+			ShowMessage(i);
 			rStringGridEd1->Cells[0][i] = ukaz->id;
 			rStringGridEd1->Cells[1][i] = ukaz->typ;
 			//ShowMessage(ukaz->name);
@@ -1041,7 +1059,7 @@ void __fastcall TForm_definice_zakazek::smaz_tempClick(TObject *Sender)
 
 void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 {
-		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(1);//inicializace
+		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(Edit_n_cesty->Text.ToInt());//inicializace
 		//naèítání dat
 
 		if(zakazka!=NULL)
@@ -1095,14 +1113,14 @@ void TForm_definice_zakazek::predvypln_cestu()	{
 						i++;
 					Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;
 					Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
-					Form_cesty->rStringGridEd_cesty->Cells[2][i]="2";    //CT
-					Form_cesty->rStringGridEd_cesty->Cells[3][i]="3,3";    //Rychlost dopravniku
+					Form_cesty->rStringGridEd_cesty->Cells[2][i]="0";    //CT
+					Form_cesty->rStringGridEd_cesty->Cells[3][i]="0";    //Rychlost dopravniku
 
 					if(objekt->short_name=="LAK") {  //pokud jde o lakovani, predvyplnim hodnoty jinak jsou 0 pro ostatni objekty
 
-					Form_cesty->rStringGridEd_cesty->Cells[4][i]="3";  //Cas vymeny
-					Form_cesty->rStringGridEd_cesty->Cells[5][i]="1";  //Cas cisteni
-					Form_cesty->rStringGridEd_cesty->Cells[6][i]="20";  //Opakovani
+					Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
+					Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
+					Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
 						}
 						else    {
 
