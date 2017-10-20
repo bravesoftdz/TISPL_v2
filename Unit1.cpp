@@ -108,6 +108,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	NovySouborClick(this);
 
 	Caption="ELTEP - tispl";
+	scLabel_titulek->Caption=Caption+" - [Nový.tispl]";
 	LICENCE="TRIAL_VIEWER_GALATEK";
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
@@ -166,7 +167,7 @@ void TForm1::edice()
 {
 	//switch na jednotlivé edice v kterém bude následné povolení či zakázání patřičných ovládacíh prvků
 	switch (EDICE)
-	{                            //edice_caption je ještě zakomentováno v scLabel_titulek->Caption...
+	{
 			//case DEVELOPER: Edice_caption="DEVELOPER";*/break;
 			case ARCHITECT: /*Edice_caption="ARCHITECT";*/break;
 			case CLIENT:		/*Edice_caption="CLIENT";*/break;
@@ -989,6 +990,24 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 102:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x+1,Mouse->CursorPos.y);break;}
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
+		//F1 - volání nápovědy
+		case 112:break;
+		//F2
+		case 113:break;
+		//F3 - pohled celé schéma
+		case 114:RzToolButton11Click(Sender);break;
+		//F4
+		case 115:Vybratoknem1Click(Sender);break;
+		//F5
+		case 116:Posouvat1Click(Sender);break;
+		//F6
+		case 117:Posunout2Click(Sender);break;
+		//F7
+		case 118:ZOOM_IN();break;
+		//F8
+		case 119:ZOOM_OUT();break;
+		//F9
+		case 120:break;
 		//CTRL, SHIFT
 		default:
 		{
@@ -1008,8 +1027,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 33:d.PosunT.y=0;Invalidate();break; //PAGE-UP + CTRL
 	}
 	*/
-		if(funkcni_klavesa==1 && Key==36)
-	ShowMessage(Key);
+	//if(funkcni_klavesa==1 && Key==36)
+	//ShowMessage(Key);
 
 }
 //---------------------------------------------------------------------------
@@ -1843,12 +1862,12 @@ void TForm1::move_objekt(int X, int Y)
 //---------------------------------------------------------------------------
 void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu pořadí (to musí ještě uživatel potvrdit)
 {
-		unsigned short presnost=4;
+		//zjištění oblasti, vynechává situace, kdy se nejedná o změnu pořadí
 		bool RET=false;
 		Cvektory::TObjekt *ukaz=d.v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 		while (ukaz!=NULL)//mimo posledního prvku
 		{
-			if(ukaz!=pom/* && ukaz!=pom->predchozi && ukaz->dalsi!=pom->dalsi*/)//přeskakuje situaci, pokud by se chtěl vkládat na původní pozici
+			if(ukaz!=pom && ukaz!=pom->predchozi && ukaz->dalsi!=pom->dalsi)//přeskakuje situaci, pokud by se chtěl vkládat na původní pozici
 			{
 					if(ukaz==d.v.OBJEKTY->predchozi)//poslední prvek versus první prvek
 					{
@@ -1869,7 +1888,8 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 			}
 			ukaz=ukaz->dalsi;//posun na další prvek v seznamu
 		}
-		if(RET)//pokud se může jednat o snahu o vložení ještě se na to dotazuje u uživatele
+		//pokud se může jednat o snahu (zjištěno z předchozí navrácenoho RET) o vložení ještě se na to dotazuje u uživatele
+		if(RET)
 		{
 			if(ukaz==d.v.OBJEKTY->predchozi)//první prvek versus poslední
 			{
@@ -1883,7 +1903,10 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 
 				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(ukaz->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
 				{
-					d.v.zmen_poradi_objektu(pom,ukaz->dalsi);//volání realizace samotné záměny
+					if(pom->n<ukaz->n)//vkládání dozadu
+						d.v.zmen_poradi_objektu(pom,ukaz);//volání realizace samotné záměny
+					else//dopředné vkládání
+						d.v.zmen_poradi_objektu(pom,ukaz->dalsi);//volání realizace samotné záměny
 				}
 			}
 		}
