@@ -1620,6 +1620,14 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Text = '1'
     Visible = False
   end
+  object Edit_n_cesty: TEdit
+    Left = 670
+    Top = 248
+    Width = 121
+    Height = 28
+    TabOrder = 32
+    Text = 'Edit_n_cesty'
+  end
   object ColorDialog1: TColorDialog
     Left = 592
     Top = 46
