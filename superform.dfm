@@ -330,7 +330,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         MinValue = 1.000000000000000000
         MaxValue = 10.000000000000000000
         OutOfLimitDataColor = clPurple
-        DropDownRows = 15
+        DropDownRows = 20
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
