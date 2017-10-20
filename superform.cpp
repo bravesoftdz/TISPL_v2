@@ -802,6 +802,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			Form1->d.v.inicializace_cesty(zakazka);
 			for(int i=1;i<Form_cesty->rStringGridEd_cesty->RowCount;i++)
 			{
+		//	if(Form_cesty->rStringGridEd_cesty->Cells[7][i]!=Checked) {
+
 					Form1->d.v.vloz_segment_cesty(zakazka,
 					/*sloupec poøadí se neukládá*/
 					Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),
@@ -810,6 +812,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),
 					Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble()
 					);
+
+			 //		}
 			}
 		}
 	}

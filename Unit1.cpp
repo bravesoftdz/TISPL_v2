@@ -301,7 +301,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 //	else
 		Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
 		startUP();//toto vždy odkomentované
-  }
+	}
 }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi
@@ -391,6 +391,16 @@ bool TForm1::ttr(UnicodeString Text)
 //při aktivaci formuláře startující záležitosti, pro zpřehlednění kodu
 void TForm1::startUP()
 {
+	////zalogování startu aplikace
+
+	AnsiString relation_id=GetCurrentProcessId();
+	AnsiString send_log_time= TIME.CurrentDateTime();
+	AnsiString ID ="1";
+	AnsiString Text="aplikace start";
+	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+	FDConnection1->ExecSQL(strSQL);
+
+
 	//////otevrení posledního souboru
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
 
@@ -3646,6 +3656,14 @@ void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::KonecClick(TObject *Sender)
 {
+  //zalogování vypnutí aplikace
+	AnsiString relation_id=GetCurrentProcessId();
+	AnsiString send_log_time= TIME.CurrentDateTime();
+	AnsiString ID ="1";
+	AnsiString Text="aplikace stop";
+	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+	FDConnection1->ExecSQL(strSQL);
+
 	Close();//ukončí aplikaci
 }
 //---------------------------------------------------------------------------
