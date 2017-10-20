@@ -243,8 +243,8 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
 			 //ZDM d.v.hlavicka_palce();
 			 //vytvoření defaltních hodnot
-			 d.v.vloz_pohon("Hlavní dopravník",1.0,10.0,32.5);
-			 d.v.vloz_pohon("Vedlejší dopravník",1.0,10.0,32.5);
+			 d.v.vloz_pohon("Hlavní dopravník",1.5,10.5,32.5);
+			 d.v.vloz_pohon("Vedlejší dopravník",1.5,10.5,32.5);
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
@@ -3902,6 +3902,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
 
 
 
