@@ -163,6 +163,10 @@
             <DependentOn>eDesigner.h</DependentOn>
             <BuildOrder>19</BuildOrder>
         </CppCompile>
+        <CppCompile Include="grafy.cpp">
+            <DependentOn>grafy.h</DependentOn>
+            <BuildOrder>21</BuildOrder>
+        </CppCompile>
         <CppCompile Include="jig.cpp">
             <Form>Form_jig</Form>
             <FormType>dfm</FormType>

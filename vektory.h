@@ -17,13 +17,13 @@ class Cvektory
 
 	struct TPohon
 	{
-		unsigned long n; //pořadí objektu ve spoj.seznamu
-		UnicodeString name;//název
-		double rychlost_od;//minimální pracovní rychlost dopravníku
-		double rychlost_do;//maximální pracovní rychlost dopravníku
-		double roztec;//rozteč palců v mm
-		struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	  	unsigned long n; //pořadí objektu ve spoj.seznamu
+	  	UnicodeString name;//název
+	  	double rychlost_od;//minimální pracovní rychlost dopravníku
+	  	double rychlost_do;//maximální pracovní rychlost dopravníku
+	  	double roztec;//rozteč palců v mm
+	  	struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TPohon *POHONY;//spojový seznam pohonů
 
@@ -41,7 +41,8 @@ class Cvektory
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			bool stopka;//zda následuje na konci objektu stopka
-			double odchylka;
+			double odchylka;//povolená odchylka u PP z CT
+			double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -49,40 +50,40 @@ class Cvektory
 
 	struct TJig//pouze složený datový typ
 	{
-		 double sirka;
-		 double delka;
-		 double vyska;
-		 double ks;//kusů
+			double sirka;
+			double delka;
+			double vyska;
+			double ks;//kusů
 	};
 
 	struct TCesta//pouze přidružený spoják, který je součástí zakázky, jeden objekt spojáku je jeden segment cesty
 	{
-		 unsigned long n;
-		 TObjekt *objekt;
-		 double CT; //cycle time
-		 double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-		 double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-		 double RD;//rychlost dopravníku
-		 struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		 struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+			unsigned long n;
+			TObjekt *objekt;
+			double CT; //cycle time
+			double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+			double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
+			double RD;//rychlost dopravníku
+			struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 
 	struct TZakazka
 	{
-		 unsigned long n;//pořadí objektu ve spoj.seznamu
-		 UnicodeString id;//uživatelské ID objektu
-		 unsigned short typ;//0- realná,1-servisní
-		 UnicodeString name;//název zakázky
-		 TColor barva;//barva zakáky
-		 double pomer;//poměr z celkového množství výrobků
-		 double TT;
-		 TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozzíku
-		 unsigned long pocet_voziku;//počet vozíků v zakázce
-		 unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
-		 unsigned long opakov_servis;//cyklus opakování servisních vozíku
-		 struct TCesta *cesta;//ukazatel na první segment cesty
-		 struct TZakazka *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		 struct TZakazka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+			unsigned long n;//pořadí objektu ve spoj.seznamu
+			UnicodeString id;//uživatelské ID objektu
+			unsigned short typ;//0- realná,1-servisní
+			UnicodeString name;//název zakázky
+			TColor barva;//barva zakáky
+			double pomer;//poměr z celkového množství výrobků
+			double TT;
+			TJig jig;//šířka délka, výška, rotace a  ks připadajících na jig/rám vozzíku
+			unsigned long pocet_voziku;//počet vozíků v zakázce
+			unsigned long serv_vozik_pocet;//počet servisních vozíků v zakázce
+			unsigned long opakov_servis;//cyklus opakování servisních vozíku
+			struct TCesta *cesta;//ukazatel na první segment cesty
+			struct TZakazka *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			struct TZakazka *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TZakazka *ZAKAZKY;//spojový seznam zakázek
 	TZakazka *ZAKAZKY_temp;//spojový seznam zakázek
@@ -91,6 +92,8 @@ class Cvektory
 	{
 			unsigned long n; //pořadí objektu ve spoj.seznamu
 			struct TZakazka *zakazka;
+			double start;//výchozí pozice v grafu časových os
+			double pozice;//aktuální pozice na dopravniku či v grafu časových os
 			struct TVozik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TVozik *dalsi;//ukazatel na další objekt ve spojovém seznamu
 	};
@@ -105,13 +108,13 @@ class Cvektory
 
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
-		TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
-		unsigned long  mnozstvi;//požadované množství
-		double hod_den;//počet hodin za den
-		double dni_rok;//počet hodin za den
-		double efektivita;//přepokládaná výrobní efektivina
-		double delka_voziku;
-		double typ_voziku;//0 - normální, 1 - závěsný
+			TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
+			unsigned long  mnozstvi;//požadované množství
+			double hod_den;//počet hodin za den
+			double dni_rok;//počet hodin za den
+			double efektivita;//přepokládaná výrobní efektivina
+			double delka_voziku;
+			double typ_voziku;//0 - normální, 1 - závěsný
 	};
 	T_parametry_projektu PP;
 
@@ -129,22 +132,22 @@ class Cvektory
 
 	struct TG_objekt
 	{
-		unsigned long n; //pořadí objektu ve spoj.seznamu
-		double X1,Y1,X2,Y2;//umístění objektu
-		UnicodeString name;//název G_objektu
-		double radius;//0==linie, 0> oblouk na jednu stranu, 0< oblouk na druhou stranu
-		struct TG_Objekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TG_Objekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+			unsigned long n; //pořadí objektu ve spoj.seznamu
+			double X1,Y1,X2,Y2;//umístění objektu
+			UnicodeString name;//název G_objektu
+			double radius;//0==linie, 0> oblouk na jednu stranu, 0< oblouk na druhou stranu
+			struct TG_Objekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			struct TG_Objekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TG_objekt *G_OBJEKTY;//spojový seznam
 
 	struct TDopravnik
 	{
-		//toto zv86it TPohonz* pohon;
-		TG_objekt *g_objekt; //spojový seznam G_objektů, ze kterých se dopravní skládá
-		TPalec *palec; //spojový seznam palců, příslušných k dopravníku - zvážit příslušnot v palcích
-		struct TDopravnik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TDopravnik *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+			//toto zv86it TPohonz* pohon;
+			TG_objekt *g_objekt; //spojový seznam G_objektů, ze kterých se dopravní skládá
+			TPalec *palec; //spojový seznam palců, příslušných k dopravníku - zvážit příslušnot v palcích
+			struct TDopravnik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			struct TDopravnik *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TDopravnik *DOPRAVNIKY;
 
@@ -162,7 +165,7 @@ class Cvektory
 			double Tdor;//X-dorovnání předchozího vozíku
 			double Tpre;//X- nutná doba přejezdu, zpoždění za předchozím vozíkem
 			double Tcek;//X- nutná doba cekani na palec
-			struct TZakazka *zakazka;//příslušnost procesu k zakázce
+			struct TCesta *segment_cesty;//příslušnost procesu k vyjmutému (ze spojáku) segmentu cesty (tedy objektu)
 			struct TVozik *vozik;//ukazatel na vozík jehož proces vyjadřuje
 			struct TProces *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TProces *dalsi;//ukazatel na  další objekt ve spojovém seznamu
@@ -352,7 +355,7 @@ class Cvektory
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
-//		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
+		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
 
 //metody pro ZAKAZKY
@@ -379,11 +382,10 @@ private:
 		void hlavicka_cesta_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
 		void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
 		void vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty);//do konkrétní zakázky vloží segmenty cesty
-		//ZDM		TSeznam_cest *vrat_cestu(unsigned int ID_cesty);
 
 //metody pro VOZIKY
 public:
-		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků
+		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků, seřazeno dle zakázek
 		void hlavicka_VOZIKY();
 private:
 		void vloz_vozik(TZakazka *zakazka);
@@ -392,11 +394,11 @@ private:
 
 //metody pro PROCESY
 public:
-//		void hlavicka_procesy();
-//		void vloz_proces(TProces *Proces);
-//		TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
-//		TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
-//		long vymaz_seznam_procesu();
+		void hlavicka_procesy();
+		void vloz_proces(TProces *Proces);
+		TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
+		TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
+		long vymaz_seznam_procesu();
 
 //metody pro PALCE
 //		void hlavicka_palce();
@@ -418,25 +420,25 @@ public:
 //		double LT;
 //		double MAX_TT;
 //		double MIN_TT;
-//		TPointD vrat_zacatek_a_konec_zakazky(TSeznam_cest *jaka);//ukazatel na cestu resp, zakázku
-//		TPointD vrat_zacatek_a_konec_zakazky(unsigned int n_zakazky);//n resp. ID cestu resp, zakázku
-//		double vrat_nejpozdejsi_konec_zakazek();//nemusí se vždy jednat o poslední zakázku
-//		double vrat_LT_voziku(TVozik *jaky);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
-//		double vrat_LT_voziku(unsigned int n_voziku);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
-//		double vrat_sumPT_voziku(TVozik *jaky);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
-//		double vrat_sumPT_voziku(unsigned int n_voziku);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
-//		double vrat_AVGsumPT_zakazky(TSeznam_cest *jaka);//vrátí čistý čas, který strávily vozík ve výrobě bez čekání pro danou zakazku
-//		double vrat_WT_voziku(TVozik *jaky);//vrátí čas čeká vozíku během výroby
-//		double vrat_WT_voziku(unsigned int n_voziku);//vrátí čas čeká vozíku během výroby
-//		double vrat_AVGsumWT_zakazky(TSeznam_cest *jaka);//vrátí čistý čas, který vozíky čekaly pro danou zakazku
-//		double vrat_TT_voziku(TVozik *jaky);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
-//		double vrat_TT_voziku(unsigned int n_voziku);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
-//		double vrat_AVG_TT_zakazky(TSeznam_cest *jaka);//vrátí hodnotu průměrného TT mezi vozíky v rámci dané zakázky/cesty
-//		double vrat_AVG_TT_zakazky(unsigned int n_zakazky);//vrátí hodnotu průměrného TT mezi vozíky v rámci
-//		unsigned int vrat_pocet_voziku_zakazky(TSeznam_cest *jaka);
-//		unsigned int vrat_pocet_voziku_zakazky(unsigned int n_zakazky);
-//		unsigned int WIP();//vrátí max. počet vozíků na lince
-//		void uloz_doporucene_kapacity_objetku();
+		TPointD vrat_zacatek_a_konec_zakazky(TZakazka *jaka);//ukazatel na cestu resp, zakázku
+		TPointD vrat_zacatek_a_konec_zakazky(unsigned int n_zakazky);//n resp. ID cestu resp, zakázku
+		double vrat_nejpozdejsi_konec_zakazek();//nemusí se vždy jednat o poslední zakázku
+		double vrat_LT_voziku(TVozik *jaky);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
+		double vrat_LT_voziku(unsigned int n_voziku);//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
+		double vrat_sumPT_voziku(TVozik *jaky);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
+		double vrat_sumPT_voziku(unsigned int n_voziku);//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
+		double vrat_AVGsumPT_zakazky(TZakazka *jaka);//vrátí čistý čas, který strávily vozík ve výrobě bez čekání pro danou zakazku
+		double vrat_WT_voziku(TVozik *jaky);//vrátí čas čeká vozíku během výroby
+		double vrat_WT_voziku(unsigned int n_voziku);//vrátí čas čeká vozíku během výroby
+		double vrat_AVGsumWT_zakazky(TZakazka *jaka);//vrátí čistý čas, který vozíky čekaly pro danou zakazku
+		double vrat_TT_voziku(TVozik *jaky);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
+		double vrat_TT_voziku(unsigned int n_voziku);//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
+		double vrat_AVG_TT_zakazky(TZakazka *jaka);//vrátí hodnotu průměrného TT mezi vozíky v rámci dané zakázky/cesty
+		double vrat_AVG_TT_zakazky(unsigned int n_zakazky);//vrátí hodnotu průměrného TT mezi vozíky v rámci
+		unsigned int vrat_pocet_voziku_zakazky(TZakazka *jaka);
+		unsigned int vrat_pocet_voziku_zakazky(unsigned int n_zakazky);
+		unsigned int WIP();//vrátí max. počet vozíků na lince
+		void uloz_doporucene_kapacity_objetku();//ukládá vypočtené doporučené kapacity jednotlivým technologickým objektům do jejich atribitu dop_kapacita, která se nezadává uživatelsky, ale jedině v tomto algoritmu
 
 //pomocné struktury pro ukládání do bináru
 private:
@@ -511,7 +513,7 @@ private:
 //
 //		AnsiString get_csv_xls(AnsiString S);
 //		AnsiString get_html();
-//		unsigned int vrat_kapacitu_objektu(TObjekt *O);//stačí v sekci private, protože ukládám přímo přímo do atributů objektu pomocí uloz_doporucene_kapacity_objetku();
+		unsigned int vrat_kapacitu_objektu(TObjekt *O);//stačí v sekci private, protože ukládám přímo přímo do atributů objektu pomocí uloz_doporucene_kapacity_objetku();
 //
 //	protected:
 

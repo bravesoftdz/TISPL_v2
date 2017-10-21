@@ -33,7 +33,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-	//novy->obsazenost=0;
+	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -61,7 +61,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-	//novy->obsazenost=0;
+	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -88,8 +88,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-
-	//novy->obsazenost=0;
+	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=p->dalsi;
@@ -716,22 +715,6 @@ void Cvektory::vymaz_cestu_zakazky(TZakazka *zakazka)
 			zakazka->cesta=zakazka->cesta->dalsi;
 		};
 }
-//---------------------------------------------------------------------------
-//Cvektory::TSeznam_cest *Cvektory::vrat_cestu(unsigned int ID_cesty)
-//{
-//	Cvektory::TSeznam_cest *ukaz=CESTY->dalsi;
-//	TSeznam_cest *ret=NULL;
-//	while (ukaz!=NULL)
-//	{
-//		if(ukaz->n==ID_cesty)
-//		{
-//			ret=ukaz;
-//			break;
-//		}
-//		ukaz=ukaz->dalsi;
-//	}
-//	return ret;
-//}
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -741,6 +724,8 @@ void Cvektory::hlavicka_VOZIKY()
 	TVozik *novy=new TVozik;
 	novy->n=0;
 	novy->zakazka=NULL;
+	novy->start=0;//výchozí pozice v grafu časových os
+	novy->pozice=-1;//akt. pozice na dopravniku či v grafu časových os
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -769,12 +754,13 @@ void Cvektory::generuj_VOZIKY()
 void Cvektory::vloz_vozik(TZakazka *zakazka)
 {
 	TVozik *novy=new TVozik;
+	novy->zakazka=zakazka;//přiřazení zakázky
 
 	//ZDM pozor v případě načítání existujícího stavu ze souboru změnitm toto je výchozí pozice na lince
-	//ZDM novy->segment=NULL;novy->pozice=-1;novy->stav=-1;
-	//ZDM novy->X=0;novy->Y=0;novy->timer=0;novy->start=0;
-
-	novy->zakazka=zakazka;//přiřazení zakázky
+	//ZDM novy->segment=NULL;novy->stav=-1;
+	//ZDM novy->X=0;novy->Y=0;novy->timer=0;;
+	novy->start=0;//výchozí pozice v grafu časových os
+	novy->pozice=-1;//pozice na dopravniku či v grafu časových os
 
 	novy->n=VOZIKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	VOZIKY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -796,102 +782,101 @@ long Cvektory::vymaz_seznam_VOZIKY()
 
 	return pocet_smazanych_objektu;
 };
+//---------------------------------------------------------------------------
+void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik)
+{
+	TObjekt *ukaz=Objekt->dalsi;
+	while (ukaz!=NULL)
+	{
+		ukaz->obsazenost=0;
+		ukaz=ukaz->dalsi;
+	};
+	TVozik *ukaz1=Vozik->dalsi;
+	while (ukaz1!=NULL)
+	{
+		ukaz1->pozice=-1;
+		ukaz1=ukaz1->dalsi;
+	};
+}
+//---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-//void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik)
-//{
-//	TObjekt *ukaz=Objekt->dalsi;
-//	while (ukaz!=NULL)
-//	{
-//		ukaz->obsazenost=0;
-//		ukaz=ukaz->dalsi;
-//	};
-//	TVozik *ukaz1=Vozik->dalsi;
-//	while (ukaz1!=NULL)
-//	{
-//		ukaz1->pozice=-1;
-//		ukaz1=ukaz1->dalsi;
-//	};
-//}
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
-//void Cvektory::hlavicka_procesy()
-//{
-//	TProces *novy=new TProces;
-//	novy->n=0;
-//	novy->n_v_zakazce=0;
-//	novy->Tpoc=0;
-//	novy->Tkon=0;
-//	novy->Tdor=0;
-//	novy->Tpre=0;
-//	novy->Tcek=0;
-//	novy->cesta=NULL;
-//	novy->vozik=NULL;
-//
-//	novy->predchozi=novy;//ukazuje sam na sebe
-//	novy->dalsi=NULL;//další je zatim NULL
-//	PROCESY=novy;
-//}
-////---------------------------------------------------------------------------
-////uloží ukazatel na vozík do spojového seznamu voziku přetížená fce
-//void Cvektory::vloz_proces(TProces *Proces)
-//{
-//	TProces *novy=new TProces;
-//	novy=Proces;//novy bude ukazovat tam kam prvek data
-//
-//	novy->n=PROCESY->predchozi->n+1;//navýším počítadlo prvku o jedničku
-//	PROCESY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
-//	novy->predchozi=PROCESY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
-//	PROCESY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-//}
-////---------------------------------------------------------------------------
-////hledá bod mezi procesy
-//Cvektory::TProces *Cvektory::najdi_proces(double cas, double vozik)
-//{
-//	TProces *RET=NULL;
-//	TProces *P=PROCESY->dalsi;
-//	while (P!=NULL)
-//	{
-//		if(P->vozik->n==vozik && P->Tpoc<=cas && cas<P->Tcek)//pokud se myš nachází nad právě cyklem procházeným procesem
-//		{
-//			 RET=P;//proces nalezen
-//			 break;//ukončí předčasně while cyklus-zbytečně by se hledalo dál, proces byl již nalezen
-//		}
-//		P=P->dalsi;
-//	};
-//	return RET;
-//}
-////---------------------------------------------------------------------------
-////vratí následující proces na stejném objektu jako proces zadaný
-//Cvektory::TProces *Cvektory::vrat_nasledujici_proces_objektu(TProces *Proces)
-//{
-//		TProces *RET=NULL;
-//		TProces *P=Proces->dalsi;
-//		while (P!=NULL)
-//		{
-//			if(P->cesta->objekt==Proces->cesta->objekt)
-//			{
-//				RET=P;
-//				break;
-//			}
-//			P=P->dalsi;
-//		};
-//		return P;
-//}
-////---------------------------------------------------------------------------
-//long Cvektory::vymaz_seznam_procesu()
-//{
-//	long pocet_smazanych_objektu=0;
-//	while (PROCESY!=NULL)
-//	{
-//		pocet_smazanych_objektu++;
-//		delete PROCESY->predchozi;
-//		PROCESY->predchozi=NULL;
-//		PROCESY=PROCESY->dalsi;
-//	};
-//
-//	return pocet_smazanych_objektu;
-//}
+void Cvektory::hlavicka_procesy()
+{
+	TProces *novy=new TProces;
+	novy->n=0;
+	novy->n_v_zakazce=0;
+	novy->Tpoc=0;
+	novy->Tkon=0;
+	novy->Tdor=0;
+	novy->Tpre=0;
+	novy->Tcek=0;
+	novy->vozik=NULL;
+
+	novy->predchozi=novy;//ukazuje sam na sebe
+	novy->dalsi=NULL;//další je zatim NULL
+	PROCESY=novy;
+}
+//---------------------------------------------------------------------------
+//uloží ukazatel na vozík do spojového seznamu voziku přetížená fce
+void Cvektory::vloz_proces(TProces *Proces)
+{
+	TProces *novy=new TProces;
+	novy=Proces;//novy bude ukazovat tam kam prvek data
+
+	novy->n=PROCESY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	PROCESY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+	novy->predchozi=PROCESY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
+	PROCESY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//---------------------------------------------------------------------------
+//hledá bod mezi procesy
+Cvektory::TProces *Cvektory::najdi_proces(double cas, double vozik)
+{
+	TProces *RET=NULL;
+	TProces *P=PROCESY->dalsi;
+	while (P!=NULL)
+	{
+		if(P->vozik->n==vozik && P->Tpoc<=cas && cas<P->Tcek)//pokud se myš nachází nad právě cyklem procházeným procesem
+		{
+			 RET=P;//proces nalezen
+			 break;//ukončí předčasně while cyklus-zbytečně by se hledalo dál, proces byl již nalezen
+		}
+		P=P->dalsi;
+	};
+	return RET;
+}
+//---------------------------------------------------------------------------
+//vratí následující proces na stejném objektu jako proces zadaný
+Cvektory::TProces *Cvektory::vrat_nasledujici_proces_objektu(TProces *Proces)
+{
+		TProces *RET=NULL;
+		TProces *P=Proces->dalsi;
+		while (P!=NULL)
+		{
+			if(P->segment_cesty->objekt==Proces->segment_cesty->objekt)
+			{
+				RET=P;
+				break;
+			}
+			P=P->dalsi;
+		};
+		return P;
+}
+//---------------------------------------------------------------------------
+long Cvektory::vymaz_seznam_procesu()
+{
+	long pocet_smazanych_objektu=0;
+	while (PROCESY!=NULL)
+	{
+		pocet_smazanych_objektu++;
+		delete PROCESY->predchozi;
+		PROCESY->predchozi=NULL;
+		PROCESY=PROCESY->dalsi;
+	};
+
+	return pocet_smazanych_objektu;
+}
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1482,303 +1467,303 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-//TPointD Cvektory::vrat_zacatek_a_konec_zakazky(TSeznam_cest *jaka)//ukazatel na cestu resp, zakázku
-//{
-//	TPointD RET; RET.x=0;RET.y=0;bool prvni=true;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(vozik->cesta->n==jaka->n && prvni){RET.x=vozik->start/Form1->d.PX2MIN;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
-//		if(vozik->cesta->n==jaka->n){RET.y=vozik->pozice/Form1->d.PX2MIN;}//uloží koncovou pozici posledního vozíku na zakázce
-//		vozik=vozik->dalsi;
-//	}
-//	return RET;
-//}
-//TPointD Cvektory::vrat_zacatek_a_konec_zakazky(unsigned int ID_zakazky)//ukazatel na cestu resp, zakázku
-//{
-//	TPointD RET; RET.x=0;RET.y=0;bool prvni=true;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(vozik->cesta->n==ID_zakazky){RET.x=vozik->start/Form1->d.PX2MIN;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
-//		if(vozik->cesta->n==ID_zakazky)RET.y=vozik->pozice/Form1->d.PX2MIN;//uloží koncovou pozici posledního vozíku na zakázce
-//		vozik=vozik->dalsi;
-//	}
-//	return RET;
-//}
+TPointD Cvektory::vrat_zacatek_a_konec_zakazky(TZakazka *jaka)//ukazatel na cestu resp, zakázku
+{
+	TPointD RET; RET.x=0;RET.y=0;bool prvni=true;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(vozik->zakazka->n==jaka->n && prvni){RET.x=vozik->start/Form1->d.PX2MIN;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
+		if(vozik->zakazka->n==jaka->n){RET.y=vozik->pozice/Form1->d.PX2MIN;}//uloží koncovou pozici posledního vozíku na zakázce
+		vozik=vozik->dalsi;
+	}
+	return RET;
+}
+TPointD Cvektory::vrat_zacatek_a_konec_zakazky(unsigned int ID_zakazky)//ukazatel na cestu resp, zakázku
+{
+	TPointD RET; RET.x=0;RET.y=0;bool prvni=true;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(vozik->zakazka->n==ID_zakazky){RET.x=vozik->start/Form1->d.PX2MIN;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
+		if(vozik->zakazka->n==ID_zakazky)RET.y=vozik->pozice/Form1->d.PX2MIN;//uloží koncovou pozici posledního vozíku na zakázce
+		vozik=vozik->dalsi;
+	}
+	return RET;
+}
 ////---------------------------------------------------------------------------
-////nemusí se vždy jednat o poslední zakázku
-//double Cvektory::vrat_nejpozdejsi_konec_zakazek()
-//{
-//	double MAX=0;
-//	TSeznam_cest *C=CESTY->dalsi;
-//	while(C!=NULL)
-//	{
-//		double DO=vrat_zacatek_a_konec_zakazky(C).y;//konec zakazky v min
-//		if(DO>MAX)MAX=DO;
-//		C=C->dalsi;
-//	}
-//	return MAX;;
-//}
+//nemusí se vždy jednat o poslední zakázku
+double Cvektory::vrat_nejpozdejsi_konec_zakazek()
+{
+	double MAX=0;
+	TZakazka *Z=ZAKAZKY->dalsi;
+	while(Z!=NULL)
+	{
+		double DO=vrat_zacatek_a_konec_zakazky(Z).y;//konec zakazky v min
+		if(DO>MAX)MAX=DO;
+		Z=Z->dalsi;
+	}
+	return MAX;
+}
 ////---------------------------------------------------------------------------
-//double Cvektory::vrat_LT_voziku(TVozik *jaky)//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
-//{
-//	if(jaky!=NULL) return (jaky->pozice-jaky->start)/Form1->d.PX2MIN;
-//	else return 0;
-//}
-//double Cvektory::vrat_LT_voziku(unsigned int n_voziku)//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
-//{
-//	double RET=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(n_voziku==vozik->n)//pokud byl nalezen
-//		{
-//			RET=vrat_LT_voziku(vozik);
-//			break;
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	return RET;
-//}
+double Cvektory::vrat_LT_voziku(TVozik *jaky)//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
+{
+	if(jaky!=NULL) return (jaky->pozice-jaky->start)/Form1->d.PX2MIN;
+	else return 0;
+}
+double Cvektory::vrat_LT_voziku(unsigned int n_voziku)//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
+{
+	double RET=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(n_voziku==vozik->n)//pokud byl nalezen
+		{
+			RET=vrat_LT_voziku(vozik);
+			break;
+		}
+		vozik=vozik->dalsi;
+	}
+	return RET;
+}
 ////---------------------------------------------------------------------------
-//double Cvektory::vrat_sumPT_voziku(TVozik *jaky)//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
-//{
-//	double SUM=0;
-//	Cvektory::TCesta *C=jaky->cesta->cesta->dalsi;
-//	while(C!=NULL)//jde po konkrétní cestě
-//	{
-//		SUM+=C->CT;
-//		C=C->dalsi;
-//	}
-//	return SUM;
-//}
-//double Cvektory::vrat_sumPT_voziku(unsigned int n_voziku)//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
-//{
-//	double SUM=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(n_voziku==vozik->n)//pokud byl nalezen
-//		{
-//			SUM=vrat_sumPT_voziku(vozik);
-//			break;
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	return SUM;
-//}
+double Cvektory::vrat_sumPT_voziku(TVozik *jaky)//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
+{
+	double SUM=0;
+	Cvektory::TCesta *C=jaky->zakazka->cesta->dalsi;
+	while(C!=NULL)//jde po konkrétní cestě
+	{
+		SUM+=C->CT;
+		C=C->dalsi;
+	}
+	return SUM;
+}
+double Cvektory::vrat_sumPT_voziku(unsigned int n_voziku)//vrátí čistý čas, který strávil vozík ve výrobě bez čekání
+{
+	double SUM=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(n_voziku==vozik->n)//pokud byl nalezen
+		{
+			SUM=vrat_sumPT_voziku(vozik);
+			break;
+		}
+		vozik=vozik->dalsi;
+	}
+	return SUM;
+}
+//---------------------------------------------------------------------------
+double Cvektory::vrat_AVGsumPT_zakazky(TZakazka *jaka)//vrátí čistý čas, který strávily vozík ve výrobě bez čekání pro danou zakazku
+{
+	double SUM=0.0; double n=0.0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(jaka==vozik->zakazka)//pokud se jedna o zadanou cestu navýší počítadlo
+		{
+			SUM+=vrat_sumPT_voziku(vozik);
+			n++;
+		}
+		vozik=vozik->dalsi;
+	}
+	if(n==0)return 0;//pokud je pouze jenom jeden vozík není takt
+	else
+	return SUM/n;
+}
 ////---------------------------------------------------------------------------
-//double Cvektory::vrat_AVGsumPT_zakazky(TSeznam_cest *jaka)//vrátí čistý čas, který strávily vozík ve výrobě bez čekání pro danou zakazku
-//{
-//	double SUM=0.0; double n=0.0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(jaka==vozik->cesta)//pokud se jedna o zadanou cestu navýší počítadlo
-//		{
-//			SUM+=vrat_sumPT_voziku(vozik);
-//			n++;
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	if(n==0)return 0;//pokud je pouze jenom jeden vozík není takt
-//	else
-//	return SUM/n;
-//}
+double Cvektory::vrat_WT_voziku(TVozik *jaky)//vrátí čas čeká vozíku během výroby
+{
+	return vrat_LT_voziku(jaky)-vrat_sumPT_voziku(jaky);
+}
+double Cvektory::vrat_WT_voziku(unsigned int n_voziku)//vrátí čas čeká vozíku během výroby
+{
+	double RET=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(n_voziku==vozik->n)//pokud byl nalezen
+		{
+			RET=vrat_WT_voziku(vozik);
+			break;
+		}
+		vozik=vozik->dalsi;
+	}
+	return RET;
+}
+//---------------------------------------------------------------------------
+double Cvektory::vrat_AVGsumWT_zakazky(TZakazka *jaka)//vrátí čistý čas, který vozíky čekaly pro danou zakazku
+{
+	double SUM=0.0; double n=0.0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(jaka==vozik->zakazka)//pokud se jedna o zadanou cestu navýší počítadlo
+		{
+			SUM+=vrat_WT_voziku(vozik);
+			n++;
+		}
+		vozik=vozik->dalsi;
+	}
+	if(n==0)return 0;//pokud je pouze jenom jeden vozík není takt
+	else
+	return SUM/n;
+}
 ////---------------------------------------------------------------------------
-//double Cvektory::vrat_WT_voziku(TVozik *jaky)//vrátí čas čeká vozíku během výroby
-//{
-//	return vrat_LT_voziku(jaky)-vrat_sumPT_voziku(jaky);
-//}
-//double Cvektory::vrat_WT_voziku(unsigned int n_voziku)//vrátí čas čeká vozíku během výroby
-//{
-//	double RET=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(n_voziku==vozik->n)//pokud byl nalezen
-//		{
-//			RET=vrat_WT_voziku(vozik);
-//			break;
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	return RET;
-//}
+double Cvektory::vrat_TT_voziku(TVozik *jaky)//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
+{
+	return (jaky->pozice-jaky->predchozi->pozice)/Form1->d.PX2MIN;//ošetřuje i případ prvního prvku a hlavičky, hlavička má pozici nastavenou na nula
+}
+double Cvektory::vrat_TT_voziku(unsigned int n_voziku)//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
+{
+	double RET=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(n_voziku==vozik->n)//pokud byl nalezen
+		{
+			RET=vrat_TT_voziku(vozik);
+			break;
+		}
+		vozik=vozik->dalsi;
+	}
+	return RET;
+}
 ////---------------------------------------------------------------------------
-//double Cvektory::vrat_AVGsumWT_zakazky(TSeznam_cest *jaka)//vrátí čistý čas, který vozíky čekaly pro danou zakazku
-//{
-//	double SUM=0.0; double n=0.0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(jaka==vozik->cesta)//pokud se jedna o zadanou cestu navýší počítadlo
-//		{
-//			SUM+=vrat_WT_voziku(vozik);
-//			n++;
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	if(n==0)return 0;//pokud je pouze jenom jeden vozík není takt
-//	else
-//	return SUM/n;
-//}
+double Cvektory::vrat_AVG_TT_zakazky(TZakazka *jaka)//vrátí hodnotu průměrného TT mezi vozíky v rámci dané zakázky/cesty
+{
+	unsigned int i=0;
+	bool prvni_vozik_zakazky=true;//ignorace taktu prvního vozíku
+	double TT=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(vozik->zakazka==jaka)//pokud byl nalezen v rámci dané cesty a zároveň se nejedná o první vozík v zakázce, tak aby se nezohledňoval takt z vyplývající z náběhu link či přechodu mezi zakázkami
+		{
+			if(prvni_vozik_zakazky)prvni_vozik_zakazky=false;//ignorace taktu prvního vozíku
+			else
+			{
+				TT+=vrat_TT_voziku(vozik);//zatím se jedná pouze o součet TT
+				i++;//navýší počet pro výpočet průměru
+			}
+		}
+		vozik=vozik->dalsi;
+	}
+	if(i==0)return 0;//pokud je pouze jenom jeden vozík není takt
+	else return floor(TT/i*1000000.0)/1000000.0;//vrátí průměrné TT
+}                      //kvůli chybě s přesnosti uříznutí na 6 reaálných míst
+double Cvektory::vrat_AVG_TT_zakazky(unsigned int n_zakazky)//vrátí hodnotu průměrného TT mezi vozíky v rámci
+{
+	unsigned int i=0;
+	bool prvni_vozik_zakazky=true;//ignorace taktu prvního vozíku
+	double TT=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(vozik->zakazka->n==n_zakazky)//pokud byl nalezen v rámci dané cesty a zároveň se nejedná o první vozík v zakázce, tak aby se nezohledňoval takt z vyplývající z náběhu link či přechodu mezi zakázkami
+		{
+			if(prvni_vozik_zakazky)prvni_vozik_zakazky=false;//ignorace taktu prvního vozíku
+			else
+			{
+				TT+=vrat_TT_voziku(vozik);//zatím se jedná pouze o součet TT
+				i++;//navýší počet pro výpočet průměru
+			}
+		}
+		vozik=vozik->dalsi;
+	}
+	if(i==0)return 0;//pokud je pouze jenom jeden vozík není takt
+	else return floor(TT/i*1000000.0)/1000000.0;//vrátí průměrné TT
+}                      //kvůli chybě s přesnosti uříznutí na 6 reaálných míst
 ////---------------------------------------------------------------------------
-//double Cvektory::vrat_TT_voziku(TVozik *jaky)//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
-//{
-//	return (jaky->pozice-jaky->predchozi->pozice)/Form1->d.PX2MIN;//ošetřuje i případ prvního prvku a hlavičky, hlavička má pozici nastavenou na nula
-//}
-//double Cvektory::vrat_TT_voziku(unsigned int n_voziku)//vrátí takt, resp. rozdíl čásů mezi dokončením tohoto a předchozího vozíku
-//{
-//	double RET=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(n_voziku==vozik->n)//pokud byl nalezen
-//		{
-//			RET=vrat_TT_voziku(vozik);
-//			break;
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	return RET;
-//}
+unsigned int Cvektory::vrat_pocet_voziku_zakazky(TZakazka *jaka)
+{
+	unsigned int RET=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(vozik->zakazka==jaka)RET++;
+		vozik=vozik->dalsi;
+	}
+	return RET;
+}
+unsigned int Cvektory::vrat_pocet_voziku_zakazky(unsigned int n_zakazky)
+{
+	unsigned int RET=0;
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		if(vozik->zakazka->n==n_zakazky)RET++;
+		vozik=vozik->dalsi;
+	}
+	return RET;
+}
 ////---------------------------------------------------------------------------
-//double Cvektory::vrat_AVG_TT_zakazky(TSeznam_cest *jaka)//vrátí hodnotu průměrného TT mezi vozíky v rámci dané zakázky/cesty
-//{
-//	unsigned int i=0;
-//	bool prvni_vozik_zakazky=true;//ignorace taktu prvního vozíku
-//	double TT=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(vozik->cesta==jaka)//pokud byl nalezen v rámci dané cesty a zároveň se nejedná o první vozík v zakázce, tak aby se nezohledňoval takt z vyplývající z náběhu link či přechodu mezi zakázkami
-//		{
-//			if(prvni_vozik_zakazky)prvni_vozik_zakazky=false;//ignorace taktu prvního vozíku
-//			else
-//			{
-//				TT+=vrat_TT_voziku(vozik);//zatím se jedná pouze o součet TT
-//				i++;//navýší počet pro výpočet průměru
-//			}
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	if(i==0)return 0;//pokud je pouze jenom jeden vozík není takt
-//	else return floor(TT/i*1000000.0)/1000000.0;//vrátí průměrné TT
-//}                      //kvůli chybě s přesnosti uříznutí na 6 reaálných míst
-//double Cvektory::vrat_AVG_TT_zakazky(unsigned int n_zakazky)//vrátí hodnotu průměrného TT mezi vozíky v rámci
-//{
-//	unsigned int i=0;
-//	bool prvni_vozik_zakazky=true;//ignorace taktu prvního vozíku
-//	double TT=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(vozik->cesta->n==n_zakazky)//pokud byl nalezen v rámci dané cesty a zároveň se nejedná o první vozík v zakázce, tak aby se nezohledňoval takt z vyplývající z náběhu link či přechodu mezi zakázkami
-//		{
-//			if(prvni_vozik_zakazky)prvni_vozik_zakazky=false;//ignorace taktu prvního vozíku
-//			else
-//			{
-//				TT+=vrat_TT_voziku(vozik);//zatím se jedná pouze o součet TT
-//				i++;//navýší počet pro výpočet průměru
-//			}
-//		}
-//		vozik=vozik->dalsi;
-//	}
-//	if(i==0)return 0;//pokud je pouze jenom jeden vozík není takt
-//	else return floor(TT/i*1000000.0)/1000000.0;//vrátí průměrné TT
-//}                      //kvůli chybě s přesnosti uříznutí na 6 reaálných míst
-////---------------------------------------------------------------------------
-//unsigned int Cvektory::vrat_pocet_voziku_zakazky(TSeznam_cest *jaka)
-//{
-//	unsigned int RET=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(vozik->cesta==jaka)RET++;
-//		vozik=vozik->dalsi;
-//	}
-//	return RET;
-//}
-//unsigned int Cvektory::vrat_pocet_voziku_zakazky(unsigned int n_zakazky)
-//{
-//	unsigned int RET=0;
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		if(vozik->cesta->n==n_zakazky)RET++;
-//		vozik=vozik->dalsi;
-//	}
-//	return RET;
-//}
-////---------------------------------------------------------------------------
-//unsigned int Cvektory::WIP()//vrátí max. počet vozíků na lince
-//{
-//	unsigned int pocet_final=0;
-//	//srovnává všechny kombinace, možná by šlo zjednodušit, uvídíme v průběhu
-//	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//	while (vozik!=NULL)
-//	{
-//		unsigned int pocet=0;
-//		Cvektory::TVozik *vozik2=vozik->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//		while (vozik2!=NULL)
-//		{
-//
-//			if(vozik->pozice>=vozik2->start)//pokud nastane situace že vozík skončil před začátkem vozíku, není nutné navyšovat počítadlo vozíků
-//			pocet++;
-//			vozik2=vozik2->dalsi;
-//		}
-//		if(pocet_final<pocet)pocet_final=pocet;
-//		vozik=vozik->dalsi;
-//	}
-//	if(VOZIKY->dalsi!=NULL)//pokud existuje nějaký vozík
-//	return pocet_final/*+1*/;
-//	else
-//	return 0;
-//}
-////---------------------------------------------------------------------------
-////srovnává všechny kombinace
-//unsigned int Cvektory::vrat_kapacitu_objektu(TObjekt *O)
-//{
-//	 unsigned int pocet_final=0;
-//	 if(O->rezim!=0)//pokud se nejedná o S&G, ten má kapacitu vždy 1, pokud ano algoritmus se přeskočí
-//	 {
-//			 TProces *P=PROCESY->dalsi;
-//			 while (P!=NULL)
-//			 {
-//				 unsigned int pocet=0;
-//				 if(P->cesta->objekt->n==O->n)//pokud se jedná o hledaný objekt
-//				 {
-//						TProces *P2=P->dalsi;
-//						while (P2!=NULL)
-//						{
-//							if(P2->cesta->objekt->n==O->n && P->Tcek>P2->Tpoc)//pokud se jedná o spoluhledaný objekt a objekty se v čase zároveň překrývají (tudíž se navyšuje jejich kapacita)
-//							pocet++;
-//							P2=P2->dalsi;
-//						}
-//				 }
-//				 if(pocet_final<pocet)pocet_final=pocet;
-//				 P=P->dalsi;
-//			 };
-//	 }
-//	 else pocet_final=1;
-//	 if(O!=NULL && PROCESY!=NULL && PROCESY->predchozi->n>0) return pocet_final/*+1*/;
-//	 else return 0;
-//}
-////---------------------------------------------------------------------------
-//void Cvektory::uloz_doporucene_kapacity_objetku()
-//{
-//	TObjekt *ukaz=OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-//	while (ukaz!=NULL)
-//	{
-//		ukaz->dop_kapacita_objektu=vrat_kapacitu_objektu(ukaz);
-//		ukaz=ukaz->dalsi;
-//	}
-//}
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
+unsigned int Cvektory::WIP()//vrátí max. počet vozíků na lince
+{
+	unsigned int pocet_final=0;
+	//srovnává všechny kombinace, možná by šlo zjednodušit, uvídíme v průběhu
+	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+	while (vozik!=NULL)
+	{
+		unsigned int pocet=0;
+		Cvektory::TVozik *vozik2=vozik->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+		while (vozik2!=NULL)
+		{
+
+			if(vozik->pozice>=vozik2->start)//pokud nastane situace že vozík skončil před začátkem vozíku, není nutné navyšovat počítadlo vozíků
+			pocet++;
+			vozik2=vozik2->dalsi;
+		}
+		if(pocet_final<pocet)pocet_final=pocet;
+		vozik=vozik->dalsi;
+	}
+	if(VOZIKY->dalsi!=NULL)//pokud existuje nějaký vozík
+	return pocet_final/*+1*/;
+	else
+	return 0;
+}
+//---------------------------------------------------------------------------
+//srovnává všechny kombinace
+unsigned int Cvektory::vrat_kapacitu_objektu(TObjekt *O)
+{
+	 unsigned int pocet_final=0;
+	 if(O->rezim!=0)//pokud se nejedná o S&G, ten má kapacitu vždy 1, pokud ano algoritmus se přeskočí
+	 {
+			 TProces *P=PROCESY->dalsi;
+			 while (P!=NULL)
+			 {
+				 unsigned int pocet=0;
+				 if(P->segment_cesty->objekt->n==O->n)//pokud se jedná o hledaný objekt
+				 {
+						TProces *P2=P->dalsi;
+						while (P2!=NULL)
+						{
+							if(P2->segment_cesty->objekt->n==O->n && P->Tcek>P2->Tpoc)//pokud se jedná o spoluhledaný objekt a objekty se v čase zároveň překrývají (tudíž se navyšuje jejich kapacita)
+							pocet++;
+							P2=P2->dalsi;
+						}
+				 }
+				 if(pocet_final<pocet)pocet_final=pocet;
+				 P=P->dalsi;
+			 };
+	 }
+	 else pocet_final=1;
+	 if(O!=NULL && PROCESY!=NULL && PROCESY->predchozi->n>0) return pocet_final/*+1*/;
+	 else return 0;
+}
+//---------------------------------------------------------------------------
+void Cvektory::uloz_doporucene_kapacity_objetku()
+{
+	TObjekt *ukaz=OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	while (ukaz!=NULL)
+	{
+		ukaz->kapacita_dop=vrat_kapacitu_objektu(ukaz);
+		ukaz=ukaz->dalsi;
+	}
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 void Cvektory::vse_odstranit()
 {
 		//objekty

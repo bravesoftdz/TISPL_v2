@@ -87,7 +87,7 @@
 #include "my.h"
 #include "vykresli.h"
 #include <Vcl.ComCtrls.hpp>
-//ZDM #include "grafy.h"
+#include "grafy.h"
 
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
@@ -356,7 +356,6 @@ __published:	// IDE-managed Components
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
 	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
-	void __fastcall PopupMenuButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton1Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender);
@@ -437,12 +436,14 @@ private:	void ESC();
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
-	void NewDesignSettings();
-
-	TDateTime TIME;
-	UnicodeString LICENCE;
+	void NewDesignSettings();//nastavení noveho designu
+	void aktualizace();//kontrola aktuálnosti verze a pøípadì nabídka na stažení nové
 
 	////promìnné
+	TDateTime TIME;
+	UnicodeString LICENCE;
+	UnicodeString VERZE;
+
 	int size_grid;
 
 	int vybrany_objekt;
@@ -489,7 +490,7 @@ public:		// User declarations
 	TMyString ms;
 	Cmy m;
 	Cvykresli d;
-	//ZDM Cgrafy g;
+	Cgrafy g;
 	UnicodeString FileName;
 	double Zoom; //promìnná uchovávajicí velikost Zoomu
 	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
