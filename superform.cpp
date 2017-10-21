@@ -175,7 +175,7 @@ void TForm_definice_zakazek:: nacti_default_zakazku(){
 	rStringGridEd1->Cells[0][1]="1";
 	rStringGridEd1->Cells[1][1]="1";
 	rStringGridEd1->Cells[2][1]="Nova zakazka";
-	rStringGridEd1->Cells[3][1]=clBlue;
+	rStringGridEd1->Cells[3][1]="Modrá";
 	rStringGridEd1->Cells[4][1]="100";  //pomer
 	rStringGridEd1->Cells[5][1]="NASTAVIT";
  //	rStringGridEd1->Cells[5][1]=j;
@@ -758,13 +758,14 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	{
 		//definice ukazatele aktuálnì editované zakázky
 		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);//inicializace
+		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
+		Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+
 		//naèítání dat
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
-			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
-			Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
 
-			int j=0;
+		int j=0;
 			while(objekt!=NULL) //tvrdy vypis objektu do tabulky
 			{
 					j++;
@@ -784,7 +785,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				Form_cesty->rStringGridEd_cesty->Cells[3][i]=ukaz->RD;
 				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tc;
 				Form_cesty->rStringGridEd_cesty->Cells[5][i]=ukaz->Tv;
-				Form_cesty->rStringGridEd_cesty->RowCount++;
+				Form_cesty->rStringGridEd_cesty->RowCount=i+1;
 				ukaz=ukaz->dalsi;
 			}
 		}
@@ -801,6 +802,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			Form1->d.v.inicializace_cesty(zakazka);
 			for(int i=1;i<Form_cesty->rStringGridEd_cesty->RowCount;i++)
 			{
+		//	if(Form_cesty->rStringGridEd_cesty->Cells[7][i]!=Checked) {
+
 					Form1->d.v.vloz_segment_cesty(zakazka,
 					/*sloupec poøadí se neukládá*/
 					Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),
@@ -809,6 +812,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 					Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),
 					Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble()
 					);
+
+			 //		}
 			}
 		}
 	}
@@ -865,26 +870,54 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
+
+		UnicodeString barva;
+
+
 		//uložení editovaných zakázek
 		for (int i = 1; i< rStringGridEd1->RowCount; i++)
 		{    //pozor zatím z nìjakého dùvodu padá pøi konverzích do INTu - odhalit pøíèinu
+
+
+
+			if(rStringGridEd1->Cells[3][i]=="Kaštanová") barva="1";
+			if(rStringGridEd1->Cells[3][i]=="Zelená") barva="2";
+			if(rStringGridEd1->Cells[3][i]=="Olivová") barva="3";
+			if(rStringGridEd1->Cells[3][i]=="Námoønická modrá") barva="4";
+			if(rStringGridEd1->Cells[3][i]=="Fialová") barva="5";
+			if(rStringGridEd1->Cells[3][i]=="Modrozelená") barva="6";
+			if(rStringGridEd1->Cells[3][i]=="Šedá") barva="7";
+			if(rStringGridEd1->Cells[3][i]=="Støíbrná") barva="8";
+			if(rStringGridEd1->Cells[3][i]=="Èervená") barva="9";//(TColor)RGB(43,87,154);
+			if(rStringGridEd1->Cells[3][i]=="Svìtle zelená") barva="10";
+			if(rStringGridEd1->Cells[3][i]=="Žlutá") barva="11";
+			if(rStringGridEd1->Cells[3][i]=="Modrá") barva="12";
+			if(rStringGridEd1->Cells[3][i]=="Rùžová") barva="13";
+			if(rStringGridEd1->Cells[3][i]=="Svìtle modrá") barva="14";
+			if(rStringGridEd1->Cells[3][i]=="Bílá") barva="15";
+			if(rStringGridEd1->Cells[3][i]=="Zelenomodrá") barva="16";
+			if(rStringGridEd1->Cells[3][i]=="Blankytnì Modrá") barva="17";
+			if(rStringGridEd1->Cells[3][i]=="Krémová") barva="18";
+			if(rStringGridEd1->Cells[3][i]=="Støednì šedá") barva="19";
 
 			Form1->d.v.edituj_temp_zakazku(
 			i,//n
 			rStringGridEd1->Cells[0][i],//ID
 			rStringGridEd1->Cells[1][i].ToInt(),//TYP
 			rStringGridEd1->Cells[2][i],//NAME
-			TColor (rStringGridEd1->Cells[3][i].ToInt()),//COLOR
+			TColor (barva.ToInt()),//COLOR
 			Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),//POMER
 			Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),//TT
 			//JIG se už jako parametr nepožaduje, stejnì jako cesta, jedná se o pøedávání ukazatelem pøi zavírání patøièného formuláøe
 			rStringGridEd1->Cells[6][i].ToInt(),//n-vozíku
 			rStringGridEd1->Cells[7][i].ToInt(),//n-servis vozíkù
 			rStringGridEd1->Cells[8][i].ToInt());//n-opak vozíkù
+
+
 		}
 		//uložení do ostrého spojáku ZAKAZKY
 		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();
-		Form1->d.v.generuj_VOZIKY();
+		//Form1->d.v.generuj_VOZIKY();
 		Form1->DuvodUlozit(true);
 		Form_definice_zakazek->Close();
 		Form1->REFRESH();
@@ -936,12 +969,13 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 	rStringGridEd1->Cells[0][i]=i;
 	rStringGridEd1->Cells[1][i]="1";
 	rStringGridEd1->Cells[2][i]="Nova zakazka";
-	rStringGridEd1->Cells[3][i]=clBlue;
+	rStringGridEd1->Cells[3][i]="Modrá";
 	rStringGridEd1->Cells[4][i]="0";  //pomer
- //	rStringGridEd1->Cells[5][1]=j;
+	rStringGridEd1->Cells[5][i]="NASTAVIT";
 	rStringGridEd1->Cells[6][i]="0";
 	rStringGridEd1->Cells[7][i]="0";
 	rStringGridEd1->Cells[8][i]="0";
+	rStringGridEd1->Cells[9][i]="NASTAVIT";
 	rStringGridEd1->Cells[10][i]="0";
 
 	Memo4->Lines->Add(AnsiString(rStringGridEd1->Cells[0][i])+";"
@@ -964,7 +998,23 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 																		rStringGridEd1->Cells[6][i].ToInt(),
 																		rStringGridEd1->Cells[7][i].ToInt(),
 																		rStringGridEd1->Cells[8][i].ToInt());
-																			}
+
+		int j=rStringGridEd1->RowCount-1;
+    	ShowMessage(j);
+
+		 //pøi pøidání další zakázky uložím do cesty defaultní hodnoty
+	 Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+	 Cvektory::TZakazka *nova_zakazka=Form1->d.v.vrat_temp_zakazku(j);
+	 Form1->d.v.inicializace_cesty(nova_zakazka);
+	 while(objekt!=NULL)
+	 {  //vložení defaulní cesty
+			Form1->d.v.vloz_segment_cesty(nova_zakazka,/*sloupec poøadí se neukládá*/objekt->n,0,0,0,0);
+			objekt=objekt->dalsi;
+
+
+	 }
+
+	 }
 
 
 
@@ -972,25 +1022,52 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 //---------------------------------------------------------------------------
 void TForm_definice_zakazek::nacti_zakazky()
 {
+
+		ShowMessage("mam data v zakazkach");
+
 		//vyplnìní stringgridu
 		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
-		int	i=1;
+		int	i=0;
 		//Memo4->Lines->Add(AnsiString(ukaz->id));
 		while (ukaz!=NULL)
 		{
-			rStringGridEd1->RowCount=++i; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
-			//ShowMessage(rStringGridEd1->RowCount);
+		i++;              //NESAHAT DO KONSTRUKCE i++!!!
+
+
+			if(ukaz->barva==1) rStringGridEd1->Cells[3][i]="Kaštanová";
+			if(ukaz->barva==2) rStringGridEd1->Cells[3][i]="Zelená";
+			if(ukaz->barva==3) rStringGridEd1->Cells[3][i]="Olivová";
+			if(ukaz->barva==4) rStringGridEd1->Cells[3][i]="Námoønická modrá";
+			if(ukaz->barva==5) rStringGridEd1->Cells[3][i]="Fialová";
+			if(ukaz->barva==6) rStringGridEd1->Cells[3][i]="Modrozelená";
+			if(ukaz->barva==7) rStringGridEd1->Cells[3][i]="Šedá";
+			if(ukaz->barva==8) rStringGridEd1->Cells[3][i]="Støíbrná";
+			if(ukaz->barva==9) rStringGridEd1->Cells[3][i]="Èervená";
+			if(ukaz->barva==10) rStringGridEd1->Cells[3][i]="Svìtle zelená";
+			if(ukaz->barva==11) rStringGridEd1->Cells[3][i]="Žlutá";
+			if(ukaz->barva==12) rStringGridEd1->Cells[3][i]="Modrá";
+			if(ukaz->barva==13) rStringGridEd1->Cells[3][i]="Rùžová";
+			if(ukaz->barva==14) rStringGridEd1->Cells[3][i]="Svìtle modrá";
+			if(ukaz->barva==15) rStringGridEd1->Cells[3][i]="Bílá";
+			if(ukaz->barva==16) rStringGridEd1->Cells[3][i]="Zelenomodrá";
+			if(ukaz->barva==17) rStringGridEd1->Cells[3][i]="Blankytnì Modrá";
+			if(ukaz->barva==18) rStringGridEd1->Cells[3][i]="Krémová";
+			if(ukaz->barva==19) rStringGridEd1->Cells[3][i]="Støednì šedá";
+
+
+			rStringGridEd1->RowCount=i+1; //zvysuji podle poctu nacitanych zakazek + 1 kvuli hlavicce tabulky
+			ShowMessage(i);
 			rStringGridEd1->Cells[0][i] = ukaz->id;
 			rStringGridEd1->Cells[1][i] = ukaz->typ;
 			//ShowMessage(ukaz->name);
 			rStringGridEd1->Cells[2][i] = ukaz->name;
-			rStringGridEd1->Cells[3][i] = ukaz->barva;
+			//rStringGridEd1->Cells[3][i] = ukaz->barva;
 			rStringGridEd1->Cells[4][i] = ukaz->pomer;
-			//rStringGridEd1->Cells[5][i] = NULL; jig
+			rStringGridEd1->Cells[5][i] ="NASTAVIT";
 			rStringGridEd1->Cells[6][i] = ukaz->pocet_voziku;
 			rStringGridEd1->Cells[7][i] = ukaz->serv_vozik_pocet;
 			rStringGridEd1->Cells[8][i] = ukaz->opakov_servis;
-			//rStringGridEd1->Cells[9][i] = NULL; //cesta
+			rStringGridEd1->Cells[9][i] ="NASTAVIT";
 			rStringGridEd1->Cells[10][i] = ukaz->TT;
 			//posun na další prvek v seznamu
 			ukaz=ukaz->dalsi;
@@ -1041,7 +1118,7 @@ void __fastcall TForm_definice_zakazek::smaz_tempClick(TObject *Sender)
 
 void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 {
-		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(1);//inicializace
+		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(Edit_n_cesty->Text.ToInt());//inicializace
 		//naèítání dat
 
 		if(zakazka!=NULL)
@@ -1095,14 +1172,14 @@ void TForm_definice_zakazek::predvypln_cestu()	{
 						i++;
 					Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;
 					Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
-					Form_cesty->rStringGridEd_cesty->Cells[2][i]="2";    //CT
-					Form_cesty->rStringGridEd_cesty->Cells[3][i]="3,3";    //Rychlost dopravniku
+					Form_cesty->rStringGridEd_cesty->Cells[2][i]="0";    //CT
+					Form_cesty->rStringGridEd_cesty->Cells[3][i]="0";    //Rychlost dopravniku
 
 					if(objekt->short_name=="LAK") {  //pokud jde o lakovani, predvyplnim hodnoty jinak jsou 0 pro ostatni objekty
 
-					Form_cesty->rStringGridEd_cesty->Cells[4][i]="3";  //Cas vymeny
-					Form_cesty->rStringGridEd_cesty->Cells[5][i]="1";  //Cas cisteni
-					Form_cesty->rStringGridEd_cesty->Cells[6][i]="20";  //Opakovani
+					Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
+					Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
+					Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
 						}
 						else    {
 

@@ -69,6 +69,7 @@ __published:	// IDE-managed Components
 	TButton *zakazky_hlavni_spojak;
 	TButton *smaz_temp;
 	TEdit *Edit_smaz_temp;
+	TEdit *Edit_n_cesty;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);

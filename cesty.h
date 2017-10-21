@@ -26,8 +26,11 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton2;
 	TscGPButton *cesta_storno;
 	TscGPButton *Button_ulozit;
+	TMemo *Memo1;
+	TButton *vypis_objekty;
 	void __fastcall cesta_stornoClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
+	void __fastcall vypis_objektyClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 

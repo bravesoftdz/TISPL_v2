@@ -277,8 +277,8 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
 			 //ZDM d.v.hlavicka_palce();
 			 //vytvoření defaltních hodnot
-			 d.v.vloz_pohon("Hlavní dopravník",1.0,10.0,32.5);
-			 d.v.vloz_pohon("Vedlejší dopravník",1.0,10.0,32.5);
+			 d.v.vloz_pohon("Hlavní dopravník",1.5,10.5,32.5);
+			 d.v.vloz_pohon("Vedlejší dopravník",1.5,10.5,32.5);
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
@@ -425,6 +425,16 @@ bool TForm1::ttr(UnicodeString Text)
 //při aktivaci formuláře startující záležitosti, pro zpřehlednění kodu
 void TForm1::startUP()
 {
+	////zalogování startu aplikace
+
+	AnsiString relation_id=GetCurrentProcessId();
+	AnsiString send_log_time= TIME.CurrentDateTime();
+	AnsiString ID ="1";
+	AnsiString Text="aplikace start";
+	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+	FDConnection1->ExecSQL(strSQL);
+
+
 	//////otevrení posledního souboru
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
 
@@ -3660,6 +3670,14 @@ void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::KonecClick(TObject *Sender)
 {
+  //zalogování vypnutí aplikace
+	AnsiString relation_id=GetCurrentProcessId();
+	AnsiString send_log_time= TIME.CurrentDateTime();
+	AnsiString ID ="1";
+	AnsiString Text="aplikace stop";
+	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+	FDConnection1->ExecSQL(strSQL);
+
 	Close();//ukončí aplikaci
 }
 //---------------------------------------------------------------------------
@@ -3921,6 +3939,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
 
 
 
