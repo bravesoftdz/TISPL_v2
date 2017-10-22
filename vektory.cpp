@@ -55,8 +55,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
-	novy->pohon=new TPohon;//ukazatel na použitý pohon
-	novy->pohon->n=1;//na default
+	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
@@ -82,8 +81,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->Y=Y;//přiřadím Y osu
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
-	novy->pohon=new TPohon;//ukazatel na použitý pohon
-	novy->pohon->n=1;//na default
+	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
@@ -619,10 +617,42 @@ void Cvektory::kopirujZAKAZKY_temp2ZAKAZKY(bool mazat_ZAKAZKY_temp)
   }
 }
 //---------------------------------------------------------------------------
-//zkopíruje ukazatel na ZAKAZEK do ZAKAZKY_temp, slouží v momentu načítání SF
+//zkopíruje data objekt ze ZAKAZEK do nezávislého ZAKAZKY_temp, není jen o předání ukazatelů slouží v momentu načítání SF
 void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 {
-	ZAKAZKY_temp=ZAKAZKY;//zkopírování ukazatele na hlavičku spojaku ZAKAZKY_temp, touto konstrukcí ZAKAZKY ukazují tam, kam ZAKAZKY_temp
+	//nelze: ZAKAZKY_temp=ZAKAZKY;//toto je pouze zkopírování ukazatele na hlavičku spojaku ZAKAZKY_temp, touto konstrukcí ZAKAZKY ukazují tam, kam ZAKAZKY_temp tudíž na stejná data
+	//není třeba, už by měl být smazaný: vymaz_seznam_ZAKAZKY_temp();
+	//hlavička se zakládá pokud neexistuje, tak v konstrukci metody vloz_temp_zakazku se poprvé vytvoří
+	TZakazka *Z=ZAKAZKY->dalsi;//přeskakuje hlavičku
+	while(Z!=NULL)
+	{
+		 //alokace paměti
+		 TZakazka *T=new TZakazka;
+		 //kopírování dat
+		 T->id=Z->id;
+		 T->typ=Z->typ;
+		 T->name=Z->name;
+		 T->barva=Z->barva;
+		 T->pomer=Z->pomer;
+		 T->TT=Z->TT;
+		 T->jig=Z->jig;
+		 T->pocet_voziku=Z->pocet_voziku;
+		 T->serv_vozik_pocet=Z->serv_vozik_pocet;
+		 T->opakov_servis=Z->opakov_servis;
+		 vloz_temp_zakazku(T);//uloží zakazku
+		 //kopírování cesty
+		 hlavicka_cesta_zakazky(T);//volá hlavičku cesty k dané temp zakazkce
+		 TCesta *C=Z->cesta->dalsi;
+		 while(C!=NULL)//projíždí cestu dané zakázky
+		 {
+			 vloz_segment_cesty(T,C->objekt,C->CT,C->Tc,C->Tv,C->RD,C->Opak);
+			 C=C->dalsi;//posun na další segment cesty dané zakázky
+		 }
+		 C=NULL;delete C;
+		 //posun na další zakázku
+		 Z=Z->dalsi;
+	}
+	Z=NULL;delete Z;
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
@@ -668,6 +698,7 @@ void Cvektory::hlavicka_cesta_zakazky(TZakazka *zakazka)
 	nova->Tc=0;
 	nova->Tv=0;
 	nova->RD=0;
+	nova->Opak=0;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;
@@ -681,15 +712,21 @@ void Cvektory::inicializace_cesty(TZakazka *zakazka)
 }
 //---------------------------------------------------------------------------
 //do konkrétní zakázky vloží segmenty cesty
-void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu,double CT,double Tc,double Tv,double RD)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+{
+	vloz_segment_cesty(zakazka,vrat_objekt(n_vybraneho_objektu),CT,Tc,Tv,RD,Opak);
+}
+//přetížená funkce
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 {
 	TCesta *segment=new TCesta;
 
-	segment->objekt=vrat_objekt(n_vybraneho_objektu);
+	segment->objekt=vybrany_objekt;
 	segment->CT=CT;
 	segment->Tc=Tc;
 	segment->Tv=Tv;
 	segment->RD=RD;
+	segment->Opak=Opak;
 
 	vloz_segment_cesty(zakazka,segment);
 }
@@ -1032,6 +1069,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					 c_c->Tc=c->Tc;
 					 c_c->Tv=c->Tv;
 					 c_c->RD=c->RD;
+					 c_c->Opak=c->Opak;
 					 //uložení do binárního filu
 					 FileStream->Write(c_c,sizeof(C_cesta));//zapiše jeden prvek do souboru
 					 //posun na další segment cesty
@@ -1216,7 +1254,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					{
 						C_cesta c_c;//=new C_cesta;
 						FileStream->Read(&c_c,sizeof(C_cesta));//načte jeden prvek ze souboru
-						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD);
+						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD,c_c.Opak);
 					}
 
 					//vloží zakazku do spojového seznamu ZAKAZKY

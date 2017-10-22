@@ -70,9 +70,7 @@ __published:	// IDE-managed Components
 	TButton *smaz_temp;
 	TEdit *Edit_smaz_temp;
 	TEdit *Edit_n_cesty;
-	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 	void __fastcall RzStringGrid1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall RzStringGrid1DrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
@@ -97,55 +95,46 @@ __published:	// IDE-managed Components
 	void __fastcall smaz_tempClick(TObject *Sender);
 	void __fastcall Button5Click(TObject *Sender);
 
-
-
-
-
-
-
-
-	//void __fastcall DrawGrid1Click(TObject *Sender);
 private:	// User declarations
-	bool OK_status;
-	bool Color_status;
-	bool RowMoved;
+	void nastav_form();
+	void nacti_PP();
+	void predvypln_default_zakazku();
+	void predvypln_cestu();
+	void nacti_zakazky();
+
+	//ZDM
+//bool OK_status;
+//bool Color_status;
+//bool RowMoved;
+//short Pocet_radku;
+//bool data_nalezena;  //jsou-li data ve spojaku, nastavi se na true
+//	struct TBarva
+//	{
+//		long	id_radek;
+//		TColor barva_voziku;
+//		struct TBarva *predchozi;
+//		struct TBarva *dalsi;
+//	};
+//	TBarva *BARVY;
+//	void hlavicka_barva();
+//	void uloz_barvu();
+//	void uloz_barvu(TColor barva,int i);
+//	void aktualizuj_barvu(TColor barva,int row);
+//	void vymaz_barvu();
+//	void smaz_barvu_radku(TBarva *Barva);
+//	void sniz_indexy(TBarva *Barva);
+//	void nacti_voziky();
+//	void uloz_voziky_a_nastav_zakazky();
+
+
+
+	void uloz_Defaulttemp_zakazku();
+	void zobraz_vsechny_objekty();
+
+	void uloz_Default_cestu();
+
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);
-
-		short offset;
-		short Pocet_radku;
-		bool data_nalezena;  //jsou-li data ve spojaku, nastavi se na true
-
-
-
-		struct TBarva
-		{
-			long	id_radek;
-			TColor barva_voziku;
-			struct TBarva *predchozi;
-			struct TBarva *dalsi;
-		};
-		TBarva *BARVY;
-
-	//	TForm_vozik_nastaveni();
-		void hlavicka_barva();
-		void uloz_barvu();
-		void uloz_barvu(TColor barva,int i);
-		void aktualizuj_barvu(TColor barva,int row);
-		void vymaz_barvu();
-		void smaz_barvu_radku(TBarva *Barva);
-		void sniz_indexy(TBarva *Barva);
-		void nacti_voziky();
-		void uloz_voziky_a_nastav_zakazky();
-		void nacti_defaulni_PP();
-		void nacti_PP();
-		void nacti_nastaveni_formu();
-		void nacti_zakazky();
-		void nacti_default_zakazku();
-		void uloz_Defaulttemp_zakazku();
-		void zobraz_vsechny_objekty();
-		void predvypln_cestu();
-		void uloz_Default_cestu();
 
 };
 //---------------------------------------------------------------------------

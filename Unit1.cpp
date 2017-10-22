@@ -140,8 +140,8 @@ void TForm1::NewDesignSettings()
 	scSplitView_OPTIONS->Opened=false;
 	scSplitView_OPTIONS->Align=alRight;
 
-	scGPGlyphButton8->Options->NormalColor=active_blue;
-	scGPGlyphButton7->Options->NormalColor=active_blue;
+	scGPGlyphButton_definice_zakazek->Options->NormalColor=active_blue;
+	scGPGlyphButton_parametry_linky->Options->NormalColor=active_blue;
 	scListGroupNastavProjektu->HeaderAutoColor=true;
 	scListGroupKnihovObjektu->HeaderAutoColor=true;
 	scListGroupNastavProjektu->Color=light_gray;
@@ -289,7 +289,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 doba_neotaceni_mysi=0;
 
 			 d.v.PP.cas_start=TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");//defaultně dnes v 8:00
-			 d.v.PP.mnozstvi=0;
+			 d.v.PP.mnozstvi=200;
 			 d.v.PP.hod_den=8;
 			 d.v.PP.dni_rok=365;
 			 d.v.PP.efektivita=95;
@@ -3686,7 +3686,7 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //volání superformuláře (definice zakázek)
-void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
+void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 {
 	ESC();//zruší případnou rozdělanou akci
 	if(d.v.OBJEKTY->dalsi==NULL)
@@ -3697,7 +3697,8 @@ void __fastcall TForm1::Button_vozik_parametryClick(TObject *Sender)
 	{
 		Form_definice_zakazek->Left=0;
 		Form_definice_zakazek->Top=0+scGPPanel_mainmenu->Height;
-		if(IDOK==Form_definice_zakazek->ShowModal())DuvodUlozit(true);
+		Form_definice_zakazek->ShowModal();
+		DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
 	}
 }
 //---------------------------------------------------------------------------
@@ -3761,15 +3762,15 @@ void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
 	scListGroupKnihovObjektu->HeaderFont->Color=scListGroupNastavProjektu->HeaderFont->Color;
 	scListGroupNastavProjektu->HeaderHeight=35;
 	scListGroupKnihovObjektu->HeaderHeight=scListGroupNastavProjektu->HeaderHeight;
-	scGPGlyphButton7->Top=41;
-	scGPGlyphButton8->Top=80;
-	scGPGlyphButton7->Height=30;
-	scGPGlyphButton8->Height=scGPGlyphButton7->Height;
-	scGPGlyphButton7->Options->NormalColor=clBtnShadow;;
-	scGPGlyphButton8->Options->NormalColor=scGPGlyphButton7->Options->NormalColor;
+	scGPGlyphButton_parametry_linky->Top=41;
+	scGPGlyphButton_definice_zakazek->Top=80;
+	scGPGlyphButton_parametry_linky->Height=30;
+	scGPGlyphButton_definice_zakazek->Height=scGPGlyphButton_parametry_linky->Height;
+	scGPGlyphButton_parametry_linky->Options->NormalColor=clBtnShadow;;
+	scGPGlyphButton_definice_zakazek->Options->NormalColor=scGPGlyphButton_parametry_linky->Options->NormalColor;
 	DrawGrid_knihovna->Top=37;
-	scGPGlyphButton7->Options->ShapeStyle=scgpRoundedRect;
-	scGPGlyphButton8->Options->ShapeStyle=scGPGlyphButton7->Options->ShapeStyle;
+	scGPGlyphButton_parametry_linky->Options->ShapeStyle=scgpRoundedRect;
+	scGPGlyphButton_definice_zakazek->Options->ShapeStyle=scGPGlyphButton_parametry_linky->Options->ShapeStyle;
 	scListGroupNastavProjektu->RowLineMargin=scListGroupNastavProjektu->Width;
 	scListGroupKnihovObjektu->Top=115;
 	scListGroupNastavProjektu->Height=115;
@@ -3902,8 +3903,11 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 				ukaz=ukaz->dalsi;
 			}
 		}
+		else S("Není zakazka");
 }
 //---------------------------------------------------------------------------
+
+
 
 
 

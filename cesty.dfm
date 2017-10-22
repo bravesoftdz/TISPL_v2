@@ -244,6 +244,7 @@ object Form_cesty: TForm_cesty
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -296,6 +297,8 @@ object Form_cesty: TForm_cesty
       GlyphOptions.Kind = scgpbgkClose
       GlyphOptions.Thickness = 1
       GlyphOptions.StyleColors = True
+      ModalResult = 8
+      ModalSetting = True
       TextMargin = -1
       WidthWithCaption = 0
       WidthWithoutCaption = 0

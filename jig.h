@@ -19,20 +19,20 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
 	TscGPGlyphButton *MaxButton;
-	TscGPButton *jig_storno;
-	TscGPButton *jig_save;
+	TscGPButton *Button_jig_storno;
+	TscGPButton *Button_jig_save;
 	TrHTMLLabel *rHTMLLabel_jig_sirka;
-	TrEditNum *jig_pocet_ks;
+	TrEditNum *Edit_jig_pocet_ks;
 	TscLabel *scLabel1;
 	TscGPButton *scGPButton2;
 	TrHTMLLabel *rHTMLLabel_jig_vyska;
-	TrEditNum *jig_vyska;
+	TrEditNum *Edit_jig_vyska;
 	TrHTMLLabel *rHTMLLabel_jig_pocetks;
-	TrEditNum *rEditNum2;
+	TrEditNum *Edit_jig_sirka;
 	TrHTMLLabel *rHTMLLabel_jig_delka;
-	TrEditNum *rEditNum3;
-	void __fastcall jig_stornoClick(TObject *Sender);
-	void __fastcall FormShow(TObject *Sender);
+	TrEditNum *Edit_jig_delka;
+	void __fastcall Button_jig_stornoClick(TObject *Sender);
+	void __fastcall KonecClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_jig(TComponent* Owner);

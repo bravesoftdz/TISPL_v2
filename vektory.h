@@ -64,6 +64,7 @@ class Cvektory
 			double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
 			double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
 			double RD;//rychlost dopravníku
+			unsigned int Opak;//počet opakování jak často se čištění opakuje
 			struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -377,7 +378,8 @@ private:
 //metody pro cesta konkrétní zakázky
 public:
 		void inicializace_cesty(TZakazka *zakazka);//vymaže předchozí cestu a zavolá hlavičku cesty nové
-		void vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+		void vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu/*z comboboxu*/,double CT,double Tc,double Tv,double RD,unsigned int opak);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+		void vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int opak);//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 private:
 		void hlavicka_cesta_zakazky(TZakazka *zakazka);//vytvoří novou hlavičku pro spojový seznam konkrétní cesty dané zakázky
 		void vymaz_cestu_zakazky(TZakazka *zakazka);//vymaže celou cestu dané zakázky
@@ -492,6 +494,7 @@ private:
 		  	double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
 				double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
 				double RD;//rychlost dopravníku
+				unsigned int Opak;//počet opakování jak často se čištění opakuje
 		};
 //		struct C_vozik//pro konverzi do bináru
 //		{

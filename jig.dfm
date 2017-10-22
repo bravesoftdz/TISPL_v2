@@ -5,8 +5,8 @@ object Form_jig: TForm_jig
   BorderStyle = bsNone
   BorderWidth = 1
   Caption = 'Nastaven'#237' Jigu'
-  ClientHeight = 397
-  ClientWidth = 448
+  ClientHeight = 331
+  ClientWidth = 413
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,15 +14,14 @@ object Form_jig: TForm_jig
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_jig_sirka: TrHTMLLabel
-    Left = 52
+    Left = 44
     Top = 177
-    Width = 35
+    Width = 66
     Height = 19
-    Caption = #352#237#345'ka'
+    Caption = #352#237#345'ka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -32,11 +31,11 @@ object Form_jig: TForm_jig
     ParentFont = False
   end
   object rHTMLLabel_jig_vyska: TrHTMLLabel
-    Left = 227
+    Left = 219
     Top = 97
-    Width = 41
+    Width = 72
     Height = 19
-    Caption = 'V'#253#353'ka'
+    Caption = 'V'#253#353'ka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -46,11 +45,11 @@ object Form_jig: TForm_jig
     ParentFont = False
   end
   object rHTMLLabel_jig_pocetks: TrHTMLLabel
-    Left = 52
+    Left = 44
     Top = 97
-    Width = 82
+    Width = 136
     Height = 19
-    Caption = 'Po'#269'et ks/jig'
+    Caption = 'Po'#269'et [v'#253'robk'#367'/jig]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -60,11 +59,11 @@ object Form_jig: TForm_jig
     ParentFont = False
   end
   object rHTMLLabel_jig_delka: TrHTMLLabel
-    Left = 227
+    Left = 219
     Top = 177
-    Width = 39
+    Width = 70
     Height = 19
-    Caption = 'D'#233'lka'
+    Caption = 'D'#233'lka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -76,7 +75,7 @@ object Form_jig: TForm_jig
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 448
+    Width = 413
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -104,9 +103,10 @@ object Form_jig: TForm_jig
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 448
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 398
+      Left = 363
       Top = 0
       Width = 50
       Height = 33
@@ -116,6 +116,7 @@ object Form_jig: TForm_jig
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -168,6 +169,8 @@ object Form_jig: TForm_jig
       GlyphOptions.Kind = scgpbgkClose
       GlyphOptions.Thickness = 1
       GlyphOptions.StyleColors = True
+      ModalResult = 8
+      ModalSetting = True
       TextMargin = -1
       WidthWithCaption = 0
       WidthWithoutCaption = 0
@@ -180,10 +183,11 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 398
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 298
+      Left = 263
       Top = 0
       Width = 50
       Height = 33
@@ -257,10 +261,11 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 298
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 348
+      Left = 313
       Top = 0
       Width = 50
       Height = 33
@@ -334,11 +339,12 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 348
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 298
+      Width = 263
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -365,11 +371,12 @@ object Form_jig: TForm_jig
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Jig'
+      ExplicitWidth = 298
     end
   end
-  object jig_storno: TscGPButton
-    Left = 227
-    Top = 355
+  object Button_jig_storno: TscGPButton
+    Left = 219
+    Top = 283
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -380,7 +387,7 @@ object Form_jig: TForm_jig
     ParentFont = False
     TabOrder = 1
     TabStop = True
-    OnClick = jig_stornoClick
+    OnClick = Button_jig_stornoClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
@@ -425,6 +432,8 @@ object Form_jig: TForm_jig
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 2
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -456,9 +465,9 @@ object Form_jig: TForm_jig
     GroupIndex = 0
     AllowAllUp = False
   end
-  object jig_save: TscGPButton
-    Left = 110
-    Top = 355
+  object Button_jig_save: TscGPButton
+    Left = 93
+    Top = 283
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -513,6 +522,8 @@ object Form_jig: TForm_jig
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 1
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -544,8 +555,8 @@ object Form_jig: TForm_jig
     GroupIndex = 0
     AllowAllUp = False
   end
-  object jig_pocet_ks: TrEditNum
-    Left = 52
+  object Edit_jig_pocet_ks: TrEditNum
+    Left = 44
     Top = 122
     Width = 149
     Height = 28
@@ -646,8 +657,8 @@ object Form_jig: TForm_jig
     GroupIndex = 0
     AllowAllUp = False
   end
-  object jig_vyska: TrEditNum
-    Left = 227
+  object Edit_jig_vyska: TrEditNum
+    Left = 219
     Top = 122
     Width = 149
     Height = 28
@@ -661,8 +672,8 @@ object Form_jig: TForm_jig
     TabOrder = 5
     Value = 1.000000000000000000
   end
-  object rEditNum2: TrEditNum
-    Left = 52
+  object Edit_jig_sirka: TrEditNum
+    Left = 44
     Top = 202
     Width = 149
     Height = 28
@@ -676,8 +687,8 @@ object Form_jig: TForm_jig
     TabOrder = 6
     Value = 1.000000000000000000
   end
-  object rEditNum3: TrEditNum
-    Left = 227
+  object Edit_jig_delka: TrEditNum
+    Left = 219
     Top = 202
     Width = 149
     Height = 28
