@@ -200,7 +200,7 @@ void TForm1::edice()
 			//M	Button_vozik_parametry->Enabled=false;
 				DrawGrid_knihovna->Enabled=false;
 			//	Nastvitparametry1->Enabled=false;
-				Smazat1->Enabled=false;
+				//Smazat1->Enabled=false;
 
 				RzToolButton1->Enabled=false;
 				RzToolButton2->Enabled=false;
@@ -813,41 +813,6 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	rComboBoxKrok->Visible=false;
 	ComboBoxCekani->Visible=false;
 	Invalidate();
-}
-//---------------------------------------------------------------------------
-//událost při zobrazení pop-up menu zobrazuje a skrývá položky pop-up menu
-void __fastcall TForm1::PopupMenu1Popup(TObject *Sender)
-{
-	//dle modu
-	switch(MOD)
-	{
-		case SCHEMA:
-			Nastvitparametry1->Visible=true;
-			Smazat1->Visible=true;
-			Zobrazitparametry1->Visible=false;
-			Rychlexport1->Visible=false;
-			Posouvat2->Visible=true;
-			Posunout3->Visible=true;
-			Priblizit2->Visible=true;
-			Oddalit2->Visible=true;
-			Vybratoknem2->Visible=true;
-			break;
-		//case REZERVY:Zobrazitparametry1->Visible=false;break;
-		case CASOVAOSA:
-		{
-			Nastvitparametry1->Visible=false;
-			Smazat1->Visible=false;
-			// jinde Zobrazitparametry1->Visible=true;
-			Rychlexport1->Visible=true;
-			Posouvat2->Visible=true;
-			Posunout3->Visible=true;
-			Priblizit2->Visible=false;
-			Oddalit2->Visible=false;
-			Vybratoknem2->Visible=false;
-		}break;
-		case TECHNOPROCESY:break;
-		case SIMULACE:break;
-	}
 }
 //---------------------------------------------------------------------------
 //skryje či zobrazí mřížku

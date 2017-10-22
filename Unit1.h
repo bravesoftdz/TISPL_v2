@@ -96,20 +96,11 @@
 class TForm1 : public TForm
 {
 __published:	// IDE-managed Components
-	TPopupMenu *PopupMenu1;
 	TRzToolbar *RzToolbar1;
 	TRzStatusPane *RzStatusPane1;
-	TMenuItem *Nastvitparametry1;
-	TMenuItem *Smazat1;
 	TRzStatusPane *RzStatusPane3;
 	TRzStatusPane *RzStatusPane4;
 	TButton *Button1;
-	TMenuItem *N5;
-	TMenuItem *Priblizit2;
-	TMenuItem *Oddalit2;
-	TMenuItem *Posouvat2;
-	TMenuItem *Posunout3;
-	TMenuItem *Vybratoknem2;
 	TImageList *ImageList1;
 	TRzToolButton *RzToolButton1;
 	TRzToolButton *RzToolButton2;
@@ -148,8 +139,6 @@ __published:	// IDE-managed Components
 	TGanttSeries *Series1;
 	TBarSeries *Series5;
 	TBarSeries *Series6;
-	TMenuItem *Rychlexport1;
-	TMenuItem *Zobrazitparametry1;
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
 	TButton *ButtonPLAY;
@@ -231,7 +220,6 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch9;
 	TscLabel *scLabel19;
 	TscLabel *scLabel_ZOOM;
-	TMenuItem *Celpohled1;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
 	TscButton *scButton_ulozit;
@@ -333,7 +321,6 @@ __published:	// IDE-managed Components
 	void __fastcall CheckBoxPALCE_Click(TObject *Sender);
 	void __fastcall Chart1Click(TObject *Sender);
 	void __fastcall technologickprocesy1Click(TObject *Sender);
-	void __fastcall PopupMenu1Popup(TObject *Sender);
 	void __fastcall Zobrazitparametry1Click(TObject *Sender);
 	void __fastcall Rychlexport1Click(TObject *Sender);
 	void __fastcall MagnaClick(TObject *Sender);
