@@ -70,9 +70,6 @@ Coordinates=125,556,99,36
 [scGPTrackBar1]
 Coordinates=10,556,105,36
 
-[Posunout3]
-Coordinates=238,557,76,36
-
 [TeeGDIPlus4]
 Coordinates=139,557,91,36
 
@@ -88,20 +85,11 @@ Coordinates=952,10,59,58
 [FDQuery1]
 Coordinates=686,144,73,58
 
-[N5]
-Coordinates=0,329,40,36
-
 [Ulozit]
 Coordinates=1046,510,47,36
 
-[Smazat1]
-Coordinates=1135,1,65,36
-
 [OpenDialog1]
 Coordinates=1135,111,89,36
-
-[Nastvitparametry1]
-Coordinates=1135,166,119,36
 
 [Otevrit]
 Coordinates=983,510,53,36
@@ -109,20 +97,11 @@ Coordinates=983,510,53,36
 [Timer_backup]
 Coordinates=1135,221,96,36
 
-[Oddalit2]
-Coordinates=1135,276,63,36
-
-[PopupMenu1]
-Coordinates=1135,331,90,36
-
 [Label_wip]
 Coordinates=832,144,72,58
 
 [TeeGDIPlus2]
 Coordinates=1135,496,91,36
-
-[Priblizit2]
-Coordinates=1135,551,64,36
 
 [ButtonPLAY]
 Coordinates=510,10,84,58
@@ -141,9 +120,6 @@ Coordinates=617,144,59,58
 
 [CheckBox_pouzit_zadane_kapacity]
 Coordinates=301,212,218,58
-
-[Rychlexport1]
-Coordinates=353,631,90,36
 
 [NovySoubor]
 Coordinates=10,510,85,36
@@ -189,9 +165,6 @@ Coordinates=264,10,108,124
 
 [IdTime1]
 Coordinates=1297,606,61,36
-
-[Posouvat2]
-Coordinates=1297,661,75,36
 
 [Button10]
 Coordinates=225,212,66,58
@@ -262,9 +235,6 @@ Coordinates=10,10,117,124
 [PopupMenuButton]
 Coordinates=564,372,120,36
 
-[Zobrazitparametry1]
-Coordinates=1090,779,126,36
-
 [RzToolButton10]
 Coordinates=447,372,107,36
 
@@ -285,9 +255,6 @@ Coordinates=10,372,99,36
 
 [technologickprocesy1]
 Coordinates=941,326,138,36
-
-[Vybratoknem2]
-Coordinates=90,779,97,36
 
 [scGPButton1]
 Coordinates=841,326,90,36
@@ -332,7 +299,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=1032,221,91,36
+Coordinates=1135,331,90,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -406,9 +373,6 @@ Coordinates=1204,1,72,36
 
 [Memo2]
 Coordinates=35,153,64,58
-
-[Celpohled1]
-Coordinates=1204,56,80,36
 
 [scSplitView_MENU]
 Coordinates=1322,276,125,36
