@@ -802,7 +802,9 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			Form1->d.v.inicializace_cesty(zakazka);
 			for(int i=1;i<Form_cesty->rStringGridEd_cesty->RowCount;i++)
 			{
-		//	if(Form_cesty->rStringGridEd_cesty->Cells[7][i]!=Checked) {
+			//if(Form_cesty->rStringGridEd_cesty->Columns[7][i].) {
+
+							ShowMessage("uloz");
 
 					Form1->d.v.vloz_segment_cesty(zakazka,
 					/*sloupec poøadí se neukládá*/
@@ -813,7 +815,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 					Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble()
 					);
 
-			 //		}
+			 	 //	}
 			}
 		}
 	}
