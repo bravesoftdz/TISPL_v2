@@ -244,7 +244,7 @@ void Cgrafy::graf2() {
 
 	Form1->Series3->Marks->Visible = true;
 	// tohle se nezobrazi, nevim Form1->Series3->Marks->Text="text";
-	Cvektory::TSeznam_cest *ukaz = Form1->d.v.CESTY->dalsi;
+	Cvektory::TZakazka *ukaz = Form1->d.v.ZAKAZKY->dalsi;
 
 	//if (Form1->d.PROZATIM) //nefunguje pøi prvním prùchodu až pøi druhém...
 	//{
@@ -258,12 +258,12 @@ void Cgrafy::graf2() {
 		while (ukaz != NULL)
 		{
 
-		Form1->Series2->Add(Form1->PP.TT, ukaz->n,ukaz->barva);
+		Form1->Series2->Add(ukaz->TT, ukaz->n,ukaz->barva);
 
-		 if(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)!=Form1->PP.TT)
+		 if(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)!=ukaz->TT)
 		 {
-				Form1->Series3->Add(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)-Form1->PP.TT, ukaz->n,Form1->m.clIntensive(ukaz->barva,80));
-				Form1->Memo1->Lines->Add(AnsiString("Chyba - Uskuteènitelný TT: ") + Form1->d.v.vrat_AVG_TT_zakazky(ukaz) + AnsiString(" Požadovaný TT: ") + Form1->PP.TT + AnsiString(" = Zakázka èíslo: ") + ukaz->n);
+				Form1->Series3->Add(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)-ukaz->TT, ukaz->n,Form1->m.clIntensive(ukaz->barva,80));
+				Form1->Memo1->Lines->Add(AnsiString("Chyba - Uskuteènitelný TT: ") + Form1->d.v.vrat_AVG_TT_zakazky(ukaz) + AnsiString(" Požadovaný TT: ") + ukaz->TT + AnsiString(" = Zakázka èíslo: ") + ukaz->n);
 		 }
 
 			ukaz = ukaz->dalsi;
@@ -302,12 +302,12 @@ void Cgrafy::graf6() { // Kapacity
 	// Cvektory::TVozik *ukaz1 = Form1->d.v.VOZIKY->dalsi;
 	while (ukaz != NULL) {
 
-	if(ukaz->kapacita_objektu!=ukaz->dop_kapacita_objektu){
-		Form1->Series9->Add(ukaz->kapacita_objektu, ukaz->short_name,(TColor) RGB(0,128,255));
+	if(ukaz->kapacita!=ukaz->kapacita_dop){
+		Form1->Series9->Add(ukaz->kapacita, ukaz->short_name,(TColor) RGB(0,128,255));
 
-		Form1->Series10->Add(ukaz->dop_kapacita_objektu,"",Form1->m.clIntensive((TColor)RGB(0,128,255),80));
+		Form1->Series10->Add(ukaz->kapacita_dop,"",Form1->m.clIntensive((TColor)RGB(0,128,255),80));
 			}
-		if(ukaz->kapacita_objektu!=ukaz->dop_kapacita_objektu){
+		if(ukaz->kapacita!=ukaz->kapacita_dop){
 
 		//Form1->Memo1->Lines->Add(AnsiString("Varování - nastavená kapacita: ") + ukaz->kapacita_objektu + AnsiString(". Doporuèená kapacita: ") + ukaz->dop_kapacita_objektu + AnsiString(" - pro objekt: ") + ukaz->short_name);
 		}
@@ -347,7 +347,7 @@ void Cgrafy::graf3() {
 
 
 
-	Cvektory::TSeznam_cest *ukaz = Form1->d.v.CESTY->dalsi;
+	Cvektory::TZakazka *ukaz = Form1->d.v.ZAKAZKY->dalsi;
 	while (ukaz != NULL) {
 
 			Form1->Series5->Add(Form1->d.v.vrat_AVGsumPT_zakazky(ukaz), ukaz->n,ukaz->barva);
@@ -389,7 +389,7 @@ void Cgrafy::graf4() {
 	Form1->Chart4->Border->Color=clGreen;
 
 	// souèet technolog. èasù vs souèet prostojù dle zakázek
-	Cvektory::TSeznam_cest *ukaz = Form1->d.v.CESTY->dalsi;
+	Cvektory::TZakazka *ukaz = Form1->d.v.ZAKAZKY->dalsi;
 	// Cvektory::TVozik *ukaz1 = Form1->d.v.VOZIKY->dalsi;
 	while (ukaz != NULL) {
 
@@ -454,7 +454,7 @@ void Cgrafy::graf1() {
 			Form1->Chart1->Height;
 	}
 
-	Cvektory::TSeznam_cest *ukaz = Form1->d.v.CESTY->dalsi;
+	Cvektory::TZakazka *ukaz = Form1->d.v.ZAKAZKY->dalsi;
 	// ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
 	while (ukaz != NULL)
 	{

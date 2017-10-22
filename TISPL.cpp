@@ -5,14 +5,14 @@
 #include <tchar.h>
 //---------------------------------------------------------------------------
 USEFORM("superform.cpp", Form_definice_zakazek);
-USEFORM("eDesigner.cpp", Form_eDesigner);
-USEFORM("parametry_linky.cpp", Form_parametry_linky);
 USEFORM("popUP_menu.cpp", PopUPmenu);
+USEFORM("parametry.cpp", Form_parametry);
+USEFORM("parametry_linky.cpp", Form_parametry_linky);
 USEFORM("uvod.cpp", Form_uvod);
 USEFORM("Unit1.cpp", Form1);
+USEFORM("eDesigner.cpp", Form_eDesigner);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("cesty.cpp", Form_cesty);
-USEFORM("parametry.cpp", Form_parametry);
 USEFORM("MyMessageBox.cpp", myMessageBox);
 USEFORM("kalendar.cpp", Form_kalendar);
 //---------------------------------------------------------------------------

@@ -401,462 +401,466 @@ void Cvykresli::vykresli_grid(TCanvas *canv, int size_grid)
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-//////celkové vykreslení módu časové osy - MaRO algoritmus
-//void Cvykresli::vykresli_casove_osy(TCanvas *canv)
-//{
-//	if(!mod_vytizenost_objektu)
-//	{
-//	v.vymazat_casovou_obsazenost_objektu_a_pozice_voziku(v.OBJEKTY,v.VOZIKY);//vymaže předchozí časovou obsazenost objektů, jinak by se při každém dalším překreslení objekty posovali o obsazenost z předchozího vykreslení
-//	if(PROZATIM)v.vymaz_seznam_procesu();
-//	if(PROZATIM)v.hlavicka_procesy();//vymaže uložené procesy //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//
-//	//KrokY;//vizuální rozteč na ose Y mezi jednotlivými vozíky  zadáno globálně
-//	double X=0;//výchozí odsazení na ose X
-//
-//	long Y=KrokY/*+Form1->RzToolbar1->Height*/;
-//	Cvektory::TSeznam_cest *SC=v.CESTY->dalsi;
-//	while(SC!=NULL)//jde po seznamu cest, po zakázkách
-//	{
-//			long Yloc;
-//			Cvektory::TCesta *C=SC->cesta->dalsi;
-//			while(C!=NULL)//jde po konkrétní cestě
-//			{
-//					Yloc=Y;
-//					unsigned int n=0;//pořádí v rámci zakázky
-//					Cvektory::TVozik *vozik=v.VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-//					while (vozik!=NULL)//jede po konkrétních vozíkách, které řeší jenom konkréttní cestu
-//					{
-//						if(vozik->cesta->n==SC->n)//řeší jenom pro konrétní cestu, pokud tedy vozík odpovídá aktuální zakázce
+////celkové vykreslení módu časové osy - MaRO algoritmus
+void Cvykresli::vykresli_casove_osy(TCanvas *canv)
+{
+	if(!mod_vytizenost_objektu)
+	{
+		//nastavení do výchozí stavu, zajištěno pro nový
+		v.vymazat_casovou_obsazenost_objektu_a_pozice_voziku(v.OBJEKTY,v.VOZIKY);//vymaže předchozí časovou obsazenost objektů, jinak by se při každém dalším překreslení objekty posovali o obsazenost z předchozího vykreslení
+		if(!JIZPOCITANO)v.vymaz_seznam_procesu();
+		if(!JIZPOCITANO)v.hlavicka_procesy();//vymaže uložené procesy //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+
+		double X=0;//výchozí odsazení na ose X
+		//KrokY je vizuální rozteč na ose Y mezi jednotlivými vozíky zadáno globálně, kvůli jednotlivým krokům
+		long Y=Form1->scGPPanel_mainmenu->Height+5;//+5 pouze grafická korekce
+		Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
+		while(Z!=NULL)//jde po zakázkách
+		{
+			long Yloc;
+			Cvektory::TCesta *C=Z->cesta->dalsi;
+			while(C!=NULL)//jde po konkrétní cestě
+			{
+				Yloc=Y;
+				unsigned int n=0;//pořádí v rámci zakázky
+				Cvektory::TVozik *vozik=v.VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+				while (vozik!=NULL)//jde po pořadí vozíků, které řeší jenom konkrétní cestu dané zakázky
+				{
+					if(vozik->zakazka->n==Z->n)//řeší jenom pro konrétní cestu, pokud tedy vozík odpovídá aktuální zakázce
+					{
+						if(vozik->pozice==-1)vozik->pozice=0;//protože implicitní hodnota pozice vozíku==-1 z důvodu mimo linku, 0 na začátku
+
+						////nastvení počáteční pozice objektu na časové ose daného vozíku
+						if(C->objekt->rezim==0 && vozik->pozice<=C->objekt->obsazenost)X=C->objekt->obsazenost;//zohlednění obsazenost objektu v režimu S&G
+						else X=vozik->pozice;//pro ostatní režimy
+
+						////uložení hodnot pro další využítí
+						if(C->n==1)vozik->start=X;//uloží výchozí X hodnotu, prvního objektu pro daný vozík
+						double X_predchozi=X;//uloží povodní X hodnotu
+
+						////BUFFER vykreslení a uložení buffer pokud předchází
+						if(vozik->pozice<X && vozik->pozice>0)
+						vykresli_proces(canv,"BUF - "+C->predchozi->objekt->short_name,m.clIntensive(vozik->zakazka->barva,80),4,vozik->pozice-PosunT.x,X-PosunT.x,Yloc-PosunT.y);
+						//Nefunguje zatím správněCvektory::TProces *P=new Cvektory::TProces;
+						//P->n_v_zakazce=n+1;P->Tpoc=vozik->pozice-PosunT.x/PX2MIN;P->Tkon=X-PosunT.x/PX2MIN;P->Tdor=P->Tkon;P->Tpre=P->Tkon;P->Tcek=P->Tkon;P->cesta=C;P->vozik=vozik;
+						//v.vloz_proces(P);
+
+						////čekání na čištění pistole a výměnu barev včetně čekání
+//						if(Form1->FileName.Pos("magna.tispl") && Form1->CheckBoxVymena_barev->Checked && (C->objekt->short_name.Pos("PRI") || C->objekt->short_name.Pos("BC") || C->objekt->short_name.Pos("CC")))
 //						{
-//							if(vozik->pozice==-1)vozik->pozice=0;//protože implicitní hodnota pozice vozíku==-1
+//								short n_cisteni=0;//po kolika vozících
+//								double T_cisteni=0;//s čištění
+//								double T_vymena=0;//min vyměna
+//								if(C->objekt->short_name=="PRI"){n_cisteni=10;T_cisteni=88/60.0;T_vymena=T_cisteni+266/60.0;}
+//								if(C->objekt->short_name=="BC"){n_cisteni=10;T_cisteni=40/60.0;T_vymena=T_cisteni+112/60.0;}
+//								if(C->objekt->short_name=="CC"){n_cisteni=10;T_cisteni=88/60.0;T_vymena=T_cisteni+266/60.0;}
 //
-//							////nastvení počáteční pozice objektu na časové ose daného vozíku
-//							if(C->objekt->rezim==0 && vozik->pozice<=C->objekt->obsazenost)X=C->objekt->obsazenost;//zohlednění obsazenost objektu v režimu S&G
-//							else X=vozik->pozice;//pro ostatní režimy
-//
-//							////uložení hodnot pro další využítí
-//							if(C->n==1)vozik->start=X;//uloží výchozí X hodnotu, prvního objektu pro daný vozík
-//							double X_predchozi=X;//uloží povodní X hodnotu
-//
-//							////BUFFER vykreslení a uložení buffer pokud předchází
-//							if(vozik->pozice<X && vozik->pozice>0)
-//							vykresli_proces(canv,"BUF - "+C->predchozi->objekt->short_name,m.clIntensive(vozik->barva,80),4,vozik->pozice-PosunT.x,X-PosunT.x,Yloc-PosunT.y);
-//							//Nefunguje zatím správněCvektory::TProces *P=new Cvektory::TProces;
-//							//P->n_v_zakazce=n+1;P->Tpoc=vozik->pozice-PosunT.x/PX2MIN;P->Tkon=X-PosunT.x/PX2MIN;P->Tdor=P->Tkon;P->Tpre=P->Tkon;P->Tcek=P->Tkon;P->cesta=C;P->vozik=vozik;
-//							//v.vloz_proces(P);
-//
-//							//čekání na čištění pistole a výměnu barev včetně čekání
-//							if(Form1->FileName.Pos("magna.tispl") && Form1->CheckBoxVymena_barev->Checked && (C->objekt->short_name.Pos("PRI") || C->objekt->short_name.Pos("BC") || C->objekt->short_name.Pos("CC")))
-//							{
-//									short n_cisteni=0;//po kolika vozících
-//									double T_cisteni=0;//s čištění
-//									double T_vymena=0;//min vyměna
-//									if(C->objekt->short_name=="PRI"){n_cisteni=10;T_cisteni=88/60.0;T_vymena=T_cisteni+266/60.0;}
-//									if(C->objekt->short_name=="BC"){n_cisteni=10;T_cisteni=40/60.0;T_vymena=T_cisteni+112/60.0;}
-//									if(C->objekt->short_name=="CC"){n_cisteni=10;T_cisteni=88/60.0;T_vymena=T_cisteni+266/60.0;}
-//
-//									if(n%n_cisteni==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
-//									{
-//										vykresli_proces(canv,"Č",m.clIntensive(vozik->barva,-20),5,X-PosunT.x,X+T_cisteni*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//										X+=T_cisteni*PX2MIN;
-//									}
-//									if(n==0 && SC->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
-//									{
-//										vykresli_proces(canv,"V+Č",m.clIntensive(vozik->barva,-40),4,X-PosunT.x,X+T_vymena*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//										X+=T_vymena*PX2MIN;
-//									}
-//									X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
-//							}
-//							if(Form1->FileName.Pos("extreme.tispl") && Form1->CheckBoxVymena_barev->Checked && C->objekt->short_name=="LAK")
-//							{
-//									short n_cisteni=2;//po kolika vozících
-//									double T_cisteni=50/60.0;//50s čištění
-//									double T_vymena=240/60.0;//4 min čištění
-//									if(n%n_cisteni==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
-//									{
-//										vykresli_proces(canv,"Č",m.clIntensive(vozik->barva,-20),5,X-PosunT.x,X+T_cisteni*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//										X+=T_cisteni*PX2MIN;
-//									}
-//									if(n==0 && SC->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
-//									{
-//										vykresli_proces(canv,"V+Č",m.clIntensive(vozik->barva,-40),4,X-PosunT.x,X+T_vymena*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//										X+=T_vymena*PX2MIN;
-//									}
-//									X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
-//							}
-//
-//							////vykreslení procesu (jednoho obdelníčku "v plavecké dráze") včetně výpočtu koncové pozice a uložení dílčích hodnot
-//							X=proces(canv,++n,X_predchozi,X,Yloc,C,vozik);
-//
-//							//posunutí na ose Y na další vozík
-//							Yloc+=KrokY;
+//								if(n%n_cisteni==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
+//								{
+//									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+T_cisteni*PX2MIN-PosunT.x,Yloc-PosunT.y);
+//									X+=T_cisteni*PX2MIN;
+//								}
+//								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
+//								{
+//									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+T_vymena*PX2MIN-PosunT.x,Yloc-PosunT.y);
+//									X+=T_vymena*PX2MIN;
+//								}
+//								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
 //						}
-//						///vypis mezivozíkového TAKTIMU (pokud se jedná vozíky od dané cesty (bacha, prochází se všechny) a zároveň pokud se jedná o poslední proces vozíku (např. svě) a nejedná o zcela první vozík
-//						if(vozik->cesta->n==SC->n && C->dalsi==NULL && vozik->n!=1)
+//						if(Form1->FileName.Pos("extreme.tispl") && Form1->CheckBoxVymena_barev->Checked && C->objekt->short_name=="LAK")
 //						{
-//							vypis_mezivozikovy_takt(canv,vozik,X,Yloc);
-//							vypis_mezivozikovy_takt(canv,vozik,X,2.5*KrokY,true);
+//								short n_cisteni=2;//po kolika vozících
+//								double T_cisteni=50/60.0;//50s čištění
+//								double T_vymena=240/60.0;//4 min čištění
+//								if(n%n_cisteni==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
+//								{
+//									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+T_cisteni*PX2MIN-PosunT.x,Yloc-PosunT.y);
+//									X+=T_cisteni*PX2MIN;
+//								}
+//								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
+//								{
+//									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+T_vymena*PX2MIN-PosunT.x,Yloc-PosunT.y);
+//									X+=T_vymena*PX2MIN;
+//								}
+//								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
 //						}
-//						///-
-//						vozik=vozik->dalsi;//posun na další prvek v seznamu vozíků
-//					}
-//					C=C->dalsi;//posun na další prvek v seznamu segmentu cesty, jde po cestě
-//			}
-//			SC=SC->dalsi;//posun na další prvek v seznamu CEST, jde po cestách-zakázakách
-//			Y=Yloc;
-//			delete C;
-//	}
-//	delete SC;
-//	//výpočet hodnot kapacit pro další využítí (grafy, ROMA atd.)
-//	if(PROZATIM)v.uloz_doporucene_kapacity_objetku();
-//	//hodnoty pro další grafické použití či nastavení
-//	WidthCanvasCasoveOsy=m.round(X);//uchová velikost nejdelší osy, pro použítí pro export canvasu do rastru
-//	HeightCanvasCasoveOsy=Y-KrokY/2;//uchová výšku grafu
-//	if(Form1->grid)vykresli_Xosy(canv);//vykreslí statické svislice na časové osy pokud je aktivovaná mřížka
-//	Form1->g.ShowGrafy(true);
-//	PROZATIM=false;//už se nebude ukladat proces znovu, není třeba
-//	}
-//	else
-//	{
-//			vykresli_vytizenost_objektu(canv);
-//			if(Form1->grid)vykresli_Xosy(canv);
-//	}
-//}
+
+						////vykreslení procesu (jednoho obdelníčku "v plavecké dráze") včetně výpočtu koncové pozice a uložení dílčích hodnot
+						X=proces(canv,++n,X_predchozi,X,Yloc,C,vozik);
+
+						//posunutí na ose Y na další vozík
+						Yloc+=KrokY;
+					}
+
+					///vypis mezivozíkového TAKTIMU (pokud se jedná vozíky od dané cesty (bacha, prochází se všechny) a zároveň pokud se jedná o poslední proces vozíku (např. svě) a nejedná o zcela první vozík
+					if(vozik->zakazka->n==Z->n && C->dalsi==NULL && vozik->n!=1)
+					{
+						vypis_mezivozikovy_takt(canv,vozik,X,Yloc);
+						vypis_mezivozikovy_takt(canv,vozik,X,2.5*KrokY,true);
+					}
+					///-
+
+					vozik=vozik->dalsi;//posun na další prvek v seznamu vozíků
+				}
+				C=C->dalsi;//posun na další prvek v seznamu segmentů cesty, jde po cestě
+			}
+			Z=Z->dalsi;//posun na další prvek v seznamu CEST, jde po cestách-zakázakách
+			Y=Yloc;
+			delete C;
+		}
+		delete Z;
+		//výpočet hodnot kapacit pro další využítí (pro grafy, ROMA atd.)
+		if(!JIZPOCITANO)v.uloz_doporucene_kapacity_objetku();
+		//hodnoty pro další grafické použití či nastavení
+		WidthCanvasCasoveOsy=m.round(X);//uchová velikost nejdelší osy, pro použítí pro export canvasu do rastru
+		HeightCanvasCasoveOsy=Y-KrokY/2;//uchová výšku grafu
+		if(Form1->grid)vykresli_Xosy(canv);//vykreslí statické svislice na časové osy pokud je aktivovaná mřížka
+		Form1->g.ShowGrafy(true);
+		JIZPOCITANO=true;//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba
+	}
+	else
+	{
+		vykresli_vytizenost_objektu(canv);
+		if(Form1->grid)vykresli_Xosy(canv);
+	}
+}
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-////vypočítá konec procesu (odbdelníčku)
-//double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, double X, int Y, Cvektory::TCesta *C,Cvektory::TVozik *vozik)
-//{
-//	 double D=C->RD;//rychlost dopravníku
-//	 double R=C->R;//rozteč palců
-//
-//	 //uložení hodnot pro zcela další použítí
-//	 Cvektory::TProces *P=new Cvektory::TProces;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 P->n_v_zakazce=n;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 P->cesta=C;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 P->vozik=vozik;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 P->Tpoc=X_predchozi/PX2MIN;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//
-//	 //standardní situace
-//	 X+=C->CT*PX2MIN;
-//	 vykresli_proces(canv,C->objekt->short_name,vozik->barva,0,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-//	 P->Tkon=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 // nestandardní - nelogická situace, pokud bude čas procesu včetně času přejezdu vozíkukratší než u totožného přechozího objektu (vozíky např. v rámci CO2 se nemohou předbíhat), přičte se i tato vzdálenost (vykresleno šrafovaně)
-//	 if(X < C->objekt->obsazenost+m.prejezd_voziku(vozik->delka,D)*PX2MIN)
-//	 {
-//			//dorovnání na čas předchozího vozíku, je-li to nutné
-//			X_predchozi=X;//uloží povodní X hodnotu
-//			X=C->objekt->obsazenost;
-//			vykresli_proces(canv,C->objekt->short_name,vozik->barva,1,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-//			P->Tdor=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//			//cas_prekonani_zpozdeni_o_min_delku_jednoho_voziku
-//			X_predchozi=X;//uloží povodní X hodnotu
-//			X+=m.prejezd_voziku(vozik->delka,D)*PX2MIN;
-//			vykresli_proces(canv,C->objekt->short_name,vozik->barva,2,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-//			P->Tpre=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 }
-//	 else//pokud situace NEnastane, tak ošetření proti tomu, aby se neukládaly náhodného hodnoty
-//	 {
-//		 P->Tdor=X/PX2MIN;
-//		 P->Tpre=X/PX2MIN;
-//   }
-//	 X_predchozi=X;
-//
-//	 //PALCE - posun o čekání na palce
-//	 if(Form1->CheckBoxPALCE->Checked && //pokud je požadováno v menu
-//	 (
-//			C->objekt->rezim==0 ||//je to po S&G nebo
-//			(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && D!=C->predchozi->RD)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
-//      (C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)//PP->K
-//	 )
-//	 )   //tady místo 0 doplní rosta Form1->Checkbox-nazev->ItemIndex
-//	 X+=m.cekani_na_palec(X/PX2MIN+C->CT,R,D,Form1->ComboBoxCekani->ItemIndex)*PX2MIN;
-//	 //--
-//
-//	 if(X_predchozi!=X)vykresli_proces(canv,C->objekt->short_name,vozik->barva,3,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-//	 //uložení hodnot pro další použití (v dalších kolech)
-//	 C->objekt->obsazenost=X;//nahraje koncovou X hodnotu do obsaženosti objektu pro další využítí
-//	 vozik->pozice=X;//uložení pro další použítý vozík
-//	 P->Tcek=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 if(PROZATIM)
-//	 v.vloz_proces(P); //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 else {delete P; P=NULL;}
-//
-//	 return X;
-//}
+//vypočítá konec procesu (odbdelníčku)
+double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, double X, int Y, Cvektory::TCesta *C/*segment cesty*/,Cvektory::TVozik *vozik)
+{
+	 double D=C->RD;//rychlost dopravníku
+	 double R=C->objekt->pohon->roztec;//rozteč palců
+
+	 //uložení hodnot pro zcela další použítí
+	 Cvektory::TProces *P=new Cvektory::TProces;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 P->n_v_zakazce=n;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 P->segment_cesty=C;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 P->vozik=vozik;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 P->Tpoc=X_predchozi/PX2MIN;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+
+	 //standardní situace
+	 X+=C->CT*PX2MIN;
+	 vykresli_proces(canv,C->objekt->short_name,vozik->zakazka->barva,0,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+	 P->Tkon=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 // nestandardní - nelogická situace, pokud bude čas procesu včetně času přejezdu vozíkukratší než u totožného přechozího objektu (vozíky např. v rámci CO2 se nemohou předbíhat), přičte se i tato vzdálenost (vykresleno šrafovaně)
+	 double DcS=vozik->zakazka->jig.delka;/*!!!tady dořešit co se kdy zadá!!!*/
+	 if(X < C->objekt->obsazenost+m.prejezd_voziku(DcS,D)*PX2MIN)
+	 {
+			//dorovnání na čas předchozího vozíku, je-li to nutné
+			X_predchozi=X;//uloží povodní X hodnotu
+			X=C->objekt->obsazenost;
+			vykresli_proces(canv,C->objekt->short_name,vozik->zakazka->barva,1,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+			P->Tdor=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+			//cas_prekonani_zpozdeni_o_min_delku_jednoho_voziku
+			X_predchozi=X;//uloží povodní X hodnotu
+			X+=m.prejezd_voziku(DcS,D)*PX2MIN;
+			vykresli_proces(canv,C->objekt->short_name,vozik->zakazka->barva,2,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+			P->Tpre=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 }
+	 else//pokud situace NEnastane, tak ošetření proti tomu, aby se neukládaly náhodného hodnoty
+	 {
+		 P->Tdor=X/PX2MIN;
+		 P->Tpre=X/PX2MIN;
+   }
+	 X_predchozi=X;
+
+	 //PALCE - posun o čekání na palce
+	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
+			 (
+					C->objekt->rezim==0 ||//je to po S&G nebo
+					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && D!=C->predchozi->RD)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
+					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)//PP->K
+			 )
+	 )   //tady místo 0 doplní rosta Form1->Checkbox-nazev->ItemIndex
+	 X+=m.cekani_na_palec(X/PX2MIN+C->CT,R,D,Form1->ComboBoxCekani->ItemIndex)*PX2MIN;
+	 //--
+
+	 if(X_predchozi!=X)vykresli_proces(canv,C->objekt->short_name,vozik->zakazka->barva,3,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+	 //uložení hodnot pro další použití (v dalších kolech)
+	 C->objekt->obsazenost=X;//nahraje koncovou X hodnotu do obsaženosti objektu pro další využítí
+	 vozik->pozice=X;//uložení pro další použítý vozík
+	 P->Tcek=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 if(!JIZPOCITANO)
+	 v.vloz_proces(P); //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 else {delete P; P=NULL;}
+
+	 return X;
+}
+//---------------------------------------------------------------------------
+//vykreslí jeden dílčí časový proces (obdelníček procesu objektu) pro jeden vozík, vytaženo pouze kvůli přehlednosti
+void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor color, short typ, long X1, long X2, long Y)
+{
+	////osa
+	//set_pen(canv,color,2);//nastavení pera barvy osy
+	canv->Pen->Width=1;
+	canv->Pen->Mode=pmCopy;
+	canv->Pen->Style=psSolid;
+	canv->Brush->Color=color;
+	switch(typ)
+	{
+			case 0: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;break;//pro typ: normální proces
+			case 1: canv->Brush->Style=bsDiagCross;canv->Pen->Color=color;break;//pro typ: doplněný o konec na čekání na proces totožný předchozí
+			case 2: canv->Brush->Style=bsCross;canv->Pen->Color=color;break;//pro typ: nutná doba přejezdu vozíku
+			case 3: canv->Brush->Style=bsVertical;canv->Pen->Color=color;break;//pro typ: doba čekání na palec
+			case 4: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//pmNotXor;/*zajistí vykreslení procesu transparentně*/break;//pro typ: obsazenost procesu či buffer
+			case 5: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//výměna barev či čištění pistole
+	}
+	//samotný obdelníček
+	canv->Rectangle(X1,Y-KrokY/2,X2+1,Y+KrokY/2);//X2+1 pouze grafická záležitost - zmenšení mezery
+	//následující musí být mimo switch kvůli pořadí vykreslování po rectanglu
+	if(typ==4)//v případě bufferu vykreslení svislice přemaskující bílý spoj, tím se buffer napojí na předchozí objekt
+	{
+		canv->Pen->Color=color;
+		canv->MoveTo(X1,Y-KrokY/2+1);canv->LineTo(X1,Y+KrokY/2-1);//+-1 grafická vyfikundace
+	}
+
+	////popisek
+	//normal 0    buffer který má popisek menší než délku obdelničku
+	if(typ==0 /*|| (typ==4 && canv->TextWidth(shortname)<X2-X1)*/)
+	{
+			SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
+			//if(color!=clBlack)canv->Font->Color=clBlack;else canv->Font->Color=clWhite;//pokud je výplň obdelníčku černě, tak popisek bude bíle
+			canv->Font->Color=clWhite;
+			canv->Font->Size=9;
+			canv->Font->Name="Arial";
+			canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+			canv->TextOutW(((X2+X1)/2)-canv->TextWidth(shortname)/2,Y-canv->TextHeight(shortname)/2,shortname);//vypíše vycentrovaný (polovina nových a starých souřadnic a posun referenčního písma o horizontálně=TextWidth/2 a verticálně=TextHeight/2) popisek shorname t-objektu
+	}
+}
+//---------------------------------------------------------------------------
+//textový výpis a kóta mezivozíkového taktu, pouze pro zpřehlednění zapisu samostatně
+void Cvykresli::vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik,double X,long Y,bool index)
+{
+		long X1=Form1->m.round(vozik->predchozi->pozice-PosunT.x);
+		long X2=Form1->m.round(X-PosunT.x);
+		short S=2;//size
+		//short O=0;//offset
+		double Y0=Y-KrokY*2-PosunT.y; //-3 pouze grafické korekce
+
+		////vykreslení kóty
+		//linie
+		canv->Pen->Width=1;
+		canv->Pen->Color=vozik->zakazka->barva;
+		canv->MoveTo(X1,Y0);
+		canv->LineTo(X2,Y0);
+		//šipky
+		POINT bodyL[3]={{X1+S,Y0-S},{X1,Y0},{X1+S,Y0+S}};
+		POINT bodyP[3]={{X2-S,Y0-S},{X2,Y0},{X2-S,Y0+S}};
+		canv->Polygon((TPoint*)bodyL,2);
+		canv->Polygon((TPoint*)bodyP,2);
+		//spojovací linie k následujícímu vozíku
+		if(!index)
+		{
+			canv->MoveTo(X2,Y0);
+			canv->LineTo(X2,Y0+KrokY/2);
+		}
+		////text
+		SetBkMode(canv->Handle,TRANSPARENT);
+		canv->Font->Color=vozik->zakazka->barva;
+		canv->Font->Size=9;
+		canv->Font->Name="Arial";
+		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+		AnsiString T="";
+		if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0)+" min";
+		else T=AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0);
+		canv->TextOut((X1+X2)/2-canv->TextWidth(T)/2,Y0-canv->TextHeight(T),T);
+}
+//---------------------------------------------------------------------------
+//vykreslí pohyblivou svislici na časové osy dle umístění kurzoru myši
+void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y)
+{
+	if(X!=-200)//pokud je mimo obraz -200 jen nahodilá hodnota pro zneplatenění čí výchozí obraz
+	{
+		canv->Pen->Mode=pmNotXor;
+		canv->Pen->Width=1;
+		canv->Pen->Style=psDashDot;//nastevení čarkované čáry
+		canv->Pen->Color=clGray;
+		canv->Brush->Style=bsClear;
+		//svislice
+		canv->MoveTo(X,Form1->RzToolbar1->Height);
+		canv->LineTo(X,Form1->ClientHeight);
+		//vodorovna
+		if(!mod_vytizenost_objektu)//při modu vytížení objektů se nezobrazí
+		{
+			canv->MoveTo(0,Y);
+			canv->LineTo(Form1->ClientWidth,Y);
+			canv->Brush->Style=bsSolid;//vracím raději do původního stavu
+			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->RzToolbar1->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+			if(V<=v.VOZIKY->predchozi->n)Form1->SB("Vozík: "+AnsiString(V));
+			else Form1->SB("");//pokud je už mimo oblast
+		}
+	}
+}
+//---------------------------------------------------------------------------
+//vypíše labal zaměřovač na pozici kurzoru myši
+void Cvykresli::zobrazit_label_zamerovac(int X,int Y)
+{
+	unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+	if(!mod_vytizenost_objektu && 0<V && V<=v.VOZIKY->predchozi->n) //pokud se nejedná o řežim vytíženost objektu a zároveň se jedná o číslo vozík od min do max vozíků
+	{
+				Form1->Label_zamerovac->Transparent=false;
+				Form1->Label_zamerovac->Color=clWhite;
+				Form1->Label_zamerovac->Font->Color=(TColor) RGB(100,100,100);
+				Form1->Label_zamerovac->Left=X+5; Form1->Label_zamerovac->Top=Y+20; //+ odsazení
+				Form1->Label_zamerovac->Caption=" vozík: "+AnsiString(V)+" \n min: "+AnsiString((X+PosunT.x)/PX2MIN)+" ";
+				Form1->Label_zamerovac->Visible=true;
+	}
+	else Form1->Label_zamerovac->Visible=false;
+}
+//---------------------------------------------------------------------------
+//vykreslí statické svislice na časové osy
+void Cvykresli::vykresli_Xosy(TCanvas *canv)
+{
+	canv->Pen->Mode=pmNotXor;
+	canv->Pen->Width=1;    //nastavení šířky pera
+	canv->Pen->Style=psDot;
+	canv->Pen->Color=TColor RGB(200,200,200);   //míchání světlě šedé
+	canv->Brush->Style=bsClear;
+	canv->Font->Color=clGray;
+	canv->Font->Size=9;
+	canv->Font->Name="Arial";
+	canv->Font->Style = TFontStyles();
+	canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
+	canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
+	short o=1;
+	short oY=5;//5 pouze grafická korekce
+	if(PosunT.x>10)o=-30;
+	if(!mod_vytizenost_objektu)canv->TextOutW(o-PosunT.x,0,"voz|min"); //popisek osy x
+	else canv->TextOutW(o-PosunT.x,0,"obj|min"); //popisek osy x
+
+	//svislice po dvou minutách
+	int start=PX2MIN*2;if(PosunT.x>0)start=0;
+	for(int i=start;i<=WidthCanvasCasoveOsy;i+=PX2MIN*2)//po dvou minutách
+	{
+		canv->MoveTo(i-PosunT.x,oY);
+		canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy-1);//-1 pouze optická korekce
+		canv->Brush->Style=bsSolid;
+		canv->Brush->Color=clWhite;
+		canv->TextOutW(i-canv->TextWidth(i/PX2MIN)/2-PosunT.x,oY,i/PX2MIN);
+	}
+
+	if(!mod_vytizenost_objektu)
+	{
+			//vodorovné číslování vozíků
+			canv->Brush->Style=bsSolid;
+			canv->Font->Style=TFontStyles()<< fsBold;
+			canv->Font->Color=clWhite;
+			Cvektory::TVozik *voz=v.VOZIKY->dalsi;
+			while(voz!=NULL)
+			{
+				canv->Brush->Color=voz->zakazka->barva;
+				canv->TextOutW(0,voz->n*KrokY-canv->TextHeight(voz->n)/2-PosunT.y,voz->n);
+				voz=voz->dalsi;
+			}
+
+			//začátky a konce zakázek
+			Cvektory::TZakazka *ukaz=v.ZAKAZKY->dalsi;
+			int konec=KrokY;
+			while (ukaz!=NULL)//projede všechny zakázky, cesty
+			{
+				TPointD RET=v.vrat_zacatek_a_konec_zakazky(ukaz);
+				konec+=v.vrat_pocet_voziku_zakazky(ukaz)*KrokY;
+				canv->Pen->Color=ukaz->barva;
+				canv->Pen->Style=psSolid;
+				canv->Pen->Width=2;
+				canv->Brush->Style=bsSolid;
+				canv->Brush->Color=clWhite;
+				if(RET.x>0)//x - plete, jedná se jen o začátek
+				{
+					canv->MoveTo(RET.x*PX2MIN-PosunT.x,oY);
+					canv->LineTo(RET.x*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
+				}
+				if(RET.y>0)//y - plete, jedná se jen o konec
+				{
+					canv->MoveTo(RET.y*PX2MIN-PosunT.x,oY);
+					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
+				}
+				canv->Brush->Style=bsSolid;
+				canv->Brush->Color=ukaz->barva;
+				canv->Font->Style=TFontStyles()<< fsBold;
+				canv->Font->Color=clWhite;
+				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,oY,RET.x);//zobrazuje pouze větší než začátek obrazovky
+				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,oY,RET.y);//zobrazuje pouze větší než začátek obrazovky
+				ukaz=ukaz->dalsi;
+			}
+	}
+}
+//---------------------------------------------------------------------------
+void Cvykresli::vykresli_vytizenost_objektu(TCanvas *canv)
+{
+	int Y=KrokY+Form1->RzToolbar1->Height;
+	Cvektory::TObjekt *ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	while (ukaz!=NULL)
+	{                      //záměrné nadhodnocení kvůli hledání minima
+		int Pocatek=v.PROCESY->predchozi->Tcek-PosunT.x;int Konec=0-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
+		Cvektory::TProces *P=v.PROCESY->dalsi;
+		double X=0;
+		while (P!=NULL)
+		{
+			if(ukaz==P->segment_cesty->objekt)
+			{
+				if(P->segment_cesty->objekt->kapacita_dop==1 || NOLIEX==0)vykresli_proces(canv,"",P->vozik->zakazka->barva,4,P->Tpoc*PX2MIN-PosunT.x,P->Tcek*PX2MIN-PosunT.x,Y-Form1->RzToolbar1->Height-PosunT.y);//pro jednokapacitní vytíženost vykreslení přímo maximální, popř. pokud není požadováno vykreslení intenzity
+				else vytizenost_procesu(canv,P,X,Y-Form1->RzToolbar1->Height); //pro vícekapacitně včetně škály vytíženosti, pokud je požadována
+				if(Pocatek>P->Tpoc*PX2MIN-PosunT.x)Pocatek=P->Tpoc*PX2MIN-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
+				if(Konec<P->Tcek*PX2MIN-PosunT.x)Konec=P->Tcek*PX2MIN-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
+			}
+			P=P->dalsi;
+		};
+
+		//vycentrovaný popisek v rámci objektu
+		SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);//nastvení transparentního pozadí
+		canv->Font->Color=clWhite;
+		canv->Font->Size=8;
+		canv->Font->Name="Arial";
+		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+		canv->TextOutW(((Konec+Pocatek)/2)-canv->TextWidth(ukaz->name.UpperCase())/2,Y-PosunT.y-canv->TextHeight(ukaz->name.UpperCase())/2,ukaz->name.UpperCase());//vypíše vycentrovaný (polovina nových a starých souřadnic a posun referenčního písma o horizontálně=TextWidth/2 a verticálně=TextHeight/2) popisek shorname t-objektu
+
+		//vodorovné popisování objektů
+		canv->Brush->Style=bsSolid;
+		canv->Brush->Color=clGray;
+		canv->TextOutW(0,Y-canv->TextHeight(ukaz->short_name)/2-Form1->RzToolbar1->Height-PosunT.y,ukaz->short_name);
+
+		ukaz=ukaz->dalsi;
+		Y+=KrokY+2;//+2 pouze grafické odsazení pro všechny objekty mimo prvního
+	}
+}
 ////---------------------------------------------------------------------------
-////vykreslí jeden dílčí časový proces (obdelníček procesu objektu) pro jeden vozík, vytaženo pouze kvůli přehlednosti
-//void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor color, short typ, long X1, long X2, long Y)
-//{
-//	////osa
-//	//set_pen(canv,color,2);//nastavení pera barvy osy
-//	canv->Pen->Width=1;
-//	canv->Pen->Mode=pmCopy;
-//	canv->Pen->Style=psSolid;
-//	canv->Brush->Color=color;
-//	switch(typ)
-//	{
-//			case 0: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;break;//pro typ: normální proces
-//			case 1: canv->Brush->Style=bsDiagCross;canv->Pen->Color=color;break;//pro typ: doplněný o konec na čekání na proces totožný předchozí
-//			case 2: canv->Brush->Style=bsCross;canv->Pen->Color=color;break;//pro typ: nutná doba přejezdu vozíku
-//			case 3: canv->Brush->Style=bsVertical;canv->Pen->Color=color;break;//pro typ: doba čekání na palec
-//			case 4: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//pmNotXor;/*zajistí vykreslení procesu transparentně*/break;//pro typ: obsazenost procesu či buffer
-//			case 5: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//výměna barev či čištění pistole
-//	}
-//	//samotný obdelníček
-//	canv->Rectangle(X1,Y-KrokY/2,X2+1,Y+KrokY/2);//X2+1 pouze grafická záležitost - zmenšení mezery
-//	//následující musí být mimo switch kvůli pořadí vykreslování po rectanglu
-//	if(typ==4)//v případě bufferu vykreslení svislice přemaskující bílý spoj, tím se buffer napojí na předchozí objekt
-//	{
-//		canv->Pen->Color=color;
-//		canv->MoveTo(X1,Y-KrokY/2+1);canv->LineTo(X1,Y+KrokY/2-1);//+-1 grafická vyfikundace
-//	}
-//
-//	////popisek
-//	//normal 0    buffer který má popisek menší než délku obdelničku
-//	if(typ==0 /*|| (typ==4 && canv->TextWidth(shortname)<X2-X1)*/)
-//	{
-//			SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
-//			//if(color!=clBlack)canv->Font->Color=clBlack;else canv->Font->Color=clWhite;//pokud je výplň obdelníčku černě, tak popisek bude bíle
-//			canv->Font->Color=clWhite;
-//			canv->Font->Size=9;
-//			canv->Font->Name="Arial";
-//			canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-//			canv->TextOutW(((X2+X1)/2)-canv->TextWidth(shortname)/2,Y-canv->TextHeight(shortname)/2,shortname);//vypíše vycentrovaný (polovina nových a starých souřadnic a posun referenčního písma o horizontálně=TextWidth/2 a verticálně=TextHeight/2) popisek shorname t-objektu
-//	}
-//}
-////---------------------------------------------------------------------------
-////textový výpis a kóta mezivozíkového taktu, pouze pro zpřehlednění zapisu samostatně
-//void Cvykresli::vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik,double X,long Y,bool index)
-//{
-//		long X1=Form1->m.round(vozik->predchozi->pozice-PosunT.x);
-//		long X2=Form1->m.round(X-PosunT.x);
-//		short S=2;//size
-//		//short O=0;//offset
-//		double Y0=Y-KrokY*2-PosunT.y; //-3 pouze grafické korekce
-//
-//		////vykreslení kóty
-//		//linie
-//		canv->Pen->Width=1;
-//		canv->Pen->Color=vozik->barva;
-//		canv->MoveTo(X1,Y0);
-//		canv->LineTo(X2,Y0);
-//		//šipky
-//		POINT bodyL[3]={{X1+S,Y0-S},{X1,Y0},{X1+S,Y0+S}};
-//		POINT bodyP[3]={{X2-S,Y0-S},{X2,Y0},{X2-S,Y0+S}};
-//		canv->Polygon((TPoint*)bodyL,2);
-//		canv->Polygon((TPoint*)bodyP,2);
-//		//spojovací linie k následujícímu vozíku
-//		if(!index)
-//		{
-//			canv->MoveTo(X2,Y0);
-//			canv->LineTo(X2,Y0+KrokY/2);
-//		}
-//		////text
-//		SetBkMode(canv->Handle,TRANSPARENT);
-//		canv->Font->Color=vozik->barva;
-//		canv->Font->Size=9;
-//		canv->Font->Name="Arial";
-//		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-//		AnsiString T="";
-//		if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0)+" min";
-//		else T=AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0);
-//		canv->TextOut((X1+X2)/2-canv->TextWidth(T)/2,Y0-canv->TextHeight(T),T);
-//}
-////---------------------------------------------------------------------------
-////vykreslí pohyblivou svislici na časové osy dle umístění kurzoru myši
-//void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y)
-//{
-//	if(X!=-200)//pokud je mimo obraz -200 jen nahodilá hodnota pro zneplatenění čí výchozí obraz
-//	{
-//		canv->Pen->Mode=pmNotXor;
-//		canv->Pen->Width=1;
-//		canv->Pen->Style=psDashDot;//nastevení čarkované čáry
-//		canv->Pen->Color=clGray;
-//		canv->Brush->Style=bsClear;
-//		//svislice
-//		canv->MoveTo(X,Form1->RzToolbar1->Height);
-//		canv->LineTo(X,Form1->ClientHeight);
-//		//vodorovna
-//		if(!mod_vytizenost_objektu)//při modu vytížení objektů se nezobrazí
-//		{
-//			canv->MoveTo(0,Y);
-//			canv->LineTo(Form1->ClientWidth,Y);
-//			canv->Brush->Style=bsSolid;//vracím raději do původního stavu
-//			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->RzToolbar1->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-//			if(V<=v.VOZIKY->predchozi->n)Form1->SB("Vozík: "+AnsiString(V));
-//			else Form1->SB("");//pokud je už mimo oblast
-//		}
-//	}
-//}
-////---------------------------------------------------------------------------
-////vypíše labal zaměřovač na pozici kurzoru myši
-//void Cvykresli::zobrazit_label_zamerovac(int X,int Y)
-//{
-//	unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->RzToolbar1->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-//	if(!mod_vytizenost_objektu && 0<V && V<=v.VOZIKY->predchozi->n) //pokud se nejedná o řežim vytíženost objektu a zároveň se jedná o číslo vozík od min do max vozíků
-//	{
-//				Form1->Label_zamerovac->Transparent=false;
-//				Form1->Label_zamerovac->Color=clWhite;
-//				Form1->Label_zamerovac->Font->Color=(TColor) RGB(100,100,100);
-//				Form1->Label_zamerovac->Left=X+5; Form1->Label_zamerovac->Top=Y+20; //+ odsazení
-//				Form1->Label_zamerovac->Caption=" vozík: "+AnsiString(V)+" \n min: "+AnsiString((X+PosunT.x)/PX2MIN)+" ";
-//				Form1->Label_zamerovac->Visible=true;
-//	}
-//	else Form1->Label_zamerovac->Visible=false;
-//}
-////---------------------------------------------------------------------------
-////vykreslí statické svislice na časové osy
-//void Cvykresli::vykresli_Xosy(TCanvas *canv)
-//{
-//	canv->Pen->Mode=pmNotXor;
-//	canv->Pen->Width=1;    //nastavení šířky pera
-//	canv->Pen->Style=psDot;
-//	canv->Pen->Color=TColor RGB(200,200,200);   //míchání světlě šedé
-//	canv->Brush->Style=bsClear;
-//	canv->Font->Color=clGray;
-//	canv->Font->Size=8;
-//	canv->Font->Name="Arial";
-//	canv->Font->Style = TFontStyles();
-//	canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
-//	canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
-//	short o=1;
-//	if(PosunT.x>10)o=-30;
-//	if(!mod_vytizenost_objektu)canv->TextOutW(o-PosunT.x,0,"voz|min"); //popisek osy x
-//	else canv->TextOutW(o-PosunT.x,0,"obj|min"); //popisek osy x
-//
-//	//svislice po dvou minutách
-//	int start=PX2MIN*2;if(PosunT.x>0)start=0;
-//	for(int i=start;i<=WidthCanvasCasoveOsy;i+=PX2MIN*2)//po dvou minutách
-//	{
-//		canv->MoveTo(i-PosunT.x,0);
-//		canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy-1);//-1 pouze optická korekce
-//		canv->Brush->Style=bsSolid;
-//		canv->Brush->Color=clWhite;
-//		canv->TextOutW(i-canv->TextWidth(i/PX2MIN)/2-PosunT.x,0,i/PX2MIN);
-//	}
-//
-//	if(!mod_vytizenost_objektu)
-//	{
-//			//vodorovné číslování vozíků
-//			canv->Brush->Style=bsSolid;
-//			canv->Font->Style=TFontStyles()<< fsBold;
-//			canv->Font->Color=clWhite;
-//			Cvektory::TVozik *voz=v.VOZIKY->dalsi;
-//			while(voz!=NULL)
-//			{
-//				canv->Brush->Color=voz->barva;
-//				canv->TextOutW(0,voz->n*KrokY-canv->TextHeight(voz->n)/2-PosunT.y,voz->n);
-//				voz=voz->dalsi;
-//			}
-//
-//			//začátky a konce zakázek
-//			Cvektory::TSeznam_cest *ukaz=v.CESTY->dalsi;
-//			int konec=KrokY;
-//			while (ukaz!=NULL)//projede všechny zakázky, cesty
-//			{
-//				TPointD RET=v.vrat_zacatek_a_konec_zakazky(ukaz);
-//				konec+=v.vrat_pocet_voziku_zakazky(ukaz)*KrokY;
-//				canv->Pen->Color=ukaz->barva;
-//				canv->Pen->Style=psSolid;
-//				canv->Pen->Width=2;
-//				canv->Brush->Style=bsSolid;
-//				canv->Brush->Color=clWhite;
-//				if(RET.x>0)//x - plete, jedná se jen o začátek
-//				{
-//					canv->MoveTo(RET.x*PX2MIN-PosunT.x,0);
-//					canv->LineTo(RET.x*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
-//				}
-//				if(RET.y>0)//y - plete, jedná se jen o konec
-//				{
-//					canv->MoveTo(RET.y*PX2MIN-PosunT.x,0);
-//					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
-//				}
-//				canv->Brush->Style=bsSolid;
-//				canv->Brush->Color=ukaz->barva;
-//				canv->Font->Style=TFontStyles()<< fsBold;
-//				canv->Font->Color=clWhite;
-//				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,0,RET.x);//zobrazuje pouze větší než začátek obrazovky
-//				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,0,RET.y);//zobrazuje pouze větší než začátek obrazovky
-//				ukaz=ukaz->dalsi;
-//			}
-//	}
-//}
-////---------------------------------------------------------------------------
-//void Cvykresli::vykresli_vytizenost_objektu(TCanvas *canv)
-//{
-//	int Y=KrokY+Form1->RzToolbar1->Height;
-//	Cvektory::TObjekt *ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-//	while (ukaz!=NULL)
-//	{                      //záměrné nadhodnocení kvůli hledání minima
-//		int Pocatek=v.PROCESY->predchozi->Tcek-PosunT.x;int Konec=0-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
-//		Cvektory::TProces *P=v.PROCESY->dalsi;
-//		double X=0;
-//		while (P!=NULL)
-//		{
-//			if(ukaz==P->cesta->objekt)
-//			{
-//				if(P->cesta->objekt->dop_kapacita_objektu==1 || NOLIEX==0)vykresli_proces(canv,"",P->vozik->barva,4,P->Tpoc*PX2MIN-PosunT.x,P->Tcek*PX2MIN-PosunT.x,Y-Form1->RzToolbar1->Height-PosunT.y);//pro jednokapacitní vytíženost vykreslení přímo maximální, popř. pokud není požadováno vykreslení intenzity
-//				else vytizenost_procesu(canv,P,X,Y-Form1->RzToolbar1->Height); //pro vícekapacitně včetně škály vytíženosti, pokud je požadována
-//				if(Pocatek>P->Tpoc*PX2MIN-PosunT.x)Pocatek=P->Tpoc*PX2MIN-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
-//				if(Konec<P->Tcek*PX2MIN-PosunT.x)Konec=P->Tcek*PX2MIN-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
-//			}
-//			P=P->dalsi;
-//		};
-//
-//		//vycentrovaný popisek v rámci objektu
-//		SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);//nastvení transparentního pozadí
-//		canv->Font->Color=clWhite;
-//		canv->Font->Size=8;
-//		canv->Font->Name="Arial";
-//		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-//		canv->TextOutW(((Konec+Pocatek)/2)-canv->TextWidth(ukaz->name.UpperCase())/2,Y-PosunT.y-canv->TextHeight(ukaz->name.UpperCase())/2,ukaz->name.UpperCase());//vypíše vycentrovaný (polovina nových a starých souřadnic a posun referenčního písma o horizontálně=TextWidth/2 a verticálně=TextHeight/2) popisek shorname t-objektu
-//
-//		//vodorovné popisování objektů
-//		canv->Brush->Style=bsSolid;
-//		canv->Brush->Color=clGray;
-//		canv->TextOutW(0,Y-canv->TextHeight(ukaz->short_name)/2-Form1->RzToolbar1->Height-PosunT.y,ukaz->short_name);
-//
-//		ukaz=ukaz->dalsi;
-//		Y+=KrokY+2;//+2 pouze grafické odsazení pro všechny objekty mimo prvního
-//	}
-//}
-////---------------------------------------------------------------------------
-//void Cvykresli::vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,int Y)
-//{
-//	 if(X==0)X=P->Tpoc;
-//	 Cvektory::TProces *P_dal=P;
-//	 //exponenciální
-//	 short I=170;//aktuální intenzita světlá nejvíc , 120 pro linearní 170 pro epxponenicální
-//	 double IK=sqrt(I*1.0)/(P->cesta->objekt->dop_kapacita_objektu);//intenzita krok  pro exponencialni
-//	 double A=0;short B=I;//pomocné pro exponeciální snižování intenzity
-//	 //linearní
-//	 if(NOLIEX==1)  //u lineárního je chyba u nejvyšší intenzity
-//	 {
-//			I=120;
-//			IK=I/(P->cesta->objekt->dop_kapacita_objektu-1);//intenzita krok pro linearni
-//	 }
-//
-//	 do
-//	 {
-//		 if(NOLIEX==2)//exponenciální
-//		 {
-//				vykresli_proces(canv,"",m.clIntensive(P->vozik->barva,B),4,X*PX2MIN-PosunT.x,P->Tcek*PX2MIN-PosunT.x,Y-PosunT.y);
-//				B=m.round(I-pow(A+=IK,2));//exponenciální snižování světlosti
-//		 }
-//		 if(NOLIEX==1)//lineární
-//		 {
-//				vykresli_proces(canv,"",m.clIntensive(P->vozik->barva,I),4,X*PX2MIN-PosunT.x,P->Tcek*PX2MIN-PosunT.x,Y-PosunT.y);
-//				I-=IK;//lineární snižování světlosti
-//		 }
-//		 P_dal=v.vrat_nasledujici_proces_objektu(P_dal);
-//		 if(P_dal!=NULL && X<P_dal->Tpoc)
-//		 X=P_dal->Tpoc;
-//		 else break;
-//	 }
-//	 while(X<P->Tcek);
-//	 X=P->Tcek;
-//}
+void Cvykresli::vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,int Y)
+{
+	 if(X==0)X=P->Tpoc;
+	 Cvektory::TProces *P_dal=P;
+	 //exponenciální
+	 short I=170;//aktuální intenzita světlá nejvíc , 120 pro linearní 170 pro epxponenicální
+	 double IK=sqrt(I*1.0)/(P->segment_cesty->objekt->kapacita_dop);//intenzita krok  pro exponencialni
+	 double A=0;short B=I;//pomocné pro exponeciální snižování intenzity
+	 //linearní
+	 if(NOLIEX==1)  //u lineárního je chyba u nejvyšší intenzity
+	 {
+			I=120;
+			IK=I/(P->segment_cesty->objekt->kapacita_dop-1);//intenzita krok pro linearni
+	 }
+
+	 do
+	 {
+		 if(NOLIEX==2)//exponenciální
+		 {
+				vykresli_proces(canv,"",m.clIntensive(P->vozik->zakazka->barva,B),4,X*PX2MIN-PosunT.x,P->Tcek*PX2MIN-PosunT.x,Y-PosunT.y);
+				B=m.round(I-pow(A+=IK,2));//exponenciální snižování světlosti
+		 }
+		 if(NOLIEX==1)//lineární
+		 {
+				vykresli_proces(canv,"",m.clIntensive(P->vozik->zakazka->barva,I),4,X*PX2MIN-PosunT.x,P->Tcek*PX2MIN-PosunT.x,Y-PosunT.y);
+				I-=IK;//lineární snižování světlosti
+		 }
+		 P_dal=v.vrat_nasledujici_proces_objektu(P_dal);
+		 if(P_dal!=NULL && X<P_dal->Tpoc)
+		 X=P_dal->Tpoc;
+		 else break;
+	 }
+	 while(X<P->Tcek);
+	 X=P->Tcek;
+}
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //////ROMA metoda, vykreslí graf technologických procesů vůči jednotlivým t-objektům v čase
