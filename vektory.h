@@ -496,6 +496,7 @@ private:
 				double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
 				double RD;//rychlost dopravníku
 				unsigned int Opak;//počet opakování jak často se čištění opakuje
+				bool Stav;//zde je segment součástí použité cesty nebo ne, možná provizorní atribut
 		};
 //		struct C_vozik//pro konverzi do bináru
 //		{

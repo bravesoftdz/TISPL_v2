@@ -3899,7 +3899,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 						AnsiString(ukaz->CT)+","+
 						AnsiString(ukaz->RD)+","+
 						AnsiString(ukaz->Tc)+","+
-						AnsiString(ukaz->Tv)
+						(AnsiString((int)ukaz->Stav))
 				);
 				ukaz=ukaz->dalsi;
 			}

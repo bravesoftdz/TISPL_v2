@@ -182,10 +182,10 @@ object Form_cesty: TForm_cesty
         TitleAlignment = taCenter
       end
       item
-        ButtonStyle = sgbCheckbox
+        ButtonStyle = sgbDropDownList
         Alignment = taCenter
         Color = clWhite
-        TitleCaption = 'Neproch'#225'zet'
+        TitleCaption = 'Proch'#225'zet'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -770,7 +770,6 @@ object Form_cesty: TForm_cesty
     Lines.Strings = (
       'Memo1')
     TabOrder = 5
-    Visible = False
   end
   object vypis_objekty: TButton
     Left = 304
@@ -779,7 +778,6 @@ object Form_cesty: TForm_cesty
     Height = 25
     Caption = 'vypis_cestu'
     TabOrder = 6
-    Visible = False
     OnClick = vypis_objektyClick
   end
 end

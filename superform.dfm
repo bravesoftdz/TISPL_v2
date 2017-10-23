@@ -589,7 +589,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     AllowAllUp = False
   end
   object Button5: TButton
-    Left = 664
+    Left = 670
     Top = 124
     Width = 225
     Height = 25
