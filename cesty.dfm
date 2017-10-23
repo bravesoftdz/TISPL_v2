@@ -92,7 +92,7 @@ object Form_cesty: TForm_cesty
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = cl3DDkShadow
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -123,7 +123,7 @@ object Form_cesty: TForm_cesty
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
-        TitleAlignment = taRightJustify
+        TitleAlignment = taCenter
       end
       item
         DataType = sgdNumber
@@ -142,6 +142,7 @@ object Form_cesty: TForm_cesty
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end
       item
         DataType = sgdNumber
@@ -167,7 +168,7 @@ object Form_cesty: TForm_cesty
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = cl3DDkShadow
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -185,6 +186,12 @@ object Form_cesty: TForm_cesty
         ButtonStyle = sgbDropDownList
         Alignment = taCenter
         Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = cl3DDkShadow
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
         TitleCaption = 'Proch'#225'zet'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
@@ -192,6 +199,7 @@ object Form_cesty: TForm_cesty
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end>
     RowHeights = (
       30
@@ -778,6 +786,7 @@ object Form_cesty: TForm_cesty
     Height = 25
     Caption = 'vypis_cestu'
     TabOrder = 6
+    Visible = False
     OnClick = vypis_objektyClick
   end
 end
