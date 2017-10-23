@@ -44,9 +44,13 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 
 
 //
-	
-	//	rStringGridEd_cesty->Columns[1].Items->PickList->Add("èau");
+			// rStringGridEd_cesty->Columns[1].
+		//	rStringGridEd_cesty->Columns[1].Items->PickList->Add('kuk');
 		//rStringGridEd_cesty->Columns[1].Items->PickList->Add("hu");
+
+		//  rStringGridEd_cesty->Columns[1][2]->PickList->Add("HOJ");
+
+					rStringGridEd_cesty->BoolCells(1,2);
 
 
 //zobraz data
@@ -101,4 +105,6 @@ void __fastcall TForm_cesty::KonecClick(TObject *Sender)
 	Form_cesty->Close();
 }
 //---------------------------------------------------------------------------
+
+
 

@@ -1037,6 +1037,8 @@ void __fastcall TForm_definice_zakazek::Button_OKKeyDown(TObject *Sender, WORD &
 //			}
 //			break;
 //		}
+
+							ShowMessage("uloz");
 //	}
 }
 //---------------------------------------------------------------------------

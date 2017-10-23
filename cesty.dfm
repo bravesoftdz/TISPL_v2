@@ -78,10 +78,6 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        PickList.Strings = (
-          'NAV'#282#352'OV'#193'N'#205
-          'LAKOV'#193'N'#205
-          'IONIZACE')
         TitleCaption = 'Objekt'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
@@ -767,8 +763,8 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object Memo1: TMemo
-    Left = 480
-    Top = 24
+    Left = 423
+    Top = 16
     Width = 185
     Height = 89
     Lines.Strings = (
