@@ -497,8 +497,8 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 					///vypis mezivozíkového TAKTIMU (pokud se jedná vozíky od dané cesty (bacha, prochází se všechny) a zároveň pokud se jedná o poslední proces vozíku (např. svě) a nejedná o zcela první vozík
 					if(vozik->zakazka->n==Z->n && C->dalsi==NULL && vozik->n!=1)
 					{
-						vypis_mezivozikovy_takt(canv,vozik,X,Yloc+oY);
-						vypis_mezivozikovy_takt(canv,vozik,X,2.5*KrokY+oY,true);
+						vypis_mezivozikovy_takt(canv,vozik,X,Yloc);//ten přímo za vozíky
+						vypis_mezivozikovy_takt(canv,vozik,X,KrokY*2.5+oY+3,true);//ten na ose X nahoře +3 grafická korekce
 					}
 					///-
 
@@ -564,7 +564,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 {
 		 P->Tdor=X/PX2MIN;
 		 P->Tpre=X/PX2MIN;
-   }
+	 }
 	 X_predchozi=X;
 
 	 //PALCE - posun o čekání na palce
@@ -685,7 +685,7 @@ void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y)
 		//vodorovna
 		if(!mod_vytizenost_objektu)//při modu vytížení objektů se nezobrazí
 		{
-			canv->MoveTo(0,Y+5);
+			canv->MoveTo(0,Y);
 			canv->LineTo(Form1->ClientWidth,Y);
 			canv->Brush->Style=bsSolid;//vracím raději do původního stavu
 			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
@@ -735,7 +735,7 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 	int start=PX2MIN*2;if(PosunT.x>0)start=0;
 	for(int i=start;i<=WidthCanvasCasoveOsy;i+=PX2MIN*2)//po dvou minutách
 	{
-		canv->MoveTo(i-PosunT.x,oY);
+		canv->MoveTo(i-PosunT.x,0);
 		canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy-1);//-1 pouze optická korekce
 		canv->Brush->Style=bsSolid;
 		canv->Brush->Color=clWhite;
@@ -744,7 +744,7 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 
 	if(!mod_vytizenost_objektu)
 	{
-			//vodorovné číslování vozíků
+			//svislé číslování vozíků (to barevné úplně nalevo)
 			canv->Brush->Style=bsSolid;
 			canv->Font->Style=TFontStyles()<< fsBold;
 			canv->Font->Color=clWhite;
@@ -752,7 +752,7 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 			while(voz!=NULL)
 			{
 				canv->Brush->Color=voz->zakazka->barva;
-				canv->TextOutW(0,oY+voz->n*KrokY-canv->TextHeight(voz->n)/2-PosunT.y,voz->n);
+				canv->TextOutW(0,voz->n*KrokY+1-PosunT.y,voz->n); //+1 pouze grafická korekce
 				voz=voz->dalsi;
 			}
 
