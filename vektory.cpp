@@ -645,7 +645,7 @@ void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 		 TCesta *C=Z->cesta->dalsi;
 		 while(C!=NULL)//projíždí cestu dané zakázky
 		 {
-			 vloz_segment_cesty(T,C->objekt,C->CT,C->Tc,C->Tv,C->RD,C->Opak,C->Stav);
+			 vloz_segment_cesty(T,C->objekt,C->CT,C->Tc,C->Tv,C->RD,C->Opak);
 			 C=C->dalsi;//posun na další segment cesty dané zakázky
 		 }
 		 C=NULL;delete C;
@@ -699,7 +699,6 @@ void Cvektory::hlavicka_cesta_zakazky(TZakazka *zakazka)
 	nova->Tv=0;
 	nova->RD=0;
 	nova->Opak=0;
-	nova->Stav=false;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;
@@ -713,12 +712,12 @@ void Cvektory::inicializace_cesty(TZakazka *zakazka)
 }
 //---------------------------------------------------------------------------
 //do konkrétní zakázky vloží segmenty cesty
-void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu,double CT,double Tc,double Tv,double RD,unsigned int Opak,bool Stav)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 {
-	vloz_segment_cesty(zakazka,vrat_objekt(n_vybraneho_objektu),CT,Tc,Tv,RD,Opak,Stav);
+	vloz_segment_cesty(zakazka,vrat_objekt(n_vybraneho_objektu),CT,Tc,Tv,RD,Opak);
 }
 //přetížená funkce
-void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int Opak,bool Stav)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 {
 	TCesta *segment=new TCesta;
 
@@ -728,7 +727,6 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,doub
 	segment->Tv=Tv;
 	segment->RD=RD;
 	segment->Opak=Opak;
-	segment->Stav=Stav;
 
 	vloz_segment_cesty(zakazka,segment);
 }
@@ -742,6 +740,18 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TCesta *segment_cesty)
 	segment->predchozi=zakazka->cesta->predchozi;//nova prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	segment->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	zakazka->cesta->predchozi=segment;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}//---------------------------------------------------------------------------
+//ověří zda daný objekt je součástí cesty dané zakázky či nikoliv, pokud ano vrací ukazatel na daný segment
+Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt,TZakazka *zakazka)
+{
+	 TCesta *RET=NULL;
+	 TCesta *C=zakazka->cesta->dalsi;
+	 while(C!=NULL)
+	 {
+			 if(C->objekt==objekt){RET=C;break;}
+			 C=C->dalsi;
+	 }ShowMessage(objekt->name);
+	 return RET;
 }
 //---------------------------------------------------------------------------
 //vymaže celou cestu dané zakázky
@@ -1072,7 +1082,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					 c_c->Tv=c->Tv;
 					 c_c->RD=c->RD;
 					 c_c->Opak=c->Opak;
-					 c_c->Stav=c->Stav;
 					 //uložení do binárního filu
 					 FileStream->Write(c_c,sizeof(C_cesta));//zapiše jeden prvek do souboru
 					 //posun na další segment cesty
@@ -1257,7 +1266,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					{
 						C_cesta c_c;//=new C_cesta;
 						FileStream->Read(&c_c,sizeof(C_cesta));//načte jeden prvek ze souboru
-						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD,c_c.Opak,c_c.Stav);
+						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD,c_c.Opak);
 					}
 
 					//vloží zakazku do spojového seznamu ZAKAZKY

@@ -69,7 +69,7 @@ void __fastcall TForm_definice_zakazek::FormShow(TObject *Sender)
 	{
 		 //vytvoøí defaultní øadek se zakázkou a její cestou
 		 predvypln_default_zakazku();
-		 predvypln_cestu();
+		 //predvypln_cestu(); již se nepoužívá plní se z default_cestu() dat tak jako uživatlsky definované zakázky
 		 //a hned se uloží do temp spojáku
 		 uloz_Defaulttemp_zakazku();
 		 uloz_Default_cestu();
@@ -111,44 +111,45 @@ void TForm_definice_zakazek:: predvypln_default_zakazku()
 }
 //----------------------------------------------------------------------------
 //pøedvyplnìní default cesta
-void TForm_definice_zakazek::predvypln_cestu()
-{
-	Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
-	int i=0;
-	while(objekt!=NULL)
-	{
-		i++;
-		Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;//poøadí
-		Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
-		if(objekt->rezim==1)//pokud je kontinální tak CT spoèítá sám
-			Form_cesty->rStringGridEd_cesty->Cells[2][i]=60*objekt->delka_dopravniku/objekt->pohon->rychlost_od;//CT
-		else
-			Form_cesty->rStringGridEd_cesty->Cells[2][i]="0";//CT
-		Form_cesty->rStringGridEd_cesty->Cells[3][i]=objekt->pohon->rychlost_od;//Rychlost dopravniku, minimální ze zadaného rozmezí
-
-		//pokud jde o lakovani, predvyplnim hodnoty jinak jsou 0 pro ostatni objekty
-		//!!!!nedìlat pro LAK ale pro objekt typu resp ID odpovídající lak
-		if(objekt->short_name=="LAK")
-		{
-			Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
-			Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
-			Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
-			Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ano"; //priznak pruchodu cesty
-		}
-		else
-		{
-			Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
-			Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
-			Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
-			Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ano";  //priznak pruchodu cesty
-		}
-
-		Form_cesty->rStringGridEd_cesty->RowCount=i+1;
-		objekt=objekt->dalsi;
-	}
-}
+//void TForm_definice_zakazek::predvypln_cestu()
+//již se nepoužívá plní se z default_cestu() dat tak jako uživatlsky definované zakázky
+//{
+//	Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+//	int i=0;
+//	while(objekt!=NULL)
+//	{
+//		i++;
+//		Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;//poøadí
+//		Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
+//		if(objekt->rezim==1)//pokud je kontinální tak CT spoèítá sám
+//			Form_cesty->rStringGridEd_cesty->Cells[2][i]=60*objekt->delka_dopravniku/objekt->pohon->rychlost_od;//CT
+//		else
+//			Form_cesty->rStringGridEd_cesty->Cells[2][i]="0";//CT
+//		Form_cesty->rStringGridEd_cesty->Cells[3][i]=objekt->pohon->rychlost_od;//Rychlost dopravniku, minimální ze zadaného rozmezí
+//
+//		//pokud jde o lakovani, predvyplnim hodnoty jinak jsou 0 pro ostatni objekty
+//		//!!!!nedìlat pro LAK ale pro objekt typu resp ID odpovídající lak
+//		if(objekt->short_name=="LAK")
+//		{
+//			Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
+//			Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
+//			Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
+//			Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ano"; //priznak pruchodu cesty
+//		}
+//		else
+//		{
+//			Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
+//			Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
+//			Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
+//			Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ano";  //priznak pruchodu cesty
+//		}
+//
+//		Form_cesty->rStringGridEd_cesty->RowCount=i+1;
+//		objekt=objekt->dalsi;
+//	}
+//}
 // ---------------------------------------------------------------------------
-void TForm_definice_zakazek:: uloz_Defaulttemp_zakazku()
+void TForm_definice_zakazek::uloz_Defaulttemp_zakazku()
 {
 	Cvektory::TJig j;
 	j.sirka=1;j.delka=1;j.vyska=1;j.ks=1;//defaultní hodnoty jigu
@@ -268,56 +269,60 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	////////////cesty form - byl klik na buòku 9. sloupci
 	if(rStringGridEd1->Col==9)
 	{
-			////naèítání dat
-			Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Clear();
-			Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ano");
-			Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
+		//Form_cesty->rStringGridEd_cesty->Columns->Clear();
+		////naplnìní picklistu
+		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Clear();
+		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ano");
+		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
 
-		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
+		////naèítání dat - není tøeba ošetøovat, protože existuje default cesta v seznamu
+		//vypíše døíve nadefinovanou cestu vèetnì segmentù z nejdelší možné cesty, které nejsou souèástí aktuální cesty
+		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+		//pøídání poètu øádkù
+		Form_cesty->rStringGridEd_cesty->RowCount=Form1->d.v.OBJEKTY->predchozi->n+1;//pøidání dalšího øádku     //pridani k zobrazeni if ukaz param
+		int i=0;
+		while(O!=NULL)//prochází všechnyobjekty a buï je ("Ano") objekt i na cestì nebo není ("Ne")
 		{
-
-			//vypíše døíve nadefinovanou cestu, jen s definovanými prvky zásadní nevýhodou je, že nelze pøidat prvky - nutno doøešit
-			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
-			int i=0;
-			while(ukaz!=NULL)
+			i++;
+			Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,zakazka);
+			if(C!=NULL)//zahrnuté segmenty cesty
 			{
-				i++;
-
-				Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->n;
-				Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->name;
-				Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->CT;
-				Form_cesty->rStringGridEd_cesty->Cells[3][i]=ukaz->RD;
-				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tv;
-				Form_cesty->rStringGridEd_cesty->Cells[5][i]=ukaz->Tc;
-				Form_cesty->rStringGridEd_cesty->Cells[6][i]=ukaz->Opak;
-
-				if(ukaz->Stav) prochazet="Ano";
-				if(!ukaz->Stav) prochazet="Ne";
-				Form_cesty->rStringGridEd_cesty->Cells[7][i]=prochazet;
-				Form_cesty->rStringGridEd_cesty->RowCount=i+1;//pøidání dalšího øádku     //pridani k zobrazeni if ukaz param
-				ukaz=ukaz->dalsi;
+					Form_cesty->rStringGridEd_cesty->Cells[0][i]=C->objekt->n;
+					Form_cesty->rStringGridEd_cesty->Cells[1][i]=C->objekt->name;
+					Form_cesty->rStringGridEd_cesty->Cells[2][i]=C->CT;
+					Form_cesty->rStringGridEd_cesty->Cells[3][i]=C->RD;
+					Form_cesty->rStringGridEd_cesty->Cells[4][i]=C->Tv;
+					Form_cesty->rStringGridEd_cesty->Cells[5][i]=C->Tc;
+					Form_cesty->rStringGridEd_cesty->Cells[6][i]=C->Opak;
+					Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ano";
 			}
-		}
-		else//cesta ještì nebyla definována
-		{
-			zobraz_vsechny_objekty();
+			else //nezahrnutý segment nejdelší cesty v aktuální cestì
+			{
+				 Form_cesty->rStringGridEd_cesty->Cells[0][i]=O->n;
+				 Form_cesty->rStringGridEd_cesty->Cells[1][i]=O->name;
+				 Form_cesty->rStringGridEd_cesty->Cells[2][i]="0";
+				 Form_cesty->rStringGridEd_cesty->Cells[3][i]="0";
+				 Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";
+				 Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";
+				 Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";
+				 Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ne";
+			}
+			O=O->dalsi;
 		}
 
-		//ukládání dat - jednotlivého segmentu cesty pokud je považován k zahrnutní ze strany uživatele
+		////--------------
+
+		////ukládání dat - jednotlivého segmentu cesty pokud je považován k zahrnutní ze strany uživatele
+		//formuláø na støed
 		Form_cesty->Left=Form1->ClientWidth/2-Form_cesty->Width/2;
 		Form_cesty->Top=Form1->ClientHeight/2-Form_cesty->Height/2;
 		if(mrOk==Form_cesty->ShowModal())
 		{
-
-
 			Form1->d.v.inicializace_cesty(zakazka);
 			for(int i=1;i<Form_cesty->rStringGridEd_cesty->RowCount;i++)
-			{                          //!!! doplní Rosa
-				//if(Form_cesty->rStringGridEd_cesty->Cells[7][i]!=Checked)//pokud je zaškrnuto neprocházek objekt se neuloží do cesty
-				//{
-				bool pruchod;
-				if (Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ano") pruchod=true;
-				if (Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ne") pruchod=false;
+			{
+				if(Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ano")//pokud je zaškrnuto neprocházek objekt se neuloží do cesty
+				{
 						Form1->d.v.vloz_segment_cesty
 						(
 							zakazka,
@@ -327,27 +332,13 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 							Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble(),//RD
 							Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),//Tv
 							Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),//Tc
-							Form_cesty->rStringGridEd_cesty->Cells[6][i].ToDouble(),//Opak   //ulozeni stavu pro cestu - roletka
-							pruchod);
-				//}
+							Form_cesty->rStringGridEd_cesty->Cells[6][i].ToDouble()//Opak   //ulozeni stavu pro cestu - roletka
+						);
+				}
 				//vymazání textu z již nepotøebného øádku
 				Form_cesty->rStringGridEd_cesty->Rows[i]->Clear();
 			}
 		}
-	}
-}
-//----------------------------------------------------------------------------
-void TForm_definice_zakazek::zobraz_vsechny_objekty()
-{
-	Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
-	int i=0;
-	while(objekt!=NULL)
-	{
-		 i++;    //natvrdo generovane i do poøadí
-		 Form_cesty->rStringGridEd_cesty->Cells[0][i]=i;
-		 Form_cesty->rStringGridEd_cesty->Cells[1][i]=objekt->name;
-		 Form_cesty->rStringGridEd_cesty->RowCount=i+1;
-		 objekt=objekt->dalsi;
 	}
 }
 //---------------------------------------------------------------------------
@@ -1184,9 +1175,6 @@ void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 			Cvektory::TCesta *ukaz=zakazka_temp->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
 			while(ukaz!=NULL)
 			{
-			if(!ukaz->Stav) prochazet="Ne";
-			if (ukaz->Stav) {prochazet="Ano";}
-
 				Memo4->Lines->Add
 				(
 						AnsiString(ukaz->n)+","+

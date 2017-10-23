@@ -1183,6 +1183,13 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y)
 {
+ if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
+ {
+	 scSplitView_MENU->Opened=false;
+	 scSplitView_OPTIONS->Opened=false;
+ }
+ else
+ {
 	 if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
 	 {
 			stisknute_leve_tlacitko_mysi=true;
@@ -1267,6 +1274,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 				}break;
 			}
 	 }
+ }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
@@ -3898,8 +3906,8 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 						AnsiString(ukaz->objekt->short_name)+","+
 						AnsiString(ukaz->CT)+","+
 						AnsiString(ukaz->RD)+","+
-						AnsiString(ukaz->Tc)+","+
-						(AnsiString((int)ukaz->Stav))
+						AnsiString(ukaz->Tc)+","
+						//+(AnsiString((int)ukaz->Stav))
 				);
 				ukaz=ukaz->dalsi;
 			}
@@ -3907,6 +3915,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		else S("Není zakazka");
 }
 //---------------------------------------------------------------------------
+
 
 
 

@@ -98,8 +98,10 @@ private:	// User declarations
 	void nastav_form();
 	void nacti_PP();
 	void predvypln_default_zakazku();
-	void predvypln_cestu();
+	//void predvypln_cestu(); již se nepoužívá plní se z default_cestu() dat tak jako uživatlsky definované zakázky
 	void nacti_zakazky();
+	void uloz_Defaulttemp_zakazku();
+	void uloz_Default_cestu();
 
 	//ZDM
 //bool OK_status;
@@ -127,10 +129,7 @@ private:	// User declarations
 
 
 
-	void uloz_Defaulttemp_zakazku();
-	void zobraz_vsechny_objekty();
 
-	void uloz_Default_cestu();
 
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);

@@ -51,19 +51,18 @@ void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)
 		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
 		//Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
 
-			while(ukaz!=NULL)
-			{
-				Memo1->Lines->Add
-				(
-						AnsiString(ukaz->n)+","+
-						AnsiString(ukaz->objekt->short_name)+","+
-						AnsiString(ukaz->CT)+","+
-						AnsiString(ukaz->RD)+","+
-						AnsiString(ukaz->Tc)+","+
-						AnsiString((int)ukaz->Stav)
-				);
-				ukaz=ukaz->dalsi;
-			}
+		while(ukaz!=NULL)
+		{
+			Memo1->Lines->Add
+			(
+					AnsiString(ukaz->n)+","+
+					AnsiString(ukaz->objekt->short_name)+","+
+					AnsiString(ukaz->CT)+","+
+					AnsiString(ukaz->RD)+","+
+					AnsiString(ukaz->Tc)+","
+			);
+			ukaz=ukaz->dalsi;
+		}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_cesty::cesta_stornoClick(TObject *Sender)
