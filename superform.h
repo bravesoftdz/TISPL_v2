@@ -29,9 +29,7 @@ __published:	// IDE-managed Components
 	TRzStringGrid *RzStringGrid1;
 	TColorDialog *ColorDialog1;
 	TButton *Button1;
-	TButton *Button2;
 	TButton *Button3;
-	TButton *Button4;
 	TMemo *Memo1;
 	TButton *Memo_spojak;
 	TMemo *Memo2;
@@ -45,7 +43,6 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum_pocet_prac_hod;
 	TrEditNum *rEditNum_effektivita;
 	TrEditNum *rEditNum_pocet_dnu;
-	TrButton *rButton1;
 	TscGPButton *scGPButton2;
 	TButton *Button5;
 	TscGPButton *scGPButton4;
@@ -64,12 +61,13 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton3;
 	TButton *button_zakazky_temp;
 	TMemo *Memo4;
-	TrHTMLLabel *rHTMLLabel_zacatek;
 	TscEdit *scEdit_zacatek;
 	TButton *zakazky_hlavni_spojak;
 	TButton *smaz_temp;
 	TEdit *Edit_smaz_temp;
 	TEdit *Edit_n_cesty;
+	TscGPGlyphButton *scGPGlyphButton_remove;
+	TrHTMLLabel *rHTMLLabel_zacatek;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RzStringGrid1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
@@ -94,6 +92,7 @@ __published:	// IDE-managed Components
 	void __fastcall zakazky_hlavni_spojakClick(TObject *Sender);
 	void __fastcall smaz_tempClick(TObject *Sender);
 	void __fastcall Button5Click(TObject *Sender);
+	void __fastcall scGPGlyphButton_removeClick(TObject *Sender);
 
 private:	// User declarations
 	void nastav_form();

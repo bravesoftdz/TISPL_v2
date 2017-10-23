@@ -11,17 +11,11 @@ Visible=True
 [Button3]
 Coordinates=235,10,59,58
 
-[Button4]
-Coordinates=166,10,59,58
-
-[Button2]
-Coordinates=10,10,59,58
-
 [Button1]
 Coordinates=10,78,59,58
 
 []
-Coordinates=586,232,92,58
+Coordinates=10,10,59,58
 
 [Memo2]
 Coordinates=235,87,64,58

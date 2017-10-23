@@ -21,9 +21,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rHTMLLabel_pocet_prac_hod: TrHTMLLabel
     Left = 53
     Top = 165
-    Width = 150
+    Width = 161
     Height = 19
-    Caption = 'Po'#269'et prac.hodin/den'
+    Caption = 'Po'#269'et prac.hodin [den]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -35,9 +35,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rHTMLLabel_pocet_dnu: TrHTMLLabel
     Left = 53
     Top = 97
-    Width = 134
+    Width = 145
     Height = 19
-    Caption = 'Po'#269'et prac.dn'#367'/rok'
+    Caption = 'Po'#269'et prac.dn'#367' [rok]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -49,9 +49,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rHTMLLabel_effektivita: TrHTMLLabel
     Left = 247
     Top = 165
-    Width = 64
+    Width = 97
     Height = 19
-    Caption = 'Efektivita'
+    Caption = 'Efektivita [%]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -63,9 +63,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rHTMLLabel_pozad_mnozstvi: TrHTMLLabel
     Left = 247
     Top = 97
-    Width = 152
+    Width = 184
     Height = 19
-    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237
+    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237' [ks]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -75,17 +75,19 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ParentFont = False
   end
   object rHTMLLabel_zacatek: TrHTMLLabel
-    Left = 421
-    Top = 97
-    Width = 53
+    Left = 381
+    Top = 165
+    Width = 106
     Height = 19
-    Caption = 'Za'#269#225'tek'
+    Caption = 'Za'#269#225'tek v'#253'roby'
+    Color = clSilver
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    ParentColor = False
     ParentFont = False
   end
   object Button_OK: TButton
@@ -138,34 +140,15 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Visible = False
     OnClick = Button1Click
   end
-  object Button2: TButton
-    Left = 639
-    Top = 31
-    Width = 75
-    Height = 25
-    Caption = 'Button2'
-    TabOrder = 3
-    Visible = False
-    OnClick = Button2Click
-  end
   object Button3: TButton
     Left = 824
     Top = 223
     Width = 75
     Height = 25
     Caption = 'P'#345'idat voz'#237'k'
-    TabOrder = 4
+    TabOrder = 3
     Visible = False
     OnClick = Button3Click
-  end
-  object Button4: TButton
-    Left = 639
-    Top = 62
-    Width = 75
-    Height = 25
-    Caption = 'Button4'
-    TabOrder = 5
-    Visible = False
   end
   object Memo1: TMemo
     Left = 838
@@ -174,7 +157,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Height = 49
     Lines.Strings = (
       'Memo1')
-    TabOrder = 6
+    TabOrder = 4
     Visible = False
   end
   object Memo_spojak: TButton
@@ -183,7 +166,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Width = 75
     Height = 25
     Caption = 'spojacek-color'
-    TabOrder = 7
+    TabOrder = 5
     Visible = False
     OnClick = Memo_spojakClick
   end
@@ -194,7 +177,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Height = 26
     Lines.Strings = (
       'Memo2')
-    TabOrder = 8
+    TabOrder = 6
     Visible = False
   end
   object Memo3: TMemo
@@ -204,7 +187,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Height = 25
     Lines.Strings = (
       'Memo3')
-    TabOrder = 9
+    TabOrder = 7
     Visible = False
   end
   object Button_DEL: TButton
@@ -222,7 +205,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 10
+    TabOrder = 8
     Visible = False
     OnClick = Button_DELClick
   end
@@ -256,10 +239,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Style = []
     Font.Quality = fqClearType
     GradientEndColor = clWhite
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 9
     StyleElements = [seFont, seClient]
     OnClick = rStringGridEd1Click
     Columns = <
@@ -272,7 +255,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'po'#345'ad'#237
+        TitleCaption = 'Po'#345'ad'#237
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13
@@ -484,23 +467,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       30
       30)
   end
-  object rButton1: TrButton
-    Left = 729
-    Top = 40
-    Width = 129
-    Height = 33
-    Caption = 'P'#345'idat zak'#225'zku'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 12
-    Visible = False
-    OnClick = rButton1Click
-  end
   object scGPButton2: TscGPButton
     Left = 0
     Top = 56
@@ -512,7 +478,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 10
     Animation = False
     Caption = '   Parametry v'#253'roby'
     CanFocused = False
@@ -594,7 +560,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Width = 225
     Height = 25
     Caption = 'Vypi'#353' cestu aktualni zakazky'
-    TabOrder = 14
+    TabOrder = 11
+    Visible = False
     OnClick = Button5Click
   end
   object scGPButton4: TscGPButton
@@ -608,7 +575,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 12
     Animation = False
     Caption = '   Pl'#225'n v'#253'roby'
     CanFocused = False
@@ -686,10 +653,13 @@ object Form_definice_zakazek: TForm_definice_zakazek
   end
   object scGPGlyphButton_add_zakazka: TscGPGlyphButton
     Left = 164
-    Top = 264
+    Top = 263
     Width = 24
     Height = 19
-    TabOrder = 16
+    Hint = 'P'#345'idat novou zak'#225'zku'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 13
     TabStop = True
     OnClick = scGPGlyphButton_add_zakazkaClick
     Animation = False
@@ -763,7 +733,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Width = 70
     Height = 35
     Align = alCustom
-    TabOrder = 17
+    TabOrder = 14
     TabStop = True
     Visible = False
     Animation = False
@@ -837,7 +807,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Width = 70
     Height = 35
     Align = alCustom
-    TabOrder = 18
+    TabOrder = 15
     TabStop = True
     Visible = False
     OnClick = scGPGlyphButton4Click
@@ -912,7 +882,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Width = 999
     Height = 34
     Align = alTop
-    TabOrder = 19
+    TabOrder = 16
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -1282,7 +1252,52 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rEditNum_pozad_mnozstvi: TrEditNum
     Left = 247
     Top = 122
-    Width = 101
+    Width = 184
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 17
+    Value = 200.000000000000000000
+  end
+  object rEditNum_pocet_prac_hod: TrEditNum
+    Left = 53
+    Top = 190
+    Width = 156
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 18
+    Value = 8.000000000000000000
+  end
+  object rEditNum_effektivita: TrEditNum
+    Left = 247
+    Top = 190
+    Width = 97
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 19
+    Value = 90.000000000000000000
+  end
+  object rEditNum_pocet_dnu: TrEditNum
+    Left = 53
+    Top = 122
+    Width = 156
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1292,51 +1307,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 20
-    Value = 200.000000000000000000
-  end
-  object rEditNum_pocet_prac_hod: TrEditNum
-    Left = 53
-    Top = 190
-    Width = 150
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 21
-    Value = 8.000000000000000000
-  end
-  object rEditNum_effektivita: TrEditNum
-    Left = 247
-    Top = 190
-    Width = 65
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 22
-    Value = 90.000000000000000000
-  end
-  object rEditNum_pocet_dnu: TrEditNum
-    Left = 53
-    Top = 122
-    Width = 149
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 23
     Style = enFloat
     Value = 5.000000000000000000
   end
@@ -1351,7 +1321,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 24
+    TabOrder = 21
     TabStop = True
     OnClick = scGPButton_UlozitClick
     Animation = False
@@ -1440,7 +1410,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 25
+    TabOrder = 22
     TabStop = True
     OnClick = scGPGlyphButton4Click
     Animation = False
@@ -1519,26 +1489,28 @@ object Form_definice_zakazek: TForm_definice_zakazek
     AllowAllUp = False
   end
   object button_zakazky_temp: TButton
-    Left = 200
+    Left = 219
     Top = 232
     Width = 185
     Height = 25
     Caption = 'button_zakazky_temp'
-    TabOrder = 26
+    TabOrder = 23
+    Visible = False
     OnClick = button_zakazky_tempClick
   end
   object Memo4: TMemo
-    Left = 410
-    Top = 170
-    Width = 254
-    Height = 113
+    Left = 576
+    Top = 237
+    Width = 88
+    Height = 46
     Lines.Strings = (
       'Memo4')
-    TabOrder = 27
+    TabOrder = 24
+    Visible = False
   end
   object scEdit_zacatek: TscEdit
-    Left = 421
-    Top = 122
+    Left = 381
+    Top = 190
     Width = 175
     Height = 28
     UseFontColorToStyleColor = False
@@ -1587,15 +1559,16 @@ object Form_definice_zakazek: TForm_definice_zakazek
     FrameColor = clBtnShadow
     FrameActiveColor = clHighlight
     Text = ''
-    TabOrder = 28
+    TabOrder = 25
   end
   object zakazky_hlavni_spojak: TButton
-    Left = 200
+    Left = 219
     Top = 263
     Width = 185
     Height = 25
     Caption = 'zakazky_hlavni_spojak'
-    TabOrder = 29
+    TabOrder = 26
+    Visible = False
     OnClick = zakazky_hlavni_spojakClick
   end
   object smaz_temp: TButton
@@ -1604,7 +1577,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Width = 89
     Height = 25
     Caption = 'smaz_temp'
-    TabOrder = 30
+    TabOrder = 27
     Visible = False
     OnClick = smaz_tempClick
   end
@@ -1613,7 +1586,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Top = 203
     Width = 89
     Height = 28
-    TabOrder = 31
+    TabOrder = 28
     Text = '1'
     Visible = False
   end
@@ -1622,8 +1595,85 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Top = 248
     Width = 121
     Height = 28
-    TabOrder = 32
+    TabOrder = 29
     Text = 'Edit_n_cesty'
+    Visible = False
+  end
+  object scGPGlyphButton_remove: TscGPGlyphButton
+    Left = 194
+    Top = 263
+    Width = 24
+    Height = 19
+    Hint = 'Odebrat posledn'#237' vlo'#382'enou zak'#225'zku'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 30
+    TabStop = True
+    OnClick = scGPGlyphButton_removeClick
+    Animation = False
+    Caption = 'scGPGlyphButton_remove_zakazka'
+    CanFocused = True
+    CustomDropDown = False
+    Layout = blGlyphLeft
+    TransparentBackground = True
+    ColorValue = clRed
+    Options.NormalColor = clBtnText
+    Options.HotColor = clBtnText
+    Options.PressedColor = clBtnText
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnText
+    Options.NormalColorAlpha = 10
+    Options.HotColorAlpha = 20
+    Options.PressedColorAlpha = 30
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 5
+    Options.FrameNormalColor = clSilver
+    Options.FrameHotColor = clBtnText
+    Options.FramePressedColor = clBtnText
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 0
+    Options.FrameHotColorAlpha = 100
+    Options.FramePressedColorAlpha = 150
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 30
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    GlyphOptions.NormalColor = clBtnText
+    GlyphOptions.HotColor = clBtnText
+    GlyphOptions.PressedColor = clBtnText
+    GlyphOptions.FocusedColor = clBtnText
+    GlyphOptions.DisabledColor = clBtnText
+    GlyphOptions.NormalColorAlpha = 200
+    GlyphOptions.HotColorAlpha = 255
+    GlyphOptions.PressedColorAlpha = 255
+    GlyphOptions.FocusedColorAlpha = 255
+    GlyphOptions.DisabledColorAlpha = 100
+    GlyphOptions.Kind = scgpbgkMinus
+    GlyphOptions.Thickness = 1
+    GlyphOptions.StyleColors = True
+    TextMargin = -1
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
   object ColorDialog1: TColorDialog
     Left = 592
