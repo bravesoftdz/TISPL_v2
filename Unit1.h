@@ -214,8 +214,8 @@ __published:	// IDE-managed Components
 	TscListGroupPanel *scListGroupNastavProjektu;
 	TscLabel *scLabel14;
 	TscLabel *scLabel15;
-	TscGPGlyphButton *scGPGlyphButton7;
-	TscGPGlyphButton *scGPGlyphButton8;
+	TscGPGlyphButton *scGPGlyphButton_parametry_linky;
+	TscGPGlyphButton *scGPGlyphButton_definice_zakazek;
 	TDrawGrid *DrawGrid_knihovna;
 	TscGPSwitch *scGPSwitch9;
 	TscLabel *scLabel19;
@@ -351,7 +351,6 @@ __published:	// IDE-managed Components
 	void __fastcall MinButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton2Click(TObject *Sender);
 	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
-	void __fastcall Button_vozik_parametryClick(TObject *Sender);
 	void __fastcall DetailsButtonClick(TObject *Sender);
 	void __fastcall scGPTrackBar1Change(TObject *Sender);
 	void __fastcall scGPSwitch4ChangeState(TObject *Sender);
@@ -368,6 +367,7 @@ __published:	// IDE-managed Components
 	void __fastcall button_zakazky_tempClick(TObject *Sender);
 	void __fastcall scButton2Click(TObject *Sender);
 	void __fastcall Button11Click(TObject *Sender);
+	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
 
 // User declarations
 	////struktury, výèty

@@ -407,17 +407,11 @@ Coordinates=1463,166,170,36
 [scExPanel_ostatni]
 Coordinates=1322,496,120,36
 
-[scGPGlyphButton7]
-Coordinates=709,631,124,36
-
 [layout]
 Coordinates=1145,631,49,36
 
 [scLabel5]
 Coordinates=640,631,66,36
-
-[scGPGlyphButton8]
-Coordinates=511,631,124,36
 
 [scLabel4]
 Coordinates=284,631,66,36
@@ -427,4 +421,10 @@ Coordinates=1463,331,88,36
 
 [scLabel_doba_cekani]
 Coordinates=86,631,66,36
+
+[scGPGlyphButton_definice_zakazek]
+Coordinates=511,631,124,36
+
+[scGPGlyphButton_parametry_linky]
+Coordinates=709,631,124,36
 

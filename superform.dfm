@@ -15,7 +15,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
-  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 20
@@ -105,7 +104,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     ParentFont = False
     TabOrder = 0
     Visible = False
-    OnClick = Button_OKClick
     OnKeyDown = Button_OKKeyDown
   end
   object RzStringGrid1: TRzStringGrid
@@ -229,8 +227,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnClick = Button_DELClick
   end
   object rStringGridEd1: TrStringGridEd
-    Left = -6
-    Top = 303
+    Left = 5
+    Top = 301
     Width = 1000
     Height = 186
     Margins.Left = 0
@@ -274,7 +272,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'ID'
+        TitleCaption = 'po'#345'ad'#237
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13
@@ -768,7 +766,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     TabOrder = 17
     TabStop = True
     Visible = False
-    OnClick = Button_OKClick
     Animation = False
     Caption = 'OK'
     CanFocused = True

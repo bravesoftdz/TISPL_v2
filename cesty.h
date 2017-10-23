@@ -31,6 +31,7 @@ __published:	// IDE-managed Components
 	void __fastcall cesta_stornoClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall vypis_objektyClick(TObject *Sender);
+	void __fastcall KonecClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 

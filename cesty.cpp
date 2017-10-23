@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 
@@ -22,38 +21,28 @@ TForm_cesty *Form_cesty;
 __fastcall TForm_cesty::TForm_cesty(TComponent* Owner)
 	: TForm(Owner)
 {
+	nactiNastaveni();
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_cesty::cesta_stornoClick(TObject *Sender)
+void TForm_cesty::nactiNastaveni ()
 {
-	Form_cesty->Close();
-}
-//---------------------------------------------------------------------------
+	TColor light_gray=(TColor)RGB(240,240,240);
+	//TColor active_blue=(TColor)RGB(43,87,154);
 
-void TForm_cesty::nactiNastaveni (){
-
-     	TColor light_gray=(TColor)RGB(240,240,240);
-			TColor active_blue=(TColor)RGB(43,87,154);
-
-		 Form_cesty->Color=light_gray;//RGB(43,87,154);
-		 scGPButton2->Options->NormalColor=Form_cesty->Color;
-		 scGPButton2->Options->FocusedColor=Form_cesty->Color;
-		 scGPButton2->Options->HotColor=Form_cesty->Color;
-		 scGPButton2->Options->PressedColor=Form_cesty->Color;
-		 scGPButton2->Options->FrameNormalColor=Form_cesty->Color;
-
-
+	Form_cesty->Color=light_gray;//RGB(43,87,154);
+	scGPButton2->Options->NormalColor=Form_cesty->Color;
+	scGPButton2->Options->FocusedColor=Form_cesty->Color;
+	scGPButton2->Options->HotColor=Form_cesty->Color;
+	scGPButton2->Options->PressedColor=Form_cesty->Color;
+	scGPButton2->Options->FrameNormalColor=Form_cesty->Color;
 
 	Form_definice_zakazek->Color=light_gray;
-
-
 }
-
+//---------------------------------------------------------------------------
 void __fastcall TForm_cesty::FormShow(TObject *Sender)
 {
 
-	nactiNastaveni();
+
 //
 			// rStringGridEd_cesty->Columns[1].
 		//	rStringGridEd_cesty->Columns[1].Items->PickList->Add('kuk');
@@ -83,19 +72,13 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 		 ukaz=ukaz->dalsi;
      	}
    */
-
-
-
 }
 //---------------------------------------------------------------------------
-
-
-
 void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)
 {
 		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(1);//inicializace
 		Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
-		Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
+		//Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
 
 			while(ukaz!=NULL)
 			{
@@ -110,11 +93,18 @@ void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)
 				);
 				ukaz=ukaz->dalsi;
 			}
-
-
 }
 //---------------------------------------------------------------------------
-
+void __fastcall TForm_cesty::cesta_stornoClick(TObject *Sender)
+{
+	Form_cesty->Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_cesty::KonecClick(TObject *Sender)
+{
+	Form_cesty->Close();
+}
+//---------------------------------------------------------------------------
 
 
 
