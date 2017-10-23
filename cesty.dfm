@@ -770,7 +770,6 @@ object Form_cesty: TForm_cesty
     Lines.Strings = (
       'Memo1')
     TabOrder = 5
-    Visible = False
   end
   object vypis_objekty: TButton
     Left = 304
@@ -779,7 +778,6 @@ object Form_cesty: TForm_cesty
     Height = 25
     Caption = 'vypis_cestu'
     TabOrder = 6
-    Visible = False
     OnClick = vypis_objektyClick
   end
 end

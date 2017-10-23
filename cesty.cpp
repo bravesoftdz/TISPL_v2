@@ -60,7 +60,7 @@ void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)
 						AnsiString(ukaz->CT)+","+
 						AnsiString(ukaz->RD)+","+
 						AnsiString(ukaz->Tc)+","+
-						AnsiString(ukaz->Tv)
+						AnsiString((int)ukaz->Stav)
 				);
 				ukaz=ukaz->dalsi;
 			}

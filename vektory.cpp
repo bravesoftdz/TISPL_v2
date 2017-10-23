@@ -645,7 +645,7 @@ void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 		 TCesta *C=Z->cesta->dalsi;
 		 while(C!=NULL)//projíždí cestu dané zakázky
 		 {
-			 vloz_segment_cesty(T,C->objekt,C->CT,C->Tc,C->Tv,C->RD,C->Opak);
+			 vloz_segment_cesty(T,C->objekt,C->CT,C->Tc,C->Tv,C->RD,C->Opak,C->Stav);
 			 C=C->dalsi;//posun na další segment cesty dané zakázky
 		 }
 		 C=NULL;delete C;
@@ -1072,6 +1072,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					 c_c->Tv=c->Tv;
 					 c_c->RD=c->RD;
 					 c_c->Opak=c->Opak;
+					 c_c->Stav=c->Stav;
 					 //uložení do binárního filu
 					 FileStream->Write(c_c,sizeof(C_cesta));//zapiše jeden prvek do souboru
 					 //posun na další segment cesty
@@ -1256,7 +1257,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					{
 						C_cesta c_c;//=new C_cesta;
 						FileStream->Read(&c_c,sizeof(C_cesta));//načte jeden prvek ze souboru
-						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD,c_c.Opak);
+						vloz_segment_cesty(ukaz2,c_c.n_objekt,c_c.CT,c_c.Tc,c_c.Tv,c_c.RD,c_c.Opak,c_c.Stav);
 					}
 
 					//vloží zakazku do spojového seznamu ZAKAZKY

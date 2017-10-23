@@ -308,6 +308,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		}
 
 		//ukládání dat - jednotlivého segmentu cesty pokud je považován k zahrnutní ze strany uživatele
+		//Form_cesty->Left=Form1->ClientWidth/2-Form_cesty->Width/2;
+		//Form_cesty->Height=Form1->ClientHeight/2-Form_cesty->Height/2;
 		if(mrOk==Form_cesty->ShowModal())
 		{
 
