@@ -17,6 +17,7 @@ Cvykresli::Cvykresli()
 	KrokY=30;//vizuální rozteč na ose Y mezi jednotlivými vozíky
 	mod_vytizenost_objektu=false;
 	NOLIEX=2;
+	oY=5;//ofset na ose Y, 5 pouze grafická korekce
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_vektory(TCanvas *canv)
@@ -414,7 +415,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 
 		double X=0;//výchozí odsazení na ose X
 		//KrokY je vizuální rozteč na ose Y mezi jednotlivými vozíky zadáno globálně, kvůli jednotlivým krokům
-		long Y=Form1->scGPPanel_mainmenu->Height+5;//+5 pouze grafická korekce
+		long Y=Form1->scGPPanel_mainmenu->Height+oY;//+5=oY pouze grafická korekce
 		Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
 		while(Z!=NULL)//jde po zakázkách
 		{
@@ -496,8 +497,8 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 					///vypis mezivozíkového TAKTIMU (pokud se jedná vozíky od dané cesty (bacha, prochází se všechny) a zároveň pokud se jedná o poslední proces vozíku (např. svě) a nejedná o zcela první vozík
 					if(vozik->zakazka->n==Z->n && C->dalsi==NULL && vozik->n!=1)
 					{
-						vypis_mezivozikovy_takt(canv,vozik,X,Yloc);
-						vypis_mezivozikovy_takt(canv,vozik,X,2.5*KrokY,true);
+						vypis_mezivozikovy_takt(canv,vozik,X,Yloc+oY);
+						vypis_mezivozikovy_takt(canv,vozik,X,2.5*KrokY+oY,true);
 					}
 					///-
 
@@ -679,15 +680,15 @@ void Cvykresli::vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y)
 		canv->Pen->Color=clGray;
 		canv->Brush->Style=bsClear;
 		//svislice
-		canv->MoveTo(X,Form1->RzToolbar1->Height);
+		canv->MoveTo(X,Form1->scGPPanel_mainmenu->Height);
 		canv->LineTo(X,Form1->ClientHeight);
 		//vodorovna
 		if(!mod_vytizenost_objektu)//při modu vytížení objektů se nezobrazí
 		{
-			canv->MoveTo(0,Y);
+			canv->MoveTo(0,Y+5);
 			canv->LineTo(Form1->ClientWidth,Y);
 			canv->Brush->Style=bsSolid;//vracím raději do původního stavu
-			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->RzToolbar1->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+			unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
 			if(V<=v.VOZIKY->predchozi->n)Form1->SB("Vozík: "+AnsiString(V));
 			else Form1->SB("");//pokud je už mimo oblast
 		}
@@ -725,10 +726,10 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 	canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
 	canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
 	short o=1;
-	short oY=5;//5 pouze grafická korekce
+	//už používám globálně short oY=5;//ofset na ose Y, 5 pouze grafická korekce
 	if(PosunT.x>10)o=-30;
-	if(!mod_vytizenost_objektu)canv->TextOutW(o-PosunT.x,0,"voz|min"); //popisek osy x
-	else canv->TextOutW(o-PosunT.x,0,"obj|min"); //popisek osy x
+	if(!mod_vytizenost_objektu)canv->TextOutW(o-PosunT.x,oY,"voz|min"); //popisek osy x
+	else canv->TextOutW(o-PosunT.x,oY,"obj|min"); //popisek osy x
 
 	//svislice po dvou minutách
 	int start=PX2MIN*2;if(PosunT.x>0)start=0;
@@ -751,7 +752,7 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 			while(voz!=NULL)
 			{
 				canv->Brush->Color=voz->zakazka->barva;
-				canv->TextOutW(0,voz->n*KrokY-canv->TextHeight(voz->n)/2-PosunT.y,voz->n);
+				canv->TextOutW(0,oY+voz->n*KrokY-canv->TextHeight(voz->n)/2-PosunT.y,voz->n);
 				voz=voz->dalsi;
 			}
 
