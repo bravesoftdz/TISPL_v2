@@ -699,6 +699,7 @@ void Cvektory::hlavicka_cesta_zakazky(TZakazka *zakazka)
 	nova->Tv=0;
 	nova->RD=0;
 	nova->Opak=0;
+	nova->Stav=false;
 
 	nova->predchozi=nova;//ukazuje sam na sebe
 	nova->dalsi=NULL;
@@ -712,12 +713,12 @@ void Cvektory::inicializace_cesty(TZakazka *zakazka)
 }
 //---------------------------------------------------------------------------
 //do konkrétní zakázky vloží segmenty cesty
-void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,unsigned int n_vybraneho_objektu,double CT,double Tc,double Tv,double RD,unsigned int Opak,bool Stav)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 {
-	vloz_segment_cesty(zakazka,vrat_objekt(n_vybraneho_objektu),CT,Tc,Tv,RD,Opak);
+	vloz_segment_cesty(zakazka,vrat_objekt(n_vybraneho_objektu),CT,Tc,Tv,RD,Opak,Stav);
 }
 //přetížená funkce
-void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int Opak)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
+void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,double CT,double Tc,double Tv,double RD,unsigned int Opak,bool Stav)//do konkrétní cesty vloží segmenty cesty,  bude užito v metodě při stisku OK, při vkládání každého řádku stringgridu v daném for cyklu.
 {
 	TCesta *segment=new TCesta;
 
@@ -727,6 +728,7 @@ void Cvektory::vloz_segment_cesty(TZakazka *zakazka,TObjekt *vybrany_objekt,doub
 	segment->Tv=Tv;
 	segment->RD=RD;
 	segment->Opak=Opak;
+	segment->Stav=Stav;
 
 	vloz_segment_cesty(zakazka,segment);
 }

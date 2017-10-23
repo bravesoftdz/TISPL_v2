@@ -19,6 +19,8 @@ class Cvykresli
 	void vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,int Y);
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
 
+	short oY;//ofset na ose Y, 5 pouze grafická korekce
+
 	public:
 	Cvykresli();//konstruktor
 	Cvektory v;
