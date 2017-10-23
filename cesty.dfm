@@ -182,10 +182,10 @@ object Form_cesty: TForm_cesty
         TitleAlignment = taCenter
       end
       item
-        ButtonStyle = sgbCheckbox
+        ButtonStyle = sgbDropDownList
         Alignment = taCenter
         Color = clWhite
-        TitleCaption = 'Neproch'#225'zet'
+        TitleCaption = 'Proch'#225'zet'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15

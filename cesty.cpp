@@ -50,7 +50,11 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 
 		//  rStringGridEd_cesty->Columns[1][2]->PickList->Add("HOJ");
 
-					rStringGridEd_cesty->BoolCells(1,2);
+			//		rStringGridEd_cesty->BoolCells(1,2);
+
+			rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ano");
+			rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
+
 
 
 //zobraz data
