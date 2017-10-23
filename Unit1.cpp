@@ -657,10 +657,13 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::casovosa1Click(TObject *Sender)
 {
-	if(d.v.VOZIKY->dalsi->zakazka==NULL)
-	MB("Nejdříve je nutné v definici zakázek zadat plán výroby!");
+	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná
+		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
 	else
-	{ if(MOD!=CASOVAOSA)
+	{
+		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka z cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
+
+		if(MOD!=CASOVAOSA)//aby se nevolalo zbytečně znovu, pokud už v daném modu je, ale může být dvousečné ve významu uživatelské užitečnosti
 		{
 			MOD=CASOVAOSA;
 			ESC();//zruší případně rozdělanou akci
@@ -710,7 +713,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 {
-	MOD=TECHNOPROCESY;
+	/*MOD=TECHNOPROCESY;
 	ESC();//zruší případně rozdělanou akci
 	SB("zobrazení technologických procesů v čase",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
@@ -776,12 +779,12 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	//---
   ComboBoxCekani->Visible=false;
 	Label_zamerovac->Visible=false;
-	Invalidate();
+	Invalidate(); */
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::simulace1Click(TObject *Sender)
 {
-	MOD=SIMULACE;
+	/*MOD=SIMULACE;
 	ESC();//zruší případně rozdělanou akci
 	SB("zobrazení animované simulace",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
@@ -812,7 +815,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	ComboBoxDOmin->Visible=false;
 	rComboBoxKrok->Visible=false;
 	ComboBoxCekani->Visible=false;
-	Invalidate();
+	Invalidate();*/
 }
 //---------------------------------------------------------------------------
 //skryje či zobrazí mřížku
@@ -2008,8 +2011,6 @@ void __fastcall TForm1::DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TSh
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
-
-
 //TDateTime TIME;
 //TIME=TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");
 //S(TIME);
@@ -3679,9 +3680,9 @@ void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 //volání parametrů linky
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
-  ESC();//zruší případnou rozdělanou akci
-	Form_parametry_linky->Left=0+scGPPanel_mainmenu->Height;
-	Form_parametry_linky->Top=0+scGPPanel_mainmenu->Height*2;
+	ESC();//zruší případnou rozdělanou akci
+	Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+	Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 	if(IDOK==Form_parametry_linky->ShowModal())DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
@@ -3695,8 +3696,8 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 	}
 	else
 	{
-		Form_definice_zakazek->Left=0;
-		Form_definice_zakazek->Top=0+scGPPanel_mainmenu->Height;
+		Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
+		Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
 		Form_definice_zakazek->ShowModal();
 		DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
 	}

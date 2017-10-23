@@ -2778,16 +2778,18 @@ object Form1: TForm1
     Height = 25
     Caption = 'hl_spojak_zakazky'
     TabOrder = 31
+    Visible = False
     OnClick = hl_spojak_zakazkyClick
   end
   object Memo2: TMemo
     Left = 183
-    Top = 507
+    Top = 510
     Width = 362
     Height = 67
     Lines.Strings = (
       'Memo2')
     TabOrder = 32
+    Visible = False
   end
   object button_zakazky_temp: TButton
     Left = 303
@@ -2796,6 +2798,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'button_zakazky_temp'
     TabOrder = 34
+    Visible = False
     OnClick = button_zakazky_tempClick
   end
   object scSplitView_OPTIONS: TscSplitView
@@ -3214,6 +3217,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button11'
     TabOrder = 36
+    Visible = False
     OnClick = Button11Click
   end
   object scSplitView_MENU: TscSplitView
@@ -4487,7 +4491,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800A803AC0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800AC03AC0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5610,7 +5614,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D000002040230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D000402040230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

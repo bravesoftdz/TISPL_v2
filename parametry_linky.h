@@ -27,9 +27,7 @@ __published:	// IDE-managed Components
 	TscGPButton *Button_storno;
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
-	TscGPGlyphButton *MinButton;
 	TscLabel *scLabel1;
-	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton15;
 	TscGPButton *scGPButton2;
 	TrEditNum *rEditNum_delkavoziku;
