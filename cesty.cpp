@@ -42,40 +42,7 @@ void TForm_cesty::nactiNastaveni ()
 void __fastcall TForm_cesty::FormShow(TObject *Sender)
 {
 
-
-//
-			// rStringGridEd_cesty->Columns[1].
-		//	rStringGridEd_cesty->Columns[1].Items->PickList->Add('kuk');
-		//rStringGridEd_cesty->Columns[1].Items->PickList->Add("hu");
-
-		//  rStringGridEd_cesty->Columns[1][2]->PickList->Add("HOJ");
-
-			//		rStringGridEd_cesty->BoolCells(1,2);
-
-			rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ano");
-			rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
-
-
-
-//zobraz data
-
-	/*Cvektory::TObjekt *ukaz=Form1->d.v.OBJEKTY->dalsi;
-
-	int i=0;
-
-	while(ukaz!=NULL){
-					i++;
-
-			rStringGridEd_cesty->Cells[0][i]=ukaz->id;
-			rStringGridEd_cesty->Cells[1][i]=ukaz->name;
-			rStringGridEd_cesty->Cells[2][i]=ukaz->delka_dopravniku;
-
-
-		 rStringGridEd_cesty->RowCount++;
-
-		 ukaz=ukaz->dalsi;
-     	}
-   */
+//cinnost obsluhuje superform.cpp
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)

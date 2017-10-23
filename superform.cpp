@@ -247,6 +247,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 {
 	//definice ukazatele na aktuálnì editovanou zakázku     //èíslo øádku kde kliku došlo
 	Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);
+	AnsiString prochazet;
 
 	////////////jig form- byl klik na buòku v 5. sloupci
 	if(rStringGridEd1->Col==5)
@@ -269,7 +270,11 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	////////////cesty form - byl klik na buòku 9. sloupci
 	if(rStringGridEd1->Col==9)
 	{
-		////naèítání dat
+			////naèítání dat
+			Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Clear();
+			Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ano");
+			Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
+
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
 
@@ -279,6 +284,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			while(ukaz!=NULL)
 			{
 				i++;
+
 				Form_cesty->rStringGridEd_cesty->Cells[0][i]=ukaz->objekt->n;
 				Form_cesty->rStringGridEd_cesty->Cells[1][i]=ukaz->objekt->name;
 				Form_cesty->rStringGridEd_cesty->Cells[2][i]=ukaz->CT;
@@ -286,7 +292,12 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tv;
 				Form_cesty->rStringGridEd_cesty->Cells[5][i]=ukaz->Tc;
 				Form_cesty->rStringGridEd_cesty->Cells[6][i]=ukaz->Opak;
-				//Form_cesty->rStringGridEd_cesty->Cells[7][i]=ukaz->prochazet;
+
+				if(ukaz->Stav) prochazet="Ano";
+				if(!ukaz->Stav) prochazet="Ne";
+				Form_cesty->rStringGridEd_cesty->Cells[7][i]=prochazet;
+
+				ShowMessage(prochazet);
 				Form_cesty->rStringGridEd_cesty->RowCount=i+1;//pøidání dalšího øádku     //pridani k zobrazeni if ukaz param
 				ukaz=ukaz->dalsi;
 			}
@@ -299,11 +310,16 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		//ukládání dat - jednotlivého segmentu cesty pokud je považován k zahrnutní ze strany uživatele
 		if(mrOk==Form_cesty->ShowModal())
 		{
+
+
 			Form1->d.v.inicializace_cesty(zakazka);
 			for(int i=1;i<Form_cesty->rStringGridEd_cesty->RowCount;i++)
 			{                          //!!! doplní Rosa
 				//if(Form_cesty->rStringGridEd_cesty->Cells[7][i]!=Checked)//pokud je zaškrnuto neprocházek objekt se neuloží do cesty
 				//{
+				bool pruchod;
+				if (Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ano") pruchod=true;
+				if (Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ne") pruchod=false;
 						Form1->d.v.vloz_segment_cesty
 						(
 							zakazka,
@@ -313,8 +329,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 							Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble(),//RD
 							Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),//Tv
 							Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),//Tc
-							Form_cesty->rStringGridEd_cesty->Cells[6][i].ToDouble()//Opak   //ulozeni stavu pro cestu - roletka
-						);
+							Form_cesty->rStringGridEd_cesty->Cells[6][i].ToDouble(),//Opak   //ulozeni stavu pro cestu - roletka
+							pruchod);
 				//}
 				//vymazání textu z již nepotøebného øádku
 				Form_cesty->rStringGridEd_cesty->Rows[i]->Clear();
@@ -1160,7 +1176,7 @@ void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 
 		Cvektory::TZakazka *zakazka_temp=Form1->d.v.vrat_temp_zakazku(Edit_n_cesty->Text.ToInt());//inicializace
 		//naèítání dat
-
+			AnsiString prochazet;
 		if(zakazka_temp!=NULL)
 		if(zakazka_temp->cesta!=NULL)//pokud již byla cesta definovaná
 		{
@@ -1168,6 +1184,9 @@ void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 			Cvektory::TCesta *ukaz=zakazka_temp->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
 			while(ukaz!=NULL)
 			{
+			if(!ukaz->Stav) prochazet="Ne";
+			if (ukaz->Stav) {prochazet="Ano";}
+
 				Memo4->Lines->Add
 				(
 						AnsiString(ukaz->n)+","+
@@ -1175,7 +1194,7 @@ void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 						AnsiString(ukaz->CT)+","+
 						AnsiString(ukaz->RD)+","+
 						AnsiString(ukaz->Tc)+","+
-						AnsiString(ukaz->Tv)
+						AnsiString(prochazet)
 				);
 				ukaz=ukaz->dalsi;
 			}
