@@ -750,7 +750,7 @@ Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt,TZakaz
 	 {
 			 if(C->objekt==objekt){RET=C;break;}
 			 C=C->dalsi;
-	 }ShowMessage(objekt->name);
+	 }
 	 return RET;
 }
 //---------------------------------------------------------------------------
