@@ -40,6 +40,7 @@ void TForm_definice_zakazek::nastav_form()
 	rHTMLLabel_pocet_dnu->Font->Color=rHTMLLabel_effektivita->Font->Color;
 	rHTMLLabel_pocet_prac_hod->Font->Color=rHTMLLabel_effektivita->Font->Color;
 	rHTMLLabel_pozad_mnozstvi->Font->Color=rHTMLLabel_effektivita->Font->Color;
+	rHTMLLabel_zacatek->Font->Color=rHTMLLabel_effektivita->Font->Color;
 	//rHTMLLabel3->Font->Color=(TColor)RGB(50,50,50);   //velky nadpis  1
 
 	scGPButton2->Options->NormalColor=Form_definice_zakazek->Color;
@@ -182,8 +183,6 @@ void TForm_definice_zakazek::uloz_Default_cestu()
 //naètení hotových zakázek, tato metoda je volána z FormShow(), pokud existují zakázky
 void TForm_definice_zakazek::nacti_zakazky()
 {
-		ShowMessage("mam data v zakazkach");
-
 		////vyplnìní stringgridu
 		Cvektory::TZakazka *ukaz=Form1->d.v.ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, pøeskoèí hlavièku
 		int	i=0;
@@ -191,7 +190,6 @@ void TForm_definice_zakazek::nacti_zakazky()
 		while (ukaz!=NULL)
 		{
 			i++;
-			ShowMessage(i);
 
 			//naètení barvy
 			rStringGridEd1->Cells[3][i] = ukaz->barva;//pokud je uživatelská
@@ -296,8 +294,6 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				if(ukaz->Stav) prochazet="Ano";
 				if(!ukaz->Stav) prochazet="Ne";
 				Form_cesty->rStringGridEd_cesty->Cells[7][i]=prochazet;
-
-				ShowMessage(prochazet);
 				Form_cesty->rStringGridEd_cesty->RowCount=i+1;//pøidání dalšího øádku     //pridani k zobrazeni if ukaz param
 				ukaz=ukaz->dalsi;
 			}
@@ -946,6 +942,9 @@ void __fastcall TForm_definice_zakazek::RzStringGrid1GetEditMask(TObject *Sender
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm_definice_zakazek::Button_DELClick(TObject *Sender) {
+
+	
+
 //
 //	// Tlaèítko na smazání øádku
 //	RzStringGrid1->Rows[RzStringGrid1->Row]->Clear();
@@ -1046,7 +1045,7 @@ void __fastcall TForm_definice_zakazek::Button_OKKeyDown(TObject *Sender, WORD &
 //			break;
 //		}
 
-							ShowMessage("uloz");
+						 //	ShowMessage("uloz");
 //	}
 }
 //---------------------------------------------------------------------------
@@ -1120,7 +1119,6 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 																		rStringGridEd1->Cells[8][i].ToInt());
 
 		int j=rStringGridEd1->RowCount-1;
-    	ShowMessage(j);
 
 		 //pøi pøidání další zakázky uložím do cesty defaultní hodnoty
 	 Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
@@ -1226,6 +1224,33 @@ void __fastcall TForm_definice_zakazek::Button5Click(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::scGPGlyphButton_removeClick(TObject *Sender)
+
+{
+ 	//mazani zakazek
+				rStringGridEd1->Rows[rStringGridEd1->RowCount]->Clear();
+
+				if(rStringGridEd1->RowCount>2)
+				{
+				 Form1->d.v.smaz_temp_zakazku(rStringGridEd1->RowCount-1);
+				 rStringGridEd1->RowCount--;
+				 }
+
+}
+//---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
