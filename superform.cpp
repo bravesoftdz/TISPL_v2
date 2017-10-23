@@ -132,12 +132,14 @@ void TForm_definice_zakazek::predvypln_cestu()
 			Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
 			Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
 			Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
+			Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ano"; //priznak pruchodu cesty
 		}
 		else
 		{
 			Form_cesty->rStringGridEd_cesty->Cells[4][i]="0";  //Cas vymeny
 			Form_cesty->rStringGridEd_cesty->Cells[5][i]="0";  //Cas cisteni
 			Form_cesty->rStringGridEd_cesty->Cells[6][i]="0";  //Opakovani
+			Form_cesty->rStringGridEd_cesty->Cells[7][i]="Ano";  //priznak pruchodu cesty
 		}
 
 		Form_cesty->rStringGridEd_cesty->RowCount=i+1;
@@ -270,19 +272,6 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		////naèítání dat
 		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
 		{
-			/*!!! už nebo neopak zatím nemá význam, musíme se domluvit na postupu, jak to uživatelsky øešit
-			//pøedvyplnìní posloupností objektù v takovém poøadí, v jakém byly zadány ve schématu
-			Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
-			int j=0;
-			while(objekt!=NULL) //tvrdy vypis objektu do tabulky
-			{
-					j++;
-					Form_cesty->rStringGridEd_cesty->Cells[1][j]=objekt->name;
-					Form_cesty->rStringGridEd_cesty->RowCount=j+1;
-
-					objekt=objekt->dalsi;
-			}
-			*/
 
 			//vypíše døíve nadefinovanou cestu, jen s definovanými prvky zásadní nevýhodou je, že nelze pøidat prvky - nutno doøešit
 			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//pøeskoèí hlavièku, jde rovnou na první segment cesty
@@ -297,7 +286,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				Form_cesty->rStringGridEd_cesty->Cells[4][i]=ukaz->Tv;
 				Form_cesty->rStringGridEd_cesty->Cells[5][i]=ukaz->Tc;
 				Form_cesty->rStringGridEd_cesty->Cells[6][i]=ukaz->Opak;
-				Form_cesty->rStringGridEd_cesty->RowCount=i+1;//pøidání dalšího øádku
+				//Form_cesty->rStringGridEd_cesty->Cells[7][i]=ukaz->prochazet;
+				Form_cesty->rStringGridEd_cesty->RowCount=i+1;//pøidání dalšího øádku     //pridani k zobrazeni if ukaz param
 				ukaz=ukaz->dalsi;
 			}
 		}
@@ -323,7 +313,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 							Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble(),//RD
 							Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),//Tv
 							Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),//Tc
-							Form_cesty->rStringGridEd_cesty->Cells[6][i].ToDouble()//Opak
+							Form_cesty->rStringGridEd_cesty->Cells[6][i].ToDouble()//Opak   //ulozeni stavu pro cestu - roletka
 						);
 				//}
 				//vymazání textu z již nepotøebného øádku
