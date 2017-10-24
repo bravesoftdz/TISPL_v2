@@ -25,7 +25,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 0
+    TabOrder = 2
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -173,7 +173,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 1
+    TabOrder = 3
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -321,7 +321,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 2
+    TabOrder = 4
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -469,7 +469,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 3
+    TabOrder = 1
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -511,7 +511,7 @@
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 0
+      TabOrder = 1
       OnClick = scLabel_smazatClick
       OnMouseEnter = scLabel_smazatMouseEnter
       OnMouseLeave = scLabel_smazatMouseLeave
@@ -542,7 +542,7 @@
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 1
+      TabOrder = 0
       OnClick = scLabel_smazatClick
       OnMouseEnter = GlyphButton_smazatMouseEnter
       OnMouseLeave = GlyphButton_smazatMouseLeave
@@ -618,7 +618,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 4
+    TabOrder = 5
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -766,7 +766,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 5
+    TabOrder = 6
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -914,7 +914,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 6
+    TabOrder = 7
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -1062,7 +1062,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 7
+    TabOrder = 8
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -1210,7 +1210,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 8
+    TabOrder = 9
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -1358,7 +1358,7 @@
     Width = 211
     Height = 34
     Align = alTop
-    TabOrder = 9
+    TabOrder = 0
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255

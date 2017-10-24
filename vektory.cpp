@@ -753,6 +753,19 @@ Cvektory::TCesta *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt,TZakaz
 	 }
 	 return RET;
 }
+//ověří zda daný objekt je součástí cesty nějaké zakázky či nikoliv, pokud ano vrací ukazatel
+Cvektory::TZakazka *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt)
+{
+	 TZakazka *Z=ZAKAZKY->dalsi;
+	 while(Z!=NULL)//prochází jednotlivé zakázky
+	 {
+			 if(obsahuje_segment_cesty_objekt(objekt,Z)!=NULL)
+			 {return Z;}//nalezen
+			 else
+			 Z=Z->dalsi;
+	 }
+	 return NULL;
+}
 //---------------------------------------------------------------------------
 //vymaže celou cestu dané zakázky
 void Cvektory::vymaz_cestu_zakazky(TZakazka *zakazka)

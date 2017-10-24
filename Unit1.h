@@ -425,7 +425,8 @@ private:	void ESC();
 	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
 	void NewDesignSettings();//nastavení noveho designu
 	void aktualizace();//kontrola aktuálnosti verze a pøípadì nabídka na stažení nové
-
+	void onPopUP(int X, int Y);//nastavení zobrazení popUPmenu a jeho volání vèetnì pozice
+	void close_all_items_popUPmenu(bool vyjimka);//zajistí skrýtí všech položek popUPmenu
 	////promìnné
 	TDateTime TIME;
 	UnicodeString LICENCE;

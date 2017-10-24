@@ -1181,7 +1181,7 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
-          int X, int Y)
+					int X, int Y)
 {
  if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
  {
@@ -1233,46 +1233,10 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 			}
 			DuvodUlozit(true);
 	 }
+	 //POPUP menu
 	 else//pokud není stisknuto levé tlačítko, předpokládá se volání pop-up menu
 	 {
-      //výchozí skrytí položek
-			PopUPmenu->Item_smazat->Visible=false;PopUPmenu->Item_nastavit_parametry->Visible=false;
-			PopUPmenu->GlyphButton_zobrazit_parametry->Visible=false;PopUPmenu->scLabel_zobrazit_parametry->Visible=false;
-			PopUPmenu->scLabel_rychly_export->Visible=false;PopUPmenu->GlyphButton_rychly_export->Visible=false;
-			//dle modu
-			switch(MOD)
-			{
-				//case EDITACE:break;
-				//case TESTOVANI:break;
-				//case REZERVY:break;
-				case CASOVAOSA:
-				{                              //min                  //vozik
-					proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN,ceil((Y+d.PosunT.y-d.KrokY/2-RzToolbar1->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
-					if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
-					{
-						PopUPmenu->GlyphButton_zobrazit_parametry->Visible=true;PopUPmenu->scLabel_zobrazit_parametry->Visible=true;//nastavení zobrazení
-						PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;//umístění popup menu
-						PopUPmenu->Show();//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
-					}
-				}break;
-				case TECHNOPROCESY:break;
-				case SIMULACE:break;
-				default://pro SCHEMA
-				{
-					//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt //přídáno 19.4.2017 - zeefktivnění
-					pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
-					if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
-					{
-						PopUPmenu->Item_smazat->Visible=true;PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom->name.UpperCase();
-						PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
-					}
-					//umístění popup menu
-					PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;
-					PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;
-					//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
-					PopUPmenu->Show();
-				}break;
-			}
+			 onPopUP(X,Y);//nastavení zobrazení popUPmenu a jeho volání včetně pozice
 	 }
  }
 }
@@ -1399,6 +1363,79 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	 //vrat_puvodni_akci();
 	 /*if(X<=RzSizePanel_knihovna_objektu->Width) DrawGrid_knihovna->Enabled=true;
 	 else DrawGrid_knihovna->Enabled=false;*/
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//nastavení zobrazení popUPmenu a jeho volání včetně pozice
+void TForm1::onPopUP(int X, int Y)
+{
+	close_all_items_popUPmenu(false);//výchozí skrytí položek - pozor záleží na pořadí zobrazování
+
+	//dle modu
+	switch(MOD)
+	{
+		//case EDITACE:break;
+		//case TESTOVANI:break;
+		//case REZERVY:break;
+		case CASOVAOSA:
+		{                              //min                  //vozik
+			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN,ceil((Y+d.PosunT.y-d.KrokY/2-RzToolbar1->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
+			{
+				PopUPmenu->Item_zobrazit_parametry->Visible=true;//nastavení zobrazení
+			}
+			PopUPmenu->Item_rychly_export->Visible=true;
+			PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;//umístění popup menu
+			PopUPmenu->Show();//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
+		}break;
+		case TECHNOPROCESY:break;
+		case SIMULACE:break;
+		default://pro SCHEMA
+		{
+			//následující prapodivný kod je pokus o workaround zobrazování pořadí položek
+			PopUPmenu->Item_nastavit_parametry->Visible=true;
+			PopUPmenu->Item_smazat->Visible=true;
+			close_all_items_popUPmenu(true);
+			//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt //přídáno 19.4.2017 - zeefktivnění
+			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
+			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
+			{
+				PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
+				PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom->name.UpperCase();
+			}
+			else//pokud nebyl objekt zobrazen skryje
+			{
+				close_all_items_popUPmenu(false);
+			}
+			PopUPmenu->Item_priblizit->Visible=true;
+			PopUPmenu->Item_oddalit->Visible=true;
+			PopUPmenu->Item_posouvat->Visible=true;
+			PopUPmenu->Item_posunout->Visible=true;
+			PopUPmenu->Item_vybrat_oknem->Visible=true;
+			PopUPmenu->Item_cely_pohled->Visible=true;
+			//umístění popup menu
+			PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;
+			PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;
+			//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
+			PopUPmenu->Show();
+		}break;
+	}
+}
+//---------------------------------------------------------------------------
+//zajistí skrýtí všech položek popUPmenu
+void TForm1::close_all_items_popUPmenu(bool vyjimka)
+{
+	//výchozí skrytí položek - pozor záleží na pořadí zobrazování a možná i skrývání
+	PopUPmenu->Item_zobrazit_parametry->Visible=false;
+	PopUPmenu->Item_rychly_export->Visible=false;
+	PopUPmenu->Item_cely_pohled->Visible=false;
+	PopUPmenu->Item_vybrat_oknem->Visible=false;
+	PopUPmenu->Item_posunout->Visible=false;
+	PopUPmenu->Item_posouvat->Visible=false;
+	PopUPmenu->Item_oddalit->Visible=false;
+	PopUPmenu->Item_priblizit->Visible=false;
+	if(!vyjimka)PopUPmenu->Item_smazat->Visible=false;
+	if(!vyjimka)PopUPmenu->Item_nastavit_parametry->Visible=false;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2256,13 +2293,19 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 	if(pom!=NULL)//pokud byl prvek nalezen
 	{
-		if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
+		Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom);
+		if(Z!=NULL)
+			MB("Nelze smazat objekt, který je součástí technologické cesty zakázky např.: "+UnicodeString(Z->name));
+		else
 		{
-			d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
-			d.v.sniz_indexy(pom);
-			pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
-			REFRESH();
-			DuvodUlozit(true);
+			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
+			{
+				d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
+				d.v.sniz_indexy(pom);
+				pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+				REFRESH();
+				DuvodUlozit(true);
+			}
 		}
 	}
 	else
@@ -2888,7 +2931,7 @@ void TForm1::nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap)
 	 //vstupně/výstupní bitmapa
 	 Bitmap->Width=d.WidthCanvasCasoveOsy;
 	 Bitmap->Height=d.HeightCanvasCasoveOsy+RzToolbar1->Height;
-	 Bitmap->Canvas->Draw(0,RzToolbar1->Height,Bitmap_MARO);//Bitmap_MARO vykreslím do výsledné mapy níže o výšku RzToolBaru kvůli prostoru na nadpis, ten se vytváří níže
+	 Bitmap->Canvas->Draw(0,scGPPanel_mainmenu->Height,Bitmap_MARO);//Bitmap_MARO vykreslím do výsledné mapy níže o výšku RzToolBaru kvůli prostoru na nadpis, ten se vytváří níže
 	 delete Bitmap_MARO;
 
 	 //nadpis výstupu
