@@ -68,6 +68,7 @@ __published:	// IDE-managed Components
 	TEdit *Edit_n_cesty;
 	TscGPGlyphButton *scGPGlyphButton_remove;
 	TrHTMLLabel *rHTMLLabel_zacatek;
+	TrHTMLLabel *rHTMLLabel_eDesigner;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RzStringGrid1MouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);

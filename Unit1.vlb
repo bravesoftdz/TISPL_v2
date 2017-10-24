@@ -163,9 +163,6 @@ Coordinates=253,144,90,58
 [rComboBoxKrok]
 Coordinates=264,10,108,124
 
-[IdTime1]
-Coordinates=1297,606,61,36
-
 [Button10]
 Coordinates=225,212,66,58
 
@@ -427,4 +424,7 @@ Coordinates=511,631,124,36
 
 [scGPGlyphButton_parametry_linky]
 Coordinates=709,631,124,36
+
+[IdTime1]
+Coordinates=1297,606,61,36
 

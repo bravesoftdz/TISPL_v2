@@ -88,6 +88,21 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_eDesigner: TrHTMLLabel
+    Left = 662
+    Top = 56
+    Width = 329
+    Height = 19
+    Caption = 'Zadejte parametry zak'#225'zek nebo zvolte storno.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    Visible = False
+  end
   object Button_OK: TButton
     Left = 619
     Top = 523

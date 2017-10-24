@@ -34,6 +34,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton1;
 	TButton *Vypis_pohony;
 	TscRadioGroup *scRadioGroup_typVoziku;
+	TrHTMLLabel *rHTMLLabel_eDesigner;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

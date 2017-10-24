@@ -250,7 +250,6 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
-    ExplicitWidth = 1034
   end
   object Button3: TButton
     Left = 183
@@ -718,7 +717,6 @@ object Form1: TForm1
     Caption = 'scGPPanel_mainmenu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 1034
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 1211
@@ -796,7 +794,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 984
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -875,7 +872,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 884
     end
     object editacelinky1: TscGPButton
       Left = 639
@@ -968,7 +964,6 @@ object Form1: TForm1
       Down = True
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 412
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -1153,7 +1148,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 568
     end
     object technologickprocesy1: TscGPButton
       Left = 873
@@ -1247,7 +1241,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 646
     end
     object scGPGlyphButton1: TscGPGlyphButton
       AlignWithMargins = True
@@ -1326,7 +1319,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 2
       AllowAllUp = True
-      ExplicitLeft = 844
     end
     object Ulozit: TscGPGlyphButton
       AlignWithMargins = True
@@ -1639,7 +1631,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 934
     end
     object DetailsButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1813,7 +1804,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 490
     end
     object simulace: TscGPButton
       Left = 951
@@ -1907,7 +1897,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
-      ExplicitLeft = 724
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 1029
@@ -1987,7 +1976,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 802
     end
     object scLabel_titulek: TscLabel
       Left = 242
@@ -2020,7 +2008,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'ELTEP - tispl'
-      ExplicitWidth = 170
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -2053,7 +2040,6 @@ object Form1: TForm1
     Color = clBtnFace
     TransparentBackground = False
     StorePaintBuffer = True
-    ExplicitWidth = 1034
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -2352,7 +2338,6 @@ object Form1: TForm1
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
-      ExplicitLeft = 1008
     end
     object scLabel_ZOOM: TscLabel
       Left = 0
@@ -2869,7 +2854,6 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
-    ExplicitLeft = 1034
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -4599,7 +4583,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800B803BC0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C403C40310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5636,7 +5620,7 @@ object Form1: TForm1
     Request.ContentRangeInstanceLength = -1
     Request.Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
     Request.BasicAuthentication = False
-    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    Request.UserAgent = 'Mozilla / 4.0 (compatible; MSIE 5.5, Windows 98)'
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
@@ -5722,7 +5706,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D001002140230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D001C021C0230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15244,7 +15228,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011D006401640118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011D006C016C0118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

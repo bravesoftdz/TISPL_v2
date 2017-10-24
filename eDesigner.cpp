@@ -20,8 +20,10 @@ __fastcall TForm_eDesigner::TForm_eDesigner(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_eDesigner::FormShow(TObject *Sender)
 {
-	if(Form_parametry_linky->ShowModal())
-	Form_definice_zakazek->ShowModal();
+	//if(Form_parametry_linky->ShowModal())
+	//Form_definice_zakazek->ShowModal();
+	//Form1->Button_dopravnik_parametryClick(Sender);//volání parametrù linky
+	//Form1->scGPGlyphButton_definice_zakazekClick(Sender);//volání superformuláøe (definice zakázek)
 }
 //---------------------------------------------------------------------------
 

@@ -30,6 +30,21 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_eDesigner: TrHTMLLabel
+    Left = 300
+    Top = 56
+    Width = 308
+    Height = 19
+    Caption = 'Zadejte parametry linky nebo zvolte storno.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    Visible = False
+  end
   object ValueListEditor: TValueListEditor
     Left = 448
     Top = 351
@@ -549,7 +564,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 429
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 529
@@ -629,7 +643,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 429
     end
   end
   object scGPButton2: TscGPButton

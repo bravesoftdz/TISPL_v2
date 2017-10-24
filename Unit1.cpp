@@ -222,16 +222,18 @@ void TForm1::aktualizace()
 		//porovnání akt. verze a používané verze aplikace
 		if(AKT_VERZE!=VERZE)//je k dispozici aktualizace
 		{
-			if(mrYes==MB("Je k dispozici aktualizace TISPLu. Chcete ji stáhnout? Aplikace bude po dokončení stahování aktualizace ukončena. Staženým souborem přepište současný EXE soubor!",MB_YESNO,false))
+			if(mrYes==MB("Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?",MB_YESNO,false))
 			{
+				MB("Po dokončení staženým souborem přepište současný EXE soubor.");
+				zobraz_tip("Probíhá stahování aktualizace, po dokončení stahování bude program ukončen.Staženým souborem přepište současný EXE soubor.");
 				SaveDialog->Title="Uložit soubor jako";
-				SaveDialog->DefaultExt="*.zip";
-				SaveDialog->Filter="Aktualizace TISPLu (*.zip)|*.zip";
+				SaveDialog->DefaultExt="*.exe";
+				SaveDialog->Filter="Aktualizace TISPLu (*.exe)|*.exe";
 				SaveDialog->FileName="TISPL_aktualizace";
 				if(SaveDialog->Execute())
 				{
 						TMemoryStream *MemoryStream=new TMemoryStream();
-						IdHTTP1->Get("http://85.255.0.237/TISPL/LIC/"+LICENCE+"/tispl.zip",MemoryStream);
+						IdHTTP1->Get("http://85.255.0.237/TISPL/LIC/"+LICENCE+"/tispl.exe",MemoryStream);
 						MemoryStream->SaveToFile(SaveDialog->FileName);
 						log2web("aktualizace_z_"+AKT_VERZE+"_na_"+VERZE);
 						ShellExecute(0,L"open",SaveDialog->FileName.c_str(),0,0,SW_SHOWNORMAL);
@@ -326,14 +328,14 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	else
 	{
-//		//toto odkomentovat pro spuštění TTR
-//		if(!ttr("start"))
-//		{
-//			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-//			Close();
-//		}
-//		else
-		Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
+		//toto odkomentovat pro spuštění TTR
+		if(!ttr("start"))
+		{
+			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+			Close();
+		}
+		else
+		//Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
 		startUP();//toto vždy odkomentované
 	}
 }
@@ -367,7 +369,7 @@ bool TForm1::ttr(UnicodeString Text)
 					{
 						IdTime1->Host="129.6.15.29";//testovací TIME SERVER, který nefunguje: 192.43.244.18
 						TIME=IdTime1->DateTime;
-				}
+					}
 					catch(...)//v případě nedostupnosti timeserveru, zkusí ještě jiný
 					{
 						IdTime1->Host="128.138.140.44";//testovací TIMESERVER, který nefunguje: 192.43.244.18
@@ -3982,9 +3984,59 @@ void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
 //volání eDesignera
 void __fastcall TForm1::scButton2Click(TObject *Sender)
 {
-		OtevritSoubor("schemaW.tispl"); //schemaW.tispl musí být tam, kde exe tisplu nebo zadat adresu
-		Form_eDesigner->Show();
-		scSplitView_MENU->Close();
+	 scSplitView_MENU->Close();//zavře menu
+	 NovySouborClick(Sender);//prvně zavřu starý, který ho donutím uložit a vytvořím nový soubor
+	 //Form_eDesigner->Show();
+	 AnsiString FileNameSablona="sablona.tisplTemp";
+
+	 //pokud šablona neexistuje, zkusí ji stáhnout
+	 //mohla by být v onshow v uvodu
+	 if(!FileExists(ExtractFilePath(Application->ExeName)+FileNameSablona))
+	 {
+			try
+			{
+					zobraz_tip("Probíhá stahování šablony...");
+					TMemoryStream *MemoryStream=new TMemoryStream();
+					IdHTTP1->Get("http://85.255.0.237/TISPL/"+FileNameSablona,MemoryStream);
+					MemoryStream->SaveToFile(ExtractFilePath(Application->ExeName)+FileNameSablona);//stáhne k souboru exe
+			}
+			catch(...){;}//v případě nedostupnosti internetu atp.
+	 }
+
+	 //pokud soubor šablony existuje
+	 if(FileExists(ExtractFilePath(Application->ExeName)+FileNameSablona))
+	 {
+		 AnsiString T1="Následně bude otevřena šablona. Zadejte název projektu, pod kterým bude uložena.";
+		 MB(T1);SB(T1);
+		 OtevritSoubor(ExtractFilePath(Application->ExeName)+FileNameSablona); //volaný *.tispl musí být tam, kde exe tisplu nebo zadat adresu
+		 DuvodUlozit(true);
+		 UlozitjakoClick(this);
+
+		 AnsiString T2="Zadejte parametry linky nebo zvolte storno.";
+		 //MB(T2);
+		 Form_parametry_linky->rHTMLLabel_eDesigner->Visible=true;
+		 Form_parametry_linky->rHTMLLabel_eDesigner->Caption=T2;
+		 SB(T2);//zobraz_tip(T2);
+		 Button_dopravnik_parametryClick(Sender);//volání parametrů linky
+
+		 AnsiString T3="Zadejte parametry zakázek nebo zvolte storno.";
+		 //MB(T3);
+		 Form_definice_zakazek->rHTMLLabel_eDesigner->Visible=true;
+		 Form_definice_zakazek->rHTMLLabel_eDesigner->Caption=T3;
+		 SB(T3);//zobraz_tip(T3);
+		 scGPGlyphButton_definice_zakazekClick(Sender);//volání superformuláře (definice zakázek)
+
+		 AnsiString T4="Vytvořte schéma a pomocí pravého tlačítka nastavte parametry objektů.";
+		 SB(T4);zobraz_tip(T4);MB(T4,MB_OK,false);
+
+		 Form_parametry_linky->rHTMLLabel_eDesigner->Visible=false;
+		 Form_definice_zakazek->rHTMLLabel_eDesigner->Visible=false;
+		 DuvodUlozit(true);
+	 }
+	 else//nebyla nalezena šablona
+	 {
+		 MB("Nepodařilo se najít nebo stáhnout šablonu. Průvodce nebude spuštěn!");
+	 }
 }
 //---------------------------------------------------------------------------
 
