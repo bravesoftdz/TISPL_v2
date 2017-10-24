@@ -572,6 +572,7 @@ void __fastcall TForm1::editacelinky1Click(TObject *Sender)
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=false;
 	scLabel_doba_cekani->Visible=false;
+	GlyphButton_close_grafy->Visible=false;
 
 
 	CheckBoxVymena_barev->Visible=false;
@@ -618,6 +619,7 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 //	CheckBox_pouzit_zadane_kapacity->Visible=false;
 //	g.ShowGrafy(false);
 //	ComboBoxCekani->Visible=false;
+//	GlyphButton_close_grafy->Visible=false;
 //	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -652,6 +654,7 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //	CheckBox_pouzit_zadane_kapacity->Visible=false;
 //	g.ShowGrafy(false);
 //	ComboBoxCekani->Visible=false;
+//	GlyphButton_close_grafy->Visible=false;
 //	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -694,7 +697,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			CheckBoxVymena_barev->Visible=true;
 			CheckBoxVytizenost->Visible=true;
 			scLabel_doba_cekani->Visible=true;
-
+			GlyphButton_close_grafy->Visible=true;
 
 			CheckBoxAnimovatSG->Visible=false;
 			ComboBoxODmin->Visible=false;
@@ -709,6 +712,25 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			Invalidate();
 		}
 	}
+}
+//---------------------------------------------------------------------------
+//zavře nebo otevře grafy v časových osách
+void __fastcall TForm1::GlyphButton_close_grafyClick(TObject *Sender)
+{
+	if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkClose)
+	{
+		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
+		Form1->GlyphButton_close_grafy->Top=scGPPanel_statusbar->Top-Form1->GlyphButton_close_grafy->Height;
+		g.ShowGrafy(false);
+		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
+	}
+	else
+	{
+		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
+		Form1->GlyphButton_close_grafy->Top=Form1->Chart1->Top/*-Form1->GlyphButton_close_grafy->Height*/;
+		g.ShowGrafy(true);
+		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkClose;//změní typ ikony
+  }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
@@ -3993,6 +4015,8 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		else S("Není zakazka");
 }
 //---------------------------------------------------------------------------
+
+
 
 
 

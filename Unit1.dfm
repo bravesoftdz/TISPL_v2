@@ -4490,11 +4490,100 @@ object Form1: TForm1
       WordWrap = False
     end
   end
+  object GlyphButton_close_grafy: TscGPGlyphButton
+    AlignWithMargins = True
+    Left = 543
+    Top = 42
+    Width = 20
+    Height = 24
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
+    Align = alCustom
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNone
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 37
+    Visible = False
+    StyleElements = [seFont, seClient]
+    OnClick = GlyphButton_close_grafyClick
+    ArrowPosition = scapBottom
+    Animation = False
+    Caption = 'GlyphButton_close_grafy'
+    CanFocused = False
+    CustomDropDown = False
+    Layout = blGlyphRight
+    TransparentBackground = True
+    ColorValue = clRed
+    Cancel = True
+    Options.NormalColor = cl3DLight
+    Options.HotColor = cl3DLight
+    Options.PressedColor = clRed
+    Options.FocusedColor = clRed
+    Options.DisabledColor = clBtnText
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 180
+    Options.FocusedColorAlpha = 220
+    Options.DisabledColorAlpha = 0
+    Options.FrameNormalColor = cl3DLight
+    Options.FrameHotColor = clRed
+    Options.FramePressedColor = clRed
+    Options.FrameFocusedColor = cl3DLight
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 220
+    Options.FramePressedColorAlpha = 220
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 0
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = cl3DLight
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 1
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    GlyphOptions.NormalColor = clWhite
+    GlyphOptions.HotColor = clWhite
+    GlyphOptions.PressedColor = clWhite
+    GlyphOptions.FocusedColor = clWhite
+    GlyphOptions.DisabledColor = clWhite
+    GlyphOptions.NormalColorAlpha = 200
+    GlyphOptions.HotColorAlpha = 255
+    GlyphOptions.PressedColorAlpha = 255
+    GlyphOptions.FocusedColorAlpha = 255
+    GlyphOptions.DisabledColorAlpha = 150
+    GlyphOptions.Kind = scgpbgkClose
+    GlyphOptions.Thickness = 2
+    GlyphOptions.StyleColors = True
+    TextMargin = -1
+    ScaleFrameWidth = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = False
+    ShowFocusRect = False
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = True
+  end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800B803B80310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800BC03BC0310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5617,7 +5706,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D001002100230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D001402140230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15139,7 +15228,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011D006001600118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011D006401640118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

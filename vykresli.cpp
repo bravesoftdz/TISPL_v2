@@ -517,8 +517,15 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		WidthCanvasCasoveOsy=m.round(X);//uchová velikost nejdelší osy, pro použítí pro export canvasu do rastru
 		HeightCanvasCasoveOsy=Y-KrokY/2;//uchová výšku grafu
 		if(Form1->grid)vykresli_Xosy(canv);//vykreslí statické svislice na časové osy pokud je aktivovaná mřížka
-		Form1->g.ShowGrafy(true);
-		JIZPOCITANO=true;//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba
+		//povolení zobrazení grafu
+		if(Form1->GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkClose)
+		{
+			Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
+			Form1->GlyphButton_close_grafy->Top=Form1->Chart1->Top/*-Form1->GlyphButton_close_grafy->Height*/;
+			Form1->g.ShowGrafy(true);
+		}
+		//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba zatěžovat znovu systémové prostředky (nehledě na to, že to bylo dost znát)
+		JIZPOCITANO=true;
 	}
 	else
 	{
