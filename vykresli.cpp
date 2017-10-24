@@ -782,8 +782,8 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				canv->Brush->Color=ukaz->barva;
 				canv->Font->Style=TFontStyles()<< fsBold;
 				canv->Font->Color=clWhite;
-				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,oY,RET.x);//zobrazuje pouze větší než začátek obrazovky
-				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,oY,RET.y);//zobrazuje pouze větší než začátek obrazovky
+				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,oY,AnsiString(RET.x)+"<");//zobrazuje pouze větší než začátek obrazovky
+				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,oY,"<"+AnsiString(RET.y));//zobrazuje pouze větší než začátek obrazovky
 				ukaz=ukaz->dalsi;
 			}
 	}

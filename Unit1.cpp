@@ -2849,7 +2849,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 				}
 				break;
 				//ZDM case REZERVY: d.vykresli_graf_rezervy(Bitmap->Canvas);break;//vykreslení grafu rezerv
-				case CASOVAOSA:	nastaveni_grafickeho_vystupu(Bitmap);break;
+				//ZDM case CASOVAOSA:	nastaveni_grafickeho_vystupu(Bitmap);break;
 			}
 
 			//vraceni puvodních hodnot
@@ -2890,7 +2890,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 				if(export_format=="bmp"){Bitmap->SaveToFile(F);delete Bitmap;}
 				if(export_format=="png"){Png->SaveToFile(F);delete Png;}
 
-				ShellExecute(0,L"open",UnicodeString(F).c_str(),0,0,SW_SHOWNORMAL);//otevře výstup
+				//ShellExecute(0,L"open",UnicodeString(F).c_str(),0,0,SW_SHOWNORMAL);//otevře výstup
 			}
 			Screen->Cursor=crDefault;//změní kurzor na default
 			SB("Export do "+export_format+" dokončen.");
@@ -2901,37 +2901,67 @@ void __fastcall TForm1::Rychlexport1Click(TObject *Sender)
 {
 	 Screen->Cursor=crHourGlass;//změní kurzor na přesýpací hodiny
 
-	 //založení Bitmapy včetně parametrů
-	 Graphics::TBitmap * Bitmap = new Graphics::TBitmap;
-	 nastaveni_grafickeho_vystupu(Bitmap);
+	 unsigned int PO=100;//po kolika vozících se bude stránkovat export
+	 for(unsigned int i=1;i<=d.v.VOZIKY->predchozi->n;i+=PO)
+	 {
+     //založení Bitmapy včetně parametrů
+		 Graphics::TBitmap * Bitmap = new Graphics::TBitmap;
+		 nastaveni_grafickeho_vystupu(Bitmap,i,PO);
 
-	 //uložení z Bitmapy do Png (do Jpg dělalo drobnou grafickou chybu)
-	 TPngImage* Png=new TPngImage;
-	 Png->Assign(Bitmap);
-	 delete Bitmap;
+     //uložení z Bitmapy do Png (do Jpg dělalo drobnou grafickou chybu)
+     TPngImage* Png=new TPngImage;
+     Png->Assign(Bitmap);
+     delete Bitmap;
 
-	 AnsiString FileName="export_"+UnicodeString(DateToStr(Now()))+"_"+ms.replace(TimeToStr(Now()),"_",":")+".png";
-	 Png->SaveToFile(FileName);delete Png;//uloží PNG do souboru a smaže na něj ukazatel
-	 ShellExecute(0,L"open",UnicodeString(FileName).c_str(),0,0,SW_SHOWNORMAL);//otevře výstup
+		 //uložení do finálního souboru včetně otevření souboru
+		 //UnicodeString FileName="export_"+UnicodeString(DateToStr(Now()))+"_"+ms.replace(TimeToStr(Now()),"_",":")+"_"+AnsiString(i)+"_"+AnsiString(i+PO)+".png";
+		 UnicodeString FileName="export_"+AnsiString(i)+"_"+AnsiString(i+PO)+".png";//název souboru bez data, výše s datem, ale zbytečně se to množí...
+		 Png->SaveToFile(FileName);delete Png;//uloží PNG do souboru a smaže na něj ukazatel
+		 ShellExecute(0,L"open",UnicodeString(FileName).c_str(),0,0,SW_SHOWNORMAL);//otevře výstup
+	 }
+
 	 Screen->Cursor=crDefault;//změní kurzor na default
 	 SB("Rychlý export dokončen.");
 }
 //---------------------------------------------------------------------------
-void TForm1::nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap)
+void TForm1::nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO)
 {
-	 //kvůli nadpisu výstupu skládám výslednou mapu ze dvou bitmap, nelze řešit jen přes posun, protože se mi neposunou popisky svislých os
+
+	 if(OD==0)OD=1;//ošetření kvůli následujícímu OD-1=aby se nešlo do minusu resp. 0 ošetřuje d.v.vrat_start_a_pozici_vozikuPX
+	 //souřadnice X pro pozici a šířku (pozor: .y mate jedná se o pravou souřadnici X)
+	 int L=0;int R=0;
+	 //souřadnice Y
+	 int B=0;
+
+	 if(d.v.VOZIKY->predchozi->n<=PO)//pokud není třeba stránkovat
+	 {
+			 R=d.WidthCanvasCasoveOsy-5;//-5korekce následujích +5
+			 L=0;
+			 B=d.HeightCanvasCasoveOsy;
+	 }
+	 else//je hodně (resp. více jak PO-čet) vozíku je třeba stránkovat
+	 {
+			B=d.KrokY*(PO+2);
+			L=d.v.vrat_start_a_pozici_vozikuPX(OD-1).x;
+			R=d.v.vrat_start_a_pozici_vozikuPX(OD+PO+2).y-L;//odečte offset z levé strany
+			if(R<=0)R=d.WidthCanvasCasoveOsy-L-5;//pokud nastane situace, že už poslední vozík není nalezen//-5korekce následujích +5
+	 }
+	 //ShowMessage(AnsiString(OD)+"_"+AnsiString(L)+"_"+AnsiString(R));
+
+	 ///kvůli nadpisu výstupu skládám výslednou mapu ze dvou bitmap, nelze řešit jen přes posun, protože se mi neposunou popisky svislých os
 	 Graphics::TBitmap * Bitmap_MARO = new Graphics::TBitmap;
-	 Bitmap_MARO->Width=d.WidthCanvasCasoveOsy;
-	 Bitmap_MARO->Height=d.HeightCanvasCasoveOsy;
+	 Bitmap_MARO->Width=/*d.WidthCanvasCasoveOsy*/R+5;
+	 Bitmap_MARO->Height=/*d.HeightCanvasCasoveOsy;*/B;//+1 kousek navíc
+
 	 TPointD puvPosunT=d.PosunT;//zazálohování aktuálního posunu
-	 d.PosunT.x=0;d.PosunT.y=0;//provizorní navrácení na výchozí pozici
+	 d.PosunT.x=L;d.PosunT.y=d.KrokY*(OD-1);//provizorní navrácení na výchozí pozici -1 kousek navíc
 	 d.vykresli_casove_osy(Bitmap_MARO->Canvas);
 	 d.PosunT=puvPosunT;//navrácení do stavu, aby uživatel posun do výchozí pozice nezaznamenal
 
 	 //vstupně/výstupní bitmapa
-	 Bitmap->Width=d.WidthCanvasCasoveOsy;
-	 Bitmap->Height=d.HeightCanvasCasoveOsy+RzToolbar1->Height;
-	 Bitmap->Canvas->Draw(0,scGPPanel_mainmenu->Height,Bitmap_MARO);//Bitmap_MARO vykreslím do výsledné mapy níže o výšku RzToolBaru kvůli prostoru na nadpis, ten se vytváří níže
+	 Bitmap->Width=/*d.WidthCanvasCasoveOsy*/R+5;              //+5 kousek navíc
+	 Bitmap->Height=/*d.HeightCanvasCasoveOsy*/B+scGPPanel_mainmenu->Height-10;
+	 Bitmap->Canvas->Draw(0,scGPPanel_mainmenu->Height-10,Bitmap_MARO);//Bitmap_MARO vykreslím do výsledné mapy níže o výšku scGPPanel_mainmenu->Height kvůli prostoru na nadpis, ten se vytváří níže
 	 delete Bitmap_MARO;
 
 	 //nadpis výstupu
@@ -3584,7 +3614,12 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 void __fastcall TForm1::scGPSwitch4ChangeState(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
-	antialiasing=!antialiasing;
+	//protože zlobí, tak rozepisuji
+	if(scGPSwitch4->State==true)
+	 antialiasing=true;
+	else
+	 antialiasing=false;
+	//antialiasing=!antialiasing;
 	DrawGrid_knihovna->Invalidate();
 	Invalidate();
 	//REFRESH();
