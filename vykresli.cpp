@@ -448,44 +448,17 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 						//v.vloz_proces(P);
 
 						////čekání na čištění pistole a výměnu barev včetně čekání
-//						if(Form1->FileName.Pos("magna.tispl") && Form1->CheckBoxVymena_barev->Checked && (C->objekt->short_name.Pos("PRI") || C->objekt->short_name.Pos("BC") || C->objekt->short_name.Pos("CC")))
-//						{
-//								short n_cisteni=0;//po kolika vozících
-//								double T_cisteni=0;//s čištění
-//								double T_vymena=0;//min vyměna
-//								if(C->objekt->short_name=="PRI"){n_cisteni=10;T_cisteni=88/60.0;T_vymena=T_cisteni+266/60.0;}
-//								if(C->objekt->short_name=="BC"){n_cisteni=10;T_cisteni=40/60.0;T_vymena=T_cisteni+112/60.0;}
-//								if(C->objekt->short_name=="CC"){n_cisteni=10;T_cisteni=88/60.0;T_vymena=T_cisteni+266/60.0;}
-//
-//								if(n%n_cisteni==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
-//								{
-//									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+T_cisteni*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//									X+=T_cisteni*PX2MIN;
-//								}
-//								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
-//								{
-//									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+T_vymena*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//									X+=T_vymena*PX2MIN;
-//								}
-//								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
-//						}
-//						if(Form1->FileName.Pos("extreme.tispl") && Form1->CheckBoxVymena_barev->Checked && C->objekt->short_name=="LAK")
-//						{
-//								short n_cisteni=2;//po kolika vozících
-//								double T_cisteni=50/60.0;//50s čištění
-//								double T_vymena=240/60.0;//4 min čištění
-//								if(n%n_cisteni==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
-//								{
-//									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+T_cisteni*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//									X+=T_cisteni*PX2MIN;
-//								}
-//								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
-//								{
-//									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+T_vymena*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//									X+=T_vymena*PX2MIN;
-//								}
-//								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
-//						}
+						if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
+						{
+							vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc*PX2MIN-PosunT.x,Yloc-PosunT.y);
+							X+=C->Tc*PX2MIN;
+						}
+						if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
+						{
+							vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv*PX2MIN-PosunT.x,Yloc-PosunT.y);
+							X+=C->Tv*PX2MIN;
+						}
+						X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
 
 						////vykreslení procesu (jednoho obdelníčku "v plavecké dráze") včetně výpočtu koncové pozice a uložení dílčích hodnot
 						X=proces(canv,++n,X_predchozi,X,Yloc,C,vozik);
