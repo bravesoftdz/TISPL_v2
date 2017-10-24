@@ -427,15 +427,6 @@ bool TForm1::ttr(UnicodeString Text)
 //při aktivaci formuláře startující záležitosti, pro zpřehlednění kodu
 void TForm1::startUP()
 {
-	////zalogování startu aplikace
-
-	AnsiString relation_id=GetCurrentProcessId();
-	AnsiString send_log_time= TIME.CurrentDateTime();
-	AnsiString ID ="1";
-	AnsiString Text="aplikace start";
-	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
-	FDConnection1->ExecSQL(strSQL);
-
 
 	//////otevrení posledního souboru
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
@@ -507,7 +498,15 @@ void TForm1::startUP()
 void TForm1::log2web(UnicodeString Text)
 {
 	log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-}
+
+	AnsiString relation_id=GetCurrentProcessId();
+	AnsiString send_log_time= TIME.CurrentDateTime();
+	AnsiString ID ="1";
+	//AnsiString Text="aplikace start";
+	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+	FDConnection1->ExecSQL(strSQL);
+
+	}
 //pouze text
 void TForm1::log2webOnlyText(UnicodeString Text)
 {

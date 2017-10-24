@@ -65,6 +65,14 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 		rHTMLLabel_doporuc_cekani_value->Caption="Nastavte pohony v parametrech linky";
 		}
 
+		if((scComboBox_rezim->ImageIndex!=1) || (scComboBox_rezim->ImageIndex!=2)){
+
+    	rEditNum_odchylka->Enabled=false;
+			rEditNum_kapacita->Enabled=false;
+			
+		}
+      rEditNum_kapacita->Text="1";
+
 
 
 
@@ -449,6 +457,13 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 {
 				switch(scComboBox_rezim->ItemIndex)
 	{
+
+		case 1: //kontinual
+		{
+      rEditNum_odchylka->Enabled=true;
+			rEditNum_kapacita->Enabled=true;
+		}
+		break;
 		case 2://postprocesni - povoleni a zakazani editboxu pro rezimy
 		{
 			rEditNum_odchylka->Enabled=true;
@@ -459,6 +474,8 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 		{
 			rEditNum_odchylka->Enabled=false;
 			rEditNum_kapacita->Enabled=false;
+			rEditNum_odchylka->Text="0";
+			rEditNum_kapacita->Text="1";
 
 		}
 		break;
@@ -466,4 +483,7 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
+
+
 

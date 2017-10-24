@@ -667,7 +667,7 @@ object Form_parametry: TForm_parametry
   end
   object rEditNum_kapacita: TrEditNum
     Left = 232
-    Top = 290
+    Top = 284
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
@@ -678,9 +678,11 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    NumbersOnly = True
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 8
+    Value = 1.000000000000000000
   end
   object scGPButton1_OK: TscGPButton
     Left = 65
@@ -904,6 +906,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 9
     TabStop = True
+    Visible = False
     CustomCheckedImageIndex = -1
     CustomCheckedImageHotIndex = -1
     CustomCheckedImagePressedIndex = -1
@@ -1117,6 +1120,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    NumbersOnly = True
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False

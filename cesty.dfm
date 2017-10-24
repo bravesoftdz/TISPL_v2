@@ -108,6 +108,10 @@ object Form_cesty: TForm_cesty
         ColumnGroup = 1
       end
       item
+        DataType = sgdNumber
+        MinValue = 0.100000000000000000
+        MaxValue = 50.000000000000000000
+        OutOfLimitDataColor = clRed
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
@@ -778,6 +782,7 @@ object Form_cesty: TForm_cesty
     Lines.Strings = (
       'Memo1')
     TabOrder = 5
+    Visible = False
   end
   object vypis_objekty: TButton
     Left = 304
