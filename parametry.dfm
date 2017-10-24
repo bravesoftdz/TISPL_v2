@@ -671,7 +671,6 @@ object Form_parametry: TForm_parametry
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
