@@ -441,6 +441,7 @@ public:
 		double vrat_AVG_TT_zakazky(unsigned int n_zakazky);//vrátí hodnotu průměrného TT mezi vozíky v rámci
 		unsigned int vrat_pocet_voziku_zakazky(TZakazka *jaka);
 		unsigned int vrat_pocet_voziku_zakazky(unsigned int n_zakazky);
+		TPoint vrat_start_a_pozici_vozikuPX(unsigned int n_voziku);//vrátí začátek a konec vozíku na časové ose v PX
 		unsigned int WIP();//vrátí max. počet vozíků na lince
 		void uloz_doporucene_kapacity_objetku();//ukládá vypočtené doporučené kapacity jednotlivým technologickým objektům do jejich atribitu dop_kapacita, která se nezadává uživatelsky, ale jedině v tomto algoritmu
 

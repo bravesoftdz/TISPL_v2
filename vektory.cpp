@@ -1736,7 +1736,7 @@ double Cvektory::vrat_AVG_TT_zakazky(unsigned int n_zakazky)//vrátí hodnotu pr
 	}
 	if(i==0)return 0;//pokud je pouze jenom jeden vozík není takt
 	else return floor(TT/i*1000000.0)/1000000.0;//vrátí průměrné TT
-}                      //kvůli chybě s přesnosti uříznutí na 6 reaálných míst
+}                      //kvůli chybě s přesnosti uříznutí na 6 reálných míst
 ////---------------------------------------------------------------------------
 unsigned int Cvektory::vrat_pocet_voziku_zakazky(TZakazka *jaka)
 {
@@ -1759,6 +1759,21 @@ unsigned int Cvektory::vrat_pocet_voziku_zakazky(unsigned int n_zakazky)
 		vozik=vozik->dalsi;
 	}
 	return RET;
+}
+////---------------------------------------------------------------------------
+//vrátí začátek a konec vozíku na časové ose v PX
+TPoint Cvektory::vrat_start_a_pozici_vozikuPX(unsigned int n_voziku)
+{
+	 TPoint RET; RET.x=0;RET.y=0;
+	 if(n_voziku==0)n_voziku=1;//ošetření proti zásahu do hlavičky
+	 TVozik *V=VOZIKY->dalsi;
+	 while(V!=NULL)
+	 {
+			if(V->n==n_voziku)RET.x=V->start;
+			if(V->n==n_voziku)RET.y=V->pozice;
+			V=V->dalsi;
+	 }
+	 return RET;
 }
 ////---------------------------------------------------------------------------
 unsigned int Cvektory::WIP()//vrátí max. počet vozíků na lince

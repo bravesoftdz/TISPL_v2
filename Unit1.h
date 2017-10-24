@@ -237,6 +237,7 @@ __published:	// IDE-managed Components
 	TButton *button_zakazky_temp;
 	TscButton *scButton10;
 	TButton *Button11;
+	TscGPGlyphButton *GlyphButton_close_grafy;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -368,6 +369,7 @@ __published:	// IDE-managed Components
 	void __fastcall scButton2Click(TObject *Sender);
 	void __fastcall Button11Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
+	void __fastcall GlyphButton_close_grafyClick(TObject *Sender);
 
 // User declarations
 	////struktury, výèty
@@ -418,7 +420,7 @@ private:	void ESC();
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();
-	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap);
+	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
