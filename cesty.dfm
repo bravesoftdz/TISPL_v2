@@ -89,6 +89,10 @@ object Form_cesty: TForm_cesty
         ColumnGroup = 1
       end
       item
+        DataType = sgdNumber
+        MinValue = 0.100000000000000000
+        MaxValue = 50.000000000000000000
+        OutOfLimitDataColor = clRed
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
