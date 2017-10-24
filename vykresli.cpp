@@ -448,12 +448,13 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 						//v.vloz_proces(P);
 
 						////čekání na čištění pistole a výměnu barev včetně čekání
+						if(C->Opak!=0)
 						if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
 						{
 							vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc*PX2MIN-PosunT.x,Yloc-PosunT.y);
 							X+=C->Tc*PX2MIN;
 						}
-						if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
+ 						if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
 						{
 							vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv*PX2MIN-PosunT.x,Yloc-PosunT.y);
 							X+=C->Tv*PX2MIN;
