@@ -77,17 +77,15 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rHTMLLabel_zacatek: TrHTMLLabel
     Left = 381
     Top = 165
-    Width = 106
+    Width = 209
     Height = 19
-    Caption = 'Za'#269#225'tek v'#253'roby'
-    Color = clSilver
+    Caption = 'Za'#269#225'tek v'#253'roby [d.m.r h:m:s]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
-    ParentColor = False
     ParentFont = False
   end
   object Button_OK: TButton
@@ -1511,7 +1509,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object scEdit_zacatek: TscEdit
     Left = 381
     Top = 190
-    Width = 175
+    Width = 209
     Height = 28
     UseFontColorToStyleColor = False
     ContentMarginLeft = 0

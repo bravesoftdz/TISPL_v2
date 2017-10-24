@@ -328,11 +328,11 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 							zakazka,
 							/*sloupec poøadí se neukládá*/ /*pozor na øazení*/
 							Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),//ID-doøešit
-							Form_cesty->rStringGridEd_cesty->Cells[2][i].ToDouble(),//CT
-							Form_cesty->rStringGridEd_cesty->Cells[5][i].ToDouble(),//RD
-							Form_cesty->rStringGridEd_cesty->Cells[4][i].ToDouble(),//Tv
-							Form_cesty->rStringGridEd_cesty->Cells[3][i].ToDouble(),//Tc
-							Form_cesty->rStringGridEd_cesty->Cells[6][i].ToDouble()//Opak   //ulozeni stavu pro cestu - roletka
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]),//CT
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]),//RD
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]),//Tv
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[3][i]),//Tc
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[6][i])//Opak   //ulozeni stavu pro cestu - roletka
 						);
 				}
 				//vymazání textu z již nepotøebného øádku
@@ -1227,6 +1227,7 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_removeClick(TObject *Sen
 
 }
 //---------------------------------------------------------------------------
+
 
 
 
