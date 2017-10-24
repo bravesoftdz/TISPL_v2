@@ -1844,49 +1844,57 @@ void Cvektory::uloz_doporucene_kapacity_objetku()
 //---------------------------------------------------------------------------
 void Cvektory::vse_odstranit()
 {
-		//objekty
-		if(OBJEKTY->predchozi->n>0)//pokud je více objektů
-		{
-			vymaz_seznam_OBJEKTY();//vymaze objekty z paměti
-			delete OBJEKTY; OBJEKTY=NULL;
-		}
-
-		//pohony
-		if(POHONY->predchozi->n>0)//pokud je více objektů
-		{
-			vymaz_seznam_POHONY();//vymaze pohony z paměti
-			delete POHONY; POHONY=NULL;
-		}
-
 		//vozíky
-		if(VOZIKY->predchozi->n>0)//pokud je více objektů
+		if(VOZIKY!=NULL && VOZIKY->predchozi->n>0)//pokud je více objektů
 		{
 			vymaz_seznam_VOZIKY();//vymaze vozíky z paměti
-			delete VOZIKY; VOZIKY=NULL;
+			VOZIKY=NULL; delete VOZIKY;
 		}
+		hlavicka_VOZIKY();//nutnost
 
 		//zakazky
-		if(ZAKAZKY->predchozi->n>0)//pokud je více objektů
+		if(ZAKAZKY!=NULL && ZAKAZKY->predchozi->n>0)//pokud je více objektů
 		{
 			vymaz_seznam_ZAKAZKY();//byla zde poznámka, že před zdm padalo
 			delete ZAKAZKY; ZAKAZKY=NULL;
 		}
+		hlavicka_ZAKAZKY();//nutnost
 
+		//objekty
+		if(OBJEKTY!=NULL && OBJEKTY->predchozi->n>0)//pokud je více objektů
+		{
+			vymaz_seznam_OBJEKTY();//vymaze objekty z paměti
+			delete OBJEKTY; OBJEKTY=NULL;
+		}
+		hlavicka_OBJEKTY();//nutnost
+
+		//pohony
+		if(POHONY!=NULL && POHONY->predchozi->n>0)//pokud je více objektů
+		{
+			vymaz_seznam_POHONY();//vymaze pohony z paměti
+			delete POHONY; POHONY=NULL;
+		}
+		hlavicka_POHONY();//nutnost
 //
-//		//palce
-//		if(PALCE->predchozi->n>0)//pokud je více objektů
-//		{
-//			vymaz_seznam();//vymaze body z paměti
-//			delete PALCE; PALCE=NULL;
-//		}
 //
 //
-//		//procesy
-//		if(PROCESY!=NULL && PROCESY->predchozi->n>0)//pokud je více objektů
-//		{
-//			vymaz_seznam_procesu();
-//			delete PROCESY; PROCESY=NULL;
-//		}
+//
+////
+////		//palce
+////		if(PALCE->predchozi->n>0)//pokud je více objektů
+////		{
+////			vymaz_seznam();//vymaze body z paměti
+////			delete PALCE; PALCE=NULL;
+////		}
+////
+////
+		//procesy
+		if(PROCESY!=NULL && PROCESY->predchozi->n>0)//pokud je více objektů
+		{
+			//vymaz_seznam_procesu();
+			delete PROCESY; PROCESY=NULL;
+		}
+		hlavicka_procesy();
 
 
 

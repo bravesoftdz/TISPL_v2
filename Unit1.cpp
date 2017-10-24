@@ -945,7 +945,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			}
 			break;
 			*/
-			if(SplitViewOpen==false)
+			if(SplitViewOpen==false)//souvisí s problémem se zobrazeným splitview menu nebo options bez toho způsobovalo pomalé skrývání těchto menn
 			{
 				//d.vykresli_casove_osy(Canvas);  //puvodni konstrukce ověřit proč nemůže být použita a místo toho se používá ta bitmapa
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
@@ -2287,7 +2287,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		switch(result)
 		{
 			case mrYes:     UlozitClick(this); if(!stisknuto_storno){/*ulozit_posledni_otevreny();*/ vse_odstranit(); CanClose=true;}else CanClose=false; break;
-			case mrNo:      ulozit_posledni_otevreny(); vse_odstranit(); CanClose=true; break;
+			case mrNo:      ulozit_posledni_otevreny(); vse_odstranit();CanClose=true; break;
 			case mrCancel:  CanClose=false; break;
 		}
 	}
@@ -2301,7 +2301,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
   //v případě uzavírání aplikace
 	if(CanClose)
 	{
-		log2web("konec");
+	 //	log2web("konec");
 		//pro ochranu v případě pádu programu
 		//TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
 		TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
@@ -3747,12 +3747,12 @@ void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
 void __fastcall TForm1::KonecClick(TObject *Sender)
 {
   //zalogování vypnutí aplikace
-	AnsiString relation_id=GetCurrentProcessId();
-	AnsiString send_log_time= TIME.CurrentDateTime();
-	AnsiString ID ="1";
-	AnsiString Text="aplikace stop";
-	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
-	FDConnection1->ExecSQL(strSQL);
+//	AnsiString relation_id=GetCurrentProcessId();
+//	AnsiString send_log_time= TIME.CurrentDateTime();
+//	AnsiString ID ="1";
+//	AnsiString Text="aplikace stop";
+//	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+//	FDConnection1->ExecSQL(strSQL);
 
 	Close();//ukončí aplikaci
 }
