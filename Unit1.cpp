@@ -672,7 +672,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 		{
 			MOD=CASOVAOSA;
 			ESC();//zruší případně rozdělanou akci
-			SB("zobrazení časové osy technologických procesů",1);
+			SB("časové osy",1);
 			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 			Timer_simulace->Enabled=false;
 			//testovnkapacity1->Checked=false;
