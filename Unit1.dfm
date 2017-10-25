@@ -236,9 +236,9 @@ object Form1: TForm1
   end
   object Memo1: TMemo
     Left = 0
-    Top = 674
+    Top = 656
     Width = 1261
-    Height = 24
+    Height = 42
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
@@ -2444,7 +2444,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 167
-    Height = 640
+    Height = 622
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -2486,8 +2486,9 @@ object Form1: TForm1
     HideControls = False
     Animation = True
     DisplayMode = scsvmOverlay
+    ExplicitHeight = 640
     object scListGroupKnihovObjektu: TscListGroupPanel
-      Left = 0
+      Left = 1
       Top = 110
       Width = 166
       Height = 530
@@ -2808,7 +2809,7 @@ object Form1: TForm1
     Left = 1261
     Top = 34
     Width = 0
-    Height = 640
+    Height = 622
     Anchors = [akTop, akRight, akBottom]
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
@@ -2854,6 +2855,7 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
+    ExplicitHeight = 640
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -3227,7 +3229,7 @@ object Form1: TForm1
     Left = 0
     Top = 34
     Width = 0
-    Height = 640
+    Height = 622
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     TabOrder = 28
@@ -3267,9 +3269,10 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
+    ExplicitHeight = 640
     object scButton1: TscButton
       Left = 0
-      Top = 590
+      Top = 572
       Width = 0
       Height = 50
       Align = alBottom
@@ -3359,6 +3362,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 590
     end
     object scButton2: TscButton
       Left = 0
@@ -3638,7 +3642,7 @@ object Form1: TForm1
     end
     object scButton5: TscButton
       Left = 0
-      Top = 540
+      Top = 522
       Width = 0
       Height = 50
       Align = alBottom
@@ -3727,6 +3731,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 540
     end
     object scButton6: TscButton
       Left = 0
@@ -4110,7 +4115,7 @@ object Form1: TForm1
     end
     object scButton9: TscButton
       Left = 0
-      Top = 490
+      Top = 472
       Width = 0
       Height = 50
       Align = alBottom
@@ -4199,6 +4204,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 490
     end
     object scGPSwitch9: TscGPSwitch
       Left = 100
@@ -4583,7 +4589,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800D803D80310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C403D80310001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5706,7 +5712,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D003002300230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D001C02300230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

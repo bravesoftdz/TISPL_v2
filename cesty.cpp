@@ -80,3 +80,5 @@ void __fastcall TForm_cesty::KonecClick(TObject *Sender)
 
 
 
+
+
