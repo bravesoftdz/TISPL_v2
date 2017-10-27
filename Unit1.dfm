@@ -2488,7 +2488,7 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     ExplicitHeight = 640
     object scListGroupKnihovObjektu: TscListGroupPanel
-      Left = 1
+      Left = 0
       Top = 110
       Width = 166
       Height = 530
