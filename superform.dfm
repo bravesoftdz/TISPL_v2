@@ -391,7 +391,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = '/Po'#269'et'
+        TitleCaption = 'Voz'#237'ky po'#269'et'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13
@@ -410,7 +410,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'Po'#269'et serv.voz'
+        TitleCaption = 'Serv.voz po'#269'et'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13
@@ -429,13 +429,14 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = '/Opakov'#225'n'#237
+        TitleCaption = 'Opakov'#225'n'#237
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end
       item
         ButtonStyle = sgbButton
@@ -1324,7 +1325,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Value = 5.000000000000000000
   end
   object scGPButton_Ulozit: TscGPButton
-    Left = 371
+    Left = 363
     Top = 490
     Width = 100
     Height = 35

@@ -370,6 +370,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button11Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
 	void __fastcall GlyphButton_close_grafyClick(TObject *Sender);
+	void __fastcall ComboBoxCekaniChange(TObject *Sender);
 
 // User declarations
 	////struktury, výèty

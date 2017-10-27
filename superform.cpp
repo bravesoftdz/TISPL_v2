@@ -400,7 +400,6 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();//uložení do ostrého spojáku ZAKAZKY+smáznutí ZAKAZKY_temp
 		Form1->d.v.generuj_VOZIKY();//vygenerování vozíkù dle zadaných zakázek
 		Form_definice_zakazek->Close();//zavøení formuláøe s následným DuvodUlozit(true); po modalshow v unit1
-		Form1->REFRESH();//pøekreslení kvùli zobrazení aktuálních cest
 }
 //---------------------------------------------------------------------------
 //Zavøení formuláøe (storno a køížek je to samé)

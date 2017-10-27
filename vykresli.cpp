@@ -448,18 +448,21 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 						//v.vloz_proces(P);
 
 						////čekání na čištění pistole a výměnu barev včetně čekání
-						if(C->Opak!=0)
-						if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
+						if(Form1->CheckBoxVymena_barev->Checked)
 						{
-							vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc*PX2MIN-PosunT.x,Yloc-PosunT.y);
-							X+=C->Tc*PX2MIN;
+								if(C->Opak!=0)
+								if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
+					    	{
+					    		vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc*PX2MIN-PosunT.x,Yloc-PosunT.y);
+					    		X+=C->Tc*PX2MIN;
+					    	}
+					    	if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
+					    	{
+					    		vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv*PX2MIN-PosunT.x,Yloc-PosunT.y);
+					    		X+=C->Tv*PX2MIN;
+					    	}
+								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
 						}
- 						if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
-						{
-							vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv*PX2MIN-PosunT.x,Yloc-PosunT.y);
-							X+=C->Tv*PX2MIN;
-						}
-						X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
 
 						////vykreslení procesu (jednoho obdelníčku "v plavecké dráze") včetně výpočtu koncové pozice a uložení dílčích hodnot
 						X=proces(canv,++n,X_predchozi,X,Yloc,C,vozik);
@@ -529,7 +532,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 vykresli_proces(canv,C->objekt->short_name,barva,0,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
 	 P->Tkon=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
 	 // nestandardní - nelogická situace, pokud bude čas procesu včetně času přejezdu vozíkukratší než u totožného přechozího objektu (vozíky např. v rámci CO2 se nemohou předbíhat), přičte se i tato vzdálenost (vykresleno šrafovaně)
-	 double DcS=vozik->zakazka->jig.delka;/*!!!tady dořešit co se kdy zadá!!!*/
+	 double DcS=v.PP.delka_voziku;//vozik->zakazka->jig.delka;/*!!!tady dořešit co se kdy zadá!!!*/
 	 if(X < C->objekt->obsazenost+m.prejezd_voziku(DcS,D)*PX2MIN)
 	 {
 			//dorovnání na čas předchozího vozíku, je-li to nutné
@@ -552,12 +555,18 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 
 	 //PALCE - posun o čekání na palce
 	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
+			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
 			 (
 					C->objekt->rezim==0 ||//je to po S&G nebo
 					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && D!=C->predchozi->RD)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
-					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)//PP->K
+					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//K->PP a jiný dopravník nebo
+					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
+					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//PP->PP a jiný dopravník nebo
+					 C->objekt->stopka//když je za objektem stopka nebo
+					 ||
+					 C->objekt->cekat_na_palce==1//automaticky požadovat čekání na palce//0-ne,1-ano,2-automaticky
 			 )
-	 )   //tady místo 0 doplní rosta Form1->Checkbox-nazev->ItemIndex
+	 )
 	 X+=m.cekani_na_palec(X/PX2MIN+C->CT,R,D,Form1->ComboBoxCekani->ItemIndex)*PX2MIN;
 	 //--
 

@@ -57,7 +57,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->kapacita_dop=0;
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
-	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
+	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
@@ -804,8 +804,11 @@ void Cvektory::generuj_VOZIKY()
 			vymaz_seznam_VOZIKY();
 			hlavicka_VOZIKY();
 			TZakazka *zakazka=ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu ZAKAZKY, přeskočí hlavičku
-			zakazka->serv_vozik_pocet=floor((double)(zakazka->pocet_voziku/zakazka->opakov_servis)); //dopočítání
-			if(zakazka->pocet_voziku%zakazka->serv_vozik_pocet==0)zakazka->serv_vozik_pocet--; //poslední se nebude započítávat
+			if(zakazka->opakov_servis>0)
+			{
+				zakazka->serv_vozik_pocet=floor((double)(zakazka->pocet_voziku/zakazka->opakov_servis)); //dopočítání
+				if(zakazka->pocet_voziku%zakazka->serv_vozik_pocet==0)zakazka->serv_vozik_pocet--; //poslední se nebude započítávat
+			}
 			while (zakazka!=NULL)//projíždí jednotlivé zakázky
 			{
 				for(unsigned long i=1;i<=zakazka->pocet_voziku+zakazka->serv_vozik_pocet;i++)//v rámci zakázky generuje zadaný počet vozíků
@@ -1349,7 +1352,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			delete FileStream;
 			return 1;
 			}
-			catch(...){ShowMessage("ko");return 2;}//jiná chyba, např. špatný formát souboru
+			catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
 	}
 }
 ////---------------------------------------------------------------------------
