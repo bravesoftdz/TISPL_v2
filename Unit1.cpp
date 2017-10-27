@@ -249,7 +249,7 @@ void __fastcall TForm1::FormShow(TObject *Sender)
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
 
 
-	}
+}
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //založí nový soubor, nastavení souboru, nastevení aplikace v konstruktoru
@@ -449,7 +449,8 @@ void TForm1::startUP()
 	//////automatický BACKUP
 	//volá obnovu dat ze zálohy, pokud poslední ukončení programu neproběhlo standardně
 	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-	AnsiString status=ini->ReadString("Konec","status",status);
+
+	AnsiString status=ini->ReadString("Konec","status","");//poslední parametr musí být prázdný jinak bude padat!!!
 	if(status=="KO")//pokud došlo k pádu programu
 	{
 		//zavře úvodní dialog
@@ -458,7 +459,7 @@ void TForm1::startUP()
 		FileName=ini->ReadString("otevrene_soubory","posledni_soubor",FileName);//zjistí název posledního souboru
 
 		//prvně porovná jestli otevřený soubor není náhoudou mladší než stejnomený BAC soubor
-    FILETIME ftCreate, ftAccess, ftWrite,ftWrite_bac;
+		FILETIME ftCreate, ftAccess, ftWrite,ftWrite_bac;
 		HANDLE hFile=CreateFile(FileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,OPEN_EXISTING, 0, NULL);
 		GetFileTime(hFile, &ftCreate, &ftAccess, &ftWrite);
 		CloseHandle(hFile);
@@ -472,9 +473,9 @@ void TForm1::startUP()
 			if(ID_YES==MB("Aplikace nebyla řádně ukončena. Chcete ze zálohy obnovit poslední neuložený soubor?",MB_YESNO))
 			{
 				if(OtevritSoubor(FileName+".bac_"+get_user_name()+"_"+get_computer_name())==1)
-        {
+				{
 					//ješti donutí stávajicí soubor uložit pod novým jménem
-          //odstraniní koncovky
+					//odstraniní koncovky
 					//AnsiString jen_nazev=FileName;
 					//while(jen_nazev.Pos(".bac")>0)//dokud bude ".bac" obsahovat
 					//jen_nazev.Delete(jen_nazev.Pos(".bac"),jen_nazev.Length());
@@ -497,8 +498,7 @@ void TForm1::startUP()
 //automaticky přidá parametry (čas, uživatel, licence)
 void TForm1::log2web(UnicodeString Text)
 {
-	log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-
+	//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
 	try{
 	AnsiString relation_id=GetCurrentProcessId();
 	AnsiString send_log_time= TIME.CurrentDateTime();
@@ -1087,7 +1087,9 @@ void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 //---------------------------------------------------------------------------
 //explicitní klávesové zkratky
 void __fastcall TForm1::FormShortCut(TWMKey &Msg, bool &Handled)
-{  //prozatim jen pro účely vývoje
+{
+	if (Msg.CharCode==VK_F9)casovosa1Click(this);
+	//prozatim jen pro účely vývoje
 	 /*	if (Msg.CharCode==VK_F11)
 		{
 			Memo1->Visible=true;
