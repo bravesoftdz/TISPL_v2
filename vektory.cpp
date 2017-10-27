@@ -57,7 +57,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->kapacita_dop=0;
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
-	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
+	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
@@ -786,6 +786,7 @@ void Cvektory::hlavicka_VOZIKY()
 	TVozik *novy=new TVozik;
 	novy->n=0;
 	novy->zakazka=NULL;
+	novy->typ=1;
 	novy->start=0;//výchozí pozice v grafu časových os
 	novy->pozice=-1;//akt. pozice na dopravniku či v grafu časových os
 
@@ -803,17 +804,32 @@ void Cvektory::generuj_VOZIKY()
 			vymaz_seznam_VOZIKY();
 			hlavicka_VOZIKY();
 			TZakazka *zakazka=ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu ZAKAZKY, přeskočí hlavičku
+			if(zakazka->opakov_servis>0)
+			{
+				zakazka->serv_vozik_pocet=floor((double)(zakazka->pocet_voziku/zakazka->opakov_servis)); //dopočítání
+				if(zakazka->pocet_voziku%zakazka->serv_vozik_pocet==0)zakazka->serv_vozik_pocet--; //poslední se nebude započítávat
+			}
 			while (zakazka!=NULL)//projíždí jednotlivé zakázky
 			{
-				for(unsigned long i=1;i<=zakazka->pocet_voziku;i++)//v rámci zakázky generuje zadaný počet vozíků
-				vloz_vozik(zakazka);
+				for(unsigned long i=1;i<=zakazka->pocet_voziku+zakazka->serv_vozik_pocet;i++)//v rámci zakázky generuje zadaný počet vozíků
+				{
+					if(zakazka->opakov_servis>0)
+					{
+							if(i%(zakazka->opakov_servis+1))
+							vloz_vozik(zakazka,0);//normální
+							else
+							vloz_vozik(zakazka,1);//servisní
+					}
+					else
+					vloz_vozik(zakazka,0);//normální
+				}
 				zakazka=zakazka->dalsi;//posun na další prvek v seznamu
 			}
 	 }
 }
 ////---------------------------------------------------------------------------
 //uloží ukazatel na vozík do spojového seznamu voziků
-void Cvektory::vloz_vozik(TZakazka *zakazka)
+void Cvektory::vloz_vozik(TZakazka *zakazka,short typ)//0-normální, 1-servisní
 {
 	TVozik *novy=new TVozik;
 	novy->zakazka=zakazka;//přiřazení zakázky
@@ -821,6 +837,7 @@ void Cvektory::vloz_vozik(TZakazka *zakazka)
 	//ZDM pozor v případě načítání existujícího stavu ze souboru změnitm toto je výchozí pozice na lince
 	//ZDM novy->segment=NULL;novy->stav=-1;
 	//ZDM novy->X=0;novy->Y=0;novy->timer=0;;
+	novy->typ=typ;
 	novy->start=0;//výchozí pozice v grafu časových os
 	novy->pozice=-1;//pozice na dopravniku či v grafu časových os
 
@@ -862,7 +879,7 @@ void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objek
 }
 //---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
-void Cvektory::hlavicka_procesy()
+void Cvektory::hlavicka_PROCESY()
 {
 	TProces *novy=new TProces;
 	novy->n=0;
@@ -926,7 +943,7 @@ Cvektory::TProces *Cvektory::vrat_nasledujici_proces_objektu(TProces *Proces)
 		return P;
 }
 //---------------------------------------------------------------------------
-long Cvektory::vymaz_seznam_procesu()
+long Cvektory::vymaz_seznam_PROCESY()
 {
 	long pocet_smazanych_objektu=0;
 	while (PROCESY!=NULL)
@@ -1335,7 +1352,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			delete FileStream;
 			return 1;
 			}
-			catch(...){ShowMessage("ko");return 2;}//jiná chyba, např. špatný formát souboru
+			catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
 	}
 }
 ////---------------------------------------------------------------------------
@@ -1894,7 +1911,7 @@ void Cvektory::vse_odstranit()
 			//vymaz_seznam_procesu();
 			delete PROCESY; PROCESY=NULL;
 		}
-		hlavicka_procesy();
+		hlavicka_PROCESY();
 
 
 

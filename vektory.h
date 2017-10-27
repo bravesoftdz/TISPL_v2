@@ -92,7 +92,8 @@ class Cvektory
 	struct TVozik
 	{
 			unsigned long n; //pořadí objektu ve spoj.seznamu
-			struct TZakazka *zakazka;
+			struct TZakazka *zakazka;//ukazatel na přidruženou zakázku
+			short typ;//0-normální, 1 - servisní
 			double start;//výchozí pozice v grafu časových os
 			double pozice;//aktuální pozice na dopravniku či v grafu časových os
 			struct TVozik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
@@ -103,7 +104,7 @@ class Cvektory
 	struct TVozik_parametry//paremtry vozíků - stejné pro všechny vozíky
 	{
 			double delka;
-			unsigned short typ;//0 - normální, 1 - závěsný
+			unsigned short typ;//0 - podlahový, 1 - závěsný
 	};
 
 
@@ -392,17 +393,17 @@ public:
 		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků, seřazeno dle zakázek
 		void hlavicka_VOZIKY();
 private:
-		void vloz_vozik(TZakazka *zakazka);
+		void vloz_vozik(TZakazka *zakazka,short typ);//0-normální, 1-servisní
 		long vymaz_seznam_VOZIKY();
 
 
 //metody pro PROCESY
 public:
-		void hlavicka_procesy();
+		void hlavicka_PROCESY();
 		void vloz_proces(TProces *Proces);
 		TProces *najdi_proces(double cas, double vozik);//hledá bod mezi procesy
 		TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
-		long vymaz_seznam_procesu();
+		long vymaz_seznam_PROCESY();
 
 //metody pro PALCE
 //		void hlavicka_palce();

@@ -23,7 +23,7 @@ void Cgrafy::ShowGrafy(bool stav) {
 	Form1->Chart3->Visible = stav;
 	Form1->Chart4->Visible = stav;
 	Form1->Chart6->Visible = stav;
-	Form1->Label_wip->Visible = stav;
+	//Form1->Label_wip->Visible = stav;
 	Form1->Memo1->Visible = stav;
 }
 
@@ -32,7 +32,7 @@ void Cgrafy::nastaveni()
 {
 			 //WIP label
 			Form1->Label_wip->Font->Color=(TColor)RGB(100,100,100);
-			Form1->Label_wip->Visible = true;
+			//Form1->Label_wip->Visible = true;
 			Form1->Label_wip->Font->Size = 20;
 			Form1->Label_wip->Top = Form1->Chart1->Top - 35;
 			Form1->Label_wip->Left = 20;

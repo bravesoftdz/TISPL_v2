@@ -328,14 +328,14 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	else
 	{
-		//toto odkomentovat pro spuštění TTR
-		if(!ttr("start"))
-		{
-			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-			Close();
-		}
-		else
-		//Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
+//		//toto odkomentovat pro spuštění TTR
+//		if(!ttr("start"))
+//		{
+//			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+//			Close();
+//		}
+//		else
+		Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
 		startUP();//toto vždy odkomentované
 	}
 }
@@ -673,7 +673,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 		{
 			MOD=CASOVAOSA;
 			ESC();//zruší případně rozdělanou akci
-			SB("zobrazení časové osy technologických procesů",1);
+			SB("časové osy",1);
 			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 			Timer_simulace->Enabled=false;
 			//testovnkapacity1->Checked=false;
@@ -694,7 +694,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			Button3->Visible=false;
 			Timer_neaktivity->Enabled=true;
 			pocitadlo_doby_neaktivity=0;//implicitní hodnota
-			technologickprocesy1->Enabled=true;
+			//technologickprocesy1->Enabled=true;
 			Timer_animace->Enabled=false;
 			ButtonPLAY->Visible=false;
 			CheckBoxVymena_barev->Visible=true;
@@ -2408,6 +2408,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->rEditNum_delka_dopravniku->Text=pom->delka_dopravniku;
 				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
 				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
+				Form_parametry->scComboBox_cekani_pacel->ItemIndex=pom->cekat_na_palce;
 				Form_parametry->rEditNum_kapacita->Text=pom->kapacita;
 				Form_parametry->rEditNum_odchylka->Text=pom->odchylka;
 				Form_parametry->scCheckBox_stopky->Checked=pom->stopka;
@@ -2940,7 +2941,8 @@ void __fastcall TForm1::Rychlexport1Click(TObject *Sender)
 
 		 //uložení do finálního souboru včetně otevření souboru
 		 //UnicodeString FileName="export_"+UnicodeString(DateToStr(Now()))+"_"+ms.replace(TimeToStr(Now()),"_",":")+"_"+AnsiString(i)+"_"+AnsiString(i+PO)+".png";
-		 UnicodeString FileName="export_"+AnsiString(i)+"_"+AnsiString(i+PO)+".png";//název souboru bez data, výše s datem, ale zbytečně se to množí...
+		 if(d.v.VOZIKY->predchozi->n<=PO)UnicodeString FileName="export_"+AnsiString(i)+"_"+AnsiString(d.v.VOZIKY->predchozi->n)+".png";//pokud se nestránkuje, název souboru bez data, výše s datem, ale zbytečně se to množí...
+		 else UnicodeString FileName="export_"+AnsiString(i)+"_"+AnsiString(i+PO)+".png";//název souboru bez data, výše s datem, ale zbytečně se to množí...
 		 Png->SaveToFile(FileName);delete Png;//uloží PNG do souboru a smaže na něj ukazatel
 		 ShellExecute(0,L"open",UnicodeString(FileName).c_str(),0,0,SW_SHOWNORMAL);//otevře výstup
 	 }
@@ -3811,6 +3813,7 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 		Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
 		Form_definice_zakazek->ShowModal();
 		DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
+		REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
 	}
 }
 //---------------------------------------------------------------------------
@@ -4068,12 +4071,9 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 		else S("Není zakazka");
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
-
-
-
+void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
+{
+   REFRESH();
+}
+//---------------------------------------------------------------------------
 

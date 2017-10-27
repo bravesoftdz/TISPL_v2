@@ -905,7 +905,6 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 9
     TabStop = True
-    Visible = False
     CustomCheckedImageIndex = -1
     CustomCheckedImageHotIndex = -1
     CustomCheckedImagePressedIndex = -1
@@ -1136,8 +1135,7 @@ object Form_parametry: TForm_parametry
     Items.Strings = (
       'STOP&GO'
       'Kontinu'#225'ln'#237' (line tracking)'
-      'Postprocesn'#237
-      'Stopka')
+      'Postprocesn'#237)
     WordBreak = False
     SelectionStyle = scstStyled
     SelectionColor = clNone
