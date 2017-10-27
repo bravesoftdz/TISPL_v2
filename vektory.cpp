@@ -804,21 +804,25 @@ void Cvektory::generuj_VOZIKY()
 			vymaz_seznam_VOZIKY();
 			hlavicka_VOZIKY();
 			TZakazka *zakazka=ZAKAZKY->dalsi;//ukazatel na první objekt v seznamu ZAKAZKY, přeskočí hlavičku
-			if(zakazka->opakov_servis>0)
-			{
-				zakazka->serv_vozik_pocet=floor((double)(zakazka->pocet_voziku/zakazka->opakov_servis)); //dopočítání
-				if(zakazka->pocet_voziku%zakazka->serv_vozik_pocet==0)zakazka->serv_vozik_pocet--; //poslední se nebude započítávat
-			}
 			while (zakazka!=NULL)//projíždí jednotlivé zakázky
 			{
-				for(unsigned long i=1;i<=zakazka->pocet_voziku+zakazka->serv_vozik_pocet;i++)//v rámci zakázky generuje zadaný počet vozíků
+				long servisu_celkem=0;//počet servisů mezi reálnými vozíky,počet servisních vozíků je servisu_celkem*zakazka->serv_vozik_pocet
+				if(zakazka->opakov_servis>0 && zakazka->serv_vozik_pocet>0)
 				{
-					if(zakazka->opakov_servis>0)
+					servisu_celkem=floor((double)(zakazka->pocet_voziku/zakazka->opakov_servis)); //výpočet počtu servisů, počet servisních vozíků je servisu_celkem*zakazka->serv_vozik_pocet
+					if(zakazka->pocet_voziku%servisu_celkem==0)servisu_celkem--; //poslední se nebude započítávat
+				}
+				for(unsigned long i=1;i<=zakazka->pocet_voziku+servisu_celkem;i++)//v rámci zakázky generuje zadaný počet vozíků
+				{
+					if(servisu_celkem>0)
 					{
 							if(i%(zakazka->opakov_servis+1))
 							vloz_vozik(zakazka,0);//normální
 							else
-							vloz_vozik(zakazka,1);//servisní
+							{
+								for(unsigned int j=1;j<=zakazka->serv_vozik_pocet;j++)//vytvoří počet servisních vozíků mezi reálnými v rámci jednoho servisu
+								vloz_vozik(zakazka,1);//servisní
+							}
 					}
 					else
 					vloz_vozik(zakazka,0);//normální
