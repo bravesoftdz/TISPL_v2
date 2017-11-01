@@ -81,20 +81,12 @@ void TForm_parametry_linky::nacti_pohony (){
 	else {  //pokud je spoják prázdný, zobrazím tyto pøednastavené hodnoty
 
 	data_nalezena=false; // default se nepoužívá - bere se pøímo z binárky
-
+//naèítá se stejnì z unit1
    rStringGridEd_tab_dopravniky->Cells[0][1]="1";
 	 rStringGridEd_tab_dopravniky->Cells[1][1]="Hlavní dopravník";
 	 rStringGridEd_tab_dopravniky->Cells[2][1]="";
 	 rStringGridEd_tab_dopravniky->Cells[3][1]="";
 	 rStringGridEd_tab_dopravniky->Cells[4][1]="";
-
-	 rStringGridEd_tab_dopravniky->Cells[0][2]="2";
-	 rStringGridEd_tab_dopravniky->Cells[1][2]="Vedlejší dopravník";
-	 rStringGridEd_tab_dopravniky->Cells[2][2]="";
-	 rStringGridEd_tab_dopravniky->Cells[3][2]="";
-	 rStringGridEd_tab_dopravniky->Cells[4][2]="";
-
-
 	}
 }
 
@@ -163,7 +155,7 @@ void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 			//	rStringGridEd_tab_dopravniky->RowCount - 1;
 				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
-				if(rStringGridEd_tab_dopravniky->RowCount>=4)
+				if(rStringGridEd_tab_dopravniky->RowCount>=3)
 				{
 				 rStringGridEd_tab_dopravniky->RowCount--;
 

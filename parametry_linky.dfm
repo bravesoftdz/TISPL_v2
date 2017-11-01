@@ -132,7 +132,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     GradientEndColor = clWhite
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goTabs, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
     ScrollBars = ssVertical
@@ -189,7 +189,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'Rychlost od'
+        TitleCaption = 'Rychlost od [m/min]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -239,6 +239,12 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
+    ColWidths = (
+      120
+      120
+      120
+      120
+      120)
     RowHeights = (
       30
       30

@@ -10,18 +10,18 @@
 void Cgrafy::ShowGrafy(bool stav) {
 	if (stav) {
 		nastaveni();
-		graf2();
-		graf6();
-		graf1();
-		graf3();
-		graf4();
+		graf2();  //prumerny TT zakazek
+		graf6(); //graf kapacit
+	 //	graf1(); //casove stavy zakazek
+	 //	graf3();   //vytizenost
+	//	graf4();   //pomer voziku
 
 		nastaveni();
 	}
-	Form1->Chart1->Visible = stav;
+	Form1->Chart1->Visible = false;
 	Form1->Chart2->Visible = stav;
-	Form1->Chart3->Visible = stav;
-	Form1->Chart4->Visible = stav;
+	Form1->Chart3->Visible = false;
+	Form1->Chart4->Visible = false;
 	Form1->Chart6->Visible = stav;
 	//Form1->Label_wip->Visible = stav;
 	Form1->Memo1->Visible = stav;
@@ -206,12 +206,6 @@ void Cgrafy::nastaveni()
 		Form1->Chart6->BottomAxis->Grid->Visible=Form1->Chart1->BottomAxis->Grid->Visible;
 		Form1->Chart6->LeftAxis->Items->Format->Font->Color=Form1->Chart1->Title->Font->Color;
 		Form1->Chart6->BottomAxis->Items->Format->Font->Color=Form1->Chart1->Title->Font->Color;
-
-
-
-
-
-
 }
 
 
@@ -223,11 +217,11 @@ void Cgrafy::graf2() {
 
 	if (Form1->Memo1->Visible) {
 		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
-			Form1->Memo1->Height - Form1->Chart1->Height;
+			Form1->Memo1->Height - Form1->Chart6->Height;
 	}
 	else {
 		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
-			Form1->Chart1->Height;
+			Form1->Chart6->Height;
 	}
 
 	Form1->Chart2->Title->Caption = "Prùmìrný TT zakázek";
@@ -235,7 +229,7 @@ void Cgrafy::graf2() {
 	Form1->Chart2->BottomAxis->Title->Caption = "zakázka";
 
 	Form1->Chart2->Left = 0;//Form1->Chart1->Width;
-	Form1->Chart2->Width = Form1->ClientWidth / 5 * 1, 5;
+	Form1->Chart2->Width = Form1->ClientWidth / 2;//5 * 1, 5;
 	Form1->Chart2->Height = Form1->ClientHeight / 3 * 1, 5;
 
 	Form1->Series2->Clear();
@@ -276,20 +270,20 @@ void Cgrafy::graf6() { // Kapacity
 
 	if (Form1->Memo1->Visible) {
 		Form1->Chart6->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
-			Form1->Memo1->Height - Form1->Chart1->Height;
+			Form1->Memo1->Height - Form1->Chart2->Height;
 	}
 	else {
 		Form1->Chart6->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
-			Form1->Chart1->Height;
+			Form1->Chart2->Height;
 	}
 
-	Form1->Chart6->Left = Form1->Chart1->Width;
-	Form1->Chart6->Width = Form1->ClientWidth / 5 * 1, 5; ;
+	Form1->Chart6->Left = Form1->Chart2->Width;
+	Form1->Chart6->Width = Form1->ClientWidth / 2;// 5 * 1, 5; ;
 	Form1->Chart6->Height = Form1->ClientHeight / 3 * 1, 5;
 
 	Form1->Chart6->AxisVisible = true;
 
-	Form1->Chart6->Title->Caption = "Kapacity";
+	Form1->Chart6->Title->Caption = "Nastavené vs. doporuèené kapacity";
 	Form1->Chart6->LeftAxis->Title->Caption = "kapacity";
 	Form1->Chart6->BottomAxis->Title->Caption = "objekty";
 

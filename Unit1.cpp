@@ -280,7 +280,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 //ZDM d.v.hlavicka_palce();
 			 //vytvoření defaltních hodnot
 			 d.v.vloz_pohon("Hlavní dopravník",1.5,10.5,32.5);
-			 d.v.vloz_pohon("Vedlejší dopravník",1.5,10.5,32.5);
+			 //d.v.vloz_pohon("Vedlejší dopravník",1.5,10.5,32.5); není nutné prý vedlejší dopravník
 
     	 editacelinky1Click(Sender);//MOD EDITACE LINKY
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
@@ -730,7 +730,7 @@ void __fastcall TForm1::GlyphButton_close_grafyClick(TObject *Sender)
 	else
 	{
 		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
-		Form1->GlyphButton_close_grafy->Top=Form1->Chart1->Top/*-Form1->GlyphButton_close_grafy->Height*/;
+		Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;
 		g.ShowGrafy(true);
 		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkClose;//změní typ ikony
   }
