@@ -80,13 +80,13 @@ void TForm_parametry_linky::nacti_pohony (){
 	}
 	else {  //pokud je spoják prázdný, zobrazím tyto pøednastavené hodnoty
 
-	data_nalezena=false; // default se nepoužívá - bere se pøímo z binárky
+	data_nalezena=false; // default se nepoužívá resp. po soubor nový se okamžitì vloží do spojáku def.pohon
 //naèítá se stejnì z unit1
-   rStringGridEd_tab_dopravniky->Cells[0][1]="1";
-	 rStringGridEd_tab_dopravniky->Cells[1][1]="Hlavní dopravník";
-	 rStringGridEd_tab_dopravniky->Cells[2][1]="";
-	 rStringGridEd_tab_dopravniky->Cells[3][1]="";
-	 rStringGridEd_tab_dopravniky->Cells[4][1]="";
+//   rStringGridEd_tab_dopravniky->Cells[0][1]="1";
+//	 rStringGridEd_tab_dopravniky->Cells[1][1]="Hlavní dopravník";
+//	 rStringGridEd_tab_dopravniky->Cells[2][1]="";
+//	 rStringGridEd_tab_dopravniky->Cells[3][1]="";
+//	 rStringGridEd_tab_dopravniky->Cells[4][1]="";
 	}
 }
 
