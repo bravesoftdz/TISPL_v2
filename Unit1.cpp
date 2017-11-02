@@ -3866,10 +3866,10 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
+void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
-	if(scLabel19->Caption=="M-design")scLabel19->Caption="R-design";
+ /*	if(scLabel19->Caption=="M-design")scLabel19->Caption="R-design";
 	else scLabel19->Caption="M-design";
 	scListGroupNastavProjektu->HeaderAutoColor=false;
 	scListGroupKnihovObjektu->HeaderAutoColor=scListGroupNastavProjektu->HeaderAutoColor;
@@ -3890,7 +3890,7 @@ void __fastcall TForm1::scGPSwitch9ChangeState(TObject *Sender)
 	scGPGlyphButton_definice_zakazek->Options->ShapeStyle=scGPGlyphButton_parametry_linky->Options->ShapeStyle;
 	scListGroupNastavProjektu->RowLineMargin=scListGroupNastavProjektu->Width;
 	scListGroupKnihovObjektu->Top=115;
-	scListGroupNastavProjektu->Height=115;
+	scListGroupNastavProjektu->Height=115;   */
 
 }
 //---------------------------------------------------------------------------
@@ -4078,4 +4078,7 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
    REFRESH();
 }
 //---------------------------------------------------------------------------
+
+
+
 

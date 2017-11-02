@@ -217,8 +217,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_parametry_linky;
 	TscGPGlyphButton *scGPGlyphButton_definice_zakazek;
 	TDrawGrid *DrawGrid_knihovna;
-	TscGPSwitch *scGPSwitch9;
-	TscLabel *scLabel19;
+	TscGPSwitch *scGPSwitch_rezim;
+	TscLabel *scLabel_rezim;
 	TscLabel *scLabel_ZOOM;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
@@ -356,7 +356,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPTrackBar1Change(TObject *Sender);
 	void __fastcall scGPSwitch4ChangeState(TObject *Sender);
 	void __fastcall scGPSwitch5ChangeState(TObject *Sender);
-	void __fastcall scGPSwitch9ChangeState(TObject *Sender);
+	void __fastcall scGPSwitch_rezimChangeState(TObject *Sender);
 	void __fastcall scSplitViewsClosing(TObject *Sender);
 	void __fastcall scSplitViewsClosed(TObject *Sender);
 	void __fastcall scExPanel_ostatniClick(TObject *Sender);
