@@ -63,9 +63,9 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rHTMLLabel_pozad_mnozstvi: TrHTMLLabel
     Left = 247
     Top = 97
-    Width = 184
+    Width = 294
     Height = 19
-    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237' [ks]'
+    Caption = 'Po'#382'adovan'#233' mno'#382'stv'#237' ks [celkov'#225' v'#253'roba]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -1266,7 +1266,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object rEditNum_pozad_mnozstvi: TrEditNum
     Left = 247
     Top = 122
-    Width = 184
+    Width = 157
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

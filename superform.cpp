@@ -345,27 +345,36 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 //TLAÈÍTKO ULOŽIT
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
+
+		TColor barva;//musí být v TColor kvùli ukládání do TColor objektu!!!
+		bool neukladat=false;
+
+			for (int i = 1; i< rStringGridEd1->RowCount; i++)
+			{
+			if(rStringGridEd1->Cells[3][i]=="Šedá"){neukladat=true; Form1->MB("Šedou barvu nelze uložit jelikož slouží pro servisní vozíky.",MB_OK);}
+			}
+
+		if (neukladat==false) {      //pokud nevyberu šedou barvu, mohu uložit data
+
 		Form1->d.v.PP.mnozstvi=Form1->ms.MyToDouble(rEditNum_pozad_mnozstvi->Text);
 		Form1->d.v.PP.dni_rok=Form1->ms.MyToDouble(rEditNum_pocet_dnu->Text);
 		Form1->d.v.PP.efektivita=Form1->ms.MyToDouble(rEditNum_effektivita->Text);
 		Form1->d.v.PP.hod_den=Form1->ms.MyToDouble(rEditNum_pocet_prac_hod->Text);
 		Form1->d.v.PP.cas_start=TDateTime(scEdit_zacatek->Text);
 
-
-		TColor barva;//musí být v TColor kvùli ukládání do TColor objektu!!!
-
 		//uložení editovaných zakázek
 		for (int i = 1; i< rStringGridEd1->RowCount; i++)
 		{
 			bool usersColor=true;
 			//konverze pøednastavených barev
+			if(rStringGridEd1->Cells[3][i]=="Èerná"){barva=(TColor)RGB(0,0,0);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Kaštanová"){barva=(TColor)RGB(128,0,0);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Zelená"){barva=(TColor)RGB(0,128,0);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Olivová"){barva=(TColor)RGB(128,128,0);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Námoønická modrá"){barva=(TColor)RGB(0,0,128);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Fialová"){barva=(TColor)RGB(128,0,128);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Modrozelená"){barva=(TColor)RGB(0,128,128);usersColor=false;}
-			if(rStringGridEd1->Cells[3][i]=="Šedá"){barva=(TColor)RGB(128,128,128);usersColor=false;}
+			if(rStringGridEd1->Cells[3][i]=="Šedá")//{barva=(TColor)RGB(128,128,128);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Støíbrná"){barva=(TColor)RGB(192,192,192);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Èervená"){barva=(TColor)RGB(255,0,0);usersColor=false;}
 			if(rStringGridEd1->Cells[3][i]=="Svìtle zelená"){barva=(TColor)RGB(0,255,0);usersColor=false;}
@@ -400,6 +409,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();//uložení do ostrého spojáku ZAKAZKY+smáznutí ZAKAZKY_temp
 		Form1->d.v.generuj_VOZIKY();//vygenerování vozíkù dle zadaných zakázek
 		Form_definice_zakazek->Close();//zavøení formuláøe s následným DuvodUlozit(true); po modalshow v unit1
+		}
 }
 //---------------------------------------------------------------------------
 //Zavøení formuláøe (storno a køížek je to samé)
@@ -1077,8 +1087,8 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 	
 	rStringGridEd1->Cells[0][i]=i;
 	rStringGridEd1->Cells[1][i]="1";
-	rStringGridEd1->Cells[2][i]="Nová zakazka";
-	rStringGridEd1->Cells[3][i]="Èervena";
+	rStringGridEd1->Cells[2][i]="Nová zakázka";
+	rStringGridEd1->Cells[3][i]=rStringGridEd1->Cells[3][i-1];
 	rStringGridEd1->Cells[4][i]="0";  //pomer
 	rStringGridEd1->Cells[5][i]="NASTAVIT";
 	rStringGridEd1->Cells[6][i]="0";
