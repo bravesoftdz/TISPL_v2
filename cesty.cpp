@@ -43,6 +43,9 @@ void __fastcall TForm_cesty::FormShow(TObject *Sender)
 {
 
 //cinnost obsluhuje superform.cpp
+
+	//rStringGridEd_cesty->Columns->Items[2]->ReadOnly=true;
+	//rStringGridEd_cesty->Columns->Items[2]->Color=(TColor)RGB(230,230,230);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_cesty::vypis_objektyClick(TObject *Sender)

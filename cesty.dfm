@@ -4,8 +4,8 @@ object Form_cesty: TForm_cesty
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Zad'#225'n'#237' cesty'
-  ClientHeight = 589
-  ClientWidth = 751
+  ClientHeight = 598
+  ClientWidth = 969
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,15 +17,15 @@ object Form_cesty: TForm_cesty
   PixelsPerInch = 96
   TextHeight = 21
   object rStringGridEd_cesty: TrStringGridEd
-    Left = 8
+    Left = 1
     Top = 105
-    Width = 735
+    Width = 969
     Height = 440
     BorderStyle = bsNone
     Color = clWhite
     ColCount = 8
     Ctl3D = False
-    DefaultColWidth = 90
+    DefaultColWidth = 120
     DefaultRowHeight = 30
     DefaultDrawing = False
     DrawingStyle = gdsGradient
@@ -101,7 +101,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'CT [min]'
+        TitleCaption = 'CT [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -143,7 +143,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = #268'as v'#253'm'#283'ny barev [min]'
+        TitleCaption = #268'as v'#253'm'#283'ny barev [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -162,7 +162,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = #268'as '#269'i'#353't'#283'n'#237' [min]'
+        TitleCaption = #268'as '#269'i'#353't'#283'n'#237' [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -216,7 +216,7 @@ object Form_cesty: TForm_cesty
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 751
+    Width = 969
     Height = 34
     Align = alTop
     TabOrder = 1
@@ -244,9 +244,10 @@ object Form_cesty: TForm_cesty
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 751
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 701
+      Left = 919
       Top = 0
       Width = 50
       Height = 33
@@ -323,10 +324,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 701
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 601
+      Left = 819
       Top = 0
       Width = 50
       Height = 33
@@ -400,10 +402,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 601
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 651
+      Left = 869
       Top = 0
       Width = 50
       Height = 33
@@ -477,11 +480,12 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 651
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 601
+      Width = 819
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -508,6 +512,7 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
+      ExplicitWidth = 601
     end
   end
   object scGPButton2: TscGPButton
@@ -598,7 +603,7 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object cesta_storno: TscGPButton
-    Left = 339
+    Left = 509
     Top = 551
     Width = 100
     Height = 35
@@ -689,7 +694,7 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object Button_ulozit: TscGPButton
-    Left = 213
+    Left = 365
     Top = 551
     Width = 100
     Height = 35
@@ -779,10 +784,10 @@ object Form_cesty: TForm_cesty
     AllowAllUp = False
   end
   object Memo1: TMemo
-    Left = 423
-    Top = 16
+    Left = 447
+    Top = 38
     Width = 185
-    Height = 89
+    Height = 65
     Lines.Strings = (
       'Memo1')
     TabOrder = 5
