@@ -3449,7 +3449,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton2: TscButton
       Left = 0
@@ -3542,7 +3541,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton3: TscButton
       Left = 0
@@ -3635,7 +3633,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton4: TscButton
       Left = 0
@@ -3728,7 +3725,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton5: TscButton
       Left = 0
@@ -3821,7 +3817,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton6: TscButton
       Left = 0
@@ -3915,7 +3910,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -3976,8 +3970,8 @@ object Form1: TForm1
     object scLabel11: TscLabel
       Left = 3
       Top = 380
-      Width = 74
-      Height = 25
+      Width = 65
+      Height = 16
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
       Font.Height = -13
@@ -4000,8 +3994,8 @@ object Form1: TForm1
     object scLabel16: TscLabel
       Left = 3
       Top = 410
-      Width = 78
-      Height = 25
+      Width = 37
+      Height = 16
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
       Font.Height = -13
@@ -4112,7 +4106,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton8: TscButton
       Left = 0
@@ -4205,7 +4198,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton9: TscButton
       Left = 0
@@ -4298,7 +4290,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch_rezim: TscGPSwitch
       Left = 100
@@ -4383,8 +4374,8 @@ object Form1: TForm1
     object scLabel5: TscLabel
       Left = 3
       Top = 440
-      Width = 78
-      Height = 25
+      Width = 42
+      Height = 16
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
       Font.Height = -13
@@ -4496,7 +4487,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton10: TscButton
       Left = 0
@@ -4589,14 +4579,13 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000004040410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118000804080410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5719,7 +5708,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D0058025C0230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D006002600230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15241,7 +15230,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011D00AC01AC0118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011D00B001B00118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

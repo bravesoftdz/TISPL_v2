@@ -328,14 +328,14 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	else
 	{
-		//toto odkomentovat pro spuštění TTR
-		if(!ttr("start"))
-		{
-			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-			Close();
-		}
-		else
-		//Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
+//		//toto odkomentovat pro spuštění TTR
+//		if(!ttr("start"))
+//		{
+//			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+//			Close();
+//		}
+//		else
+		Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
 		startUP();//toto vždy odkomentované
 	}
 }
@@ -499,16 +499,17 @@ void TForm1::startUP()
 void TForm1::log2web(UnicodeString Text)
 {
 	//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-	try{
-	AnsiString relation_id=GetCurrentProcessId();
-	AnsiString send_log_time= TIME.CurrentDateTime();
-	AnsiString ID ="1";
-	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
-	FDConnection1->ExecSQL(strSQL);
+	try
+	{
+			AnsiString relation_id=GetCurrentProcessId();
+			AnsiString send_log_time= TIME.CurrentDateTime();
+			AnsiString ID ="1";
+			AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+			//FDConnection1->ExecSQL(strSQL);
 	}
-	catch(...){;}
+	catch(...){;}//např. není připojení k internetu
 
-	}
+}
 //pouze text
 void TForm1::log2webOnlyText(UnicodeString Text)
 {
@@ -2378,7 +2379,6 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 {
-	//Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 	Cvektory::TPohon *ukaz=NULL;
 	if(Form1->d.v.POHONY!=NULL)ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na první objekt v seznamu POHONY, přeskočí hlavičku
 
@@ -2416,8 +2416,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->scCheckBox_stopky->Checked=pom->stopka;
 
 				//navrácení dat + volání zobrazení formu
-				Form_parametry->ShowModal();
-				if(Form_parametry->returnOk)//kvůli tomu, že button nevrací mrOK
+				if(Form_parametry->ShowModal()==mrOk)
 				{
 						try
 						{
@@ -2436,7 +2435,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 						}
 						catch(...)
 						{
-							S("Neplatná hodnota!");
+							MB("Neplatná hodnota!");
 							Nastvitparametry1Click(this);//nové zadání
 						}
 				}

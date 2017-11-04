@@ -39,6 +39,7 @@ class Cvektory
 			double kapacita_dop;//doporučená, vypočítáná
 			TPohon *pohon;//ukazatel na použitý pohon
 			double delka_dopravniku;//delka dopravníku v rámci objektu
+			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			bool stopka;//zda následuje na konci objektu stopka
 			double odchylka;//povolená odchylka u PP z CT
@@ -63,8 +64,9 @@ class Cvektory
 			double CT; //cycle time
 			double Tc;//čaš čištění v rámci zakázky resp. stejné barvy, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
 			double Tv;//čas čištění a výměny barev, vztahuje se na konkrétní objekt a a zároveň zakázku, musí být tady, pokud není použito, tak 0
-			double RD;//rychlost dopravníku
 			unsigned int Opak;//počet opakování jak často se čištění opakuje
+			double RD;//rychlost dopravníku
+			double Rotace;// úhel natočení jigu v objektu pro danou zakázku
 			struct TCesta *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TCesta *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};

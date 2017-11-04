@@ -45,6 +45,9 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_posunout;
 	TscGPGlyphButton *GlyphButton_smazat;
 	TscGPGlyphButton *GlyphButton_close;
+	TscGPPanel *scGPPanel1;
+	TscLabel *scLabel1;
+	TscGPGlyphButton *scGPGlyphButton1;
 	void __fastcall scLabel_smazatClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scLabel_zobrazit_parametryMouseEnter(TObject *Sender);

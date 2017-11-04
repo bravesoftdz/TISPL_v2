@@ -12,7 +12,6 @@ object Form_parametry: TForm_parametry
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -266,7 +265,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_shortname: TrHTMLLabel
     Left = 232
-    Top = 55
+    Top = 53
     Width = 52
     Height = 19
     Caption = 'Zkratka'
@@ -281,9 +280,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_cekani: TrHTMLLabel
     Left = 8
     Top = 215
-    Width = 110
+    Width = 181
     Height = 19
-    Caption = #268'ek'#225'n'#237' na palec'
+    Caption = 'N'#225'sleduje '#269'ek'#225'n'#237' na palec'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -305,16 +304,6 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-  end
-  object Button_OK: TButton
-    Left = 221
-    Top = 486
-    Width = 95
-    Height = 25
-    Caption = 'OK'
-    ModalResult = 1
-    TabOrder = 11
-    Visible = False
   end
   object ValueListEditor: TValueListEditor
     Left = 32
@@ -373,7 +362,7 @@ object Form_parametry: TForm_parametry
     Style = csDropDownList
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 12
+    TabOrder = 11
     OnChange = ComboBox_dopravnikChange
   end
   object Button_min_sec: TButton
@@ -391,7 +380,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 13
+    TabOrder = 12
     Visible = False
     OnClick = Button_min_secClick
   end
@@ -410,7 +399,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 16
+    TabOrder = 15
     Visible = False
     OnClick = Button_DELClick
   end
@@ -426,7 +415,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 17
+    TabOrder = 16
     OnChange = Edit_nameChange
   end
   object Edit_shortname: TEdit
@@ -444,7 +433,7 @@ object Form_parametry: TForm_parametry
     Font.Style = [fsBold]
     MaxLength = 4
     ParentFont = False
-    TabOrder = 18
+    TabOrder = 17
   end
   object scGPPanel2: TscGPPanel
     Left = 0
@@ -452,7 +441,7 @@ object Form_parametry: TForm_parametry
     Width = 348
     Height = 34
     Align = alTop
-    TabOrder = 19
+    TabOrder = 18
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -489,7 +478,6 @@ object Form_parametry: TForm_parametry
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
-      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -542,6 +530,8 @@ object Form_parametry: TForm_parametry
       GlyphOptions.Kind = scgpbgkClose
       GlyphOptions.Thickness = 1
       GlyphOptions.StyleColors = True
+      ModalResult = 8
+      ModalSetting = True
       TextMargin = -1
       WidthWithCaption = 0
       WidthWithoutCaption = 0
@@ -667,7 +657,7 @@ object Form_parametry: TForm_parametry
   end
   object rEditNum_kapacita: TrEditNum
     Left = 232
-    Top = 284
+    Top = 290
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
@@ -694,9 +684,8 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 14
+    TabOrder = 13
     TabStop = True
-    OnClick = scGPButton1_OKClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -742,6 +731,7 @@ object Form_parametry: TForm_parametry
     Options.StyleColors = True
     HotImageIndex = -1
     ModalResult = 1
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -784,9 +774,8 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 14
     TabStop = True
-    OnClick = scGPButton3Click
     Animation = False
     Caption = 'Storno'
     CanFocused = True
@@ -832,6 +821,7 @@ object Form_parametry: TForm_parametry
     Options.StyleColors = True
     HotImageIndex = -1
     ModalResult = 2
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -869,7 +859,7 @@ object Form_parametry: TForm_parametry
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_delku'
-    TabOrder = 20
+    TabOrder = 19
     Visible = False
   end
   object Edit_vzdalenost_voziku: TEdit
@@ -877,7 +867,7 @@ object Form_parametry: TForm_parametry
     Top = 635
     Width = 121
     Height = 21
-    TabOrder = 21
+    TabOrder = 20
     Text = 'Edit_vzdalenost_voziku'
     Visible = False
   end
@@ -887,7 +877,7 @@ object Form_parametry: TForm_parametry
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_sirku'
-    TabOrder = 22
+    TabOrder = 21
     Visible = False
   end
   object scCheckBox_stopky: TscCheckBox
@@ -942,9 +932,9 @@ object Form_parametry: TForm_parametry
     ShowFocusRect = True
   end
   object scEdit_name: TscEdit
-    Left = 65
+    Left = 56
     Top = 50
-    Width = 158
+    Width = 170
     Height = 27
     UseFontColorToStyleColor = False
     ContentMarginLeft = 0
@@ -1126,9 +1116,9 @@ object Form_parametry: TForm_parametry
     TabOrder = 7
   end
   object scComboBox_rezim: TscComboBox
-    Left = 65
+    Left = 57
     Top = 90
-    Width = 275
+    Width = 283
     Height = 28
     Style = csOwnerDrawFixed
     ItemIndex = 0
@@ -1155,9 +1145,9 @@ object Form_parametry: TForm_parametry
     OnChange = scComboBox_rezimChange
   end
   object scComboBox_pohon: TscComboBox
-    Left = 65
+    Left = 57
     Top = 130
-    Width = 275
+    Width = 283
     Height = 27
     Style = csOwnerDrawFixed
     ItemIndex = -1
@@ -1189,7 +1179,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 23
+    TabOrder = 22
     Animation = True
     Caption = 'scGPGlyphButton_InfoIcon'
     CanFocused = False

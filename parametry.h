@@ -20,7 +20,6 @@
 class TForm_parametry : public TForm
 {
 __published:	// IDE-managed Components
-	TButton *Button_OK;
 	TValueListEditor *ValueListEditor;
 	TLabel *Label_CT;
 	TComboBox *ComboBox_druh_objektu;
@@ -80,33 +79,30 @@ __published:	// IDE-managed Components
 	void __fastcall Edit_vzdalenost_vozikuChange(TObject *Sender);
 	void __fastcall Button_min_secClick(TObject *Sender);
 	void __fastcall Button_DELClick(TObject *Sender);
-	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall Edit_nameChange(TObject *Sender);
 	void __fastcall Edit_vzdalenost_vozikuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall scGPButton3Click(TObject *Sender);
-	void __fastcall KonecClick(TObject *Sender);
-	void __fastcall scGPButton1_OKClick(TObject *Sender);
 	void __fastcall scComboBox_rezimChange(TObject *Sender);
 
 
 
 private:	// User declarations
 	enum Tminsec{MIN=0,SEC};Tminsec minsec;
+	void setForm4Rezim(unsigned short rezim);
+
+
+
 	double get_sum();
-
 	void get_capacity(unsigned int input);
-
 	UnicodeString SG,K,P;
 	unsigned short novy_parametr_n;
 	short offset;
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
+
 	void vykresli_vozik(bool na_delku=true);
-	void setForm4Rezim(unsigned short rezim,bool default_text=true);
 	short dopravnik_typ;
 	void nacist_data();
-	bool returnOk;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry *Form_parametry;

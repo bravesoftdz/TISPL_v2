@@ -30,6 +30,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->kapacita_dop=0;
 	novy->pohon=NULL;//ukazatel na použitý pohon
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -57,6 +59,8 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->kapacita_dop=0;
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -83,6 +87,8 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->kapacita_dop=0;
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=false;//zda následuje na konci objektu stopka
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu

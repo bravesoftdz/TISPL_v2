@@ -50,19 +50,18 @@ void TForm_parametry::nacist_data(){
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
-	returnOk=false;
 	scGPGlyphButton_InfoIcon->Visible=false;
 	rHTMLLabel_doporuc_cekani_value->Visible=false;
 
 	scGPButton1_OK->Enabled=true;
 
-		if(Form1->d.v.POHONY->dalsi==NULL) {
-
-		//ShowMessage("Nejsou nastaveny pohony v parametrech linky. Následující formuláø nebude možné uložit.");  //prozatimni reseni
-		scGPButton1_OK->Enabled=false;
-		scGPGlyphButton_InfoIcon->Visible=true;
-		rHTMLLabel_doporuc_cekani_value->Visible=true;
-		rHTMLLabel_doporuc_cekani_value->Caption="Nastavte pohony v parametrech linky";
+		if(Form1->d.v.POHONY->dalsi==NULL)
+		{
+				//ShowMessage("Nejsou nastaveny pohony v parametrech linky. Následující formuláø nebude možné uložit.");  //prozatimni reseni
+				scGPButton1_OK->Enabled=false;
+				scGPGlyphButton_InfoIcon->Visible=true;
+				rHTMLLabel_doporuc_cekani_value->Visible=true;
+				rHTMLLabel_doporuc_cekani_value->Caption="Nastavte pohony v parametrech linky";
 		}
 
 //		if((scComboBox_rezim->ImageIndex!=1) || (scComboBox_rezim->ImageIndex!=2)){
@@ -101,6 +100,105 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 //
 //	ValueListEditorStringsChange(Sender);
 }
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
+{
+	setForm4Rezim(scComboBox_rezim->ItemIndex);//resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
+}
+//---------------------------------------------------------------------------
+//resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
+void TForm_parametry::setForm4Rezim(unsigned short rezim)
+{
+	ShowMessage(rezim);
+	switch(rezim)
+	{
+		 case 0://STOP & GO
+		 {
+			//délka dopravníku
+			rEditNum_delka_dopravniku->Visible=false;
+			rHTMLLabel_delka_dopravniku->Visible=false;
+			//povolená odchylka z c CT
+			rHTMLLabel_odchylkaCT->Visible=false;
+			rEditNum_odchylka->Visible=false;
+		 }break;
+		 case 1://KONTINUÁLNÍ
+		 {
+			//délka dopravníku
+			rEditNum_delka_dopravniku->Visible=true;
+			rHTMLLabel_delka_dopravniku->Visible=true;
+			rHTMLLabel_odchylkaCT->Visible=false;
+			rEditNum_odchylka->Visible=false;
+		 }break;
+		 case 2://POSTPROCESNÍ
+		 {
+		 	//délka dopravníku
+			rEditNum_delka_dopravniku->Visible=true;
+			rHTMLLabel_delka_dopravniku->Visible=true;
+			rHTMLLabel_odchylkaCT->Visible=true;
+			rEditNum_odchylka->Visible=true;
+		 }break;
+	}
+//	switch(rezim)
+//	{
+//		 case 0://STOP & GO
+//		 {
+//			ComboBox_dopravnik->Visible=false;
+//		//	GroupBox_vzdalenost->Left=0;
+//		//	GroupBox_vzdalenost->Visible=false;
+//		//	GroupBox_orientace_voziku->Width=262;
+//			Button_DEL->Visible=false;
+//			Image_vozik->Width=185;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
+//			if(default_text)ValueListEditor->Strings->SetText(SG.c_str());
+//			Label_CT->Top=296+offset;Label_CT_hodnota->Top=296+offset;
+//			Label_TT->Top=315+offset;Label_TT_hodnota->Top=315+offset;
+//			Label_kapacita->Top=334+offset;Label_kapacita_hodnota->Top=334+offset;
+//			Label_kapacita_hodnota->Caption=1;
+//			Label_delka_prepravniku->Visible=false;Label_delka_prepravniku_hodnota->Visible=false;
+//			Button_min_sec->Top=388+offset-6;
+//			Form_parametry->Height=429+offset;
+//			//Button_OK->Top=374+offset;
+//			Label_vypis->Top=355+offset;
+//		 }break;
+//		 case 1://KONTINUÁLNÍ
+//		 {
+//			ComboBox_dopravnik->Visible=true;
+//		//	GroupBox_vzdalenost->Visible=true;
+//		//	GroupBox_vzdalenost->Left=195;
+//		//	GroupBox_orientace_voziku->Width=187;
+//			Button_DEL->Visible=false;
+//			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
+//			if(default_text)ValueListEditor->Strings->SetText(K.c_str());
+//			Label_CT->Top=296-19*5;Label_CT_hodnota->Top=296-19*5;
+//			Label_TT->Top=315-19*5;Label_TT_hodnota->Top=315-19*5;Label_TT_hodnota->Caption=0;
+//			Label_kapacita->Top=334-19*5;Label_kapacita_hodnota->Top=334-19*5;
+//			Label_delka_prepravniku->Visible=false;Label_delka_prepravniku_hodnota->Visible=false;
+//			Button_min_sec->Top=388-19*5-6;
+//			Form_parametry->Height=429-19*5;
+//			//Button_OK->Top=374-19*5;Label_vypis->Top=355-19*5;
+//		 }break;
+//		 case 2://POSTPROCESNÍ
+//		 {
+//		//	GroupBox_vzdalenost->Visible=true;
+//	 //		GroupBox_vzdalenost->Left=195;
+//			ComboBox_dopravnik->Visible=false;
+//		//	GroupBox_orientace_voziku->Width=187;
+//			Button_DEL->Visible=false;
+//			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
+//			if(default_text)ValueListEditor->Strings->SetText(P.c_str());
+//			Label_delka_prepravniku->Visible=true;Label_delka_prepravniku_hodnota->Visible=true;
+//			Label_delka_prepravniku->Top=296-19*5;Label_delka_prepravniku_hodnota->Top=296-19*5;
+//			Label_CT->Top=296-19*4;Label_CT_hodnota->Top=296-19*4;
+//			Label_TT->Top=315-19*4;Label_TT_hodnota->Top=315-19*4;
+//			Label_kapacita->Top=334-19*4;Label_kapacita_hodnota->Top=334-19*4;
+//			Form_parametry->Height=429-19*4;
+//			//Button_OK->Top=374-19*4;
+//			Label_vypis->Top=355-19*4;Button_min_sec->Top=388-19*4-6;
+//		 }break;
+// }
+// ValueListEditor->Height=19*ValueListEditor->RowCount;*/
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void TForm_parametry::vykresli_vozik(bool na_delku)
 { /*ZDM
@@ -146,11 +244,10 @@ void TForm_parametry::vykresli_vozik(bool na_delku)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-
 {
  if(Key==13)//ENTER
  {
-		 Form_parametry->ModalResult=idOK;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_parametry->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
 		 Form_parametry->VisibleChanging();//skryje form, stejné jako visible=false
  }
 }
@@ -259,64 +356,6 @@ void __fastcall TForm_parametry::ComboBox_druh_objektuChange(TObject *Sender)
 	 setForm4Rezim(ComboBox_druh_objektu->ItemIndex);
 }
 //---------------------------------------------------------------------------
-void TForm_parametry::setForm4Rezim(unsigned short rezim,bool default_text)
-{
-	switch(rezim)
- {
-		 case 0://STOP & GO
-		 {
-			ComboBox_dopravnik->Visible=false;
-		//	GroupBox_vzdalenost->Left=0;
-		//	GroupBox_vzdalenost->Visible=false;
-		//	GroupBox_orientace_voziku->Width=262;
-			Button_DEL->Visible=false;
-			Image_vozik->Width=185;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
-			if(default_text)ValueListEditor->Strings->SetText(SG.c_str());
-			Label_CT->Top=296+offset;Label_CT_hodnota->Top=296+offset;
-			Label_TT->Top=315+offset;Label_TT_hodnota->Top=315+offset;
-			Label_kapacita->Top=334+offset;Label_kapacita_hodnota->Top=334+offset;
-			Label_kapacita_hodnota->Caption=1;
-			Label_delka_prepravniku->Visible=false;Label_delka_prepravniku_hodnota->Visible=false;
-			Button_min_sec->Top=388+offset-6;
-			Form_parametry->Height=429+offset;Button_OK->Top=374+offset;Label_vypis->Top=355+offset;
-		 }break;
-		 case 1://KONTINUÁLNÍ
-		 {
-			ComboBox_dopravnik->Visible=true;
-		//	GroupBox_vzdalenost->Visible=true;
-		//	GroupBox_vzdalenost->Left=195;
-		//	GroupBox_orientace_voziku->Width=187;
-			Button_DEL->Visible=false;
-			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
-			if(default_text)ValueListEditor->Strings->SetText(K.c_str());
-			Label_CT->Top=296-19*5;Label_CT_hodnota->Top=296-19*5;
-			Label_TT->Top=315-19*5;Label_TT_hodnota->Top=315-19*5;Label_TT_hodnota->Caption=0;
-			Label_kapacita->Top=334-19*5;Label_kapacita_hodnota->Top=334-19*5;
-			Label_delka_prepravniku->Visible=false;Label_delka_prepravniku_hodnota->Visible=false;
-			Button_min_sec->Top=388-19*5-6;
-			Form_parametry->Height=429-19*5;Button_OK->Top=374-19*5;Label_vypis->Top=355-19*5;
-		 }break;
-		 case 2://POSTPROCESNÍ
-		 {
-		//	GroupBox_vzdalenost->Visible=true;
-	 //		GroupBox_vzdalenost->Left=195;
-			ComboBox_dopravnik->Visible=false;
-		//	GroupBox_orientace_voziku->Width=187;
-			Button_DEL->Visible=false;
-			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
-			if(default_text)ValueListEditor->Strings->SetText(P.c_str());
-			Label_delka_prepravniku->Visible=true;Label_delka_prepravniku_hodnota->Visible=true;
-			Label_delka_prepravniku->Top=296-19*5;Label_delka_prepravniku_hodnota->Top=296-19*5;
-			Label_CT->Top=296-19*4;Label_CT_hodnota->Top=296-19*4;
-			Label_TT->Top=315-19*4;Label_TT_hodnota->Top=315-19*4;
-			Label_kapacita->Top=334-19*4;Label_kapacita_hodnota->Top=334-19*4;
-			Form_parametry->Height=429-19*4;Button_OK->Top=374-19*4;
-			Label_vypis->Top=355-19*4;Button_min_sec->Top=388-19*4-6;
-		 }break;
- }
- ValueListEditor->Height=19*ValueListEditor->RowCount;
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm_parametry::ComboBox_dopravnikChange(TObject *Sender)
 {
 	ValueListEditorStringsChange(this);
@@ -354,7 +393,7 @@ void __fastcall TForm_parametry::ValueListEditorClick(TObject *Sender)
 		ValueListEditor->Strings->Delete(ValueListEditor->RowCount-4);
 		ValueListEditor->KeyOptions<<keyUnique;
 
-		setForm4Rezim(0,false);
+		setForm4Rezim(0);
 	}
 
 	if(ValueListEditor->Row!=ValueListEditor->RowCount-1)//pouze pokud se netýká posledního øádku
@@ -370,7 +409,7 @@ void __fastcall TForm_parametry::Button_DELClick(TObject *Sender)
 {
 	ValueListEditor->DeleteRow(ValueListEditor->Row);
 	offset-=19;
-	setForm4Rezim(0,false);
+	setForm4Rezim(0);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Edit_vzdalenost_vozikuChange(TObject *Sender)
@@ -411,12 +450,6 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
  }
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry::FormClose(TObject *Sender, TCloseAction &Action)
-{
-	//v pøípadì pøepnutí na SEC zajistí pøevod zpìt na MIN
-	if(minsec==SEC)Button_min_secClick(Sender);
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Edit_nameChange(TObject *Sender)
 {
 	 Form_parametry->Caption=Edit_name->Text+" - parametry";
@@ -432,58 +465,6 @@ void __fastcall TForm_parametry::Edit_vzdalenost_vozikuKeyDown(TObject *Sender, 
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPButton3Click(TObject *Sender)
-{
-	Form_parametry->Close();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::KonecClick(TObject *Sender)
-{
-	returnOk=false;
-	Close();
-}
-//---------------------------------------------------------------------------
-
-
-void __fastcall TForm_parametry::scGPButton1_OKClick(TObject *Sender)
-{
-	returnOk=true;
-	Close(); // veškeré ukládání je øešeno v Unit1 metoda  Nastvitparametry1Click
-
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
-{
-//				switch(scComboBox_rezim->ItemIndex)
-//	{
-//
-//		case 1: //kontinual
-//		{
-//      rEditNum_odchylka->Enabled=true;
-//			rEditNum_kapacita->Enabled=true;
-//		}
-//		break;
-//		case 2://postprocesni - povoleni a zakazani editboxu pro rezimy
-//		{
-//			rEditNum_odchylka->Enabled=true;
-//			rEditNum_kapacita->Enabled=true;
-//		}
-//		break;
-//		default :
-//		{
-//			rEditNum_odchylka->Enabled=false;
-//			rEditNum_kapacita->Enabled=false;
-//			//rEditNum_odchylka->Text="0";
-//			//rEditNum_kapacita->Text="1";
-//
-//		}
-//		break;
-//
-//		}     TODO Dodelat, nechova se korektne
-}
-//---------------------------------------------------------------------------
 
 
 
