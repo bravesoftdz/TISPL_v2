@@ -5,8 +5,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
   BorderStyle = bsNone
   BorderWidth = 1
   Caption = 'Definice zak'#225'zek'
-  ClientHeight = 533
-  ClientWidth = 999
+  ClientHeight = 535
+  ClientWidth = 1001
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clDefault
@@ -223,7 +223,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnClick = Button_DELClick
   end
   object rStringGridEd1: TrStringGridEd
-    Left = 5
+    Left = 1
     Top = 301
     Width = 1000
     Height = 186
@@ -467,7 +467,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'TakTime'
+        TitleCaption = 'TakTime [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13
@@ -893,7 +893,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 999
+    Width = 1001
     Height = 34
     Align = alTop
     TabOrder = 16
@@ -921,9 +921,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 999
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 949
+      Left = 951
       Top = 0
       Width = 50
       Height = 33
@@ -998,10 +999,11 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 949
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 849
+      Left = 851
       Top = 0
       Width = 50
       Height = 33
@@ -1075,11 +1077,12 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 849
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 812
+      Width = 814
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1106,10 +1109,11 @@ object Form_definice_zakazek: TForm_definice_zakazek
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
+      ExplicitWidth = 812
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 899
+      Left = 901
       Top = 0
       Width = 50
       Height = 33
@@ -1183,9 +1187,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 899
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 812
+      Left = 814
       Top = 0
       Width = 37
       Height = 34
@@ -1261,6 +1266,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 812
     end
   end
   object rEditNum_pozad_mnozstvi: TrEditNum
@@ -1325,7 +1331,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Value = 5.000000000000000000
   end
   object scGPButton_Ulozit: TscGPButton
-    Left = 363
+    Left = 380
     Top = 490
     Width = 100
     Height = 35
@@ -1414,7 +1420,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     AllowAllUp = False
   end
   object scGPButton3: TscGPButton
-    Left = 496
+    Left = 520
     Top = 490
     Width = 100
     Height = 35

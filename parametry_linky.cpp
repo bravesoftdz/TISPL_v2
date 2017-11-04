@@ -31,7 +31,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		//	Form1->d.v.vymaz_seznam_POHONY();
 
-	 Form_parametry_linky->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
+	 Form_parametry_linky->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
+	 rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
 
 	 scGPButton1->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton1->Options->FocusedColor=Form_parametry_linky->Color;
@@ -182,6 +183,7 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 				 }
 }
 //---------------------------------------------------------------------------
+
 
 
 

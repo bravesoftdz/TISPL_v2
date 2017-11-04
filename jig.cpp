@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "jig.h"
+#include "unit1.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -17,14 +18,17 @@ __fastcall TForm_jig::TForm_jig(TComponent* Owner)
 	: TForm(Owner)
 {
 	//designové nastavení formuláøe
-	Form_jig->Color=(TColor)RGB(225,225,225);//RGB(43,87,154);
+	Form_jig->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
 	scGPButton2->Options->NormalColor=Form_jig->Color;
 	scGPButton2->Options->FocusedColor=Form_jig->Color;
 	scGPButton2->Options->HotColor=Form_jig->Color;
 	scGPButton2->Options->PressedColor=Form_jig->Color;
 	scGPButton2->Options->FrameNormalColor=Form_jig->Color;
 	scGPButton2->Options->PressedColor=Form_jig->Color;
- 	scGPButton2->Options->FramePressedColor=Form_jig->Color;
+	scGPButton2->Options->FramePressedColor=Form_jig->Color;
+
+	Form_jig->Left=Form1->ClientWidth/2-Form_jig->Width/2;
+	Form_jig->Top=Form1->ClientHeight/2-Form_jig->Height/2;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_jig::KonecClick(TObject *Sender)

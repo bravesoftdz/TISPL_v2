@@ -6,7 +6,7 @@ object Form_jig: TForm_jig
   BorderWidth = 1
   Caption = 'Nastaven'#237' Jigu'
   ClientHeight = 331
-  ClientWidth = 413
+  ClientWidth = 410
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -75,7 +75,7 @@ object Form_jig: TForm_jig
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 413
+    Width = 410
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -103,10 +103,10 @@ object Form_jig: TForm_jig
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 448
+    ExplicitWidth = 413
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 363
+      Left = 360
       Top = 0
       Width = 50
       Height = 33
@@ -183,11 +183,11 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 398
+      ExplicitLeft = 363
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 263
+      Left = 260
       Top = 0
       Width = 50
       Height = 33
@@ -261,11 +261,11 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 298
+      ExplicitLeft = 263
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 313
+      Left = 310
       Top = 0
       Width = 50
       Height = 33
@@ -339,12 +339,12 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 348
+      ExplicitLeft = 313
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 263
+      Width = 260
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -371,11 +371,11 @@ object Form_jig: TForm_jig
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Jig'
-      ExplicitWidth = 298
+      ExplicitWidth = 263
     end
   end
   object Button_jig_storno: TscGPButton
-    Left = 219
+    Left = 225
     Top = 283
     Width = 100
     Height = 35
@@ -466,7 +466,7 @@ object Form_jig: TForm_jig
     AllowAllUp = False
   end
   object Button_jig_save: TscGPButton
-    Left = 93
+    Left = 85
     Top = 283
     Width = 100
     Height = 35
