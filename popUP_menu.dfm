@@ -1592,13 +1592,14 @@
     GroupIndex = 0
     AllowAllUp = True
   end
-  object scGPPanel1: TscGPPanel
+  object Item_poznamka: TscGPPanel
     Left = 0
     Top = 340
     Width = 211
     Height = 34
     Align = alTop
     TabOrder = 11
+    Visible = False
     FrameSides = [gppfsBottom]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
@@ -1624,7 +1625,7 @@
     Caption = 'Item1'
     TransparentBackground = True
     StorePaintBuffer = True
-    object scLabel1: TscLabel
+    object scLabel_poznamka: TscLabel
       Left = 37
       Top = 0
       Width = 174
@@ -1641,7 +1642,6 @@
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      Visible = False
       OnClick = scLabel_cely_pohledClick
       OnMouseEnter = scLabel_cely_pohledMouseEnter
       OnMouseLeave = scLabel_cely_pohledMouseLeave
@@ -1659,7 +1659,7 @@
       UseFontColorToStyleColor = True
       Caption = '  Pozn'#225'mka'
     end
-    object scGPGlyphButton1: TscGPGlyphButton
+    object GlyphButton_poznamka: TscGPGlyphButton
       Left = 0
       Top = 0
       Width = 37
@@ -1672,12 +1672,11 @@
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      Visible = False
       OnClick = scLabel_cely_pohledClick
       OnMouseEnter = GlyphButton_cely_pohledMouseEnter
       OnMouseLeave = GlyphButton_cely_pohledMouseLeave
       Animation = False
-      Caption = 'scGPGlyphButton1'
+      Caption = 'GlyphButton_poznamka'
       CanFocused = False
       CustomDropDown = False
       Layout = blGlyphLeft

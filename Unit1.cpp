@@ -2386,16 +2386,6 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 	{
 		if(pom!=NULL)
 		{
-				//ošetření aby zůstal dialog na monitoru
-				if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->Width<Form1->Width)
-					Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
-				else
-					Form_parametry->Left=Form1->Width-Form_parametry->Width-10;
-				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->Height<Form1->Height)
-					Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
-				else 	Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
-					Form_parametry->Caption=pom->name+" - parametry";
-
 				//plnění daty
 				Form_parametry->scComboBox_pohon->Items->Clear();
 				while (ukaz!=NULL)
@@ -2407,13 +2397,25 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
 				Form_parametry->scEdit_name->Text=pom->name;
 				Form_parametry->scEdit_shortname->Text=pom->short_name;
-				Form_parametry->rEditNum_delka_dopravniku->Text=pom->delka_dopravniku;
-				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
 				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
-				Form_parametry->scComboBox_cekani_pacel->ItemIndex=pom->cekat_na_palce;
+				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
+				Form_parametry->rEditNum_delka_dopravniku->Text=pom->delka_dopravniku;
+				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 				Form_parametry->rEditNum_kapacita->Text=pom->kapacita;
 				Form_parametry->rEditNum_odchylka->Text=pom->odchylka;
 				Form_parametry->scCheckBox_stopky->Checked=pom->stopka;
+				//nadesignování formu
+				Form_parametry->setForm4Rezim(pom->rezim);
+
+				//ošetření aby zůstal dialog na monitoru
+				if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->Width<Form1->Width)
+					Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
+				else
+					Form_parametry->Left=Form1->Width-Form_parametry->Width-10;
+				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->Height<Form1->Height)
+					Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
+				else 	Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
+					Form_parametry->Caption=pom->name+" - parametry";
 
 				//navrácení dat + volání zobrazení formu
 				if(Form_parametry->ShowModal()==mrOk)
@@ -2426,7 +2428,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 							pom->delka_dopravniku=ms.MyToDouble(Form_parametry->rEditNum_delka_dopravniku->Text);
 							pom->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
 							pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
-							pom->cekat_na_palce=Form_parametry->scComboBox_cekani_pacel->ItemIndex;
+							pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
 							pom->kapacita=Form_parametry->rEditNum_kapacita->Text.ToDouble();
 							pom->odchylka=Form_parametry->rEditNum_odchylka->Text.ToDouble();
 							pom->stopka=Form_parametry->scCheckBox_stopky->Checked;

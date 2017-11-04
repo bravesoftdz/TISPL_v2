@@ -47,7 +47,7 @@ class Cmy
 	double prejezd_voziku(double delka, double rychlost_dopravniku);
 
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
-
+	void designButton(TButton *button,short rank,short sum,int formWidth,short space=22);//vrací pozice tlaèítek
 
 	protected:
 

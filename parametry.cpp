@@ -5,7 +5,6 @@
 
 #include "parametry.h"
 #include "unit1.h"
-//#include "dopravniky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -21,48 +20,38 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
   //nové nastavení barvy formuláøe
 	Form_parametry->Color=(TColor)RGB(240,240,240);
 
-	SG="PT - èistý technologický výrobní èas=0\nMT - èas pøesouvání produktu=0\nWT - doba èekání vozíku=0\nIT - doba kontroly vozíku=0\nQT - doba èekání ve frontì=0\n...=""";
-	K="délka dopravníku [m]=0";
-	P="WT - doba èekání vozíku=0";
+	//pøevzetí defaultní velikosti formuláøe z designu pro další užití (slouží spíše pro usnadnìní vývoje, než funkènì)
+	defaultForm_parametryHeight=Form_parametry->Height;
 
-	novy_parametr_n=0;
-	offset=0;
+	//matamaticky exaktní napozicování tlaèítek OK a storno
+	Form1->m.designButton((TButton*)scGPButton_OK,1,2,Width);
+	Form1->m.designButton((TButton*)scGPButton_storno,2,2,Width);
 
+	navrhar=true;//prozatim
 
-}
-
-void TForm_parametry::nacist_data(){
-
-// Cvektory::TObjekt *ukaz=Form1->d.v.OBJEKTY->dalsi;
+//	//asi již k nièemu:
+//	SG="PT - èistý technologický výrobní èas=0\nMT - èas pøesouvání produktu=0\nWT - doba èekání vozíku=0\nIT - doba kontroly vozíku=0\nQT - doba èekání ve frontì=0\n...=""";
+//	K="délka dopravníku [m]=0";
+//	P="WT - doba èekání vozíku=0";
 //
-//
-//				scEdit_name->Text=Form_parametry->Edit_name->Text;
-//				scEdit_shortname->Text=Form_parametry->Edit_shortname->Text;
-//				rEditNum_delka_dopravniku->Text=ukaz->delka_dopravniku;
-//				scComboBox_pohon->ItemIndex=ukaz->pohon->n;
-//				scComboBox_rezim->ItemIndex=ukaz->rezim;
-//				rEditNum_kapacita->Text=ukaz->kapacita;
-
-
+//	novy_parametr_n=0;
 }
-
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
-	scGPGlyphButton_InfoIcon->Visible=false;
-	rHTMLLabel_doporuc_cekani_value->Visible=false;
+	scGPGlyphButton_InfoIcon->Visible=true;
 
-	scGPButton1_OK->Enabled=true;
-
-		if(Form1->d.v.POHONY->dalsi==NULL)
-		{
-				//ShowMessage("Nejsou nastaveny pohony v parametrech linky. Následující formuláø nebude možné uložit.");  //prozatimni reseni
-				scGPButton1_OK->Enabled=false;
-				scGPGlyphButton_InfoIcon->Visible=true;
-				rHTMLLabel_doporuc_cekani_value->Visible=true;
-				rHTMLLabel_doporuc_cekani_value->Caption="Nastavte pohony v parametrech linky";
-		}
+//	//ošetøení pro pøípad neexistujících pohonu - zvážit potøebu
+//	scGPButton_OK->Enabled=true;
+//	if(Form1->d.v.POHONY->dalsi==NULL)
+//	{
+//				//ShowMessage("Nejsou nastaveny pohony v parametrech linky. Následující formuláø nebude možné uložit.");  //prozatimni reseni
+//				scGPButton_OK->Enabled=false;
+//				scGPGlyphButton_InfoIcon->Visible=true;
+//				rHTMLLabel_doporuc_cekani_value->Visible=true;
+//				rHTMLLabel_doporuc_cekani_value->Caption="Nastavte pohony v parametrech linky";
+//	}
 
 //		if((scComboBox_rezim->ImageIndex!=1) || (scComboBox_rezim->ImageIndex!=2)){
 //
@@ -110,35 +99,50 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 //resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
 void TForm_parametry::setForm4Rezim(unsigned short rezim)
 {
-	ShowMessage(rezim);
+	//výchozí zmenšení formuláøe
+	offset=0;
+	if (navrhar) rezim+=10;//posunutí o 10 vytváøí stejný režim+navrhaø
 	switch(rezim)
 	{
 		 case 0://STOP & GO
 		 {
-			//délka dopravníku
-			rEditNum_delka_dopravniku->Visible=false;
-			rHTMLLabel_delka_dopravniku->Visible=false;
-			//povolená odchylka z c CT
-			rHTMLLabel_odchylkaCT->Visible=false;
-			rEditNum_odchylka->Visible=false;
+
+		 }break;
+		 case 10://STOP & GO - NÁVRHÁØ
+		 {
+			 set(POHON,HIDE);
+			 set(DELKA,HIDE);
+			 set(CEKANI,HIDE);
+			 set(ODCHYLKA,HIDE);
+			 set(KAPACITA,READONLY);
+			 set(STOPKA,HIDE);
 		 }break;
 		 case 1://KONTINUÁLNÍ
 		 {
-			//délka dopravníku
-			rEditNum_delka_dopravniku->Visible=true;
-			rHTMLLabel_delka_dopravniku->Visible=true;
-			rHTMLLabel_odchylkaCT->Visible=false;
-			rEditNum_odchylka->Visible=false;
+
+		 }break;
+		 case 11://KONTINUÁLNÍ - NÁVRHÁØ
+		 {
+			 set(POHON,ENABLED);
+			 set(DELKA,ENABLED);
+			 set(CEKANI,ENABLED);
+			 set(ODCHYLKA,ENABLED);
+			 set(KAPACITA,ENABLED);
+			 set(STOPKA,ENABLED);
 		 }break;
 		 case 2://POSTPROCESNÍ
 		 {
-		 	//délka dopravníku
-			rEditNum_delka_dopravniku->Visible=true;
-			rHTMLLabel_delka_dopravniku->Visible=true;
-			rHTMLLabel_odchylkaCT->Visible=true;
-			rEditNum_odchylka->Visible=true;
+
 		 }break;
 	}
+
+
+	//VELIKOST FORMULÁØE
+	Form_parametry->Height=defaultForm_parametryHeight+offset;
+	//vertikální POZICE TLAÈÍTEK OK A STORNO
+	scGPButton_OK->Top=Form_parametry->Height-scGPButton_OK->Height-10;
+	scGPButton_storno->Top=Form_parametry->Height-scGPButton_storno->Height-10;
+
 //	switch(rezim)
 //	{
 //		 case 0://STOP & GO
@@ -199,6 +203,101 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 // ValueListEditor->Height=19*ValueListEditor->RowCount;*/
 }
 //---------------------------------------------------------------------------
+void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
+{
+	//defaultní hodnoty
+	short O=40;//vertikální velikost odsazení komponent
+	int L=rHTMLLabel_rezim->Top;//výchozí komponenta
+	int P=scComboBox_rezim->Top;//výchozí komponenta
+
+	switch (C)
+	{
+		case POHON:
+		{
+			//pozice
+			rHTMLLabel_pohon->Top=L+O;
+			scComboBox_pohon->Top=P+O;
+			//funkèní vlastnosti
+			switch (S)
+			{
+				case ENABLED:	rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=true;break;
+				case DISABLED:rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=false;break;
+				case READONLY:rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=false;break;
+				case HIDE:		rHTMLLabel_pohon->Visible=false;scComboBox_pohon->Visible=false;offset-=O;break;
+			}
+		}	break;
+		case DELKA://délka dopravníku
+		{
+			//pozice
+			rHTMLLabel_pohon->Top=L+2*O+offset;
+			rEditNum_delka_dopravniku->Top=P+2*O+offset;
+			//funkèní vlastnosti
+			switch (S)
+			{
+				case ENABLED:	rHTMLLabel_delka_dopravniku->Visible=true;rEditNum_delka_dopravniku->Visible=true;rEditNum_delka_dopravniku->Enabled=true;break;
+				case DISABLED:rHTMLLabel_delka_dopravniku->Visible=true;rEditNum_delka_dopravniku->Visible=true;rEditNum_delka_dopravniku->Enabled=false;break;
+				case READONLY:rHTMLLabel_delka_dopravniku->Visible=true;rEditNum_delka_dopravniku->Visible=false;/*doplnit label s textem*/break;
+				case HIDE:		rHTMLLabel_delka_dopravniku->Visible=false;rEditNum_delka_dopravniku->Visible=false;offset-=O;break;
+			}
+		}break;
+		case CEKANI://èekání
+		{
+			//pozice
+			rHTMLLabel_cekani->Top=L+3*O+offset;
+			scComboBox_cekani_palec->Top=P+3*O+offset;
+			//funkèní vlastnosti
+			switch (S)
+			{
+				case ENABLED:	rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=true;break;
+				case DISABLED:rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=false;break;
+				case READONLY:rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=false;break;
+				case HIDE:		rHTMLLabel_cekani->Visible=false;scComboBox_cekani_palec->Visible=false;offset-=O;break;
+			}
+		}	break;
+		case ODCHYLKA://povolená odchylka z CT
+		{
+			//pozice
+			rHTMLLabel_odchylkaCT->Top=L+4*O+offset;
+			rEditNum_odchylka->Top=P+4*O+offset;
+			//funkèní vlastnosti
+			switch (S)
+			{
+				case ENABLED:	rHTMLLabel_odchylkaCT->Visible=true;rEditNum_odchylka->Visible=true;rEditNum_odchylka->Enabled=true;break;
+				case DISABLED:rHTMLLabel_odchylkaCT->Visible=true;rEditNum_odchylka->Visible=true;rEditNum_odchylka->Enabled=false;break;
+				case READONLY:rHTMLLabel_odchylkaCT->Visible=true;rEditNum_odchylka->Visible=false;/*doplnit label s textem*/break;
+				case HIDE:		rHTMLLabel_odchylkaCT->Visible=false;rEditNum_odchylka->Visible=false;offset-=O;break;
+			}
+		}	break;
+		case KAPACITA://požadována vs. zjištìná kapacita objektu
+		{
+			//pozice
+			rHTMLLabel_kapacita->Top=L+5*O+offset;
+			rEditNum_kapacita->Top=P+5*O+offset;
+			//funkèní vlastnosti
+			switch (S)
+			{
+				case ENABLED:	rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=true;rEditNum_kapacita->Enabled=true;break;
+				case DISABLED:rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=true;rEditNum_kapacita->Enabled=false;break;
+				case READONLY:rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=false;/*doplnit label s textem*/break;
+				case HIDE:		rHTMLLabel_kapacita->Visible=false;rEditNum_kapacita->Visible=false;offset-=O;break;
+			}
+		}	break;
+		case STOPKA://stop stanice na konci objektu
+		{
+			//pozice
+			scCheckBox_stopky->Top=L+6*O+offset;
+			//funkèní vlastnosti
+			switch (S)
+			{
+				case ENABLED:	scCheckBox_stopky->Visible=true;scCheckBox_stopky->Enabled=true;break;
+				case DISABLED:scCheckBox_stopky->Visible=true;scCheckBox_stopky->Enabled=false;break;
+				case READONLY:scCheckBox_stopky->Visible=true;scCheckBox_stopky->Enabled=false;break;
+				case HIDE:		scCheckBox_stopky->Visible=false;offset-=O;break;
+			}
+		}	break;
+	}
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void TForm_parametry::vykresli_vozik(bool na_delku)
 { /*ZDM
@@ -245,223 +344,222 @@ void TForm_parametry::vykresli_vozik(bool na_delku)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
- if(Key==13)//ENTER
- {
-		 Form_parametry->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
-		 Form_parametry->VisibleChanging();//skryje form, stejné jako visible=false
- }
+// if(Key==13)//ENTER
+// {
+//		 Form_parametry->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+//		 Form_parametry->VisibleChanging();//skryje form, stejné jako visible=false
+// }
 }
 //---------------------------------------------------------------------------
 double TForm_parametry::get_sum()
 {
-	 double sum=0;
-	 for(int i=1;i<=ValueListEditor->RowCount;i++)
-	 {
-		 try
-		 {
-			 sum+=ValueListEditor->Cells[1][i].ToDouble();
-		 }
-		 catch(...){}
-	 }
-	 return sum;
+//	 double sum=0;
+//	 for(int i=1;i<=ValueListEditor->RowCount;i++)
+//	 {
+//		 try
+//		 {
+//			 sum+=ValueListEditor->Cells[1][i].ToDouble();
+//		 }
+//		 catch(...){}
+//	 }
+//	 return sum;
 }
 //---------------------------------------------------------------------------
 void TForm_parametry::get_capacity(unsigned int input)
 {
-		try
-		{
-			switch (input)
-			{
-				case 1://kontinual, line tracking
-				{
-					if(Form1->d.v.PP.delka_voziku!=0)
-					{
-						double sirka_delka=Form1->d.v.PP.delka_voziku;//ZDMForm1->PP.sirka_voziku;if(RadioButton_na_delku->Checked)sirka_delka=Form1->PP.delka_voziku;//podle nastavene orientace vozíku
-						if(ValueListEditor->Cells[1][1].ToDouble()>=sirka_delka)
-						{
-							Label_kapacita_hodnota->Font->Color=clBlack;
-							try{Edit_vzdalenost_voziku->Text.ToDouble();}catch(...){Edit_vzdalenost_voziku->Text=0;}
-							Label_kapacita_hodnota->Caption=UnicodeString((ValueListEditor->Cells[1][1].ToDouble()+Edit_vzdalenost_voziku->Text.ToDouble())/(sirka_delka+Edit_vzdalenost_voziku->Text.ToDouble()));
-						}
-						else
-						{
-							Label_kapacita_hodnota->Font->Color=clRed;
-							Label_kapacita_hodnota->Caption="Nepl. délka!";
-						}
-					}
-					else {Label_kapacita_hodnota->Font->Color=clBlack;Label_kapacita_hodnota->Caption="Parametry vozík!";}
-				}break;
-
-				case 2://postprocesní
-				{
-					//ZDM if(Form1->PP.TT!=0)
-					{
-						unsigned short sm=1;if(minsec==SEC)sm=60;//pouze pro zkrácení zapisu
-						//ZDM if(ValueListEditor->Cells[1][1].ToDouble()>=Form1->PP.TT*sm){Label_kapacita_hodnota->Font->Color=clBlack;Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
-						//ZDM else	{Label_kapacita_hodnota->Font->Color=clRed;/*Label_kapacita_hodnota->Caption="Nepl. doba!";*/Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
-
-						if(Label_kapacita_hodnota->Caption=="0")Label_delka_prepravniku_hodnota->Caption="0";
-						else
-						{
-							//ZDM if(RadioButton_na_delku->Checked)
-							 //ZDM 	Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.delka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
-							//ZDM else
-							//ZDM 	Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.sirka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
-            }
-					}
-					//ZDM else {Label_kapacita_hodnota->Font->Color=clRed;Label_kapacita_hodnota->Caption="Zadejte TT!";}
-				}break;
-			}
-
-
-		}catch(...){}
+//		try
+//		{
+//			switch (input)
+//			{
+//				case 1://kontinual, line tracking
+//				{
+//					if(Form1->d.v.PP.delka_voziku!=0)
+//					{
+//						double sirka_delka=Form1->d.v.PP.delka_voziku;//ZDMForm1->PP.sirka_voziku;if(RadioButton_na_delku->Checked)sirka_delka=Form1->PP.delka_voziku;//podle nastavene orientace vozíku
+//						if(ValueListEditor->Cells[1][1].ToDouble()>=sirka_delka)
+//						{
+//							Label_kapacita_hodnota->Font->Color=clBlack;
+//							try{Edit_vzdalenost_voziku->Text.ToDouble();}catch(...){Edit_vzdalenost_voziku->Text=0;}
+//							Label_kapacita_hodnota->Caption=UnicodeString((ValueListEditor->Cells[1][1].ToDouble()+Edit_vzdalenost_voziku->Text.ToDouble())/(sirka_delka+Edit_vzdalenost_voziku->Text.ToDouble()));
+//						}
+//						else
+//						{
+//							Label_kapacita_hodnota->Font->Color=clRed;
+//							Label_kapacita_hodnota->Caption="Nepl. délka!";
+//						}
+//					}
+//					else {Label_kapacita_hodnota->Font->Color=clBlack;Label_kapacita_hodnota->Caption="Parametry vozík!";}
+//				}break;
+//
+//				case 2://postprocesní
+//				{
+//					//ZDM if(Form1->PP.TT!=0)
+//					{
+//						unsigned short sm=1;if(minsec==SEC)sm=60;//pouze pro zkrácení zapisu
+//						//ZDM if(ValueListEditor->Cells[1][1].ToDouble()>=Form1->PP.TT*sm){Label_kapacita_hodnota->Font->Color=clBlack;Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
+//						//ZDM else	{Label_kapacita_hodnota->Font->Color=clRed;/*Label_kapacita_hodnota->Caption="Nepl. doba!";*/Label_kapacita_hodnota->Caption=UnicodeString(ValueListEditor->Cells[1][1].ToDouble()/(Form1->PP.TT*sm));}
+//
+//						if(Label_kapacita_hodnota->Caption=="0")Label_delka_prepravniku_hodnota->Caption="0";
+//						else
+//						{
+//							//ZDM if(RadioButton_na_delku->Checked)
+//							 //ZDM 	Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.delka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
+//							//ZDM else
+//							//ZDM 	Label_delka_prepravniku_hodnota->Caption=(Label_kapacita_hodnota->Caption.ToDouble()*Form1->PP.sirka_voziku)+(Label_kapacita_hodnota->Caption.ToDouble()-1)*Edit_vzdalenost_voziku->Text.ToDouble();
+//            }
+//					}
+//					//ZDM else {Label_kapacita_hodnota->Font->Color=clRed;Label_kapacita_hodnota->Caption="Zadejte TT!";}
+//				}break;
+//			}
+//
+//
+//		}catch(...){}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::ValueListEditorStringsChange(TObject *Sender)
 {
-	Label_vypis->Visible=false;
-	unsigned short sm=1;if(minsec==SEC)sm=60;//pouze pro zkrácení zapisu
-	switch(ComboBox_druh_objektu->ItemIndex)
-	{
-		case 0://stop and go
-		{
-			Label_CT_hodnota->Caption=get_sum();Label_kapacita_hodnota->Font->Color=clBlack;
-			Label_TT_hodnota->Caption=Label_CT_hodnota->Caption;
-			//ZDM if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
-		}
-		break;
-		case 1://kontinual
-		{
-			try
-			{                                                                                  //zvážit zda to nebrat pøímo z form
-					Label_CT_hodnota->Caption=ValueListEditor->Cells[1][1].ToDouble()/Form1->ms.EP(ComboBox_dopravnik->Items->operator[](ComboBox_dopravnik->ItemIndex),"- "," [").ToDouble();
-					get_capacity(1);
-					Label_TT_hodnota->Caption=Label_CT_hodnota->Caption.ToDouble()/Label_kapacita_hodnota->Caption.ToDouble();
-					//ZDM if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
-			}catch(...){;};
-		}
-		break;
-		case 2://postprocesní
-		{
-			get_capacity(2);
-			Label_CT_hodnota->Caption=get_sum();
-			//ZDM Label_TT_hodnota->Caption=Form1->PP.TT*sm;
-		}
-		break;
-	}
+//	Label_vypis->Visible=false;
+//	unsigned short sm=1;if(minsec==SEC)sm=60;//pouze pro zkrácení zapisu
+//	switch(ComboBox_druh_objektu->ItemIndex)
+//	{
+//		case 0://stop and go
+//		{
+//			Label_CT_hodnota->Caption=get_sum();Label_kapacita_hodnota->Font->Color=clBlack;
+//			Label_TT_hodnota->Caption=Label_CT_hodnota->Caption;
+//			//ZDM if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
+//		}
+//		break;
+//		case 1://kontinual
+//		{
+//			try
+//			{                                                                                  //zvážit zda to nebrat pøímo z form
+//					Label_CT_hodnota->Caption=ValueListEditor->Cells[1][1].ToDouble()/Form1->ms.EP(ComboBox_dopravnik->Items->operator[](ComboBox_dopravnik->ItemIndex),"- "," [").ToDouble();
+//					get_capacity(1);
+//					Label_TT_hodnota->Caption=Label_CT_hodnota->Caption.ToDouble()/Label_kapacita_hodnota->Caption.ToDouble();
+//					//ZDM if(Label_TT_hodnota->Caption.ToDouble()!=Form1->PP.TT*sm)Label_vypis->Visible=true;
+//			}catch(...){;};
+//		}
+//		break;
+//		case 2://postprocesní
+//		{
+//			get_capacity(2);
+//			Label_CT_hodnota->Caption=get_sum();
+//			//ZDM Label_TT_hodnota->Caption=Form1->PP.TT*sm;
+//		}
+//		break;
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::ComboBox_druh_objektuChange(TObject *Sender)
 {
-	 setForm4Rezim(ComboBox_druh_objektu->ItemIndex);
+//	 setForm4Rezim(ComboBox_druh_objektu->ItemIndex);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::ComboBox_dopravnikChange(TObject *Sender)
 {
-	ValueListEditorStringsChange(this);
+//	ValueListEditorStringsChange(this);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::RadioButton_na_delkuClick(TObject *Sender)
 {
-	 vykresli_vozik(true);//na délku
-	 ValueListEditorStringsChange(Sender);//zajistí pøepoèítání hodnot
+//	 vykresli_vozik(true);//na délku
+//	 ValueListEditorStringsChange(Sender);//zajistí pøepoèítání hodnot
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry::RadioButton_na_sirkuClick(TObject *Sender)
 {
-	 vykresli_vozik(false);//na šíøku
-	 ValueListEditorStringsChange(Sender);//zajistí pøepoèítání hodnot
+//	 vykresli_vozik(false);//na šíøku
+//	 ValueListEditorStringsChange(Sender);//zajistí pøepoèítání hodnot
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Image_vozikClick(TObject *Sender)
 {
-	 if(RadioButton_na_delku->Checked){RadioButton_na_sirku->Checked=true;RadioButton_na_sirkuClick(Sender);}
-	 else {RadioButton_na_delkuClick(Sender);RadioButton_na_delku->Checked=true;}
+//	 if(RadioButton_na_delku->Checked){RadioButton_na_sirku->Checked=true;RadioButton_na_sirkuClick(Sender);}
+//	 else {RadioButton_na_delkuClick(Sender);RadioButton_na_delku->Checked=true;}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::ValueListEditorClick(TObject *Sender)
 {
-	//požadavek na pøidání øetìzce
-	if(ValueListEditor->Col==0 && ValueListEditor->Row==ValueListEditor->RowCount-1)
-	{
-		offset+=19;
-
-		ValueListEditor->KeyOptions>>keyUnique;
-		ValueListEditor->Strings->Add("nový parametr "+ UnicodeString(++novy_parametr_n)+"=0");
-		ValueListEditor->Strings->Add("...=""");
-		ValueListEditor->Strings->Delete(ValueListEditor->RowCount-4);
-		ValueListEditor->KeyOptions<<keyUnique;
-
-		setForm4Rezim(0);
-	}
-
-	if(ValueListEditor->Row!=ValueListEditor->RowCount-1)//pouze pokud se netýká posledního øádku
-	{
-		Button_DEL->Visible=true;
-		Button_DEL->Top=ValueListEditor->Top+ValueListEditor->Row*19+1;
-	}
-
+//	//požadavek na pøidání øetìzce
+//	if(ValueListEditor->Col==0 && ValueListEditor->Row==ValueListEditor->RowCount-1)
+//	{
+//		offset+=19;
+//
+//		ValueListEditor->KeyOptions>>keyUnique;
+//		ValueListEditor->Strings->Add("nový parametr "+ UnicodeString(++novy_parametr_n)+"=0");
+//		ValueListEditor->Strings->Add("...=""");
+//		ValueListEditor->Strings->Delete(ValueListEditor->RowCount-4);
+//		ValueListEditor->KeyOptions<<keyUnique;
+//
+//		setForm4Rezim(0);
+//	}
+//
+//	if(ValueListEditor->Row!=ValueListEditor->RowCount-1)//pouze pokud se netýká posledního øádku
+//	{
+//		Button_DEL->Visible=true;
+//		Button_DEL->Top=ValueListEditor->Top+ValueListEditor->Row*19+1;
+//	}
 }
 //---------------------------------------------------------------------------
 //smaže daný øádek
 void __fastcall TForm_parametry::Button_DELClick(TObject *Sender)
 {
-	ValueListEditor->DeleteRow(ValueListEditor->Row);
-	offset-=19;
-	setForm4Rezim(0);
+//	ValueListEditor->DeleteRow(ValueListEditor->Row);
+//	offset-=19;
+//	setForm4Rezim(0);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Edit_vzdalenost_vozikuChange(TObject *Sender)
 {
-	 ValueListEditorStringsChange(Sender);
+//	 ValueListEditorStringsChange(Sender);
 }
 //---------------------------------------------------------------------------
 //pøepínání zobrazení min vs. sec
 void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 {
- if(minsec==MIN)
- {
-		minsec=SEC;
-		Label_CT->Caption="CYCLE TIME [sec/vozík] :";
-		Label_CT_hodnota->Caption=Label_CT_hodnota->Caption.ToDouble()*60;
-		Label_TT->Caption="TAKT TIME objektu [sec/vozík] :";
-		Label_TT_hodnota->Caption=Label_TT_hodnota->Caption.ToDouble()*60;
-		ValueListEditor->TitleCaptions->Insert(1,"èas [sec/vozík]");
-		if(ComboBox_druh_objektu->ItemIndex!=1)//pokud se nejedná o kontinuál
-		{
-			for(unsigned short i=1;i<=ValueListEditor->RowCount-1;i++)
-			try{ValueListEditor->Cells[1][i]=ValueListEditor->Cells[1][i].ToDouble()*60;}catch(...){;}
-		}
- }
- else
- {
-		minsec=MIN;
-		Label_CT->Caption="CYCLE TIME [min/vozík] :";
-		Label_CT_hodnota->Caption=Label_CT_hodnota->Caption.ToDouble()/60;
-		Label_TT->Caption="TAKT TIME objektu [min/vozík] :";
-		Label_TT_hodnota->Caption=Label_TT_hodnota->Caption.ToDouble()/60;
-		ValueListEditor->TitleCaptions->Insert(1,"èas [min/vozík]");
-		if(ComboBox_druh_objektu->ItemIndex!=1)//pokud se nejedná kontinuál
-		{
-			for(unsigned short i=1;i<=ValueListEditor->RowCount-1;i++)
-			try{ValueListEditor->Cells[1][i]=ValueListEditor->Cells[1][i].ToDouble()/60.0;}catch(...){;}
-		}
- }
+// if(minsec==MIN)
+// {
+//		minsec=SEC;
+//		Label_CT->Caption="CYCLE TIME [sec/vozík] :";
+//		Label_CT_hodnota->Caption=Label_CT_hodnota->Caption.ToDouble()*60;
+//		Label_TT->Caption="TAKT TIME objektu [sec/vozík] :";
+//		Label_TT_hodnota->Caption=Label_TT_hodnota->Caption.ToDouble()*60;
+//		ValueListEditor->TitleCaptions->Insert(1,"èas [sec/vozík]");
+//		if(ComboBox_druh_objektu->ItemIndex!=1)//pokud se nejedná o kontinuál
+//		{
+//			for(unsigned short i=1;i<=ValueListEditor->RowCount-1;i++)
+//			try{ValueListEditor->Cells[1][i]=ValueListEditor->Cells[1][i].ToDouble()*60;}catch(...){;}
+//		}
+// }
+// else
+// {
+//		minsec=MIN;
+//		Label_CT->Caption="CYCLE TIME [min/vozík] :";
+//		Label_CT_hodnota->Caption=Label_CT_hodnota->Caption.ToDouble()/60;
+//		Label_TT->Caption="TAKT TIME objektu [min/vozík] :";
+//		Label_TT_hodnota->Caption=Label_TT_hodnota->Caption.ToDouble()/60;
+//		ValueListEditor->TitleCaptions->Insert(1,"èas [min/vozík]");
+//		if(ComboBox_druh_objektu->ItemIndex!=1)//pokud se nejedná kontinuál
+//		{
+//			for(unsigned short i=1;i<=ValueListEditor->RowCount-1;i++)
+//			try{ValueListEditor->Cells[1][i]=ValueListEditor->Cells[1][i].ToDouble()/60.0;}catch(...){;}
+//		}
+// }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Edit_nameChange(TObject *Sender)
 {
-	 Form_parametry->Caption=Edit_name->Text+" - parametry";
-	 Edit_shortname->Text=Edit_name->Text.SubString(1,3);
+//	 Form_parametry->Caption=Edit_name->Text+" - parametry";
+//	 Edit_shortname->Text=Edit_name->Text.SubString(1,3);
 }
 //---------------------------------------------------------------------------
 //pøi stisku Enteru do editu vzdálenosti
 void __fastcall TForm_parametry::Edit_vzdalenost_vozikuKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift)
 {
-	 if(Key==13)
-	 ComboBox_dopravnik->SetFocus();
+//	 if(Key==13)
+//	 ComboBox_dopravnik->SetFocus();
 }
 //---------------------------------------------------------------------------
 

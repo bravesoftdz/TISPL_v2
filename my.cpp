@@ -280,3 +280,31 @@ TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
 	return (TColor)RGB(R,G,B);
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrací pozice tlaèítek
+void Cmy::designButton(TButton *button,short rank,short sum,int formWidth,short space)
+{
+		switch(sum)
+		{
+			//celkem jedno tlaèítko
+			case 1:button->Left=formWidth/2-button->Width/2;break;//na støed
+			//celkem dvì tlaèítka
+			case 2:
+			{
+				if(rank==1)button->Left=formWidth/2-button->Width-space/2; //první tlaèítko
+				else button->Left=formWidth/2+space/2;//druhé tlaèítko
+			}
+			break;
+			//celkem tøi tlaèítka
+			case 3:
+			{
+				switch(rank)
+				{
+					case 1:button->Left=formWidth/2-button->Width/2-space-button->Width; break;//první
+					case 2:button->Left=formWidth/2-button->Width/2;break;//druhé na støed
+					case 3:button->Left=formWidth/2+button->Width/2+space-button->Width;break;//tøetí
+				}
+			}
+			break;
+		}
+}
+/////////////////////////////////////////////////////////////////////////////

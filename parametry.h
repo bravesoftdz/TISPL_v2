@@ -21,18 +21,8 @@ class TForm_parametry : public TForm
 {
 __published:	// IDE-managed Components
 	TValueListEditor *ValueListEditor;
-	TLabel *Label_CT;
 	TComboBox *ComboBox_druh_objektu;
-	TLabel *Label_kapacita;
-	TLabel *Label_kapacita_hodnota;
-	TLabel *Label_CT_hodnota;
-	TComboBox *ComboBox_dopravnik;
-	TLabel *Label_vypis;
-	TLabel *Label_TT;
-	TLabel *Label_TT_hodnota;
 	TButton *Button_min_sec;
-	TLabel *Label_delka_prepravniku;
-	TLabel *Label_delka_prepravniku_hodnota;
 	TButton *Button_DEL;
 	TEdit *Edit_name;
 	TEdit *Edit_shortname;
@@ -42,15 +32,13 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel1;
 	TscGPGlyphButton *scGPGlyphButton15;
-	TrHTMLLabel *rHTMLLabel5_rezim;
+	TrHTMLLabel *rHTMLLabel_rezim;
 	TrHTMLLabel *rHTMLLabel_kapacita;
 	TrEditNum *rEditNum_kapacita;
-	TscGPButton *scGPButton1_OK;
-	TscGPButton *scGPButton3;
-	TRadioButton *RadioButton_na_delku;
+	TscGPButton *scGPButton_OK;
+	TscGPButton *scGPButton_storno;
 	TEdit *Edit_vzdalenost_voziku;
 	TRadioButton *RadioButton_na_sirku;
-	TImage *Image_vozik;
 	TrHTMLLabel *rHTMLLabel_pohon;
 	TscCheckBox *scCheckBox_stopky;
 	TrHTMLLabel *rHTMLLabel_odchylkaCT;
@@ -60,7 +48,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_name;
 	TrHTMLLabel *rHTMLLabel_shortname;
 	TrHTMLLabel *rHTMLLabel_cekani;
-	TscComboBox *scComboBox_cekani_pacel;
+	TscComboBox *scComboBox_cekani_palec;
 	TrEditNum *rEditNum_delka_dopravniku;
 	TrEditNum *rEditNum_odchylka;
 	TscComboBox *scComboBox_rezim;
@@ -87,22 +75,28 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
 	enum Tminsec{MIN=0,SEC};Tminsec minsec;
-	void setForm4Rezim(unsigned short rezim);
+	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA};
+	enum Tcomponents_state{ENABLED,DISABLED,READONLY,HIDE};
+	void set(Tcomponents C,Tcomponents_state S);
 
+	bool navrhar;
+	short offset;
+	short defaultForm_parametryHeight;
 
 
 	double get_sum();
 	void get_capacity(unsigned int input);
 	UnicodeString SG,K,P;
 	unsigned short novy_parametr_n;
-	short offset;
+
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
+  void setForm4Rezim(unsigned short rezim);
+
 
 	void vykresli_vozik(bool na_delku=true);
 	short dopravnik_typ;
-	void nacist_data();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry *Form_parametry;
