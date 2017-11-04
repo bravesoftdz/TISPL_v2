@@ -41,7 +41,7 @@ class Cvektory
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
-			bool stopka;//zda následuje na konci objektu stopka
+			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 			double odchylka;//povolená odchylka u PP z CT
 			double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
@@ -472,7 +472,7 @@ private:
 				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 				double delka_dopravniku;//delka dopravníku v rámci objektu
 				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
-				bool stopka;//zda následuje na konci objektu stopka
+				unsigned short  stopka;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 				double odchylka;//povolená odchylka z CT (hlavně užito u PP)
 		};
 		struct C_zakazka

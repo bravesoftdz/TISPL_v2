@@ -33,7 +33,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
-	novy->stopka=false;//zda následuje na konci objektu stopka
+	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
@@ -62,7 +62,7 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
-	novy->stopka=false;//zda následuje na konci objektu stopka
+	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
@@ -89,8 +89,8 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
-	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
-	novy->stopka=false;//zda následuje na konci objektu stopka
+	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
+	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
