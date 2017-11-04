@@ -22,16 +22,15 @@ class TForm_parametry : public TForm
 __published:	// IDE-managed Components
 	TValueListEditor *ValueListEditor;
 	TComboBox *ComboBox_druh_objektu;
-	TButton *Button_min_sec;
 	TButton *Button_DEL;
 	TEdit *Edit_name;
 	TEdit *Edit_shortname;
 	TLabel *Label1;
 	TLabel *Label2;
-	TscGPPanel *scGPPanel2;
+	TscGPPanel *scGPPanel_hlavicka;
 	TscGPGlyphButton *Konec;
-	TscLabel *scLabel1;
-	TscGPGlyphButton *scGPGlyphButton15;
+	TscLabel *scLabel_titulek;
+	TscGPGlyphButton *scGPGlyphButton_help;
 	TrHTMLLabel *rHTMLLabel_rezim;
 	TrHTMLLabel *rHTMLLabel_kapacita;
 	TrEditNum *rEditNum_kapacita;
@@ -40,7 +39,6 @@ __published:	// IDE-managed Components
 	TEdit *Edit_vzdalenost_voziku;
 	TRadioButton *RadioButton_na_sirku;
 	TrHTMLLabel *rHTMLLabel_pohon;
-	TscCheckBox *scCheckBox_stopky;
 	TrHTMLLabel *rHTMLLabel_odchylkaCT;
 	TrHTMLLabel *rHTMLLabel_delka_dopravniku;
 	TscEdit *scEdit_name;
@@ -54,7 +52,10 @@ __published:	// IDE-managed Components
 	TscComboBox *scComboBox_rezim;
 	TscComboBox *scComboBox_pohon;
 	TscGPGlyphButton *scGPGlyphButton_InfoIcon;
-	TrHTMLLabel *rHTMLLabel_doporuc_cekani_value;
+	TrHTMLLabel *rHTMLLabel_InfoText;
+	TrHTMLLabel *rHTMLLabel_stopka;
+	TscComboBox *scComboBox_stopka;
+	TscGPButton *scGPButton_min_sec;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);
@@ -78,6 +79,7 @@ private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA};
 	enum Tcomponents_state{ENABLED,DISABLED,READONLY,HIDE};
 	void set(Tcomponents C,Tcomponents_state S);
+	void vypis(UnicodeString text);
 
 	bool navrhar;
 	short offset;

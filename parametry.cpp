@@ -40,7 +40,7 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
-	scGPGlyphButton_InfoIcon->Visible=true;
+	vypis("");
 
 //	//ošetøení pro pøípad neexistujících pohonu - zvážit potøebu
 //	scGPButton_OK->Enabled=true;
@@ -90,6 +90,21 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 //	ValueListEditorStringsChange(Sender);
 }
 //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+void TForm_parametry::vypis(UnicodeString text)
+{
+	if(text!="")//zobrazí a vypíše
+	{
+		scGPGlyphButton_InfoIcon->Visible=true;
+		rHTMLLabel_InfoText->Visible=true;
+		rHTMLLabel_InfoText->Caption=text;
+	}
+	else//skryje
+	{
+		scGPGlyphButton_InfoIcon->Visible=false;
+		rHTMLLabel_InfoText->Visible=false;
+	}
+}
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 {
@@ -229,7 +244,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 		case DELKA://délka dopravníku
 		{
 			//pozice
-			rHTMLLabel_pohon->Top=L+2*O+offset;
+			rHTMLLabel_delka_dopravniku->Top=L+2*O+offset;
 			rEditNum_delka_dopravniku->Top=P+2*O+offset;
 			//funkèní vlastnosti
 			switch (S)
@@ -240,18 +255,18 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case HIDE:		rHTMLLabel_delka_dopravniku->Visible=false;rEditNum_delka_dopravniku->Visible=false;offset-=O;break;
 			}
 		}break;
-		case CEKANI://èekání
+		case KAPACITA://požadována vs. zjištìná kapacita objektu
 		{
 			//pozice
-			rHTMLLabel_cekani->Top=L+3*O+offset;
-			scComboBox_cekani_palec->Top=P+3*O+offset;
+			rHTMLLabel_kapacita->Top=L+3*O+offset;
+			rEditNum_kapacita->Top=P+3*O+offset;
 			//funkèní vlastnosti
 			switch (S)
 			{
-				case ENABLED:	rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=true;break;
-				case DISABLED:rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=false;break;
-				case READONLY:rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=false;break;
-				case HIDE:		rHTMLLabel_cekani->Visible=false;scComboBox_cekani_palec->Visible=false;offset-=O;break;
+				case ENABLED:	rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=true;rEditNum_kapacita->Enabled=true;break;
+				case DISABLED:rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=true;rEditNum_kapacita->Enabled=false;break;
+				case READONLY:rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=false;/*doplnit label s textem*/break;
+				case HIDE:		rHTMLLabel_kapacita->Visible=false;rEditNum_kapacita->Visible=false;offset-=O;break;
 			}
 		}	break;
 		case ODCHYLKA://povolená odchylka z CT
@@ -268,31 +283,32 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case HIDE:		rHTMLLabel_odchylkaCT->Visible=false;rEditNum_odchylka->Visible=false;offset-=O;break;
 			}
 		}	break;
-		case KAPACITA://požadována vs. zjištìná kapacita objektu
+		case CEKANI://èekání
 		{
 			//pozice
-			rHTMLLabel_kapacita->Top=L+5*O+offset;
-			rEditNum_kapacita->Top=P+5*O+offset;
+			rHTMLLabel_cekani->Top=L+5*O+offset;
+			scComboBox_cekani_palec->Top=P+5*O+offset;
 			//funkèní vlastnosti
 			switch (S)
 			{
-				case ENABLED:	rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=true;rEditNum_kapacita->Enabled=true;break;
-				case DISABLED:rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=true;rEditNum_kapacita->Enabled=false;break;
-				case READONLY:rHTMLLabel_kapacita->Visible=true;rEditNum_kapacita->Visible=false;/*doplnit label s textem*/break;
-				case HIDE:		rHTMLLabel_kapacita->Visible=false;rEditNum_kapacita->Visible=false;offset-=O;break;
+				case ENABLED:	rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=true;break;
+				case DISABLED:rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=false;break;
+				case READONLY:rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=false;break;
+				case HIDE:		rHTMLLabel_cekani->Visible=false;scComboBox_cekani_palec->Visible=false;offset-=O;break;
 			}
 		}	break;
 		case STOPKA://stop stanice na konci objektu
 		{
 			//pozice
-			scCheckBox_stopky->Top=L+6*O+offset;
+			rHTMLLabel_stopka->Top=L+6*O+offset;
+			scComboBox_stopka->Top=P+6*O+offset;
 			//funkèní vlastnosti
 			switch (S)
 			{
-				case ENABLED:	scCheckBox_stopky->Visible=true;scCheckBox_stopky->Enabled=true;break;
-				case DISABLED:scCheckBox_stopky->Visible=true;scCheckBox_stopky->Enabled=false;break;
-				case READONLY:scCheckBox_stopky->Visible=true;scCheckBox_stopky->Enabled=false;break;
-				case HIDE:		scCheckBox_stopky->Visible=false;offset-=O;break;
+				case ENABLED:	scComboBox_stopka->Visible=true;scComboBox_stopka->Enabled=true;break;
+				case DISABLED:scComboBox_stopka->Visible=true;scComboBox_stopka->Enabled=false;break;
+				case READONLY:scComboBox_stopka->Visible=true;scComboBox_stopka->Enabled=false;break;
+				case HIDE:		rHTMLLabel_stopka->Visible=false;scComboBox_stopka->Visible=false;offset-=O;break;
 			}
 		}	break;
 	}
@@ -562,6 +578,7 @@ void __fastcall TForm_parametry::Edit_vzdalenost_vozikuKeyDown(TObject *Sender, 
 //	 ComboBox_dopravnik->SetFocus();
 }
 //---------------------------------------------------------------------------
+
 
 
 

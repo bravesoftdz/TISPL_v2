@@ -3,7 +3,7 @@ object Form_parametry: TForm_parametry
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
-  ClientHeight = 435
+  ClientHeight = 444
   ClientWidth = 348
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -57,7 +57,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_kapacita: TrHTMLLabel
     Left = 8
-    Top = 295
+    Top = 216
     Width = 208
     Height = 19
     Caption = 'Po'#382'adovan'#225' kapacita [voz'#237'k'#367']'
@@ -141,7 +141,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_cekani: TrHTMLLabel
     Left = 8
-    Top = 215
+    Top = 295
     Width = 181
     Height = 19
     Caption = 'N'#225'sleduje '#269'ek'#225'n'#237' na palec'
@@ -153,12 +153,26 @@ object Form_parametry: TForm_parametry
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel_doporuc_cekani_value: TrHTMLLabel
+  object rHTMLLabel_InfoText: TrHTMLLabel
     Left = 43
-    Top = 365
+    Top = 375
     Width = 81
     Height = 19
     Caption = 'Upozorn'#283'n'#237
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_stopka: TrHTMLLabel
+    Left = 8
+    Top = 333
+    Width = 215
+    Height = 19
+    Caption = 'STOP stanice na konci objektu'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -186,7 +200,7 @@ object Form_parametry: TForm_parametry
       'IT - doba kontroly voz'#237'ku=0'
       'QT - doba '#269'ek'#225'n'#237' ve front'#283'=0'
       '...=')
-    TabOrder = 10
+    TabOrder = 9
     TitleCaptions.Strings = (
       ' n'#225'zev'
       ' '#269'as [min/voz'#237'k]')
@@ -215,28 +229,9 @@ object Form_parametry: TForm_parametry
       'KONTINU'#193'LN'#205' (line tracking)'
       'POSTPROCESN'#205)
   end
-  object Button_min_sec: TButton
-    Left = 213
-    Top = 449
-    Width = 50
-    Height = 16
-    Hint = 'P'#345'epo'#269#237't'#225' hodnoty z minut na sekundy a obr'#225'cen'#283
-    Caption = 'min<->sec'
-    Font.Charset = EASTEUROPE_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -9
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 11
-    Visible = False
-    OnClick = Button_min_secClick
-  end
   object Button_DEL: TButton
     Left = 269
-    Top = 448
+    Top = 444
     Width = 15
     Height = 15
     Hint = 'Sma'#382'e '#345#225'dek'
@@ -249,7 +244,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 14
+    TabOrder = 12
     Visible = False
     OnClick = Button_DELClick
   end
@@ -265,7 +260,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 13
     OnChange = Edit_nameChange
   end
   object Edit_shortname: TEdit
@@ -283,15 +278,15 @@ object Form_parametry: TForm_parametry
     Font.Style = [fsBold]
     MaxLength = 4
     ParentFont = False
-    TabOrder = 16
+    TabOrder = 14
   end
-  object scGPPanel2: TscGPPanel
+  object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
     Width = 348
     Height = 34
     Align = alTop
-    TabOrder = 17
+    TabOrder = 15
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -313,7 +308,7 @@ object Form_parametry: TForm_parametry
     CaptionGlowEffect.Intensive = True
     CaptionGlowEffect.StyleColors = True
     Color = clBtnFace
-    Caption = 'scGPPanel2'
+    Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
@@ -395,7 +390,7 @@ object Form_parametry: TForm_parametry
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scLabel1: TscLabel
+    object scLabel_titulek: TscLabel
       Left = 0
       Top = 0
       Width = 261
@@ -426,7 +421,7 @@ object Form_parametry: TForm_parametry
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
     end
-    object scGPGlyphButton15: TscGPGlyphButton
+    object scGPGlyphButton_help: TscGPGlyphButton
       Left = 261
       Top = 0
       Width = 37
@@ -507,7 +502,7 @@ object Form_parametry: TForm_parametry
   end
   object rEditNum_kapacita: TrEditNum
     Left = 232
-    Top = 290
+    Top = 211
     Width = 108
     Height = 28
     BiDiMode = bdRightToLeft
@@ -525,7 +520,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPButton_OK: TscGPButton
     Left = 62
-    Top = 391
+    Top = 400
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -534,7 +529,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 12
+    TabOrder = 10
     TabStop = True
     Animation = False
     Caption = 'Ulo'#382'it'
@@ -615,7 +610,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPButton_storno: TscGPButton
     Left = 184
-    Top = 391
+    Top = 400
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -624,7 +619,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 11
     TabStop = True
     Animation = False
     Caption = 'Storno'
@@ -708,7 +703,7 @@ object Form_parametry: TForm_parametry
     Top = 635
     Width = 121
     Height = 21
-    TabOrder = 18
+    TabOrder = 16
     Text = 'Edit_vzdalenost_voziku'
     Visible = False
   end
@@ -718,59 +713,8 @@ object Form_parametry: TForm_parametry
     Width = 113
     Height = 17
     Caption = 'RadioButton_na_sirku'
-    TabOrder = 19
+    TabOrder = 17
     Visible = False
-  end
-  object scCheckBox_stopky: TscCheckBox
-    Left = 2
-    Top = 335
-    Width = 338
-    Height = 17
-    BiDiMode = bdRightToLeft
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGrayText
-    Font.Height = -16
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentBiDiMode = False
-    ParentFont = False
-    TabOrder = 9
-    TabStop = True
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    CustomGrayedImageIndex = -1
-    CustomGrayedImageHotIndex = -1
-    CustomGrayedImagePressedIndex = -1
-    CustomGrayedImageDisabledIndex = -1
-    UseFontColorToStyleColor = False
-    Animation = False
-    Caption = 'STOP stanice na konci objektu '
-    CanFocused = True
-    Spacing = 0
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    Checked = False
-    ShowFocusRect = True
   end
   object scEdit_name: TscEdit
     Left = 56
@@ -893,7 +837,7 @@ object Form_parametry: TForm_parametry
   end
   object scComboBox_cekani_palec: TscComboBox
     Left = 232
-    Top = 210
+    Top = 290
     Width = 108
     Height = 27
     ItemIndex = 2
@@ -1010,7 +954,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPGlyphButton_InfoIcon: TscGPGlyphButton
     Left = 0
-    Top = 358
+    Top = 368
     Width = 37
     Height = 34
     Align = alCustom
@@ -1020,7 +964,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 20
+    TabOrder = 18
     Animation = True
     Caption = 'scGPGlyphButton_InfoIcon'
     CanFocused = False
@@ -1081,6 +1025,122 @@ object Form_parametry: TForm_parametry
     ShowGalleryMenuFromTop = False
     ShowGalleryMenuFromRight = False
     ShowMenuArrow = False
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object scComboBox_stopka: TscComboBox
+    Left = 232
+    Top = 330
+    Width = 108
+    Height = 27
+    ItemIndex = 2
+    Items.Strings = (
+      'ne'
+      'ano'
+      'automaticky')
+    WordBreak = False
+    SelectionStyle = scstStyled
+    SelectionColor = clNone
+    SelectionTextColor = clHighlightText
+    ImageIndex = -1
+    ItemHeight = 21
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 19
+    Text = 'automaticky'
+    StyleKind = scscbDefault
+    ShowFocusRect = True
+  end
+  object scGPButton_min_sec: TscGPButton
+    Left = 280
+    Top = 34
+    Width = 68
+    Height = 15
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 20
+    TabStop = True
+    OnClick = Button_min_secClick
+    Animation = False
+    Caption = 'min<->sec'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphTop
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = 1871359
+    Options.DisabledColor = clBlack
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 200
+    Options.FrameNormalColor = 33023
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = 1871359
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
     ShowFocusRect = True
     Down = False
     GroupIndex = 0

@@ -2403,7 +2403,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 				Form_parametry->rEditNum_kapacita->Text=pom->kapacita;
 				Form_parametry->rEditNum_odchylka->Text=pom->odchylka;
-				Form_parametry->scCheckBox_stopky->Checked=pom->stopka;
+				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 				//nadesignování formu
 				Form_parametry->setForm4Rezim(pom->rezim);
 
@@ -2431,7 +2431,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 							pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
 							pom->kapacita=Form_parametry->rEditNum_kapacita->Text.ToDouble();
 							pom->odchylka=Form_parametry->rEditNum_odchylka->Text.ToDouble();
-							pom->stopka=Form_parametry->scCheckBox_stopky->Checked;
+							pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
 							DuvodUlozit(true);
 							REFRESH();
 						}
