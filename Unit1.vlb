@@ -85,14 +85,8 @@ Coordinates=952,10,59,58
 [FDQuery1]
 Coordinates=686,144,73,58
 
-[Ulozit]
-Coordinates=1046,510,47,36
-
 [OpenDialog1]
 Coordinates=1135,111,89,36
-
-[Otevrit]
-Coordinates=983,510,53,36
 
 [Timer_backup]
 Coordinates=1135,221,96,36
@@ -121,14 +115,8 @@ Coordinates=617,144,59,58
 [CheckBox_pouzit_zadane_kapacity]
 Coordinates=301,212,218,58
 
-[NovySoubor]
-Coordinates=10,510,85,36
-
 [Timer_animace]
 Coordinates=155,631,103,36
-
-[editacelinky1]
-Coordinates=1113,464,89,36
 
 [Series7]
 Coordinates=1297,1,58,36
@@ -296,7 +284,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=1135,331,90,36
+Coordinates=557,331,102,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -337,9 +325,6 @@ Coordinates=1412,56,167,36
 
 [ComboBoxCekani]
 Coordinates=410,87,118,36
-
-[scButton_ulozit]
-Coordinates=557,331,102,36
 
 [pravyoption_nadpis]
 Coordinates=809,87,126,36
@@ -427,4 +412,16 @@ Coordinates=1204,606,73,36
 
 [scGPSwitch_rezim]
 Coordinates=773,221,91,36
+
+[Toolbar_Ulozit]
+Coordinates=1046,510,47,36
+
+[Toolbar_Otevrit]
+Coordinates=983,510,53,36
+
+[Toolbar_NovySoubor]
+Coordinates=10,510,85,36
+
+[zalozka_schema]
+Coordinates=1113,464,89,36
 

@@ -151,7 +151,7 @@ void TForm1::NewDesignSettings()
  //	scExPanel_ostatni->Color=light_gray;
 
 	//nastaveni barvy prepinacu modu
-	editacelinky1->Options->PressedColor=light_gray;
+	zalozka_schema->Options->PressedColor=light_gray;
 	layout->Options->PressedColor=light_gray;
 	casovosa1->Options->PressedColor=light_gray;
 	technologickprocesy1->Options->PressedColor=light_gray;
@@ -180,10 +180,10 @@ void TForm1::edice()
 			case VIEWER: 		/*Edice_caption="VIEWER";*/break;
 			case DEMO:  //demo
 				/*Edice_caption="VIEWER - DEMO";*/
-				NovySoubor->Enabled=false;
-				Otevrit->Enabled=false;
+				Toolbar_NovySoubor->Enabled=false;
+				Toolbar_Otevrit->Enabled=false;
 			//	Otevritsablonu->Enabled=false;
-				Ulozit->Enabled=false;
+				Toolbar_Ulozit->Enabled=false;
 				scButton_ulozit->Enabled=false;
 			//	Ulozitjako->Enabled=false;
 			//	Export1->Enabled=false;
@@ -282,7 +282,8 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.vloz_pohon("Hlavní dopravník",1.5,10.5,32.5);
 			 //d.v.vloz_pohon("Vedlejší dopravník",1.5,10.5,32.5); není nutné prý vedlejší dopravník
 
-    	 editacelinky1Click(Sender);//MOD EDITACE LINKY
+			 //tady bude přepnutí založek dodělat
+			 schemaClick(Sender);//volání MODu SCHEMA
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
     	 Zoom_predchozi=1.0;
 			 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
@@ -551,7 +552,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	else REFRESH();
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::editacelinky1Click(TObject *Sender)
+void __fastcall TForm1::schemaClick(TObject *Sender)
 {
 	ESC();//zruší případnou rozdělanou akci
 	MOD=SCHEMA;
@@ -2267,11 +2268,11 @@ void __fastcall TForm1::RzStatusPane1Click(TObject *Sender)
 {
 		switch(MOD)
 		{
-			case 0:editacelinky1Click(Sender);break;
+			case 0:schemaClick(Sender);break;
 			case 1:testovnkapacity1Click(Sender);break;
 			case 2:casoverezervy1Click(Sender);break;
 			case 3:simulace1Click(Sender);break;
-			case 4:editacelinky1Click(Sender);break;
+			case 4:schemaClick(Sender);break;
 		}
 }
 //---------------------------------------------------------------------------
@@ -2386,14 +2387,14 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 	{
 		if(pom!=NULL)
 		{
-				//plnění daty
+				////plnění daty
+				//combo pohony
 				Form_parametry->scComboBox_pohon->Items->Clear();
 				while (ukaz!=NULL)
 				{
 					Form_parametry->scComboBox_pohon->Items->Add(ukaz->name);
 					ukaz=ukaz->dalsi;
 				}
-
 				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
 				Form_parametry->scEdit_name->Text=pom->name;
 				Form_parametry->scEdit_shortname->Text=pom->short_name;
@@ -2404,7 +2405,9 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->rEditNum_kapacita->Text=pom->kapacita;
 				Form_parametry->rEditNum_odchylka->Text=pom->odchylka;
 				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
-				//nadesignování formu
+
+				//nadesignování formu podle právě vypisováných hodnot
+				Form_parametry->vypis("");
 				Form_parametry->setForm4Rezim(pom->rezim);
 
 				//ošetření aby zůstal dialog na monitoru
@@ -2523,12 +2526,17 @@ AnsiString TForm1::FileName_short(AnsiString FileName)
 void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
 	if(FileName=="Nový.tispl" || FileName.Pos(".tisplTemp"))UlozitjakoClick(this);
-	else if(duvod_k_ulozeni)Ulozit_soubor();else SB("Soubor byl již uložen...");
+	else
+	{
+		scSplitView_MENU->Opened=false;
+		if(duvod_k_ulozeni)Ulozit_soubor();
+		else SB("Soubor byl již uložen...");
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 {
-  scSplitView_MENU->Opened=false;
+	scSplitView_MENU->Opened=false;
 	SaveDialog->Title="Uložit soubor jako";
 	SaveDialog->DefaultExt="*.tispl";
 	SaveDialog->Filter="Soubory formátu TISPL (*.tispl)|*.tispl|Soubory šablon TISPL (*.tisplTemp)|*.tisplTemp";
@@ -2553,8 +2561,11 @@ void TForm1::Ulozit_soubor()
 		//zapis dat do souboru
 		d.v.uloz_do_souboru(FileName);
 
-    SB("Soubor uložen...");
+		//nastavení komponent + výpis
+		SB("Soubor uložen...");
 		DuvodUlozit(false);
+
+
 
     //zakazuje UNDO
 		//ToolButton_undo->Enabled=false;//přepne příslušně nabídky menu
@@ -2564,7 +2575,7 @@ void TForm1::Ulozit_soubor()
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //otevře soubor
-void __fastcall TForm1::OtevritClick(TObject *Sender)
+void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 {
   scSplitView_MENU->Opened=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
@@ -2628,13 +2639,13 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 			switch(MOD)
 			{
 					case NO:REFRESH();break; //překreslí obraz pro ostatní případy
-					//case SCHEMA: 	editacelinky1Click(this);break;
+					case SCHEMA: 	schemaClick(this);break;
 					//ZDM case TESTOVANI:	testovnkapacity1Click(this);break;
 					//ZDM case REZERVY:		casoverezervy1Click(this);break;
 					//ZDM case CASOVAOSA:	editacelinky1Click(this);MOD=SCHEMA;/*casovosa1Click(this);*/break;
 					//ZDM case TECHNOPROCESY:editacelinky1Click(this);MOD=SCHEMA;break;
 					//ZDM case SIMULACE:	editacelinky1Click(this);MOD=SCHEMA;/*simulace1Click(this);*/break;
-					default: editacelinky1Click(this);break;
+					default: schemaClick(this);break;
 			}
 			DuvodUlozit(false);
 			//aktualizace statusbaru
@@ -2824,7 +2835,7 @@ void TForm1::DuvodUlozit(bool stav)
 {
 	 //nastavení stavu ovládacích prvků
 	 RzToolButton3->Enabled=stav;
-	 Ulozit->Enabled=stav;
+	 Toolbar_Ulozit->Enabled=stav;
 	 scButton_ulozit->Enabled=stav;
 	 //samotný indikátor změny a důvodu k uložení
 	 duvod_k_ulozeni=stav;

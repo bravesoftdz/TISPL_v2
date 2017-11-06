@@ -114,7 +114,7 @@ object Form1: TForm1
       Images = ImageList1
       ParentShowHint = False
       ShowHint = True
-      OnClick = OtevritClick
+      OnClick = Toolbar_OtevritClick
     end
     object RzToolButton3: TRzToolButton
       Left = 54
@@ -873,7 +873,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object editacelinky1: TscGPButton
+    object zalozka_schema: TscGPButton
       Left = 639
       Top = 0
       Width = 78
@@ -890,7 +890,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      OnClick = editacelinky1Click
+      OnClick = schemaClick
       Animation = True
       Caption = 'Sch'#233'ma'
       CanFocused = False
@@ -1320,7 +1320,7 @@ object Form1: TForm1
       GroupIndex = 2
       AllowAllUp = True
     end
-    object Ulozit: TscGPGlyphButton
+    object Toolbar_Ulozit: TscGPGlyphButton
       AlignWithMargins = True
       Left = 207
       Top = 0
@@ -1334,7 +1334,7 @@ object Form1: TForm1
       TabOrder = 7
       OnClick = UlozitClick
       Animation = True
-      Caption = 'Ulozit'
+      Caption = 'Toolbar_Ulozit'
       CanFocused = False
       CustomDropDown = False
       Layout = blGlyphLeft
@@ -1398,7 +1398,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object NovySoubor: TscGPGlyphButton
+    object Toolbar_NovySoubor: TscGPGlyphButton
       AlignWithMargins = True
       Left = 137
       Top = 0
@@ -1476,7 +1476,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object Otevrit: TscGPGlyphButton
+    object Toolbar_Otevrit: TscGPGlyphButton
       AlignWithMargins = True
       Left = 172
       Top = 0
@@ -1488,7 +1488,7 @@ object Form1: TForm1
       Margins.Bottom = 1
       Align = alLeft
       TabOrder = 9
-      OnClick = OtevritClick
+      OnClick = Toolbar_OtevritClick
       Animation = True
       Caption = 'Otev'#345#237't'
       CanFocused = False
@@ -3317,9 +3317,10 @@ object Form1: TForm1
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
-    Width = 180
+    Width = 0
     Height = 622
     Anchors = [akLeft, akTop, akBottom]
+    Enabled = False
     TabOrder = 28
     CustomImageIndex = -1
     StyleKind = scpsPanel
@@ -3342,7 +3343,7 @@ object Form1: TForm1
     CompactWidth = 0
     CompactHeight = 20
     GripSize = 0
-    Opened = True
+    Opened = False
     OpenedWidth = 180
     OpenedHeight = 50
     OpenedMinWidth = 0
@@ -3360,7 +3361,7 @@ object Form1: TForm1
     object scButton1: TscButton
       Left = 0
       Top = 572
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -3449,11 +3450,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton2: TscButton
       Left = 0
       Top = 50
-      Width = 180
+      Width = 0
       Height = 44
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3541,11 +3543,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton3: TscButton
       Left = 0
       Top = 94
-      Width = 180
+      Width = 0
       Height = 44
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3555,7 +3558,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      OnClick = OtevritClick
+      OnClick = Toolbar_OtevritClick
       Animation = False
       Caption = 'Otev'#345#237't'
       CanFocused = False
@@ -3633,11 +3636,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton4: TscButton
       Left = 0
-      Top = 305
-      Width = 180
+      Top = 299
+      Width = 0
       Height = 46
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3725,11 +3729,13 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 305
+      ExplicitWidth = 180
     end
     object scButton5: TscButton
       Left = 0
       Top = 522
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -3817,11 +3823,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton6: TscButton
       Left = 0
-      Top = 225
-      Width = 180
+      Top = 219
+      Width = 0
       Height = 36
       Align = alTop
       Enabled = False
@@ -3910,6 +3917,8 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 225
+      ExplicitWidth = 180
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -4017,8 +4026,8 @@ object Form1: TForm1
     end
     object scButton7: TscButton
       Left = 0
-      Top = 180
-      Width = 180
+      Top = 174
+      Width = 0
       Height = 45
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4106,11 +4115,13 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 180
+      ExplicitWidth = 180
     end
     object scButton8: TscButton
       Left = 0
-      Top = 261
-      Width = 180
+      Top = 255
+      Width = 0
       Height = 44
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4198,11 +4209,13 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 261
+      ExplicitWidth = 180
     end
     object scButton9: TscButton
       Left = 0
       Top = 472
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -4290,6 +4303,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scGPSwitch_rezim: TscGPSwitch
       Left = 100
@@ -4395,103 +4409,10 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       Caption = 'M'#283#345#237'tko'
     end
-    object scButton_ulozit: TscButton
-      Left = 0
-      Top = 138
-      Width = 180
-      Height = 42
-      Align = alTop
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 17
-      OnClick = UlozitClick
-      Animation = False
-      Caption = 'Ulo'#382'it'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 2
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = 8538404
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = True
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clHighlight
-      GlowEffect.PressedColor = clHighlight
-      GlowEffect.FocusedColor = clHighlight
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 155
-      GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = False
-      WordWrap = False
-    end
     object scButton10: TscButton
       Left = 0
       Top = 0
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4500,7 +4421,7 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 18
+      TabOrder = 17
       OnClick = NovySouborClick
       Animation = False
       Caption = 'Nov'#253' projekt'
@@ -4579,13 +4500,110 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
+    end
+    object scButton_ulozit: TscButton
+      Left = 0
+      Top = 138
+      Width = 0
+      Height = 36
+      Align = alTop
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 18
+      OnClick = UlozitClick
+      Animation = False
+      Caption = 'Ulo'#382'it'
+      CanFocused = False
+      CustomDropDown = False
+      Margin = 0
+      Spacing = 10
+      Layout = blGlyphLeft
+      ImageIndex = 2
+      ImageMargin = 50
+      TransparentBackground = False
+      ColorOptions.NormalColor = 8538404
+      ColorOptions.HotColor = 7159583
+      ColorOptions.PressedColor = 8538404
+      ColorOptions.FocusedColor = 657930
+      ColorOptions.DisabledColor = 8538404
+      ColorOptions.FrameNormalColor = clNone
+      ColorOptions.FrameHotColor = clNone
+      ColorOptions.FramePressedColor = clNone
+      ColorOptions.FrameFocusedColor = clNone
+      ColorOptions.FrameDisabledColor = clBtnShadow
+      ColorOptions.FrameWidth = 0
+      ColorOptions.FontNormalColor = clWhite
+      ColorOptions.FontHotColor = clWhite
+      ColorOptions.FontPressedColor = clBtnShadow
+      ColorOptions.FontFocusedColor = clWhite
+      ColorOptions.FontDisabledColor = clBtnShadow
+      ColorOptions.TitleFontNormalColor = clBtnText
+      ColorOptions.TitleFontHotColor = clBtnText
+      ColorOptions.TitleFontPressedColor = clBtnText
+      ColorOptions.TitleFontFocusedColor = clBtnText
+      ColorOptions.TitleFontDisabledColor = clBtnShadow
+      ColorOptions.StyleColors = True
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = [fsBold]
+      HotImageIndex = -1
+      FocusedImageIndex = -1
+      PressedImageIndex = -1
+      StyleKind = scbsColorButton
+      UseGalleryMenuImage = False
+      UseGalleryMenuCaption = False
+      CustomImageNormalIndex = -1
+      CustomImageHotIndex = -1
+      CustomImagePressedIndex = -1
+      CustomImageDisabledIndex = -1
+      CustomImageFocusedIndex = -1
+      ScaleMarginAndSpacing = False
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      UseFontColorToStyleColor = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      SplitButton = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 1
+      AllowAllUp = False
+      WordWrap = False
+      ExplicitLeft = 3
+      ExplicitTop = 156
+      ExplicitWidth = 180
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000804080410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001004100410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5708,7 +5726,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D006002600230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D006802680230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15230,7 +15248,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011D00B001B00118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011D00B801B80118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

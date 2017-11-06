@@ -181,6 +181,35 @@ object Form_parametry: TForm_parametry
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_CT: TrHTMLLabel
+    Left = 8
+    Top = 110
+    Width = 25
+    Height = 19
+    Caption = 'CT '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_RD: TrHTMLLabel
+    Left = 6
+    Top = 158
+    Width = 21
+    Height = 19
+    Caption = 'RD'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    Visible = False
+  end
   object ValueListEditor: TValueListEditor
     Left = 27
     Top = 471
@@ -1145,5 +1174,40 @@ object Form_parametry: TForm_parametry
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object rEditNum_CT: TrEditNum
+    Left = 39
+    Top = 106
+    Width = 108
+    Height = 28
+    BiDiMode = bdRightToLeft
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    NumbersOnly = True
+    ParentBiDiMode = False
+    ParentFont = False
+    TabOrder = 21
+  end
+  object rEditNum_RD: TrEditNum
+    Left = 37
+    Top = 154
+    Width = 108
+    Height = 28
+    BiDiMode = bdRightToLeft
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    NumbersOnly = True
+    ParentBiDiMode = False
+    ParentFont = False
+    TabOrder = 22
+    Visible = False
   end
 end

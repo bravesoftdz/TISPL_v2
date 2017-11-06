@@ -56,6 +56,10 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_stopka;
 	TscComboBox *scComboBox_stopka;
 	TscGPButton *scGPButton_min_sec;
+	TrHTMLLabel *rHTMLLabel_CT;
+	TrEditNum *rEditNum_CT;
+	TrHTMLLabel *rHTMLLabel_RD;
+	TrEditNum *rEditNum_RD;
 	void __fastcall Edit_CTKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall ValueListEditorStringsChange(TObject *Sender);
@@ -76,10 +80,11 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
 	enum Tminsec{MIN=0,SEC};Tminsec minsec;
-	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA};
+	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,CT,RD};
 	enum Tcomponents_state{ENABLED,DISABLED,READONLY,HIDE};
+
 	void set(Tcomponents C,Tcomponents_state S);
-	void vypis(UnicodeString text);
+
 
 	bool navrhar;
 	short offset;
@@ -94,7 +99,8 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
-  void setForm4Rezim(unsigned short rezim);
+	void setForm4Rezim(unsigned short rezim);
+	void vypis(UnicodeString text);
 
 
 	void vykresli_vozik(bool na_delku=true);

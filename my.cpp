@@ -261,7 +261,7 @@ double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 	return delka/rychlost_dopravniku;
 }
 /////////////////////////////////////////////////////////////////////////////
-//zesvìtlí barvu
+//zesvìtlí nebo ztmaví barvu
 TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
 {
 	BYTE R=GetRValue(C); BYTE G=GetGValue(C); BYTE B=GetBValue(C);
@@ -280,18 +280,19 @@ TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
 	return (TColor)RGB(R,G,B);
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrací pozice tlaèítek
-void Cmy::designButton(TButton *button,short rank,short sum,int formWidth,short space)
+//nastaví horizontální a vertikální pozici tlaèítka
+void Cmy::designButton(TButton *button,TForm *form,short rank,short sum,short horizontal_space,short vertikal_space)
 {
+		//horizontální pozice
 		switch(sum)
 		{
 			//celkem jedno tlaèítko
-			case 1:button->Left=formWidth/2-button->Width/2;break;//na støed
+			case 1:button->Left=form->Width/2-button->Width/2;break;//na støed
 			//celkem dvì tlaèítka
 			case 2:
 			{
-				if(rank==1)button->Left=formWidth/2-button->Width-space/2; //první tlaèítko
-				else button->Left=formWidth/2+space/2;//druhé tlaèítko
+				if(rank==1)button->Left=form->Width/2-button->Width-horizontal_space/2; //první tlaèítko
+				else button->Left=form->Width/2+horizontal_space/2;//druhé tlaèítko
 			}
 			break;
 			//celkem tøi tlaèítka
@@ -299,12 +300,15 @@ void Cmy::designButton(TButton *button,short rank,short sum,int formWidth,short 
 			{
 				switch(rank)
 				{
-					case 1:button->Left=formWidth/2-button->Width/2-space-button->Width; break;//první
-					case 2:button->Left=formWidth/2-button->Width/2;break;//druhé na støed
-					case 3:button->Left=formWidth/2+button->Width/2+space-button->Width;break;//tøetí
+					case 1:button->Left=form->Width/2-button->Width/2-horizontal_space-button->Width; break;//první
+					case 2:button->Left=form->Width/2-button->Width/2;break;//druhé na støed
+					case 3:button->Left=form->Width/2+button->Width/2+horizontal_space-button->Width;break;//tøetí
 				}
 			}
 			break;
 		}
+
+		//vertikální pozice
+		button->Top=form->Height-button->Height-vertikal_space;
 }
 /////////////////////////////////////////////////////////////////////////////

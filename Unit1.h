@@ -172,14 +172,14 @@ __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_mainmenu;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
-	TscGPButton *editacelinky1;
+	TscGPButton *zalozka_schema;
 	TscGPButton *PopupMenuButton;
 	TscGPButton *casovosa1;
 	TscGPButton *technologickprocesy1;
 	TscGPGlyphButton *scGPGlyphButton1;
-	TscGPGlyphButton *Ulozit;
-	TscGPGlyphButton *NovySoubor;
-	TscGPGlyphButton *Otevrit;
+	TscGPGlyphButton *Toolbar_Ulozit;
+	TscGPGlyphButton *Toolbar_NovySoubor;
+	TscGPGlyphButton *Toolbar_Otevrit;
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *DetailsButton;
 	TscGPPanel *scGPPanel_statusbar;
@@ -222,7 +222,6 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_ZOOM;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
-	TscButton *scButton_ulozit;
 	TscGPCheckBox *CheckBoxVymena_barev;
 	TscGPCheckBox *CheckBoxVytizenost;
 	TscComboBox *ComboBoxCekani;
@@ -238,6 +237,7 @@ __published:	// IDE-managed Components
 	TscButton *scButton10;
 	TButton *Button11;
 	TscGPGlyphButton *GlyphButton_close_grafy;
+	TscButton *scButton_ulozit;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -245,7 +245,7 @@ __published:	// IDE-managed Components
           TGridDrawState State);
 	void __fastcall testovnkapacity1Click(TObject *Sender);
 	void __fastcall casoverezervy1Click(TObject *Sender);
-	void __fastcall editacelinky1Click(TObject *Sender);
+	void __fastcall schemaClick(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall FormResize(TObject *Sender);
@@ -290,7 +290,7 @@ __published:	// IDE-managed Components
 	void __fastcall Edit_pocet_vozikuChange(TObject *Sender);
 	void __fastcall UlozitClick(TObject *Sender);
 	void __fastcall UlozitjakoClick(TObject *Sender);
-	void __fastcall OtevritClick(TObject *Sender);
+	void __fastcall Toolbar_OtevritClick(TObject *Sender);
 	void __fastcall NovySouborClick(TObject *Sender);
 	void __fastcall Timer_backupTimer(TObject *Sender);
 	void __fastcall Obnovitzezlohy1Click(TObject *Sender);

@@ -24,8 +24,8 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 	defaultForm_parametryHeight=Form_parametry->Height;
 
 	//matamaticky exaktní napozicování tlaèítek OK a storno
-	Form1->m.designButton((TButton*)scGPButton_OK,1,2,Width);
-	Form1->m.designButton((TButton*)scGPButton_storno,2,2,Width);
+	Form1->m.designButton((TButton*)scGPButton_OK,Form_parametry,1,2);
+	Form1->m.designButton((TButton*)scGPButton_storno,Form_parametry,2,2);
 
 	navrhar=true;//prozatim
 
@@ -40,7 +40,6 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
 	minsec=MIN;//formuláø bude po zobrazení v minutách
-	vypis("");
 
 //	//ošetøení pro pøípad neexistujících pohonu - zvážit potøebu
 //	scGPButton_OK->Enabled=true;
@@ -95,14 +94,18 @@ void TForm_parametry::vypis(UnicodeString text)
 {
 	if(text!="")//zobrazí a vypíše
 	{
+		scGPGlyphButton_InfoIcon->Top=Form_parametry->Height-76;
 		scGPGlyphButton_InfoIcon->Visible=true;
+		rHTMLLabel_InfoText->Top=Form_parametry->Height-69;
 		rHTMLLabel_InfoText->Visible=true;
 		rHTMLLabel_InfoText->Caption=text;
+		Form_parametry->Height+=(40+19);
 	}
 	else//skryje
 	{
 		scGPGlyphButton_InfoIcon->Visible=false;
 		rHTMLLabel_InfoText->Visible=false;
+		Form_parametry->Height-=(40+19);
 	}
 }
 //---------------------------------------------------------------------------
@@ -125,6 +128,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 10://STOP & GO - NÁVRHÁØ
 		 {
+			 set(CT,ENABLED);
+			 set(RD,HIDE);
 			 set(POHON,HIDE);
 			 set(DELKA,HIDE);
 			 set(CEKANI,HIDE);
@@ -138,6 +143,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 11://KONTINUÁLNÍ - NÁVRHÁØ
 		 {
+			 //set(CT,HIDE);
+			 //set(RD,HIDE);
 			 set(POHON,ENABLED);
 			 set(DELKA,ENABLED);
 			 set(CEKANI,ENABLED);
@@ -151,71 +158,11 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 	}
 
-
 	//VELIKOST FORMULÁØE
 	Form_parametry->Height=defaultForm_parametryHeight+offset;
 	//vertikální POZICE TLAÈÍTEK OK A STORNO
 	scGPButton_OK->Top=Form_parametry->Height-scGPButton_OK->Height-10;
 	scGPButton_storno->Top=Form_parametry->Height-scGPButton_storno->Height-10;
-
-//	switch(rezim)
-//	{
-//		 case 0://STOP & GO
-//		 {
-//			ComboBox_dopravnik->Visible=false;
-//		//	GroupBox_vzdalenost->Left=0;
-//		//	GroupBox_vzdalenost->Visible=false;
-//		//	GroupBox_orientace_voziku->Width=262;
-//			Button_DEL->Visible=false;
-//			Image_vozik->Width=185;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
-//			if(default_text)ValueListEditor->Strings->SetText(SG.c_str());
-//			Label_CT->Top=296+offset;Label_CT_hodnota->Top=296+offset;
-//			Label_TT->Top=315+offset;Label_TT_hodnota->Top=315+offset;
-//			Label_kapacita->Top=334+offset;Label_kapacita_hodnota->Top=334+offset;
-//			Label_kapacita_hodnota->Caption=1;
-//			Label_delka_prepravniku->Visible=false;Label_delka_prepravniku_hodnota->Visible=false;
-//			Button_min_sec->Top=388+offset-6;
-//			Form_parametry->Height=429+offset;
-//			//Button_OK->Top=374+offset;
-//			Label_vypis->Top=355+offset;
-//		 }break;
-//		 case 1://KONTINUÁLNÍ
-//		 {
-//			ComboBox_dopravnik->Visible=true;
-//		//	GroupBox_vzdalenost->Visible=true;
-//		//	GroupBox_vzdalenost->Left=195;
-//		//	GroupBox_orientace_voziku->Width=187;
-//			Button_DEL->Visible=false;
-//			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
-//			if(default_text)ValueListEditor->Strings->SetText(K.c_str());
-//			Label_CT->Top=296-19*5;Label_CT_hodnota->Top=296-19*5;
-//			Label_TT->Top=315-19*5;Label_TT_hodnota->Top=315-19*5;Label_TT_hodnota->Caption=0;
-//			Label_kapacita->Top=334-19*5;Label_kapacita_hodnota->Top=334-19*5;
-//			Label_delka_prepravniku->Visible=false;Label_delka_prepravniku_hodnota->Visible=false;
-//			Button_min_sec->Top=388-19*5-6;
-//			Form_parametry->Height=429-19*5;
-//			//Button_OK->Top=374-19*5;Label_vypis->Top=355-19*5;
-//		 }break;
-//		 case 2://POSTPROCESNÍ
-//		 {
-//		//	GroupBox_vzdalenost->Visible=true;
-//	 //		GroupBox_vzdalenost->Left=195;
-//			ComboBox_dopravnik->Visible=false;
-//		//	GroupBox_orientace_voziku->Width=187;
-//			Button_DEL->Visible=false;
-//			Image_vozik->Width=107;if(RadioButton_na_delku->Checked)vykresli_vozik();else vykresli_vozik(false);
-//			if(default_text)ValueListEditor->Strings->SetText(P.c_str());
-//			Label_delka_prepravniku->Visible=true;Label_delka_prepravniku_hodnota->Visible=true;
-//			Label_delka_prepravniku->Top=296-19*5;Label_delka_prepravniku_hodnota->Top=296-19*5;
-//			Label_CT->Top=296-19*4;Label_CT_hodnota->Top=296-19*4;
-//			Label_TT->Top=315-19*4;Label_TT_hodnota->Top=315-19*4;
-//			Label_kapacita->Top=334-19*4;Label_kapacita_hodnota->Top=334-19*4;
-//			Form_parametry->Height=429-19*4;
-//			//Button_OK->Top=374-19*4;
-//			Label_vypis->Top=355-19*4;Button_min_sec->Top=388-19*4-6;
-//		 }break;
-// }
-// ValueListEditor->Height=19*ValueListEditor->RowCount;*/
 }
 //---------------------------------------------------------------------------
 void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
@@ -311,6 +258,34 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case HIDE:		rHTMLLabel_stopka->Visible=false;scComboBox_stopka->Visible=false;offset-=O;break;
 			}
 		}	break;
+		case CT://CT v režimu návrháø
+		{
+			//pozice
+			//rHTMLLabel_CT->Top=L+3*O+offset;
+			//rEditNum_CT->Top=P+3*O+offset;
+			//funkèní vlastnosti
+			switch (S)
+			{
+				case ENABLED:	rEditNum_CT->Visible=true;rEditNum_CT->Enabled=true;break;
+				case DISABLED:rEditNum_CT->Visible=true;rEditNum_CT->Enabled=false;break;
+				case READONLY:rEditNum_CT->Visible=true;rEditNum_CT->Enabled=false;break;
+				case HIDE:		rHTMLLabel_CT->Visible=false;rEditNum_CT->Visible=false;offset-=O;break;
+			}
+		}	break;
+//		case RD://RD v režimu návrháø
+//		{
+//			//pozice
+//			rHTMLLabel_RD->Top=L+4*O+offset;
+//			rEditNum_RD->Top=P+4*O+offset;
+//			//funkèní vlastnosti
+//			switch (S)
+//			{
+//				case ENABLED:	rEditNum_RD->Visible=true;rEditNum_RD->Enabled=true;break;
+//				case DISABLED:rEditNum_RD->Visible=true;rEditNum_RD->Enabled=false;break;
+//				case READONLY:rEditNum_RD->Visible=true;rEditNum_RD->Enabled=false;break;
+//				case HIDE:		rHTMLLabel_RD->Visible=false;rEditNum_RD->Visible=false;offset-=O;break;
+//			}
+//		}	break;
 	}
 }
 //---------------------------------------------------------------------------

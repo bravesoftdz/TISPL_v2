@@ -37,7 +37,7 @@ class Cmy
 	bool cele_cislo(double number);
 	double mod_d(double number1,double number2);//možno nahradit fci fmod z math.h  - to si už tak nejsem jistý viz paramatry této funkce - ukazatel?
 	bool isFinite(double number1,double number2);
-	TColor clIntensive(TColor C,short A);//A + míra zesvìtlení,  - míra ztmaveni
+	TColor clIntensive(TColor C,short A); //A + míra zesvìtlení,  - míra ztmaveni
 	double azimut(double X1,double Y1,double X2,double Y2);
 	double uhel(double X1,double Y1,double X2,double Y2);
 	double delka(double X1,double Y1,double X2,double Y2);
@@ -45,9 +45,8 @@ class Cmy
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (výstupu vozíku z objektu) v min, rozteèe je v mm resp. v m za z minu u rychlosti dopravniku
 	double prejezd_voziku(double delka, double rychlost_dopravniku);
-
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
-	void designButton(TButton *button,short rank,short sum,int formWidth,short space=22);//vrací pozice tlaèítek
+	void designButton(TButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=10);//nastaví horizontální a vertikální pozici tlaèítka
 
 	protected:
 
