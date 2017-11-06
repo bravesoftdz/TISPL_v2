@@ -646,7 +646,7 @@ object Form1: TForm1
       '')
   end
   object SQL_processID: TButton
-    Left = 618
+    Left = 644
     Top = 508
     Width = 75
     Height = 25
@@ -3450,7 +3450,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton2: TscButton
       Left = 0
@@ -3543,7 +3542,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton3: TscButton
       Left = 0
@@ -3636,7 +3634,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton4: TscButton
       Left = 0
@@ -3729,8 +3726,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 305
-      ExplicitWidth = 180
     end
     object scButton5: TscButton
       Left = 0
@@ -3823,7 +3818,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton6: TscButton
       Left = 0
@@ -3917,8 +3911,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 225
-      ExplicitWidth = 180
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -4115,8 +4107,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 180
-      ExplicitWidth = 180
     end
     object scButton8: TscButton
       Left = 0
@@ -4209,8 +4199,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 261
-      ExplicitWidth = 180
     end
     object scButton9: TscButton
       Left = 0
@@ -4303,7 +4291,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scGPSwitch_rezim: TscGPSwitch
       Left = 100
@@ -4500,7 +4487,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton_ulozit: TscButton
       Left = 0
@@ -4594,16 +4580,13 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitLeft = 3
-      ExplicitTop = 156
-      ExplicitWidth = 180
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118001004100410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001004140410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5726,7 +5709,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011D006802680230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011D0068026C0230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15248,7 +15231,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011D00B801B80118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011D00BC01BC0118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

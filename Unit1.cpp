@@ -17,6 +17,7 @@
 #include "antialiasing.h"
 #include "popUP_menu.h"
 #include "eDesigner.h"
+#include "casovaOsa_info.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -2344,7 +2345,9 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 //zobrazí paramety jednoho procesu na časových osách
 void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 {
-	double prozatim_delka_voziku=d.v.PP.delka_voziku;
+
+
+	double prozatim_delka_voziku=Form1->d.v.PP.delka_voziku;
 	AnsiString rezim="";
 	AnsiString delka="v tuto chvíli neznamá";
 	AnsiString delka_dop=delka;
@@ -2358,24 +2361,51 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
 			break;
 	}
+	
 
-	S(/*"n_procesu: "+AnsiString(proces_pom->n)+*/
-	"číslo vozíku v zakázce: "+AnsiString(proces_pom->n_v_zakazce)+
-	"\nnázev: "+AnsiString(proces_pom->segment_cesty->objekt->name)+
-	"\nzkratka: "+AnsiString(proces_pom->segment_cesty->objekt->short_name)+
-	"\nrežim: "+AnsiString(rezim)+
-	"\nrychlost dopravníku: "+AnsiString(proces_pom->segment_cesty->RD)+" m/min"+
-	"\nrozteč palců: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec)+" mm"+
-	"\nstřední hodnota doby čekání na palec: "+AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1))+" min"+
-	"\nmax. hodnota doby čekání na palec: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD)+" min"+
-	"\nTpoc: "+AnsiString(proces_pom->Tpoc)+" | Tkon: "+AnsiString(proces_pom->Tkon)+" | Tdor: "+AnsiString(proces_pom->Tdor)+" | Tpre: "+AnsiString(proces_pom->Tpre)+" | Tcek: "+AnsiString(proces_pom->Tcek)+
-	"\nPT: "+AnsiString(proces_pom->Tkon-proces_pom->Tpoc)+" min"+
-	"\nMT: "+AnsiString(proces_pom->Tpre-proces_pom->Tkon)+" min"+
-	"\nWT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpre)+" min"+
-	"\nCT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpoc)+" min"+
-	"\nzadaný CT: "+AnsiString(proces_pom->segment_cesty->CT)+" min"+
-	"\ndoporučená kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita_dop)+", délka objektu: "+delka_dop+" m"+
-	"\npožadovaná kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita)+	", délka objektu: "+delka+" m");
+	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
+	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
+	Form_osa_info->rHTMLLabel_rezim_vypis->Caption=rezim;
+	Form_osa_info->rHTMLLabel_dop_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita_dop;
+	Form_osa_info->rHTMLLabel_pozad_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita;
+	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD;
+	Form_osa_info->rHTMLLabel_palce_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec;
+	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
+	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD;
+ 	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
+	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=proces_pom->Tpoc;
+	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=proces_pom->Tkon;
+	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=proces_pom->Tdor;
+	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=proces_pom->Tpre;
+	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=proces_pom->Tcek;
+
+	Form_osa_info->rHTMLLabel_pt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpoc;
+	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tkon-proces_pom->Tkon;
+	Form_osa_info->rHTMLLabel_wt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpre;
+	Form_osa_info->rHTMLLabel_CT_n_vypis->Caption=proces_pom->Tcek-proces_pom->Tpoc;
+
+
+	Form_osa_info->ShowModal();
+
+//
+//	S(/*"n_procesu: "+AnsiString(proces_pom->n)+*/
+//	"číslo vozíku v zakázce: "+AnsiString(proces_pom->n_v_zakazce)+
+//	"\nnázev: "+AnsiString(proces_pom->segment_cesty->objekt->name)+
+//	"\nzkratka: "+AnsiString(proces_pom->segment_cesty->objekt->short_name)+
+//	"\nrežim: "+AnsiString(rezim)+
+//	"\nrychlost dopravníku: "+AnsiString(proces_pom->segment_cesty->RD)+" m/min"+
+//	"\nrozteč palců: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec)+" mm"+
+//	"\nstřední hodnota doby čekání na palec: "+AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1))+" min"+
+//	"\nmax. hodnota doby čekání na palec: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD)+" min"+
+//	"\nTpoc: "+AnsiString(proces_pom->Tpoc)+" | Tkon: "+AnsiString(proces_pom->Tkon)+" | Tdor: "+AnsiString(proces_pom->Tdor)+" | Tpre: "+AnsiString(proces_pom->Tpre)+" | Tcek: "+AnsiString(proces_pom->Tcek)+
+//	"\nPT: "+AnsiString(proces_pom->Tkon-proces_pom->Tpoc)+" min"+
+//	"\nMT: "+AnsiString(proces_pom->Tpre-proces_pom->Tkon)+" min"+
+//	"\nWT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpre)+" min"+
+//	"\nCT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpoc)+" min"+
+//	"\nzadaný CT: "+AnsiString(proces_pom->segment_cesty->CT)+" min"+
+//	"\ndoporučená kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita_dop)+", délka objektu: "+delka_dop+" m"+
+//	"\npožadovaná kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita)+	", délka objektu: "+delka+" m");
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
