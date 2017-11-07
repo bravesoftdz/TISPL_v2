@@ -103,7 +103,6 @@ object Form_jig: TForm_jig
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 413
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 360
@@ -183,7 +182,6 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 363
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -261,7 +259,6 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 263
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -339,7 +336,6 @@ object Form_jig: TForm_jig
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 313
     end
     object scLabel1: TscLabel
       Left = 0
@@ -371,7 +367,6 @@ object Form_jig: TForm_jig
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Jig'
-      ExplicitWidth = 263
     end
   end
   object Button_jig_storno: TscGPButton

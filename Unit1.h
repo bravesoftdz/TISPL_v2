@@ -372,6 +372,7 @@ __published:	// IDE-managed Components
 	void __fastcall GlyphButton_close_grafyClick(TObject *Sender);
 	void __fastcall ComboBoxCekaniChange(TObject *Sender);
 
+
 // User declarations
 	////struktury, výèty
 public:

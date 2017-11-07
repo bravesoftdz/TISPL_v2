@@ -31,9 +31,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_rezim: TrHTMLLabel
     Left = 8
     Top = 97
-    Width = 49
+    Width = 43
     Height = 19
-    Caption = 'Re'#382'im:'
+    Caption = 'Re'#382'im'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -45,9 +45,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_ct: TrHTMLLabel
     Left = 8
     Top = 129
-    Width = 50
+    Width = 44
     Height = 19
-    Caption = 'CT [s]:'
+    Caption = 'CT [s]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -103,9 +103,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_dop_kap: TrHTMLLabel
     Left = 176
     Top = 97
-    Width = 158
+    Width = 147
     Height = 19
-    Caption = 'Doporu'#269'en'#225' kapacita: '
+    Caption = 'Doporu'#269'en'#225' kapacita'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -131,9 +131,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_pozad_kap: TrHTMLLabel
     Left = 176
     Top = 129
-    Width = 157
+    Width = 146
     Height = 19
-    Caption = 'Po'#382'adovan'#225' kapacita: '
+    Caption = 'Po'#382'adovan'#225' kapacita'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -159,9 +159,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_rd: TrHTMLLabel
     Left = 416
     Top = 97
-    Width = 213
+    Width = 207
     Height = 19
-    Caption = 'Rychlost dopravn'#237'ku [m/min]:'
+    Caption = 'Rychlost dopravn'#237'ku [m/min]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -187,9 +187,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_palce: TrHTMLLabel
     Left = 416
     Top = 129
-    Width = 139
+    Width = 133
     Height = 19
-    Caption = 'Rozte'#269' palc'#367' [mm]:'
+    Caption = 'Rozte'#269' palc'#367' [mm]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -259,9 +259,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_cislo_voziku: TrHTMLLabel
     Left = 416
     Top = 56
-    Width = 161
+    Width = 155
     Height = 19
-    Caption = #268#237'slo voz'#237'ku v zak'#225'zce:'
+    Caption = #268#237'slo voz'#237'ku v zak'#225'zce'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -287,9 +287,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_tpoc: TrHTMLLabel
     Left = 8
     Top = 249
-    Width = 36
+    Width = 31
     Height = 17
-    Caption = 'Tpoc:'
+    Caption = 'Tpoc'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -315,9 +315,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_tkon: TrHTMLLabel
     Left = 117
     Top = 249
-    Width = 36
+    Width = 31
     Height = 17
-    Caption = 'Tkon:'
+    Caption = 'Tkon'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -327,8 +327,8 @@ object Form_osa_info: TForm_osa_info
     ParentFont = False
   end
   object rHTMLLabel_wt_vypis: TrHTMLLabel
-    Left = 35
-    Top = 332
+    Left = 36
+    Top = 330
     Width = 32
     Height = 17
     Caption = 'Value'
@@ -343,9 +343,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_mt: TrHTMLLabel
     Left = 8
     Top = 307
-    Width = 23
+    Width = 18
     Height = 17
-    Caption = 'MT:'
+    Caption = 'MT'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -371,9 +371,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_str_dob_cekani: TrHTMLLabel
     Left = 8
     Top = 185
-    Width = 236
+    Width = 231
     Height = 17
-    Caption = 'St'#345'edn'#237' hodnota doby '#269'ek'#225'n'#237' na palec:'
+    Caption = 'St'#345'edn'#237' hodnota doby '#269'ek'#225'n'#237' na palec'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -399,9 +399,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_max_dob_cekani: TrHTMLLabel
     Left = 8
     Top = 210
-    Width = 222
+    Width = 217
     Height = 17
-    Caption = 'Max. hodnota doby '#269'ek'#225'n'#237' na palec:'
+    Caption = 'Max. hodnota doby '#269'ek'#225'n'#237' na palec'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -427,9 +427,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_wt: TrHTMLLabel
     Left = 8
     Top = 330
-    Width = 27
+    Width = 22
     Height = 17
-    Caption = 'WT:'
+    Caption = 'WT'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -455,9 +455,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_pt: TrHTMLLabel
     Left = 8
     Top = 284
-    Width = 21
+    Width = 16
     Height = 17
-    Caption = 'PT:'
+    Caption = 'PT'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -469,9 +469,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_tdor: TrHTMLLabel
     Left = 235
     Top = 249
-    Width = 34
+    Width = 29
     Height = 17
-    Caption = 'Tdor:'
+    Caption = 'Tdor'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -497,9 +497,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_tpre: TrHTMLLabel
     Left = 344
     Top = 249
-    Width = 33
+    Width = 28
     Height = 17
-    Caption = 'Tpre:'
+    Caption = 'Tpre'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -525,9 +525,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_tcek: TrHTMLLabel
     Left = 472
     Top = 249
-    Width = 34
+    Width = 29
     Height = 17
-    Caption = 'Tcek:'
+    Caption = 'Tcek'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -553,9 +553,9 @@ object Form_osa_info: TForm_osa_info
   object rHTMLLabel_CTn: TrHTMLLabel
     Left = 8
     Top = 353
-    Width = 22
+    Width = 17
     Height = 17
-    Caption = 'CT:'
+    Caption = 'CT'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 17
@@ -959,6 +959,88 @@ object Form_osa_info: TForm_osa_info
     GlowEffect.PressedColor = clRed
     GlowEffect.FocusedColor = clRed
     GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object scGPButton1: TscGPButton
+    Left = 638
+    Top = 376
+    Width = 57
+    Height = 29
+    TabOrder = 2
+    TabStop = True
+    Animation = False
+    Caption = 's/min'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 29
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = clBtnFace
+    Options.HotColor = clBtnFace
+    Options.PressedColor = clBtnShadow
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnFace
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clBtnShadow
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
     GlowEffect.PressedAlphaValue = 255
     GlowEffect.States = [scsHot, scsPressed, scsFocused]
     ImageGlow = True

@@ -239,12 +239,6 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
-    ColWidths = (
-      130
-      160
-      160
-      160
-      160)
     RowHeights = (
       30
       30
@@ -461,7 +455,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 616
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 594
@@ -539,7 +532,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 566
     end
     object scLabel1: TscLabel
       Left = 0
@@ -572,7 +564,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 529
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 557
@@ -652,7 +643,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 529
     end
   end
   object scGPButton2: TscGPButton

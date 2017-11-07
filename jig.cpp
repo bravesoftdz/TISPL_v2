@@ -17,7 +17,7 @@ TForm_jig *Form_jig;
 __fastcall TForm_jig::TForm_jig(TComponent* Owner)
 	: TForm(Owner)
 {
-	//designové nastavení formuláøe
+	//designové nastavení formuláøe  - vše v konstruktoru
 	Form_jig->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
 	scGPButton2->Options->NormalColor=Form_jig->Color;
 	scGPButton2->Options->FocusedColor=Form_jig->Color;
@@ -29,6 +29,9 @@ __fastcall TForm_jig::TForm_jig(TComponent* Owner)
 
 	Form_jig->Left=Form1->ClientWidth/2-Form_jig->Width/2;
 	Form_jig->Top=Form1->ClientHeight/2-Form_jig->Height/2;
+
+	Form1->m.designButton((TButton*)Button_jig_save,Form_jig,1,2);
+	Form1->m.designButton((TButton*)Button_jig_storno,Form_jig,2,2);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_jig::KonecClick(TObject *Sender)

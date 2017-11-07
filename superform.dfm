@@ -7,7 +7,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Caption = 'Definice zak'#225'zek'
   ClientHeight = 535
   ClientWidth = 1001
-  Color = clSilver
+  Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clDefault
   Font.Height = 20
@@ -921,7 +921,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 999
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 951
@@ -999,7 +998,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 949
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1077,7 +1075,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 849
     end
     object scLabel1: TscLabel
       Left = 0
@@ -1109,7 +1106,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Definice zak'#225'zek'
-      ExplicitWidth = 812
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1187,7 +1183,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 899
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 814
@@ -1266,7 +1261,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 812
     end
   end
   object rEditNum_pozad_mnozstvi: TrEditNum
@@ -1419,7 +1413,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPButton3: TscGPButton
+  object scGPButton_storno: TscGPButton
     Left = 520
     Top = 490
     Width = 100

@@ -60,9 +60,12 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_tcek_vypis;
 	TrHTMLLabel *rHTMLLabel_CTn;
 	TrHTMLLabel *rHTMLLabel_CT_n_vypis;
+	TscGPButton *scGPButton1;
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_osa_info(TComponent* Owner);
+
+		UnicodeString minsec;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_osa_info *Form_osa_info;

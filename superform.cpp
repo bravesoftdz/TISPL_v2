@@ -55,6 +55,9 @@ void TForm_definice_zakazek::nastav_form()
 	scGPButton4->Options->PressedColor=Form_definice_zakazek->Color;
 	scGPButton4->Options->FrameNormalColor=Form_definice_zakazek->Color;
 	scGPButton4->Options->FramePressedColor=Form_definice_zakazek->Color;
+
+	Form1->m.designButton((TButton*)scGPButton_Ulozit,Form_definice_zakazek,1,2);
+	Form1->m.designButton((TButton*)scGPButton_storno,Form_definice_zakazek,2,2);
 }
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------

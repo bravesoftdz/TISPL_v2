@@ -58,6 +58,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	////nastavení aplikace
 	upozornovat_na_zmenu_TT_parametru=true;
 
+
 	//nastavení knihovnky
 	//DrawGrid_knihovna->Enabled=false;
 	DrawGrid_knihovna->RowCount=pocet_objektu_knihovny/2;//velikosti buněk
@@ -666,8 +667,9 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::casovosa1Click(TObject *Sender)
 {
-	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná
+	if(d.v.ZAKAZKY->dalsi==NULL){//pokud nebyla zakazka definovaná
 		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
+	  }
 	else
 	{
 		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka z cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
@@ -1273,6 +1275,11 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
+
+	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY->dalsi;
+		if (ukaz==NULL){ casovosa1->Enabled=false;}
+		else { casovosa1->Enabled=true;}
+
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
@@ -2365,6 +2372,7 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 
 	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
 	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
+	Form_osa_info->rHTMLLabel_cislo_voziku_vypis->Caption=proces_pom->n_v_zakazce;
 	Form_osa_info->rHTMLLabel_rezim_vypis->Caption=rezim;
 	Form_osa_info->rHTMLLabel_dop_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita_dop;
 	Form_osa_info->rHTMLLabel_pozad_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita;
@@ -4009,6 +4017,19 @@ void __fastcall TForm1::hl_spojak_zakazkyClick(TObject *Sender)
 //
 //	Memo2->Lines->Add(AnsiString(p->name)+";"+AnsiString(p->short_name)+";"+AnsiString(p->rezim)+";"+AnsiString(p->pohon->n)+";"+AnsiString(p->delka_dopravniku)+";"+AnsiString(p->cekat_na_palce)+";"+AnsiString(p->odchylka)+";"+AnsiString(p->kapacita));
 
+		Cvektory::TZakazka *ukaz2=d.v.ZAKAZKY->dalsi;
+		if (ukaz2==NULL)
+		{
+ShowMessage("NEmam data");
+casovosa1->Enabled=false;
+		}
+		else {
+		 ShowMessage("mam data");
+		 casovosa1->Enabled=true;
+		 } //	casovosa1->Enabled=true; }
+
+
+
 
 		Cvektory::TZakazka *ukaz=d.v.ZAKAZKY->dalsi;
 		while (ukaz!=NULL)
@@ -4120,6 +4141,9 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
    REFRESH();
 }
 //---------------------------------------------------------------------------
+
+
+
 
 
 

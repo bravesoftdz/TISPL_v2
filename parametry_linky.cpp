@@ -18,6 +18,11 @@ TForm_parametry_linky *Form_parametry_linky;
 __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	: TForm(Owner)
 {
+	Form1->m.designButton((TButton*)Button_save,Form_parametry_linky,1,2);
+	Form1->m.designButton((TButton*)Button_storno,Form_parametry_linky,2,2);
+
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
@@ -160,6 +165,10 @@ void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 				{
 				 rStringGridEd_tab_dopravniky->RowCount--;
 
+				 }
+				 else {
+
+				 Form1->MB("Linka musí obsahovat alespoò jeden pohon.");
 				 }
 
 	 //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)

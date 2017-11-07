@@ -4,17 +4,18 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
-USEFORM("superform.cpp", Form_definice_zakazek);
 USEFORM("popUP_menu.cpp", PopUPmenu);
-USEFORM("parametry.cpp", Form_parametry);
+USEFORM("superform.cpp", Form_definice_zakazek);
 USEFORM("parametry_linky.cpp", Form_parametry_linky);
+USEFORM("parametry.cpp", Form_parametry);
 USEFORM("uvod.cpp", Form_uvod);
 USEFORM("Unit1.cpp", Form1);
 USEFORM("eDesigner.cpp", Form_eDesigner);
-USEFORM("jig.cpp", Form_jig);
 USEFORM("cesty.cpp", Form_cesty);
+USEFORM("jig.cpp", Form_jig);
 USEFORM("MyMessageBox.cpp", myMessageBox);
 USEFORM("kalendar.cpp", Form_kalendar);
+USEFORM("casovaOsa_info.cpp", Form_osa_info);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -33,6 +34,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TPopUPmenu), &PopUPmenu);
 		Application->CreateForm(__classid(TForm_eDesigner), &Form_eDesigner);
 		Application->CreateForm(__classid(TForm_kalendar), &Form_kalendar);
+		Application->CreateForm(__classid(TForm_osa_info), &Form_osa_info);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}
