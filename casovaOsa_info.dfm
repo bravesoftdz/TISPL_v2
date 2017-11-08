@@ -609,8 +609,6 @@ object Form_osa_info: TForm_osa_info
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitLeft = -318
-    ExplicitWidth = 969
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 653
@@ -689,7 +687,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 919
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -767,7 +764,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 819
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -845,7 +841,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 869
     end
     object scLabel1: TscLabel
       Left = 0
@@ -877,7 +872,6 @@ object Form_osa_info: TForm_osa_info
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Informace o Objektu'
-      ExplicitWidth = 819
     end
   end
   object ioo_ok: TscGPButton
@@ -906,7 +900,7 @@ object Form_osa_info: TForm_osa_info
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.PressedColor = clGreen
     Options.FocusedColor = 33023
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -914,10 +908,10 @@ object Form_osa_info: TForm_osa_info
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clGray
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clGray
+    Options.FrameNormalColor = 1871359
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = 1871359
+    Options.FrameFocusedColor = 1871359
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255

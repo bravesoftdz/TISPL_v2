@@ -24,8 +24,8 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 	defaultForm_parametryHeight=Form_parametry->Height;
 
 	//matamaticky exaktní napozicování tlaèítek OK a storno
-	Form1->m.designButton((TButton*)scGPButton_OK,Form_parametry,1,2);
-	Form1->m.designButton((TButton*)scGPButton_storno,Form_parametry,2,2);
+	Form1->m.designButton(scGPButton_OK,Form_parametry,1,2);
+	Form1->m.designButton(scGPButton_storno,Form_parametry,2,2);
 
 	navrhar=true;//prozatim
 

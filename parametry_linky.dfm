@@ -272,7 +272,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.PressedColor = clGreen
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -280,10 +280,10 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clGray
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clGray
+    Options.FrameNormalColor = 1871359
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = 1871359
+    Options.FrameFocusedColor = 1871359
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -303,6 +303,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 1
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -370,10 +372,10 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clGray
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clGray
+    Options.FrameNormalColor = 1871359
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = 1871359
+    Options.FrameFocusedColor = 1871359
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -393,6 +395,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.ArrowSize = 9
     Options.StyleColors = True
     HotImageIndex = -1
+    ModalResult = 2
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False

@@ -18,10 +18,8 @@ TForm_parametry_linky *Form_parametry_linky;
 __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	: TForm(Owner)
 {
-	Form1->m.designButton((TButton*)Button_save,Form_parametry_linky,1,2);
-	Form1->m.designButton((TButton*)Button_storno,Form_parametry_linky,2,2);
-
-
+	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
+	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 
 }
 //---------------------------------------------------------------------------

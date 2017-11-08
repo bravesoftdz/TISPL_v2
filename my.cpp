@@ -2,6 +2,7 @@
 #pragma hdrstop
 #include "my.h"
 #include "Unit1.h"
+#include "MyMessageBox.h"//kvùli referenci na tlaèítka v MyMessageBox
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)
@@ -280,8 +281,8 @@ TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
 	return (TColor)RGB(R,G,B);
 }
 /////////////////////////////////////////////////////////////////////////////
-//nastaví horizontální a vertikální pozici tlaèítka
-void Cmy::designButton(TButton *button,TForm *form,short rank,short sum,short horizontal_space,short vertikal_space)
+//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox
+void Cmy::designButton(TscGPButton *button,TForm *form,short rank,short sum,short horizontal_space,short vertikal_space)
 {
 		//horizontální pozice
 		switch(sum)
@@ -310,5 +311,13 @@ void Cmy::designButton(TButton *button,TForm *form,short rank,short sum,short ho
 
 		//vertikální pozice
 		button->Top=form->Height-button->Height-vertikal_space;
+
+		//pøebírání designu z referenèních tlaèítek v MyMessageBox
+
+		if(button->ModalResult==mrYes)*button->Options=*myMessageBox->Button_Yes->Options;
+		if(button->ModalResult==mrOk)*button->Options=*myMessageBox->Button_OK->Options;
+		if(button->ModalResult==mrCancel)*button->Options=*myMessageBox->Button_Cancel->Options;
+		if(button->ModalResult==mrNo)*button->Options=*myMessageBox->Button_No->Options;
 }
 /////////////////////////////////////////////////////////////////////////////
+

@@ -41,8 +41,9 @@ void TForm_cesty::nactiNastaveni ()
 
 	Form_definice_zakazek->Color=light_gray;
 
-	Form1->m.designButton((TButton*)Button_ulozit,Form_cesty,1,2);
-	Form1->m.designButton((TButton*)cesta_storno,Form_cesty,2,2);
+	Form1->m.designButton(Button_ulozit,Form_cesty,1,2);
+	Form1->m.designButton(cesta_storno,Form_cesty,2,2);
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_cesty::FormShow(TObject *Sender)
