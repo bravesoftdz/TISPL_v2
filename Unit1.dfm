@@ -2781,6 +2781,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'hl_spojak_zakazky'
     TabOrder = 31
+    Visible = False
     OnClick = hl_spojak_zakazkyClick
   end
   object Memo2: TMemo
@@ -2791,6 +2792,7 @@ object Form1: TForm1
     Lines.Strings = (
       'Memo2')
     TabOrder = 32
+    Visible = False
   end
   object button_zakazky_temp: TButton
     Left = 303

@@ -317,6 +317,10 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 pan_non_locked=false;
 			 zobrazit_barvy_casovych_rezerv=false;
 			 d.cas=0;
+			 casovosa1->Enabled=false;
+			 casovosa1->Down=false;
+			 zalozka_schema->Down=true;
+
 
 			 SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 
