@@ -1,0 +1,61 @@
+Parametry projektu;ELTEP - tispl - [Magna_cas_osy_1zak.tispl]
+Poadované celkové mnoství;200
+Poèet pracovních dní [rok];365
+Poèet pracovních hodin [den];8
+Efektivita [%];95
+Zaèátek vıroby;23.10.2017 8:00:00
+Délka vozíku;1
+
+Pøehled objektù a jejich nastavenıch parametrù u zakázky:;honda
+ID;Název;Zkratka;Reim;CT [s];Kapacita doporuèená;Kapacita nastavená;Název dopravníku;Rychlost dopravníku;Rozteè palcù [mm];Délka dopravníku [m]
+1;navìšování;NAV;STOP & GO;2;0;1;D1;nerelevantní;540;nerelevantní
+2;pøejezd;PRE1;KONTINUÁLNÍ;4,3;0;2;D1;2;540;20
+3;powerwash;POW;KONTINUÁLNÍ;2;0;0;D2;1,2;378;0
+4;pøejezd;PRE2;KONTINUÁLNÍ;1,64;0;0;D2;1,2;378;2
+5;ofuk;OFU;KONTINUÁLNÍ;2;0;0;D2;1,2;378;0
+6;pøejezd;PRE3;KONTINUÁLNÍ;1,34;0;0;D1;2;540;2
+7;sušení1;SUŠ1;POSTPROCESNÍ;20;13;10;D1;nerelevantní;540;0
+8;chlazení1;CHL1;POSTPROCESNÍ;10;5;5;D1;nerelevantní;540;0
+9;pøejezd4;PRE4;KONTINUÁLNÍ;0,35;0;0;D1;2;540;5
+10;ionizace;ION;KONTINUÁLNÍ;2;0;1;D2;1,2;378;0
+11;pøejezd5;PRE5;KONTINUÁLNÍ;1,64;0;0;D2;1,2;378;4
+12;primer;pri1;KONTINUÁLNÍ;14;2;7;D3;0,5;1620;0
+13;vytìkání1;VY1;POSTPROCESNÍ;10;7;4;D1;nerelevantní;540;0
+14;sušení2;SUŠ2;POSTPROCESNÍ;30;18;14;D1;nerelevantní;540;0
+15;chlazení2;CHL2;POSTPROCESNÍ;10;4;4;D1;nerelevantní;540;0
+16;basecoat;BC1;KONTINUÁLNÍ;14;4;16;D4;0,5;1620;0
+17;vytìkání2;VY2;POSTPROCESNÍ;10;5;7;D1;nerelevantní;540;0
+18;clearcoat;CC1;KONTINUÁLNÍ;14;2;10;D5;0,5;1620;0
+19;vytìkání3;VY3;POSTPROCESNÍ;10;5;7;D1;nerelevantní;540;0
+20;sušení3;SUŠ3;POSTPROCESNÍ;30;18;19;D1;nerelevantní;540;0
+21;chlazení3;CHL3;POSTPROCESNÍ;10;5;7;D1;nerelevantní;540;0
+22;pøejezd6;PRE6;KONTINUÁLNÍ;0,79;0;0;D1;2;540;7
+23;svìšování;SVÌ;STOP & GO;2;0;1;D1;nerelevantní;540;nerelevantní
+24;pøejezd7;PRE7;KONTINUÁLNÍ;2;0;0;D1;2;540;5
+
+Pøehled objektù a jejich nastavenıch parametrù u zakázky:;bmw
+ID;Název;Zkratka;Reim;CT [s];Kapacita doporuèená;Kapacita nastavená;Název dopravníku;Rychlost dopravníku;Rozteè palcù [mm];Délka dopravníku [m]
+1;navìšování;NAV;STOP & GO;4;0;1;D1;nerelevantní;540;nerelevantní
+2;pøejezd;PRE1;KONTINUÁLNÍ;4,3;0;2;D1;4;540;20
+3;powerwash;POW;KONTINUÁLNÍ;2;0;0;D2;1,89;378;0
+4;pøejezd;PRE2;KONTINUÁLNÍ;1,64;0;0;D2;1,89;378;2
+5;ofuk;OFU;KONTINUÁLNÍ;2;0;0;D2;1,89;378;0
+6;pøejezd;PRE3;KONTINUÁLNÍ;1,34;0;0;D1;4;540;2
+7;sušení1;SUŠ1;POSTPROCESNÍ;20;13;10;D1;nerelevantní;540;0
+8;chlazení1;CHL1;POSTPROCESNÍ;10;5;5;D1;nerelevantní;540;0
+9;pøejezd4;PRE4;KONTINUÁLNÍ;0,35;0;0;D1;4;540;5
+10;ionizace;ION;KONTINUÁLNÍ;2;0;1;D2;1,89;378;0
+11;pøejezd5;PRE5;KONTINUÁLNÍ;1,64;0;0;D2;1,89;378;4
+12;primer;pri1;KONTINUÁLNÍ;14;2;7;D3;0,75;1620;0
+13;vytìkání1;VY1;POSTPROCESNÍ;10;7;4;D1;nerelevantní;540;0
+16;basecoat;BC1;KONTINUÁLNÍ;14;4;16;D4;0,75;1620;0
+17;vytìkání2;VY2;POSTPROCESNÍ;10;5;7;D1;nerelevantní;540;0
+18;clearcoat;CC1;KONTINUÁLNÍ;14;2;10;D5;0,75;1620;0
+19;vytìkání3;VY3;POSTPROCESNÍ;10;5;7;D1;nerelevantní;540;0
+20;sušení3;SUŠ3;POSTPROCESNÍ;30;18;19;D1;nerelevantní;540;0
+21;chlazení3;CHL3;POSTPROCESNÍ;10;5;7;D1;nerelevantní;540;0
+22;pøejezd6;PRE6;KONTINUÁLNÍ;0,79;0;0;D1;4;540;7
+23;svìšování;SVÌ;STOP & GO;2;0;1;D1;nerelevantní;540;nerelevantní
+24;pøejezd7;PRE7;KONTINUÁLNÍ;2;0;0;D1;4;540;5
+
+

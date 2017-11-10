@@ -242,6 +242,7 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_log_header;
 	TscHTMLLabel *scHTMLLabel_log_vypis;
 	TscGPGlyphButton *scGPGlyphButton_zpravy_ikona;
+	TscButton *scButton11;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

@@ -2911,7 +2911,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 36
+    TabOrder = 35
     Visible = False
     StyleElements = [seFont, seClient]
     OnClick = GlyphButton_close_grafyClick
@@ -3784,7 +3784,7 @@ object Form1: TForm1
     end
     object scButton4: TscButton
       Left = 0
-      Top = 299
+      Top = 294
       Width = 0
       Height = 46
       Align = alTop
@@ -3873,6 +3873,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 299
     end
     object scButton5: TscButton
       Left = 0
@@ -3968,9 +3969,9 @@ object Form1: TForm1
     end
     object scButton6: TscButton
       Left = 0
-      Top = 219
+      Top = 244
       Width = 0
-      Height = 36
+      Height = 25
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3981,7 +3982,7 @@ object Form1: TForm1
       TabOrder = 5
       OnClick = html1Click
       Animation = False
-      Caption = 'Report'
+      Caption = 'Report HTML'
       CanFocused = False
       CustomDropDown = False
       Margin = 0
@@ -4057,6 +4058,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -4256,9 +4258,9 @@ object Form1: TForm1
     end
     object scButton8: TscButton
       Left = 0
-      Top = 255
+      Top = 269
       Width = 0
-      Height = 44
+      Height = 25
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -4345,6 +4347,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton9: TscButton
       Left = 0
@@ -4727,12 +4730,105 @@ object Form1: TForm1
       AllowAllUp = False
       WordWrap = False
     end
+    object scButton11: TscButton
+      Left = 0
+      Top = 219
+      Width = 0
+      Height = 25
+      Align = alTop
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 19
+      OnClick = csv1Click
+      Animation = False
+      Caption = 'Report CSV'
+      CanFocused = False
+      CustomDropDown = False
+      Margin = 0
+      Spacing = 10
+      Layout = blGlyphLeft
+      ImageIndex = 2
+      ImageMargin = 50
+      TransparentBackground = False
+      ColorOptions.NormalColor = 8538404
+      ColorOptions.HotColor = 7159583
+      ColorOptions.PressedColor = 5648664
+      ColorOptions.FocusedColor = 657930
+      ColorOptions.DisabledColor = 8538404
+      ColorOptions.FrameNormalColor = clNone
+      ColorOptions.FrameHotColor = clNone
+      ColorOptions.FramePressedColor = clNone
+      ColorOptions.FrameFocusedColor = clNone
+      ColorOptions.FrameDisabledColor = clBtnShadow
+      ColorOptions.FrameWidth = 0
+      ColorOptions.FontNormalColor = clWhite
+      ColorOptions.FontHotColor = clWhite
+      ColorOptions.FontPressedColor = clWhite
+      ColorOptions.FontFocusedColor = clWhite
+      ColorOptions.FontDisabledColor = clGray
+      ColorOptions.TitleFontNormalColor = clBtnText
+      ColorOptions.TitleFontHotColor = clBtnText
+      ColorOptions.TitleFontPressedColor = clBtnText
+      ColorOptions.TitleFontFocusedColor = clBtnText
+      ColorOptions.TitleFontDisabledColor = clBtnShadow
+      ColorOptions.StyleColors = True
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = [fsBold]
+      HotImageIndex = -1
+      FocusedImageIndex = -1
+      PressedImageIndex = -1
+      StyleKind = scbsColorButton
+      UseGalleryMenuImage = False
+      UseGalleryMenuCaption = False
+      CustomImageNormalIndex = -1
+      CustomImageHotIndex = -1
+      CustomImagePressedIndex = -1
+      CustomImageDisabledIndex = -1
+      CustomImageFocusedIndex = -1
+      ScaleMarginAndSpacing = False
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      UseFontColorToStyleColor = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      SplitButton = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 1
+      AllowAllUp = False
+      WordWrap = False
+      ExplicitWidth = 180
+    end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118001004280410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180010042C0410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5855,7 +5951,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011E0068028C0230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011E006802900230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15377,7 +15473,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011E00D001D00118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011E00D401D40118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
