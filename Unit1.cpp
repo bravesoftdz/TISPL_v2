@@ -39,6 +39,7 @@
 #pragma link "scModernControls"
 #pragma link "scDrawUtils"
 #pragma link "scGPImages"
+#pragma link "scHtmlControls"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
@@ -584,6 +585,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	CheckBoxAnimovatSG->Visible=false;
 	scLabel_doba_cekani->Visible=false;
 	GlyphButton_close_grafy->Visible=false;
+	scExPanel_log_header->Visible=false;
 
 
 	CheckBoxVymena_barev->Visible=false;
@@ -719,6 +721,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			CheckBox_pouzit_zadane_kapacity->Visible=false;
 			ComboBoxCekani->Visible=true;
 			d.JIZPOCITANO=false;
+			scExPanel_log_header->Visible=true;
 
 			Label_zamerovac->Visible=false;
 			Invalidate();
@@ -4147,7 +4150,23 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
+{
+//	scExPanel_log_header->Visible=false;
+	scGPGlyphButton_zpravy_ikona->Visible=true;
+	scExPanel_log_header->Visible=false;
 
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
+{
+if(scExPanel_log_header->Visible==false){
+
+		 scExPanel_log_header->Visible=true;
+	}
+}
+//---------------------------------------------------------------------------
 
 
 

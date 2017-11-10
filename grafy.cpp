@@ -24,7 +24,8 @@ void Cgrafy::ShowGrafy(bool stav) {
 	Form1->Chart4->Visible = false;
 	Form1->Chart6->Visible = stav;
 	//Form1->Label_wip->Visible = stav;
-	Form1->Memo1->Visible = stav;
+	//Form1->Memo1->Visible = stav;
+ //	Form1->scExPanel_log_header->Visible=stav;
 }
 
 /////////////////////////////////////////////////////
@@ -215,9 +216,9 @@ void Cgrafy::graf2() {
 
 	// defaultní vykreslení grafu (checkbox reší událost onclick)
 
-	if (Form1->Memo1->Visible) {
+	if (Form1->scHTMLLabel_log_vypis->Visible) {
 		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
-			Form1->Memo1->Height - Form1->Chart6->Height;
+			Form1->scHTMLLabel_log_vypis->Height - Form1->Chart6->Height;
 	}
 	else {
 		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
@@ -243,11 +244,13 @@ void Cgrafy::graf2() {
 	//if (Form1->d.PROZATIM) //nefunguje pøi prvním prùchodu až pøi druhém...
 	//{
 
-		Form1->Memo1->Lines->Clear();
-		Form1->Memo1->Font->Color=clRed;
+	//	Form1->Memo1->Lines->Clear();
+	//	Form1->Memo1->Font->Color=clRed;
 
 			Form1->Series2->Clear();
 			Form1->Series3->Clear();
+
+
 
 		while (ukaz != NULL)
 		{
@@ -257,7 +260,12 @@ void Cgrafy::graf2() {
 		 if(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)!=ukaz->TT)
 		 {
 				Form1->Series3->Add(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)-ukaz->TT, ukaz->n,Form1->m.clIntensive(ukaz->barva,80));
-				Form1->Memo1->Lines->Add(AnsiString("Chyba - Uskuteènitelný TT: ") + Form1->d.v.vrat_AVG_TT_zakazky(ukaz) + AnsiString(" Požadovaný TT: ") + ukaz->TT + AnsiString(" = Zakázka èíslo: ") + ukaz->n);
+			 //	Form1->Memo1->Lines->Add(AnsiString("Chyba - Uskuteènitelný TT: ") + Form1->d.v.vrat_AVG_TT_zakazky(ukaz) + AnsiString(" Požadovaný TT: ") + ukaz->TT + AnsiString(" = Zakázka èíslo: ") + ukaz->n);
+				 AnsiString tt_uskutec =Form1->d.v.vrat_AVG_TT_zakazky(ukaz);
+				 AnsiString tt_pozad =ukaz->TT;
+				 AnsiString zakazka_n =ukaz->n;
+
+					Form1->scHTMLLabel_log_vypis->Caption="Chyba u zakázky è."+zakazka_n+" - Uskuteènitelný TT: <b>"+tt_uskutec+"</b>. Požadovaný TT: <b>"+tt_pozad+"</b>";
 		 }
 
 			ukaz = ukaz->dalsi;
@@ -268,9 +276,9 @@ void Cgrafy::graf2() {
 }
 void Cgrafy::graf6() { // Kapacity
 
-	if (Form1->Memo1->Visible) {
+	if (Form1->scHTMLLabel_log_vypis->Visible) {
 		Form1->Chart6->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
-			Form1->Memo1->Height - Form1->Chart2->Height;
+			Form1->scHTMLLabel_log_vypis->Height - Form1->Chart2->Height;
 	}
 	else {
 		Form1->Chart6->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
@@ -287,7 +295,7 @@ void Cgrafy::graf6() { // Kapacity
 	Form1->Chart6->LeftAxis->Title->Caption = "kapacity";
 	Form1->Chart6->BottomAxis->Title->Caption = "objekty";
 
-		Form1->Memo1->Font->Color=clBlack;
+		//Form1->Memo1->Font->Color=clBlack;
 
 	Form1->Series9->Clear();
 	Form1->Series10->Clear();
