@@ -1501,7 +1501,26 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 
 		data+="\n";
 
+					data+="Přehled pohonů"+S+"\n";
 
+				Cvektory::TPohon *ukaz=POHONY->dalsi;
+
+				data+="ID"+S+"Název"+S+"Rychlost od [m/min]"+S+"Rychlost do [m/min]"+S+"Rozteč palců [mm]"+S+"\n";
+				while(ukaz!=NULL){
+
+				UnicodeString ID=ukaz->n;
+				UnicodeString name=ukaz->name;
+				UnicodeString rychlost_od=ukaz->rychlost_od;
+				UnicodeString rychlost_do=ukaz->rychlost_do;
+				UnicodeString roztec=ukaz->roztec;
+
+					data+=""+ID+S+name+S+rychlost_od+S+rychlost_do+S+roztec+S+"\n";
+
+					ukaz=ukaz->dalsi;
+
+				}
+
+      	data+="\n";
 
 			if(ZAKAZKY->predchozi!=NULL  && OBJEKTY->predchozi!=NULL)//pokud existuje alespoň jedna zakázka a nějaký objekt
 {
@@ -1549,6 +1568,8 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 	}
 }
 		data+="\n";
+
+
 	}
 
 

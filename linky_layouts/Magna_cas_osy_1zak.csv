@@ -6,6 +6,14 @@ Efektivita [%];95
 Zaèátek výroby;23.10.2017 8:00:00
 Délka vozíku;1
 
+Pøehled pohonù;
+ID;Název;Rychlost od [m/min];Rychlost do [m/min];Rozteè palcù [mm];
+1;D1;2;6;540;
+2;D2;1,2;3,5;378;
+3;D3;0,5;1,5;1620;
+4;D4;0,5;1,5;1620;
+5;D5;0,5;1,5;1620;
+
 Pøehled objektù a jejich nastavených parametrù u zakázky:;honda
 ID;Název;Zkratka;Režim;CT [s];Kapacita doporuèená;Kapacita nastavená;Název dopravníku;Rychlost dopravníku;Rozteè palcù [mm];Délka dopravníku [m]
 1;navìšování;NAV;STOP & GO;2;0;1;D1;nerelevantní;540;nerelevantní
