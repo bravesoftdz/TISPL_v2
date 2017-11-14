@@ -1518,6 +1518,51 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 
 		data+="<div class=\"container-fluid\"><form>";
 
+		if(Form1->STATUS==Form1->NAVRH) {
+
+
+		data+="<h4>NÁVRH: Přehled objektů a jejich parametrů</h4></br>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporučená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteč palců [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+
+		Cvektory::TObjekt *O=OBJEKTY->dalsi;
+
+		while (O!=NULL)//prochází potenciální segmenty cesty po objektech
+		{
+								UnicodeString ID=O->id;
+								UnicodeString name=O->name;
+								UnicodeString short_name=O->short_name;
+								UnicodeString rezim;
+								UnicodeString CT=O->CT;
+								UnicodeString kapacita=O->kapacita;
+								UnicodeString kapacita_dop=O->kapacita_dop;
+								UnicodeString nazev_pohonu="";
+								UnicodeString roztec_palcu="";
+								UnicodeString rychlost_dopravniku=O->RD;
+								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
+								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
+								UnicodeString delka_dopravniku=O->delka_dopravniku;
+									switch(O->rezim)
+								{
+									case 0:rezim="STOP & GO";rychlost_dopravniku="nerelevantní";delka_dopravniku="nerelevantní"; break;
+									case 1:rezim="KONTINUÁLNÍ";break;
+									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
+								}
+//          //html
+								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita+"</td><td>"+kapacita_dop+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
+
+									O=O->dalsi;
+								}
+
+		data+="</tbody></table></br>";
+		data+="</form></div></br>";
+
+	}
+
+
+
+
+
+
 
 	if(ZAKAZKY->predchozi!=NULL  && OBJEKTY->predchozi!=NULL)//pokud existuje alespoň jedna zakázka a nějaký objekt
 {
@@ -1562,7 +1607,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 		Z=Z->dalsi;
 
 		data+="</tbody></table></br>";
-  }
+	}
 }
 		data+="</form></div>";
 	}
