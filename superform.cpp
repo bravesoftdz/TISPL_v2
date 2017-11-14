@@ -5,7 +5,7 @@
 
 #include "superform.h"
 #include "unit1.h"
-//#include "dopravniky.h"
+#include "parametry_linky.h"
 #include "cesty.h"
 #include "jig.h"
 
@@ -110,7 +110,7 @@ void TForm_definice_zakazek:: predvypln_default_zakazku()
 	rStringGridEd1->Cells[7][1]="5";
 	rStringGridEd1->Cells[8][1]="50";
 	rStringGridEd1->Cells[9][1]="NASTAVIT";//tlaèítko pro nastavení ceesty
-	rStringGridEd1->Cells[10][1]="2";
+	rStringGridEd1->Cells[10][1]=Form_parametry_linky->rEditNum_takt->Text;
 }
 //----------------------------------------------------------------------------
 //pøedvyplnìní default cesta
@@ -178,8 +178,14 @@ void TForm_definice_zakazek::uloz_Default_cestu()
 	 Form1->d.v.inicializace_cesty(default_zakazka);
 	 int i=0;
 	 while(objekt!=NULL)
-	 {  //vložení defaulní cesty                                                                //v tomto pøípadì zámìrnì takto protože se pøebírá vypoètená hodnota
-			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/objekt->n,Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][++i]),0,0,objekt->pohon->rychlost_od,0);
+	 {  //vložení defaulní cesty                        Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][++i]                                        //v tomto pøípadì zámìrnì takto protože se pøebírá vypoètená hodnota
+			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/
+																					objekt->n,
+																					objekt->CT,
+																					0,
+																					0,
+																					objekt->RD,
+																					0);
 			objekt=objekt->dalsi;
 	 }
 }
