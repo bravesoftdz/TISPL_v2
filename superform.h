@@ -58,7 +58,7 @@ __published:	// IDE-managed Components
 	TImageList *ImageList1;
 	TrHTMLLabel *rHTMLLabel_pozad_mnozstvi;
 	TscGPButton *scGPButton_Ulozit;
-	TscGPButton *scGPButton3;
+	TscGPButton *scGPButton_storno;
 	TButton *button_zakazky_temp;
 	TMemo *Memo4;
 	TscEdit *scEdit_zacatek;

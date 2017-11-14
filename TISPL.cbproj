@@ -148,6 +148,12 @@
             <DependentOn>antialiasing.h</DependentOn>
             <BuildOrder>17</BuildOrder>
         </CppCompile>
+        <CppCompile Include="casovaOsa_info.cpp">
+            <Form>Form_osa_info</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>casovaOsa_info.h</DependentOn>
+            <BuildOrder>22</BuildOrder>
+        </CppCompile>
         <CppCompile Include="cesty.cpp">
             <Form>Form_cesty</Form>
             <FormType>dfm</FormType>
@@ -256,10 +262,11 @@
         <FormResources Include="parametry.dfm"/>
         <FormResources Include="uvod.dfm"/>
         <FormResources Include="Unit1.dfm"/>
+        <FormResources Include="MyMessageBox.dfm"/>
         <FormResources Include="eDesigner.dfm"/>
         <FormResources Include="cesty.dfm"/>
+        <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="jig.dfm"/>
-        <FormResources Include="MyMessageBox.dfm"/>
         <FormResources Include="kalendar.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

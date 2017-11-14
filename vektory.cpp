@@ -1422,9 +1422,208 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 			//ZDM case 3:data=get_html();break;//html
 		}
 
+		//zápis dat do DB
+//			AnsiString ID ="1";
+//			AnsiString header = "INSERT INTO report_header (app_id,project_name) VALUES (\""+ID+"\",\""+FileName+"\")";
+//			Form1->FDConnection1->ExecSQL(header);
+//			AnsiString dni=PP.dni_rok;
+//			AnsiString mnozstvi=PP.mnozstvi;
+//			AnsiString hod_den=PP.hod_den;
+//			AnsiString efektivita=PP.efektivita;
+//			AnsiString cas_start=PP.cas_start;
+//
+//			AnsiString sw_vyroba = "INSERT INTO project_params_sw_vyroba (pocet_dni,mnozstvi_kusu,prac_hodin,efektivita,pocatek_vyroby,id_projektu) VALUES (\""+dni+"\",\""+mnozstvi+"\",\""+hod_den+"\",\""+efektivita+"\",\""+cas_start+"\",\""+ID+"\")";
+//			Form1->FDConnection1->ExecSQL(sw_vyroba);
+//
+//			Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
+//
+//			while (ukaz){
+//
+//			AnsiString n=ukaz->n;
+//			AnsiString name=ukaz->name;
+//			AnsiString rychlost_od=ukaz->rychlost_od;
+//			AnsiString rychlost_do=ukaz->rychlost_do;
+//			AnsiString roztec=ukaz->roztec;
+//
+//			AnsiString hw_pohony = "INSERT INTO project_params_hw_pohony (id_pohon,nazev,rychlost_od,rychlost_do,roztec_palcu,id_projektu) VALUES (\""+n+"\",\""+name+"\",\""+rychlost_od+"\",\""+rychlost_do+"\",\""+roztec+"\",\""+ID+"\")";
+//			Form1->FDConnection1->ExecSQL(hw_pohony);
+//			ukaz=ukaz->dalsi;
+//			}
+
+		 UnicodeString PP_mnozstvi=PP.mnozstvi;
+		 UnicodeString dni_rok=PP.dni_rok;
+		 UnicodeString hod_den=PP.hod_den;
+		 UnicodeString efektivita=PP.efektivita;
+		 UnicodeString cas_start=PP.cas_start;
+		 UnicodeString delka_voziku=PP.delka_voziku;
+		 UnicodeString titulek_projektu;
+
+
 		//poznámka, provizorní záležitost - potom smazat
-		if(export_format==3)data+="<font color=\"Red\">";
-		data+="\n*pozn.:další paramatry objektů budou doplněny, jedná se provizorní podobu výstupu ...";
+		if(export_format==3)  {
+		data+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css\" integrity=\"sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb\" crossorigin=\"anonymous\">";
+		data+="<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js\" integrity=\"sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ\" crossorigin=\"anonymous\"></script>";
+		data+="<div class=\"container-fluid\"><form></br>";
+		data+="<h4>Parametry projektu <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Požadované celkové množství</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_mnozstvi+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Počet pracovních dní [rok]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+dni_rok+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Počet pracovních hodin [den]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+hod_den+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Efektivita [%]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+efektivita+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Začátek výroby</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+cas_start+"\"></div></div>";
+    data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka vozíku</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
+    data+="</form></div></br>";
+
+		data+="<div class=\"container-fluid\"><form>";
+
+
+	if(ZAKAZKY->predchozi!=NULL  && OBJEKTY->predchozi!=NULL)//pokud existuje alespoň jedna zakázka a nějaký objekt
+{
+	Cvektory::TZakazka *Z=ZAKAZKY->dalsi;//přeskočí hlavičku
+	while(Z!=NULL)//prochází jednotlivé zakázky
+	{
+		UnicodeString zakazka_name=Z->name;
+		data+="<h4>Přehled objektů a jejich nastavených parametrů u zakázky: <b>"+zakazka_name+"</b></h4></br>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporučená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteč palců [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+
+		Cvektory::TObjekt *O=OBJEKTY->dalsi;
+
+		while (O!=NULL)//prochází potenciální segmenty cesty po objektech
+		{
+							//pokud je objekt platným segmentem cesty zakázky, vrátí ukazatel na tento segment
+							Cvektory::TCesta *C=obsahuje_segment_cesty_objekt(O,Z);
+						if(C!=NULL){
+								UnicodeString ID=C->objekt->n;
+								UnicodeString name=C->objekt->name;
+								UnicodeString short_name=C->objekt->short_name;
+								UnicodeString rezim;
+								UnicodeString CT=C->CT;
+								UnicodeString kapacita=C->objekt->kapacita;
+								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
+								UnicodeString nazev_pohonu=C->objekt->pohon->name;
+								UnicodeString roztec_palcu=C->objekt->pohon->roztec;
+								UnicodeString rychlost_dopravniku=C->RD;
+								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
+								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
+								UnicodeString delka_dopravniku=C->objekt->delka_dopravniku;
+									switch(C->objekt->rezim)
+								{
+									case 0:rezim="STOP & GO";rychlost_dopravniku="nerelevantní";delka_dopravniku="nerelevantní"; break;
+									case 1:rezim="KONTINUÁLNÍ";break;
+									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
+								}
+//          //html
+								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita+"</td><td>"+kapacita_dop+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
+								}
+					O=O->dalsi;
+		}
+		Z=Z->dalsi;
+
+		data+="</tbody></table></br>";
+  }
+}
+		data+="</form></div>";
+	}
+
+		if(export_format==1)  {
+
+
+		data+="Parametry projektu"+S+UnicodeString(Form1->scLabel_titulek->Caption)+"\n";
+		data+="Požadované celkové množství"+S+PP_mnozstvi+"\n";
+		data+="Počet pracovních dní [rok]"+S+dni_rok+"\n";
+		data+="Počet pracovních hodin [den]"+S+hod_den+"\n";
+		data+="Efektivita [%]"+S+efektivita+"\n";
+		data+="Začátek výroby"+S+cas_start+"\n";
+		data+="Délka vozíku"+S+delka_voziku+"\n";
+
+		data+="\n";
+
+					data+="Přehled pohonů"+S+"\n";
+
+				Cvektory::TPohon *ukaz=POHONY->dalsi;
+
+				data+="ID"+S+"Název"+S+"Rychlost od [m/min]"+S+"Rychlost do [m/min]"+S+"Rozteč palců [mm]"+S+"\n";
+				while(ukaz!=NULL){
+
+				UnicodeString ID=ukaz->n;
+				UnicodeString name=ukaz->name;
+				UnicodeString rychlost_od=ukaz->rychlost_od;
+				UnicodeString rychlost_do=ukaz->rychlost_do;
+				UnicodeString roztec=ukaz->roztec;
+
+					data+=""+ID+S+name+S+rychlost_od+S+rychlost_do+S+roztec+S+"\n";
+
+					ukaz=ukaz->dalsi;
+
+				}
+
+      	data+="\n";
+
+			if(ZAKAZKY->predchozi!=NULL  && OBJEKTY->predchozi!=NULL)//pokud existuje alespoň jedna zakázka a nějaký objekt
+{
+	Cvektory::TZakazka *Z=ZAKAZKY->dalsi;//přeskočí hlavičku
+	while(Z!=NULL)//prochází jednotlivé zakázky
+	{
+		UnicodeString zakazka_name=Z->name;
+		data+="Přehled objektů a jejich nastavených parametrů u zakázky:"+S+zakazka_name+"\n";
+		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporučená"+S+"Kapacita nastavená"+S+"Název dopravníku"+S+"Rychlost dopravníku"+S+"Rozteč palců [mm]"+S+"Délka dopravníku [m]\n";
+
+		Cvektory::TObjekt *O=OBJEKTY->dalsi;
+
+		while (O!=NULL)//prochází potenciální segmenty cesty po objektech
+		{
+							//pokud je objekt platným segmentem cesty zakázky, vrátí ukazatel na tento segment
+							Cvektory::TCesta *C=obsahuje_segment_cesty_objekt(O,Z);
+						if(C!=NULL){
+								UnicodeString ID=C->objekt->n;
+								UnicodeString name=C->objekt->name;
+								UnicodeString short_name=C->objekt->short_name;
+								UnicodeString rezim;
+								UnicodeString CT=C->CT;
+								UnicodeString kapacita=C->objekt->kapacita;
+								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
+								UnicodeString nazev_pohonu=C->objekt->pohon->name;
+								UnicodeString roztec_palcu=C->objekt->pohon->roztec;
+								UnicodeString rychlost_dopravniku=C->RD;
+								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
+								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
+								UnicodeString delka_dopravniku=C->objekt->delka_dopravniku;
+									switch(C->objekt->rezim)
+								{
+									case 0:rezim="STOP & GO";rychlost_dopravniku="nerelevantní";delka_dopravniku="nerelevantní"; break;
+									case 1:rezim="KONTINUÁLNÍ";break;
+									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
+								}
+//          //html
+								data+=""+ID+S+name+S+short_name+S+rezim+S+CT+S+kapacita+S+kapacita_dop+S+nazev_pohonu+S+rychlost_dopravniku+S+roztec_palcu+S+delka_dopravniku+"\n";
+								}
+					O=O->dalsi;
+		}
+		Z=Z->dalsi;
+
+		data+="\n";
+	}
+}
+		data+="\n";
+
+
+	}
+
+
+
+
+
+
+
+
+
+	//example tabulka
+	 /*	data+="<table class=\"table table-striped\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Objekt</th><th scope=\"col\">Kapacita</th><th scope=\"col\">CT</th></tr></thead>";
+		data+="<tbody><tr><th scope=\"row\">1</th><td>LAK</td><td>2</td><td>1</td></tr>";
+		data+="<tr><th scope=\"row\">2</th><td>CO2</td><td>5</td><td>1</td></tr>";
+		data+="<tr><th scope=\"row\">3</th><td>SUŠ</td><td>2</td><td>2</td></tr>";
+		data+="</tbody></table>";       */
+
+
 
 		///////////////////////////zapis data do souboru
 		TMemoryStream* MemoryStream=new TMemoryStream();

@@ -17,6 +17,7 @@
 #include "antialiasing.h"
 #include "popUP_menu.h"
 #include "eDesigner.h"
+#include "casovaOsa_info.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -38,6 +39,7 @@
 #pragma link "scModernControls"
 #pragma link "scDrawUtils"
 #pragma link "scGPImages"
+#pragma link "scHtmlControls"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
@@ -56,6 +58,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	////nastavení aplikace
 	upozornovat_na_zmenu_TT_parametru=true;
+
 
 	//nastavení knihovnky
 	//DrawGrid_knihovna->Enabled=false;
@@ -316,6 +319,10 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 pan_non_locked=false;
 			 zobrazit_barvy_casovych_rezerv=false;
 			 d.cas=0;
+			 casovosa1->Enabled=false;
+			 casovosa1->Down=false;
+			 zalozka_schema->Down=true;
+
 
 			 SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 
@@ -578,6 +585,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	CheckBoxAnimovatSG->Visible=false;
 	scLabel_doba_cekani->Visible=false;
 	GlyphButton_close_grafy->Visible=false;
+	scExPanel_log_header->Visible=false;
 
 
 	CheckBoxVymena_barev->Visible=false;
@@ -665,8 +673,9 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::casovosa1Click(TObject *Sender)
 {
-	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná
+	if(d.v.ZAKAZKY->dalsi==NULL){//pokud nebyla zakazka definovaná
 		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
+	  }
 	else
 	{
 		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka z cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
@@ -711,6 +720,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			CheckBox_pouzit_zadane_kapacity->Visible=false;
 			ComboBoxCekani->Visible=true;
 			d.JIZPOCITANO=false;
+			scExPanel_log_header->Visible=true;
 
 			Label_zamerovac->Visible=false;
 			Invalidate();
@@ -1271,6 +1281,11 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
+
+	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY->dalsi;
+		if (ukaz==NULL){ casovosa1->Enabled=false;}
+		else { casovosa1->Enabled=true;}
+
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
@@ -2343,7 +2358,9 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 //zobrazí paramety jednoho procesu na časových osách
 void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 {
-	double prozatim_delka_voziku=d.v.PP.delka_voziku;
+
+
+	double prozatim_delka_voziku=Form1->d.v.PP.delka_voziku;
 	AnsiString rezim="";
 	AnsiString delka="v tuto chvíli neznamá";
 	AnsiString delka_dop=delka;
@@ -2357,24 +2374,52 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
 			break;
 	}
+	
 
-	S(/*"n_procesu: "+AnsiString(proces_pom->n)+*/
-	"číslo vozíku v zakázce: "+AnsiString(proces_pom->n_v_zakazce)+
-	"\nnázev: "+AnsiString(proces_pom->segment_cesty->objekt->name)+
-	"\nzkratka: "+AnsiString(proces_pom->segment_cesty->objekt->short_name)+
-	"\nrežim: "+AnsiString(rezim)+
-	"\nrychlost dopravníku: "+AnsiString(proces_pom->segment_cesty->RD)+" m/min"+
-	"\nrozteč palců: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec)+" mm"+
-	"\nstřední hodnota doby čekání na palec: "+AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1))+" min"+
-	"\nmax. hodnota doby čekání na palec: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD)+" min"+
-	"\nTpoc: "+AnsiString(proces_pom->Tpoc)+" | Tkon: "+AnsiString(proces_pom->Tkon)+" | Tdor: "+AnsiString(proces_pom->Tdor)+" | Tpre: "+AnsiString(proces_pom->Tpre)+" | Tcek: "+AnsiString(proces_pom->Tcek)+
-	"\nPT: "+AnsiString(proces_pom->Tkon-proces_pom->Tpoc)+" min"+
-	"\nMT: "+AnsiString(proces_pom->Tpre-proces_pom->Tkon)+" min"+
-	"\nWT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpre)+" min"+
-	"\nCT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpoc)+" min"+
-	"\nzadaný CT: "+AnsiString(proces_pom->segment_cesty->CT)+" min"+
-	"\ndoporučená kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita_dop)+", délka objektu: "+delka_dop+" m"+
-	"\npožadovaná kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita)+	", délka objektu: "+delka+" m");
+	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
+	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
+	Form_osa_info->rHTMLLabel_cislo_voziku_vypis->Caption=proces_pom->n_v_zakazce;
+	Form_osa_info->rHTMLLabel_rezim_vypis->Caption=rezim;
+	Form_osa_info->rHTMLLabel_dop_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita_dop;
+	Form_osa_info->rHTMLLabel_pozad_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita;
+	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD;
+	Form_osa_info->rHTMLLabel_palce_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec;
+	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
+	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD;
+ 	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
+	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=proces_pom->Tpoc;
+	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=proces_pom->Tkon;
+	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=proces_pom->Tdor;
+	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=proces_pom->Tpre;
+	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=proces_pom->Tcek;
+
+	Form_osa_info->rHTMLLabel_pt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpoc;
+	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tkon-proces_pom->Tkon;
+	Form_osa_info->rHTMLLabel_wt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpre;
+	Form_osa_info->rHTMLLabel_CT_n_vypis->Caption=proces_pom->Tcek-proces_pom->Tpoc;
+
+
+	Form_osa_info->ShowModal();
+
+//
+//	S(/*"n_procesu: "+AnsiString(proces_pom->n)+*/
+//	"číslo vozíku v zakázce: "+AnsiString(proces_pom->n_v_zakazce)+
+//	"\nnázev: "+AnsiString(proces_pom->segment_cesty->objekt->name)+
+//	"\nzkratka: "+AnsiString(proces_pom->segment_cesty->objekt->short_name)+
+//	"\nrežim: "+AnsiString(rezim)+
+//	"\nrychlost dopravníku: "+AnsiString(proces_pom->segment_cesty->RD)+" m/min"+
+//	"\nrozteč palců: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec)+" mm"+
+//	"\nstřední hodnota doby čekání na palec: "+AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1))+" min"+
+//	"\nmax. hodnota doby čekání na palec: "+AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD)+" min"+
+//	"\nTpoc: "+AnsiString(proces_pom->Tpoc)+" | Tkon: "+AnsiString(proces_pom->Tkon)+" | Tdor: "+AnsiString(proces_pom->Tdor)+" | Tpre: "+AnsiString(proces_pom->Tpre)+" | Tcek: "+AnsiString(proces_pom->Tcek)+
+//	"\nPT: "+AnsiString(proces_pom->Tkon-proces_pom->Tpoc)+" min"+
+//	"\nMT: "+AnsiString(proces_pom->Tpre-proces_pom->Tkon)+" min"+
+//	"\nWT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpre)+" min"+
+//	"\nCT: "+AnsiString(proces_pom->Tcek-proces_pom->Tpoc)+" min"+
+//	"\nzadaný CT: "+AnsiString(proces_pom->segment_cesty->CT)+" min"+
+//	"\ndoporučená kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita_dop)+", délka objektu: "+delka_dop+" m"+
+//	"\npožadovaná kapacita: "+AnsiString(proces_pom->segment_cesty->objekt->kapacita)+	", délka objektu: "+delka+" m");
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
@@ -4000,6 +4045,19 @@ void __fastcall TForm1::hl_spojak_zakazkyClick(TObject *Sender)
 //
 //	Memo2->Lines->Add(AnsiString(p->name)+";"+AnsiString(p->short_name)+";"+AnsiString(p->rezim)+";"+AnsiString(p->pohon->n)+";"+AnsiString(p->delka_dopravniku)+";"+AnsiString(p->cekat_na_palce)+";"+AnsiString(p->odchylka)+";"+AnsiString(p->kapacita));
 
+		Cvektory::TZakazka *ukaz2=d.v.ZAKAZKY->dalsi;
+		if (ukaz2==NULL)
+		{
+ShowMessage("NEmam data");
+casovosa1->Enabled=false;
+		}
+		else {
+		 ShowMessage("mam data");
+		 casovosa1->Enabled=true;
+		 } //	casovosa1->Enabled=true; }
+
+
+
 
 		Cvektory::TZakazka *ukaz=d.v.ZAKAZKY->dalsi;
 		while (ukaz!=NULL)
@@ -4109,6 +4167,25 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
    REFRESH();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
+{
+//	scExPanel_log_header->Visible=false;
+	scGPGlyphButton_zpravy_ikona->Visible=true;
+	scExPanel_log_header->Visible=false;
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
+{
+if(scExPanel_log_header->Visible==false){
+
+		 scExPanel_log_header->Visible=true;
+	}
 }
 //---------------------------------------------------------------------------
 

@@ -244,7 +244,6 @@ object Form_cesty: TForm_cesty
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 751
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 919
@@ -324,7 +323,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 701
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -402,7 +400,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 601
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -480,7 +477,6 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 651
     end
     object scLabel1: TscLabel
       Left = 0
@@ -512,7 +508,6 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
-      ExplicitWidth = 601
     end
   end
   object scGPButton2: TscGPButton
@@ -637,10 +632,10 @@ object Form_cesty: TForm_cesty
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clGray
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = clGray
+    Options.FrameNormalColor = 1871359
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = 1871359
+    Options.FrameFocusedColor = 1871359
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -719,7 +714,7 @@ object Form_cesty: TForm_cesty
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.PressedColor = clGreen
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -727,9 +722,9 @@ object Form_cesty: TForm_cesty
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clGray
-    Options.FramePressedColor = clGray
+    Options.FrameNormalColor = 1871359
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = 1871359
     Options.FrameFocusedColor = clGray
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1

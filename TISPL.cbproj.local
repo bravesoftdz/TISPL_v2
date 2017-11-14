@@ -1,2 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject/>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.030,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
+  </Transactions>
+</BorlandProject>

@@ -88,6 +88,7 @@
 #include "vykresli.h"
 #include <Vcl.ComCtrls.hpp>
 #include "grafy.h"
+#include "scHtmlControls.hpp"
 
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
@@ -238,6 +239,10 @@ __published:	// IDE-managed Components
 	TButton *Button11;
 	TscGPGlyphButton *GlyphButton_close_grafy;
 	TscButton *scButton_ulozit;
+	TscExPanel *scExPanel_log_header;
+	TscHTMLLabel *scHTMLLabel_log_vypis;
+	TscGPGlyphButton *scGPGlyphButton_zpravy_ikona;
+	TscButton *scButton11;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -371,6 +376,9 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
 	void __fastcall GlyphButton_close_grafyClick(TObject *Sender);
 	void __fastcall ComboBoxCekaniChange(TObject *Sender);
+	void __fastcall scExPanel_log_headerClose(TObject *Sender);
+	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
+
 
 // User declarations
 	////struktury, výèty

@@ -4,6 +4,8 @@
 #include <vcl.h>
 #include "CTpointD.h"
 
+#include "scGPControls.hpp"//knihovna kvùli designování tlaèítek
+
 //---------------------------------------------------------------------------
 class Cmy
 {
@@ -46,17 +48,10 @@ class Cmy
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (výstupu vozíku z objektu) v min, rozteèe je v mm resp. v m za z minu u rychlosti dopravniku
 	double prejezd_voziku(double delka, double rychlost_dopravniku);
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
-	void designButton(TButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=10);//nastaví horizontální a vertikální pozici tlaèítka
+	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=10);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox
 
 	protected:
 
 };
 #endif
-
-
-
-
-
-
-
 

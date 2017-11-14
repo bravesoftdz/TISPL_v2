@@ -22,6 +22,9 @@ __fastcall TForm_cesty::TForm_cesty(TComponent* Owner)
 	: TForm(Owner)
 {
 	nactiNastaveni();
+
+
+
 }
 //---------------------------------------------------------------------------
 void TForm_cesty::nactiNastaveni ()
@@ -37,6 +40,10 @@ void TForm_cesty::nactiNastaveni ()
 	scGPButton2->Options->FrameNormalColor=Form_cesty->Color;
 
 	Form_definice_zakazek->Color=light_gray;
+
+	Form1->m.designButton(Button_ulozit,Form_cesty,1,2);
+	Form1->m.designButton(cesta_storno,Form_cesty,2,2);
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_cesty::FormShow(TObject *Sender)
@@ -78,6 +85,7 @@ void __fastcall TForm_cesty::KonecClick(TObject *Sender)
 	Form_cesty->Close();
 }
 //---------------------------------------------------------------------------
+
 
 
 
