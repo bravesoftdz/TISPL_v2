@@ -3,7 +3,7 @@ object Form_parametry_linky: TForm_parametry_linky
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
-  ClientHeight = 402
+  ClientHeight = 424
   ClientWidth = 644
   Color = clActiveBorder
   Font.Charset = DEFAULT_CHARSET
@@ -17,8 +17,8 @@ object Form_parametry_linky: TForm_parametry_linky
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_delka: TrHTMLLabel
-    Left = 53
-    Top = 97
+    Left = 30
+    Top = 102
     Width = 70
     Height = 19
     Caption = 'D'#233'lka [m]'
@@ -46,11 +46,11 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
   end
   object rHTMLLabel_takt: TrHTMLLabel
-    Left = 227
-    Top = 176
-    Width = 67
+    Left = 26
+    Top = 151
+    Width = 111
     Height = 19
-    Caption = 'TaktTime'
+    Caption = 'TaktTime [min]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -94,7 +94,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_ADD: TButton
     Left = 139
-    Top = 182
+    Top = 223
     Width = 31
     Height = 25
     Hint = 'P'#345'idat pohon'
@@ -111,7 +111,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_DEL: TButton
     Left = 176
-    Top = 182
+    Top = 223
     Width = 28
     Height = 25
     Hint = 'Odebrat pohon'
@@ -127,8 +127,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Button_DELClick
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
-    Left = 2
-    Top = 235
+    Left = 0
+    Top = 267
     Width = 641
     Height = 94
     BorderStyle = bsNone
@@ -261,7 +261,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_save: TscGPButton
     Left = 206
-    Top = 357
+    Top = 381
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -352,8 +352,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object Button_storno: TscGPButton
-    Left = 346
-    Top = 357
+    Left = 344
+    Top = 381
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -753,8 +753,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object rEditNum_delkavoziku: TrEditNum
-    Left = 53
-    Top = 122
+    Left = 159
+    Top = 93
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -769,7 +769,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPButton_pohon: TscGPButton
     Left = 0
-    Top = 172
+    Top = 213
     Width = 137
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -866,8 +866,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Vypis_pohonyClick
   end
   object scRadioGroup_typVoziku: TscRadioGroup
-    Left = 176
-    Top = 97
+    Left = 273
+    Top = 81
     Width = 225
     Height = 53
     Font.Charset = DEFAULT_CHARSET
@@ -926,8 +926,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ShowFocusRect = True
   end
   object rEditNum_takt: TrEditNum
-    Left = 300
-    Top = 172
+    Left = 159
+    Top = 147
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
