@@ -4,7 +4,7 @@ object Form_osa_info: TForm_osa_info
   BorderStyle = bsNone
   Caption = 'Form_osa_info'
   ClientHeight = 413
-  ClientWidth = 703
+  ClientWidth = 702
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -581,7 +581,7 @@ object Form_osa_info: TForm_osa_info
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 703
+    Width = 702
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -609,9 +609,10 @@ object Form_osa_info: TForm_osa_info
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 703
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 653
+      Left = 652
       Top = 0
       Width = 50
       Height = 33
@@ -687,10 +688,11 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 653
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 553
+      Left = 552
       Top = 0
       Width = 50
       Height = 33
@@ -764,10 +766,11 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 553
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 603
+      Left = 602
       Top = 0
       Width = 50
       Height = 33
@@ -841,11 +844,12 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 603
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 553
+      Width = 552
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -872,6 +876,7 @@ object Form_osa_info: TForm_osa_info
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Informace o Objektu'
+      ExplicitWidth = 553
     end
   end
   object ioo_ok: TscGPButton
