@@ -27,6 +27,18 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 	//matamaticky exaktní napozicování tlaèítek OK a storno
 	Form1->m.designButton(scGPButton_OK,Form_parametry,1,2);
 	Form1->m.designButton(scGPButton_storno,Form_parametry,2,2);
+<<<<<<< HEAD
+=======
+
+	navrhar=true;//prozatim
+
+//	//asi již k nièemu:
+//	SG="PT - èistý technologický výrobní èas=0\nMT - èas pøesouvání produktu=0\nWT - doba èekání vozíku=0\nIT - doba kontroly vozíku=0\nQT - doba èekání ve frontì=0\n...=""";
+//	K="délka dopravníku [m]=0";
+//	P="WT - doba èekání vozíku=0";
+//
+//	novy_parametr_n=0;
+>>>>>>> 128fdacbd64080aed1f135285da638dc188d96e9
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)

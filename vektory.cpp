@@ -44,7 +44,7 @@ void Cvektory::hlavicka_OBJEKTY()
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////uloží objekt a jeho parametry do seznamu
-short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
+void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 {
 	TObjekt *novy=new TObjekt;
 
@@ -70,12 +70,10 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-
-	return 0;
-};
+}
 //---------------------------------------------------------------------------
-//uloží objekt a jeho parametry do seznamu mezi objekty                //p předchozí
-short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
+//uloží objekt a jeho parametry do seznamu za objekt p        //p předchozí
+void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 {
 	TObjekt *novy=new TObjekt;
 	novy->id=id;
@@ -100,11 +98,10 @@ short Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	p->dalsi=novy;
 	novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	//indexy zvýšit separátně
-	return 0;
-};
+}
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu - přetížená fce
-short Cvektory::vloz_objekt(TObjekt *Objekt)
+void Cvektory::vloz_objekt(TObjekt *Objekt)
 {
 	TObjekt *novy=new TObjekt;
 
@@ -114,9 +111,48 @@ short Cvektory::vloz_objekt(TObjekt *Objekt)
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//---------------------------------------------------------------------------
+//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL,
+//pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen
+//hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového
+//index_name slouží pro rozlišení např. LAK, LAK1, LAK2...
+//zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
+Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short offsetY,AnsiString index_name,TObjekt *p)
+{
+	if(p==NULL)
+	{
+		vloz_objekt(Objekt);
+		return OBJEKTY->predchozi;//vrátí poslední ukazatel na prvek seznamu
+	}
+	else
+	{
+		TObjekt *novy=new TObjekt;
+		novy->id=Objekt->id;
+		novy->short_name=Objekt->short_name+index_name;
+		novy->name=Objekt->name+index_name;
+		novy->X=Objekt->X+offsetX;//přiřadím X osu včetně požadovaného offsetu
+		novy->Y=Objekt->Y+offsetY;//přiřadím Y osu  včetně požadovaného offsetu
+		novy->kapacita=Objekt->kapacita;
+		novy->kapacita_dop=Objekt->kapacita_dop;
+		novy->pohon=Objekt->pohon;
+		novy->delka_dopravniku=Objekt->delka_dopravniku;
+		novy->min_prujezdni_profil.x=Objekt->min_prujezdni_profil.x;//výška a šířka minimálního průjezdního profilu v objektu
+		novy->min_prujezdni_profil.y=Objekt->min_prujezdni_profil.y;//výška a šířka minimálního průjezdního profilu v objektu
+		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
+		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
+		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
+		novy->obsazenost=Objekt->obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
-	return 0;
-};
+		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+		novy->dalsi=p->dalsi;
+		p->dalsi->predchozi=novy;
+		p->dalsi=novy;
+		novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
+		zvys_indexy(p);//indexy zvýšit separátně se tady psalo
+		return novy;//vrátí ukazatel na posledně kopírovaný objekt
+	}
+}
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
 Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY)
