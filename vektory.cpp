@@ -1522,7 +1522,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 
 
 		data+="<h4>NÁVRH: Přehled objektů a jejich parametrů</h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporučená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteč palců [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [min]</th><th scope=\"col\">Kapacita doporučená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteč palců [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
 
 		Cvektory::TObjekt *O=OBJEKTY->dalsi;
 
@@ -1535,8 +1535,8 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 								UnicodeString CT=O->CT;
 								UnicodeString kapacita=O->kapacita;
 								UnicodeString kapacita_dop=O->kapacita_dop;
-								UnicodeString nazev_pohonu="";
-								UnicodeString roztec_palcu="";
+								UnicodeString nazev_pohonu=O->pohon->name;
+								UnicodeString roztec_palcu=O->pohon->roztec;
 								UnicodeString rychlost_dopravniku=O->RD;
 								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
 								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
@@ -1548,7 +1548,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 								}
 //          //html
-								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita+"</td><td>"+kapacita_dop+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
+								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
 
 									O=O->dalsi;
 								}
@@ -1600,7 +1600,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 								}
 //          //html
-								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita+"</td><td>"+kapacita_dop+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
+								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
 								}
 					O=O->dalsi;
 		}
@@ -1611,6 +1611,8 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 }
 		data+="</form></div>";
 	}
+
+	////////////////////////////////////////////////////////////////////////////// CSV
 
 		if(export_format==1)  {
 
