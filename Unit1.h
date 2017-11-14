@@ -376,6 +376,7 @@ __published:	// IDE-managed Components
 	////struktury, výèty
 public:
 	enum Tmod{NO=0,SCHEMA,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
+	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
@@ -390,8 +391,7 @@ private:
 
 	////metody
 	void edice();
-public:	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
-private:	void ESC();
+	void ESC();
 	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizují posuny obrazu
 	void ZOOM_IN();//pøiblížení
 	void ZOOM_OUT();//oddálení
@@ -490,6 +490,7 @@ public:		// User declarations
 	bool antialiasing;
 	double Zoom_predchozi_AA;//pøi antialiasingu
 
+	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//Usnadòuje pøístup k ShowMessage

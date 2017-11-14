@@ -284,6 +284,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 
 			 //tady bude přepnutí založek dodělat
 			 schemaClick(Sender);//volání MODu SCHEMA
+			 STATUS=NAVRH;
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
     	 Zoom_predchozi=1.0;
 			 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
@@ -556,7 +557,6 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 {
 	ESC();//zruší případnou rozdělanou akci
 	MOD=SCHEMA;
-	SB("editace linky",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
 	//editacelinky1->Checked=true;          //zakomentovano - novy design, nepouzivaji se checkboxy
@@ -675,7 +675,6 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 		{
 			MOD=CASOVAOSA;
 			ESC();//zruší případně rozdělanou akci
-			SB("časové osy",1);
 			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 			Timer_simulace->Enabled=false;
 			//testovnkapacity1->Checked=false;
@@ -2392,19 +2391,28 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->scComboBox_pohon->Items->Clear();
 				while (ukaz!=NULL)
 				{
-					Form_parametry->scComboBox_pohon->Items->Add(ukaz->name);
+					TscGPListBoxItem *t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+					t->Caption=ukaz->name;
 					ukaz=ukaz->dalsi;
 				}
 				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
-				Form_parametry->scEdit_name->Text=pom->name;
-				Form_parametry->scEdit_shortname->Text=pom->short_name;
+				Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
+				Form_parametry->scGPEdit_name->Text=pom->name;
+				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
 				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
-				Form_parametry->rEditNum_delka_dopravniku->Text=pom->delka_dopravniku;
+				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
 				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
-				Form_parametry->rEditNum_kapacita->Text=pom->kapacita;
-				Form_parametry->rEditNum_odchylka->Text=pom->odchylka;
+				//Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
+				Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
+				//nastavení defaultních hodnot
+				if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
+				{
+					if(Form_parametry->scGPNumericEdit_CT->Value==0)Form_parametry->scGPNumericEdit_CT->Value=d.v.ZAKAZKY->dalsi->TT;
+					Form_parametry->scGPNumericEdit_kapacita->Value=1;
+				}
+				//Form_parametry->input_state=1;//povoleníní akcí vyplývající ze změny editů
 
 				//nadesignování formu podle právě vypisováných hodnot
 				Form_parametry->vypis("");
@@ -2417,8 +2425,11 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					Form_parametry->Left=Form1->Width-Form_parametry->Width-10;
 				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->Height<Form1->Height)
 					Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
-				else 	Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
-					Form_parametry->Caption=pom->name+" - parametry";
+				else
+					Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
+
+				//nastevní titulku
+				Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
 
 				//navrácení dat + volání zobrazení formu
 				if(Form_parametry->ShowModal()==mrOk)
@@ -2426,15 +2437,30 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 						try
 						{
 							//navrácení hodnot z Form_Parametry, v případě stisku OK
-							pom->name=Form_parametry->scEdit_name->Text;
-							pom->short_name=Form_parametry->scEdit_shortname->Text;
-							pom->delka_dopravniku=ms.MyToDouble(Form_parametry->rEditNum_delka_dopravniku->Text);
+							pom->name=Form_parametry->scGPEdit_name->Text;
+							pom->short_name=Form_parametry->scGPEdit_shortname->Text;
+							pom->delka_dopravniku=ms.MyToDouble(Form_parametry->scGPNumericEdit_delka_dopravniku->Value);
 							pom->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
 							pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
 							pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
-							pom->kapacita=Form_parametry->rEditNum_kapacita->Text.ToDouble();
-							pom->odchylka=Form_parametry->rEditNum_odchylka->Text.ToDouble();
+							pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
+							pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
 							pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
+							//pokud je požadovaný rozklad objektu na více objektů
+							if(Form_parametry->kapacitaSG>1)
+							{
+									//doplnit vrácení původního CT
+									Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
+									for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
+									{
+										if(cop==NULL)//kopíruje za originál
+										cop=d.v.kopiruj_objekt(pom,2*(i-1),-2*(i-1),i,pom);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
+										else //vkládá za předchozí kopii, aby bylo řazeno orig,1,2,n nikoliv n,2,1,orig
+										cop=d.v.kopiruj_objekt(pom,2*(i-1),-2*(i-1),i,cop);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
+									}
+									cop=NULL;delete cop;
+									pom->name+="1";pom->short_name+="1";//oindexuje i název origánálu, musí být na závěr
+							}
 							DuvodUlozit(true);
 							REFRESH();
 						}
@@ -3810,7 +3836,7 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 	ESC();//zruší případnou rozdělanou akci
 	Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 	Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-	if(IDOK==Form_parametry_linky->ShowModal())DuvodUlozit(true);
+	Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
 }
 //---------------------------------------------------------------------------
 //volání superformuláře (definice zakázek)
@@ -3823,11 +3849,14 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 	}
 	else
 	{
-		Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
-		Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
-		Form_definice_zakazek->ShowModal();
-		DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
-		REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
+
+		{
+			Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
+			Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
+			Form_definice_zakazek->ShowModal();
+			DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
+			REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -3877,33 +3906,25 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 }
 //---------------------------------------------------------------------------
-
+//přepínání režimu aplikace návrh ověřování
 void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
- /*	if(scLabel19->Caption=="M-design")scLabel19->Caption="R-design";
-	else scLabel19->Caption="M-design";
-	scListGroupNastavProjektu->HeaderAutoColor=false;
-	scListGroupKnihovObjektu->HeaderAutoColor=scListGroupNastavProjektu->HeaderAutoColor;
-	scListGroupNastavProjektu->HeaderFont->Color=clWhite;
-	scListGroupNastavProjektu->Color=(TColor)RGB(43,87,154);
-	scListGroupKnihovObjektu->Color=scListGroupNastavProjektu->Color;
-	scListGroupKnihovObjektu->HeaderFont->Color=scListGroupNastavProjektu->HeaderFont->Color;
-	scListGroupNastavProjektu->HeaderHeight=35;
-	scListGroupKnihovObjektu->HeaderHeight=scListGroupNastavProjektu->HeaderHeight;
-	scGPGlyphButton_parametry_linky->Top=41;
-	scGPGlyphButton_definice_zakazek->Top=80;
-	scGPGlyphButton_parametry_linky->Height=30;
-	scGPGlyphButton_definice_zakazek->Height=scGPGlyphButton_parametry_linky->Height;
-	scGPGlyphButton_parametry_linky->Options->NormalColor=clBtnShadow;;
-	scGPGlyphButton_definice_zakazek->Options->NormalColor=scGPGlyphButton_parametry_linky->Options->NormalColor;
-	DrawGrid_knihovna->Top=37;
-	scGPGlyphButton_parametry_linky->Options->ShapeStyle=scgpRoundedRect;
-	scGPGlyphButton_definice_zakazek->Options->ShapeStyle=scGPGlyphButton_parametry_linky->Options->ShapeStyle;
-	scListGroupNastavProjektu->RowLineMargin=scListGroupNastavProjektu->Width;
-	scListGroupKnihovObjektu->Top=115;
-	scListGroupNastavProjektu->Height=115;   */
-
+	if(STATUS==NAVRH)
+	{
+		STATUS=OVEROVANI;
+		scLabel15->Visible=true;
+		scGPGlyphButton_definice_zakazek->Visible=true;
+		scLabel15->Caption="Definice zakázek";
+		SB("OVĚŘOVÁNÍ",1);
+	}
+	else
+	{
+		STATUS=NAVRH;
+		scLabel15->Visible=false;
+		scGPGlyphButton_definice_zakazek->Visible=false;
+		SB("NÁVRH",1);
+	}
 }
 //---------------------------------------------------------------------------
 //pokud je při zavírání okna aktivní AA, tak udělá kopii pracovní oblasti AA vypne a zavře okno, bez toho by se zavíralo trhaně

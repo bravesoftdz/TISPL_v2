@@ -35,6 +35,8 @@ class Cvektory
 			UnicodeString name;//celý název objektu
 			double X, Y;//umístění objektu
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
+			//double CT;//pro status návrh
+			//double RD;//pro status návrh
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
 			TPohon *pohon;//ukazatel na použitý pohon
@@ -341,9 +343,10 @@ class Cvektory
 
 //metody pro OBJEKTY
 		void hlavicka_OBJEKTY();
-		short vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu
-		short vloz_objekt(TObjekt *Objekt);//přetížená fce
-		short vloz_objekt(unsigned int id, double X, double Y,TObjekt *p);//přetížená fce vkládá mezi objekty
+		void vloz_objekt(unsigned int id, double X, double Y);//vloží prvek do seznamu
+		void vloz_objekt(TObjekt *Objekt);//přetížená fce
+		void vloz_objekt(unsigned int id, double X, double Y,TObjekt *p);//přetížená fce vkládá objekt za objekt p
+		TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
 		TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY);//hledá bod v dané oblasti
 		TObjekt *vrat_objekt(unsigned int n);
 		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu

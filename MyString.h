@@ -38,8 +38,9 @@ public:
   long u2i(UnicodeString Vstup);
   long long a2ll(AnsiString Vstup);
   UnicodeString get_local_decimal();//vrátí oddìlovaè desetinného místa na daném systému
-  UnicodeString get_local_double(double number);//vrátí reálné èíslo s oddìlovaè desetinného místa na daném systému
-
+	UnicodeString get_local_double(double number);//vrátí reálné èíslo s oddìlovaè desetinného místa na daném systému
+	double get_decimal(double number);//vrátí reálnou èást èísla
+	unsigned short get_count_decimal(double number);//vrátí poèet desetinných míst
 	//TPointD HexGes2Dec(UnicodeString Loc);//pøevede èíslo z hexagesimálního tvaru na dekadický
 protected:
 

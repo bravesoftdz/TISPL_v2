@@ -176,34 +176,34 @@ UnicodeString TMyString::delete_repeat(UnicodeString Text, UnicodeString Text_de
 AnsiString TMyString::TrimRightFrom(AnsiString Text, AnsiString Trim)
 {
   unsigned int Pos=Text.Pos(Trim);
-  if(Pos!=0)
+	if(Pos!=0)//pokud byla parsovací zarážka nalezena
   {
     return Text.SubString(1,Pos-1);
   }
-  else
-  return Text;
+	else//nebyla nalezena, vrátí prázdný řetezec
+	return "";
 }
 UnicodeString  TMyString::TrimRightFrom_UTF(UnicodeString  Text, UnicodeString Trim)
 {
   unsigned int Pos=Text.Pos(Trim);
-  if(Pos!=0)
+  if(Pos!=0)//pokud byla parsovací zarážka nalezena
   {
     return Text.SubString(1,Pos-1);
   }
-  else
-  return Text;
+	else//nebyla nalezena, vrátí prázdný řetezec
+	return "";
 }
 //---------------------------------------------------------------------------
 //ožízne řetezec od znaku, to co následuje znaku, vrátí
 UnicodeString  TMyString::TrimLeftFrom_UTF(UnicodeString  Text, UnicodeString Trim)
 {
-  unsigned int Pos=Text.Pos(Trim);
-  if(Pos!=0)
+	unsigned int Pos=Text.Pos(Trim);
+	if(Pos!=0)//pokud byla parsovací zarážka nalezena
   {
-	return Text.SubString(Pos+1,Text.Length());
-  }
-  else
-  return Text;
+		return Text.SubString(Pos+1,Text.Length());
+	}
+	else//nebyla nalezena, vrátí prázdný řetezec
+	return "";
 }
 //---------------------------------------------------------------------------
 //smaže vše od počátku textu až po všechny vyskyty znaku, včetně ostatního textu co předchází
@@ -333,7 +333,7 @@ long long TMyString::a2ll(AnsiString Vstup)
 UnicodeString TMyString::get_local_decimal()
 {
  char text[5];
- //GetLocaleInfo(LOCALE_USER_DEFAULT,LOCALE_SDECIMAL,text,sizeof(text));
+ GetLocaleInfoA(LOCALE_USER_DEFAULT,LOCALE_SDECIMAL,text,sizeof(text));
  return UnicodeString(text);
 }
 //---------------------------------------------------------------------------
@@ -437,5 +437,29 @@ TPointD TMyString::HexGes2Dec(UnicodeString Loc)
 	}
 }  */
 //---------------------------------------------------------------------------
+//vrátí reálnou část čísla
+double TMyString::get_decimal(double number)
+{
+	try
+	{
+		double N=TrimLeftFrom_UTF(number,get_local_decimal()).ToDouble();
+		if(N==0)return 0;
+		return N;
+	}
+	catch(...)
+	{
+		return 0;
+	}
+}
+//---------------------------------------------------------------------------
+//vrátí počet desetinných míst
+unsigned short TMyString::get_count_decimal(double number)
+{
+	double N=get_decimal(number);
+	if(N==0) return 0;
+	return AnsiString(N).Length();
+}
+//---------------------------------------------------------------------------
+
 
 
