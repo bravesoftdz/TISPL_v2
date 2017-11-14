@@ -361,8 +361,8 @@ class Cvektory
 		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
+		void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
-		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
 
 //metody pro ZAKAZKY
@@ -395,8 +395,9 @@ private:
 
 //metody pro VOZIKY
 public:
-		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků, seřazeno dle zakázek
 		void hlavicka_VOZIKY();
+		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků, seřazeno dle zakázek
+		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
 private:
 		void vloz_vozik(TZakazka *zakazka,short typ);//0-normální, 1-servisní
 		long vymaz_seznam_VOZIKY();

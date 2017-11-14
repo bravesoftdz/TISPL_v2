@@ -2446,6 +2446,8 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
 				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
+				Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
+				Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
 				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
 				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 				//Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -2491,10 +2493,11 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 							pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
 							pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
 							pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
+							pom->RD=Form_parametry->scGPNumericEdit_RD->Value;
 							//pokud je požadovaný rozklad objektu na více objektů
 							if(Form_parametry->kapacitaSG>1)
 							{
-									//doplnit vrácení původního CT
+									pom->CT=Form_parametry_linky->rEditNum_takt->Value;//vrácení správného CT
 									Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
 									for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
 									{
@@ -2506,6 +2509,10 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 									cop=NULL;delete cop;
 									pom->name+="1";pom->short_name+="1";//oindexuje i název origánálu, musí být na závěr
 							}
+							else //pro kontinuál a postprocesní
+							{
+							 pom->CT=Form_parametry->scGPNumericEdit_CT->Value;
+              }
 							DuvodUlozit(true);
 							REFRESH();
 						}
