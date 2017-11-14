@@ -288,6 +288,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 //tady bude přepnutí založek dodělat
 			 schemaClick(Sender);//volání MODu SCHEMA
 			 STATUS=NAVRH;
+			 scGPSwitch_rezim->State=scswOn;
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
     	 Zoom_predchozi=1.0;
 			 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;

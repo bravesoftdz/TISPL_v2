@@ -112,7 +112,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 {
 			 //nastavení komponent
 			 set(POHON,HIDE);
-			 set(TIME,ENABLED);
+			 set(TIME,HIGHLIGHT);
 			 set(RYCHLOST,HIDE);
 			 set(DELKA,HIDE);
 			 set(KAPACITA,READONLY);
@@ -232,12 +232,12 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			//ty co jsou stejné
 			scGPNumericEdit_delka_dopravniku->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_delka_dopravniku->Visible=true;scGPNumericEdit_delka_dopravniku->Visible=true;scGPNumericEdit_delka_dopravniku->Enabled=true;
-			/*scGPNumericEdit_delka_dopravniku->Options->FrameColor=hl_color;*/scGPNumericEdit_delka_dopravniku->Options->FrameWidth=1;
+			scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor=clGray;scGPNumericEdit_delka_dopravniku->Options->FrameWidth=1;
 			//ty co jsou rozdílné
 		 ////funkèní vlastnosti
 			switch (S)
 			{
-				case HIGHLIGHT:/*scGPNumericEdit_delka_dopravniku->Options->FrameColor=hl_color;*/scGPNumericEdit_delka_dopravniku->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor=hl_color;scGPNumericEdit_delka_dopravniku->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_delka_dopravniku->Enabled=false;break;
 				case READONLY:scGPNumericEdit_delka_dopravniku->Options->ShapeStyle=scgpessNone;scGPNumericEdit_delka_dopravniku->Enabled=false;break;
@@ -253,11 +253,11 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			//ty co jsou stejné
 			scGPNumericEdit_kapacita->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_kapacita->Visible=true;scGPNumericEdit_kapacita->Visible=true;scGPNumericEdit_kapacita->Enabled=true;
-			/*scGPNumericEdit_kapacita->Options->FrameColor=hl_color;*/scGPNumericEdit_kapacita->Options->FrameWidth=1;
+			scGPNumericEdit_kapacita->Options->FrameNormalColor=clGray;scGPNumericEdit_kapacita->Options->FrameWidth=1;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:/*scGPNumericEdit_kapacita->Options->FrameColor=hl_color;*/scGPNumericEdit_kapacita->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:scGPNumericEdit_kapacita->Options->FrameNormalColor=hl_color;scGPNumericEdit_kapacita->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_kapacita->Enabled=false;break;
 				case READONLY:scGPNumericEdit_kapacita->Options->ShapeStyle=scgpessNone;scGPNumericEdit_kapacita->Enabled=false;break;
@@ -273,11 +273,11 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			//ty co jsou stejné
 			scGPNumericEdit_odchylka->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_odchylka->Visible=true;scGPNumericEdit_odchylka->Visible=true;scGPNumericEdit_odchylka->Enabled=true;
-			/*scGPNumericEdit_odchylka->Options->FrameColor=hl_color;*/scGPNumericEdit_odchylka->Options->FrameWidth=1;
+			scGPNumericEdit_odchylka->Options->FrameNormalColor=clGray;scGPNumericEdit_odchylka->Options->FrameWidth=1;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:/*scGPNumericEdit_odchylka->Options->FrameColor=hl_color;*/scGPNumericEdit_odchylka->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:scGPNumericEdit_odchylka->Options->FrameNormalColor=hl_color;scGPNumericEdit_odchylka->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_odchylka->Enabled=false;break;
 				case READONLY:scGPNumericEdit_odchylka->Options->ShapeStyle=scgpessNone;scGPNumericEdit_odchylka->Visible=false;break;
@@ -291,11 +291,12 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			scComboBox_cekani_palec->Top=P+7*O+offset;
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
+			scComboBox_cekani_palec->Options->FrameNormalColor=clGray;scComboBox_cekani_palec->Options->FrameWidth=1;
 			rHTMLLabel_cekani->Visible=true;scComboBox_cekani_palec->Visible=true;scComboBox_cekani_palec->Enabled=true;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:/*scComboBox_cekani_palec->Options->FrameColor=hl_color;*/scComboBox_cekani_palec->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:scComboBox_cekani_palec->Options->FrameNormalColor=hl_color;scComboBox_cekani_palec->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scComboBox_cekani_palec->Enabled=false;break;
 				case READONLY:scComboBox_cekani_palec->Enabled=false;break;
@@ -310,10 +311,11 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			rHTMLLabel_stopka->Visible=true;scComboBox_stopka->Visible=true;scComboBox_stopka->Enabled=true;
+			scComboBox_stopka->Options->FrameNormalColor=clGray;scComboBox_stopka->Options->FrameWidth=1;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:/*scComboBox_stopka->Options->FrameColor=hl_color;*/scComboBox_stopka->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:scComboBox_stopka->Options->FrameColor=hl_color;scComboBox_stopka->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scComboBox_stopka->Enabled=false;break;
 				case READONLY:scComboBox_stopka->Enabled=false;break;

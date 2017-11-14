@@ -2690,6 +2690,7 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 1
+        Visible = False
         DragForm = False
         GlowEffect.Enabled = False
         GlowEffect.Color = clBtnShadow
@@ -2786,6 +2787,7 @@ object Form1: TForm1
         Font.Style = []
         ParentFont = False
         TabOrder = 3
+        Visible = False
         OnClick = scGPGlyphButton_definice_zakazekClick
         Animation = True
         Caption = 'scGPGlyphButton1'
@@ -3873,7 +3875,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 299
     end
     object scButton5: TscButton
       Left = 0
@@ -4058,7 +4059,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -4347,7 +4347,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton9: TscButton
       Left = 0
@@ -4821,14 +4820,13 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 180
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C0101180010042C0410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003004300410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -5951,7 +5949,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01011E006802900230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01011E009402940230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000008001000001002000000000000080
       0400000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -15473,7 +15471,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01011E00D401D40118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01011E00D801D80118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000C000000001000400000000000024
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
