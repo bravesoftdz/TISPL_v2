@@ -346,7 +346,20 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				}
 				//vymazání textu z již nepotøebného øádku
 				Form_cesty->rStringGridEd_cesty->Rows[i]->Clear();
+
 			}
+
+				Cvektory::TObjekt *Obj=Form1->d.v.OBJEKTY->dalsi;
+				Cvektory::TCesta *Cesta=Form1->d.v.obsahuje_segment_cesty_objekt(Obj,zakazka);
+
+			 while(Obj!=NULL){
+
+			 Obj->CT=Cesta->CT;
+			 Obj->RD=Cesta->RD;
+
+			 Obj=Obj->dalsi;
+
+			 }
 		}
 	}
 }
@@ -400,6 +413,12 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 					if(usersColor)barva=(TColor)rStringGridEd1->Cells[3][i].ToInt();//musí být až tady, jinak spadne
 
 					//uložení aktuálních hodnot do dané temp_zakazky
+
+					if (i==1) { //ulož TT do objektu
+
+					 Form_parametry_linky->rEditNum_takt->Text=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]);
+
+					}
 					Form1->d.v.edituj_temp_zakazku
 					(
 						i,//n
