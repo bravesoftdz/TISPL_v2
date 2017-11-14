@@ -35,8 +35,8 @@ class Cvektory
 			UnicodeString name;//celý název objektu
 			double X, Y;//umístění objektu
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
-			//double CT;//pro status návrh
-			//double RD;//pro status návrh
+			double CT;//pro status návrh
+			double RD;//pro status návrh
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
 			TPohon *pohon;//ukazatel na použitý pohon

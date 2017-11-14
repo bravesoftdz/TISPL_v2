@@ -26,6 +26,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->short_name="";//krátký název
 	novy->name="";//celý název objektu
 	novy->rezim=0;
+	novy->CT=0;//pro status návrh
+	novy->RD=0;//pro status návrh
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
 	novy->pohon=NULL;//ukazatel na použitý pohon
@@ -55,6 +57,8 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
+	novy->CT=0;//pro status návrh
+	novy->RD=0;//pro status návrh
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
@@ -79,8 +83,12 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->id=id;
 	novy->short_name=knihovna_objektu[id].short_name;
 	novy->name=knihovna_objektu[id].name;
+	//režim tu před 14.11.2017 nebyl, nevím proč
+	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
+	novy->CT=0;//pro status návrh
+	novy->RD=0;//pro status návrh
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
@@ -133,6 +141,8 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->name=Objekt->name+index_name;
 		novy->X=Objekt->X+offsetX;//přiřadím X osu včetně požadovaného offsetu
 		novy->Y=Objekt->Y+offsetY;//přiřadím Y osu  včetně požadovaného offsetu
+		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
+		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
 		novy->kapacita=Objekt->kapacita;
 		novy->kapacita_dop=Objekt->kapacita_dop;
 		novy->pohon=Objekt->pohon;
