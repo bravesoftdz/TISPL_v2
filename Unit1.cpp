@@ -2442,6 +2442,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					ukaz=ukaz->dalsi;
 				}
 				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
+				Form_parametry->TT=ms.MyToDouble(Form_parametry_linky->rEditNum_takt->Text);//z editu v parametrech linky//Form1->d.v.ZAKAZKY->dalsi->TT;//TT defaultní zakázky
 				Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 				Form_parametry->scGPEdit_name->Text=pom->name;
 				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
@@ -2455,9 +2456,10 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 				//nastavení defaultních hodnot
-				if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
+
+				if(Form_parametry->scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
 				{
-					if(Form_parametry->scGPNumericEdit_CT->Value==0)Form_parametry->scGPNumericEdit_CT->Value=d.v.ZAKAZKY->dalsi->TT;
+					Form_parametry->scGPNumericEdit_CT->Value=Form_parametry->TT;//d.v.ZAKAZKY->dalsi->TT;
 					Form_parametry->scGPNumericEdit_kapacita->Value=1;
 				}
 				//Form_parametry->input_state=1;//povoleníní akcí vyplývající ze změny editů

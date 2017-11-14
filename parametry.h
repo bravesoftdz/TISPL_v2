@@ -95,9 +95,9 @@ private:	// User declarations
 	short offset;
 	short defaultForm_parametryHeight;
 
-	//UnicodeString SG,K,P;
-	//unsigned short novy_parametr_n;
-
+	double dV;//delka voziku
+	double m;//mezera mezi voziky
+	short p;//odeètení do správného poètu mezer
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
@@ -105,7 +105,7 @@ public:		// User declarations
 	Tinput_state input_state;
 	void vypis(UnicodeString text,bool RED=true);
 	short kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
-
+	double TT;
 
 	void vykresli_vozik(bool na_delku=true);
 };

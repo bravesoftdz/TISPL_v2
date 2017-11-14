@@ -34,6 +34,9 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 	minsec=MIN;scGPButton_min_sec->Caption="na sec";//formuláø bude po zobrazení v minutách
 	input_state=NOTHING;//nutnost
 	kapacitaSG=1;//není podnìt k rozkládání na více objektù
+	dV=Form1->d.v.PP.delka_voziku;
+	m=0;//mezera mezi voziky
+	p=1;//odeètení do správného poètu mezer
 	scGPEdit_name->SetFocus();//nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
 	scGPEdit_name->SelectAll();//oznaèí cele pro editace
 }
@@ -123,13 +126,20 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 1://KONTINUÁLNÍ
 		 {
-
+			 set(POHON,ENABLED);
+			 set(TIME,HIDE);
+			 set(RYCHLOST,HIDE);
+			 set(DELKA,ENABLED);
+			 set(KAPACITA,ENABLED);
+			 set(ODCHYLKA,HIDE);
+			 set(CEKANI,ENABLED);
+			 set(STOPKA,ENABLED);
 		 }break;
 		 case 11://KONTINUÁLNÍ - NÁVRHÁØ
 		 {
 			 set(POHON,HIDE);
-			 set(TIME,ENABLED);
-			 set(RYCHLOST,ENABLED);
+			 set(TIME,HIDE);
+			 set(RYCHLOST,HIDE);
 			 set(DELKA,ENABLED);
 			 set(KAPACITA,ENABLED);
 			 set(ODCHYLKA,HIDE);
@@ -138,7 +148,14 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 2://POSTPROCESNÍ
 		 {
-
+			 set(POHON,HIDE);
+			 set(TIME,ENABLED);
+			 set(RYCHLOST,HIDE);
+			 set(DELKA,ENABLED);
+			 set(KAPACITA,ENABLED);
+			 set(ODCHYLKA,ENABLED);
+			 set(CEKANI,ENABLED);
+			 set(STOPKA,ENABLED);
 		 }break;
 		 case 12://POSTPROCESNÍ - NÁVRHÁØ
 		 {
@@ -166,20 +183,26 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 	short O=40;//vertikální velikost odsazení komponent
 	int L=rHTMLLabel_rezim->Top;//výchozí komponenta
 	int P=scComboBox_rezim->Top;//výchozí komponenta
-	TColor hl_color=(TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
+	TColor hl_color=clRed;//(TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
 	short hlFrameWidth=2;//šíøka zvýraznìní rámeèku komponenty napø.pro povinné položky
 
 	switch (C)
 	{
 		case POHON:
 		{
-			//pozice
+		 ////pozice
 			rHTMLLabel_pohon->Top=L+O;
 			scComboBox_pohon->Top=P+O;
-			//funkèní vlastnosti
+		 ////funkèní vlastnosti
+			//ty co jsou stejné
+			scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect;
+			rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=true;
+			scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameWidth=1;
+			//ty co jsou rozdílné
 			switch (S)
 			{
-				case ENABLED:	rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=true;break;
+				case HIGHLIGHT:scComboBox_pohon->Options->FrameNormalColor=hl_color;scComboBox_pohon->Options->FrameWidth=hlFrameWidth;break;
+				case ENABLED:	break;
 				case DISABLED:rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=false;break;
 				case READONLY:rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=false;break;
 				case HIDE:		rHTMLLabel_pohon->Visible=false;scComboBox_pohon->Visible=false;offset-=O;break;
@@ -194,12 +217,11 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			//ty co jsou stejné
 			scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_CT->Visible=true;scGPNumericEdit_CT->Enabled=true;scGPNumericEdit_CT->Visible=true;
-			//scGPNumericEdit_CT->Options->FrameColor=clGray;
-			scGPNumericEdit_CT->Options->FrameWidth=1;
+			scGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:/*scGPNumericEdit_CT->Options->FrameColor=hl_color;*/scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:scGPNumericEdit_CT->Options->FrameNormalColor=hl_color;scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_CT->Enabled=false;break;
 				case READONLY:scGPNumericEdit_CT->Enabled=false;break;
@@ -215,12 +237,14 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			//ty co jsou stejné
 			scGPNumericEdit_RD->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_RD->Visible=true;scGPNumericEdit_RD->Visible=true;scGPNumericEdit_RD->Enabled=true;
+			scGPNumericEdit_RD->Options->FrameNormalColor=clGray;scGPNumericEdit_RD->Options->FrameWidth=1;
 			//ty co jsou rozdílné
 			switch (S)
 			{
+				case HIGHLIGHT:scGPNumericEdit_RD->Options->FrameNormalColor=hl_color;scGPNumericEdit_RD->Options->FrameWidth=hlFrameWidth;
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_RD->Enabled=false;break;
-				case READONLY:scGPNumericEdit_CT->Options->ShapeStyle=scgpessNone;scGPNumericEdit_RD->Enabled=false;break;
+				case READONLY:scGPNumericEdit_RD->Options->ShapeStyle=scgpessNone;scGPNumericEdit_RD->Enabled=false;break;
 				case HIDE:		rHTMLLabel_RD->Visible=false;scGPNumericEdit_RD->Visible=false;offset-=O;break;
 			}
 		}	break;
@@ -315,7 +339,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:scComboBox_stopka->Options->FrameColor=hl_color;scComboBox_stopka->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:scComboBox_stopka->Options->FrameNormalColor=hl_color;scComboBox_stopka->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scComboBox_stopka->Enabled=false;break;
 				case READONLY:scComboBox_stopka->Enabled=false;break;
@@ -368,16 +392,10 @@ void TForm_parametry::input_CT()
 	 if(minsec==SEC)CT=CT/60.0;//pokud bylo zadání v sekundách pøevede na minuty
 	 if(CT>0)//nutné ošetøení pro období zadávání/psaní
 	 {
-    	 //default hodnoty
-    	 double TT=Form1->d.v.ZAKAZKY->dalsi->TT;//TT defaultní zakázky
-    	 double dV=Form1->d.v.PP.delka_voziku; //delka voziku
-
-    	 double m=0;//mezera mezi voziky
-    	 short p=1;//odeètení do správného poètu mezer
 			 //default nastavení komponent
 			 scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
-    	 scGPButton_OK->Enabled=true;
+			 scGPButton_OK->Enabled=true;
     	 scGPButton_OK->Caption="Uložit";
 
     	 //dle øežimu objektu
@@ -439,15 +457,11 @@ void TForm_parametry::input_CT()
 //pøepoèet hodnot vyplývajících ze zmìny DD
 void TForm_parametry::input_DD()
 {
-	input_state=DD;
+	input_state=DD;//DD - z ENUM
 	//default hodnoty
 	double DD=scGPNumericEdit_delka_dopravniku->Value;
 	if(DD>0)//nutné ošetøení pro období zadávání/psaní
 	{
-		double TT=Form1->d.v.ZAKAZKY->dalsi->TT;//TT defaultní zakázky
-		double dV=Form1->d.v.PP.delka_voziku; //delka voziku
-		double m=0;//mezera mezi voziky
-		short p=1;//odeètení do správného poètu mezer
 		//default nastavení komponent
 		scGPNumericEdit_kapacita->Decimal=0;
 		vypis("");
@@ -489,12 +503,7 @@ void TForm_parametry::input_RD()
 	 double RD=scGPNumericEdit_RD->Value;
 	 if(RD>0)//nutné ošetøení pro období zadávání/psaní
 	 {
-    	 //default hodnoty
-    	 double TT=Form1->d.v.ZAKAZKY->dalsi->TT;//TT defaultní zakázky
-    	 double dV=Form1->d.v.PP.delka_voziku; //delka voziku
-    	 double m=0;//mezera mezi voziky
-    	 short p=1;//odeètení do správného poètu mezer
-    	 //default nastavení komponent
+			 //default nastavení komponent
 			 scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
     	 scGPButton_OK->Enabled=true;
@@ -596,11 +605,6 @@ void TForm_parametry::input_K()
 	 double K=scGPNumericEdit_kapacita->Value;//získání kapacity od uživatele
 	 if(K>0)//nutné ošetøení pro období zadávání/psaní
 	 {
-    	 //default hodnoty
-    	 double TT=Form1->d.v.ZAKAZKY->dalsi->TT;//TT defaultní zakázky
-    	 double dV=Form1->d.v.PP.delka_voziku; //delka voziku
-    	 double m=0;//velikost mezera mezi voziky
-    	 short p=1;//odeètení do správného poètu mezer
     	 //default nastavení komponent
     	 scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
