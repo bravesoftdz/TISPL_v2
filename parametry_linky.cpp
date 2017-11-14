@@ -21,6 +21,42 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 
+	if(Form1->STATUS==Form1->NAVRH)
+	{
+
+	rHTMLLabel_takt->Visible=true;
+	rEditNum_takt->Visible=true;
+
+	rStringGridEd_tab_dopravniky->Visible=false;
+	Button_ADD->Visible=false;
+	Button_DEL->Visible=false;
+
+	scRadioGroup_typVoziku->Visible=false;
+	rEditNum_delkavoziku->Visible=false;
+	rHTMLLabel_delka->Visible=false;
+	scGPButton_vozik->Visible=false;
+	scGPButton_pohon->Visible=false;
+
+	}
+
+	else {
+
+		rHTMLLabel_takt->Visible=false;
+		rEditNum_takt->Visible=false;
+
+	rStringGridEd_tab_dopravniky->Visible=true;
+	Button_ADD->Visible=true;
+	Button_DEL->Visible=true;
+
+	scRadioGroup_typVoziku->Visible=true;
+	rEditNum_delkavoziku->Visible=true;
+	rHTMLLabel_delka->Visible=true;
+	scGPButton_vozik->Visible=true;
+	scGPButton_pohon->Visible=true;
+
+
+	}
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
@@ -37,21 +73,21 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 Form_parametry_linky->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
 	 rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
 
-	 scGPButton1->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton1->Options->FocusedColor=Form_parametry_linky->Color;
-	 scGPButton1->Options->HotColor=Form_parametry_linky->Color;
-	 scGPButton1->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton1->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton1->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton1->Options->FramePressedColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->NormalColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->FocusedColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->HotColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->FrameNormalColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->FramePressedColor=Form_parametry_linky->Color;
 
-	 scGPButton2->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton2->Options->FocusedColor=Form_parametry_linky->Color;
-	 scGPButton2->Options->HotColor=Form_parametry_linky->Color;
-	 scGPButton2->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton2->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton2->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton2->Options->FramePressedColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->NormalColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->FocusedColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->HotColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->FrameNormalColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->FramePressedColor=Form_parametry_linky->Color;
 
 
 	 //nahrání hodnot

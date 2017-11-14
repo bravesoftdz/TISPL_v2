@@ -18,7 +18,7 @@
 class TForm_parametry_linky : public TForm
 {
 __published:	// IDE-managed Components
-	TrHTMLLabel *rHTMLLabel5;
+	TrHTMLLabel *rHTMLLabel_delka;
 	TValueListEditor *ValueListEditor;
 	TButton *Button_ADD;
 	TButton *Button_DEL;
@@ -29,12 +29,14 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel1;
 	TscGPGlyphButton *scGPGlyphButton15;
-	TscGPButton *scGPButton2;
+	TscGPButton *scGPButton_vozik;
 	TrEditNum *rEditNum_delkavoziku;
-	TscGPButton *scGPButton1;
+	TscGPButton *scGPButton_pohon;
 	TButton *Vypis_pohony;
 	TscRadioGroup *scRadioGroup_typVoziku;
 	TrHTMLLabel *rHTMLLabel_eDesigner;
+	TrEditNum *rEditNum_takt;
+	TrHTMLLabel *rHTMLLabel_takt;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

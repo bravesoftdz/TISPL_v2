@@ -16,7 +16,7 @@ object Form_parametry_linky: TForm_parametry_linky
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object rHTMLLabel5: TrHTMLLabel
+  object rHTMLLabel_delka: TrHTMLLabel
     Left = 53
     Top = 97
     Width = 70
@@ -36,6 +36,21 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 308
     Height = 19
     Caption = 'Zadejte parametry linky nebo zvolte storno.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    Visible = False
+  end
+  object rHTMLLabel_takt: TrHTMLLabel
+    Left = 227
+    Top = 176
+    Width = 67
+    Height = 19
+    Caption = 'TaktTime'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -649,7 +664,7 @@ object Form_parametry_linky: TForm_parametry_linky
       AllowAllUp = False
     end
   end
-  object scGPButton2: TscGPButton
+  object scGPButton_vozik: TscGPButton
     Left = 0
     Top = 56
     Width = 105
@@ -752,7 +767,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 8
     Value = 1.000000000000000000
   end
-  object scGPButton1: TscGPButton
+  object scGPButton_pohon: TscGPButton
     Left = 0
     Top = 172
     Width = 137
@@ -909,5 +924,21 @@ object Form_parametry_linky: TForm_parametry_linky
     ButtonsGlowEffect.States = [scsHot, scsPressed, scsFocused]
     ButtonsAnimation = False
     ShowFocusRect = True
+  end
+  object rEditNum_takt: TrEditNum
+    Left = 300
+    Top = 172
+    Width = 84
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 12
+    Visible = False
+    Value = 1.000000000000000000
   end
 end
