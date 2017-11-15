@@ -300,6 +300,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.PP.mnozstvi=200;
 			 d.v.PP.hod_den=8;
 			 d.v.PP.dni_rok=365;
+			 d.v.PP.TT=2;
 			 d.v.PP.efektivita=95;
 			 d.v.PP.delka_voziku=1;
 			 d.v.PP.typ_voziku=0;
@@ -2442,7 +2443,6 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					ukaz=ukaz->dalsi;
 				}
 				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
-				Form_parametry->TT=ms.MyToDouble(Form_parametry_linky->rEditNum_takt->Text);//z editu v parametrech linky//Form1->d.v.ZAKAZKY->dalsi->TT;//TT defaultní zakázky
 				Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 				Form_parametry->scGPEdit_name->Text=pom->name;
 				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
@@ -2459,7 +2459,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 
 				if(Form_parametry->scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
 				{
-					Form_parametry->scGPNumericEdit_CT->Value=Form_parametry->TT;//d.v.ZAKAZKY->dalsi->TT;
+					Form_parametry->scGPNumericEdit_CT->Value=d.v.PP.TT;//d.v.ZAKAZKY->dalsi->TT;
 					Form_parametry->scGPNumericEdit_kapacita->Value=1;
 				}
 				//Form_parametry->input_state=1;//povoleníní akcí vyplývající ze změny editů
@@ -2713,6 +2713,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 			d.v.PP.mnozstvi=d.v.File_hlavicka.mnozstvi;
 			d.v.PP.hod_den=d.v.File_hlavicka.hod_den;
 			d.v.PP.dni_rok=d.v.File_hlavicka.dni_rok;
+			d.v.PP.TT=d.v.File_hlavicka.TT;
 			d.v.PP.efektivita=d.v.File_hlavicka.efektivita;
 			d.v.PP.delka_voziku=d.v.File_hlavicka.delka_voziku;
 			d.v.PP.typ_voziku=d.v.File_hlavicka.typ_voziku;

@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 
@@ -104,7 +103,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(POHON,ENABLED);
 			 set(TIME,HIDE);
 			 set(RYCHLOST,HIDE);
-			 set(DELKA,READONLY);
+			 set(DELKA,HIDE);
 			 set(KAPACITA,READONLY);
 			 set(ODCHYLKA,ENABLED);
 			 set(CEKANI,ENABLED);
@@ -115,7 +114,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 {
 			 //nastavení komponent
 			 set(POHON,HIDE);
-			 set(TIME,HIGHLIGHT);
+			 set(TIME,ENABLED);
 			 set(RYCHLOST,HIDE);
 			 set(DELKA,HIDE);
 			 set(KAPACITA,READONLY);
@@ -138,8 +137,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 case 11://KONTINUÁLNÍ - NÁVRHÁØ
 		 {
 			 set(POHON,HIDE);
-			 set(TIME,HIDE);
-			 set(RYCHLOST,HIDE);
+			 set(TIME,ENABLED);
+			 set(RYCHLOST,ENABLED);
 			 set(DELKA,ENABLED);
 			 set(KAPACITA,ENABLED);
 			 set(ODCHYLKA,HIDE);
@@ -148,8 +147,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 2://POSTPROCESNÍ
 		 {
-			 set(POHON,HIDE);
-			 set(TIME,ENABLED);
+			 set(POHON,ENABLED);
+			 set(TIME,HIDE);
 			 set(RYCHLOST,HIDE);
 			 set(DELKA,ENABLED);
 			 set(KAPACITA,ENABLED);
@@ -401,17 +400,17 @@ void TForm_parametry::input_CT()
     	 //dle øežimu objektu
 			 if(scComboBox_rezim->ItemIndex==0)//S&G
 			 {
-    		 //ošetøení a pøípadnì následné øešení situací, kdy není totožný procesní èas a TT
-    		 if(CT<TT)
+				 //ošetøení a pøípadnì následné øešení situací, kdy není totožný procesní èas a TT
+				 if(CT<Form1->d.v.PP.TT)
     		 {
     			scGPButton_OK->Enabled=false;
     		 	vypis("Pozor, procesní èas je nižší než hodnota TT!");
     		 }
-    		 if(CT>TT)
+				 if(CT>Form1->d.v.PP.TT)
 				 {
-    		 		if(fmod(CT,TT)==0)
+						if(fmod(CT,Form1->d.v.PP.TT)==0)
     				{
-    		 			kapacitaSG=CT/TT;//pro další použití
+							kapacitaSG=CT/Form1->d.v.PP.TT;//pro další použití
     					vypis("Rozložit na "+AnsiString(kapacitaSG)+"x "+scGPEdit_name->Text.UpperCase()+"?");
     		 			scGPButton_OK->Enabled=true;
     					scGPButton_OK->Caption="Ano a uložit";
@@ -426,14 +425,14 @@ void TForm_parametry::input_CT()
     	 else//KONTINUAL+PP
 			 {
     		 //KAPACITA
-    		 double K=CT/TT;//výpoèet
+				 double K=CT/Form1->d.v.PP.TT;//výpoèet
     		 scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
     		 scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
     		 //pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 				 if(Form1->ms.get_count_decimal(K)>0)
 				 {
-					if(minsec==MIN)vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*TT)+" min.");
-					else vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*TT*60)+" s.");
+					if(minsec==MIN)vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" min.");
+					else vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT*60)+" s.");
 				 }
 				 //DÉLKA DOPRAVNÍKU
 				 double DD=K*dV+(K-p)*m;//ošetøeno i pro stav kdy je stejný poèet mezer jako vozíku
@@ -474,10 +473,10 @@ void TForm_parametry::input_DD()
 		scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 		//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 		if(Form1->ms.get_count_decimal(K)>0)
-		vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*TT)+" min.");
+		vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" min.");
 
 		//PROCESNÍ ÈAS resp. CT
-		double CT = TT*K;
+		double CT = Form1->d.v.PP.TT*K;
 		if(minsec==SEC)CT*=60.0;
 		scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
@@ -513,12 +512,12 @@ void TForm_parametry::input_RD()
     	 if(m>0 && p==1)//pokud je rozdílný poèet mezer jako vozíkù a mezera je nenulova, lze pøímo z RD vypoèítat ostatní hodnoty
     	 {
     			//KAPACITA
-    			K=m/(dV+m-RD*TT);
+					K=m/(dV+m-RD*Form1->d.v.PP.TT);
     			scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
     			scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
     			//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
     			if(Form1->ms.get_count_decimal(K)>0)
-    			vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*TT)+" min.");
+					vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" min.");
 
     			//DÉLKA DOPRAVNÍKU
     			double DD = K*dV+(K-p)*m;
@@ -540,12 +539,12 @@ void TForm_parametry::input_RD()
     			if(DD!=0)//pokud je známá délka dopravníku
     			{
     				//KAPACITA
-    				K=RD/DD/TT;
+						K=RD/DD/Form1->d.v.PP.TT;
     				scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
     				scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
     				//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
     				if(Form1->ms.get_count_decimal(K)>0)
-    				vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*TT)+" min.");
+						vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" min.");
 
     				//PROCESNÍ ÈAS resp. CT
 						double CT = RD/DD;
@@ -563,19 +562,19 @@ void TForm_parametry::input_RD()
     					scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 
         			//KAPACITA
-        			K=CT/TT;
+							K=CT/Form1->d.v.PP.TT;
         			scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
         			scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
     					//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
     					if(Form1->ms.get_count_decimal(K)>0)
-    					vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*TT)+" min.");
+							vypis("Doporuèený procesní èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" min.");
     				}
     				else
     				{
     					if(K!=0)//pokud není známá délka ani CT a je známá K
     					{
     						//DÉLKA DOPRAVNÍKU
-    						DD=RD*TT*K;
+    						DD=RD*Form1->d.v.PP.TT*K;
     						scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
     						scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 
@@ -612,7 +611,7 @@ void TForm_parametry::input_K()
     	 scGPButton_OK->Caption="Uložit";
 
     	 //PROCESNÍ ÈAS resp. CT
-    	 double CT = TT*K;
+			 double CT = Form1->d.v.PP.TT*K;
     	 scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
     	 scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
 

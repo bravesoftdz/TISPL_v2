@@ -46,8 +46,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
   end
   object rHTMLLabel_takt: TrHTMLLabel
-    Left = 26
-    Top = 151
+    Left = 42
+    Top = 279
     Width = 111
     Height = 19
     Caption = 'TaktTime [min]'
@@ -60,9 +60,24 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     Visible = False
   end
+  object rHTMLLabel_sirka: TrHTMLLabel
+    Left = 260
+    Top = 100
+    Width = 66
+    Height = 19
+    Caption = #352#237#345'ka [m]'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    Visible = False
+  end
   object ValueListEditor: TValueListEditor
-    Left = 480
-    Top = 97
+    Left = 486
+    Top = 172
     Width = 150
     Height = 89
     Align = alCustom
@@ -753,8 +768,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object rEditNum_delkavoziku: TrEditNum
-    Left = 159
-    Top = 93
+    Left = 120
+    Top = 96
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -866,8 +881,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Vypis_pohonyClick
   end
   object scRadioGroup_typVoziku: TscRadioGroup
-    Left = 273
-    Top = 81
+    Left = 30
+    Top = 143
     Width = 225
     Height = 53
     Font.Charset = DEFAULT_CHARSET
@@ -926,8 +941,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ShowFocusRect = True
   end
   object rEditNum_takt: TrEditNum
-    Left = 159
-    Top = 147
+    Left = 175
+    Top = 275
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -938,6 +953,22 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 12
+    Visible = False
+    Value = 1.000000000000000000
+  end
+  object rEditNum_sirkavoziku: TrEditNum
+    Left = 344
+    Top = 96
+    Width = 84
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 13
     Visible = False
     Value = 1.000000000000000000
   end

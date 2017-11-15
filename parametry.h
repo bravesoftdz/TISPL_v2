@@ -105,7 +105,6 @@ public:		// User declarations
 	Tinput_state input_state;
 	void vypis(UnicodeString text,bool RED=true);
 	short kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
-	double TT;
 
 	void vykresli_vozik(bool na_delku=true);
 };

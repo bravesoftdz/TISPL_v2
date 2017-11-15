@@ -37,6 +37,8 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_eDesigner;
 	TrEditNum *rEditNum_takt;
 	TrHTMLLabel *rHTMLLabel_takt;
+	TrHTMLLabel *rHTMLLabel_sirka;
+	TrEditNum *rEditNum_sirkavoziku;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

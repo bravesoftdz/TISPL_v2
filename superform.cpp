@@ -5,7 +5,6 @@
 
 #include "superform.h"
 #include "unit1.h"
-#include "parametry_linky.h"
 #include "cesty.h"
 #include "jig.h"
 
@@ -110,7 +109,7 @@ void TForm_definice_zakazek:: predvypln_default_zakazku()
 	rStringGridEd1->Cells[7][1]="5";
 	rStringGridEd1->Cells[8][1]="50";
 	rStringGridEd1->Cells[9][1]="NASTAVIT";//tlaèítko pro nastavení ceesty
-	rStringGridEd1->Cells[10][1]=Form_parametry_linky->rEditNum_takt->Text;
+	rStringGridEd1->Cells[10][1]=Form1->d.v.PP.TT;//TT
 }
 //----------------------------------------------------------------------------
 //pøedvyplnìní default cesta
@@ -414,11 +413,9 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 
 					//uložení aktuálních hodnot do dané temp_zakazky
 
-					if (i==1) { //ulož TT do objektu
+					if (i==1)//ulož TT do projektu pro status návrháø, pouze z první zakázky
+					Form1->d.v.PP.TT=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]);
 
-					 Form_parametry_linky->rEditNum_takt->Text=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]);
-
-					}
 					Form1->d.v.edituj_temp_zakazku
 					(
 						i,//n

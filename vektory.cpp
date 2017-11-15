@@ -1062,6 +1062,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.hod_den=PP.hod_den;
 		File_hlavicka.dni_rok=PP.dni_rok;
 		File_hlavicka.efektivita=PP.efektivita;
+		File_hlavicka.TT=PP.TT;
 		File_hlavicka.delka_voziku=PP.delka_voziku;
 		File_hlavicka.typ_voziku=PP.typ_voziku;
 		//objektové záležitosti
@@ -1122,6 +1123,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					c_ukaz->X=ukaz->X;
 					c_ukaz->Y=ukaz->Y;
 					c_ukaz->rezim=ukaz->rezim;
+					c_ukaz->CT=ukaz->CT;
+					c_ukaz->RD=ukaz->RD;
 					c_ukaz->kapacita_dop=ukaz->kapacita_dop;
 					c_ukaz->kapacita=ukaz->kapacita;
 					c_ukaz->pohon=ukaz->pohon->n;
@@ -1269,7 +1272,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			{
 			TFileStream *FileStream=new TFileStream(FileName,fmOpenRead);
 
-			//zapiše hlavičku do souboru
+			//zapiše hlavičku ze souboru
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
 
 			//vytvoří nové hlavičky pro spojové seznamy
@@ -1320,6 +1323,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->X=c_ukaz->X;
 						ukaz->Y=c_ukaz->Y;
 						ukaz->rezim=c_ukaz->rezim;
+						ukaz->CT=c_ukaz->CT;
+						ukaz->RD=c_ukaz->RD;
 						ukaz->kapacita=c_ukaz->kapacita;
 						ukaz->kapacita_dop=c_ukaz->kapacita_dop;
 						ukaz->pohon=vrat_pohon(c_ukaz->pohon);

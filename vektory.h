@@ -119,6 +119,7 @@ class Cvektory
 			double hod_den;//počet hodin za den
 			double dni_rok;//počet hodin za den
 			double efektivita;//přepokládaná výrobní efektivina
+			double TT;//pro návrháře
 			double delka_voziku;
 			double typ_voziku;//0 - normální, 1 - závěsný
 	};
@@ -333,6 +334,7 @@ class Cvektory
 					double hod_den;//počet hodin za den
 					double dni_rok;//počet hodin za den
 					double efektivita;//přepokládaná výrobní efektivina
+					double TT;//globální TT linky
 					double delka_voziku;
 					double typ_voziku;
 		};
@@ -471,6 +473,8 @@ private:
 				unsigned int text_length;
 				double X, Y;
 				unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
+				double CT;//kvůli návrháři
+				double RD;//kvůli návrháři
 				double kapacita;
 				double kapacita_dop;
 				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu

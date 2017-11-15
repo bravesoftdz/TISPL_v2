@@ -20,54 +20,50 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 {
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
-
-
-	}
-
+}
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
+		if(Form1->STATUS==Form1->NAVRH)
+		{
+			scGPButton_vozik->Caption="JIG";
+			scGPButton_pohon->Caption="Takt time";
+			rHTMLLabel_takt->Visible=true;
+			rEditNum_takt->Visible=true;
+			rHTMLLabel_sirka->Visible=true;
+			rEditNum_sirkavoziku->Visible=true;
 
-   	if(Form1->STATUS==Form1->NAVRH)
-	{
-   //ShowMessage("NAVRHUJ");
+			rStringGridEd_tab_dopravniky->Visible=false;
+			Button_ADD->Visible=false;
+			Button_DEL->Visible=false;
 
-	rHTMLLabel_takt->Visible=true;
-	rEditNum_takt->Visible=true;
+			scRadioGroup_typVoziku->Visible=true;
+			rEditNum_delkavoziku->Visible=true;
+			rHTMLLabel_delka->Visible=true;
+		}
+		else
+		{
+			scGPButton_vozik->Caption="Vozík";
+			scGPButton_pohon->Caption="Pohon";
 
-	rStringGridEd_tab_dopravniky->Visible=false;
-	Button_ADD->Visible=false;
-	Button_DEL->Visible=false;
+			rHTMLLabel_takt->Visible=false;
+			rEditNum_takt->Visible=false;
+			rHTMLLabel_sirka->Visible=false;
+			rEditNum_sirkavoziku->Visible=false;
 
-	scRadioGroup_typVoziku->Visible=true;
-	rEditNum_delkavoziku->Visible=true;
-	rHTMLLabel_delka->Visible=true;
-	scGPButton_vozik->Visible=true;
-	scGPButton_pohon->Visible=false;
+			rStringGridEd_tab_dopravniky->Visible=true;
+			Button_ADD->Visible=true;
+			Button_DEL->Visible=true;
 
-	}
-
-	else {
-
-		rHTMLLabel_takt->Visible=false;
-		rEditNum_takt->Visible=false;
-
-	rStringGridEd_tab_dopravniky->Visible=true;
-	Button_ADD->Visible=true;
-	Button_DEL->Visible=true;
-
-	scRadioGroup_typVoziku->Visible=true;
-	rEditNum_delkavoziku->Visible=true;
-	rHTMLLabel_delka->Visible=true;
-	scGPButton_vozik->Visible=true;
-	scGPButton_pohon->Visible=true;
-
-		 // ShowMessage("OVERUJ");
-     }
+			scRadioGroup_typVoziku->Visible=true;
+			rEditNum_delkavoziku->Visible=true;
+			rHTMLLabel_delka->Visible=true;
+		}
 
 		nacti_pohony();
 
-		if (!data_nalezena) {
+		if(!data_nalezena)
+		{
 		rStringGridEd_tab_dopravniky->RowCount=3;    //defaultní poèet øádkù - hlavièka, hl.dopravník,vedl.dopravník
 		}
 
@@ -96,6 +92,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //nahrání hodnot
 	 rEditNum_delkavoziku->Text=Form1->d.v.PP.delka_voziku;
 	 scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
+	 rEditNum_takt->Text=Form1->d.v.PP.TT;
 }
 //---------------------------------------------------------------------------
 
@@ -163,13 +160,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 				 Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
 				 Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
+				 Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
 
 				 Form1->DuvodUlozit(true);
 				 Form_parametry_linky->Close();
-
-
-
-
 }
 //---------------------------------------------------------------------------
 
