@@ -303,6 +303,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.PP.TT=2;
 			 d.v.PP.efektivita=95;
 			 d.v.PP.delka_voziku=1;
+			 d.v.PP.sirka_voziku=d.v.PP.delka_voziku;
 			 d.v.PP.typ_voziku=0;
 
 			 Akce=NIC;Screen->Cursor=crDefault;//změní kurzor na default
@@ -2716,6 +2717,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 			d.v.PP.TT=d.v.File_hlavicka.TT;
 			d.v.PP.efektivita=d.v.File_hlavicka.efektivita;
 			d.v.PP.delka_voziku=d.v.File_hlavicka.delka_voziku;
+      d.v.PP.sirka_voziku=d.v.File_hlavicka.sirka_voziku;
 			d.v.PP.typ_voziku=d.v.File_hlavicka.typ_voziku;
 			MOD=d.v.File_hlavicka.Mod;
 			switch(MOD)

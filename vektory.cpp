@@ -30,6 +30,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->RD=0;//pro status návrh
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
+	novy->rotace=0;//rotace jigu v objektu
 	novy->pohon=NULL;//ukazatel na použitý pohon
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -61,6 +62,7 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->RD=0;//pro status návrh
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
+	novy->rotace=0;//rotace jigu v objektu
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -91,6 +93,7 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->RD=0;//pro status návrh
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
+	novy->rotace=0;//rotace jigu v objektu
 	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -145,6 +148,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
 		novy->kapacita=Objekt->kapacita;
 		novy->kapacita_dop=Objekt->kapacita_dop;
+    novy->rotace=Objekt->rotace;
 		novy->pohon=Objekt->pohon;
 		novy->delka_dopravniku=Objekt->delka_dopravniku;
 		novy->min_prujezdni_profil.x=Objekt->min_prujezdni_profil.x;//výška a šířka minimálního průjezdního profilu v objektu
@@ -1064,6 +1068,7 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.efektivita=PP.efektivita;
 		File_hlavicka.TT=PP.TT;
 		File_hlavicka.delka_voziku=PP.delka_voziku;
+		File_hlavicka.sirka_voziku=PP.sirka_voziku;
 		File_hlavicka.typ_voziku=PP.typ_voziku;
 		//objektové záležitosti
 		File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
@@ -1127,6 +1132,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					c_ukaz->RD=ukaz->RD;
 					c_ukaz->kapacita_dop=ukaz->kapacita_dop;
 					c_ukaz->kapacita=ukaz->kapacita;
+					c_ukaz->rotace=ukaz->rotace;
 					c_ukaz->pohon=ukaz->pohon->n;
 					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
 					c_ukaz->cekat_na_palce=ukaz->cekat_na_palce;
@@ -1327,6 +1333,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->RD=c_ukaz->RD;
 						ukaz->kapacita=c_ukaz->kapacita;
 						ukaz->kapacita_dop=c_ukaz->kapacita_dop;
+						ukaz->rotace=c_ukaz->rotace;
 						ukaz->pohon=vrat_pohon(c_ukaz->pohon);
 						ukaz->delka_dopravniku=c_ukaz->delka_dopravniku;
 						ukaz->cekat_na_palce=c_ukaz->cekat_na_palce;

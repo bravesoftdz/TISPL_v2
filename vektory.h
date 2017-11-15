@@ -39,6 +39,7 @@ class Cvektory
 			double RD;//pro status návrh
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
+			double rotace;//rotace jigu v objektu
 			TPohon *pohon;//ukazatel na použitý pohon
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
@@ -111,7 +112,6 @@ class Cvektory
 			unsigned short typ;//0 - podlahový, 1 - závěsný
 	};
 
-
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
 			TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
@@ -121,10 +121,10 @@ class Cvektory
 			double efektivita;//přepokládaná výrobní efektivina
 			double TT;//pro návrháře
 			double delka_voziku;
+			double sirka_voziku;
 			double typ_voziku;//0 - normální, 1 - závěsný
 	};
 	T_parametry_projektu PP;
-
 
 	struct TPalec
 	{
@@ -336,6 +336,7 @@ class Cvektory
 					double efektivita;//přepokládaná výrobní efektivina
 					double TT;//globální TT linky
 					double delka_voziku;
+					double sirka_voziku;
 					double typ_voziku;
 		};
 		TFile_hlavicka File_hlavicka;
@@ -477,6 +478,7 @@ private:
 				double RD;//kvůli návrháři
 				double kapacita;
 				double kapacita_dop;
+				double rotace;//rotace jigu v objektu
 				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 				double delka_dopravniku;//delka dopravníku v rámci objektu
 				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky

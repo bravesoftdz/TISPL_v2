@@ -91,6 +91,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	 //nahrání hodnot
 	 rEditNum_delkavoziku->Text=Form1->d.v.PP.delka_voziku;
+	 rEditNum_sirkavoziku->Text=Form1->d.v.PP.sirka_voziku;
 	 scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
 	 rEditNum_takt->Text=Form1->d.v.PP.TT;
 }
@@ -146,24 +147,24 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
-//	Form1->d.v.PP.delka_voziku=rEditNum_delkavoziku->Text.ToDouble();
-	Form1->d.v.vymaz_seznam_POHONY();
-	Form1->d.v.hlavicka_POHONY();
+		Form1->d.v.vymaz_seznam_POHONY();
+		Form1->d.v.hlavicka_POHONY();
 
-					for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
+		for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 		{
 				 Form1->d.v.vloz_pohon (rStringGridEd_tab_dopravniky->Cells[1][i], //nazev
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]),        //rychlost od
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]),    //rychlost do
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
-				 }
+		}
 
-				 Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-				 Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
-				 Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
+		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
+		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
+		Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
+		Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
 
-				 Form1->DuvodUlozit(true);
-				 Form_parametry_linky->Close();
+		Form1->DuvodUlozit(true);
+		Form_parametry_linky->Close();
 }
 //---------------------------------------------------------------------------
 
