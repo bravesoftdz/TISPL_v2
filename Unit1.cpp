@@ -4205,3 +4205,11 @@ if(scExPanel_log_header->Visible==false){
 
 
 
+void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
+{
+scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
+
+
+}
+//---------------------------------------------------------------------------
+

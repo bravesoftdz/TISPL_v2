@@ -38,6 +38,7 @@ void Cgrafy::nastaveni()
 			Form1->Label_wip->Top = Form1->Chart1->Top - 35;
 			Form1->Label_wip->Left = 20;
 			Form1->Label_wip->Caption = "WIP: " + AnsiString(Form1->d.v.WIP());
+			Form1->scHTMLLabel_log_vypis->Caption="Linka v poøádku";
 
 
 
