@@ -33,8 +33,6 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 	minsec=MIN;scGPButton_min_sec->Caption="na sec";//formuláø bude po zobrazení v minutách
 	input_state=NOTHING;//nutnost
 	kapacitaSG=1;//není podnìt k rozkládání na více objektù
-	dV=Form1->d.v.PP.delka_voziku;
-	m=0;//mezera mezi voziky
 	p=1;//odeètení do správného poètu mezer
 	scGPEdit_name->SetFocus();//nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
 	scGPEdit_name->SelectAll();//oznaèí cele pro editace
@@ -108,6 +106,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(ODCHYLKA,ENABLED);
 			 set(CEKANI,ENABLED);
 			 set(STOPKA,ENABLED);
+			 set(ROTACE,HIDE);
+			 set(MEZERA,HIDE);
 			 scGPNumericEdit_kapacita->Value=1;
 		 }break;
 		 case 10://STOP & GO - NÁVRHÁØ
@@ -121,6 +121,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(ODCHYLKA,HIDE);
 			 set(CEKANI,HIDE);
 			 set(STOPKA,HIDE);
+			 set(ROTACE,HIDE);
+			 set(MEZERA,HIDE);
 			 scGPNumericEdit_kapacita->Value=1;
 		 }break;
 		 case 1://KONTINUÁLNÍ
@@ -133,17 +135,21 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(ODCHYLKA,HIDE);
 			 set(CEKANI,ENABLED);
 			 set(STOPKA,ENABLED);
+			 set(ROTACE,ENABLED);
+			 set(MEZERA,ENABLED);
 		 }break;
 		 case 11://KONTINUÁLNÍ - NÁVRHÁØ
 		 {
 			 set(POHON,HIDE);
 			 set(TIME,ENABLED);
-			 set(RYCHLOST,ENABLED);
+			 set(RYCHLOST,READONLY);
 			 set(DELKA,ENABLED);
 			 set(KAPACITA,ENABLED);
 			 set(ODCHYLKA,HIDE);
 			 set(CEKANI,HIDE);
 			 set(STOPKA,HIDE);
+			 set(ROTACE,ENABLED);
+			 set(MEZERA,ENABLED);
 		 }break;
 		 case 2://POSTPROCESNÍ
 		 {
@@ -155,6 +161,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(ODCHYLKA,ENABLED);
 			 set(CEKANI,ENABLED);
 			 set(STOPKA,ENABLED);
+			 set(ROTACE,ENABLED);
+			 set(MEZERA,ENABLED);
 		 }break;
 		 case 12://POSTPROCESNÍ - NÁVRHÁØ
 		 {
@@ -166,6 +174,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(ODCHYLKA,HIDE);
 			 set(CEKANI,HIDE);
 			 set(STOPKA,HIDE);
+			 set(ROTACE,ENABLED);
+			 set(MEZERA,ENABLED);
 		 }break;
 	}
 
@@ -345,6 +355,45 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case HIDE:		rHTMLLabel_stopka->Visible=false;scComboBox_stopka->Visible=false;offset-=O;break;
 			}
 		}	break;
+		case ROTACE://rotace jigu v objektu, zatím jen pøepínátko 0-90
+		{
+		 ////pozice
+			rHTMLLabel_rotace->Top=L+9*O+offset;
+			scComboBox_rotace->Top=P+9*O+offset;
+		 ////funkèní vlastnosti
+			//ty co jsou stejné
+			rHTMLLabel_rotace->Visible=true;scComboBox_rotace->Visible=true;scComboBox_rotace->Enabled=true;
+			scComboBox_rotace->Options->FrameNormalColor=clGray;scComboBox_rotace->Options->FrameWidth=1;
+			//ty co jsou rozdílné
+			switch (S)
+			{
+				case HIGHLIGHT:scComboBox_rotace->Options->FrameNormalColor=hl_color;scComboBox_rotace->Options->FrameWidth=hlFrameWidth;break;
+				case ENABLED:	break;
+				case DISABLED:scComboBox_rotace->Enabled=false;break;
+				case READONLY:scComboBox_rotace->Enabled=false;break;
+				case HIDE:		rHTMLLabel_rotace->Visible=false;scComboBox_rotace->Visible=false;offset-=O;break;
+			}
+		}	break;
+		case MEZERA://požadována vs. zjištìná kapacita objektu
+		{
+		 ////pozice
+			rHTMLLabel_mezera->Top=L+10*O+offset;
+			scGPNumericEdit_mezera->Top=P+10*O+offset;
+		 ////funkèní vlastnosti
+			//ty co jsou stejné
+			scGPNumericEdit_mezera->Options->ShapeStyle=scgpessRect;
+			rHTMLLabel_mezera->Visible=true;scGPNumericEdit_mezera->Visible=true;scGPNumericEdit_mezera->Enabled=true;
+			scGPNumericEdit_mezera->Options->FrameNormalColor=clGray;scGPNumericEdit_mezera->Options->FrameWidth=1;
+			//ty co jsou rozdílné
+			switch (S)
+			{
+				case HIGHLIGHT:scGPNumericEdit_mezera->Options->FrameNormalColor=hl_color;scGPNumericEdit_mezera->Options->FrameWidth=hlFrameWidth;break;
+				case ENABLED:	break;
+				case DISABLED:scGPNumericEdit_mezera->Enabled=false;break;
+				case READONLY:scGPNumericEdit_mezera->Options->ShapeStyle=scgpessNone;scGPNumericEdit_mezera->Enabled=false;break;
+				case HIDE:		rHTMLLabel_mezera->Visible=false;scGPNumericEdit_mezera->Visible=false;offset-=O;break;
+			}
+		}	break;
 	}
 }
 //---------------------------------------------------------------------------
@@ -395,9 +444,14 @@ void TForm_parametry::input_CT()
 			 scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
 			 scGPButton_OK->Enabled=true;
-    	 scGPButton_OK->Caption="Uložit";
+			 scGPButton_OK->Caption="Uložit";
 
-    	 //dle øežimu objektu
+			 //volba šíøka èi délka jigu
+			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+			 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+			 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
+
+			 //dle øežimu objektu
 			 if(scComboBox_rezim->ItemIndex==0)//S&G
 			 {
 				 //ošetøení a pøípadnì následné øešení situací, kdy není totožný procesní èas a TT
@@ -467,6 +521,11 @@ void TForm_parametry::input_DD()
 		scGPButton_OK->Enabled=true;
 		scGPButton_OK->Caption="Uložit";
 
+		//volba šíøka èi délka jigu
+		double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+		if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+		double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
+
 		//KAPACITA                 //pokud je stejný poèet mezer jako vozíkù
 		double K=(DD+m)/(dV+m);if(p==1)K=DD/(dV+m);
 		scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
@@ -506,7 +565,12 @@ void TForm_parametry::input_RD()
 			 scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
     	 scGPButton_OK->Enabled=true;
-    	 scGPButton_OK->Caption="Uložit";
+			 scGPButton_OK->Caption="Uložit";
+
+			 //volba šíøka èi délka jigu
+			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+			 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+			 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
 
     	 double K=0;
     	 if(m>0 && p==1)//pokud je rozdílný poèet mezer jako vozíkù a mezera je nenulova, lze pøímo z RD vypoèítat ostatní hodnoty
@@ -608,7 +672,12 @@ void TForm_parametry::input_K()
     	 scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
     	 scGPButton_OK->Enabled=true;
-    	 scGPButton_OK->Caption="Uložit";
+			 scGPButton_OK->Caption="Uložit";
+
+			 //volba šíøka èi délka jigu
+			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+			 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+			 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
 
     	 //PROCESNÍ ÈAS resp. CT
 			 double CT = Form1->d.v.PP.TT*K;

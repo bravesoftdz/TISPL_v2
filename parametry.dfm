@@ -3,7 +3,7 @@ object Form_parametry: TForm_parametry
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
-  ClientHeight = 522
+  ClientHeight = 604
   ClientWidth = 349
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -187,7 +187,7 @@ object Form_parametry: TForm_parametry
     Top = 215
     Width = 207
     Height = 19
-    Caption = 'Rychlost dopravn'#237'ku [min/m]'
+    Caption = 'Rychlost dopravn'#237'ku [m/min]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -198,8 +198,8 @@ object Form_parametry: TForm_parametry
     Visible = False
   end
   object rHTMLLabel_InfoText: TrHTMLLabel
-    Left = 39
-    Top = 455
+    Left = 49
+    Top = 527
     Width = 81
     Height = 19
     Caption = 'Upozorn'#283'n'#237
@@ -211,22 +211,33 @@ object Form_parametry: TForm_parametry
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object ComboBox_druh_objektu: TComboBox
-    Left = 31
-    Top = 668
-    Width = 267
-    Height = 21
-    Hint = 'Volba re'#382'imu objektu'
-    Style = csDropDownList
-    ItemIndex = 0
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 7
-    Text = 'STOP & GO'
-    Items.Strings = (
-      'STOP & GO'
-      'KONTINU'#193'LN'#205' (line tracking)'
-      'POSTPROCESN'#205)
+  object rHTMLLabel_rotace: TrHTMLLabel
+    Left = 8
+    Top = 455
+    Width = 99
+    Height = 19
+    Caption = 'Orientace jigu'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_mezera: TrHTMLLabel
+    Left = 8
+    Top = 495
+    Width = 213
+    Height = 19
+    Caption = 'D'#233'lka mezery mezi voz'#237'ky [m]'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
   end
   object Edit_name: TEdit
     Left = 43
@@ -240,7 +251,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 9
   end
   object Edit_shortname: TEdit
     Left = 245
@@ -257,7 +268,7 @@ object Form_parametry: TForm_parametry
     Font.Style = [fsBold]
     MaxLength = 4
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 10
   end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
@@ -265,7 +276,7 @@ object Form_parametry: TForm_parametry
     Width = 349
     Height = 34
     Align = alTop
-    TabOrder = 12
+    TabOrder = 11
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -481,8 +492,8 @@ object Form_parametry: TForm_parametry
     end
   end
   object scGPButton_OK: TscGPButton
-    Left = 62
-    Top = 480
+    Left = 66
+    Top = 560
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -491,7 +502,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 7
     TabStop = True
     Animation = False
     Caption = 'Ulo'#382'it'
@@ -570,8 +581,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 184
-    Top = 480
+    Left = 188
+    Top = 560
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -580,7 +591,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 8
     TabStop = True
     OnClick = scGPButton_stornoClick
     Animation = False
@@ -659,27 +670,9 @@ object Form_parametry: TForm_parametry
     GroupIndex = 0
     AllowAllUp = False
   end
-  object Edit_vzdalenost_voziku: TEdit
-    Left = 182
-    Top = 635
-    Width = 121
-    Height = 21
-    TabOrder = 13
-    Text = 'Edit_vzdalenost_voziku'
-    Visible = False
-  end
-  object RadioButton_na_sirku: TRadioButton
-    Left = 37
-    Top = 639
-    Width = 113
-    Height = 17
-    Caption = 'RadioButton_na_sirku'
-    TabOrder = 14
-    Visible = False
-  end
   object scGPGlyphButton_InfoIcon: TscGPGlyphButton
-    Left = 2
-    Top = 448
+    Left = 6
+    Top = 520
     Width = 37
     Height = 34
     Align = alCustom
@@ -689,7 +682,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 12
     Animation = True
     Caption = 'scGPGlyphButton_InfoIcon'
     CanFocused = False
@@ -766,7 +759,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 16
+    TabOrder = 13
     TabStop = True
     OnClick = Button_min_secClick
     Animation = False
@@ -923,7 +916,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 17
+    TabOrder = 14
     OnChange = scGPNumericEdit_CTChange
     OnKeyDown = FormKeyDown
   end
@@ -1007,7 +1000,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 18
+    TabOrder = 15
     OnChange = scGPNumericEdit_RDChange
     OnKeyDown = FormKeyDown
   end
@@ -1797,7 +1790,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 19
+    TabOrder = 16
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_kapacita: TscGPNumericEdit
@@ -1880,8 +1873,208 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 20
+    TabOrder = 17
     OnChange = scGPNumericEdit_kapacitaChange
+    OnKeyDown = FormKeyDown
+  end
+  object scComboBox_rotace: TscGPComboBox
+    Left = 232
+    Top = 450
+    Width = 108
+    Height = 29
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 18
+    ContentMargin = 0
+    AutoComplete = False
+    Animation = False
+    CheckedListMode = False
+    CheckedListWrap = True
+    Items = <
+      item
+        Header = False
+        Enabled = True
+        Caption = 'na d'#233'lku'
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'na '#353#237#345'ku'
+        Checked = False
+      end>
+    ItemIndex = 0
+    DropDownCount = 7
+    Options.NormalColor = clWhite
+    Options.HotColor = clWhite
+    Options.PressedColor = clWhite
+    Options.FocusedColor = clWhite
+    Options.DisabledColor = clWhite
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpcssRect
+    Options.ScaleFrameWidth = False
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    ShowItemImage = True
+    ShowItemText = True
+    ShowItemDetail = False
+    ListBoxHeaderFont.Charset = DEFAULT_CHARSET
+    ListBoxHeaderFont.Color = clWindowText
+    ListBoxHeaderFont.Height = -11
+    ListBoxHeaderFont.Name = 'Tahoma'
+    ListBoxHeaderFont.Style = [fsBold]
+    ListBoxHeaderOptions.Color = clBtnFace
+    ListBoxHeaderOptions.ColorAlpha = 220
+    ListBoxHeaderOptions.FillStyle = scgpsfColor
+    ListBoxHeaderOptions.GradientAngle = 90
+    ListBoxHeaderOptions.Margin = 5
+    DetailFont.Charset = DEFAULT_CHARSET
+    DetailFont.Color = clWindowText
+    DetailFont.Height = -16
+    DetailFont.Name = 'Tahoma'
+    DetailFont.Style = []
+    ListBoxLineColor = clWindowText
+    ListBoxWidth = 0
+    ListBoxHeight = 0
+    ListBoxShowItemDetails = False
+    ListBoxShowLines = False
+    ListBoxItemHeight = 30
+    ListBoxHeaderHeight = 20
+    ListBoxItemSpacing = 5
+    ListBoxItemMargin = 5
+    ListBoxIndentMargin = 10
+    ListBoxScrollBarOptions.BorderWidth = 0
+    ListBoxScrollBarOptions.FillColor = clBtnFace
+    ListBoxScrollBarOptions.FillColorAlpha = 100
+    ListBoxScrollBarOptions.ThumbColor = clWindowText
+    ListBoxScrollBarOptions.ThumbColorAlpha = 50
+    ListBoxScrollBarOptions.ThumbColorHotAlpha = 100
+    ListBoxScrollBarOptions.ThumbColorPressedAlpha = 150
+    ListBoxScrollBarOptions.ThumbRounded = False
+    ListBoxScrollBarOptions.Position = scgpsbDefault
+    ListBoxScrollBarOptions.Size = 11
+    ListBoxOptions.FillColor = clWhite
+    ListBoxOptions.FillColor2 = clWhite
+    ListBoxOptions.FillColorAlpha = 255
+    ListBoxOptions.FillColor2Alpha = 255
+    ListBoxOptions.FillGradientAngle = 90
+    ListBoxOptions.FrameColor = clGray
+    ListBoxOptions.FrameColorAlpha = 255
+    ListBoxOptions.FrameWidth = 1
+    ListBoxOptions.FrameScaleWidth = False
+    Color = clWhite
+    OnChange = scComboBox_rezimChange
+    OnKeyDown = FormKeyDown
+  end
+  object scGPNumericEdit_mezera: TscGPNumericEdit
+    Left = 232
+    Top = 490
+    Width = 108
+    Height = 29
+    Options.NormalColor = clWhite
+    Options.HotColor = clWhite
+    Options.FocusedColor = clWhite
+    Options.DisabledColor = clWhite
+    Options.NormalColorAlpha = 200
+    Options.HotColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 150
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = 1871359
+    Options.FrameFocusedColor = 10114859
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 50
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clBlack
+    Options.FontFocusedColor = clBlack
+    Options.FontDisabledColor = clGrayText
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpessRect
+    Options.ScaleFrameWidth = False
+    Options.StyleColors = True
+    ContentMarginLeft = 5
+    ContentMarginRight = 5
+    ContentMarginTop = 5
+    ContentMarginBottom = 5
+    Transparent = True
+    Increment = 1.000000000000000000
+    SupportUpDownKeys = False
+    SupportMouseWheel = False
+    Decimal = 0
+    ValueType = scvtFloat
+    DisplayType = scedtNumeric
+    LeftButton.Kind = scgpebCustom
+    LeftButton.Enabled = True
+    LeftButton.Visible = False
+    LeftButton.ImageIndex = -1
+    LeftButton.ImageHotIndex = -1
+    LeftButton.ImagePressedIndex = -1
+    LeftButton.RepeatClick = False
+    LeftButton.RepeatClickInterval = 200
+    LeftButton.ShowHint = False
+    LeftButton.GlyphColor = clWindowText
+    LeftButton.GlyphColorAlpha = 180
+    LeftButton.GlyphColorHotAlpha = 240
+    LeftButton.GlyphColorPressedAlpha = 150
+    LeftButton.GlyphThickness = 2
+    RightButton.Kind = scgpebCustom
+    RightButton.Enabled = True
+    RightButton.Visible = False
+    RightButton.ImageIndex = -1
+    RightButton.ImageHotIndex = -1
+    RightButton.ImagePressedIndex = -1
+    RightButton.RepeatClick = False
+    RightButton.RepeatClickInterval = 200
+    RightButton.ShowHint = False
+    RightButton.GlyphColor = clWindowText
+    RightButton.GlyphColorAlpha = 180
+    RightButton.GlyphColorHotAlpha = 240
+    RightButton.GlyphColorPressedAlpha = 150
+    RightButton.GlyphThickness = 2
+    BiDiMode = bdLeftToRight
+    Color = clWhite
+    Ctl3D = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentBiDiMode = False
+    ParentFont = False
+    TabOrder = 19
+    OnChange = scGPNumericEdit_delka_dopravnikuChange
     OnKeyDown = FormKeyDown
   end
 end

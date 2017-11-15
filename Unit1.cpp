@@ -2453,9 +2453,11 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
 				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
 				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
-				//Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
+				Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
 				Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
+				Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
+				Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
 				//nastavení defaultních hodnot
 
 				if(Form_parametry->scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
@@ -2463,7 +2465,6 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					Form_parametry->scGPNumericEdit_CT->Value=d.v.PP.TT;//d.v.ZAKAZKY->dalsi->TT;
 					Form_parametry->scGPNumericEdit_kapacita->Value=1;
 				}
-				//Form_parametry->input_state=1;//povoleníní akcí vyplývající ze změny editů
 
 				//nadesignování formu podle právě vypisováných hodnot
 				Form_parametry->vypis("");
@@ -2498,6 +2499,8 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 							pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
 							pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
 							pom->RD=Form_parametry->scGPNumericEdit_RD->Value;
+							pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
+							pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value;
 							//pokud je požadovaný rozklad objektu na více objektů
 							if(Form_parametry->kapacitaSG>1)
 							{
@@ -4201,6 +4204,7 @@ if(scExPanel_log_header->Visible==false){
 	}
 }
 //---------------------------------------------------------------------------
+
 
 
 

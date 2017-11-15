@@ -40,6 +40,8 @@ class Cvektory
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
 			double rotace;//rotace jigu v objektu
+			double mezera;//mezera mezi vozíky
+			short mV;//rozdíl počet mezer a vozíků
 			TPohon *pohon;//ukazatel na použitý pohon
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
@@ -479,6 +481,8 @@ private:
 				double kapacita;
 				double kapacita_dop;
 				double rotace;//rotace jigu v objektu
+				double mezera;//mezera mezi vozíky
+				short mV;//rozdíl počet mezer a vozíků
 				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 				double delka_dopravniku;//delka dopravníku v rámci objektu
 				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky

@@ -21,7 +21,6 @@
 class TForm_parametry : public TForm
 {
 __published:	// IDE-managed Components
-	TComboBox *ComboBox_druh_objektu;
 	TEdit *Edit_name;
 	TEdit *Edit_shortname;
 	TLabel *Label1;
@@ -34,8 +33,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_kapacita;
 	TscGPButton *scGPButton_OK;
 	TscGPButton *scGPButton_storno;
-	TEdit *Edit_vzdalenost_voziku;
-	TRadioButton *RadioButton_na_sirku;
 	TrHTMLLabel *rHTMLLabel_pohon;
 	TrHTMLLabel *rHTMLLabel_odchylka;
 	TrHTMLLabel *rHTMLLabel_delka_dopravniku;
@@ -59,6 +56,10 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TscGPNumericEdit *scGPNumericEdit_odchylka;
 	TscGPNumericEdit *scGPNumericEdit_kapacita;
+	TrHTMLLabel *rHTMLLabel_rotace;
+	TscGPComboBox *scComboBox_rotace;
+	TrHTMLLabel *rHTMLLabel_mezera;
+	TscGPNumericEdit *scGPNumericEdit_mezera;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -80,7 +81,7 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
 	enum Tminsec{MIN=0,SEC};Tminsec minsec;
-	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST};
+	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA};
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchovává vybìr input hodnoty (aby se formuláøe necyklyly)
 
@@ -95,8 +96,6 @@ private:	// User declarations
 	short offset;
 	short defaultForm_parametryHeight;
 
-	double dV;//delka voziku
-	double m;//mezera mezi voziky
 	short p;//odeètení do správného poètu mezer
 
 public:		// User declarations

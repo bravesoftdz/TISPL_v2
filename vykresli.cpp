@@ -826,7 +826,7 @@ void Cvykresli::vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,
 	 Cvektory::TProces *P_dal=P;
 	 //exponenciální
 	 short I=170;//aktuální intenzita světlá nejvíc , 120 pro linearní 170 pro epxponenicální
-	 double IK=sqrt(I*1.0)/(P->segment_cesty->objekt->kapacita_dop);//intenzita krok  pro exponencialni
+	 double IK=sqrt(I*1.0)/(P->segment_cesty->objekt->kapacita/*kapacita_dop*/);//intenzita krok  pro exponencialni
 	 double A=0;short B=I;//pomocné pro exponeciální snižování intenzity
 	 //linearní
 	 if(NOLIEX==1)  //u lineárního je chyba u nejvyšší intenzity
