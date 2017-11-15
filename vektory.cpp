@@ -1512,29 +1512,51 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 		 UnicodeString cas_start=PP.cas_start;
 		 UnicodeString delka_voziku=PP.delka_voziku;
 		 UnicodeString titulek_projektu;
+		 UnicodeString PP_TT=PP.TT;
+		 UnicodeString sirka_voziku=PP.sirka_voziku;
+
+		 try{
+
 
 
 		//poznámka, provizorní záležitost - potom smazat
 		if(export_format==3)  {
-		data+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css\" integrity=\"sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb\" crossorigin=\"anonymous\">";
-		data+="<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js\" integrity=\"sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ\" crossorigin=\"anonymous\"></script>";
-		data+="<div class=\"container-fluid\"><form></br>";
-		data+="<h4>Parametry projektu <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
+
+			data+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css\" integrity=\"sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb\" crossorigin=\"anonymous\">";
+			data+="<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js\" integrity=\"sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ\" crossorigin=\"anonymous\"></script>";
+		  data+="<div class=\"container-fluid\">";
+
+		if(ZAKAZKY->dalsi!=NULL){   //když existuje zakázka - vypiš tuto hlavičku
+		data+="<form></br>";
+		data+="<h4>Parametry zakázky <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Požadované celkové množství</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_mnozstvi+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Počet pracovních dní [rok]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+dni_rok+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Počet pracovních hodin [den]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+hod_den+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Efektivita [%]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+efektivita+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Začátek výroby</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+cas_start+"\"></div></div>";
     data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka vozíku</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
-    data+="</form></div></br>";
+		data+="</form></div></br>";
 
-		data+="<div class=\"container-fluid\"><form>";
+		data+="<div class=\"container-fluid\"><form>";  }
+
+		else {   //pokud neexistuje zakázka vypiš pouze info z NÁVRHU
+
+			data+="<form></br>";
+			data+="<h4>Parametry linky <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">TaktTime [min]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_TT+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka vozíku [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
+      data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Šířka vozíku [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+sirka_voziku+"\"></div></div>";
+
+			data+="</form></div></br>";
+			data+="<div class=\"container-fluid\"><form>";
+
+		}
 
 		if(Form1->STATUS==Form1->NAVRH) {
 
 
 		data+="<h4>NÁVRH: Přehled objektů a jejich parametrů</h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [min]</th><th scope=\"col\">Kapacita doporučená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteč palců [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [min]</th><th scope=\"col\">Kapacita doporučená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteč palců [cm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
 
 		Cvektory::TObjekt *O=OBJEKTY->dalsi;
 
@@ -1643,7 +1665,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 
 				Cvektory::TPohon *ukaz=POHONY->dalsi;
 
-				data+="ID"+S+"Název"+S+"Rychlost od [m/min]"+S+"Rychlost do [m/min]"+S+"Rozteč palců [mm]"+S+"\n";
+				data+="ID"+S+"Název"+S+"Rychlost od [m/min]"+S+"Rychlost do [m/min]"+S+"Rozteč palců [cm]"+S+"\n";
 				while(ukaz!=NULL){
 
 				UnicodeString ID=ukaz->n;
@@ -1667,7 +1689,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 	{
 		UnicodeString zakazka_name=Z->name;
 		data+="Přehled objektů a jejich nastavených parametrů u zakázky:"+S+zakazka_name+"\n";
-		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporučená"+S+"Kapacita nastavená"+S+"Název dopravníku"+S+"Rychlost dopravníku"+S+"Rozteč palců [mm]"+S+"Délka dopravníku [m]\n";
+		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporučená"+S+"Kapacita nastavená"+S+"Název dopravníku"+S+"Rychlost dopravníku"+S+"Rozteč palců [cm]"+S+"Délka dopravníku [m]\n";
 
 		Cvektory::TObjekt *O=OBJEKTY->dalsi;
 
@@ -1734,6 +1756,9 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 		MemoryStream->SaveToFile(FileName);
 		delete MemoryStream;
 		return 1;
+
+		}
+		catch(...){;Form1->MB("Soubor je otevřen, ukončete aplikaci MS Excel");}
 }
 //ZDM
 //---------------------------------------------------------------------------
