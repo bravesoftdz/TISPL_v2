@@ -142,9 +142,9 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Button_DELClick
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
-    Left = 0
+    Left = 1
     Top = 267
-    Width = 641
+    Width = 642
     Height = 94
     BorderStyle = bsNone
     Color = clWhite
@@ -260,7 +260,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Font.Style = []
         Font.Quality = fqClearType
         ParentFont = False
-        TitleCaption = 'Rozte'#269' [mm]'
+        TitleCaption = 'Rozte'#269' [cm]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -954,6 +954,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 12
     Visible = False
+    Style = enFloat
     Value = 1.000000000000000000
   end
   object rEditNum_sirkavoziku: TrEditNum
