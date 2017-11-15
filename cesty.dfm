@@ -101,7 +101,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'CT [s]'
+        TitleCaption = 'CT [min]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15

@@ -378,6 +378,7 @@ __published:	// IDE-managed Components
 	void __fastcall ComboBoxCekaniChange(TObject *Sender);
 	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
+	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
 
 
 // User declarations

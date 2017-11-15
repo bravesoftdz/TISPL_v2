@@ -2116,7 +2116,7 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 //{
 //		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name);
 //		ukaz=ukaz->dalsi;
-//}
+//}
 //S(m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.v.OBJEKTY->dalsi->X,d.v.OBJEKTY->dalsi->Y,d.v.OBJEKTY->dalsi->dalsi->X,d.v.OBJEKTY->dalsi->dalsi->Y));
 			/*HRGN hreg=CreateEllipticRgn(100,100,300,200);
 				Canvas->Brush->Color=clRed;
@@ -4208,4 +4208,12 @@ if(scExPanel_log_header->Visible==false){
 
 
 
+
+void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
+{
+scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
+
+
+}
+//---------------------------------------------------------------------------
 

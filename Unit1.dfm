@@ -3052,6 +3052,7 @@ object Form1: TForm1
       TextAlignment = taLeftJustify
     end
   end
+    OnOpened = scSplitView_OPTIONSOpened
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34

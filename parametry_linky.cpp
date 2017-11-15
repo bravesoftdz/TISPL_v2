@@ -26,8 +26,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
 		if(Form1->STATUS==Form1->NAVRH)
 		{
-			scGPButton_vozik->Caption="JIG";
-			scGPButton_pohon->Caption="Takt time";
+			scGPButton_vozik->Caption="   Jig";
+			scGPButton_pohon->Caption="   Takt time";
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
 			rHTMLLabel_sirka->Visible=true;
@@ -43,8 +43,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		}
 		else
 		{
-			scGPButton_vozik->Caption="Vozík";
-			scGPButton_pohon->Caption="Pohon";
+			scGPButton_vozik->Caption="   Vozík";
+			scGPButton_pohon->Caption="   Pohon";
 
 			rHTMLLabel_takt->Visible=false;
 			rEditNum_takt->Visible=false;
@@ -87,6 +87,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_pohon->Options->FrameNormalColor=Form_parametry_linky->Color;
 	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_pohon->Options->FramePressedColor=Form_parametry_linky->Color;
+
+	 rStringGridEd_tab_dopravniky->Left=1;
+	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
+
 
 
 	 //nahrání hodnot
