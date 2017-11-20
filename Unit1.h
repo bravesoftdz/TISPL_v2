@@ -218,8 +218,6 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_parametry_linky;
 	TscGPGlyphButton *scGPGlyphButton_definice_zakazek;
 	TDrawGrid *DrawGrid_knihovna;
-	TscGPSwitch *scGPSwitch_rezim;
-	TscLabel *scLabel_rezim;
 	TscLabel *scLabel_ZOOM;
 	TscGPSwitch *scGPSwitch_meritko;
 	TscLabel *scLabel5;
@@ -243,6 +241,9 @@ __published:	// IDE-managed Components
 	TscHTMLLabel *scHTMLLabel_log_vypis;
 	TscGPGlyphButton *scGPGlyphButton_zpravy_ikona;
 	TscButton *scButton11;
+	TscGPSwitch *scGPSwitch_rezim;
+	TscLabel *scLabel2;
+	TscLabel *scLabel1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

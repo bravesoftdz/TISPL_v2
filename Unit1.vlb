@@ -284,7 +284,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=557,331,102,36
+Coordinates=773,221,91,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -406,12 +406,6 @@ Coordinates=709,631,124,36
 
 [IdTime1]
 Coordinates=1297,606,61,36
-
-[scLabel_rezim]
-Coordinates=1204,606,73,36
-
-[scGPSwitch_rezim]
-Coordinates=773,221,91,36
 
 [Toolbar_Ulozit]
 Coordinates=1046,510,47,36
