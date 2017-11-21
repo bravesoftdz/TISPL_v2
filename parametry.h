@@ -60,6 +60,8 @@ __published:	// IDE-managed Components
 	TscGPComboBox *scComboBox_rotace;
 	TrHTMLLabel *rHTMLLabel_mezera;
 	TscGPNumericEdit *scGPNumericEdit_mezera;
+	TscGPCheckBox *scGPCheckBox_pocet_mezer;
+	TscGPButton *scGPButton_metry_milimetry;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -74,19 +76,17 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_delka_dopravnikuChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_kapacitaChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_RDChange(TObject *Sender);
-
-
-
-
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall Button_metry_milimetryClick(TObject *Sender);
+	void __fastcall scGPCheckBox_pocet_mezerClick(TObject *Sender);
 
 private:	// User declarations
-	enum Tminsec{MIN=0,SEC};Tminsec minsec;
-	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA};
-	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchovává vybìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
+	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
+	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
 
 
-	void set(Tcomponents C,Tcomponents_state S);
+	void set(Tcomponents C,Tcomponents_state S);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu
 	void input_CT();//pøepoèet hodnot vyplıvajících ze zmìny CT
 	void input_DD();//pøepoèet hodnot vyplıvajících ze zmìny DD
 	void input_RD();//pøepoèet hodnot vyplıvajících ze zmìny RD
@@ -95,11 +95,14 @@ private:	// User declarations
 
 	short offset;
 	short defaultForm_parametryHeight;
+	TColor hl_color;//(TColor)RGB(255,141,28);//barva zvıraznìní rámeèku komponenty napø.pro povinné poloky
+	short hlFrameWidth;//šíøka zvıraznìní rámeèku komponenty napø.pro povinné poloky
 
-	short p;//odeètení do správného poètu mezer
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
+	enum Tminsec{S=0,MIN};Tminsec minsec;//pøepínaè jednotek èasu
+	enum Tm_mm{M=0,MM};Tm_mm m_mm;//pøepínaè jednotek vzdálenost
 	void setForm4Rezim(unsigned short rezim);
 	Tinput_state input_state;
 	void vypis(UnicodeString text,bool RED=true);

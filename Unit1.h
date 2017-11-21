@@ -448,7 +448,8 @@ private:
 
 	int vybrany_objekt;
 
-	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
+public:	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
+private:
 	TPointD akt_souradnice_kurzoru;//uchová aktuální pozici kurzoru v logickıch jednotkách, resp. souøadnicích
 	TPoint vychozi_souradnice_kurzoru;//uchová vıchozí pozici kurzoru
 	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
@@ -505,6 +506,8 @@ public:		// User declarations
 	void S(UnicodeString Text="");//Usnadòuje pøístup k ShowMessage
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false);
 	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true);
+	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišuje zápis do INI aplikace
+	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišuje ètení z INI aplikace
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

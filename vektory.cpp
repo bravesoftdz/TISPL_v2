@@ -1471,7 +1471,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 {
 		//ZDM get_LT_a_max_min_TT();//zajistí hodnoty
 
-		generuj_POHONY();
+		//generuj_POHONY(); už nepoužíváme, ale možná časem budeme
 
 		AnsiString data="";//celková textová data k exportu
 
