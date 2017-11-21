@@ -348,7 +348,6 @@ __published:	// IDE-managed Components
 	void __fastcall CheckBox_pouzit_zadane_kapacityClick(TObject *Sender);
 	void __fastcall SQL_processIDClick(TObject *Sender);
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
-	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton1Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

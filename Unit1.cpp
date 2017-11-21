@@ -3837,13 +3837,6 @@ void __fastcall TForm1::rComboBoxKrokChange(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::Button12Click(TObject *Sender)
-{
- //	WindowState = wsMaximized;
- scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
-
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 {
 	if (FMaximized)//zmenšení
