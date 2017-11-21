@@ -56,7 +56,7 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	 		 {
 	 				Pos=t.Pos(" ");
 	 				Pos_min+=Pos;
-	 				t=t.SubString(Pos+1,t.Length());
+					t=t.SubString(Pos+1,t.Length());
 	 		 }
 
 	 		 if(Pos==0)Pos_min=44;//pokud text neobsahuje mezeru, rozdìlí umìle
@@ -83,6 +83,9 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	}
 	//checkbox
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;
+	if(checkbox_zobrazit)myMessageBox->Height=151;
+	else myMessageBox->Height=Button_Yes->Top+Button_Yes->Height+11;//pokud neni checkbox zobrazen, je formáláø o 10px vìtší než je konec tlaèítek
+
 	//tlaèítka
 	switch(mbTYPE) //OK=0,OKCANCEL,YESNO,YESNOCANCEL
 	{

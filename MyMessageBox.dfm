@@ -3,7 +3,7 @@ object myMessageBox: TmyMessageBox
   Top = 0
   BorderStyle = bsNone
   ClientHeight = 151
-  ClientWidth = 348
+  ClientWidth = 366
   Color = clBtnFace
   Font.Charset = EASTEUROPE_CHARSET
   Font.Color = clWindowText
@@ -46,7 +46,7 @@ object myMessageBox: TmyMessageBox
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 348
+    Width = 366
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -74,9 +74,10 @@ object myMessageBox: TmyMessageBox
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 348
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 298
+      Left = 316
       Top = 0
       Width = 50
       Height = 33
@@ -151,11 +152,12 @@ object myMessageBox: TmyMessageBox
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 298
     end
     object scLabel_caption: TscLabel
       Left = 0
       Top = 0
-      Width = 261
+      Width = 279
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -182,9 +184,10 @@ object myMessageBox: TmyMessageBox
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
+      ExplicitWidth = 261
     end
     object scGPGlyph_info: TscGPGlyphButton
-      Left = 261
+      Left = 279
       Top = 0
       Width = 37
       Height = 34
@@ -260,6 +263,7 @@ object myMessageBox: TmyMessageBox
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 261
     end
   end
   object Button_Yes: TscGPButton
@@ -446,7 +450,7 @@ object myMessageBox: TmyMessageBox
     AlignWithMargins = True
     Left = 3
     Top = 131
-    Width = 342
+    Width = 360
     Height = 17
     Align = alBottom
     BiDiMode = bdLeftToRight
@@ -494,6 +498,7 @@ object myMessageBox: TmyMessageBox
     ImageGlow = True
     Checked = False
     ShowFocusRect = False
+    ExplicitWidth = 342
   end
   object Button_OK: TscGPButton
     Left = 121
