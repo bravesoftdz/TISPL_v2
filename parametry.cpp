@@ -1008,11 +1008,11 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 	scGPEdit_shortname->Text=Form1->copyObjekt->short_name;
 	scComboBox_rezim->ItemIndex=Form1->copyObjekt->rezim;
 	scComboBox_pohon->ItemIndex=Form1->copyObjekt->pohon->n-1;
-	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(pom->CT/jednotky_cas);//nastaví zobrazení poètu desetinnıch míst;
+	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->CT/jednotky_cas);//nastaví zobrazení poètu desetinnıch míst;
 	scGPNumericEdit_CT->Value=Form1->copyObjekt->CT/jednotky_cas;
 	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení poètu desetinnıch míst;
 	scGPNumericEdit_RD->Value=Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost;
-	scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(pom->delka_dopravniku*jednotky_vzdalenost);//nastaví zobrazení poètu desetinnıch míst;
+	scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost);//nastaví zobrazení poètu desetinnıch míst;
 	scGPNumericEdit_delka_dopravniku->Value=Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost;
 	scComboBox_cekani_palec->ItemIndex=Form1->copyObjekt->cekat_na_palce;
 	scGPNumericEdit_kapacita->Value=Form1->copyObjekt->kapacita;
