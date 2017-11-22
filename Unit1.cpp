@@ -125,6 +125,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 
+  copyObjekt=new Cvektory::TObjekt;
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -2475,12 +2476,14 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
 				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
-        //CT
+				//CT
+				Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT/jednotky_cas);//nastaví zobrazení počtu desetinných míst;
 				Form_parametry->scGPNumericEdit_CT->Value=pom->CT/jednotky_cas;
 				//RD
 				Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení počtu desetinných míst;
 				Form_parametry->scGPNumericEdit_RD->Value=pom->RD*jednotky_cas*jednotky_vzdalenost;
 				//DD
+				Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku*jednotky_vzdalenost);//nastaví zobrazení počtu desetinných míst;
 				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku*jednotky_vzdalenost;
 				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 				Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -2874,8 +2877,9 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 void TForm1::vse_odstranit()
 {
 		d.v.vse_odstranit();
-		pom=NULL;
-		proces_pom=NULL;
+		pom=NULL;delete pom;
+		proces_pom=NULL;delete proces_pom;
+		copyObjekt=NULL;delete copyObjekt;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -62,6 +62,8 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit_mezera;
 	TscGPCheckBox *scGPCheckBox_pocet_mezer;
 	TscGPButton *scGPButton_metry_milimetry;
+	TscGPGlyphButton *scGPGlyphButton_copy;
+	TscGPGlyphButton *scGPGlyphButton_paste;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -79,6 +81,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall Button_metry_milimetryClick(TObject *Sender);
 	void __fastcall scGPCheckBox_pocet_mezerClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_pasteClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
@@ -97,7 +101,6 @@ private:	// User declarations
 	short defaultForm_parametryHeight;
 	TColor hl_color;//(TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
 	short hlFrameWidth;//šíøka zvýraznìní rámeèku komponenty napø.pro povinné položky
-
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
