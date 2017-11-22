@@ -223,6 +223,12 @@
             <DependentOn>popUP_menu.h</DependentOn>
             <BuildOrder>18</BuildOrder>
         </CppCompile>
+        <CppCompile Include="report.cpp">
+            <Form>Form_report</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>report.h</DependentOn>
+            <BuildOrder>23</BuildOrder>
+        </CppCompile>
         <CppCompile Include="superform.cpp">
             <Form>Form_definice_zakazek</Form>
             <FormType>dfm</FormType>
@@ -268,6 +274,7 @@
         <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="kalendar.dfm"/>
+        <FormResources Include="report.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

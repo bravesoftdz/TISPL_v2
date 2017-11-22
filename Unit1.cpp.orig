@@ -18,6 +18,7 @@
 #include "popUP_menu.h"
 #include "eDesigner.h"
 #include "casovaOsa_info.h"
+#include "report.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -40,6 +41,7 @@
 #pragma link "scDrawUtils"
 #pragma link "scGPImages"
 #pragma link "scHtmlControls"
+#pragma link "scWebBrowser"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
@@ -48,6 +50,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
 	srand(time(NULL));//nutno tady
+
 
 	NewDesignSettings();//záležitost s novým designem
 
@@ -70,6 +73,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	grid=true; size_grid=10;//velikost je v logických jednotkách (metrech)
 	prichytavat_k_mrizce=0;
 	SB("přichytávat?",5);
+	ortogonalizace_stav=false;
+
 	//bitmapa pro uložení přesovaného obrazu - PAN
 	Pan_bmp=new Graphics::TBitmap();
 	pan_non_locked=false;
@@ -122,6 +127,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 
+  copyObjekt=new Cvektory::TObjekt;
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -439,7 +445,6 @@ bool TForm1::ttr(UnicodeString Text)
 //při aktivaci formuláře startující záležitosti, pro zpřehlednění kodu
 void TForm1::startUP()
 {
-
 	//////otevrení posledního souboru
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
 
@@ -451,24 +456,22 @@ void TForm1::startUP()
 		//načtení posledního otevřeného souboru
 		if(nastaveni.posledni_file)
 		{
-			TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-			FileName=ini->ReadString("otevrene_soubory","posledni_soubor",FileName);
+			FileName=readINI("otevrene_soubory","posledni_soubor");
 			if(FileName!="Nový.tispl" && FileName!="")OtevritSoubor(FileName);
-			delete ini;
 		}
 	}
 
 	//////automatický BACKUP
 	//volá obnovu dat ze zálohy, pokud poslední ukončení programu neproběhlo standardně
-	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	AnsiString status=readINI("Konec","status");
 
-	AnsiString status=ini->ReadString("Konec","status","");//poslední parametr musí být prázdný jinak bude padat!!!
 	if(status=="KO")//pokud došlo k pádu programu
 	{
 		//zavře úvodní dialog
 		zavrit_uvod();
 
-		FileName=ini->ReadString("otevrene_soubory","posledni_soubor",FileName);//zjistí název posledního souboru
+		//načte název posledního souboru
+		FileName=readINI("otevrene_soubory","posledni_soubor");
 
 		//prvně porovná jestli otevřený soubor není náhoudou mladší než stejnomený BAC soubor
 		FILETIME ftCreate, ftAccess, ftWrite,ftWrite_bac;
@@ -502,8 +505,30 @@ void TForm1::startUP()
 		}
 	}
 	//zapíše status pro předčasné ukončení programu pro případ pádu programu
-	ini->WriteString("Konec","status","KO");
+	writeINI("Konec","status","KO");
+
+	//načte dílčí nastavení aplikace
+	AnsiString T=readINI("Nastaveni_app","ortogonalizace");
+	if(T=="0" || T=="")ortogonalizace_stav=false;else ortogonalizace_stav=true;
+	T=readINI("Nastaveni_app","prichytavat");
+	if(T=="0" || T=="")prichytavat_k_mrizce=0;else prichytavat_k_mrizce=ms.MyToDouble(T);
+}
+//---------------------------------------------------------------------------
+//zajišťuje zápis do INI aplikace
+void TForm1::writeINI(AnsiString Section,AnsiString Ident,AnsiString Value)
+{
+	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	ini->WriteString(Section,Ident,Value);
 	delete ini;
+}
+//---------------------------------------------------------------------------
+//zajišťuje čtení z INI aplikace
+AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
+{
+	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	AnsiString status=ini->ReadString(Section,Ident,"");//hlavně nepoužívat poslední parametr!!!jinak bude app padat
+	delete ini;
+	return status;
 }
 //---------------------------------------------------------------------------
 //Zalogování na webu
@@ -1049,6 +1074,12 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 119:ZOOM_OUT();break;
 		//F9
 		case 120:break;
+		//F10
+		case 121:break;
+		//F11
+		case 122:ortogonalizace_on_off();break;//přepíná stav automatické ortogonalizace
+		//F12
+		case 123:ortogonalizovat();break;//ortogonalizuje schéma
 		//CTRL, SHIFT
 		default:
 		{
@@ -1864,7 +1895,7 @@ void TForm1::add_objekt(int X, int Y)
 						}
 						break;
 					}
-					case 1:souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
+					case 1:	souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
 					case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
 			}
 			akutalizace_stavu_prichytavani_vSB();
@@ -1887,6 +1918,7 @@ void TForm1::add_objekt(int X, int Y)
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
 		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
+		ortogonalizace();
 		Akce=NIC;kurzor(standard);
 		REFRESH();
 		DuvodUlozit(true);
@@ -1943,6 +1975,7 @@ void TForm1::move_objekt(int X, int Y)
 		}
 		posun_objektu=false;Akce=NIC;kurzor(standard);//REFRESH();DuvodUlozit(true);
 		zmen_poradi_objektu(X,Y);//testuje zda se nejedná o změnu pořadí (to musí ještě uživatel potvrdit), pokud ano, vrácí true
+		ortogonalizace();
 		REFRESH();DuvodUlozit(true);
 		pom=NULL;
 }
@@ -1999,6 +2032,36 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		}
 }
 //---------------------------------------------------------------------------
+//zapíná či vypíná automatickou ortogonalizaci
+void TForm1::ortogonalizace_on_off()
+{
+	 if(ortogonalizace_stav)//pokud je zapnuta
+	 {
+		 ortogonalizace_stav=false;//tak vypne
+		 SB("Ortogonalizace vypnuta.");
+	 }
+	 else//pokud vypnuta, tak zapne, zortogonalizuje a zapíše stav do registru
+	 {
+		 ortogonalizace_stav=true;
+		 ortogonalizovat();
+		 writeINI("Nastaveni_app","ortogonalizace",(short)ortogonalizace_stav);
+		 SB("Ortogonalizace zapnuta.");
+   }
+}
+//---------------------------------------------------------------------------
+//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
+void TForm1::ortogonalizace()
+{
+	 if(ortogonalizace_stav)ortogonalizovat();
+}
+//---------------------------------------------------------------------------
+//ortogonalizuje schéma + přichytne ke mřížce pokud je požadováno
+void TForm1::ortogonalizovat()
+{
+  d.v.ortogonalizovat();
+	REFRESH();
+}
+//---------------------------------------------------------------------------
 void TForm1::zneplatnit_minulesouradnice()
 {
 	minule_souradnice_kurzoru=TPoint(-200,-200);
@@ -2019,8 +2082,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	if(antialiasing)C->Font->Size=11;else C->Font->Size=10;
 	C->Font->Name="Arial";
 	C->Pen->Width=1;
-	C->Pen->Color=(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
-	C->Brush->Color=(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
+	C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+	C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
 	C->Font->Color=clWhite;
 	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 	{
@@ -2116,7 +2179,7 @@ void __fastcall TForm1::Button1Click(TObject *Sender)
 //{
 //		Memo2->Lines->Add(AnsiString(ukaz->n)+" "+ukaz->name);
 //		ukaz=ukaz->dalsi;
-//}
+//}
 //S(m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.v.OBJEKTY->dalsi->X,d.v.OBJEKTY->dalsi->Y,d.v.OBJEKTY->dalsi->dalsi->X,d.v.OBJEKTY->dalsi->dalsi->Y));
 			/*HRGN hreg=CreateEllipticRgn(100,100,300,200);
 				Canvas->Brush->Color=clRed;
@@ -2326,9 +2389,8 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		log2web("konec");
 		//pro ochranu v případě pádu programu
 		//TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-		TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-		ini->WriteString("Konec","status","OK");
-		delete ini;
+		writeINI("Nastaveni_app","prichytavat",prichytavat_k_mrizce);
+		writeINI("Konec","status","OK");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2444,25 +2506,33 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					ukaz=ukaz->dalsi;
 				}
 				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
+				double jednotky_cas=1.0;if(Form_parametry->minsec==Form_parametry->MIN)jednotky_cas=60.0;
+				double jednotky_vzdalenost=1.0;if(Form_parametry->m_mm==Form_parametry->MM)jednotky_vzdalenost=1000.0;
 				Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 				Form_parametry->scGPEdit_name->Text=pom->name;
 				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
 				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
-				Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
-				Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
-				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
+				//CT
+				Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT/jednotky_cas);//nastaví zobrazení počtu desetinných míst;
+				Form_parametry->scGPNumericEdit_CT->Value=pom->CT/jednotky_cas;
+				//RD
+				Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení počtu desetinných míst;
+				Form_parametry->scGPNumericEdit_RD->Value=pom->RD*jednotky_cas*jednotky_vzdalenost;
+				//DD
+				Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku*jednotky_vzdalenost);//nastaví zobrazení počtu desetinných míst;
+				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku*jednotky_vzdalenost;
 				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 				Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
 				Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 				Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
-				Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+				Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera*jednotky_vzdalenost;
+				Form_parametry->scGPCheckBox_pocet_mezer->Checked=!pom->mV;
 				//nastavení defaultních hodnot
-
 				if(Form_parametry->scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
 				{
-					Form_parametry->scGPNumericEdit_CT->Value=d.v.PP.TT;//d.v.ZAKAZKY->dalsi->TT;
+					Form_parametry->scGPNumericEdit_CT->Value=d.v.PP.TT/jednotky_cas;//d.v.ZAKAZKY->dalsi->TT;
 					Form_parametry->scGPNumericEdit_kapacita->Value=1;
 				}
 
@@ -2471,14 +2541,14 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->setForm4Rezim(pom->rezim);
 
 				//ošetření aby zůstal dialog na monitoru
-				if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->Width<Form1->Width)
+				if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->ClientWidth<Form1->ClientWidth)
 					Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
 				else
-					Form_parametry->Left=Form1->Width-Form_parametry->Width-10;
-				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->Height<Form1->Height)
+					Form_parametry->Left=Form1->ClientWidth-Form_parametry->ClientWidth-10;
+				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->ClientHeight<Form1->ClientHeight)
 					Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
 				else
-					Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
+					Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-scGPPanel_statusbar->ClientHeight-10;
 
 				//nastevní titulku
 				Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
@@ -2489,22 +2559,25 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 						try
 						{
 							//navrácení hodnot z Form_Parametry, v případě stisku OK
+							if(Form_parametry->minsec==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
+							if(Form_parametry->m_mm==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
 							pom->name=Form_parametry->scGPEdit_name->Text;
 							pom->short_name=Form_parametry->scGPEdit_shortname->Text;
-							pom->delka_dopravniku=ms.MyToDouble(Form_parametry->scGPNumericEdit_delka_dopravniku->Value);
+							pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
 							pom->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
 							pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
 							pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
 							pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
 							pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
 							pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
-							pom->RD=Form_parametry->scGPNumericEdit_RD->Value;
+							pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
 							pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-							pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value;
+							pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
+							pom->mV=!Form_parametry->scGPCheckBox_pocet_mezer->Checked;
 							//pokud je požadovaný rozklad objektu na více objektů
 							if(Form_parametry->kapacitaSG>1)
 							{
-									pom->CT=Form_parametry_linky->rEditNum_takt->Value;//vrácení správného CT
+									pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
 									Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
 									for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
 									{
@@ -2518,8 +2591,8 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 							}
 							else //pro kontinuál a postprocesní
 							{
-							 pom->CT=Form_parametry->scGPNumericEdit_CT->Value;
-              }
+							 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
+							}
 							DuvodUlozit(true);
 							REFRESH();
 						}
@@ -2799,9 +2872,10 @@ void __fastcall TForm1::OtevritsablonuClick(TObject *Sender)
 //uložení posledního otevřeného souboru
 void TForm1::ulozit_posledni_otevreny()
 {
-	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-	ini->WriteString("otevrene_soubory","posledni_soubor",FileName);
-	delete ini;
+	//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	//-ini->WriteString("otevrene_soubory","posledni_soubor",FileName);
+	//-delete ini;
+	writeINI("otevrene_soubory","posledni_soubor",FileName);
 }
 //---------------------------------------------------------------------------
 //zavře úvodní dialog
@@ -2840,8 +2914,9 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 void TForm1::vse_odstranit()
 {
 		d.v.vse_odstranit();
-		pom=NULL;
-		proces_pom=NULL;
+		pom=NULL;delete pom;
+		proces_pom=NULL;delete proces_pom;
+		copyObjekt=NULL;delete copyObjekt;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3144,13 +3219,13 @@ void __fastcall TForm1::csv1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::html1Click(TObject *Sender)
 {
-  scSplitView_MENU->Opened=false;
+	scSplitView_MENU->Opened=false;
 	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
 		S("Žádná data k exportu!");
 	else
 	{
 		//příprava SaveDialogu
-		SaveDialog->Title="Vytvořit HTML report...";
+	 /*	SaveDialog->Title="Vytvořit HTML report...";
 		SaveDialog->DefaultExt="*.html";
 		SaveDialog->Filter="Soubory formátu HTML (*.html)|*.html";
 
@@ -3166,8 +3241,14 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 			if(d.v.ulozit_report(SaveDialog->FileName)==1)SB("Report do HTML dokončen.");else SB("Chyba při tvorbě reportu!");
 			//postprocesní záležitost
 			Screen->Cursor=crDefault;//změní kurzor na default
-			ShellExecute(0,L"open",UnicodeString(SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup
-		}
+			ShellExecute(0,L"open",UnicodeString(SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup   */
+
+			UnicodeString FN=FileName;
+			if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
+			Form_report->ulozit_report(FN+".html");
+
+		
+
 	}
 }
 //---------------------------------------------------------------------------
@@ -3806,13 +3887,6 @@ void __fastcall TForm1::rComboBoxKrokChange(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::Button12Click(TObject *Sender)
-{
- //	WindowState = wsMaximized;
- scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
-
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 {
 	if (FMaximized)//zmenšení
@@ -4208,8 +4282,7 @@ if(scExPanel_log_header->Visible==false){
 
 
 
-<<<<<<< HEAD
-=======
+
 void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
 {
 scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
@@ -4217,5 +4290,13 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 }
 //---------------------------------------------------------------------------
->>>>>>> 9f81a09a937126d2ee0fe1d550c0403f0517104d
+
+
+
+<<<<<<< HEAD
+
+
+
+=======
+>>>>>>> b71a5f0fad3d064d730271cb4d4fa701905177c1
 

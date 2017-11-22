@@ -4296,7 +4296,5 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 
 
-void __fastcall TForm1::WebBrowser1ShowScriptError(TObject *ASender, const OleVariant &AErrorLine,
-          const OleVariant &AErrorCharacter, const OleVariant &AErrorMessage,
-          const OleVariant &AErrorCode, const OleVariant &AErrorUrl,
+
 
