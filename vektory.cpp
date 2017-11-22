@@ -1476,7 +1476,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 		AnsiString data="";//celková textová data k exportu
 
 		//zjištění exportovaného formátu
-		unsigned short export_format=1;
+		unsigned short export_format=3;
 		if(FileName.SubString(FileName.Length()-2,3).LowerCase() =="xls")export_format=2;
 		if(FileName.SubString(FileName.Length()-3,4).LowerCase() =="html")export_format=3;
 
@@ -1536,12 +1536,13 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 
 			data+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css\" integrity=\"sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb\" crossorigin=\"anonymous\">"; // href=\"\../linky_layouts/styly/css/bootstrap.min.css\">";
 			//data+="<script src=\"\../linky_layouts/styly/js/bootstrap.min.js\"></script>";
+			data+="<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">";
 			data+="<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js\" integrity=\"sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ\" crossorigin=\"anonymous\"></script>";
 			data+="<div class=\"container-fluid\">";
 
-		if(ZAKAZKY->dalsi!=NULL){   //když existuje zakázka - vypiš tuto hlavičku
+		if(ZAKAZKY->dalsi!=NULL){   //když existuje zakázka - vypiš tuto hlavičku //UnicodeString(Form1->scLabel_titulek->Caption)
 		data+="<form></br>";
-		data+="<h4>Parametry zakázky <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
+		data+="<h4>Parametry zakázky <b>"+FileName+"</b></h4></br>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Požadované celkové množství</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_mnozstvi+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Počet pracovních dní [rok]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+dni_rok+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Počet pracovních hodin [den]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+hod_den+"\"></div></div>";
@@ -1659,16 +1660,8 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 	}
 }
 		data+="</form></div>";
-	 //	Form1->scHTML_obsah->Caption=data;
 
-		//Form1->scWebBrowser1->
 
-	//->
-		Form1->scExPanel_html->Visible=true;
-		Form1->scExPanel_html->Width=Form1->ClientWidth;
-		Form1->scExPanel_html->Left=0;
-		Form1->scExPanel_html->Top=0;
-		Form1->scExPanel_html->Height=Form1->ClientHeight;
 
 	}
 
@@ -1780,11 +1773,22 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 		MemoryStream->Clear();
 		MemoryStream->Write(data.c_str(),data.Length());//Win kodování
 		MemoryStream->SaveToFile(FileName);
+
+
+
+		  Form1->scExPanel_html->Visible=true;
+			Form1->scExPanel_html->Top=Form1->scGPPanel_mainmenu->Height*2;
+			Form1->scExPanel_html->Left=Form1->scListGroupNastavProjektu->Width*2;
+			Form1->scExPanel_html->Width=Form1->ClientWidth-400;
+			Form1->scExPanel_html->Height=Form1->ClientHeight-100;
+			Form1->WebBrowser1->Navigate(FileName);
+
+
 		delete MemoryStream;
 		return 1;
 
 		}
-		catch(...){;Form1->MB("Soubor je otevřen, ukončete aplikaci MS Excel");}
+		catch(...){;Form1->MB("Soubor je otevřen, ukončete otevřenou aplikaci a akci opakujte");}
 }
 //ZDM
 //---------------------------------------------------------------------------

@@ -50,11 +50,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 {
 	srand(time(NULL));//nutno tady
 
-	scExPanel_html->Width=Form1->ClientWidth;
-	scExPanel_html->Height=Form1->ClientHeight;
-	scWebBrowser1->Visible=true;
-	scWebBrowser1->Navigate("www.google.com");
- //	scWebBrowser1->
 
 	NewDesignSettings();//záležitost s novým designem
 
@@ -3182,13 +3177,13 @@ void __fastcall TForm1::csv1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::html1Click(TObject *Sender)
 {
-  scSplitView_MENU->Opened=false;
+	scSplitView_MENU->Opened=false;
 	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
 		S("Žádná data k exportu!");
 	else
 	{
 		//příprava SaveDialogu
-		SaveDialog->Title="Vytvořit HTML report...";
+	 /*	SaveDialog->Title="Vytvořit HTML report...";
 		SaveDialog->DefaultExt="*.html";
 		SaveDialog->Filter="Soubory formátu HTML (*.html)|*.html";
 
@@ -3204,8 +3199,16 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 			if(d.v.ulozit_report(SaveDialog->FileName)==1)SB("Report do HTML dokončen.");else SB("Chyba při tvorbě reportu!");
 			//postprocesní záležitost
 			Screen->Cursor=crDefault;//změní kurzor na default
-			ShellExecute(0,L"open",UnicodeString(SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup
-		}
+			ShellExecute(0,L"open",UnicodeString(SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup   */
+
+			UnicodeString FN=FileName;
+			if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
+
+			//S(FN+".html"+);
+			d.v.ulozit_report(FN+".html");
+
+		
+
 	}
 }
 //---------------------------------------------------------------------------
@@ -4248,4 +4251,14 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 }
 //---------------------------------------------------------------------------
 
+
+
+void __fastcall TForm1::WebBrowser1ShowScriptError(TObject *ASender, const OleVariant &AErrorLine,
+          const OleVariant &AErrorCharacter, const OleVariant &AErrorMessage,
+          const OleVariant &AErrorCode, const OleVariant &AErrorUrl,
+          OleVariant &AOut, bool &AHandled)
+{
+S("jj");
+}
+//---------------------------------------------------------------------------
 

@@ -3560,6 +3560,58 @@ object Form1: TForm1
       end
     end
   end
+  object scExPanel_html: TscExPanel
+    Left = 183
+    Top = 583
+    Width = 133
+    Height = 39
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBtnText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 39
+    Visible = False
+    BackgroundStyle = scexbgsPanel
+    HeaderColor = clBtnFace
+    ButtonGlyphColor = clBtnText
+    HeaderStyle = scexphsHeader
+    CaptionImageIndex = -1
+    Spacing = 5
+    ShowFrame = True
+    RealWidth = 0
+    RealHeight = 0
+    ShowRollButton = False
+    ShowCloseButton = True
+    CaptionHeight = 24
+    RollKind = scrkRollVertical
+    RollUpState = False
+    Moveable = True
+    Sizeable = True
+    HideControlsInRollUpState = True
+    StorePaintBuffer = False
+    Caption = 'HTML Report'
+    object WebBrowser1: TWebBrowser
+      Left = 1
+      Top = 24
+      Width = 131
+      Height = 14
+      Align = alClient
+      TabOrder = 0
+      OnShowScriptError = WebBrowser1ShowScriptError
+      ExplicitLeft = -209
+      ExplicitTop = -178
+      ExplicitWidth = 342
+      ExplicitHeight = 217
+      ControlData = {
+        4C0000008A0D0000720100000100000001020000000000000000000000000000
+        000000004C000000000000000000000001000000E0D057007335CF11AE690800
+        2B2E126208000000000000004C0000000114020000000000C000000000000046
+        8000000000000000000000000000000000000000000000000000000000000000
+        00000000000000000100000000000000000000000000000000000000}
+    end
+  end
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
@@ -4080,7 +4132,7 @@ object Form1: TForm1
       TabOrder = 5
       OnClick = html1Click
       Animation = False
-      Caption = 'Report HTML'
+      Caption = 'Report'
       CanFocused = False
       CustomDropDown = False
       Margin = 0
@@ -4867,196 +4919,11 @@ object Form1: TForm1
       WordWrap = False
     end
   end
-  object scExPanel_html: TscExPanel
-    Left = 183
-    Top = 583
-    Width = 133
-    Height = 39
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBtnText
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 39
-    BackgroundStyle = scexbgsPanel
-    HeaderColor = clBtnFace
-    ButtonGlyphColor = clBtnText
-    HeaderStyle = scexphsHeader
-    CaptionImageIndex = -1
-    Spacing = 5
-    ShowFrame = True
-    RealWidth = 0
-    RealHeight = 0
-    ShowRollButton = False
-    ShowCloseButton = True
-    CaptionHeight = 24
-    RollKind = scrkRollVertical
-    RollUpState = False
-    Moveable = True
-    Sizeable = True
-    HideControlsInRollUpState = True
-    StorePaintBuffer = False
-    Caption = 'HTML Report'
-    object scWebBrowser1: TscWebBrowser
-      Left = 1
-      Top = 24
-      Width = 131
-      Height = 14
-      Align = alClient
-      TabOrder = 0
-      ExplicitLeft = 25
-      ExplicitWidth = 480
-      ExplicitHeight = 211
-      ControlData = {
-        4C0000008A0D0000720100000000000000000000000000000000000000000000
-        000000004C000000000000000000000001000000E0D057007335CF11AE690800
-        2B2E126208000000000000004C0000000114020000000000C000000000000046
-        8000000000000000000000000000000000000000000000000000000000000000
-        00000000000000000100000000000000000000000000000000000000}
-    end
-  end
-  object scGPCheckBox1: TscGPCheckBox
-    AlignWithMargins = True
-    Left = 637
-    Top = 444
-    Width = 201
-    Height = 35
-    BiDiMode = bdRightToLeft
-    ParentBiDiMode = False
-    TabOrder = 40
-    TabStop = True
-    Animation = False
-    Caption = 'scGPCheckBox1'
-    CanFocused = True
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    Options.NormalColor = clWindow
-    Options.HotColor = clWindow
-    Options.PressedColor = clWindow
-    Options.DisabledColor = clWindow
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 200
-    Options.DisabledColorAlpha = 125
-    Options.FrameNormalColor = clBtnShadow
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clHighlight
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.CheckMarkNormalColor = clWindowText
-    Options.CheckMarkHotColor = clWindowText
-    Options.CheckMarkPressedColor = clWindowText
-    Options.CheckMarkDisabledColor = clWindowText
-    Options.CheckMarkNormalColorAlpha = 255
-    Options.CheckMarkHotColorAlpha = 255
-    Options.CheckMarkPressedColorAlpha = 255
-    Options.CheckMarkDisabledColorAlpha = 125
-    Options.ShapeSize = 20
-    Options.CheckMarkThickness = 2
-    Options.StyleColors = True
-    OptionsChecked.NormalColor = clWindow
-    OptionsChecked.HotColor = clWindow
-    OptionsChecked.PressedColor = clWindow
-    OptionsChecked.DisabledColor = clWindow
-    OptionsChecked.NormalColorAlpha = 255
-    OptionsChecked.HotColorAlpha = 255
-    OptionsChecked.PressedColorAlpha = 200
-    OptionsChecked.DisabledColorAlpha = 125
-    OptionsChecked.FrameNormalColor = clBtnShadow
-    OptionsChecked.FrameHotColor = clHighlight
-    OptionsChecked.FramePressedColor = clHighlight
-    OptionsChecked.FrameDisabledColor = clBtnShadow
-    OptionsChecked.FrameWidth = 2
-    OptionsChecked.FrameNormalColorAlpha = 255
-    OptionsChecked.FrameHotColorAlpha = 255
-    OptionsChecked.FramePressedColorAlpha = 255
-    OptionsChecked.FrameDisabledColorAlpha = 255
-    OptionsChecked.CheckMarkNormalColor = clWindowText
-    OptionsChecked.CheckMarkHotColor = clWindowText
-    OptionsChecked.CheckMarkPressedColor = clWindowText
-    OptionsChecked.CheckMarkDisabledColor = clWindowText
-    OptionsChecked.CheckMarkNormalColorAlpha = 255
-    OptionsChecked.CheckMarkHotColorAlpha = 255
-    OptionsChecked.CheckMarkPressedColorAlpha = 255
-    OptionsChecked.CheckMarkDisabledColorAlpha = 125
-    OptionsChecked.ShapeSize = 20
-    OptionsChecked.CheckMarkThickness = 2
-    OptionsChecked.StyleColors = True
-    Checked = False
-    ScaleFrameWidth = True
-    ScaleCheckMarkThickness = True
-    ShowFocusRect = True
-  end
-  object scCheckBox1: TscCheckBox
-    Left = 637
-    Top = 391
-    Width = 100
-    Height = 35
-    BiDiMode = bdRightToLeft
-    ParentBiDiMode = False
-    TabOrder = 41
-    TabStop = True
-    CustomCheckedImageIndex = -1
-    CustomCheckedImageHotIndex = -1
-    CustomCheckedImagePressedIndex = -1
-    CustomCheckedImageDisabledIndex = -1
-    CustomUnCheckedImageIndex = -1
-    CustomUnCheckedImageHotIndex = -1
-    CustomUnCheckedImagePressedIndex = -1
-    CustomUnCheckedImageDisabledIndex = -1
-    CustomGrayedImageIndex = -1
-    CustomGrayedImageHotIndex = -1
-    CustomGrayedImagePressedIndex = -1
-    CustomGrayedImageDisabledIndex = -1
-    UseFontColorToStyleColor = False
-    Animation = False
-    Caption = 'scCheckBox1'
-    CanFocused = True
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    Checked = False
-    ShowFocusRect = True
-  end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118003404400410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003404440410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6179,7 +6046,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010120009802B00230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010120009802B40230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000B001000001002000000000000010
       0500000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -16889,7 +16756,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01012000E801E80118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01012000EC01EC0118001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000D800000001000400000000008028
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

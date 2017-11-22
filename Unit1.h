@@ -247,10 +247,8 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch_rezim;
 	TscLabel *scLabel2;
 	TscLabel *scLabel1;
-	TscWebBrowser *scWebBrowser1;
 	TscExPanel *scExPanel_html;
-	TscGPCheckBox *scGPCheckBox1;
-	TscCheckBox *scCheckBox1;
+	TWebBrowser *WebBrowser1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -386,6 +384,10 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
+	void __fastcall WebBrowser1ShowScriptError(TObject *ASender, const OleVariant &AErrorLine,
+          const OleVariant &AErrorCharacter, const OleVariant &AErrorMessage,
+          const OleVariant &AErrorCode, const OleVariant &AErrorUrl,
+          OleVariant &AOut, bool &AHandled);
 
 
 // User declarations
