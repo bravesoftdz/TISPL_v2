@@ -539,7 +539,7 @@ void TForm_parametry::input_CT()
 					else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
 				 }
 				 //DÉLKA DOPRAVNÍKU
-				 double jednotky_vzdalenost=1.0;if(m_mm=MM)jednotky_vzdalenost=1000.0;
+				 double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
 				 double DD=K*dV+(K-p)*m;//ošetøeno i pro stav kdy je stejný poèet mezer jako vozíku
 				 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
 				 scGPNumericEdit_delka_dopravniku->Value=DD*jednotky_vzdalenost;//plnìní patøièného políèka
@@ -561,7 +561,7 @@ void TForm_parametry::input_CT()
 //pøepoèet hodnot vyplývajících ze zmìny DD
 void TForm_parametry::input_DD()
 {
-	double jednotky_vzdalenost=1.0;if(m_mm=MM)jednotky_vzdalenost=1000.0;
+	double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
 	input_state=DD;//pozor myšleno DD - z ENUM
 	//default hodnoty
 	double DD=scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;//pøevede vždy do metrù
@@ -620,8 +620,8 @@ void TForm_parametry::input_DD()
 void TForm_parametry::input_RD()
 {
 	 input_state=RD;
-	 double jednotky_vzdalenost=1.0;if(m_mm=MM)jednotky_vzdalenost=1000.0;
-	 double jednotky_cas=1.0;if(m_mm=MM)jednotky_cas=60.0;
+	 double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
+	 double jednotky_cas=1.0;if(m_mm==MM)jednotky_cas=60.0;
 	 double RD=scGPNumericEdit_RD->Value/jednotky_vzdalenost/jednotky_cas;//pøevede na metr a na jednu sekundu
 
 	 if(RD>0)//nutné ošetøení pro období zadávání/psaní
@@ -745,7 +745,7 @@ void TForm_parametry::input_K()
 			 vypis("");
     	 scGPButton_OK->Enabled=true;
 			 scGPButton_OK->Caption="Uložit";
-			 double jednotky_vzdalenost=1.0;if(m_mm=MM)jednotky_vzdalenost=1000.0;
+			 double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
 
 			 //volba šíøka èi délka jigu
 			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku

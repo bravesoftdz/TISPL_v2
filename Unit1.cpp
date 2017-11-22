@@ -72,6 +72,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	grid=true; size_grid=10;//velikost je v logických jednotkách (metrech)
 	prichytavat_k_mrizce=0;
 	SB("přichytávat?",5);
+	ortogonalizace_stav=false;
+
 	//bitmapa pro uložení přesovaného obrazu - PAN
 	Pan_bmp=new Graphics::TBitmap();
 	pan_non_locked=false;
@@ -453,18 +455,13 @@ void TForm1::startUP()
 		//načtení posledního otevřeného souboru
 		if(nastaveni.posledni_file)
 		{
-			//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-			//-FileName=ini->ReadString("otevrene_soubory","posledni_soubor","");
 			FileName=readINI("otevrene_soubory","posledni_soubor");
 			if(FileName!="Nový.tispl" && FileName!="")OtevritSoubor(FileName);
-			//-delete ini;
 		}
 	}
 
 	//////automatický BACKUP
 	//volá obnovu dat ze zálohy, pokud poslední ukončení programu neproběhlo standardně
-	//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-	//-AnsiString status=ini->ReadString("Konec","status","");//poslední parametr musí být prázdný jinak bude padat!!!
 	AnsiString status=readINI("Konec","status");
 
 	if(status=="KO")//pokud došlo k pádu programu
@@ -472,7 +469,7 @@ void TForm1::startUP()
 		//zavře úvodní dialog
 		zavrit_uvod();
 
-		//-FileName=ini->ReadString("otevrene_soubory","posledni_soubor","");//zjistí název posledního souboru
+		//načte název posledního souboru
 		FileName=readINI("otevrene_soubory","posledni_soubor");
 
 		//prvně porovná jestli otevřený soubor není náhoudou mladší než stejnomený BAC soubor
@@ -508,8 +505,12 @@ void TForm1::startUP()
 	}
 	//zapíše status pro předčasné ukončení programu pro případ pádu programu
 	writeINI("Konec","status","KO");
-	//-ini->WriteString("Konec","status","KO");
-	//-delete ini;
+
+	//načte dílčí nastavení aplikace
+	AnsiString T=readINI("Nastaveni_app","ortogonalizace");
+	if(T=="0" || T=="")ortogonalizace_stav=false;else ortogonalizace_stav=true;
+	T=readINI("Nastaveni_app","prichytavat");
+	if(T=="0" || T=="")prichytavat_k_mrizce=0;else prichytavat_k_mrizce=ms.MyToDouble(T);
 }
 //---------------------------------------------------------------------------
 //zajišťuje zápis do INI aplikace
@@ -1072,6 +1073,12 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 119:ZOOM_OUT();break;
 		//F9
 		case 120:break;
+		//F10
+		case 121:break;
+		//F11
+		case 122:ortogonalizace_on_off();break;//přepíná stav automatické ortogonalizace
+		//F12
+		case 123:ortogonalizovat();break;//ortogonalizuje schéma
 		//CTRL, SHIFT
 		default:
 		{
@@ -1887,7 +1894,7 @@ void TForm1::add_objekt(int X, int Y)
 						}
 						break;
 					}
-					case 1:souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
+					case 1:	souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
 					case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
 			}
 			akutalizace_stavu_prichytavani_vSB();
@@ -1910,6 +1917,7 @@ void TForm1::add_objekt(int X, int Y)
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
 		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
+		ortogonalizace();
 		Akce=NIC;kurzor(standard);
 		REFRESH();
 		DuvodUlozit(true);
@@ -1966,6 +1974,7 @@ void TForm1::move_objekt(int X, int Y)
 		}
 		posun_objektu=false;Akce=NIC;kurzor(standard);//REFRESH();DuvodUlozit(true);
 		zmen_poradi_objektu(X,Y);//testuje zda se nejedná o změnu pořadí (to musí ještě uživatel potvrdit), pokud ano, vrácí true
+		ortogonalizace();
 		REFRESH();DuvodUlozit(true);
 		pom=NULL;
 }
@@ -2020,6 +2029,36 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 				}
 			}
 		}
+}
+//---------------------------------------------------------------------------
+//zapíná či vypíná automatickou ortogonalizaci
+void TForm1::ortogonalizace_on_off()
+{
+	 if(ortogonalizace_stav)//pokud je zapnuta
+	 {
+		 ortogonalizace_stav=false;//tak vypne
+		 SB("Ortogonalizace vypnuta.");
+	 }
+	 else//pokud vypnuta, tak zapne, zortogonalizuje a zapíše stav do registru
+	 {
+		 ortogonalizace_stav=true;
+		 ortogonalizovat();
+		 writeINI("Nastaveni_app","ortogonalizace",(short)ortogonalizace_stav);
+		 SB("Ortogonalizace zapnuta.");
+   }
+}
+//---------------------------------------------------------------------------
+//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
+void TForm1::ortogonalizace()
+{
+	 if(ortogonalizace_stav)ortogonalizovat();
+}
+//---------------------------------------------------------------------------
+//ortogonalizuje schéma + přichytne ke mřížce pokud je požadováno
+void TForm1::ortogonalizovat()
+{
+  d.v.ortogonalizovat();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 void TForm1::zneplatnit_minulesouradnice()
@@ -2349,9 +2388,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		log2web("konec");
 		//pro ochranu v případě pádu programu
 		//TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-		//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-		//-ini->WriteString("Konec","status","OK");
-		//-delete ini;
+		writeINI("Nastaveni_app","prichytavat",prichytavat_k_mrizce);
 		writeINI("Konec","status","OK");
 	}
 }
@@ -4257,12 +4294,7 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 
 
-void __fastcall TForm1::WebBrowser1ShowScriptError(TObject *ASender, const OleVariant &AErrorLine,
-          const OleVariant &AErrorCharacter, const OleVariant &AErrorMessage,
-          const OleVariant &AErrorCode, const OleVariant &AErrorUrl,
-          OleVariant &AOut, bool &AHandled)
-{
-S("jj");
-}
-//---------------------------------------------------------------------------
+
+
+
 

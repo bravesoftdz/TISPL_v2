@@ -4,7 +4,7 @@
 #include "antialiasing.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-//vrátí bitmapu pøesampovanou pomocí algoritmu antialiasingu
+//vrátí bitmapu pøesamplovanou pomocí algoritmu antialiasingu
 Graphics::TBitmap *Cantialising::antialiasing(Graphics::TBitmap *bmp_grid,Graphics::TBitmap *bmp_in)
 {
 	//tutoriál

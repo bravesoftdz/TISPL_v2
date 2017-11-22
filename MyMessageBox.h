@@ -24,11 +24,11 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyph_info;
 	TscGPButton *Button_Yes;
 	TscGPButton *Button_No;
-	TscCheckBox *CheckBox_pamatovat;
 	TrHTMLLabel *Label1;
 	TrHTMLLabel *Label2;
 	TscGPButton *Button_OK;
 	TscGPButton *Button_Cancel;
+	TscGPCheckBox *CheckBox_pamatovat;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormShow(TObject *Sender);

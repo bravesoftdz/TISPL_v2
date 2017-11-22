@@ -384,10 +384,6 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
-	void __fastcall WebBrowser1ShowScriptError(TObject *ASender, const OleVariant &AErrorLine,
-          const OleVariant &AErrorCharacter, const OleVariant &AErrorMessage,
-          const OleVariant &AErrorCode, const OleVariant &AErrorUrl,
-          OleVariant &AOut, bool &AHandled);
 
 
 // User declarations
@@ -449,13 +445,17 @@ private:
 	void aktualizace();//kontrola aktuálnosti verze a pøípadì nabídka na stažení nové
 	void onPopUP(int X, int Y);//nastavení zobrazení popUPmenu a jeho volání vèetnì pozice
 	void close_all_items_popUPmenu(bool vyjimka);//zajistí skrýtí všech položek popUPmenu
+	void ortogonalizace_on_off();//zapíná èi vypíná automatickou ortogonalizaci
+	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
+	void ortogonalizovat();//ortogonalizuje schéma
+
+
 	////promìnné
 	TDateTime TIME;
 	UnicodeString LICENCE;
 	UnicodeString VERZE;
 
-	int size_grid;
-
+	bool ortogonalizace_stav;
 	int vybrany_objekt;
 
 public:	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
@@ -474,7 +474,6 @@ private:
 	TPointD Posun_predchozi;
 	short jedno_ze_tri_otoceni_koleckem_mysi;
 	short doba_neotaceni_mysi;
-	short prichytavat_k_mrizce;
 	bool uchop_zobrazen;
 	bool vycentrovat;
 	bool posun_objektu;
@@ -505,7 +504,9 @@ public:		// User declarations
 	UnicodeString FileName;
 	double Zoom; //promìnná uchovávajicí velikost Zoomu
 	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
-  bool grid;
+	bool grid;
+	int size_grid;
+	short prichytavat_k_mrizce;
 	bool zobrazit_barvy_casovych_rezerv;
 	bool antialiasing;
 	double Zoom_predchozi_AA;//pøi antialiasingu

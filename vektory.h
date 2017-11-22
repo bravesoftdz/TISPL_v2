@@ -12,6 +12,7 @@
 class Cvektory
 {
   private:
+	Cmy m;//instance na my knihovnu
 
 	public:
 
@@ -359,6 +360,7 @@ class Cvektory
 		void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);
 		void sniz_indexy(TObjekt *Objekt);
 		void zvys_indexy(TObjekt *Objekt);
+		void ortogonalizovat();//ortogonalizuje schéma
 		long vymaz_seznam_OBJEKTY();
 
 //metody pro POHONY

@@ -308,8 +308,68 @@ void Cvektory::zvys_indexy(TObjekt *Objekt)//zvýší indexy NÁSLEDUJICÍCH bod
 		if(Objekt!=NULL)Objekt->n++;//sníží indexy nasledujicích bodů,protože optimalizace seznamu nefungovalo, navíc ušetřím strojový čas
 	}
 }
-////---------------------------------------------------------------------------
-////smaze body z pameti
+//---------------------------------------------------------------------------
+//ortogonalizuje schéma
+void Cvektory::ortogonalizovat()
+{
+	//mimo posledního prvku
+	TObjekt *O=OBJEKTY->dalsi;
+	while(O->dalsi!=NULL)
+	{
+		 double A=m.azimut(O->X,O->Y,O->dalsi->X,O->dalsi->Y);
+		 double D=m.delka(O->X,O->Y,O->dalsi->X,O->dalsi->Y);
+		 if(315<A || A<=45)//A==0 - nahoru
+		 {
+			O->dalsi->X=O->X;
+			if(Form1->prichytavat_k_mrizce==1)O->dalsi->Y=m.round((O->Y+D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+			else O->dalsi->Y=O->Y+D;
+		 }
+		 if(45<A && A<=135)//A==90 - doprava
+		 {
+			if(Form1->prichytavat_k_mrizce==1)O->dalsi->X=m.round((O->X+D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+			else O->dalsi->X=O->X+D;
+			O->dalsi->Y=O->Y;
+		 }
+		 if(135<A && A<=255)//A==180 - dolu
+		 {
+			O->dalsi->X=O->X;
+			if(Form1->prichytavat_k_mrizce==1)O->dalsi->Y=m.round((O->Y-D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+			else O->dalsi->Y=O->Y-D;
+		 }
+		 if(225<A && A<=315)//A==270 - doleva
+		 {
+			if(Form1->prichytavat_k_mrizce==1)O->dalsi->X=m.round((O->X-D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+			else O->dalsi->X=O->X-D;
+			O->dalsi->Y=O->Y;
+		 }
+		 O=O->dalsi;
+	}
+	O=NULL;delete O;
+
+	//ošetření a dorovnání posledního prvku pokud jsou minimálně čtyři prkvy
+	if(OBJEKTY->predchozi->n>=4)
+	{
+		TObjekt *O1=OBJEKTY->dalsi;//první
+		TObjekt *Op=OBJEKTY->predchozi;//poslední
+		TObjekt *Opp=OBJEKTY->predchozi->predchozi;//předposlední
+		double A=m.azimut(O1->X,O1->Y,Opp->X,Opp->Y);
+		if(m.round(A)%90)//pokud se NEjedná o náseobek 90° je nutné řešit
+		{
+			if(Op->X==Opp->X)Op->Y=O1->Y;
+			if(Op->Y==Opp->Y)Op->X=O1->X;
+			O1=NULL;delete O1;
+			Op=NULL;delete Op;
+			Opp=NULL;delete Opp;
+		}
+		else //umístí dopřestře mezi prvky, protože jsou v jedné linii
+		{
+			 Op->X=(O1->X+Opp->X)/2;
+			 Op->Y=(O1->Y+Opp->Y)/2;
+    }
+	}
+}
+//---------------------------------------------------------------------------
+//smaze objekty z pameti
 long Cvektory::vymaz_seznam_OBJEKTY()
 {
 	long pocet_smazanych_objektu=0;

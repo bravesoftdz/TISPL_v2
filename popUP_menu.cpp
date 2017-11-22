@@ -100,7 +100,7 @@ void __fastcall TPopUPmenu::FormKeyDown(TObject *Sender, WORD &Key, TShiftState 
 		//ENTER
 		case 13:break;
 		//ESC
-		case 27:Close();break;
+		case 27:closing=true;Close();break;
 		//MEZERNÍK
 		case 32:break;
 	}
