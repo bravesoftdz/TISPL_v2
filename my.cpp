@@ -226,7 +226,7 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 		return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrátí dobu èekání na palec v min, rozteèe je v mm resp. v m za z minu u rychlosti dopravniku
+double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrátí dobu èekání na palec v sec, rozteè je v m, rychlost dopravníku v m/s
 {
 
 		//if(zohlednit && rezim!=1)//pokud se jedná o kontinuální režim neøeší se, pøedpokládá se, že jede na stejném dopravníku
@@ -241,9 +241,9 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 		}
 		//else return 0;
 
-		//vrátí dobu èekání na palec v min, rozteèe je v mm resp. v m za z minu u rychlosti dopravniku
+		//vrátí dobu èekání na palec v sec, rozteè je v m, rychlost dopravníku v m/s
 		double RET=0.0;
-		double MIN=0.0;double MAX=roztec_palcu/(rychlost_dopravniku*1000.0);
+		double MIN=0.0;double MAX=roztec_palcu/rychlost_dopravniku;
 		double ZOI=0.001;//korekce pro zajištìní zprava otevøeného intervalu (nemùže být uzavøený, protože to není reálné, dochází v takové situaci ještì k uchopení pùvodním palcem), øád kokekce zvolen neexaktnì, pouze dle úvahy
 		switch(funkce)
 		{
