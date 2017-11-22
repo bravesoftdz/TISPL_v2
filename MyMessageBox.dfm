@@ -3,7 +3,7 @@ object myMessageBox: TmyMessageBox
   Top = 0
   BorderStyle = bsNone
   ClientHeight = 151
-  ClientWidth = 348
+  ClientWidth = 366
   Color = clBtnFace
   Font.Charset = EASTEUROPE_CHARSET
   Font.Color = clWindowText
@@ -46,7 +46,7 @@ object myMessageBox: TmyMessageBox
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 348
+    Width = 366
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -76,7 +76,7 @@ object myMessageBox: TmyMessageBox
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 298
+      Left = 316
       Top = 0
       Width = 50
       Height = 33
@@ -155,7 +155,7 @@ object myMessageBox: TmyMessageBox
     object scLabel_caption: TscLabel
       Left = 0
       Top = 0
-      Width = 261
+      Width = 279
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -184,7 +184,7 @@ object myMessageBox: TmyMessageBox
       Caption = 'TISPL'
     end
     object scGPGlyph_info: TscGPGlyphButton
-      Left = 261
+      Left = 279
       Top = 0
       Width = 37
       Height = 34
@@ -446,7 +446,7 @@ object myMessageBox: TmyMessageBox
     AlignWithMargins = True
     Left = 3
     Top = 131
-    Width = 342
+    Width = 360
     Height = 17
     Align = alBottom
     BiDiMode = bdLeftToRight

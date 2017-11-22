@@ -35,6 +35,7 @@ int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text)
 }
 int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit)
 {
+	short max_pismen=46;
 	////naplnìní daty
 	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption="TISPL"; //hlídání zda nepøijde prázdný øetezec
 	//pokud text obsahuje enter, tak odøákuje
@@ -48,18 +49,18 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 		Label1->Caption=text;
 		Label2->Caption="";//nutné vymazání
 		////pokud je text delší odøádkuje    //pokud druhý øádek je volný //pokud vùbec má smysl øetìzez zalamovat
-		if(Label1->Width>=myMessageBox->Width && Label1->Caption.Length()>44)
+		if(Label1->Width>=myMessageBox->Width && Label1->Caption.Length()>max_pismen)
 		{
 	 		 int Pos=0;int Pos_min=Pos;
 	 		 AnsiString t=Label1->Caption;
-	 		 while(t.Pos(" ") && Pos_min+t.Pos(" ")<44)//dìlá dokud øetìze obsahuje mezeru nebo dokud je mezera na nižším poøadí v øetìzci než 44
+			 while(t.Pos(" ") && Pos_min+t.Pos(" ")<max_pismen)//dìlá dokud øetìze obsahuje mezeru nebo dokud je mezera na nižším poøadí v øetìzci než 44
 	 		 {
 	 				Pos=t.Pos(" ");
 	 				Pos_min+=Pos;
-	 				t=t.SubString(Pos+1,t.Length());
+					t=t.SubString(Pos+1,t.Length());
 	 		 }
 
-	 		 if(Pos==0)Pos_min=44;//pokud text neobsahuje mezeru, rozdìlí umìle
+			 if(Pos==0)Pos_min=max_pismen;//pokud text neobsahuje mezeru, rozdìlí umìle
 
 	 		 //samotné rozdìlení
 	 		 Label2->Caption=Label1->Caption.SubString(Pos_min+1,Label1->Caption.Length());
@@ -68,7 +69,7 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	}
 
 	////zobrazení komponent + pøípadnì jejich pozice
-	if(centrovat_text)//pokud je požadováno centrování
+	if(centrovat_text && Label1->Caption.Length()<=max_pismen)//pokud je požadováno centrování a zároveò není text prvního øádku delší než max možný poèet
 	{
 			if(Label1->Width>Label2->Width)//podle toho, který label je delší, tak se oba vycentrují
 			{
@@ -83,6 +84,9 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	}
 	//checkbox
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;
+	if(checkbox_zobrazit)myMessageBox->Height=151;
+	else myMessageBox->Height=Button_Yes->Top+Button_Yes->Height+11;//pokud neni checkbox zobrazen, je formáláø o 10px vìtší než je konec tlaèítek
+
 	//tlaèítka
 	switch(mbTYPE) //OK=0,OKCANCEL,YESNO,YESNOCANCEL
 	{

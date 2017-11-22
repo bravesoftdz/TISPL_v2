@@ -446,7 +446,6 @@ bool TForm1::ttr(UnicodeString Text)
 //při aktivaci formuláře startující záležitosti, pro zpřehlednění kodu
 void TForm1::startUP()
 {
-
 	//////otevrení posledního souboru
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
 
@@ -458,24 +457,27 @@ void TForm1::startUP()
 		//načtení posledního otevřeného souboru
 		if(nastaveni.posledni_file)
 		{
-			TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-			FileName=ini->ReadString("otevrene_soubory","posledni_soubor",FileName);
+			//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+			//-FileName=ini->ReadString("otevrene_soubory","posledni_soubor","");
+			FileName=readINI("otevrene_soubory","posledni_soubor");
 			if(FileName!="Nový.tispl" && FileName!="")OtevritSoubor(FileName);
-			delete ini;
+			//-delete ini;
 		}
 	}
 
 	//////automatický BACKUP
 	//volá obnovu dat ze zálohy, pokud poslední ukončení programu neproběhlo standardně
-	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	//-AnsiString status=ini->ReadString("Konec","status","");//poslední parametr musí být prázdný jinak bude padat!!!
+	AnsiString status=readINI("Konec","status");
 
-	AnsiString status=ini->ReadString("Konec","status","");//poslední parametr musí být prázdný jinak bude padat!!!
 	if(status=="KO")//pokud došlo k pádu programu
 	{
 		//zavře úvodní dialog
 		zavrit_uvod();
 
-		FileName=ini->ReadString("otevrene_soubory","posledni_soubor",FileName);//zjistí název posledního souboru
+		//-FileName=ini->ReadString("otevrene_soubory","posledni_soubor","");//zjistí název posledního souboru
+		FileName=readINI("otevrene_soubory","posledni_soubor");
 
 		//prvně porovná jestli otevřený soubor není náhoudou mladší než stejnomený BAC soubor
 		FILETIME ftCreate, ftAccess, ftWrite,ftWrite_bac;
@@ -509,8 +511,26 @@ void TForm1::startUP()
 		}
 	}
 	//zapíše status pro předčasné ukončení programu pro případ pádu programu
-	ini->WriteString("Konec","status","KO");
+	writeINI("Konec","status","KO");
+	//-ini->WriteString("Konec","status","KO");
+	//-delete ini;
+}
+//---------------------------------------------------------------------------
+//zajišťuje zápis do INI aplikace
+void TForm1::writeINI(AnsiString Section,AnsiString Ident,AnsiString Value)
+{
+	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	ini->WriteString(Section,Ident,Value);
 	delete ini;
+}
+//---------------------------------------------------------------------------
+//zajišťuje čtení z INI aplikace
+AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
+{
+	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	AnsiString status=ini->ReadString(Section,Ident,"");//hlavně nepoužívat poslední parametr!!!jinak bude app padat
+	delete ini;
+	return status;
 }
 //---------------------------------------------------------------------------
 //Zalogování na webu
@@ -2333,9 +2353,10 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		log2web("konec");
 		//pro ochranu v případě pádu programu
 		//TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-		TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-		ini->WriteString("Konec","status","OK");
-		delete ini;
+		//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+		//-ini->WriteString("Konec","status","OK");
+		//-delete ini;
+		writeINI("Konec","status","OK");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2451,25 +2472,31 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					ukaz=ukaz->dalsi;
 				}
 				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry
+				double jednotky_cas=1.0;if(Form_parametry->minsec==Form_parametry->MIN)jednotky_cas=60.0;
+				double jednotky_vzdalenost=1.0;if(Form_parametry->m_mm==Form_parametry->MM)jednotky_vzdalenost=1000.0;
 				Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 				Form_parametry->scGPEdit_name->Text=pom->name;
 				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
 				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
-				Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
-				Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
-				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
+        //CT
+				Form_parametry->scGPNumericEdit_CT->Value=pom->CT/jednotky_cas;
+				//RD
+				Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení počtu desetinných míst;
+				Form_parametry->scGPNumericEdit_RD->Value=pom->RD*jednotky_cas*jednotky_vzdalenost;
+				//DD
+				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku*jednotky_vzdalenost;
 				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 				Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
 				Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 				Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
-				Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+				Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera*jednotky_vzdalenost;
+				Form_parametry->scGPCheckBox_pocet_mezer->Checked=!pom->mV;
 				//nastavení defaultních hodnot
-
 				if(Form_parametry->scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
 				{
-					Form_parametry->scGPNumericEdit_CT->Value=d.v.PP.TT;//d.v.ZAKAZKY->dalsi->TT;
+					Form_parametry->scGPNumericEdit_CT->Value=d.v.PP.TT/jednotky_cas;//d.v.ZAKAZKY->dalsi->TT;
 					Form_parametry->scGPNumericEdit_kapacita->Value=1;
 				}
 
@@ -2478,14 +2505,14 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				Form_parametry->setForm4Rezim(pom->rezim);
 
 				//ošetření aby zůstal dialog na monitoru
-				if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->Width<Form1->Width)
+				if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->ClientWidth<Form1->ClientWidth)
 					Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
 				else
-					Form_parametry->Left=Form1->Width-Form_parametry->Width-10;
-				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->Height<Form1->Height)
+					Form_parametry->Left=Form1->ClientWidth-Form_parametry->ClientWidth-10;
+				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->ClientHeight<Form1->ClientHeight)
 					Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
 				else
-					Form_parametry->Top=Form1->Height-Form_parametry->Height-scGPPanel_statusbar->Height-10;
+					Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-scGPPanel_statusbar->ClientHeight-10;
 
 				//nastevní titulku
 				Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
@@ -2496,22 +2523,25 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 						try
 						{
 							//navrácení hodnot z Form_Parametry, v případě stisku OK
+							if(Form_parametry->minsec==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
+							if(Form_parametry->m_mm==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
 							pom->name=Form_parametry->scGPEdit_name->Text;
 							pom->short_name=Form_parametry->scGPEdit_shortname->Text;
-							pom->delka_dopravniku=ms.MyToDouble(Form_parametry->scGPNumericEdit_delka_dopravniku->Value);
+							pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
 							pom->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
 							pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
 							pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
 							pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
 							pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
 							pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
-							pom->RD=Form_parametry->scGPNumericEdit_RD->Value;
+							pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
 							pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-							pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value;
+							pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
+							pom->mV=!Form_parametry->scGPCheckBox_pocet_mezer->Checked;
 							//pokud je požadovaný rozklad objektu na více objektů
 							if(Form_parametry->kapacitaSG>1)
 							{
-									pom->CT=Form_parametry_linky->rEditNum_takt->Value;//vrácení správného CT
+									pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
 									Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
 									for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
 									{
@@ -2525,8 +2555,8 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 							}
 							else //pro kontinuál a postprocesní
 							{
-							 pom->CT=Form_parametry->scGPNumericEdit_CT->Value;
-              }
+							 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
+							}
 							DuvodUlozit(true);
 							REFRESH();
 						}
@@ -2806,9 +2836,10 @@ void __fastcall TForm1::OtevritsablonuClick(TObject *Sender)
 //uložení posledního otevřeného souboru
 void TForm1::ulozit_posledni_otevreny()
 {
-	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-	ini->WriteString("otevrene_soubory","posledni_soubor",FileName);
-	delete ini;
+	//-TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+	//-ini->WriteString("otevrene_soubory","posledni_soubor",FileName);
+	//-delete ini;
+	writeINI("otevrene_soubory","posledni_soubor",FileName);
 }
 //---------------------------------------------------------------------------
 //zavře úvodní dialog
@@ -3810,13 +3841,6 @@ void __fastcall TForm1::rComboBoxKrokChange(TObject *Sender)
 {
 		d.TP.K=ms.MyToDouble(rComboBoxKrok->Text);
 		Invalidate();
-
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::Button12Click(TObject *Sender)
-{
- //	WindowState = wsMaximized;
- scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
 
 }
 //---------------------------------------------------------------------------

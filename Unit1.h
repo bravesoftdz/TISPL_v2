@@ -355,7 +355,6 @@ __published:	// IDE-managed Components
 	void __fastcall CheckBox_pouzit_zadane_kapacityClick(TObject *Sender);
 	void __fastcall SQL_processIDClick(TObject *Sender);
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
-	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton1Click(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -456,7 +455,8 @@ private:
 
 	int vybrany_objekt;
 
-	TPoint akt_souradnice_kurzoru_PX;//uchov· aktu·lnÌ pozici kurzoru
+public:	TPoint akt_souradnice_kurzoru_PX;//uchov· aktu·lnÌ pozici kurzoru
+private:
 	TPointD akt_souradnice_kurzoru;//uchov· aktu·lnÌ pozici kurzoru v logick˝ch jednotk·ch, resp. sou¯adnicÌch
 	TPoint vychozi_souradnice_kurzoru;//uchov· v˝chozÌ pozici kurzoru
 	TPoint predchozi_souradnice_kurzoru;//uchov· p˘vodnÌ pozici kurzoru p¯i stisku tlaËÌtka myöi
@@ -513,6 +513,8 @@ public:		// User declarations
 	void S(UnicodeString Text="");//UsnadÚuje p¯Ìstup k ShowMessage
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false);
 	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true);
+	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajiöùuje z·pis do INI aplikace
+	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajiöùuje ËtenÌ z INI aplikace
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
