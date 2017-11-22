@@ -18,6 +18,7 @@
 #include "popUP_menu.h"
 #include "eDesigner.h"
 #include "casovaOsa_info.h"
+#include "report.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -2041,8 +2042,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	if(antialiasing)C->Font->Size=11;else C->Font->Size=10;
 	C->Font->Name="Arial";
 	C->Pen->Width=1;
-	C->Pen->Color=(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
-	C->Brush->Color=(TColor)RGB(160,160,160);//(TColor)RGB(19,115,169);
+	C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+	C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
 	C->Font->Color=clWhite;
 	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 	{
@@ -3203,9 +3204,7 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 
 			UnicodeString FN=FileName;
 			if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
-
-			//S(FN+".html"+);
-			d.v.ulozit_report(FN+".html");
+			Form_report->ulozit_report(FN+".html");
 
 		
 
@@ -4253,12 +4252,4 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 
 
-void __fastcall TForm1::WebBrowser1ShowScriptError(TObject *ASender, const OleVariant &AErrorLine,
-          const OleVariant &AErrorCharacter, const OleVariant &AErrorMessage,
-          const OleVariant &AErrorCode, const OleVariant &AErrorUrl,
-          OleVariant &AOut, bool &AHandled)
-{
-S("jj");
-}
-//---------------------------------------------------------------------------
 

@@ -384,10 +384,6 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
-	void __fastcall WebBrowser1ShowScriptError(TObject *ASender, const OleVariant &AErrorLine,
-          const OleVariant &AErrorCharacter, const OleVariant &AErrorMessage,
-          const OleVariant &AErrorCode, const OleVariant &AErrorUrl,
-          OleVariant &AOut, bool &AHandled);
 
 
 // User declarations
