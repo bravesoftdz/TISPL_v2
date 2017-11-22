@@ -1988,6 +1988,19 @@ double Cvektory::vrat_nejpozdejsi_konec_zakazek()
 	return MAX;
 }
 ////---------------------------------------------------------------------------
+//vratí součet CT časů objektů ze statusu návrh/architekt
+double Cvektory::vrat_LT()
+{
+		double LT=0.0;
+		TObjekt *ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
+		while (ukaz!=NULL)
+		{
+			LT+=ukaz->CT;
+			ukaz=ukaz->dalsi;//posun na další prvek
+		}
+		return LT;
+}
+////---------------------------------------------------------------------------
 double Cvektory::vrat_LT_voziku(TVozik *jaky)//vrátí celkový čas, který strávil vozík ve výrobě včetně čekání
 {
 	if(jaky!=NULL) return (jaky->pozice-jaky->start)/Form1->d.PX2MIN;
@@ -2195,29 +2208,57 @@ TPoint Cvektory::vrat_start_a_pozici_vozikuPX(unsigned int n_voziku)
 	 return RET;
 }
 ////---------------------------------------------------------------------------
-unsigned int Cvektory::WIP()//vrátí max. počet vozíků na lince
+//vrátí max. počet vozíků na lince, kde parametr s implicitní hodnotou 0 je volaný výpočet z překrytí vozíků na časových osách, hodnot 1 - součtem kapacit zadaných (resp. v návrháru/architektovi vypočítaných), hodnota 2 - součtem kapacit vypočtených v časových osách,  3 - tradiční výpočet WIP=1/TT*LT
+double Cvektory::WIP(short typ_vypoctu)
 {
-	unsigned int pocet_final=0;
-	//srovnává všechny kombinace, možná by šlo zjednodušit, uvídíme v průběhu
-	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-	while (vozik!=NULL)
+	double pocet_final=0.0;
+	switch(typ_vypoctu)
 	{
-		unsigned int pocet=0;
-		Cvektory::TVozik *vozik2=vozik->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
-		while (vozik2!=NULL)
+		//z vozíků na časových osách
+		case 0:
 		{
+			//srovnává všechny kombinace, možná by šlo zjednodušit, uvídíme v průběhu
+			Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+			while (vozik!=NULL)
+			{
+				unsigned int pocet=0;
+				Cvektory::TVozik *vozik2=vozik->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
+				while (vozik2!=NULL)
+				{
 
-			if(vozik->pozice>=vozik2->start)//pokud nastane situace že vozík skončil před začátkem vozíku, není nutné navyšovat počítadlo vozíků
-			pocet++;
-			vozik2=vozik2->dalsi;
-		}
-		if(pocet_final<pocet)pocet_final=pocet;
-		vozik=vozik->dalsi;
+					if(vozik->pozice>=vozik2->start)//pokud nastane situace že vozík skončil před začátkem vozíku, není nutné navyšovat počítadlo vozíků
+					pocet++;
+					vozik2=vozik2->dalsi;
+				}
+				if(pocet_final<pocet)pocet_final=pocet;
+				vozik=vozik->dalsi;
+			}
+		}break;
+		//součtem kapacit zadaných (resp. v návrháru/architektovi vypočítaných)
+		case 1:
+		{
+			Cvektory::TObjekt *ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
+			while (ukaz!=NULL)
+			{
+				pocet_final+=ukaz->kapacita;
+				ukaz=ukaz->dalsi;//posun na další prvek
+			}
+		}break;
+		//součtem kapacit vypočtených v časových osách
+		case 2:
+		{
+			Cvektory::TObjekt *ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
+			while (ukaz!=NULL)
+			{
+				pocet_final+=ukaz->kapacita_dop;
+				ukaz=ukaz->dalsi;//posun na další prvek
+			}
+		}break;
+		//tradiční výpočet
+		case 3:
+		pocet_final=(1/PP.TT)*vrat_LT();break;
 	}
-	if(VOZIKY->dalsi!=NULL)//pokud existuje nějaký vozík
-	return pocet_final/*+1*/;
-	else
-	return 0;
+	return pocet_final;
 }
 //---------------------------------------------------------------------------
 //srovnává všechny kombinace
