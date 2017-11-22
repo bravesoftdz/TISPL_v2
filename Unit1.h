@@ -89,6 +89,9 @@
 #include <Vcl.ComCtrls.hpp>
 #include "grafy.h"
 #include "scHtmlControls.hpp"
+#include "scWebBrowser.hpp"
+#include <SHDocVw.hpp>
+#include <Vcl.OleCtrls.hpp>
 
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
@@ -244,6 +247,10 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch_rezim;
 	TscLabel *scLabel2;
 	TscLabel *scLabel1;
+	TscWebBrowser *scWebBrowser1;
+	TscExPanel *scExPanel_html;
+	TscGPCheckBox *scGPCheckBox1;
+	TscCheckBox *scCheckBox1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

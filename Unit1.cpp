@@ -40,6 +40,7 @@
 #pragma link "scDrawUtils"
 #pragma link "scGPImages"
 #pragma link "scHtmlControls"
+#pragma link "scWebBrowser"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 AnsiString Parametry;
@@ -48,6 +49,12 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
 	srand(time(NULL));//nutno tady
+
+	scExPanel_html->Width=Form1->ClientWidth;
+	scExPanel_html->Height=Form1->ClientHeight;
+	scWebBrowser1->Visible=true;
+	scWebBrowser1->Navigate("www.google.com");
+ //	scWebBrowser1->
 
 	NewDesignSettings();//záležitost s novým designem
 

@@ -1534,9 +1534,10 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 		//poznámka, provizorní záležitost - potom smazat
 		if(export_format==3)  {
 
-			data+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css\" integrity=\"sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb\" crossorigin=\"anonymous\">";
+			data+="<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css\" integrity=\"sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb\" crossorigin=\"anonymous\">"; // href=\"\../linky_layouts/styly/css/bootstrap.min.css\">";
+			//data+="<script src=\"\../linky_layouts/styly/js/bootstrap.min.js\"></script>";
 			data+="<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js\" integrity=\"sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ\" crossorigin=\"anonymous\"></script>";
-		  data+="<div class=\"container-fluid\">";
+			data+="<div class=\"container-fluid\">";
 
 		if(ZAKAZKY->dalsi!=NULL){   //když existuje zakázka - vypiš tuto hlavičku
 		data+="<form></br>";
@@ -1557,7 +1558,7 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 			data+="<h4>Parametry linky <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">TaktTime [min]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_TT+"\"></div></div>";
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
-      data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Šířka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+sirka_voziku+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Šířka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+sirka_voziku+"\"></div></div>";
 
 			data+="</form></div></br>";
 			data+="<div class=\"container-fluid\"><form>";
@@ -1601,6 +1602,8 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 
 		data+="</tbody></table></br>";
 		data+="</form></div></br>";
+
+
 
 	}
 
@@ -1656,6 +1659,17 @@ short int Cvektory::ulozit_report(UnicodeString FileName)
 	}
 }
 		data+="</form></div>";
+	 //	Form1->scHTML_obsah->Caption=data;
+
+		//Form1->scWebBrowser1->
+
+	//->
+		Form1->scExPanel_html->Visible=true;
+		Form1->scExPanel_html->Width=Form1->ClientWidth;
+		Form1->scExPanel_html->Left=0;
+		Form1->scExPanel_html->Top=0;
+		Form1->scExPanel_html->Height=Form1->ClientHeight;
+
 	}
 
 	////////////////////////////////////////////////////////////////////////////// CSV
