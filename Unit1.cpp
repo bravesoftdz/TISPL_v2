@@ -3224,30 +3224,11 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 		S("Žádná data k exportu!");
 	else
 	{
-		//příprava SaveDialogu
-	 /*	SaveDialog->Title="Vytvořit HTML report...";
-		SaveDialog->DefaultExt="*.html";
-		SaveDialog->Filter="Soubory formátu HTML (*.html)|*.html";
 
-		//předvyplnění názvem stejnojmeným souboru
-		UnicodeString FN=FileName;
-		if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
-		SaveDialog->FileName=FN;
-
-		if(SaveDialog->Execute())
-		{
-			Screen->Cursor=crHourGlass;//změní kurzor na přesýpací hodiny
-			//samotné uložení
-			if(d.v.ulozit_report(SaveDialog->FileName)==1)SB("Report do HTML dokončen.");else SB("Chyba při tvorbě reportu!");
-			//postprocesní záležitost
-			Screen->Cursor=crDefault;//změní kurzor na default
-			ShellExecute(0,L"open",UnicodeString(SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup   */
-
-			UnicodeString FN=FileName;
+ 			UnicodeString FN=FileName;
 			if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
 			Form_report->ulozit_report(FN+".html");
 
-		
 
 	}
 }
