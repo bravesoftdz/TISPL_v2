@@ -507,14 +507,11 @@ void TForm1::startUP()
 	//zapíše status pro předčasné ukončení programu pro případ pádu programu
 	writeINI("Konec","status","KO");
 
-	////načte dílčí nastavení aplikace
-	//ortogonalizace
+	//načte dílčí nastavení aplikace
 	AnsiString T=readINI("Nastaveni_app","ortogonalizace");
 	if(T=="0" || T=="")ortogonalizace_stav=false;else ortogonalizace_stav=true;
-	//přichytávání k mřížce
 	T=readINI("Nastaveni_app","prichytavat");
 	if(T=="0" || T=="")prichytavat_k_mrizce=0;else prichytavat_k_mrizce=ms.MyToDouble(T);
-	akutalizace_stavu_prichytavani_vSB();
 }
 //---------------------------------------------------------------------------
 //zajišťuje zápis do INI aplikace
@@ -1990,7 +1987,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		Cvektory::TObjekt *ukaz=d.v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 		while (ukaz!=NULL)//mimo posledního prvku
 		{
-			if(ukaz!=pom && ukaz!=pom->predchozi && !(ukaz==d.v.OBJEKTY->predchozi && pom==d.v.OBJEKTY->dalsi)) //přeskakuje situaci, pokud by se chtěl vkládat na původní pozici a to i pokud se jedná o první prvek (tj. vkládal by se první prvek za poslední)
+			if(ukaz!=pom && ukaz!=pom->predchozi && ukaz->dalsi!=pom->dalsi)//přeskakuje situaci, pokud by se chtěl vkládat na původní pozici
 			{
 					if(ukaz==d.v.OBJEKTY->predchozi)//poslední prvek versus první prvek
 					{
@@ -2016,7 +2013,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		{
 			if(ukaz==d.v.OBJEKTY->predchozi)//první prvek versus poslední
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"_Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
 				{
 					d.v.zmen_poradi_objektu(pom,d.v.OBJEKTY->predchozi);//volání realizace samotné záměny
 				}
@@ -2085,10 +2082,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	if(antialiasing)C->Font->Size=11;else C->Font->Size=10;
 	C->Font->Name="Arial";
 	C->Pen->Width=1;
-	//C->Pen->Color=m.clIntensive((TColor)RGB(19,115,169),140);
-	//C->Brush->Color=m.clIntensive((TColor)RGB(19,115,169),140);
-	C->Pen->Color=(TColor)RGB(190,190,190);
-	C->Brush->Color=(TColor)RGB(190,190,190);
+	C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+	C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
 	C->Font->Color=clWhite;
 	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 	{

@@ -3618,9 +3618,10 @@ object Form1: TForm1
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
-    Width = 180
+    Width = 0
     Height = 622
     Anchors = [akLeft, akTop, akBottom]
+    Enabled = False
     TabOrder = 28
     CustomImageIndex = -1
     StyleKind = scpsPanel
@@ -3643,7 +3644,7 @@ object Form1: TForm1
     CompactWidth = 0
     CompactHeight = 20
     GripSize = 0
-    Opened = True
+    Opened = False
     OpenedWidth = 180
     OpenedHeight = 50
     OpenedMinWidth = 0
@@ -3661,7 +3662,7 @@ object Form1: TForm1
     object scButton1: TscButton
       Left = 0
       Top = 572
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -3748,14 +3749,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 0
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton2: TscButton
       Left = 0
       Top = 50
-      Width = 180
+      Width = 0
       Height = 44
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3841,14 +3841,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 1
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton3: TscButton
       Left = 0
       Top = 94
-      Width = 180
+      Width = 0
       Height = 44
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -3934,14 +3933,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 1
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton4: TscButton
       Left = 0
       Top = 294
-      Width = 180
+      Width = 0
       Height = 46
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4029,12 +4027,11 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton5: TscButton
       Left = 0
       Top = 522
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -4120,14 +4117,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 0
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_report: TscButton
       Left = 0
       Top = 244
-      Width = 180
+      Width = 0
       Height = 25
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4204,7 +4200,7 @@ object Form1: TForm1
       GlowEffect.FocusedColor = clNone
       GlowEffect.PressedGlowSize = 7
       GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsFocused]
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
       ImageGlow = True
       ShowGalleryMenuFromTop = False
       ShowGalleryMenuFromRight = False
@@ -4215,7 +4211,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch4: TscGPSwitch
       Left = 100
@@ -4324,7 +4319,7 @@ object Form1: TForm1
     object scButton7: TscButton
       Left = 0
       Top = 174
-      Width = 180
+      Width = 0
       Height = 45
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4410,14 +4405,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 1
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton8: TscButton
       Left = 0
       Top = 269
-      Width = 180
+      Width = 0
       Height = 25
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4503,14 +4497,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 1
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton9: TscButton
       Left = 0
       Top = 472
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -4596,9 +4589,8 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 0
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -4655,7 +4647,7 @@ object Form1: TForm1
     object scButton10: TscButton
       Left = 0
       Top = 0
-      Width = 180
+      Width = 0
       Height = 50
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4741,14 +4733,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 1
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_ulozit: TscButton
       Left = 0
       Top = 138
-      Width = 180
+      Width = 0
       Height = 36
       Align = alTop
       Enabled = False
@@ -4835,14 +4826,13 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 1
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton11: TscButton
       Left = 0
       Top = 219
-      Width = 180
+      Width = 0
       Height = 25
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4928,9 +4918,8 @@ object Form1: TForm1
       ShowFocusRect = True
       Down = False
       GroupIndex = 1
-      AllowAllUp = False
+      AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
   end
   object ImageList1: TImageList
