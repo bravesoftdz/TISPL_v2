@@ -361,7 +361,7 @@ void Cvektory::ortogonalizovat()
 			Op=NULL;delete Op;
 			Opp=NULL;delete Opp;
 		}
-		else //umístí dopřestře mezi prvky, protože jsou v jedné linii
+		else//pokud je první předchozí v jedné linii, umístí dopřestřed mezi prvky
 		{
 			 Op->X=(O1->X+Opp->X)/2;
 			 Op->Y=(O1->Y+Opp->Y)/2;

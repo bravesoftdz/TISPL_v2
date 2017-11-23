@@ -479,6 +479,12 @@ void __fastcall TForm_parametry::scGPNumericEdit_kapacitaChange(TObject *Sender)
 	input_K();//pøepoèet hodnot vyplývajících ze zmìny K
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scGPCheckBox_pocet_mezerClick(TObject *Sender)
+{
+ if(input_state==NOTHING)
+ input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //pøepoèet hodnot vyplývajících ze zmìny CT
@@ -1031,12 +1037,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm_parametry::scGPCheckBox_pocet_mezerClick(TObject *Sender)
-{
- if(input_state==NOTHING)
- ShowMessage("dodìlat aktualizaci po kliknutí");
-}
-//---------------------------------------------------------------------------
+
 
 
 
