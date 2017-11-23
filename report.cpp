@@ -9,6 +9,7 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "scStyledForm"
 #pragma resource "*.dfm"
 TForm_report *Form_report;
 //---------------------------------------------------------------------------
@@ -20,6 +21,8 @@ __fastcall TForm_report::TForm_report(TComponent* Owner)
 
 		Form_report->Left=Form1->ClientWidth/2-Form_report->Width/2;
 		Form_report->Top=Form1->ClientHeight/2-Form_report->Height/2;
+
+	 //	scGPPanel1->FillColor=(TColor)RGB(240,240,240);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_report::KonecClick(TObject *Sender)
@@ -125,6 +128,27 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			data+="<div class=\"container-fluid\"><form>";
 
 		}
+
+			data+="<h4>Pøehled doporuèených rychlostí pohonù</h4></br>";
+
+		  data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">Název</th><th scope=\"col\">Rychlost</th></tr></thead>";
+			Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
+
+				while(ukaz!=NULL){
+
+				UnicodeString ID=ukaz->n;
+				UnicodeString name=ukaz->name;
+				UnicodeString rychlost_od=ukaz->rychlost_od;
+				UnicodeString rychlost_do=ukaz->rychlost_do;
+				UnicodeString roztec=ukaz->roztec;
+
+		data+="<tr><th scope=\"row\">"+name+"</th><td>"+rychlost_od+"</td></tr>";
+
+
+					ukaz=ukaz->dalsi;
+
+				}
+          	data+="</tbody></table></br>";
 
 		if(Form1->STATUS==Form1->NAVRH) {
 
@@ -345,3 +369,39 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		}
 		catch(...){;Form1->MB("Soubor je otevøen, ukonèete otevøenou aplikaci a akci opakujte");}
 }
+
+
+void __fastcall TForm_report::scButton_csvClick(TObject *Sender)
+{
+ShowMessage("ahoj");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_report::MaxButtonClick(TObject *Sender)
+{
+	if (FMaximized)//zmenšení
+	{
+			 //BoundsRect =  FOldBoundsRect;
+			 FMaximized = false;
+			// scLabel_titulek->DragForm = true;
+			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
+			// scGPSizeBox->Visible = true;
+			 Form_report->Width=Screen->Width/3*2;//zmenší formuláø na 2/3 jeho velikosti
+			 Form_report->Height=Screen->Height/3*2;//zmenší formuláø na 2/3 jeho velikosti
+		 //	 scSplitView_OPTIONS->Opened=false;
+			// scSplitView_MENU->Opened=false;
+	}
+	else //maximalizace
+	{
+			//FOldBoundsRect = BoundsRect;
+			BoundsRect = scStyledForm1->GetMaximizeBounds();
+			FMaximized = true;
+		 //	scLabel_titulek->DragForm = false;
+			MaxButton->GlyphOptions->Kind = scgpbgkRestore;
+		 //	scGPSizeBox->Visible = false;
+		 //	scSplitView_OPTIONS->Opened=false;
+		//	scSplitView_MENU->Opened=false;
+	}
+}
+//---------------------------------------------------------------------------
+
