@@ -874,6 +874,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
@@ -958,6 +959,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
@@ -1268,6 +1270,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     LeftButton.Kind = scgpebCustom
     LeftButton.Enabled = True
@@ -1588,6 +1591,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
@@ -1672,6 +1676,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     LeftButton.Kind = scgpebCustom
     LeftButton.Enabled = True
@@ -1748,6 +1753,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
@@ -1831,6 +1837,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
@@ -2031,6 +2038,7 @@ object Form_parametry: TForm_parametry
     ContentMarginRight = 5
     ContentMarginTop = 5
     ContentMarginBottom = 5
+    PromptTextColor = clNone
     Transparent = True
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
@@ -2081,11 +2089,13 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPCheckBox_pocet_mezer: TscGPCheckBox
-    Left = 8
+    Left = 6
     Top = 525
-    Width = 341
+    Width = 334
     Height = 30
-    BiDiMode = bdLeftToRight
+    Margins.Left = 0
+    Margins.Right = 0
+    BiDiMode = bdRightToLeft
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = -16
@@ -2099,7 +2109,7 @@ object Form_parametry: TForm_parametry
     Animation = False
     Caption = 'Po'#269'et mezer stejn'#253' jako po'#269'et voz'#237'k'#367
     CanFocused = True
-    Spacing = 1
+    Spacing = 0
     Layout = blGlyphLeft
     ImageIndex = -1
     GlowEffect.Enabled = False
