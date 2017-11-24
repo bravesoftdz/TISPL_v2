@@ -1456,77 +1456,79 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //nastavení zobrazení popUPmenu a jeho volání včetně pozice
 void TForm1::onPopUP(int X, int Y)
 {
-  //výchozí skrytí všech položek, další postup je založen na postupném odkrývání a zvětšování panelu UP nebo DOWN
-	close_all_items_popUPmenu();
-	//dle modu zobrazí položky
+	close_all_items_popUPmenu(false);//výchozí skrytí položek - pozor záleží na pořadí zobrazování
+
+	//dle modu
 	switch(MOD)
 	{
+		//case EDITACE:break;
+		//case TESTOVANI:break;
+		//case REZERVY:break;
 		case CASOVAOSA:
-		{														 //min                  //vozik
+		{                              //min                  //vozik
 			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN,ceil((Y+d.PosunT.y-d.KrokY/2-RzToolbar1->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
 			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
 			{
-				PopUPmenu->Item_zobrazit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;//nastavení zobrazení
+				PopUPmenu->Item_zobrazit_parametry->Visible=true;//nastavení zobrazení
 			}
-			PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_rychly_export->Visible=true;
+			PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;//umístění popup menu
+			PopUPmenu->Show();//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
 		}break;
 		case TECHNOPROCESY:break;
 		case SIMULACE:break;
 		default://pro SCHEMA
 		{
-			//povoluje nastavení položek kopírování či smazání objektu
+			//následující prapodivný kod je pokus o workaround zobrazování pořadí položek
+			PopUPmenu->Item_nastavit_parametry->Visible=true;
+			PopUPmenu->Item_smazat->Visible=true;
+			PopUPmenu->Item_kopirovat->Visible=true;
+			close_all_items_popUPmenu(true);
+			//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt //přídáno 19.4.2017 - zeefktivnění
 			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
+			//int H=408;
 			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
-			{ //pozor rozhoduje pořadí
+			{
 				PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
 				PopUPmenu->scLabel_kopirovat->Caption="  Kopie "+pom->name.UpperCase();
 				PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom->name.UpperCase();
-				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
-			//zobrazení běžných položek, pozor rozhoduje pořadí
-			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_oddalit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_vybrat_oknem->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_cely_pohled->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			else//pokud nebyl objekt zobrazen skryje
+			{
+				close_all_items_popUPmenu(false);
+				//H-=34*8;
+				//PopUPmenu->ClientHeight=H;
+			}
+			PopUPmenu->Item_priblizit->Visible=true;
+			PopUPmenu->Item_oddalit->Visible=true;
+			PopUPmenu->Item_posouvat->Visible=true;
+			PopUPmenu->Item_posunout->Visible=true;
+			PopUPmenu->Item_vybrat_oknem->Visible=true;
+			PopUPmenu->Item_cely_pohled->Visible=true;
+			//umístění popup menu
+			PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;
+			PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;
+			//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
+			PopUPmenu->Show();
 		}break;
 	}
-	//horní panel nahoře - nutnost
-	PopUPmenu->Panel_UP->Top=0;
-	//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje
-	//!!!případně začlenit další položky, které budou zlobit
-	PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
-	PopUPmenu->Item_cely_pohled->FillColor=(TColor)RGB(240,240,240);
-	//umístění popup menu
-	PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;
-	PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;
-	//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
-	PopUPmenu->Show();
 }
 //---------------------------------------------------------------------------
 //zajistí skrýtí všech položek popUPmenu
-void TForm1::close_all_items_popUPmenu()
+void TForm1::close_all_items_popUPmenu(bool vyjimka)
 {
-  PopUPmenu->Item_zobrazit_parametry->Visible=false;
-	PopUPmenu->Item_poznamka->Visible=false;
+	//výchozí skrytí položek - pozor záleží na pořadí zobrazování a možná i skrývání
+	PopUPmenu->Item_zobrazit_parametry->Visible=false;
+	PopUPmenu->Item_rychly_export->Visible=false;
 	PopUPmenu->Item_cely_pohled->Visible=false;
 	PopUPmenu->Item_vybrat_oknem->Visible=false;
 	PopUPmenu->Item_posunout->Visible=false;
 	PopUPmenu->Item_posouvat->Visible=false;
 	PopUPmenu->Item_oddalit->Visible=false;
 	PopUPmenu->Item_priblizit->Visible=false;
-	PopUPmenu->Item_rychly_export->Visible=false;
-	PopUPmenu->Item_nastavit_parametry->Visible=false;
-	PopUPmenu->Item_smazat->Visible=false;
-	PopUPmenu->Item_kopirovat->Visible=false;
-
-	PopUPmenu->Panel_UP->Height=0;
-	PopUPmenu->Panel_DOWN->Height=0;
+	if(!vyjimka)PopUPmenu->Item_smazat->Visible=false;
+	if(!vyjimka)PopUPmenu->Item_kopirovat->Visible=false;
+	if(!vyjimka)PopUPmenu->Item_nastavit_parametry->Visible=false;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

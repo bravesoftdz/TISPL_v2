@@ -3,7 +3,7 @@ object Form_parametry_linky: TForm_parametry_linky
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
-  ClientHeight = 424
+  ClientHeight = 517
   ClientWidth = 644
   Color = clActiveBorder
   Font.Charset = DEFAULT_CHARSET
@@ -17,8 +17,8 @@ object Form_parametry_linky: TForm_parametry_linky
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_delka: TrHTMLLabel
-    Left = 30
-    Top = 102
+    Left = 25
+    Top = 188
     Width = 70
     Height = 19
     Caption = 'D'#233'lka [m]'
@@ -32,7 +32,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel_eDesigner: TrHTMLLabel
     Left = 300
-    Top = 56
+    Top = 144
     Width = 308
     Height = 19
     Caption = 'Zadejte parametry linky nebo zvolte storno.'
@@ -46,8 +46,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
   end
   object rHTMLLabel_takt: TrHTMLLabel
-    Left = 42
-    Top = 279
+    Left = 25
+    Top = 103
     Width = 111
     Height = 19
     Caption = 'TaktTime [min]'
@@ -61,8 +61,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
   end
   object rHTMLLabel_sirka: TrHTMLLabel
-    Left = 260
-    Top = 100
+    Left = 25
+    Top = 230
     Width = 66
     Height = 19
     Caption = #352#237#345'ka [m]'
@@ -76,8 +76,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
   end
   object ValueListEditor: TValueListEditor
-    Left = 486
-    Top = 172
+    Left = 458
+    Top = 40
     Width = 150
     Height = 89
     Align = alCustom
@@ -109,7 +109,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_ADD: TButton
     Left = 139
-    Top = 223
+    Top = 324
     Width = 31
     Height = 25
     Hint = 'P'#345'idat pohon'
@@ -126,7 +126,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_DEL: TButton
     Left = 176
-    Top = 223
+    Top = 324
     Width = 28
     Height = 25
     Hint = 'Odebrat pohon'
@@ -142,8 +142,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Button_DELClick
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
-    Left = 1
-    Top = 267
+    Left = 0
+    Top = 355
     Width = 642
     Height = 94
     BorderStyle = bsNone
@@ -275,8 +275,8 @@ object Form_parametry_linky: TForm_parametry_linky
       30)
   end
   object Button_save: TscGPButton
-    Left = 206
-    Top = 381
+    Left = 190
+    Top = 469
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -367,8 +367,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object Button_storno: TscGPButton
-    Left = 344
-    Top = 381
+    Left = 328
+    Top = 469
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -681,7 +681,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPButton_vozik: TscGPButton
     Left = 0
-    Top = 56
+    Top = 144
     Width = 105
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -768,8 +768,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object rEditNum_delkavoziku: TrEditNum
-    Left = 120
-    Top = 96
+    Left = 160
+    Top = 184
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -784,7 +784,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPButton_pohon: TscGPButton
     Left = 0
-    Top = 213
+    Top = 314
     Width = 137
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -871,8 +871,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object Vypis_pohony: TButton
-    Left = 30
-    Top = 423
+    Left = 25
+    Top = 519
     Width = 75
     Height = 25
     Caption = 'Vypis_pohony'
@@ -881,8 +881,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Vypis_pohonyClick
   end
   object scRadioGroup_typVoziku: TscRadioGroup
-    Left = 30
-    Top = 143
+    Left = 278
+    Top = 169
     Width = 225
     Height = 53
     Font.Charset = DEFAULT_CHARSET
@@ -941,8 +941,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ShowFocusRect = True
   end
   object rEditNum_takt: TrEditNum
-    Left = 175
-    Top = 275
+    Left = 160
+    Top = 99
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -958,8 +958,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 1.000000000000000000
   end
   object rEditNum_sirkavoziku: TrEditNum
-    Left = 344
-    Top = 96
+    Left = 160
+    Top = 226
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -972,5 +972,93 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 13
     Visible = False
     Value = 1.000000000000000000
+  end
+  object scGPButton_obecne: TscGPButton
+    Left = 0
+    Top = 57
+    Width = 137
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 14
+    Animation = False
+    Caption = '  Obecn'#233
+    CanFocused = False
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 25
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = clSilver
+    Options.HotColor = clPurple
+    Options.PressedColor = clSilver
+    Options.FocusedColor = clRed
+    Options.DisabledColor = clPurple
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clSilver
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clBlack
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = True
+    GroupIndex = 0
+    AllowAllUp = False
   end
 end
