@@ -11,6 +11,7 @@
 #include "scGPControls.hpp"
 #include <SHDocVw.hpp>
 #include <Vcl.OleCtrls.hpp>
+#include "scStyledForm.hpp"
 //---------------------------------------------------------------------------
 class TForm_report : public TForm
 {
@@ -19,11 +20,19 @@ __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_header;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
-	TscLabel *scLabel_caption;
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton_Info;
+	TscButton *scButton_csv;
+	TscButton *scButton_html;
+	TscLabel *scLabel1;
+	TscGPPanel *scGPPanel1;
+	TscStyledForm *scStyledForm1;
 	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall scButton_csvClick(TObject *Sender);
+	void __fastcall MaxButtonClick(TObject *Sender);
 private:	// User declarations
+
+	bool FMaximized;
 public:		// User declarations
 
 	short int ulozit_report(UnicodeString FileName);

@@ -208,7 +208,7 @@ __published:	// IDE-managed Components
 	TImageList *ImageList48;
 	TscGPVirtualImageList *scGPVirtualImageList1;
 	TscButton *scButton2;
-	TscButton *scButton6;
+	TscButton *scButton_report;
 	TscSplitView *scSplitView_MENU;
 	TscButton *scButton7;
 	TscButton *scButton8;
