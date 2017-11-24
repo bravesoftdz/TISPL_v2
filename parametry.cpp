@@ -1052,4 +1052,5 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 
 
 
+//požadavek na zmìnu jednotek CT
 
