@@ -519,6 +519,8 @@ public:		// User declarations
 	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true);
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišuje zápis do INI aplikace
 	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišuje ètení z INI aplikace
+	void kopirovat_objekt();//pokud je oznaèenı objekt, zajistí jeho zkopírování, pøipoèítá index 1,2,3
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

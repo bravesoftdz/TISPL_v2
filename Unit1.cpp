@@ -256,8 +256,6 @@ void TForm1::aktualizace()
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
-
-
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -515,6 +513,9 @@ void TForm1::startUP()
 	T=readINI("Nastaveni_app","prichytavat");
 	if(T=="0" || T=="")prichytavat_k_mrizce=0;else prichytavat_k_mrizce=ms.MyToDouble(T);
 	akutalizace_stavu_prichytavani_vSB();
+	//zatím nepoužíváme, bude spíše souviset přímo se souborem, v případě použití nutno vyhodit implicitní volbu návrhář v sobuor novy
+	//T=readINI("Nastaveni_app","status");
+	//if(T=="0" || T=="")STATUS=NAVRH;else STATUS=OVEROVANI;
 }
 //---------------------------------------------------------------------------
 //zajišťuje zápis do INI aplikace
@@ -1023,7 +1024,7 @@ void TForm1::REFRESH(bool invalidate)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{
+{ ShowMessage(Key);
 	funkcni_klavesa=0;
 	switch(Key)
 	{
@@ -1059,6 +1060,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 102:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x+1,Mouse->CursorPos.y);break;}
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
+		//CTRL+V
+		case 86: if(ssCtrl)/*příkaz*/;break;
 		//F1 - volání nápovědy
 		case 112:break;
 		//F2
@@ -1082,8 +1085,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F11
 		case 122:ortogonalizace_on_off();break;//přepíná stav automatické ortogonalizace
 		//F12
-		case 123:ortogonalizovat();break;//ortogonalizuje schéma
-		//CTRL, SHIFT
+		case 123:ortogonalizovat();SB("Ortogonalizace schématu dokončena.");REFRESH();break;//ortogonalizuje schéma
+		//CTRL, SHIFT pro další použití, pro klávesové zkratky např. if(ssCtrl && Key==86) jako ctrl+V
 		default:
 		{
 			if(Shift.Contains(ssShift) && Shift.Contains(ssCtrl)){funkcni_klavesa=3;}//SHIFT + CTRL
@@ -1095,7 +1098,19 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			break;
 		}
 	}
+/*ascii
+  78 - n
+86 - v
+67 - c
+79 - o
+83 - s
+90 - z
+89 - y
+70 - f
+82 - r
+65 - a */
 
+	//pro klávesové zkratky např. if(ssCtrl && Key==86) jako ctrl+V
 	/*if(funkcni_klavesa==1)//CTRL
 	switch(Key)
 	{
@@ -1304,6 +1319,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					predchozi_souradnice_kurzoru=vychozi_souradnice_kurzoru;
 					break;
 				}
+				//case MOVE: testovací mod 23.listopadu 2017 při přesování se měnila velikost písma sice deteail...
+				case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
 				default: break;
 			}
 			DuvodUlozit(true);
@@ -1318,11 +1335,6 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
-
-	Cvektory::TZakazka *ukaz=d.v.ZAKAZKY->dalsi;
-		if (ukaz==NULL){ casovosa1->Enabled=false;}
-		else { casovosa1->Enabled=true;}
-
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
@@ -1409,10 +1421,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case NIC:
 		{
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
-
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt
-
 			break;
     }
 		default: break;
@@ -1475,17 +1485,22 @@ void TForm1::onPopUP(int X, int Y)
 			//následující prapodivný kod je pokus o workaround zobrazování pořadí položek
 			PopUPmenu->Item_nastavit_parametry->Visible=true;
 			PopUPmenu->Item_smazat->Visible=true;
+			PopUPmenu->Item_kopirovat->Visible=true;
 			close_all_items_popUPmenu(true);
 			//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt //přídáno 19.4.2017 - zeefktivnění
 			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
+			//int H=408;
 			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
 			{
 				PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
+				PopUPmenu->scLabel_kopirovat->Caption="  Kopie "+pom->name.UpperCase();
 				PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom->name.UpperCase();
 			}
 			else//pokud nebyl objekt zobrazen skryje
 			{
 				close_all_items_popUPmenu(false);
+				//H-=34*8;
+				//PopUPmenu->ClientHeight=H;
 			}
 			PopUPmenu->Item_priblizit->Visible=true;
 			PopUPmenu->Item_oddalit->Visible=true;
@@ -1515,6 +1530,7 @@ void TForm1::close_all_items_popUPmenu(bool vyjimka)
 	PopUPmenu->Item_oddalit->Visible=false;
 	PopUPmenu->Item_priblizit->Visible=false;
 	if(!vyjimka)PopUPmenu->Item_smazat->Visible=false;
+	if(!vyjimka)PopUPmenu->Item_kopirovat->Visible=false;
 	if(!vyjimka)PopUPmenu->Item_nastavit_parametry->Visible=false;
 }
 //---------------------------------------------------------------------------
@@ -2016,7 +2032,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		{
 			if(ukaz==d.v.OBJEKTY->predchozi)//první prvek versus poslední
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"_Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
 				{
 					d.v.zmen_poradi_objektu(pom,d.v.OBJEKTY->predchozi);//volání realizace samotné záměny
 				}
@@ -2047,7 +2063,7 @@ void TForm1::ortogonalizace_on_off()
 	 {
 		 ortogonalizace_stav=true;
 		 ortogonalizovat();
-		 writeINI("Nastaveni_app","ortogonalizace",(short)ortogonalizace_stav);
+		 REFRESH();
 		 SB("Ortogonalizace zapnuta.");
    }
 }
@@ -2062,7 +2078,6 @@ void TForm1::ortogonalizace()
 void TForm1::ortogonalizovat()
 {
   d.v.ortogonalizovat();
-	REFRESH();
 }
 //---------------------------------------------------------------------------
 void TForm1::zneplatnit_minulesouradnice()
@@ -2082,7 +2097,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 
 	unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
 	C->Font->Style = TFontStyles()<< fsBold;
-	if(antialiasing)C->Font->Size=11;else C->Font->Size=10;
+	//if(antialiasing)C->Font->Size=12;else
+	C->Font->Size=12;
 	C->Font->Name="Arial";
 	C->Pen->Width=1;
 	//C->Pen->Color=m.clIntensive((TColor)RGB(19,115,169),140);
@@ -2394,8 +2410,11 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 		log2web("konec");
 		//pro ochranu v případě pádu programu
 		//TIniFile *ini = new TIniFile(ExtractFilePath(Application->ExeName) + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-		writeINI("Nastaveni_app","prichytavat",prichytavat_k_mrizce);
 		writeINI("Konec","status","OK");
+		//zápis dalšího nastavení
+		writeINI("Nastaveni_app","prichytavat",prichytavat_k_mrizce);
+		writeINI("Nastaveni_app","ortogonalizace",(short)ortogonalizace_stav);
+		//zatím nepoužíváme writeINI("Nastaveni_app","status",STATUS);
 	}
 }
 //---------------------------------------------------------------------------
@@ -2584,15 +2603,17 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 							{
 									pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
 									Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
+									short N=(int)!ortogonalizace_stav;//pokud je ortogonalizeace aktivní tak N=1
 									for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
 									{
-										if(cop==NULL)//kopíruje za originál
-										cop=d.v.kopiruj_objekt(pom,2*(i-1),-2*(i-1),i,pom);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
+										if(cop==NULL)//kopíruje za originál  //pokud je ortoganalizace zapnuta bude odsazení nových objektů větší a algoritmus objekty rovná jen po X ose
+										cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,pom);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
 										else //vkládá za předchozí kopii, aby bylo řazeno orig,1,2,n nikoliv n,2,1,orig
-										cop=d.v.kopiruj_objekt(pom,2*(i-1),-2*(i-1),i,cop);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
+										cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,cop);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
 									}
 									cop=NULL;delete cop;
 									pom->name+="1";pom->short_name+="1";//oindexuje i název origánálu, musí být na závěr
+									ortogonalizace();
 							}
 							else //pro kontinuál a postprocesní
 							{
@@ -2613,6 +2634,27 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 	{
 			MB("Nejdříve je nutné nadefinovat pohony ve formuláři parametry linky!");
   }
+}
+//---------------------------------------------------------------------------
+//pokud je označený objekt, zajistí jeho zkopírování, připočítá index 1,2,3
+void TForm1::kopirovat_objekt()
+{
+		if(pom!=NULL)//pokud je vybraný objekt
+		{
+				if(pom->dalsi!=NULL)//pokud po vybraném následuje další objekt, tak nový vkládá mezi ně
+				{
+					d.v.kopiruj_objekt(pom,(pom->X+pom->dalsi->X)/2-pom->X,(pom->Y+pom->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true,pom);
+				}
+				else //jinak odsazeně
+				{
+					if(pom==d.v.OBJEKTY->predchozi && pom->n==1)//pokud je jenom jeden objekt
+					d.v.kopiruj_objekt(pom,2,0,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true);
+					if(pom==d.v.OBJEKTY->predchozi)//pokud se jedná o poslední prvek
+					d.v.kopiruj_objekt(pom,(pom->X+d.v.OBJEKTY->dalsi->X)/2-pom->X,(pom->Y+d.v.OBJEKTY->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true);
+				}
+				ortogonalizace();
+				REFRESH();
+		}
 }
 //---------------------------------------------------------------------------
 //volá dialog kalkulátor TT
@@ -3808,16 +3850,10 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 //zapne či vypne antialiasing
 void __fastcall TForm1::scGPSwitch4ChangeState(TObject *Sender)
 {
+	antialiasing=!antialiasing;//musí být před scSplitView_MENU->Opened
 	scSplitView_MENU->Opened=false;
-	//protože zlobí, tak rozepisuji
-	if(scGPSwitch4->State==true)
-	 antialiasing=true;
-	else
-	 antialiasing=false;
-	//antialiasing=!antialiasing;
 	DrawGrid_knihovna->Invalidate();
-	Invalidate();
-	//REFRESH();
+	Invalidate();//v tomto případě lépe než REFRESH - kvůli efektu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_trTimer(TObject *Sender)
@@ -3970,11 +4006,11 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 	}
 	else
 	{
-
 		{
 			Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
 			Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
 			Form_definice_zakazek->ShowModal();
+			casovosa1->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat
 			DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
 			REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
 		}

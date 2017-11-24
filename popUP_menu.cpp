@@ -49,6 +49,7 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	Item_oddalit->FillColor=clBg;
 	Item_vybrat_oknem->FillColor=clBg;
 	Item_cely_pohled->FillColor=clBg;
+	Item_kopirovat->FillColor=clBg;
 	GlyphButton_close->Options->NormalColor=clAcBg;
 	GlyphButton_close->Options->HotColor=clRed;
 	GlyphButton_close->Options->FocusedColor=clAcBg;
@@ -75,6 +76,8 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	GlyphButton_vybrat_oknem->GlyphOptions->NormalColor=clWhite;
 	GlyphButton_cely_pohled->Options->NormalColor=clGlyph;
 	GlyphButton_cely_pohled->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_kopirovat->Options->NormalColor=clGlyph;
+	GlyphButton_kopirovat->GlyphOptions->NormalColor=clWhite;
 	closing=false;
 }
 //---------------------------------------------------------------------------
@@ -184,6 +187,40 @@ void __fastcall TPopUPmenu::scLabel_zobrazit_parametryClick(TObject *Sender)
 	closing=true;
 	Close();
 	Form1->Zobrazitparametry1Click(Sender);
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_kopirovatMouseEnter(TObject *Sender)
+{
+ 	pasiveColor();
+	Item_kopirovat->FillColor=clAcBg;
+	GlyphButton_kopirovat->Options->NormalColor=clAcBg;
+	GlyphButton_kopirovat->Options->HotColor=clAcBg;
+	GlyphButton_kopirovat->Options->FocusedColor=clAcBg;
+	GlyphButton_kopirovat->GlyphOptions->NormalColor=clAcGlyph;
+	top_positon(Item_kopirovat->Top);//hlídání horní pozice, je-li daná komponenta horní
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_kopirovatMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_kopirovatMouseEnter(TObject *Sender)
+{
+	scLabel_kopirovatMouseEnter(Sender);
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::GlyphButton_kopirovatMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TPopUPmenu::scLabel_kopirovatClick(TObject *Sender)
+{
+	closing=true;
+	Close();
+	Form1->kopirovat_objekt();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -452,30 +489,11 @@ void __fastcall TPopUPmenu::GlyphButton_cely_pohledMouseLeave(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TPopUPmenu::scLabel_cely_pohledClick(TObject *Sender)
 {
-  closing=true;
+	closing=true;
 	Close();
 	Form1->RzToolButton11Click(Sender);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

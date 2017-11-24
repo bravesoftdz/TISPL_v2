@@ -64,6 +64,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_metry_milimetry;
 	TscGPGlyphButton *scGPGlyphButton_copy;
 	TscGPGlyphButton *scGPGlyphButton_paste;
+	TscButton *scButton1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);

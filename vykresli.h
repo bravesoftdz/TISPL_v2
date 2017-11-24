@@ -80,6 +80,7 @@ class Cvykresli
 	bool mod_vytizenost_objektu;
 	short NOLIEX;//NO - 0, LINEAR - 1, EXPO - 2
 	bool JIZPOCITANO;//øešení aby se zbyteènì a opakovanì neukládalo do PROCESù pokud to není treba
+  bool grafickeDilema;//provizorní promìnná na pøepínání stavu, zda se pøi pøidávání objektu a pøesouvání objektu bude zmenšovat písmo nebo nepøekreslovat objekt
 
 	protected:
 

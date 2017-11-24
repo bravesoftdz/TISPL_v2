@@ -48,6 +48,11 @@ __published:	// IDE-managed Components
 	TscGPPanel *Item_poznamka;
 	TscLabel *scLabel_poznamka;
 	TscGPGlyphButton *GlyphButton_poznamka;
+	TscGPPanel *Item_kopirovat;
+	TscLabel *scLabel_kopirovat;
+	TscGPGlyphButton *GlyphButton_kopirovat;
+	TscGPPanel *Panel_UP;
+	TscGPPanel *Panel_down;
 	void __fastcall scLabel_smazatClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scLabel_zobrazit_parametryMouseEnter(TObject *Sender);
@@ -102,6 +107,11 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_vybrat_oknemClick(TObject *Sender);
 	void __fastcall scLabel_cely_pohledClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
+	void __fastcall scLabel_kopirovatClick(TObject *Sender);
+	void __fastcall GlyphButton_kopirovatMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_kopirovatMouseLeave(TObject *Sender);
+	void __fastcall scLabel_kopirovatMouseEnter(TObject *Sender);
+	void __fastcall scLabel_kopirovatMouseLeave(TObject *Sender);
 private:	// User declarations
 	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;
 	void pasiveColor();

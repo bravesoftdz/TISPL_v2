@@ -122,7 +122,7 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 {
 	TObjekt *novy=new TObjekt;
 
-	novy=Objekt;//novy bude ukazovat tam kam prvek Objekt
+	*novy=*Objekt;//novy bude ukazovat tam kam prvek Objekt
 	novy->n=OBJEKTY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -135,21 +135,41 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 //hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového
 //index_name slouží pro rozlišení např. LAK, LAK1, LAK2...
 //zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
-Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short offsetY,AnsiString index_name,TObjekt *p)
+Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short offsetY,AnsiString index_name,bool remove_pre_index,TObjekt *p)
 {
-	if(p==NULL)
+	TObjekt *novy=new TObjekt;
+	novy->id=Objekt->id;
+
+	//název
+	if(!remove_pre_index || index_name=="1")//pokud se předchozí index nemaže či nezohledňuje, vhodné např. pro kopírování z originálního objektu bez indexu
 	{
-		vloz_objekt(Objekt);
-		return OBJEKTY->predchozi;//vrátí poslední ukazatel na prvek seznamu
+		novy->short_name=Objekt->short_name+index_name;
+		novy->name=Objekt->name+index_name;
 	}
 	else
 	{
-		TObjekt *novy=new TObjekt;
-		novy->id=Objekt->id;
-		novy->short_name=Objekt->short_name+index_name;
-		novy->name=Objekt->name+index_name;
-		novy->X=Objekt->X+offsetX;//přiřadím X osu včetně požadovaného offsetu
-		novy->Y=Objekt->Y+offsetY;//přiřadím Y osu  včetně požadovaného offsetu
+		novy->short_name=Objekt->short_name.SubString(1,Objekt->short_name.Length()-1)+index_name;
+		novy->name=Objekt->name.SubString(1,Objekt->name.Length()-1)+index_name;
+	}
+
+	//souřadnice nového
+	novy->X=Objekt->X+offsetX;//přiřadím X osu včetně požadovaného offsetu
+	novy->Y=Objekt->Y+offsetY;//přiřadím Y osu  včetně požadovaného offsetu
+
+	//ošetření pokud se jedná o poslední prvek - pro upomínku rozepsáno
+	if(Objekt->dalsi==NULL)p=NULL;//tak se vkládá vždy nakonec
+
+	if(p==NULL)//vkládání nakonec
+	{
+		vloz_objekt(Objekt);
+		OBJEKTY->predchozi->short_name=novy->short_name;
+		OBJEKTY->predchozi->name=novy->name;
+		OBJEKTY->predchozi->X=novy->X;
+		OBJEKTY->predchozi->Y=novy->Y;
+		return OBJEKTY->predchozi;//vrátí poslední ukazatel na prvek seznamu
+	}
+	else//vkládání mezi objekty
+	{
 		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
 		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
 		novy->kapacita=Objekt->kapacita;
@@ -312,60 +332,63 @@ void Cvektory::zvys_indexy(TObjekt *Objekt)//zvýší indexy NÁSLEDUJICÍCH bod
 //ortogonalizuje schéma
 void Cvektory::ortogonalizovat()
 {
-	//mimo posledního prvku
-	TObjekt *O=OBJEKTY->dalsi;
-	while(O->dalsi!=NULL)
+	if(OBJEKTY->predchozi->n>1)//ortogonalizace až od dvou prvků
 	{
-		 double A=m.azimut(O->X,O->Y,O->dalsi->X,O->dalsi->Y);
-		 double D=m.delka(O->X,O->Y,O->dalsi->X,O->dalsi->Y);
-		 if(315<A || A<=45)//A==0 - nahoru
-		 {
-			O->dalsi->X=O->X;
-			if(Form1->prichytavat_k_mrizce==1)O->dalsi->Y=m.round((O->Y+D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
-			else O->dalsi->Y=O->Y+D;
-		 }
-		 if(45<A && A<=135)//A==90 - doprava
-		 {
-			if(Form1->prichytavat_k_mrizce==1)O->dalsi->X=m.round((O->X+D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
-			else O->dalsi->X=O->X+D;
-			O->dalsi->Y=O->Y;
-		 }
-		 if(135<A && A<=255)//A==180 - dolu
-		 {
-			O->dalsi->X=O->X;
-			if(Form1->prichytavat_k_mrizce==1)O->dalsi->Y=m.round((O->Y-D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
-			else O->dalsi->Y=O->Y-D;
-		 }
-		 if(225<A && A<=315)//A==270 - doleva
-		 {
-			if(Form1->prichytavat_k_mrizce==1)O->dalsi->X=m.round((O->X-D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
-			else O->dalsi->X=O->X-D;
-			O->dalsi->Y=O->Y;
-		 }
-		 O=O->dalsi;
-	}
-	O=NULL;delete O;
+			//mimo posledního prvku
+			TObjekt *O=OBJEKTY->dalsi;
+			while(O->dalsi!=NULL)
+			{
+				 double A=m.azimut(O->X,O->Y,O->dalsi->X,O->dalsi->Y);
+				 double D=m.delka(O->X,O->Y,O->dalsi->X,O->dalsi->Y);
+				 if(315<A || A<=45)//A==0 - nahoru
+				 {
+					O->dalsi->X=O->X;
+					if(Form1->prichytavat_k_mrizce==1)O->dalsi->Y=m.round((O->Y+D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+					else O->dalsi->Y=O->Y+D;
+				 }
+				 if(45<A && A<=135)//A==90 - doprava
+				 {
+					if(Form1->prichytavat_k_mrizce==1)O->dalsi->X=m.round((O->X+D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+					else O->dalsi->X=O->X+D;
+					O->dalsi->Y=O->Y;
+				 }
+				 if(135<A && A<=255)//A==180 - dolu
+				 {
+					O->dalsi->X=O->X;
+					if(Form1->prichytavat_k_mrizce==1)O->dalsi->Y=m.round((O->Y-D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+					else O->dalsi->Y=O->Y-D;
+				 }
+				 if(225<A && A<=315)//A==270 - doleva
+				 {
+					if(Form1->prichytavat_k_mrizce==1)O->dalsi->X=m.round((O->X-D)/(Form1->size_grid*1.0*Form1->m2px))*Form1->size_grid*Form1->m2px;
+					else O->dalsi->X=O->X-D;
+					O->dalsi->Y=O->Y;
+				 }
+				 O=O->dalsi;
+			}
+			O=NULL;delete O;
 
-	//ošetření a dorovnání posledního prvku pokud jsou minimálně čtyři prkvy
-	if(OBJEKTY->predchozi->n>=4)
-	{
-		TObjekt *O1=OBJEKTY->dalsi;//první
-		TObjekt *Op=OBJEKTY->predchozi;//poslední
-		TObjekt *Opp=OBJEKTY->predchozi->predchozi;//předposlední
-		double A=m.azimut(O1->X,O1->Y,Opp->X,Opp->Y);
-		if(m.round(A)%90)//pokud se NEjedná o náseobek 90° je nutné řešit
-		{
-			if(Op->X==Opp->X)Op->Y=O1->Y;
-			if(Op->Y==Opp->Y)Op->X=O1->X;
-			O1=NULL;delete O1;
-			Op=NULL;delete Op;
-			Opp=NULL;delete Opp;
-		}
-		else//pokud je první předchozí v jedné linii, umístí dopřestřed mezi prvky
-		{
-			 Op->X=(O1->X+Opp->X)/2;
-			 Op->Y=(O1->Y+Opp->Y)/2;
-    }
+			//ošetření a dorovnání posledního prvku pokud jsou minimálně čtyři prkvy
+			if(OBJEKTY->predchozi->n>=4)
+			{
+				TObjekt *O1=OBJEKTY->dalsi;//první
+				TObjekt *Op=OBJEKTY->predchozi;//poslední
+				TObjekt *Opp=OBJEKTY->predchozi->predchozi;//předposlední
+				double A=m.azimut(O1->X,O1->Y,Opp->X,Opp->Y);
+				if(m.round(A)%90)//pokud se NEjedná o náseobek 90° je nutné řešit
+				{
+					if(Op->X==Opp->X)Op->Y=O1->Y;
+					if(Op->Y==Opp->Y)Op->X=O1->X;
+					O1=NULL;delete O1;
+					Op=NULL;delete Op;
+					Opp=NULL;delete Opp;
+				}
+				else//pokud je první předchozí v jedné linii, umístí dopřestřed mezi prvky
+				{
+					 Op->X=(O1->X+Opp->X)/2;
+					 Op->Y=(O1->Y+Opp->Y)/2;
+				}
+			}
 	}
 }
 //---------------------------------------------------------------------------

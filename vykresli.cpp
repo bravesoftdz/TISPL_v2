@@ -18,6 +18,7 @@ Cvykresli::Cvykresli()
 	mod_vytizenost_objektu=false;
 	NOLIEX=2;
 	oY=5;//ofset na ose Y, 5 pouze grafická korekce
+	grafickeDilema=true;
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_vektory(TCanvas *canv)
@@ -141,7 +142,7 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
     //INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
 
-		//referenčni bod jsem nakonce stanovil pravý konec levé packy
+		////referenčni bod jsem nakonce stanovil pravý konec levé packy
 		TPoint S=m.L2P(ukaz->X,ukaz->Y);//Převede logické souřadnice na fyzické (displej zařízení), vrací fyzické souřadnice
 
 		unsigned short W=O_width*Form1->Zoom;
@@ -154,32 +155,46 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 //			canv->Rectangle(S.x-O,S.y-O,S.x+W+O,S.y+H+O);
 //		}
 
-		//obdelník objektu
+		////obdelník objektu
 		canv->Pen->Style=psSolid;
 		canv->Brush->Style=bsSolid;
 		canv->Brush->Color=(TColor)RGB(19,115,169);//(TColor)RGB(254,254,254);//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
 		canv->Pen->Color=(TColor)RGB(19,115,169);//clBlack;
 		canv->Pen->Mode=pmCopy;
-		canv->Font->Name="Arial";
-		//canv->Font->Name="MS Sans Serif";
-		if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)canv->Font->Size=9*3+3;//+3 grafická korekce protože při AA dochází ke zmenšení písma
-		else canv->Font->Size=9;
-		rotace_textu(canv,0);
-		canv->Font->Color=(TColor)RGB(254,254,254);//clBlack;//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
 		canv->Pen->Width=m.round(2*Form1->Zoom);
 		canv->Rectangle(S.x,S.y,S.x+W,S.y+H);
 
-		//packy
+		////packy
 		/*unsigned short packy_W=5*Form1->Zoom;
 		canv->Pen->Width=1*Form1->Zoom;
 		canv->MoveTo(S.x-packy_W,S.y+H/2);canv->LineTo(S.x,S.y+H/2);
 		canv->MoveTo(S.x+W,S.y+H/2);canv->LineTo(S.x+W+packy_W,S.y+H/2);*/
 
+		////nastavení písma
+		canv->Font->Name="Arial";//canv->Font->Name="MS Sans Serif";
+		if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)
+		{
+			canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
+			//asi nepřináší zcela přínos
+			canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
+			canv->Font->Size=10*3+3;//+3 grafická korekce protože při AA dochází ke zmenšení písma
+		}
+		else
+		{
+			//asi nepřináší zcela přínos
+			canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+			canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
+			canv->Font->Size=11;//tady zajist rozšíření písma
+		}
+		rotace_textu(canv,0);
+		canv->Font->Color=(TColor)RGB(254,254,254);//clBlack;//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
+
 		short zAA=1;//zvětšení pro antialising, jinak 1
 		if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)zAA=3;
 
-		//text - pro jednotlivé zoomu různé podoby výpisu
-		if(Form1->Zoom_predchozi_AA>1)//nadpis
+		////samotný text - pro jednotlivé zoomu různé podoby výpisu
+		//název objektu
+		if(Form1->Zoom_predchozi_AA>1)
 		{
 		 canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
 		 if(Form1->Zoom_predchozi_AA==1.5)	drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
@@ -193,30 +208,38 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 		 if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)canv->Font->Size=8*3+2;//+3 grafická korekce protože při AA dochází ke zmenšení písma
 		}
 
-		if(Form1->Zoom_predchozi_AA>1.5)//vypíší se i datové položky
+		//vypis další datových položek
+		if(Form1->Zoom_predchozi_AA>1.5)
 		{
-		 UnicodeString T="";
+		 UnicodeString T=""; unsigned short R=18;//řádkování
 		 switch(ukaz->rezim)
 		 {
 			case 0:T="STOP & GO";break;
 			case 1:T="KONTINUÁLNÍ";break;
 			case 2:T="POSTPROCESNÍ";break;
 		 }
-		 canv->TextOutW(S.x+4*zAA,S.y+18*zAA,T);
-		 //ZDM canv->TextOutW(S.x+4*zAA,S.y+33*zAA,"TT: "+UnicodeString(ukaz->TTo)+" min/v");
-		 //ZDM canv->TextOutW(S.x+4*zAA,S.y+48*zAA,"CT: "+UnicodeString(ukaz->CT)+" min/v");
-		 canv->TextOutW(S.x+4*zAA,S.y+33*zAA,"Kap.: "+UnicodeString(ukaz->kapacita)+" v");
-		 canv->TextOutW(S.x+4*zAA,S.y+48*zAA,"dopKap.: "+UnicodeString(ukaz->kapacita_dop)+" v");
-		 //S.y+63,78 - pro další řádky
+		 canv->TextOutW(S.x+4*zAA,S.y+R*zAA,T);//výpis režimu
+		 if(ukaz->pohon->name==NULL)canv->TextOutW(S.x+4*zAA,S.y+33*zAA,"pohon nepřiřazen");//pohon name
+		 canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,UnicodeString(ukaz->pohon->name));//pohon name
+		 if(Form1->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"RD: "+UnicodeString(ukaz->RD)+" m/s");
+		 if(Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"DD: "+UnicodeString(ukaz->delka_dopravniku)+" m");
+		 if(Form1->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"CT: "+UnicodeString(ukaz->CT)+" s");
+		 if(Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Kap.: "+UnicodeString(ukaz->kapacita)+" v");
 		}
 
-		if(Form1->Zoom_predchozi_AA<=1)//pro největší oddálení zobrazí jenom zkratku objektu
+    //pro největší oddálení zobrazí jenom zkratku objektu
+		if(Form1->Zoom_predchozi_AA<=1)
 		{
 			if(Form1->Zoom_predchozi_AA==1)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();
 			if(Form1->Zoom_predchozi_AA==0.25)
 			drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->short_name.SubString(1,1));
 			else
-			drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
+			{
+				if(Form1->antialiasing && Form1->Akce!=Form1->ADD && Form1->Akce!=Form1->MOVE)//při antialiasingu se zobrazuje popisek trochu jinak
+				drawRectText(canv,TRect(S.x,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
+				else
+				drawRectText(canv,TRect(S.x-1,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
+			}
 		}
 }
 ////---------------------------------------------------------------------------
@@ -1096,7 +1119,7 @@ void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int pos
 		canv->Pen->Mode=pmNotXor;
 		canv->Brush->Style=bsClear;
 
-		//provizorní spojovací linie + znovupřekreslení zůčastněných objekt§ pro lepší vzhled
+		//provizorní spojovací linie + znovupřekreslení zůčastněných objektů pro lepší vzhled
 		if(v.OBJEKTY->predchozi->n>=3)//pokud budou alespoň 3 prky
 		{
 
@@ -1109,9 +1132,12 @@ void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int pos
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->predchozi->X,p->predchozi->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
 				sipka(canv,(m.L2Px(p->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,v.OBJEKTY->predchozi);
-				vykresli_rectangle(canv,p);
-				vykresli_rectangle(canv,p->dalsi);
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				{
+					vykresli_rectangle(canv,v.OBJEKTY->predchozi);
+					vykresli_rectangle(canv,p);
+					vykresli_rectangle(canv,p->dalsi);
+				}
 			}
 			if(p->n==v.OBJEKTY->predchozi->n)//pokud se jedná o poslední prvek
 			{
@@ -1122,9 +1148,12 @@ void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int pos
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
 				sipka(canv,(m.L2Px(v.OBJEKTY->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(v.OBJEKTY->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((v.OBJEKTY->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((v.OBJEKTY->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,p->predchozi);
-				vykresli_rectangle(canv,p);
-				vykresli_rectangle(canv,v.OBJEKTY->dalsi);
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				{
+					vykresli_rectangle(canv,p->predchozi);
+					vykresli_rectangle(canv,p);
+					vykresli_rectangle(canv,v.OBJEKTY->dalsi);
+				}
 			}
 			if(p->n!=1 && p->n!=v.OBJEKTY->predchozi->n)//pokud se nejedná o první ani poslední prvek
 			{
@@ -1135,9 +1164,12 @@ void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int pos
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
 				sipka(canv,(m.L2Px(p->predchozi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->predchozi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,p->predchozi);
-				vykresli_rectangle(canv,p);
-				vykresli_rectangle(canv,p->dalsi);
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				{
+					vykresli_rectangle(canv,p->predchozi);
+					vykresli_rectangle(canv,p);
+					vykresli_rectangle(canv,p->dalsi);
+				}
 			}
 		}
 
@@ -1149,8 +1181,11 @@ void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int pos
 				canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
 				sipka(canv,(m.L2Px(p->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,p);
-				vykresli_rectangle(canv,p->dalsi);
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				{
+					vykresli_rectangle(canv,p);
+					vykresli_rectangle(canv,p->dalsi);
+				}
 			}
 			else//pokud se jedná o druhý prvek
 			{
@@ -1158,8 +1193,11 @@ void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int pos
 				canv->LineTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
 				sipka(canv,(m.L2Px(p->predchozi->X)+m.L2Px(p->X)+O_width*Form1->Zoom+posunX)/2,(m.L2Py(p->predchozi->Y)+m.L2Py(p->Y)+O_height*Form1->Zoom+posunY)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,p->predchozi);
-				vykresli_rectangle(canv,p);
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				{
+					vykresli_rectangle(canv,p->predchozi);
+					vykresli_rectangle(canv,p);
+				}
 			}
 		}
 
@@ -1185,10 +1223,12 @@ void Cvykresli::odznac_oznac_objekt_novy_posledni(TCanvas *canv,int X, int Y)
 				{
 					canv->LineTo(m.L2Px(v.OBJEKTY->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->dalsi->Y)+O_height*Form1->Zoom/2);
 					sipka(canv,(m.L2Px(v.OBJEKTY->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-					vykresli_rectangle(canv,v.OBJEKTY->dalsi);
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					vykresli_rectangle(canv,v.OBJEKTY->dalsi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 				}
 				sipka(canv,(m.L2Px(v.OBJEKTY->predchozi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->predchozi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(v.OBJEKTY->predchozi->X,v.OBJEKTY->predchozi->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,v.OBJEKTY->predchozi);
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				vykresli_rectangle(canv,v.OBJEKTY->predchozi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 			}
 		}
 		editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);
@@ -1210,9 +1250,11 @@ void Cvykresli::odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::T
 				canv->LineTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
 				canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
 				sipka(canv,(m.L2Px(p->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,p->dalsi);
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				vykresli_rectangle(canv,p->dalsi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 				sipka(canv,(m.L2Px(p->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				vykresli_rectangle(canv,p);
+        if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				vykresli_rectangle(canv,p);//znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 			}
 		}
 		editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);

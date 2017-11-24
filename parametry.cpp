@@ -1,7 +1,6 @@
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
-
 #include "parametry.h"
 #include "unit1.h"
 //---------------------------------------------------------------------------
@@ -975,29 +974,36 @@ void __fastcall TForm_parametry::FormClose(TObject *Sender, TCloseAction &Action
 //zkopÌruje parametry objektu pro dalöÌ pouûitÌ
 void __fastcall TForm_parametry::scGPGlyphButton_copyClick(TObject *Sender)
 {
-  //povolÌ tlaËÌtko vkl·d·nÌ
+	//povolÌ tlaËÌtko vkl·d·nÌ
 	scGPGlyphButton_paste->Enabled=true;
 
 	//p¯evod jednotek
 	double jednotky_cas=1.0;if(minsec==MIN)jednotky_cas=60.0;
 	double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
 
-	//atributy
-	Form1->copyObjekt->name=Form_parametry->scGPEdit_name->Text;
-	Form1->copyObjekt->short_name=Form_parametry->scGPEdit_shortname->Text;
-	Form1->copyObjekt->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
-	Form1->copyObjekt->pohon=Form1->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
-	Form1->copyObjekt->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
-	Form1->copyObjekt->CT=scGPNumericEdit_CT->Value*jednotky_cas;
-	Form1->copyObjekt->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
-	Form1->copyObjekt->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
-	Form1->copyObjekt->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
-	Form1->copyObjekt->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
-	Form1->copyObjekt->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
-	Form1->copyObjekt->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-	Form1->copyObjekt->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
-	Form1->copyObjekt->mV=!Form_parametry->scGPCheckBox_pocet_mezer->Checked;
+	//text do schr·nky
+	AnsiString T="";
 
+	//atributy
+	Form1->copyObjekt->name=scGPEdit_name->Text;T=scGPEdit_name->Text;T+=";";
+	Form1->copyObjekt->short_name=scGPEdit_shortname->Text;T+=scGPEdit_shortname->Text;T+=";";
+	Form1->copyObjekt->delka_dopravniku=scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;T+=scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;T+=";";
+	Form1->copyObjekt->pohon=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex+1);/*indexuje se od nuly*/T+=scComboBox_pohon->ItemIndex+1;T+=";";
+	Form1->copyObjekt->rezim=scComboBox_rezim->ItemIndex;T+=scComboBox_rezim->ItemIndex;T+=";";
+	Form1->copyObjekt->CT=scGPNumericEdit_CT->Value*jednotky_cas;T+=Form1->copyObjekt->CT;T+=";";
+	Form1->copyObjekt->cekat_na_palce=scComboBox_cekani_palec->ItemIndex;T+=scComboBox_cekani_palec->ItemIndex;T+=";";
+	Form1->copyObjekt->kapacita=scGPNumericEdit_kapacita->Value;T+=Form1->copyObjekt->kapacita;T+=";";
+	Form1->copyObjekt->odchylka=scGPNumericEdit_odchylka->Value;T+=Form1->copyObjekt->odchylka;T+=";";
+	Form1->copyObjekt->stopka=scComboBox_stopka->ItemIndex;T+=Form1->copyObjekt->stopka;T+=";";
+	Form1->copyObjekt->RD=scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;T+=Form1->copyObjekt->RD;T+=";";
+	Form1->copyObjekt->rotace=scComboBox_rotace->ItemIndex;T+=Form1->copyObjekt->rotace;T+=";";
+	Form1->copyObjekt->mezera=scGPNumericEdit_mezera->Value/jednotky_vzdalenost;T+=Form1->copyObjekt->mezera;T+=";";
+	Form1->copyObjekt->mV=!scGPCheckBox_pocet_mezer->Checked;T+=Form1->copyObjekt->mV;T+=";";
+
+	//zkopÌrov·nÌ textu do schr·nky
+	TClipboard *c=new TClipboard;
+	c->AsText=T;
+	c=NULL;delete c;
 }
 //---------------------------------------------------------------------------
 //zajiöùuje vloûenÌ objektu
