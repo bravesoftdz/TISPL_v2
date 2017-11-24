@@ -27,15 +27,15 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		if(Form1->STATUS==Form1->NAVRH)
 		{
 			scGPButton_vozik->Caption="   Jig";
-			scGPButton_pohon->Caption="   Takt time";
+			scGPButton_obecne->Caption="   Takt time";
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
 			rHTMLLabel_sirka->Visible=true;
 			rEditNum_sirkavoziku->Visible=true;
 
-			rStringGridEd_tab_dopravniky->Visible=false;
-			Button_ADD->Visible=false;
-			Button_DEL->Visible=false;
+			rStringGridEd_tab_dopravniky->Visible=true;
+			Button_ADD->Visible=true;
+			Button_DEL->Visible=true;
 
 			scRadioGroup_typVoziku->Visible=true;
 			rEditNum_delkavoziku->Visible=true;
@@ -46,8 +46,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scGPButton_vozik->Caption="   Vozík";
 			scGPButton_pohon->Caption="   Pohon";
 
-			rHTMLLabel_takt->Visible=false;
-			rEditNum_takt->Visible=false;
+			rHTMLLabel_takt->Visible=true;
+			rEditNum_takt->Enabled=false;
 			rHTMLLabel_sirka->Visible=false;
 			rEditNum_sirkavoziku->Visible=false;
 
@@ -58,6 +58,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scRadioGroup_typVoziku->Visible=true;
 			rEditNum_delkavoziku->Visible=true;
 			rHTMLLabel_delka->Visible=true;
+
 		}
 
 		nacti_pohony();
@@ -87,6 +88,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_pohon->Options->FrameNormalColor=Form_parametry_linky->Color;
 	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_pohon->Options->FramePressedColor=Form_parametry_linky->Color;
+
+	 scGPButton_obecne->Options->NormalColor=Form_parametry_linky->Color;
+	 scGPButton_obecne->Options->FocusedColor=Form_parametry_linky->Color;
+	 scGPButton_obecne->Options->HotColor=Form_parametry_linky->Color;
+	 scGPButton_obecne->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_obecne->Options->FrameNormalColor=Form_parametry_linky->Color;
+	 scGPButton_obecne->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_obecne->Options->FramePressedColor=Form_parametry_linky->Color;
 
 	 rStringGridEd_tab_dopravniky->Left=1;
 	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;

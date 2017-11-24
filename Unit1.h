@@ -444,7 +444,7 @@ private:
 	void NewDesignSettings();//nastavení noveho designu
 	void aktualizace();//kontrola aktuálnosti verze a pøípadì nabídka na stažení nové
 	void onPopUP(int X, int Y);//nastavení zobrazení popUPmenu a jeho volání vèetnì pozice
-	void close_all_items_popUPmenu();//zajistí skrýtí všech položek popUPmenu
+	void close_all_items_popUPmenu(bool vyjimka);//zajistí skrýtí všech položek popUPmenu
 	void ortogonalizace_on_off();//zapíná èi vypíná automatickou ortogonalizaci
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void ortogonalizovat();//ortogonalizuje schéma
