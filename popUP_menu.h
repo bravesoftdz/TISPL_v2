@@ -24,7 +24,6 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_rychly_export;
 	TscGPGlyphButton *GlyphButton_rychly_export;
 	TscGPPanel *Item_smazat;
-	TscLabel *scLabel_smazat;
 	TscGPPanel *Item_cely_pohled;
 	TscLabel *scLabel_cely_pohled;
 	TscGPGlyphButton *GlyphButton_cely_pohled;
@@ -52,7 +51,8 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_kopirovat;
 	TscGPGlyphButton *GlyphButton_kopirovat;
 	TscGPPanel *Panel_UP;
-	TscGPPanel *Panel_down;
+	TscGPPanel *Panel_DOWN;
+	TscLabel *scLabel_smazat;
 	void __fastcall scLabel_smazatClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scLabel_zobrazit_parametryMouseEnter(TObject *Sender);
@@ -111,13 +111,13 @@ __published:	// IDE-managed Components
 	void __fastcall GlyphButton_kopirovatMouseEnter(TObject *Sender);
 	void __fastcall GlyphButton_kopirovatMouseLeave(TObject *Sender);
 	void __fastcall scLabel_kopirovatMouseEnter(TObject *Sender);
-	void __fastcall scLabel_kopirovatMouseLeave(TObject *Sender);
+	void __fastcall scLabel_smazatLeave(TObject *Sender);
 private:	// User declarations
 	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;
-	void pasiveColor();
 	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní
 public:		// User declarations
 	bool closing;//detekce kvùli hlavnímu formuláøi jinak volá tìlo formactivate hlavního formu
+  void pasiveColor();
 	__fastcall TPopUPmenu(TComponent* Owner);
 };
 //---------------------------------------------------------------------------

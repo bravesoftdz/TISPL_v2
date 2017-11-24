@@ -13,7 +13,6 @@
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  PopupMode = pmExplicit
   Position = poDesigned
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -26,17 +25,17 @@
     Height = 170
     Align = alTop
     TabOrder = 1
-    FrameSides = [gppfsBottom]
+    FrameSides = []
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
     FillGradientBeginColorOffset = 25
     FillGradientEndColorOffset = 25
-    FrameWidth = 0
+    FrameWidth = 1
     FillColor = cl3DLight
     FillColorAlpha = 255
     FillColor2 = clNone
-    FrameColor = clBtnShadow
+    FrameColor = clWhite
     FrameColorAlpha = 255
     FrameRadius = 0
     ShowCaption = False
@@ -52,10 +51,10 @@
     StorePaintBuffer = True
     object Item_zobrazit_parametry: TscGPPanel
       Left = 0
-      Top = 0
+      Top = 34
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 0
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
@@ -79,7 +78,6 @@
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
       Color = clBtnFace
-      Caption = 'Item1'
       TransparentBackground = True
       StorePaintBuffer = True
       object scLabel_zobrazit_parametry: TscLabel
@@ -200,21 +198,21 @@
     end
     object Item_smazat: TscGPPanel
       Left = 0
-      Top = 68
+      Top = 102
       Width = 211
       Height = 34
-      Align = alBottom
-      TabOrder = 2
+      Align = alTop
+      TabOrder = 3
       FrameSides = [gppfsBottom]
-      FillGradientAngle = 90
+      FillGradientAngle = 0
       FillGradientBeginAlpha = 255
       FillGradientEndAlpha = 255
       FillGradientBeginColorOffset = 25
-      FillGradientEndColorOffset = 25
+      FillGradientEndColorOffset = 0
       FrameWidth = 0
       FillColor = cl3DLight
       FillColorAlpha = 255
-      FillColor2 = clNone
+      FillColor2 = cl3DLight
       FrameColor = clBtnShadow
       FrameColorAlpha = 255
       FrameRadius = 0
@@ -226,45 +224,9 @@
       CaptionGlowEffect.Offset = 0
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
-      Color = cl3DLight
-      Caption = 'Item1'
+      Color = clBtnFace
       TransparentBackground = True
       StorePaintBuffer = True
-      object scLabel_smazat: TscLabel
-        Left = 37
-        Top = 0
-        Width = 174
-        Height = 34
-        Margins.Left = 10
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 0
-        Align = alClient
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 1
-        OnClick = scLabel_smazatClick
-        OnMouseEnter = scLabel_smazatMouseEnter
-        OnMouseLeave = scLabel_smazatMouseLeave
-        DragForm = True
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 2
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = False
-        Layout = tlCenter
-        VertAlignment = scvtaCenter
-        WordWrap = True
-        UseFontColorToStyleColor = True
-        Caption = '  Smazat objekt'
-      end
       object GlyphButton_smazat: TscGPGlyphButton
         Left = 0
         Top = 0
@@ -277,7 +239,7 @@
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 0
+        TabOrder = 1
         OnClick = scLabel_smazatClick
         OnMouseEnter = GlyphButton_smazatMouseEnter
         OnMouseLeave = GlyphButton_smazatMouseLeave
@@ -346,15 +308,50 @@
         GroupIndex = 0
         AllowAllUp = False
       end
+      object scLabel_smazat: TscLabel
+        Left = 37
+        Top = 0
+        Width = 174
+        Height = 34
+        Margins.Left = 10
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGray
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        OnClick = scLabel_smazatClick
+        OnMouseEnter = scLabel_smazatMouseEnter
+        OnMouseLeave = scLabel_smazatLeave
+        DragForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 2
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = False
+        Layout = tlCenter
+        VertAlignment = scvtaCenter
+        WordWrap = True
+        UseFontColorToStyleColor = True
+        Caption = '  Smazat objekt'
+      end
     end
     object Item_rychly_export: TscGPPanel
       Left = 0
-      Top = 34
+      Top = 136
       Width = 211
       Height = 34
-      Align = alBottom
-      TabOrder = 1
-      FrameSides = [gppfsBottom]
+      Align = alTop
+      TabOrder = 2
+      FrameSides = []
       FillGradientAngle = 90
       FillGradientBeginAlpha = 255
       FillGradientEndAlpha = 255
@@ -383,7 +380,7 @@
         Left = 37
         Top = 0
         Width = 174
-        Height = 33
+        Height = 34
         Margins.Left = 10
         Margins.Top = 0
         Margins.Right = 0
@@ -417,7 +414,7 @@
         Left = 0
         Top = 0
         Width = 37
-        Height = 33
+        Height = 34
         Align = alLeft
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clNone
@@ -495,13 +492,161 @@
         AllowAllUp = False
       end
     end
-    object Item_nastavit_parametry: TscGPPanel
+    object Item_kopirovat: TscGPPanel
       Left = 0
-      Top = 102
+      Top = 68
       Width = 211
       Height = 34
-      Align = alBottom
-      TabOrder = 3
+      Align = alTop
+      TabOrder = 4
+      FrameSides = [gppfsBottom]
+      FillGradientAngle = 90
+      FillGradientBeginAlpha = 255
+      FillGradientEndAlpha = 255
+      FillGradientBeginColorOffset = 25
+      FillGradientEndColorOffset = 25
+      FrameWidth = 0
+      FillColor = cl3DLight
+      FillColorAlpha = 255
+      FillColor2 = clNone
+      FrameColor = clBtnShadow
+      FrameColorAlpha = 255
+      FrameRadius = 0
+      ShowCaption = False
+      CaptionGlowEffect.Enabled = False
+      CaptionGlowEffect.Color = cl3DLight
+      CaptionGlowEffect.AlphaValue = 255
+      CaptionGlowEffect.GlowSize = 7
+      CaptionGlowEffect.Offset = 0
+      CaptionGlowEffect.Intensive = True
+      CaptionGlowEffect.StyleColors = True
+      Color = clBtnFace
+      TransparentBackground = True
+      StorePaintBuffer = True
+      object scLabel_kopirovat: TscLabel
+        Left = 37
+        Top = 0
+        Width = 174
+        Height = 34
+        Margins.Left = 10
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGray
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        OnClick = scLabel_kopirovatClick
+        OnMouseEnter = scLabel_kopirovatMouseEnter
+        OnMouseLeave = scLabel_smazatLeave
+        DragForm = True
+        GlowEffect.Enabled = False
+        GlowEffect.Color = clBtnShadow
+        GlowEffect.AlphaValue = 255
+        GlowEffect.GlowSize = 7
+        GlowEffect.Offset = 2
+        GlowEffect.Intensive = True
+        GlowEffect.StyleColors = True
+        AutoSize = False
+        Layout = tlCenter
+        VertAlignment = scvtaCenter
+        WordWrap = True
+        UseFontColorToStyleColor = True
+        Caption = '  Kop'#237'rovat objekt'
+      end
+      object GlyphButton_kopirovat: TscGPGlyphButton
+        Left = 0
+        Top = 0
+        Width = 37
+        Height = 34
+        Align = alLeft
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clNone
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        OnClick = scLabel_kopirovatClick
+        OnMouseEnter = GlyphButton_kopirovatMouseEnter
+        OnMouseLeave = GlyphButton_kopirovatMouseLeave
+        Animation = False
+        Caption = 'GlyphButton_smazat'
+        CanFocused = False
+        CustomDropDown = False
+        Layout = blGlyphLeft
+        TransparentBackground = False
+        ColorValue = clRed
+        Options.NormalColor = 10114859
+        Options.HotColor = clBtnText
+        Options.PressedColor = clBtnText
+        Options.FocusedColor = clBtnFace
+        Options.DisabledColor = clBtnText
+        Options.NormalColorAlpha = 255
+        Options.HotColorAlpha = 20
+        Options.PressedColorAlpha = 30
+        Options.FocusedColorAlpha = 255
+        Options.DisabledColorAlpha = 5
+        Options.FrameNormalColor = clBtnText
+        Options.FrameHotColor = clBtnText
+        Options.FramePressedColor = clBtnText
+        Options.FrameFocusedColor = clHighlight
+        Options.FrameDisabledColor = clBtnText
+        Options.FrameWidth = 2
+        Options.FrameNormalColorAlpha = 0
+        Options.FrameHotColorAlpha = 0
+        Options.FramePressedColorAlpha = 0
+        Options.FrameFocusedColorAlpha = 0
+        Options.FrameDisabledColorAlpha = 0
+        Options.FontNormalColor = clBtnText
+        Options.FontHotColor = clBtnText
+        Options.FontPressedColor = clBtnText
+        Options.FontFocusedColor = clBtnText
+        Options.FontDisabledColor = clBtnShadow
+        Options.ShapeFillGradientAngle = 90
+        Options.ShapeFillGradientPressedAngle = -90
+        Options.ShapeCornerRadius = 1
+        Options.ShapeStyle = scgpRect
+        Options.ArrowSize = 9
+        Options.StyleColors = True
+        GlyphOptions.NormalColor = clWhite
+        GlyphOptions.HotColor = 16744448
+        GlyphOptions.PressedColor = clBtnText
+        GlyphOptions.FocusedColor = 16744448
+        GlyphOptions.DisabledColor = 16744448
+        GlyphOptions.NormalColorAlpha = 200
+        GlyphOptions.HotColorAlpha = 255
+        GlyphOptions.PressedColorAlpha = 255
+        GlyphOptions.FocusedColorAlpha = 255
+        GlyphOptions.DisabledColorAlpha = 150
+        GlyphOptions.Kind = scgpbgkCopy
+        GlyphOptions.Thickness = 2
+        GlyphOptions.StyleColors = True
+        TextMargin = -1
+        WidthWithCaption = 0
+        WidthWithoutCaption = 0
+        RepeatClick = False
+        RepeatClickInterval = 100
+        ShowGalleryMenuFromTop = False
+        ShowGalleryMenuFromRight = False
+        ShowMenuArrow = False
+        ShowFocusRect = False
+        Down = False
+        GroupIndex = 0
+        AllowAllUp = False
+      end
+    end
+    object Item_nastavit_parametry: TscGPPanel
+      Left = 0
+      Top = 0
+      Width = 211
+      Height = 34
+      Align = alTop
+      TabOrder = 1
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
       FillGradientBeginAlpha = 255
@@ -646,173 +791,25 @@
         AllowAllUp = False
       end
     end
-    object Item_kopirovat: TscGPPanel
-      Left = 0
-      Top = 136
-      Width = 211
-      Height = 34
-      Align = alBottom
-      TabOrder = 4
-      FrameSides = [gppfsBottom]
-      FillGradientAngle = 90
-      FillGradientBeginAlpha = 255
-      FillGradientEndAlpha = 255
-      FillGradientBeginColorOffset = 25
-      FillGradientEndColorOffset = 25
-      FrameWidth = 0
-      FillColor = cl3DLight
-      FillColorAlpha = 255
-      FillColor2 = clNone
-      FrameColor = clBtnShadow
-      FrameColorAlpha = 255
-      FrameRadius = 0
-      ShowCaption = False
-      CaptionGlowEffect.Enabled = False
-      CaptionGlowEffect.Color = cl3DLight
-      CaptionGlowEffect.AlphaValue = 255
-      CaptionGlowEffect.GlowSize = 7
-      CaptionGlowEffect.Offset = 0
-      CaptionGlowEffect.Intensive = True
-      CaptionGlowEffect.StyleColors = True
-      Color = cl3DLight
-      TransparentBackground = True
-      StorePaintBuffer = True
-      object scLabel_kopirovat: TscLabel
-        Left = 37
-        Top = 0
-        Width = 174
-        Height = 34
-        Margins.Left = 10
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 0
-        Align = alClient
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 1
-        OnClick = scLabel_kopirovatClick
-        OnMouseEnter = scLabel_kopirovatMouseEnter
-        OnMouseLeave = scLabel_kopirovatMouseLeave
-        DragForm = True
-        GlowEffect.Enabled = False
-        GlowEffect.Color = clBtnShadow
-        GlowEffect.AlphaValue = 255
-        GlowEffect.GlowSize = 7
-        GlowEffect.Offset = 2
-        GlowEffect.Intensive = True
-        GlowEffect.StyleColors = True
-        AutoSize = False
-        Layout = tlCenter
-        VertAlignment = scvtaCenter
-        WordWrap = True
-        UseFontColorToStyleColor = True
-        Caption = '  Kop'#237'rovat objekt'
-      end
-      object GlyphButton_kopirovat: TscGPGlyphButton
-        Left = 0
-        Top = 0
-        Width = 37
-        Height = 34
-        Align = alLeft
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clNone
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        OnClick = scLabel_kopirovatClick
-        OnMouseEnter = GlyphButton_kopirovatMouseEnter
-        OnMouseLeave = GlyphButton_kopirovatMouseLeave
-        Animation = False
-        Caption = 'GlyphButton_smazat'
-        CanFocused = False
-        CustomDropDown = False
-        Layout = blGlyphLeft
-        TransparentBackground = False
-        ColorValue = clRed
-        Options.NormalColor = 10114859
-        Options.HotColor = clBtnText
-        Options.PressedColor = clBtnText
-        Options.FocusedColor = clBtnFace
-        Options.DisabledColor = clBtnText
-        Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
-        Options.PressedColorAlpha = 30
-        Options.FocusedColorAlpha = 255
-        Options.DisabledColorAlpha = 5
-        Options.FrameNormalColor = clBtnText
-        Options.FrameHotColor = clBtnText
-        Options.FramePressedColor = clBtnText
-        Options.FrameFocusedColor = clHighlight
-        Options.FrameDisabledColor = clBtnText
-        Options.FrameWidth = 2
-        Options.FrameNormalColorAlpha = 0
-        Options.FrameHotColorAlpha = 0
-        Options.FramePressedColorAlpha = 0
-        Options.FrameFocusedColorAlpha = 0
-        Options.FrameDisabledColorAlpha = 0
-        Options.FontNormalColor = clBtnText
-        Options.FontHotColor = clBtnText
-        Options.FontPressedColor = clBtnText
-        Options.FontFocusedColor = clBtnText
-        Options.FontDisabledColor = clBtnShadow
-        Options.ShapeFillGradientAngle = 90
-        Options.ShapeFillGradientPressedAngle = -90
-        Options.ShapeCornerRadius = 1
-        Options.ShapeStyle = scgpRect
-        Options.ArrowSize = 9
-        Options.StyleColors = True
-        GlyphOptions.NormalColor = clWhite
-        GlyphOptions.HotColor = 16744448
-        GlyphOptions.PressedColor = clBtnText
-        GlyphOptions.FocusedColor = 16744448
-        GlyphOptions.DisabledColor = 16744448
-        GlyphOptions.NormalColorAlpha = 200
-        GlyphOptions.HotColorAlpha = 255
-        GlyphOptions.PressedColorAlpha = 255
-        GlyphOptions.FocusedColorAlpha = 255
-        GlyphOptions.DisabledColorAlpha = 150
-        GlyphOptions.Kind = scgpbgkCopy
-        GlyphOptions.Thickness = 2
-        GlyphOptions.StyleColors = True
-        TextMargin = -1
-        WidthWithCaption = 0
-        WidthWithoutCaption = 0
-        RepeatClick = False
-        RepeatClickInterval = 100
-        ShowGalleryMenuFromTop = False
-        ShowGalleryMenuFromRight = False
-        ShowMenuArrow = False
-        ShowFocusRect = False
-        Down = False
-        GroupIndex = 0
-        AllowAllUp = False
-      end
-    end
   end
-  object Panel_down: TscGPPanel
+  object Panel_DOWN: TscGPPanel
     Left = 0
     Top = 170
     Width = 211
     Height = 238
     Align = alTop
     TabOrder = 2
-    FrameSides = [gppfsBottom]
+    FrameSides = [gppfsTop]
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
     FillGradientBeginColorOffset = 25
     FillGradientEndColorOffset = 25
-    FrameWidth = 0
+    FrameWidth = 1
     FillColor = cl3DLight
     FillColorAlpha = 255
     FillColor2 = clNone
-    FrameColor = clBtnShadow
+    FrameColor = clWhite
     FrameColorAlpha = 255
     FrameRadius = 0
     ShowCaption = False
@@ -828,12 +825,11 @@
     StorePaintBuffer = True
     object Item_poznamka: TscGPPanel
       Left = 0
-      Top = 34
+      Top = 205
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 0
-      Visible = False
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
       FillGradientBeginAlpha = 255
@@ -977,10 +973,10 @@
     end
     object Item_cely_pohled: TscGPPanel
       Left = 0
-      Top = 0
+      Top = 171
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 1
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
@@ -1125,10 +1121,10 @@
     end
     object Item_oddalit: TscGPPanel
       Left = 0
-      Top = 102
+      Top = 103
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 2
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
@@ -1171,7 +1167,7 @@
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 0
+        TabOrder = 1
         OnClick = scLabel_oddálitClick
         OnMouseEnter = scLabel_oddálitMouseEnter
         OnMouseLeave = scLabel_oddálitMouseLeave
@@ -1201,7 +1197,7 @@
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 1
+        TabOrder = 0
         OnClick = scLabel_oddálitClick
         OnMouseEnter = GlyphButton_oddalitMouseEnter
         OnMouseLeave = GlyphButton_oddalitMouseLeave
@@ -1273,10 +1269,10 @@
     end
     object Item_vybrat_oknem: TscGPPanel
       Left = 0
-      Top = 68
+      Top = 137
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 3
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
@@ -1421,10 +1417,10 @@
     end
     object Item_priblizit: TscGPPanel
       Left = 0
-      Top = 136
+      Top = 69
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 4
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
@@ -1569,10 +1565,10 @@
     end
     object Item_posunout: TscGPPanel
       Left = 0
-      Top = 170
+      Top = 35
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 5
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90
@@ -1717,10 +1713,10 @@
     end
     object Item_posouvat: TscGPPanel
       Left = 0
-      Top = 204
+      Top = 1
       Width = 211
       Height = 34
-      Align = alBottom
+      Align = alTop
       TabOrder = 6
       FrameSides = [gppfsBottom]
       FillGradientAngle = 90

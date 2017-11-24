@@ -941,8 +941,12 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key, TShiftS
 {
  if(Key==13)//ENTER
  {
-		 Form_parametry->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
-		 Form_parametry->VisibleChanging();//skryje form, stejné jako visible=false
+		 if(scGPButton_OK->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_parametry->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
  }
  if(Key==27)//ESC
  {

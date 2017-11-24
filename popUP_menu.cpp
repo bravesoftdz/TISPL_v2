@@ -23,9 +23,7 @@ __fastcall TPopUPmenu::TPopUPmenu(TComponent* Owner)
 	clGlyph=(TColor)RGB(43,87,154);//pasive
 	clAcGlyph=(TColor)RGB(0,128,255);//active
 
-
 	PopUPmenu->Color=clBg;//nastavení pozadí barvy formuláøe
-	pasiveColor();
 }
 //---------------------------------------------------------------------------
 void __fastcall TPopUPmenu::FormShow(TObject *Sender)
@@ -35,6 +33,12 @@ void __fastcall TPopUPmenu::FormShow(TObject *Sender)
 	PopUPmenu->Left=Form1->ClientWidth-PopUPmenu->Width-5;
 	if(PopUPmenu->Top>=Form1->ClientHeight-PopUPmenu->Height)
 	PopUPmenu->Top=Form1->ClientHeight-PopUPmenu->Height-5;
+
+	//ošetøení pokud je zobrazeno jenom dolní panel, tak se nezobrazí rozdìlovací linka - frame
+	if(Panel_DOWN->Top==0)Panel_DOWN->FrameWidth=0;
+	else Panel_DOWN->FrameWidth=1;
+
+	pasiveColor();//nastavení pasivních barev, pøipravano na aktivaci
 }
 //---------------------------------------------------------------------------
 void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default barvu
@@ -101,7 +105,7 @@ void __fastcall TPopUPmenu::FormKeyDown(TObject *Sender, WORD &Key, TShiftState 
 		//BACKSPACE
 		case 8: break;
 		//ENTER
-		case 13:break;
+		case 13:pasiveColor();MessageBeep(0);break;
 		//ESC
 		case 27:closing=true;Close();break;
 		//MEZERNÍK
@@ -201,7 +205,7 @@ void __fastcall TPopUPmenu::scLabel_kopirovatMouseEnter(TObject *Sender)
 	top_positon(Item_kopirovat->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
-void __fastcall TPopUPmenu::scLabel_kopirovatMouseLeave(TObject *Sender)
+void __fastcall TPopUPmenu::scLabel_smazatLeave(TObject *Sender)
 {
 	pasiveColor();
 }
