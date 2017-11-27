@@ -84,6 +84,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_pocet_mezerClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_pasteClick(TObject *Sender);
+	void __fastcall rHTMLLabel_CTClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
