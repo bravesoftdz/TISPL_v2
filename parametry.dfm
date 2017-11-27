@@ -184,6 +184,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_CTClick
   end
   object rHTMLLabel_RD: TrHTMLLabel
     Left = 8
