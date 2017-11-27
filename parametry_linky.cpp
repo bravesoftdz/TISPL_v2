@@ -12,6 +12,8 @@
 #pragma link "rStringGridEd"
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "scExtControls"
+#pragma link "scHtmlControls"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -24,10 +26,10 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
-		if(Form1->STATUS==Form1->NAVRH)
+		if(Form1->STATUS==Form1->NAVRH)    //Architekt
 		{
 			scGPButton_vozik->Caption="   Jig";
-			scGPButton_obecne->Caption="   Takt time";
+			//scGPButton_obecne->Caption="   Takt time";
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
 			rHTMLLabel_sirka->Visible=true;
@@ -40,14 +42,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scRadioGroup_typVoziku->Visible=true;
 			rEditNum_delkavoziku->Visible=true;
 			rHTMLLabel_delka->Visible=true;
+
+
 		}
-		else
+		else          //Klient
 		{
 			scGPButton_vozik->Caption="   Vozík";
 			scGPButton_pohon->Caption="   Pohon";
 
-			rHTMLLabel_takt->Visible=true;
-			rEditNum_takt->Enabled=false;
 			rHTMLLabel_sirka->Visible=false;
 			rEditNum_sirkavoziku->Visible=false;
 
@@ -58,6 +60,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scRadioGroup_typVoziku->Visible=true;
 			rEditNum_delkavoziku->Visible=true;
 			rHTMLLabel_delka->Visible=true;
+
+			scGPButton_obecne->Visible=false;
+			rHTMLLabel_takt->Visible=false;
+			rEditNum_takt->Visible=false;
+
 
 		}
 
@@ -72,6 +79,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	 Form_parametry_linky->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
 	 rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
+	 scHTMLLabel_doporuc_pohony->Color=(TColor)RGB(230,230,230);
+
 
 	 scGPButton_vozik->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_vozik->Options->FocusedColor=Form_parametry_linky->Color;
@@ -99,6 +108,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	 rStringGridEd_tab_dopravniky->Left=1;
 	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
+
+
+	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
+	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
 
 
 
@@ -240,4 +253,22 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 
 
 
+
+void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sender)
+
+{
+
+		scExPanel_doporuc_pohony->Visible=true;
+		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY();
+
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_parametry_linky::scExPanel_doporuc_pohonyClose(TObject *Sender)
+
+{
+scExPanel_doporuc_pohony->Visible=false;
+}
+//---------------------------------------------------------------------------
 

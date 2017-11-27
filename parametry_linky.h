@@ -14,6 +14,8 @@
 #include "scGPControls.hpp"
 #include <Vcl.Grids.hpp>
 #include <Vcl.ValEdit.hpp>
+#include "scExtControls.hpp"
+#include "scHtmlControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
@@ -40,6 +42,10 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_sirka;
 	TrEditNum *rEditNum_sirkavoziku;
 	TscGPButton *scGPButton_obecne;
+	TrHTMLLabel *rHTMLLabel_doporuc_pohony;
+	TscGPButton *scGPButton_doporucene;
+	TscExPanel *scExPanel_doporuc_pohony;
+	TscHTMLLabel *scHTMLLabel_doporuc_pohony;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -47,6 +53,8 @@ __published:	// IDE-managed Components
 	void __fastcall Button_ADDClick(TObject *Sender);
 	void __fastcall Button_DELClick(TObject *Sender);
 	void __fastcall Vypis_pohonyClick(TObject *Sender);
+	void __fastcall scGPButton_doporuceneClick(TObject *Sender);
+	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);

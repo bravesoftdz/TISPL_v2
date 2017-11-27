@@ -491,6 +491,44 @@ void Cvektory::generuj_POHONY()
 		O=O->dalsi;//posun na další prvek
 	}
 }
+
+AnsiString Cvektory::navrhni_POHONY()
+{
+		AnsiString data="nejaka data </br>";
+
+	TObjekt *O=OBJEKTY->dalsi;
+	unsigned int i=0;//i vygenerovaného pohonu
+	while (O!=NULL)
+	{
+	data+="zacatek whilu </br>";
+		if(O->RD>0)//pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a Kontinuál nezohledňuje
+		{
+			TPohon *P=POHONY->dalsi;
+			bool pohon_nenalezen=true;
+			while(P!=NULL)
+			{
+				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==32.5)//byl-li pohon se stejnými parametry nalezen
+				 {
+						pohon_nenalezen=false;//již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
+						O->pohon=P;//přiřazení pohonu k danému objektu
+
+				 data+="tento IF </br>";
+				 }
+				 P=P->dalsi;//posun na další prvek
+			}
+			//byl-li předchozí konstrukcí pohon nenanlezen přidá, musí být až po dokončení while(P
+			if(pohon_nenalezen)
+			{
+			 //	vloz_pohon("automaticky vygenerovaný pohon "+AnsiString(++i),O->RD,O->RD,32.5);
+				data+="Navržený pohon:"+AnsiString(++i)+" Rychlost:"+AnsiString(O->RD)+"[m/min] </br>";
+				O->pohon=POHONY->predchozi;
+			}
+		}
+		O=O->dalsi;//posun na další prvek
+	}
+
+	return data;
+}
 ////---------------------------------------------------------------------------
 //smaze body z pameti
 long Cvektory::vymaz_seznam_POHONY()
