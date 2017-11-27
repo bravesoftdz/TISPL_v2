@@ -31,7 +31,8 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 	Form1->m.designButton(scGPButton_storno,Form_parametry,2,2);
 
 	//formuláø bude pøi prvním zobrazení v sekundách a metrech nebo dle INI v odvozených jednotkách, jinak dle SI
-	minsec=S;m_mm=M;
+	minsec=S;CTunit=S;
+	m_mm=M;
 	if(Form1->readINI("nastaveni_form_parametry","cas")=="1")Button_min_secClick(this);//tedy MIN
 	if(Form1->readINI("nastaveni_form_parametry","vzdalenost")=="1")Button_metry_milimetryClick(this);//tedy MM
 }
@@ -872,6 +873,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 	{
 		minsec=S;scGPButton_min_sec->Caption="na min";//samotné tlaèítko,ukazuje název opaènì
 		//CT - pøepoèítání
+		CTunit=S;
 		CT=scGPNumericEdit_CT->Value*60.0;
 		rHTMLLabel_CT->Caption="Technologický èas [s]";
 		//RD - pøepoèítání
@@ -884,6 +886,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 	{
 		minsec=MIN;scGPButton_min_sec->Caption="na s";//samotné tlaèítko,ukazuje název opaènì
 		//CT - pøepoèítání
+		CTunit=MIN;
 		CT=scGPNumericEdit_CT->Value/60.0;
 		rHTMLLabel_CT->Caption="Technologický èas [min]";
 		//RD - pøepoèítání
@@ -898,6 +901,32 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 	scGPNumericEdit_RD->Value=RD;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
+//---------------------------------------------------------------------------
+//požadavek na zmìnu jednotek CT
+void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double RD=0.0;double CT=0.0;
+	if(CTunit==MIN)//pokud je v minutách, tak pøepne na sekundy
+	{
+		CTunit=S;
+		//CT - pøepoèítání
+		CT=scGPNumericEdit_CT->Value*60.0;
+		rHTMLLabel_CT->Caption="Technologický èas [s]";
+	}
+	else//pokud je v sekundách pøepne na minuty
+	{
+		CTunit=MIN;
+		//CT - pøepoèítání
+		CT=scGPNumericEdit_CT->Value/60.0;
+		rHTMLLabel_CT->Caption="Technologický èas [min]";
+	}
+	//plnìní + poèet desetinných míst
+	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+	scGPNumericEdit_CT->Value=CT;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //pøepínání zobrazení m vs. mm
 void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
@@ -1052,10 +1081,5 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 
 
 
-//požadavek na zmìnu jednotek CT
-void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
-{
-  //
-}
-//---------------------------------------------------------------------------
+
 

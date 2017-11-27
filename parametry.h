@@ -106,7 +106,7 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
-	enum Tminsec{S=0,MIN};Tminsec minsec;//pøepínaè jednotek èasu
+	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;//pøepínaè jednotek èasu
 	enum Tm_mm{M=0,MM};Tm_mm m_mm;//pøepínaè jednotek vzdálenost
 	void setForm4Rezim(unsigned short rezim);
 	Tinput_state input_state;
