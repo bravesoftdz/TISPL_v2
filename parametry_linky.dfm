@@ -3,9 +3,9 @@ object Form_parametry_linky: TForm_parametry_linky
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
-  ClientHeight = 517
+  ClientHeight = 479
   ClientWidth = 644
-  Color = clActiveBorder
+  Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clActiveCaption
   Font.Height = -11
@@ -17,8 +17,8 @@ object Form_parametry_linky: TForm_parametry_linky
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_delka: TrHTMLLabel
-    Left = 25
-    Top = 188
+    Left = 30
+    Top = 108
     Width = 70
     Height = 19
     Caption = 'D'#233'lka [m]'
@@ -31,8 +31,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
   end
   object rHTMLLabel_eDesigner: TrHTMLLabel
-    Left = 300
-    Top = 144
+    Left = 138
+    Top = 412
     Width = 308
     Height = 19
     Caption = 'Zadejte parametry linky nebo zvolte storno.'
@@ -46,8 +46,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
   end
   object rHTMLLabel_takt: TrHTMLLabel
-    Left = 25
-    Top = 103
+    Left = 296
+    Top = 108
     Width = 111
     Height = 19
     Caption = 'TaktTime [min]'
@@ -61,8 +61,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
   end
   object rHTMLLabel_sirka: TrHTMLLabel
-    Left = 25
-    Top = 230
+    Left = 30
+    Top = 150
     Width = 66
     Height = 19
     Caption = #352#237#345'ka [m]'
@@ -75,11 +75,25 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     Visible = False
   end
+  object rHTMLLabel_doporuc_pohony: TrHTMLLabel
+    Left = 350
+    Top = 293
+    Width = 208
+    Height = 19
+    Caption = 'Doporu'#269'en'#233' rychlosti pohon'#367
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
   object ValueListEditor: TValueListEditor
-    Left = 458
-    Top = 40
-    Width = 150
-    Height = 89
+    Left = 480
+    Top = 452
+    Width = 136
+    Height = 41
     Align = alCustom
     BiDiMode = bdLeftToRight
     BorderStyle = bsNone
@@ -105,11 +119,11 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
     ColWidths = (
       150
-      -2)
+      -16)
   end
   object Button_ADD: TButton
     Left = 139
-    Top = 324
+    Top = 292
     Width = 31
     Height = 25
     Hint = 'P'#345'idat pohon'
@@ -126,7 +140,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_DEL: TButton
     Left = 176
-    Top = 324
+    Top = 292
     Width = 28
     Height = 25
     Hint = 'Odebrat pohon'
@@ -143,7 +157,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 0
-    Top = 355
+    Top = 323
     Width = 642
     Height = 94
     BorderStyle = bsNone
@@ -276,7 +290,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_save: TscGPButton
     Left = 190
-    Top = 469
+    Top = 437
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -368,7 +382,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_storno: TscGPButton
     Left = 328
-    Top = 469
+    Top = 437
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -680,8 +694,8 @@ object Form_parametry_linky: TForm_parametry_linky
     end
   end
   object scGPButton_vozik: TscGPButton
-    Left = 0
-    Top = 144
+    Left = 8
+    Top = 60
     Width = 105
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -768,8 +782,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object rEditNum_delkavoziku: TrEditNum
-    Left = 160
-    Top = 184
+    Left = 165
+    Top = 104
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -783,9 +797,9 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 1.000000000000000000
   end
   object scGPButton_pohon: TscGPButton
-    Left = 0
-    Top = 314
-    Width = 137
+    Left = 8
+    Top = 282
+    Width = 129
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
@@ -881,8 +895,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Vypis_pohonyClick
   end
   object scRadioGroup_typVoziku: TscRadioGroup
-    Left = 278
-    Top = 169
+    Left = 22
+    Top = 193
     Width = 225
     Height = 53
     Font.Charset = DEFAULT_CHARSET
@@ -941,8 +955,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ShowFocusRect = True
   end
   object rEditNum_takt: TrEditNum
-    Left = 160
-    Top = 99
+    Left = 448
+    Top = 104
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -958,8 +972,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 1.000000000000000000
   end
   object rEditNum_sirkavoziku: TrEditNum
-    Left = 160
-    Top = 226
+    Left = 165
+    Top = 146
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -974,9 +988,9 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 1.000000000000000000
   end
   object scGPButton_obecne: TscGPButton
-    Left = 0
-    Top = 57
-    Width = 137
+    Left = 296
+    Top = 60
+    Width = 96
     Height = 35
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
@@ -987,14 +1001,14 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 14
     Animation = False
-    Caption = '  Obecn'#233
+    Caption = '  Takt'
     CanFocused = False
     CustomDropDown = False
     Margin = -1
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 25
+    ImageIndex = 34
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = clSilver
@@ -1060,5 +1074,160 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = True
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scGPButton_doporucene: TscGPButton
+    Left = 564
+    Top = 282
+    Width = 45
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 15
+    OnClick = scGPButton_doporuceneClick
+    Animation = False
+    CanFocused = False
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = 36
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = clSilver
+    Options.HotColor = clSilver
+    Options.PressedColor = clSilver
+    Options.FocusedColor = clRed
+    Options.DisabledColor = clPurple
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 200
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = clSilver
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 0
+    Options.FramePressedColorAlpha = 200
+    Options.FrameFocusedColorAlpha = 200
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clBlack
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 8
+    Options.ShapeStyle = scgpRoundedRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object scExPanel_doporuc_pohony: TscExPanel
+    Left = 296
+    Top = 150
+    Width = 329
+    Height = 126
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 16
+    Visible = False
+    BackgroundStyle = scexbgsPanel
+    HeaderColor = clAppWorkSpace
+    ButtonGlyphColor = clBtnText
+    HeaderStyle = scexphsHeader
+    CaptionImageIndex = -1
+    ChangeRollStateWithCaptionClick = False
+    Color = clWhite
+    Spacing = 5
+    ShowFrame = False
+    RealWidth = 0
+    RealHeight = 0
+    ShowRollButton = False
+    ShowCloseButton = True
+    CaptionHeight = 24
+    RollKind = scrkRollVertical
+    RollUpState = False
+    Moveable = True
+    Sizeable = True
+    HideControlsInRollUpState = True
+    StorePaintBuffer = False
+    Caption = 'P'#345'ehled doporu'#269'en'#253'ch pohon'#367
+    OnClose = scExPanel_doporuc_pohonyClose
+    object scHTMLLabel_doporuc_pohony: TscHTMLLabel
+      Left = 3
+      Top = 32
+      Width = 221
+      Height = 19
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clSkyBlue
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      TabOrder = 0
+      AutoSizeHeight = True
+      AutoSizeWidth = True
+      AutoExecuteURL = True
+      Caption = 'scHTMLLabel_doporuc_pohony'
+      LinkFontNormal.Charset = DEFAULT_CHARSET
+      LinkFontNormal.Color = clHighlight
+      LinkFontNormal.Height = -11
+      LinkFontNormal.Name = 'Tahoma'
+      LinkFontNormal.Style = []
+      LinkFontHover.Charset = DEFAULT_CHARSET
+      LinkFontHover.Color = clHighlight
+      LinkFontHover.Height = -11
+      LinkFontHover.Name = 'Tahoma'
+      LinkFontHover.Style = [fsUnderline]
+      MaxWidth = 0
+      TextAlignment = taLeftJustify
+    end
   end
 end
