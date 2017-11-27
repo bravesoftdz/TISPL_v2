@@ -8,7 +8,6 @@
 //#define TITULEK "Omap editor"
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-
 class Cvektory
 {
   private:
@@ -368,14 +367,10 @@ class Cvektory
 		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
-	 	void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
+		void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
+		AnsiString navrhni_POHONY();//navrhne pohony zobrazené v parametrech linky, vráti formou řetězce  pouze seznam unikátních použitých rychlostí
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
-
-public:
-
-	AnsiString navrhni_POHONY();//navrhne pohony zobrazené v parametrech linky
-
 
 //metody pro ZAKAZKY
 public:
