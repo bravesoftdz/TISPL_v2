@@ -339,7 +339,6 @@
         AutoSize = False
         Layout = tlCenter
         VertAlignment = scvtaCenter
-        WordWrap = True
         UseFontColorToStyleColor = True
         Caption = '  Smazat objekt'
       end
@@ -554,7 +553,6 @@
         AutoSize = False
         Layout = tlCenter
         VertAlignment = scvtaCenter
-        WordWrap = True
         UseFontColorToStyleColor = True
         Caption = '  Kop'#237'rovat objekt'
       end
@@ -657,7 +655,7 @@
       FillColor = cl3DLight
       FillColorAlpha = 255
       FillColor2 = clNone
-      FrameColor = clBtnShadow
+      FrameColor = clWhite
       FrameColorAlpha = 255
       FrameRadius = 0
       ShowCaption = False
@@ -705,7 +703,6 @@
         AutoSize = False
         Layout = tlCenter
         VertAlignment = scvtaCenter
-        WordWrap = True
         UseFontColorToStyleColor = True
         Caption = '  Nastavit parametry'
       end
@@ -809,7 +806,7 @@
     FillColor = cl3DLight
     FillColorAlpha = 255
     FillColor2 = clNone
-    FrameColor = clWhite
+    FrameColor = clSilver
     FrameColorAlpha = 255
     FrameRadius = 0
     ShowCaption = False

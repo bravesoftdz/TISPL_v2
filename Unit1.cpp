@@ -1479,13 +1479,23 @@ void TForm1::onPopUP(int X, int Y)
 			//povoluje nastavení položek kopírování či smazání objektu
 			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
 			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
-			{ //pozor rozhoduje pořadí
-				PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
-				PopUPmenu->scLabel_kopirovat->Caption="  Kopie "+pom->name.UpperCase();
-				PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom->name.UpperCase();
-				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-				PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+			{
+				if(AnsiString("Nastavit "+pom->name.Length())>19)//pokud je více znaků tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
+				{
+					PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit\n  "+pom->name.UpperCase();
+					PopUPmenu->scLabel_kopirovat->Caption="  Kopie\n  "+pom->name.UpperCase();
+					PopUPmenu->scLabel_smazat->Caption="  Smazat\n  "+pom->name.UpperCase();
+				}
+				else
+				{
+					PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
+					PopUPmenu->scLabel_kopirovat->Caption="  Kopie "+pom->name.UpperCase();
+					PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom->name.UpperCase();
+				}
+				//pozor rozhoduje pořadí
 				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			}
 			//zobrazení běžných položek, pozor rozhoduje pořadí
 			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -2634,14 +2644,14 @@ void TForm1::kopirovat_objekt()
 {
 		if(pom!=NULL)//pokud je vybraný objekt
 		{
-				if(pom->dalsi!=NULL)//pokud po vybraném následuje další objekt, tak nový vkládá mezi ně
+				if(pom->dalsi!=NULL)//pokud po vybraném následuje další objekt, tak nový vkládá přesně mezi ně
 				{
 					d.v.kopiruj_objekt(pom,(pom->X+pom->dalsi->X)/2-pom->X,(pom->Y+pom->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true,pom);
 				}
 				else //jinak odsazeně
 				{
 					if(pom==d.v.OBJEKTY->predchozi && pom->n==1)//pokud je jenom jeden objekt
-					d.v.kopiruj_objekt(pom,2,0,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true);
+					d.v.kopiruj_objekt(pom,6,0,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true);
 					if(pom==d.v.OBJEKTY->predchozi)//pokud se jedná o poslední prvek
 					d.v.kopiruj_objekt(pom,(pom->X+d.v.OBJEKTY->dalsi->X)/2-pom->X,(pom->Y+d.v.OBJEKTY->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true);
 				}
