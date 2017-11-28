@@ -22,10 +22,23 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 {
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
+
+		if(Form1->d.v.OBJEKTY->dalsi==NULL){
+			scGPButton_doporucene->Visible=false;
+			rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
+		}
+		else {
+
+				scGPButton_doporucene->Visible=true;
+				rHTMLLabel_doporuc_pohony->Caption="Doporuèené rychlosti pohonù";
+		}
+
 		if(Form1->STATUS==Form1->NAVRH)    //Architekt
 		{
 			scGPButton_vozik->Caption="   Jig";
@@ -269,6 +282,12 @@ void __fastcall TForm_parametry_linky::scExPanel_doporuc_pohonyClose(TObject *Se
 
 {
 scExPanel_doporuc_pohony->Visible=false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
+{
+ //	ShowMessage("Se zmìnou taktu linky a následném uložení budou novì pøepoèítány parametry objektù");
 }
 //---------------------------------------------------------------------------
 

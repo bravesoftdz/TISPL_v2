@@ -55,6 +55,7 @@ __published:	// IDE-managed Components
 	void __fastcall Vypis_pohonyClick(TObject *Sender);
 	void __fastcall scGPButton_doporuceneClick(TObject *Sender);
 	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
+	void __fastcall rEditNum_taktChange(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);

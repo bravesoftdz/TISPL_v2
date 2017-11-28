@@ -968,6 +968,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 12
     Visible = False
+    OnChange = rEditNum_taktChange
     Style = enFloat
     Value = 1.000000000000000000
   end
