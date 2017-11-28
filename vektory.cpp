@@ -497,24 +497,26 @@ AnsiString Cvektory::navrhni_POHONY()
 {
 	AnsiString data="";
 	TObjekt *O=OBJEKTY->dalsi;
-	int *pole_rychlosti=new int[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je  o max. velikosti počtu objektů
+	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je  o max. velikosti počtu objektů
+	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
 	unsigned int i=0;//i vygenerovaného pohonu
-	bool nalezen=false;
+
 	while (O!=NULL)
 	{
 		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní) nezohledňuje
 		{
-			for(unsigned int j=0;j<=O->n;j++)//zajištění UNIKATNOSTI, kontroluje pole unikátních rychlosti
+      bool nalezen=false;
+			for(unsigned int j=0;j<O->n;j++)//zajištění UNIKATNOSTI, kontroluje pole unikátních rychlosti
 			{
 				if(pole_rychlosti[j]==O->RD)//shodný nalezen
 				{
 					nalezen=true;
-					break;//přeruší další zbytečné vyhledávání ve for, může se přejít na další objekt a tedy potenciální rychlost
+					//break;//přeruší další zbytečné vyhledávání ve for, může se přejít na další objekt a tedy potenciální rychlost
 				}
 			}
 			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
 			{
-				data+="Navržený pohon:"+AnsiString(++i)+" Rychlost:"+AnsiString(O->RD)+"[m/s] </br>";
+				data+="Navržený pohon "+AnsiString(++i)+", rychlost:"+AnsiString(O->RD)+" [m/s] </br>";
 				pole_rychlosti[O->n-1]=O->RD;
 			}                //indexuje se od nuly
 		}

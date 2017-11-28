@@ -31,8 +31,8 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 	Form1->m.designButton(scGPButton_storno,Form_parametry,2,2);
 
 	//formuláø bude pøi prvním zobrazení v sekundách a metrech nebo dle INI v odvozených jednotkách, jinak dle SI
-	minsec=S;CTunit=S;
-	m_mm=M;
+	minsec=S;CTunit=S;RDunitT=S;
+	m_mm=M;DDunit=M;DMunit=M;
 	if(Form1->readINI("nastaveni_form_parametry","cas")=="1")Button_min_secClick(this);//tedy MIN
 	if(Form1->readINI("nastaveni_form_parametry","vzdalenost")=="1")Button_metry_milimetryClick(this);//tedy MM
 }
@@ -877,6 +877,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 		CT=scGPNumericEdit_CT->Value*60.0;
 		rHTMLLabel_CT->Caption="Technologický èas [s]";
 		//RD - pøepoèítání
+		RDunitT=S;
 		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";//pokud je v milimetrech
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value/60.0;
@@ -890,6 +891,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 		CT=scGPNumericEdit_CT->Value/60.0;
 		rHTMLLabel_CT->Caption="Technologický èas [min]";
 		//RD - pøepoèítání
+		RDunitT=MIN;
 		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v milimetrech
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value*60.0;
@@ -927,6 +929,32 @@ void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
+//požadavek na zmìnu jednotek RD
+void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double RD=0.0;double CT=0.0;
+	if(RDunitT==MIN)//pokud je v minutách, tak pøepne na sekundy
+	{
+		RDunitT=S;
+		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";//pokud je v milimetrech
+		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";//pokud je v metrech
+		RD=scGPNumericEdit_RD->Value/60.0;
+
+	}
+	else//pokud je v sekundách pøepne na minuty
+	{
+		RDunitT=MIN;
+		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v milimetrech
+		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v metrech
+		RD=scGPNumericEdit_RD->Value*60.0;
+	}
+	//plnìní + poèet desetinných míst
+	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+	scGPNumericEdit_RD->Value=RD;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //pøepínání zobrazení m vs. mm
 void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
@@ -936,10 +964,15 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 	if(m_mm==MM)//pokud je v milimetrech, tak pøepne na metry
 	{
 		m_mm=M;scGPButton_metry_milimetry->Caption="na mm";//samotné tlaèítko,ukazuje název opaènì
+		//DD
+		DDunit=M;
 		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [m]";
 		DD=scGPNumericEdit_delka_dopravniku->Value/1000.0;
+		//DM
+		DMunit=M;
 		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [m]";
 		DM=scGPNumericEdit_mezera->Value/1000.0;
+		//RD
 		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v minutách
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";// pokud je v sekundách
 		RD=scGPNumericEdit_RD->Value/1000.0;
@@ -947,10 +980,15 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 	else//pokud je metrech, tak pøepne na milimetry
 	{
 		m_mm=MM;scGPButton_metry_milimetry->Caption="na m";//samotné tlaèítko,ukazuje název opaènì
+		//DD
+		DDunit=MM;
 		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [mm]";
 		DD=scGPNumericEdit_delka_dopravniku->Value*1000.0;
+		//DM
+		DMunit=MM;
 		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [mm]";
 		DM=scGPNumericEdit_mezera->Value*1000.0;
+		//RD
 		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v minutách
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";// pokud je v sekundách
 		RD=scGPNumericEdit_RD->Value*1000.0;
@@ -964,6 +1002,55 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 	scGPNumericEdit_RD->Value=RD;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
+//---------------------------------------------------------------------------
+//požadavek na zmìnu jednotek DD
+void __fastcall TForm_parametry::rHTMLLabel_delka_dopravnikuClick(TObject *Sender)
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double DD=0.0;
+	if(DDunit==MM)//pokud je v milimetrech, tak pøepne na metry
+	{
+		DDunit=M;
+		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [m]";
+		DD=scGPNumericEdit_delka_dopravniku->Value/1000.0;
+	}
+	else//pokud je metrech, tak pøepne na milimetry
+	{
+		DDunit=MM;
+		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [mm]";
+		DD=scGPNumericEdit_delka_dopravniku->Value*1000.0;
+	}
+	//plnìní + poèet desetinných míst
+	scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+	scGPNumericEdit_delka_dopravniku->Value=DD;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
+//požadavek na zmìnu jednotek DM
+void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double DM=0.0;
+	if(DMunit==MM)//pokud je v milimetrech, tak pøepne na metry
+	{
+		//DM
+		DMunit=M;
+		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [m]";
+		DM=scGPNumericEdit_mezera->Value/1000.0;
+	}
+	else//pokud je metrech, tak pøepne na milimetry
+	{
+		//DM
+		DMunit=MM;
+		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [mm]";
+		DM=scGPNumericEdit_mezera->Value*1000.0;
+	}
+	//plnìní + poèet desetinných míst
+	scGPNumericEdit_mezera->Decimal=Form1->ms.get_count_decimal(DM);//nastaví zobrazení poètu desetinných míst
+	scGPNumericEdit_mezera->Value=DM;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //pøi stisku klávesy enter nebo esc
 void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -1074,12 +1161,6 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 	input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
-
 
 
 
