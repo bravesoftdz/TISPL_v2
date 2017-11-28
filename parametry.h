@@ -64,7 +64,8 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_metry_milimetry;
 	TscGPGlyphButton *scGPGlyphButton_copy;
 	TscGPGlyphButton *scGPGlyphButton_paste;
-	TscButton *scButton1;
+	TscButton *scButton_zamek_CT;
+	TscButton *scButton_zamek_DD;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -88,12 +89,14 @@ __published:	// IDE-managed Components
 	void __fastcall rHTMLLabel_delka_dopravnikuClick(TObject *Sender);
 	void __fastcall rHTMLLabel_mezeraClick(TObject *Sender);
 	void __fastcall rHTMLLabel_RDClick(TObject *Sender);
+	void __fastcall scButton_zamek_CTClick(TObject *Sender);
+	void __fastcall scButton_zamek_DDClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
-
+	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek DD_zamek;
 
 	void set(Tcomponents C,Tcomponents_state S);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu
 	void input_CT();//pøepoèet hodnot vyplıvajících ze zmìny CT
@@ -101,6 +104,8 @@ private:	// User declarations
 	void input_RD();//pøepoèet hodnot vyplıvajících ze zmìny RD
 	void input_K();//pøepoèet hodnot vyplıvajících ze zmìny Kapacity
 	void null_input_value();//vynuluje vstupní hodnoty
+
+	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
 
 	short offset;
 	short defaultForm_parametryHeight;
@@ -110,7 +115,7 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
 	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
-	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;//pøepínaè jednotek vzdálenost
+	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm RDunitD;//pøepínaè jednotek vzdálenost
 	void setForm4Rezim(unsigned short rezim);
 	Tinput_state input_state;
 	void vypis(UnicodeString text,bool RED=true);
