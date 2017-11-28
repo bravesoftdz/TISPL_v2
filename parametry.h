@@ -85,6 +85,9 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_pasteClick(TObject *Sender);
 	void __fastcall rHTMLLabel_CTClick(TObject *Sender);
+	void __fastcall rHTMLLabel_delka_dopravnikuClick(TObject *Sender);
+	void __fastcall rHTMLLabel_mezeraClick(TObject *Sender);
+	void __fastcall rHTMLLabel_RDClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
@@ -106,8 +109,8 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
-	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;//pøepínaè jednotek èasu
-	enum Tm_mm{M=0,MM};Tm_mm m_mm;//pøepínaè jednotek vzdálenost
+	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
+	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;//pøepínaè jednotek vzdálenost
 	void setForm4Rezim(unsigned short rezim);
 	Tinput_state input_state;
 	void vypis(UnicodeString text,bool RED=true);

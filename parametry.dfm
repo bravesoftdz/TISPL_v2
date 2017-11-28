@@ -114,6 +114,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_delka_dopravnikuClick
   end
   object rHTMLLabel_name: TrHTMLLabel
     Left = 8
@@ -200,6 +201,7 @@ object Form_parametry: TForm_parametry
     Font.Quality = fqClearType
     ParentFont = False
     Visible = False
+    OnClick = rHTMLLabel_RDClick
   end
   object rHTMLLabel_InfoText: TrHTMLLabel
     Left = 36
@@ -242,6 +244,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_mezeraClick
   end
   object Edit_name: TEdit
     Left = 43
