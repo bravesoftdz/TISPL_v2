@@ -101,7 +101,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'CT [sec]'
+        TitleCaption = 'CT [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -143,7 +143,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = #268'as v'#253'm'#283'ny barev [sec]'
+        TitleCaption = #268'as v'#253'm'#283'ny barev [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -162,7 +162,7 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = #268'as '#269'i'#353't'#283'n'#237' [sec]'
+        TitleCaption = #268'as '#269'i'#353't'#283'n'#237' [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15

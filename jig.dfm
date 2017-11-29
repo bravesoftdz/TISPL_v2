@@ -19,9 +19,9 @@ object Form_jig: TForm_jig
   object rHTMLLabel_jig_sirka: TrHTMLLabel
     Left = 44
     Top = 177
-    Width = 80
+    Width = 66
     Height = 19
-    Caption = #352#237#345'ka [mm]'
+    Caption = #352#237#345'ka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -33,9 +33,9 @@ object Form_jig: TForm_jig
   object rHTMLLabel_jig_vyska: TrHTMLLabel
     Left = 219
     Top = 97
-    Width = 86
+    Width = 72
     Height = 19
-    Caption = 'V'#253#353'ka [mm]'
+    Caption = 'V'#253#353'ka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -61,9 +61,9 @@ object Form_jig: TForm_jig
   object rHTMLLabel_jig_delka: TrHTMLLabel
     Left = 219
     Top = 177
-    Width = 84
+    Width = 70
     Height = 19
-    Caption = 'D'#233'lka [mm]'
+    Caption = 'D'#233'lka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19

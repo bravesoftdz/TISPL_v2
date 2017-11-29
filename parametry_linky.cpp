@@ -23,11 +23,14 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 
+	Delkaunit=M;
+
 
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
+		input_state=NOTHING;//nutnost
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL){
 			scGPButton_doporucene->Visible=false;
@@ -197,8 +200,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000.0));      //roztec
 		}
 
-		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text/1000.0);
-		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text/1000.0);
+		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
+		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
 		Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
 		Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
 
@@ -288,6 +291,30 @@ scExPanel_doporuc_pohony->Visible=false;
 void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
 {
  //	ShowMessage("Se zmìnou taktu linky a následném uložení budou novì pøepoèítány parametry objektù");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rHTMLLabel_delkaClick(TObject *Sender)
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double delka=0.0;
+	if(Delkaunit==M)//pokud je v MM, tak pøepne na metry
+	{
+		Delkaunit=M;
+		//delka - pøepoèítání
+		delka=rEditNum_delkavoziku->Value*60.0;
+		rHTMLLabel_delka->Caption="Délka [m]";
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Delkaunit=MM;
+		//delka - pøepoèítání
+			delka=rEditNum_delkavoziku->Value/60.0;
+		rHTMLLabel_delka->Caption="Délka [mm]";
+	}
+	//plnìní + poèet desetinných míst
+	rEditNum_delkavoziku->Value=delka;
+	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
 

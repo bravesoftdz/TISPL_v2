@@ -261,16 +261,16 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	{
 		//naplnìní dat
 		Form_jig->Edit_jig_pocet_ks->Text=zakazka->jig.ks;
-		Form_jig->Edit_jig_delka->Text=zakazka->jig.delka*1000;
-		Form_jig->Edit_jig_sirka->Text=zakazka->jig.sirka*1000;
-		Form_jig->Edit_jig_vyska->Text=zakazka->jig.vyska*1000;
+		Form_jig->Edit_jig_delka->Text=zakazka->jig.delka;
+		Form_jig->Edit_jig_sirka->Text=zakazka->jig.sirka;
+		Form_jig->Edit_jig_vyska->Text=zakazka->jig.vyska;
 		//zobrazení formu + uložení dat pokud je zvoleno OK
 		if(mrOk==Form_jig->ShowModal())
 		{
 			zakazka->jig.ks=Form1->ms.MyToDouble(Form_jig->Edit_jig_pocet_ks->Text);
-			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text/1000.0);
-			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text/1000.0);
-			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text/1000.0);
+			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text);
+			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text);
+			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text);
 		}
 	}
 

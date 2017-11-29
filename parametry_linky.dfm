@@ -19,16 +19,17 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_delka: TrHTMLLabel
     Left = 30
     Top = 108
-    Width = 84
+    Width = 70
     Height = 19
-    Caption = 'D'#233'lka [mm]'
+    Caption = 'D'#233'lka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
     Font.Name = 'Tahoma'
-    Font.Style = []
+    Font.Style = [fsUnderline]
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_delkaClick
   end
   object rHTMLLabel_eDesigner: TrHTMLLabel
     Left = 138
@@ -48,9 +49,9 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_takt: TrHTMLLabel
     Left = 296
     Top = 108
-    Width = 106
+    Width = 91
     Height = 19
-    Caption = 'TaktTime [sec]'
+    Caption = 'TaktTime [s]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -63,9 +64,9 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_sirka: TrHTMLLabel
     Left = 30
     Top = 150
-    Width = 80
+    Width = 66
     Height = 19
-    Caption = #352#237#345'ka [mm]'
+    Caption = #352#237#345'ka [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -274,7 +275,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Font.Style = []
         Font.Quality = fqClearType
         ParentFont = False
-        TitleCaption = 'Rozte'#269' [mm]'
+        TitleCaption = 'Rozte'#269' [m]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -794,7 +795,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 8
-    Value = 1000.000000000000000000
+    Value = 1.000000000000000000
   end
   object scGPButton_pohon: TscGPButton
     Left = 8
@@ -986,7 +987,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 13
     Visible = False
-    Value = 1000.000000000000000000
+    Value = 1.000000000000000000
   end
   object scGPButton_obecne: TscGPButton
     Left = 296

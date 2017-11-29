@@ -306,7 +306,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.PP.dni_rok=365;
 			 d.v.PP.TT=120.0;
 			 d.v.PP.efektivita=95;
-			 d.v.PP.delka_voziku=1000;
+			 d.v.PP.delka_voziku=1;
 			 d.v.PP.sirka_voziku=d.v.PP.delka_voziku;
 			 d.v.PP.typ_voziku=0;
 
