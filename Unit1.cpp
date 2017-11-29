@@ -301,12 +301,12 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 doba_neotaceni_mysi=0;
 
 			 d.v.PP.cas_start=TDateTime(AnsiString(TIME.CurrentDate().DateString())+" "+"8:00:00");//defaultně dnes v 8:00
-			 d.v.PP.mnozstvi=200;
+			 d.v.PP.mnozstvi=20000;
 			 d.v.PP.hod_den=8;
 			 d.v.PP.dni_rok=365;
-			 d.v.PP.TT=2;
+			 d.v.PP.TT=120.0;
 			 d.v.PP.efektivita=95;
-			 d.v.PP.delka_voziku=1;
+			 d.v.PP.delka_voziku=1000;
 			 d.v.PP.sirka_voziku=d.v.PP.delka_voziku;
 			 d.v.PP.typ_voziku=0;
 
@@ -2544,6 +2544,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 			}
 
 			//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
+				double jednotky_vzdalenost=1.0;if(Form_parametry->m_mm==Form_parametry->MM)jednotky_vzdalenost=1000.0;
 			Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 			Form_parametry->scGPEdit_name->Text=pom->name;
 			Form_parametry->scGPEdit_shortname->Text=pom->short_name;
@@ -2567,7 +2568,14 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 			Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 			Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 			Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
+				Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera*jednotky_vzdalenost;
 			Form_parametry->scGPCheckBox_pocet_mezer->Checked=!pom->mV;
+				//nastavení defaultních hodnot
+				if(Form_parametry->scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
+				{
+					Form_parametry->scGPNumericEdit_CT->Value=d.v.PP.TT/jednotky_cas;//d.v.ZAKAZKY->dalsi->TT;
+					Form_parametry->scGPNumericEdit_kapacita->Value=1;
+				}
 
 			//nadesignování formu podle právě vypisováných hodnot
 			Form_parametry->vypis("");
@@ -2593,6 +2601,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 					{
 						//navrácení hodnot z Form_Parametry, v případě stisku OK
 						double jednotky_cas=60.0;double jednotky_vzdalenost=1000.0;
+							if(Form_parametry->m_mm==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
 						pom->name=Form_parametry->scGPEdit_name->Text;
 						pom->short_name=Form_parametry->scGPEdit_shortname->Text;
 						pom->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);//indexuje se od nuly,ale pohony od 1 (nicméně nově je na prvním místě položka nepřiřazen), pokud pohon neexituje vráti null

@@ -22,10 +22,23 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 {
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
+
+		if(Form1->d.v.OBJEKTY->dalsi==NULL){
+			scGPButton_doporucene->Visible=false;
+			rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
+		}
+		else {
+
+				scGPButton_doporucene->Visible=true;
+				rHTMLLabel_doporuc_pohony->Caption="Doporuèené rychlosti pohonù";
+		}
+
 		if(Form1->STATUS==Form1->NAVRH)    //Architekt
 		{
 			scGPButton_vozik->Caption="   Jig";
@@ -139,7 +152,7 @@ void TForm_parametry_linky::nacti_pohony (){
 			rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
 			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od;
 			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do;
-			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec;
+			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000;
 
 				ukaz = ukaz->dalsi;
 				 }
@@ -181,11 +194,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				 Form1->d.v.vloz_pohon (rStringGridEd_tab_dopravniky->Cells[1][i], //nazev
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]),        //rychlost od
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]),    //rychlost do
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
+																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000.0));      //roztec
 		}
 
-		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
+		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text/1000.0);
+		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text/1000.0);
 		Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
 		Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
 
@@ -269,6 +282,12 @@ void __fastcall TForm_parametry_linky::scExPanel_doporuc_pohonyClose(TObject *Se
 
 {
 scExPanel_doporuc_pohony->Visible=false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
+{
+ //	ShowMessage("Se zmìnou taktu linky a následném uložení budou novì pøepoèítány parametry objektù");
 }
 //---------------------------------------------------------------------------
 

@@ -17,6 +17,7 @@ TForm_jig *Form_jig;
 __fastcall TForm_jig::TForm_jig(TComponent* Owner)
 	: TForm(Owner)
 {
+	//naèítání a ukládání dat je realizováno v superform.cpp
 	//designové nastavení formuláøe  - vše v konstruktoru
 	Form_jig->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
 	scGPButton2->Options->NormalColor=Form_jig->Color;

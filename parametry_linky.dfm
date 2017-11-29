@@ -19,9 +19,9 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_delka: TrHTMLLabel
     Left = 30
     Top = 108
-    Width = 70
+    Width = 84
     Height = 19
-    Caption = 'D'#233'lka [m]'
+    Caption = 'D'#233'lka [mm]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -48,9 +48,9 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_takt: TrHTMLLabel
     Left = 296
     Top = 108
-    Width = 111
+    Width = 106
     Height = 19
-    Caption = 'TaktTime [min]'
+    Caption = 'TaktTime [sec]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -63,9 +63,9 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_sirka: TrHTMLLabel
     Left = 30
     Top = 150
-    Width = 66
+    Width = 80
     Height = 19
-    Caption = #352#237#345'ka [m]'
+    Caption = #352#237#345'ka [mm]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -274,7 +274,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Font.Style = []
         Font.Quality = fqClearType
         ParentFont = False
-        TitleCaption = 'Rozte'#269' [cm]'
+        TitleCaption = 'Rozte'#269' [mm]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
@@ -794,7 +794,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 8
-    Value = 1.000000000000000000
+    Value = 1000.000000000000000000
   end
   object scGPButton_pohon: TscGPButton
     Left = 8
@@ -968,8 +968,9 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 12
     Visible = False
+    OnChange = rEditNum_taktChange
     Style = enFloat
-    Value = 1.000000000000000000
+    Value = 120.000000000000000000
   end
   object rEditNum_sirkavoziku: TrEditNum
     Left = 165
@@ -985,7 +986,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 13
     Visible = False
-    Value = 1.000000000000000000
+    Value = 1000.000000000000000000
   end
   object scGPButton_obecne: TscGPButton
     Left = 296
@@ -1178,9 +1179,9 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 16
     Visible = False
     BackgroundStyle = scexbgsPanel
-    HeaderColor = clAppWorkSpace
+    HeaderColor = clBtnFace
     ButtonGlyphColor = clBtnText
-    HeaderStyle = scexphsHeader
+    HeaderStyle = scexphsColor
     CaptionImageIndex = -1
     ChangeRollStateWithCaptionClick = False
     Color = clWhite
@@ -1205,7 +1206,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Width = 221
       Height = 19
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clSkyBlue
+      Font.Color = clTeal
       Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
