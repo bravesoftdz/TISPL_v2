@@ -18,7 +18,7 @@ __fastcall TPopUPmenu::TPopUPmenu(TComponent* Owner)
 	//pozadí
 	clBg=(TColor)RGB(240,240,240); //pasive
 	clAcBg=(TColor)RGB(212,208,200);//active
-	clAcBg2=(TColor)RGB(195,192,184);//active
+	clAcBg2=(TColor)RGB(195,192,184);//active køížku
 	//výplò glyphu
 	clGlyph=(TColor)RGB(43,87,154);//pasive
 	clAcGlyph=(TColor)RGB(0,128,255);//active
@@ -62,26 +62,37 @@ void TPopUPmenu::pasiveColor()//nastaví všechny položky na pasivní resp. default
 	GlyphButton_close->Options->FrameFocusedColor=clAcBg;
 	GlyphButton_zobrazit_parametry->Options->NormalColor=clGlyph;
 	GlyphButton_zobrazit_parametry->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_zobrazit_parametry->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_nastavit_parametry->Options->NormalColor=clGlyph;
 	GlyphButton_nastavit_parametry->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_nastavit_parametry->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_smazat->Options->NormalColor=clGlyph;
 	GlyphButton_smazat->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_smazat->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_rychly_export->Options->NormalColor=clGlyph;
 	GlyphButton_rychly_export->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_rychly_export->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_posouvat->Options->NormalColor=clGlyph;
 	GlyphButton_posouvat->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_posouvat->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_posunout->Options->NormalColor=clGlyph;
 	GlyphButton_posunout-> GlyphOptions->NormalColor=clWhite;
+	GlyphButton_posunout-> GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_priblizit->Options->NormalColor=clGlyph;
 	GlyphButton_priblizit->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_priblizit->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_oddalit->Options->NormalColor=clGlyph;
 	GlyphButton_oddalit->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_oddalit->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_vybrat_oknem->Options->NormalColor=clGlyph;
 	GlyphButton_vybrat_oknem->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_vybrat_oknem->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_cely_pohled->Options->NormalColor=clGlyph;
 	GlyphButton_cely_pohled->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_cely_pohled->GlyphOptions->NormalColorAlpha=200;
 	GlyphButton_kopirovat->Options->NormalColor=clGlyph;
 	GlyphButton_kopirovat->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_kopirovat->GlyphOptions->NormalColorAlpha=200;
 	closing=false;
 }
 //---------------------------------------------------------------------------
@@ -134,6 +145,7 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryMouseEnter(TObject *Sender
 	GlyphButton_nastavit_parametry->Options->HotColor=clAcBg;
 	GlyphButton_nastavit_parametry->Options->FocusedColor=clAcBg;
 	GlyphButton_nastavit_parametry->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_nastavit_parametry->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_nastavit_parametry->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -168,6 +180,7 @@ void __fastcall TPopUPmenu::scLabel_zobrazit_parametryMouseEnter(TObject *Sender
 	GlyphButton_zobrazit_parametry->Options->HotColor=clAcBg;
 	GlyphButton_zobrazit_parametry->Options->FocusedColor=clAcBg;
 	GlyphButton_zobrazit_parametry->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_zobrazit_parametry->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_zobrazit_parametry->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -202,6 +215,7 @@ void __fastcall TPopUPmenu::scLabel_kopirovatMouseEnter(TObject *Sender)
 	GlyphButton_kopirovat->Options->HotColor=clAcBg;
 	GlyphButton_kopirovat->Options->FocusedColor=clAcBg;
 	GlyphButton_kopirovat->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_kopirovat->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_kopirovat->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -236,6 +250,7 @@ void __fastcall TPopUPmenu::scLabel_smazatMouseEnter(TObject *Sender)
 	GlyphButton_smazat->Options->HotColor=clAcBg;
 	GlyphButton_smazat->Options->FocusedColor=clAcBg;
 	GlyphButton_smazat->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_smazat->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_smazat->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -270,6 +285,7 @@ void __fastcall TPopUPmenu::scLabel_rychly_exportMouseEnter(TObject *Sender)
 	GlyphButton_rychly_export->Options->HotColor=clAcBg;
 	GlyphButton_rychly_export->Options->FocusedColor=clAcBg;
 	GlyphButton_rychly_export->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_rychly_export->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_rychly_export->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -304,6 +320,7 @@ void __fastcall TPopUPmenu::scLabel_posouvatMouseEnter(TObject *Sender)
 	GlyphButton_posouvat->Options->HotColor=clAcBg;
 	GlyphButton_posouvat->Options->FocusedColor=clAcBg;
 	GlyphButton_posouvat->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_posouvat->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_posouvat->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -338,6 +355,7 @@ void __fastcall TPopUPmenu::scLabel_posunoutMouseEnter(TObject *Sender)
 	GlyphButton_posunout->Options->HotColor=clAcBg;
 	GlyphButton_posunout->Options->FocusedColor=clAcBg;
 	GlyphButton_posunout->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_posunout->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_posunout->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 void __fastcall TPopUPmenu::scLabel_posunoutMouseLeave(TObject *Sender)
@@ -371,6 +389,7 @@ void __fastcall TPopUPmenu::scLabel_priblizitMouseEnter(TObject *Sender)
 	GlyphButton_priblizit->Options->HotColor=clAcBg;
 	GlyphButton_priblizit->Options->FocusedColor=clAcBg;
 	GlyphButton_priblizit->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_priblizit->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_priblizit->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -405,6 +424,7 @@ void __fastcall TPopUPmenu::scLabel_oddálitMouseEnter(TObject *Sender)
 	GlyphButton_oddalit->Options->HotColor=clAcBg;
 	GlyphButton_oddalit->Options->FocusedColor=clAcBg;
 	GlyphButton_oddalit->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_oddalit->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_oddalit->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -439,6 +459,7 @@ void __fastcall TPopUPmenu::scLabel_vybrat_oknemMouseEnter(TObject *Sender)
 	GlyphButton_vybrat_oknem->Options->HotColor=clAcBg;
 	GlyphButton_vybrat_oknem->Options->FocusedColor=clAcBg;
 	GlyphButton_vybrat_oknem->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_vybrat_oknem->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_vybrat_oknem->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------
@@ -473,6 +494,7 @@ void __fastcall TPopUPmenu::scLabel_cely_pohledMouseEnter(TObject *Sender)
 	GlyphButton_cely_pohled->Options->HotColor=clAcBg;
 	GlyphButton_cely_pohled->Options->FocusedColor=clAcBg;
 	GlyphButton_cely_pohled->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_cely_pohled->GlyphOptions->NormalColorAlpha=255;
 	top_positon(Item_cely_pohled->Top);//hlídání horní pozice, je-li daná komponenta horní
 }
 //---------------------------------------------------------------------------

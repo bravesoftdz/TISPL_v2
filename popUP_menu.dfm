@@ -143,7 +143,7 @@
         Options.FocusedColor = clRed
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -256,7 +256,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -438,7 +438,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -585,7 +585,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -735,7 +735,7 @@
         Options.FocusedColor = clRed
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -915,7 +915,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -1063,7 +1063,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -1211,7 +1211,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -1359,7 +1359,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -1507,7 +1507,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -1655,7 +1655,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
@@ -1803,7 +1803,7 @@
         Options.FocusedColor = clBtnFace
         Options.DisabledColor = clBtnText
         Options.NormalColorAlpha = 255
-        Options.HotColorAlpha = 20
+        Options.HotColorAlpha = 0
         Options.PressedColorAlpha = 30
         Options.FocusedColorAlpha = 255
         Options.DisabledColorAlpha = 5
