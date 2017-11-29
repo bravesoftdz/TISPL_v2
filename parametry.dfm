@@ -1062,7 +1062,7 @@ object Form_parametry: TForm_parametry
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = clHighlight
     Options.FrameFocusedColor = clHighlight
     Options.FrameDisabledColor = clBtnShadow
@@ -1166,7 +1166,7 @@ object Form_parametry: TForm_parametry
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = clHighlight
     Options.FrameFocusedColor = clHighlight
     Options.FrameDisabledColor = clBtnShadow
@@ -1365,7 +1365,7 @@ object Form_parametry: TForm_parametry
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = clHighlight
     Options.FrameFocusedColor = clHighlight
     Options.FrameDisabledColor = clBtnShadow
@@ -1487,7 +1487,7 @@ object Form_parametry: TForm_parametry
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = clHighlight
     Options.FrameFocusedColor = clHighlight
     Options.FrameDisabledColor = clBtnShadow
@@ -1934,7 +1934,7 @@ object Form_parametry: TForm_parametry
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
     Options.FrameNormalColor = clGray
-    Options.FrameHotColor = clHighlight
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = clHighlight
     Options.FrameFocusedColor = clHighlight
     Options.FrameDisabledColor = clBtnShadow
@@ -2139,7 +2139,7 @@ object Form_parametry: TForm_parametry
     Options.PressedColorAlpha = 200
     Options.DisabledColorAlpha = 125
     Options.FrameNormalColor = clBtnShadow
-    Options.FrameHotColor = clHighlight
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = clHighlight
     Options.FrameDisabledColor = clBtnShadow
     Options.FrameWidth = 1
@@ -2305,12 +2305,12 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clBtnText
     Options.PressedColor = clBtnText
     Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnText
+    Options.DisabledColor = clGray
     Options.NormalColorAlpha = 0
     Options.HotColorAlpha = 20
     Options.PressedColorAlpha = 30
     Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
+    Options.DisabledColorAlpha = 0
     Options.FrameNormalColor = clBtnText
     Options.FrameHotColor = clBtnText
     Options.FramePressedColor = clBtnText
@@ -2386,12 +2386,12 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clBtnText
     Options.PressedColor = clBtnText
     Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnText
+    Options.DisabledColor = clGray
     Options.NormalColorAlpha = 0
     Options.HotColorAlpha = 20
     Options.PressedColorAlpha = 30
     Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
+    Options.DisabledColorAlpha = 0
     Options.FrameNormalColor = clBtnText
     Options.FrameHotColor = clBtnText
     Options.FramePressedColor = clBtnText
@@ -2407,7 +2407,7 @@ object Form_parametry: TForm_parametry
     Options.FontHotColor = clBtnText
     Options.FontPressedColor = clBtnText
     Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
+    Options.FontDisabledColor = clBtnFace
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 5
@@ -2441,9 +2441,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scButton_zamek_CT: TscButton
-    Left = 193
-    Top = 169
-    Width = 33
+    Left = 204
+    Top = 170
+    Width = 28
     Height = 29
     TabOrder = 24
     OnClick = scButton_zamek_CTClick
@@ -2454,7 +2454,7 @@ object Form_parametry: TForm_parametry
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 30
+    ImageIndex = 31
     ImageMargin = 0
     TransparentBackground = True
     ColorOptions.NormalColor = clBtnFace
@@ -2525,9 +2525,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scButton_zamek_DD: TscButton
-    Left = 193
-    Top = 205
-    Width = 33
+    Left = 204
+    Top = 250
+    Width = 28
     Height = 29
     TabOrder = 25
     OnClick = scButton_zamek_DDClick
@@ -2538,7 +2538,7 @@ object Form_parametry: TForm_parametry
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 30
+    ImageIndex = 31
     ImageMargin = 0
     TransparentBackground = True
     ColorOptions.NormalColor = clBtnFace

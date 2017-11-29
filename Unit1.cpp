@@ -286,7 +286,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 d.v.hlavicka_VOZIKY();// nemusí tu být pokud nebudu ukládat vozíky do filuzaložení spojového seznamu pro vozíky
 			 //ZDM d.v.hlavicka_palce();
 			 //vytvoření defaltních hodnot
-			 d.v.vloz_pohon("Hlavní dopravník",1.5,10.5,32.5);
+			 //d.v.vloz_pohon("Hlavní dopravník",1.5,10.5,32.5);
 			 //d.v.vloz_pohon("Vedlejší dopravník",1.5,10.5,32.5); není nutné prý vedlejší dopravník
 
 			 //tady bude přepnutí založek dodělat
@@ -2516,130 +2516,136 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 {
-	Cvektory::TPohon *ukaz=NULL;
-	if(Form1->d.v.POHONY!=NULL)ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na první objekt v seznamu POHONY, přeskočí hlavičku
-
-	if(ukaz!=NULL)
+	if(pom!=NULL)
 	{
-		if(pom!=NULL)
-		{
-				////plnění daty
-				//combo pohony
-				Form_parametry->scComboBox_pohon->Items->Clear();
-				while (ukaz!=NULL)
-				{
-					TscGPListBoxItem *t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-					t->Caption=ukaz->name;
-					ukaz=ukaz->dalsi;
-				}
-				//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
-				Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
-				Form_parametry->scGPEdit_name->Text=pom->name;
-				Form_parametry->scGPEdit_shortname->Text=pom->short_name;
-				Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
-				Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n-1;
-				//CT
-				Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
-				Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
-				//RD
-				Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD);//nastaví zobrazení počtu desetinných míst;
-				Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
-				//DD
-				Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku);//nastaví zobrazení počtu desetinných míst;
-				Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
-				//DM
-				Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
-				Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
-				//ostatni
-				Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
-				Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
-				Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
-				Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
-				Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
-				Form_parametry->scGPCheckBox_pocet_mezer->Checked=!pom->mV;
+			////plnění daty
+			//combo pohony
+			Form_parametry->scComboBox_pohon->Items->Clear();
+			Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
+			Form_parametry->existuje_pohon=true;
 
-				//nadesignování formu podle právě vypisováných hodnot
-				Form_parametry->vypis("");
-				Form_parametry->setForm4Rezim(pom->rezim);
+			TscGPListBoxItem *t=NULL;
+			if(ukaz==NULL)
+			{
+				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+				t->Caption="nebyl nadefinován";
+				Form_parametry->existuje_pohon=false;
+			}
+			else
+			{
+				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+				t->Caption="nepřiřazen";
+      }
+			while (ukaz!=NULL)
+			{
+				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+				t->Caption=ukaz->name;
+				ukaz=ukaz->dalsi;
+			}
 
-				//ošetření aby zůstal dialog na monitoru
-				if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->ClientWidth<Form1->ClientWidth)
-					Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
-				else
-					Form_parametry->Left=Form1->ClientWidth-Form_parametry->ClientWidth-10;
-				if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->ClientHeight<Form1->ClientHeight)
-					Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
-				else
-					Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-scGPPanel_statusbar->ClientHeight-10;
+			//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
+			Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
+			Form_parametry->scGPEdit_name->Text=pom->name;
+			Form_parametry->scGPEdit_shortname->Text=pom->short_name;
+			Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
+			if(Form_parametry->existuje_pohon && pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
+			//CT
+			Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
+			Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
+			//RD
+			Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD);//nastaví zobrazení počtu desetinných míst;
+			Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
+			//DD
+			Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku);//nastaví zobrazení počtu desetinných míst;
+			Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
+			//DM
+			Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
+			Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+			//ostatni
+			Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
+			Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
+			Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
+			Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
+			Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
+			Form_parametry->scGPCheckBox_pocet_mezer->Checked=!pom->mV;
 
-				//nastevní titulku
-				Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
+			//nadesignování formu podle právě vypisováných hodnot
+			Form_parametry->vypis("");
+			Form_parametry->setForm4Rezim(pom->rezim);
 
-				//navrácení dat + volání zobrazení formu
-				if(Form_parametry->ShowModal()==mrOk)
-				{
-						try
+			//ošetření aby zůstal dialog na monitoru
+			if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->ClientWidth<Form1->ClientWidth)
+				Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
+			else
+				Form_parametry->Left=Form1->ClientWidth-Form_parametry->ClientWidth-10;
+			if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->ClientHeight<Form1->ClientHeight)
+				Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
+			else
+				Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-scGPPanel_statusbar->ClientHeight-10;
+
+			//nastevní titulku
+			Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
+
+			//navrácení dat + volání zobrazení formu
+			if(Form_parametry->ShowModal()==mrOk)
+			{
+					try
+					{
+						//navrácení hodnot z Form_Parametry, v případě stisku OK
+						double jednotky_cas=60.0;double jednotky_vzdalenost=1000.0;
+						pom->name=Form_parametry->scGPEdit_name->Text;
+						pom->short_name=Form_parametry->scGPEdit_shortname->Text;
+						pom->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);//indexuje se od nuly,ale pohony od 1 (nicméně nově je na prvním místě položka nepřiřazen), pokud pohon neexituje vráti null
+						pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
+						pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
+						pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
+						pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
+						pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
+						//DD
+						if(Form_parametry->DDunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+						pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
+						//RD
+						if(Form_parametry->RDunitT==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
+						if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+						pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
+						//DM
+						if(Form_parametry->DMunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+						pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
+						//ostatni
+						pom->mV=!Form_parametry->scGPCheckBox_pocet_mezer->Checked;
+						pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
+						//CT
+						if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
+						if(Form_parametry->kapacitaSG>1)//pokud je požadovaný rozklad objektu na více objektů
 						{
-							//navrácení hodnot z Form_Parametry, v případě stisku OK
-							double jednotky_cas=60.0;double jednotky_vzdalenost=1000.0;
-							pom->name=Form_parametry->scGPEdit_name->Text;
-							pom->short_name=Form_parametry->scGPEdit_shortname->Text;
-							pom->pohon=d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex+1);//indexuje se od nuly
-							pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
-							pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
-							pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
-							pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
-							pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
-							//DD
-							if(Form_parametry->DDunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
-							pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
-							//RD
-							if(Form_parametry->RDunitT==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
-							if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
-							pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
-							//DM
-							if(Form_parametry->DMunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
-							pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
-							//ostatni
-							pom->mV=!Form_parametry->scGPCheckBox_pocet_mezer->Checked;
-							pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-							//CT
-							if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
-							if(Form_parametry->kapacitaSG>1)//pokud je požadovaný rozklad objektu na více objektů
-							{
-									pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
-									Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
-									short N=(int)!ortogonalizace_stav;//pokud je ortogonalizeace aktivní tak N=1
-									for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
-									{
-										if(cop==NULL)//kopíruje za originál  //pokud je ortoganalizace zapnuta bude odsazení nových objektů větší a algoritmus objekty rovná jen po X ose
-										cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,pom);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
-										else //vkládá za předchozí kopii, aby bylo řazeno orig,1,2,n nikoliv n,2,1,orig
-										cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,cop);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
-									}
-									cop=NULL;delete cop;
-									pom->name+="1";pom->short_name+="1";//oindexuje i název origánálu, musí být na závěr
-									ortogonalizace();
-							}
-							else //pro kontinuál a postprocesní
-							{
-							 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
-							}
-							DuvodUlozit(true);
-							REFRESH();
+								pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
+								Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
+								short N=(int)!ortogonalizace_stav;//pokud je ortogonalizeace aktivní tak N=1
+								for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
+								{
+									if(cop==NULL)//kopíruje za originál  //pokud je ortoganalizace zapnuta bude odsazení nových objektů větší a algoritmus objekty rovná jen po X ose
+									cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,pom);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
+									else //vkládá za předchozí kopii, aby bylo řazeno orig,1,2,n nikoliv n,2,1,orig
+									cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,cop);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
+								}
+								cop=NULL;delete cop;
+								pom->name+="1";pom->short_name+="1";//oindexuje i název origánálu, musí být na závěr
+								ortogonalizace();
 						}
-						catch(...)
+						else //pro kontinuál a postprocesní
 						{
-							MB("Neplatná hodnota!");
-							Nastvitparametry1Click(this);//nové zadání
+						 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
 						}
-				}
-		}
+						DuvodUlozit(true);
+						REFRESH();
+					}
+					catch(...)
+					{
+						MB("Neplatná hodnota!");
+						Nastvitparametry1Click(this);//nové zadání
+					}
+			}
 	}
-	else
-	{
-			MB("Nejdříve je nutné nadefinovat pohony ve formuláři parametry linky!");
-  }
 }
 //---------------------------------------------------------------------------
 //pokud je označený objekt, zajistí jeho zkopírování, připočítá index 1,2,3

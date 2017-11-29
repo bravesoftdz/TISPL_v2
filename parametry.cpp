@@ -236,7 +236,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 	scGPGlyphButton_copy->Top=scGPGlyphButton_paste->Top-scGPGlyphButton_copy->Height;
 }
 //---------------------------------------------------------------------------
-void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
+//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udržování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
+void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 {
 	//defaultní hodnoty
 	short O=40;//vertikální velikost odsazení komponent
@@ -247,9 +248,14 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 	{
 		case POHON:
 		{
+		 ////ošetøení pokud není nadefinován žádný pohon
+			if(!Form_parametry->existuje_pohon)S=READONLY;
 		 ////pozice
-			rHTMLLabel_pohon->Top=L+O;
-			scComboBox_pohon->Top=P+O;
+			if(move)
+			{
+				rHTMLLabel_pohon->Top=L+O;
+				scComboBox_pohon->Top=P+O;
+			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect;
@@ -260,36 +266,44 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 			{
 				case HIGHLIGHT:scComboBox_pohon->Options->FrameNormalColor=hl_color;scComboBox_pohon->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
-				case DISABLED:rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=false;break;
-				case READONLY:rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=false;break;
-				case HIDE:		rHTMLLabel_pohon->Visible=false;scComboBox_pohon->Visible=false;offset-=O;break;
+				case DISABLED:scComboBox_pohon->Enabled=false;break;
+				case READONLY:scComboBox_pohon->Enabled=false;break;
+				case HIDE:		rHTMLLabel_pohon->Visible=false;scComboBox_pohon->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case TIME://technologický èas v režimu návrháø
 		{
 		 ////pozice
-			rHTMLLabel_CT->Top=L+2*O+offset;
-			scGPNumericEdit_CT->Top=P+2*O+offset;
+			if(move)
+			{
+				rHTMLLabel_CT->Top=L+2*O+offset;
+				scGPNumericEdit_CT->Top=P+2*O+offset;
+				scButton_zamek_CT->Top=scGPNumericEdit_CT->Top;
+			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_CT->Visible=true;scGPNumericEdit_CT->Enabled=true;scGPNumericEdit_CT->Visible=true;
 			scGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;
+			scButton_zamek_CT->Visible=true;
 			//ty co jsou rozdílné
 			switch (S)
 			{
 				case HIGHLIGHT:scGPNumericEdit_CT->Options->FrameNormalColor=hl_color;scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;break;
-				case ENABLED:	break;
-				case DISABLED:scGPNumericEdit_CT->Enabled=false;break;
-				case READONLY:scGPNumericEdit_CT->Enabled=false;break;
-				case HIDE:		rHTMLLabel_CT->Visible=false;scGPNumericEdit_CT->Visible=false;offset-=O;break;
+				case ENABLED:	 scButton_zamek_CT->ImageIndex=31;CT_zamek=UNLOCKED;break;
+				case DISABLED:scGPNumericEdit_CT->Enabled=false;scButton_zamek_CT->ImageIndex=30;CT_zamek=LOCKED;break;
+				case READONLY:scGPNumericEdit_CT->Options->ShapeStyle=scgpessNone;scButton_zamek_CT->Visible=false;scGPNumericEdit_CT->Enabled=false;break;
+				case HIDE:		rHTMLLabel_CT->Visible=false;scGPNumericEdit_CT->Visible=false;scButton_zamek_CT->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case RYCHLOST://RD v režimu návrháø
 		{
 		 ////pozice
-			rHTMLLabel_RD->Top=L+3*O+offset;
-			scGPNumericEdit_RD->Top=P+3*O+offset;
+			if(move)
+			{
+				rHTMLLabel_RD->Top=L+3*O+offset;
+				scGPNumericEdit_RD->Top=P+3*O+offset;
+			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			scGPNumericEdit_RD->Options->ShapeStyle=scgpessRect;
@@ -302,18 +316,23 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_RD->Enabled=false;break;
 				case READONLY:scGPNumericEdit_RD->Options->ShapeStyle=scgpessNone;scGPNumericEdit_RD->Enabled=false;break;
-				case HIDE:		rHTMLLabel_RD->Visible=false;scGPNumericEdit_RD->Visible=false;offset-=O;break;
+				case HIDE:		rHTMLLabel_RD->Visible=false;scGPNumericEdit_RD->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case DELKA://délka dopravníku
 		{
 		 ////pozice
-			rHTMLLabel_delka_dopravniku->Top=L+4*O+offset;
-			scGPNumericEdit_delka_dopravniku->Top=P+4*O+offset;
+			if(move)
+			{
+				rHTMLLabel_delka_dopravniku->Top=L+4*O+offset;
+				scGPNumericEdit_delka_dopravniku->Top=P+4*O+offset;
+				scButton_zamek_DD->Top=scGPNumericEdit_delka_dopravniku->Top;
+      }
 			//ty co jsou stejné
 			scGPNumericEdit_delka_dopravniku->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_delka_dopravniku->Visible=true;scGPNumericEdit_delka_dopravniku->Visible=true;scGPNumericEdit_delka_dopravniku->Enabled=true;
 			scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor=clGray;scGPNumericEdit_delka_dopravniku->Options->FrameWidth=1;
+			scButton_zamek_DD->Visible=true;
 			//ty co jsou rozdílné
 		 ////funkèní vlastnosti
 			switch (S)
@@ -321,8 +340,8 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case HIGHLIGHT:scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor=hl_color;scGPNumericEdit_delka_dopravniku->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_delka_dopravniku->Enabled=false;break;
-				case READONLY:scGPNumericEdit_delka_dopravniku->Options->ShapeStyle=scgpessNone;scGPNumericEdit_delka_dopravniku->Enabled=false;break;
-				case HIDE:		rHTMLLabel_delka_dopravniku->Visible=false;scGPNumericEdit_delka_dopravniku->Visible=false;offset-=O;break;
+				case READONLY:scGPNumericEdit_delka_dopravniku->Options->ShapeStyle=scgpessNone;scGPNumericEdit_delka_dopravniku->Enabled=false;scButton_zamek_DD->Visible=false;break;
+				case HIDE:		rHTMLLabel_delka_dopravniku->Visible=false;scGPNumericEdit_delka_dopravniku->Visible=false;scButton_zamek_DD->Visible=false;if(move)offset-=O;break;
 			}
 		}break;
 		case KAPACITA://požadována vs. zjištìná kapacita objektu
@@ -342,7 +361,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_kapacita->Enabled=false;break;
 				case READONLY:scGPNumericEdit_kapacita->Options->ShapeStyle=scgpessNone;scGPNumericEdit_kapacita->Enabled=false;break;
-				case HIDE:		rHTMLLabel_kapacita->Visible=false;scGPNumericEdit_kapacita->Visible=false;offset-=O;break;
+				case HIDE:		rHTMLLabel_kapacita->Visible=false;scGPNumericEdit_kapacita->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case ODCHYLKA://povolená odchylka z CT
@@ -362,14 +381,17 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_odchylka->Enabled=false;break;
 				case READONLY:scGPNumericEdit_odchylka->Options->ShapeStyle=scgpessNone;scGPNumericEdit_odchylka->Visible=false;break;
-				case HIDE:		rHTMLLabel_odchylka->Visible=false;scGPNumericEdit_odchylka->Visible=false;offset-=O;break;
+				case HIDE:		rHTMLLabel_odchylka->Visible=false;scGPNumericEdit_odchylka->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case CEKANI://èekání
 		{
 		 ////pozice
-			rHTMLLabel_cekani->Top=L+7*O+offset;
-			scComboBox_cekani_palec->Top=P+7*O+offset;
+			if(move)
+			{
+				rHTMLLabel_cekani->Top=L+7*O+offset;
+				scComboBox_cekani_palec->Top=P+7*O+offset;
+			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			scComboBox_cekani_palec->Options->FrameNormalColor=clGray;scComboBox_cekani_palec->Options->FrameWidth=1;
@@ -381,14 +403,17 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scComboBox_cekani_palec->Enabled=false;break;
 				case READONLY:scComboBox_cekani_palec->Enabled=false;break;
-				case HIDE:		rHTMLLabel_cekani->Visible=false;scComboBox_cekani_palec->Visible=false;offset-=O;break;
+				case HIDE:		rHTMLLabel_cekani->Visible=false;scComboBox_cekani_palec->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case STOPKA://stop stanice na konci objektu
 		{
 		 ////pozice
-			rHTMLLabel_stopka->Top=L+8*O+offset;
-			scComboBox_stopka->Top=P+8*O+offset;
+			if(move)
+			{
+				rHTMLLabel_stopka->Top=L+8*O+offset;
+				scComboBox_stopka->Top=P+8*O+offset;
+			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			rHTMLLabel_stopka->Visible=true;scComboBox_stopka->Visible=true;scComboBox_stopka->Enabled=true;
@@ -400,14 +425,17 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scComboBox_stopka->Enabled=false;break;
 				case READONLY:scComboBox_stopka->Enabled=false;break;
-				case HIDE:		rHTMLLabel_stopka->Visible=false;scComboBox_stopka->Visible=false;offset-=O;break;
+				case HIDE:		rHTMLLabel_stopka->Visible=false;scComboBox_stopka->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case ROTACE://rotace jigu v objektu, zatím jen pøepínátko 0-90
 		{
 		 ////pozice
-			rHTMLLabel_rotace->Top=L+9*O+offset;
-			scComboBox_rotace->Top=P+9*O+offset;
+			if(move)
+			{
+				rHTMLLabel_rotace->Top=L+9*O+offset;
+				scComboBox_rotace->Top=P+9*O+offset;
+			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			rHTMLLabel_rotace->Visible=true;scComboBox_rotace->Visible=true;scComboBox_rotace->Enabled=true;
@@ -419,14 +447,17 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scComboBox_rotace->Enabled=false;break;
 				case READONLY:scComboBox_rotace->Enabled=false;break;
-				case HIDE:		rHTMLLabel_rotace->Visible=false;scComboBox_rotace->Visible=false;offset-=O;break;
+				case HIDE:		rHTMLLabel_rotace->Visible=false;scComboBox_rotace->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case MEZERA://požadována vs. zjištìná kapacita objektu
 		{
 		 ////pozice
-			rHTMLLabel_mezera->Top=L+10*O+offset;
-			scGPNumericEdit_mezera->Top=P+10*O+offset;
+			if(move)
+			{
+				rHTMLLabel_mezera->Top=L+10*O+offset;
+				scGPNumericEdit_mezera->Top=P+10*O+offset;
+			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			scGPNumericEdit_mezera->Options->ShapeStyle=scgpessRect;
@@ -439,13 +470,13 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scGPNumericEdit_mezera->Enabled=false;break;
 				case READONLY:scGPNumericEdit_mezera->Options->ShapeStyle=scgpessNone;scGPNumericEdit_mezera->Enabled=false;break;
-				case HIDE:		rHTMLLabel_mezera->Visible=false;scGPNumericEdit_mezera->Visible=false;offset-=O;break;
+				case HIDE:		rHTMLLabel_mezera->Visible=false;scGPNumericEdit_mezera->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 		case POCET_MEZER://požadována vs. zjištìná kapacita objektu
 		{
 		 ////pozice
-			scGPCheckBox_pocet_mezer->Top=L+11*O-5+offset;
+			if(move)scGPCheckBox_pocet_mezer->Top=L+11*O-5+offset;
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
 			scGPCheckBox_pocet_mezer->Visible=true;scGPCheckBox_pocet_mezer->Enabled=true;
@@ -457,7 +488,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S)
 				case ENABLED:	break;
 				case DISABLED:scGPCheckBox_pocet_mezer->Enabled=false;break;
 				case READONLY:scGPCheckBox_pocet_mezer->Enabled=false;break;
-				case HIDE:		scGPCheckBox_pocet_mezer->Visible=false;offset-=O;break;
+				case HIDE:		scGPCheckBox_pocet_mezer->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
 	}
@@ -945,7 +976,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 {
 	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
-	double RD=0.0;double CT=0.0;
+	double CT=0.0;
 	if(CTunit==MIN)//pokud je v minutách, tak pøepne na sekundy
 	{
 		CTunit=S;
@@ -970,7 +1001,7 @@ void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 {
 	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
-	double RD=0.0;double CT=0.0;
+	double RD=0.0;
 
 	if(RDunitT==MIN)//pokud je v minutách, tak pøepne na sekundy
 	{
@@ -1226,35 +1257,37 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 	input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
-
-
-
+//zámek procesního èasu
 void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 {
 	if(scButton_zamek_CT->ImageIndex==30)//když je zamèeno
 	{
 		scButton_zamek_CT->ImageIndex=31;
 		CT_zamek=UNLOCKED;
+		set(TIME,ENABLED,false);
 	}
 	else//odemèeno
 	{
 		scButton_zamek_CT->ImageIndex=30;
 		CT_zamek=LOCKED;
+		set(TIME,DISABLED,false);
 	}
 }
 //---------------------------------------------------------------------------
-
+//zámek délky dopravníku
 void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 {
 	if(scButton_zamek_DD->ImageIndex==30)//když je zamèeno
 	{
 		scButton_zamek_DD->ImageIndex=31;
 		DD_zamek=UNLOCKED;
+		set(DELKA,ENABLED,false);
 	}
 	else//odemèeno
 	{
 		scButton_zamek_DD->ImageIndex=30;
 		DD_zamek=LOCKED;
+		set(DELKA,DISABLED,false);
 	}
 }
 //---------------------------------------------------------------------------

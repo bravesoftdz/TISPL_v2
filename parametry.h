@@ -98,7 +98,7 @@ private:	// User declarations
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek DD_zamek;
 
-	void set(Tcomponents C,Tcomponents_state S);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu
+	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
 	void input_CT();//pøepoèet hodnot vyplıvajících ze zmìny CT
 	void input_DD();//pøepoèet hodnot vyplıvajících ze zmìny DD
 	void input_RD();//pøepoèet hodnot vyplıvajících ze zmìny RD
@@ -117,9 +117,11 @@ public:		// User declarations
 	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
 	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm RDunitD;//pøepínaè jednotek vzdálenost
 	void setForm4Rezim(unsigned short rezim);
-	Tinput_state input_state;
 	void vypis(UnicodeString text,bool RED=true);
+	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	short kapacitaSG;//poadavek na rozpad na více stejnıch S&G objektù
+	bool existuje_pohon;
+
 
 	void vykresli_vozik(bool na_delku=true);
 };
