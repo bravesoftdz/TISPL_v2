@@ -300,19 +300,19 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delkaClick(TObject *Sender)
 	double delka=0.0;
 	if(Delkaunit==M)//pokud je v MM, tak pøepne na metry
 	{
-		Delkaunit=M;
+		Delkaunit=MM;
 		//delka - pøepoèítání
-		delka=rEditNum_delkavoziku->Value*60.0;
+		delka=rEditNum_delkavoziku->Value*100.0;
 		rHTMLLabel_delka->Caption="Délka [m]";
 	}
 	else//metrech tak se pøepne na MM
 	{
-		Delkaunit=MM;
+		Delkaunit=M;
 		//delka - pøepoèítání
-			delka=rEditNum_delkavoziku->Value/60.0;
+			delka=rEditNum_delkavoziku->Value/100.0;
 		rHTMLLabel_delka->Caption="Délka [mm]";
 	}
-	//plnìní + poèet desetinnıch míst
+	//plnìní
 	rEditNum_delkavoziku->Value=delka;
 	input_state=NOTHING;//u se mohou pøepoèítávat
 }
