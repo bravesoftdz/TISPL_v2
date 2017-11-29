@@ -23,7 +23,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 
-	Delkaunit=M;
+	Delkaunit=MM;
 
 
 }
@@ -298,21 +298,21 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delkaClick(TObject *Sender)
 {
 	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
 	double delka=0.0;
-	if(Delkaunit==M)//pokud je v MM, tak pøepne na metry
+	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
 	{
 		Delkaunit=M;
 		//delka - pøepoèítání
-		delka=rEditNum_delkavoziku->Value*60.0;
-		rHTMLLabel_delka->Caption="Délka [m]";
+		delka=rEditNum_delkavoziku->Value*1000.0;
+		rHTMLLabel_delka->Caption="Délka [mm]";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 		//delka - pøepoèítání
-			delka=rEditNum_delkavoziku->Value/60.0;
-		rHTMLLabel_delka->Caption="Délka [mm]";
+			delka=rEditNum_delkavoziku->Value/1000.0;
+		rHTMLLabel_delka->Caption="Délka [m]";
 	}
-	//plnìní + poèet desetinnıch míst
+	//plnìní
 	rEditNum_delkavoziku->Value=delka;
 	input_state=NOTHING;//u se mohou pøepoèítávat
 }
