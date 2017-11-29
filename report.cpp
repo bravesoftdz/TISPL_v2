@@ -133,8 +133,11 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 			data+="<h4>Pøehled doporuèených rychlostí pohonù</h4></br>";
 
-		  data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">Název</th><th scope=\"col\">Rychlost</th></tr></thead>";
-			Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
+		 //	data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">Název</th><th scope=\"col\">Rychlost</th></tr></thead>";
+
+			data+=Form1->d.v.navrhni_POHONY();
+
+		/*	Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
 
 				while(ukaz!=NULL){
 
@@ -149,8 +152,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 					ukaz=ukaz->dalsi;
 
-				}
-          	data+="</tbody></table></br>";
+				}    */
+						data+="</br>";
 
 		if(Form1->STATUS==Form1->NAVRH) {
 
