@@ -467,7 +467,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'TakTime [min]'
+        TitleCaption = 'TakTime [sec]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13
@@ -1539,6 +1539,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     CustomBackgroundImageNormalIndex = -1
     CustomBackgroundImageHotIndex = -1
     CustomBackgroundImageDisabledIndex = -1
+    PromptTextColor = clNone
     WallpaperIndex = -1
     LeftButton.ComboButton = False
     LeftButton.Enabled = True

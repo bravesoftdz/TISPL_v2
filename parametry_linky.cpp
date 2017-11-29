@@ -152,7 +152,7 @@ void TForm_parametry_linky::nacti_pohony (){
 			rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
 			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od;
 			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do;
-			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec;
+			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000;
 
 				ukaz = ukaz->dalsi;
 				 }
@@ -194,11 +194,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				 Form1->d.v.vloz_pohon (rStringGridEd_tab_dopravniky->Cells[1][i], //nazev
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]),        //rychlost od
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]),    //rychlost do
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
+																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000.0));      //roztec
 		}
 
-		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
+		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text/1000.0);
+		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text/1000.0);
 		Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
 		Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
 
