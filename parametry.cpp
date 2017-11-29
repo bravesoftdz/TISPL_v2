@@ -32,13 +32,30 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 
 	//formuláø bude pøi prvním zobrazení v sekundách a metrech nebo dle INI v odvozených jednotkách, jinak dle SI
 	minsec=S;CTunit=S;RDunitT=S;
-	m_mm=M;DDunit=M;DMunit=M;
-	if(Form1->readINI("nastaveni_form_parametry","cas")=="1")Button_min_secClick(this);//tedy MIN
-	if(Form1->readINI("nastaveni_form_parametry","vzdalenost")=="1")Button_metry_milimetryClick(this);//tedy MM
+	m_mm=M;DDunit=M;DMunit=M;RDunitD=M;
+	//GLOBAL
+	if(Form1->readINI("nastaveni_form_parametry","cas")=="1"){minsec=MIN;scGPButton_min_sec->Caption="vše na s";}//tedy MIN
+	if(Form1->readINI("nastaveni_form_parametry","vzdalenost")=="1"){m_mm=MM;scGPButton_metry_milimetry->Caption="vše na m";}//tedy MM
+	//CT
+	if(Form1->readINI("nastaveni_form_parametry","CT")=="1") rHTMLLabel_CTClick(this);//pøevede na min tzn. CTunit=MIN;
+	//RD
+	if(Form1->readINI("nastaveni_form_parametry","RDt")=="1")	rHTMLLabel_RDClick(this);//pøevede na min tzn. RDunitT=MIN;
+	if(Form1->readINI("nastaveni_form_parametry","RDd")=="1")	rHTMLLabel_RDClick(this);//pøevede na mm tzn. RDunitD=MM;
+	//DD
+	if(Form1->readINI("nastaveni_form_parametry","DD")=="1")	rHTMLLabel_delka_dopravnikuClick(this);//pøevede na mm tzn. DDunit=MM;
+	//DM
+	if(Form1->readINI("nastaveni_form_parametry","DM")=="1")	rHTMLLabel_mezeraClick(this);//pøevede na mm tzn. DMunit=MM;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
+	//nastavení defaultních hodnot
+	if(scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
+	{
+		scGPNumericEdit_CT->Value=Form1->d.v.PP.TT/(1+59*CTunit);//d.v.ZAKAZKY->dalsi->TT;
+		scGPNumericEdit_kapacita->Value=1;
+	}
+
 	input_state=NOTHING;//nutnost
 	kapacitaSG=1;//není podnìt k rozkládání na více objektù
 	scGPEdit_name->SetFocus();//nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
@@ -139,7 +156,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 case 10://STOP & GO - NÁVRHÁØ
 		 {
 			 //nastavení komponent
-			 set(POHON,HIDE);
+			 set(POHON,ENABLED);
 			 set(TIME,ENABLED);
 			 set(RYCHLOST,HIDE);
 			 set(DELKA,HIDE);
@@ -168,7 +185,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 11://KONTINUÁLNÍ - NÁVRHÁØ
 		 {
-			 set(POHON,HIDE);
+			 set(POHON,ENABLED);
 			 set(TIME,ENABLED);
 			 set(RYCHLOST,READONLY);
 			 set(DELKA,ENABLED);
@@ -196,7 +213,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 12://POSTPROCESNÍ - NÁVRHÁØ
 		 {
-			 set(POHON,HIDE);
+			 set(POHON,ENABLED);
 			 set(TIME,ENABLED);
 			 set(RYCHLOST,HIDE);
 			 set(DELKA,ENABLED);
@@ -492,7 +509,7 @@ void TForm_parametry::input_CT()
 {
 	 input_state=CT;
 	 double CT=scGPNumericEdit_CT->Value;//CT od uživatele
-	 if(minsec==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy
+	 if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy
 	 if(CT>0)//nutné ošetøení pro období zadávání/psaní
 	 {
 			 //default nastavení komponent
@@ -541,21 +558,22 @@ void TForm_parametry::input_CT()
     		 //pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 				 if(Form1->ms.get_count_decimal(K)>0)
 				 {
-					if(minsec==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
+					if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 					else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
 				 }
 				 //DÉLKA DOPRAVNÍKU
-				 double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
 				 double DD=K*dV+(K-p)*m;//ošetøeno i pro stav kdy je stejný poèet mezer jako vozíku
-				 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-				 scGPNumericEdit_delka_dopravniku->Value=DD*jednotky_vzdalenost;//plnìní patøièného políèka
+				 if(m_mm==MM)DD*=1000.0;
+				 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+				 scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+				 if(m_mm==MM)DD/=1000.0;//vracení do pùvodního stavu k dalšímu použití
 				 //RYCHLOST DOPRAVNÍKU (èistì jen pro KONTINUAL)
 				 if(scComboBox_rezim->ItemIndex==1)
 				 {
 					double RD=DD/CT;
-					if(minsec==MIN)RD*=60.0;
-					scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-					scGPNumericEdit_RD->Value=RD*jednotky_vzdalenost;//plnìní patøièného políèka
+					if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
+					scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 				 }
 			 }
 	 }
@@ -567,10 +585,10 @@ void TForm_parametry::input_CT()
 //pøepoèet hodnot vyplývajících ze zmìny DD
 void TForm_parametry::input_DD()
 {
-	double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
 	input_state=DD;//pozor myšleno DD - z ENUM
 	//default hodnoty
-	double DD=scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;//pøevede vždy do metrù
+	double DD=scGPNumericEdit_delka_dopravniku->Value;if(DDunit==MM)DD/=1000.0;//pøevede vždy do metrù
+
 	if(DD>0)//nutné ošetøení pro období zadávání/psaní
 	{
 		//default nastavení komponent
@@ -592,12 +610,12 @@ void TForm_parametry::input_DD()
 		//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 		if(Form1->ms.get_count_decimal(K)>0)
 		{
-			if(minsec==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
+			if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 			else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
 		}
 		//PROCESNÍ ÈAS resp. CT
 		double CT = Form1->d.v.PP.TT*K;
-		if(minsec==MIN)
+		if(CTunit==MIN)
 		{
 			scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
 			scGPNumericEdit_CT->Value=CT/60.0;//plnìní patøièného políèka
@@ -612,9 +630,9 @@ void TForm_parametry::input_DD()
 		if(scComboBox_rezim->ItemIndex==1)
 		{
 			double RD = DD/CT;
-			if(minsec==MIN)RD*=60.0;
-			scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-			scGPNumericEdit_RD->Value=RD*jednotky_vzdalenost;//plnìní patøièného políèka
+			if(minsec==MIN)RD*=60.0;if(RDunitD==MM)RD*=1000.0;
+			scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+			scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 		}
 	}
 	else
@@ -626,9 +644,10 @@ void TForm_parametry::input_DD()
 void TForm_parametry::input_RD()
 {
 	 input_state=RD;
-	 double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
-	 double jednotky_cas=1.0;if(m_mm==MM)jednotky_cas=60.0;
-	 double RD=scGPNumericEdit_RD->Value/jednotky_vzdalenost/jednotky_cas;//pøevede na metr a na jednu sekundu
+	 double RD=scGPNumericEdit_RD->Value;
+	 //pøevede pøípadnì na metr a na jednu sekundu, není-li
+	 if(RDunitD==MM)RD/=1000.0;
+	 if(RDunitT==MIN)RD/=60.0;
 
 	 if(RD>0)//nutné ošetøení pro období zadávání/psaní
 	 {
@@ -654,28 +673,31 @@ void TForm_parametry::input_RD()
     			//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 					if(Form1->ms.get_count_decimal(K)>0)
 					{
-						if(minsec==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
+						if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 						else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
 					}
 
 					//DÉLKA DOPRAVNÍKU
 					double DD = K*dV+(K-p)*m;
-					scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-					scGPNumericEdit_delka_dopravniku->Value=DD*jednotky_vzdalenost;//plnìní patøièného políèka
+					if(DDunit==MM)DD*=1000.0;
+					scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+					if(DDunit==MM)DD/=1000.0;//vrácení do pùvodního stavu kvùli dalšímu použit
 
     			//PROCESNÍ ÈAS resp. CT
 					double CT = RD/DD;
-					scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/jednotky_cas);//nastaví zobrazení poètu desetinných míst
-					scGPNumericEdit_CT->Value=CT/jednotky_cas;//plnìní patøièného políèka
+					if(CTunit==MIN)CT/60.0;
+					scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
 			 }
     	 else //pokud ne, je nutné získat další nenulový vstup
 			 {
-					double DD=scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
-					double CT=scGPNumericEdit_CT->Value*jednotky_cas;
+					double DD=scGPNumericEdit_delka_dopravniku->Value;if(DDunit==MM)DD/=1000.0; //na metry
+					double CT=scGPNumericEdit_CT->Value;if(CTunit==MIN)CT*60.0; //na sekunkdy
     			double K=scGPNumericEdit_kapacita->Value;
 
     			if(DD!=0)//pokud je známá délka dopravníku
-    			{
+					{
     				//KAPACITA
 						K=RD/DD/Form1->d.v.PP.TT;
     				scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
@@ -683,23 +705,25 @@ void TForm_parametry::input_RD()
     				//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 						if(Form1->ms.get_count_decimal(K)>0)
 						{
-							if(minsec==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
+							if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 							else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
 						}
 
     				//PROCESNÍ ÈAS resp. CT
 						double CT = RD/DD;
-						scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/jednotky_cas);//nastaví zobrazení poètu desetinných míst
-						scGPNumericEdit_CT->Value=CT/jednotky_cas;//plnìní patøièného políèka
+						if(CTunit==MIN)CT/60.0;
+						scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+						scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
     			}
     			else
-    			{
-    				if(CT!=0)//pokud není známá délka ale je známe CT
+					{
+						if(CT!=0)//pokud není známá délka ale je známe CT
     				{
         			//DÉLKA DOPRAVNÍKU
-        			DD=RD*CT;
-							scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-							scGPNumericEdit_delka_dopravniku->Value=DD*jednotky_vzdalenost;//plnìní patøièného políèka
+							DD=RD*CT;
+							if(DDunit==MM)DD*=1000.0;
+							scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+							scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 
         			//KAPACITA
 							K=CT/Form1->d.v.PP.TT;
@@ -708,7 +732,7 @@ void TForm_parametry::input_RD()
     					//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 							if(Form1->ms.get_count_decimal(K)>0)
 							{
-								if(minsec==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
+								if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 								else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
 							}
 						}
@@ -717,14 +741,17 @@ void TForm_parametry::input_RD()
     					if(K!=0)//pokud není známá délka ani CT a je známá K
     					{
     						//DÉLKA DOPRAVNÍKU
-    						DD=RD*Form1->d.v.PP.TT*K;
-								scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-								scGPNumericEdit_delka_dopravniku->Value=DD*jednotky_vzdalenost;//plnìní patøièného políèka
+								DD=RD*Form1->d.v.PP.TT*K;
+								if(DDunit==MM)DD*=1000.0;
+								scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+								scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+								if(DDunit==MM)DD/=1000.0;//navrácení do pùvodního stavu kvùli dalšímu použití
 
     						//PROCESNÍ ÈAS resp. CT
 								double CT = RD/DD;
-								scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/jednotky_cas);//nastaví zobrazení poètu desetinných míst
-								scGPNumericEdit_CT->Value=CT/jednotky_cas;//plnìní patøièného políèka
+								if(CTunit==MIN)CT/60.0;
+								scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+								scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
     					}
     					else//pokud kromì RD není nic zadané a je požadovaná další hodnota
 							{
@@ -749,9 +776,8 @@ void TForm_parametry::input_K()
     	 //default nastavení komponent
     	 scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
-    	 scGPButton_OK->Enabled=true;
+			 scGPButton_OK->Enabled=true;
 			 scGPButton_OK->Caption="Uložit";
-			 double jednotky_vzdalenost=1.0;if(m_mm==MM)jednotky_vzdalenost=1000.0;
 
 			 //volba šíøka èi délka jigu
 			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
@@ -760,30 +786,41 @@ void TForm_parametry::input_K()
 			 short p=!scGPCheckBox_pocet_mezer->Checked;//poèet mezer mezi vozíky
 
 			 //PROCESNÍ ÈAS resp. CT
-			 double CT = Form1->d.v.PP.TT*K;
-			 if(minsec==MIN)
+			 double CT = 0;//Form1->d.v.PP.TT;
+			 if(CT_zamek==UNLOCKED)
 			 {
-					scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
-					scGPNumericEdit_CT->Value=CT/60.0;//plnìní patøièného políèka
+					 CT =Form1->d.v.PP.TT*K;
+					 if(CTunit==MIN)
+					 {
+							scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
+							scGPNumericEdit_CT->Value=CT/60.0;//plnìní patøièného políèka
+					 }
+					 else
+					 {
+							scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+							scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
+					 }
 			 }
 			 else
 			 {
-					scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
-					scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
+						CT=scGPNumericEdit_CT->Value; if(CTunit==MIN)CT*=60;
 			 }
+
 
     	 //DÉLKA DOPRAVNÍKU
 			 double DD = K*dV+(K-p)*m;//ošetøeno i pro stav stejného poètu vozíku a mezer;
-			 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-			 scGPNumericEdit_delka_dopravniku->Value=DD*jednotky_vzdalenost;//plnìní patøièného políèka
+			 if(DDunit==MM)DD*=1000.0;
+			 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+			 scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+			 if(DDunit==MM)DD/=1000.0;//navrácení do pùvodního stavu kvùli dalšímu použití
 
     	 //RYCHLOST DOPRAVNÍKU (èistì jen pro KONTINUAL)
     	 if(scComboBox_rezim->ItemIndex==1)
 			 {
 					double RD=DD/CT;
-					if(minsec==MIN)RD*=60;
-					scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst
-					scGPNumericEdit_RD->Value=RD*jednotky_vzdalenost;//plnìní patøièného políèka
+					if(minsec==RDunitT)RD*=60.0;if(RDunitD==MM)RD*=1000.0;
+					scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 			 }
 	 }
 	 else
@@ -871,7 +908,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 	double RD=0.0;double CT=0.0;
 	if(minsec==MIN)//pokud je v minutách, tak pøepne na sekundy
 	{
-		minsec=S;scGPButton_min_sec->Caption="na min";//samotné tlaèítko,ukazuje název opaènì
+		minsec=S;scGPButton_min_sec->Caption="vše na min";//samotné tlaèítko,ukazuje název opaènì
 		//CT - pøepoèítání
 		CTunit=S;
 		CT=scGPNumericEdit_CT->Value*60.0;
@@ -885,7 +922,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 	}
 	else//pokud je v sekundách pøepne na minuty
 	{
-		minsec=MIN;scGPButton_min_sec->Caption="na s";//samotné tlaèítko,ukazuje název opaènì
+		minsec=MIN;scGPButton_min_sec->Caption="vše na s";//samotné tlaèítko,ukazuje název opaènì
 		//CT - pøepoèítání
 		CTunit=MIN;
 		CT=scGPNumericEdit_CT->Value/60.0;
@@ -934,13 +971,14 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 {
 	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
 	double RD=0.0;double CT=0.0;
+
 	if(RDunitT==MIN)//pokud je v minutách, tak pøepne na sekundy
 	{
 		RDunitT=S;
 		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";//pokud je v milimetrech
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value/60.0;
-
+		//RD=RDunitD_funkce(RD);
 	}
 	else//pokud je v sekundách pøepne na minuty
 	{
@@ -948,11 +986,31 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v milimetrech
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value*60.0;
+		RD=RDunitD_funkce(RD);
 	}
+  RD=RDunitD_funkce(RD);
 	//plnìní + poèet desetinných míst
 	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_RD->Value=RD;
 	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
+double TForm_parametry::RDunitD_funkce(double RD)//podpùrná metoda výše uvedené
+{
+		if(RDunitD==MM)//pokud je v milimetrech, tak pøepne na metry
+		{
+			RDunitD=M;
+			if(RDunitT==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v minutách
+			else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";// pokud je v sekundách
+			return RD/1000.0;
+		}
+		else
+		{
+			RDunitD=MM;
+			if(RDunitT==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v minutách
+			else rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";// pokud je v sekundách
+			return RD*1000.0;
+		}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -963,7 +1021,7 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 	double DD=0.0;double DM=0.0;double RD=0.0;
 	if(m_mm==MM)//pokud je v milimetrech, tak pøepne na metry
 	{
-		m_mm=M;scGPButton_metry_milimetry->Caption="na mm";//samotné tlaèítko,ukazuje název opaènì
+		m_mm=M;scGPButton_metry_milimetry->Caption="vše na mm";//samotné tlaèítko,ukazuje název opaènì
 		//DD
 		DDunit=M;
 		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [m]";
@@ -973,13 +1031,14 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [m]";
 		DM=scGPNumericEdit_mezera->Value/1000.0;
 		//RD
+		RDunitD=M;
 		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v minutách
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";// pokud je v sekundách
 		RD=scGPNumericEdit_RD->Value/1000.0;
 	}
 	else//pokud je metrech, tak pøepne na milimetry
 	{
-		m_mm=MM;scGPButton_metry_milimetry->Caption="na m";//samotné tlaèítko,ukazuje název opaènì
+		m_mm=MM;scGPButton_metry_milimetry->Caption="vše na m";//samotné tlaèítko,ukazuje název opaènì
 		//DD
 		DDunit=MM;
 		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [mm]";
@@ -989,6 +1048,7 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [mm]";
 		DM=scGPNumericEdit_mezera->Value*1000.0;
 		//RD
+		RDunitD=MM;
 		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v minutách
 		else rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";// pokud je v sekundách
 		RD=scGPNumericEdit_RD->Value*1000.0;
@@ -1089,6 +1149,11 @@ void __fastcall TForm_parametry::FormClose(TObject *Sender, TCloseAction &Action
 {
 	Form1->writeINI("nastaveni_form_parametry","cas",minsec);
 	Form1->writeINI("nastaveni_form_parametry","vzdalenost",m_mm);
+	Form1->writeINI("nastaveni_form_parametry","CT",CTunit);
+	Form1->writeINI("nastaveni_form_parametry","RDt",RDunitT);
+	Form1->writeINI("nastaveni_form_parametry","RDd",RDunitD);
+	Form1->writeINI("nastaveni_form_parametry","DD",DDunit);
+	Form1->writeINI("nastaveni_form_parametry","DM",DMunit);
 }
 //---------------------------------------------------------------------------
 //zkopíruje parametry objektu pro další použití
@@ -1163,4 +1228,34 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+
+void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
+{
+	if(scButton_zamek_CT->ImageIndex==30)//když je zamèeno
+	{
+		scButton_zamek_CT->ImageIndex=31;
+		CT_zamek=UNLOCKED;
+	}
+	else//odemèeno
+	{
+		scButton_zamek_CT->ImageIndex=30;
+		CT_zamek=LOCKED;
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
+{
+	if(scButton_zamek_DD->ImageIndex==30)//když je zamèeno
+	{
+		scButton_zamek_DD->ImageIndex=31;
+		DD_zamek=UNLOCKED;
+	}
+	else//odemèeno
+	{
+		scButton_zamek_DD->ImageIndex=30;
+		DD_zamek=LOCKED;
+	}
+}
+//---------------------------------------------------------------------------
 
