@@ -28,7 +28,6 @@ __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_hlavicka;
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel_titulek;
-	TscGPGlyphButton *scGPGlyphButton_help;
 	TrHTMLLabel *rHTMLLabel_rezim;
 	TrHTMLLabel *rHTMLLabel_kapacita;
 	TscGPButton *scGPButton_OK;
@@ -66,6 +65,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_paste;
 	TscButton *scButton_zamek_CT;
 	TscButton *scButton_zamek_DD;
+	TscButton *scButton_zamek_RD;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -96,7 +96,7 @@ private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//n·zev souvisejÌcÌch komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchov·v· v˝bÏr input hodnoty (aby se formul·¯e necyklyly)
-	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek DD_zamek;
+	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;
 
 	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajiöùuje zobrazenÌ a napozicov·nÌ pat¯iËnÈ konkrÈtnÌ komponenty a z·roveÚ udrûov·nÌ hodnoty offsetu - to pokud je move==true, jinak jen nastavÌ komponenty
 	void input_CT();//p¯epoËet hodnot vypl˝vajÌcÌch ze zmÏny CT
