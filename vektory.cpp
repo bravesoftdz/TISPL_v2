@@ -372,22 +372,71 @@ void Cvektory::ortogonalizovat()
 			if(OBJEKTY->predchozi->n>=4)
 			{
 				TObjekt *O1=OBJEKTY->dalsi;//první
-				TObjekt *Op=OBJEKTY->predchozi;//poslední
+				TObjekt *Op=OBJEKTY->predchozi;//poslední, tj. akutáulní
 				TObjekt *Opp=OBJEKTY->predchozi->predchozi;//předposlední
-				double A=m.azimut(O1->X,O1->Y,Opp->X,Opp->Y);
-				if(m.round(A)%90)//pokud se NEjedná o náseobek 90° je nutné řešit
+				double A=m.azimut(O1->X,O1->Y,Opp->X,Opp->Y);//první vs. předposlední
+				if(m.round(A)%90)//pokud se NEjedná o náseobek 90° je nutné řešit touto větví, zajistí, že budou do 90°
 				{
 					if(Op->X==Opp->X)Op->Y=O1->Y;
 					if(Op->Y==Opp->Y)Op->X=O1->X;
-					O1=NULL;delete O1;
-					Op=NULL;delete Op;
-					Opp=NULL;delete Opp;
 				}
-				else//pokud je první předchozí v jedné linii, umístí dopřestřed mezi prvky
+				else//pokud je první a předchozí v jedné linii, umístí dopřestřed mezi prvky
 				{
+					double B=m.azimut(Opp->X,Opp->Y,Opp->predchozi->X,Opp->predchozi->Y);
+					double C=m.azimut(Op->X,Op->Y,Opp->X,Opp->Y);
+					ShowMessage(A);
+					ShowMessage(B);
+					ShowMessage(C);
+					//ale za předpokladu, že je je první, předposlední a předpředposlední v pravém úhlu
+					if(fabs(A-B)==90.0)//vloží mezi
+					{
 					 Op->X=(O1->X+Opp->X)/2;
 					 Op->Y=(O1->Y+Opp->Y)/2;
+					}
+					else
+					{
+						if(A==C)//pokud by byly přes sebe tam a zpět
+						{
+							if(A==90 || A==270)//přes sebe horizontálně tam a zpět
+							{
+								short smer=-1;//pod
+								if(m.P2Ly(Form1->akt_souradnice_kurzoru_PX.y)>O1->Y)smer=1;//nad //pokud je náznak vkládání nad
+								Op->Y+=fabs(Op->X-Opp->X)*smer;
+								Op->X=Opp->X;
+							}
+							if(A==0 || A==180)//přes sebe vertikalně tam a zpět
+							{
+								short smer=+1;//v pravo
+								if(m.P2Lx(Form1->akt_souradnice_kurzoru_PX.x)<O1->X)smer=-1;//vlevo //pokud je náznak vkládání doleva
+								Op->X+=fabs(Op->Y-Opp->Y)*smer;
+								Op->Y=Opp->Y;
+							}
+						}
+					}
 				}
+				O1=NULL;delete O1;
+				Op=NULL;delete Op;
+				Opp=NULL;delete Opp;
+			}
+			//ošetření pokud se jedná o tři prvky a jsou všechny v jedné linii a zároveň poslední prvek by byl mezi
+			if(OBJEKTY->predchozi->n==3)
+			{                                                                                                  //je mezi
+					if(OBJEKTY->dalsi->X==OBJEKTY->dalsi->dalsi->X && OBJEKTY->predchozi->X==OBJEKTY->dalsi->X && (OBJEKTY->dalsi->Y<=OBJEKTY->predchozi->Y && OBJEKTY->predchozi->Y<=OBJEKTY->dalsi->dalsi->Y || OBJEKTY->dalsi->Y>=OBJEKTY->predchozi->Y && OBJEKTY->predchozi->Y>=OBJEKTY->dalsi->dalsi->Y))
+					{
+						short smer=+1;//v pravo
+						if(m.P2Lx(Form1->akt_souradnice_kurzoru_PX.x)<OBJEKTY->dalsi->X)//pokud je náznak vkládání doleva
+						smer=1;//v levo
+						OBJEKTY->predchozi->X+=fabs(OBJEKTY->dalsi->dalsi->Y-OBJEKTY->predchozi->Y)*smer;
+						OBJEKTY->predchozi->Y=OBJEKTY->dalsi->dalsi->Y;
+					}                                                                                              //je mezi
+					if(OBJEKTY->dalsi->Y==OBJEKTY->dalsi->dalsi->Y && OBJEKTY->predchozi->Y==OBJEKTY->dalsi->Y && (OBJEKTY->dalsi->X<=OBJEKTY->predchozi->X && OBJEKTY->predchozi->X<=OBJEKTY->dalsi->dalsi->X || OBJEKTY->dalsi->X>=OBJEKTY->predchozi->X && OBJEKTY->predchozi->X>=OBJEKTY->dalsi->dalsi->X))
+					{
+						short smer=-1;//pod
+						if(m.P2Ly(Form1->akt_souradnice_kurzoru_PX.y)>OBJEKTY->dalsi->Y)//pokud je náznak vkládání nad
+						smer=1;//nad
+						OBJEKTY->predchozi->Y+=fabs(OBJEKTY->dalsi->dalsi->X-OBJEKTY->predchozi->X)*smer;
+						OBJEKTY->predchozi->X=OBJEKTY->dalsi->dalsi->X;
+					}
 			}
 	}
 }

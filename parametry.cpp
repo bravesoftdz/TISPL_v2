@@ -564,7 +564,7 @@ void TForm_parametry::input_CT()
 				 if(CT<Form1->d.v.PP.TT)
     		 {
     			scGPButton_OK->Enabled=false;
-					vypis("Pozor, technologický èas je nižší než hodnota TT!");
+					vypis("Technologický èas je nižší než TT!");
 				 }
 				 if(CT>Form1->d.v.PP.TT)
 				 {
