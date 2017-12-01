@@ -24,6 +24,8 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 
 	Delkaunit=MM;
+	Sirkaunit=Delkaunit;
+	Taktunit=S;
 
 
 }
@@ -88,7 +90,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(!data_nalezena)
 		{
-		rStringGridEd_tab_dopravniky->RowCount=3;    //defaultní poèet øádkù - hlavièka, hl.dopravník,vedl.dopravník
+		rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka, hl.dopravník,vedl.dopravník
 		}
 
 		//	Form1->d.v.vymaz_seznam_POHONY();
@@ -136,6 +138,13 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rEditNum_sirkavoziku->Text=Form1->d.v.PP.sirka_voziku;
 	 scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
 	 rEditNum_takt->Text=Form1->d.v.PP.TT;
+
+
+	 rStringGridEd_tab_dopravniky->Cells[1][0]="Nazev";
+	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
+	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
+	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [m]";
+
 }
 //---------------------------------------------------------------------------
 
@@ -164,15 +173,10 @@ void TForm_parametry_linky::nacti_pohony (){
 	else {  //pokud je spoják prázdný, zobrazím tyto pøednastavené hodnoty
 
 	data_nalezena=false; // default se nepoužívá resp. po soubor nový se okamžitì vloží do spojáku def.pohon
-//naèítá se stejnì z unit1
-//   rStringGridEd_tab_dopravniky->Cells[0][1]="1";
-//	 rStringGridEd_tab_dopravniky->Cells[1][1]="Hlavní dopravník";
-//	 rStringGridEd_tab_dopravniky->Cells[2][1]="";
-//	 rStringGridEd_tab_dopravniky->Cells[3][1]="";
-//	 rStringGridEd_tab_dopravniky->Cells[4][1]="";
+//nevytvari se zadny default pohon nikde
 	}
-}
 
+}
 
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 {
@@ -233,16 +237,14 @@ void __fastcall TForm_parametry_linky::Button_ADDClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 {
 			//	rStringGridEd_tab_dopravniky->RowCount - 1;
+
+
 				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
-				if(rStringGridEd_tab_dopravniky->RowCount>=3)
+				if(rStringGridEd_tab_dopravniky->RowCount>1)
 				{
+
 				 rStringGridEd_tab_dopravniky->RowCount--;
-
-				 }
-				 else {
-
-				 Form1->MB("Linka musí obsahovat alespoò jeden pohon.");
 				 }
 
 	 //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
@@ -303,17 +305,69 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delkaClick(TObject *Sender)
 		Delkaunit=M;
 		//delka - pøepoèítání
 		delka=rEditNum_delkavoziku->Value*1000.0;
-		rHTMLLabel_delka->Caption="Délka [mm]";
+		rHTMLLabel_delka->Caption="Délka <font color=#2b579a>[mm]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 		//delka - pøepoèítání
 			delka=rEditNum_delkavoziku->Value/1000.0;
-		rHTMLLabel_delka->Caption="Délka [m]";
+		rHTMLLabel_delka->Caption="Délka <font color=#2b579a>[m]</font>";
 	}
 	//plnìní
 	rEditNum_delkavoziku->Value=delka;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rHTMLLabel_sirkaClick(TObject *Sender)
+{
+
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double sirka=0.0;
+	if(Sirkaunit==MM)//pokud je v MM, tak pøepne na metry
+	{
+		Sirkaunit=M;
+		//delka - pøepoèítání
+		sirka=rEditNum_sirkavoziku->Value*1000.0;
+		rHTMLLabel_sirka->Caption="Šíøka <font color=#2b579a>[mm]</font>";
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Sirkaunit=MM;
+		//delka - pøepoèítání
+			sirka=rEditNum_sirkavoziku->Value/1000.0;
+		rHTMLLabel_sirka->Caption="Šíøka <font color=#2b579a>[m]</font>";
+	}
+	//plnìní
+	rEditNum_sirkavoziku->Value=sirka;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
+{
+//
+
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double takt=0.0;
+	if(Taktunit==MIN)//pokud je v MM, tak pøepne na metry
+	{
+		Taktunit=S;
+		//delka - pøepoèítání
+		takt=rEditNum_takt->Value*60.0;
+		rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[s]</font>";
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Taktunit=MIN;
+		//delka - pøepoèítání
+			takt=rEditNum_takt->Value/60.0;
+		rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[m]</font>";
+	}
+	//plnìní
+	rEditNum_takt->Value=takt;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------

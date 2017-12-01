@@ -57,6 +57,8 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
 	void __fastcall rEditNum_taktChange(TObject *Sender);
 	void __fastcall rHTMLLabel_delkaClick(TObject *Sender);
+	void __fastcall rHTMLLabel_sirkaClick(TObject *Sender);
+	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
 private:	// User declarations
 
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
@@ -67,7 +69,8 @@ public:		// User declarations
 	bool data_nalezena;
 	void  nacti_pohony();
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
-	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;//pøepínaè jednotek vzdálenost
+	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
+	enum Tminsec{S=0,MIN};Tminsec Taktunit;//pøepínaè jednotek èasu
 
 };
 //---------------------------------------------------------------------------

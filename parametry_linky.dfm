@@ -19,14 +19,14 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_delka: TrHTMLLabel
     Left = 30
     Top = 108
-    Width = 70
-    Height = 19
-    Caption = 'D'#233'lka [m]'
+    Width = 77
+    Height = 21
+    Caption = 'D'#233'lka <font color=#2b579a>[m]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
     Font.Name = 'Tahoma'
-    Font.Style = [fsUnderline]
+    Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
     OnClick = rHTMLLabel_delkaClick
@@ -49,9 +49,9 @@ object Form_parametry_linky: TForm_parametry_linky
   object rHTMLLabel_takt: TrHTMLLabel
     Left = 296
     Top = 108
-    Width = 91
-    Height = 19
-    Caption = 'TaktTime [s]'
+    Width = 98
+    Height = 21
+    Caption = 'TaktTime <font color=#2b579a>[s]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -60,13 +60,14 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     Visible = False
+    OnClick = rHTMLLabel_taktClick
   end
   object rHTMLLabel_sirka: TrHTMLLabel
     Left = 30
     Top = 150
-    Width = 66
-    Height = 19
-    Caption = #352#237#345'ka [m]'
+    Width = 73
+    Height = 21
+    Caption = #352#237#345'ka <font color=#2b579a>[m]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -75,6 +76,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     Visible = False
+    OnClick = rHTMLLabel_sirkaClick
   end
   object rHTMLLabel_doporuc_pohony: TrHTMLLabel
     Left = 350
@@ -160,7 +162,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Left = 0
     Top = 323
     Width = 642
-    Height = 94
+    Height = 102
     BorderStyle = bsNone
     Color = clWhite
     Ctl3D = False
@@ -169,7 +171,8 @@ object Form_parametry_linky: TForm_parametry_linky
     DefaultDrawing = False
     DrawingStyle = gdsGradient
     FixedColor = clWhite
-    RowCount = 3
+    RowCount = 1
+    FixedRows = 0
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
     Font.Height = -17
@@ -285,8 +288,6 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end>
     RowHeights = (
-      30
-      30
       30)
   end
   object Button_save: TscGPButton
