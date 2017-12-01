@@ -4,7 +4,7 @@ object Form_parametry_linky: TForm_parametry_linky
   BorderStyle = bsNone
   Caption = 'Parametry linky'
   ClientHeight = 479
-  ClientWidth = 644
+  ClientWidth = 803
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clActiveCaption
@@ -161,10 +161,11 @@ object Form_parametry_linky: TForm_parametry_linky
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 0
     Top = 323
-    Width = 642
+    Width = 801
     Height = 102
     BorderStyle = bsNone
     Color = clWhite
+    ColCount = 6
     Ctl3D = False
     DefaultColWidth = 160
     DefaultRowHeight = 30
@@ -187,11 +188,12 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 3
     Columns = <
       item
+        InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
+        Font.Color = clGrayText
+        Font.Height = -17
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -206,11 +208,12 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end
       item
+        InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
+        Font.Color = clGrayText
+        Font.Height = -17
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -229,11 +232,12 @@ object Form_parametry_linky: TForm_parametry_linky
       end
       item
         DataType = sgdNumber
+        InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
+        Font.Color = clGrayText
+        Font.Height = -17
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -249,11 +253,12 @@ object Form_parametry_linky: TForm_parametry_linky
       end
       item
         DataType = sgdNumber
+        InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
+        Font.Color = clGrayText
+        Font.Height = -17
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -269,11 +274,12 @@ object Form_parametry_linky: TForm_parametry_linky
       end
       item
         DataType = sgdNumber
+        InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = cl3DDkShadow
-        Font.Height = -15
+        Font.Color = clGrayText
+        Font.Height = -17
         Font.Name = 'Tahoma'
         Font.Style = []
         Font.Quality = fqClearType
@@ -286,6 +292,17 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleFont.Style = []
         TitleParentFont = False
         TitleAlignment = taCenter
+      end
+      item
+        InvalidDataAction = sgaNone
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -17
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ReadOnly = True
       end>
     RowHeights = (
       30)
@@ -477,7 +494,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 644
+    Width = 803
     Height = 34
     Align = alTop
     TabOrder = 6
@@ -505,9 +522,10 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 644
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 594
+      Left = 753
       Top = 0
       Width = 50
       Height = 33
@@ -582,11 +600,12 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 594
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 557
+      Width = 716
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -614,9 +633,10 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
+      ExplicitWidth = 557
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 557
+      Left = 716
       Top = 0
       Width = 37
       Height = 34
@@ -693,6 +713,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 557
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -1078,6 +1099,159 @@ object Form_parametry_linky: TForm_parametry_linky
     GroupIndex = 0
     AllowAllUp = False
   end
+  object scExPanel_doporuc_pohony: TscExPanel
+    Left = 296
+    Top = 150
+    Width = 433
+    Height = 126
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 15
+    Visible = False
+    BackgroundStyle = scexbgsPanel
+    HeaderColor = clBtnFace
+    ButtonGlyphColor = clBtnText
+    HeaderStyle = scexphsColor
+    CaptionImageIndex = -1
+    ChangeRollStateWithCaptionClick = False
+    Color = clWhite
+    Spacing = 5
+    ShowFrame = False
+    RealWidth = 0
+    RealHeight = 0
+    ShowRollButton = False
+    ShowCloseButton = True
+    CaptionHeight = 24
+    RollKind = scrkRollVertical
+    RollUpState = False
+    Moveable = True
+    Sizeable = True
+    HideControlsInRollUpState = True
+    StorePaintBuffer = False
+    Caption = 'P'#345'ehled doporu'#269'en'#253'ch pohon'#367
+    OnClose = scExPanel_doporuc_pohonyClose
+    object scHTMLLabel_doporuc_pohony: TscHTMLLabel
+      Left = 3
+      Top = 32
+      Width = 221
+      Height = 19
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = 10114859
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      TabOrder = 0
+      AutoSizeHeight = True
+      AutoSizeWidth = True
+      AutoExecuteURL = True
+      Caption = 'scHTMLLabel_doporuc_pohony'
+      LinkFontNormal.Charset = DEFAULT_CHARSET
+      LinkFontNormal.Color = clHighlight
+      LinkFontNormal.Height = -11
+      LinkFontNormal.Name = 'Tahoma'
+      LinkFontNormal.Style = []
+      LinkFontHover.Charset = DEFAULT_CHARSET
+      LinkFontHover.Color = clHighlight
+      LinkFontHover.Height = -11
+      LinkFontHover.Name = 'Tahoma'
+      LinkFontHover.Style = [fsUnderline]
+      MaxWidth = 0
+      TextAlignment = taLeftJustify
+    end
+    object scGPGlyphButton_add_mezi_pohony: TscGPGlyphButton
+      Left = 396
+      Top = 24
+      Width = 37
+      Height = 102
+      Hint = 'P'#345'idat do seznamu pou'#382'iteln'#253'ch pohon'#367
+      Align = alRight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNone
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      OnClick = scGPGlyphButton_add_mezi_pohonyClick
+      Animation = True
+      Caption = 'scGPGlyphButton_add_mezi_pohony'
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.FrameNormalColor = clBtnText
+      Options.FrameHotColor = clBtnText
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = clHighlight
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 0
+      Options.FrameHotColorAlpha = 0
+      Options.FramePressedColorAlpha = 0
+      Options.FrameFocusedColorAlpha = 0
+      Options.FrameDisabledColorAlpha = 0
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 5
+      Options.ShapeStyle = scgpRoundedRect
+      Options.ArrowSize = 9
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = 16744448
+      GlyphOptions.HotColor = 16744448
+      GlyphOptions.PressedColor = clBtnText
+      GlyphOptions.FocusedColor = 16744448
+      GlyphOptions.DisabledColor = 16744448
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 150
+      GlyphOptions.Kind = scgpbgkCopy
+      GlyphOptions.Thickness = 2
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+      ExplicitLeft = 292
+      ExplicitTop = 56
+      ExplicitHeight = 70
+    end
+  end
   object scGPButton_doporucene: TscGPButton
     Left = 564
     Top = 282
@@ -1090,7 +1264,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 15
+    TabOrder = 16
     OnClick = scGPButton_doporuceneClick
     Animation = False
     CanFocused = False
@@ -1165,72 +1339,5 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
-  end
-  object scExPanel_doporuc_pohony: TscExPanel
-    Left = 296
-    Top = 150
-    Width = 329
-    Height = 126
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGrayText
-    Font.Height = -16
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 16
-    Visible = False
-    BackgroundStyle = scexbgsPanel
-    HeaderColor = clBtnFace
-    ButtonGlyphColor = clBtnText
-    HeaderStyle = scexphsColor
-    CaptionImageIndex = -1
-    ChangeRollStateWithCaptionClick = False
-    Color = clWhite
-    Spacing = 5
-    ShowFrame = False
-    RealWidth = 0
-    RealHeight = 0
-    ShowRollButton = False
-    ShowCloseButton = True
-    CaptionHeight = 24
-    RollKind = scrkRollVertical
-    RollUpState = False
-    Moveable = True
-    Sizeable = True
-    HideControlsInRollUpState = True
-    StorePaintBuffer = False
-    Caption = 'P'#345'ehled doporu'#269'en'#253'ch pohon'#367
-    OnClose = scExPanel_doporuc_pohonyClose
-    object scHTMLLabel_doporuc_pohony: TscHTMLLabel
-      Left = 3
-      Top = 32
-      Width = 221
-      Height = 19
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clTeal
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Font.Quality = fqClearType
-      ParentFont = False
-      TabOrder = 0
-      AutoSizeHeight = True
-      AutoSizeWidth = True
-      AutoExecuteURL = True
-      Caption = 'scHTMLLabel_doporuc_pohony'
-      LinkFontNormal.Charset = DEFAULT_CHARSET
-      LinkFontNormal.Color = clHighlight
-      LinkFontNormal.Height = -11
-      LinkFontNormal.Name = 'Tahoma'
-      LinkFontNormal.Style = []
-      LinkFontHover.Charset = DEFAULT_CHARSET
-      LinkFontHover.Color = clHighlight
-      LinkFontHover.Height = -11
-      LinkFontHover.Name = 'Tahoma'
-      LinkFontHover.Style = [fsUnderline]
-      MaxWidth = 0
-      TextAlignment = taLeftJustify
-    end
   end
 end
