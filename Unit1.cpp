@@ -2620,7 +2620,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				{
 						pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
 						Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
-						short N=(int)!ortogonalizace_stav;//pokud je ortogonalizeace aktivní tak N=1
+						short N=(int)!ortogonalizace_stav;//pokud je ortogonalizeace aktivní tak N=1, zajištuje, aby se vložilo ortogonalizovaně
 						for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
 						{
 							if(cop==NULL)//kopíruje za originál  //pokud je ortoganalizace zapnuta bude odsazení nových objektů větší a algoritmus objekty rovná jen po X ose

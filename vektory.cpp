@@ -510,6 +510,41 @@ Cvektory::TPohon *Cvektory::vrat_pohon(unsigned long n)
 	return p;
 }
 ////---------------------------------------------------------------------------
+//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
+bool Cvektory::pohon_je_pouzivan(unsigned long n)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	bool nalezen=false;
+	while (O!=NULL)
+	{
+		if(O->pohon->n==n)
+		{
+			nalezen=true;
+			break;//přeruší další vyhledávání
+		}
+		O=O->dalsi;
+	}
+	return nalezen;
+}
+////---------------------------------------------------------------------------
+//dle n pohonu vráti objekty, které pohon používají,, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
+AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_name)
+{
+ 	TObjekt *O=OBJEKTY->dalsi;
+	AnsiString nalezen="";
+	while (O!=NULL)
+	{
+		if(O->pohon->n==n)
+		{
+			if(short_name)nalezen+=O->short_name+", ";
+			else nalezen+=O->name+", ";
+		}
+		O=O->dalsi;
+	}
+	if(nalezen=="")nalezen=nalezen.SubString(1,nalezen.Length()-2);//ještě odebere poslední čárku a mezeru
+	return nalezen;
+}
+////---------------------------------------------------------------------------
 //vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
 void Cvektory::generuj_POHONY()
 {
@@ -525,8 +560,8 @@ void Cvektory::generuj_POHONY()
 			{
 				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==32.5)//byl-li pohon se stejnými parametry nalezen
 				 {
-						pohon_nenalezen=false;//již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
-            O->pohon=P;//přiřazení pohonu k danému objektu
+						pohon_nenalezen=false;//tzn. že již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
+            //již nepoužíváme O->pohon=P;//přiřazení pohonu k danému objektu
 				 }
 				 P=P->dalsi;//posun na další prvek
 			}
