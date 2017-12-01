@@ -140,10 +140,13 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rEditNum_takt->Text=Form1->d.v.PP.TT;
 
 
-	 rStringGridEd_tab_dopravniky->Cells[1][0]="Nazev";
+	 rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
 	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [m]";
+	 rStringGridEd_tab_dopravniky->Cells[5][0]="Používán";
+
+	//	rStringGridEd_tab_dopravniky->Columns->
 
 }
 //---------------------------------------------------------------------------
@@ -369,6 +372,12 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 	//plnìní
 	rEditNum_takt->Value=takt;
 	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
+{
+ Form1->d.v.generuj_POHONY();
 }
 //---------------------------------------------------------------------------
 
