@@ -384,9 +384,6 @@ void Cvektory::ortogonalizovat()
 				{
 					double B=m.azimut(Opp->X,Opp->Y,Opp->predchozi->X,Opp->predchozi->Y);
 					double C=m.azimut(Op->X,Op->Y,Opp->X,Opp->Y);
-					ShowMessage(A);
-					ShowMessage(B);
-					ShowMessage(C);
 					//ale za předpokladu, že je je první, předposlední a předpředposlední v pravém úhlu
 					if(fabs(A-B)==90.0)//vloží mezi
 					{
@@ -561,7 +558,8 @@ void Cvektory::generuj_POHONY()
 				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==32.5)//byl-li pohon se stejnými parametry nalezen
 				 {
 						pohon_nenalezen=false;//tzn. že již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
-            //již nepoužíváme O->pohon=P;//přiřazení pohonu k danému objektu
+						//již nepoužíváme O->pohon=P;//přiřazení pohonu k danému objektu
+						break;//nalezen tak se může jít ověřovat další objekt
 				 }
 				 P=P->dalsi;//posun na další prvek
 			}
