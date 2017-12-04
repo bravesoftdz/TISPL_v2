@@ -431,12 +431,6 @@ Coordinates=792,221,79,36
 [scHTMLLabel_log_vypis]
 Coordinates=1681,1,154,36
 
-[scLabel2]
-Coordinates=249,542,66,36
-
-[scLabel1]
-Coordinates=1204,56,66,36
-
 [GlyphButton_close_grafy]
 Coordinates=1681,56,158,36
 
@@ -451,4 +445,10 @@ Coordinates=1492,221,199,36
 
 [scButton_report]
 Coordinates=1204,551,72,36
+
+[scLabel_architekt]
+Coordinates=1204,56,66,36
+
+[scLabel_klient]
+Coordinates=249,542,66,36
 

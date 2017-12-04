@@ -1978,9 +1978,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scLabel_titulek: TscLabel
-      Left = 409
+      Left = 401
       Top = 0
-      Width = 193
+      Width = 201
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -2008,6 +2008,8 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
+      ExplicitLeft = 409
+      ExplicitWidth = 193
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
       Left = 602
@@ -2091,7 +2093,7 @@ object Form1: TForm1
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
-      Left = 294
+      Left = 306
       Top = 6
       Width = 47
       Height = 22
@@ -2106,7 +2108,7 @@ object Form1: TForm1
       FrameColor = 33023
       FrameOnColor = 33023
       FramePressedColor = clRed
-      State = scswOn
+      State = scswOff
       StyleKind = scswsStyled
       ThumbColor = clWhite
       ThumbOnColor = clWhite
@@ -2122,11 +2124,12 @@ object Form1: TForm1
       FrameOnSolid = True
       FrameInside = False
       OnChangeState = scGPSwitch_rezimChangeState
+      ExplicitLeft = 294
     end
-    object scLabel2: TscLabel
-      Left = 342
+    object scLabel_klient: TscLabel
+      Left = 354
       Top = 0
-      Width = 67
+      Width = 47
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -2153,12 +2156,13 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Architekt'
+      Caption = 'Klient'
+      ExplicitLeft = 352
     end
-    object scLabel1: TscLabel
+    object scLabel_architekt: TscLabel
       Left = 242
       Top = 0
-      Width = 51
+      Width = 63
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -2185,7 +2189,8 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Klient'
+      Caption = 'Architekt'
+      ExplicitLeft = 230
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -4926,7 +4931,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004804540410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004804680410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6049,7 +6054,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01012500BC02EC0230003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012500BC02000330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000E0010000010020000000000000A0
       0500000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -17947,10 +17952,10 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C010125000002000218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C010125001402140218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000F00000000100040000000000002D
       0000000000000000000000000000000000000000000000008000008000000080
-      8000800000008000800080800000C0C0C000808080000000FF0000FF000000FF
+      800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
       FF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFFFFFFFFFFFFFF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
