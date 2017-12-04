@@ -120,9 +120,6 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
-    ColWidths = (
-      150
-      -16)
   end
   object Button_ADD: TButton
     Left = 139
@@ -522,7 +519,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 644
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 753
@@ -600,7 +596,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 594
     end
     object scLabel1: TscLabel
       Left = 0
@@ -633,7 +628,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 557
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 716
@@ -713,7 +707,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 557
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -1102,7 +1095,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scExPanel_doporuc_pohony: TscExPanel
     Left = 296
     Top = 150
-    Width = 433
+    Width = 457
     Height = 126
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGrayText
@@ -1166,7 +1159,7 @@ object Form_parametry_linky: TForm_parametry_linky
       TextAlignment = taLeftJustify
     end
     object scGPGlyphButton_add_mezi_pohony: TscGPGlyphButton
-      Left = 396
+      Left = 420
       Top = 24
       Width = 37
       Height = 102
@@ -1247,9 +1240,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 292
-      ExplicitTop = 56
-      ExplicitHeight = 70
+      ExplicitLeft = 396
     end
   end
   object scGPButton_doporucene: TscGPButton

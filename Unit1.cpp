@@ -4263,30 +4263,43 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-    Memo2->Visible=true;
-		Cvektory::TZakazka *zakazka=d.v.ZAKAZKY->dalsi;
-		//načítání dat
-		if(zakazka!=NULL)
-		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
-		{
-			ShowMessage(zakazka->name);
-			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//přeskočí hlavičku, jde rovnou na první segment cesty
-			while(ukaz!=NULL)
-			{
-				Memo2->Lines->Add
-				(
-						AnsiString(ukaz->n)+","+
-						AnsiString(ukaz->objekt->short_name)+","+
-						AnsiString(ukaz->CT)+","+
-						AnsiString(ukaz->RD)+","+
-						AnsiString(ukaz->Tc)+","
-						//+(AnsiString((int)ukaz->Stav))
-				);
-				ukaz=ukaz->dalsi;
-			}
+//    Memo2->Visible=true;
+//		Cvektory::TZakazka *zakazka=d.v.ZAKAZKY->dalsi;
+//		//načítání dat
+//		if(zakazka!=NULL)
+//		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
+//		{
+//			ShowMessage(zakazka->name);
+//			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//přeskočí hlavičku, jde rovnou na první segment cesty
+//			while(ukaz!=NULL)
+//			{
+//				Memo2->Lines->Add
+//				(
+//						AnsiString(ukaz->n)+","+
+//						AnsiString(ukaz->objekt->short_name)+","+
+//						AnsiString(ukaz->CT)+","+
+//						AnsiString(ukaz->RD)+","+
+//						AnsiString(ukaz->Tc)+","
+//						//+(AnsiString((int)ukaz->Stav))
+//				);
+//				ukaz=ukaz->dalsi;
+//			}
+//		}
+//		else S("Není zakazka");
+
+		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+
+		while (O!=NULL) {
+
+		Memo2->Lines->Add(O->pohon->name);
+
+		O=O->dalsi;
+
 		}
-		else S("Není zakazka");
+
 }
+
+
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {

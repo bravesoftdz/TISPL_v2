@@ -568,7 +568,7 @@ void Cvektory::generuj_POHONY()
 			//byl-li předchozí konstrukcí pohon nenanlezen přidá, musí být až po dokončení while(P
 			if(pohon_nenalezen)
 			{
-				vloz_pohon("automaticky vygenerovaný pohon "+AnsiString(++i),O->RD,O->RD,32.5);
+				vloz_pohon("Navržený pohon "+AnsiString(++i),O->RD,O->RD,1620.0);
 				O->pohon=POHONY->predchozi;
 			}
 		}
@@ -600,7 +600,7 @@ AnsiString Cvektory::navrhni_POHONY()
 			}
 			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
 			{
-				data+="Navržený pohon "+AnsiString(++i)+", rychlost:"+AnsiString(O->RD)+" [m/s] </br>";
+				data+="Navržený pohon "+AnsiString(++i)+", rychlost:"+AnsiString(O->RD*60)+" [m/min] </br>";
 				pole_rychlosti[O->n-1]=O->RD;
 			}                //indexuje se od nuly
 		}
