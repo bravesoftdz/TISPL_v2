@@ -387,7 +387,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitHeight = 34
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -421,9 +420,6 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitLeft = 0
-      ExplicitWidth = 299
-      ExplicitHeight = 33
     end
     object scGPButton_metry_milimetry: TscGPButton
       Left = 227

@@ -245,8 +245,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_zpravy_ikona;
 	TscButton *scButton11;
 	TscGPSwitch *scGPSwitch_rezim;
-	TscLabel *scLabel2;
-	TscLabel *scLabel1;
+	TscLabel *scLabel_klient;
+	TscLabel *scLabel_architekt;
 	TscExPanel *scExPanel_html;
 	TWebBrowser *WebBrowser1;
 	void __fastcall Konec1Click(TObject *Sender);

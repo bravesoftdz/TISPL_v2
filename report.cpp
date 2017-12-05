@@ -159,7 +159,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 
 		data+="<h4>NÁVRH: Pøehled objektù a jejich parametrù</h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [min]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteè palcù [cm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [min]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 
@@ -172,11 +172,14 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString CT=O->CT;
 								UnicodeString kapacita=O->kapacita;
 								UnicodeString kapacita_dop=O->kapacita_dop;
-								UnicodeString nazev_pohonu=O->pohon->name;
-								UnicodeString roztec_palcu=O->pohon->roztec;
+								UnicodeString nazev_pohonu;
+								UnicodeString roztec_palcu;
+
+								if(O->pohon!=NULL)  {nazev_pohonu=O->pohon->name;roztec_palcu=O->pohon->roztec;}
+								else {nazev_pohonu="Nedefinovaný";roztec_palcu="";}
+
+
 								UnicodeString rychlost_dopravniku=O->RD;
-								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
-								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
 								UnicodeString delka_dopravniku=O->delka_dopravniku;
 									switch(O->rezim)
 								{
@@ -372,7 +375,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		return 1;
 
 		}
-		catch(...){;Form1->MB("Soubor je otevøen, ukonèete otevøenou aplikaci a akci opakujte");}
+		catch(...){;Form1->MB("Chyba pøi otevírání reportu");}
 }
 
 

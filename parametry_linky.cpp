@@ -46,7 +46,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(Form1->STATUS==Form1->NAVRH)    //Architekt
 		{
-			scGPButton_vozik->Caption="   Jig";
+			scGPButton_vozik->Caption="   Vozík";
+			scGPButton_vozik->ImageIndex=21;
 			//scGPButton_obecne->Caption="   Takt time";
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
@@ -65,7 +66,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		}
 		else          //Klient
 		{
-			scGPButton_vozik->Caption="   Vozík";
+			scGPButton_vozik->Caption="   Jig";
+			scGPButton_vozik->ImageIndex=19;
 			scGPButton_pohon->Caption="   Pohon";
 
 			rHTMLLabel_sirka->Visible=false;
@@ -143,7 +145,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
 	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
-	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [m]";
+	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [mm]";
 	 rStringGridEd_tab_dopravniky->Cells[5][0]="Používán";
 
 	//	rStringGridEd_tab_dopravniky->Columns->
@@ -165,9 +167,9 @@ void TForm_parametry_linky::nacti_pohony (){
 				 //ShowMessage(ukaz->n);
 			rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
 			rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
-			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od;
-			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do;
-			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000;
+			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60;
+			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60;
+			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec;
 
 				ukaz = ukaz->dalsi;
 				 }
@@ -202,9 +204,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 		{
 				 Form1->d.v.vloz_pohon (rStringGridEd_tab_dopravniky->Cells[1][i], //nazev
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]),        //rychlost od
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]),    //rychlost do
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000.0));      //roztec
+																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60),        //rychlost od
+																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60),    //rychlost do
+																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
 		}
 
 		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
@@ -378,6 +380,9 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
 {
  Form1->d.v.generuj_POHONY();
+ nacti_pohony();
+
 }
 //---------------------------------------------------------------------------
+
 
