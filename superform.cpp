@@ -324,6 +324,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		//formuláø na støed
 		Form_cesty->Left=Form1->ClientWidth/2-Form_cesty->Width/2;
 		Form_cesty->Top=Form1->ClientHeight/2-Form_cesty->Height/2;
+		double CT;
 		if(mrOk==Form_cesty->ShowModal())
 		{
 			Form1->d.v.inicializace_cesty(zakazka);
@@ -331,12 +332,16 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			{
 				if(Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ano")//pokud je zaškrnuto neprocházek objekt se neuloží do cesty
 				{
+				if (Form_cesty->rStringGridEd_cesty->Columns->Items[2]->TitleCaption=="CT [s]") {
+								CT=	Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]);
+				}
+				else CT= Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]*60);       //min na sekundy
 						Form1->d.v.vloz_segment_cesty
 						(
 							zakazka,
 							/*sloupec poøadí se neukládá*/ /*pozor na øazení*/
 							Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),//ID-doøešit
-							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]),//CT
+							Form1->ms.MyToDouble(CT),//CT
 							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]),//RD
 							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]),//Tv
 							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[3][i]),//Tc

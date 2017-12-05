@@ -600,7 +600,7 @@ AnsiString Cvektory::navrhni_POHONY()
 			}
 			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
 			{
-				data+="Navržený pohon "+AnsiString(++i)+", rychlost:"+AnsiString(O->RD*60)+" [m/min] </br>";
+				data+="Navržený pohon "+AnsiString(++i)+", rychlost :"+AnsiString(O->RD*60)+" [m/min] </br>";
 				pole_rychlosti[O->n-1]=O->RD;
 			}                //indexuje se od nuly
 		}

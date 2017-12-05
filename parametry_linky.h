@@ -61,6 +61,7 @@ __published:	// IDE-managed Components
 	void __fastcall rHTMLLabel_sirkaClick(TObject *Sender);
 	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
 
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)

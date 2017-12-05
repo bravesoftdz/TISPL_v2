@@ -226,8 +226,13 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString CT=C->CT;
 								UnicodeString kapacita=C->objekt->kapacita;
 								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
-								UnicodeString nazev_pohonu=C->objekt->pohon->name;
-								UnicodeString roztec_palcu=C->objekt->pohon->roztec;
+
+								UnicodeString nazev_pohonu;
+								UnicodeString roztec_palcu;
+
+						if(C->objekt->pohon!=NULL)  {nazev_pohonu=C->objekt->pohon->name;roztec_palcu=C->objekt->pohon->roztec;}
+								else {nazev_pohonu="Nepøiøazen";roztec_palcu="";}
+
 								UnicodeString rychlost_dopravniku=C->RD;
 								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
 								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;

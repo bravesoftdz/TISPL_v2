@@ -386,3 +386,23 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
 //---------------------------------------------------------------------------
 
 
+void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+if(Key==13)//ENTER
+ {
+		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+

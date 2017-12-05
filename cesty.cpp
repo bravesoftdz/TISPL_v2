@@ -22,6 +22,7 @@ __fastcall TForm_cesty::TForm_cesty(TComponent* Owner)
 	: TForm(Owner)
 {
 	nactiNastaveni();
+	CasoveJednotky=S;
 
 
 
@@ -88,9 +89,50 @@ void __fastcall TForm_cesty::KonecClick(TObject *Sender)
 
 
 
+void __fastcall TForm_cesty::scGPButton_min_secClick(TObject *Sender)
+{
+
+if (CasoveJednotky==S) {  //*60
+
+		CasoveJednotky=MIN;
+		rStringGridEd_cesty->Columns->Items[2]->TitleCaption="CT [min]";
+		scGPButton_min_sec->Caption="vše na sec";
+
+		for(int i=1;i<=rStringGridEd_cesty->RowCount;i++){
+
+		try{
+
+				rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i]/60.0);
+
+				}
+
+			catch(...){;}  //pøetypování string - double, doøešit
+
+		}
+
+}
+
+		else {
+
+		 CasoveJednotky=S;
+		 rStringGridEd_cesty->Columns->Items[2]->TitleCaption="CT [s]";
+		 scGPButton_min_sec->Caption="vše na min";
+
+      	for(int i=1;i<=rStringGridEd_cesty->RowCount;i++){
+
+				try{
+
+					rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i]*60.0);
+
+					}
+
+			catch(...){;}
+
+		}
+
+	}
 
 
-
-
-
+}
+//---------------------------------------------------------------------------
 

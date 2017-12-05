@@ -17,8 +17,8 @@ object Form_cesty: TForm_cesty
   PixelsPerInch = 96
   TextHeight = 21
   object rStringGridEd_cesty: TrStringGridEd
-    Left = 1
-    Top = 105
+    Left = 0
+    Top = 109
     Width = 969
     Height = 440
     BorderStyle = bsNone
@@ -89,9 +89,9 @@ object Form_cesty: TForm_cesty
         ColumnGroup = 1
       end
       item
-        DataType = sgdNumber
         MinValue = 0.100000000000000000
         MaxValue = 50.000000000000000000
+        InvalidDataAction = sgaNone
         OutOfLimitDataColor = clRed
         Alignment = taCenter
         Color = clWhite
@@ -209,6 +209,15 @@ object Form_cesty: TForm_cesty
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
+    ColWidths = (
+      69
+      94
+      86
+      209
+      162
+      120
+      94
+      120)
     RowHeights = (
       30
       30)
@@ -508,6 +517,94 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
+    end
+    object scGPButton_min_sec: TscGPButton
+      Left = 744
+      Top = 3
+      Width = 72
+      Height = 15
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clMenuBar
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      TabStop = True
+      OnClick = scGPButton_min_secClick
+      Animation = False
+      Caption = 'v'#353'e na min'
+      CanFocused = True
+      CustomDropDown = False
+      Margin = -1
+      Spacing = 1
+      Layout = blGlyphTop
+      ImageIndex = -1
+      ImageMargin = 0
+      TransparentBackground = True
+      Options.NormalColor = 33023
+      Options.HotColor = 1871359
+      Options.PressedColor = clBlack
+      Options.FocusedColor = 1871359
+      Options.DisabledColor = clBlack
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 255
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 200
+      Options.FrameNormalColor = 33023
+      Options.FrameHotColor = 1871359
+      Options.FramePressedColor = clGray
+      Options.FrameFocusedColor = 1871359
+      Options.FrameDisabledColor = clBtnShadow
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.FontNormalColor = clWhite
+      Options.FontHotColor = clWhite
+      Options.FontPressedColor = clWhite
+      Options.FontFocusedColor = clWhite
+      Options.FontDisabledColor = clAqua
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.StyleColors = True
+      HotImageIndex = -1
+      FocusedImageIndex = -1
+      PressedImageIndex = -1
+      UseGalleryMenuImage = False
+      UseGalleryMenuCaption = False
+      ScaleMarginAndSpacing = False
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      RepeatClick = False
+      RepeatClickInterval = 100
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clMaroon
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 1
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clRed
+      GlowEffect.FocusedColor = clRed
+      GlowEffect.PressedGlowSize = 1
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
     end
   end
   object scGPButton2: TscGPButton

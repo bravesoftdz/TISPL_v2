@@ -477,18 +477,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleAlignment = taCenter
       end>
     ChangedCellsBkColor = clWhite
-    ColWidths = (
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90
-      90)
     RowHeights = (
       30
       30)

@@ -13,6 +13,7 @@ object Form_parametry_linky: TForm_parametry_linky
   Font.Style = []
   Font.Quality = fqClearType
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -120,6 +121,9 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
+    ColWidths = (
+      150
+      -16)
   end
   object Button_ADD: TButton
     Left = 139
@@ -1240,7 +1244,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 396
     end
   end
   object scGPButton_doporucene: TscGPButton
