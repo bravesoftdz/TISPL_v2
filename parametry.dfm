@@ -2378,7 +2378,7 @@ object Form_parametry: TForm_parametry
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 30
+    ImageIndex = 37
     ImageMargin = 0
     TransparentBackground = True
     ColorOptions.NormalColor = clBtnFace
@@ -2463,7 +2463,7 @@ object Form_parametry: TForm_parametry
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 31
+    ImageIndex = 38
     ImageMargin = 0
     TransparentBackground = True
     ColorOptions.NormalColor = clBtnFace
@@ -2547,7 +2547,7 @@ object Form_parametry: TForm_parametry
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 31
+    ImageIndex = 38
     ImageMargin = 0
     TransparentBackground = True
     ColorOptions.NormalColor = clBtnFace
