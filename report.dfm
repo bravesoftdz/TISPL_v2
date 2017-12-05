@@ -436,7 +436,6 @@ object Form_report: TForm_report
       Caption = 'scGPPanel_header'
       TransparentBackground = True
       StorePaintBuffer = True
-      ExplicitLeft = 896
       object scButton_csv: TscButton
         Left = 0
         Top = 0
@@ -525,7 +524,6 @@ object Form_report: TForm_report
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitTop = 3
       end
       object scButton_html: TscButton
         Left = 34
@@ -613,7 +611,6 @@ object Form_report: TForm_report
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitLeft = 89
       end
     end
   end
