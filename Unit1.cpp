@@ -3248,7 +3248,7 @@ void TForm1::nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned in
 void __fastcall TForm1::csv1Click(TObject *Sender)
 {
 	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
-		S("Žádná data k exportu!");
+		MB("Žádná data k reportu!");
 	else
 	{
 		//příprava SaveDialogu
@@ -3280,7 +3280,7 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
 	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
-		S("Žádná data k exportu!");
+		MB("Žádná data k reportu!");
 	else
 	{
 
@@ -4287,15 +4287,15 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //		}
 //		else S("Není zakazka");
 
-		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
-
-		while (O!=NULL) {
-
-		Memo2->Lines->Add(O->pohon->name);
-
-		O=O->dalsi;
-
-		}
+//		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+//
+//		while (O!=NULL) {
+//
+//		Memo2->Lines->Add(O->pohon->name);
+//
+//		O=O->dalsi;
+//
+//		}
 
 }
 

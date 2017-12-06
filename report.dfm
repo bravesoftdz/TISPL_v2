@@ -528,7 +528,7 @@ object Form_report: TForm_report
       object scButton_html: TscButton
         Left = 34
         Top = 0
-        Width = 40
+        Width = 36
         Height = 34
         Align = alLeft
         ParentShowHint = False

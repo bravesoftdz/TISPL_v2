@@ -198,6 +198,8 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
+
+
 		Form1->d.v.vymaz_seznam_POHONY();
 		Form1->d.v.hlavicka_POHONY();
 
@@ -212,6 +214,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
 		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
 		Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
+
+
 		Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
 
 		Form1->DuvodUlozit(true);
@@ -298,6 +302,21 @@ scExPanel_doporuc_pohony->Visible=false;
 void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
 {
  //	ShowMessage("Se zmìnou taktu linky a následném uložení budou novì pøepoèítány parametry objektù");
+
+      //Sleep(3000);    - sice poèká, ale do editu nejde nic psát
+
+	if(Form1->ms.MyToDouble(rEditNum_takt->Text) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
+
+
+		Form1->MB("Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.",MB_OK);
+
+	 //	rEditNum_takt->ShowHint=true;
+	 //	rEditNum_takt->Hint="Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.";
+
+
+		}
+
+
 }
 //---------------------------------------------------------------------------
 
@@ -405,4 +424,7 @@ if(Key==13)//ENTER
  }
 }
 //---------------------------------------------------------------------------
+
+
+
 

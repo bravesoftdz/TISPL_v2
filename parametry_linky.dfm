@@ -986,6 +986,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 12
     Visible = False
     OnChange = rEditNum_taktChange
