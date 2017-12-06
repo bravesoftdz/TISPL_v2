@@ -353,7 +353,9 @@ class Cvektory
 		void vloz_objekt(unsigned int id, double X, double Y,TObjekt *p);//přetížená fce vkládá objekt za objekt p
 		TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
 		TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY);//hledá bod v dané oblasti
-		TObjekt *vrat_objekt(unsigned int n);
+		TObjekt *vrat_objekt(unsigned int n);//dle zadaného n vrátí ukazatel na hledaný objekt
+		void aktualizace_objektu();//dle zadaného TT zaktualizuje paramametry všech objektů
+		double vrat_soucet_delek_vsech_objektu();//sečte délky jednotlivých objektů
 		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu
 		void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
 		void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);
@@ -548,3 +550,4 @@ private:
 };
 //---------------------------------------------------------------------------
 #endif
+

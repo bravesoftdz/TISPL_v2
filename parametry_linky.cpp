@@ -200,6 +200,12 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
 
 
+//pri zmene TT
+	if(Form1->ms.MyToDouble(rEditNum_takt->Text) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
+
+     Form1->d.v.aktualizace_objektu();
+	}
+
 		Form1->d.v.vymaz_seznam_POHONY();
 		Form1->d.v.hlavicka_POHONY();
 
@@ -309,13 +315,15 @@ void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
 
 
 		Form1->MB("Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.",MB_OK);
+	 //	scLabel_TT_change_hint->Visible=true;
+	 //	scLabel_TT_change_hint->Caption="Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.";
 
 	 //	rEditNum_takt->ShowHint=true;
 	 //	rEditNum_takt->Hint="Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.";
 
 
 		}
-
+   // scLabel_TT_change_hint->Visible=false;
 
 }
 //---------------------------------------------------------------------------

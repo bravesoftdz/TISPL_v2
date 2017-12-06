@@ -47,6 +47,7 @@ __published:	// IDE-managed Components
 	TscHTMLLabel *scHTMLLabel_doporuc_pohony;
 	TscGPButton *scGPButton_doporucene;
 	TscGPGlyphButton *scGPGlyphButton_add_mezi_pohony;
+	TscLabel *scLabel_TT_change_hint;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

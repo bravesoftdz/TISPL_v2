@@ -1336,4 +1336,23 @@ object Form_parametry_linky: TForm_parametry_linky
     GroupIndex = 0
     AllowAllUp = False
   end
+  object scLabel_TT_change_hint: TscLabel
+    Left = 552
+    Top = 99
+    Width = 118
+    Height = 13
+    TabOrder = 17
+    Visible = False
+    DragForm = False
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clBtnShadow
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    AutoSize = True
+    UseFontColorToStyleColor = False
+    Caption = 'scLabel_TT_change_hint'
+  end
 end
