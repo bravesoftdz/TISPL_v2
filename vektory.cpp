@@ -250,6 +250,32 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 
 };
 //---------------------------------------------------------------------------
+//dle zadaného TT zaktualizuje paramametry všech objektů
+void Cvektory::aktualizace_objektu()
+{
+	//
+}
+//---------------------------------------------------------------------------
+//sečte délky jednotlivých objektů
+double Cvektory::vrat_soucet_delek_vsech_objektu()
+{
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	double SUM=0.0;
+	while (O!=NULL)
+	{
+		if(O->rezim==0)//S&G, u tohoto režimu se bere délka nebo šířka vozíku, dle nastaveného
+		{
+			if(O->rotace==0)
+			SUM+=PP.delka_voziku;
+			else SUM+=PP.sirka_voziku;
+		}
+		else //u kontinuálního a pp se uvažuje jako délka přímo délka dopravníku
+		SUM+=O->delka_dopravniku;
+		O=O->dalsi;//posun na další prvek
+	}
+	return SUM;
+}
+//---------------------------------------------------------------------------
 //změní zařazení objektů ve spojovém seznamu
 //přetížená funkce
 void Cvektory::zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi)
@@ -1342,7 +1368,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					c_ukaz->rotace=ukaz->rotace;
 					c_ukaz->mezera=ukaz->mezera;
 					c_ukaz->mV=ukaz->mV;
-					c_ukaz->pohon=ukaz->pohon->n;
+					if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
+					else c_ukaz->pohon=0;
 					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
 					c_ukaz->cekat_na_palce=ukaz->cekat_na_palce;
 					c_ukaz->stopka=ukaz->stopka;
