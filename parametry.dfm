@@ -104,9 +104,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_delka_dopravniku: TrHTMLLabel
     Left = 8
     Top = 255
-    Width = 154
-    Height = 19
-    Caption = 'D'#233'lka dopravn'#237'ku [m]'
+    Width = 161
+    Height = 21
+    Caption = 'D'#233'lka dopravn'#237'ku <font color=#2b579a>[m]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -175,9 +175,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_CT: TrHTMLLabel
     Left = 8
     Top = 175
-    Width = 152
-    Height = 19
-    Caption = 'Technologick'#253' '#269'as [s]'
+    Width = 159
+    Height = 21
+    Caption = 'Technologick'#253' '#269'as <font color=#2b579a>[s]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -190,9 +190,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_RD: TrHTMLLabel
     Left = 8
     Top = 215
-    Width = 187
-    Height = 19
-    Caption = 'Rychlost dopravn'#237'ku [m/s]'
+    Width = 169
+    Height = 21
+    Caption = 'Rychlost pohonu <font color=#2b579a>[m/s]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -234,9 +234,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_mezera: TrHTMLLabel
     Left = 8
     Top = 495
-    Width = 213
-    Height = 19
-    Caption = 'D'#233'lka mezery mezi voz'#237'ky [m]'
+    Width = 174
+    Height = 21
+    Caption = 'Mezera mezi voz'#237'ky <font color=#2b579a>[m]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19

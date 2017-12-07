@@ -3304,7 +3304,7 @@ void __fastcall TForm1::csv1Click(TObject *Sender)
 			UnicodeString export_format="csv";
 			if(SaveDialog->FileName.SubString(SavePictureDialog1->FileName.Length()-2,3).LowerCase() =="xls")export_format="xls";
 			//samotné uložení
-			if(d.v.ulozit_report(SaveDialog->FileName)==1)SB("Report do "+export_format+" dokončen.");else SB("Chyba při tvorbě reportu!");
+			if(Form_report->ulozit_report(SaveDialog->FileName)==1)SB("Report do "+export_format+" dokončen.");else SB("Chyba při tvorbě reportu!");
 			//postprocesní záležitost
 			Screen->Cursor=crDefault;//změní kurzor na default
 			ShellExecute(0,L"open",UnicodeString(SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup

@@ -41,6 +41,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 		//zjištìní exportovaného formátu
 		unsigned short export_format=3;
+		if(FileName.SubString(FileName.Length()-2,3).LowerCase() =="csv")export_format=1;
 		if(FileName.SubString(FileName.Length()-2,3).LowerCase() =="xls")export_format=2;
 		if(FileName.SubString(FileName.Length()-3,4).LowerCase() =="html")export_format=3;
 
@@ -389,9 +390,12 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		 //	Form1->scExPanel_html->Height=Form1->ClientHeight-100;
 		 //	Form1->WebBrowser1->Navigate(FileName);
 
-
-				WebBrowser1->Navigate(FileName);
+		 if (export_format==3) {
+       	WebBrowser1->Navigate(FileName);
 				ShowModal();
+		 }
+
+
 
 		delete MemoryStream;
 		return 1;

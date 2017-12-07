@@ -957,11 +957,11 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 		//CT - pøepoèítání
 		CTunit=S;
 		CT=scGPNumericEdit_CT->Value*60.0;
-		rHTMLLabel_CT->Caption="Technologický èas [s]";
+		rHTMLLabel_CT->Caption="Technologický èas <font color=#2b579a>[s]</font>";
 		//RD - pøepoèítání
 		RDunitT=S;
-		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";//pokud je v milimetrech
-		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";//pokud je v metrech
+		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/s]</font>";//pokud je v milimetrech
+		else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/s]</font>";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value/60.0;
 
 	}
@@ -974,8 +974,8 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 		rHTMLLabel_CT->Caption="Technologický èas [min]";
 		//RD - pøepoèítání
 		RDunitT=MIN;
-		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v milimetrech
-		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v metrech
+		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/min]</font>";//pokud je v milimetrech
+		else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/min]</font>";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value*60.0;
 	}
 	//plnìní + poèet desetinných míst
@@ -996,14 +996,14 @@ void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 		CTunit=S;
 		//CT - pøepoèítání
 		CT=scGPNumericEdit_CT->Value*60.0;
-		rHTMLLabel_CT->Caption="Technologický èas [s]";
+		rHTMLLabel_CT->Caption="Technologický èas <font color=#2b579a>[s]</font>";
 	}
 	else//pokud je v sekundách pøepne na minuty
 	{
 		CTunit=MIN;
 		//CT - pøepoèítání
 		CT=scGPNumericEdit_CT->Value/60.0;
-		rHTMLLabel_CT->Caption="Technologický èas [min]";
+		rHTMLLabel_CT->Caption="Technologický èas <font color=#2b579a>[min]</font>";
 	}
 	//plnìní + poèet desetinných míst
 	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
@@ -1020,16 +1020,16 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 	if(RDunitT==MIN)//pokud je v minutách, tak pøepne na sekundy
 	{
 		RDunitT=S;
-		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";//pokud je v milimetrech
-		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";//pokud je v metrech
+		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/s]</font>";//pokud je v milimetrech
+		else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/s]</font>";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value/60.0;
 		//RD=RDunitD_funkce(RD);
 	}
 	else//pokud je v sekundách pøepne na minuty
 	{
 		RDunitT=MIN;
-		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v milimetrech
-		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v metrech
+		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/min]</font>";//pokud je v milimetrech
+		else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/min]</font>";//pokud je v metrech
 		RD=scGPNumericEdit_RD->Value*60.0;
 		RD=RDunitD_funkce(RD);
 	}
@@ -1045,15 +1045,15 @@ double TForm_parametry::RDunitD_funkce(double RD)//podpùrná metoda výše uvedené
 		if(RDunitD==MM)//pokud je v milimetrech, tak pøepne na metry
 		{
 			RDunitD=M;
-			if(RDunitT==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v minutách
-			else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";// pokud je v sekundách
+			if(RDunitT==MIN)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/min]</font>";//pokud je v minutách
+			else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v sekundách
 			return RD/1000.0;
 		}
 		else
 		{
 			RDunitD=MM;
-			if(RDunitT==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v minutách
-			else rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";// pokud je v sekundách
+			if(RDunitT==MIN)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/min]</font>";//pokud je v minutách
+			else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v sekundách
 			return RD*1000.0;
 		}
 }
@@ -1069,16 +1069,16 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		m_mm=M;scGPButton_metry_milimetry->Caption="vše na mm";//samotné tlaèítko,ukazuje název opaènì
 		//DD
 		DDunit=M;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [m]";
+		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[m]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value/1000.0;
 		//DM
 		DMunit=M;
-		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [m]";
+		rHTMLLabel_mezera->Caption="Mezera mezi vozíky <font color=#2b579a>[m]</font>";
 		DM=scGPNumericEdit_mezera->Value/1000.0;
 		//RD
 		RDunitD=M;
-		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [m/min]";//pokud je v minutách
-		else rHTMLLabel_RD->Caption="Rychlost dopravníku [m/s]";// pokud je v sekundách
+		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/min]</font>";//pokud je v minutách
+		else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v sekundách
 		RD=scGPNumericEdit_RD->Value/1000.0;
 	}
 	else//pokud je metrech, tak pøepne na milimetry
@@ -1086,16 +1086,16 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		m_mm=MM;scGPButton_metry_milimetry->Caption="vše na m";//samotné tlaèítko,ukazuje název opaènì
 		//DD
 		DDunit=MM;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [mm]";
+		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[mm]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value*1000.0;
 		//DM
 		DMunit=MM;
-		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [mm]";
+		rHTMLLabel_mezera->Caption="Mezera mezi vozíky <font color=#2b579a>[mm]</font>";
 		DM=scGPNumericEdit_mezera->Value*1000.0;
 		//RD
 		RDunitD=MM;
-		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/min]";//pokud je v minutách
-		else rHTMLLabel_RD->Caption="Rychlost dopravníku [mm/s]";// pokud je v sekundách
+		if(minsec==MIN)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/min]</font>";//pokud je v minutách
+		else rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v sekundách
 		RD=scGPNumericEdit_RD->Value*1000.0;
 	}
 	//plnìní + poèet desetinných míst
@@ -1116,13 +1116,13 @@ void __fastcall TForm_parametry::rHTMLLabel_delka_dopravnikuClick(TObject *Sende
 	if(DDunit==MM)//pokud je v milimetrech, tak pøepne na metry
 	{
 		DDunit=M;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [m]";
+		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[m]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value/1000.0;
 	}
 	else//pokud je metrech, tak pøepne na milimetry
 	{
 		DDunit=MM;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku [mm]";
+		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[mm]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value*1000.0;
 	}
 	//plnìní + poèet desetinných míst
@@ -1140,14 +1140,14 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
 	{
 		//DM
 		DMunit=M;
-		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [m]";
+		rHTMLLabel_mezera->Caption="Mezera mezi vozíky <font color=#2b579a>[m]</font>";
 		DM=scGPNumericEdit_mezera->Value/1000.0;
 	}
 	else//pokud je metrech, tak pøepne na milimetry
 	{
 		//DM
 		DMunit=MM;
-		rHTMLLabel_mezera->Caption="Délka mezery mezi vozíky [mm]";
+		rHTMLLabel_mezera->Caption="Mezera mezi vozíky <font color=#2b579a>[mm]</font>";
 		DM=scGPNumericEdit_mezera->Value*1000.0;
 	}
 	//plnìní + poèet desetinných míst
