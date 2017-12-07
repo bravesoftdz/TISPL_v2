@@ -22,6 +22,7 @@ __fastcall TForm_cesty::TForm_cesty(TComponent* Owner)
 	: TForm(Owner)
 {
 	nactiNastaveni();
+	CasoveJednotky=S;
 
 
 
@@ -88,9 +89,59 @@ void __fastcall TForm_cesty::KonecClick(TObject *Sender)
 
 
 
+void __fastcall TForm_cesty::scGPButton_min_secClick(TObject *Sender)
+{
+
+if (CasoveJednotky==S) {  //*60
+
+		CasoveJednotky=MIN;
+		rStringGridEd_cesty->Columns->Items[2]->TitleCaption="CT [min]";
+		rStringGridEd_cesty->Columns->Items[4]->TitleCaption="Èas výmìny barev [min]";
+		rStringGridEd_cesty->Columns->Items[5]->TitleCaption="Èas èištìní [min]";
+		scGPButton_min_sec->Caption="vše na sec";
+
+		for(int i=1;i<=rStringGridEd_cesty->RowCount;i++){
+
+		try{
+
+				rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i]/60.0);
+				rStringGridEd_cesty->Cells[4][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[4][i]/60.0);
+				rStringGridEd_cesty->Cells[5][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[5][i]/60.0);
+
+				}
+
+			catch(...){;}  //pøetypování string - double, doøešit
+
+		}
+
+}
+
+		else {
+
+		 CasoveJednotky=S;
+		 rStringGridEd_cesty->Columns->Items[2]->TitleCaption="CT [s]";
+		 rStringGridEd_cesty->Columns->Items[4]->TitleCaption="Èas výmìny barev [s]";
+		 rStringGridEd_cesty->Columns->Items[5]->TitleCaption="Èas èištìní [s]";
+
+		 scGPButton_min_sec->Caption="vše na min";
+
+      	for(int i=1;i<=rStringGridEd_cesty->RowCount;i++){
+
+				try{
+
+					rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i]*60.0);
+					rStringGridEd_cesty->Cells[4][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[4][i]*60.0);
+					rStringGridEd_cesty->Cells[5][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[5][i]*60.0);
+
+					}
+
+			catch(...){;}
+
+		}
+
+	}
 
 
-
-
-
+}
+//---------------------------------------------------------------------------
 

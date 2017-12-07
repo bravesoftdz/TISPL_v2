@@ -298,7 +298,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 					Form_cesty->rStringGridEd_cesty->Cells[0][i]=C->objekt->n;
 					Form_cesty->rStringGridEd_cesty->Cells[1][i]=C->objekt->name;
 					Form_cesty->rStringGridEd_cesty->Cells[2][i]=C->CT;
-					Form_cesty->rStringGridEd_cesty->Cells[3][i]=C->RD;
+					Form_cesty->rStringGridEd_cesty->Cells[3][i]=C->RD*60;  //zobrazím vždy v [m/min]
 					Form_cesty->rStringGridEd_cesty->Cells[4][i]=C->Tv;
 					Form_cesty->rStringGridEd_cesty->Cells[5][i]=C->Tc;
 					Form_cesty->rStringGridEd_cesty->Cells[6][i]=C->Opak;
@@ -324,6 +324,11 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		//formuláø na støed
 		Form_cesty->Left=Form1->ClientWidth/2-Form_cesty->Width/2;
 		Form_cesty->Top=Form1->ClientHeight/2-Form_cesty->Height/2;
+
+		double CT;
+		double Tv;
+		double Tc;
+
 		if(mrOk==Form_cesty->ShowModal())
 		{
 			Form1->d.v.inicializace_cesty(zakazka);
@@ -331,15 +336,25 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			{
 				if(Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ano")//pokud je zaškrnuto neprocházek objekt se neuloží do cesty
 				{
+				if (Form_cesty->rStringGridEd_cesty->Columns->Items[2]->TitleCaption=="CT [s]") {  //pokud je v sekundach
+								CT=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]);
+								Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]);
+								Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]);
+				}
+				else {  // pøevedu minuty na sekundy
+				 CT=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]*60);       //min na sekundy
+				 Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]*60);
+				 Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]*60);
+					}
 						Form1->d.v.vloz_segment_cesty
 						(
 							zakazka,
 							/*sloupec poøadí se neukládá*/ /*pozor na øazení*/
 							Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),//ID-doøešit
-							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]),//CT
-							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]),//RD
-							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]),//Tv
-							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[3][i]),//Tc
+							Form1->ms.MyToDouble(CT),//CT
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]/60),//RD ulozim v m/sec
+							Form1->ms.MyToDouble(Tv),//Tv
+							Form1->ms.MyToDouble(Tc),//Tc
 							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[6][i])//Opak   //ulozeni stavu pro cestu - roletka
 						);
 				}

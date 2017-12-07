@@ -47,6 +47,7 @@ __published:	// IDE-managed Components
 	TscHTMLLabel *scHTMLLabel_doporuc_pohony;
 	TscGPButton *scGPButton_doporucene;
 	TscGPGlyphButton *scGPGlyphButton_add_mezi_pohony;
+	TscLabel *scLabel_TT_change_hint;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -61,6 +62,7 @@ __published:	// IDE-managed Components
 	void __fastcall rHTMLLabel_sirkaClick(TObject *Sender);
 	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
 
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)

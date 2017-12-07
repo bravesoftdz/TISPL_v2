@@ -28,14 +28,17 @@ __published:	// IDE-managed Components
 	TscGPButton *Button_ulozit;
 	TMemo *Memo1;
 	TButton *vypis_objekty;
+	TscGPButton *scGPButton_min_sec;
 	void __fastcall cesta_stornoClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall vypis_objektyClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall scGPButton_min_secClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 
 		void nactiNastaveni();
+		enum Tminsec{S=0,MIN};Tminsec CasoveJednotky;//pøepínaè jednotek èasu
 
 	__fastcall TForm_cesty(TComponent* Owner);
 };

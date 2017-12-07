@@ -114,6 +114,15 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Efektivita [%]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+efektivita+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Zaèátek výroby</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+cas_start+"\"></div></div>";
     data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka vozíku</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
+
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Lead Time</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.vrat_LT())+"\"></div></div>";
+
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP z vozíkù na èasových osách</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(0))+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP souètem kapacit zadaných</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(1))+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP souètem kapacit vypoètených v èasových osách</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(2))+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP tradièní výpoèet</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(3))+"\"></div></div>";
+
+
 		data+="</form></div></br>";
 
 		data+="<div class=\"container-fluid\"><form>";  }
@@ -122,9 +131,18 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 			data+="<form></br>";
 			data+="<h4>Parametry linky <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
-			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">TaktTime [min]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_TT+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">TaktTime [s]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_TT+"\"></div></div>";
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Šíøka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+sirka_voziku+"\"></div></div>";
+
+			//LT
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Lead Time</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.vrat_LT())+"\"></div></div>";
+      //WIP
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP z vozíkù na èasových osách</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(0))+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP souètem kapacit zadaných</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(1))+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP souètem kapacit vypoètených v èasových osách</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(2))+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP tradièní výpoèet</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(3))+"\"></div></div>";
+
 
 			data+="</form></div></br>";
 			data+="<div class=\"container-fluid\"><form>";
@@ -158,8 +176,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		if(Form1->STATUS==Form1->NAVRH) {
 
 
-		data+="<h4>NÁVRH: Pøehled objektù a jejich parametrù</h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [min]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+		data+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 
@@ -179,7 +197,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								else {nazev_pohonu="Nedefinovaný";roztec_palcu="";}
 
 
-								UnicodeString rychlost_dopravniku=O->RD;
+								UnicodeString rychlost_dopravniku=O->RD*60;    //vždy budu zobrazovat v m/min
 								UnicodeString delka_dopravniku=O->delka_dopravniku;
 									switch(O->rezim)
 								{
@@ -200,7 +218,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 	}
 
-
+   // zobrazení dat ze zakázek
 
 
 	if(Form1->d.v.ZAKAZKY->predchozi!=NULL  && Form1->d.v.OBJEKTY->predchozi!=NULL)//pokud existuje alespoò jedna zakázka a nìjaký objekt
@@ -210,7 +228,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 	{
 		UnicodeString zakazka_name=Z->name;
 		data+="<h4>Pøehled objektù a jejich nastavených parametrù u zakázky: <b>"+zakazka_name+"</b></h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 
@@ -226,9 +244,13 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString CT=C->CT;
 								UnicodeString kapacita=C->objekt->kapacita;
 								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
-								UnicodeString nazev_pohonu=C->objekt->pohon->name;
-								UnicodeString roztec_palcu=C->objekt->pohon->roztec;
-								UnicodeString rychlost_dopravniku=C->RD;
+								UnicodeString nazev_pohonu;
+								UnicodeString roztec_palcu;
+
+						if(C->objekt->pohon!=NULL)  {nazev_pohonu=C->objekt->pohon->name;roztec_palcu=C->objekt->pohon->roztec;}
+								else {nazev_pohonu="Nepøiøazen";roztec_palcu="";}
+
+								UnicodeString rychlost_dopravniku=C->objekt->pohon->rychlost_od*60;
 								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
 								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
 								UnicodeString delka_dopravniku=C->objekt->delka_dopravniku;
@@ -273,7 +295,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 				Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
 
-				data+="ID"+S+"Název"+S+"Rychlost od [m/min]"+S+"Rychlost do [m/min]"+S+"Rozteè palcù [cm]"+S+"\n";
+				data+="ID"+S+"Název"+S+"Rychlost od [m/min]"+S+"Rychlost do [m/min]"+S+"Rozteè palcù [mm]"+S+"\n";
 				while(ukaz!=NULL){
 
 				UnicodeString ID=ukaz->n;
@@ -297,7 +319,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 	{
 		UnicodeString zakazka_name=Z->name;
 		data+="Pøehled objektù a jejich nastavených parametrù u zakázky:"+S+zakazka_name+"\n";
-		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporuèená"+S+"Kapacita nastavená"+S+"Název dopravníku"+S+"Rychlost dopravníku"+S+"Rozteè palcù [cm]"+S+"Délka dopravníku [m]\n";
+		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporuèená"+S+"Kapacita nastavená"+S+"Název dopravníku"+S+"Rychlost dopravníku"+S+"Rozteè palcù [mm]"+S+"Délka dopravníku [m]\n";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 

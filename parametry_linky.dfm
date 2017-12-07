@@ -13,6 +13,7 @@ object Form_parametry_linky: TForm_parametry_linky
   Font.Style = []
   Font.Quality = fqClearType
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -120,6 +121,9 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
+    ColWidths = (
+      150
+      -16)
   end
   object Button_ADD: TButton
     Left = 139
@@ -982,6 +986,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 12
     Visible = False
     OnChange = rEditNum_taktChange
@@ -1240,7 +1246,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 396
     end
   end
   object scGPButton_doporucene: TscGPButton
@@ -1330,5 +1335,24 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scLabel_TT_change_hint: TscLabel
+    Left = 552
+    Top = 99
+    Width = 118
+    Height = 13
+    TabOrder = 17
+    Visible = False
+    DragForm = False
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clBtnShadow
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    AutoSize = True
+    UseFontColorToStyleColor = False
+    Caption = 'scLabel_TT_change_hint'
   end
 end
