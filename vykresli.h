@@ -49,6 +49,8 @@ class Cvykresli
 	void vykresli_svislici_na_casove_osy(TCanvas *canv,int X,int Y);//vykreslí pohyblivou svislici yna èasové osy dle umístìní kurzoru myši
 	void zobrazit_label_zamerovac(int X,int Y);//vypiše labal zamìøovaè
 	void vykresli_technologicke_procesy(TCanvas *canv);//ROMA metoda, vykreslí graf technologickıch procesù vùèi jednotlivım t-objektùm v èase
+	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
+	void vykresli_pozice(TCanvas *canv, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double mezera);//zajišuje vykreslení pozic v layoutu
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
 //	void vykresli_linku(TCanvas *canv);//zajišuje vykreslení osy linky
 //	void umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz);//zajišuje umístìní vozíku na lince

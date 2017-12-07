@@ -247,17 +247,11 @@ Coordinates=841,326,90,36
 [scLabel16]
 Coordinates=455,326,73,36
 
-[scGPSwitch4]
-Coordinates=354,326,91,36
-
 [scButton4]
 Coordinates=272,326,72,36
 
 [scButton5]
 Coordinates=10,326,72,36
-
-[scGPSwitch5]
-Coordinates=1004,280,91,36
 
 [scGPGlyphButton15]
 Coordinates=863,280,131,36
@@ -451,4 +445,10 @@ Coordinates=1204,56,66,36
 
 [scLabel_klient]
 Coordinates=249,542,66,36
+
+[scGPSwitch_grid]
+Coordinates=1004,280,91,36
+
+[scGPSwitch_AA]
+Coordinates=354,326,91,36
 

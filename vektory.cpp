@@ -170,6 +170,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 	}
 	else//vkládání mezi objekty
 	{
+		novy->rezim=Objekt->rezim;
 		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
 		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
 		novy->kapacita=Objekt->kapacita;
@@ -184,7 +185,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
 		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
-		novy->obsazenost=Objekt->obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+		novy->obsazenost=0;//Objekt->obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		novy->dalsi=p->dalsi;

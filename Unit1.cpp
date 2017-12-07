@@ -665,6 +665,16 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 //	Invalidate();
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm1::layoutClick(TObject *Sender)
+{
+	MOD=LAYOUT;
+	scSplitView_LEFTTOOLBAR->Visible=false;
+	ESC();//zruší případně rozdělanou akci
+	SB("Layout",1);
+	//Zoom=5;ZOOM();
+	Invalidate();
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 {
 //	MOD=REZERVY;
@@ -702,9 +712,10 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::casovosa1Click(TObject *Sender)
 {
-	if(d.v.ZAKAZKY->dalsi==NULL){//pokud nebyla zakazka definovaná
+	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná
+	{
 		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
-	  }
+	}
 	else
 	{
 		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka z cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
@@ -884,7 +895,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //skryje či zobrazí mřížku
-void __fastcall TForm1::scGPSwitch5ChangeState(TObject *Sender)
+void __fastcall TForm1::scGPSwitch_gridChangeState(TObject *Sender)
 {
   scSplitView_MENU->Opened=false;
 	grid=!grid;
@@ -932,7 +943,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
 	//vykreslení gridu
-	if(grid && Zoom>0.5 && !antialiasing && /*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
+	if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
 
 	//jednoltivé mody
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
@@ -952,7 +963,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 					d.vykresli_grid(bmp_grid->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 				}
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-        //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+				//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_vektory(bmp_in->Canvas);
@@ -967,6 +978,29 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
 		}
+		case LAYOUT:
+		{
+			if(!antialiasing)d.vykresli_layout(Canvas);
+			else
+			{
+				Cantialising a;
+				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;bmp_grid->Width=0;bmp_grid->Height=0;//je nutné mít založeno, ač nemá v tomto případě význam
+				//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+				d.vykresli_layout(bmp_in->Canvas);
+				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				Canvas->Draw(0,0,bmp_out);
+				delete (bmp_out);//velice nutné
+				delete (bmp_grid);//velice nutné
+				delete (bmp_in);//velice nutné
+			}
+			//grafické měřítko
+			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
+		}
+		break;
 //		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
 		case CASOVAOSA:
 		{
@@ -992,7 +1026,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 				bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
 				d.vykresli_casove_osy(bmp_in->Canvas);
-				Canvas->Draw(0,RzToolbar1->Height,bmp_in);
+				Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 				delete (bmp_in);//velice nutné
 			}
 			d.vykresli_svislici_na_casove_osy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
@@ -2616,7 +2650,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
-				if(Form_parametry->kapacitaSG>1)//pokud je požadovaný rozklad objektu na více objektů
+				if(Form_parametry->kapacitaSG>1 && pom->rezim==0)//pokud je požadovaný rozklad objektu na více objektů, pouze u S&G
 				{
 						pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
 						Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
@@ -2653,16 +2687,18 @@ void TForm1::kopirovat_objekt()
 {
 		if(pom!=NULL)//pokud je vybraný objekt
 		{
+				bool remove_pre_index=true;
+				if(pom->short_name=="CO2")remove_pre_index=false;//pokud se jedná CO2, tak aby nedával CO3, CO4 atp
 				if(pom->dalsi!=NULL)//pokud po vybraném následuje další objekt, tak nový vkládá přesně mezi ně
 				{
-					d.v.kopiruj_objekt(pom,(pom->X+pom->dalsi->X)/2-pom->X,(pom->Y+pom->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true,pom);
+					d.v.kopiruj_objekt(pom,(pom->X+pom->dalsi->X)/2-pom->X,(pom->Y+pom->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index,pom);
 				}
 				else //jinak odsazeně
 				{
 					if(pom==d.v.OBJEKTY->predchozi && pom->n==1)//pokud je jenom jeden objekt
-					d.v.kopiruj_objekt(pom,6,0,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true);
+					d.v.kopiruj_objekt(pom,6,0,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index);
 					if(pom==d.v.OBJEKTY->predchozi)//pokud se jedná o poslední prvek
-					d.v.kopiruj_objekt(pom,(pom->X+d.v.OBJEKTY->dalsi->X)/2-pom->X,(pom->Y+d.v.OBJEKTY->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,true);
+					d.v.kopiruj_objekt(pom,(pom->X+d.v.OBJEKTY->dalsi->X)/2-pom->X,(pom->Y+d.v.OBJEKTY->dalsi->Y)/2-pom->Y,ms.a2i(pom->short_name.SubString(pom->short_name.Length(),1))+1,remove_pre_index);
 				}
 				ortogonalizace();
 				REFRESH();
@@ -3860,9 +3896,9 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //zapne či vypne antialiasing
-void __fastcall TForm1::scGPSwitch4ChangeState(TObject *Sender)
+void __fastcall TForm1::scGPSwitch_AAChangeState(TObject *Sender)
 {
-	antialiasing=!antialiasing;//musí být před scSplitView_MENU->Opened
+	antialiasing=!antialiasing;//musí být před scSplitView_MENU->Opened!!!
 	scSplitView_MENU->Opened=false;
 	DrawGrid_knihovna->Invalidate();
 	Invalidate();//v tomto případě lépe než REFRESH - kvůli efektu
@@ -4337,6 +4373,8 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 }
 //---------------------------------------------------------------------------
+
+
 
 
 

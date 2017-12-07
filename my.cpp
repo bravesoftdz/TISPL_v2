@@ -151,6 +151,60 @@ TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)
 	return ret;
 }
 /////////////////////////////////////////////////////////////////////////////
+//TPointD Cvektory::Get_AreaSize(TPolygon *ukaz)
+//{
+//	unsigned int delka=0;
+//	float azimut=0;
+//	float obsah=0;
+//	unsigned int pocet=0;
+//	bool pouze_usecka=false;
+//
+//	while (ukaz!=NULL)//pro všechny linie
+//	{
+//		if(ukaz->n>0)//vynechá hlavièku
+//		{
+//			pocet++;
+//			Cvektory::TBod_LP *p;
+//			p=ukaz->prvky;
+//			while (p->dalsi!=NULL)//pro konkretni linii
+//			{
+//				TPointD P=w.WebMercator2UTM(p->X,p->Y);
+//				TPointD P_dalsi=w.WebMercator2UTM(p->dalsi->X,p->dalsi->Y);
+//				TPointD P_pred=w.WebMercator2UTM(p->predchozi->X,p->predchozi->Y);
+//				if(p->n>0)//vynechá hlavièku
+//				{
+//					delka+=my.round(sqrt(pow(P_dalsi.x - P.x, 2)+ pow(P_dalsi.y - P.y, 2)));
+//					if(p->n!=1)obsah+=P.x*(P_dalsi.y - P_pred.y); //Výpoèet_plochy_pomocí_L´Huillierových_vzorcù vèetnì nedokonèených ploch èi linii, alternativa Mascheroniho vzorec:http://klobouk.fsv.cvut.cz/~hanek/K154/PDF/Vypocet_vymer.pdf
+////					if(pouze_usecka)//spoèítá azimut
+////					{
+////						azimut=acos((P_dalsi.y-P.y)/(delka*1.0))*180/M_PI;
+////						if(P_dalsi.x<P.x)azimut=360-azimut;
+////					}
+//				}
+////				else //zjistí, jestli obsahuje pouze dva body, tj. jestli se jedná o úseèku a je dùvod zmìøit i azimut
+////				{
+////					if(p->predchozi->n==2)pouze_usecka=true;
+////					TPointD P_pred_pred=w.WebMercator2UTM(p->predchozi->predchozi->X,p->predchozi->predchozi->Y);
+////					TPointD P_dalsi_dalsi=w.WebMercator2UTM(p->dalsi->dalsi->X,p->dalsi->dalsi->Y);
+////					obsah+=P_pred.x*(P_dalsi.y - P_pred_pred.y); //pro posledni
+////					obsah+=P_dalsi.x*(P_dalsi_dalsi.y - P_pred.y); //pro n=1
+////				}
+//				p=p->dalsi;//posun na další prvek
+//			}
+//			p=NULL;delete p;
+//		}
+//		ukaz=ukaz->dalsi;//posun na další prvek
+//		obsah=fabs(obsah);
+//	}
+//	ukaz=NULL;delete ukaz;
+//	obsah=fabs(obsah/2);
+//
+//	TPointD ret;
+//	ret.x=delka;//v m - reálné èíslo
+//	ret.y=obsah;//v m2 - reálné èíslo
+//	return ret;
+// }
+/////////////////////////////////////////////////////////////////////////////
 long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2)
 {
 	double a=Y2-Y1;
