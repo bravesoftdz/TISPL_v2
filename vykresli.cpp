@@ -1365,11 +1365,11 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 		 canv->Brush->Color=clWhite;
 		 canv->Brush->Style=bsSolid;
 		 canv->Pen->Color=clRed;
-		 canv->Pen->Width=1;if(Form1->antialiasing)canv->Pen->Width=1*3;
-		 canv->Font->Color=clRed;
+		 canv->Pen->Width=Form1->Zoom*1;if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*1;
 		 //font
+		 canv->Font->Color=clRed;
 		 SetBkMode(canv->Handle,TRANSPARENT);
-		 canv->Font->Size=9; if(Form1->antialiasing)canv->Font->Size=9*3;
+		 canv->Font->Size=Form1->Zoom*9; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*9;
 		 canv->Font->Name="Arial";
 
 		 ////pomocné promněnné
@@ -1416,10 +1416,11 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 		  ////----
 
 		 	////vykreslení jednoho objektu
-		 	do
-		 	{
-		 			bool posunuti_segmentu=false;//dekece zda se má zvýšit počítadlo pozice segmentu - i
-		 			unsigned int n=i;if(i<3)n=i+1;else n=0;//"přeindexování" pokude se bude jednat o poslední spojnici (tj. poslední-první prvek)
+			bool popisek_se_jiz_vypisoval=false;//detekce, zda se má vypsat popisek za zlomem či ne
+			do
+			{
+					bool posunuti_segmentu=false;//dekece zda se má zvýšit počítadlo pozice segmentu - i
+					unsigned int n=i;if(i<3)n=i+1;else n=0;//"přeindexování" pokude se bude jednat o poslední spojnici (tj. poslední-první prvek)
 		 			double DS=m.delka(P[i].x,P[i].y,P[n].x,P[n].y);//delka_segmentu obrazce
 		 			if(zbytek>0)delka=zbytek;//zbytek objektu z minulého segmentu
 		 			if(delka+akt_pozice>=DS)//přetekl do dalšího segmentu
@@ -1447,31 +1448,63 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 		 			canv->MoveTo(m.L2Px(S.x),m.L2Py(S.y));//pero na výchozí (minulou pozici)
 		 			S.x+=(P[n].x-P[i].x)*PO;//posun ze začátku objektu nakonec
 		 			S.y+=(P[n].y-P[i].y)*PO;//posun ze začátku objektu nakonec
-		 			canv->Pen->Width=1;if(Form1->antialiasing)canv->Pen->Width=1*3;canv->Pen->Color=clRed;
-		 			canv->LineTo(m.L2Px(S.x),m.L2Py(S.y));//nakreslení linie
-		 			//zarazka
+					canv->Pen->Width=Form1->Zoom*1;if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*1;canv->Pen->Color=clRed;
+					canv->LineTo(m.L2Px(S.x),m.L2Py(S.y));//nakreslení linie
+
+					//zarazka
 		 			if(zbytek==0)//zarážka se zobrazí pouze pokud se nepokračuje ve vykreslování objektu v dalším segmentu
 		 			{
 		 				 double Alfa=m.azimut(S_puv.x,S_puv.y,S.x,S.y)+90;if(Alfa>=360)Alfa-=360;
-		 				 //ShowMessage(Alfa);
-		 				 Alfa*=(M_PI/180);
-		 				 canv->Pen->Width=2;if(Form1->antialiasing)canv->Pen->Width=2*3;canv->Pen->Color=clRed;
-		 				 canv->MoveTo(m.L2Px(S.x-sin(Alfa)*sirkaV/2),m.L2Py(S.y-cos(Alfa)*sirkaV/2));
-		 				 canv->LineTo(m.L2Px(S.x+sin(Alfa)*sirkaV/2),m.L2Py(S.y+cos(Alfa)*sirkaV/2));
-		 			}
+						 //ShowMessage(Alfa);
+						 if(posunuti_segmentu)Alfa=135;//v případě rohu je to 45°
+						 Alfa*=(M_PI/180);
+						 set_pen(canv,clRed,Form1->Zoom*2,PS_ENDCAP_SQUARE);//nastavení pera barvy osy
+						 //canv->Pen->Width=Form1->Zoom*2;canv->Pen->Color=clRed;
+
+						 canv->MoveTo(m.L2Px(S.x-sin(Alfa)*sirkaV/2),m.L2Py(S.y-cos(Alfa)*sirkaV/2));
+						 canv->LineTo(m.L2Px(S.x+sin(Alfa)*sirkaV/2),m.L2Py(S.y+cos(Alfa)*sirkaV/2));
+					}
 		 			//pozice - vykreslí pozice v daném segmentu
-					vykresli_pozice(canv,S_puv,S,delka,delkaV,sirkaV,O->mezera);
-		 			//popisek
-		 			AnsiString T=O->name.UpperCase();
-		 			canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T)/2,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextHeight(T),T);//vypíše název objektu uprostřed nad
-		 			if(posunuti_segmentu)i++;
-		 	}
+					//vykresli_pozice(canv,S_puv,S,delka,delkaV,sirkaV,O->mezera);
+					//popisek
+					if(popisek_se_jiz_vypisoval==false)
+					{
+						AnsiString T=O->name.UpperCase();
+						AnsiString T1="K: "+AnsiString(O->kapacita)+" DD: "+AnsiString(O->delka_dopravniku);
+						if(O->rezim==2)T1+=" RD: "+AnsiString(O->RD).SubString(1,5);//pokud se jedná o kontinual, tak ještě RD
+						canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T)/2,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextHeight(T),T);//vypíše název objektu uprostřed nad
+						canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T1)/2,m.L2Py((S.y+S_puv.y)/2.0),T1);//vypíše parametry objektu uprostřed pod
+						popisek_se_jiz_vypisoval=true;
+					}
+					if(posunuti_segmentu)i++;
+			}
 		 	while(zbytek>0);
 
-		 	//posun na další prvek
-		 	O=O->dalsi;
+			//posun na další prvek
+			O=O->dalsi;
 		 }
-		 canv->TextOutW(m.L2Px(P[0].x+A/2),m.L2Py(P[0].y-B/2),"Plocha linky: "+AnsiString(A*B)+" m2\nObvod linky: "+AnsiString(obvod)+" m\nDélka linky: "+AnsiString(A)+" m\nŠířka linky: "+AnsiString(B)+" m");
+
+		 ////celkový výpis
+		 canv->Font->Color=clGray;
+		 W=0;//nejširší text
+		 AnsiString T1="Plocha linky: "+AnsiString(A*B)+" m2";W=canv->TextWidth(T1);
+		 AnsiString T2="Obvod linky: "+AnsiString(obvod)+" m";if(canv->TextWidth(T2)>W)W=canv->TextWidth(T2);
+		 AnsiString T3="Délka linky: "+AnsiString(A)+" m";if(canv->TextWidth(T3)>W)W=canv->TextWidth(T3);
+		 AnsiString T4="Šířka linky: "+AnsiString(B)+" m";if(canv->TextWidth(T4)>W)W=canv->TextWidth(T4);
+		 if(P[0].x!=P[3].x)
+		 {
+			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2)-canv->TextHeight(T1)*2,T1);
+			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2)-canv->TextHeight(T1),T2);
+			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2),T3);
+			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2)+canv->TextHeight(T1),T4);
+		 }
+		 else
+		 {
+			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)-canv->TextHeight(T1)*2,T1);
+			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)-canv->TextHeight(T1),T2);
+			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2),T3);
+			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)+canv->TextHeight(T1),T4);
+		 }
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
