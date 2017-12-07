@@ -200,10 +200,10 @@ __published:	// IDE-managed Components
 	TscButton *scButton1;
 	TscButton *scButton4;
 	TscButton *scButton5;
-	TscGPSwitch *scGPSwitch4;
+	TscGPSwitch *scGPSwitch_AA;
 	TscLabel *scLabel11;
 	TscLabel *scLabel16;
-	TscGPSwitch *scGPSwitch5;
+	TscGPSwitch *scGPSwitch_grid;
 	TscGPGlyphButton *scGPGlyphButton15;
 	TImageList *ImageList48;
 	TscGPVirtualImageList *scGPVirtualImageList1;
@@ -364,8 +364,8 @@ __published:	// IDE-managed Components
 	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
 	void __fastcall DetailsButtonClick(TObject *Sender);
 	void __fastcall scGPTrackBar1Change(TObject *Sender);
-	void __fastcall scGPSwitch4ChangeState(TObject *Sender);
-	void __fastcall scGPSwitch5ChangeState(TObject *Sender);
+	void __fastcall scGPSwitch_AAChangeState(TObject *Sender);
+	void __fastcall scGPSwitch_gridChangeState(TObject *Sender);
 	void __fastcall scGPSwitch_rezimChangeState(TObject *Sender);
 	void __fastcall scSplitViewsClosing(TObject *Sender);
 	void __fastcall scSplitViewsClosed(TObject *Sender);
@@ -384,12 +384,13 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
+	void __fastcall layoutClick(TObject *Sender);
 
 
 // User declarations
 	////struktury, výèty
 public:
-	enum Tmod{NO=0,SCHEMA,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
+	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
 	Cvektory::TObjekt *copyObjekt;

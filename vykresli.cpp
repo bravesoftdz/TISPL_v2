@@ -96,6 +96,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			vykresli_rectangle(canv,O);
 			O=O->dalsi;//posun na další prvek
 		}
+		//povolení zobrazování LAYOUTU, pokud existují objekty, jinak ne
+		if(v.OBJEKTY->dalsi!=NULL)Form1->layout->Enabled=true;else Form1->layout->Enabled=false;
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
@@ -1322,6 +1324,176 @@ bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,lo
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//zajišťuje vykreslení layoutu
+void Cvykresli::vykresli_layout(TCanvas *canv)
+{
+	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
+	if(O!=NULL)//pokud existuje nějaký objekt
+	{
+		 ////stanovení rozeměrů a orientace nosného obdelníku layoutu
+		 //délka stran nosného obdelníka
+		 double obvod=v.vrat_soucet_delek_vsech_objektu();
+		 int W=Form1->ClientWidth;
+		 int H=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-Form1->scGPPanel_mainmenu->Height;
+		 double A=m.round(obvod/2*W/((W+H)/1.0));//rozměry poměrově k monitoru, vůči monitoru
+		 double B=obvod/2-A;//B se už jenom dopočítá jako rozdíl
+		 //orietnace nosného obdelníka dle zakresleného schématu
+		 short smerZ=0;if(O->dalsi!=NULL)smerZ=m.round(m.azimut(O->X,O->Y,O->dalsi->X,O->dalsi->Y)/90.0)*90;//udá uvodní směr obdelníku
+		 short smerDo=0;if(O->predchozi!=NULL)smerDo=m.round(m.azimut(O->predchozi->predchozi->X,O->predchozi->predchozi->Y,O->X,O->Y)/90.0)*90;//udá uvodní směr obdelníku
+		 double X1=O->X,Y1=O->Y,X2=O->X,Y2=O->Y,X3=O->X,Y3=O->Y,X4=O->X,Y4=O->Y;
+		 if(smerZ==90&&(smerDo==0||smerDo==90)){X2+=A;X3+=A;Y3-=B;Y4-=B;}
+		 if(smerZ==90&&smerDo==180){X2+=A;X3+=A;Y3+=B;Y4+=B;}
+		 if(smerZ==270&&(smerDo==0||smerDo==270)){X2-=A;X3-=A;Y3-=B;Y4-=B;}
+		 if(smerZ==270&&smerDo==180){X2-=A;X3-=A;Y3+=B;Y4+=B;}
+		 if(smerZ==0&&(smerDo==270||smerDo==0)){Y2+=B;X3+=A;Y3+=B;X4+=A;}
+		 if(smerZ==0&&smerDo==90){Y2+=B;X3+=A;Y3+=B;X4-=A;Y4+=B;}
+		 if(smerZ==180&&(smerDo==270||smerDo==180)){Y2-=B;X3+=A;Y3-=B;X4+=A;}
+		 if(smerZ==180&&smerDo==90){Y2-=B;X3-=A;Y3-=B;X4-=A;}
+		 //uložení bodů nosného obdelníka pro další použití
+		 POINT P[4]={{X1,Y1},{X2,Y2},{X3,Y3},{X4,Y4}};//TPoint *P=new TPoint[velikost_pole];//vytovoří pole pro polyline
+		 ////----
+
+		 //prozatim //vykreslení oramování obdelníku
+		 canv->Pen->Color=clGray;
+		 canv->Brush->Color=clWhite;
+		 POINT O1[4]={{m.L2Px(X1),m.L2Py(Y1)},{m.L2Px(X2),m.L2Py(Y2)},{m.L2Px(X3),m.L2Py(Y3)},{m.L2Px(X4),m.L2Py(Y4)}};
+		 canv->Polygon((TPoint*)O1,3);
+
+
+		 ////grafické nastavení
+		 //pero+výplň
+		 canv->Brush->Color=clWhite;
+		 canv->Brush->Style=bsSolid;
+		 canv->Pen->Color=clRed;
+		 canv->Pen->Width=1;if(Form1->antialiasing)canv->Pen->Width=1*3;
+		 canv->Font->Color=clRed;
+		 //font
+		 SetBkMode(canv->Handle,TRANSPARENT);
+		 canv->Font->Size=9; if(Form1->antialiasing)canv->Font->Size=9*3;
+		 canv->Font->Name="Arial";
+
+		 ////pomocné promněnné
+		 double akt_pozice=0;//v segmentu
+		 double zbytek=0;//z předchozí segmentu
+		 unsigned int i=0;//číslo prvního bodu segmentu
+		 TPointD S;
+		 S.x=P[i].x;S.y=P[i].y;//na uchování výchozí pozice
+
+		 ////procházení jednotlivých objektů
+		 while (O!=NULL)
+		 {
+		 	////stanovení resp. načtení délky a šířky objektu
+		 	double delka=0;
+		 	double sirkaV=0;
+		 	double delkaV=0;
+		 	if(O->rezim==0)//S&G, u tohoto režimu se bere délka nebo šířka vozíku, dle nastavení, zda je vozík v objektu na šířku či na délku
+		 	{
+		 		if(O->rotace==0)
+		 		{
+		 			delka=v.PP.delka_voziku;delkaV=delka;
+		 			sirkaV=v.PP.sirka_voziku;
+		 		}
+		 		else
+		 		{
+		 			delka=v.PP.sirka_voziku;delkaV=delka;
+		 			sirkaV=v.PP.delka_voziku;
+		 		}
+		 	}
+		 	else //u kontinuálního a pp se uvažuje jako délka přímo jen délka dopravníku
+		 	{
+		 		delka=O->delka_dopravniku;
+		 		if(O->rotace==0)
+		 		{
+		 			sirkaV=v.PP.sirka_voziku;//sířka dle rotace (pokud je na délku či šířku)
+		 			delkaV=v.PP.delka_voziku;
+		 		}
+		 		else
+		 		{
+		 			sirkaV=v.PP.delka_voziku;
+		 			delkaV=v.PP.sirka_voziku;
+		 		}
+		 	}
+		  ////----
+
+		 	////vykreslení jednoho objektu
+		 	do
+		 	{
+		 			bool posunuti_segmentu=false;//dekece zda se má zvýšit počítadlo pozice segmentu - i
+		 			unsigned int n=i;if(i<3)n=i+1;else n=0;//"přeindexování" pokude se bude jednat o poslední spojnici (tj. poslední-první prvek)
+		 			double DS=m.delka(P[i].x,P[i].y,P[n].x,P[n].y);//delka_segmentu obrazce
+		 			if(zbytek>0)delka=zbytek;//zbytek objektu z minulého segmentu
+		 			if(delka+akt_pozice>=DS)//přetekl do dalšího segmentu
+		 			{
+		 				zbytek=delka+akt_pozice-DS;
+		 				delka-=zbytek;
+		 				akt_pozice=0;
+		 				posunuti_segmentu=true;//posunutí segmentu
+		 				//ShowMessage("přetekl "+AnsiString(i));
+		 			}
+		 			else//nepřetekl
+		 			{
+		 				akt_pozice+=delka;
+		 				zbytek=0;
+		 				posunuti_segmentu=false;
+		 				//ShowMessage("nepřetekl "+AnsiString(i));
+		 			}
+
+		 			double PO=delka/DS;//pomer delky objektu a segmentu obrazce
+		 			//ShowMessage(AnsiString(delka)+"/"+AnsiString(DS));
+
+		 			////vykreslení
+		 			//objekt
+		 			TPointD S_puv=S;
+		 			canv->MoveTo(m.L2Px(S.x),m.L2Py(S.y));//pero na výchozí (minulou pozici)
+		 			S.x+=(P[n].x-P[i].x)*PO;//posun ze začátku objektu nakonec
+		 			S.y+=(P[n].y-P[i].y)*PO;//posun ze začátku objektu nakonec
+		 			canv->Pen->Width=1;if(Form1->antialiasing)canv->Pen->Width=1*3;canv->Pen->Color=clRed;
+		 			canv->LineTo(m.L2Px(S.x),m.L2Py(S.y));//nakreslení linie
+		 			//zarazka
+		 			if(zbytek==0)//zarážka se zobrazí pouze pokud se nepokračuje ve vykreslování objektu v dalším segmentu
+		 			{
+		 				 double Alfa=m.azimut(S_puv.x,S_puv.y,S.x,S.y)+90;if(Alfa>=360)Alfa-=360;
+		 				 //ShowMessage(Alfa);
+		 				 Alfa*=(M_PI/180);
+		 				 canv->Pen->Width=2;if(Form1->antialiasing)canv->Pen->Width=2*3;canv->Pen->Color=clRed;
+		 				 canv->MoveTo(m.L2Px(S.x-sin(Alfa)*sirkaV/2),m.L2Py(S.y-cos(Alfa)*sirkaV/2));
+		 				 canv->LineTo(m.L2Px(S.x+sin(Alfa)*sirkaV/2),m.L2Py(S.y+cos(Alfa)*sirkaV/2));
+		 			}
+		 			//pozice - vykreslí pozice v daném segmentu
+					vykresli_pozice(canv,S_puv,S,delka,delkaV,sirkaV,O->mezera);
+		 			//popisek
+		 			AnsiString T=O->name.UpperCase();
+		 			canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T)/2,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextHeight(T),T);//vypíše název objektu uprostřed nad
+		 			if(posunuti_segmentu)i++;
+		 	}
+		 	while(zbytek>0);
+
+		 	//posun na další prvek
+		 	O=O->dalsi;
+		 }
+		 canv->TextOutW(m.L2Px(P[0].x+A/2),m.L2Py(P[0].y-B/2),"Plocha linky: "+AnsiString(A*B)+" m2\nObvod linky: "+AnsiString(obvod)+" m\nDélka linky: "+AnsiString(A)+" m\nŠířka linky: "+AnsiString(B)+" m");
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_pozice(TCanvas *canv,TPointD OD, TPointD DO,double delka,double delkaV,double sirkaV,double mezera)//zajišťuje vykreslení pozic v layoutu
+{
+	TPointD S;S=OD;
+	double akt_pozice=0;
+	canv->Pen->Color=clPurple;
+	while(akt_pozice<delka)
+	{
+		double PO=delkaV/delka;//pomer delky vozíku a delky objekut
+		S.x+=(OD.x-DO.x)*PO;//posun ze začátku objektu nakonec
+		S.y+=(OD.y-DO.y)*PO;//posun ze začátku objektu nakonec
+		canv->Rectangle(m.L2Px(S.x-sirkaV/2),m.L2Py(S.y+sirkaV/2),m.L2Px(S.x+sirkaV/2),m.L2Py(S.y-sirkaV/2));
+		akt_pozice+=delkaV;
+	}
+
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////zajišťuje vykreslení simulace
 //void Cvykresli::vykresli_simulaci(TCanvas *canv)
 //{
@@ -1672,6 +1844,7 @@ void Cvykresli::meritko(TCanvas *canv)
 {
 	//proměnné nastavení měřítka
 	int L=Form1->scSplitView_LEFTTOOLBAR->Width+5;//umístění na X - levého výchozího kraje měřítka
+	if(Form1->scSplitView_LEFTTOOLBAR->Visible==false)L=5;//pokud je levé menu skryto
 	int T=Form1->scGPPanel_statusbar->Top-20;//umistění na Y - horního výchozího kraje měřítka
 	int H=5;//výška měřítka
 	int K=1;//krok v metrech

@@ -580,7 +580,8 @@ void TForm_parametry::input_CT()
     					scGPButton_OK->Enabled=false;
     		 			vypis("Zmìnte režim nebo rozložte do více objektù!");
     		 		}
-    		 }
+				 }
+				 else kapacitaSG=1;
     	 }
     	 else//KONTINUAL+PP
 			 {
@@ -1248,7 +1249,8 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 	scGPEdit_name->Text=Form1->copyObjekt->name;
 	scGPEdit_shortname->Text=Form1->copyObjekt->short_name;
 	scComboBox_rezim->ItemIndex=Form1->copyObjekt->rezim;
-	scComboBox_pohon->ItemIndex=Form1->copyObjekt->pohon->n-1;
+	if(Form1->copyObjekt->pohon==NULL)scComboBox_pohon->ItemIndex=0;
+	else scComboBox_pohon->ItemIndex=Form1->copyObjekt->pohon->n-1;
 	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->CT/jednotky_cas);//nastaví zobrazení poètu desetinných míst;
 	scGPNumericEdit_CT->Value=Form1->copyObjekt->CT/jednotky_cas;
 	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst;

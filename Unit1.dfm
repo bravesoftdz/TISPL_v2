@@ -1730,7 +1730,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 12
-      OnClick = casovosa1Click
+      OnClick = layoutClick
       Animation = True
       Caption = 'Layout'
       CanFocused = False
@@ -4212,7 +4212,7 @@ object Form1: TForm1
       AllowAllUp = True
       WordWrap = False
     end
-    object scGPSwitch4: TscGPSwitch
+    object scGPSwitch_AA: TscGPSwitch
       Left = 100
       Top = 380
       Width = 42
@@ -4238,9 +4238,9 @@ object Form1: TForm1
       FrameSolid = False
       FrameOnSolid = True
       FrameInside = False
-      OnChangeState = scGPSwitch4ChangeState
+      OnChangeState = scGPSwitch_AAChangeState
     end
-    object scGPSwitch5: TscGPSwitch
+    object scGPSwitch_grid: TscGPSwitch
       Left = 100
       Top = 410
       Width = 42
@@ -4266,7 +4266,7 @@ object Form1: TForm1
       FrameSolid = False
       FrameOnSolid = True
       FrameInside = False
-      OnChangeState = scGPSwitch5ChangeState
+      OnChangeState = scGPSwitch_gridChangeState
     end
     object scLabel11: TscLabel
       Left = 3

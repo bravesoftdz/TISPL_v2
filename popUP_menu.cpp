@@ -272,6 +272,7 @@ void __fastcall TPopUPmenu::GlyphButton_smazatMouseLeave(TObject *Sender)
 void __fastcall TPopUPmenu::scLabel_smazatClick(TObject *Sender)
 {
 	closing=true;
+	PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);//workaround
 	Close();
 	Form1->Smazat1Click(Sender);
 }
