@@ -242,6 +242,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     DefaultColWidth = 90
     DefaultRowHeight = 30
     DefaultDrawing = False
+    DrawingStyle = gdsGradient
     FixedColor = clWhite
     RowCount = 2
     Font.Charset = DEFAULT_CHARSET

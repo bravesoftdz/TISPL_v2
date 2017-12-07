@@ -33,6 +33,8 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
 		input_state=NOTHING;//nutnost
+		scExPanel_doporuc_pohony->Visible=false;
+
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL){
 			scGPButton_doporucene->Visible=false;
@@ -92,7 +94,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(!data_nalezena)
 		{
-		rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka, hl.dopravník,vedl.dopravník
+		rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
 		}
 
 		//	Form1->d.v.vymaz_seznam_POHONY();
@@ -186,7 +188,14 @@ void TForm_parametry_linky::nacti_pohony (){
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 {
 
-	Form_parametry_linky->Close();
+		for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++){
+			rStringGridEd_tab_dopravniky->Rows[i]->Clear();
+			rStringGridEd_tab_dopravniky->RowCount--;
+			}
+		Form_parametry_linky->Close();
+
+
+
 }
 //---------------------------------------------------------------------------
 

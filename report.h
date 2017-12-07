@@ -30,6 +30,7 @@ __published:	// IDE-managed Components
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scButton_csvClick(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
+	void __fastcall scButton_htmlClick(TObject *Sender);
 private:	// User declarations
 
 	bool FMaximized;
