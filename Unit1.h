@@ -243,7 +243,7 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_log_header;
 	TscHTMLLabel *scHTMLLabel_log_vypis;
 	TscGPGlyphButton *scGPGlyphButton_zpravy_ikona;
-	TscButton *scButton11;
+	TscButton *scButton_CSV_report;
 	TscGPSwitch *scGPSwitch_rezim;
 	TscLabel *scLabel_klient;
 	TscLabel *scLabel_architekt;

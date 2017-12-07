@@ -437,9 +437,6 @@ Coordinates=1681,56,158,36
 [scButton_ulozit]
 Coordinates=402,631,102,36
 
-[scButton11]
-Coordinates=1110,276,79,36
-
 [scGPGlyphButton_zpravy_ikona]
 Coordinates=1492,221,199,36
 
@@ -451,4 +448,7 @@ Coordinates=1204,56,66,36
 
 [scLabel_klient]
 Coordinates=249,542,66,36
+
+[scButton_CSV_report]
+Coordinates=1110,276,79,36
 
