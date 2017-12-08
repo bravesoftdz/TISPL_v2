@@ -209,15 +209,6 @@ object Form_cesty: TForm_cesty
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
-    ColWidths = (
-      69
-      94
-      86
-      209
-      162
-      120
-      94
-      120)
     RowHeights = (
       30
       30)

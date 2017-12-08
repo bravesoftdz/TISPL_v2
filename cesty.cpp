@@ -24,6 +24,15 @@ __fastcall TForm_cesty::TForm_cesty(TComponent* Owner)
 	nactiNastaveni();
 	CasoveJednotky=S;
 
+	rStringGridEd_cesty->SetColumnAutoFit(0);
+ //	rStringGridEd_cesty->SetColumnAutoFit(1);
+	rStringGridEd_cesty->SetColumnAutoFit(2);
+	rStringGridEd_cesty->SetColumnAutoFit(3);
+	rStringGridEd_cesty->SetColumnAutoFit(4);
+	rStringGridEd_cesty->SetColumnAutoFit(5);
+	rStringGridEd_cesty->SetColumnAutoFit(6);
+	rStringGridEd_cesty->SetColumnAutoFit(7);
+
 
 
 }
