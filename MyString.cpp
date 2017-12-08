@@ -177,7 +177,7 @@ AnsiString TMyString::TrimRightFrom(AnsiString Text, AnsiString Trim)
 {
   unsigned int Pos=Text.Pos(Trim);
 	if(Pos!=0)//pokud byla parsovací zarážka nalezena
-  {
+  {                           //tady by mělo být asi -OD jako níže
     return Text.SubString(1,Pos-1);
   }
 	else//nebyla nalezena, vrátí prázdný řetezec
@@ -187,7 +187,7 @@ UnicodeString  TMyString::TrimRightFrom_UTF(UnicodeString  Text, UnicodeString T
 {
   unsigned int Pos=Text.Pos(Trim);
   if(Pos!=0)//pokud byla parsovací zarážka nalezena
-  {
+	{                           //tady by mělo být asi -OD jako níže
     return Text.SubString(1,Pos-1);
   }
 	else//nebyla nalezena, vrátí prázdný řetezec
@@ -199,8 +199,21 @@ UnicodeString  TMyString::TrimLeftFrom_UTF(UnicodeString  Text, UnicodeString Tr
 {
 	unsigned int Pos=Text.Pos(Trim);
 	if(Pos!=0)//pokud byla parsovací zarážka nalezena
-  {
+	{                                  //tady by mělo být asi -OD jako níže
 		return Text.SubString(Pos+1,Text.Length());
+	}
+	else//nebyla nalezena, vrátí prázdný řetezec
+	return "";
+}
+//---------------------------------------------------------------------------
+//ožízne řetezec od textu, to co následuje znaku, vrátí
+UnicodeString TMyString::TrimLeftFromText(UnicodeString Text, UnicodeString Trim)
+{
+	unsigned int Pos=Text.Pos(Trim);
+	if(Pos!=0)//pokud byla parsovací zarážka nalezena
+	{
+	 short OD=Pos+Trim.Length();
+	 return Text.SubString(OD,Text.Length()-OD+1);
 	}
 	else//nebyla nalezena, vrátí prázdný řetezec
 	return "";

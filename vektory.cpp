@@ -574,6 +574,18 @@ void Cvektory::generuj_POHONY()
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	unsigned int i=0;//i vygenerovaného pohonu
+	//prvně najde "i" nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
+	TPohon *P=POHONY->dalsi;
+	while(P!=NULL)
+	{
+		 if(P->name.Pos("Navržený pohon "))
+		 {
+			short i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
+			if(i_potencial>i)i=i_potencial;
+		 }
+		 P=P->dalsi;//posun na další prvek
+	}
+
 	while (O!=NULL)
 	{
 		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní) nezohledňuje
@@ -594,7 +606,7 @@ void Cvektory::generuj_POHONY()
 			if(pohon_nenalezen)
 			{
 				vloz_pohon("Navržený pohon "+AnsiString(++i),O->RD,O->RD,1620.0);
-				O->pohon=POHONY->predchozi;
+				//již nepoužíváme O->pohon=POHONY->predchozi;
 			}
 		}
 		O=O->dalsi;//posun na další prvek
@@ -609,6 +621,17 @@ AnsiString Cvektory::navrhni_POHONY()
 	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je  o max. velikosti počtu objektů
 	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
 	unsigned int i=0;//i vygenerovaného pohonu
+	//prvně najde "i" nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
+	TPohon *P=POHONY->dalsi;
+	while(P!=NULL)
+	{
+		 if(P->name.Pos("Navržený pohon "))
+		 {
+			short i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
+			if(i_potencial>i)i=i_potencial;
+		 }
+		 P=P->dalsi;//posun na další prvek
+	}
 
 	while (O!=NULL)
 	{
@@ -625,8 +648,17 @@ AnsiString Cvektory::navrhni_POHONY()
 			}
 			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
 			{
-				data+="Navržený pohon "+AnsiString(++i)+", rychlost:"+AnsiString(O->RD*60)+" [m/min] </br>";
-				pole_rychlosti[O->n-1]=O->RD;
+				while(P!=NULL)//ještě kontroluje zda již dříve nebyl uložen stejný pohon
+				{
+						 if(P->name.Pos("Navržený pohon ") && P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==1620.0)//byl-li pohon se stejnými parametry nalezen
+						 nalezen=true;
+						 P=P->dalsi;//posun na další prvek
+				}
+				if(!nalezen)//pokud stále platí, že nebyl nalezen
+				{
+					data+="Navržený pohon "+AnsiString(++i)+", rychlost:"+AnsiString(O->RD*60)+" [m/min] </br>";
+					pole_rychlosti[O->n-1]=O->RD;
+        }
 			}                //indexuje se od nuly
 		}
 		O=O->dalsi;//posun na další prvek
