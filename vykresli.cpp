@@ -221,8 +221,8 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 			case 2:T="POSTPROCESNÍ";break;
 		 }
 		 canv->TextOutW(S.x+4*zAA,S.y+R*zAA,T);//výpis režimu
-		 if(ukaz->pohon->name==NULL)canv->TextOutW(S.x+4*zAA,S.y+33*zAA,"pohon nepřiřazen");//pohon name
-		 canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,UnicodeString(ukaz->pohon->name));//pohon name
+		 if(ukaz->pohon==NULL)canv->TextOutW(S.x+4*zAA,S.y+33*zAA,"pohon nepřiřazen");//pohon name
+		 else canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,UnicodeString(ukaz->pohon->name));//pohon name
 		 if(Form1->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"RD: "+UnicodeString(ukaz->RD)+" m/s");
 		 if(Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"DD: "+UnicodeString(ukaz->delka_dopravniku)+" m");
 		 if(Form1->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"CT: "+UnicodeString(ukaz->CT)+" s");
@@ -1472,27 +1472,29 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 					}
 
 					//popisek
-					if(zbytek<delka && popisek_se_jiz_vypisoval==false)//zajistí, že se vypisuje pouze jednou a navíc v tom z delších segmentů
-					{
-						AnsiString T=O->name.UpperCase();
-						AnsiString T1="K: "+AnsiString(O->kapacita)+"[v] DD: "+AnsiString(O->delka_dopravniku)+" [m]";
-						if(O->rezim==2)T1+=" RD: "+AnsiString(O->RD).SubString(1,5)+" [m/s]";//pokud se jedná o kontinual, tak ještě RD
-						double A=m.azimut(S_puv.x,S_puv.y,S.x,S.y);
-						bool RT=false;//rotace textu ano ne
-						if(A==270 ||  A==90)rotace_textu(canv,0);else {RT=true;rotace_textu(canv,A*10-900);}//rotace textu,ošetření, aby se zprava doleva nevypisovalo obráceně
-						if(!RT)
-						{
-							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T)/2,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextHeight(T),T);//vypíše název objektu uprostřed nad
-							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T1)/2,m.L2Py((S.y+S_puv.y)/2.0),T1);//vypíše parametry objektu uprostřed pod
-						}
-						else
-						{
-							if(A==180){AnsiString Tb=T;T=T1;T1=Tb;}
-							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)+canv->TextHeight(T),m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T)/2,T);//vypíše název objektu uprostřed nad
-							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0),m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T1)/2,T1);//vypíše parametry objektu uprostřed pod
-						}
-						popisek_se_jiz_vypisoval=true;
-					}
+//					if(zbytek<delka && popisek_se_jiz_vypisoval==false)//zajistí, že se vypisuje pouze jednou a navíc v tom z delších segmentů
+//					{
+//						AnsiString T=O->name.UpperCase();
+//						AnsiString T1="K: "+AnsiString(O->kapacita)+"[v] DD: "+AnsiString(O->delka_dopravniku)+" [m]";
+//						if(O->rezim==2)T1+=" RD: "+AnsiString(O->RD).SubString(1,5)+" [m/s]";//pokud se jedná o kontinual, tak ještě RD
+//						double A=m.azimut(S_puv.x,S_puv.y,S.x,S.y);
+//						bool RT=false;//rotace textu ano ne
+//						if(A==270 ||  A==90)rotace_textu(canv,0);else {RT=true;rotace_textu(canv,A*10-900);}//rotace textu,ošetření, aby se zprava doleva nevypisovalo obráceně
+//						if(!RT)
+//						{
+//							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T)/2,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextHeight(T),T);//vypíše název objektu uprostřed nad
+//							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T1)/2,m.L2Py((S.y+S_puv.y)/2.0),T1);//vypíše parametry objektu uprostřed pod
+//						}
+//						else
+//						{
+//							if(A==180){AnsiString Tb=T;T=T1;T1=Tb;}
+//							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)+canv->TextHeight(T),m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T)/2,T);//vypíše název objektu uprostřed nad
+//							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0),m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T1)/2,T1);//vypíše parametry objektu uprostřed pod
+//						}
+//						popisek_se_jiz_vypisoval=true;
+//					}
+
+					//posunutí na další segment vykreslovaného obrazce layoutu
 					if(posunuti_segmentu)i++;
 			}
 		 	while(zbytek>0);
