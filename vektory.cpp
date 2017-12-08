@@ -582,7 +582,7 @@ void Cvektory::generuj_POHONY()
 			bool pohon_nenalezen=true;
 			while(P!=NULL)
 			{
-				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==32.5)//byl-li pohon se stejnými parametry nalezen
+				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==1620.0)//byl-li pohon se stejnými parametry nalezen
 				 {
 						pohon_nenalezen=false;//tzn. že již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
 						//již nepoužíváme O->pohon=P;//přiřazení pohonu k danému objektu
