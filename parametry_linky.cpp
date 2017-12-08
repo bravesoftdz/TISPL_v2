@@ -449,8 +449,26 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
 {
- Form1->d.v.generuj_POHONY();
- nacti_pohony();
+// Form1->d.v.generuj_POHONY();
+// nacti_pohony();
+
+//vykopirovana konstrukce z ADD pohon - kopiruje hodnoty z predchoziho radku
+	rStringGridEd_tab_dopravniky->RowCount++;
+	rStringGridEd_tab_dopravniky->Cols[0]->Add(rStringGridEd_tab_dopravniky->RowCount - 1);
+
+	if (rStringGridEd_tab_dopravniky->RowCount > 2) {
+
+		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
+
+		rStringGridEd_tab_dopravniky->Cells[0][i] = i;
+		rStringGridEd_tab_dopravniky->Cells[1][i] = rStringGridEd_tab_dopravniky->Cells[1][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[2][i] = rStringGridEd_tab_dopravniky->Cells[2][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[3][i] = rStringGridEd_tab_dopravniky->Cells[3][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[4][i] = rStringGridEd_tab_dopravniky->Cells[4][i - 1];
+
+	}
+
+
 
 }
 //---------------------------------------------------------------------------
