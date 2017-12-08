@@ -224,6 +224,20 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 Changes=true;
 		}
 
+		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
+		 int i=1;
+		while(ukaz!=NULL){
+
+		if(Form1->ms.MyToDouble(ukaz->rychlost_od*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]))
+		{  Changes=true;  }
+		if(Form1->ms.MyToDouble(ukaz->rychlost_do*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))
+		{  Changes=true;  }
+		if(Form1->ms.MyToDouble(ukaz->roztec)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]))
+		{  Changes=true;  }
+		 	i++;
+			ukaz=ukaz->dalsi;
+		}
+
 		if(Changes){    //pri zmene + jiz existuje nejaky objekt
 
 			if(mrOk==Form1->MB("Pozor, pøi zmìnì parametrù linky dojde k pøepoèítání parametrù objektù.",MB_OKCANCEL))
@@ -449,24 +463,24 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
 {
-// Form1->d.v.generuj_POHONY();
-// nacti_pohony();
+ Form1->d.v.generuj_POHONY();
+ nacti_pohony();
 
 //vykopirovana konstrukce z ADD pohon - kopiruje hodnoty z predchoziho radku
-	rStringGridEd_tab_dopravniky->RowCount++;
-	rStringGridEd_tab_dopravniky->Cols[0]->Add(rStringGridEd_tab_dopravniky->RowCount - 1);
-
-	if (rStringGridEd_tab_dopravniky->RowCount > 2) {
-
-		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
-
-		rStringGridEd_tab_dopravniky->Cells[0][i] = i;
-		rStringGridEd_tab_dopravniky->Cells[1][i] = rStringGridEd_tab_dopravniky->Cells[1][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[2][i] = rStringGridEd_tab_dopravniky->Cells[2][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[3][i] = rStringGridEd_tab_dopravniky->Cells[3][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[4][i] = rStringGridEd_tab_dopravniky->Cells[4][i - 1];
-
-	}
+//	rStringGridEd_tab_dopravniky->RowCount++;
+//	rStringGridEd_tab_dopravniky->Cols[0]->Add(rStringGridEd_tab_dopravniky->RowCount - 1);
+//
+//	if (rStringGridEd_tab_dopravniky->RowCount > 2) {
+//
+//		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
+//
+//		rStringGridEd_tab_dopravniky->Cells[0][i] = i;
+//		rStringGridEd_tab_dopravniky->Cells[1][i] = rStringGridEd_tab_dopravniky->Cells[1][i - 1];
+//		rStringGridEd_tab_dopravniky->Cells[2][i] = rStringGridEd_tab_dopravniky->Cells[2][i - 1];
+//		rStringGridEd_tab_dopravniky->Cells[3][i] = rStringGridEd_tab_dopravniky->Cells[3][i - 1];
+//		rStringGridEd_tab_dopravniky->Cells[4][i] = rStringGridEd_tab_dopravniky->Cells[4][i - 1];
+//
+//	}
 
 
 
