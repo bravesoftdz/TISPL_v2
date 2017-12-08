@@ -3283,33 +3283,8 @@ void TForm1::nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned in
 //zajistí report do Formátu CSV nebo JPG
 void __fastcall TForm1::csv1Click(TObject *Sender)
 {
-	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
-		MB("Žádná data k reportu!");
-	else
-	{
-		//příprava SaveDialogu
-		SaveDialog->Title="Vytvořit report...";
-		SaveDialog->DefaultExt="*.csv";
-		SaveDialog->Filter="Soubory formátu CSV (*.csv)|*.csv|Soubory formátu XLS (*.xls)|*.xls";
+	// puvodni export do csv
 
-		//předvyplnění názvem stejnojmeným souboru
-		UnicodeString FN=FileName;
-		if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
-		SaveDialog->FileName=FN;
-
-		if(SaveDialog->Execute())
-		{
-			Screen->Cursor=crHourGlass;//změní kurzor na přesýpací hodiny
-			//nastavení formátu
-			UnicodeString export_format="csv";
-			if(SaveDialog->FileName.SubString(SavePictureDialog1->FileName.Length()-2,3).LowerCase() =="xls")export_format="xls";
-			//samotné uložení
-			if(Form_report->ulozit_report(SaveDialog->FileName)==1)SB("Report do "+export_format+" dokončen.");else SB("Chyba při tvorbě reportu!");
-			//postprocesní záležitost
-			Screen->Cursor=crDefault;//změní kurzor na default
-			ShellExecute(0,L"open",UnicodeString(SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup
-		}
-	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::html1Click(TObject *Sender)

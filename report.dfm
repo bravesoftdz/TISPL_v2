@@ -437,7 +437,7 @@ object Form_report: TForm_report
       TransparentBackground = True
       StorePaintBuffer = True
       object scButton_csv: TscButton
-        Left = 0
+        Left = 30
         Top = 0
         Width = 34
         Height = 34
@@ -454,7 +454,7 @@ object Form_report: TForm_report
         Spacing = 1
         Layout = blGlyphLeft
         Images = Form1.scGPVirtualImageList1
-        ImageIndex = 33
+        ImageIndex = 41
         ImageMargin = 0
         TransparentBackground = True
         ColorOptions.NormalColor = clBtnFace
@@ -524,17 +524,19 @@ object Form_report: TForm_report
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ExplicitLeft = 0
       end
       object scButton_html: TscButton
-        Left = 34
+        Left = 0
         Top = 0
-        Width = 36
+        Width = 30
         Height = 34
         Align = alLeft
         ParentShowHint = False
         ShowHint = True
         TabOrder = 1
         TabStop = True
+        OnClick = scButton_htmlClick
         Animation = False
         CanFocused = True
         CustomDropDown = False
@@ -542,7 +544,7 @@ object Form_report: TForm_report
         Spacing = 1
         Layout = blGlyphLeft
         Images = Form1.scGPVirtualImageList1
-        ImageIndex = 32
+        ImageIndex = 45
         ImageMargin = 0
         TransparentBackground = True
         ColorOptions.NormalColor = clWhite
@@ -611,6 +613,8 @@ object Form_report: TForm_report
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ExplicitLeft = -6
+        ExplicitTop = -6
       end
     end
   end

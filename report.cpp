@@ -401,13 +401,39 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		return 1;
 
 		}
-		catch(...){;Form1->MB("Chyba pøi otevírání reportu");}
+		catch(...){;}
 }
 
 
 void __fastcall TForm_report::scButton_csvClick(TObject *Sender)
 {
-ShowMessage("ahoj");
+if(Form1->d.v.OBJEKTY->dalsi==NULL)//pokud existují nìjaka data
+		Form1->MB("Žádná data k reportu!");
+	else
+	{
+		//pøíprava SaveDialogu
+		Form1->SaveDialog->Title="Vytvoøit report...";
+		Form1->SaveDialog->DefaultExt="*.csv";
+		Form1->SaveDialog->Filter="Soubory formátu CSV (*.csv)|*.csv|Soubory formátu XLS (*.xls)|*.xls";
+
+		//pøedvyplnìní názvem stejnojmeným souboru
+		UnicodeString FN=Form1->FileName;
+		if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
+		Form1->SaveDialog->FileName=FN;
+
+		if(Form1->SaveDialog->Execute())
+		{
+			Screen->Cursor=crHourGlass;//zmìní kurzor na pøesýpací hodiny
+			//nastavení formátu
+			UnicodeString export_format="csv";
+			if(Form1->SaveDialog->FileName.SubString(Form1->SavePictureDialog1->FileName.Length()-2,3).LowerCase() =="xls")export_format="xls";
+			//samotné uložení
+			if(Form_report->ulozit_report(Form1->SaveDialog->FileName)==1)Form1->SB("Report do "+export_format+" dokonèen.");else Form1->SB("Chyba pøi tvorbì reportu!");
+			//postprocesní záležitost
+			Screen->Cursor=crDefault;//zmìní kurzor na default
+			ShellExecute(0,L"open",UnicodeString(Form1->SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevøe výstup
+		}
+	}
 }
 //---------------------------------------------------------------------------
 
@@ -436,6 +462,40 @@ void __fastcall TForm_report::MaxButtonClick(TObject *Sender)
 		 //	scSplitView_OPTIONS->Opened=false;
 		//	scSplitView_MENU->Opened=false;
 	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_report::scButton_htmlClick(TObject *Sender)
+{
+
+if(Form1->d.v.OBJEKTY->dalsi==NULL)//pokud existují nìjaka data
+		Form1->MB("Žádná data k reportu!");
+	else
+	{
+		//pøíprava SaveDialogu
+		Form1->SaveDialog->Title="Vytvoøit report...";
+		Form1->SaveDialog->DefaultExt="*.html";
+		Form1->SaveDialog->Filter="Soubory formátu HTML (*.html)|*.html";
+
+		//pøedvyplnìní názvem stejnojmeným souboru
+		UnicodeString FN=Form1->FileName;
+		if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
+		Form1->SaveDialog->FileName=FN;
+
+		if(Form1->SaveDialog->Execute())
+		{
+			Screen->Cursor=crHourGlass;//zmìní kurzor na pøesýpací hodiny
+			//nastavení formátu
+			UnicodeString export_format="html";
+			if(Form1->SaveDialog->FileName.SubString(Form1->SavePictureDialog1->FileName.Length()-2,3).LowerCase() =="html")export_format="html";
+			//samotné uložení
+			if(Form_report->ulozit_report(Form1->SaveDialog->FileName)==1)Form1->SB("Report do "+export_format+" dokonèen.");else Form1->SB("Chyba pøi tvorbì reportu!");
+			//postprocesní záležitost
+			Screen->Cursor=crDefault;//zmìní kurzor na default
+			ShellExecute(0,L"open",UnicodeString(Form1->SaveDialog->FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevøe výstup
+		}
+	}
+
 }
 //---------------------------------------------------------------------------
 

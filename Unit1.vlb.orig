@@ -34,14 +34,6 @@ Coordinates=10,212,59,58
 [Button5]
 Coordinates=901,212,59,58
 
-<<<<<<< HEAD
-[scGPPanel2]
-Coordinates=751,556,86,36
-=======
-[ComboBoxCekani]
-Coordinates=382,10,118,124
->>>>>>> 4e82051b4f9ebf2afa774f0f12d265f90e6ccdc3
-
 [Memo1]
 Coordinates=179,144,64,58
 
@@ -78,9 +70,6 @@ Coordinates=125,556,100,36
 [scGPTrackBar1]
 Coordinates=10,556,105,36
 
-[Posunout3]
-Coordinates=238,557,76,36
-
 [TeeGDIPlus4]
 Coordinates=139,557,91,36
 
@@ -96,41 +85,17 @@ Coordinates=952,10,59,58
 [FDQuery1]
 Coordinates=686,144,73,58
 
-[N5]
-Coordinates=0,329,40,36
-
-[Ulozit]
-Coordinates=1046,510,47,36
-
-[Smazat1]
-Coordinates=1135,1,65,36
-
 [OpenDialog1]
 Coordinates=1135,111,90,36
 
-[Nastvitparametry1]
-Coordinates=1135,166,119,36
-
-[Otevrit]
-Coordinates=983,510,53,36
-
 [Timer_backup]
 Coordinates=1135,221,96,36
-
-[Oddalit2]
-Coordinates=1135,276,63,36
-
-[PopupMenu1]
-Coordinates=1135,331,90,36
 
 [Label_wip]
 Coordinates=832,144,72,58
 
 [TeeGDIPlus2]
 Coordinates=1135,496,91,36
-
-[Priblizit2]
-Coordinates=1135,551,64,36
 
 [ButtonPLAY]
 Coordinates=510,10,84,58
@@ -144,35 +109,20 @@ Coordinates=511,510,104,36
 [SaveDialog]
 Coordinates=838,631,80,36
 
-[scRadioGroup1]
-Coordinates=397,510,104,36
-
 [Button9]
 Coordinates=617,144,59,58
 
 [CheckBox_pouzit_zadane_kapacity]
 Coordinates=301,212,218,58
 
-[Rychlexport1]
-Coordinates=353,631,90,36
-
-[NovySoubor]
-Coordinates=10,510,85,36
-
 [Timer_animace]
 Coordinates=155,631,103,36
-
-[editacelinky1]
-Coordinates=1113,464,89,36
 
 [Series7]
 Coordinates=1297,1,58,36
 
 [ImageList1]
 Coordinates=1297,111,77,36
-
-[scCheckBox2]
-Coordinates=838,464,93,36
 
 [RzToolButton8]
 Coordinates=661,464,100,36
@@ -201,15 +151,6 @@ Coordinates=253,144,90,58
 [rComboBoxKrok]
 Coordinates=264,10,108,124
 
-[IdTime1]
-Coordinates=1297,606,61,36
-
-[Posouvat2]
-Coordinates=1297,661,75,36
-
-[scGPSizeBox1]
-Coordinates=120,464,100,36
-
 [Button10]
 Coordinates=225,212,66,58
 
@@ -230,9 +171,6 @@ Coordinates=843,418,100,36
 
 [FDConnection1]
 Coordinates=229,705,104,36
-
-[Button11]
-Coordinates=1046,144,66,58
 
 [RzSpacer1]
 Coordinates=755,418,78,36
@@ -264,9 +202,6 @@ Coordinates=142,212,73,58
 [Button1]
 Coordinates=977,144,59,58
 
-[scCheckBox1]
-Coordinates=1004,372,93,36
-
 [Konec]
 Coordinates=809,372,51,36
 
@@ -284,9 +219,6 @@ Coordinates=10,10,117,124
 
 [PopupMenuButton]
 Coordinates=564,372,121,36
-
-[Zobrazitparametry1]
-Coordinates=1090,779,126,36
 
 [RzToolButton10]
 Coordinates=447,372,107,36
@@ -309,26 +241,17 @@ Coordinates=10,372,100,36
 [technologickprocesy1]
 Coordinates=941,326,138,36
 
-[Vybratoknem2]
-Coordinates=90,779,97,36
-
 [scGPButton1]
 Coordinates=841,326,90,36
 
 [scLabel16]
 Coordinates=455,326,73,36
 
-[scGPSwitch4]
-Coordinates=354,326,91,36
-
 [scButton4]
 Coordinates=272,326,72,36
 
 [scButton5]
 Coordinates=10,326,72,36
-
-[scGPSwitch5]
-Coordinates=1004,280,91,36
 
 [scGPGlyphButton15]
 Coordinates=863,280,131,36
@@ -355,28 +278,179 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-<<<<<<< HEAD
-Coordinates=382,10,118,124
-=======
-Coordinates=1179,705,90,36
->>>>>>> 4e82051b4f9ebf2afa774f0f12d265f90e6ccdc3
+Coordinates=1617,276,108,36
 Visible=True
 
 [scSplitView_OPTIONS]
-Coordinates=540,418,88,36
+Coordinates=540,418,145,36
 
 [scGPGlyphButton_ZOOM_MINUS]
-Coordinates=849,510,124,36
+Coordinates=849,510,210,36
 
 [scGPGlyphButton_ZOOM_PLUS]
-Coordinates=870,372,124,36
+Coordinates=870,372,202,36
 
 [scGPPanel_statusbar]
-Coordinates=1017,464,86,36
+Coordinates=1017,464,139,36
 
-[scGPPanel_mainmenu]
-Coordinates=751,556,86,36
+[SQL_processID]
+Coordinates=1046,144,105,58
+
+[scGPSizeBox]
+Coordinates=120,464,93,36
+
+[hl_spojak_zakazky]
+Coordinates=411,446,122,58
+
+[CheckBoxVymena_barev]
+Coordinates=576,87,159,36
+
+[scLabel15]
+Coordinates=557,221,73,36
+
+[scExPanel_vrstvy]
+Coordinates=381,1,116,36
+
+[scLabel14]
+Coordinates=557,276,73,36
+
+[scListGroupKnihovObjektu]
+Coordinates=1412,56,167,36
+
+[ComboBoxCekani]
+Coordinates=410,87,118,36
+
+[pravyoption_nadpis]
+Coordinates=809,87,126,36
+
+[scGPSwitch_meritko]
+Coordinates=1292,166,133,36
 
 [scLabel_titulek]
-Coordinates=1035,418,66,36
+Coordinates=110,354,100,36
+
+[scLabel_ZOOM]
+Coordinates=773,335,104,36
+
+[DrawGrid_knihovna]
+Coordinates=1292,221,127,36
+
+[simulace]
+Coordinates=73,249,65,36
+
+[scButton7]
+Coordinates=770,542,72,36
+
+[scButton8]
+Coordinates=1204,1,72,36
+
+[Memo2]
+Coordinates=35,153,64,58
+
+[scSplitView_MENU]
+Coordinates=1322,276,125,36
+
+[scSplitView_LEFTTOOLBAR]
+Coordinates=1463,111,180,36
+
+[CheckBoxVytizenost]
+Coordinates=1322,331,132,36
+
+[scButton2]
+Coordinates=1204,276,72,36
+
+[scGPPanel_mainmenu]
+Coordinates=1322,441,145,36
+
+[scButton9]
+Coordinates=957,631,72,36
+
+[button_zakazky_temp]
+Coordinates=104,153,139,58
+
+[scListGroupNastavProjektu]
+Coordinates=1463,166,171,36
+
+[scExPanel_ostatni]
+Coordinates=1322,496,120,36
+
+[layout]
+Coordinates=1145,631,49,36
+
+[scLabel5]
+Coordinates=640,631,66,36
+
+[scLabel4]
+Coordinates=284,631,66,36
+
+[(TMenuItem)]
+Coordinates=1463,331,88,36
+
+[scLabel_doba_cekani]
+Coordinates=86,631,139,36
+
+[scGPGlyphButton_definice_zakazek]
+Coordinates=511,631,222,36
+
+[scGPGlyphButton_parametry_linky]
+Coordinates=709,631,215,36
+
+[IdTime1]
+Coordinates=1297,606,61,36
+
+[Toolbar_Ulozit]
+Coordinates=1046,510,98,36
+
+[Toolbar_Otevrit]
+Coordinates=983,510,103,36
+
+[Toolbar_NovySoubor]
+Coordinates=10,510,136,36
+
+[zalozka_schema]
+Coordinates=1113,464,110,36
+
+[Button11]
+Coordinates=538,323,66,58
+
+[scGPSwitch_rezim]
+Coordinates=632,335,122,36
+
+[scExPanel_log_header]
+Coordinates=1110,331,147,36
+
+[scButton10]
+Coordinates=792,221,79,36
+
+[scHTMLLabel_log_vypis]
+Coordinates=1681,1,154,36
+
+[GlyphButton_close_grafy]
+Coordinates=1681,56,158,36
+
+[scButton_ulozit]
+Coordinates=402,631,102,36
+
+[scGPGlyphButton_zpravy_ikona]
+Coordinates=1492,221,199,36
+
+[scButton_report]
+Coordinates=1204,551,72,36
+
+[scLabel_architekt]
+Coordinates=1204,56,66,36
+
+[scLabel_klient]
+Coordinates=249,542,66,36
+
+<<<<<<< HEAD
+[scButton_CSV_report]
+Coordinates=1110,276,79,36
+=======
+[scGPSwitch_grid]
+Coordinates=1004,280,91,36
+
+[scGPSwitch_AA]
+Coordinates=354,326,91,36
+>>>>>>> cc146e819820d5731f5daf3130055338499ded53
 
