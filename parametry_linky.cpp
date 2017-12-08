@@ -207,16 +207,44 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
+	bool Changes=false;
+	bool Ulozit=true;
 
 
-//pri zmene TT
-	if(Form1->ms.MyToDouble(rEditNum_takt->Text) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
+	//pri zmene TT
+		if(Form1->ms.MyToDouble(rEditNum_takt->Text) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		 Changes=true;
+		}
+		//pri zmene delky voziku
+		if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		 Changes=true;
+		}
+		//pri zmene sirky voziku
+			if(Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		 Changes=true;
+		}
 
-     Form1->d.v.aktualizace_objektu();
+		if(Changes){    //pri zmene + jiz existuje nejaky objekt
+
+			if(mrOk==Form1->MB("Pozor, pøi zmìnì parametrù linky dojde k pøepoèítání parametrù objektù.",MB_OKCANCEL))
+			{  // OK souhlas se zmenou parametru
+				Ulozit=true;
+			}
+			else { Ulozit=false;} // cancel - data nebudu ukladat
 	}
+
+			if (Form1->d.v.OBJEKTY->dalsi==NULL) {  // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
+					Ulozit=true;
+			}
+
+		if (Ulozit) {  // ukladej
 
 		Form1->d.v.vymaz_seznam_POHONY();
 		Form1->d.v.hlavicka_POHONY();
+
+			 if (Form1->d.v.OBJEKTY->dalsi!=NULL) {  // kdyz ukladam a existuje i nejaky objekt tak udelam aktualizaci obj.
+				Form1->d.v.aktualizace_objektu();
+		 }
 
 		for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 		{
@@ -235,6 +263,15 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 		Form1->DuvodUlozit(true);
 		Form_parametry_linky->Close();
+
+		}
+
+		else {     //stisknul storno - zustavam na PL a nic jsem neulozil
+
+		   Form1->DuvodUlozit(false);
+
+
+		}
 }
 //---------------------------------------------------------------------------
 
@@ -320,10 +357,7 @@ void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
 
       //Sleep(3000);    - sice poèká, ale do editu nejde nic psát
 
-	if(Form1->ms.MyToDouble(rEditNum_takt->Text) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
 
-
-		Form1->MB("Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.",MB_OK);
 	 //	scLabel_TT_change_hint->Visible=true;
 	 //	scLabel_TT_change_hint->Caption="Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.";
 
@@ -331,7 +365,7 @@ void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
 	 //	rEditNum_takt->Hint="Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.";
 
 
-		}
+
    // scLabel_TT_change_hint->Visible=false;
 
 }
