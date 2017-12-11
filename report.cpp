@@ -221,6 +221,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
    // zobrazení dat ze zakázek
 
+ if(Form1->STATUS==Form1->OVEROVANI)  {
 
 	if(Form1->d.v.ZAKAZKY->predchozi!=NULL  && Form1->d.v.OBJEKTY->predchozi!=NULL)//pokud existuje alespoò jedna zakázka a nìjakı objekt
 {
@@ -269,10 +270,11 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		Z=Z->dalsi;
 
 		data+="</tbody></table></br>";
-	}
-}
-		data+="</form></div>";
+			}
+		}
 
+		data+="</form></div>";
+		}
 
 
 	}
@@ -312,6 +314,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 				}
 
       	data+="\n";
+
+      // pokud existuje alespon jedna zakazka, ktera ma objekt a zaroven jsem na urovni Klienta tak vypisu zakazky
 
 			if(Form1->d.v.ZAKAZKY->predchozi!=NULL  && Form1->d.v.OBJEKTY->predchozi!=NULL)//pokud existuje alespoò jedna zakázka a nìjakı objekt
 {
@@ -381,14 +385,6 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		MemoryStream->Write(data.c_str(),data.Length());//Win kodování
 		MemoryStream->SaveToFile(FileName);
 
-
-
-			//Form1->scExPanel_html->Visible=true;
-			//Form1->scExPanel_html->Top=Form1->scGPPanel_mainmenu->Height*2;
-			//Form1->scExPanel_html->Left=Form1->scListGroupNastavProjektu->Width*2-50;
-		 //	Form1->scExPanel_html->Width=Form1->ClientWidth-400;
-		 //	Form1->scExPanel_html->Height=Form1->ClientHeight-100;
-		 //	Form1->WebBrowser1->Navigate(FileName);
 
 		 if (export_format==3) {
        	WebBrowser1->Navigate(FileName);
