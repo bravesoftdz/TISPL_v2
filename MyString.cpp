@@ -206,7 +206,7 @@ UnicodeString  TMyString::TrimLeftFrom_UTF(UnicodeString  Text, UnicodeString Tr
 	return "";
 }
 //---------------------------------------------------------------------------
-//ožízne řetezec od textu, to co následuje znaku, vrátí
+//ožízne řetezec od textu, to co následuje textu, vrátí
 UnicodeString TMyString::TrimLeftFromText(UnicodeString Text, UnicodeString Trim)
 {
 	unsigned int Pos=Text.Pos(Trim);
