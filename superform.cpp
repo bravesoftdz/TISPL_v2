@@ -346,6 +346,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				 Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]*60);
 				 Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]*60);
 					}
+
 						Form1->d.v.vloz_segment_cesty
 						(
 							zakazka,
@@ -362,18 +363,6 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 				Form_cesty->rStringGridEd_cesty->Rows[i]->Clear();
 
 			}
-
-				Cvektory::TObjekt *Obj=Form1->d.v.OBJEKTY->dalsi;
-				Cvektory::TCesta *Cesta=Form1->d.v.obsahuje_segment_cesty_objekt(Obj,zakazka);
-
-			 while(Obj!=NULL){
-
-			 Obj->CT=Cesta->CT;
-			 Obj->RD=Cesta->RD;
-
-			 Obj=Obj->dalsi;
-
-			 }
 		}
 	}
 }
@@ -449,7 +438,20 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 				//samotné uložení
 				Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();//uložení do ostrého spojáku ZAKAZKY+smáznutí ZAKAZKY_temp
 				Form1->d.v.generuj_VOZIKY();//vygenerování vozíkù dle zadaných zakázek
-				Form_definice_zakazek->Close();//zavøení formuláøe s následným DuvodUlozit(true) po modalshow v unit1
+				//konstrukce která má vzít CT objektu z první zakázky a našit ho do CT objektù
+				Cvektory::TObjekt *Obj=Form1->d.v.OBJEKTY->dalsi;
+				while(Obj!=NULL)
+				{
+					Cvektory::TCesta *Segment_cesty=Form1->d.v.obsahuje_segment_cesty_objekt(Obj,Form1->d.v.ZAKAZKY->dalsi);
+					if(Segment_cesty!=NULL)
+					{
+						Obj->CT=Segment_cesty->CT;//ShowMessage(Obj->CT);
+						Obj->RD=Segment_cesty->RD;
+					}
+					Obj=Obj->dalsi;
+				}
+				//zavøení formuláøe s následným DuvodUlozit(true) po modalshow v unit1
+				Form_definice_zakazek->Close();
 		}
 }
 //---------------------------------------------------------------------------

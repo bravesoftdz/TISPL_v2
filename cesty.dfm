@@ -5,7 +5,7 @@ object Form_cesty: TForm_cesty
   BorderStyle = bsNone
   Caption = 'Zad'#225'n'#237' cesty'
   ClientHeight = 598
-  ClientWidth = 969
+  ClientWidth = 871
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -209,6 +209,15 @@ object Form_cesty: TForm_cesty
         TitleParentFont = False
         TitleAlignment = taCenter
       end>
+    ColWidths = (
+      71
+      101
+      90
+      120
+      120
+      120
+      120
+      120)
     RowHeights = (
       30
       30)
@@ -216,7 +225,7 @@ object Form_cesty: TForm_cesty
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 969
+    Width = 871
     Height = 34
     Align = alTop
     TabOrder = 1
@@ -244,9 +253,10 @@ object Form_cesty: TForm_cesty
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 969
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 919
+      Left = 821
       Top = 0
       Width = 50
       Height = 33
@@ -323,10 +333,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 919
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 819
+      Left = 721
       Top = 0
       Width = 50
       Height = 33
@@ -400,10 +411,11 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 819
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 869
+      Left = 771
       Top = 0
       Width = 50
       Height = 33
@@ -477,11 +489,12 @@ object Form_cesty: TForm_cesty
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 869
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 819
+      Width = 721
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -508,6 +521,7 @@ object Form_cesty: TForm_cesty
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Technologick'#233' cesty'
+      ExplicitWidth = 819
     end
     object scGPButton_min_sec: TscGPButton
       Left = 744
