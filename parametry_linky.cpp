@@ -225,17 +225,17 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		}
 
 		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
-		 int i=1;
-		while(ukaz!=NULL){
-
-		if(Form1->ms.MyToDouble(ukaz->rychlost_od*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]))
-		{  Changes=true;  }
-		if(Form1->ms.MyToDouble(ukaz->rychlost_do*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))
-		{  Changes=true;  }
-		if(Form1->ms.MyToDouble(ukaz->roztec)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]))
-		{  Changes=true;  }
-		 	i++;
-			ukaz=ukaz->dalsi;
+		int i=1;
+		while(ukaz!=NULL)
+		{
+				if(Form1->ms.MyToDouble(ukaz->rychlost_od*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]))
+				{  Changes=true;  }
+				if(Form1->ms.MyToDouble(ukaz->rychlost_do*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))
+				{  Changes=true;  }
+				if(Form1->ms.MyToDouble(ukaz->roztec)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]))
+				{  Changes=true;  }
+				i++;
+				ukaz=ukaz->dalsi;
 		}
 
 		if(Changes){    //pri zmene + jiz existuje nejaky objekt

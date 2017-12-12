@@ -29,6 +29,10 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner)
 	//matamaticky exaktní napozicování tlaèítek OK a storno
 	Form1->m.designButton(scGPButton_OK,Form_parametry,1,2);
 	Form1->m.designButton(scGPButton_storno,Form_parametry,2,2);
+
+	//výchozí nastavení zámkù
+	CT_zamek=UNLOCKED;
+	RD_zamek=LOCKED;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
@@ -249,7 +253,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 		case POHON:
 		{
 		 ////ošetøení pokud není nadefinován žádný pohon
-			if(!Form_parametry->existuje_pohon)S=READONLY;
+			if(!existuje_pohon)S=READONLY;
 		 ////pozice
 			if(move)
 			{
@@ -290,8 +294,8 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 			switch (S)
 			{
 				case HIGHLIGHT:scGPNumericEdit_CT->Options->FrameNormalColor=hl_color;scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;break;
-				case ENABLED:	/*scButton_zamek_CT->ImageIndex=31;CT_zamek=UNLOCKED;*/break;
-				case DISABLED:scGPNumericEdit_CT->Enabled=false;/*scButton_zamek_CT->ImageIndex=30;CT_zamek=LOCKED;*/break;
+				case ENABLED:	/*scButton_zamek_CT->ImageIndex=38;CT_zamek=UNLOCKED;*/break;
+				case DISABLED:scGPNumericEdit_CT->Enabled=false;/*scButton_zamek_CT->ImageIndex=37;CT_zamek=LOCKED;*/break;
 				case READONLY:scGPNumericEdit_CT->Options->ShapeStyle=scgpessNone;scButton_zamek_CT->Visible=false;scGPNumericEdit_CT->Enabled=false;break;
 				case HIDE:		rHTMLLabel_CT->Visible=false;scGPNumericEdit_CT->Visible=false;scButton_zamek_CT->Visible=false;if(move)offset-=O;break;
 			}
@@ -315,8 +319,8 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 			switch (S)
 			{
 				case HIGHLIGHT:scGPNumericEdit_RD->Options->FrameNormalColor=hl_color;scGPNumericEdit_RD->Options->FrameWidth=hlFrameWidth;
-				case ENABLED:	/*scButton_zamek_RD->ImageIndex=31;RD_zamek=UNLOCKED;*/break;
-				case DISABLED:/*scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->ImageIndex=30;RD_zamek=UNLOCKED;*/break;
+				case ENABLED:	/*scButton_zamek_RD->ImageIndex=38;RD_zamek=UNLOCKED;*/break;
+				case DISABLED:/*scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->ImageIndex=37;RD_zamek=UNLOCKED;*/break;
 				case READONLY:scGPNumericEdit_RD->Options->ShapeStyle=scgpessNone;scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->Visible=false;break;
 				case HIDE:		rHTMLLabel_RD->Visible=false;scGPNumericEdit_RD->Visible=false;scButton_zamek_RD->Visible=false;if(move)offset-=O;break;
 			}
@@ -340,8 +344,8 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 			switch (S)
 			{
 				case HIGHLIGHT:scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor=hl_color;scGPNumericEdit_delka_dopravniku->Options->FrameWidth=hlFrameWidth;break;
-				case ENABLED:	scButton_zamek_DD->ImageIndex=31;DD_zamek=UNLOCKED;break;
-				case DISABLED:scGPNumericEdit_delka_dopravniku->Enabled=false;scButton_zamek_DD->ImageIndex=30;DD_zamek=LOCKED;break;
+				case ENABLED:	scButton_zamek_DD->ImageIndex=38;DD_zamek=UNLOCKED;break;
+				case DISABLED:scGPNumericEdit_delka_dopravniku->Enabled=false;scButton_zamek_DD->ImageIndex=37;DD_zamek=LOCKED;break;
 				case READONLY:scGPNumericEdit_delka_dopravniku->Options->ShapeStyle=scgpessNone;scGPNumericEdit_delka_dopravniku->Enabled=false;scButton_zamek_DD->Visible=false;break;
 				case HIDE:		rHTMLLabel_delka_dopravniku->Visible=false;scGPNumericEdit_delka_dopravniku->Visible=false;scButton_zamek_DD->Visible=false;if(move)offset-=O;break;
 			}
@@ -1275,22 +1279,22 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 //zámek procesního èasu
 void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 {
-	if(scButton_zamek_CT->ImageIndex==30)//když je zamèeno
+	if(scButton_zamek_CT->ImageIndex==37)//když je zamèeno
 	{
 		//CT
-		scButton_zamek_CT->ImageIndex=31;
+		scButton_zamek_CT->ImageIndex=38;
 		CT_zamek=UNLOCKED;
 		//RD
-		scButton_zamek_RD->ImageIndex=30;
+		scButton_zamek_RD->ImageIndex=37;
 		RD_zamek=LOCKED;
 	}
 	else//odemèeno
 	{
 		//CT
-		scButton_zamek_CT->ImageIndex=30;
+		scButton_zamek_CT->ImageIndex=37;
 		CT_zamek=LOCKED;
 		//RD
-		scButton_zamek_RD->ImageIndex=31;
+		scButton_zamek_RD->ImageIndex=38;
 		RD_zamek=UNLOCKED;
 	}
 
@@ -1299,15 +1303,15 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 //zámek délky dopravníku
 void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 {
-	if(scButton_zamek_DD->ImageIndex==30)//když je zamèeno
+	if(scButton_zamek_DD->ImageIndex==37)//když je zamèeno
 	{
-		scButton_zamek_DD->ImageIndex=31;
+		scButton_zamek_DD->ImageIndex=38;
 		DD_zamek=UNLOCKED;
 		set(DELKA,ENABLED,false);
 	}
 	else//odemèeno
 	{
-		scButton_zamek_DD->ImageIndex=30;
+		scButton_zamek_DD->ImageIndex=37;
 		DD_zamek=LOCKED;
 		set(DELKA,DISABLED,false);
 	}

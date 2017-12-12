@@ -62,9 +62,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_kapacita: TrHTMLLabel
     Left = 8
     Top = 296
-    Width = 208
+    Width = 120
     Height = 19
-    Caption = 'Po'#382'adovan'#225' kapacita [voz'#237'k'#367']'
+    Caption = 'Kapacita [voz'#237'k'#367']'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -2378,7 +2378,7 @@ object Form_parametry: TForm_parametry
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 37
+    ImageIndex = 38
     ImageMargin = 0
     TransparentBackground = True
     ColorOptions.NormalColor = clBtnFace
@@ -2450,7 +2450,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_zamek_DD: TscButton
     Left = 204
-    Top = 250
+    Top = 270
     Width = 28
     Height = 29
     TabOrder = 23
@@ -2547,7 +2547,7 @@ object Form_parametry: TForm_parametry
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 38
+    ImageIndex = 37
     ImageMargin = 0
     TransparentBackground = True
     ColorOptions.NormalColor = clBtnFace
