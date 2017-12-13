@@ -278,7 +278,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=1617,276,108,36
+Coordinates=1110,276,79,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -442,9 +442,6 @@ Coordinates=1204,56,66,36
 
 [scLabel_klient]
 Coordinates=249,542,66,36
-
-[scButton_CSV_report]
-Coordinates=1110,276,79,36
 
 [scGPSwitch_AA]
 Coordinates=354,326,91,36

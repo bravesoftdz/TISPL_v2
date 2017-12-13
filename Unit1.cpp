@@ -602,8 +602,6 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	//casovosa1->Checked=false;
 	//technologickprocesy1->Checked=false;
 	scSplitView_LEFTTOOLBAR->Visible=true;
-	scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
 	scListGroupNastavProjektu->Top=0;
 	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
@@ -671,8 +669,6 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 {
 	MOD=LAYOUT;
 	scSplitView_LEFTTOOLBAR->Visible=false;
-	scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
 	ESC();//zruší případně rozdělanou akci
 	SB("Layout",1);
 	//Zoom=5;ZOOM();
@@ -741,8 +737,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			//zneplatnit_minulesouradnice();//zrušeno test
 			DuvodUlozit(true);
 			scSplitView_LEFTTOOLBAR->Visible=false;
-			scSplitView_OPTIONS->Opened=false;
-			scSplitView_MENU->Opened=false;
+
 			scListGroupNastavProjektu->Visible=false;
 			scListGroupKnihovObjektu->Visible=false;
 			//PopupMenu1->AutoPopup=true;
@@ -810,8 +805,6 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 
 	g.ShowGrafy(false);
 	DuvodUlozit(true);
-		scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
 	//PopupMenu1->AutoPopup=false;
@@ -879,8 +872,6 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	//CheckBoxPALCE->Visible=false;
 	g.ShowGrafy(false);
 	DuvodUlozit(true);
-		scSplitView_OPTIONS->Opened=false;
-	scSplitView_MENU->Opened=false;
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
 	//PopupMenu1->AutoPopup=false;

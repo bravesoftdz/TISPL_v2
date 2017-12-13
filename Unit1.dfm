@@ -3938,7 +3938,7 @@ object Form1: TForm1
     end
     object scButton4: TscButton
       Left = 0
-      Top = 294
+      Top = 269
       Width = 0
       Height = 46
       Align = alTop
@@ -4027,6 +4027,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitTop = 294
     end
     object scButton5: TscButton
       Left = 0
@@ -4122,7 +4123,7 @@ object Form1: TForm1
     end
     object scButton_report: TscButton
       Left = 0
-      Top = 244
+      Top = 219
       Width = 0
       Height = 25
       Align = alTop
@@ -4211,6 +4212,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 244
     end
     object scGPSwitch_AA: TscGPSwitch
       Left = 100
@@ -4410,7 +4412,7 @@ object Form1: TForm1
     end
     object scButton8: TscButton
       Left = 0
-      Top = 269
+      Top = 244
       Width = 0
       Height = 25
       Align = alTop
@@ -4499,6 +4501,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 269
     end
     object scButton9: TscButton
       Left = 0
@@ -4829,104 +4832,12 @@ object Form1: TForm1
       AllowAllUp = True
       WordWrap = False
     end
-    object scButton_CSV_report: TscButton
-      Left = 0
-      Top = 219
-      Width = 0
-      Height = 25
-      Align = alTop
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 17
-      OnClick = csv1Click
-      Animation = False
-      Caption = 'Report CSV'
-      CanFocused = False
-      CustomDropDown = False
-      Margin = 0
-      Spacing = 10
-      Layout = blGlyphLeft
-      ImageIndex = 2
-      ImageMargin = 50
-      TransparentBackground = False
-      ColorOptions.NormalColor = 8538404
-      ColorOptions.HotColor = 7159583
-      ColorOptions.PressedColor = 5648664
-      ColorOptions.FocusedColor = 657930
-      ColorOptions.DisabledColor = 8538404
-      ColorOptions.FrameNormalColor = clNone
-      ColorOptions.FrameHotColor = clNone
-      ColorOptions.FramePressedColor = clNone
-      ColorOptions.FrameFocusedColor = clNone
-      ColorOptions.FrameDisabledColor = clBtnShadow
-      ColorOptions.FrameWidth = 0
-      ColorOptions.FontNormalColor = clWhite
-      ColorOptions.FontHotColor = clWhite
-      ColorOptions.FontPressedColor = clWhite
-      ColorOptions.FontFocusedColor = clWhite
-      ColorOptions.FontDisabledColor = clGray
-      ColorOptions.TitleFontNormalColor = clBtnText
-      ColorOptions.TitleFontHotColor = clBtnText
-      ColorOptions.TitleFontPressedColor = clBtnText
-      ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
-      ColorOptions.StyleColors = True
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = [fsBold]
-      HotImageIndex = -1
-      FocusedImageIndex = -1
-      PressedImageIndex = -1
-      StyleKind = scbsColorButton
-      UseGalleryMenuImage = False
-      UseGalleryMenuCaption = False
-      CustomImageNormalIndex = -1
-      CustomImageHotIndex = -1
-      CustomImagePressedIndex = -1
-      CustomImageDisabledIndex = -1
-      CustomImageFocusedIndex = -1
-      ScaleMarginAndSpacing = False
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      UseFontColorToStyleColor = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      GlowEffect.Enabled = False
-      GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 95
-      GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 0
-      GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
-      GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
-      GlowEffect.States = [scsHot, scsFocused]
-      ImageGlow = True
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      SplitButton = False
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 1
-      AllowAllUp = True
-      WordWrap = False
-    end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004804780410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180048047C0410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6049,7 +5960,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01012F00BC027C0330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012F00BC02800330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000040020000010020000000000000C0
       0600000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000080
@@ -20323,10 +20234,10 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01012F002402240218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01012F002802280218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000002001000001000400000000000036
       0000000000000000000000000000000000000000000000008000008000000080
-      8000800000008000800080800000C0C0C000808080000000FF0000FF000000FF
+      800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
       FF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000000000
       0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
