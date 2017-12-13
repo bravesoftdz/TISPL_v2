@@ -569,14 +569,14 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
-//všem objektům s n pohonem zruší přířazení k tomuto pohonu a nahradí hodnotu tohoto ukazatele za NULL
-void zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
+//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
+void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 {
 		//průchod všemi objekty, testuje je daný pohon objektu přiřazen a pokud ano, tak mu nastaví přiřazený pohon na NULL
-		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+		TObjekt *O=OBJEKTY->dalsi;
 		while(O!=NULL)
 		{
-			if(O->pohon->n==n))//pokud objekt má pohon přiřazen a zároveň
+			if(O->pohon->n==n)//pokud objekt má pohon přiřazen a zároveň
 			{
 				O->pohon==NULL;//pohon již nepřiřazen
 			}
