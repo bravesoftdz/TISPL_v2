@@ -367,11 +367,10 @@ void Cmy::designButton(TscGPButton *button,TForm *form,short rank,short sum,shor
 		button->Top=form->Height-button->Height-vertikal_space;
 
 		//pøebírání designu z referenèních tlaèítek v MyMessageBox
-
-		if(button->ModalResult==mrYes)*button->Options=*myMessageBox->Button_Yes->Options;
-		if(button->ModalResult==mrOk)*button->Options=*myMessageBox->Button_OK->Options;
-		if(button->ModalResult==mrCancel)*button->Options=*myMessageBox->Button_Cancel->Options;
-		if(button->ModalResult==mrNo)*button->Options=*myMessageBox->Button_No->Options;
+		if(button->ModalResult==mrYes){*button->Options=*myMessageBox->Button_Yes->Options;button->Layout=myMessageBox->Button_Yes->Layout;}
+		if(button->ModalResult==mrOk){*button->Options=*myMessageBox->Button_OK->Options;button->Layout=myMessageBox->Button_OK->Layout;}
+		if(button->ModalResult==mrCancel){*button->Options=*myMessageBox->Button_Cancel->Options;button->Layout=myMessageBox->Button_Cancel->Layout;}
+		if(button->ModalResult==mrNo){*button->Options=*myMessageBox->Button_No->Options;button->Layout=myMessageBox->Button_No->Layout;}
 }
 /////////////////////////////////////////////////////////////////////////////
 

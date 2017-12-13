@@ -18,7 +18,7 @@ object myMessageBox: TmyMessageBox
   object Label_text: TrHTMLLabel
     Left = 8
     Top = 40
-    Width = 350
+    Width = 195
     Height = 19
     Caption = 'Zde je v'#253'pis dotazu '#345#225'dek 1'
     Font.Charset = DEFAULT_CHARSET
@@ -268,7 +268,7 @@ object myMessageBox: TmyMessageBox
     CustomDropDown = False
     Margin = -1
     Spacing = 1
-    Layout = blGlyphLeft
+    Layout = blGlyphTop
     Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0
@@ -358,7 +358,7 @@ object myMessageBox: TmyMessageBox
     CustomDropDown = False
     Margin = -1
     Spacing = 1
-    Layout = blGlyphLeft
+    Layout = blGlyphTop
     Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0
@@ -448,7 +448,7 @@ object myMessageBox: TmyMessageBox
     CustomDropDown = False
     Margin = -1
     Spacing = 1
-    Layout = blGlyphLeft
+    Layout = blGlyphTop
     Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0
@@ -538,7 +538,7 @@ object myMessageBox: TmyMessageBox
     CustomDropDown = False
     Margin = -1
     Spacing = 1
-    Layout = blGlyphLeft
+    Layout = blGlyphTop
     Images = Form1.scGPVirtualImageList1
     ImageIndex = -1
     ImageMargin = 0

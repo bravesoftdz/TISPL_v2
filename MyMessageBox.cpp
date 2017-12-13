@@ -39,15 +39,20 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	Label_text->Width=myMessageBox->Width-8-8;//pøevzetí šíøky labelu dle šíøky formu - oba okraje
 	if(centrovat_text)Label_text->Alignment=taCenter;else Label_text->Alignment=taLeftJustify;
 	Label_text->Caption=text;
-	//Caption
+
+	//výška myMessageBoxu dle zadaného textu
+	myMessageBox->ClientHeight=151-26+Label_text->Height-19;//poèítáno oproti výchozí pozici
+
+	//Caption naplnìní daty
 	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption="TISPL"; //hlídání zda nepøijde prázdný øetezec
 
 	//checkbox
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;
-	if(checkbox_zobrazit)myMessageBox->Height=151;
-	else myMessageBox->Height=Button_Yes->Top+Button_Yes->Height+11;//pokud neni checkbox zobrazen, je formáláø o 10px vìtší než je konec tlaèítek
+	if(checkbox_zobrazit)myMessageBox->Height+=26;//pokud je checkbox zobrazen, je formáláø o 10px vìtší než je konec tlaèítek
+	CheckBox_pamatovat->Top=myMessageBox->Height-26;
 
-	//tlaèítka
+	////tlaèítka
+	//horizontální umístìní
 	switch(mbTYPE) //OK=0,OKCANCEL,YESNO,YESNOCANCEL
 	{
 			case OK:
@@ -87,6 +92,13 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 				Button_Cancel->Left=myMessageBox->Width*2/3+myMessageBox->Width/3/2-Button_Cancel->Width/2;
 			}break;
 	}
+	//vertikální umístìní
+	short O=26;
+	if(!checkbox_zobrazit)O=0;
+	Button_OK->Top=myMessageBox->Height-Button_OK->Height-11-O;//umístí vertikálnì
+	Button_Yes->Top=Button_OK->Top;
+	Button_No->Top=Button_OK->Top;
+	Button_Cancel->Top=Button_OK->Top;
 
 	////pozice formuláøe
 	if(left<0 && top<0)//na støed, pokud se zadá libovolné záporné èíslo
@@ -126,6 +138,7 @@ void __fastcall TmyMessageBox::FormKeyDown(TObject *Sender, WORD &Key, TShiftSta
 	}
 }
 //---------------------------------------------------------------------------
+
 
 
 
