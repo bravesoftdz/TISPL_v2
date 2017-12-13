@@ -1231,7 +1231,7 @@ object Form_parametry_linky: TForm_parametry_linky
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
       GlyphOptions.DisabledColorAlpha = 150
-      GlyphOptions.Kind = scgpbgkCopy
+      GlyphOptions.Kind = scgpbgkInBox
       GlyphOptions.Thickness = 2
       GlyphOptions.StyleColors = True
       TextMargin = -1

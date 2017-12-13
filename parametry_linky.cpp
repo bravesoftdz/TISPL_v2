@@ -224,67 +224,79 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 Changes=true;
 		}
 
-		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
-		 int i=1;
-		while(ukaz!=NULL){
-
-		if(Form1->ms.MyToDouble(ukaz->rychlost_od*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]))
-		{  Changes=true;  }
-		if(Form1->ms.MyToDouble(ukaz->rychlost_do*60.0)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))
-		{  Changes=true;  }
-		if(Form1->ms.MyToDouble(ukaz->roztec)!=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]))
-		{  Changes=true;  }
-		 	i++;
-			ukaz=ukaz->dalsi;
+		//NEW
+		//kontrola rozmezí jednotlivých pohonù
+		AnsiString T="";
+		for(unsigned short i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
+		{
+			//prùchod jednotlivými objekty, zda je daný pohon objektu pøiøazen a pokud ano, tak zda je mimo rozsah
+			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+			while(O!=NULL)
+			{
+				if(
+					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
+					(O->RD*60.0<Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]) ||//je mimo rozsah (pod) nebo
+					 O->RD*60.0>Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))//je mimo rozsah (nad)
+				)
+				{
+					T+="Objekt: "+O->name+"Rychlost:"+O->RD+"vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
+					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
+				}
+				O=O->dalsi;
+			}
+			O=NULL;delete O;
 		}
 
-		if(Changes){    //pri zmene + jiz existuje nejaky objekt
+		if(T!="")//byly nalezeny objekty mimo rozmezí + výpis
+		{
+			Changes=false;Ulozit=false;//zakáže uložení
+			Form1->MB("Pozor, nelze uložit hodnoty rozmezí pohonù, protože následující objekty mají rychlost mimo novì nastavený rozsah: "+T);
+		}
 
+
+
+		if(Changes)//pri zmene + jiz existuje nejaky objekt
+		{
 			if(mrOk==Form1->MB("Pozor, pøi zmìnì parametrù linky dojde k pøepoèítání parametrù objektù.",MB_OKCANCEL))
 			{  // OK souhlas se zmenou parametru
 				Ulozit=true;
 			}
 			else { Ulozit=false;} // cancel - data nebudu ukladat
-	}
+		}
 
-			if (Form1->d.v.OBJEKTY->dalsi==NULL) {  // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
-					Ulozit=true;
-			}
+		if(Form1->d.v.OBJEKTY->dalsi==NULL)Ulozit=true;   // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
 
-		if (Ulozit) {  // ukladej
-
-		Form1->d.v.vymaz_seznam_POHONY();
-		Form1->d.v.hlavicka_POHONY();
+		// ukladej
+		if (Ulozit)
+		{
+			Form1->d.v.vymaz_seznam_POHONY();
+			Form1->d.v.hlavicka_POHONY();
 
 			 if (Form1->d.v.OBJEKTY->dalsi!=NULL) {  // kdyz ukladam a existuje i nejaky objekt tak udelam aktualizaci obj.
 				Form1->d.v.aktualizace_objektu();
-		 }
+			}
 
-		for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
-		{
+			for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
+			{
 				 Form1->d.v.vloz_pohon (rStringGridEd_tab_dopravniky->Cells[1][i], //nazev
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60),        //rychlost od
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60),    //rychlost do
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
+			}
+
+			Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
+			Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
+			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
+
+
+			Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
+
+			Form1->DuvodUlozit(true);
+			Form_parametry_linky->Close();
 		}
-
-		Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-		Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
-		Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
-
-
-		Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
-
-		Form1->DuvodUlozit(true);
-		Form_parametry_linky->Close();
-
-		}
-
-		else {     //stisknul storno - zustavam na PL a nic jsem neulozil
-
-		   Form1->DuvodUlozit(false);
-
-
+		else//stisknul storno - zustavam na PL a nic jsem neulozil
+		{
+			 Form1->DuvodUlozit(false);
 		}
 }
 //---------------------------------------------------------------------------
@@ -460,30 +472,29 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
-
+//tlaèítko na kopírování na kopírování doporuèených pohonù do striggridu, nepøidává ale do pohonù
 void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
 {
- Form1->d.v.generuj_POHONY();
- nacti_pohony();
+ //již se používá z dùvodu storna
+ //Form1->d.v.generuj_POHONY();
+ //nacti_pohony();
 
-//vykopirovana konstrukce z ADD pohon - kopiruje hodnoty z predchoziho radku
-//	rStringGridEd_tab_dopravniky->RowCount++;
-//	rStringGridEd_tab_dopravniky->Cols[0]->Add(rStringGridEd_tab_dopravniky->RowCount - 1);
-//
-//	if (rStringGridEd_tab_dopravniky->RowCount > 2) {
-//
-//		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
-//
-//		rStringGridEd_tab_dopravniky->Cells[0][i] = i;
-//		rStringGridEd_tab_dopravniky->Cells[1][i] = rStringGridEd_tab_dopravniky->Cells[1][i - 1];
-//		rStringGridEd_tab_dopravniky->Cells[2][i] = rStringGridEd_tab_dopravniky->Cells[2][i - 1];
-//		rStringGridEd_tab_dopravniky->Cells[3][i] = rStringGridEd_tab_dopravniky->Cells[3][i - 1];
-//		rStringGridEd_tab_dopravniky->Cells[4][i] = rStringGridEd_tab_dopravniky->Cells[4][i - 1];
-//
-//	}
-
-
-
+ //nová konstrukce zajišující pouze vložení do stringgridu, o samotné uložení pohonù se stará až tlaèítko uložit
+ AnsiString T=scHTMLLabel_doporuc_pohony->Caption;
+ while(T.Pos("</br>"))//bude parsovat dokud bude </br>
+ {
+	//zvýšení poètu øádkù
+	rStringGridEd_tab_dopravniky->RowCount++;
+	unsigned short i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
+	//plnìní øádku a parsování daty
+	rStringGridEd_tab_dopravniky->Cells[0][i]=i;
+	rStringGridEd_tab_dopravniky->Cells[1][i]=Form1->ms.TrimRightFrom(T,",");T=Form1->ms.TrimLeftFromText(T,", ");
+	rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,"rychlost:"," [");T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
+	rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
+	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+	//smazání jednoho již nepotøebného záznamu
+	T=Form1->ms.TrimLeftFromText(T,"</br>");
+ }
 }
 //---------------------------------------------------------------------------
 

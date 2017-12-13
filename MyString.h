@@ -27,11 +27,11 @@ public:
 	AnsiString delete_repeat_all(AnsiString Text, AnsiString Text_delete);
 	UnicodeString DeleteSpace(UnicodeString text);
   AnsiString TrimRightFrom(AnsiString Text,AnsiString Trim);//ožízne øetezec po znak, to co pøedchází znaku, vrátí
-  UnicodeString TrimRightFrom_UTF(UnicodeString Text,UnicodeString Trim);//ožízne øetezec po znak, to co pøedchází znaku, vrátí
+	UnicodeString TrimRightFrom_UTF(UnicodeString Text,UnicodeString Trim);//ožízne øetezec po znak, to co pøedchází znaku, vrátí
 	UnicodeString TrimLeftFrom_UTF(UnicodeString  Text, UnicodeString Trim);//ožízne øetezec po znaku, to co následuje znaku, vrátí
-	UnicodeString TrimLeftFromText(UnicodeString  Text, UnicodeString Trim);//ožízne øetezec od textu, to co následuje znaku, vrátí
-  AnsiString Win2UTF(AnsiString Text);//pøevede text v kódování WINDOWS-1250 na UTF-8
-  AnsiString UTF2Win(AnsiString Text);//pøevede text v kódování UTF-8 na WINDOWS-1250
+	UnicodeString TrimLeftFromText(UnicodeString  Text, UnicodeString Trim);//ožízne øetezec od textu, to co následuje textu, vrátí
+	AnsiString Win2UTF(AnsiString Text);//pøevede text v kódování WINDOWS-1250 na UTF-8
+	AnsiString UTF2Win(AnsiString Text);//pøevede text v kódování UTF-8 na WINDOWS-1250
   double MyToDouble (UnicodeString Text);//pøevede UnicodeString na Double, v pøípadì èárky pøevede na teèku
   AnsiString c2t(AnsiString Vstup);
   AnsiString t2c(AnsiString Vstup);
