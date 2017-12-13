@@ -15,10 +15,10 @@ object myMessageBox: TmyMessageBox
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TrHTMLLabel
+  object Label_text: TrHTMLLabel
     Left = 8
     Top = 40
-    Width = 195
+    Width = 350
     Height = 19
     Caption = 'Zde je v'#253'pis dotazu '#345#225'dek 1'
     Font.Charset = DEFAULT_CHARSET
@@ -28,20 +28,7 @@ object myMessageBox: TmyMessageBox
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-  end
-  object Label2: TrHTMLLabel
-    Left = 8
-    Top = 65
-    Width = 195
-    Height = 19
-    Caption = 'Zde je v'#253'pis dotazu '#345#225'dek 2'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = 19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
+    WordWrap = True
   end
   object scGPPanel2: TscGPPanel
     Left = 0
@@ -642,7 +629,7 @@ object myMessageBox: TmyMessageBox
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True

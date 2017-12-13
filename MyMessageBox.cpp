@@ -35,53 +35,13 @@ int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text)
 }
 int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit)
 {
-	short max_pismen=46;
-	////naplnìní daty
+	////naplnìní daty + naformátování Label_text
+	Label_text->Width=myMessageBox->Width-8-8;//pøevzetí šíøky labelu dle šíøky formu - oba okraje
+	if(centrovat_text)Label_text->Alignment=taCenter;else Label_text->Alignment=taLeftJustify;
+	Label_text->Caption=text;
+	//Caption
 	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption="TISPL"; //hlídání zda nepøijde prázdný øetezec
-	//pokud text obsahuje enter, tak odøákuje
-	if(text.Pos("\n"))
-	{
-		Label1->Caption=text.SubString(1,text.Pos("\n")-1);
-		Label2->Caption=text.SubString(text.Pos("\n")+1,text.Length());
-	}
-	else//snaha nacpat vše do jednoho øádku pøípadnì automaticky odøákuje
-	{
-		Label1->Caption=text;
-		Label2->Caption="";//nutné vymazání
-		////pokud je text delší odøádkuje    //pokud druhý øádek je volný //pokud vùbec má smysl øetìzez zalamovat
-		if(Label1->Width>=myMessageBox->Width && Label1->Caption.Length()>max_pismen)
-		{
-	 		 int Pos=0;int Pos_min=Pos;
-	 		 AnsiString t=Label1->Caption;
-			 while(t.Pos(" ") && Pos_min+t.Pos(" ")<max_pismen)//dìlá dokud øetìze obsahuje mezeru nebo dokud je mezera na nižším poøadí v øetìzci než 44
-	 		 {
-	 				Pos=t.Pos(" ");
-	 				Pos_min+=Pos;
-					t=t.SubString(Pos+1,t.Length());
-	 		 }
 
-			 if(Pos==0)Pos_min=max_pismen;//pokud text neobsahuje mezeru, rozdìlí umìle
-
-	 		 //samotné rozdìlení
-	 		 Label2->Caption=Label1->Caption.SubString(Pos_min+1,Label1->Caption.Length());
-	 		 Label1->Caption=Label1->Caption.SubString(1,Pos_min-1);
-		}
-	}
-
-	////zobrazení komponent + pøípadnì jejich pozice
-	if(centrovat_text && Label1->Caption.Length()<=max_pismen)//pokud je požadováno centrování a zároveò není text prvního øádku delší než max možný poèet
-	{
-			if(Label1->Width>Label2->Width)//podle toho, který label je delší, tak se oba vycentrují
-			{
-				Label1->Left=myMessageBox->Width/2-Label1->Width/2;
-				Label2->Left=Label1->Left;
-			}
-			else
-			{
-				Label2->Left=myMessageBox->Width/2-Label2->Width/2;
-				Label1->Left=Label2->Left;
-			}
-	}
 	//checkbox
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;
 	if(checkbox_zobrazit)myMessageBox->Height=151;

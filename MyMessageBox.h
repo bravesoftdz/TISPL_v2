@@ -24,8 +24,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyph_info;
 	TscGPButton *Button_Yes;
 	TscGPButton *Button_No;
-	TrHTMLLabel *Label1;
-	TrHTMLLabel *Label2;
+	TrHTMLLabel *Label_text;
 	TscGPButton *Button_OK;
 	TscGPButton *Button_Cancel;
 	TscGPCheckBox *CheckBox_pamatovat;
