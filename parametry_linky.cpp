@@ -168,6 +168,10 @@ void TForm_parametry_linky::nacti_pohony (){
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
 				 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)  {
 
+				 if(Form1->d.v.pohon_je_pouzivan(ukaz->n)){
+					rStringGridEd_tab_dopravniky->Cells[5][i]="ano";
+				 } else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+
 				 //ShowMessage(ukaz->n);
 			rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
 			rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
@@ -240,7 +244,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 				if(
 					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
-					O->rezim!=0 && //není v režimu S&G a zároveò
+					O->rezim==1 && //je v režimu kontinuál a zároveò
 					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
 					(Form1->ms.MyToDouble(O->RD*60.0)<Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]) ||//je mimo rozsah (pod) nebo
 					 Form1->ms.MyToDouble(O->RD*60.0)>Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))//je mimo rozsah (nad)
@@ -265,7 +269,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 		if(Changes)//pri zmene + jiz existuje nejaky objekt
 		{
-			if(mrOk==Form1->MB("Pozor, pøi zmìnì parametrù linky dojde k pøepoèítání parametrù objektù.",MB_OKCANCEL))
+			if(mrOk==Form1->MB("Pozor, probìhne zmìna parametrù na základì zmìnìných hodnot a zadané délky dopravníku daného objektu.",MB_OKCANCEL))
 			{  // OK souhlas se zmenou parametru
 				Ulozit=true;
 			}

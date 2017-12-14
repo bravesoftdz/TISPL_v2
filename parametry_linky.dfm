@@ -1364,7 +1364,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Lines.Strings = (
       'Memo1')
     TabOrder = 18
-    Visible = False
   end
   object Button1: TButton
     Left = 483
