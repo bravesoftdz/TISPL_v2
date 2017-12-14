@@ -55,6 +55,8 @@ void TForm_cesty::nactiNastaveni ()
 	rStringGridEd_cesty->SetColumnAutoFit(6);
 	rStringGridEd_cesty->SetColumnAutoFit(7);
 
+	Form_cesty->Width=rStringGridEd_cesty->Width;
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_cesty::FormShow(TObject *Sender)
