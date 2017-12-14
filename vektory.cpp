@@ -581,7 +581,7 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 		{
 			if(O->pohon!=NULL && O->pohon->n==n)//pokud objekt má pohon přiřazen a zároveň
 			{
-				O->pohon==NULL;//pohon již nepřiřazen  //TODO check ==?
+				O->pohon=NULL;//pohon již nepřiřazen
 			}
 			O=O->dalsi;
 		}
