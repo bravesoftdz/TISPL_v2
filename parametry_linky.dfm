@@ -14,6 +14,7 @@ object Form_parametry_linky: TForm_parametry_linky
   Font.Quality = fqClearType
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
+  OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -1354,5 +1355,25 @@ object Form_parametry_linky: TForm_parametry_linky
     AutoSize = True
     UseFontColorToStyleColor = False
     Caption = 'scLabel_TT_change_hint'
+  end
+  object Memo1: TMemo
+    Left = 616
+    Top = 72
+    Width = 169
+    Height = 57
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 18
+    Visible = False
+  end
+  object Button1: TButton
+    Left = 483
+    Top = 60
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 19
+    Visible = False
+    OnClick = Button1Click
   end
 end

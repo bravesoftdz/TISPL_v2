@@ -560,7 +560,7 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	AnsiString nalezen="";
 	while (O!=NULL)
 	{
-		if(O->pohon->n==n)
+		if(O->pohon!=NULL && O->pohon->n==n)
 		{
 			if(short_name)nalezen+=O->short_name+", ";
 			else nalezen+=O->name+", ";

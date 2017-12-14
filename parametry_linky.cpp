@@ -28,12 +28,14 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	Taktunit=S;
 
 
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
+
 
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL){
@@ -225,7 +227,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		}
 
 		//NEW
-		//kontrola rozmezí jednotlivých pohonù
+		//kontrola rozmezí jednotlivých pohonù   - je to spravne, cekovat vzdy vuci RD?
 		AnsiString T="";
 		for(unsigned short i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 		{
@@ -233,8 +235,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 			while(O!=NULL)
 			{
-				ShowMessage(O->RD*60.0);
-				ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]));
+			 //	ShowMessage(O->RD*60.0);
+			 //	ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]));
 
 				if(
 					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
@@ -333,8 +335,8 @@ void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 
 			if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
 			{
-
-						if(mrOk==Form1->MB("Pohon je používán, opravdu smazat?",MB_OKCANCEL)){
+				AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(rStringGridEd_tab_dopravniky->RowCount-1,true);
+						if(mrOk==Form1->MB("Pohon je používán pro objekty: "+objekty+" opravdu má být smazán?",MB_OKCANCEL)){
 
 						Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(rStringGridEd_tab_dopravniky->RowCount-1);
 						rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
@@ -343,7 +345,7 @@ void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 							{
 							rStringGridEd_tab_dopravniky->RowCount--;
 							}
-							Form1->MB("Smazano");
+						 //	Form1->MB("Smazano");
 						}
 						else { //storno   - nic se nedìje
 
@@ -351,7 +353,7 @@ void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 				}
 
 			else {  // pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
-			ShowMessage("mazu nepouzivany pohon");
+
 				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
 				if(rStringGridEd_tab_dopravniky->RowCount>1)
@@ -547,4 +549,23 @@ if(Key==13)//ENTER
 
 
 
+
+void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
+{
+	Cvektory:: TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+			while (O!=NULL){
+	Memo1->Lines->Add(O->pohon->n);
+
+	O=O->dalsi;
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
+{
+		if(rStringGridEd_tab_dopravniky->RowCount==1) Button_DEL->Enabled=false;
+		else  Button_DEL->Enabled=true;
+
+}
+//---------------------------------------------------------------------------
 
