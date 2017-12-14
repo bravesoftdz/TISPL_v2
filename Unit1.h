@@ -296,7 +296,7 @@ __published:	// IDE-managed Components
 	void __fastcall RzToolButton9Click(TObject *Sender);
 	void __fastcall RzToolButton11Click(TObject *Sender);
 	void __fastcall Smazat1Click(TObject *Sender);
-	void __fastcall Nastvitparametry1Click(TObject *Sender);
+	void __fastcall Nastavitparametry1Click(TObject *Sender);
 	void __fastcall RzStatusPane5Click(TObject *Sender);
 	void __fastcall Edit_takt_timeChange(TObject *Sender);
 	void __fastcall Edit_pocet_vozikuChange(TObject *Sender);

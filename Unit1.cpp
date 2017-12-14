@@ -2548,41 +2548,46 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
+void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 {
 	if(pom!=NULL)
 	{
 		////plnění daty
-		//combo pohony
-		Form_parametry->scComboBox_pohon->Items->Clear();
+		//combo POHONY
+		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
 		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 		Form_parametry->existuje_pohon=true;
-
 		TscGPListBoxItem *t=NULL;
-		if(ukaz==NULL)
+		if(ukaz==NULL)//pokud neexitustuje žádný pohon
 		{
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nebyl nadefinován";
 			Form_parametry->existuje_pohon=false;
+			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
 		}
-		else
+		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 		{
+			//vytvoření položky nepřiřazen
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nepřiřazen";
+			//plnění existujícím pohony
+			while (ukaz!=NULL)
+			{
+				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+				t->Caption=ukaz->name;
+				ukaz=ukaz->dalsi;
+			}
+			//nastavení comba, aby ukazoval na dříve vybraný pohon
+			if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
+			else Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen
 		}
-		while (ukaz!=NULL)
-		{
-			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-			t->Caption=ukaz->name;
-			ukaz=ukaz->dalsi;
-		}
-
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
 		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
+		//název
 		Form_parametry->scGPEdit_name->Text=pom->name;
 		Form_parametry->scGPEdit_shortname->Text=pom->short_name;
+		//režim
 		Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
-		if(Form_parametry->existuje_pohon && pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
 		//CT
 		Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
@@ -2676,7 +2681,7 @@ void __fastcall TForm1::Nastvitparametry1Click(TObject *Sender)
 			catch(...)
 			{
 				MB("Neplatná hodnota!");
-				Nastvitparametry1Click(this);//nové zadání
+				Nastavitparametry1Click(this);//nové zadání
 			}
 		}
 	}

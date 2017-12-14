@@ -576,7 +576,6 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 {
 		//průchod všemi objekty, testuje je daný pohon objektu přiřazen a pokud ano, tak mu nastaví přiřazený pohon na NULL
 		TObjekt *O=OBJEKTY->dalsi;
-
 		while(O!=NULL)
 		{
 			if(O->pohon!=NULL && O->pohon->n==n)//pokud objekt má pohon přiřazen a zároveň
