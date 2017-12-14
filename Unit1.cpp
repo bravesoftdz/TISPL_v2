@@ -4353,3 +4353,32 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 
 
+void __fastcall TForm1::pohonobjektClick(TObject *Sender)
+{
+	Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+
+
+		while(O!=NULL)
+		{
+	 Memo2->Lines->Add(O->pohon->n);
+
+	  O=O->dalsi;
+		 }
+
+	
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button12Click(TObject *Sender)
+{
+	Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
+		while(P!=NULL)
+		{
+	 Memo2->Lines->Add(P->n);
+
+	 P=P->dalsi;
+		 }
+
+}
+//---------------------------------------------------------------------------
+

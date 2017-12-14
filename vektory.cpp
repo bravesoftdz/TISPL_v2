@@ -541,11 +541,13 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 	bool nalezen=false;
 	while (O!=NULL)
 	{
+	if(O->pohon!=NULL){
 		if(O->pohon->n==n)
 		{
 			nalezen=true;
 			break;//přeruší další vyhledávání
 		}
+	}
 		O=O->dalsi;
 	}
 	return nalezen;
@@ -574,11 +576,12 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 {
 		//průchod všemi objekty, testuje je daný pohon objektu přiřazen a pokud ano, tak mu nastaví přiřazený pohon na NULL
 		TObjekt *O=OBJEKTY->dalsi;
+
 		while(O!=NULL)
 		{
-			if(O->pohon->n==n)//pokud objekt má pohon přiřazen a zároveň
+			if(O->pohon!=NULL && O->pohon->n==n)//pokud objekt má pohon přiřazen a zároveň
 			{
-				O->pohon==NULL;//pohon již nepřiřazen
+				O->pohon==NULL;//pohon již nepřiřazen  //TODO check ==?
 			}
 			O=O->dalsi;
 		}

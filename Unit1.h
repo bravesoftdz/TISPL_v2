@@ -248,6 +248,8 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_architekt;
 	TscExPanel *scExPanel_html;
 	TWebBrowser *WebBrowser1;
+	TButton *pohonobjekt;
+	TButton *Button12;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -384,6 +386,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
 	void __fastcall layoutClick(TObject *Sender);
+	void __fastcall pohonobjektClick(TObject *Sender);
+	void __fastcall Button12Click(TObject *Sender);
 
 
 // User declarations

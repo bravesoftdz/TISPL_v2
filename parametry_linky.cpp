@@ -227,18 +227,24 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		//NEW
 		//kontrola rozmezí jednotlivých pohonù
 		AnsiString T="";
-		for(unsigned short i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
+		for(unsigned short i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 		{
 			//prùchod jednotlivými objekty, zda je daný pohon objektu pøiøazen a pokud ano, tak zda je mimo rozsah
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 			while(O!=NULL)
 			{
+				ShowMessage(O->RD*60.0);
+				ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]));
+
 				if(
+					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
+					O->rezim!=0 && //není v režimu S&G a zároveò
 					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
-					(O->RD*60.0<Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]) ||//je mimo rozsah (pod) nebo
-					 O->RD*60.0>Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))//je mimo rozsah (nad)
+					(Form1->ms.MyToDouble(O->RD*60.0)<Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]) ||//je mimo rozsah (pod) nebo
+					 Form1->ms.MyToDouble(O->RD*60.0)>Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))//je mimo rozsah (nad)
 				)
 				{
+
 					T+="Objekt: "+O->name+"Rychlost:"+O->RD+"vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
 					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
 				}
@@ -323,16 +329,36 @@ void __fastcall TForm_parametry_linky::Button_ADDClick(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
 {
-			//	rStringGridEd_tab_dopravniky->RowCount - 1;
 
 
+			if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
+			{
+
+						if(mrOk==Form1->MB("Pohon je používán, opravdu smazat?",MB_OKCANCEL)){
+
+						Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(rStringGridEd_tab_dopravniky->RowCount-1);
+						rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
+
+							if(rStringGridEd_tab_dopravniky->RowCount>1)
+							{
+							rStringGridEd_tab_dopravniky->RowCount--;
+							}
+							Form1->MB("Smazano");
+						}
+						else { //storno   - nic se nedìje
+
+								}
+				}
+
+			else {  // pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
+			ShowMessage("mazu nepouzivany pohon");
 				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
 				if(rStringGridEd_tab_dopravniky->RowCount>1)
 				{
-
 				 rStringGridEd_tab_dopravniky->RowCount--;
 				 }
+						}
 
 	 //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 	 //	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
