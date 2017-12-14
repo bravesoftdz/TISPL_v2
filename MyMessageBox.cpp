@@ -35,21 +35,23 @@ int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text)
 }
 int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit)
 {
+	short O=26;//výchozí offset pro zohlednìní checkboxu
+
 	////naplnìní daty + naformátování Label_text
 	Label_text->Width=myMessageBox->Width-8-8;//pøevzetí šíøky labelu dle šíøky formu - oba okraje
 	if(centrovat_text)Label_text->Alignment=taCenter;else Label_text->Alignment=taLeftJustify;
 	Label_text->Caption=text;
 
 	//výška myMessageBoxu dle zadaného textu
-	myMessageBox->ClientHeight=151-26+Label_text->Height-19;//poèítáno oproti výchozí pozici
+	myMessageBox->ClientHeight=139-O+Label_text->Height-19;//poèítáno oproti výchozí pozici
 
 	//Caption naplnìní daty
 	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption="TISPL"; //hlídání zda nepøijde prázdný øetezec
 
 	//checkbox
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;
-	if(checkbox_zobrazit)myMessageBox->Height+=26;//pokud je checkbox zobrazen, je formáláø o 10px vìtší než je konec tlaèítek
-	CheckBox_pamatovat->Top=myMessageBox->Height-26;
+	if(checkbox_zobrazit)myMessageBox->Height+=O;//pokud je checkbox zobrazen, je formáláø o 10px vìtší než je konec tlaèítek
+	CheckBox_pamatovat->Top=myMessageBox->Height-O;
 
 	////tlaèítka
 	//horizontální umístìní
@@ -93,9 +95,8 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 			}break;
 	}
 	//vertikální umístìní
-	short O=26;
-	if(!checkbox_zobrazit)O=0;
-	Button_OK->Top=myMessageBox->Height-Button_OK->Height-11-O;//umístí vertikálnì
+	if(!checkbox_zobrazit)O=11;//11px je default odsazení všech buttonu v našem designu
+	Button_OK->Top=myMessageBox->Height-Button_OK->Height-O;//umístí vertikálnì
 	Button_Yes->Top=Button_OK->Top;
 	Button_No->Top=Button_OK->Top;
 	Button_Cancel->Top=Button_OK->Top;
@@ -107,9 +108,11 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 		myMessageBox->Top=Form1->ClientHeight/2-myMessageBox->Height/2;
 	}
 	else//dle zadaných souøadnic
-	{ //doøešit hlídání mimo monitor
+	{
 		myMessageBox->Left=left;
 		myMessageBox->Top=top;
+		if(left<0)myMessageBox->Left=5;//ještì ošetøení samostatných záporných souøadnic
+		if(top<0)myMessageBox->Top=5;//ještì ošetøení samostatných záporných souøadnic
 	}
 
 	////volá samotné zobrazení
