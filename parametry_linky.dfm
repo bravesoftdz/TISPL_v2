@@ -297,6 +297,7 @@ object Form_parametry_linky: TForm_parametry_linky
       end
       item
         InvalidDataAction = sgaNone
+        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -306,6 +307,8 @@ object Form_parametry_linky: TForm_parametry_linky
         ParentFont = False
         ReadOnly = True
       end>
+    OnGetEditStyle = rStringGridEd_tab_dopravnikyGetEditStyle
+    OnCanEdit = rStringGridEd_tab_dopravnikyCanEdit
     RowHeights = (
       30)
   end

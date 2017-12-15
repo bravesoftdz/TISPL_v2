@@ -150,8 +150,10 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 		}
 
-			data+="<h4>Pøehled doporuèených rychlostí pohonù</h4></br>";
 
+		 	if(!Form1->d.v.navrhni_POHONY().IsEmpty()) {
+			data+="<h4>Pøehled doporuèených rychlostí pohonù</h4></br>";
+			}
 		 //	data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">Název</th><th scope=\"col\">Rychlost</th></tr></thead>";
 
 			data+=Form1->d.v.navrhni_POHONY();

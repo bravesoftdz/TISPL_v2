@@ -36,6 +36,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
 
+//		rStringGridEd_tab_dopravniky->Columns->Items[2]->ReadOnly=true;
+//		rStringGridEd_tab_dopravniky->Rows
+
 
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL){
@@ -572,4 +575,42 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender,
+					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
+{
+
+if (Col==1 && Row==0) {
+
+ //	EditStyle=sgbDropDown;   //vyber typu
+
+	 }
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender,
+          int Col, int Row, bool &CanEdit)
+{
+
+if (Col==1 && Row==0) {
+	CanEdit=false;
+	 }
+if (Col==2 && Row==0) {
+	CanEdit=false;
+	 }
+if (Col==3 && Row==0) {
+	CanEdit=false;
+	 }
+if (Col==4 && Row==0) {
+	CanEdit=false;
+	 }
+if (Col==5 && Row==0) {
+	CanEdit=false;
+	 }
+}
+//---------------------------------------------------------------------------
+
+
+
 

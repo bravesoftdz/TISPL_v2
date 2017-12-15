@@ -524,7 +524,6 @@ object Form_report: TForm_report
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitLeft = 0
       end
       object scButton_html: TscButton
         Left = 0
@@ -613,8 +612,6 @@ object Form_report: TForm_report
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitLeft = -6
-        ExplicitTop = -6
       end
     end
   end

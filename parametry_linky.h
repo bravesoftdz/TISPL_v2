@@ -67,6 +67,10 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
+	void __fastcall rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender, int Col,
+          int Row, TrStringGridEdEditStyle &EditStyle);
+	void __fastcall rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender, int Col, int Row,
+          bool &CanEdit);
 private:	// User declarations
 
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
