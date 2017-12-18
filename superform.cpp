@@ -1295,3 +1295,11 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_removeClick(TObject *Sen
 
 
 
+void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
+{
+		if(rStringGridEd1->RowCount==1) scGPGlyphButton_remove->Enabled=false;
+		else  scGPGlyphButton_remove->Enabled=true;
+
+}
+//---------------------------------------------------------------------------
+

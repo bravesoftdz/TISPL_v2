@@ -15,6 +15,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
+  OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 20

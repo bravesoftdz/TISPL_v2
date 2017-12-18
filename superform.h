@@ -94,6 +94,7 @@ __published:	// IDE-managed Components
 	void __fastcall smaz_tempClick(TObject *Sender);
 	void __fastcall Button5Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_removeClick(TObject *Sender);
+	void __fastcall FormPaint(TObject *Sender);
 
 private:	// User declarations
 	void nastav_form();
