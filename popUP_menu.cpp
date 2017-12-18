@@ -168,7 +168,7 @@ void __fastcall TPopUPmenu::scLabel_nastavit_parametryClick(TObject *Sender)
 {
 	closing=true;
 	Close();
-	Form1->Nastvitparametry1Click(Sender);
+	Form1->Nastavitparametry1Click(Sender);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

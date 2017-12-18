@@ -626,6 +626,9 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	CheckBox_pouzit_zadane_kapacity->Visible=false;
 	g.ShowGrafy(false);
 	ComboBoxCekani->Visible=false;
+	scGPCheckBox_ortogon->Align=alTop;
+	scGPCheckBox_ortogon->Left=3;
+	scGPCheckBox_ortogon->Visible=true;
 
 	Invalidate();
 }
@@ -662,6 +665,7 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 //	g.ShowGrafy(false);
 //	ComboBoxCekani->Visible=false;
 //	GlyphButton_close_grafy->Visible=false;
+//  scGPCheckBox_ortogon->Visible=false;
 //	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -669,6 +673,7 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 {
 	MOD=LAYOUT;
 	scSplitView_LEFTTOOLBAR->Visible=false;
+	scGPCheckBox_ortogon->Visible=false;
 	ESC();//zruší případně rozdělanou akci
 	SB("Layout",1);
 	//Zoom=5;ZOOM();
@@ -763,6 +768,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			scExPanel_log_header->Visible=true;
 
 			Label_zamerovac->Visible=false;
+			scGPCheckBox_ortogon->Visible=false;
 			Invalidate();
 		}
 	}
@@ -833,6 +839,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	LabelRoletka->Font->Color=clBlack;
 	ComboBoxODmin->Visible=true;
 	rComboBoxKrok->Visible=true;
+	scGPCheckBox_ortogon->Visible=false;
 
 
 
@@ -891,6 +898,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	ComboBoxDOmin->Visible=false;
 	rComboBoxKrok->Visible=false;
 	ComboBoxCekani->Visible=false;
+	scGPCheckBox_ortogon->Visible=false;
 	Invalidate();*/
 }
 //---------------------------------------------------------------------------
@@ -4384,6 +4392,12 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 	 P=P->dalsi;
 		 }
 
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
+{
+	ortogonalizace_on_off();
 }
 //---------------------------------------------------------------------------
 

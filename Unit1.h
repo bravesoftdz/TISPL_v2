@@ -250,6 +250,7 @@ __published:	// IDE-managed Components
 	TWebBrowser *WebBrowser1;
 	TButton *pohonobjekt;
 	TButton *Button12;
+	TscGPCheckBox *scGPCheckBox_ortogon;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -388,6 +389,7 @@ __published:	// IDE-managed Components
 	void __fastcall layoutClick(TObject *Sender);
 	void __fastcall pohonobjektClick(TObject *Sender);
 	void __fastcall Button12Click(TObject *Sender);
+	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
 
 
 // User declarations
