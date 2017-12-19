@@ -252,9 +252,90 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 };
 //---------------------------------------------------------------------------
 //dle zadaného TT zaktualizuje paramametry všech objektů
-void Cvektory::aktualizace_objektu()
+//typ 0://při změně TT změna CT a RD, K a DD zůstává
+//typ 1://při změně TT změna K,DD,RD zůstává CT
+//typ 2://při změně parametrů vozíku změna DD, RD zůstává K, CT
+//typ 3://při změně parametrů vozíku změna u DD, CT zůstává K,RD
+//typ 4://při změně parametrů vozíku změna u K,CT,RD zůstává DD
+void Cvektory::aktualizace_objektu(short typ)
 {
-	//
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		switch(typ)
+		{
+			case 0://při změně TT změna CT a RD, K a DD zůstává
+			{
+				O->CT=PP.TT*O->kapacita;
+				if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
+			}
+			break;
+			case 1://při změně TT změna K,DD,RD zůstává CT
+			{
+				if(O->rezim==0)O->CT=PP.TT;//pro S&G
+				else //pro kontinuál a PP
+				{
+					//K
+					O->kapacita=O->CT/PP.TT;
+					//DD
+					double dV=PP.delka_voziku;//delka voziku
+					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
+					O->delka_dopravniku=O->kapacita*dV+(K-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					//RD
+					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
+				}
+			}
+			break;
+			case 2://při změně parametrů vozíku změna DD, RD zůstává K, CT
+			{
+				if(O->rezim!=0)//pro kontinuál a PP
+				{
+					//DD
+					double dV=PP.delka_voziku;//delka voziku
+					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
+					O->delka_dopravniku=O->kapacita*dV+(K-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					//RD
+					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
+				}
+			}
+			break;
+			case 3://při změně parametrů vozíku změna u DD, CT zůstává K,RD
+			{
+				if(O->rezim!=0)//pro kontinuál a PP
+				{
+					//DD
+					double dV=PP.delka_voziku;//delka voziku
+					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
+					O->delka_dopravniku=O->kapacita*dV+(K-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					//CT
+					if(O->rezim==1)O->CT=O->delka_dopravniku/O->RD;//pro kontinual
+					else//pro PP
+					{
+						if(O->kapacita==O->mV)PP.TT*(O->delka_dopravniku+O->mezera)/(dV+m);//dle toho, kolik se zohledňuje mezer
+						else O->kapacita=PP.TT*O->delka_dopravniku/(dV+m);//dle toho, kolik se zohledňuje mezer
+				 }
+				}
+			}
+			break;
+			case 4://při změně parametrů vozíku změna u K,CT,RD zůstává DD
+			{
+				if(O->rezim!=0)//pro kontinuál a PP
+				{
+					//K
+					double dV=PP.delka_voziku;//delka voziku
+					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
+					if(O->kapacita==O->mV)(O->delka_dopravniku+O->mezera)/(dV+m);//dle toho, kolik se zohledňuje mezer
+					else O->kapacita=O->delka_dopravniku/(dV+m);//dle toho, kolik se zohledňuje mezer
+					//CT
+					O->CT=PP.TT*O->kapacita;
+					//RD
+					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
+				}
+			}
+			break;
+		}
+		O=O->dalsi;//posun na další prvek
+	}
 }
 //---------------------------------------------------------------------------
 //sečte délky jednotlivých objektů
@@ -264,7 +345,7 @@ double Cvektory::vrat_soucet_delek_vsech_objektu()
 	double SUM=0.0;
 	while (O!=NULL)
 	{
-		if(O->rezim==0)//S&G, u tohoto režimu se bere délka nebo šířka vozíku, dle nastaveného
+		if(O->rezim==0 && O->delka_dopravniku==0)//S&G a pokud není zadaná uživatelsky, u tohoto režimu se bere délka nebo šířka vozíku, dle nastaveného
 		{
 			if(O->rotace==0)
 			SUM+=PP.delka_voziku;
