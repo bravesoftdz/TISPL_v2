@@ -16,6 +16,7 @@
 #include <Vcl.ValEdit.hpp>
 #include "scExtControls.hpp"
 #include "scHtmlControls.hpp"
+#include "pl_priority.h"
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
@@ -83,6 +84,10 @@ public:		// User declarations
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{S=0,MIN};Tminsec Taktunit;//pøepínaè jednotek èasu
+	bool Changes;  //obecna zmena = zmena PP ci TT
+	bool Changes_TT;    // konkretni zmena TT
+	bool Changes_PP;   // konkretni zmena PP
+	bool Ulozit;
 
 };
 //---------------------------------------------------------------------------

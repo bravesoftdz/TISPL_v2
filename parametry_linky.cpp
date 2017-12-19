@@ -28,18 +28,12 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	Taktunit=S;
 
 
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
-
-//		rStringGridEd_tab_dopravniky->Columns->Items[2]->ReadOnly=true;
-//		rStringGridEd_tab_dopravniky->Rows
-
-
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL){
 			scGPButton_doporucene->Visible=false;
@@ -216,21 +210,26 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
-	bool Changes=false;
-	bool Ulozit=true;
+	Changes=false;  //obecna zmena = zmena PP ci TT
+	Changes_TT=false;    // konkretni zmena TT
+	Changes_PP=false;   // konkretni zmena PP
+	Ulozit=true;
 
 
 	//pri zmene TT
 		if(Form1->ms.MyToDouble(rEditNum_takt->Text) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
+		 Changes_TT=true;
 		}
 		//pri zmene delky voziku
 		if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
+		 Changes_PP=true;
 		}
 		//pri zmene sirky voziku
 			if(Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
+		 Changes_PP=true;
 		}
 
 		//NEW
@@ -270,14 +269,55 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 
 
-		if(Changes)//pri zmene + jiz existuje nejaky objekt
+		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt
 		{
-			if(mrOk==Form1->MB("Pozor, probìhne zmìna parametrù na základì zmìnìných hodnot a zadané délky dopravníku daného objektu.",MB_OKCANCEL))
-			{  // OK souhlas se zmenou parametru
-				Ulozit=true;
+		//Form_PL_priority->rStringGridEd_tab->Height=Form_PL_priority->rStringGridEd_tab->Height-Form_PL_priority->rStringGridEd_tab->DefaultRowHeight;
+		Form_PL_priority->rStringGridEd_tab->RowCount=3;
+		Form_PL_priority->scGPRadioButton3->Visible=false;
+					//zustava
+		Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Délka pohonu";
+		Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Technologický èas";
+
+				 //meni se
+		Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Technologický èas, Rychlost pohonu";
+		Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka pohonu, Rychlost pohonu";
+
+	  Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
+
+			if(mrOk==Form_PL_priority->ShowModal()){
+			Ulozit=true;   // predat pro M vybrany parametr z radio
 			}
-			else { Ulozit=false;} // cancel - data nebudu ukladat
-		}
+			else{
+			Ulozit=false;
+
+			}
+	 }
+			if(Changes_PP)//pri zmene PP + jiz existuje nejaky objekt
+		{
+			Form_PL_priority->rStringGridEd_tab->RowCount=4;
+			//Form_PL_priority->rStringGridEd_tab->Height=3*Form_PL_priority->rStringGridEd_tab->DefaultRowHeight+2; //2px kosmetika
+
+			Form_PL_priority->scGPRadioButton3->Visible=true;
+						 //zustava
+		Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Technologický èas";
+		Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Kapacita, Rychlost pohonu";
+		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Délka pohonu";
+				 //meni se
+		Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Délka pohonu, Rychlost pohonu";
+		Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Délka pohonu, Technologický èas";
+		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Kapacita, Technologický èas, Rychlost pohonu";
+
+			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnám parametrù <font color=#2b579a>vozíku</font>, které ovlivòují parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
+
+			if(mrOk==Form_PL_priority->ShowModal()){
+			
+			Ulozit=true;   // predat pro M vybrany parametr z radio
+			}
+			else{
+			Ulozit=false;
+
+			}
+	 }
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL)Ulozit=true;   // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
 
