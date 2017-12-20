@@ -256,6 +256,8 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);
 	AnsiString prochazet;
 
+	bool Changes=false;
+
 	////////////jig form- byl klik na buòku v 5. sloupci
 	if(rStringGridEd1->Col==5)
 	{
@@ -267,10 +269,34 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		//zobrazení formu + uložení dat pokud je zvoleno OK
 		if(mrOk==Form_jig->ShowModal())
 		{
+					//pri zmene delky
+		if(Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text) != 	zakazka->jig.delka){
+		 Changes=true;
+
+		}
+		//pri zmene sirky
+			if(Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text) != zakazka->jig.sirka){
+		 Changes=true;
+		}
+
+		if(Changes){
+
+			if(mrOk==Form1->MB("Nastala zmìna parametrù délka nebo šíøka jigu, budou pøepoèítány parametry linky pro tuto zakázku.",MB_OKCANCEL)) {
+			//aktualizacni fce a ulozeni do zakazky
 			zakazka->jig.ks=Form1->ms.MyToDouble(Form_jig->Edit_jig_pocet_ks->Text);
 			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text);
 			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text);
 			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text);
+			}
+
+		}
+		if(!Changes){   //pokud nejsou zadne zmeny na jigu  ulozim hodnoty z editboxu
+
+			zakazka->jig.ks=Form1->ms.MyToDouble(Form_jig->Edit_jig_pocet_ks->Text);
+			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text);
+			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text);
+			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text);
+			}
 		}
 	}
 
