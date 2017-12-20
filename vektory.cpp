@@ -252,11 +252,13 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 };
 //---------------------------------------------------------------------------
 //dle zadaného TT zaktualizuje paramametry všech objektů
-//typ 0://při změně TT změna CT a RD, K a DD zůstává
-//typ 1://při změně TT změna K,DD,RD zůstává CT
-//typ 2://při změně parametrů vozíku změna DD, RD zůstává K, CT
-//typ 3://při změně parametrů vozíku změna u DD, CT zůstává K,RD
-//typ 4://při změně parametrů vozíku změna u K,CT,RD zůstává DD
+//typ -1://dle zamčených a odemčených hodnot při změně TT
+//typ 0://dle zamčených a odemčených hodnot při změně parametrů vozíku
+//typ 1://při změně TT změna CT a RD, K a DD zůstává
+//typ 2://při změně TT změna K,DD,RD zůstává CT
+//typ 3://při změně parametrů vozíku změna DD, RD zůstává K, CT
+//typ 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD
+//typ 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
 void Cvektory::aktualizace_objektu(short typ)
 {
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
@@ -264,13 +266,13 @@ void Cvektory::aktualizace_objektu(short typ)
 	{
 		switch(typ)
 		{
-			case 0://při změně TT změna CT a RD, K a DD zůstává
+			case 1://při změně TT změna CT a RD, K a DD zůstává
 			{
 				O->CT=PP.TT*O->kapacita;
 				if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 			}
 			break;
-			case 1://při změně TT změna K,DD,RD zůstává CT
+			case 2://při změně TT změna K,DD,RD zůstává CT
 			{
 				if(O->rezim==0)O->CT=PP.TT;//pro S&G
 				else //pro kontinuál a PP
@@ -280,52 +282,52 @@ void Cvektory::aktualizace_objektu(short typ)
 					//DD
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV+(K-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*dV+(O->kapacita-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
 					//RD
 					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 				}
 			}
 			break;
-			case 2://při změně parametrů vozíku změna DD, RD zůstává K, CT
+			case 3://při změně parametrů vozíku změna DD, RD zůstává K, CT
 			{
 				if(O->rezim!=0)//pro kontinuál a PP
 				{
 					//DD
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV+(K-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*dV+(O->kapacita-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
 					//RD
 					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 				}
 			}
 			break;
-			case 3://při změně parametrů vozíku změna u DD, CT zůstává K,RD
+			case 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD
 			{
 				if(O->rezim!=0)//pro kontinuál a PP
 				{
 					//DD
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV+(K-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*dV+(O->kapacita-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
 					//CT
 					if(O->rezim==1)O->CT=O->delka_dopravniku/O->RD;//pro kontinual
 					else//pro PP
 					{
-						if(O->kapacita==O->mV)PP.TT*(O->delka_dopravniku+O->mezera)/(dV+m);//dle toho, kolik se zohledňuje mezer
-						else O->kapacita=PP.TT*O->delka_dopravniku/(dV+m);//dle toho, kolik se zohledňuje mezer
-				 }
+						if(O->kapacita==O->mV)PP.TT*(O->delka_dopravniku+O->mezera)/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
+						else O->kapacita=PP.TT*O->delka_dopravniku/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
+					}
 				}
 			}
 			break;
-			case 4://při změně parametrů vozíku změna u K,CT,RD zůstává DD
+			case 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
 			{
 				if(O->rezim!=0)//pro kontinuál a PP
 				{
 					//K
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					if(O->kapacita==O->mV)(O->delka_dopravniku+O->mezera)/(dV+m);//dle toho, kolik se zohledňuje mezer
-					else O->kapacita=O->delka_dopravniku/(dV+m);//dle toho, kolik se zohledňuje mezer
+					if(O->kapacita==O->mV)(O->delka_dopravniku+O->mezera)/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
+					else O->kapacita=O->delka_dopravniku/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
 					//CT
 					O->CT=PP.TT*O->kapacita;
 					//RD
@@ -1216,6 +1218,24 @@ Cvektory::TZakazka *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt)
 			 Z=Z->dalsi;
 	 }
 	 return NULL;
+}
+//---------------------------------------------------------------------------
+//dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
+void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka)
+{
+	//bude doplněno
+}
+//---------------------------------------------------------------------------
+//to samé co výše ale uskuteční pro všechny zakázky, vhodné pro volání v tlačítku uložit
+void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky()
+{
+	//bude doplněno
+}
+//---------------------------------------------------------------------------
+//dle parametrů JIG přepočítá K (u S&G zanechá 1) a z toho vyplývající změnu CT a RD (u linetracking objektů) jednolivých segmentů cesty dané zakázky
+void Cvektory::aktualizace_KaCTaRD_segmentu_cesty_dleJIG(TZakazka *zakazka)
+{
+//bude doplněno
 }
 //---------------------------------------------------------------------------
 //vymaže celou cestu dané zakázky
