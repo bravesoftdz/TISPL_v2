@@ -29,6 +29,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_header;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
+	TscGPRadioButton *scGPRadioButton4;
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall rStringGridEd_tabGetCellParams(TObject *Sender, int Col, int Row,

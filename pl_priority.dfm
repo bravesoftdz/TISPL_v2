@@ -132,12 +132,11 @@ object Form_PL_priority: TForm_PL_priority
     Left = 48
     Top = 122
     Width = 705
-    Height = 127
+    Height = 159
     ColCount = 2
     DefaultColWidth = 350
     DefaultRowHeight = 30
     DefaultDrawing = False
-    RowCount = 4
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
@@ -179,6 +178,7 @@ object Form_PL_priority: TForm_PL_priority
       end>
     OnGetCellParams = rStringGridEd_tabGetCellParams
     RowHeights = (
+      30
       30
       30
       30
@@ -700,5 +700,100 @@ object Form_PL_priority: TForm_PL_priority
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scGPRadioButton4: TscGPRadioButton
+    Left = 12
+    Top = 246
+    Width = 30
+    Height = 35
+    BiDiMode = bdLeftToRight
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentBiDiMode = False
+    ParentFont = False
+    TabOrder = 7
+    TabStop = True
+    OnClick = scGPRadioButton3Click
+    Animation = False
+    CanFocused = True
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    Options.NormalColor = clWindow
+    Options.HotColor = clWindow
+    Options.PressedColor = clWindow
+    Options.DisabledColor = clWindow
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 200
+    Options.DisabledColorAlpha = 125
+    Options.FrameNormalColor = clBtnShadow
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.CheckMarkNormalColor = clWindowText
+    Options.CheckMarkHotColor = clWindowText
+    Options.CheckMarkPressedColor = clWindowText
+    Options.CheckMarkDisabledColor = clWindowText
+    Options.CheckMarkNormalColorAlpha = 255
+    Options.CheckMarkHotColorAlpha = 255
+    Options.CheckMarkPressedColorAlpha = 255
+    Options.CheckMarkDisabledColorAlpha = 125
+    Options.ShapeSize = 20
+    Options.CheckMarkThickness = 2
+    Options.StyleColors = True
+    OptionsChecked.NormalColor = clWindow
+    OptionsChecked.HotColor = clWindow
+    OptionsChecked.PressedColor = clWindow
+    OptionsChecked.DisabledColor = clWindow
+    OptionsChecked.NormalColorAlpha = 255
+    OptionsChecked.HotColorAlpha = 255
+    OptionsChecked.PressedColorAlpha = 200
+    OptionsChecked.DisabledColorAlpha = 125
+    OptionsChecked.FrameNormalColor = clBtnShadow
+    OptionsChecked.FrameHotColor = clHighlight
+    OptionsChecked.FramePressedColor = clHighlight
+    OptionsChecked.FrameDisabledColor = clBtnShadow
+    OptionsChecked.FrameWidth = 2
+    OptionsChecked.FrameNormalColorAlpha = 255
+    OptionsChecked.FrameHotColorAlpha = 255
+    OptionsChecked.FramePressedColorAlpha = 255
+    OptionsChecked.FrameDisabledColorAlpha = 255
+    OptionsChecked.CheckMarkNormalColor = clWindowText
+    OptionsChecked.CheckMarkHotColor = clWindowText
+    OptionsChecked.CheckMarkPressedColor = clWindowText
+    OptionsChecked.CheckMarkDisabledColor = clWindowText
+    OptionsChecked.CheckMarkNormalColorAlpha = 255
+    OptionsChecked.CheckMarkHotColorAlpha = 255
+    OptionsChecked.CheckMarkPressedColorAlpha = 255
+    OptionsChecked.CheckMarkDisabledColorAlpha = 125
+    OptionsChecked.ShapeSize = 20
+    OptionsChecked.CheckMarkThickness = 2
+    OptionsChecked.StyleColors = True
+    ImageGlow = True
+    Checked = False
+    ScaleFrameWidth = True
+    ShowFocusRect = True
   end
 end

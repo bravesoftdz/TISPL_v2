@@ -272,20 +272,26 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt
 		{
 		//Form_PL_priority->rStringGridEd_tab->Height=Form_PL_priority->rStringGridEd_tab->Height-Form_PL_priority->rStringGridEd_tab->DefaultRowHeight;
-		Form_PL_priority->rStringGridEd_tab->RowCount=3;
-		Form_PL_priority->scGPRadioButton3->Visible=false;
+		Form_PL_priority->rStringGridEd_tab->RowCount=4;
+		Form_PL_priority->scGPRadioButton4->Visible=false;
 					//zustava
 		Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Délka pohonu";
 		Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Technologický èas";
+		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Individuální nastavení";
 
 				 //meni se
 		Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Technologický èas, Rychlost pohonu";
 		Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka pohonu, Rychlost pohonu";
+		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Individuální nastavení";
 
 	  Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
 
 			if(mrOk==Form_PL_priority->ShowModal()){
-			Ulozit=true;   // predat pro M vybrany parametr z radio
+				// volani aktualizacni fce
+			if(Form_PL_priority->scGPRadioButton1->Checked) Form1->d.v.aktualizace_objektu(1);
+			if(Form_PL_priority->scGPRadioButton2->Checked) Form1->d.v.aktualizace_objektu(2);
+			if(Form_PL_priority->scGPRadioButton3->Checked) Form1->d.v.aktualizace_objektu(0); //indi nastav
+			Ulozit=true;
 			}
 			else{
 			Ulozit=false;
@@ -294,22 +300,29 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 	 }
 			if(Changes_PP)//pri zmene PP + jiz existuje nejaky objekt
 		{
-			Form_PL_priority->rStringGridEd_tab->RowCount=4;
+			Form_PL_priority->rStringGridEd_tab->RowCount=5;
 			//Form_PL_priority->rStringGridEd_tab->Height=3*Form_PL_priority->rStringGridEd_tab->DefaultRowHeight+2; //2px kosmetika
 
-			Form_PL_priority->scGPRadioButton3->Visible=true;
+			Form_PL_priority->scGPRadioButton4->Visible=true;
 						 //zustava
 		Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Technologický èas";
 		Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Kapacita, Rychlost pohonu";
 		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Délka pohonu";
+		Form_PL_priority->rStringGridEd_tab->Cells[0][4]="Individuální nastavení";
 				 //meni se
 		Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Délka pohonu, Rychlost pohonu";
 		Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Délka pohonu, Technologický èas";
 		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Kapacita, Technologický èas, Rychlost pohonu";
+		Form_PL_priority->rStringGridEd_tab->Cells[1][4]="Individuální nastavení";
 
 			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnám parametrù <font color=#2b579a>vozíku</font>, které ovlivòují parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
 
 			if(mrOk==Form_PL_priority->ShowModal()){
+          // volani aktualizacni fce
+			if(Form_PL_priority->scGPRadioButton1->Checked) Form1->d.v.aktualizace_objektu(3);
+			if(Form_PL_priority->scGPRadioButton2->Checked) Form1->d.v.aktualizace_objektu(4);
+			if(Form_PL_priority->scGPRadioButton3->Checked) Form1->d.v.aktualizace_objektu(5);
+			if(Form_PL_priority->scGPRadioButton4->Checked) Form1->d.v.aktualizace_objektu(0); //indi nastav
 			
 			Ulozit=true;   // predat pro M vybrany parametr z radio
 			}
@@ -328,7 +341,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Form1->d.v.hlavicka_POHONY();
 
 			 if (Form1->d.v.OBJEKTY->dalsi!=NULL) {  // kdyz ukladam a existuje i nejaky objekt tak udelam aktualizaci obj.
-				Form1->d.v.aktualizace_objektu();
+			 //	Form1->d.v.aktualizace_objektu();
 			}
 
 			for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
@@ -650,7 +663,5 @@ if (Col==5 && Row==0) {
 	 }
 }
 //---------------------------------------------------------------------------
-
-
 
 

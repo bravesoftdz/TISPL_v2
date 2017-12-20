@@ -16,6 +16,8 @@ TForm_PL_priority *Form_PL_priority;
 __fastcall TForm_PL_priority::TForm_PL_priority(TComponent* Owner)
 	: TForm(Owner)
 {
+	Form1->m.designButton(Button_save,Form_PL_priority,1,2);
+	Form1->m.designButton(Button_storno,Form_PL_priority,2,2);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_PL_priority::Button_stornoClick(TObject *Sender)
@@ -34,9 +36,6 @@ void __fastcall TForm_PL_priority::FormShow(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-
-
-
 void __fastcall TForm_PL_priority::rStringGridEd_tabGetCellParams(TObject *Sender,
           int Col, int Row, TFont *AFont, TColor &Background, bool &Highlight)
 
@@ -51,13 +50,19 @@ void __fastcall TForm_PL_priority::rStringGridEd_tabGetCellParams(TObject *Sende
 	}
 		if (Row==2 && scGPRadioButton2->Checked) {
 
-	Background=(TColor)RGB(202,217,240);
+		Background=(TColor)RGB(202,217,240);
 		Highlight=true;
 
 	}
 		if (Row==3 && scGPRadioButton3->Checked) {
 
-	Background=(TColor)RGB(202,217,240);
+		Background=(TColor)RGB(202,217,240);
+		Highlight=true;
+
+	}
+		if (Row==4 && scGPRadioButton3->Checked) {
+
+		Background=(TColor)RGB(202,217,240);
 		Highlight=true;
 
 	}
