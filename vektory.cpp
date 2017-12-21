@@ -264,6 +264,29 @@ void Cvektory::aktualizace_objektu(short typ)
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
+		if(typ==-1)//dle zamčených a odemčených hodnot při změně TT
+		{
+			////při zamčeném CT
+			//doplnit podmínku
+			typ=2;//přesměrování na daný typ
+			////při zamčené K a DD
+			//doplnit podmínku
+			typ=1;//přesměrování na daný typ
+			////při zamčeném RD
+			//doplnit podmínku
+			//doplnit počítání mezer
+		}
+		if(typ==0)//dle zamčených a odemčených hodnot při změně parametrů vozíku
+		{
+			//při zamčeném K či CT
+			typ=3;
+			//při zamčeném K,RD
+			typ=4;
+			//při zamčeném DD
+			typ=5;
+
+		}
+
 		switch(typ)
 		{
 			case 1://při změně TT změna CT a RD, K a DD zůstává
@@ -272,7 +295,7 @@ void Cvektory::aktualizace_objektu(short typ)
 				if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 			}
 			break;
-			case 2://při změně TT změna K,DD,RD zůstává CT
+			case 2://při změně TT změna K,DD,RD zůstává CT mimo S&G
 			{
 				if(O->rezim==0)O->CT=PP.TT;//pro S&G
 				else //pro kontinuál a PP
