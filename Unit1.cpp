@@ -4108,6 +4108,8 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 		STATUS=OVEROVANI;
 		scLabel15->Visible=true;
 		scGPGlyphButton_definice_zakazek->Visible=true;
+		scGPGlyphButton_parametry_linky->Visible=false;
+		scLabel14->Visible=false;
 		scLabel15->Caption="Definice zakázek";
 		SB("OVĚŘOVÁNÍ",1);
 	}
@@ -4115,6 +4117,9 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 	{
 		STATUS=NAVRH;
 		scLabel15->Visible=false;
+		scLabel14->Visible=true;
+		scLabel14->Caption="Parametry linky";
+		scGPGlyphButton_parametry_linky->Visible=true;
 		scGPGlyphButton_definice_zakazek->Visible=false;
 		SB("NÁVRH",1);
 	}

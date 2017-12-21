@@ -468,7 +468,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'TakTime [sec]'
+        TitleCaption = 'TakTime [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -13

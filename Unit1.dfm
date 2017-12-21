@@ -3094,7 +3094,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 37
+    TabOrder = 36
     Visible = False
     BackgroundStyle = scexbgsPanel
     HeaderColor = clHighlight
@@ -3162,7 +3162,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 39
+    TabOrder = 38
     Visible = False
     BackgroundStyle = scexbgsPanel
     HeaderColor = clBtnFace
@@ -4424,7 +4424,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Pohon - objektu'
-    TabOrder = 40
+    TabOrder = 39
     Visible = False
     OnClick = pohonobjektClick
   end
@@ -4443,7 +4443,7 @@ object Form1: TForm1
     Top = 34
     Width = 0
     Height = 622
-    Align = alCustom
+    Anchors = [akTop, akRight, akBottom]
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
@@ -4796,8 +4796,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 6
-        Top = 169
+        Left = 12
+        Top = 175
         Width = 244
         Height = 31
         Align = alCustom
@@ -4884,8 +4884,6 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
-        ExplicitLeft = 3
-        ExplicitTop = 166
       end
     end
     object scExPanel_vrstvy: TscExPanel
@@ -4947,7 +4945,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004804840410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004804880410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6070,7 +6068,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01012F00BC02880330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012F00BC028C0330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000040020000010020000000000000C0
       0600000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000080
@@ -20344,7 +20342,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01012F003002300218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01012F003402340218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000002001000001000400000000000036
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

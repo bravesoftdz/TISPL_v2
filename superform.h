@@ -136,6 +136,8 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_definice_zakazek(TComponent* Owner);
 
+	bool zmena_TT;
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_definice_zakazek *Form_definice_zakazek;
