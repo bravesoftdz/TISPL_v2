@@ -284,7 +284,6 @@ void Cvektory::aktualizace_objektu(short typ)
 			typ=4;
 			//při zamčeném DD
 			typ=5;
-
 		}
 
 		switch(typ)
@@ -1249,7 +1248,7 @@ void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka)
 	TCesta *C=zakazka->cesta->dalsi;
 	while(C!=NULL)
 	{
-		 C->CT=PP.TT*C->objekt->kapacita;
+		 C->CT=zakazka->TT*C->objekt->kapacita;
 		 if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
 		 C=C->dalsi;
 	}
