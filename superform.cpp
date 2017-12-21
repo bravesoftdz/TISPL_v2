@@ -207,7 +207,7 @@ void TForm_definice_zakazek::nacti_zakazky()
 			if(ukaz->barva==(TColor)RGB(128,0,0)) rStringGridEd1->Cells[3][i]="Kaštanová";
 			if(ukaz->barva==(TColor)RGB(0,128,0)) rStringGridEd1->Cells[3][i]="Zelená";
 			if(ukaz->barva==(TColor)RGB(128,128,0)) rStringGridEd1->Cells[3][i]="Olivová";
-			if(ukaz->barva==(TColor)RGB(0,0,128)) rStringGridEd1->Cells[3][i]="Námoønická modrá";
+			if(ukaz->barva==(TColor)RGB(0,0,128)) rStringGridEd1->Cells[3][i]="Námoønická modø";
 			if(ukaz->barva==(TColor)RGB(128,0,128)) rStringGridEd1->Cells[3][i]="Fialová";
 			if(ukaz->barva==(TColor)RGB(0,128,128)) rStringGridEd1->Cells[3][i]="Modrozelená";
 			if(ukaz->barva==(TColor)RGB(128,128,128)) rStringGridEd1->Cells[3][i]="Šedá";
@@ -265,7 +265,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	if(rStringGridEd1->Col==5)
 	{
 
-		Form1->MB("V této verzi programu není možné nastavovan parametry Jigu. Jig je již nastaven v parametrech linky.");
+		Form1->MB("V této verzi programu není možné nastavovat parametry jigu. Jig je možné nastavit pouze v parametrech linky.");
 
     //DOCASNE ODSTAVENI NASTAVENI JIGU PRO KONKRETNI ZAKAZKU
 		//naplnìní dat
@@ -328,6 +328,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,zakazka);
 			if(C!=NULL)//zahrnuté segmenty cesty
 			{
+					if(zakazka->n==1){C->CT=O->CT;C->RD=O->RD;}//v pøípadì první zakázky se berou hodnoty z parametrù objektu nikoliv zakázky, což zajistí patøiènou aktuliazaci
 					Form_cesty->rStringGridEd_cesty->Cells[0][i]=C->objekt->n;
 					Form_cesty->rStringGridEd_cesty->Cells[1][i]=C->objekt->name;
 					Form_cesty->rStringGridEd_cesty->Cells[2][i]=C->CT;
@@ -352,6 +353,14 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		}
 
 		////--------------
+
+		// TT temp zakazky je rozdilny oproti TT ve stringgridu - budu prepocitavat hodnoty RD,CT na Ceste
+     if(Form1->ms.MyToDouble(zakazka->TT)!=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]))  {
+
+	 	 ShowMessage("prepocitej");
+	 	 Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(zakazka);
+		}
+
 
 		////ukládání dat - jednotlivého segmentu cesty pokud je považován k zahrnutní ze strany uživatele
 		//formuláø na støed
@@ -425,13 +434,14 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 
 		if(zmena_TT) {
 
-		if(mrOk==Form1->MB("Nastala zmìna TakTime, která ovlivní Technologický èas a Rychlost pohonu upravené zakázky.",MB_OKCANCEL)) {
+		if(mrOk==Form1->MB("Nastala zmìna TakTime, která ovlivní technologický èas a rychlost pohonu upravované zakázky.",MB_OKCANCEL)) {
 		//aktualiz fce pro CT,RD zakazky
+				Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();
 				neukladat=false;
 			}
 			else {
 
-				neukladat=true;    //pokud neulozim data, ulozim do dat puvodni hodnoty TT z temp_zakazky
+				neukladat=true;    //pokud neulozim data, ulozim do dat puvodni hodnoty TT z temp_zakazek
 				for (int i=1; i < rStringGridEd1->RowCount; i++) {
 				Cvektory::TZakazka *zak=Form1->d.v.vrat_temp_zakazku(i);
 				rStringGridEd1->Cells[10][i]=zak->TT;

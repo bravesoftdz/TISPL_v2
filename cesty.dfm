@@ -101,7 +101,6 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ReadOnly = True
         TitleCaption = 'CT [s]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
@@ -125,7 +124,6 @@ object Form_cesty: TForm_cesty
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ReadOnly = True
         TitleCaption = 'Rychlost dopravn'#237'ku [m/min]'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow

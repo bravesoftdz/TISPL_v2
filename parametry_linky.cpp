@@ -471,6 +471,7 @@ void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sende
 
 {
 
+    scExPanel_doporuc_pohony->Width=Form_parametry_linky->Width-10;
 		scExPanel_doporuc_pohony->Visible=true;
 		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY();
 

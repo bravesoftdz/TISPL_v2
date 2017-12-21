@@ -19,8 +19,8 @@ object Form_parametry_linky: TForm_parametry_linky
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_delka_voziku: TrHTMLLabel
-    Left = 594
-    Top = 40
+    Left = 581
+    Top = 44
     Width = 77
     Height = 21
     Caption = 'D'#233'lka <font color=#2b579a>[m]</font>'
@@ -66,8 +66,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rHTMLLabel_taktClick
   end
   object rHTMLLabel_sirka: TrHTMLLabel
-    Left = 487
-    Top = 145
+    Left = 252
+    Top = 241
     Width = 71
     Height = 21
     Caption = #353#237#345'ka <font color=#2b579a>[m]</font>'
@@ -96,8 +96,8 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
   end
   object rHTMLLabel_delka_jigu: TrHTMLLabel
-    Left = 305
-    Top = 142
+    Left = 70
+    Top = 238
     Width = 75
     Height = 21
     Caption = 'd'#233'lka <font color=#2b579a>[m]</font>'
@@ -111,8 +111,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rHTMLLabel_delka_jiguClick
   end
   object rHTMLLabel3: TrHTMLLabel
-    Left = 305
-    Top = 102
+    Left = 70
+    Top = 198
     Width = 73
     Height = 19
     Caption = 'podlahov'#253
@@ -126,8 +126,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rHTMLLabel_delkavozikuClick
   end
   object rHTMLLabel4: TrHTMLLabel
-    Left = 487
-    Top = 102
+    Left = 252
+    Top = 198
     Width = 67
     Height = 19
     Caption = 'podv'#283'sn'#253
@@ -141,8 +141,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rHTMLLabel_delkavozikuClick
   end
   object rHTMLLabel1: TrHTMLLabel
-    Left = 253
-    Top = 102
+    Left = 18
+    Top = 198
     Width = 27
     Height = 19
     Caption = 'Typ'
@@ -156,8 +156,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rHTMLLabel_delkavozikuClick
   end
   object rHTMLLabel2: TrHTMLLabel
-    Left = 253
-    Top = 142
+    Left = 18
+    Top = 238
     Width = 20
     Height = 19
     Caption = 'Jig'
@@ -794,8 +794,8 @@ object Form_parametry_linky: TForm_parametry_linky
     end
   end
   object scGPButton_vozik: TscGPButton
-    Left = 253
-    Top = 48
+    Left = 18
+    Top = 144
     Width = 105
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -882,8 +882,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object rEditNum_delkavoziku: TrEditNum
-    Left = 504
-    Top = 36
+    Left = 491
+    Top = 40
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -1017,8 +1017,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 120.000000000000000000
   end
   object rEditNum_sirka_jigu: TrEditNum
-    Left = 580
-    Top = 138
+    Left = 345
+    Top = 234
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -1120,9 +1120,9 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object scExPanel_doporuc_pohony: TscExPanel
-    Left = 242
+    Left = 435
     Top = 172
-    Width = 553
+    Width = 360
     Height = 104
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGrayText
@@ -1186,7 +1186,7 @@ object Form_parametry_linky: TForm_parametry_linky
       TextAlignment = taLeftJustify
     end
     object scGPGlyphButton_add_mezi_pohony: TscGPGlyphButton
-      Left = 516
+      Left = 323
       Top = 24
       Width = 37
       Height = 80
@@ -1488,8 +1488,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object rEditNum_delka_jigu: TrEditNum
-    Left = 397
-    Top = 138
+    Left = 162
+    Top = 234
     Width = 84
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -1503,8 +1503,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 1.000000000000000000
   end
   object scGPSwitch: TscGPSwitch
-    Left = 411
-    Top = 102
+    Left = 176
+    Top = 198
     Width = 47
     Height = 22
     Margins.Left = 1
