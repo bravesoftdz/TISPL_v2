@@ -1223,19 +1223,45 @@ Cvektory::TZakazka *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt)
 //dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
 void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka)
 {
-	//bude doplněno
+	TCesta *C=zakazka->cesta->dalsi;
+	while(C!=NULL)
+	{
+		 C->CT=PP.TT*C->objekt->kapacita;
+		 if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
+		 C=C->dalsi;
+	}
+	C=NULL;delete C;
 }
 //---------------------------------------------------------------------------
 //to samé co výše ale uskuteční pro všechny zakázky, vhodné pro volání v tlačítku uložit
 void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky()
 {
-	//bude doplněno
+	TZakazka *Z=ZAKAZKY->dalsi;
+	while(Z!=NULL)//prochází jednotlivé zakázky
+	{
+		aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(Z);
+		Z=Z->dalsi;
+	}
+	Z=NULL;delete Z;
 }
 //---------------------------------------------------------------------------
 //dle parametrů JIG přepočítá K (u S&G zanechá 1) a z toho vyplývající změnu CT a RD (u linetracking objektů) jednolivých segmentů cesty dané zakázky
 void Cvektory::aktualizace_KaCTaRD_segmentu_cesty_dleJIG(TZakazka *zakazka)
 {
-//bude doplněno
+  //zatim nepoužíváme rozlišení jig a vozík
+	/*TCesta *C=zakazka->cesta->dalsi;
+	while(C!=NULL)
+	{
+		 if(C->objekt->rezim!=0)//u S&G neřeší
+		 {
+			C->objekt
+			C->CT=PP.TT*C->objekt->kapacita;
+			if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
+			C=C->dalsi;
+		 }
+	}
+	C=NULL;delete C;
+	*/
 }
 //---------------------------------------------------------------------------
 //vymaže celou cestu dané zakázky

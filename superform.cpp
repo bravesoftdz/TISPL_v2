@@ -464,7 +464,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 				//samotné uložení
 				Form1->d.v.kopirujZAKAZKY_temp2ZAKAZKY();//uložení do ostrého spojáku ZAKAZKY+smáznutí ZAKAZKY_temp
 				Form1->d.v.generuj_VOZIKY();//vygenerování vozíkù dle zadaných zakázek
-				//konstrukce která má vzít CT objektu z první zakázky a našit ho do CT objektù
+				//konstrukce která má vzít CT a RD objektu z první zakázky a našit ho do CT a RD objektù
 				Cvektory::TObjekt *Obj=Form1->d.v.OBJEKTY->dalsi;
 				while(Obj!=NULL)
 				{
