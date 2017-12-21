@@ -17,11 +17,12 @@
 #include "scExtControls.hpp"
 #include "scHtmlControls.hpp"
 #include "pl_priority.h"
+#include "scModernControls.hpp"
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
 __published:	// IDE-managed Components
-	TrHTMLLabel *rHTMLLabel_delka;
+	TrHTMLLabel *rHTMLLabel_delka_voziku;
 	TValueListEditor *ValueListEditor;
 	TButton *Button_ADD;
 	TButton *Button_DEL;
@@ -36,12 +37,11 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum_delkavoziku;
 	TscGPButton *scGPButton_pohon;
 	TButton *Vypis_pohony;
-	TscRadioGroup *scRadioGroup_typVoziku;
 	TrHTMLLabel *rHTMLLabel_eDesigner;
 	TrEditNum *rEditNum_takt;
 	TrHTMLLabel *rHTMLLabel_takt;
 	TrHTMLLabel *rHTMLLabel_sirka;
-	TrEditNum *rEditNum_sirkavoziku;
+	TrEditNum *rEditNum_sirka_jigu;
 	TscGPButton *scGPButton_obecne;
 	TrHTMLLabel *rHTMLLabel_doporuc_pohony;
 	TscExPanel *scExPanel_doporuc_pohony;
@@ -51,6 +51,14 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_TT_change_hint;
 	TMemo *Memo1;
 	TButton *Button1;
+	TscGPButton *scGPButton_jig;
+	TrHTMLLabel *rHTMLLabel_delka_jigu;
+	TrEditNum *rEditNum_delka_jigu;
+	TscGPSwitch *scGPSwitch;
+	TrHTMLLabel *rHTMLLabel3;
+	TrHTMLLabel *rHTMLLabel4;
+	TrHTMLLabel *rHTMLLabel1;
+	TrHTMLLabel *rHTMLLabel2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -61,7 +69,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_doporuceneClick(TObject *Sender);
 	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
 	void __fastcall rEditNum_taktChange(TObject *Sender);
-	void __fastcall rHTMLLabel_delkaClick(TObject *Sender);
+	void __fastcall rHTMLLabel_delkavozikuClick(TObject *Sender);
 	void __fastcall rHTMLLabel_sirkaClick(TObject *Sender);
 	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender);
@@ -72,6 +80,10 @@ __published:	// IDE-managed Components
           int Row, TrStringGridEdEditStyle &EditStyle);
 	void __fastcall rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender, int Col, int Row,
           bool &CanEdit);
+	void __fastcall rEditNum_delkavozikuClick(TObject *Sender);
+	void __fastcall rHTMLLabel_delka_jiguClick(TObject *Sender);
+	void __fastcall rHTMLLabel_delka_vozikuClick(TObject *Sender);
+
 private:	// User declarations
 
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)

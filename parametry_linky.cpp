@@ -14,6 +14,7 @@
 #pragma link "scGPControls"
 #pragma link "scExtControls"
 #pragma link "scHtmlControls"
+#pragma link "scModernControls"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -53,15 +54,15 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
 			rHTMLLabel_sirka->Visible=true;
-			rEditNum_sirkavoziku->Visible=true;
+		 //	rEditNum_sirkavoziku->Visible=true;
 
 			rStringGridEd_tab_dopravniky->Visible=true;
 			Button_ADD->Visible=true;
 			Button_DEL->Visible=true;
 
-			scRadioGroup_typVoziku->Visible=true;
-			rEditNum_delkavoziku->Visible=true;
-			rHTMLLabel_delka->Visible=true;
+		 //	scRadioGroup_typVoziku->Visible=true;
+			//rEditNum_delkavoziku->Visible=true;
+			//rHTMLLabel_delka_voziku->Visible=true;
 
 
 		}
@@ -72,15 +73,15 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scGPButton_pohon->Caption="   Pohon";
 
 			rHTMLLabel_sirka->Visible=false;
-			rEditNum_sirkavoziku->Visible=false;
+		 //	rEditNum_sirkavoziku->Visible=false;
 
 			rStringGridEd_tab_dopravniky->Visible=true;
 			Button_ADD->Visible=true;
 			Button_DEL->Visible=true;
 
-			scRadioGroup_typVoziku->Visible=true;
+		 //	scRadioGroup_typVoziku->Visible=true;
 			rEditNum_delkavoziku->Visible=true;
-			rHTMLLabel_delka->Visible=true;
+			rHTMLLabel_delka_voziku->Visible=true;
 
 			scGPButton_obecne->Visible=false;
 			rHTMLLabel_takt->Visible=false;
@@ -127,6 +128,15 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_obecne->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_obecne->Options->FramePressedColor=Form_parametry_linky->Color;
 
+
+	 scGPButton_jig->Options->NormalColor=Form_parametry_linky->Color;
+	 scGPButton_jig->Options->FocusedColor=Form_parametry_linky->Color;
+	 scGPButton_jig->Options->HotColor=Form_parametry_linky->Color;
+	 scGPButton_jig->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_jig->Options->FrameNormalColor=Form_parametry_linky->Color;
+	 scGPButton_jig->Options->PressedColor=Form_parametry_linky->Color;
+	 scGPButton_jig->Options->FramePressedColor=Form_parametry_linky->Color;
+
 	 rStringGridEd_tab_dopravniky->Left=1;
 	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
 
@@ -134,12 +144,12 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
 
-
-
 	 //nahrání hodnot
 	 rEditNum_delkavoziku->Text=Form1->d.v.PP.delka_voziku;
-	 rEditNum_sirkavoziku->Text=Form1->d.v.PP.sirka_voziku;
-	 scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
+	 rEditNum_sirka_jigu->Text=Form1->d.v.PP.sirka_voziku;
+	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
+	 else  { scGPSwitch->State=scswOn; }
+	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
 	 rEditNum_takt->Text=Form1->d.v.PP.TT;
 
 
@@ -227,7 +237,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 Changes_PP=true;
 		}
 		//pri zmene sirky voziku
-			if(Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+			if(Form1->ms.MyToDouble(rEditNum_sirka_jigu->Text) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
 		 Changes_PP=true;
 		}
@@ -290,7 +300,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				// volani aktualizacni fce
 			if(Form_PL_priority->scGPRadioButton1->Checked) Form1->d.v.aktualizace_objektu(1);
 			if(Form_PL_priority->scGPRadioButton2->Checked) Form1->d.v.aktualizace_objektu(2);
-			if(Form_PL_priority->scGPRadioButton3->Checked) Form1->d.v.aktualizace_objektu(0); //indi nastav
+			if(Form_PL_priority->scGPRadioButton3->Checked) Form1->d.v.aktualizace_objektu(-1); //indi nastav
 			Ulozit=true;
 			}
 			else{
@@ -352,9 +362,19 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
 			}
 
+			if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
+			{
 			Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-			Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirkavoziku->Text);
-			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(scRadioGroup_typVoziku->ItemIndex);
+			}
+			else 	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delka_jigu->Text);
+
+			int typ;
+			//Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
+			Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirka_jigu->Text);   //zavadejici docasne reseni
+			if(scGPSwitch->State==scswOff) {
+			 typ=0;}
+			 else {typ=1;}
+			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(typ);
 
 
 			Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
@@ -485,7 +505,7 @@ void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rHTMLLabel_delkaClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::rHTMLLabel_delkavozikuClick(TObject *Sender)
 {
 	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
 	double delka=0.0;
@@ -493,18 +513,18 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delkaClick(TObject *Sender)
 	{
 		Delkaunit=M;
 		//delka - pøepoèítání
-		delka=rEditNum_delkavoziku->Value*1000.0;
-		rHTMLLabel_delka->Caption="Délka <font color=#2b579a>[mm]</font>";
+		delka=rEditNum_delka_jigu->Value*1000.0;
+		rHTMLLabel_delka_jigu->Caption="Délka <font color=#2b579a>[mm]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 		//delka - pøepoèítání
-			delka=rEditNum_delkavoziku->Value/1000.0;
-		rHTMLLabel_delka->Caption="Délka <font color=#2b579a>[m]</font>";
+			delka=rEditNum_delka_jigu->Value/1000.0;
+		rHTMLLabel_delka_jigu->Caption="Délka <font color=#2b579a>[m]</font>";
 	}
 	//plnìní
-	rEditNum_delkavoziku->Value=delka;
+	rEditNum_delka_jigu->Value=delka;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
@@ -518,18 +538,18 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_sirkaClick(TObject *Sender)
 	{
 		Sirkaunit=M;
 		//delka - pøepoèítání
-		sirka=rEditNum_sirkavoziku->Value*1000.0;
-		rHTMLLabel_sirka->Caption="Šíøka <font color=#2b579a>[mm]</font>";
+		sirka=rEditNum_sirka_jigu->Value*1000.0;
+		rHTMLLabel_sirka->Caption="šíøka <font color=#2b579a>[mm]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Sirkaunit=MM;
 		//delka - pøepoèítání
-			sirka=rEditNum_sirkavoziku->Value/1000.0;
-		rHTMLLabel_sirka->Caption="Šíøka <font color=#2b579a>[m]</font>";
+			sirka=rEditNum_sirka_jigu->Value/1000.0;
+		rHTMLLabel_sirka->Caption="šíøka <font color=#2b579a>[m]</font>";
 	}
 	//plnìní
-	rEditNum_sirkavoziku->Value=sirka;
+	rEditNum_sirka_jigu->Value=sirka;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 
 }
@@ -664,4 +684,83 @@ if (Col==5 && Row==0) {
 }
 //---------------------------------------------------------------------------
 
+
+
+
+void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender)
+
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double delka=0.0;
+	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
+	{
+		Delkaunit=M;
+		//delka - pøepoèítání
+		delka=rEditNum_delkavoziku->Value*1000.0;
+		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[mm]</font>";
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Delkaunit=MM;
+		//delka - pøepoèítání
+			delka=rEditNum_delkavoziku->Value/1000.0;
+		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[m]</font>";
+	}
+	//plnìní
+	rEditNum_delkavoziku->Value=delka;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jiguClick(TObject *Sender)
+
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double delka=0.0;
+	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
+	{
+		Delkaunit=M;
+		//delka - pøepoèítání
+		delka=rEditNum_delka_jigu->Value*1000.0;
+		rHTMLLabel_delka_jigu->Caption="délka <font color=#2b579a>[mm]</font>";
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Delkaunit=MM;
+		//delka - pøepoèítání
+			delka=rEditNum_delka_jigu->Value/1000.0;
+		rHTMLLabel_delka_jigu->Caption="délka <font color=#2b579a>[m]</font>";
+	}
+	//plnìní
+	rEditNum_delka_jigu->Value=delka;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sender)
+
+{
+	input_state=NO;//zámìr, aby se nepøepoèítavaly hodnoty
+	double delka=0.0;
+	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
+	{
+		Delkaunit=M;
+		//delka - pøepoèítání
+		delka=rEditNum_delkavoziku->Value*1000.0;
+		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[mm]</font>";
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Delkaunit=MM;
+		//delka - pøepoèítání
+			delka=rEditNum_delkavoziku->Value/1000.0;
+		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[m]</font>";
+	}
+	//plnìní
+	rEditNum_delkavoziku->Value=delka;
+	input_state=NOTHING;//už se mohou pøepoèítávat
+
+}
+//---------------------------------------------------------------------------
 

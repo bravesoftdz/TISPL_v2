@@ -25,6 +25,7 @@ __fastcall TForm_definice_zakazek::TForm_definice_zakazek(TComponent* Owner)
 	: TForm(Owner)
 {
 	nastav_form(); //nastavení barev komponent
+	zmena_TT=false;
 }
 //---------------------------------------------------------------------------
 //nastavení barev komponent
@@ -256,48 +257,54 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);
 	AnsiString prochazet;
 
+
+
 	bool Changes=false;
 
 	////////////jig form- byl klik na buòku v 5. sloupci
 	if(rStringGridEd1->Col==5)
 	{
+
+		Form1->MB("V této verzi programu není možné nastavovan parametry Jigu. Jig je již nastaven v parametrech linky.");
+
+    //DOCASNE ODSTAVENI NASTAVENI JIGU PRO KONKRETNI ZAKAZKU
 		//naplnìní dat
-		Form_jig->Edit_jig_pocet_ks->Text=zakazka->jig.ks;
-		Form_jig->Edit_jig_delka->Text=zakazka->jig.delka;
-		Form_jig->Edit_jig_sirka->Text=zakazka->jig.sirka;
-		Form_jig->Edit_jig_vyska->Text=zakazka->jig.vyska;
-		//zobrazení formu + uložení dat pokud je zvoleno OK
-		if(mrOk==Form_jig->ShowModal())
-		{
-					//pri zmene delky
-		if(Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text) != 	zakazka->jig.delka){
-		 Changes=true;
+//		Form_jig->Edit_jig_pocet_ks->Text=zakazka->jig.ks;
+//		Form_jig->Edit_jig_delka->Text=zakazka->jig.delka;
+//		Form_jig->Edit_jig_sirka->Text=zakazka->jig.sirka;
+//		Form_jig->Edit_jig_vyska->Text=zakazka->jig.vyska;
+//		//zobrazení formu + uložení dat pokud je zvoleno OK
+//		if(mrOk==Form_jig->ShowModal())
+//		{
+//					//pri zmene delky
+//		if(Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text) != 	zakazka->jig.delka){
+//		 Changes=true;
+//
+//		}
+//		//pri zmene sirky
+//			if(Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text) != zakazka->jig.sirka){
+//		 Changes=true;
+//		}
+//
+//		if(Changes){
+//
+//			if(mrOk==Form1->MB("Nastala zmìna parametrù délka nebo šíøka jigu, budou pøepoèítány parametry linky pro tuto zakázku.",MB_OKCANCEL)) {
+//			//aktualizacni fce a ulozeni do zakazky
+//			zakazka->jig.ks=Form1->ms.MyToDouble(Form_jig->Edit_jig_pocet_ks->Text);
+//			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text);
+//			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text);
+//			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text);
+//			}
+//
+//		}
+//		if(!Changes){   //pokud nejsou zadne zmeny na jigu  ulozim hodnoty z editboxu
+//
+//			zakazka->jig.ks=Form1->ms.MyToDouble(Form_jig->Edit_jig_pocet_ks->Text);
+//			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text);
+//			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text);
+//			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text);
+//			}
 
-		}
-		//pri zmene sirky
-			if(Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text) != zakazka->jig.sirka){
-		 Changes=true;
-		}
-
-		if(Changes){
-
-			if(mrOk==Form1->MB("Nastala zmìna parametrù délka nebo šíøka jigu, budou pøepoèítány parametry linky pro tuto zakázku.",MB_OKCANCEL)) {
-			//aktualizacni fce a ulozeni do zakazky
-			zakazka->jig.ks=Form1->ms.MyToDouble(Form_jig->Edit_jig_pocet_ks->Text);
-			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text);
-			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text);
-			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text);
-			}
-
-		}
-		if(!Changes){   //pokud nejsou zadne zmeny na jigu  ulozim hodnoty z editboxu
-
-			zakazka->jig.ks=Form1->ms.MyToDouble(Form_jig->Edit_jig_pocet_ks->Text);
-			zakazka->jig.delka=Form1->ms.MyToDouble(Form_jig->Edit_jig_delka->Text);
-			zakazka->jig.sirka=Form1->ms.MyToDouble(Form_jig->Edit_jig_sirka->Text);
-			zakazka->jig.vyska=Form1->ms.MyToDouble(Form_jig->Edit_jig_vyska->Text);
-			}
-		}
 	}
 
 	////////////cesty form - byl klik na buòku 9. sloupci
@@ -391,13 +398,48 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			}
 		}
 	}
+
+
+
 }
 //---------------------------------------------------------------------------
 //TLAÈÍTKO ULOŽIT
 void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
+  zmena_TT=false;
+	bool neukladat=false;//pokud nebudou splnìny podmínky, nelze form uložit
+
+		for (int i=1; i < rStringGridEd1->RowCount; i++) {   //prochazim vsechny radky a hledam, kde je zmena TT
+
+		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(i);
+	//	ShowMessage(Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]));
+	//	ShowMessage(Form1->ms.MyToDouble(zakazka->TT));
+	//  ShowMessage(i);
+		 if(Form1->ms.MyToDouble(zakazka->TT)!=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]))  {
+	 //	ShowMessage(rStringGridEd1->Cells[10][i]);
+	 //	ShowMessage(zakazka->TT);
+
+		zmena_TT=true;
+		}
+	}
+
+		if(zmena_TT) {
+
+		if(mrOk==Form1->MB("Nastala zmìna TakTime, která ovlivní Technologický èas a Rychlost pohonu upravené zakázky.",MB_OKCANCEL)) {
+		//aktualiz fce pro CT,RD zakazky
+				neukladat=false;
+			}
+			else {
+
+				neukladat=true;    //pokud neulozim data, ulozim do dat puvodni hodnoty TT z temp_zakazky
+				for (int i=1; i < rStringGridEd1->RowCount; i++) {
+				Cvektory::TZakazka *zak=Form1->d.v.vrat_temp_zakazku(i);
+				rStringGridEd1->Cells[10][i]=zak->TT;
+					}
+			}
+		}
+
 		TColor barva;//musí být v TColor kvùli ukládání do TColor objektu!!!
-		bool neukladat=false;//pokud nebudou splnìny podmínky, nelze form uložit
 
 		//kontrola zda neobsahuje šedou barvu, nutno v samostatném for cyklu
 		for (int i = 1; i< rStringGridEd1->RowCount; i++)
@@ -1164,7 +1206,7 @@ void __fastcall TForm_definice_zakazek::scGPGlyphButton_add_zakazkaClick(TObject
 	rStringGridEd1->Cells[7][i]="0";
 	rStringGridEd1->Cells[8][i]="0";
 	rStringGridEd1->Cells[9][i]="NASTAVIT";
-	rStringGridEd1->Cells[10][i]="0";
+	rStringGridEd1->Cells[10][i]="120";
 
 	Memo4->Lines->Add(AnsiString(rStringGridEd1->Cells[0][i])+";"
 										+AnsiString(rStringGridEd1->Cells[1][i])+";"
