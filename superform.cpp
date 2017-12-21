@@ -316,6 +316,28 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ano");
 		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
 
+		//AKTUALIZACE SEGMENTÙ DLE PARAMETRÙ OBJEKTU U PRVNÍ ZAKÁZKY
+		if(zakazka->n==1)//pouze pokud se jedná o první zakázku
+		{
+			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+			while(O!=NULL)//prochází všechnyobjekty a buï je ("Ano") objekt i na cestì nebo není ("Ne")
+			{
+				Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,zakazka);
+				if(C!=NULL)//objekt je segmentem cesty
+				{
+					C->CT=O->CT;C->RD=O->RD;//v pøípadì první zakázky se berou hodnoty z parametrù objektu nikoliv zakázky, což zajistí patøiènou aktuliazaci
+				}
+				O=O->dalsi;
+			}
+		}
+
+		//AKTAUALIZACE CT,RD DLE TT U PRVNÍ ZAKÁZKY, TT temp zakazky je rozdilny oproti TT ve stringgridu - budu prepocitavat hodnoty RD,CT na Ceste
+		 if(Form1->ms.MyToDouble(zakazka->TT)!=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]))  {
+
+	 	 ShowMessage("prepocitej");
+	 	 Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(zakazka,Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]));
+		}
+
 		////naèítání dat - není tøeba ošetøovat, protože existuje default cesta v seznamu
 		//vypíše døíve nadefinovanou cestu vèetnì segmentù z nejdelší možné cesty, které nejsou souèástí aktuální cesty
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
@@ -354,12 +376,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 
 		////--------------
 
-		// TT temp zakazky je rozdilny oproti TT ve stringgridu - budu prepocitavat hodnoty RD,CT na Ceste
-     if(Form1->ms.MyToDouble(zakazka->TT)!=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]))  {
 
-	 	 ShowMessage("prepocitej");
-	 	 Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(zakazka);
-		}
 
 
 		////ukládání dat - jednotlivého segmentu cesty pokud je považován k zahrnutní ze strany uživatele
@@ -378,28 +395,28 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			{
 				if(Form_cesty->rStringGridEd_cesty->Cells[7][i]=="Ano")//pokud je zaškrnuto neprocházek objekt se neuloží do cesty
 				{
-				if (Form_cesty->rStringGridEd_cesty->Columns->Items[2]->TitleCaption=="CT [s]") {  //pokud je v sekundach
+					if (Form_cesty->rStringGridEd_cesty->Columns->Items[2]->TitleCaption=="CT [s]") {  //pokud je v sekundach
 								CT=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]);
 								Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]);
 								Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]);
-				}
-				else {  // pøevedu minuty na sekundy
-				 CT=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]*60);       //min na sekundy
-				 Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]*60);
-				 Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]*60);
+					}
+					else {  // pøevedu minuty na sekundy
+					CT=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]*60);       //min na sekundy
+					Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]*60);
+					Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]*60);
 					}
 
-						Form1->d.v.vloz_segment_cesty
-						(
+					Form1->d.v.vloz_segment_cesty
+					(
 							zakazka,
 							/*sloupec poøadí se neukládá*/ /*pozor na øazení*/
 							Form_cesty->rStringGridEd_cesty->Cells[0][i].ToInt(),//ID-doøešit
 							Form1->ms.MyToDouble(CT),//CT
-							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]/60),//RD ulozim v m/sec
 							Form1->ms.MyToDouble(Tv),//Tv
 							Form1->ms.MyToDouble(Tc),//Tc
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[3][i]/60), //RD ulozim v m/sec
 							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[6][i])//Opak   //ulozeni stavu pro cestu - roletka
-						);
+					);
 				}
 				//vymazání textu z již nepotøebného øádku
 				Form_cesty->rStringGridEd_cesty->Rows[i]->Clear();
@@ -417,24 +434,23 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 {
   zmena_TT=false;
 	bool neukladat=false;//pokud nebudou splnìny podmínky, nelze form uložit
+	bool dal_ok=false;
 
 		for (int i=1; i < rStringGridEd1->RowCount; i++) {   //prochazim vsechny radky a hledam, kde je zmena TT
 
 		Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(i);
-	//	ShowMessage(Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]));
-	//	ShowMessage(Form1->ms.MyToDouble(zakazka->TT));
-	//  ShowMessage(i);
+
 		 if(Form1->ms.MyToDouble(zakazka->TT)!=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]))  {
-	 //	ShowMessage(rStringGridEd1->Cells[10][i]);
-	 //	ShowMessage(zakazka->TT);
 
 		zmena_TT=true;
 		}
 	}
 
+
 		if(zmena_TT) {
 
 		if(mrOk==Form1->MB("Nastala zmìna TakTime, která ovlivní technologický èas a rychlost pohonu upravované zakázky.",MB_OKCANCEL)) {
+		dal_ok=true;
 		//aktualiz fce pro CT,RD zakazky
 				Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();
 				neukladat=false;
@@ -528,9 +544,16 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 					}
 					Obj=Obj->dalsi;
 				}
+
+			}
+
+			if(dal_ok) {
+		//aktualiz fce pro CT,RD zakazky
+				Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();
+
+			}
 				//zavøení formuláøe s následným DuvodUlozit(true) po modalshow v unit1
 				Form_definice_zakazek->Close();
-		}
 }
 //---------------------------------------------------------------------------
 //Zavøení formuláøe (storno a køížek je to samé)

@@ -147,6 +147,7 @@ object Form_PL_priority: TForm_PL_priority
     TabOrder = 1
     Columns = <
       item
+        Alignment = taCenter
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -15
@@ -162,6 +163,7 @@ object Form_PL_priority: TForm_PL_priority
         TitleParentFont = False
       end
       item
+        Alignment = taCenter
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -15
