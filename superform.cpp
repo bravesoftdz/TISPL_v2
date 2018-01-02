@@ -457,8 +457,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 
 				neukladat=true;    //pokud neulozim data, ulozim do dat puvodni hodnoty TT z temp_zakazek
 				for (int i=1; i < rStringGridEd1->RowCount; i++) {
-				Cvektory::TZakazka *zak=Form1->d.v.vrat_temp_zakazku(i);
-				rStringGridEd1->Cells[10][i]=zak->TT;
+				rStringGridEd1->Cells[10][i]=Form1->d.v.vrat_temp_zakazku(i)->TT;
 					}
 			}
 		}
@@ -550,8 +549,9 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 				Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();
 
 			}
-				//zavøení formuláøe s následným DuvodUlozit(true) po modalshow v unit1
-				Form_definice_zakazek->Close();
+
+			//zavøení formuláøe s následným DuvodUlozit(true) po modalshow v unit1
+			if (neukladat==false)Form_definice_zakazek->Close();  //kdyby nìco tak nic
 }
 //---------------------------------------------------------------------------
 //Zavøení formuláøe (storno a køížek je to samé)

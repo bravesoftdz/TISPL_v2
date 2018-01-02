@@ -1384,7 +1384,6 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Options.StyleColors = True
     HotImageIndex = -1
     ModalResult = 1
-    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
