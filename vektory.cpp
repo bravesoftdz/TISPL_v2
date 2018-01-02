@@ -1245,7 +1245,7 @@ Cvektory::TZakazka *Cvektory::obsahuje_segment_cesty_objekt(TObjekt *objekt)
 //dle TT z parametru nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
 void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka,double TT)
 {
- 	TCesta *C=zakazka->cesta->dalsi;
+	TCesta *C=zakazka->cesta->dalsi;
 	while(C!=NULL)
 	{
 		 C->CT=TT*C->objekt->kapacita;
@@ -1258,17 +1258,10 @@ void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka,
 //dle TT zakázky nastaví všem segmentům cesty od dané zakázky odpovídající CT (a line-tracking objektů i RD) dle fixní délky a kapacity, vhodné pro volání před zobrazením cest
 void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(TZakazka *zakazka)
 {
-	TCesta *C=zakazka->cesta->dalsi;
-	while(C!=NULL)
-	{
-		 C->CT=zakazka->TT*C->objekt->kapacita;
-		 if(C->objekt->rezim==1)C->RD=C->objekt->delka_dopravniku/C->CT;///u kontinuálního
-		 C=C->dalsi;
-	}
-	C=NULL;delete C;
+	aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(zakazka,zakazka->TT);
 }
 //---------------------------------------------------------------------------
-//to samé co výše ale uskuteční pro všechny zakázky, vhodné pro volání v tlačítku uložit
+//to samé co výše ale uskuteční plošně pro všechny zakázky, vhodné pro volání v tlačítku uložit
 void Cvektory::aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky()
 {
 	TZakazka *Z=ZAKAZKY->dalsi;

@@ -504,7 +504,7 @@ object Form_report: TForm_report
         RepeatClickInterval = 100
         GlowEffect.Enabled = True
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 255
+        GlowEffect.AlphaValue = 175
         GlowEffect.GlowSize = 70
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -592,7 +592,7 @@ object Form_report: TForm_report
         RepeatClickInterval = 100
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 255
+        GlowEffect.AlphaValue = 175
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True

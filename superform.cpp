@@ -316,7 +316,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ano");
 		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
 
-		//AKTUALIZACE SEGMENTÙ DLE PARAMETRÙ OBJEKTU U PRVNÍ ZAKÁZKY
+		//AKTUALIZACE SEGMENTÙ DLE PARAMETRÙ OBJEKTU U PRVNÍ ZAKÁZKY,v pøípadì první zakázky se berou hodnoty z parametrù objektu nikoliv zakázky, což zajistí patøiènou aktuliazaci
 		if(zakazka->n==1)//pouze pokud se jedná o první zakázku
 		{
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
@@ -331,12 +331,11 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			}
 		}
 
-		//AKTAUALIZACE CT,RD DLE TT U PRVNÍ ZAKÁZKY, TT temp zakazky je rozdilny oproti TT ve stringgridu - budu prepocitavat hodnoty RD,CT na Ceste
-		 if(Form1->ms.MyToDouble(zakazka->TT)!=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]))  {
-
-	 	 ShowMessage("prepocitej");
-	 	 Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(zakazka,Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]));
-		}
+		//AKTAUALIZACE CT,RD DLE TT dle TT temp zakazky je rozdilny oproti TT ve stringgridu - budu prepocitavat hodnoty RD,CT na Ceste
+		 //if(Form1->ms.MyToDouble(zakazka->TT)!=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]))  {
+		 //ShowMessage("prepocitej");
+		 Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky(zakazka,Form1->ms.MyToDouble(rStringGridEd1->Cells[10][rStringGridEd1->Row]));
+		//}
 
 		////naèítání dat - není tøeba ošetøovat, protože existuje default cesta v seznamu
 		//vypíše døíve nadefinovanou cestu vèetnì segmentù z nejdelší možné cesty, které nejsou souèástí aktuální cesty
@@ -350,7 +349,6 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 			Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,zakazka);
 			if(C!=NULL)//zahrnuté segmenty cesty
 			{
-					if(zakazka->n==1){C->CT=O->CT;C->RD=O->RD;}//v pøípadì první zakázky se berou hodnoty z parametrù objektu nikoliv zakázky, což zajistí patøiènou aktuliazaci
 					Form_cesty->rStringGridEd_cesty->Cells[0][i]=C->objekt->n;
 					Form_cesty->rStringGridEd_cesty->Cells[1][i]=C->objekt->name;
 					Form_cesty->rStringGridEd_cesty->Cells[2][i]=C->CT;
@@ -452,7 +450,7 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 		if(mrOk==Form1->MB("Nastala zmìna TakTime, která ovlivní technologický èas a rychlost pohonu upravované zakázky.",MB_OKCANCEL)) {
 		dal_ok=true;
 		//aktualiz fce pro CT,RD zakazky
-				Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();
+				//Form1->d.v.aktualizace_CTaRD_segmentu_cesty_dleTT_zakazky();
 				neukladat=false;
 			}
 			else {

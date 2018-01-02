@@ -399,7 +399,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		return 1;
 
 		}
-		catch(...){;}
+		catch(...){ShowMessage(1);}
 }
 
 
