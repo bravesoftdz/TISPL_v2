@@ -471,8 +471,10 @@ void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sende
 
 {
 
-    scExPanel_doporuc_pohony->Width=Form_parametry_linky->Width-10;
+		scExPanel_doporuc_pohony->Left=250;
+		scExPanel_doporuc_pohony->Width=545;
 		scExPanel_doporuc_pohony->Visible=true;
+		scGPButton_doporucene->Visible=false;
 		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY();
 
 }
@@ -483,6 +485,7 @@ void __fastcall TForm_parametry_linky::scExPanel_doporuc_pohonyClose(TObject *Se
 
 {
 scExPanel_doporuc_pohony->Visible=false;
+scGPButton_doporucene->Visible=true;
 }
 //---------------------------------------------------------------------------
 
@@ -764,4 +767,5 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sen
 
 }
 //---------------------------------------------------------------------------
+
 

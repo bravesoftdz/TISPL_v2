@@ -82,8 +82,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rHTMLLabel_sirkaClick
   end
   object rHTMLLabel_doporuc_pohony: TrHTMLLabel
-    Left = 350
-    Top = 293
+    Left = 252
+    Top = 298
     Width = 208
     Height = 19
     Caption = 'Doporu'#269'en'#233' rychlosti pohon'#367
@@ -1120,10 +1120,10 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object scExPanel_doporuc_pohony: TscExPanel
-    Left = 435
-    Top = 172
-    Width = 360
-    Height = 104
+    Left = 517
+    Top = 197
+    Width = 278
+    Height = 120
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGrayText
     Font.Height = -16
@@ -1134,7 +1134,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 14
     Visible = False
     BackgroundStyle = scexbgsPanel
-    HeaderColor = clBtnFace
+    HeaderColor = clBtnShadow
     ButtonGlyphColor = clBtnText
     HeaderStyle = scexphsColor
     CaptionImageIndex = -1
@@ -1186,10 +1186,10 @@ object Form_parametry_linky: TForm_parametry_linky
       TextAlignment = taLeftJustify
     end
     object scGPGlyphButton_add_mezi_pohony: TscGPGlyphButton
-      Left = 323
+      Left = 241
       Top = 24
       Width = 37
-      Height = 80
+      Height = 96
       Hint = 'P'#345'idat do seznamu pou'#382'iteln'#253'ch pohon'#367
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
@@ -1267,13 +1267,13 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 420
-      ExplicitHeight = 102
+      ExplicitLeft = 323
+      ExplicitHeight = 80
     end
   end
   object scGPButton_doporucene: TscGPButton
-    Left = 564
-    Top = 282
+    Left = 466
+    Top = 287
     Width = 45
     Height = 35
     Font.Charset = DEFAULT_CHARSET
