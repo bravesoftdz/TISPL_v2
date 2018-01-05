@@ -455,7 +455,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 				{
 					if(vozik->zakazka->n==Z->n)//řeší jenom pro konrétní cestu, pokud tedy vozík odpovídá aktuální zakázce
 					{
-						if(vozik->pozice==-1)vozik->pozice=0;//protože implicitní hodnota pozice vozíku==-1 z důvodu mimo linku, 0 na začátku
+						if(vozik->pozice==-1)vozik->pozice=0;//protože implicitní hodnota pozice vozíku==-1 z důvodu mimo linku, 0 na začátku ve výchozí pozici
 
 						////nastvení počáteční pozice objektu na časové ose daného vozíku
 						if(C->objekt->rezim==0 && vozik->pozice<=C->objekt->obsazenost)X=C->objekt->obsazenost;//zohlednění obsazenost objektu v režimu S&G
@@ -472,22 +472,22 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 						//P->n_v_zakazce=n+1;P->Tpoc=vozik->pozice-PosunT.x/PX2MIN;P->Tkon=X-PosunT.x/PX2MIN;P->Tdor=P->Tkon;P->Tpre=P->Tkon;P->Tcek=P->Tkon;P->cesta=C;P->vozik=vozik;
 						//v.vloz_proces(P);
 
-						////čekání na čištění pistole a výměnu barev včetně čekání
-						if(Form1->CheckBoxVymena_barev->Checked)
-						{
-								if(C->Opak!=0)
-								if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
-					    	{
-									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
-									X+=C->Tc/60.0*PX2MIN;
-					    	}
-					    	if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
-					    	{
-									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
-									X+=C->Tv/60.0*PX2MIN;
-					    	}
-								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
-						}
+//						////čekání na čištění pistole a výměnu barev včetně čekání
+//						if(Form1->CheckBoxVymena_barev->Checked)
+//						{
+//								if(C->Opak!=0)
+//								if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
+//								{
+//									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
+//									X+=C->Tc/60.0*PX2MIN;
+//								}
+//								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
+//								{
+//									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
+//									X+=C->Tv/60.0*PX2MIN;
+//								}
+//								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
+//						}
 
 						////vykreslení procesu (jednoho obdelníčku "v plavecké dráze") včetně výpočtu koncové pozice a uložení dílčích hodnot
 						X=proces(canv,++n,X_predchozi,X,Yloc,C,vozik);
@@ -508,11 +508,13 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 				}
 				C=C->dalsi;//posun na další prvek v seznamu segmentů cesty, jde po cestě
 			}
-			Z=Z->dalsi;//posun na další prvek v seznamu CEST, jde po cestách-zakázakách
+			Z=Z->dalsi;//posun na další prvek v seznamu ZAKÁZEK, jde po zakázakách
 			Y=Yloc;
 			delete C;
 		}
 		delete Z;
+
+		////DALŠÍ VYPLÝVAJÍCÍ NASTAVENÍ
 		//výpočet hodnot kapacit pro další využítí (pro grafy, ROMA atd.)
 		if(!JIZPOCITANO)v.uloz_doporucene_kapacity_objetku();
 		//hodnoty pro další grafické použití či nastavení
@@ -541,7 +543,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, double X, int Y, Cvektory::TCesta *C/*segment cesty*/,Cvektory::TVozik *vozik)
 {
 	 double D=C->RD;//rychlost dopravníku
-	 double R=C->objekt->pohon->roztec;//rozteč palců
+   double R=0;if(C->objekt->pohon!=NULL)R=C->objekt->pohon->roztec;//rozteč palců
 	 TColor barva=vozik->zakazka->barva;
 	 if(vozik->typ)barva=clSilver;//pokud se jedná o servisní vozík, tak bude šedivý
 
@@ -551,49 +553,48 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 P->segment_cesty=C;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
 	 P->vozik=vozik;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
 	 P->Tpoc=X_predchozi*60.0/PX2MIN;//uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-
 	 //standardní situace
 	 X+=C->CT/60.0*PX2MIN;
 	 vykresli_proces(canv,C->objekt->short_name,barva,0,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-	 P->Tkon=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 P->Tkon=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
 	 // nestandardní - nelogická situace, pokud bude čas procesu včetně času přejezdu vozíkukratší než u totožného přechozího objektu (vozíky např. v rámci CO2 se nemohou předbíhat), přičte se i tato vzdálenost (vykresleno šrafovaně)
 	 double DcS=v.PP.delka_voziku;//vozik->zakazka->jig.delka;/*!!!tady dořešit co se kdy zadá!!!*/
-	 if(X < C->objekt->obsazenost+m.prejezd_voziku(DcS,D)/60.0*PX2MIN)
-	 {
-			//dorovnání na čas předchozího vozíku, je-li to nutné
-			X_predchozi=X;//uloží povodní X hodnotu
-			X=C->objekt->obsazenost;
-			vykresli_proces(canv,C->objekt->short_name,barva,1,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-			P->Tdor=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-			//cas_prekonani_zpozdeni_o_min_delku_jednoho_voziku
-			X_predchozi=X;//uloží povodní X hodnotu
-			X+=m.prejezd_voziku(DcS,D)/60.0*PX2MIN;
-			vykresli_proces(canv,C->objekt->short_name,barva,2,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-			P->Tpre=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-	 }
-	 else//pokud situace NEnastane, tak ošetření proti tomu, aby se neukládaly náhodného hodnoty
-	 {
-		 P->Tdor=X*60.0/PX2MIN;
-		 P->Tpre=X*60.0/PX2MIN;
-	 }
+//	 if(X < C->objekt->obsazenost+m.prejezd_voziku(DcS,D)/60.0*PX2MIN)
+//	 {
+//			//dorovnání na čas předchozího vozíku, je-li to nutné
+//			X_predchozi=X;//uloží povodní X hodnotu
+//			X=C->objekt->obsazenost;
+//			vykresli_proces(canv,C->objekt->short_name,barva,1,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+//			P->Tdor=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+//			//cas_prekonani_zpozdeni_o_min_delku_jednoho_voziku
+//			X_predchozi=X;//uloží povodní X hodnotu
+//			X+=m.prejezd_voziku(DcS,D)/60.0*PX2MIN;
+//			vykresli_proces(canv,C->objekt->short_name,barva,2,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+//			P->Tpre=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+//	 }
+//	 else//pokud situace NEnastane, tak ošetření proti tomu, aby se neukládaly náhodného hodnoty
+//	 {
+//		 P->Tdor=X*60.0/PX2MIN;
+//		 P->Tpre=X*60.0/PX2MIN;
+//	 }
 	 X_predchozi=X;
 
-	 //PALCE - posun o čekání na palce
-	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
-			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
-			 (
-					C->objekt->rezim==0 ||//je to po S&G nebo
-					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && D!=C->predchozi->RD)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
-					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//K->PP a jiný dopravník nebo
-					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
-					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//PP->PP a jiný dopravník nebo
-					 C->objekt->stopka//když je za objektem stopka nebo
-					 ||
-					 C->objekt->cekat_na_palce==1//automaticky požadovat čekání na palce//0-ne,1-ano,2-automaticky
-			 )
-	 )
-	 X+=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,D,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
-	 //--
+//	 //PALCE - posun o čekání na palce
+//	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
+//			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
+//			 (
+//					C->objekt->rezim==0 ||//je to po S&G nebo
+//					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && D!=C->predchozi->RD)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
+//					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//K->PP a jiný dopravník nebo
+//					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
+//					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//PP->PP a jiný dopravník nebo
+//					 C->objekt->stopka//když je za objektem stopka nebo
+//					 ||
+//					 C->objekt->cekat_na_palce==1//automaticky požadovat čekání na palce//0-ne,1-ano,2-automaticky
+//			 )
+//	 )
+//	 X+=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,D,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
+//	 //--
 
 	 if(X_predchozi!=X)vykresli_proces(canv,C->objekt->short_name,barva,3,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
 	 //uložení hodnot pro další použití (v dalších kolech)
@@ -1526,11 +1527,12 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 
 		 AnsiString T1="obvod linky: "+AnsiString(obvod)+" [m]";if(canv->TextWidth(T1)>W)W=canv->TextWidth(T1);
 		 AnsiString T2="kapacita linky: "+AnsiString(v.WIP(1))+" [voz.]";if(canv->TextWidth(T2)>W)W=canv->TextWidth(T2);
-		 AnsiString T3="akt. plocha linky: "+AnsiString(A*B)+" [m2]";W=canv->TextWidth(T3);
+     //T3-T5 bylo zakázáno používat
+		 /*AnsiString T3="akt. plocha linky: "+AnsiString(A*B)+" [m2]";W=canv->TextWidth(T3);
 		 AnsiString T4="akt. X-rozměr linky: "+AnsiString(A)+" [m]";if(canv->TextWidth(T4)>W)W=canv->TextWidth(T4);
-		 AnsiString T5="akt. Y-rozměr linky: "+AnsiString(B)+" [m]";if(canv->TextWidth(T5)>W)W=canv->TextWidth(T5);
+		 AnsiString T5="akt. Y-rozměr linky: "+AnsiString(B)+" [m]";if(canv->TextWidth(T5)>W)W=canv->TextWidth(T5);*/
 		 AnsiString T6="lead time: "+AnsiString(v.vrat_LT())+" [s]";if(canv->TextWidth(T6)>W)W=canv->TextWidth(T6);
-		 if(P[0].x!=P[3].x)
+		 /*if(P[0].x!=P[3].x)
 		 {
 			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2)-canv->TextHeight(T1)*3,T1);
 			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2)-canv->TextHeight(T2)*2,T2);
@@ -1547,6 +1549,18 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2),T4);
 			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)+canv->TextHeight(T5)*1,T5);
 			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)+canv->TextHeight(T6)*2,T6);
+		 }*/
+		 if(P[0].x!=P[3].x)
+		 {
+			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2)-canv->TextHeight(T1)*1,T1);
+			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2),T2);
+			canv->TextOutW(m.L2Px((P[0].x+P[3].x)/2)-W/2,m.L2Py((P[0].y+P[1].y)/2)+canv->TextHeight(T6)*1,T6);
+		 }
+		 else
+		 {
+			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)-canv->TextHeight(T1)*1,T1);
+			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2),T2);
+			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)+canv->TextHeight(T6)*1,T6);
 		 }
 	}
 }

@@ -3463,7 +3463,8 @@ void __fastcall TForm1::Button8Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button9Click(TObject *Sender)
 {
-	/*Memo1->Lines->Add("vypis spojáku VOZIKY:");
+		Memo1->Visible=true;
+		Memo1->Lines->Add("vypis spojáku VOZIKY:");
 			Cvektory::TVozik *ukaz=d.v.VOZIKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 		while (ukaz!=NULL)
 		{
@@ -3472,7 +3473,7 @@ void __fastcall TForm1::Button9Click(TObject *Sender)
 			Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" Start: ")+ukaz->start/d.PX2MIN+AnsiString(" Pozice: ")+ukaz->pozice/d.PX2MIN);
 			//posun na další prvek v seznamu
 			ukaz=ukaz->dalsi;
-		} */
+		}
 		//Memo1->Lines->Add("vypis spojáku OBJEKTY:");
 	/*	Cvektory::TObjekt *ukaz=d.v.CESTA2;//ukazatel na první objekt v seznamu OBJEKTU, NEpřeskočí hlavičku
 		while (ukaz!=NULL)

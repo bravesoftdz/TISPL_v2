@@ -1313,7 +1313,7 @@ void Cvektory::hlavicka_VOZIKY()
 	novy->zakazka=NULL;
 	novy->typ=1;
 	novy->start=0;//výchozí pozice v grafu časových os
-	novy->pozice=-1;//akt. pozice na dopravniku či v grafu časových os
+	novy->pozice=-1.0;//akt. pozice na dopravniku či v grafu časových os
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -1368,7 +1368,7 @@ void Cvektory::vloz_vozik(TZakazka *zakazka,short typ)//0-normální, 1-servisn�
 	//ZDM novy->X=0;novy->Y=0;novy->timer=0;;
 	novy->typ=typ;
 	novy->start=0;//výchozí pozice v grafu časových os
-	novy->pozice=-1;//pozice na dopravniku či v grafu časových os
+	novy->pozice=-1.0;//pozice na dopravniku či v grafu časových os
 
 	novy->n=VOZIKY->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	VOZIKY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -1402,7 +1402,7 @@ void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objek
 	TVozik *ukaz1=Vozik->dalsi;
 	while (ukaz1!=NULL)
 	{
-		ukaz1->pozice=-1;
+		ukaz1->pozice=-1.0;
 		ukaz1=ukaz1->dalsi;
 	};
 }
