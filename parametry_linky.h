@@ -24,8 +24,6 @@ class TForm_parametry_linky : public TForm
 __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_delka_voziku;
 	TValueListEditor *ValueListEditor;
-	TButton *Button_ADD;
-	TButton *Button_DEL;
 	TrStringGridEd *rStringGridEd_tab_dopravniky;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
@@ -59,12 +57,14 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel4;
 	TrHTMLLabel *rHTMLLabel1;
 	TrHTMLLabel *rHTMLLabel2;
+	TscGPGlyphButton *Button_ADD;
+	TscGPGlyphButton *Button_DEL;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall Button_saveClick(TObject *Sender);
-	void __fastcall Button_ADDClick(TObject *Sender);
-	void __fastcall Button_DELClick(TObject *Sender);
+	void __fastcall Button_ADD_Click(TObject *Sender);
+	void __fastcall Button_DEL_Click(TObject *Sender);
 	void __fastcall Vypis_pohonyClick(TObject *Sender);
 	void __fastcall scGPButton_doporuceneClick(TObject *Sender);
 	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
@@ -75,7 +75,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall Button1Click(TObject *Sender);
-	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender, int Col,
           int Row, TrStringGridEdEditStyle &EditStyle);
 	void __fastcall rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender, int Col, int Row,
@@ -83,6 +82,15 @@ __published:	// IDE-managed Components
 	void __fastcall rEditNum_delkavozikuClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_jiguClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_vozikuClick(TObject *Sender);
+	void __fastcall Button_DELMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall rEditNum_delka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_sirka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_taktKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
+
+
+
+
 
 private:	// User declarations
 
