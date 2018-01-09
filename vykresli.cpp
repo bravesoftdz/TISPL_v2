@@ -522,7 +522,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		HeightCanvasCasoveOsy=Y-KrokY/2;//uchová výšku grafu
 		if(Form1->grid)vykresli_Xosy(canv);//vykreslí statické svislice na časové osy pokud je aktivovaná mřížka
 		//povolení zobrazení grafu
-		if(Form1->GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkClose)
+		if(Form1->GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)
 		{
 			Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
 			Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;

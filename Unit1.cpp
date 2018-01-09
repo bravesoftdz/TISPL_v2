@@ -777,19 +777,19 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 //zavře nebo otevře grafy v časových osách
 void __fastcall TForm1::GlyphButton_close_grafyClick(TObject *Sender)
 {
-	if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkClose)
+	if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)
 	{
 		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
 		Form1->GlyphButton_close_grafy->Top=scGPPanel_statusbar->Top-Form1->GlyphButton_close_grafy->Height;
 		g.ShowGrafy(false);
-		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
+		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
 	}
 	else
 	{
 		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
 		Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;
 		g.ShowGrafy(true);
-		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkClose;//změní typ ikony
+		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
   }
 }
 //---------------------------------------------------------------------------
@@ -1080,9 +1080,17 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//PAGE DOWN
 		case 34:break;
 		//END
-		case 35:break;
+		case 35:
+		if(MOD==CASOVAOSA && d.v.VOZIKY->predchozi!=NULL)//na časové ose na poslední vozík
+		{
+			d.PosunT.x=d.v.VOZIKY->predchozi->pozice-ClientWidth+Canvas->TextWidth(d.v.VOZIKY->predchozi->pozice*d.PX2MIN)/2+2;
+			int HG=0; if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
+			d.PosunT.y=(d.v.VOZIKY->predchozi->n+1)*d.KrokY-ClientHeight+scGPPanel_statusbar->Height+scLabel_titulek->Height+HG;
+		}
+		Invalidate();
+		break;
 		//HOME
-		case 36:if(d.PosunT.x){d.PosunT.x=0;Invalidate();}break;
+		case 36:if(d.PosunT.x)d.PosunT.x=0;if(d.PosunT.y)d.PosunT.y=0;Invalidate();break;//posun na časových osách na začátek
 		//ŠIPKA DOLŮ
 		case 40:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y+1); break;}
 		//ŠIPKA LEVÁ
