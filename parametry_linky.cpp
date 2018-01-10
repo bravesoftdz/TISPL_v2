@@ -277,7 +277,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Form1->MB("Pozor, nelze uložit hodnoty rozmezí pohonù, protože následující objekty mají rychlost mimo novì nastavený rozsah: "+T);
 		}
 
+		/////////////volba priority////////////////////////////////////////////////////
 
+		bool volat_aktualizaci=false;
+		int aktualizace_id;
 
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt
 		{
@@ -298,12 +301,15 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 			if(mrOk==Form_PL_priority->ShowModal()){
 				// volani aktualizacni fce
-			if(Form_PL_priority->scGPRadioButton1->Checked) Form1->d.v.aktualizace_objektu(1);
-			if(Form_PL_priority->scGPRadioButton2->Checked) Form1->d.v.aktualizace_objektu(2);
-			if(Form_PL_priority->scGPRadioButton3->Checked) Form1->d.v.aktualizace_objektu(-1); //indi nastav
+			if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=1;//Form1->d.v.aktualizace_objektu(1);
+			if(Form_PL_priority->scGPRadioButton2->Checked) aktualizace_id=2;//Form1->d.v.aktualizace_objektu(2);
+			if(Form_PL_priority->scGPRadioButton3->Checked) aktualizace_id=-1; //Form1->d.v.aktualizace_objektu(-1); //indi nastav
+
+			volat_aktualizaci=true;
 			Ulozit=true;
 			}
 			else{
+			volat_aktualizaci=false;
 			Ulozit=false;
 
 			}
@@ -329,18 +335,22 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 			if(mrOk==Form_PL_priority->ShowModal()){
           // volani aktualizacni fce
-			if(Form_PL_priority->scGPRadioButton1->Checked) Form1->d.v.aktualizace_objektu(3);
-			if(Form_PL_priority->scGPRadioButton2->Checked) Form1->d.v.aktualizace_objektu(4);
-			if(Form_PL_priority->scGPRadioButton3->Checked) Form1->d.v.aktualizace_objektu(5);
-			if(Form_PL_priority->scGPRadioButton4->Checked) Form1->d.v.aktualizace_objektu(0); //indi nastav
+			if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=3; //Form1->d.v.aktualizace_objektu(3);
+			if(Form_PL_priority->scGPRadioButton2->Checked) aktualizace_id=4; //Form1->d.v.aktualizace_objektu(4);
+			if(Form_PL_priority->scGPRadioButton3->Checked) aktualizace_id=5; //Form1->d.v.aktualizace_objektu(5);
+			if(Form_PL_priority->scGPRadioButton4->Checked) aktualizace_id=0; //Form1->d.v.aktualizace_objektu(0); //indi nastav
 			
 			Ulozit=true;   // predat pro M vybrany parametr z radio
+			volat_aktualizaci=true;
 			}
 			else{
+			volat_aktualizaci=false;
 			Ulozit=false;
 
 			}
 	 }
+
+	 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL)Ulozit=true;   // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
 
@@ -361,7 +371,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60),    //rychlost do
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
 			}
-        // docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
+			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
 		 //	if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
 		 //	{
 		 //	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
@@ -376,9 +386,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			 typ=0;}
 			 else {typ=1;}
 			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(typ);
-
-
 			Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
+
+			if(volat_aktualizaci){
+			 		Form1->d.v.aktualizace_objektu(aktualizace_id);
+					 }
 
 			Form1->DuvodUlozit(true);
 			Form_parametry_linky->Close();

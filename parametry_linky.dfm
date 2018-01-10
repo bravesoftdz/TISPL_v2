@@ -571,7 +571,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 803
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 754
@@ -649,7 +648,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 753
     end
     object scLabel1: TscLabel
       Left = 0
@@ -682,7 +680,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 716
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 717
@@ -762,7 +759,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 716
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -868,6 +864,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 6
     Visible = False
     OnClick = rEditNum_delkavozikuClick
+    Style = enFloat
     Value = 1.000000000000000000
   end
   object scGPButton_pohon: TscGPButton
@@ -1003,6 +1000,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 10
     OnKeyDown = rEditNum_sirka_jiguKeyDown
+    Style = enFloat
     Value = 1.000000000000000000
   end
   object scGPButton_obecne: TscGPButton
@@ -1241,8 +1239,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 241
-      ExplicitHeight = 96
     end
   end
   object scGPButton_doporucene: TscGPButton
@@ -1475,6 +1471,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 11
     OnKeyDown = rEditNum_delka_jiguKeyDown
+    Style = enFloat
     Value = 1.000000000000000000
   end
   object scGPSwitch: TscGPSwitch

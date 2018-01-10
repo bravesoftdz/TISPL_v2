@@ -407,7 +407,6 @@ object Form_PL_priority: TForm_PL_priority
     Caption = 'scGPPanel_header'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 755
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 726
@@ -484,7 +483,6 @@ object Form_PL_priority: TForm_PL_priority
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 705
     end
     object scLabel_header: TscLabel
       Left = 0
@@ -517,7 +515,6 @@ object Form_PL_priority: TForm_PL_priority
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'V'#253'b'#283'r priority '#250'prav'
-      ExplicitWidth = 705
     end
   end
   object Button_save: TscGPButton

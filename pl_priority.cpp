@@ -29,8 +29,12 @@ Close();
 void __fastcall TForm_PL_priority::FormShow(TObject *Sender)
 {
 	 Form_PL_priority->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
-	 Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
-	 Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+	// Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+	// Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+
+	 Left=Form_parametry_linky->Left;
+	 Top=Form_parametry_linky->Top;
+	 Width=Form_parametry_linky->Width;
 
 
 }

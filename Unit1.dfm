@@ -2662,7 +2662,7 @@ object Form1: TForm1
     ParentColor = False
     Placement = scsvpLeft
     HideControls = False
-    Animation = True
+    Animation = False
     DisplayMode = scsvmOverlay
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
@@ -3243,7 +3243,7 @@ object Form1: TForm1
     ParentColor = False
     Placement = scsvpLeft
     HideControls = False
-    Animation = True
+    Animation = False
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
@@ -4484,7 +4484,7 @@ object Form1: TForm1
     ParentColor = False
     Placement = scsvpRight
     HideControls = False
-    Animation = True
+    Animation = False
     DisplayMode = scsvmOverlay
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
@@ -4796,8 +4796,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 24
-        Top = 187
+        Left = 30
+        Top = 193
         Width = 244
         Height = 31
         Align = alCustom
@@ -4945,7 +4945,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009004900410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118009004940410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6068,7 +6068,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01012F009403940330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012F009403980330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000040020000010020000000000000C0
       0600000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000080
@@ -20342,7 +20342,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01012F003C023C0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01012F004002400218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000002001000001000400000000000036
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
