@@ -515,21 +515,35 @@ void TForm1::startUP()
 	//if(T=="0" || T=="")STATUS=NAVRH;else STATUS=OVEROVANI;
 }
 //---------------------------------------------------------------------------
-//zajišťuje zápis do INI aplikace
+//zajišťuje zápis do INI aplikace, museli jsme dát do výjimky, protože jednou hodilo error
 void TForm1::writeINI(AnsiString Section,AnsiString Ident,AnsiString Value)
 {
-	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-	ini->WriteString(Section,Ident,Value);
-	delete ini;
+	try
+	{
+		TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+		ini->WriteString(Section,Ident,Value);
+		delete ini;
+	}
+	catch(...)
+	{
+		;
+	}
 }
 //---------------------------------------------------------------------------
 //zajišťuje čtení z INI aplikace
 AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 {
-	TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
-	AnsiString status=ini->ReadString(Section,Ident,"");//hlavně nepoužívat poslední parametr!!!jinak bude app padat
-	delete ini;
-	return status;
+	try
+	{
+		TIniFile *ini = new TIniFile(get_temp_dir() +"TISPL\\" + "tispl_"+get_user_name()+"_"+get_computer_name()+".ini");
+		AnsiString status=ini->ReadString(Section,Ident,"");//hlavně nepoužívat poslední parametr!!!jinak bude app padat
+		delete ini;
+		return status;
+	}
+	catch(...)
+	{
+		return AnsiString("");
+	}
 }
 //---------------------------------------------------------------------------
 //Zalogování na webu
@@ -1065,6 +1079,7 @@ void TForm1::REFRESH(bool invalidate)
 void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 { //ShowMessage(Key);
 	funkcni_klavesa=0;
+	int HG=0; if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
 	switch(Key)
 	{
 		//BACKSPACE
@@ -1076,15 +1091,31 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//MEZERNÍK
 		case 32: if(Akce!=PAN_MOVE){Akce=PAN;kurzor(pan);}break;
 		//PAGE UP
-		case 33:;break;
+		case 33:
+		if(MOD==CASOVAOSA && d.v.VOZIKY->predchozi!=NULL && d.PosunT.y>=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height-HG)/(float)d.KrokY*d.KrokY)
+		{
+			d.PosunT.y-=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height-HG)/(float)d.KrokY*d.KrokY;
+			unsigned int V=ceil((d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0));//zjistí aktuální číslo vozíku; pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+			Cvektory::TVozik *Vozik=d.v.vrat_vozik(V);
+			if(Vozik==NULL)d.PosunT.x=0;else d.PosunT.x=Vozik->start;
+			Invalidate();
+		}
+		break;
 		//PAGE DOWN
-		case 34:break;
+		case 34:
+		if(MOD==CASOVAOSA && d.v.VOZIKY->predchozi!=NULL && d.PosunT.y<(d.v.VOZIKY->predchozi->n+1)*d.KrokY-ClientHeight+scGPPanel_statusbar->Height+scLabel_titulek->Height+HG)
+		{
+			d.PosunT.y+=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height-HG)/(float)d.KrokY*d.KrokY;
+			unsigned int V=ceil((d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0));//zjistí aktuální číslo vozíku; pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+			d.PosunT.x=d.v.vrat_vozik(V)->start;
+      Invalidate();
+		}
+		break;
 		//END
 		case 35:
 		if(MOD==CASOVAOSA && d.v.VOZIKY->predchozi!=NULL)//na časové ose na poslední vozík
 		{
 			d.PosunT.x=d.v.VOZIKY->predchozi->pozice-ClientWidth+Canvas->TextWidth(d.v.VOZIKY->predchozi->pozice*d.PX2MIN)/2+2;
-			int HG=0; if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
 			d.PosunT.y=(d.v.VOZIKY->predchozi->n+1)*d.KrokY-ClientHeight+scGPPanel_statusbar->Height+scLabel_titulek->Height+HG;
 		}
 		Invalidate();
