@@ -1543,8 +1543,8 @@ void TForm1::onPopUP(int X, int Y)
 	switch(MOD)
 	{
 		case CASOVAOSA:
-		{														 //min                  //vozik
-			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN,ceil((Y+d.PosunT.y-d.KrokY/2-RzToolbar1->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+		{														 //min                      //vozik
+			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
 			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
 			{
 				PopUPmenu->Item_zobrazit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;//nastavení zobrazení
@@ -2531,8 +2531,6 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 //zobrazí paramety jednoho procesu na časových osách
 void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 {
-
-
 	double prozatim_delka_voziku=Form1->d.v.PP.delka_voziku;
 	AnsiString rezim="";
 	AnsiString delka="v tuto chvíli neznamá";
@@ -2547,7 +2545,6 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 				delka_dop=proces_pom->segment_cesty->objekt->kapacita_dop*prozatim_delka_voziku;
 			break;
 	}
-	
 
 	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
 	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
@@ -2559,7 +2556,7 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	Form_osa_info->rHTMLLabel_palce_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec;
 	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
 	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD;
- 	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
+	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
 	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=proces_pom->Tpoc;
 	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=proces_pom->Tkon;
 	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=proces_pom->Tdor;
