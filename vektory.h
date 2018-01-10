@@ -411,9 +411,10 @@ private:
 
 //metody pro VOZIKY
 public:
-		void hlavicka_VOZIKY();
+		void hlavicka_VOZIKY();//vytvoří hlavičku spojového seznamu VOZIKY
 		void generuj_VOZIKY();//vygeneruje podle zadaných zakázek seznam vozíků, seřazeno dle zakázek
-		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);
+		void vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik);//slouží při úvodním načítání časových os, smaže výchozí a koncovou pozici sloužící pro tvorbu a zobrazení na časových osách
+		TVozik *vrat_vozik(unsigned int n);//dle n resp. ID vozíku vrátí ukazatel na daný vozík
 private:
 		void vloz_vozik(TZakazka *zakazka,short typ);//0-normální, 1-servisní
 		long vymaz_seznam_VOZIKY();

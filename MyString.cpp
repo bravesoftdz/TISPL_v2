@@ -260,6 +260,48 @@ AnsiString TMyString::UTF2Win(AnsiString Text)
   return DATA;
 }
 //---------------------------------------------------------------------------
+//odstraní českou diakritiku a vrátí stejný (zadaný) řetěze bez diakritiky)
+AnsiString TMyString::remove_diacritics(AnsiString text)
+{
+	 for(unsigned long i=1;i<=text.Length();i++)
+	 {
+		 switch((int)*text.SubString(i,1).c_str())
+		 {
+			 case -20:	text.Delete(i,1);text.Insert("e",i);break;//ě
+			 case -102:	text.Delete(i,1);text.Insert("s",i);break;//š
+			 case -24:	text.Delete(i,1);text.Insert("c",i);break;//č
+			 case -8:		text.Delete(i,1);text.Insert("r",i);break;//ř
+			 case	-98:	text.Delete(i,1);text.Insert("z",i);break;//ž
+			 case -3:		text.Delete(i,1);text.Insert("y",i);break;//ý
+			 case -31:	text.Delete(i,1);text.Insert("a",i);break;//á
+			 case -19:	text.Delete(i,1);text.Insert("i",i);break;//í
+			 case -23:	text.Delete(i,1);text.Insert("e",i);break;//é
+			 case -6:		text.Delete(i,1);text.Insert("u",i);break;//ú
+			 case -7:		text.Delete(i,1);text.Insert("u",i);break;//ů
+			 case -14:	text.Delete(i,1);text.Insert("n",i);break;//ň
+			 case -52:	text.Delete(i,1);text.Insert("E",i);break;//Ě
+			 case -118:	text.Delete(i,1);text.Insert("S",i);break;//Š
+			 case -56:	text.Delete(i,1);text.Insert("C",i);break;//Č
+			 case -40:	text.Delete(i,1);text.Insert("R",i);break;//Ř
+			 case -114:	text.Delete(i,1);text.Insert("Z",i);break;//Ž
+			 case -35:	text.Delete(i,1);text.Insert("Y",i);break;//Ý
+			 case -63:	text.Delete(i,1);text.Insert("A",i);break;//Á
+			 case -51:	text.Delete(i,1);text.Insert("I",i);break;//Í
+			 case -55:	text.Delete(i,1);text.Insert("E",i);break;//É
+			 case -38:	text.Delete(i,1);text.Insert("U",i);break;//Ú
+			 case -39:	text.Delete(i,1);text.Insert("U",i);break;//Ů
+			 case -46:	text.Delete(i,1);text.Insert("N",i);break;//Ň
+			 case -99:	text.Delete(i,1);text.Insert("t",i);break;//ť
+			 case -17:	text.Delete(i,1);text.Insert("d",i);break;//ď
+			 case -13:	text.Delete(i,1);text.Insert("o",i);break;//ó
+			 case -115:	text.Delete(i,1);text.Insert("T",i);break;//Ť
+			 case -49:	text.Delete(i,1);text.Insert("D",i);break;//Ď
+			 case -45:	text.Delete(i,1);text.Insert("O",i);break;//Ó
+		 }
+	 }
+	 return text;
+}
+//---------------------------------------------------------------------------
 //převede text do double datového typu, řeší nastavení desetinná tečka vs. čárka
 double TMyString::MyToDouble(UnicodeString Text)
 {

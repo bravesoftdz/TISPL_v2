@@ -32,12 +32,13 @@ public:
 	UnicodeString TrimLeftFromText(UnicodeString  Text, UnicodeString Trim);//ožízne øetezec od textu, to co následuje textu, vrátí
 	AnsiString Win2UTF(AnsiString Text);//pøevede text v kódování WINDOWS-1250 na UTF-8
 	AnsiString UTF2Win(AnsiString Text);//pøevede text v kódování UTF-8 na WINDOWS-1250
-  double MyToDouble (UnicodeString Text);//pøevede UnicodeString na Double, v pøípadì èárky pøevede na teèku
-  AnsiString c2t(AnsiString Vstup);
-  AnsiString t2c(AnsiString Vstup);
-  long a2i(AnsiString Vstup);
-  long u2i(UnicodeString Vstup);
-  long long a2ll(AnsiString Vstup);
+	AnsiString remove_diacritics(AnsiString text);//odstraní èeskou diakritiku a vrátí stejný (zadaný) øetìze bez diakritiky)
+	double MyToDouble (UnicodeString Text);//pøevede UnicodeString na Double, v pøípadì èárky pøevede na teèku
+	AnsiString c2t(AnsiString Vstup);//desetinná èárka na desetinnou teèku
+	AnsiString t2c(AnsiString Vstup);//desetinná teèka na desetinnou èárku
+	long a2i(AnsiString Vstup);//AnsiString do Int
+	long u2i(UnicodeString Vstup);//UnicodeString do Int
+	long long a2ll(AnsiString Vstup);//AnsiString do long long
   UnicodeString get_local_decimal();//vrátí oddìlovaè desetinného místa na daném systému
 	UnicodeString get_local_double(double number);//vrátí reálné èíslo s oddìlovaè desetinného místa na daném systému
 	double get_decimal(double number);//vrátí reálnou èást èísla
