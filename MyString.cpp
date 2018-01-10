@@ -260,7 +260,7 @@ AnsiString TMyString::UTF2Win(AnsiString Text)
   return DATA;
 }
 //---------------------------------------------------------------------------
-//odstraní českou diakritiku
+//odstraní českou diakritiku a vrátí stejný (zadaný) řetěze bez diakritiky)
 AnsiString TMyString::remove_diacritics(AnsiString text)
 {
 	 for(unsigned long i=1;i<=text.Length();i++)
