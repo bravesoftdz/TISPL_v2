@@ -64,6 +64,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 	kapacitaSG=1;//není podnìt k rozkládání na více objektù
 	scGPEdit_name->SetFocus();//nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
 	scGPEdit_name->SelectAll();//oznaèí cele pro editace
+	form_zobrazen=true;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -110,13 +111,16 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 			//nadesignování a napozicování komponent dle zvoleného režimu
 			setForm4Rezim(scComboBox_rezim->ItemIndex);//resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
 
-			//napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru
-			if(Form1->akt_souradnice_kurzoru_PX.x+10+Form_parametry->ClientWidth<Form1->ClientWidth)
-				Form_parametry->Left=Form1->akt_souradnice_kurzoru_PX.x+10;
+			//napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru, pouze pro prvotní zobrazení dle souøadnic kurzoru myši, jinak dle uživatele
+			long X=Form1->akt_souradnice_kurzoru_PX.x+10;long Y=Form1->akt_souradnice_kurzoru_PX.y+10;
+			if(form_zobrazen){X=Form_parametry->Left;Y=Form_parametry->Top;}
+
+			if(X+Form_parametry->ClientWidth<Form1->ClientWidth)
+				Form_parametry->Left=X;
 			else
 				Form_parametry->Left=Form1->ClientWidth-Form_parametry->ClientWidth-10;
-			if(Form1->akt_souradnice_kurzoru_PX.y+10+Form_parametry->ClientHeight<Form1->ClientHeight)
-				Form_parametry->Top=Form1->akt_souradnice_kurzoru_PX.y+10;
+			if(Y+Form_parametry->ClientHeight<Form1->ClientHeight)
+				Form_parametry->Top=Y;
 			else
 				Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-Form1->scGPPanel_statusbar->Height-10;
 
@@ -1317,6 +1321,8 @@ void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+
+
 
 
 

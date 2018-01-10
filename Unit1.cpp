@@ -2728,6 +2728,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				Nastavitparametry1Click(this);//nové zadání
 			}
 		}
+		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
 	}
 }
 //---------------------------------------------------------------------------
