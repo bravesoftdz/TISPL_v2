@@ -145,7 +145,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
 
 	 //nahrání hodnot
-	 rEditNum_delkavoziku->Text=Form1->d.v.PP.delka_voziku;
+	 rEditNum_delka_jigu->Text=Form1->d.v.PP.delka_voziku;
 	 rEditNum_sirka_jigu->Text=Form1->d.v.PP.sirka_voziku;
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
@@ -232,7 +232,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 Changes_TT=true;
 		}
 		//pri zmene delky voziku
-		if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		if(Form1->ms.MyToDouble(rEditNum_delka_jigu->Text) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
 		 Changes_PP=true;
 		}
@@ -361,12 +361,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60),    //rychlost do
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
 			}
-
-			if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
-			{
-			Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-			}
-			else 	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delka_jigu->Text);
+        // docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
+		 //	if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
+		 //	{
+		 //	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
+		 //	}
+		 //	else
+				Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delka_jigu->Text);
 
 			int typ;
 			//Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
@@ -389,7 +390,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::Button_ADDClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
 	rStringGridEd_tab_dopravniky->RowCount++;
 	rStringGridEd_tab_dopravniky->Cols[0]->Add(rStringGridEd_tab_dopravniky->RowCount - 1);
@@ -409,9 +410,8 @@ void __fastcall TForm_parametry_linky::Button_ADDClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm_parametry_linky::Button_DELClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 {
-
 
 			if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
 			{
@@ -471,8 +471,8 @@ void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sende
 
 {
 
-		scExPanel_doporuc_pohony->Left=250;
-		scExPanel_doporuc_pohony->Width=545;
+	 //	scExPanel_doporuc_pohony->Left=1;
+	 //	scExPanel_doporuc_pohony->Width=Form_parametry_linky->Width;
 		scExPanel_doporuc_pohony->Visible=true;
 		scGPButton_doporucene->Visible=false;
 		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY();
@@ -645,13 +645,6 @@ void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
-{
-		if(rStringGridEd_tab_dopravniky->RowCount==1) Button_DEL->Enabled=false;
-		else  Button_DEL->Enabled=true;
-
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender,
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
@@ -768,4 +761,73 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sen
 }
 //---------------------------------------------------------------------------
 
+
+
+void __fastcall TForm_parametry_linky::Button_DELMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y)
+{
+//	if(rStringGridEd_tab_dopravniky->RowCount==1) Button_DEL->Enabled=false;
+ //		else  Button_DEL->Enabled=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rEditNum_delka_jiguKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rEditNum_sirka_jiguKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rEditNum_taktKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
 
