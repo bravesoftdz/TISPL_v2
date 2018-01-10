@@ -1376,21 +1376,8 @@ void Cvektory::vloz_vozik(TZakazka *zakazka,short typ)//0-normální, 1-servisn�
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje)
 	VOZIKY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 };
-////---------------------------------------------------------------------------
-long Cvektory::vymaz_seznam_VOZIKY()
-{
-	long pocet_smazanych_objektu=0;
-	while (VOZIKY!=NULL)
-	{
-		pocet_smazanych_objektu++;
-		VOZIKY->predchozi=NULL;
-		delete VOZIKY->predchozi;
-		VOZIKY=VOZIKY->dalsi;
-	};
-
-	return pocet_smazanych_objektu;
-};
 //---------------------------------------------------------------------------
+//slouží při úvodním načítání časových os, smaže výchozí a koncovou pozici sloužící pro tvorbu a zobrazení na časových osách
 void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objekt,TVozik *Vozik)
 {
 	TObjekt *ukaz=Objekt->dalsi;
@@ -1406,6 +1393,32 @@ void Cvektory::vymazat_casovou_obsazenost_objektu_a_pozice_voziku(TObjekt *Objek
 		ukaz1=ukaz1->dalsi;
 	};
 }
+//---------------------------------------------------------------------------
+//dle n resp. ID vozíku vrátí ukazatel na daný vozík
+Cvektory::TVozik *Cvektory::vrat_vozik(unsigned int n)
+{
+	TVozik *V=VOZIKY->dalsi;
+	while (V!=NULL)
+	{
+		if(V->n==n)break;//nalezen přeruší se další vyhledávání
+		V=V->dalsi;
+	};
+	return V;
+}
+////---------------------------------------------------------------------------
+long Cvektory::vymaz_seznam_VOZIKY()
+{
+	long pocet_smazanych_objektu=0;
+	while (VOZIKY!=NULL)
+	{
+		pocet_smazanych_objektu++;
+		VOZIKY->predchozi=NULL;
+		delete VOZIKY->predchozi;
+		VOZIKY=VOZIKY->dalsi;
+	};
+
+	return pocet_smazanych_objektu;
+};
 //---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 void Cvektory::hlavicka_PROCESY()
