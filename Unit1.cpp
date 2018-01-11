@@ -685,10 +685,11 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::layoutClick(TObject *Sender)
 {
+	ESC();//zruší případnou rozdělanou akci
 	MOD=LAYOUT;
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
-	ESC();//zruší případně rozdělanou akci
+	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
 	SB("Layout",1);
 	//Zoom=5;ZOOM();
 	Invalidate();

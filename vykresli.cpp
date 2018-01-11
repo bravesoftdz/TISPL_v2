@@ -1471,38 +1471,38 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 						 canv->LineTo(m.L2Px(S.x+sin(Alfa)*sirkaV/2),m.L2Py(S.y+cos(Alfa)*sirkaV/2));
 					}
 
-					//popisek objektu
-					canv->Brush->Color=clWhite;
-					canv->Font->Color=clRed;
-					if(zbytek<delka && popisek_se_jiz_vypisoval==false)//zajistí, že se vypisuje pouze jednou a navíc v tom z delších segmentů
-					{
-
-						AnsiString T=O->name.UpperCase();
-						AnsiString T1="K: "+AnsiString(O->kapacita)+"[v] DD: "+AnsiString(O->delka_dopravniku)+" [m]";
-						if(O->rezim==2)T1+=" RD: "+AnsiString(O->RD).SubString(1,5)+" [m/s]";//pokud se jedná o kontinual, tak ještě RD
-						double A=m.azimut(S_puv.x,S_puv.y,S.x,S.y);
-						bool RT=false;//rotace textu ano ne
-						if(A==270 ||  A==90)rotace_textu(canv,0);else {RT=true;rotace_textu(canv,A*10-900);}//rotace textu,ošetření, aby se zprava doleva nevypisovalo obráceně
-						if(!RT)
-						{
-							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T)/2,m.L2Py((S.y+S_puv.y+sirkaV)/2.0)-canv->TextHeight(T),T);//vypíše název objektu uprostřed nad
-							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T1)/2,m.L2Py((S.y+S_puv.y-sirkaV)/2.0),T1);//vypíše parametry objektu uprostřed pod
-						}
-						else
-						{  //ShowMessage(T+AnsiString(A));
-							if(A==180)
-							{
-								canv->TextOutW(m.L2Px((S.x+S_puv.x-sirkaV)/2.0+sirkaV/2)-canv->TextHeight(T)-1,m.L2Py((S.y+S_puv.y)/2.0)+canv->TextWidth(T)/2,T);//vypíše parametry objektu uprostřed pod
-								canv->TextOutW(m.L2Px((S.x+S_puv.x+sirkaV)/2.0+sirkaV/2)+1,m.L2Py((S.y+S_puv.y)/2.0)+canv->TextWidth(T1)/2,T1);//vypíše název objektu uprostřed nad
-							}
-							else
-							{
-								canv->TextOutW(m.L2Px((S.x+S_puv.x+sirkaV)/2.0+sirkaV/2)+canv->TextHeight(T)+1,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T)/2,T);//vypíše název objektu uprostřed nad
-								canv->TextOutW(m.L2Px((S.x+S_puv.x-sirkaV)/2.0+sirkaV/2)-1,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T1)/2,T1);//vypíše parametry objektu uprostřed pod
-							}
-						}
-						popisek_se_jiz_vypisoval=true;
-					}
+//					//popisek objektu
+//					canv->Brush->Color=clWhite;
+//					canv->Font->Color=clRed;
+//					if(zbytek<delka && popisek_se_jiz_vypisoval==false)//zajistí, že se vypisuje pouze jednou a navíc v tom z delších segmentů
+//					{
+//
+//						AnsiString T=O->name.UpperCase();
+//						AnsiString T1="K: "+AnsiString(O->kapacita)+"[v] DD: "+AnsiString(O->delka_dopravniku)+" [m]";
+//						if(O->rezim==2)T1+=" RD: "+AnsiString(O->RD).SubString(1,5)+" [m/s]";//pokud se jedná o kontinual, tak ještě RD
+//						double A=m.azimut(S_puv.x,S_puv.y,S.x,S.y);
+//						bool RT=false;//rotace textu ano ne
+//						if(A==270 ||  A==90)rotace_textu(canv,0);else {RT=true;rotace_textu(canv,A*10-900);}//rotace textu,ošetření, aby se zprava doleva nevypisovalo obráceně
+//						if(!RT)
+//						{
+//							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T)/2,m.L2Py((S.y+S_puv.y+sirkaV)/2.0)-canv->TextHeight(T),T);//vypíše název objektu uprostřed nad
+//							canv->TextOutW(m.L2Px((S.x+S_puv.x)/2.0)-canv->TextWidth(T1)/2,m.L2Py((S.y+S_puv.y-sirkaV)/2.0),T1);//vypíše parametry objektu uprostřed pod
+//						}
+//						else
+//						{  //ShowMessage(T+AnsiString(A));
+//							if(A==180)
+//							{
+//								canv->TextOutW(m.L2Px((S.x+S_puv.x-sirkaV)/2.0+sirkaV/2)-canv->TextHeight(T)-1,m.L2Py((S.y+S_puv.y)/2.0)+canv->TextWidth(T)/2,T);//vypíše parametry objektu uprostřed pod
+//								canv->TextOutW(m.L2Px((S.x+S_puv.x+sirkaV)/2.0+sirkaV/2)+1,m.L2Py((S.y+S_puv.y)/2.0)+canv->TextWidth(T1)/2,T1);//vypíše název objektu uprostřed nad
+//							}
+//							else
+//							{
+//								canv->TextOutW(m.L2Px((S.x+S_puv.x+sirkaV)/2.0+sirkaV/2)+canv->TextHeight(T)+1,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T)/2,T);//vypíše název objektu uprostřed nad
+//								canv->TextOutW(m.L2Px((S.x+S_puv.x-sirkaV)/2.0+sirkaV/2)-1,m.L2Py((S.y+S_puv.y)/2.0)-canv->TextWidth(T1)/2,T1);//vypíše parametry objektu uprostřed pod
+//							}
+//						}
+//						popisek_se_jiz_vypisoval=true;
+//					}
 
 					//posunutí na další segment vykreslovaného obrazce layoutu
 					if(posunuti_segmentu)i++;
