@@ -66,7 +66,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel_sirka: TrHTMLLabel
     Left = 172
-    Top = 206
+    Top = 190
     Width = 71
     Height = 21
     Caption = #353#237#345'ka <font color=#2b579a>[m]</font>'
@@ -82,7 +82,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel_doporuc_pohony: TrHTMLLabel
     Left = 521
-    Top = 306
+    Top = 290
     Width = 208
     Height = 19
     Caption = 'Doporu'#269'en'#233' rychlosti pohon'#367
@@ -96,7 +96,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel_delka_jigu: TrHTMLLabel
     Left = 65
-    Top = 206
+    Top = 190
     Width = 75
     Height = 21
     Caption = 'd'#233'lka <font color=#2b579a>[m]</font>'
@@ -159,7 +159,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel2: TrHTMLLabel
     Left = 25
-    Top = 206
+    Top = 190
     Width = 20
     Height = 19
     Caption = 'Jig'
@@ -174,7 +174,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object ValueListEditor: TValueListEditor
     Left = 480
-    Top = 460
+    Top = 444
     Width = 136
     Height = 41
     Align = alCustom
@@ -206,7 +206,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 1
-    Top = 331
+    Top = 315
     Width = 801
     Height = 102
     BorderStyle = bsNone
@@ -358,7 +358,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_save: TscGPButton
     Left = 190
-    Top = 445
+    Top = 429
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -450,7 +450,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_storno: TscGPButton
     Left = 328
-    Top = 445
+    Top = 429
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -763,7 +763,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPButton_vozik: TscGPButton
     Left = 0
-    Top = 165
+    Top = 149
     Width = 130
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -869,7 +869,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPButton_pohon: TscGPButton
     Left = 0
-    Top = 290
+    Top = 274
     Width = 130
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -988,7 +988,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rEditNum_sirka_jigu: TrEditNum
     Left = 172
-    Top = 233
+    Top = 217
     Width = 100
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -1093,7 +1093,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scExPanel_doporuc_pohony: TscExPanel
     Left = 278
-    Top = 206
+    Top = 190
     Width = 518
     Height = 119
     Font.Charset = DEFAULT_CHARSET
@@ -1243,7 +1243,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPButton_doporucene: TscGPButton
     Left = 735
-    Top = 290
+    Top = 274
     Width = 45
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1331,7 +1331,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scLabel_TT_change_hint: TscLabel
     Left = 491
-    Top = 441
+    Top = 425
     Width = 118
     Height = 13
     TabOrder = 15
@@ -1350,7 +1350,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Memo1: TMemo
     Left = 659
-    Top = 449
+    Top = 433
     Width = 57
     Height = 30
     Lines.Strings = (
@@ -1360,7 +1360,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button1: TButton
     Left = 720
-    Top = 422
+    Top = 406
     Width = 75
     Height = 25
     Caption = 'Button1'
@@ -1459,7 +1459,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rEditNum_delka_jigu: TrEditNum
     Left = 66
-    Top = 233
+    Top = 217
     Width = 100
     Height = 28
     Font.Charset = DEFAULT_CHARSET
@@ -1509,7 +1509,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_ADD: TscGPGlyphButton
     Left = 141
-    Top = 306
+    Top = 290
     Width = 24
     Height = 19
     Hint = 'P'#345'idat pohon'
@@ -1585,7 +1585,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_DEL: TscGPGlyphButton
     Left = 171
-    Top = 306
+    Top = 290
     Width = 24
     Height = 19
     Hint = 'Smazat posledn'#237' p'#345'idan'#253' pohon'
