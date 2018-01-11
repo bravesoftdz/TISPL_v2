@@ -121,7 +121,7 @@ public:		// User declarations
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	short kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
 	bool existuje_pohon;
-
+	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
 
 	void vykresli_vozik(bool na_delku=true);
 };
