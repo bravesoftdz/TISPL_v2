@@ -732,11 +732,12 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::casovosa1Click(TObject *Sender)
 {
-	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná
-	{
-		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
-	}
-	else
+	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+//	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná
+//	{
+//		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
+//	}
+//	else
 	{
 		if(d.v.VOZIKY->dalsi==NULL)d.v.generuj_VOZIKY();//situace kdy nejsou načtené vozíky ale existuje zakázka z cestou (situace např. po načtení nového souboru), tak se vygeneruji dle zadané zakazky/cesty vozíky
 
@@ -1538,7 +1539,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //nastavení zobrazení popUPmenu a jeho volání včetně pozice
 void TForm1::onPopUP(int X, int Y)
 {
-  //výchozí skrytí všech položek, další postup je založen na postupném odkrývání a zvětšování panelu UP nebo DOWN
+	//výchozí skrytí všech položek, další postup je založen na postupném odkrývání a zvětšování panelu UP nebo DOWN
 	close_all_items_popUPmenu();
 	//dle modu zobrazí položky
 	switch(MOD)
@@ -1550,10 +1551,14 @@ void TForm1::onPopUP(int X, int Y)
 			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
 			{
 				PopUPmenu->Item_zobrazit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;//nastavení zobrazení
-				if(STATUS==NAVRH)//měnit parametry je možné pouze v návrháři/architektovi
+				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
 				{
+          pom=proces_pom->segment_cesty->objekt;
+					if(AnsiString("Nastavit "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
+					PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit\n  "+pom->name.UpperCase();
+					else
+					PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
 					PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
-					pom=proces_pom->segment_cesty->objekt;
 				}
 			}
 			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
@@ -4107,7 +4112,7 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 			Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
 			Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
 			Form_definice_zakazek->ShowModal();
-			casovosa1->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat
+			casovosa1->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
 			DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
 			REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
 		}

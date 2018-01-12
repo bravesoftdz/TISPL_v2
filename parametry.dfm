@@ -204,7 +204,7 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_RDClick
   end
   object rHTMLLabel_InfoText: TrHTMLLabel
-    Left = 36
+    Left = 8
     Top = 568
     Width = 81
     Height = 19
@@ -2205,7 +2205,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPGlyphButton_copy: TscGPGlyphButton
     Left = 312
-    Top = 568
+    Top = 585
     Width = 37
     Height = 34
     Align = alCustom
@@ -2285,7 +2285,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPGlyphButton_paste: TscGPGlyphButton
     Left = 312
-    Top = 608
+    Top = 612
     Width = 37
     Height = 34
     Align = alCustom

@@ -102,13 +102,13 @@ void TForm_definice_zakazek:: predvypln_default_zakazku()
 {
 	rStringGridEd1->Cells[0][1]="1";
 	rStringGridEd1->Cells[1][1]="1";
-	rStringGridEd1->Cells[2][1]="Nova zakazka";
+	rStringGridEd1->Cells[2][1]="Nová zakázka";
 	rStringGridEd1->Cells[3][1]="Èervená";
 	rStringGridEd1->Cells[4][1]="100";  //pomer
 	rStringGridEd1->Cells[5][1]="NASTAVIT"; //tlaèítko pro nastavení JIG
 	rStringGridEd1->Cells[6][1]="200";
-	rStringGridEd1->Cells[7][1]="5";
-	rStringGridEd1->Cells[8][1]="50";
+	rStringGridEd1->Cells[7][1]="0";
+	rStringGridEd1->Cells[8][1]="0";
 	rStringGridEd1->Cells[9][1]="NASTAVIT";//tlaèítko pro nastavení ceesty
 	rStringGridEd1->Cells[10][1]=Form1->d.v.PP.TT;//TT
 }
@@ -155,7 +155,10 @@ void TForm_definice_zakazek:: predvypln_default_zakazku()
 void TForm_definice_zakazek::uloz_Defaulttemp_zakazku()
 {
 	Cvektory::TJig j;
-	j.sirka=1;j.delka=1;j.vyska=1;j.ks=1;//defaultní hodnoty jigu
+	//defaultní hodnoty jigu
+	j.sirka=Form1->d.v.PP.sirka_voziku;
+	j.delka=Form1->d.v.PP.delka_voziku;
+	j.vyska=1;j.ks=1;
 	Form1->d.v.vloz_temp_zakazku
 	(
 		rStringGridEd1->Cells[0][1],

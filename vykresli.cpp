@@ -96,8 +96,17 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			vykresli_rectangle(canv,O);
 			O=O->dalsi;//posun na další prvek
 		}
-		//povolení zobrazování LAYOUTU, pokud existují objekty, jinak ne
-		if(v.OBJEKTY->dalsi!=NULL)Form1->layout->Enabled=true;else Form1->layout->Enabled=false;
+		//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
+		if(v.OBJEKTY->dalsi!=NULL)
+		{
+			Form1->layout->Enabled=true;
+			Form1->casovosa1->Enabled=true;
+		}
+		else
+		{
+			Form1->layout->Enabled=false;
+			Form1->casovosa1->Enabled=false;
+    }
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
@@ -431,15 +440,15 @@ void Cvykresli::vykresli_grid(TCanvas *canv, int size_grid)
 ////celkové vykreslení módu časové osy - MaRO algoritmus
 void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 {
-	if(!mod_vytizenost_objektu)
+	if(!mod_vytizenost_objektu)//pokud se bude jednat o zobrazení formou časových os, nikoliv formou vytížení objektů
 	{
-		//nastavení do výchozí stavu, zajištěno pro nový
+		//nastavení do výchozí stavu, zajištěno pro nový výpočet
 		v.vymazat_casovou_obsazenost_objektu_a_pozice_voziku(v.OBJEKTY,v.VOZIKY);//vymaže předchozí časovou obsazenost objektů, jinak by se při každém dalším překreslení objekty posovali o obsazenost z předchozího vykreslení
 		if(!JIZPOCITANO)v.vymaz_seznam_PROCESY();
 		if(!JIZPOCITANO)v.hlavicka_PROCESY();//vymaže uložené procesy //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
 
 		double X=0;//výchozí odsazení na ose X
-		//KrokY je vizuální rozteč na ose Y mezi jednotlivými vozíky zadáno globálně, kvůli jednotlivým krokům
+		//KrokY je vizuální rozteč na ose Y mezi jednotlivými vozíky zadáno globálně, kvůli jednotlivým krokům + používáno v Unit1 např. na posun obrazu po vozících
 		long Y=Form1->scGPPanel_mainmenu->Height+oY;//+5=oY pouze grafická korekce
 		Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
 		while(Z!=NULL)//jde po zakázkách

@@ -89,7 +89,7 @@ void TForm_parametry::vypis(UnicodeString text,bool RED)
 			rHTMLLabel_InfoText->Font->Color=(TColor)RGB(0,128,255);
 		}
 		scGPGlyphButton_InfoIcon->Top=Form_parametry->Height-81;
-		scGPGlyphButton_InfoIcon->Visible=true;
+		//scGPGlyphButton_InfoIcon->Visible=true;
 		rHTMLLabel_InfoText->Top=Form_parametry->Height-74;
 		rHTMLLabel_InfoText->Visible=true;
 		rHTMLLabel_InfoText->Caption=text;
@@ -596,12 +596,15 @@ void TForm_parametry::input_CT()
 				 //KAPACITA
 				 double K=CT/Form1->d.v.PP.TT;//výpoèet
     		 scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
-    		 scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
-    		 //pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+				 scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
+				 scGPNumericEdit_kapacita->Font->Color=clBlack;
+				 //pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 				 if(Form1->ms.get_count_decimal(K)>0)
 				 {
-					if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
-					else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
+					scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+					if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+					if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+					else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
 				 }
 				 //DÉLKA DOPRAVNÍKU
 				 double DD=K*dV+(K-p)*m;//ošetøeno i pro stav kdy je stejný poèet mezer jako vozíku
@@ -649,9 +652,12 @@ void TForm_parametry::input_DD()
 		double K=(DD+m)/(dV+m);if(p==1)K=DD/(dV+m);
 		scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
+		scGPNumericEdit_kapacita->Font->Color=clBlack;
 		//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 		if(Form1->ms.get_count_decimal(K)>0)
 		{
+      scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+			if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 			if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 			else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
 		}
@@ -722,12 +728,15 @@ void TForm_parametry::input_RD()
     			//KAPACITA
 					K=m/(dV+m-RD*Form1->d.v.PP.TT);
     			scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
-    			scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
-    			//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+					scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
+					scGPNumericEdit_kapacita->Font->Color=clBlack;
+					//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 					if(Form1->ms.get_count_decimal(K)>0)
 					{
-						if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
-						else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
+            scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+						if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+						if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+						else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
 					}
 
 					//DÉLKA DOPRAVNÍKU
@@ -754,12 +763,15 @@ void TForm_parametry::input_RD()
     				//KAPACITA
 						K=RD/DD/Form1->d.v.PP.TT;
     				scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
-    				scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
-    				//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+						scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
+						scGPNumericEdit_kapacita->Font->Color=clBlack;
+						//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 						if(Form1->ms.get_count_decimal(K)>0)
 						{
-							if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
-							else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
+							scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+							if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+							if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+							else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
 						}
 
     				//PROCESNÍ ÈAS resp. CT
@@ -782,11 +794,14 @@ void TForm_parametry::input_RD()
 							K=CT/Form1->d.v.PP.TT;
         			scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
         			scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
-    					//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+              scGPNumericEdit_kapacita->Font->Color=clBlack;
+							//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 							if(Form1->ms.get_count_decimal(K)>0)
 							{
-								if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
-								else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
+                scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+								if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+								if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+								else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
 							}
 						}
     				else
@@ -859,8 +874,7 @@ void TForm_parametry::input_K()
 						CT=scGPNumericEdit_CT->Value; if(CTunit==MIN)CT*=60;
 			 }
 
-
-    	 //DÉLKA DOPRAVNÍKU
+       //DÉLKA DOPRAVNÍKU
 			 double DD = K*dV+(K-p)*m;//ošetøeno i pro stav stejného poètu vozíku a mezer;
 			 if(DDunit==MM)DD*=1000.0;
 			 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst

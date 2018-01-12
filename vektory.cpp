@@ -60,9 +60,9 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
-	novy->CT=0;//pro status návrh
-	novy->RD=0;//pro status návrh
-	novy->kapacita=0;
+	novy->CT=PP.TT;//pro status návrh
+	novy->RD=PP.delka_voziku/novy->CT;//pro status návrh
+	novy->kapacita=1;
 	novy->kapacita_dop=0;
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
@@ -93,9 +93,9 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
-	novy->CT=0;//pro status návrh
-	novy->RD=0;//pro status návrh
-	novy->kapacita=0;
+	novy->CT=PP.TT;//pro status návrh
+	novy->RD=PP.delka_voziku/novy->CT;//pro status návrh
+	novy->kapacita=1;
 	novy->kapacita_dop=0;
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
@@ -1128,6 +1128,36 @@ void Cvektory::kopirujZAKAZKY2ZAKAZKY_temp()
 		 Z=Z->dalsi;
 	}
 	Z=NULL;delete Z;
+}
+//---------------------------------------------------------------------------
+//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+void Cvektory::prvni_zakazka_dle_schematu()
+{
+	////ZAKAZKA
+	TZakazka *Z=ZAKAZKY->dalsi;
+	if(ZAKAZKY->dalsi==NULL)//pokud první zakázka neexistuje, založí ji
+	{
+    Z=new TZakazka;
+		Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=200;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
+		Z->cesta=NULL;
+		Cvektory::TJig j;
+		j.sirka=Form1->d.v.PP.sirka_voziku;j.delka=Form1->d.v.PP.delka_voziku;j.vyska=1;j.ks=1;//defaultní hodnoty jigu
+		Z->jig=j;
+		vloz_zakazku(Z);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
+	}//jinak přepíše novou cestou (zajištění aktualizace parametrů z objektu) stávající první zakázku
+	////CESTA
+	inicializace_cesty(Z);//vymaže předchozí cestu a zavolá hlavičku cesty nové
+	//procházení všech objektů ve schématu a přiřaření do cesty
+	TObjekt *O=OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		TCesta *S=new TCesta;
+		S->objekt=O;S->CT=O->CT;S->RD=O->RD;S->Rotace=O->rotace;S->Tc=0;S->Tv=0;S->Opak=0;
+		vloz_segment_cesty(Z,S);//do konkrétní zakázky vloží segmenty cesty
+		O=O->dalsi;
+		//S=NULL;delete S;
+	}
+	//delete O;Z=NULL;delete Z;
 }
 //---------------------------------------------------------------------------
 //smaze seznam ZAKAZKY z paměti v četně přidružených cest
