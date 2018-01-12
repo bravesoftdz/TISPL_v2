@@ -180,7 +180,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 
 		data+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku [m/min]</th><th scope=\"col\">Rozsah dopravníku [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 
@@ -195,8 +195,10 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString kapacita_dop=O->kapacita_dop;
 								UnicodeString nazev_pohonu;
 								UnicodeString roztec_palcu;
+								UnicodeString rozsah_pohonu_od;
+								UnicodeString rozsah_pohonu_do;
 
-								if(O->pohon!=NULL)  {nazev_pohonu=O->pohon->name;roztec_palcu=O->pohon->roztec;}
+								if(O->pohon!=NULL)  {nazev_pohonu=O->pohon->name;roztec_palcu=O->pohon->roztec;rozsah_pohonu_od=O->pohon->rychlost_od;rozsah_pohonu_do=O->pohon->rychlost_do;}
 								else {nazev_pohonu="Nedefinovaný";roztec_palcu="";}
 
 
@@ -209,7 +211,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 								}
 //          //html
-								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
+								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+rozsah_pohonu_od*60+"-"+rozsah_pohonu_do*60+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
 
 									O=O->dalsi;
 								}
@@ -232,7 +234,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 	{
 		UnicodeString zakazka_name=Z->name;
 		data+="<h4>Pøehled objektù a jejich nastavených parametrù u zakázky: <b>"+zakazka_name+"</b></h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
+		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název dopravníku</th><th scope=\"col\">Rychlost dopravníku [m/min]</th><th scope=\"col\">Rozsah dopravníku [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka dopravníku [m]</th></tr></thead>";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 
@@ -250,10 +252,18 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
 								UnicodeString nazev_pohonu;
 								UnicodeString roztec_palcu;
-								UnicodeString rychlost_dopravniku;
+								UnicodeString rychlost_dopravniku=C->RD*60;
+								UnicodeString rozsah_pohonu_od;
+								UnicodeString rozsah_pohonu_do;
+
+							 //	ShowMessage(C->RD);
+							 //	ShowMessage(C->objekt->RD);
+							 //	ShowMessage(C->objekt->pohon->rychlost_od);
+							 //	ShowMessage(C->objekt->pohon->rychlost_do);
+
 
 							if(C->objekt->pohon!=NULL)  {
-								nazev_pohonu=C->objekt->pohon->name; roztec_palcu=C->objekt->pohon->roztec;rychlost_dopravniku=C->objekt->pohon->rychlost_od*60;
+								nazev_pohonu=C->objekt->pohon->name; roztec_palcu=C->objekt->pohon->roztec;rozsah_pohonu_od=C->objekt->pohon->rychlost_od*60;rozsah_pohonu_do=C->objekt->pohon->rychlost_do*60;
 								}
 								else {nazev_pohonu="nepøiøazen";roztec_palcu="";rychlost_dopravniku="žádná";}
 
@@ -267,7 +277,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 								}
 //          //html
-								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
+								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+rozsah_pohonu_od+"-"+rozsah_pohonu_do+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
 								}
 					O=O->dalsi;
 		}
@@ -344,9 +354,15 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString CT=C->CT;
 								UnicodeString kapacita=C->objekt->kapacita;
 								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
-								UnicodeString nazev_pohonu=C->objekt->pohon->name;
-								UnicodeString roztec_palcu=C->objekt->pohon->roztec;
+								UnicodeString nazev_pohonu;
+								UnicodeString roztec_palcu;
+							 //	UnicodeString rychlost_dopravniku;
 								UnicodeString rychlost_dopravniku=C->RD;
+									if(C->objekt->pohon!=NULL)  {
+								nazev_pohonu=C->objekt->pohon->name; roztec_palcu=C->objekt->pohon->roztec;//rychlost_dopravniku=C->objekt->pohon->rychlost_od*60;
+								}
+								else {nazev_pohonu="nepøiøazen";roztec_palcu="";rychlost_dopravniku="žádná";}
+
 								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
 								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
 								UnicodeString delka_dopravniku=C->objekt->delka_dopravniku;
