@@ -979,7 +979,7 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 		//CT - pøepoèítání
 		CTunit=MIN;
 		CT=scGPNumericEdit_CT->Value/60.0;
-		rHTMLLabel_CT->Caption="Technologický èas [min]";
+		rHTMLLabel_CT->Caption="Technologický èas <font color=#2b579a>[min]</font>";
 		//RD - pøepoèítání
 		RDunitT=MIN;
 		if(m_mm==MM)rHTMLLabel_RD->Caption="Rychlost pohonu <font color=#2b579a>[mm/min]</font>";//pokud je v milimetrech
