@@ -41,6 +41,7 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	Label_text->Width=myMessageBox->Width-8-8;//pøevzetí šíøky labelu dle šíøky formu - oba okraje
 	if(centrovat_text)Label_text->Alignment=taCenter;else Label_text->Alignment=taLeftJustify;
 	Label_text->Caption=text;
+	if(text.Length()>=46)Label_text->AutoSize=true;
 
 	//výška myMessageBoxu dle zadaného textu
 	myMessageBox->ClientHeight=139-O+Label_text->Height-19;//poèítáno oproti výchozí pozici

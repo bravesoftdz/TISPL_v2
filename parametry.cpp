@@ -684,7 +684,7 @@ void TForm_parametry::input_DD()
 			scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
 		}
 		//plnìní a formátování editboxu RD
-		if(minsec==MIN)RD*=60.0;if(RDunitD==MM)RD*=1000.0;
+		if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
 		scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinnıch míst
 		scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 	}
@@ -842,7 +842,7 @@ void TForm_parametry::input_K()
 			 double CT = 0;//Form1->d.v.PP.TT;
 			 if(CT_zamek==UNLOCKED)
 			 {
-					 CT =Form1->d.v.PP.TT*K;
+					 CT=Form1->d.v.PP.TT*K;
 					 if(CTunit==MIN)
 					 {
 							scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinnıch míst
@@ -871,7 +871,7 @@ void TForm_parametry::input_K()
     	 if(scComboBox_rezim->ItemIndex==1)
 			 {
 					double RD=DD/CT;
-					if(minsec==RDunitT)RD*=60.0;if(RDunitD==MM)RD*=1000.0;
+					if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
 					scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinnıch míst
 					scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 			 }

@@ -508,7 +508,10 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 				}
 				C=C->dalsi;//posun na další prvek v seznamu segmentů cesty, jde po cestě
 			}
+			if(Form1->STATUS==Form1->OVEROVANI)//(pokud je status nastaven na klienta, jinak jen první zakázka)
 			Z=Z->dalsi;//posun na další prvek v seznamu ZAKÁZEK, jde po zakázakách
+			else Z=NULL;
+
 			Y=Yloc;
 			delete C;
 		}
