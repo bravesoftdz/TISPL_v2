@@ -20,6 +20,7 @@ object myMessageBox: TmyMessageBox
     Top = 40
     Width = 195
     Height = 19
+    AutoSize = False
     Caption = 'Zde je v'#253'pis dotazu '#345#225'dek 1'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray

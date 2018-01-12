@@ -685,10 +685,11 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::layoutClick(TObject *Sender)
 {
+	ESC();//zruší případnou rozdělanou akci
 	MOD=LAYOUT;
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
-	ESC();//zruší případně rozdělanou akci
+	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
 	SB("Layout",1);
 	//Zoom=5;ZOOM();
 	Invalidate();
@@ -1545,11 +1546,16 @@ void TForm1::onPopUP(int X, int Y)
 		case CASOVAOSA:
 		{														 //min                      //vozik
 			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+			PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
 			{
 				PopUPmenu->Item_zobrazit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;//nastavení zobrazení
+				if(STATUS==NAVRH)//měnit parametry je možné pouze v návrháři/architektovi
+				{
+					PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+					pom=proces_pom->segment_cesty->objekt;
+				}
 			}
-			PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 		}break;
@@ -2718,6 +2724,23 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				else //pro kontinuál a postprocesní
 				{
 				 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
+				}
+				//AKTUALIZACE hodnot první zakázky pokud již existuje, to samé akorát obráceně (z objektů do zakazky) probíhá v při načtení SF - definice zakázek, z určitého pohledu se jedná o duplicitní algoritmus, ale v případě aktualizací jinak než přes parametry objektu lze považovat za nutnost
+				if(d.v.ZAKAZKY->dalsi!=NULL)
+				{
+					Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+					while(O!=NULL)//prochází všechnyobjekty a buď je ("Ano") objekt i na cestě nebo není ("Ne")
+					{
+						Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,d.v.ZAKAZKY->dalsi);
+						if(C!=NULL)//objekt je segmentem cesty
+						{
+							C->CT=O->CT;C->RD=O->RD;//v případě první zakázky se berou hodnoty z parametrů objektu nikoliv zakázky, což zajistí patřičnou aktuliazaci
+						}
+						O=O->dalsi;
+						C=NULL;delete C;
+					}
+					delete O;
+					d.JIZPOCITANO=false;//nutnost zakutalizovat časové osy
 				}
 				DuvodUlozit(true);
 				REFRESH();

@@ -317,6 +317,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 		Form_cesty->rStringGridEd_cesty->Columns->Items[7]->PickList->Add("Ne");
 
 		//AKTUALIZACE SEGMENTÙ DLE PARAMETRÙ OBJEKTU U PRVNÍ ZAKÁZKY,v pøípadì první zakázky se berou hodnoty z parametrù objektu nikoliv zakázky, což zajistí patøiènou aktuliazaci
+    //to samé je voláno v unit1.cpp v Nastavitparametry1Click z urèitého pohledu se jedná o duplicitní algoritmus, ale v pøípadì aktualizací jinak než pøes parametry objektu lze považovat za nutnost
 		if(zakazka->n==1)//pouze pokud se jedná o první zakázku
 		{
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
