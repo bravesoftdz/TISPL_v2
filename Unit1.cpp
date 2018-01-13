@@ -2740,6 +2740,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 						if(C!=NULL)//objekt je segmentem cesty
 						{
 							C->CT=O->CT;C->RD=O->RD;//v případě první zakázky se berou hodnoty z parametrů objektu nikoliv zakázky, což zajistí patřičnou aktuliazaci
+							C->objekt->pohon=O->pohon;
 						}
 						O=O->dalsi;
 						C=NULL;delete C;
@@ -4238,6 +4239,12 @@ void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
+//vypnutí či zapnutí ortogonolazice
+void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
+{
+	ortogonalizace_on_off();
+}
+//---------------------------------------------------------------------------
 //vypnutí měřítko
 void __fastcall TForm1::scGPSwitch_meritkoChangeState(TObject *Sender)
 {
@@ -4398,7 +4405,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
-   REFRESH();
+	 REFRESH();
 }
 //---------------------------------------------------------------------------
 
@@ -4446,29 +4453,37 @@ void __fastcall TForm1::pohonobjektClick(TObject *Sender)
 		{
 	 Memo2->Lines->Add(O->pohon->n);
 
-	  O=O->dalsi;
+		O=O->dalsi;
 		 }
 
-	
+
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button12Click(TObject *Sender)
 {
-	Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
-		while(P!=NULL)
-		{
-	 Memo2->Lines->Add(P->n);
+	Memo2->Visible=true;
+	Cvektory::TPohon *P=d.v.POHONY->dalsi;
+	while(P!=NULL)
+	{
+		Memo2->Lines->Add(P->name);
+		P=P->dalsi;
+	}
 
-	 P=P->dalsi;
-		 }
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+		Memo2->Lines->Add(O->pohon->name);
+		if(O->pohon==d.v.POHONY->dalsi)
+		Memo2->Lines->Add("stejný");
+		else Memo2->Lines->Add("není stejný");
+		O=O->dalsi;
+	}
+
+
 
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
-{
-	ortogonalizace_on_off();
-}
-//---------------------------------------------------------------------------
+
 

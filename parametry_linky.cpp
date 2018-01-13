@@ -371,6 +371,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60),    //rychlost do
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
 			}
+			//po aktualizaci (resp. smazání a uložení) pohonù musí následovat aktualizace pøiøazení pohonù k objektum:
+			if (Form1->d.v.OBJEKTY->dalsi!=NULL)Form1->d.v.aktualizace_objektu(-2);
+
+
 			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
 		 //	if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
 		 //	{

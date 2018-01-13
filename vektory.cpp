@@ -251,7 +251,8 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 
 };
 //---------------------------------------------------------------------------
-//dle zadaného TT zaktualizuje paramametry všech objektů
+//dle zadaného TT  či případně dalších hodnot zaktualizuje paramametry všech objektů
+//typ -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
 //typ -1://dle zamčených a odemčených hodnot při změně TT
 //typ 0://dle zamčených a odemčených hodnot při změně parametrů vozíku
 //typ 1://při změně TT změna CT a RD, K a DD zůstává
@@ -288,6 +289,11 @@ void Cvektory::aktualizace_objektu(short typ)
 
 		switch(typ)
 		{
+			case -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
+			{
+				O->pohon=vrat_pohon(O->pohon->n);
+			}
+      break;
 			case 1://při změně TT změna CT a RD, K a DD zůstává
 			{
 				O->CT=PP.TT*O->kapacita;
