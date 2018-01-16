@@ -99,7 +99,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
 		if(v.OBJEKTY->dalsi!=NULL)
 		{
-			Form1->layout->Enabled=true;
+			if(v.OBJEKTY->predchozi->n>3)Form1->layout->Enabled=true;else Form1->layout->Enabled=false;///pokud je více jak 3 objekty
 			Form1->casovosa1->Enabled=true;
 		}
 		else
@@ -464,11 +464,17 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 				{
 					if(vozik->zakazka->n==Z->n)//řeší jenom pro konrétní cestu, pokud tedy vozík odpovídá aktuální zakázce
 					{
+						////nastvení počáteční ale i následující pozice objektu na časové ose daného vozíku
 						if(vozik->pozice==-1)vozik->pozice=0;//protože implicitní hodnota pozice vozíku==-1 z důvodu mimo linku, 0 na začátku ve výchozí pozici
-
-						////nastvení počáteční pozice objektu na časové ose daného vozíku
-						if(C->objekt->rezim==0 && vozik->pozice<=C->objekt->obsazenost)X=C->objekt->obsazenost;//zohlednění obsazenost objektu v režimu S&G
-						else X=vozik->pozice;//pro ostatní režimy
+						if(C->objekt->rezim==0 && vozik->pozice<=C->objekt->obsazenost)//zohlednění obsazenost objektu v režimu S&G
+							X=C->objekt->obsazenost;//převezme se koncová pozice v objektu z předchozího vozíku
+						else//pro ostatní režimy
+						{
+							if(vozik->pozice==0 && vozik->n!=1)//nejednáli se o první vozík a zároveň se jedná o výchozí pozici v režimu kontinuál či pp (sice trochu nelogické, ale může se uvažovat že navěšování bude kontinuál)
+							X=vozik->predchozi->start+C->objekt->CT/C->objekt->kapacita/60.0*PX2MIN;//tak stanový výchozí pozici dle CT a kapacity (např. při 3min CT a kapacitě 2 je časový offset mezi vozíky 1,5 min)
+							else//ostatní pozice
+							X=vozik->pozice;
+						}
 
 						////uložení hodnot pro další využítí
 						if(C->n==1)vozik->start=X;//uloží výchozí X hodnotu, prvního objektu pro daný vozík
@@ -481,22 +487,22 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 						//P->n_v_zakazce=n+1;P->Tpoc=vozik->pozice-PosunT.x/PX2MIN;P->Tkon=X-PosunT.x/PX2MIN;P->Tdor=P->Tkon;P->Tpre=P->Tkon;P->Tcek=P->Tkon;P->cesta=C;P->vozik=vozik;
 						//v.vloz_proces(P);
 
-//						////čekání na čištění pistole a výměnu barev včetně čekání
-//						if(Form1->CheckBoxVymena_barev->Checked)
-//						{
-//								if(C->Opak!=0)
-//								if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
-//								{
-//									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//									X+=C->Tc/60.0*PX2MIN;
-//								}
-//								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
-//								{
-//									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
-//									X+=C->Tv/60.0*PX2MIN;
-//								}
-//								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
-//						}
+						////čekání na čištění pistole a výměnu barev včetně čekání v rámci OBJEKTU
+						if(Form1->CheckBoxVymena_barev->Checked)
+						{
+								if(C->Opak!=0)
+								if(n%C->Opak==0 && n!=0)//čištění, mimo první vozík protože buď je připravená linka (v případě první zakázky nebo je čištění součástí mezizakázkové výměny barev)
+								{
+									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
+									X+=C->Tc/60.0*PX2MIN;
+								}
+								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
+								{
+									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
+									X+=C->Tv/60.0*PX2MIN;
+								}
+								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
+						}
 
 						////vykreslení procesu (jednoho obdelníčku "v plavecké dráze") včetně výpočtu koncové pozice a uložení dílčích hodnot
 						X=proces(canv,++n,X_predchozi,X,Yloc,C,vozik);
@@ -542,6 +548,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		}
 		//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba zatěžovat znovu systémové prostředky (nehledě na to, že to bylo dost znát)
 		JIZPOCITANO=true;
+		Form1->technologickprocesy1->Enabled=true;//povolí mod technologické procesy
 	}
 	else
 	{
@@ -554,8 +561,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 //vypočítá konec procesu (odbdelníčku)
 double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, double X, int Y, Cvektory::TCesta *C/*segment cesty*/,Cvektory::TVozik *vozik)
 {
-	 double D=C->RD;//rychlost dopravníku
-   double R=0;if(C->objekt->pohon!=NULL)R=C->objekt->pohon->roztec;//rozteč palců
+	 double R=0;if(C->objekt->pohon!=NULL)R=C->objekt->pohon->roztec;//rozteč palců + ošetření pokud není pohon přiřazen
 	 TColor barva=vozik->zakazka->barva;
 	 if(vozik->typ)barva=clSilver;//pokud se jedná o servisní vozík, tak bude šedivý
 
@@ -569,46 +575,48 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 X+=C->CT/60.0*PX2MIN;
 	 vykresli_proces(canv,C->objekt->short_name,barva,0,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
 	 P->Tkon=X/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-	 // nestandardní - nelogická situace, pokud bude čas procesu včetně času přejezdu vozíkukratší než u totožného přechozího objektu (vozíky např. v rámci CO2 se nemohou předbíhat), přičte se i tato vzdálenost (vykresleno šrafovaně)
-	 double DcS=v.PP.delka_voziku;//vozik->zakazka->jig.delka;/*!!!tady dořešit co se kdy zadá!!!*/
-//	 if(X < C->objekt->obsazenost+m.prejezd_voziku(DcS,D)/60.0*PX2MIN)
-//	 {
-//			//dorovnání na čas předchozího vozíku, je-li to nutné
-//			X_predchozi=X;//uloží povodní X hodnotu
-//			X=C->objekt->obsazenost;
-//			vykresli_proces(canv,C->objekt->short_name,barva,1,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-//			P->Tdor=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//			//cas_prekonani_zpozdeni_o_min_delku_jednoho_voziku
-//			X_predchozi=X;//uloží povodní X hodnotu
-//			X+=m.prejezd_voziku(DcS,D)/60.0*PX2MIN;
-//			vykresli_proces(canv,C->objekt->short_name,barva,2,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
-//			P->Tpre=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-//	 }
-//	 else//pokud situace NEnastane, tak ošetření proti tomu, aby se neukládaly náhodného hodnoty
-//	 {
-//		 P->Tdor=X*60.0/PX2MIN;
-//		 P->Tpre=X*60.0/PX2MIN;
-//	 }
+	 // nestandardní - nelogická situace, pokud bude čas procesu včetně času přejezdu vozíku kratší než u totožného přechozího objektu (vozíky např. v rámci CO2 se nemohou předbíhat), přičte se i tato vzdálenost (vykresleno šrafovaně)
+	 double DcS=vozik->zakazka->jig.delka;//old: v.PP.delka_voziku;
+	 if(P->segment_cesty->Rotace)DcS=vozik->zakazka->jig.sirka;
+	 double Xt=C->objekt->obsazenost+m.prejezd_voziku(DcS,C->RD)/60.0*PX2MIN;//musí být takto vyseparované, protože jinak v podmínce dávalo chybu, že např. 60<60 je true
+	 if(X < Xt)
+	 {
+			//dorovnání na čas předchozího vozíku, je-li to nutné
+			X_predchozi=X;//uloží povodní X hodnotu
+			X=C->objekt->obsazenost;
+			vykresli_proces(canv,C->objekt->short_name,barva,1,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+			P->Tdor=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+			//cas_prekonani_zpozdeni_o_min_delku_jednoho_voziku
+			X_predchozi=X;//uloží povodní X hodnotu
+			X=Xt;//to samé jako X+=m.prejezd_voziku(DcS,C->RD)/60.0*PX2MIN;
+			vykresli_proces(canv,C->objekt->short_name,barva,2,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
+			P->Tpre=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+	 }
+	 else//pokud situace NEnastane, tak ošetření proti tomu, aby se neukládaly náhodného hodnoty,ale hodnoty standardního konce procesu tzn. srovnatelné s CT
+	 {
+		 P->Tdor=X*60.0/PX2MIN;
+		 P->Tpre=X*60.0/PX2MIN;
+	 }
 	 X_predchozi=X;
 
-//	 //PALCE - posun o čekání na palce
-//	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
-//			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
-//			 (
-//					C->objekt->rezim==0 ||//je to po S&G nebo
-//					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && D!=C->predchozi->RD)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
-//					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//K->PP a jiný dopravník nebo
-//					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
-//					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==2 && D!=C->predchozi->RD)||//PP->PP a jiný dopravník nebo
-//					 C->objekt->stopka//když je za objektem stopka nebo
-//					 ||
-//					 C->objekt->cekat_na_palce==1//automaticky požadovat čekání na palce//0-ne,1-ano,2-automaticky
-//			 )
-//	 )
-//	 X+=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,D,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
-//	 //--
+	 //PALCE - posun o čekání na palce
+	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
+			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
+			 (// a zároveň je splňuje následují:
+					C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
+					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
+					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//K->PP a jiný dopravník nebo
+					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
+					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==2 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//PP->PP a jiný dopravník nebo
+					 C->objekt->stopka//když je za objektem stopka nebo
+					 ||
+					 C->objekt->cekat_na_palce==1//automaticky-uživaztelsky požadovano zohledňování čekání na palce//0-ne,1-ano,2-automaticky
+			 )
+	 )
+	 X+=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,C->RD,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
+	 if(X_predchozi!=X)vykresli_proces(canv,C->objekt->short_name,barva,3,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku čakání na palec na časové ose
+	 //--
 
-	 if(X_predchozi!=X)vykresli_proces(canv,C->objekt->short_name,barva,3,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku na časové ose
 	 //uložení hodnot pro další použití (v dalších kolech)
 	 C->objekt->obsazenost=X;//nahraje koncovou X hodnotu do obsaženosti objektu pro další využítí
 	 vozik->pozice=X;//uložení pro další použítý vozík

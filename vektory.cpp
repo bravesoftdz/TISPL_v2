@@ -1356,7 +1356,7 @@ void Cvektory::hlavicka_VOZIKY()
 	VOZIKY=novy;
 }
 ////---------------------------------------------------------------------------
-//vygeneruje podle zadaných zakázek seznam vozíků
+//vygeneruje podle zadaných zakázek seznam vozíků (včetně případných servisních), seřazeno dle zakázek
 void Cvektory::generuj_VOZIKY()
 {
 	 if(ZAKAZKY!=NULL)//záměrně do dvou podmínek

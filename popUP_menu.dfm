@@ -391,7 +391,7 @@
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 0
+        TabOrder = 1
         OnClick = scLabel_rychly_exportClick
         OnMouseEnter = scLabel_rychly_exportMouseEnter
         OnMouseLeave = scLabel_rychly_exportMouseLeave
@@ -421,7 +421,7 @@
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 1
+        TabOrder = 0
         OnClick = scLabel_rychly_exportClick
         OnMouseEnter = GlyphButton_rychly_exportMouseEnter
         OnMouseLeave = GlyphButton_rychly_exportMouseLeave

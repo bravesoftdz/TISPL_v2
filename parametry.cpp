@@ -89,7 +89,16 @@ void TForm_parametry::vypis(UnicodeString text,bool RED)
 			rHTMLLabel_InfoText->Font->Color=(TColor)RGB(0,128,255);
 		}
 		scGPGlyphButton_InfoIcon->Top=Form_parametry->Height-81;
-		//scGPGlyphButton_InfoIcon->Visible=true;
+		if(text.Length()<=35)//v pøípadì, že je text delší než 35 znakù skryje ikonu u zvolí nové levé odsazení textu
+		{
+			scGPGlyphButton_InfoIcon->Visible=true;
+			rHTMLLabel_InfoText->Left=34;
+		}
+		else
+		{
+			scGPGlyphButton_InfoIcon->Visible=false;
+			rHTMLLabel_InfoText->Left=8;
+    }
 		rHTMLLabel_InfoText->Top=Form_parametry->Height-74;
 		rHTMLLabel_InfoText->Visible=true;
 		rHTMLLabel_InfoText->Caption=text;
@@ -585,9 +594,9 @@ void TForm_parametry::input_CT()
     		 		}
     				else
     		 		{
-    					scGPButton_OK->Enabled=false;
-    		 			vypis("Zmìnte režim nebo rozložte do více objektù!");
-    		 		}
+							scGPButton_OK->Enabled=false;
+							vypis("Zmìnte režim nebo rozložte do více objektù!");
+						}
 				 }
 				 else kapacitaSG=1;
     	 }
@@ -605,6 +614,7 @@ void TForm_parametry::input_CT()
 					if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 					if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
 					else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+					scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
 				 }
 				 //DÉLKA DOPRAVNÍKU
 				 double DD=K*dV+(K-p)*m;//ošetøeno i pro stav kdy je stejný poèet mezer jako vozíku
@@ -660,6 +670,7 @@ void TForm_parametry::input_DD()
 			if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 			if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 			else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
+      scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
 		}
 
 		/////////CT,RD
@@ -737,6 +748,7 @@ void TForm_parametry::input_RD()
 						if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 						if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
 						else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+            scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
 					}
 
 					//DÉLKA DOPRAVNÍKU
@@ -772,6 +784,7 @@ void TForm_parametry::input_RD()
 							if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 							if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
 							else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+              scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
 						}
 
     				//PROCESNÍ ÈAS resp. CT
@@ -802,6 +815,7 @@ void TForm_parametry::input_RD()
 								if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 								if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
 								else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+                scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
 							}
 						}
     				else
@@ -891,7 +905,11 @@ void TForm_parametry::input_K()
 			 }
 	 }
 	 else
-	 null_input_value();
+	 {
+		null_input_value();
+		vypis("Doporuèená kapacita je 1!");
+		scGPButton_OK->Enabled=false;
+	 }
 	 input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
@@ -1335,8 +1353,22 @@ void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
-
-
-
+//pøi kliknutí na doporuèení nastane aplikace doporuèení do daného editboxu
+void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
+{
+	 if(rHTMLLabel_InfoText->Caption.Pos("Doporuèený technologický èas je"))
+	 {
+		if(CTunit==MIN)scGPNumericEdit_CT->Value=Form1->m.round(scGPNumericEdit_kapacita->Value)*Form1->d.v.PP.TT/60.0;
+		else scGPNumericEdit_CT->Value=Form1->m.round(scGPNumericEdit_kapacita->Value)*Form1->d.v.PP.TT;
+	 }
+	 if(rHTMLLabel_InfoText->Caption.Pos("Doporuèená kapacita je 1!"))
+	 {
+		scGPNumericEdit_kapacita->Value=1;
+	 }
+	 if(rHTMLLabel_InfoText->Caption.Pos("Zmìnte režim nebo rozložte do více objektù!"))
+	 {
+		scComboBox_rezim->ItemIndex=1;
+	 }
+}
+//---------------------------------------------------------------------------
 

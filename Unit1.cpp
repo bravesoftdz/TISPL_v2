@@ -609,18 +609,14 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	MOD=SCHEMA;
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
-	//editacelinky1->Checked=true;          //zakomentovano - novy design, nepouzivaji se checkboxy
-	//testovnkapacity1->Checked=false;
-	//simulace1->Checked=false;
-	//casoverezervy1->Checked=false;
-	//casovosa1->Checked=false;
-	//technologickprocesy1->Checked=false;
+	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=true;
 	scListGroupNastavProjektu->Top=0;
 	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
 	scListGroupKnihovObjektu->Top=scListGroupNastavProjektu->Height;
-	//PopupMenu1->AutoPopup=true;
 	DuvodUlozit(true);
 	ButtonPLAY->Visible=false;
 	Timer_neaktivity->Enabled=false;
@@ -687,6 +683,9 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 {
 	ESC();//zruší případnou rozdělanou akci
 	MOD=LAYOUT;
+	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
 	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
@@ -747,25 +746,19 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ESC();//zruší případně rozdělanou akci
 			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 			Timer_simulace->Enabled=false;
-			//testovnkapacity1->Checked=false;
-			//editacelinky1->Checked=false;
-			//casoverezervy1->Checked=false;
-			//simulace1->Checked=false;
-			//casovosa1->Checked=true;
-			//technologickprocesy1->Checked=false;
 			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 			d.PosunT.y=0;
 			//zneplatnit_minulesouradnice();//zrušeno test
 			DuvodUlozit(true);
+			scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+			scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 			scSplitView_LEFTTOOLBAR->Visible=false;
-
 			scListGroupNastavProjektu->Visible=false;
 			scListGroupKnihovObjektu->Visible=false;
-			//PopupMenu1->AutoPopup=true;
 			Button3->Visible=false;
 			Timer_neaktivity->Enabled=true;
 			pocitadlo_doby_neaktivity=0;//implicitní hodnota
-			//technologickprocesy1->Enabled=true;
 			Timer_animace->Enabled=false;
 			ButtonPLAY->Visible=false;
 			CheckBoxVymena_barev->Visible=true;
@@ -813,22 +806,21 @@ void __fastcall TForm1::GlyphButton_close_grafyClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 {
-	/*MOD=TECHNOPROCESY;
+	MOD=TECHNOPROCESY;
 	ESC();//zruší případně rozdělanou akci
 	SB("zobrazení technologických procesů v čase",1);
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
-	//testovnkapacity1->Checked=false;
-	//editacelinky1->Checked=false;
-	//casoverezervy1->Checked=false;
-	//simulace1->Checked=false;
-	//technologickprocesy1->Checked=true;
 	d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 	d.PosunT.y=0;
 	zneplatnit_minulesouradnice();
 
 	g.ShowGrafy(false);
 	DuvodUlozit(true);
+	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+	scSplitView_LEFTTOOLBAR->Visible=false;
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
 	//PopupMenu1->AutoPopup=false;
@@ -880,7 +872,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	//---
   ComboBoxCekani->Visible=false;
 	Label_zamerovac->Visible=false;
-	Invalidate(); */
+	Invalidate();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::simulace1Click(TObject *Sender)
@@ -897,6 +889,13 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	//CheckBoxPALCE->Visible=false;
 	g.ShowGrafy(false);
 	DuvodUlozit(true);
+	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+	scSplitView_LEFTTOOLBAR->Visible=false;
+	scListGroupNastavProjektu->Visible=false;
+	scListGroupKnihovObjektu->Visible=false;
+
 	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
 	//PopupMenu1->AutoPopup=false;
@@ -1543,16 +1542,19 @@ void TForm1::onPopUP(int X, int Y)
 {
 	//výchozí skrytí všech položek, další postup je založen na postupném odkrývání a zvětšování panelu UP nebo DOWN
 	close_all_items_popUPmenu();
-	//dle modu zobrazí položky
+	//dle modu zobrazí položky, pozor záleží zvláštně!!! na pořadí položek
 	switch(MOD)
 	{
 		case CASOVAOSA:
 		{														 //min                      //vozik
 			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
-			PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+ 			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
 			{
 				PopUPmenu->Item_zobrazit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;//nastavení zobrazení
+				PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
+				PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
 				{
           pom=proces_pom->segment_cesty->objekt;
@@ -1563,8 +1565,6 @@ void TForm1::onPopUP(int X, int Y)
 					PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				}
 			}
-			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
-			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 		}break;
 		case TECHNOPROCESY:break;
 		case SIMULACE:break;
@@ -1604,6 +1604,7 @@ void TForm1::onPopUP(int X, int Y)
 	PopUPmenu->Panel_UP->Top=0;
 	//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje
 	//!!!případně začlenit další položky, které budou zlobit
+	//PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240); musí být zařazeno výše
 	PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
 	PopUPmenu->Item_cely_pohled->FillColor=(TColor)RGB(240,240,240);
 	//umístění popup menu
@@ -1616,7 +1617,6 @@ void TForm1::onPopUP(int X, int Y)
 //zajistí skrýtí všech položek popUPmenu
 void TForm1::close_all_items_popUPmenu()
 {
-  PopUPmenu->Item_zobrazit_parametry->Visible=false;
 	PopUPmenu->Item_poznamka->Visible=false;
 	PopUPmenu->Item_cely_pohled->Visible=false;
 	PopUPmenu->Item_vybrat_oknem->Visible=false;
@@ -1624,8 +1624,9 @@ void TForm1::close_all_items_popUPmenu()
 	PopUPmenu->Item_posouvat->Visible=false;
 	PopUPmenu->Item_oddalit->Visible=false;
 	PopUPmenu->Item_priblizit->Visible=false;
-	PopUPmenu->Item_rychly_export->Visible=false;
 	PopUPmenu->Item_nastavit_parametry->Visible=false;
+	PopUPmenu->Item_zobrazit_parametry->Visible=false;
+	PopUPmenu->Item_rychly_export->Visible=false;
 	PopUPmenu->Item_smazat->Visible=false;
 	PopUPmenu->Item_kopirovat->Visible=false;
 
@@ -3930,7 +3931,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
-	 d.JIZPOCITANO=true;
+	 d.JIZPOCITANO=false;//zajistí přepočet časových os
 	 Invalidate();
 }
 
@@ -4041,7 +4042,7 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::scGPGlyphButton1Click(TObject *Sender)
+void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 {
   ESC();//zruší případnou rozdělanou akci
 	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;

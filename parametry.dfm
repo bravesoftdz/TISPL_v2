@@ -204,10 +204,11 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_RDClick
   end
   object rHTMLLabel_InfoText: TrHTMLLabel
-    Left = 8
+    Left = 34
     Top = 568
-    Width = 81
+    Width = 491
     Height = 19
+    AutoSize = False
     Caption = 'Upozorn'#283'n'#237
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
@@ -216,6 +217,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_InfoTextClick
   end
   object rHTMLLabel_rotace: TrHTMLLabel
     Left = 8
