@@ -3084,26 +3084,26 @@ object Form1: TForm1
     AllowAllUp = True
   end
   object scExPanel_log_header: TscExPanel
-    Left = 891
+    Left = 1048
     Top = 40
-    Width = 362
-    Height = 74
+    Width = 205
+    Height = 168
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBtnText
-    Font.Height = -15
+    Font.Color = clNone
+    Font.Height = -17
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
     TabOrder = 36
     Visible = False
     BackgroundStyle = scexbgsPanel
-    HeaderColor = clHighlight
+    HeaderColor = clSilver
     ButtonGlyphColor = clBtnText
-    HeaderStyle = scexphsHeader
+    HeaderStyle = scexphsColor
     CaptionImages = scGPVirtualImageList1
     CaptionImageIndex = -1
     ChangeRollStateWithCaptionClick = False
-    Color = 10114859
+    Color = clWhite
     Spacing = 5
     ShowFrame = True
     RealWidth = 0
@@ -3121,11 +3121,11 @@ object Form1: TForm1
     OnClose = scExPanel_log_headerClose
     object scHTMLLabel_log_vypis: TscHTMLLabel
       Left = 3
-      Top = 31
+      Top = 30
       Width = 153
       Height = 18
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = clBlack
       Font.Height = -15
       Font.Name = 'Tahoma'
       Font.Style = []
@@ -3135,7 +3135,7 @@ object Form1: TForm1
       AutoSizeWidth = True
       AutoExecuteURL = True
       Caption = 'scHTMLLabel_log_vypis'
-      Color = clWhite
+      Color = clBlack
       LinkFontNormal.Charset = DEFAULT_CHARSET
       LinkFontNormal.Color = clHighlight
       LinkFontNormal.Height = -11
@@ -4796,8 +4796,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 30
-        Top = 193
+        Left = 42
+        Top = 205
         Width = 244
         Height = 31
         Align = alCustom
@@ -4945,7 +4945,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118009004940410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180090049C0410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6068,7 +6068,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01012F009403980330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012F009403A00330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000040020000010020000000000000C0
       0600000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000080
@@ -20342,7 +20342,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01012F004002400218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01012F004802480218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000002001000001000400000000000036
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

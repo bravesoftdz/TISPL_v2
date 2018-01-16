@@ -785,6 +785,8 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 
 			Label_zamerovac->Visible=false;
 			scGPCheckBox_ortogon->Visible=false;
+
+
 			Invalidate();
 		}
 	}
