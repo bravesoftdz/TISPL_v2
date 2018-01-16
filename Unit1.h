@@ -180,7 +180,7 @@ __published:	// IDE-managed Components
 	TscGPButton *PopupMenuButton;
 	TscGPButton *casovosa1;
 	TscGPButton *technologickprocesy1;
-	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *scGPGlyphButton_OPTIONS;
 	TscGPGlyphButton *Toolbar_Ulozit;
 	TscGPGlyphButton *Toolbar_NovySoubor;
 	TscGPGlyphButton *Toolbar_Otevrit;
@@ -356,7 +356,7 @@ __published:	// IDE-managed Components
 	void __fastcall SQL_processIDClick(TObject *Sender);
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
-	void __fastcall scGPGlyphButton1Click(TObject *Sender);
+	void __fastcall scGPGlyphButton_OPTIONSClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender);

@@ -43,9 +43,6 @@ Coordinates=969,276,58,36
 [Button6]
 Coordinates=820,10,59,58
 
-[scGPGlyphButton1]
-Coordinates=514,556,124,36
-
 [Chart6]
 Coordinates=1122,144,53,58
 
@@ -448,4 +445,7 @@ Coordinates=354,326,91,36
 
 [scGPSwitch_grid]
 Coordinates=1004,280,91,36
+
+[scGPGlyphButton_OPTIONS]
+Coordinates=514,556,124,36
 
