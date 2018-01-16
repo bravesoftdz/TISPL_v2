@@ -715,7 +715,7 @@ object Form_PL_priority: TForm_PL_priority
     ParentFont = False
     TabOrder = 7
     TabStop = True
-    OnClick = scGPRadioButton3Click
+    OnClick = scGPRadioButton4Click
     Animation = False
     CanFocused = True
     Spacing = 1

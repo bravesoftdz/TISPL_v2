@@ -64,7 +64,7 @@ void __fastcall TForm_PL_priority::rStringGridEd_tabGetCellParams(TObject *Sende
 		Highlight=true;
 
 	}
-		if (Row==4 && scGPRadioButton3->Checked) {
+		if (Row==4 && scGPRadioButton4->Checked) {
 
 		Background=(TColor)RGB(202,217,240);
 		Highlight=true;
@@ -88,6 +88,7 @@ Form_PL_priority->rStringGridEd_tab->Visible=true;
 }
 //---------------------------------------------------------------------------
 
+
 void __fastcall TForm_PL_priority::scGPRadioButton3Click(TObject *Sender)
 {
 Form_PL_priority->rStringGridEd_tab->Visible=false;
@@ -95,6 +96,10 @@ Form_PL_priority->rStringGridEd_tab->Visible=true;
 }
 //---------------------------------------------------------------------------
 
-
-
+void __fastcall TForm_PL_priority::scGPRadioButton4Click(TObject *Sender)
+{
+Form_PL_priority->rStringGridEd_tab->Visible=false;
+Form_PL_priority->rStringGridEd_tab->Visible=true;
+}
+//---------------------------------------------------------------------------
 

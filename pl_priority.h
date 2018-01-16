@@ -37,6 +37,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPRadioButton1Click(TObject *Sender);
 	void __fastcall scGPRadioButton2Click(TObject *Sender);
 	void __fastcall scGPRadioButton3Click(TObject *Sender);
+	void __fastcall scGPRadioButton4Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_PL_priority(TComponent* Owner);
