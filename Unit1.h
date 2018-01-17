@@ -389,6 +389,7 @@ __published:	// IDE-managed Components
 	void __fastcall layoutClick(TObject *Sender);
 	void __fastcall pohonobjektClick(TObject *Sender);
 	void __fastcall Button12Click(TObject *Sender);
+	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);
 	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
 
 

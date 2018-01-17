@@ -4176,20 +4176,23 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 	if(STATUS==NAVRH)
 	{
 		STATUS=OVEROVANI;
-		scLabel15->Visible=true;
+		scLabel14->Visible=true;
+		scLabel15->Visible=false;
 		scGPGlyphButton_definice_zakazek->Visible=true;
 		scGPGlyphButton_parametry_linky->Visible=false;
-		scLabel14->Visible=false;
-		scLabel15->Caption="Definice zakázek";
+		scGPGlyphButton_definice_zakazek->Top=scGPGlyphButton_parametry_linky->Top;
+		//scLabel14->Visible=false;
+		scLabel14->Caption="Definice zakázek";
 		SB("OVĚŘOVÁNÍ",1);
 	}
 	else
 	{
 		STATUS=NAVRH;
-		scLabel15->Visible=false;
 		scLabel14->Visible=true;
+		scLabel15->Visible=false;
 		scLabel14->Caption="Parametry linky";
 		scGPGlyphButton_parametry_linky->Visible=true;
+		scGPGlyphButton_parametry_linky->Top=scGPGlyphButton_definice_zakazek->Top;
 		scGPGlyphButton_definice_zakazek->Visible=false;
 		SB("NÁVRH",1);
 	}
@@ -4480,12 +4483,23 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 		if(O->pohon==d.v.POHONY->dalsi)
 		Memo2->Lines->Add("stejný");
 		else Memo2->Lines->Add("není stejný");
-		O=O->dalsi;
+
+
+			O=O->dalsi;
 	}
+}
+	void __fastcall TForm1::scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect)
 
+{
 
+ //	ShowMessage("panel");
 
 }
+//---------------------------------------------------------------------------
+
+
+
+
 //---------------------------------------------------------------------------
 
 
