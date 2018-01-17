@@ -291,7 +291,7 @@ void Cvektory::aktualizace_objektu(short typ)
 		{
 			case -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
 			{
-        ShowMessage("zde");
+				if(O->pohon!=NULL)//přiřazuje pouze pokud byl pohon již přiřazen
 				O->pohon=vrat_pohon(O->pohon->n);
 			}
       break;
