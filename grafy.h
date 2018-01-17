@@ -23,6 +23,7 @@ class Cgrafy
 
  //	void zpravy(UnicodeString zprava);
 	void ShowGrafy(bool stav=true);
+	void nastav_zpravy();
 	void zpravy();
 
 

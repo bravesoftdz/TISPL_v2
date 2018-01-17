@@ -16,9 +16,8 @@ void Cgrafy::ShowGrafy(bool stav) {
 				// graf1(); //casove stavy zakazek
 				// graf3();   //vytizenost
 				// graf4();   //pomer voziku
-
-				nastaveni();
-				zpravy();
+			 //	zpravy();
+			 //	nastav_zpravy();
 
 		}
 		Form1->Chart1->Visible = false;
@@ -42,12 +41,7 @@ void Cgrafy::nastaveni() {
 		Form1->Label_wip->Left = 20;
 		Form1->Label_wip->Caption = "WIP: " + AnsiString(Form1->d.v.WIP());
 		// Form1->scHTMLLabel_log_vypis->Caption="Linka v poøádku";
-		if (!Form1->d.JIZPOCITANO) {
-				Form1->scExPanel_log_header->Width = 700;
-				Form1->scExPanel_log_header->Left = Form1->zalozka_schema->Left-100;
-				Form1->scExPanel_log_header->Top = Form1->zalozka_schema->Height + 10;
-				Form1->scExPanel_log_header->Height = 300;
-		}
+
 
 		// globalni nastaveni grafu
 		Form1->Chart1->Legend->Visible = false;
@@ -566,6 +560,21 @@ void Cgrafy::graf1() {
 // }
 
 }
+/////////////////////////////////////////////////////
+
+ void Cgrafy::nastav_zpravy(){
+
+		if (!Form1->d.JIZPOCITANO) { // pro první zobrazení nastavím default rozmìry
+				Form1->scExPanel_log_header->Width = 700;
+				Form1->scExPanel_log_header->Left = Form1->zalozka_schema->Left-100;
+				Form1->scExPanel_log_header->Top = Form1->zalozka_schema->Height + 10;
+				Form1->scExPanel_log_header->Height = 300;
+		}
+
+
+ }
+
+/////////////////////////////////////////////
 
 void Cgrafy::zpravy() {
 
@@ -614,9 +623,13 @@ while (ukaz != NULL) {
 						" - doporuèená kapacita: " + ukaz->kapacita_dop + "</br>";
 		}
 
+	//	else zpravy+="<i>Nejsou evidovány žádné rozdílné kapacity.</i>";   TODO dotvoøit
+
 		ukaz = ukaz->dalsi;
 }
 
 Form1->scHTMLLabel_log_vypis->Caption = zpravy;
 
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
