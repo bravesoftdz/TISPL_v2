@@ -291,6 +291,7 @@ void Cvektory::aktualizace_objektu(short typ)
 		{
 			case -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
 			{
+        ShowMessage("zde");
 				O->pohon=vrat_pohon(O->pohon->n);
 			}
       break;
@@ -1143,8 +1144,8 @@ void Cvektory::prvni_zakazka_dle_schematu()
 	TZakazka *Z=ZAKAZKY->dalsi;
 	if(ZAKAZKY->dalsi==NULL)//pokud první zakázka neexistuje, založí ji
 	{
-    Z=new TZakazka;
-		Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=200;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
+		Z=new TZakazka;                                                                         //počet vozíků vygeneruje dle hodnoty WIP
+		Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1);Z->serv_vozik_pocet=0;Z->opakov_servis=0;
 		Z->cesta=NULL;
 		Cvektory::TJig j;
 		j.sirka=Form1->d.v.PP.sirka_voziku;j.delka=Form1->d.v.PP.delka_voziku;j.vyska=1;j.ks=1;//defaultní hodnoty jigu

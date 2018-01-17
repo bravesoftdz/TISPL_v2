@@ -796,7 +796,7 @@ void __fastcall TForm1::GlyphButton_close_grafyClick(TObject *Sender)
 	else
 	{
 		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
-		Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;
+		Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top;
 		g.ShowGrafy(true);
 		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
   }

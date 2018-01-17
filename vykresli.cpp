@@ -546,6 +546,8 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 			Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;
 			Form1->g.ShowGrafy(true);
 		}
+		//zobrazení legendy časových os
+		vykresli_legendu_casovych_os(canv);
 		//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba zatěžovat znovu systémové prostředky (nehledě na to, že to bylo dost znát)
 		JIZPOCITANO=true;
 		Form1->technologickprocesy1->Enabled=true;//povolí mod technologické procesy
@@ -667,6 +669,23 @@ void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor colo
 			canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 			canv->TextOutW(((X2+X1)/2)-canv->TextWidth(shortname)/2,Y-canv->TextHeight(shortname)/2,shortname);//vypíše vycentrovaný (polovina nových a starých souřadnic a posun referenčního písma o horizontálně=TextWidth/2 a verticálně=TextHeight/2) popisek shorname t-objektu
 	}
+}
+//---------------------------------------------------------------------------
+//vykreslí legendu pro jednotlivé procesy na časových osách
+void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
+{
+	//pozice
+	short P=6+1;//počet obdelníků,kterých se bude vykreslovat
+	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2;//levé a top usazení legendy
+	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
+
+	//vykreslování samotné legendy
+	vykresli_proces(canv, "",clRed,0,L,L+KrokY,T+=KrokY);
+	vykresli_proces(canv, "",clRed,1,L,L+KrokY,T+=KrokY);
+	vykresli_proces(canv, "",clRed,2,L,L+KrokY,T+=KrokY);
+	vykresli_proces(canv, "",clRed,3,L,L+KrokY,T+=KrokY);
+	vykresli_proces(canv, "",clRed,4,L,L+KrokY,T+=KrokY);
+	vykresli_proces(canv, "",clRed,5,L,L+KrokY,T+=KrokY);
 }
 //---------------------------------------------------------------------------
 //textový výpis a kóta mezivozíkového taktu, pouze pro zpřehlednění zapisu samostatně

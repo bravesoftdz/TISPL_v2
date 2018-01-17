@@ -15,6 +15,7 @@ class Cvykresli
 //	void STOPKA(Cvektory::TVozik *ukaz);//zajištuje základní funkcionalitu technologického objektu STOPKA pøi vykreslování simulaci
 //	bool KOLIZE(Cvektory::TVozik *V1,Cvektory::TVozik *V2);//vrací logickou hodnotu zda došlo èi nedošlo ke kolizi s jiným vozíkem
 	void vykresli_proces(TCanvas *canv, AnsiString shortname, TColor color,short typ, long X1, long X2,long Y);//vykreslí jeden dílèí èasový proces (obdelníèek procesu objektu) pro jeden vozík, vytaženo pouze kvùli pøehlednosti
+	void vykresli_legendu_casovych_os(TCanvas *canv);//vykreslí legendu pro jednotlivé procesy na èasových osách
 	void vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik, double X,long Y,bool index=false);//pouze pro zpøehlednìní zapisu, textový výpis a kóta mezivozíkového taktu
 	void vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,int Y);
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy

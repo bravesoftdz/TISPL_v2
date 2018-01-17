@@ -217,14 +217,14 @@ void Cgrafy::graf2() {
 
 	// defaultní vykreslení grafu (checkbox reší událost onclick)
 
-	if (Form1->scHTMLLabel_log_vypis->Visible) {
-		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
-	}
-	else {
-		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height -
-			Form1->Chart2->Height;
-	}
+//	if (Form1->scHTMLLabel_log_vypis->Visible) {
+//		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
+//	}
+//	else {
+//		Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
+//	}
 
+  Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
 	Form1->Chart2->Title->Caption = "Prùmìrný TT zakázek";
 	Form1->Chart2->LeftAxis->Title->Caption = "min";
 	Form1->Chart2->BottomAxis->Title->Caption = "zakázka";
