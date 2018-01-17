@@ -2666,9 +2666,9 @@ object Form1: TForm1
     DisplayMode = scsvmOverlay
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
-      Top = 110
+      Top = 72
       Width = 166
-      Height = 530
+      Height = 568
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -2728,7 +2728,7 @@ object Form1: TForm1
       Left = 0
       Top = 0
       Width = 166
-      Height = 110
+      Height = 72
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -2736,8 +2736,8 @@ object Form1: TForm1
       Align = alCustom
       TabOrder = 1
       AutoSize = True
-      RowCount = 2
-      RowLineMargin = 10
+      RowCount = 1
+      RowLineMargin = 1
       RowHeight = 0
       GroupColor = clWindow
       GroupColorAlpha = 255
@@ -2755,7 +2755,7 @@ object Form1: TForm1
       object scLabel14: TscLabel
         Left = 15
         Top = 43
-        Width = 93
+        Width = 97
         Height = 16
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clNone
@@ -2774,7 +2774,7 @@ object Form1: TForm1
         GlowEffect.StyleColors = True
         AutoSize = True
         UseFontColorToStyleColor = True
-        Caption = 'Parametry linky:'
+        Caption = 'Parametry linky: '
       end
       object scLabel15: TscLabel
         Left = 15
