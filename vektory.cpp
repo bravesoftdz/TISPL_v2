@@ -1145,7 +1145,7 @@ void Cvektory::prvni_zakazka_dle_schematu()
 	if(ZAKAZKY->dalsi==NULL)//pokud první zakázka neexistuje, založí ji
 	{
 		Z=new TZakazka;                                                                         //počet vozíků vygeneruje dle hodnoty WIP
-		Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1);Z->serv_vozik_pocet=0;Z->opakov_servis=0;
+		Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1);Z->serv_vozik_pocet=0;Z->opakov_servis=0;
 		Z->cesta=NULL;
 		Cvektory::TJig j;
 		j.sirka=Form1->d.v.PP.sirka_voziku;j.delka=Form1->d.v.PP.delka_voziku;j.vyska=1;j.ks=1;//defaultní hodnoty jigu
@@ -2432,7 +2432,7 @@ unsigned int Cvektory::vrat_kapacitu_objektu(TObjekt *O)
 			 TProces *P=PROCESY->dalsi;
 			 while (P!=NULL)
 			 {
-				 unsigned int pocet=0;
+				 unsigned int pocet=1;
 				 if(P->segment_cesty->objekt->n==O->n)//pokud se jedná o hledaný objekt
 				 {
 						TProces *P2=P->dalsi;
