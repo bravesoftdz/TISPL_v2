@@ -422,9 +422,6 @@ Coordinates=792,221,79,36
 [scHTMLLabel_log_vypis]
 Coordinates=1681,1,154,36
 
-[GlyphButton_close_grafy]
-Coordinates=1681,56,158,36
-
 [scButton_ulozit]
 Coordinates=402,631,102,36
 
@@ -448,4 +445,7 @@ Coordinates=1004,280,91,36
 
 [scGPGlyphButton_OPTIONS]
 Coordinates=514,556,124,36
+
+[scGPGlyphButton_close_grafy]
+Coordinates=1681,56,158,36
 

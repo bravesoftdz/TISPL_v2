@@ -540,13 +540,20 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		HeightCanvasCasoveOsy=Y-KrokY/2;//uchová výšku grafu
 		if(Form1->grid)vykresli_Xosy(canv);//vykreslí statické svislice na časové osy pokud je aktivovaná mřížka
 		//povolení zobrazení grafu
-		if(Form1->GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)
+		if(Form1->scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)
 		{
-			Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
-			Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;
+			Form1->scGPGlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->scGPGlyphButton_close_grafy->Width;
+			Form1->scGPGlyphButton_close_grafy->Top=Form1->Chart2->Top/*-Form1->GlyphButton_close_grafy->Height*/;
 			Form1->g.ShowGrafy(true);
 		}
+		//nastavení a zobrazení zpráv
+		if(JIZPOCITANO)
+		{
+			Form1->g.nastav_zpravy();
+			Form1->g.zpravy();
+		}
 		//zobrazení legendy časových os
+		if(Form1->scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)
 		vykresli_legendu_casovych_os(canv);
 		//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba zatěžovat znovu systémové prostředky (nehledě na to, že to bylo dost znát)
 		JIZPOCITANO=true;

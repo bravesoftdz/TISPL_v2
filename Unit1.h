@@ -238,7 +238,7 @@ __published:	// IDE-managed Components
 	TButton *button_zakazky_temp;
 	TscButton *scButton10;
 	TButton *Button11;
-	TscGPGlyphButton *GlyphButton_close_grafy;
+	TscGPGlyphButton *scGPGlyphButton_close_grafy;
 	TscButton *scButton_ulozit;
 	TscExPanel *scExPanel_log_header;
 	TscHTMLLabel *scHTMLLabel_log_vypis;
@@ -382,7 +382,7 @@ __published:	// IDE-managed Components
 	void __fastcall scButton2Click(TObject *Sender);
 	void __fastcall Button11Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
-	void __fastcall GlyphButton_close_grafyClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_close_grafyClick(TObject *Sender);
 	void __fastcall ComboBoxCekaniChange(TObject *Sender);
 	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
@@ -392,6 +392,8 @@ __published:	// IDE-managed Components
 	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);
 	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender);
+
 
 
 // User declarations

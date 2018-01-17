@@ -623,7 +623,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=false;
 	scLabel_doba_cekani->Visible=false;
-	GlyphButton_close_grafy->Visible=false;
+	scGPGlyphButton_close_grafy->Visible=false;
 	scExPanel_log_header->Visible=false;
 
 
@@ -766,7 +766,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			CheckBoxVymena_barev->Visible=true;
 			CheckBoxVytizenost->Visible=true;
 			scLabel_doba_cekani->Visible=true;
-			GlyphButton_close_grafy->Visible=true;
+			scGPGlyphButton_close_grafy->Visible=true;
 
 			CheckBoxAnimovatSG->Visible=false;
 			ComboBoxODmin->Visible=false;
@@ -789,23 +789,46 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //zavře nebo otevře grafy v časových osách
-void __fastcall TForm1::GlyphButton_close_grafyClick(TObject *Sender)
+void __fastcall TForm1::scGPGlyphButton_close_grafyClick(TObject *Sender)
 {
-	if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)
+	scGPGlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->scGPGlyphButton_close_grafy->Width;
+	if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)
 	{
-		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
-		Form1->GlyphButton_close_grafy->Top=scGPPanel_statusbar->Top-Form1->GlyphButton_close_grafy->Height;
+		scGPGlyphButton_close_grafy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
 		g.ShowGrafy(false);
-		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
+		scGPGlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
 	}
 	else
 	{
-		Form1->GlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->GlyphButton_close_grafy->Width;
-		Form1->GlyphButton_close_grafy->Top=Form1->Chart2->Top;
+		scGPGlyphButton_close_grafy->Top=Form1->Chart2->Top;
 		g.ShowGrafy(true);
-		GlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
+		scGPGlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
   }
 }
+//---------------------------------------------------------------------------
+//skryje nebo zobrazí legendu časových os
+void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender)
+{
+	scGPGlyphButton_close_legenda_casove_osy->Left=0;
+	if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)
+	{
+		scGPGlyphButton_close_legenda_casove_osy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
+		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
+		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=true;
+		scGPGlyphButton_close_legenda_casove_osy->Width=132;
+		scGPGlyphButton_close_legenda_casove_osy->Height=24;
+	}
+	else
+	{
+		scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;
+		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
+		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=false;
+		scGPGlyphButton_close_legenda_casove_osy->Width=20;
+		scGPGlyphButton_close_legenda_casove_osy->Height=24;
+	}
+	REFRESH();
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 {
@@ -1087,7 +1110,7 @@ void TForm1::REFRESH(bool invalidate)
 void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 { //ShowMessage(Key);
 	funkcni_klavesa=0;
-	int HG=0; if(GlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
+	int HG=0; if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
 	switch(Key)
 	{
 		//BACKSPACE
@@ -4501,11 +4524,5 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-
-
-
-
-//---------------------------------------------------------------------------
-
 
 
