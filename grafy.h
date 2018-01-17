@@ -18,15 +18,16 @@ class Cgrafy
 	void graf6();
 
 
+
 	public:
+
+ //	void zpravy(UnicodeString zprava);
 	void ShowGrafy(bool stav=true);
-
-
+	void zpravy();
 
 
 
 	protected:
-
 
 
 };

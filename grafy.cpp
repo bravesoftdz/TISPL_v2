@@ -8,6 +8,8 @@
 #pragma package(smart_init)
 
 void Cgrafy::ShowGrafy(bool stav) {
+
+
 	if (stav) {
 		nastaveni();
 		graf2();  //prumerny TT zakazek
@@ -17,12 +19,15 @@ void Cgrafy::ShowGrafy(bool stav) {
 	//	graf4();   //pomer voziku
 
 		nastaveni();
+		zpravy();
+
 	}
 	Form1->Chart1->Visible = false;
 	Form1->Chart2->Visible = stav;
 	Form1->Chart3->Visible = false;
 	Form1->Chart4->Visible = false;
 	Form1->Chart6->Visible = stav;
+
 	//Form1->Label_wip->Visible = stav;
 	//Form1->Memo1->Visible = stav;
  //	Form1->scExPanel_log_header->Visible=stav;
@@ -38,8 +43,13 @@ void Cgrafy::nastaveni()
 			Form1->Label_wip->Top = Form1->Chart1->Top - 35;
 			Form1->Label_wip->Left = 20;
 			Form1->Label_wip->Caption = "WIP: " + AnsiString(Form1->d.v.WIP());
-			Form1->scHTMLLabel_log_vypis->Caption="Linka v poøádku";
-
+			//Form1->scHTMLLabel_log_vypis->Caption="Linka v poøádku";
+			if(!Form1->d.JIZPOCITANO)   {
+			Form1->scExPanel_log_header->Width=500;
+			Form1->scExPanel_log_header->Left=Form1->layout->Left;
+			Form1->scExPanel_log_header->Top=Form1->layout->Height+10;
+			Form1->scExPanel_log_header->Height=300;
+        }
 
 
 		//globalni nastaveni grafu
@@ -251,10 +261,9 @@ void Cgrafy::graf2() {
 			Form1->Series3->Clear();
 
 
-
 		while (ukaz != NULL)
 		{
-
+	//	Form1->scHTMLLabel_log_vypis->Caption=ukaz->n;
 		Form1->Series2->Add(ukaz->TT, ukaz->n,ukaz->barva);
 
 		 if(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)!=ukaz->TT)
@@ -265,7 +274,8 @@ void Cgrafy::graf2() {
 				 AnsiString tt_pozad =ukaz->TT;
 				 AnsiString zakazka_n =ukaz->n;
 
-					Form1->scHTMLLabel_log_vypis->Caption="Chyba u zakázky è."+zakazka_n+" - Uskuteènitelný TT: <b>"+tt_uskutec+"</b>. Požadovaný TT: <b>"+tt_pozad+"</b>";
+
+				//	Form1->scHTMLLabel_log_vypis->Caption="Chyba u zakázky è."+zakazka_n+" - Uskuteènitelný TT: <b>"+tt_uskutec+"</b>. Požadovaný TT: <b>"+tt_pozad+"</b>";
 		 }
 
 			ukaz = ukaz->dalsi;
@@ -311,6 +321,7 @@ void Cgrafy::graf6() { // Kapacity
 		if(ukaz->kapacita!=ukaz->kapacita_dop){
 
 		//Form1->Memo1->Lines->Add(AnsiString("Varování - nastavená kapacita: ") + ukaz->kapacita_objektu + AnsiString(". Doporuèená kapacita: ") + ukaz->dop_kapacita_objektu + AnsiString(" - pro objekt: ") + ukaz->short_name);
+	//	zpravy+="Objekt:"+ukaz->short_name+"- nastavená kapacita:"+ukaz->kapacita+" - doporuèená kapacita"+ ukaz->dop_kapacita_objektu +;
 		}
 
 		ukaz = ukaz->dalsi;
@@ -483,5 +494,43 @@ void Cgrafy::graf1() {
 		ukaz = ukaz->dalsi;
 
 	}
+
+}
+
+void Cgrafy::zpravy(){
+
+			Cvektory::TZakazka *zakazka = Form1->d.v.ZAKAZKY->dalsi;
+					//zakazka->name
+			UnicodeString zpravy;
+			zpravy+="<b>Poèet zakázek:";
+			zpravy+=Form1->d.v.ZAKAZKY->predchozi->n;
+			zpravy+="</b></br>";
+			while (zakazka!= NULL){
+
+			UnicodeString tt= zakazka->TT;
+			UnicodeString id= zakazka->id;
+			UnicodeString name= zakazka->name;
+
+			zpravy+="Požadovaný takt: <b>"+tt+"s</b> pro zakázku è."+id+ "- "+name+"</br>";
+
+			zakazka=zakazka->dalsi;
+			}
+
+			zpravy+="<br><b>Zobrazení rozdílných kapacit:</b></br>";
+			Cvektory::TObjekt *ukaz = Form1->d.v.OBJEKTY->dalsi;
+	while (ukaz != NULL) {
+
+		if(ukaz->kapacita!=ukaz->kapacita_dop){
+//Form1->Memo1->Lines->Add(AnsiString("Varování - nastavená kapacita: ") + ukaz->kapacita_objektu + AnsiString(". Doporuèená kapacita: ") + ukaz->dop_kapacita_objektu + AnsiString(" - pro objekt: ") + ukaz->short_name);
+		zpravy+=ukaz->short_name+"- nastavená kapacita: "+ukaz->kapacita+" - doporuèená kapacita: "+ ukaz->kapacita_dop +"</br>";
+		}
+
+		ukaz = ukaz->dalsi;
+	}
+
+
+		Form1->scHTMLLabel_log_vypis->Caption=zpravy;
+
+
 
 }

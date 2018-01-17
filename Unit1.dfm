@@ -3084,26 +3084,26 @@ object Form1: TForm1
     AllowAllUp = True
   end
   object scExPanel_log_header: TscExPanel
-    Left = 891
+    Left = 1048
     Top = 40
-    Width = 362
-    Height = 74
+    Width = 205
+    Height = 168
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBtnText
-    Font.Height = -15
+    Font.Color = clNone
+    Font.Height = -17
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
     TabOrder = 36
     Visible = False
     BackgroundStyle = scexbgsPanel
-    HeaderColor = clHighlight
+    HeaderColor = clSilver
     ButtonGlyphColor = clBtnText
-    HeaderStyle = scexphsHeader
+    HeaderStyle = scexphsColor
     CaptionImages = scGPVirtualImageList1
     CaptionImageIndex = -1
     ChangeRollStateWithCaptionClick = False
-    Color = 10114859
+    Color = clWhite
     Spacing = 5
     ShowFrame = True
     RealWidth = 0
@@ -3121,11 +3121,11 @@ object Form1: TForm1
     OnClose = scExPanel_log_headerClose
     object scHTMLLabel_log_vypis: TscHTMLLabel
       Left = 3
-      Top = 31
+      Top = 30
       Width = 153
       Height = 18
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
+      Font.Color = clBlack
       Font.Height = -15
       Font.Name = 'Tahoma'
       Font.Style = []
@@ -3135,7 +3135,7 @@ object Form1: TForm1
       AutoSizeWidth = True
       AutoExecuteURL = True
       Caption = 'scHTMLLabel_log_vypis'
-      Color = clWhite
+      Color = clBlack
       LinkFontNormal.Charset = DEFAULT_CHARSET
       LinkFontNormal.Color = clHighlight
       LinkFontNormal.Height = -11
