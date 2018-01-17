@@ -639,6 +639,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPCheckBox_ortogon->Align=alTop;
 	scGPCheckBox_ortogon->Left=3;
 	scGPCheckBox_ortogon->Visible=true;
+	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 
 	Invalidate();
 }
@@ -688,6 +689,7 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
+	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
 	SB("Layout",1);
 	//Zoom=5;ZOOM();
@@ -778,6 +780,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 
 			Label_zamerovac->Visible=false;
 			scGPCheckBox_ortogon->Visible=false;
+			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
 
 
 			Invalidate();
@@ -850,6 +853,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	ComboBoxODmin->Visible=true;
 	rComboBoxKrok->Visible=true;
 	scGPCheckBox_ortogon->Visible=false;
+	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 
 
 
@@ -916,6 +920,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	rComboBoxKrok->Visible=false;
 	ComboBoxCekani->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
+	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	Invalidate();*/
 }
 //---------------------------------------------------------------------------
