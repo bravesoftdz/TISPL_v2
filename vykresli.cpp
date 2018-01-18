@@ -652,14 +652,15 @@ void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor colo
 	switch(typ)
 	{
 			case 0: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;break;//pro typ: normální proces
-			case 1: canv->Brush->Style=bsDiagCross;if(legenda)canv->Pen->Color=clWhite;else canv->Pen->Color=color;break;//pro typ: doplněný o konec na čekání na proces totožný předchozí
-			case 2: canv->Brush->Style=bsCross;if(legenda)canv->Pen->Color=clWhite;else canv->Pen->Color=color;break;//pro typ: nutná doba přejezdu vozíku
-			case 3: canv->Brush->Style=bsVertical;if(legenda)canv->Pen->Color=clWhite;else canv->Pen->Color=color;break;//pro typ: doba čekání na palec
+			case 1: canv->Brush->Style=bsDiagCross;canv->Pen->Color=color;break;//pro typ: doplněný o konec na čekání na proces totožný předchozí
+			case 2: canv->Brush->Style=bsCross;canv->Pen->Color=color;break;//pro typ: nutná doba přejezdu vozíku
+			case 3: canv->Brush->Style=bsVertical;canv->Pen->Color=color;break;//pro typ: doba čekání na palec
 			case 4: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//pmNotXor;/*zajistí vykreslení procesu transparentně*/break;//pro typ: obsazenost procesu či buffer
 			case 5: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//výměna barev či čištění pistole
 	}
 	//samotný obdelníček
-	canv->Rectangle(X1,Y-KrokY/2,X2+1,Y+KrokY/2);//X2+1 pouze grafická záležitost - zmenšení mezery
+	short o=0;if(legenda)o=1;//v případe zobrazeného orámování zmenší o jeden pixel u legendy
+	canv->Rectangle(X1+o,Y-KrokY/2+o,X2+1-o,Y+KrokY/2-o);//X2+1 pouze grafická záležitost - zmenšení mezery
 	//následující musí být mimo switch kvůli pořadí vykreslování po rectanglu
 	if(typ==4)//v případě bufferu vykreslení svislice přemaskující bílý spoj, tím se buffer napojí na předchozí objekt
 	{
@@ -686,8 +687,8 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 {
 	//pozice
 	short P=8+1;//počet obdelníků,kterých se bude vykreslovat
-	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2;//levé a top usazení legendy
-	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
+	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2-9;//levé a top usazení legendy
+	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2-9;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
 	int R=L+KrokY+canv->TextWidth("čištění pistole a výměna barev")+KrokY/2;//pravý okraj
 	Form1->scGPGlyphButton_close_legenda_casove_osy->Left=R-Form1->scGPGlyphButton_close_legenda_casove_osy->Width-1;
 	Form1->scGPGlyphButton_close_legenda_casove_osy->Top=T+KrokY+KrokY/2+Form1->scGPGlyphButton_close_legenda_casove_osy->Options->FrameWidth;
@@ -700,7 +701,7 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 	canv->Pen->Color=clMedGray;
 	canv->Pen->Width=1;
 	canv->Pen->Mode=pmCopy;
-	canv->Rectangle(L-2,T+KrokY/2-2,R,T+P*KrokY);
+	canv->Rectangle(L-2,T+KrokY/2-2,R,T+P*KrokY-KrokY/2+2);
 
 	//vykreslování samotné legendy
 	vykresli_proces(canv, "",clRed,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,V);
@@ -708,9 +709,9 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 	vykresli_proces(canv, "",m.clIntensive(clRed,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev");
 	vykresli_proces(canv, "",m.clIntensive(clRed,80),4,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"buffer");
 	vykresli_proces(canv, "",clSilver,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"vozíky čištění a výměny");
-	vykresli_proces(canv, "",clRed,1,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čekání na předchozí proces");
-	vykresli_proces(canv, "",clRed,2,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"nutná doba přejezdu vozíku");
-	vykresli_proces(canv, "",clRed,3,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"doba čekání na palec");
+	vykresli_proces(canv, "",clRed,1,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"čekání na předchozí proces");
+	vykresli_proces(canv, "",clRed,2,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"nutná doba přejezdu vozíku");
+	vykresli_proces(canv, "",clRed,3,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"doba čekání na palec");
 }
 //---------------------------------------------------------------------------
 //textový výpis a kóta mezivozíkového taktu, pouze pro zpřehlednění zapisu samostatně
