@@ -547,7 +547,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 			Form1->g.ShowGrafy(true);
 		}
 		//nastavení a zobrazení zpráv
-		if(JIZPOCITANO)
+		if(JIZPOCITANO)//přepočítávají se a nastavují jen v momentu nového výpočtu, tj. zadání nových parametrů nebo nového načtení
 		{
 			Form1->g.nastav_zpravy();
 			Form1->g.zpravy();
@@ -685,12 +685,24 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 	short P=8+1;//počet obdelníků,kterých se bude vykreslovat
 	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2;//levé a top usazení legendy
 	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
+	int R=L+KrokY+canv->TextWidth("čištění pistole a výměna barev")+KrokY/2;//pravý okraj
+	Form1->scGPGlyphButton_close_legenda_casove_osy->Left=R-Form1->scGPGlyphButton_close_legenda_casove_osy->Width-1;
+	Form1->scGPGlyphButton_close_legenda_casove_osy->Top=T+KrokY+KrokY/2+Form1->scGPGlyphButton_close_legenda_casove_osy->Options->FrameWidth;
 	AnsiString V="";//výpis
+
+	//vykreslení obdelníku bíléhopozadí
+	canv->Brush->Style=bsSolid;
+	canv->Brush->Color=clWhite;
+	canv->Pen->Style=psSolid;
+	canv->Pen->Color=clMedGray;
+	canv->Pen->Width=1;
+	canv->Pen->Mode=pmCopy;
+	canv->Rectangle(L-2,T+KrokY/2-2,R,T+P*KrokY);
 
 	//vykreslování samotné legendy
 	vykresli_proces(canv, "",clRed,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,V);
 	vykresli_proces(canv, "",m.clIntensive(clRed,-20),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"čištění pistole");
-	vykresli_proces(canv, "",m.clIntensive(clRed,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev ");
+	vykresli_proces(canv, "",m.clIntensive(clRed,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev");
 	vykresli_proces(canv, "",m.clIntensive(clRed,80),4,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"buffer");
 	vykresli_proces(canv, "",clSilver,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"vozíky čištění a výměny");
 	vykresli_proces(canv, "",clRed,1,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"čekání na předchozí proces");

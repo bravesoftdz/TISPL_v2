@@ -299,6 +299,7 @@ void Cgrafy::graf2() {
 		// Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
 		// }
 
+    Form1->Chart2->Height = Form1->ClientHeight / 3;
 		Form1->Chart2->Top = Form1->ClientHeight -
 				Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
 		Form1->Chart2->Title->Caption = "Prùmìrný TT zakázek";
@@ -307,7 +308,7 @@ void Cgrafy::graf2() {
 
 		Form1->Chart2->Left = 0; // Form1->Chart1->Width;
 		Form1->Chart2->Width = Form1->ClientWidth / 2; // 5 * 1, 5;
-		Form1->Chart2->Height = Form1->ClientHeight / 3 * 1, 5;
+
 
 		Form1->Series2->Clear();
 		Form1->Series3->Clear();
@@ -362,7 +363,7 @@ void Cgrafy::graf6() { // Kapacity
 
 		Form1->Chart6->Left = Form1->Chart2->Width;
 		Form1->Chart6->Width = Form1->ClientWidth / 2; // 5 * 1, 5; ;
-		Form1->Chart6->Height = Form1->ClientHeight / 3 * 1, 5;
+		Form1->Chart6->Height = Form1->ClientHeight / 3 * 1;
 
 		Form1->Chart6->AxisVisible = true;
 

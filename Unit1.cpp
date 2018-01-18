@@ -780,8 +780,9 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 
 			Label_zamerovac->Visible=false;
 			scGPCheckBox_ortogon->Visible=false;
+			scGPGlyphButton_close_legenda_casove_osy->Left=0;
+			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
 			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
-
 
 			Invalidate();
 		}
@@ -791,19 +792,25 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 //zavře nebo otevře grafy v časových osách
 void __fastcall TForm1::scGPGlyphButton_close_grafyClick(TObject *Sender)
 {
-	scGPGlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->scGPGlyphButton_close_grafy->Width;
 	if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)
 	{
 		scGPGlyphButton_close_grafy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
 		g.ShowGrafy(false);
 		scGPGlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
+		scGPGlyphButton_close_grafy->ShowCaption=true;//zobrazí titulek
+		if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkUpArrow)scGPGlyphButton_close_legenda_casove_osy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;//buttonglyph legendy přesune pokud je minimalizováná
 	}
 	else
 	{
 		scGPGlyphButton_close_grafy->Top=Form1->Chart2->Top;
 		g.ShowGrafy(true);
 		scGPGlyphButton_close_grafy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
-  }
+		scGPGlyphButton_close_grafy->ShowCaption=false;//skryje titulek
+		if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkUpArrow)scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;//buttonglyph legendy přesune pokud je minimalizováná
+	}
+	scGPGlyphButton_close_grafy->Left=Form1->ClientWidth-Form1->scGPGlyphButton_close_grafy->Width;
+	//pozn. šířka Buttnu se zadává pomocí paramerů Width, WidthWithCaption,WidthWitoutCaption v proporties
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //skryje nebo zobrazí legendu časových os
@@ -812,20 +819,18 @@ void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *S
 	scGPGlyphButton_close_legenda_casove_osy->Left=0;
 	if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)
 	{
-		scGPGlyphButton_close_legenda_casove_osy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
+		if(Form1->Chart2->Visible)scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;else scGPGlyphButton_close_legenda_casove_osy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
 		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
 		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=true;
 		scGPGlyphButton_close_legenda_casove_osy->Width=132;
-		scGPGlyphButton_close_legenda_casove_osy->Height=24;
 	}
 	else
 	{
-		scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;
 		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
 		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=false;
 		scGPGlyphButton_close_legenda_casove_osy->Width=20;
-		scGPGlyphButton_close_legenda_casove_osy->Height=24;
 	}
+	//pozn. šířka Buttnu se zadává pomocí paramerů Width, WidthWithCaption,WidthWitoutCaption v proporties
 	REFRESH();
 }
 //---------------------------------------------------------------------------

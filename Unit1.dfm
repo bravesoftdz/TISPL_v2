@@ -2996,8 +2996,8 @@ object Form1: TForm1
   end
   object scGPGlyphButton_close_grafy: TscGPGlyphButton
     AlignWithMargins = True
-    Left = 543
-    Top = 42
+    Left = 227
+    Top = 117
     Width = 20
     Height = 24
     Margins.Left = 0
@@ -3017,15 +3017,15 @@ object Form1: TForm1
     OnClick = scGPGlyphButton_close_grafyClick
     ArrowPosition = scapBottom
     Animation = False
-    Caption = 'scGPGlyphButton_close_grafy'
+    Caption = 'Zobrazit grafy'
     CanFocused = False
     CustomDropDown = False
     Layout = blGlyphRight
     TransparentBackground = True
     ColorValue = clRed
     Cancel = True
-    Options.NormalColor = cl3DLight
-    Options.HotColor = cl3DLight
+    Options.NormalColor = clMedGray
+    Options.HotColor = clMedGray
     Options.PressedColor = clRed
     Options.FocusedColor = clRed
     Options.DisabledColor = clBtnText
@@ -3034,10 +3034,10 @@ object Form1: TForm1
     Options.PressedColorAlpha = 180
     Options.FocusedColorAlpha = 220
     Options.DisabledColorAlpha = 0
-    Options.FrameNormalColor = cl3DLight
+    Options.FrameNormalColor = clMedGray
     Options.FrameHotColor = clRed
     Options.FramePressedColor = clRed
-    Options.FrameFocusedColor = cl3DLight
+    Options.FrameFocusedColor = clMedGray
     Options.FrameDisabledColor = clBtnText
     Options.FrameWidth = 2
     Options.FrameNormalColorAlpha = 255
@@ -3045,11 +3045,11 @@ object Form1: TForm1
     Options.FramePressedColorAlpha = 220
     Options.FrameFocusedColorAlpha = 255
     Options.FrameDisabledColorAlpha = 0
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = cl3DLight
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clWhite
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 1
@@ -3071,8 +3071,8 @@ object Form1: TForm1
     GlyphOptions.StyleColors = True
     TextMargin = -1
     ScaleFrameWidth = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
+    WidthWithCaption = 100
+    WidthWithoutCaption = 20
     RepeatClick = False
     RepeatClickInterval = 100
     ShowGalleryMenuFromTop = False
@@ -4796,8 +4796,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 87
-        Top = 250
+        Left = 93
+        Top = 256
         Width = 244
         Height = 31
         Align = alCustom
@@ -4943,9 +4943,9 @@ object Form1: TForm1
   end
   object scGPGlyphButton_close_legenda_casove_osy: TscGPGlyphButton
     AlignWithMargins = True
-    Left = 0
+    Left = 3
     Top = 493
-    Width = 132
+    Width = 138
     Height = 24
     Margins.Left = 0
     Margins.Top = 0
@@ -4972,8 +4972,8 @@ object Form1: TForm1
     TransparentBackground = True
     ColorValue = clRed
     Cancel = True
-    Options.NormalColor = cl3DLight
-    Options.HotColor = cl3DLight
+    Options.NormalColor = clMedGray
+    Options.HotColor = clMedGray
     Options.PressedColor = clRed
     Options.FocusedColor = clRed
     Options.DisabledColor = clBtnText
@@ -4982,10 +4982,10 @@ object Form1: TForm1
     Options.PressedColorAlpha = 180
     Options.FocusedColorAlpha = 220
     Options.DisabledColorAlpha = 0
-    Options.FrameNormalColor = cl3DLight
+    Options.FrameNormalColor = clMedGray
     Options.FrameHotColor = clRed
     Options.FramePressedColor = clRed
-    Options.FrameFocusedColor = cl3DLight
+    Options.FrameFocusedColor = clMedGray
     Options.FrameDisabledColor = clWhite
     Options.FrameWidth = 2
     Options.FrameNormalColorAlpha = 255
@@ -5014,13 +5014,14 @@ object Form1: TForm1
     GlyphOptions.PressedColorAlpha = 255
     GlyphOptions.FocusedColorAlpha = 255
     GlyphOptions.DisabledColorAlpha = 150
-    GlyphOptions.Kind = scgpbgkDownArrow
+    GlyphOptions.Kind = scgpbgkUpArrow
     GlyphOptions.Thickness = 2
     GlyphOptions.StyleColors = True
     TextMargin = -1
     ScaleFrameWidth = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
+    WidthWithCaption = 138
+    WidthWithoutCaption = 20
+    ShowCaption = True
     RepeatClick = False
     RepeatClickInterval = 100
     ShowGalleryMenuFromTop = False
@@ -5035,7 +5036,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800BC04BC0410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C004C00410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6158,7 +6159,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01012F00C003C00330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012F00C403C40330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C000000040020000010020000000000000C0
       0600000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000080
@@ -20432,7 +20433,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01012F006802680218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01012F006C026C0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       0000000000007600000028000000600000002001000001000400000000000036
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
