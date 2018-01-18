@@ -714,7 +714,7 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 	TColor C=v.vrat_vozik(Voz+1)->zakazka->barva;
 
 	//vykreslování samotné legendy, podle položek, které byly použity
-	vykresli_proces(canv, "",C,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,V);}
+	vykresli_proces(canv, "",C,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,V);
 	if(legenda_polozky[1]){vykresli_proces(canv, "",m.clIntensive(C,-20),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole");}
 	if(legenda_polozky[2]){vykresli_proces(canv, "",m.clIntensive(C,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev");}
 	if(legenda_polozky[3]){vykresli_proces(canv, "",m.clIntensive(C,80),4,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"buffer");}
