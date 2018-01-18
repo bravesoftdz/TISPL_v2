@@ -565,12 +565,12 @@ void Cgrafy::graf1() {
 
  void Cgrafy::nastav_zpravy(){
 
-		if (!Form1->d.JIZPOCITANO) { // pro první zobrazení nastavím default rozmìry
-				Form1->scExPanel_log_header->Width = 700;
+	 //	if (!Form1->d.JIZPOCITANO) { // pro první zobrazení nastavím default rozmìry - podmínka realizována nyní ve vykresli
+				Form1->scExPanel_log_header->Width = 710;
 				Form1->scExPanel_log_header->Left = Form1->zalozka_schema->Left-100;
 				Form1->scExPanel_log_header->Top = Form1->zalozka_schema->Height + 10;
 				Form1->scExPanel_log_header->Height = 300;
-		}
+	 //	}
 
 
  }
@@ -616,18 +616,21 @@ void Cgrafy::zpravy() {
 
 zpravy += "<br><b>Zobrazení rozdílných kapacit:</b></br>";
 Cvektory::TObjekt *ukaz = Form1->d.v.OBJEKTY->dalsi;
+
+bool rozdilne_kapacity=false;
 while (ukaz != NULL) {
 
 		if (ukaz->kapacita != ukaz->kapacita_dop) {
 				// Form1->Memo1->Lines->Add(AnsiString("Varování - nastavená kapacita: ") + ukaz->kapacita_objektu + AnsiString(". Doporuèená kapacita: ") + ukaz->dop_kapacita_objektu + AnsiString(" - pro objekt: ") + ukaz->short_name);
 				zpravy += ukaz->short_name + "- nastavená kapacita: " + ukaz->kapacita +
 						" - doporuèená kapacita: " + ukaz->kapacita_dop + "</br>";
+
+		rozdilne_kapacity=true;
 		}
-
-	//	else zpravy+="<i>Nejsou evidovány žádné rozdílné kapacity.</i>";   TODO dotvoøit
-
-		ukaz = ukaz->dalsi;
+ ukaz = ukaz->dalsi;
 }
+
+	if(!rozdilne_kapacity) zpravy+="<i>Nejsou evidovány žádné rozdílné kapacity.</i>";
 
 Form1->scHTMLLabel_log_vypis->Caption = zpravy;
 
