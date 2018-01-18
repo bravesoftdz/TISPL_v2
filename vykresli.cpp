@@ -444,9 +444,12 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 	{
 		//nastavení do výchozí stavu, zajištěno pro nový výpočet
 		v.vymazat_casovou_obsazenost_objektu_a_pozice_voziku(v.OBJEKTY,v.VOZIKY);//vymaže předchozí časovou obsazenost objektů, jinak by se při každém dalším překreslení objekty posovali o obsazenost z předchozího vykreslení
-		if(!JIZPOCITANO)v.vymaz_seznam_PROCESY();
-		if(!JIZPOCITANO)v.hlavicka_PROCESY();//vymaže uložené procesy //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-
+		if(!JIZPOCITANO)//aby se znovu nevypočítávalo, pokud je již spočítáno a není třeba přepočítávat (např. z důvodu nového volání časových os či změny parametrů)
+		{
+			v.vymaz_seznam_PROCESY();
+			v.hlavicka_PROCESY();//vymaže uložené procesy //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
+			for(short i=0;i<8;i++)legenda_polozky[i]=false;//nastaví všechny položky na false
+		}
 		double X=0;//výchozí odsazení na ose X
 		//KrokY je vizuální rozteč na ose Y mezi jednotlivými vozíky zadáno globálně, kvůli jednotlivým krokům + používáno v Unit1 např. na posun obrazu po vozících
 		long Y=Form1->scGPPanel_mainmenu->Height+oY;//+5=oY pouze grafická korekce
@@ -495,11 +498,13 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 								{
 									vykresli_proces(canv,"Č",m.clIntensive(vozik->zakazka->barva,-20),5,X-PosunT.x,X+C->Tc/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
 									X+=C->Tc/60.0*PX2MIN;
+									legenda_polozky[1]=true;if(!legenda_polozky[1])legenda_polozky[0]++;
 								}
 								if(n==0 && Z->n>1)//výměna barev + čistění, mimo první zakázku, u té předpokládáme připravenost linky
 								{
 									vykresli_proces(canv,"V+Č",m.clIntensive(vozik->zakazka->barva,-40),4,X-PosunT.x,X+C->Tv/60.0*PX2MIN-PosunT.x,Yloc-PosunT.y);
 									X+=C->Tv/60.0*PX2MIN;
+									legenda_polozky[2]=true;if(!legenda_polozky[2])legenda_polozky[0]++;
 								}
 								X_predchozi=X;//pokud toto zakomentuji prodlouží se CT resp. vykreslí se např. LAK o ten kus delší
 						}
@@ -641,7 +646,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 }
 //---------------------------------------------------------------------------
 //vykreslí jeden dílčí časový proces (obdelníček procesu objektu) pro jeden vozík, vytaženo pouze kvůli přehlednosti
-void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor color, short typ, long X1, long X2, long Y)
+void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor color, short typ, long X1, long X2, long Y,bool legenda)
 {
 	////osa
 	//set_pen(canv,color,2);//nastavení pera barvy osy
@@ -649,17 +654,19 @@ void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor colo
 	canv->Pen->Mode=pmCopy;
 	canv->Pen->Style=psSolid;
 	canv->Brush->Color=color;
+	if(color==clSilver){legenda_polozky[4]=true;if(!legenda_polozky[4])legenda_polozky[0]++;}
 	switch(typ)
 	{
 			case 0: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;break;//pro typ: normální proces
-			case 1: canv->Brush->Style=bsDiagCross;canv->Pen->Color=color;break;//pro typ: doplněný o konec na čekání na proces totožný předchozí
-			case 2: canv->Brush->Style=bsCross;canv->Pen->Color=color;break;//pro typ: nutná doba přejezdu vozíku
-			case 3: canv->Brush->Style=bsVertical;canv->Pen->Color=color;break;//pro typ: doba čekání na palec
-			case 4: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//pmNotXor;/*zajistí vykreslení procesu transparentně*/break;//pro typ: obsazenost procesu či buffer
+			case 1: canv->Brush->Style=bsDiagCross;canv->Pen->Color=color;legenda_polozky[5]=true;if(!legenda_polozky[5])legenda_polozky[0]++;break;//pro typ: doplněný o konec na čekání na proces totožný předchozí
+			case 2: canv->Brush->Style=bsCross;canv->Pen->Color=color;legenda_polozky[6]=true;if(!legenda_polozky[6])legenda_polozky[0]++;break;//pro typ: nutná doba přejezdu vozíku
+			case 3: canv->Brush->Style=bsVertical;canv->Pen->Color=color;legenda_polozky[7]=true;if(!legenda_polozky[7])legenda_polozky[0]++;break;//pro typ: doba čekání na palec
+			case 4: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;legenda_polozky[3]=true;if(!legenda_polozky[3])legenda_polozky[0]++;//pmNotXor;/*zajistí vykreslení procesu transparentně*/break;//pro typ: obsazenost procesu či buffer
 			case 5: canv->Brush->Style=bsSolid;canv->Pen->Color=clWhite;canv->Pen->Mode=pmMask;//výměna barev či čištění pistole
 	}
 	//samotný obdelníček
-	canv->Rectangle(X1,Y-KrokY/2,X2+1,Y+KrokY/2);//X2+1 pouze grafická záležitost - zmenšení mezery
+	short o=0;if(legenda)o=1;//v případe zobrazeného orámování zmenší o jeden pixel u legendy
+	canv->Rectangle(X1+o,Y-KrokY/2+o,X2+1-o,Y+KrokY/2-o);//X2+1 pouze grafická záležitost - zmenšení mezery
 	//následující musí být mimo switch kvůli pořadí vykreslování po rectanglu
 	if(typ==4)//v případě bufferu vykreslení svislice přemaskující bílý spoj, tím se buffer napojí na předchozí objekt
 	{
@@ -685,9 +692,9 @@ void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor colo
 void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 {
 	//pozice
-	short P=8+1;//počet obdelníků,kterých se bude vykreslovat
-	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2;//levé a top usazení legendy
-	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
+	short P=legenda_polozky[0]+2;//počet obdelníků,kterých se bude vykreslovat
+	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2-9;//levé a top usazení legendy
+	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2-9;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
 	int R=L+KrokY+canv->TextWidth("čištění pistole a výměna barev")+KrokY/2;//pravý okraj
 	Form1->scGPGlyphButton_close_legenda_casove_osy->Left=R-Form1->scGPGlyphButton_close_legenda_casove_osy->Width-1;
 	Form1->scGPGlyphButton_close_legenda_casove_osy->Top=T+KrokY+KrokY/2+Form1->scGPGlyphButton_close_legenda_casove_osy->Options->FrameWidth;
@@ -700,17 +707,21 @@ void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 	canv->Pen->Color=clMedGray;
 	canv->Pen->Width=1;
 	canv->Pen->Mode=pmCopy;
-	canv->Rectangle(L-2,T+KrokY/2-2,R,T+P*KrokY);
+	canv->Rectangle(L-2,T+KrokY/2-2,R,T+P*KrokY-KrokY/2+2);
 
-	//vykreslování samotné legendy
-	vykresli_proces(canv, "",clRed,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,V);
-	vykresli_proces(canv, "",m.clIntensive(clRed,-20),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"čištění pistole");
-	vykresli_proces(canv, "",m.clIntensive(clRed,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev");
-	vykresli_proces(canv, "",m.clIntensive(clRed,80),4,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"buffer");
-	vykresli_proces(canv, "",clSilver,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"vozíky čištění a výměny");
-	vykresli_proces(canv, "",clRed,1,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"čekání na předchozí proces");
-	vykresli_proces(canv, "",clRed,2,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"nutná doba přejezdu vozíku");
-	vykresli_proces(canv, "",clRed,3,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY,T-canv->TextHeight(V)/2,"doba čekání na palec");
+	//zjistí barvu (raději) druhého zobrazeného voziků, podle této barvy se vykreslí legenda
+	unsigned int Voz=ceil((Form1->scLabel_titulek->Height+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+	TColor C=v.vrat_vozik(Voz+1)->zakazka->barva;
+
+	//vykreslování samotné legendy, podle položek, které byly použity
+	vykresli_proces(canv, "",C,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,V);
+	if(legenda_polozky[1]){vykresli_proces(canv, "",m.clIntensive(C,-20),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole");}
+	if(legenda_polozky[2]){vykresli_proces(canv, "",m.clIntensive(C,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev");}
+	if(legenda_polozky[3]){vykresli_proces(canv, "",m.clIntensive(C,80),4,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"buffer");}
+	if(legenda_polozky[4]){vykresli_proces(canv, "",clSilver,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"vozíky čištění a výměny");}
+	if(legenda_polozky[5]){vykresli_proces(canv, "",C,1,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"čekání na předchozí proces");}
+	if(legenda_polozky[6]){vykresli_proces(canv, "",C,2,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"nutná doba přejezdu vozíku");}
+	if(legenda_polozky[7]){vykresli_proces(canv, "",C,3,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"doba čekání na palec");}
 }
 //---------------------------------------------------------------------------
 //textový výpis a kóta mezivozíkového taktu, pouze pro zpřehlednění zapisu samostatně
