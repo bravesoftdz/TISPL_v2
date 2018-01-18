@@ -549,8 +549,11 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		//nastavení a zobrazení zpráv
 		if(JIZPOCITANO)//přepočítávají se a nastavují jen v momentu nového výpočtu, tj. zadání nových parametrů nebo nového načtení
 		{
-			Form1->g.nastav_zpravy();
 			Form1->g.zpravy();
+		}
+		if(!JIZPOCITANO)
+		{
+			Form1->g.nastav_zpravy();
 		}
 		//zobrazení legendy časových os
 		if(Form1->scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)
