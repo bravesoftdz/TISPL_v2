@@ -21,6 +21,7 @@ class Cvykresli
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
 
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
+	short legenda_polozky[8];//zobrazení jednotlivých položek 0 index je však poèet zobrazených
 
 	public:
 	Cvykresli();//konstruktor
