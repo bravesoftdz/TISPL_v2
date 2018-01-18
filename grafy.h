@@ -25,6 +25,8 @@ class Cgrafy
 	void ShowGrafy(bool stav=true);
 	void nastav_zpravy();
 	void zpravy();
+	bool takt_splnen;
+	int sirka_boxu;
 
 
 
