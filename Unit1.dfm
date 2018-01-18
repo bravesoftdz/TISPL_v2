@@ -4945,7 +4945,7 @@ object Form1: TForm1
     AlignWithMargins = True
     Left = 3
     Top = 493
-    Width = 138
+    Width = 110
     Height = 24
     Margins.Left = 0
     Margins.Top = 0
@@ -4965,7 +4965,7 @@ object Form1: TForm1
     StyleElements = [seFont, seClient]
     OnClick = scGPGlyphButton_close_legenda_casove_osyClick
     Animation = False
-    Caption = 'Legenda '#269'asov'#233' osy'
+    Caption = 'Zobrazit legendu'
     CanFocused = False
     CustomDropDown = False
     Layout = blGlyphLeft
@@ -5019,7 +5019,7 @@ object Form1: TForm1
     GlyphOptions.StyleColors = True
     TextMargin = -1
     ScaleFrameWidth = False
-    WidthWithCaption = 138
+    WidthWithCaption = 110
     WidthWithoutCaption = 20
     ShowCaption = True
     RepeatClick = False

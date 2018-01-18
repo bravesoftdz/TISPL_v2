@@ -822,13 +822,11 @@ void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *S
 		if(Form1->Chart2->Visible)scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;else scGPGlyphButton_close_legenda_casove_osy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
 		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
 		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=true;
-		scGPGlyphButton_close_legenda_casove_osy->Width=132;
 	}
 	else
 	{
 		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
 		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=false;
-		scGPGlyphButton_close_legenda_casove_osy->Width=20;
 	}
 	//pozn. šířka Buttnu se zadává pomocí paramerů Width, WidthWithCaption,WidthWitoutCaption v proporties
 	REFRESH();
