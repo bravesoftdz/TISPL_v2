@@ -116,7 +116,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Zaèátek výroby</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+cas_start+"\"></div></div>";
     data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka vozíku</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
 
-		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Lead Time</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.vrat_LT())+"\"></div></div>";
+		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Lead Time [min]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.vrat_LT()/60)+"\"></div></div>";
 
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP z vozíkù na èasových osách</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(0))+"\"></div></div>";
 		data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP souètem kapacit zadaných</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(1))+"\"></div></div>";
@@ -137,7 +137,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Šíøka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+sirka_voziku+"\"></div></div>";
 
 			//LT
-			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Lead Time</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.vrat_LT())+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Lead Time [min]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.vrat_LT()/60.0)+"\"></div></div>";
       //WIP
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP z vozíkù na èasových osách</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(0))+"\"></div></div>";
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">WIP souètem kapacit zadaných</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.WIP(1))+"\"></div></div>";
@@ -158,22 +158,6 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 			data+=Form1->d.v.navrhni_POHONY();
 
-		/*	Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
-
-				while(ukaz!=NULL){
-
-				UnicodeString ID=ukaz->n;
-				UnicodeString name=ukaz->name;
-				UnicodeString rychlost_od=ukaz->rychlost_od;
-				UnicodeString rychlost_do=ukaz->rychlost_do;
-				UnicodeString roztec=ukaz->roztec;
-
-		data+="<tr><th scope=\"row\">"+name+"</th><td>"+rychlost_od+"</td></tr>";
-
-
-					ukaz=ukaz->dalsi;
-
-				}    */
 						data+="</br>";
 
 		if(Form1->STATUS==Form1->NAVRH) {
@@ -198,9 +182,15 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString rozsah_pohonu_od;
 								UnicodeString rozsah_pohonu_do;
 
-								if(O->pohon!=NULL)  {nazev_pohonu=O->pohon->name;roztec_palcu=O->pohon->roztec;rozsah_pohonu_od=O->pohon->rychlost_od;rozsah_pohonu_do=O->pohon->rychlost_do;}
+								if(O->pohon!=NULL)  {
+								nazev_pohonu=O->pohon->name;
+								roztec_palcu=O->pohon->roztec;
+								rozsah_pohonu_od=O->pohon->rychlost_od;
+								rozsah_pohonu_do=O->pohon->rychlost_do;
+								rozsah_pohonu_od=rozsah_pohonu_od*60;
+								rozsah_pohonu_do=rozsah_pohonu_do*60;
+								}
 								else {nazev_pohonu="Nedefinovaný";roztec_palcu="";}
-
 
 								UnicodeString rychlost_dopravniku=O->RD*60;    //vždy budu zobrazovat v m/min
 								UnicodeString delka_dopravniku=O->delka_dopravniku;
@@ -210,9 +200,10 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 									case 1:rezim="KONTINUÁLNÍ";break;
 									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 								}
-//          //html
-								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+rozsah_pohonu_od*60+"-"+rozsah_pohonu_do*60+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
-
+////          //html
+//               // ShowMessage(ID+name+short_name+rezim+CT+kapacita_dop+kapacita+nazev_pohonu+rychlost_dopravniku+rozsah_pohonu_od*60+rozsah_pohonu_do*60+roztec_palcu+delka_dopravniku);
+							data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+rozsah_pohonu_od+"-"+rozsah_pohonu_do+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td></tr>";
+							//	 ShowMessage(ID+name+short_name+rezim+CT+kapacita+kapacita_dop+nazev_pohonu+rychlost_dopravniku+delka_dopravniku+roztec_palcu+rozsah_pohonu_od+rozsah_pohonu_do);
 									O=O->dalsi;
 								}
 
@@ -263,7 +254,13 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 
 							if(C->objekt->pohon!=NULL)  {
-								nazev_pohonu=C->objekt->pohon->name; roztec_palcu=C->objekt->pohon->roztec;rozsah_pohonu_od=C->objekt->pohon->rychlost_od*60;rozsah_pohonu_do=C->objekt->pohon->rychlost_do*60;
+								nazev_pohonu=C->objekt->pohon->name;
+								roztec_palcu=C->objekt->pohon->roztec;
+								rozsah_pohonu_od=C->objekt->pohon->rychlost_od;
+								rozsah_pohonu_do=C->objekt->pohon->rychlost_do;
+
+								rozsah_pohonu_od=rozsah_pohonu_od*60;
+								rozsah_pohonu_do=rozsah_pohonu_do*60;
 								}
 								else {nazev_pohonu="nepøiøazen";roztec_palcu="";rychlost_dopravniku="žádná";}
 
@@ -338,7 +335,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 	{
 		UnicodeString zakazka_name=Z->name;
 		data+="Pøehled objektù a jejich nastavených parametrù u zakázky:"+S+zakazka_name+"\n";
-		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporuèená"+S+"Kapacita nastavená"+S+"Název dopravníku"+S+"Rychlost dopravníku"+S+"Rozteè palcù [mm]"+S+"Délka dopravníku [m]\n";
+		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporuèená"+S+"Kapacita nastavená"+S+"Název dopravníku"+S+"Rychlost dopravníku [m/min]"+S+"Rozsah dopravníku [m/min]"+S+"Rozteè palcù [mm]"+S+"Délka dopravníku [m]\n";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 
@@ -357,9 +354,18 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString nazev_pohonu;
 								UnicodeString roztec_palcu;
 							 //	UnicodeString rychlost_dopravniku;
+							  UnicodeString rozsah_pohonu_od;
+								UnicodeString rozsah_pohonu_do;
 								UnicodeString rychlost_dopravniku=C->RD;
 									if(C->objekt->pohon!=NULL)  {
-								nazev_pohonu=C->objekt->pohon->name; roztec_palcu=C->objekt->pohon->roztec;//rychlost_dopravniku=C->objekt->pohon->rychlost_od*60;
+								nazev_pohonu=C->objekt->pohon->name;
+								roztec_palcu=C->objekt->pohon->roztec;
+
+								 rozsah_pohonu_od=C->objekt->pohon->rychlost_od;
+								 rozsah_pohonu_do=C->objekt->pohon->rychlost_do;
+
+								rozsah_pohonu_od=rozsah_pohonu_od*60;
+								rozsah_pohonu_do=rozsah_pohonu_do*60;
 								}
 								else {nazev_pohonu="nepøiøazen";roztec_palcu="";rychlost_dopravniku="žádná";}
 
@@ -373,7 +379,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 								}
 //          //html
-								data+=""+ID+S+name+S+short_name+S+rezim+S+CT+S+kapacita+S+kapacita_dop+S+nazev_pohonu+S+rychlost_dopravniku+S+roztec_palcu+S+delka_dopravniku+"\n";
+								data+=""+ID+S+name+S+short_name+S+rezim+S+CT+S+kapacita+S+kapacita_dop+S+nazev_pohonu+S+rychlost_dopravniku+S+rozsah_pohonu_od+"-"+rozsah_pohonu_do+S+roztec_palcu+S+delka_dopravniku+"\n";
 								}
 					O=O->dalsi;
 		}

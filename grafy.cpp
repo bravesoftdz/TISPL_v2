@@ -566,7 +566,8 @@ void Cgrafy::graf1() {
  void Cgrafy::nastav_zpravy(){
 
 	 //	if (!Form1->d.JIZPOCITANO) { // pro první zobrazení nastavím default rozmìry - podmínka realizována nyní ve vykresli
-				Form1->scExPanel_log_header->Width = 710;
+
+
 				Form1->scExPanel_log_header->Left = Form1->zalozka_schema->Left-100;
 				Form1->scExPanel_log_header->Top = Form1->zalozka_schema->Height + 10;
 				Form1->scExPanel_log_header->Height = 300;
@@ -580,8 +581,9 @@ void Cgrafy::graf1() {
 void Cgrafy::zpravy() {
 
 		Cvektory::TZakazka *zakazka = Form1->d.v.ZAKAZKY->dalsi;
-		// zakazka->name
+		takt_splnen=true;
 		UnicodeString zpravy;
+		UnicodeString zprava_dlouha_probox;
 		zpravy += "<b>Poèet zakázek:";
 		zpravy += Form1->d.v.ZAKAZKY->predchozi->n;
 		zpravy += "</b></br>";
@@ -596,26 +598,41 @@ void Cgrafy::zpravy() {
 
 		if (Form1->d.v.vrat_AVG_TT_zakazky(zakazka)*60 != zakazka->TT) {
 				stav = "nesplnìn";
+				takt_splnen=false;
 				rozdil_tt = Form1->d.v.vrat_AVG_TT_zakazky(zakazka) * 60;
 
 		}
 
 		zpravy += "Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
+		//zprava_dlouha_probox+="Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
 
 		if(stav=="splnìn"){
 		zpravy +="</br>";
+		takt_splnen=true;
+		//zprava_dlouha_probox+="</br>";
 
 		}
 
 		if (rozdil_tt > 0) {
 				zpravy +=", vypoèítaný prùmìrný takt " + rozdil_tt + " s</br>";
+				//zprava_dlouha_probox+=", vypoèítaný prùmìrný takt " + rozdil_tt + " s</br>";
 		}
+
+	 //	int delka;
+	// delka=	zprava_dlouha_probox.Length();   //vrati 111
+	// ShowMessage(Form1->Canvas->TextWidth(zprava_dlouha_probox)); //vrati 575
+
+	 //ShowMessage(delka);
 
 		zakazka = zakazka->dalsi;
 }
 
-zpravy += "<br><b>Zobrazení rozdílných kapacit:</b></br>";
-Cvektory::TObjekt *ukaz = Form1->d.v.OBJEKTY->dalsi;
+	if(takt_splnen){ sirka_boxu=450;} else sirka_boxu=715;
+			Form1->scExPanel_log_header->Width = sirka_boxu;//sirka_boxu;
+
+
+		zpravy += "<br><b>Zobrazení rozdílných kapacit:</b></br>";
+		Cvektory::TObjekt *ukaz = Form1->d.v.OBJEKTY->dalsi;
 
 bool rozdilne_kapacity=false;
 while (ukaz != NULL) {
