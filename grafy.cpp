@@ -622,9 +622,9 @@ void Cgrafy::zpravy() {
 	// delka=	zprava_dlouha_probox.Length();   //vrati 111
 	// ShowMessage(Form1->Canvas->TextWidth(zprava_dlouha_probox)); //vrati 575
 
-	Form1->Canvas->Font=Form1->scHTMLLabel_log_vypis->Font;
-	Form1->Canvas->Font->Size=Form1->scHTMLLabel_log_vypis->Font->Size;
-	ShowMessage(Form1->Canvas->TextWidth(zprava_dlouha_probox));
+	//Form1->Canvas->Font=Form1->scHTMLLabel_log_vypis->Font;
+	//Form1->Canvas->Font->Size=Form1->scHTMLLabel_log_vypis->Font->Size;
+	//ShowMessage(Form1->Canvas->TextWidth(zprava_dlouha_probox));
 
 	 //ShowMessage(delka);
 
