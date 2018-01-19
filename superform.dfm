@@ -15,6 +15,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
+  OnKeyDown = FormKeyDown
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -259,6 +260,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     TabOrder = 9
     StyleElements = [seFont, seClient]
     OnClick = rStringGridEd1Click
+    OnKeyDown = rStringGridEd1KeyDown
     Columns = <
       item
         Alignment = taCenter
@@ -1277,6 +1279,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 17
+    OnKeyDown = rEditNum_pozad_mnozstviKeyDown
     Value = 200.000000000000000000
   end
   object rEditNum_pocet_prac_hod: TrEditNum
@@ -1292,6 +1295,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 18
+    OnKeyDown = rEditNum_pocet_prac_hodKeyDown
     Value = 8.000000000000000000
   end
   object rEditNum_effektivita: TrEditNum
@@ -1307,6 +1311,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 19
+    OnKeyDown = rEditNum_effektivitaKeyDown
     Value = 90.000000000000000000
   end
   object rEditNum_pocet_dnu: TrEditNum
@@ -1322,6 +1327,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 20
+    OnKeyDown = rEditNum_pocet_dnuKeyDown
     Style = enFloat
     Value = 5.000000000000000000
   end
@@ -1579,6 +1585,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
     FrameActiveColor = clHighlight
     Text = ''
     TabOrder = 25
+    OnKeyDown = scEdit_zacatekKeyDown
   end
   object zakazky_hlavni_spojak: TButton
     Left = 219

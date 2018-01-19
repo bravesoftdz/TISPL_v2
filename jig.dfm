@@ -14,6 +14,7 @@ object Form_jig: TForm_jig
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_jig_sirka: TrHTMLLabel
@@ -563,6 +564,7 @@ object Form_jig: TForm_jig
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 3
+    OnKeyDown = Edit_jig_pocet_ksKeyDown
     Value = 235.000000000000000000
   end
   object scGPButton2: TscGPButton
@@ -665,6 +667,7 @@ object Form_jig: TForm_jig
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 5
+    OnKeyDown = Edit_jig_vyskaKeyDown
     Value = 1.000000000000000000
   end
   object Edit_jig_sirka: TrEditNum
@@ -680,6 +683,7 @@ object Form_jig: TForm_jig
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 6
+    OnKeyDown = Edit_jig_sirkaKeyDown
     Value = 1.000000000000000000
   end
   object Edit_jig_delka: TrEditNum
@@ -695,6 +699,7 @@ object Form_jig: TForm_jig
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 7
+    OnKeyDown = Edit_jig_delkaKeyDown
     Value = 1.000000000000000000
   end
 end

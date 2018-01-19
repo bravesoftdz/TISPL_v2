@@ -232,6 +232,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
+    OnKeyDown = rStringGridEd_tab_dopravnikyKeyDown
     Columns = <
       item
         InvalidDataAction = sgaNone

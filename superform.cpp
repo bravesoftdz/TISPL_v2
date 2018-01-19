@@ -1393,3 +1393,143 @@ void __fastcall TForm_definice_zakazek::FormPaint(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_definice_zakazek::rEditNum_pocet_dnuKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(scGPButton_Ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_definice_zakazek->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_definice_zakazek->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::rEditNum_pocet_prac_hodKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(scGPButton_Ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_definice_zakazek->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_definice_zakazek->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::rEditNum_pozad_mnozstviKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(scGPButton_Ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_definice_zakazek->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_definice_zakazek->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::rEditNum_effektivitaKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(scGPButton_Ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_definice_zakazek->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_definice_zakazek->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::scEdit_zacatekKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(scGPButton_Ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_definice_zakazek->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_definice_zakazek->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::rStringGridEd1KeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(scGPButton_Ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_definice_zakazek->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_definice_zakazek->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_definice_zakazek::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ if(Key==13)//ENTER
+ {
+		 if(scGPButton_Ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_definice_zakazek->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_definice_zakazek->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_definice_zakazek->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+

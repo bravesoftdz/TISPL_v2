@@ -86,6 +86,8 @@ __published:	// IDE-managed Components
 	void __fastcall rEditNum_delka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rEditNum_sirka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rEditNum_taktKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rStringGridEd_tab_dopravnikyKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift);
 
 
 

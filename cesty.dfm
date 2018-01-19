@@ -44,6 +44,7 @@ object Form_cesty: TForm_cesty
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 0
+    OnKeyDown = rStringGridEd_cestyKeyDown
     Columns = <
       item
         Alignment = taCenter

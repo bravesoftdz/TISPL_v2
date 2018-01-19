@@ -168,3 +168,23 @@ if (CasoveJednotky==S) {  //*60
 
 
 
+void __fastcall TForm_cesty::rStringGridEd_cestyKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_ulozit->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_cesty->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_cesty->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_cesty->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_cesty->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+

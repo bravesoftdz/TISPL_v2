@@ -34,6 +34,8 @@ __published:	// IDE-managed Components
 	void __fastcall vypis_objektyClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPButton_min_secClick(TObject *Sender);
+	void __fastcall rStringGridEd_cestyKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 private:	// User declarations
 public:		// User declarations
 
