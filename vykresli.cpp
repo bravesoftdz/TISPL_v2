@@ -666,7 +666,8 @@ void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor colo
 	}
 	//samotný obdelníček
 	short o=0;if(legenda)o=1;//v případe zobrazeného orámování zmenší o jeden pixel u legendy
-	canv->Rectangle(X1+o,Y-KrokY/2+o,X2+1-o,Y+KrokY/2-o);//X2+1 pouze grafická záležitost - zmenšení mezery
+	short o2=0;if(typ==1 || typ==2 || typ==3)o2=1;//v případe daného typu zmenší o jeden pixel
+	canv->Rectangle(X1+o,Y-KrokY/2+o2,X2+1-o,Y+KrokY/2-o2);//X2+1 pouze grafická záležitost - zmenšení mezery
 	//následující musí být mimo switch kvůli pořadí vykreslování po rectanglu
 	if(typ==4)//v případě bufferu vykreslení svislice přemaskující bílý spoj, tím se buffer napojí na předchozí objekt
 	{
@@ -692,6 +693,7 @@ void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor colo
 void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 {
 	//pozice
+	ShowMessage(legenda_polozky[0]);
 	short P=legenda_polozky[0]+2;//počet obdelníků,kterých se bude vykreslovat
 	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2-9;//levé a top usazení legendy
 	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2-9;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů

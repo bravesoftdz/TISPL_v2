@@ -157,14 +157,14 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 	{
 		 case 0://STOP & GO
 		 {
-			 set(POHON,ENABLED);
-			 set(TIME,HIDE);
+			 set(POHON,READONLY);
+			 set(TIME,READONLY);
 			 set(RYCHLOST,HIDE);
-			 set(DELKA,HIDE);
+			 set(DELKA,READONLY);
 			 set(KAPACITA,READONLY);
-			 set(ODCHYLKA,ENABLED);
-			 set(CEKANI,ENABLED);
-			 set(STOPKA,ENABLED);
+			 set(ODCHYLKA,READONLY);
+			 set(CEKANI,READONLY);
+			 set(STOPKA,READONLY);
 			 set(ROTACE,HIDE);
 			 set(MEZERA,HIDE);
 			 set(POCET_MEZER,HIDE);
@@ -176,7 +176,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(POHON,ENABLED);
 			 set(TIME,ENABLED);
 			 set(RYCHLOST,HIDE);
-			 set(DELKA,HIDE);
+			 set(DELKA,ENABLED);
 			 set(KAPACITA,READONLY);
 			 set(ODCHYLKA,HIDE);
 			 set(CEKANI,HIDE);
@@ -188,14 +188,14 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		 }break;
 		 case 1://KONTINUÁLNÍ
 		 {
-			 set(POHON,ENABLED);
+			 set(POHON,READONLY);
 			 set(TIME,HIDE);
 			 set(RYCHLOST,HIDE);
-			 set(DELKA,ENABLED);
-			 set(KAPACITA,ENABLED);
+			 set(DELKA,READONLY);
+			 set(KAPACITA,READONLY);
 			 set(ODCHYLKA,HIDE);
-			 set(CEKANI,ENABLED);
-			 set(STOPKA,ENABLED);
+			 set(CEKANI,READONLY);
+			 set(STOPKA,READONLY);
 			 set(ROTACE,ENABLED);
 			 set(MEZERA,ENABLED);
 			 set(POCET_MEZER,ENABLED);
