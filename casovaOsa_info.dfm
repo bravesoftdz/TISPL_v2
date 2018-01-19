@@ -62,7 +62,7 @@ object Form_osa_info: TForm_osa_info
     Width = 39
     Height = 19
     Caption = 'Value'
-    Color = 33023
+    Color = clBtnFace
     Font.Charset = DEFAULT_CHARSET
     Font.Color = 33023
     Font.Height = 19
@@ -232,7 +232,7 @@ object Form_osa_info: TForm_osa_info
     Width = 39
     Height = 19
     Caption = 'Value'
-    Color = 33023
+    Color = clBtnFace
     Font.Charset = DEFAULT_CHARSET
     Font.Color = 33023
     Font.Height = 19
@@ -609,7 +609,6 @@ object Form_osa_info: TForm_osa_info
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 703
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 652
@@ -688,7 +687,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 653
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -766,7 +764,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 553
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -844,7 +841,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 603
     end
     object scLabel1: TscLabel
       Left = 0
@@ -876,7 +872,6 @@ object Form_osa_info: TForm_osa_info
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Informace o Objektu'
-      ExplicitWidth = 553
     end
   end
   object ioo_ok: TscGPButton
