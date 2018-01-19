@@ -252,6 +252,7 @@ __published:	// IDE-managed Components
 	TButton *Button12;
 	TscGPCheckBox *scGPCheckBox_ortogon;
 	TscGPGlyphButton *scGPGlyphButton_close_legenda_casove_osy;
+	TButton *Button13;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
