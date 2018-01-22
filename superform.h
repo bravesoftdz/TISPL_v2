@@ -95,6 +95,19 @@ __published:	// IDE-managed Components
 	void __fastcall Button5Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_removeClick(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
+	void __fastcall rEditNum_pocet_dnuKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_pocet_prac_hodKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_pozad_mnozstviKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_effektivitaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scEdit_zacatekKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rStringGridEd1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
+
+
+
+
+
 
 private:	// User declarations
 	void nastav_form();

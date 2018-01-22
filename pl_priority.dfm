@@ -161,6 +161,7 @@ object Form_PL_priority: TForm_PL_priority
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end
       item
         Alignment = taCenter
@@ -177,6 +178,7 @@ object Form_PL_priority: TForm_PL_priority
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
         TitleParentFont = False
+        TitleAlignment = taCenter
       end>
     OnGetCellParams = rStringGridEd_tabGetCellParams
     RowHeights = (

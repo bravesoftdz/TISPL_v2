@@ -604,23 +604,27 @@ void Cgrafy::zpravy() {
 		}
 
 		zpravy += "Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
-		//zprava_dlouha_probox+="Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
+		zprava_dlouha_probox+="Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
 
 		if(stav=="splnìn"){
 		zpravy +="</br>";
 		takt_splnen=true;
-		//zprava_dlouha_probox+="</br>";
+		zprava_dlouha_probox+="</br>";
 
 		}
 
 		if (rozdil_tt > 0) {
 				zpravy +=", vypoèítaný prùmìrný takt " + rozdil_tt + " s</br>";
-				//zprava_dlouha_probox+=", vypoèítaný prùmìrný takt " + rozdil_tt + " s</br>";
+				zprava_dlouha_probox+=", vypoèítaný prùmìrný takt " + rozdil_tt + " s</br>";
 		}
 
 	 //	int delka;
 	// delka=	zprava_dlouha_probox.Length();   //vrati 111
 	// ShowMessage(Form1->Canvas->TextWidth(zprava_dlouha_probox)); //vrati 575
+
+	//Form1->Canvas->Font=Form1->scHTMLLabel_log_vypis->Font;
+	//Form1->Canvas->Font->Size=Form1->scHTMLLabel_log_vypis->Font->Size;
+	//ShowMessage(Form1->Canvas->TextWidth(zprava_dlouha_probox));
 
 	 //ShowMessage(delka);
 

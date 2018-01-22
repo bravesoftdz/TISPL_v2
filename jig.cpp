@@ -47,3 +47,104 @@ void __fastcall TForm_jig::Button_jig_stornoClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+void __fastcall TForm_jig::Edit_jig_pocet_ksKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_jig_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_jig->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_jig->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_jig::Edit_jig_vyskaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_jig_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_jig->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_jig->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_jig::Edit_jig_delkaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_jig_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_jig->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_jig->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_jig::Edit_jig_sirkaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_jig_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_jig->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_jig->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_jig::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ if(Key==13)//ENTER
+ {
+		 if(Button_jig_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {
+			Form_jig->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+ }
+ if(Key==27)//ESC
+ {
+		 Form_jig->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_jig->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+}
+//---------------------------------------------------------------------------
+

@@ -291,8 +291,9 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 
 			 //tady bude přepnutí založek dodělat
 			 schemaClick(Sender);//volání MODu SCHEMA
-			 STATUS=NAVRH;
 			 scGPSwitch_rezim->State=scswOff;
+			 SB("NÁVRH",1);
+
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
     	 Zoom_predchozi=1.0;
 			 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
@@ -3934,8 +3935,10 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 
-	ShowMessage(scListGroupNastavProjektu->TabOrder);
-	ShowMessage(scListGroupKnihovObjektu->TabOrder);
+ //	ShowMessage(scListGroupNastavProjektu->TabOrder);
+ //	ShowMessage(scListGroupKnihovObjektu->TabOrder);
+
+ ShowMessage(STATUS);
  //	scListGroupNastavProjektu->TabOrder;
 
 	/*	Memo1->Visible=true;
@@ -4207,6 +4210,7 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
+ //	ShowMessage(STATUS);
 	if(STATUS==NAVRH)
 	{
 		STATUS=OVEROVANI;
@@ -4218,6 +4222,7 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 		//scLabel14->Visible=false;
 		scLabel14->Caption="Definice zakázek";
 		SB("OVĚŘOVÁNÍ",1);
+	 //	ShowMessage(STATUS);
 	}
 	else
 	{
@@ -4229,6 +4234,7 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 		scGPGlyphButton_parametry_linky->Top=scGPGlyphButton_definice_zakazek->Top;
 		scGPGlyphButton_definice_zakazek->Visible=false;
 		SB("NÁVRH",1);
+	 //	ShowMessage(STATUS);
 	}
 }
 //---------------------------------------------------------------------------

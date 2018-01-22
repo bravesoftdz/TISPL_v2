@@ -33,6 +33,15 @@ __published:	// IDE-managed Components
 	TrEditNum *Edit_jig_delka;
 	void __fastcall Button_jig_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall Edit_jig_pocet_ksKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall Edit_jig_vyskaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall Edit_jig_delkaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall Edit_jig_sirkaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
+
+
+
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_jig(TComponent* Owner);
