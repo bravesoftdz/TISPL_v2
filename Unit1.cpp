@@ -641,6 +641,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPCheckBox_ortogon->Visible=true;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 
+	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
 	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -693,6 +694,7 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
 	SB("Layout",1);
 	//Zoom=5;ZOOM();
+	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
 	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -775,7 +777,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			LabelRoletka->Visible=false;
 			CheckBox_pouzit_zadane_kapacity->Visible=false;
 			ComboBoxCekani->Visible=true;
-			d.JIZPOCITANO=false;
+			d.JIZPOCITANO=false;d.RANDOM=true;
 			scExPanel_log_header->Visible=true;
 
 			Label_zamerovac->Visible=false;
@@ -828,7 +830,7 @@ void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *S
 		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkDownArrow;//změní typ ikony
 		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=false;
 	}
-	//pozn. šířka Buttnu se zadává pomocí paramerů Width, WidthWithCaption,WidthWitoutCaption v proporties
+	//pozn. šířka Buttonu se zadává pomocí paramerů Width, WidthWithCaption,WidthWitoutCaption v proporties
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -3563,17 +3565,18 @@ void __fastcall TForm1::Button8Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button9Click(TObject *Sender)
 {
+    Memo1->Lines->Clear();
 		Memo1->Visible=true;
-		Memo1->Lines->Add("vypis spojáku VOZIKY:");
-			Cvektory::TVozik *ukaz=d.v.VOZIKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-		while (ukaz!=NULL)
-		{
-			//akce s ukazatelem
-			//Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" ID: ")+ukaz->id+AnsiString(" X: ")+ukaz->X+AnsiString(" Y: ")+ukaz->Y);
-			Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" Start: ")+ukaz->start/d.PX2MIN+AnsiString(" Pozice: ")+ukaz->pozice/d.PX2MIN);
-			//posun na další prvek v seznamu
-			ukaz=ukaz->dalsi;
-		}
+//		Memo1->Lines->Add("vypis spojáku VOZIKY:");
+//			Cvektory::TVozik *ukaz=d.v.VOZIKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+//		while (ukaz!=NULL)
+//		{
+//			//akce s ukazatelem
+//			//Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" ID: ")+ukaz->id+AnsiString(" X: ")+ukaz->X+AnsiString(" Y: ")+ukaz->Y);
+//			Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" Start: ")+ukaz->start/d.PX2MIN+AnsiString(" Pozice: ")+ukaz->pozice/d.PX2MIN);
+//			//posun na další prvek v seznamu
+//			ukaz=ukaz->dalsi;
+//		}
 		//Memo1->Lines->Add("vypis spojáku OBJEKTY:");
 	/*	Cvektory::TObjekt *ukaz=d.v.CESTA2;//ukazatel na první objekt v seznamu OBJEKTU, NEpřeskočí hlavičku
 		while (ukaz!=NULL)
@@ -3603,16 +3606,16 @@ void __fastcall TForm1::Button9Click(TObject *Sender)
 
 					 //	Pan_bmp->SaveToFile("test.bmp");
 
-//		Memo1->Lines->Add("vypis spojáku PROCESY:");
-//		Cvektory::TProces *ukaz=d.v.PROCESY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
-//		while (ukaz!=NULL)
-//		{
-//			//akce s ukazatelem
-//			//if(ukaz->vozik->n==2)
-//			Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" | n_v_zakazce: ")+ukaz->n_v_zakazce+AnsiString(" | Tpoc: ")+ukaz->Tpoc+AnsiString(" | Tkon: ")+ukaz->Tkon+AnsiString(" | Tdor: ")+ukaz->Tdor+AnsiString(" | Tpre: ")+ukaz->Tpre+AnsiString(" | Tcek: ")+ukaz->Tcek+AnsiString(" | Shortname: ")+ukaz->cesta->objekt->short_name);
-//			//posun na další prvek v seznamu
-//			ukaz=ukaz->dalsi;
-//		}
+		Memo1->Lines->Add("vypis spojáku PROCESY:");
+		Cvektory::TProces *ukaz=d.v.PROCESY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+		while (ukaz!=NULL)
+		{
+			//akce s ukazatelem
+			//if(ukaz->vozik->n==2)
+			Memo1->Lines->Add(AnsiString("n: ")+ukaz->n+AnsiString(" | n_v_zakazce: ")+ukaz->n_v_zakazce+AnsiString(" | Tpoc: ")+ukaz->Tpoc+AnsiString(" | Tkon: ")+ukaz->Tkon+AnsiString(" | Tdor: ")+ukaz->Tdor+AnsiString(" | Tpre: ")+ukaz->Tpre+AnsiString(" | Tcek: ")+ukaz->Tpre+AnsiString(" | Trand: ")+ukaz->Trand+AnsiString(" | Shortname: "));
+			//posun na další prvek v seznamu
+			ukaz=ukaz->dalsi;
+		}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button10Click(TObject *Sender)
@@ -4442,7 +4445,10 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
+	 //tady doplní R: if(Form1->ComboBoxCekani->ItemIndex==2)ButtonGenerovat->visible=true;else ButtonGenerovat->visible=false;//tak se zobrazí vedle toho comba tlačítko s textem "generovat", to tam přidáš a napozicuješ
+	 if(ComboBoxCekani->ItemIndex==2 && d.RANDOM)d.JIZPOCITANO=false;//musí být před, zajístí přepočet dle nových hodnot
 	 REFRESH();
+	 if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
 }
 //---------------------------------------------------------------------------
 

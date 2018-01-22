@@ -22,6 +22,7 @@ class Cvykresli
 
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	short legenda_polozky[8];//zobrazení jednotlivých položek 0 index je však poèet zobrazených
+	Cvektory::TProces *Pom_proces;//pomocný ukazatel na proces, využívá se v pøi naèítání pùvodnì vytvoøených náhodných hodnot èekání na palec
 
 	public:
 	Cvykresli();//konstruktor
@@ -84,7 +85,8 @@ class Cvykresli
 	bool mod_vytizenost_objektu;
 	short NOLIEX;//NO - 0, LINEAR - 1, EXPO - 2
 	bool JIZPOCITANO;//øešení aby se zbyteènì a opakovanì neukládalo do PROCESù pokud to není treba
-  bool grafickeDilema;//provizorní promìnná na pøepínání stavu, zda se pøi pøidávání objektu a pøesouvání objektu bude zmenšovat písmo nebo nepøekreslovat objekt
+	bool RANDOM;
+	bool grafickeDilema;//provizorní promìnná na pøepínání stavu, zda se pøi pøidávání objektu a pøesouvání objektu bude zmenšovat písmo nebo nepøekreslovat objekt
 
 	protected:
 
