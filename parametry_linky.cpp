@@ -867,3 +867,10 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyDown(TObje
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyEnter(TObject *Sender)
+
+{
+ rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width;
+}
+//---------------------------------------------------------------------------
+

@@ -205,8 +205,8 @@ object Form_parametry_linky: TForm_parametry_linky
       -16)
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
-    Left = 1
-    Top = 315
+    Left = 0
+    Top = 317
     Width = 801
     Height = 102
     BorderStyle = bsNone
@@ -232,6 +232,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
+    OnEnter = rStringGridEd_tab_dopravnikyEnter
     OnKeyDown = rStringGridEd_tab_dopravnikyKeyDown
     Columns = <
       item
