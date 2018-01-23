@@ -1468,6 +1468,7 @@ void Cvektory::hlavicka_PROCESY()
 	novy->Tdor=0;
 	novy->Tpre=0;
 	novy->Tcek=0;
+	novy->Trand=0;
 	novy->vozik=NULL;
 
 	novy->predchozi=novy;//ukazuje sam na sebe
@@ -1475,7 +1476,7 @@ void Cvektory::hlavicka_PROCESY()
 	PROCESY=novy;
 }
 //---------------------------------------------------------------------------
-//uloží ukazatel na vozík do spojového seznamu voziku přetížená fce
+//uloží ukazatel na proces do spojového seznamu procesů přetížená fce
 void Cvektory::vloz_proces(TProces *Proces)
 {
 	TProces *novy=new TProces;
@@ -1488,7 +1489,7 @@ void Cvektory::vloz_proces(TProces *Proces)
 	PROCESY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
-//hledá bod mezi procesy
+//hledá proces mezi procesy
 Cvektory::TProces *Cvektory::najdi_proces(double cas, double vozik)
 {
 	TProces *RET=NULL;

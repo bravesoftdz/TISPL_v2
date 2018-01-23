@@ -174,6 +174,7 @@ class Cvektory
 			double Tdor;//X-dorovnání předchozího vozíku
 			double Tpre;//X- nutná doba přejezdu, zpoždění za předchozím vozíkem
 			double Tcek;//X- nutná doba cekani na palec
+			double Trand;//hodnota vypočitán dle funkce náhodná doba čekání na palec
 			struct TCesta *segment_cesty;//příslušnost procesu k vyjmutému (ze spojáku) segmentu cesty (tedy objektu)
 			struct TVozik *vozik;//ukazatel na vozík jehož proces vyjadřuje
 			struct TProces *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
