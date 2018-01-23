@@ -1533,3 +1533,13 @@ void __fastcall TForm_definice_zakazek::FormKeyDown(TObject *Sender, WORD &Key, 
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm_definice_zakazek::FormMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y)
+{
+	if (rStringGridEd1->RowCount<=2) {
+	scGPGlyphButton_remove->Enabled=false;
+	}  else scGPGlyphButton_remove->Enabled=true;
+}
+//---------------------------------------------------------------------------
+

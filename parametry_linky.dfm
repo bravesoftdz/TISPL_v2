@@ -14,6 +14,7 @@ object Form_parametry_linky: TForm_parametry_linky
   Font.Quality = fqClearType
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

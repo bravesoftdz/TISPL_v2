@@ -16,6 +16,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
   OldCreateOrder = False
   Position = poDesigned
   OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -225,8 +226,8 @@ object Form_definice_zakazek: TForm_definice_zakazek
     OnClick = Button_DELClick
   end
   object rStringGridEd1: TrStringGridEd
-    Left = 1
-    Top = 301
+    Left = -4
+    Top = 303
     Width = 1000
     Height = 186
     Margins.Left = 0
@@ -480,6 +481,18 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleAlignment = taCenter
       end>
     ChangedCellsBkColor = clWhite
+    ColWidths = (
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90)
     RowHeights = (
       30
       30)

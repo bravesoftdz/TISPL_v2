@@ -102,6 +102,9 @@ __published:	// IDE-managed Components
 	void __fastcall scEdit_zacatekKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rStringGridEd1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+
+
 
 
 

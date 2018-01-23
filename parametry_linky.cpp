@@ -36,6 +36,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
 
+
 		if(Form1->d.v.OBJEKTY->dalsi==NULL){
 			scGPButton_doporucene->Visible=false;
 			rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
@@ -263,7 +264,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				)
 				{
 
-					T+="Objekt: "+O->name+"Rychlost:"+O->RD+"vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
+					T+="Objekt: "+O->name+" Rychlost:"+O->RD*60+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
 					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
 				}
 				O=O->dalsi;
@@ -873,4 +874,19 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyEnter(TObject
  rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width;
 }
 //---------------------------------------------------------------------------
+
+
+void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftState Shift,
+          int X, int Y)
+{
+ // ShowMessage(rStringGridEd_tab_dopravniky->RowCount);
+ 	if (rStringGridEd_tab_dopravniky->RowCount<=1) {
+	Button_DEL->Enabled=false;
+	}  else Button_DEL->Enabled=true;
+
+}
+//---------------------------------------------------------------------------
+
+
+
 

@@ -89,6 +89,8 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift);
 	void __fastcall rStringGridEd_tab_dopravnikyEnter(TObject *Sender);
+	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+
 
 
 
