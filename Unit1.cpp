@@ -780,6 +780,9 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ComboBoxCekani->Visible=true;
 			d.JIZPOCITANO=false;d.RANDOM=true;
 			scExPanel_log_header->Visible=true;
+			if(Form1->ComboBoxCekani->ItemIndex==2){
+      scGPButton_generuj->Visible=true;
+			}
 
 			Label_zamerovac->Visible=false;
 			scGPCheckBox_ortogon->Visible=false;
@@ -4085,6 +4088,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
 		if(scSplitView_MENU->Opened) scSplitView_MENU->Close();
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::KonecClick(TObject *Sender)
@@ -4451,7 +4455,8 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
-	 //tady doplní R: if(Form1->ComboBoxCekani->ItemIndex==2)ButtonGenerovat->visible=true;else ButtonGenerovat->visible=false;//tak se zobrazí vedle toho comba tlačítko s textem "generovat", to tam přidáš a napozicuješ
+	 if(Form1->ComboBoxCekani->ItemIndex==2)Form1->scGPButton_generuj->Visible=true;
+	 else Form1->scGPButton_generuj->Visible=false;//tak se zobrazí vedle toho comba tlačítko s textem "generovat", to tam přidáš a napozicuješ
 	 if(ComboBoxCekani->ItemIndex==2 && d.RANDOM)d.JIZPOCITANO=false;//musí být před, zajístí přepočet dle nových hodnot
 	 REFRESH();
 	 if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
@@ -4484,6 +4489,12 @@ if(scExPanel_log_header->Visible==false){
 void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
 {
 scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
+
+	scGPButton_generuj->Options->NormalColor=scSplitView_OPTIONS->Color;
+	scGPButton_generuj->Options->FocusedColor=scGPButton_generuj->Options->NormalColor;
+	scGPButton_generuj->Options->HotColor=scGPButton_generuj->Options->NormalColor;
+	scGPButton_generuj->Options->PressedColor=scGPButton_generuj->Options->NormalColor;
+	scGPButton_generuj->Options->FramePressedColor=scGPButton_generuj->Options->NormalColor;
 
 
 }
@@ -4540,4 +4551,12 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm1::scGPButton_generujClick(TObject *Sender)
+{
+		d.RANDOM=true;
+		d.JIZPOCITANO=false;
+		REFRESH();
+		d.RANDOM=false;
+}
+//---------------------------------------------------------------------------
 

@@ -253,6 +253,7 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *scGPCheckBox_ortogon;
 	TscGPGlyphButton *scGPGlyphButton_close_legenda_casove_osy;
 	TButton *Button13;
+	TscGPGlyphButton *scGPButton_generuj;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -394,6 +395,7 @@ __published:	// IDE-managed Components
 	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);
 	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender);
+	void __fastcall scGPButton_generujClick(TObject *Sender);
 
 
 
