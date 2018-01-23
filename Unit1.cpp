@@ -770,7 +770,6 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			CheckBoxVytizenost->Visible=true;
 			scLabel_doba_cekani->Visible=true;
 			scGPGlyphButton_close_grafy->Visible=true;
-
 			CheckBoxAnimovatSG->Visible=false;
 			ComboBoxODmin->Visible=false;
 			ComboBoxDOmin->Visible=false;
@@ -780,9 +779,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ComboBoxCekani->Visible=true;
 			d.JIZPOCITANO=false;d.RANDOM=true;
 			scExPanel_log_header->Visible=true;
-			if(Form1->ComboBoxCekani->ItemIndex==2){
-      scGPButton_generuj->Visible=true;
-			}
+			if(Form1->ComboBoxCekani->ItemIndex==2)scGPButton_generuj->Visible=true;
 
 			Label_zamerovac->Visible=false;
 			scGPCheckBox_ortogon->Visible=false;
@@ -819,13 +816,11 @@ void __fastcall TForm1::scGPGlyphButton_close_grafyClick(TObject *Sender)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
-//skryje nebo zobrazí legendu časových os
+//přepíná tlačito na skrytí nebo zobrazí legendu časových os, dle stavu tlačítka dochází poté k samotnému skrývání či zobrazování v Cvykresli vykresli_legendu_casovych_os(TCanvas *canv)
 void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender)
 {
-	scGPGlyphButton_close_legenda_casove_osy->Left=0;
 	if(scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)
 	{
-		if(Form1->Chart2->Visible)scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;else scGPGlyphButton_close_legenda_casove_osy->Top=scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
 		scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind=scgpbgkUpArrow;//změní typ ikony
 		scGPGlyphButton_close_legenda_casove_osy->ShowCaption=true;
 	}
