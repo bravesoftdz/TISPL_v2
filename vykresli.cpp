@@ -557,7 +557,6 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		if(JIZPOCITANO)Form1->g.zpravy();
 		else Form1->g.nastav_zpravy();//nastavují jen v momentu nového výpočtu, tj. zadání nových parametrů nebo nového načtení
 		//zobrazení legendy časových os
-		if(Form1->scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)
 		vykresli_legendu_casovych_os(canv);
 		//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba zatěžovat znovu systémové prostředky (nehledě na to, že to bylo dost znát)
 		JIZPOCITANO=true;
@@ -700,38 +699,50 @@ void Cvykresli::vykresli_proces(TCanvas *canv, AnsiString shortname, TColor colo
 //vykreslí legendu pro jednotlivé procesy na časových osách
 void Cvykresli::vykresli_legendu_casovych_os(TCanvas *canv)
 {
-	//pozice
-	//ShowMessage(legenda_polozky[0]);
-	short P=legenda_polozky[0]+2;//počet obdelníků,kterých se bude vykreslovat
-	short L=20;int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2-9;//levé a top usazení legendy
-	if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2-9;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
-	int R=L+KrokY+canv->TextWidth("čištění pistole a výměna barev")+KrokY/2;//pravý okraj
-	Form1->scGPGlyphButton_close_legenda_casove_osy->Left=R-Form1->scGPGlyphButton_close_legenda_casove_osy->Width-1;
-	Form1->scGPGlyphButton_close_legenda_casove_osy->Top=T+KrokY+KrokY/2+Form1->scGPGlyphButton_close_legenda_casove_osy->Options->FrameWidth;
-	AnsiString V="";//výpis
+	if(Form1->scGPGlyphButton_close_legenda_casove_osy->GlyphOptions->Kind==scgpbgkDownArrow)//pokud je legenda zobrazena + napozicování dle toho, zda jsou zobrazeny či skryty grafy
+	{
+		//pozice
+		short P=legenda_polozky[0]+2;//počet obdelníků,kterých se bude vykreslovat
+		short L=20;
+		int T=Form1->ClientHeight-Form1->scGPPanel_statusbar->Height-P*KrokY-KrokY/2-9;//levé a top usazení legendy
+		if(Form1->Chart2->Visible)T=Form1->Chart2->Top-P*KrokY-KrokY/2-9;//pokud jsou zobrazeny grafy, bude TOP pozice dle grafů
+		int R=L+KrokY+canv->TextWidth("čištění pistole a výměna barev")+KrokY/2;//pravý okraj
+		AnsiString V="";//výpis
 
-	//vykreslení obdelníku bíléhopozadí
-	canv->Brush->Style=bsSolid;
-	canv->Brush->Color=clWhite;
-	canv->Pen->Style=psSolid;
-	canv->Pen->Color=clMedGray;
-	canv->Pen->Width=1;
-	canv->Pen->Mode=pmCopy;
-	canv->Rectangle(L-2,T+KrokY/2-2,R,T+P*KrokY-KrokY/2+2);
+		//top pozice
+		Form1->scGPGlyphButton_close_legenda_casove_osy->Top=T+KrokY+KrokY/2+Form1->scGPGlyphButton_close_legenda_casove_osy->Options->FrameWidth;//top je nehledě na to, zda je či není zobrazeno
+		//levá pozice tlačítka, pokud je legenda zobrazena
+		Form1->scGPGlyphButton_close_legenda_casove_osy->Left=R-Form1->scGPGlyphButton_close_legenda_casove_osy->Width-1;
 
-	//zjistí barvu (raději) druhého zobrazeného voziků, podle této barvy se vykreslí legenda
-	unsigned int Voz=ceil((Form1->scLabel_titulek->Height+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
-	TColor C=v.vrat_vozik(Voz+1)->zakazka->barva;
+		//vykreslení obdelníku bíléhopozadí
+		canv->Brush->Style=bsSolid;
+		canv->Brush->Color=clWhite;
+		canv->Pen->Style=psSolid;
+		canv->Pen->Color=clMedGray;
+		canv->Pen->Width=1;
+		canv->Pen->Mode=pmCopy;
+		canv->Rectangle(L-2,T+KrokY/2-2,R,T+P*KrokY-KrokY/2+2);
 
-	//vykreslování samotné legendy, podle položek, které byly použity
-	vykresli_proces(canv, "",C,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,V);
-	if(legenda_polozky[1]){vykresli_proces(canv, "",m.clIntensive(C,-20),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole");}
-	if(legenda_polozky[2]){vykresli_proces(canv, "",m.clIntensive(C,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev");}
-	if(legenda_polozky[3]){vykresli_proces(canv, "",m.clIntensive(C,80),4,L-1,L+KrokY+1,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"buffer či čekání");}
-	if(legenda_polozky[4]){vykresli_proces(canv, "",clSilver,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"vozíky čištění a výměny");}
-	if(legenda_polozky[5]){vykresli_proces(canv, "",C,1,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"čekání na předchozí proces");}
-	if(legenda_polozky[6]){vykresli_proces(canv, "",C,2,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"nutná doba přejezdu vozíku");}
-	if(legenda_polozky[7]){vykresli_proces(canv, "",C,3,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"doba čekání na palec");}
+		//zjistí barvu (raději) druhého zobrazeného voziků, podle této barvy se vykreslí legenda
+		unsigned int Voz=ceil((Form1->scLabel_titulek->Height+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
+		TColor C=v.vrat_vozik(Voz+1)->zakazka->barva;
+
+		//vykreslování samotné legendy, podle položek, které byly použity
+		vykresli_proces(canv, "",C,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;V="technologický proces";canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,V);
+		if(legenda_polozky[1]){vykresli_proces(canv, "",m.clIntensive(C,-20),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole");}
+		if(legenda_polozky[2]){vykresli_proces(canv, "",m.clIntensive(C,-40),5,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"čištění pistole a výměna barev");}
+		if(legenda_polozky[3]){vykresli_proces(canv, "",m.clIntensive(C,80),4,L-1,L+KrokY+1,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"buffer či čekání");}
+		if(legenda_polozky[4]){vykresli_proces(canv, "",clSilver,0,L,L+KrokY,T+=KrokY);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+1,T-canv->TextHeight(V)/2,"vozíky čištění a výměny");}
+		if(legenda_polozky[5]){vykresli_proces(canv, "",C,1,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"čekání na předchozí proces");}
+		if(legenda_polozky[6]){vykresli_proces(canv, "",C,2,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"nutná doba přejezdu vozíku");}
+		if(legenda_polozky[7]){vykresli_proces(canv, "",C,3,L,L+KrokY,T+=KrokY,true);canv->Brush->Style=bsSolid;canv->TextOutW(L+KrokY+2,T-canv->TextHeight(V)/2,"doba čekání na palec");}
+	}
+	else//pokud je legenda skryta, tak pouze napozicování dle toho, zda jsou zobrazeny či skryty grafy
+	{
+		Form1->scGPGlyphButton_close_legenda_casove_osy->Left=0;
+		if(Form1->Chart2->Visible)Form1->scGPGlyphButton_close_legenda_casove_osy->Top=Form1->Chart2->Top;
+		else Form1->scGPGlyphButton_close_legenda_casove_osy->Top=Form1->scGPPanel_statusbar->Top-Form1->scGPGlyphButton_close_grafy->Height;
+	}
 }
 //---------------------------------------------------------------------------
 //textový výpis a kóta mezivozíkového taktu, pouze pro zpřehlednění zapisu samostatně
