@@ -4550,7 +4550,7 @@ object Form1: TForm1
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
-      Width = 0
+      Width = 249
       Height = 32
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
@@ -4581,6 +4581,7 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Caption = 'Nastaven'#237
+      ExplicitWidth = 0
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
@@ -4620,7 +4621,7 @@ object Form1: TForm1
       object ComboBoxCekani: TscComboBox
         Left = 3
         Top = 55
-        Width = 196
+        Width = 243
         Height = 26
         ItemIndex = 0
         Items.Strings = (
@@ -4824,8 +4825,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 474
-        Top = 637
+        Left = 699
+        Top = 862
         Width = 244
         Height = 31
         Align = alCustom
@@ -4912,6 +4913,8 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        ExplicitLeft = 474
+        ExplicitTop = 637
       end
       object ComboBoxDOmin: TComboBox
         Left = 64
@@ -5277,7 +5280,7 @@ object Form1: TForm1
         GlyphOptions.NormalColor = clWhite
         GlyphOptions.HotColor = 33023
         GlyphOptions.PressedColor = clWhite
-        GlyphOptions.FocusedColor = 33023
+        GlyphOptions.FocusedColor = clWhite
         GlyphOptions.DisabledColor = clBtnText
         GlyphOptions.NormalColorAlpha = 200
         GlyphOptions.HotColorAlpha = 255

@@ -779,10 +779,11 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ComboBoxCekani->Visible=true;
 			d.JIZPOCITANO=false;d.RANDOM=true;
 			scExPanel_log_header->Visible=true;
-			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-2;
-			if(Form1->ComboBoxCekani->ItemIndex==2){
-			scGPButton_generuj->Visible=true;
-		 	ComboBoxCekani->Width=196;
+			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
+			if(Form1->ComboBoxCekani->ItemIndex==2)
+			{
+				scGPButton_generuj->Visible=true;
+		 		ComboBoxCekani->Width=196;
 			}
 
 			Label_zamerovac->Visible=false;
@@ -4469,17 +4470,20 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
-	 if(Form1->ComboBoxCekani->ItemIndex==2){
-	 Form1->scGPButton_generuj->Visible=true;
-	 ComboBoxCekani->Width=196;
-	 }
-	 else {
-	 Form1->scGPButton_generuj->Visible=false;
-	 ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-2;
-	 }//tak se zobrazí vedle toho comba tlačítko s textem "generovat", to tam přidáš a napozicuješ
-	 if(ComboBoxCekani->ItemIndex==2 && d.RANDOM)d.JIZPOCITANO=false;//musí být před, zajístí přepočet dle nových hodnot
-	 REFRESH();
-	 if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
+	if(ComboBoxCekani->ItemIndex==2)//tak se zobrazí vedle toho comba tlačítko pro nové generování
+	{
+		scGPButton_generuj->Visible=true;
+		ComboBoxCekani->Width=196;
+	}
+	else
+	{
+		Form1->scGPButton_generuj->Visible=false;
+		ComboBoxCekani->Width=scSplitView_OPTIONS->Width-7;
+	}
+	if(ComboBoxCekani->ItemIndex==2 && d.RANDOM)d.JIZPOCITANO=false;//musí být před, zajístí přepočet dle nových hodnot
+	REFRESH();
+	if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
+	RM();//korekce chyby oskakování pravého menu, je zajímavé, že tu musí být znovu
 }
 //---------------------------------------------------------------------------
 
