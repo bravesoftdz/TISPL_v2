@@ -59,6 +59,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel2;
 	TscGPGlyphButton *Button_ADD;
 	TscGPGlyphButton *Button_DEL;
+	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

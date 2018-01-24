@@ -101,7 +101,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		//	Form1->d.v.vymaz_seznam_POHONY();
 
 	 Form_parametry_linky->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
-	 rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
+	// rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
+
 	 scHTMLLabel_doporuc_pohony->Color=(TColor)RGB(230,230,230);
 
 
@@ -153,12 +154,23 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
 	 rEditNum_takt->Text=Form1->d.v.PP.TT;
 
+	 rStringGridEd_tab_dopravniky->SetColumnAutoFit(0);
+	 rStringGridEd_hlavicka_tabulky->SetColumnAutoFit(0);
 
+	 rStringGridEd_tab_dopravniky->Cells[0][0]="ID";
 	 rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
 	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [mm]";
 	 rStringGridEd_tab_dopravniky->Cells[5][0]="Používán";
+
+	 rStringGridEd_hlavicka_tabulky->Cells[0][0]=rStringGridEd_tab_dopravniky->Cells[0][0];
+	 rStringGridEd_hlavicka_tabulky->Cells[1][0]=rStringGridEd_tab_dopravniky->Cells[1][0];
+	 rStringGridEd_hlavicka_tabulky->Cells[2][0]=rStringGridEd_tab_dopravniky->Cells[2][0];
+	 rStringGridEd_hlavicka_tabulky->Cells[3][0]=rStringGridEd_tab_dopravniky->Cells[3][0];
+	 rStringGridEd_hlavicka_tabulky->Cells[4][0]=rStringGridEd_tab_dopravniky->Cells[4][0];
+	 rStringGridEd_hlavicka_tabulky->Cells[5][0]=rStringGridEd_tab_dopravniky->Cells[5][0];
+
 
 	//	rStringGridEd_tab_dopravniky->Columns->
 
@@ -417,10 +429,14 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
 
 		rStringGridEd_tab_dopravniky->Cells[0][i] = i;
-		rStringGridEd_tab_dopravniky->Cells[1][i] = rStringGridEd_tab_dopravniky->Cells[1][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[2][i] = rStringGridEd_tab_dopravniky->Cells[2][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[3][i] = rStringGridEd_tab_dopravniky->Cells[3][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[4][i] = rStringGridEd_tab_dopravniky->Cells[4][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[2][i] = "0";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[3][i] = "0";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[4][i] = "0";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
+		rStringGridEd_tab_dopravniky->Cells[5][i] = "ne";
+
+
+
 
 	}
 }
@@ -667,11 +683,15 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
 {
 
-if (Col==1 && Row==0) {
+//if (Col==1 && Row==5) {
 
  //	EditStyle=sgbDropDown;   //vyber typu
 
-	 }
+// SetFocus();
+
+
+
+ //	 }
 
 }
 //---------------------------------------------------------------------------
