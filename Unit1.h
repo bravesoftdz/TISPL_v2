@@ -148,7 +148,7 @@ __published:	// IDE-managed Components
 	TButton *ButtonPLAY;
 	TTimer *Timer_animace;
 	TChart *Chart6;
-	TCheckBox *CheckBoxAnimovatSG;
+	TCheckBox *CheckBoxAnimovatSG_OLD;
 	TLabel *Label_zamerovac;
 	TPieSeries *Series7;
 	TTeeGDIPlus *TeeGDIPlus1;
@@ -168,7 +168,7 @@ __published:	// IDE-managed Components
 	TIdHTTP *IdHTTP1;
 	TTimer *Timer_tr;
 	TFDConnection *FDConnection1;
-	TCheckBox *CheckBox_pouzit_zadane_kapacity;
+	TCheckBox *CheckBox_pouzit_zadane_kapacity_OLD;
 	TFDQuery *FDQuery1;
 	TButton *SQL_processID;
 	TFDQuery *FDQuery2;
@@ -232,7 +232,6 @@ __published:	// IDE-managed Components
 	TscExPanel *scExPanel_vrstvy;
 	TscLabel *scLabel4;
 	TscLabel *scLabel_titulek;
-	TscLabel *scLabel_doba_cekani;
 	TButton *hl_spojak_zakazky;
 	TMemo *Memo2;
 	TButton *button_zakazky_temp;
@@ -254,6 +253,10 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_close_legenda_casove_osy;
 	TButton *Button13;
 	TscGPGlyphButton *scGPButton_generuj;
+	TscLabel *scLabel_procesy_header;
+	TscLabel *scLabel_doba_cekani;
+	TscGPCheckBox *CheckBoxAnimovatSG;
+	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -355,7 +358,7 @@ __published:	// IDE-managed Components
 	void __fastcall ComboBoxDOminChange(TObject *Sender);
 	void __fastcall TimerMouseWheelTimer(TObject *Sender);
 	void __fastcall Timer_trTimer(TObject *Sender);
-	void __fastcall CheckBox_pouzit_zadane_kapacityClick(TObject *Sender);
+	void __fastcall CheckBox_pouzit_zadane_kapacity_OLDClick(TObject *Sender);
 	void __fastcall SQL_processIDClick(TObject *Sender);
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);

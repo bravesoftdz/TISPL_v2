@@ -73,9 +73,6 @@ Coordinates=139,557,91,36
 [RzSpacer2]
 Coordinates=1103,510,78,36
 
-[CheckBoxAnimovatSG]
-Coordinates=1021,10,145,58
-
 [Button2]
 Coordinates=952,10,59,58
 
@@ -108,9 +105,6 @@ Coordinates=838,631,80,36
 
 [Button9]
 Coordinates=617,144,59,58
-
-[CheckBox_pouzit_zadane_kapacity]
-Coordinates=301,212,218,58
 
 [Timer_animace]
 Coordinates=155,631,103,36
@@ -275,7 +269,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=1110,276,79,36
+Coordinates=86,631,139,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -383,9 +377,6 @@ Coordinates=284,631,66,36
 [(TMenuItem)]
 Coordinates=1463,331,88,36
 
-[scLabel_doba_cekani]
-Coordinates=86,631,139,36
-
 [scGPGlyphButton_definice_zakazek]
 Coordinates=511,631,222,36
 
@@ -448,4 +439,10 @@ Coordinates=514,556,124,36
 
 [scGPGlyphButton_close_grafy]
 Coordinates=1681,56,158,36
+
+[CheckBoxAnimovatSG_OLD]
+Coordinates=1021,10,145,58
+
+[CheckBox_pouzit_zadane_kapacity_OLD]
+Coordinates=301,212,218,58
 

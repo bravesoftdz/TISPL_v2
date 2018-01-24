@@ -231,7 +231,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
-    ScrollBars = ssVertical
+    ScrollBars = ssNone
     TabOrder = 1
     OnEnter = rStringGridEd_tab_dopravnikyEnter
     OnKeyDown = rStringGridEd_tab_dopravnikyKeyDown

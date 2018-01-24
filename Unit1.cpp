@@ -780,8 +780,10 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ComboBoxCekani->Visible=true;
 			d.JIZPOCITANO=false;d.RANDOM=true;
 			scExPanel_log_header->Visible=true;
+			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-2;
 			if(Form1->ComboBoxCekani->ItemIndex==2){
-      scGPButton_generuj->Visible=true;
+			scGPButton_generuj->Visible=true;
+		 	ComboBoxCekani->Width=196;
 			}
 
 			Label_zamerovac->Visible=false;
@@ -861,9 +863,25 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	//PopupMenu1->AutoPopup=false;
 	Button3->Visible=false;
 	Timer_neaktivity->Enabled=false;
+	CheckBoxVymena_barev->Visible=false;
+	scGPButton_generuj->Visible=false;
 
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=true;
+	scLabel_procesy_header->Visible=true;
+	CheckBox_pouzit_zadane_kapacity->Visible=true;
+	ComboBoxDOmin->Visible=true;
+	ComboBoxODmin->Visible=true;
+	rComboBoxKrok->Visible=true;
+
+	scLabel_procesy_header->Top=scLabel_doba_cekani->Top;
+	ComboBoxODmin->Top=ComboBoxCekani->Top;
+	ComboBoxDOmin->Top=ComboBoxODmin->Top;
+	ComboBoxDOmin->Left=64;
+	rComboBoxKrok->Top=ComboBoxODmin->Top;
+	CheckBoxAnimovatSG->Top=CheckBoxVymena_barev->Top;
+	CheckBox_pouzit_zadane_kapacity->Top=CheckBoxVytizenost->Top;
+  ComboBoxCekani->Visible=true;
 
 	CheckBoxVymena_barev->Visible=false;
 	scLabel_doba_cekani->Visible=false;
@@ -882,8 +900,6 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	LabelRoletka->Visible=true;
 	LabelRoletka->Caption="Filtr minut";
 	LabelRoletka->Font->Color=clBlack;
-	ComboBoxODmin->Visible=true;
-	rComboBoxKrok->Visible=true;
 	scGPCheckBox_ortogon->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 
@@ -896,14 +912,14 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 		ComboBoxDOmin->Items->Add(val);
 	}
 	//ComboBoxODmin->Items->Add(d.v.vrat_nejpozdejsi_konec_zakazek());
-	ComboBoxDOmin->Visible=true;
+	//ComboBoxDOmin->Visible=true;
 	//ComboBoxDOmin->Top=CheckBoxPALCE->Top;
-	ComboBoxDOmin->Left=ComboBoxODmin->Left+40+2;
+	//ComboBoxDOmin->Left=ComboBoxODmin->Left+40+2;
 	//ComboBoxDOmin->Items->Add(d.TP.KZ);//plnění komba max časem
 
-	CheckBox_pouzit_zadane_kapacity->Visible=true;
+	//CheckBox_pouzit_zadane_kapacity->Visible=true;
  //	CheckBox_pouzit_zadane_kapacity->Top=CheckBoxPALCE->Top;
-	CheckBox_pouzit_zadane_kapacity->Left=CheckBoxAnimovatSG->Left+CheckBoxAnimovatSG->Width+7;
+	//CheckBox_pouzit_zadane_kapacity->Left=CheckBoxAnimovatSG->Left+CheckBoxAnimovatSG->Width+7;
 
 	//---
   ComboBoxCekani->Visible=false;
@@ -4041,7 +4057,7 @@ void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm1::CheckBox_pouzit_zadane_kapacityClick(TObject *Sender)
+void __fastcall TForm1::CheckBox_pouzit_zadane_kapacity_OLDClick(TObject *Sender)
 {
 Invalidate();
 }
@@ -4455,8 +4471,14 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
-	 if(Form1->ComboBoxCekani->ItemIndex==2)Form1->scGPButton_generuj->Visible=true;
-	 else Form1->scGPButton_generuj->Visible=false;//tak se zobrazí vedle toho comba tlačítko s textem "generovat", to tam přidáš a napozicuješ
+	 if(Form1->ComboBoxCekani->ItemIndex==2){
+	 Form1->scGPButton_generuj->Visible=true;
+	 ComboBoxCekani->Width=196;
+	 }
+	 else {
+	 Form1->scGPButton_generuj->Visible=false;
+	 ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-2;
+	 }//tak se zobrazí vedle toho comba tlačítko s textem "generovat", to tam přidáš a napozicuješ
 	 if(ComboBoxCekani->ItemIndex==2 && d.RANDOM)d.JIZPOCITANO=false;//musí být před, zajístí přepočet dle nových hodnot
 	 REFRESH();
 	 if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
