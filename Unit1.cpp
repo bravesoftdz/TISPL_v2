@@ -1126,6 +1126,7 @@ void TForm1::REFRESH(bool invalidate)
 {
 	if(!antialiasing && invalidate)Invalidate();
 	else {FormPaint(this);if(Label_wip->Visible)Label_wip->Invalidate();}//pokude je zapntutý antialiasing neproblikne, ale jen se "přeplácne" bitmapou nedojde k probliknutí
+	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -4569,7 +4570,7 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-
+//zajišťuje vygenerování nové doby čekání na palec
 void __fastcall TForm1::scGPButton_generujClick(TObject *Sender)
 {
 		d.RANDOM=true;
@@ -4578,4 +4579,19 @@ void __fastcall TForm1::scGPButton_generujClick(TObject *Sender)
 		d.RANDOM=false;
 }
 //---------------------------------------------------------------------------
+//korekce chyby oskakování pravého menu
+void TForm1::RM()
+{
+	if(scSplitView_OPTIONS->Visible)scSplitView_OPTIONS->Align=alRight;
+}
+//---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 

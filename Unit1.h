@@ -402,6 +402,7 @@ __published:	// IDE-managed Components
 
 
 
+
 // User declarations
 	////struktury, vıèty
 public:
@@ -536,7 +537,7 @@ public:		// User declarations
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišuje zápis do INI aplikace
 	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišuje ètení z INI aplikace
 	void kopirovat_objekt();//pokud je oznaèenı objekt, zajistí jeho zkopírování, pøipoèítá index 1,2,3
-
+  void RM();//korekce chyby oskakování pravého menu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
