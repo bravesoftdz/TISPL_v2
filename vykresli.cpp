@@ -821,6 +821,7 @@ void Cvykresli::zobrazit_label_zamerovac(int X,int Y)
 				Form1->Label_zamerovac->Left=X+5; Form1->Label_zamerovac->Top=Y+20; //+ odsazení
 				Form1->Label_zamerovac->Caption=" vozík: "+AnsiString(V)+" \n min: "+AnsiString((X+PosunT.x)/PX2MIN)+" ";
 				Form1->Label_zamerovac->Visible=true;
+				Form1->RM();//korekce chyby oskakování pravého menu
 	}
 	else Form1->Label_zamerovac->Visible=false;
 }
