@@ -382,7 +382,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				 Form1->d.v.vloz_pohon (rStringGridEd_tab_dopravniky->Cells[1][i], //nazev
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60),        //rychlost od
 																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60),    //rychlost do
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]));      //roztec
+																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000));      //roztec
 			}
 			//po aktualizaci (resp. smazání a uložení) pohonù musí následovat aktualizace pøiøazení pohonù k objektum:
 			if (Form1->d.v.OBJEKTY->dalsi!=NULL)Form1->d.v.aktualizace_objektu(-2);

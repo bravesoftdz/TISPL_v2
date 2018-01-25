@@ -145,7 +145,7 @@ __published:	// IDE-managed Components
 	TBarSeries *Series6;
 	TButton *Button2;
 	TTimer *Timer_neaktivity;
-	TButton *ButtonPLAY;
+	TButton *ButtonPLAY_O;
 	TTimer *Timer_animace;
 	TChart *Chart6;
 	TCheckBox *CheckBoxAnimovatSG_OLD;
@@ -257,6 +257,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_doba_cekani;
 	TscGPCheckBox *CheckBoxAnimovatSG;
 	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
+	TscGPGlyphButton *ButtonPLAY;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -349,7 +350,7 @@ __published:	// IDE-managed Components
 	void __fastcall eXtreme1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall Timer_neaktivityTimer(TObject *Sender);
-	void __fastcall ButtonPLAYClick(TObject *Sender);
+	void __fastcall ButtonPLAY_OClick(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
 	void __fastcall CheckBoxVytizenost_Click(TObject *Sender);
 	void __fastcall Button13Click(TObject *Sender);
@@ -399,6 +400,12 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_ortogonClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_close_legenda_casove_osyClick(TObject *Sender);
 	void __fastcall scGPButton_generujClick(TObject *Sender);
+	void __fastcall scExPanel_log_headerClick(TObject *Sender);
+	void __fastcall scExPanel_log_headerMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
+	void __fastcall scExPanel_log_headerMouseActivate(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y, int HitTest, TMouseActivate &MouseActivate);
+
 
 
 
