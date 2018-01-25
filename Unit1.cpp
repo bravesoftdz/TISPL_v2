@@ -2618,16 +2618,24 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	Form_osa_info->rHTMLLabel_rezim_vypis->Caption=rezim;
 	Form_osa_info->rHTMLLabel_dop_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita_dop;
 	Form_osa_info->rHTMLLabel_pozad_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita;
-	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD;
+	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD*60.0;
 	Form_osa_info->rHTMLLabel_palce_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec;
 	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
-	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec/1000.0/proces_pom->segment_cesty->RD;
-	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
-	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=proces_pom->Tpoc;
+	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec/100.0)/(proces_pom->segment_cesty->RD*60.0);
+	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec/100.0,proces_pom->segment_cesty->RD*60.0,1);
+ //	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec)/(proces_pom->segment_cesty->RD);
+ //	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
+
+	UnicodeString tpoc=proces_pom->Tpoc/60.0;
+
+
+	tpoc=tpoc.SubString(1,5);
+
+	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=tpoc;
 	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=proces_pom->Tkon;
 	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=proces_pom->Tdor;
-	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=proces_pom->Tpre;
-	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=proces_pom->Tcek;
+	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=proces_pom->Tpre/60.0;
+	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=proces_pom->Tcek/60.0;
 
 	Form_osa_info->rHTMLLabel_pt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpoc;
 	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tkon-proces_pom->Tkon;
@@ -2964,7 +2972,7 @@ void TForm1::Ulozit_soubor()
 //otevře soubor
 void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 {
-  scSplitView_MENU->Opened=false;
+	scSplitView_MENU->Opened=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
   {
 		int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
@@ -3429,7 +3437,7 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 	else
 	{
 
- 			UnicodeString FN=FileName;
+			UnicodeString FN=FileName;
 			if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
 			Form_report->ulozit_report(FN+".html");
 

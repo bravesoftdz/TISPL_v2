@@ -971,6 +971,7 @@ object Form_osa_info: TForm_osa_info
     Height = 29
     TabOrder = 2
     TabStop = True
+    Visible = False
     Animation = False
     Caption = 's/min'
     CanFocused = True
