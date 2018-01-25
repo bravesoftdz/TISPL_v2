@@ -750,6 +750,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			MOD=CASOVAOSA;
 			ESC();//zruší případně rozdělanou akci
 			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
+			d.mod_vytizenost_objektu=false;
 			Timer_simulace->Enabled=false;
 			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 			d.PosunT.y=0;
@@ -768,6 +769,8 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ButtonPLAY->Visible=false;
 			CheckBoxVymena_barev->Visible=true;
 			CheckBoxVytizenost->Visible=true;
+			CheckBoxVytizenost->Checked=false;
+			CheckBoxVytizenost->Top=135;
 			scLabel_doba_cekani->Visible=true;
 			scGPGlyphButton_close_grafy->Visible=true;
 			CheckBoxAnimovatSG->Visible=false;
