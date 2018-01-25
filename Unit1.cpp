@@ -2630,8 +2630,8 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=proces_pom->Tcek;
 
 	Form_osa_info->rHTMLLabel_pt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpoc;
-	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tkon-proces_pom->Tkon;
-	Form_osa_info->rHTMLLabel_wt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpre;
+	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tpre-proces_pom->Tkon;
+	Form_osa_info->rHTMLLabel_wt_vypis->Caption=proces_pom->Tcek-proces_pom->Tpre;
 	Form_osa_info->rHTMLLabel_CT_n_vypis->Caption=proces_pom->Tcek-proces_pom->Tpoc;
 
 
@@ -3944,12 +3944,17 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 	{
 		d.mod_vytizenost_objektu=!d.mod_vytizenost_objektu;
 		CheckBoxVymena_barev->Visible=!CheckBoxVymena_barev->Visible;
+		ComboBoxCekani->Visible=!ComboBoxCekani->Visible;
+		scLabel_doba_cekani->Visible=!scLabel_doba_cekani->Visible;
+		//pozice
+		if(d.mod_vytizenost_objektu)CheckBoxVytizenost->Top=scLabel_doba_cekani->Top;
+		else CheckBoxVytizenost->Top=135;
 		SB("");
 		Invalidate();
+		RM();
 	}
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 
@@ -3983,20 +3988,21 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-
 void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
 	 d.JIZPOCITANO=false;//zajistí přepočet časových os
 	 Invalidate();
+	 RM();
 }
 
- //-------------------------------------------------------------
+//-------------------------------------------------------------
 void __fastcall TForm1::ComboBoxODminChange(TObject *Sender)
 {
 		//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
 
 		d.TP.OD=ms.MyToDouble(ComboBoxODmin->Text);
 		Invalidate();
+		RM();
 }
 //---------------------------------------------------------------------------
 
@@ -4006,6 +4012,7 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 		//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
 		d.TP.DO=ms.MyToDouble(ComboBoxDOmin->Text);
 		Invalidate();
+		RM();
 }
 //---------------------------------------------------------------------------
 //zapne či vypne antialiasing
@@ -4015,6 +4022,7 @@ void __fastcall TForm1::scGPSwitch_AAChangeState(TObject *Sender)
 	scSplitView_MENU->Opened=false;
 	DrawGrid_knihovna->Invalidate();
 	Invalidate();//v tomto případě lépe než REFRESH - kvůli efektu
+	RM();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_trTimer(TObject *Sender)
@@ -4470,6 +4478,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
+	//pokud bych chtěl používat i v v modu vytzení objektu, ale při znovu výberu náhodne hodnoty házelo chybu:if(d.mod_vytizenost_objektu){d.JIZPOCITANO=false;d.mod_vytizenost_objektu=false;d.vykresli_casove_osy(Canvas);d.mod_vytizenost_objektu=true;}
 	if(ComboBoxCekani->ItemIndex==2)//tak se zobrazí vedle toho comba tlačítko pro nové generování
 	{
 		scGPButton_generuj->Visible=true;
