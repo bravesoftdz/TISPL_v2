@@ -844,7 +844,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	MOD=TECHNOPROCESY;
 	ESC();//zruší případně rozdělanou akci
 	SB("zobrazení technologických procesů v čase",1);
-	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
+	//if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
 	d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 	d.PosunT.y=0;
@@ -1106,19 +1106,19 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 				delete (bmp_in);//velice nutné
 			}
-			d.vykresli_svislici_na_casove_osy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+			//d.vykresli_svislici_na_casove_osy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
 			break;
 		}
-//		case TECHNOPROCESY:	//d.vykresli_technologicke_procesy(Canvas); break; puvodni konstrukce
-//		if(SplitViewOpen==false)
-//		{
-//			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-//			bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
-//			d.vykresli_technologicke_procesy(bmp_in->Canvas);
-//			Canvas->Draw(0,RzToolbar1->Height,bmp_in);
-//			delete (bmp_in);//velice nutné
-//		}
-//			break;
+		case TECHNOPROCESY:	//d.vykresli_technologicke_procesy(Canvas); break; puvodni konstrukce
+		if(SplitViewOpen==false)
+		{
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+			bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
+			d.vykresli_technologicke_procesy(bmp_in->Canvas);
+			Canvas->Draw(0,RzToolbar1->Height,bmp_in);
+			delete (bmp_in);//velice nutné
+		}
+		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
 }
@@ -1475,10 +1475,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
 
 	if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
-	{
-			d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
+	{   //nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (if zde nebyl)
+			if(Label_zamerovac->Visible)d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			d.vykresli_svislici_na_casove_osy(Canvas,X,Y);
+			//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
 			SB(UnicodeString((X+d.PosunT.x)/d.PX2MIN)+" min",6);//výpis času na ose procesů dle kurzoru
 			//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
 			Label_zamerovac->Visible=false;

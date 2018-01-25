@@ -1950,7 +1950,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitWidth = 162
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
       Left = 543
@@ -4843,8 +4842,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 807
-        Top = 970
+        Left = 717
+        Top = 880
         Width = 244
         Height = 31
         Align = alCustom
@@ -4852,7 +4851,7 @@ object Form1: TForm1
         TabStop = True
         OnClick = scGPCheckBox_ortogonClick
         Animation = False
-        Caption = 'Ortogonalizovat - Zarovnat'
+        Caption = 'Ortogonalizovat sch'#233'ma'
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft

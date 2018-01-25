@@ -814,7 +814,7 @@ void Cvykresli::zobrazit_label_zamerovac(int X,int Y)
 {
 	unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
 	if(!mod_vytizenost_objektu && 0<V && V<=v.VOZIKY->predchozi->n) //pokud se nejedná o řežim vytíženost objektu a zároveň se jedná o číslo vozík od min do max vozíků
-	{
+	{          vykresli_svislici_na_casove_osy(Form1->Canvas,X,Y);
 				Form1->Label_zamerovac->Transparent=false;
 				Form1->Label_zamerovac->Color=clWhite;
 				Form1->Label_zamerovac->Font->Color=(TColor) RGB(100,100,100);
