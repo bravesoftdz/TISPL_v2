@@ -1938,8 +1938,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitLeft = 401
-      ExplicitWidth = 149
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
       Left = 550
@@ -2054,7 +2052,6 @@ object Form1: TForm1
       FrameOnSolid = True
       FrameInside = False
       OnChangeState = scGPSwitch_rezimChangeState
-      ExplicitLeft = 306
     end
     object scLabel_klient: TscLabel
       Left = 329
@@ -2087,7 +2084,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Ov'#283#345'ov'#225'n'#237
-      ExplicitLeft = 337
     end
     object scLabel_architekt: TscLabel
       Left = 242
@@ -4828,8 +4824,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 711
-        Top = 874
+        Left = 717
+        Top = 880
         Width = 244
         Height = 31
         Align = alCustom
@@ -4837,7 +4833,7 @@ object Form1: TForm1
         TabStop = True
         OnClick = scGPCheckBox_ortogonClick
         Animation = False
-        Caption = 'Ortogonalizovat - Zarovnat'
+        Caption = 'Ortogonalizovat sch'#233'ma'
         CanFocused = True
         Spacing = 1
         Layout = blGlyphLeft
@@ -5365,7 +5361,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800E004E00410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800E404E40410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6488,7 +6484,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013000F003F00330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013000F403F40330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -21950,7 +21946,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C010130008C028C0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C010130009002900218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
