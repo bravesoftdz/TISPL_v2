@@ -878,6 +878,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	scLabel_procesy_header->Top=scLabel_doba_cekani->Top;
 	ComboBoxODmin->Top=ComboBoxCekani->Top;
 	ComboBoxDOmin->Top=ComboBoxODmin->Top;
+	ButtonPLAY->Top=ComboBoxODmin->Top-5;
 	ComboBoxDOmin->Left=64;
 	rComboBoxKrok->Top=ComboBoxODmin->Top;
 	CheckBoxAnimovatSG->Top=CheckBoxVymena_barev->Top;
@@ -2629,16 +2630,24 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
  //	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec)/(proces_pom->segment_cesty->RD);
  //	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
 
-	UnicodeString tpoc=proces_pom->Tpoc/60.0;
+	UnicodeString Tpoc=proces_pom->Tpoc/60.0;
+	UnicodeString Tkon=proces_pom->Tkon/60.0;
+	UnicodeString Tdor=proces_pom->Tdor/60.0;
+	UnicodeString Tpre=proces_pom->Tpre/60.0;
+	UnicodeString Tcek=proces_pom->Tcek/60.0;
 
 
-	tpoc=tpoc.SubString(1,5);
+	Tpoc=Tpoc.SubString(1,5);
+	Tkon=Tkon.SubString(1,5);
+	Tdor=Tdor.SubString(1,5);
+	Tpre=Tpre.SubString(1,5);
+	Tcek=Tcek.SubString(1,5);
 
-	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=tpoc;
-	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=proces_pom->Tkon;
-	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=proces_pom->Tdor;
-	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=proces_pom->Tpre/60.0;
-	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=proces_pom->Tcek/60.0;
+	Form_osa_info->rHTMLLabel_tpoc_vypis->Caption=Tpoc;
+	Form_osa_info->rHTMLLabel_tkon_vypis->Caption=Tkon;
+	Form_osa_info->rHTMLLabel_tdor_vypis->Caption=Tdor;
+	Form_osa_info->rHTMLLabel_tpre_vypis->Caption=Tpre;
+	Form_osa_info->rHTMLLabel_tcek_vypis->Caption=Tcek;
 
 	Form_osa_info->rHTMLLabel_pt_vypis->Caption=proces_pom->Tkon-proces_pom->Tpoc;
 	Form_osa_info->rHTMLLabel_mt_vypis->Caption=proces_pom->Tpre-proces_pom->Tkon;
@@ -3914,9 +3923,20 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::ButtonPLAYClick(TObject *Sender)
+void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 {
 	Timer_animace->Enabled=!Timer_animace->Enabled;
+
+	if(ButtonPLAY->GlyphOptions->Kind==scgpbgkPlay) {
+			ButtonPLAY->GlyphOptions->Kind=scgpbgkStop;
+			ButtonPLAY->Hint="zastavit animaci";
+	}
+	else {
+    ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+		ButtonPLAY->Hint="spustit animaci";
+
+	}
+
 	if(Timer_animace->Enabled)
 	{
 		CheckBoxAnimovatSG->Visible=true;
@@ -3930,7 +3950,8 @@ void __fastcall TForm1::ButtonPLAYClick(TObject *Sender)
 		d.TP.Ndo=0;//rozmezí Jaký se vypíše vozik, pokud bude 0 vypisují se všechny
 		d.TP.A=true;//jednořádková animace
 	}
-	else ButtonPLAY->Caption="PLAY";
+	else 	ButtonPLAY->Caption="PLAY";
+		
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
@@ -4513,6 +4534,7 @@ void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
 //	scExPanel_log_header->Visible=false;
 	scGPGlyphButton_zpravy_ikona->Visible=true;
 	scExPanel_log_header->Visible=false;
+	scSplitView_OPTIONS->Opened=false;
 
 }
 //---------------------------------------------------------------------------
@@ -4539,6 +4561,12 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 	scGPButton_generuj->Options->HotColor=scGPButton_generuj->Options->NormalColor;
 	scGPButton_generuj->Options->PressedColor=scGPButton_generuj->Options->NormalColor;
 	scGPButton_generuj->Options->FramePressedColor=scGPButton_generuj->Options->NormalColor;
+
+	ButtonPLAY->Options->NormalColor=scSplitView_OPTIONS->Color;
+	ButtonPLAY->Options->FocusedColor=scGPButton_generuj->Options->NormalColor;
+	ButtonPLAY->Options->HotColor=scGPButton_generuj->Options->NormalColor;
+	ButtonPLAY->Options->PressedColor=scGPButton_generuj->Options->NormalColor;
+	ButtonPLAY->Options->FramePressedColor=scGPButton_generuj->Options->NormalColor;
 
 
 }
@@ -4610,12 +4638,25 @@ void TForm1::RM()
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm1::scExPanel_log_headerClick(TObject *Sender)
+{
+scSplitView_OPTIONS->Opened=false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scExPanel_log_headerMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+scSplitView_OPTIONS->Opened=false;
+}
+//---------------------------------------------------------------------------
 
 
+void __fastcall TForm1::scExPanel_log_headerMouseActivate(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y, int HitTest, TMouseActivate &MouseActivate)
 
-
-
-
-
-
+{
+scSplitView_OPTIONS->Opened=false;
+}
+//---------------------------------------------------------------------------
 

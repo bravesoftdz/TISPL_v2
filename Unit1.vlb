@@ -91,9 +91,6 @@ Coordinates=832,144,72,58
 [TeeGDIPlus2]
 Coordinates=1135,496,91,36
 
-[ButtonPLAY]
-Coordinates=510,10,84,58
-
 [TeeGDIPlus1]
 Coordinates=1036,631,91,36
 
@@ -445,4 +442,7 @@ Coordinates=1021,10,145,58
 
 [CheckBox_pouzit_zadane_kapacity_OLD]
 Coordinates=301,212,218,58
+
+[ButtonPLAY_O]
+Coordinates=510,10,84,58
 

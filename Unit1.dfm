@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderStyle = bsNone
   Caption = 'ELTEP - TISPL - Timing Inspection of Single Purpose Lines'
   ClientHeight = 726
-  ClientWidth = 1209
+  ClientWidth = 1202
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -28,7 +28,7 @@ object Form1: TForm1
   OnShortCut = FormShortCut
   OnShow = FormShow
   DesignSize = (
-    1209
+    1202
     726)
   PixelsPerInch = 96
   TextHeight = 13
@@ -237,7 +237,7 @@ object Form1: TForm1
   object Memo1: TMemo
     Left = 0
     Top = 656
-    Width = 1209
+    Width = 1202
     Height = 42
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
@@ -250,6 +250,7 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
+    ExplicitWidth = 1209
   end
   object Button3: TButton
     Left = 183
@@ -545,7 +546,7 @@ object Form1: TForm1
     Visible = False
     OnClick = Button2Click
   end
-  object ButtonPLAY: TButton
+  object ButtonPLAY_O: TButton
     Left = 795
     Top = 1
     Width = 43
@@ -553,7 +554,7 @@ object Form1: TForm1
     Caption = 'PLAY'
     TabOrder = 16
     Visible = False
-    OnClick = ButtonPLAYClick
+    OnClick = ButtonPLAY_OClick
   end
   object Chart6: TChart
     Left = 904
@@ -619,7 +620,7 @@ object Form1: TForm1
   object scGPPanel_mainmenu: TscGPPanel
     Left = 0
     Top = 0
-    Width = 1209
+    Width = 1202
     Height = 34
     Align = alTop
     TabOrder = 19
@@ -647,9 +648,10 @@ object Form1: TForm1
     Caption = 'scGPPanel_mainmenu'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 1209
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1159
+      Left = 1152
       Top = 0
       Width = 50
       Height = 33
@@ -724,10 +726,11 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1159
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1059
+      Left = 1052
       Top = 0
       Width = 50
       Height = 33
@@ -802,9 +805,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1059
     end
     object zalozka_schema: TscGPButton
-      Left = 587
+      Left = 580
       Top = 0
       Width = 78
       Height = 34
@@ -894,6 +898,7 @@ object Form1: TForm1
       Down = True
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 587
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -988,7 +993,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object casovosa1: TscGPButton
-      Left = 743
+      Left = 736
       Top = 0
       Width = 78
       Height = 34
@@ -1078,9 +1083,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 743
     end
     object technologickprocesy1: TscGPButton
-      Left = 821
+      Left = 814
       Top = 0
       Width = 78
       Height = 34
@@ -1171,10 +1177,11 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 821
     end
     object scGPGlyphButton_OPTIONS: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1019
+      Left = 1012
       Top = 0
       Width = 35
       Height = 33
@@ -1249,6 +1256,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 2
       AllowAllUp = True
+      ExplicitLeft = 1019
     end
     object Toolbar_Ulozit: TscGPGlyphButton
       AlignWithMargins = True
@@ -1486,7 +1494,7 @@ object Form1: TForm1
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1109
+      Left = 1102
       Top = 0
       Width = 50
       Height = 33
@@ -1561,6 +1569,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1109
     end
     object DetailsButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1643,7 +1652,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object layout: TscGPButton
-      Left = 665
+      Left = 658
       Top = 0
       Width = 78
       Height = 34
@@ -1734,9 +1743,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 665
     end
     object simulace: TscGPButton
-      Left = 899
+      Left = 892
       Top = 0
       Width = 78
       Height = 34
@@ -1827,9 +1837,10 @@ object Form1: TForm1
       Down = False
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 899
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 977
+      Left = 970
       Top = 0
       Width = 37
       Height = 34
@@ -1906,11 +1917,12 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 977
     end
     object scLabel_titulek: TscLabel
       Left = 388
       Top = 0
-      Width = 162
+      Width = 155
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1940,7 +1952,7 @@ object Form1: TForm1
       Caption = 'TISPL'
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
-      Left = 550
+      Left = 543
       Top = 0
       Width = 37
       Height = 34
@@ -2018,6 +2030,7 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 550
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
@@ -2121,7 +2134,7 @@ object Form1: TForm1
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
     Top = 698
-    Width = 1209
+    Width = 1202
     Height = 28
     Align = alBottom
     TabOrder = 20
@@ -2148,6 +2161,7 @@ object Form1: TForm1
     Color = clBtnFace
     TransparentBackground = False
     StorePaintBuffer = True
+    ExplicitWidth = 1209
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -2200,7 +2214,7 @@ object Form1: TForm1
     object RzStatusPane4: TRzStatusPane
       Left = 479
       Top = 0
-      Width = 704
+      Width = 697
       Height = 28
       Hint = 'Rychl'#225' n'#225'pov'#283'da aplikace'
       BorderWidth = 0
@@ -2437,7 +2451,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPSizeBox: TscGPSizeBox
-      Left = 1183
+      Left = 1176
       Top = 0
       Width = 26
       Height = 28
@@ -2447,6 +2461,7 @@ object Form1: TForm1
       GlyphColor = clWhite
       GlyphColorAlpha = 200
       GlyphThickness = 1
+      ExplicitLeft = 1183
     end
     object scLabel_ZOOM: TscLabel
       Left = 0
@@ -3027,6 +3042,9 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 31
     Visible = False
+    OnClick = scExPanel_log_headerClick
+    OnMouseActivate = scExPanel_log_headerMouseActivate
+    OnMouseDown = scExPanel_log_headerMouseDown
     BackgroundStyle = scexbgsPanel
     HeaderColor = clSilver
     ButtonGlyphColor = clBtnText
@@ -4496,12 +4514,11 @@ object Form1: TForm1
     OnClick = CheckBoxVytizenost_Click
   end
   object scSplitView_OPTIONS: TscSplitView
-    Left = 1209
+    Left = 952
     Top = 34
-    Width = 0
+    Width = 250
     Height = 622
     Anchors = [akTop, akRight, akBottom]
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
     Font.Height = -11
@@ -4531,7 +4548,7 @@ object Form1: TForm1
     CompactWidth = 0
     CompactHeight = 20
     GripSize = 0
-    Opened = False
+    Opened = True
     OpenedWidth = 250
     OpenedHeight = 50
     OpenedMinWidth = 0
@@ -4547,6 +4564,7 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
+    ExplicitLeft = 959
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -4912,6 +4930,8 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        ExplicitLeft = 717
+        ExplicitTop = 880
       end
       object ComboBoxDOmin: TComboBox
         Left = 64
@@ -4951,9 +4971,9 @@ object Form1: TForm1
           '')
       end
       object rComboBoxKrok: TrComboBoxEx
-        Left = 130
+        Left = 115
         Top = 198
-        Width = 103
+        Width = 95
         Height = 26
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -5300,6 +5320,89 @@ object Form1: TForm1
         GroupIndex = 0
         AllowAllUp = False
       end
+      object ButtonPLAY: TscGPGlyphButton
+        Left = 208
+        Top = 192
+        Width = 38
+        Height = 37
+        Hint = 'spustit animaci'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 12
+        TabStop = True
+        Visible = False
+        OnClick = ButtonPLAY_OClick
+        Animation = False
+        Caption = 'scGPButton_generuj'
+        CanFocused = True
+        CustomDropDown = False
+        Layout = blGlyphLeft
+        TransparentBackground = True
+        ColorValue = clRed
+        Options.NormalColor = clBtnText
+        Options.HotColor = clBtnText
+        Options.PressedColor = clBtnText
+        Options.FocusedColor = clBtnFace
+        Options.DisabledColor = clBtnText
+        Options.NormalColorAlpha = 10
+        Options.HotColorAlpha = 20
+        Options.PressedColorAlpha = 30
+        Options.FocusedColorAlpha = 255
+        Options.DisabledColorAlpha = 5
+        Options.FrameNormalColor = 10114859
+        Options.FrameHotColor = 10114859
+        Options.FramePressedColor = clBtnText
+        Options.FrameFocusedColor = 10114859
+        Options.FrameDisabledColor = clBtnText
+        Options.FrameWidth = 1
+        Options.FrameNormalColorAlpha = 70
+        Options.FrameHotColorAlpha = 100
+        Options.FramePressedColorAlpha = 150
+        Options.FrameFocusedColorAlpha = 255
+        Options.FrameDisabledColorAlpha = 30
+        Options.FontNormalColor = clBtnText
+        Options.FontHotColor = clBtnText
+        Options.FontPressedColor = clBtnText
+        Options.FontFocusedColor = clBtnText
+        Options.FontDisabledColor = clBtnShadow
+        Options.ShapeFillGradientAngle = 90
+        Options.ShapeFillGradientPressedAngle = -90
+        Options.ShapeCornerRadius = 10
+        Options.ShapeStyle = scgpRect
+        Options.ArrowSize = 9
+        Options.StyleColors = True
+        GlyphOptions.NormalColor = clWhite
+        GlyphOptions.HotColor = 33023
+        GlyphOptions.PressedColor = clWhite
+        GlyphOptions.FocusedColor = clWhite
+        GlyphOptions.DisabledColor = clBtnText
+        GlyphOptions.NormalColorAlpha = 200
+        GlyphOptions.HotColorAlpha = 255
+        GlyphOptions.PressedColorAlpha = 255
+        GlyphOptions.FocusedColorAlpha = 255
+        GlyphOptions.DisabledColorAlpha = 100
+        GlyphOptions.Kind = scgpbgkPlay
+        GlyphOptions.Thickness = 2
+        GlyphOptions.StyleColors = True
+        TextMargin = -1
+        WidthWithCaption = 0
+        WidthWithoutCaption = 0
+        RepeatClick = False
+        RepeatClickInterval = 100
+        ShowGalleryMenuFromTop = False
+        ShowGalleryMenuFromRight = False
+        ShowMenuArrow = True
+        ShowFocusRect = True
+        Down = False
+        GroupIndex = 0
+        AllowAllUp = False
+      end
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 3
@@ -5361,7 +5464,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800E404E40410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800E004E40410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6484,7 +6587,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013000F403F40330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013000F003F40330003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
