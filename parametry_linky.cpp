@@ -379,10 +379,27 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 			for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 			{
-				 Form1->d.v.vloz_pohon (rStringGridEd_tab_dopravniky->Cells[1][i], //nazev
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60),        //rychlost od
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60),    //rychlost do
-																Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000));      //roztec
+			 double rychlost_od;
+			 double rychlost_do;
+			 double roztec;
+			 UnicodeString nazev;
+
+			if (rStringGridEd_tab_dopravniky->Cells[1][i].IsEmpty())  nazev="nový pohon";
+			else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
+
+			if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty())  rychlost_od=0;
+			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60);
+
+			if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty())  rychlost_do=0;
+			else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60);
+
+			if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())  roztec=0;
+			else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000);
+
+				 Form1->d.v.vloz_pohon (nazev, //nazev
+																rychlost_od,        //rychlost od
+																rychlost_do,    //rychlost do
+																roztec);      //roztec
 			}
 			//po aktualizaci (resp. smazání a uložení) pohonù musí následovat aktualizace pøiøazení pohonù k objektum:
 			if (Form1->d.v.OBJEKTY->dalsi!=NULL)Form1->d.v.aktualizace_objektu(-2);

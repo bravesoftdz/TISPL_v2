@@ -280,6 +280,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
@@ -300,6 +301,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
@@ -320,6 +322,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
