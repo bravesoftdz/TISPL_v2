@@ -616,7 +616,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
 			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
 			 (// a zároveň je splňuje následují:
-					C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
+					 C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
 					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
 					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//K->PP a jiný dopravník nebo
 					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
@@ -1013,7 +1013,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		ukaz=ukaz->dalsi;
 	}
 
-	////////VOZÍČKY
+	////////VOZÍKY
 	//nastavení popisku
 	SetBkMode(canv->Handle,/*TRANSPARENT*/OPAQUE);//nastvení transparentního pozadí
 	canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
