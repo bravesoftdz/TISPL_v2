@@ -692,6 +692,7 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
+	scGPGlyphButton_close_grafy->Visible=false;
 	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
 	SB("Layout",1);
 	//Zoom=5;ZOOM();
@@ -750,6 +751,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			MOD=CASOVAOSA;
 			ESC();//zruší případně rozdělanou akci
 			if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
+			d.mod_vytizenost_objektu=false;
 			Timer_simulace->Enabled=false;
 			d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 			d.PosunT.y=0;
@@ -768,6 +770,8 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			ButtonPLAY->Visible=false;
 			CheckBoxVymena_barev->Visible=true;
 			CheckBoxVytizenost->Visible=true;
+			CheckBoxVytizenost->Checked=false;
+			CheckBoxVytizenost->Top=135;
 			scLabel_doba_cekani->Visible=true;
 			scGPGlyphButton_close_grafy->Visible=true;
 			CheckBoxAnimovatSG->Visible=false;
@@ -901,6 +905,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	LabelRoletka->Font->Color=clBlack;
 	scGPCheckBox_ortogon->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
+	scGPGlyphButton_close_grafy->Visible=false;
 
 
 
@@ -2627,11 +2632,11 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
  //	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec)/(proces_pom->segment_cesty->RD);
  //	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
 
-	UnicodeString Tpoc=proces_pom->Tpoc/60.0;
-	UnicodeString Tkon=proces_pom->Tkon/60.0;
-	UnicodeString Tdor=proces_pom->Tdor/60.0;
-	UnicodeString Tpre=proces_pom->Tpre/60.0;
-	UnicodeString Tcek=proces_pom->Tcek/60.0;
+	UnicodeString Tpoc=proces_pom->Tpoc;
+	UnicodeString Tkon=proces_pom->Tkon;
+	UnicodeString Tdor=proces_pom->Tdor;
+	UnicodeString Tpre=proces_pom->Tpre;
+	UnicodeString Tcek=proces_pom->Tcek;
 
 
 	Tpoc=Tpoc.SubString(1,5);
@@ -2651,7 +2656,10 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	Form_osa_info->rHTMLLabel_wt_vypis->Caption=proces_pom->Tcek-proces_pom->Tpre;
 	Form_osa_info->rHTMLLabel_CT_n_vypis->Caption=proces_pom->Tcek-proces_pom->Tpoc;
 
-
+	//pozice
+	Form_osa_info->Left=ClientWidth/2-Form_osa_info->Width/2;
+	Form_osa_info->Top=ClientHeight/2-Form_osa_info->Height/2;
+	//samotné volání modálního okna
 	Form_osa_info->ShowModal();
 
 //

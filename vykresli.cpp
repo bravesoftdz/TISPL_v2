@@ -591,7 +591,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 double DcS=vozik->zakazka->jig.delka;//old: v.PP.delka_voziku;
 	 if(P->segment_cesty->Rotace)DcS=vozik->zakazka->jig.sirka;
 	 double Xt=C->objekt->obsazenost+m.prejezd_voziku(DcS,C->RD)/60.0*PX2MIN;//musí být takto vyseparované, protože jinak v podmínce dávalo chybu, že např. 60<60 je true
-	 if(X < Xt)
+	 if(X < Xt)//komentář o řádek výše
 	 {
 			//dorovnání na čas předchozího vozíku, je-li to nutné
 			X_predchozi=X;//uloží povodní X hodnotu
@@ -616,7 +616,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
 			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
 			 (// a zároveň je splňuje následují:
-					C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
+					 C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
 					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
 					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//K->PP a jiný dopravník nebo
 					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
@@ -814,7 +814,8 @@ void Cvykresli::zobrazit_label_zamerovac(int X,int Y)
 {
 	unsigned int V=ceil((Y+PosunT.y-KrokY/2-Form1->scGPPanel_mainmenu->Height)/(KrokY*1.0));//pozn. KrokY/2 kvůli tomu, že střed osy je ve horozintální ose obdelníku
 	if(!mod_vytizenost_objektu && 0<V && V<=v.VOZIKY->predchozi->n) //pokud se nejedná o řežim vytíženost objektu a zároveň se jedná o číslo vozík od min do max vozíků
-	{          vykresli_svislici_na_casove_osy(Form1->Canvas,X,Y);
+	{
+				vykresli_svislici_na_casove_osy(Form1->Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac
 				Form1->Label_zamerovac->Transparent=false;
 				Form1->Label_zamerovac->Color=clWhite;
 				Form1->Label_zamerovac->Font->Color=(TColor) RGB(100,100,100);
@@ -843,18 +844,19 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 	short o=1;
 	//už používám globálně short oY=5;//ofset na ose Y, 5 pouze grafická korekce
 	if(PosunT.x>10)o=-30;
-	if(!mod_vytizenost_objektu)canv->TextOutW(o-PosunT.x,oY,"voz|min"); //popisek osy x
-	else canv->TextOutW(o-PosunT.x,oY,"obj|min"); //popisek osy x
+	if(!mod_vytizenost_objektu)canv->TextOutW(o-PosunT.x,0,"voz|min"); //popisek osy x
+	else canv->TextOutW(o-PosunT.x,0,"obj|min"); //popisek osy x
 
 	//svislice po dvou minutách
 	int start=PX2MIN*2;if(PosunT.x>0)start=0;
 	for(int i=start;i<=WidthCanvasCasoveOsy;i+=PX2MIN*2)//po dvou minutách
 	{
-		canv->MoveTo(i-PosunT.x,0);
-		canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy-1);//-1 pouze optická korekce
+		canv->MoveTo(i-PosunT.x,oY);
+		if(!mod_vytizenost_objektu)canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy+oY-1);//-2 pouze optická korekce
+		else canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy+oY+1);//+1 pouze optická korekce
 		canv->Brush->Style=bsSolid;
 		canv->Brush->Color=clWhite;
-		canv->TextOutW(i-canv->TextWidth(i/PX2MIN)/2-PosunT.x,oY,i/PX2MIN);
+		canv->TextOutW(i-canv->TextWidth(i/PX2MIN)/2-PosunT.x,0,i/PX2MIN);
 	}
 
 	if(!mod_vytizenost_objektu)
@@ -885,40 +887,41 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				canv->Brush->Color=clWhite;
 				if(RET.x>0)//x - plete, jedná se jen o začátek
 				{
-					canv->MoveTo(RET.x*PX2MIN-PosunT.x,oY);
+					canv->MoveTo(RET.x*PX2MIN-PosunT.x,0);
 					canv->LineTo(RET.x*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
 				}
 				if(RET.y>0)//y - plete, jedná se jen o konec
 				{
-					canv->MoveTo(RET.y*PX2MIN-PosunT.x,oY);
+					canv->MoveTo(RET.y*PX2MIN-PosunT.x,0);
 					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
 				}
 				canv->Brush->Style=bsSolid;
 				canv->Brush->Color=ukaz->barva;
 				canv->Font->Style=TFontStyles()<< fsBold;
 				canv->Font->Color=clWhite;
-				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,oY,AnsiString(RET.x)+"<");//zobrazuje pouze větší než začátek obrazovky
-				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,oY,"<"+AnsiString(RET.y));//zobrazuje pouze větší než začátek obrazovky
+				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,0,AnsiString(RET.x)+"<");//zobrazuje pouze větší než začátek obrazovky
+				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,0,"<"+AnsiString(RET.y));//zobrazuje pouze větší než začátek obrazovky
 				ukaz=ukaz->dalsi;
 			}
 	}
 }
 //---------------------------------------------------------------------------
+//vykreslí vytíženost od daného objektu
 void Cvykresli::vykresli_vytizenost_objektu(TCanvas *canv)
 {
-	int Y=KrokY+Form1->RzToolbar1->Height;
+	int Y=KrokY/*+Form1->scGPPanel_mainmenu->Height*/+oY;
 	Cvektory::TObjekt *ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	while (ukaz!=NULL)
 	{                      //záměrné nadhodnocení kvůli hledání minima
-		int Pocatek=v.PROCESY->predchozi->Tcek-PosunT.x;int Konec=0-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
+		int Pocatek=v.PROCESY->predchozi->Tcek/60.0*PX2MIN-PosunT.x;int Konec=0-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
 		Cvektory::TProces *P=v.PROCESY->dalsi;
 		double X=0;
 		while (P!=NULL)
 		{
 			if(ukaz==P->segment_cesty->objekt)
 			{
-				if(P->segment_cesty->objekt->kapacita_dop==1 || NOLIEX==0)vykresli_proces(canv,"",P->vozik->zakazka->barva,4,P->Tpoc/60.0*PX2MIN-PosunT.x,P->Tcek/60.0*PX2MIN-PosunT.x,Y-Form1->RzToolbar1->Height-PosunT.y);//pro jednokapacitní vytíženost vykreslení přímo maximální, popř. pokud není požadováno vykreslení intenzity
-				else vytizenost_procesu(canv,P,X,Y-Form1->scGPPanel_mainmenu->Height); //pro vícekapacitně včetně škály vytíženosti, pokud je požadována
+				if(P->segment_cesty->objekt->kapacita_dop==1 || NOLIEX==0)vykresli_proces(canv,"",P->vozik->zakazka->barva,4,P->Tpoc/60.0*PX2MIN-PosunT.x,P->Tcek/60.0*PX2MIN-PosunT.x,Y+oY-PosunT.y);//pro jednokapacitní vytíženost vykreslení přímo maximální, popř. pokud není požadováno vykreslení intenzity
+				else vytizenost_procesu(canv,P,X,Y+oY); //pro vícekapacitně včetně škály vytíženosti, pokud je požadována
 				if(Pocatek>P->Tpoc/60.0*PX2MIN-PosunT.x)Pocatek=P->Tpoc/60.0*PX2MIN-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
 				if(Konec<P->Tcek/60.0*PX2MIN-PosunT.x)Konec=P->Tcek/60.0*PX2MIN-PosunT.x;//pro další využítí, zatím pouze pro vypis názvu objektu, hlednání min a maxima
 			}
@@ -928,15 +931,15 @@ void Cvykresli::vykresli_vytizenost_objektu(TCanvas *canv)
 		//vycentrovaný popisek v rámci objektu
 		SetBkMode(canv->Handle,TRANSPARENT/*OPAQUE*/);//nastvení transparentního pozadí
 		canv->Font->Color=clWhite;
-		canv->Font->Size=8;
+		canv->Font->Size=10;
 		canv->Font->Name="Arial";
 		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-		canv->TextOutW(((Konec+Pocatek)/2)-canv->TextWidth(ukaz->name.UpperCase())/2,Y-PosunT.y-canv->TextHeight(ukaz->name.UpperCase())/2,ukaz->name.UpperCase());//vypíše vycentrovaný (polovina nových a starých souřadnic a posun referenčního písma o horizontálně=TextWidth/2 a verticálně=TextHeight/2) popisek shorname t-objektu
+		canv->TextOutW(((Konec+Pocatek)/2)-canv->TextWidth(ukaz->name.UpperCase())/2,Y+oY-PosunT.y-canv->TextHeight(ukaz->name.UpperCase())/2,ukaz->name.UpperCase());//vypíše vycentrovaný (polovina nových a starých souřadnic a posun referenčního písma o horizontálně=TextWidth/2 a verticálně=TextHeight/2) popisek shorname t-objektu
 
-		//vodorovné popisování objektů
+		//svislé popisování objektů
 		canv->Brush->Style=bsSolid;
 		canv->Brush->Color=clGray;
-		canv->TextOutW(0,Y-canv->TextHeight(ukaz->short_name)/2-Form1->scGPPanel_mainmenu->Height-PosunT.y,ukaz->short_name);
+		canv->TextOutW(0,Y+oY-canv->TextHeight(ukaz->short_name)/2/*-Form1->scGPPanel_mainmenu->Height+oY*/-PosunT.y,ukaz->short_name);
 
 		ukaz=ukaz->dalsi;
 		Y+=KrokY+2;//+2 pouze grafické odsazení pro všechny objekty mimo prvního
@@ -1010,7 +1013,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		ukaz=ukaz->dalsi;
 	}
 
-	////////VOZÍČKY
+	////////VOZÍKY
 	//nastavení popisku
 	SetBkMode(canv->Handle,/*TRANSPARENT*/OPAQUE);//nastvení transparentního pozadí
 	canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
