@@ -486,6 +486,35 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 				//uložení editovaných zakázek
 				for (int i = 1; i< rStringGridEd1->RowCount; i++)
 				{
+
+					 double pomer;
+					 double TT;
+					 double nvoziku;
+					 double nservis_voziku;
+					 double nopak_voziku;
+					 UnicodeString nazev;
+
+      // ošetøení - pokud se pøi ukládání formu objeví prázdné hodnoty, automaticky vyplním "0" a pøidám název zakázky
+			if (rStringGridEd1->Cells[2][i].IsEmpty())  nazev="Nová zakázka";
+			else  nazev=rStringGridEd1->Cells[2][i];
+
+			if (rStringGridEd1->Cells[4][i].IsEmpty())  pomer=0;
+			else  pomer=Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]);
+
+			if (rStringGridEd1->Cells[10][i].IsEmpty())  TT=0;
+			else  TT=Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]);
+
+			if (rStringGridEd1->Cells[6][i].IsEmpty())  nvoziku=0;
+			else  nvoziku=rStringGridEd1->Cells[6][i].ToInt();
+
+			if (rStringGridEd1->Cells[7][i].IsEmpty())  nservis_voziku=0;
+			else  nservis_voziku=	rStringGridEd1->Cells[7][i].ToInt();
+
+			if (rStringGridEd1->Cells[8][i].IsEmpty())  nopak_voziku=0;
+			else  nopak_voziku=	rStringGridEd1->Cells[8][i].ToInt();
+
+
+
 					bool usersColor=true;
 					//konverze pøednastavených barev
 					if(rStringGridEd1->Cells[3][i]=="Èerná"){barva=(TColor)RGB(0,0,0);usersColor=false;}
@@ -520,14 +549,14 @@ void __fastcall TForm_definice_zakazek::scGPButton_UlozitClick(TObject *Sender)
 						i,//n
 						rStringGridEd1->Cells[0][i],//ID
 						rStringGridEd1->Cells[1][i].ToInt(),//TYP
-						rStringGridEd1->Cells[2][i],//NAME
+						nazev,//NAME
 						barva,//COLOR
-						Form1->ms.MyToDouble(rStringGridEd1->Cells[4][i]),//POMER
-						Form1->ms.MyToDouble(rStringGridEd1->Cells[10][i]),//TT
+						pomer,//POMER
+						TT,//TT
 						//JIG se už jako parametr nepožaduje, stejnì jako cesta, jedná se o pøedávání ukazatelem pøi zavírání patøièného formuláøe
-						rStringGridEd1->Cells[6][i].ToInt(),//n-vozíku
-						rStringGridEd1->Cells[7][i].ToInt(),//n-servis vozíkù
-						rStringGridEd1->Cells[8][i].ToInt()//n-opak vozíkù
+						nvoziku,//n-vozíku
+						nservis_voziku,//n-servis vozíkù
+						nopak_voziku//n-opak vozíkù
 					);
 				}
 				//samotné uložení
