@@ -197,7 +197,7 @@ void TForm_parametry_linky::nacti_pohony (){
 			rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
 			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60;
 			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60;
-			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec;
+			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000;
 
 				ukaz = ukaz->dalsi;
 				 }
