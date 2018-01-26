@@ -615,13 +615,14 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 P->Trand=0;
 	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
 			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
+			C->objekt->dalsi!=NULL &&//a nejedná se o poslední objekt
 			 (// a zároveň je splňuje následují:
 					 C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
-					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==1 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
-					(C->objekt->rezim==1 && C->objekt->predchozi->rezim==2 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//K->PP a jiný dopravník nebo
-					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==1)||//PP->K nebo
-					(C->objekt->rezim==2 && C->objekt->predchozi->rezim==2 && C->objekt->pohon!=C->predchozi->objekt->pohon)||//PP->PP a jiný dopravník nebo
-					 C->objekt->stopka//když je za objektem stopka nebo
+					(C->objekt->rezim==1 && C->objekt->dalsi->rezim==1 && C->objekt->pohon!=C->dalsi->objekt->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
+					(C->objekt->rezim==1 && C->objekt->dalsi->rezim==2 && C->objekt->pohon!=C->dalsi->objekt->pohon)||//K->PP a jiný dopravník nebo
+					(C->objekt->rezim==2 && C->objekt->dalsi->rezim==1)||//PP->K nebo
+					(C->objekt->rezim==2 && C->objekt->dalsi->rezim==2 && C->objekt->pohon!=C->dalsi->objekt->pohon)||//PP->PP a jiný dopravník nebo
+					 C->objekt->stopka==1//když je za objektem stopka (//0-ne,1-ano,2-automaticky) nebo
 					 ||
 					 C->objekt->cekat_na_palce==1//automaticky-uživaztelsky požadovano zohledňování čekání na palce//0-ne,1-ano,2-automaticky
 			 )
@@ -852,8 +853,8 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 	for(int i=start;i<=WidthCanvasCasoveOsy;i+=PX2MIN*2)//po dvou minutách
 	{
 		canv->MoveTo(i-PosunT.x,oY);
-		if(!mod_vytizenost_objektu)canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy+oY-1);//-2 pouze optická korekce
-		else canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy+oY+1);//+1 pouze optická korekce
+		if(mod_vytizenost_objektu && v.OBJEKTY->predchozi!=NULL)canv->LineTo(i-PosunT.x,v.OBJEKTY->predchozi->n*KrokY+KrokY+1);//+1 pouze optická korekce
+		else canv->LineTo(i-PosunT.x,HeightCanvasCasoveOsy+oY-1);//-1 pouze optická korekce
 		canv->Brush->Style=bsSolid;
 		canv->Brush->Color=clWhite;
 		canv->TextOutW(i-canv->TextWidth(i/PX2MIN)/2-PosunT.x,0,i/PX2MIN);
@@ -888,12 +889,12 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				if(RET.x>0)//x - plete, jedná se jen o začátek
 				{
 					canv->MoveTo(RET.x*PX2MIN-PosunT.x,0);
-					canv->LineTo(RET.x*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
+					canv->LineTo(RET.x*PX2MIN-PosunT.x,konec-+Form1->scGPPanel_mainmenu->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
 				}
 				if(RET.y>0)//y - plete, jedná se jen o konec
 				{
 					canv->MoveTo(RET.y*PX2MIN-PosunT.x,0);
-					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-Form1->RzToolbar1->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
+					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-+Form1->scGPPanel_mainmenu->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
 				}
 				canv->Brush->Style=bsSolid;
 				canv->Brush->Color=ukaz->barva;
@@ -909,7 +910,7 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 //vykreslí vytíženost od daného objektu
 void Cvykresli::vykresli_vytizenost_objektu(TCanvas *canv)
 {
-	int Y=KrokY/*+Form1->scGPPanel_mainmenu->Height*/+oY;
+	int Y=KrokY+oY;
 	Cvektory::TObjekt *ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	while (ukaz!=NULL)
 	{                      //záměrné nadhodnocení kvůli hledání minima
@@ -986,6 +987,7 @@ void Cvykresli::vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,
 //////ROMA metoda, vykreslí graf technologických procesů vůči jednotlivým t-objektům v čase
 void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 {
+	//VÝCHOZÍ NASTAVENÍ
 	//--nastavení proměnných k účelu filtrace, nastavováno z unit1 či volání animace, pro přehlednost a lenost necháno zde předáním na lokální proměnné
 	double K=TP.K;//Krok po kolika minutach se bude zobrazovat
 	double OD=TP.OD;//od které min se proces začne vypisovat
@@ -1034,7 +1036,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	{
 		for(double MIN=OD;MIN<=DO;MIN+=K)
 		{   //filtr na rozsah vozíků, nebo podku Ndo==0, tak se vypíší všechny
-				if(((Nod<=P->vozik->n && P->vozik->n<=Ndo) || Ndo==0) && P->Tpoc<=MIN && MIN<P->Tcek)//filtr
+				if(((Nod<=P->vozik->n && P->vozik->n<=Ndo) || Ndo==0) && P->Tpoc/60.0<=MIN && MIN<P->Tcek/60.0)//filtr
 				{
 					//výpočet umístění na ose X
           //pro jednokapacitní resp. S&G neanimuje, pokud není nastaveno Checkboxem jina
@@ -1048,7 +1050,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 						X=P->segment_cesty->objekt->predchozi->obsazenost+
 						(
 							(P->segment_cesty->objekt->obsazenost-P->segment_cesty->objekt->predchozi->obsazenost)*
-							(MIN-P->Tpoc)/(P->Tcek-P->Tpoc)
+							(MIN-P->Tpoc/60.0)/(P->Tcek/60.0-P->Tpoc/60.0)
 						);
 						X+=Xofset+S/2;//ještě grafické odsazení o odsazení výchozí osy a o šířku jednoho vozíku
 					}
@@ -1094,7 +1096,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		if(!A)canv->LineTo(X-PosunT.x,Yofset+PXM*DO/K-PosunT.y);//pokud se nejedná o animaci, pozn. osa Y si stejně vypisuje nějak divně
 		else canv->LineTo(X-PosunT.x,Yofset+PXM);//pokud se jedná o animaci
 		AnsiString T=ukaz->short_name;
-		canv->TextOutW((Xpuv+X)/2-canv->TextWidth(T)/2-PosunT.x,Y,T);
+		canv->TextOutW((Xpuv+X)/2-canv->TextWidth(T)/2-PosunT.x,Y+1,T);//+1 pouze grafická korekce
 		Xpuv=X;
 		ukaz=ukaz->dalsi;
 	}
@@ -1126,7 +1128,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		}
 	}
 	//popisek [min]
-	canv->TextOutW(2,0,"[min]");
+	canv->TextOutW(1,oY-1,"[min]");//-1 pouze grafická korekce
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
