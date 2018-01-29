@@ -1120,7 +1120,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 			bmp_in->Width=ClientWidth;bmp_in->Height=ClientHeight;
 			d.vykresli_technologicke_procesy(bmp_in->Canvas);
-			Canvas->Draw(0,RzToolbar1->Height,bmp_in);
+			Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 			delete (bmp_in);//velice nutné
 		}
 		break;
