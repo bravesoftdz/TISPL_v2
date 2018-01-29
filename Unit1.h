@@ -258,6 +258,9 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *CheckBoxAnimovatSG;
 	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
 	TscGPGlyphButton *ButtonPLAY;
+	TscLabel *scLabel_mezera;
+	TscGPButton *scGPButton_header_param_linky;
+	TscGPButton *scGPButton_header_def_zakazek;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
