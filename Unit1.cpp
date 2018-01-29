@@ -641,6 +641,8 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPCheckBox_ortogon->Left=3;
 	scGPCheckBox_ortogon->Visible=true;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
+	scGPButton_header_def_zakazek->Visible=false;
+	scGPButton_header_param_linky->Visible=false;
 
 	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
 	Invalidate();
@@ -784,6 +786,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			d.JIZPOCITANO=false;d.RANDOM=true;
 			scExPanel_log_header->Visible=true;
 			ComboBoxCekani->Width=scSplitView_OPTIONS->OpenedWidth-7;
+		 //	scGPGlyphButton_zpravy_ikona->Visible=true;
 			if(Form1->ComboBoxCekani->ItemIndex==2)
 			{
 				scGPButton_generuj->Visible=true;
@@ -795,6 +798,22 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			scGPGlyphButton_close_legenda_casove_osy->Left=0;
 			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
 			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
+
+			if(STATUS==NAVRH) {
+
+					scGPButton_header_def_zakazek->Visible=false;
+					scGPButton_header_param_linky->Visible=true;
+					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
+					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
+			}
+			if(STATUS==OVEROVANI){
+
+
+					scGPButton_header_def_zakazek->Visible=true;
+					scGPButton_header_param_linky->Visible=false;
+					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
+					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
+			}
 
 			Invalidate();
 		}
@@ -906,6 +925,22 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	scGPCheckBox_ortogon->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
+
+		if(STATUS==NAVRH) {
+
+					scGPButton_header_def_zakazek->Visible=false;
+					scGPButton_header_param_linky->Visible=true;
+					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
+					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
+			}
+			if(STATUS==OVEROVANI){
+
+
+					scGPButton_header_def_zakazek->Visible=true;
+					scGPButton_header_param_linky->Visible=false;
+					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
+					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
+			}
 
 
 
@@ -4287,6 +4322,14 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 		scLabel14->Caption="Definice zakázek";
 		SB("OVĚŘOVÁNÍ",1);
 	 //	ShowMessage(STATUS);
+			 if(MOD==CASOVAOSA || MOD==TECHNOPROCESY ){
+			 scGPButton_header_def_zakazek->Visible=true;
+			 scGPButton_header_param_linky->Visible=false;
+			}
+				else  {
+			scGPButton_header_param_linky->Visible=false;
+			scGPButton_header_def_zakazek->Visible=false;
+				 }
 	}
 	else
 	{
@@ -4297,6 +4340,16 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 		scGPGlyphButton_parametry_linky->Visible=true;
 		scGPGlyphButton_parametry_linky->Top=scGPGlyphButton_definice_zakazek->Top;
 		scGPGlyphButton_definice_zakazek->Visible=false;
+
+				 if(MOD==CASOVAOSA || MOD==TECHNOPROCESY){
+		 scGPButton_header_def_zakazek->Visible=false;
+		 scGPButton_header_param_linky->Visible=true;
+		 }
+		 		else  {
+			scGPButton_header_param_linky->Visible=false;
+			scGPButton_header_def_zakazek->Visible=false;
+				 }
+
 		SB("NÁVRH",1);
 	 //	ShowMessage(STATUS);
 	}
@@ -4664,4 +4717,6 @@ void __fastcall TForm1::scExPanel_log_headerMouseActivate(TObject *Sender, TMous
 scSplitView_OPTIONS->Opened=false;
 }
 //---------------------------------------------------------------------------
+
+
 
