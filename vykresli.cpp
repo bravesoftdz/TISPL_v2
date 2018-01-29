@@ -1014,12 +1014,12 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		{
 			if(Form1->CheckBox_pouzit_zadane_kapacity->Checked)
 			{
-				if(ukaz->rotace==90)X+=ukaz->kapacita*S;//pokud se mají použít zadané kapacity
+				if(ukaz->rotace)X+=ukaz->kapacita*S;//pokud se mají použít zadané kapacity
 				else X+=ukaz->kapacita*D;//pokud se mají použít zadané kapacity
 			}
 			else
 			{
-				if(ukaz->rotace==90)X+=ukaz->kapacita_dop*S;//pokud se mají použít zadané kapacity
+				if(ukaz->rotace)X+=ukaz->kapacita_dop*S;//pokud se mají použít zadané kapacity
 				else X+=ukaz->kapacita_dop*D;//pokud se mají použít zadané kapacity
 			}
 		}
@@ -1054,7 +1054,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		{   //filtr na rozsah vozíků, nebo podku Ndo==0, tak se vypíší všechny
 				if(((Nod<=P->vozik->n && P->vozik->n<=Ndo) || Ndo==0) && P->Tpoc/60.0<=MIN && MIN<P->Tcek/60.0)//filtr
 				{
-					int Rx=D;int Ry=S;//if(P->segment_cesty->objekt->rotace==90){Rx=S;Ry=D;}//rozměr
+					int Rx=D;int Ry=S;if(P->segment_cesty->objekt->rotace){Rx=S;Ry=D;}//rozměr
 					//výpočet umístění na ose X už jen v rámci objektu, tzn. aby byl znatelný posun (po částech i v rámci objektu)
 					//pro jednokapacitní resp. S&G neanimuje, pokud není nastaveno Checkboxem jina
 					if(P->segment_cesty->objekt->kapacita==1 && !Form1->CheckBoxAnimovatSG->Checked)
@@ -1074,9 +1074,11 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 					//vykreslení samotného vozíku (obdélníčku)
 					canv->Brush->Color=P->vozik->zakazka->barva;
 					AnsiString T=P->vozik->n;
+					if(P->segment_cesty->objekt->rotace)if((P->segment_cesty->objekt->obsazenost+Xofset)<=X){Rx=D;Ry=S;}
+					//if(P->segment_cesty->objekt->rotace){;Rx=S;Ry=D;}
 					if(!A)//pokud se nejedná o animaci, aby bylo možné posouvat obraz na ose Y a při animaci naopak nebylo možné
 					{
-						Y=Ry*(MIN-OD)/K+Yofset;//výpočet umístění na ose Y (jedná se pouze o umístění na řádku správné minuty)
+						Y=Yofset*(MIN-OD)/K+Yofset;//výpočet umístění na ose Y (jedná se pouze o umístění na řádku správné minuty)
 						canv->Rectangle(X-Rx/2-PosunT.x,Y-Ry/2-PosunT.y,X+Rx/2+1-PosunT.x,Y+Ry/2-PosunT.y);  //+1 pouze grafická vyfikundace
 						canv->TextOutW(X-canv->TextWidth(T)/2-PosunT.x,Y-canv->TextHeight(T)/2-PosunT.y,T);
 					}

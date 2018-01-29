@@ -1157,6 +1157,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			d.vykresli_technologicke_procesy(bmp_in->Canvas);
 			Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 			delete (bmp_in);//velice nutné
+			//grafické měřítko
+			//if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 		}
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
@@ -4236,6 +4238,7 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 	Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 	Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 	Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //volání superformuláře (definice zakázek)
