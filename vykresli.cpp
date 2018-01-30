@@ -998,8 +998,8 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	//--
 	//výchozí proměnné
 	int PXM=50;//měřítko pixelů na metr v tomto modu, zároveň však používám jako krok posunu na ose Y (přetížení proměnné)
-	int D=v.PP.delka_voziku*PXM;//vozik délka
-	int S=v.PP.sirka_voziku*PXM;//vozik šířka
+	int D=Form1->m.round(v.PP.delka_voziku*PXM);//vozik délka
+	int S=Form1->m.round(v.PP.sirka_voziku*PXM);//vozik šířka
 	unsigned int X=0;//posun po X-ové ose
 	short Yofset=D;if(S>D)Yofset=S;//výška řádku - daného časového úseku, podle šířky vozíku či největší hodnoty šířka/délka
 	unsigned int Y=Yofset;//Posun po Y-oso včetně výchozí pozice
@@ -1046,15 +1046,23 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	canv->Pen->Color=clWhite;
 	canv->Brush->Style=bsSolid;
 	canv->Font->Color=clWhite;
-	//samotné vykreslení
+	//samotné vykreslení, vypíše vždy všechny procesy v dané minutě
 	Cvektory::TProces *P=v.PROCESY->dalsi;
 	while (P!=NULL)
 	{
 		for(double MIN=OD;MIN<=DO;MIN+=K)
-		{   //filtr na rozsah vozíků, nebo podku Ndo==0, tak se vypíší všechny
-				if(((Nod<=P->vozik->n && P->vozik->n<=Ndo) || Ndo==0) && P->Tpoc/60.0<=MIN && MIN<P->Tcek/60.0)//filtr
+		{   //filtr na rozsah vozíků, nebo pokud Ndo==0, tak se vypíší všechny             //nemůže být "="    //pro poslední vozík
+				if(((Nod<=P->vozik->n && P->vozik->n<=Ndo) || Ndo==0) && P->Tpoc/60.0<=MIN && (MIN<P->Tcek/60.0 || DO==P->Tcek/60.0))//filtr
 				{
-					int Rx=D;int Ry=S;if(P->segment_cesty->objekt->rotace){Rx=S;Ry=D;}//rozměr
+					int Rx=D;int Ry=S;//rozměr
+					if(P->segment_cesty->objekt->rotace)//pokud je požadovaná rotace jigu v objektu
+					{
+						Rx=S;Ry=D;
+						//v případě, že se vozík blíží ke konci objektu orotuje jig zase zpět, Xp - X predikce následného výpočtu
+						int Xp=P->segment_cesty->objekt->predchozi->obsazenost+((P->segment_cesty->objekt->obsazenost-P->segment_cesty->objekt->predchozi->obsazenost)*(MIN-P->Tpoc/60.0)/(P->Tcek/60.0-P->Tpoc/60.0))+Xofset+Rx/2;
+            //lze odbrat /2 za Xofset či >= předělat na =, ale stále se nejedná o opticky dokonalý jev, rotace totiž "probíhá" v začátku vozíku nikoliv jeho středu, je dobré, si pro otestování vypsat ve filtru krok po 0,1
+						if(Xp-Rx/2+Xofset/2>=P->segment_cesty->objekt->obsazenost){Rx=D;Ry=S;}
+					}
 					//výpočet umístění na ose X už jen v rámci objektu, tzn. aby byl znatelný posun (po částech i v rámci objektu)
 					//pro jednokapacitní resp. S&G neanimuje, pokud není nastaveno Checkboxem jina
 					if(P->segment_cesty->objekt->kapacita==1 && !Form1->CheckBoxAnimovatSG->Checked)
@@ -1062,7 +1070,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 						X=P->segment_cesty->objekt->obsazenost;//pokud se do objektu vejde pouze jenom jeden objekt
 						X+=Xofset-Rx/2;//ještě grafické odsazení o odsazení výchozí osy a o šířku jednoho vozíku
 					}
-					else //animace i v rámci objektu
+					else//animace i v rámci objektu
 					{
 						X=P->segment_cesty->objekt->predchozi->obsazenost+
 						(
@@ -1074,8 +1082,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 					//vykreslení samotného vozíku (obdélníčku)
 					canv->Brush->Color=P->vozik->zakazka->barva;
 					AnsiString T=P->vozik->n;
-					if(P->segment_cesty->objekt->rotace)if((P->segment_cesty->objekt->obsazenost+Xofset)<=X){Rx=D;Ry=S;}
-					//if(P->segment_cesty->objekt->rotace){;Rx=S;Ry=D;}
+					//if(P->segment_cesty->objekt->rotace)if(P->segment_cesty->objekt->obsazenost+Xofset<X){Rx=D;Ry=S;}
 					if(!A)//pokud se nejedná o animaci, aby bylo možné posouvat obraz na ose Y a při animaci naopak nebylo možné
 					{
 						Y=Yofset*(MIN-OD)/K+Yofset;//výpočet umístění na ose Y (jedná se pouze o umístění na řádku správné minuty)
@@ -1087,7 +1094,6 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 						canv->Rectangle(X-Rx/2-PosunT.x,Y-Ry/2,X+Rx/2+1-PosunT.x,Y+Ry/2);  //+1 pouze grafická vyfikundace
 						canv->TextOutW(X-canv->TextWidth(T)/2-PosunT.x,Y-canv->TextHeight(T)/2,T);
 					}
-					//break;//proces byl v dané minutě nalezen nemá cenu hledat dál
 				}
 		}
 		P=P->dalsi;
@@ -1113,7 +1119,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		int Rx=D;int Ry=S;if(ukaz->rotace==90){Rx=S;Ry=D;}//rozměr
 		X=ukaz->obsazenost+Xofset;
 		canv->MoveTo(X-PosunT.x,Y);
-		if(!A)canv->LineTo(X-PosunT.x,Yofset+Ry*DO/K-PosunT.y);//pokud se nejedná o animaci, pozn. osa Y si stejně vypisuje nějak divně
+		if(!A)canv->LineTo(X-PosunT.x,Yofset+Ry*DO/K+Yofset/2-PosunT.y);//pokud se nejedná o animaci, pozn. osa Y si stejně vypisuje nějak divně
 		else canv->LineTo(X-PosunT.x,Yofset+Ry);//pokud se jedná o animaci
 		AnsiString T=ukaz->short_name;
 		canv->TextOutW((Xpuv+X)/2-canv->TextWidth(T)/2-PosunT.x,Y+1,T);//+1 pouze grafická korekce
@@ -2075,53 +2081,99 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,unsigned int i,TPointD OD,
 //vykresluje měřítko
 void Cvykresli::meritko(TCanvas *canv)
 {
-	//proměnné nastavení měřítka
-	int L=Form1->scSplitView_LEFTTOOLBAR->Width+5;//umístění na X - levého výchozího kraje měřítka
-	if(Form1->scSplitView_LEFTTOOLBAR->Visible==false)L=5;//pokud je levé menu skryto
-	int T=Form1->scGPPanel_statusbar->Top-20;//umistění na Y - horního výchozího kraje měřítka
-	int H=5;//výška měřítka
-	int K=1;//krok v metrech
-	if(Form1->Zoom==0.5)K=2;
-	if(Form1->Zoom==0.25)K=5;
-	int M=10;//MAX políček
-	TColor barva_meritko=(TColor)RGB(128,128,128);//barva měřítka
-	//TColor barva_meritko=(TColor)RGB(43,87,154);//(0,120,215);barva měřítka
-
-	//nastavení pera a fontu canvasu
-	canv->Pen->Color=barva_meritko;
-	canv->Pen->Width=1;
-	canv->Pen->Style=psSolid;
-	canv->Brush->Style=bsSolid;
-	canv->Pen->Mode=pmCopy;
-	canv->Font->Size=8;
-	canv->Font->Name="Arial";
-	canv->Font->Color=barva_meritko;
-
-	//popisek 0
-	canv->MoveTo(L,T+5);canv->LineTo(L,T+7);//spojnice
-	SetBkMode(canv->Handle,TRANSPARENT);//musí být zde znovu, nastavení transparentního pozadí
-	canv->TextOutW(L-canv->TextWidth("0")/2+1,T+5,"0");
-
-	//vykreslení políček měřítka
-	int i=0;
-	for(;i<M;i+=K)
+	if(Form1->MOD!=Form1->TECHNOPROCESY)
 	{
-		if(i%(2*K))canv->Brush->Color=barva_meritko;//výplň barevna
-		else canv->Brush->Color=clWhite;//výplň bílá                 //+1 pouze grafická korekce
-		canv->Rectangle(m.L2Px(m.P2Lx(L)+i),T,m.L2Px(m.P2Lx(L)+(i+K))+1,T+H);
-	}
+			//proměnné nastavení měřítka
+			int L=Form1->scSplitView_LEFTTOOLBAR->Width+5;//umístění na X - levého výchozího kraje měřítka
+			if(Form1->scSplitView_LEFTTOOLBAR->Visible==false)L=5;//pokud je levé menu skryto
+			int T=Form1->scGPPanel_statusbar->Top-20;//umistění na Y - horního výchozího kraje měřítka
+			int H=5;//výška měřítka
+			int K=1;//krok v metrech
+			if(Form1->Zoom==0.5)K=2;
+			if(Form1->Zoom==0.25)K=5;
+			int M=10;//MAX políček
+			TColor barva_meritko=(TColor)RGB(128,128,128);//barva měřítka
+			//TColor barva_meritko=(TColor)RGB(43,87,154);//(0,120,215);barva měřítka
 
-	//musí být zde znovu, nastavení transparentního pozadí
-	SetBkMode(canv->Handle,TRANSPARENT);
-	//popisek polovina
-	if(Form1->Zoom>=1)
-	{
-		canv->MoveTo(m.L2Px(m.P2Lx(L)+i/2),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i/2),T+7);
-		canv->TextOutW(m.L2Px(m.P2Lx(L)+i/2)-canv->TextWidth(M/2)/2,T+5,AnsiString(M/2));
+			//nastavení pera a fontu canvasu
+			canv->Pen->Color=barva_meritko;
+			canv->Pen->Width=1;
+			canv->Pen->Style=psSolid;
+			canv->Brush->Style=bsSolid;
+			canv->Pen->Mode=pmCopy;
+			canv->Font->Size=8;
+			canv->Font->Name="Arial";
+			canv->Font->Color=barva_meritko;
+
+			//popisek 0
+			canv->MoveTo(L,T+5);canv->LineTo(L,T+7);//spojnice
+			SetBkMode(canv->Handle,TRANSPARENT);//musí být zde znovu, nastavení transparentního pozadí
+			canv->TextOutW(L-canv->TextWidth("0")/2+1,T+5,"0");
+
+			//vykreslení políček měřítka
+			int i=0;
+			for(;i<M;i+=K)
+			{
+				if(i%(2*K))canv->Brush->Color=barva_meritko;//výplň barevna
+				else canv->Brush->Color=clWhite;//výplň bílá                 //+1 pouze grafická korekce
+				canv->Rectangle(m.L2Px(m.P2Lx(L)+i),T,m.L2Px(m.P2Lx(L)+(i+K))+1,T+H);
+			}
+
+			//musí být zde znovu, nastavení transparentního pozadí
+			SetBkMode(canv->Handle,TRANSPARENT);
+			//popisek polovina
+			if(Form1->Zoom>=1)
+			{
+				canv->MoveTo(m.L2Px(m.P2Lx(L)+i/2),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i/2),T+7);
+				canv->TextOutW(m.L2Px(m.P2Lx(L)+i/2)-canv->TextWidth(M/2)/2,T+5,AnsiString(M/2));
+			}
+			//popisek MAX
+			canv->MoveTo(m.L2Px(m.P2Lx(L)+i),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i),T+7);
+			canv->TextOutW(m.L2Px(m.P2Lx(L)+i)-canv->TextWidth(M)/2,T+5,AnsiString(M)+" m");
 	}
-	//popisek MAX
-	canv->MoveTo(m.L2Px(m.P2Lx(L)+i),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i),T+7);
-	canv->TextOutW(m.L2Px(m.P2Lx(L)+i)-canv->TextWidth(M)/2,T+5,AnsiString(M)+" m");
+	else //pro mod technologické procesy
+	{
+			//proměnné nastavení měřítka
+			int L=Form1->scSplitView_OPTIONS->Width-50*2-15;//umístění na X - levého výchozího kraje měřítka
+			if(Form1->scSplitView_LEFTTOOLBAR->Visible==false)L=Form1->ClientWidth-50*2-15;//pokud je levé menu skryto
+			int T=Form1->scGPPanel_mainmenu->Height+5;//umistění na Y - horního výchozího kraje měřítka
+			int H=5;//výška měřítka
+			int K=1*5;//krok v metrech
+			int M=2*5;//MAX políček
+			TColor barva_meritko=(TColor)RGB(128,128,128);//barva měřítka
+			//TColor barva_meritko=(TColor)RGB(43,87,154);//(0,120,215);barva měřítka
+
+			//nastavení pera a fontu canvasu
+			canv->Pen->Color=barva_meritko;
+			canv->Pen->Width=1;
+			canv->Pen->Style=psSolid;
+			canv->Brush->Style=bsSolid;
+			canv->Pen->Mode=pmCopy;
+			canv->Font->Size=8;
+			canv->Font->Name="Arial";
+			canv->Font->Color=barva_meritko;
+
+			//popisek 0
+			canv->MoveTo(L,T+5);canv->LineTo(L,T+7);//spojnice
+			SetBkMode(canv->Handle,TRANSPARENT);//musí být zde znovu, nastavení transparentního pozadí
+			canv->TextOutW(L-canv->TextWidth("0")/2+1,T+5,"0");
+
+			//vykreslení políček měřítka
+			int i=0;
+			for(;i<M;i+=K)
+			{
+				if(i%(2*K))canv->Brush->Color=barva_meritko;//výplň barevna
+				else canv->Brush->Color=clWhite;//výplň bílá                 //+1 pouze grafická korekce
+				canv->Rectangle(m.L2Px(m.P2Lx(L)+i),T,m.L2Px(m.P2Lx(L)+(i+K))+1,T+H);
+			}
+
+			//musí být zde znovu, nastavení transparentního pozadí
+			SetBkMode(canv->Handle,TRANSPARENT);
+
+			//popisek MAX
+			canv->MoveTo(m.L2Px(m.P2Lx(L)+i),T+5);canv->LineTo(m.L2Px(m.P2Lx(L)+i),T+7);
+			canv->TextOutW(m.L2Px(m.P2Lx(L)+i)-canv->TextWidth(M)/2,T+5,AnsiString(2)+" m");
+	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //vytvoří zvuk

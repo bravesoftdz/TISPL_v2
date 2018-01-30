@@ -1158,7 +1158,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 			delete (bmp_in);//velice nutné
 			//grafické měřítko
-			//if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
+			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 		}
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
