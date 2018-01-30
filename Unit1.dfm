@@ -1938,8 +1938,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitLeft = 403
-      ExplicitWidth = 140
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
       Left = 543
@@ -2054,7 +2052,6 @@ object Form1: TForm1
       FrameOnSolid = True
       FrameInside = False
       OnChangeState = scGPSwitch_rezimChangeState
-      ExplicitLeft = 296
     end
     object scLabel_klient: TscLabel
       Left = 391
@@ -2087,7 +2084,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Ov'#283#345'ov'#225'n'#237
-      ExplicitLeft = 344
     end
     object scLabel_architekt: TscLabel
       Left = 304
@@ -2120,7 +2116,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'vrh'
-      ExplicitLeft = 257
     end
     object scLabel_mezera: TscLabel
       Left = 289
@@ -2152,7 +2147,6 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      ExplicitLeft = 242
     end
     object scGPButton_header_projekt: TscGPButton
       AlignWithMargins = True
@@ -2244,7 +2238,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 227
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -2725,15 +2718,15 @@ object Form1: TForm1
     Animation = False
     DisplayMode = scsvmOverlay
     object scListGroupKnihovObjektu: TscListGroupPanel
-      Left = 1
-      Top = 1
+      Left = 0
+      Top = 0
       Width = 166
-      Height = 624
+      Height = 622
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 0
-      Align = alCustom
+      Align = alLeft
       TabOrder = 0
       AutoSize = True
       RowCount = 1
@@ -2752,6 +2745,9 @@ object Form1: TForm1
       HeaderMargin = 10
       HeaderAutoColor = False
       TransparentBackground = False
+      ExplicitLeft = 1
+      ExplicitTop = 1
+      ExplicitHeight = 624
       object DrawGrid_knihovna: TDrawGrid
         Left = 11
         Top = 33
@@ -4726,8 +4722,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 729
-        Top = 892
+        Left = 735
+        Top = 898
         Width = 244
         Height = 31
         Align = alCustom
@@ -5438,7 +5434,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800E004EC0410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800E004F00410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6561,7 +6557,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013300F003200430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013300F003240430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22023,7 +22019,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C010133009802980218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C010133009C029C0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
