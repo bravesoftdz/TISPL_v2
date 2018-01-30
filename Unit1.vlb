@@ -238,23 +238,14 @@ Coordinates=455,326,73,36
 [scButton4]
 Coordinates=272,326,72,36
 
-[scButton5]
-Coordinates=10,326,72,36
-
 [scGPGlyphButton15]
 Coordinates=863,280,131,36
-
-[scButton3]
-Coordinates=781,280,72,36
 
 [scGPVirtualImageList1]
 Coordinates=1619,606,146,36
 
 [ImageList48]
 Coordinates=1619,661,85,36
-
-[scButton1]
-Coordinates=699,280,72,36
 
 [scLabel11]
 Coordinates=453,280,73,36
@@ -320,12 +311,6 @@ Coordinates=1292,221,127,36
 [simulace]
 Coordinates=73,249,65,36
 
-[scButton7]
-Coordinates=770,542,72,36
-
-[scButton8]
-Coordinates=1204,1,72,36
-
 [Memo2]
 Coordinates=35,153,64,58
 
@@ -340,9 +325,6 @@ Coordinates=1322,331,132,36
 
 [scGPPanel_mainmenu]
 Coordinates=1322,441,145,36
-
-[scButton9]
-Coordinates=957,631,72,36
 
 [button_zakazky_temp]
 Coordinates=104,153,139,58
@@ -386,9 +368,6 @@ Coordinates=632,335,122,36
 [scExPanel_log_header]
 Coordinates=1110,331,147,36
 
-[scButton10]
-Coordinates=792,221,79,36
-
 [scHTMLLabel_log_vypis]
 Coordinates=1681,1,154,36
 
@@ -427,4 +406,25 @@ Coordinates=301,212,218,58
 
 [ButtonPLAY_O]
 Coordinates=510,10,84,58
+
+[scButton_ulozjako]
+Coordinates=770,542,72,36
+
+[scButton_otevrit]
+Coordinates=781,280,72,36
+
+[scButton_novy]
+Coordinates=792,221,79,36
+
+[scButton_export]
+Coordinates=1204,1,72,36
+
+[scButton_posledni_otevreny]
+Coordinates=957,631,72,36
+
+[scButton_zaloha]
+Coordinates=10,326,72,36
+
+[scButton_konec]
+Coordinates=699,280,72,36
 

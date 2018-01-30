@@ -80,7 +80,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	pan_non_locked=false;
 
 	//načtení nestandardních kurzorů aplikace
-  HCURSOR HC;
+	HCURSOR HC;
 	HC=LoadCursor(HInstance,L"POSUN_V");
 	Screen->Cursors[1]=HC;
 	HC=LoadCursor(HInstance,L"POSUN_B");
@@ -113,7 +113,8 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	//nastavení implicitního souboru
 	duvod_k_ulozeni=false;
-	NovySouborClick(this);
+	Novy_soubor();
+	volat_parametry_linky=false;
 
 	//zjistí verzi aplikace
 	DWORD  ver=GetFileVersion(Application->ExeName);
@@ -127,7 +128,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 
-  copyObjekt=new Cvektory::TObjekt;
+	copyObjekt=new Cvektory::TObjekt;
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -258,10 +259,21 @@ void __fastcall TForm1::FormShow(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-//založí nový soubor, nastavení souboru, nastevení aplikace v konstruktoru
+//volání založení nový soubor z menu = nové nastavení souboru, nastevení aplikace je v konstruktoru
 void __fastcall TForm1::NovySouborClick(TObject *Sender)
 {
+	 Novy_soubor();//samotné vytvoření nového souboru
+	 //následující slouží pouze při uživatelsky volaném soubor nový
+	 Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+	 Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+	 Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
+	 REFRESH();
+}
+//---------------------------------------------------------------------------
+void TForm1::Novy_soubor()//samotné vytvoření nového souboru
+{
 	 scSplitView_MENU->Opened=false;
+	 scButton_novy->Down=false;
 	 bool novy=true;
 	 if(duvod_k_ulozeni)
 	 {
@@ -289,12 +301,12 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 //d.v.vloz_pohon("Vedlejší dopravník",1.5,10.5,32.5); není nutné prý vedlejší dopravník
 
 			 //tady bude přepnutí založek dodělat
-			 schemaClick(Sender);//volání MODu SCHEMA
+			 schemaClick(this);//volání MODu SCHEMA
 			 scGPSwitch_rezim->State=scswOff;
 			 SB("NÁVRH",1);
 
-    	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
-    	 Zoom_predchozi=1.0;
+			 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
+			 Zoom_predchozi=1.0;
 			 Posun.x=-scListGroupKnihovObjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
 			 Posun_predchozi.x=Posun.x;Posun_predchozi.y=Posun.y;
 			 jedno_ze_tri_otoceni_koleckem_mysi=1;
@@ -316,13 +328,13 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 			 RzToolButton4->Enabled=false;
 			 RzToolButton5->Enabled=false;
 			 uchop_zobrazen=false;
-    	 vycentrovat=true;
-    	 posun_objektu=false;//nutnost, aby se během realizace posunu neaktivoval další posun
-    	 zneplatnit_minulesouradnice();
-    	 probehl_zoom=false;
-    	 add_posledni=true;
-    	 stisknute_leve_tlacitko_mysi=false;
-    	 funkcni_klavesa=0;
+			 vycentrovat=true;
+			 posun_objektu=false;//nutnost, aby se během realizace posunu neaktivoval další posun
+			 zneplatnit_minulesouradnice();
+			 probehl_zoom=false;
+			 add_posledni=true;
+			 stisknute_leve_tlacitko_mysi=false;
+			 funkcni_klavesa=0;
 			 pan_non_locked=false;
 			 zobrazit_barvy_casovych_rezerv=false;
 			 d.cas=0;
@@ -445,17 +457,17 @@ void TForm1::startUP()
 {
 	//////otevrení posledního souboru
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
-
+  volat_parametry_linky=true;//následně je případně znegováno
 	UnicodeString user_file=ms.delete_repeat(ms.delete_repeat(Parametry,"\"",2),"\"").Trim();
 	if(user_file!="")//pokud zkouší uživatel otevřít přímo soubor kliknutím na něj mimo aplikaci
-	OtevritSoubor(user_file);
+	Otevrit_soubor(user_file);
 	else
 	{
 		//načtení posledního otevřeného souboru
 		if(nastaveni.posledni_file)
 		{
 			FileName=readINI("otevrene_soubory","posledni_soubor");
-			if(FileName!="Nový.tispl" && FileName!="")OtevritSoubor(FileName);
+			if(FileName!="Nový.tispl" && FileName!=""){Otevrit_soubor(FileName);volat_parametry_linky=false;}
 		}
 	}
 
@@ -485,7 +497,7 @@ void TForm1::startUP()
 		{
 			if(ID_YES==MB("Aplikace nebyla řádně ukončena. Chcete ze zálohy obnovit poslední neuložený soubor?",MB_YESNO))
 			{
-				if(OtevritSoubor(FileName+".bac_"+get_user_name()+"_"+get_computer_name())==1)
+				if(Otevrit_soubor(FileName+".bac_"+get_user_name()+"_"+get_computer_name())==1)
 				{
 					//ješti donutí stávajicí soubor uložit pod novým jménem
 					//odstraniní koncovky
@@ -513,6 +525,14 @@ void TForm1::startUP()
 	//zatím nepoužíváme, bude spíše souviset přímo se souborem, v případě použití nutno vyhodit implicitní volbu návrhář v sobuor novy
 	//T=readINI("Nastaveni_app","status");
 	//if(T=="0" || T=="")STATUS=NAVRH;else STATUS=OVEROVANI;
+
+	//slouží po startu programu k načtení parametrů linky, nemůže být voláno v tomto okamžiku v souboru nový, protože by jinak vedlo k pádu aplikace
+	if(volat_parametry_linky)
+	{
+		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+		Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
+	}
 }
 //---------------------------------------------------------------------------
 //zajišťuje zápis do INI aplikace, museli jsme dát do výjimky, protože jednou hodilo error
@@ -1219,7 +1239,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
 		//CTRL+V
-		case 86: if(ssCtrl)/*příkaz*/;break;
+		case 86: /*if(ssCtrl)příkaz*/;break;
 		//F1 - volání nápovědy
 		case 112:break;
 		//F2
@@ -2974,10 +2994,12 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 		if(duvod_k_ulozeni)Ulozit_soubor();
 		else SB("Soubor byl již uložen...");
 	}
+	scButton_ulozit->Down=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitjakoClick(TObject *Sender)
 {
+  scButton_ulozjako->Down=false;
 	scSplitView_MENU->Opened=false;
 	SaveDialog->Title="Uložit soubor jako";
 	SaveDialog->DefaultExt="*.tispl";
@@ -3020,36 +3042,37 @@ void TForm1::Ulozit_soubor()
 void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
+	scButton_otevrit->Down=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
   {
 		int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
 		switch(result)
 		{
-			case mrYes:     UlozitClick(this); if(!stisknuto_storno){OtevritSoubor();}break;
-			case mrNo:      DuvodUlozit(false); OtevritSoubor(); break;
+			case mrYes:     UlozitClick(this); if(!stisknuto_storno){Otevrit_soubor();}break;
+			case mrNo:      DuvodUlozit(false); Otevrit_soubor(); break;
 			case mrCancel:  break;
 		}
 	}
   else
-	OtevritSoubor();
+	Otevrit_soubor();
 }
 //---------------------------------------------------------------------------
-void TForm1::OtevritSoubor()//realizuje otevření opendialogu s následným voláním realizace samotného otevření souboru
+void TForm1::Otevrit_soubor()//realizuje otevření opendialogu s následným voláním realizace samotného otevření souboru
 {
-  OpenDialog1->Title="Otevřít soubor";
+	OpenDialog1->Title="Otevřít soubor";
 	OpenDialog1->DefaultExt="*.tispl";
 	OpenDialog1->Filter="Soubory formátu TISPL (*.tispl)|*.tispl";
 	if(OpenDialog1->Execute())
 	{
 		//zavolá nový soubor/smaže stávajicí
-		NovySouborClick(this);
+		Novy_soubor();
 
 		//otevrení souboru
-		OtevritSoubor(OpenDialog1->FileName);
+		Otevrit_soubor(OpenDialog1->FileName);
 	}
 }
 //-------------------------------------------------------------------------
-unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotné otevření souboru
+unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samotné otevření souboru
 {
 	//načte data ze souboru a reaguje na návratovou hodnotu
 	switch(d.v.nacti_ze_souboru(soubor))
@@ -3110,6 +3133,7 @@ unsigned short int TForm1::OtevritSoubor(UnicodeString soubor)//realizuje samotn
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Obnovitzezlohy1Click(TObject *Sender)
 {
+	scButton_zaloha->Down=false;
 	scSplitView_MENU->Opened=false;
 	OpenDialog1->Title="Otevřít soubor ze zálohy";
 	OpenDialog1->DefaultExt="*tispl.bac_"+get_user_name()+"_"+get_computer_name();
@@ -3118,10 +3142,10 @@ void __fastcall TForm1::Obnovitzezlohy1Click(TObject *Sender)
 	if(OpenDialog1->Execute())
 	{
 		//zavolá nový soubor/smaže stávajicí
-		NovySouborClick(this);
+		Novy_soubor();
 
 		//otevrení souboru
-		OtevritSoubor(OpenDialog1->FileName);
+		Otevrit_soubor(OpenDialog1->FileName);
 
 		//ještě donutí stávajicí soubor uložit pod novým jménem
 		//odstranění koncovky
@@ -3142,10 +3166,10 @@ void __fastcall TForm1::OtevritsablonuClick(TObject *Sender)
 	if(OpenDialog1->Execute())
 	{
 		//zavolá nový soubor/smaže stávajicí
-		NovySouborClick(this);
+		Novy_soubor();
 
 		//otevrení souboru
-		OtevritSoubor(OpenDialog1->FileName);
+		Otevrit_soubor(OpenDialog1->FileName);
 
 		//ještě donutí stávajicí soubor uložit pod novým jménem
 		FileName="";
@@ -3291,7 +3315,8 @@ void TForm1::DuvodUlozit(bool stav)
 //zajistí export do rastrového formátu
 void __fastcall TForm1::Export1Click(TObject *Sender)
 {
-   scSplitView_MENU->Opened=false;
+	 scSplitView_MENU->Opened=false;
+	 scButton_export->Down=false;
 	 SavePictureDialog1->Filter="Soubory formátu BMP (*.bmp)|*.bmp|Soubory formátu JPG (*.jpg)|*.jpg|Soubory formátu PNG (*.png)|*.png";
 
 	 //předvyplnění názvem stejnojmeným souboru
@@ -3479,6 +3504,7 @@ void __fastcall TForm1::csv1Click(TObject *Sender)
 void __fastcall TForm1::html1Click(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
+	scButton_report->Down=false;
 	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
 		MB("Žádná data k reportu!");
 	else
@@ -3747,7 +3773,11 @@ void __fastcall TForm1::Chart1Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::MagnaClick(TObject *Sender)
-{ //ZDM
+{
+	scButton_posledni_otevreny->Down=false;
+	scSplitView_MENU->Opened=false;
+	Otevrit_soubor(FileName);
+//ZDM
 //	scSplitView_MENU->Opened=false;
 //	//otevřít soubor
 //	OtevritSoubor(FileName);
@@ -4177,14 +4207,14 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::KonecClick(TObject *Sender)
 {
-  //zalogování vypnutí aplikace
+	//zalogování vypnutí aplikace
 //	AnsiString relation_id=GetCurrentProcessId();
 //	AnsiString send_log_time= TIME.CurrentDateTime();
 //	AnsiString ID ="1";
 //	AnsiString Text="aplikace stop";
 //	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
 //	FDConnection1->ExecSQL(strSQL);
-
+  scButton_konec->Down=false;
 	Close();//ukončí aplikaci
 }
 //---------------------------------------------------------------------------
@@ -4221,38 +4251,33 @@ void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 //volání parametrů linky nebo definice zakázek - dle zvoleného režimu
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
-
-if(scGPButton_header_projekt->ImageIndex==49)  {
-
-	ESC();//zruší případnou rozdělanou akci
-	Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
-	Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-	Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
-	REFRESH();
-
-
-	}
-	else {
-
-		ESC();//zruší případnou rozdělanou akci
-	if(d.v.OBJEKTY->dalsi==NULL)
+	scButton_parmlinky_defzakazek->Down=false;
+	if(scGPButton_header_projekt->ImageIndex==49)
 	{
-		MB("Nejdříve je nutné zakreslit schéma linky!");
+		ESC();//zruší případnou rozdělanou akci
+		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+		Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
+		REFRESH();
 	}
 	else
 	{
+		ESC();//zruší případnou rozdělanou akci
+		if(d.v.OBJEKTY->dalsi==NULL)
 		{
-			Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
-			Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
-			Form_definice_zakazek->ShowModal();
-			casovosa1->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
-			DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
-			REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
+			MB("Nejdříve je nutné zakreslit schéma linky!");
 		}
-	}
-
-
-
+		else
+		{
+			{
+				Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
+				Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
+				Form_definice_zakazek->ShowModal();
+				casovosa1->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
+				DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
+				REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
+			}
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -4487,7 +4512,7 @@ void __fastcall TForm1::button_zakazky_tempClick(TObject *Sender)
 void __fastcall TForm1::scButton2Click(TObject *Sender)
 {
 	 scSplitView_MENU->Close();//zavře menu
-	 NovySouborClick(Sender);//prvně zavřu starý, který ho donutím uložit a vytvořím nový soubor
+	 Novy_soubor();//prvně zavřu starý, který ho donutím uložit a vytvořím nový soubor
 	 //Form_eDesigner->Show();
 	 AnsiString FileNameSablona="sablona.tisplTemp";
 
@@ -4510,7 +4535,7 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 	 {
 		 AnsiString T1="Následně bude otevřena šablona. Zadejte název projektu, pod kterým bude uložena.";
 		 MB(T1);SB(T1);
-		 OtevritSoubor(ExtractFilePath(Application->ExeName)+FileNameSablona); //volaný *.tispl musí být tam, kde exe tisplu nebo zadat adresu
+		 Otevrit_soubor(ExtractFilePath(Application->ExeName)+FileNameSablona); //volaný *.tispl musí být tam, kde exe tisplu nebo zadat adresu
 		 DuvodUlozit(true);
 		 UlozitjakoClick(this);
 

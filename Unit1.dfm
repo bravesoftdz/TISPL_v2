@@ -2219,7 +2219,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 255
+      GlowEffect.AlphaValue = 175
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -2745,9 +2745,6 @@ object Form1: TForm1
       HeaderMargin = 10
       HeaderAutoColor = False
       TransparentBackground = False
-      ExplicitLeft = 1
-      ExplicitTop = 1
-      ExplicitHeight = 624
       object DrawGrid_knihovna: TDrawGrid
         Left = 11
         Top = 33
@@ -2991,7 +2988,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 33
+    TabOrder = 32
     Visible = False
     BackgroundStyle = scexbgsPanel
     HeaderColor = clBtnFace
@@ -3038,7 +3035,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Pohon - objektu'
-    TabOrder = 34
+    TabOrder = 33
     Visible = False
     OnClick = pohonobjektClick
   end
@@ -3048,7 +3045,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'TPohony'
-    TabOrder = 35
+    TabOrder = 34
     Visible = False
     OnClick = Button12Click
   end
@@ -3071,7 +3068,7 @@ object Form1: TForm1
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 36
+    TabOrder = 35
     Visible = False
     StyleElements = [seFont, seClient]
     OnClick = scGPGlyphButton_close_legenda_casove_osyClick
@@ -3149,7 +3146,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'Button13'
-    TabOrder = 37
+    TabOrder = 36
     Visible = False
     OnClick = Button13Click
   end
@@ -3161,7 +3158,7 @@ object Form1: TForm1
     Caption = 'pou'#382#237't zadan'#233' kapacity objekt'#367
     Color = clBtnFace
     ParentColor = False
-    TabOrder = 38
+    TabOrder = 37
     Visible = False
     OnClick = CheckBox_pouzit_zadane_kapacity_OLDClick
   end
@@ -3175,7 +3172,7 @@ object Form1: TForm1
     Color = clBtnFace
     ParentColor = False
     State = cbChecked
-    TabOrder = 40
+    TabOrder = 39
     Visible = False
     OnClick = CheckBoxVytizenost_Click
   end
@@ -3507,8 +3504,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 735
-        Top = 898
+        Left = 741
+        Top = 904
         Width = 244
         Height = 31
         Align = alCustom
@@ -4195,7 +4192,7 @@ object Form1: TForm1
     RepeatClickInterval = 100
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -4218,10 +4215,9 @@ object Form1: TForm1
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
-    Width = 0
+    Width = 180
     Height = 622
     Anchors = [akLeft, akTop, akBottom]
-    Enabled = False
     TabOrder = 23
     CustomImageIndex = -1
     StyleKind = scpsPanel
@@ -4244,7 +4240,7 @@ object Form1: TForm1
     CompactWidth = 0
     CompactHeight = 20
     GripSize = 0
-    Opened = False
+    Opened = True
     OpenedWidth = 180
     OpenedHeight = 50
     OpenedMinWidth = 0
@@ -4260,10 +4256,10 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_MENUOpened
-    object scButton1: TscButton
+    object scButton_konec: TscButton
       Left = 0
       Top = 572
-      Width = 0
+      Width = 180
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -4352,11 +4348,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 0
     end
-    object scButton3: TscButton
+    object scButton_otevrit: TscButton
       Left = 0
       Top = 40
-      Width = 0
+      Width = 180
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4444,12 +4441,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
+      ExplicitWidth = 0
     end
     object scButton4: TscButton
       Left = 0
       Top = 240
-      Width = 0
+      Width = 180
       Height = 46
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4537,12 +4534,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 269
+      ExplicitWidth = 0
     end
-    object scButton5: TscButton
+    object scButton_zaloha: TscButton
       Left = 0
       Top = 522
-      Width = 0
+      Width = 180
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -4630,11 +4627,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 0
     end
     object scButton_report: TscButton
       Left = 0
       Top = 160
-      Width = 0
+      Width = 180
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4722,7 +4720,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
+      ExplicitWidth = 0
     end
     object scGPSwitch_AA: TscGPSwitch
       Left = 100
@@ -4828,10 +4826,10 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       Caption = 'M'#345#237#382'ka'
     end
-    object scButton7: TscButton
+    object scButton_ulozjako: TscButton
       Left = 0
       Top = 120
-      Width = 0
+      Width = 180
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4919,12 +4917,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
+      ExplicitWidth = 0
     end
-    object scButton8: TscButton
+    object scButton_export: TscButton
       Left = 0
       Top = 200
-      Width = 0
+      Width = 180
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -5012,12 +5010,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
+      ExplicitWidth = 0
     end
-    object scButton9: TscButton
+    object scButton_posledni_otevreny: TscButton
       Left = 0
       Top = 472
-      Width = 0
+      Width = 180
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -5105,6 +5103,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 0
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -5158,10 +5157,10 @@ object Form1: TForm1
       UseFontColorToStyleColor = False
       Caption = 'M'#283#345#237'tko'
     end
-    object scButton10: TscButton
+    object scButton_novy: TscButton
       Left = 0
       Top = 0
-      Width = 0
+      Width = 180
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -5173,7 +5172,7 @@ object Form1: TForm1
       TabOrder = 14
       OnClick = NovySouborClick
       Animation = False
-      Caption = 'Nov'#253' projekt'
+      Caption = 'Nov'#253'...'
       CanFocused = False
       CustomDropDown = False
       Margin = 0
@@ -5249,12 +5248,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
+      ExplicitWidth = 0
     end
     object scButton_ulozit: TscButton
       Left = 0
       Top = 80
-      Width = 0
+      Width = 180
       Height = 40
       Align = alTop
       Enabled = False
@@ -5343,12 +5342,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
+      ExplicitWidth = 0
     end
     object scButton_parmlinky_defzakazek: TscButton
       Left = 0
       Top = 286
-      Width = 0
+      Width = 180
       Height = 40
       Align = alTop
       BiDiMode = bdLeftToRight
@@ -5439,14 +5438,14 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
+      ExplicitWidth = 0
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800E004F00410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800F404F40410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6569,7 +6568,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013300F003240430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010133002804280430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22031,7 +22030,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C010133009C029C0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01013300A002A00218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

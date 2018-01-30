@@ -196,10 +196,10 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton2;
 	TscGPButton *layout;
 	TscGPButton *simulace;
-	TscButton *scButton3;
-	TscButton *scButton1;
+	TscButton *scButton_otevrit;
+	TscButton *scButton_konec;
 	TscButton *scButton4;
-	TscButton *scButton5;
+	TscButton *scButton_zaloha;
 	TscGPSwitch *scGPSwitch_AA;
 	TscLabel *scLabel11;
 	TscLabel *scLabel16;
@@ -209,9 +209,9 @@ __published:	// IDE-managed Components
 	TscGPVirtualImageList *scGPVirtualImageList1;
 	TscButton *scButton_report;
 	TscSplitView *scSplitView_MENU;
-	TscButton *scButton7;
-	TscButton *scButton8;
-	TscButton *scButton9;
+	TscButton *scButton_ulozjako;
+	TscButton *scButton_export;
+	TscButton *scButton_posledni_otevreny;
 	TscSplitView *scSplitView_LEFTTOOLBAR;
 	TscListGroupPanel *scListGroupKnihovObjektu;
 	TDrawGrid *DrawGrid_knihovna;
@@ -229,7 +229,7 @@ __published:	// IDE-managed Components
 	TButton *hl_spojak_zakazky;
 	TMemo *Memo2;
 	TButton *button_zakazky_temp;
-	TscButton *scButton10;
+	TscButton *scButton_novy;
 	TButton *Button11;
 	TscGPGlyphButton *scGPGlyphButton_close_grafy;
 	TscButton *scButton_ulozit;
@@ -446,9 +446,10 @@ private:
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text);
 	void akutalizace_stavu_prichytavani_vSB();
+	void Novy_soubor();//samotné vytvoøení nového souboru
 	void Ulozit_soubor();//samotné uložení
-	void OtevritSoubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
-	unsigned short int OtevritSoubor(UnicodeString soubor);//realizuje samotné otevøení souboru
+	void Otevrit_soubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
+	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
@@ -508,6 +509,7 @@ private:
 
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
+	bool volat_parametry_linky;//použito pøi soubor nový
 
 	AnsiString Caption;
 
