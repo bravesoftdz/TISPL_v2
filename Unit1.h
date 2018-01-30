@@ -207,7 +207,6 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton15;
 	TImageList *ImageList48;
 	TscGPVirtualImageList *scGPVirtualImageList1;
-	TscButton *scButton2;
 	TscButton *scButton_report;
 	TscSplitView *scSplitView_MENU;
 	TscButton *scButton7;
@@ -256,6 +255,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_mezera;
 	TscGPButton *scGPButton_header_projekt;
 	TscGPButton *scGPButton_header_def_zakazek;
+	TscButton *scButton_parmlinky_defzakazek;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -403,6 +403,7 @@ __published:	// IDE-managed Components
           TShiftState Shift, int X, int Y);
 	void __fastcall scExPanel_log_headerMouseActivate(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y, int HitTest, TMouseActivate &MouseActivate);
+	void __fastcall scSplitView_MENUOpened(TObject *Sender);
 
 
 

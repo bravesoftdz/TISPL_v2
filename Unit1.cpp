@@ -4734,3 +4734,23 @@ scSplitView_OPTIONS->Opened=false;
 
 
 
+
+void __fastcall TForm1::scSplitView_MENUOpened(TObject *Sender)
+{
+// generování buttonu na PL nebo DF dle přepínače režimu
+
+ if(STATUS==NAVRH){
+scButton_parmlinky_defzakazek->Caption="Parametry linky";
+scButton_parmlinky_defzakazek->ImageIndex=49;
+
+}
+
+if (STATUS==OVEROVANI) {
+
+scButton_parmlinky_defzakazek->Caption="Definice zakázek";
+scButton_parmlinky_defzakazek->ImageIndex=48;
+
+}
+}
+//---------------------------------------------------------------------------
+
