@@ -870,14 +870,9 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 	d.PosunT.y=0;
 	zneplatnit_minulesouradnice();
-
-	g.ShowGrafy(false);
+	//tady bylo showgrafy(false) - ale zamrzalo
 	DuvodUlozit(true);
-	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
-	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
-	scSplitView_LEFTTOOLBAR->Visible=false;
-	scListGroupKnihovObjektu->Visible=false;
+	//pozor musí být některé z dříve zde uloženýchpoložek dole jinak zamrzá
 	//PopupMenu1->AutoPopup=false;
 	Button3->Visible=false;
 	Timer_neaktivity->Enabled=false;
@@ -924,7 +919,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	scGPGlyphButton_close_grafy->Visible=false;
 
 
-	double konec_cas=d.v.vrat_nejpozdejsi_konec_zakazek()/10;
+	int konec_cas=m.round(d.v.vrat_nejpozdejsi_konec_zakazek()/10.0);
 	for (int i = 1; i <= 10; i++) {
 		int val=konec_cas*i;
 		ComboBoxODmin->Items->Add(val);
@@ -941,8 +936,15 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	//CheckBox_pouzit_zadane_kapacity->Left=CheckBoxAnimovatSG->Left+CheckBoxAnimovatSG->Width+7;
 
 	//---
-  ComboBoxCekani->Visible=false;
+	//pozor musí být některé z položek dole jinak zamrzá:
+	ComboBoxCekani->Visible=false;
 	Label_zamerovac->Visible=false;
+	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+	scSplitView_LEFTTOOLBAR->Visible=false;
+	scListGroupKnihovObjektu->Visible=false;
+	g.ShowGrafy(false);
 	Invalidate();
 }
 //---------------------------------------------------------------------------
