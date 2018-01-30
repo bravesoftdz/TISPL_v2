@@ -628,6 +628,11 @@ void Cgrafy::zpravy() {
 
 	 //ShowMessage(delka);
 
+	 //ShowMessage(Form1->d.v.vrat_AVGsumPT_zakazky(zakazka));
+	 //ShowMessage(Form1->d.v.vrat_AVGsumWT_zakazky(zakazka));
+
+
+
 		zakazka = zakazka->dalsi;
 }
 
@@ -654,6 +659,10 @@ while (ukaz != NULL) {
 	if(!rozdilne_kapacity) zpravy+="<i>Nejsou evidovány žádné rozdílné kapacity.</i>";
 
 Form1->scHTMLLabel_log_vypis->Caption = zpravy;
+
+
+
+
 
 }
 

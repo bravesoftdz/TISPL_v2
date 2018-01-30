@@ -2637,6 +2637,8 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 			break;
 	}
 
+
+
 	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
 	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
 	Form_osa_info->rHTMLLabel_cislo_voziku_vypis->Caption=proces_pom->n_v_zakazce;
@@ -2644,10 +2646,19 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	Form_osa_info->rHTMLLabel_dop_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita_dop;
 	Form_osa_info->rHTMLLabel_pozad_kap_vypis->Caption=proces_pom->segment_cesty->objekt->kapacita;
 	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD*60.0;
-	Form_osa_info->rHTMLLabel_palce_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec;
 	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
+
+		if(proces_pom->segment_cesty->objekt->pohon){
 	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec/100.0)/(proces_pom->segment_cesty->RD*60.0);
 	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec/100.0,proces_pom->segment_cesty->RD*60.0,1);
+	Form_osa_info->rHTMLLabel_palce_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec;
+		 }
+		 else  {
+	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption="neznámá - nepřiřazen pohon";
+	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption;
+	Form_osa_info->rHTMLLabel_palce_vypis->Caption=Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption;
+		 }
+
  //	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec)/(proces_pom->segment_cesty->RD);
  //	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
 
@@ -4724,4 +4735,24 @@ scSplitView_OPTIONS->Opened=false;
 //---------------------------------------------------------------------------
 
 
+
+
+void __fastcall TForm1::scSplitView_MENUOpened(TObject *Sender)
+{
+// generování buttonu na PL nebo DF dle přepínače režimu
+
+ if(STATUS==NAVRH){
+scButton_parmlinky_defzakazek->Caption="Parametry linky";
+scButton_parmlinky_defzakazek->ImageIndex=49;
+
+}
+
+if (STATUS==OVEROVANI) {
+
+scButton_parmlinky_defzakazek->Caption="Definice zakázek";
+scButton_parmlinky_defzakazek->ImageIndex=48;
+
+}
+}
+//---------------------------------------------------------------------------
 
