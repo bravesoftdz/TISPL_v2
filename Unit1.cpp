@@ -3948,23 +3948,13 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 {
 	Timer_animace->Enabled=!Timer_animace->Enabled;
-
-	if(ButtonPLAY->GlyphOptions->Kind==scgpbgkPlay) {
-			ButtonPLAY->GlyphOptions->Kind=scgpbgkStop;
-			ButtonPLAY->Hint="zastavit animaci";
-	}
-	else {
-    ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
-		ButtonPLAY->Hint="spustit animaci";
-
-	}
-
 	if(Timer_animace->Enabled)
 	{
 		CheckBoxAnimovatSG->Visible=true;
 		d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu
 		d.PosunT.y=0;
-		ButtonPLAY->Caption="STOP";
+		ButtonPLAY->GlyphOptions->Kind=scgpbgkStop;
+		ButtonPLAY->Hint="zastavit animaci";
 		Timer_animace->Interval=40;
 		d.TP.K=0.05;//Krok po kolika minutach se bude zobrazovat
 		d.TP.DO=-d.TP.K;//výchozí čás (záporný interval, kvůli tomu, aby se začínalo od nuly)
@@ -3972,8 +3962,11 @@ void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 		d.TP.Ndo=0;//rozmezí Jaký se vypíše vozik, pokud bude 0 vypisují se všechny
 		d.TP.A=true;//jednořádková animace
 	}
-	else 	ButtonPLAY->Caption="PLAY";
-		
+	else
+	{
+		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+		ButtonPLAY->Hint="spustit animaci";
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
@@ -3987,7 +3980,8 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 	else
 	{
 		Timer_animace->Enabled=false;
-		ButtonPLAY->Caption="PLAY";
+		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+		ButtonPLAY->Hint="spustit animaci";
 		technologickprocesy1Click(Sender);//vratí statický mod
 	}
 }
