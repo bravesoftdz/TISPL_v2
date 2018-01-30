@@ -149,11 +149,10 @@ void TForm1::NewDesignSettings()
 	scSplitView_OPTIONS->Opened=false;
 	scSplitView_OPTIONS->Align=alRight;
 
-	scGPGlyphButton_definice_zakazek->Options->NormalColor=active_blue;
-	scGPGlyphButton_parametry_linky->Options->NormalColor=active_blue;
-	scListGroupNastavProjektu->HeaderAutoColor=true;
+ //	scGPGlyphButton_definice_zakazek->Options->NormalColor=active_blue;
+ //	scGPGlyphButton_parametry_linky->Options->NormalColor=active_blue;
+ //	scListGroupNastavProjektu->HeaderAutoColor=true;
 	scListGroupKnihovObjektu->HeaderAutoColor=true;
-	scListGroupNastavProjektu->Color=light_gray;
 	scListGroupKnihovObjektu->Color=light_gray;
 	//scSplitView_OPTIONS->Color=light_gray;
  //	scExPanel_vrstvy->Color=light_gray;
@@ -296,7 +295,7 @@ void __fastcall TForm1::NovySouborClick(TObject *Sender)
 
     	 Zoom=1.0; on_change_zoom_change_scGPTrackBar();
     	 Zoom_predchozi=1.0;
-			 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
+			 Posun.x=-scListGroupKnihovObjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
 			 Posun_predchozi.x=Posun.x;Posun_predchozi.y=Posun.y;
 			 jedno_ze_tri_otoceni_koleckem_mysi=1;
 			 doba_neotaceni_mysi=0;
@@ -599,7 +598,7 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
-	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupNastavProjektu->Height+0+DetailsButton->Height);
+	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupKnihovObjektu->Height+0+DetailsButton->Height);
 	if(/*MOD==REZERVY ||*/ MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
 }
@@ -614,10 +613,10 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=true;
-	scListGroupNastavProjektu->Top=0;
-	scListGroupNastavProjektu->Visible=true;
+	scListGroupKnihovObjektu->Top=0;
+//	scListGroupNastavProjektu->Visible=true;
 	scListGroupKnihovObjektu->Visible=true;
-	scListGroupKnihovObjektu->Top=scListGroupNastavProjektu->Height;
+ //	scListGroupKnihovObjektu->Top=scListGroupNastavProjektu->Height;
 	DuvodUlozit(true);
 	ButtonPLAY->Visible=false;
 	Timer_neaktivity->Enabled=false;
@@ -641,8 +640,8 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPCheckBox_ortogon->Left=3;
 	scGPCheckBox_ortogon->Visible=true;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
-	scGPButton_header_def_zakazek->Visible=false;
-	scGPButton_header_param_linky->Visible=false;
+ //	scGPButton_header_def_zakazek->Visible=false;
+ //	scGPButton_header_param_linky->Visible=false;
 
 	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
 	Invalidate();
@@ -763,7 +762,6 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 			scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 			scSplitView_LEFTTOOLBAR->Visible=false;
-			scListGroupNastavProjektu->Visible=false;
 			scListGroupKnihovObjektu->Visible=false;
 			Button3->Visible=false;
 			Timer_neaktivity->Enabled=true;
@@ -801,18 +799,18 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 
 			if(STATUS==NAVRH) {
 
-					scGPButton_header_def_zakazek->Visible=false;
-					scGPButton_header_param_linky->Visible=true;
-					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
-					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
+			 //		scGPButton_header_def_zakazek->Visible=false;
+			 //		scGPButton_header_param_linky->Visible=true;
+			 //		scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
+				//	scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
 			}
 			if(STATUS==OVEROVANI){
 
 
-					scGPButton_header_def_zakazek->Visible=true;
-					scGPButton_header_param_linky->Visible=false;
-					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
-					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
+//					scGPButton_header_def_zakazek->Visible=true;
+//					scGPButton_header_param_linky->Visible=false;
+//					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
+//					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
 			}
 
 			Invalidate();
@@ -879,7 +877,6 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=false;
-	scListGroupNastavProjektu->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
 	//PopupMenu1->AutoPopup=false;
 	Button3->Visible=false;
@@ -925,23 +922,6 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	scGPCheckBox_ortogon->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
-
-		if(STATUS==NAVRH) {
-
-					scGPButton_header_def_zakazek->Visible=false;
-					scGPButton_header_param_linky->Visible=true;
-					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
-					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
-			}
-			if(STATUS==OVEROVANI){
-
-
-					scGPButton_header_def_zakazek->Visible=true;
-					scGPButton_header_param_linky->Visible=false;
-					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
-					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
-			}
-
 
 
 	double konec_cas=d.v.vrat_nejpozdejsi_konec_zakazek()/10;
@@ -2056,7 +2036,7 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 
 	if(MaxX+MinX==0)//v případě, že není objekt
 	{
-		 Posun.x=-scListGroupNastavProjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
+		 Posun.x=-scListGroupKnihovObjektu->Width;if(vyska_menu>0)Posun.y=-vyska_menu+9;else Posun.y=-29;
 	}
 
 	//SB(Zoom,2); už se používá jinak
@@ -4231,20 +4211,23 @@ void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 	scSplitView_LEFTTOOLBAR->Opened = !scSplitView_LEFTTOOLBAR->Opened;
 }
 //---------------------------------------------------------------------------
-//volání parametrů linky
+//volání parametrů linky nebo definice zakázek - dle zvoleného režimu
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
+
+if(scGPButton_header_projekt->ImageIndex==49)  {
+
 	ESC();//zruší případnou rozdělanou akci
 	Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 	Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 	Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
 	REFRESH();
-}
-//---------------------------------------------------------------------------
-//volání superformuláře (definice zakázek)
-void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
-{
-	ESC();//zruší případnou rozdělanou akci
+
+
+	}
+	else {
+
+		ESC();//zruší případnou rozdělanou akci
 	if(d.v.OBJEKTY->dalsi==NULL)
 	{
 		MB("Nejdříve je nutné zakreslit schéma linky!");
@@ -4260,6 +4243,33 @@ void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
 			REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
 		}
 	}
+
+
+
+	}
+}
+//---------------------------------------------------------------------------
+//volání superformuláře (definice zakázek)
+void __fastcall TForm1::scGPGlyphButton_definice_zakazekClick(TObject *Sender)
+{
+
+// není aktuálně využíváno, volá se pres společnou metodu Button_dopravnik_parametryClick
+//	ESC();//zruší případnou rozdělanou akci
+//	if(d.v.OBJEKTY->dalsi==NULL)
+//	{
+//		MB("Nejdříve je nutné zakreslit schéma linky!");
+//	}
+//	else
+//	{
+//		{
+//			Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
+//			Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
+//			Form_definice_zakazek->ShowModal();
+//			casovosa1->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
+//			DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
+//			REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
+//		}
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DetailsButtonClick(TObject *Sender)
@@ -4316,42 +4326,38 @@ void __fastcall TForm1::scGPSwitch_rezimChangeState(TObject *Sender)
 	if(STATUS==NAVRH)
 	{
 		STATUS=OVEROVANI;
-		scLabel14->Visible=true;
-		scLabel15->Visible=false;
-		scGPGlyphButton_definice_zakazek->Visible=true;
-		scGPGlyphButton_parametry_linky->Visible=false;
-		scGPGlyphButton_definice_zakazek->Top=scGPGlyphButton_parametry_linky->Top;
+
+	 //	scGPGlyphButton_definice_zakazek->Visible=true;
+	 //	scGPGlyphButton_parametry_linky->Visible=false;
+	//	scGPGlyphButton_definice_zakazek->Top=scGPGlyphButton_parametry_linky->Top;
 		//scLabel14->Visible=false;
-		scLabel14->Caption="Definice zakázek";
+		//scLabel14->Caption="Definice zakázek";
 		SB("OVĚŘOVÁNÍ",1);
 	 //	ShowMessage(STATUS);
-			 if(MOD==CASOVAOSA || MOD==TECHNOPROCESY ){
-			 scGPButton_header_def_zakazek->Visible=true;
-			 scGPButton_header_param_linky->Visible=false;
-			}
-				else  {
-			scGPButton_header_param_linky->Visible=false;
-			scGPButton_header_def_zakazek->Visible=false;
-				 }
+
+			// scGPButton_header_def_zakazek->Visible=true;
+			// scGPButton_header_param_linky->Visible=false;
+			scGPButton_header_projekt->ImageIndex=48;
+			scGPButton_header_projekt->Hint="Definice zakázek";
+
+
 	}
 	else
 	{
 		STATUS=NAVRH;
-		scLabel14->Visible=true;
-		scLabel15->Visible=false;
-		scLabel14->Caption="Parametry linky";
-		scGPGlyphButton_parametry_linky->Visible=true;
-		scGPGlyphButton_parametry_linky->Top=scGPGlyphButton_definice_zakazek->Top;
-		scGPGlyphButton_definice_zakazek->Visible=false;
+	 //	scLabel14->Visible=true;
+	//	scLabel15->Visible=false;
+		//scLabel14->Caption="Parametry linky";
+	//	scGPGlyphButton_parametry_linky->Visible=true;
+	//	scGPGlyphButton_parametry_linky->Top=scGPGlyphButton_definice_zakazek->Top;
+	//	scGPGlyphButton_definice_zakazek->Visible=false;
 
-				 if(MOD==CASOVAOSA || MOD==TECHNOPROCESY){
-		 scGPButton_header_def_zakazek->Visible=false;
-		 scGPButton_header_param_linky->Visible=true;
-		 }
-		 		else  {
-			scGPButton_header_param_linky->Visible=false;
-			scGPButton_header_def_zakazek->Visible=false;
-				 }
+	 //	 scGPButton_header_def_zakazek->Visible=false;
+	 //	 scGPButton_header_param_linky->Visible=true;
+
+		scGPButton_header_projekt->ImageIndex=49;
+		scGPButton_header_projekt->Hint="Parametry linky";
+
 
 		SB("NÁVRH",1);
 	 //	ShowMessage(STATUS);

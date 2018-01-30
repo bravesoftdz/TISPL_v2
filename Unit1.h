@@ -215,11 +215,6 @@ __published:	// IDE-managed Components
 	TscButton *scButton9;
 	TscSplitView *scSplitView_LEFTTOOLBAR;
 	TscListGroupPanel *scListGroupKnihovObjektu;
-	TscListGroupPanel *scListGroupNastavProjektu;
-	TscLabel *scLabel14;
-	TscLabel *scLabel15;
-	TscGPGlyphButton *scGPGlyphButton_parametry_linky;
-	TscGPGlyphButton *scGPGlyphButton_definice_zakazek;
 	TDrawGrid *DrawGrid_knihovna;
 	TscLabel *scLabel_ZOOM;
 	TscGPSwitch *scGPSwitch_meritko;
@@ -259,7 +254,7 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
 	TscGPGlyphButton *ButtonPLAY;
 	TscLabel *scLabel_mezera;
-	TscGPButton *scGPButton_header_param_linky;
+	TscGPButton *scGPButton_header_projekt;
 	TscGPButton *scGPButton_header_def_zakazek;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
