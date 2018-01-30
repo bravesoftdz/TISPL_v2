@@ -341,10 +341,7 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 casovosa1->Enabled=false;
 			 casovosa1->Down=false;
 			 zalozka_schema->Down=true;
-
-
-			 SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
-
+       SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 			 FileName="Nový.tispl";
 			 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
 			 Invalidate();//vhodnější invalidate než refresh
@@ -662,8 +659,8 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
  //	scGPButton_header_def_zakazek->Visible=false;
  //	scGPButton_header_param_linky->Visible=false;
-
 	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
+  SB("Kliknutím na libovolné místo přidáte objekt z knihovny nebo lze upravit stávájící schéma");
 	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -715,7 +712,7 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
 	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
-	SB("Layout",1);
+	SB("Zobrazení navrženého layoutu");
 	//Zoom=5;ZOOM();
 	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
 	Invalidate();
@@ -759,7 +756,7 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 void __fastcall TForm1::casovosa1Click(TObject *Sender)
 {
 	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
-//	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná
+//	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
 //	{
 //		MB("Pro zobrazení je nutné ve formuláři definice zakázek zadat plán výroby!");
 //	}
@@ -816,23 +813,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			scGPGlyphButton_close_legenda_casove_osy->Left=0;
 			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
 			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
-
-			if(STATUS==NAVRH) {
-
-			 //		scGPButton_header_def_zakazek->Visible=false;
-			 //		scGPButton_header_param_linky->Visible=true;
-			 //		scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
-				//	scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
-			}
-			if(STATUS==OVEROVANI){
-
-
-//					scGPButton_header_def_zakazek->Visible=true;
-//					scGPButton_header_param_linky->Visible=false;
-//					scGPButton_header_def_zakazek->Top=scGPButton_header_param_linky->Top;
-//					scGPButton_header_def_zakazek->Left=scGPButton_header_param_linky->Left;
-			}
-
+			SB("Zobrazení technologických procesů v čase formou časových os.");
 			Invalidate();
 		}
 	}
@@ -884,7 +865,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 {
 	MOD=TECHNOPROCESY;
 	ESC();//zruší případně rozdělanou akci
-	SB("zobrazení technologických procesů v čase",1);
+	SB("Zobrazení technologických procesů v čase v jednotlivých objektech.");
 	//if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
 	Timer_simulace->Enabled=false;
 	d.PosunT.x=0;//výchozí posunutí obrazu Posunu na časových osách, kvůli možnosti posouvání obrazu

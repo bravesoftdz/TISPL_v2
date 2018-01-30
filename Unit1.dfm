@@ -1908,9 +1908,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scLabel_titulek: TscLabel
-      Left = 450
+      Left = 459
       Top = 0
-      Width = 93
+      Width = 84
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -1938,6 +1938,8 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
+      ExplicitLeft = 471
+      ExplicitWidth = 72
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
       Left = 543
@@ -2056,7 +2058,7 @@ object Form1: TForm1
     object scLabel_klient: TscLabel
       Left = 391
       Top = 0
-      Width = 59
+      Width = 68
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -2116,6 +2118,7 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'vrh'
+      ExplicitLeft = 300
     end
     object scLabel_mezera: TscLabel
       Left = 289
@@ -2219,7 +2222,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 175
+      GlowEffect.AlphaValue = 95
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -2292,6 +2295,7 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       OnClick = RzStatusPane1Click
+      Alignment = taCenter
       BlinkColor = 10114859
       Caption = ''
       DefaultWidth = 50
@@ -2313,6 +2317,7 @@ object Form1: TForm1
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
+      Alignment = taCenter
       BlinkColor = 10114859
       Caption = ''
       ExplicitLeft = 333
@@ -2361,6 +2366,7 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       OnClick = RzStatusPane5Click
+      Alignment = taCenter
       BlinkColor = 10114859
       Caption = ''
       ExplicitLeft = 874
@@ -3504,8 +3510,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 741
-        Top = 904
+        Left = 747
+        Top = 910
         Width = 244
         Height = 31
         Align = alCustom
@@ -4192,7 +4198,7 @@ object Form1: TForm1
     RepeatClickInterval = 100
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -4348,7 +4354,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -4441,7 +4446,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton4: TscButton
       Left = 0
@@ -4534,7 +4538,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_zaloha: TscButton
       Left = 0
@@ -4627,7 +4630,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_report: TscButton
       Left = 0
@@ -4720,7 +4722,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch_AA: TscGPSwitch
       Left = 100
@@ -4917,7 +4918,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_export: TscButton
       Left = 0
@@ -5010,7 +5010,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
@@ -5103,7 +5102,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -5248,7 +5246,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_ulozit: TscButton
       Left = 0
@@ -5342,7 +5339,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
     object scButton_parmlinky_defzakazek: TscButton
       Left = 0
@@ -5438,14 +5434,13 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 0
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800F404F40410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800F804F80410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6568,7 +6563,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010133002804280430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010133002C042C0430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22030,7 +22025,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01013300A002A00218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01013300A402A40218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
