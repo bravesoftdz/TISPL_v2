@@ -222,6 +222,19 @@ Cvektory::TObjekt *Cvektory::vrat_objekt(unsigned int n)
 	return p;
 }
 //---------------------------------------------------------------------------
+//dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt
+Cvektory::TObjekt *Cvektory::vrat_objekt_z_roma(int X)
+{
+	TObjekt *O=OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
+	while (O!=NULL)
+	{
+		if(O->predchozi->obsazenost<X && X<=O->obsazenost)//akce s ukazatelem
+		break;//zastaví další hledání výsledek je O
+		O=O->dalsi;//posun na další prvek v seznamu
+	}
+	return O;
+}
+//---------------------------------------------------------------------------
 //smaze objekt ze seznamu
 short int Cvektory::smaz_objekt(TObjekt *Objekt)
 {
@@ -702,7 +715,7 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 void Cvektory::generuj_POHONY()
 {
 	TObjekt *O=OBJEKTY->dalsi;
-	unsigned int i=0;//i vygenerovaného pohonu
+	int i=0;//i vygenerovaného pohonu
 	//prvně najde "i" nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
 	TPohon *P=POHONY->dalsi;
 	while(P!=NULL)

@@ -221,105 +221,6 @@ class Cvektory
 	};
 	struct TLinie LINIE;//seznam linií sloužicích jako poznámky
 
-///starý datový model
-//		struct TObjekt
-//		{
-//			unsigned int n; //pořadí objektu ve spoj.seznamu
-//			unsigned int id;   //id typu objektu
-//			UnicodeString short_name;  //krátký název
-//			UnicodeString name;  //celý název objektu
-//			double X, Y;
-//			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
-//			double TTo; //takt time objektu
-//			double CT; //cycle time
-//			short stav;//0 - stop 2 - vozík může jet
-//			unsigned short orientace_voziku; //0-na délku, 1- na šířku
-//			double vzdalenost; //mezera mezi vozíky
-//			short typ_dopravniku;
-//			double delka_dopravniku;
-//			double kapacita_objektu;
-//			double dop_kapacita_objektu;//doporučená, vypočítáná
-//			double obsazenost;//čas obsazenosti
-//			UnicodeString techn_parametry;//obsah valuestringlistu, nelze ukládát pouze jednotlivá data, protože se seznam může u S&G měnit
-//			struct TObjekt *predchozi;
-//			struct TObjekt *dalsi;
-//		};
-//		TObjekt *OBJEKTY;
-//
-//		struct TCesta//seznam technologických objektů na cestě - definice cesty
-//		{
-//			unsigned int n; //pořadí + ID objektu ve spoj.seznamu
-//			TObjekt *objekt;
-//			double CT; //cycle time
-//			double RD;//rychlost dopravníku
-//			double R;//roztec
-//			struct TCesta *predchozi;
-//			struct TCesta *dalsi;
-//		};
-//		struct TSeznam_cest //seznam cest
-//		{
-//			unsigned int n; //pořadí cesty ve spoj.seznamu všech cest
-//			TCesta *cesta;
-//			TColor barva;
-//			struct TSeznam_cest *predchozi;
-//			struct TSeznam_cest *dalsi;
-//		}; TSeznam_cest *CESTY;
-//
-//		struct TVozik
-//		{
-//			unsigned int n; //pořadí objektu ve spoj.seznamu
-//			UnicodeString id;   //id typu objektu
-//			double delka;
-//			double sirka;
-//			double vyska;
-//			double rotace;
-//			UnicodeString nazev_vyrobku;
-//			double max_vyrobku;
-//			double akt_vyrobku;
-//			double delka_vcetne_vyrobku;
-//			double sirka_vcetne_vyrobku;
-//			double vyska_vcetne_vyrobku;
-//			short stav;//-1 - není na lince, 0 - stop, 1 - čeká, 2 - jede
-//			TColor barva;
-//			double start;//výchozí pozice vozíku v grafu časové osy
-//			double pozice;//pozice na dopravniku či v grafu
-//			double X;
-//			double Y;
-//			double timer;
-//			struct TObjekt *segment;
-//			struct TSeznam_cest *cesta;
-//			struct TVozik *predchozi;
-//			struct TVozik *dalsi;
-//		};
-//		TVozik *VOZIKY;
-//
-//		struct TProces
-//		{
-//			unsigned int n; //pořadí objektu ve spoj.seznamu
-//			unsigned int n_v_zakazce;//pořadí objektu v rámci zakázky
-//			double Tpoc;//X-počateční
-//			double Tkon;//X-koncové
-//			double Tdor;//X-dorovnání předchozího vozíku
-//			double Tpre;//X- nutná doba přejezdu, zpoždění za předchozím vozíkem
-//			double Tcek;//X- nutná doba cekani na palec
-//			struct TCesta *cesta; //při změna datového modelu spíše zakazka
-//			struct TVozik *vozik;
-//			struct TProces *predchozi;
-//			struct TProces *dalsi;
-//		};
-//		TProces *PROCESY; //zadaný CT - obsažen v cestě, objekt obsažen v cestě
-//
-//		struct TPalec
-//		{
-//			unsigned long n; //pořadí objektu ve spoj.seznamu
-//			double pozice;
-//			struct TObjekt *segment;
-//			struct TPalec *predchozi;
-//			struct TPalec *dalsi;
-//		};
-//		TPalec *PALCE;
-
-
 		struct TFile_hlavicka
 		{
 					unsigned short int Verze;
@@ -355,6 +256,7 @@ class Cvektory
 		TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
 		TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY);//hledá bod v dané oblasti
 		TObjekt *vrat_objekt(unsigned int n);//dle zadaného n vrátí ukazatel na hledaný objekt
+		TObjekt *vrat_objekt_z_roma(int X);//dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt
 		void aktualizace_objektu(short typ);//dle zadaného TT  či případně dalších hodnot zaktualizuje paramametry všech objektů//typ -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané //typ -1://dle zamčených a odemčených hodnot při změně TT//typ 0://dle zamčených a odemčených hodnot při změně parametrů vozíku//typ 1://při změně TT změna CT a RD, K a DD zůstává//typ 2://při změně TT změna K,DD,RD zůstává CT//typ 3://při změně parametrů vozíku změna DD, RD zůstává K, CT//typ 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD//typ 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
 		double vrat_soucet_delek_vsech_objektu();//sečte délky jednotlivých objektů
 		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu
@@ -435,7 +337,7 @@ public:
 //		void vloz_palec();//přidá nový vozík do seznamu PALCE
 //		long vymaz_seznam_palcu();
 
-    //odstraní všechny vektory (všechny globální spojáky)
+		//odstraní všechny vektory (všechny globální spojáky)
 		void vse_odstranit();
 
 		//souborové operace

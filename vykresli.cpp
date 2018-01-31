@@ -1004,7 +1004,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	short Yofset=D;if(S>D)Yofset=S;//výška řádku - daného časového úseku, podle šířky vozíku či největší hodnoty šířka/délka
 	unsigned int Y=Yofset;//Posun po Y-oso včetně výchozí pozice
 	canv->Font->Size=10;//nutno tady kvůli správné velikosti, pokud dojde ke změně je nutné párově změnit
-	short Xofset=4+canv->TextWidth(TP.KZ+K)+4;//zajistí správný počátek prvního objektu dle šířky nejdelší vypisované minuty
+	Xofset=4+canv->TextWidth(TP.KZ+K)+4;//zajistí správný počátek prvního objektu dle šířky nejdelší vypisované minuty
 
 	////////VÝPOČET A ULOŽENÍ POZICE OBJEKTŮ NA X OSE
 	Cvektory::TObjekt *ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku

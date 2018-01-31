@@ -805,7 +805,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 			if(Form1->ComboBoxCekani->ItemIndex==2)
 			{
 				scGPButton_generuj->Visible=true;
-		 		ComboBoxCekani->Width=196;
+				ComboBoxCekani->Width=196;
 			}
 
 			Label_zamerovac->Visible=false;
@@ -1640,7 +1640,7 @@ void TForm1::onPopUP(int X, int Y)
 		case CASOVAOSA:
 		{														 //min                      //vozik
 			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
- 			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
 			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
 			{
@@ -1649,7 +1649,7 @@ void TForm1::onPopUP(int X, int Y)
 				PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
 				{
-          pom=proces_pom->segment_cesty->objekt;
+					pom=proces_pom->segment_cesty->objekt;
 					if(AnsiString("Nastavit "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 					PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit\n  "+pom->name.UpperCase();
 					else
@@ -1658,7 +1658,22 @@ void TForm1::onPopUP(int X, int Y)
 				}
 			}
 		}break;
-		case TECHNOPROCESY:break;
+		case TECHNOPROCESY:
+		{
+			pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
+			if(pom!=NULL)
+			{
+				PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+				PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+				//PopUPmenu->Item_rychly_export->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+				if(AnsiString("Nastavit "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
+				PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit\n  "+pom->name.UpperCase();
+				else
+				PopUPmenu->scLabel_nastavit_parametry->Caption="  Nastavit "+pom->name.UpperCase();
+				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+			}
+		}
+		break;
 		case SIMULACE:break;
 		default://pro SCHEMA
 		{
@@ -1696,7 +1711,7 @@ void TForm1::onPopUP(int X, int Y)
 	PopUPmenu->Panel_UP->Top=0;
 	//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje
 	//!!!případně začlenit další položky, které budou zlobit
-	//PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240); musí být zařazeno výše
+	//PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240); to musí být zařazeno výše
 	PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
 	PopUPmenu->Item_cely_pohled->FillColor=(TColor)RGB(240,240,240);
 	//umístění popup menu
@@ -2858,7 +2873,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				if(d.v.ZAKAZKY->dalsi!=NULL)
 				{
 					Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
-					while(O!=NULL)//prochází všechnyobjekty a buď je ("Ano") objekt i na cestě nebo není ("Ne")
+					while(O!=NULL)//prochází všechny objekty a buď je ("Ano") objekt i na cestě nebo není ("Ne")
 					{
 						Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,d.v.ZAKAZKY->dalsi);
 						if(C!=NULL)//objekt je segmentem cesty
@@ -2871,6 +2886,13 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 					}
 					delete O;
 					d.JIZPOCITANO=false;//nutnost zakutalizovat časové osy
+					if(MOD==TECHNOPROCESY)//v případě technologických procesů (ROMA) i jejich přepočítání
+					{
+						Graphics::TBitmap *bmp_temp=new Graphics::TBitmap;bmp_temp->Width=0;bmp_temp->Height=0;//aby se nevykreslovalo přímo do Form1->Canvasu a neproběhl problik časových os, bmp obcházím nutnost vykreslování do canvasu, protože mi jde jen o přepočet časových os, bohužel ve vykresli_casove osy je společně jak výpočet, tak vykreslování, což není z tohoto pohledu dobře (zachováno bylo z důvodu efektivity při vykreslování/výpočtu)
+						d.vykresli_casove_osy(bmp_temp->Canvas);//u ROMA ještě nutno předtím zaktulizovat výpočet na časových osách
+						g.ShowGrafy(false);
+						bmp_temp=NULL; delete bmp_temp;
+					}
 				}
 				DuvodUlozit(true);
 				REFRESH();
