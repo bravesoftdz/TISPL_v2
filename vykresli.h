@@ -21,13 +21,14 @@ class Cvykresli
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
 
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
-	short legenda_polozky[8];//zobrazení jednotlivých položek 0 index je však poèet zobrazených
+
 	Cvektory::TProces *Pom_proces;//pomocný ukazatel na proces, využívá se v pøi naèítání pùvodnì vytvoøených náhodných hodnot èekání na palec
 
 	public:
 	Cvykresli();//konstruktor
 	Cvektory v;
 	Cmy m;
+	short legenda_polozky[8];//zobrazení jednotlivých položek 0 index je však poèet zobrazených
 
 	//--promìnné k úèelu filtrace
 	struct TTP

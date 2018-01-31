@@ -4,6 +4,7 @@
 
 #include "grafy.h"
 #include "Unit1.h"
+#include "vykresli.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -628,8 +629,8 @@ void Cgrafy::zpravy() {
 
 	 //ShowMessage(delka);
 
-	 ShowMessage(Form1->d.v.vrat_AVGsumPT_zakazky(zakazka));
-	 ShowMessage(Form1->d.v.vrat_AVGsumWT_zakazky(zakazka));
+	// ShowMessage(Form1->d.v.vrat_AVGsumPT_zakazky(zakazka));
+	// ShowMessage(Form1->d.v.vrat_AVGsumWT_zakazky(zakazka));
 
 
 
@@ -658,8 +659,43 @@ while (ukaz != NULL) {
 
 	if(!rozdilne_kapacity) zpravy+="<i>Nejsou evidovány žádné rozdílné kapacity.</i>";
 
-Form1->scHTMLLabel_log_vypis->Caption = zpravy;
 
+
+
+
+ /*	if(Form1->d.legenda_polozky[6]){
+    zpravy+="nutna doba";
+	}
+		if(Form1->d.legenda_polozky[5]){
+		zpravy+="proces doba";
+	}
+
+		if(Form1->d.legenda_polozky[2]){
+    zpravy+="cisti pistol";
+	}   */
+
+	//ShowMessage(Form1->d.zprava_z_legendy);
+
+
+		if(Form1->d.legenda_polozky[1])zpravy+="èištìní pistole</br>";
+		if(Form1->d.legenda_polozky[2])zpravy+="èištìní pistole a výmìna barev</br>";
+		if(Form1->d.legenda_polozky[3])zpravy+="buffer èi èekání</br>";
+		if(Form1->d.legenda_polozky[4])zpravy+="vozíky èištìní a výmìny</br>";
+		if(Form1->d.legenda_polozky[5])zpravy+="èekání na pøedchozí proces</br>";
+		if(Form1->d.legenda_polozky[6])zpravy+="nutná doba pøejezdu vozíku</br>";
+		if(Form1->d.legenda_polozky[7])zpravy+="doba èekání na palec</br>";
+
+	// zpravy+=Form1->d.zprava_z_legendy;
+
+	for(int i=1;i<8;i++){
+
+		//Form1->d.legenda_polozky[i];
+	 //	ShowMessage((int)Form1->d.legenda_polozky[i]);
+
+	}
+
+
+   Form1->scHTMLLabel_log_vypis->Caption = zpravy;
 
 
 
