@@ -628,8 +628,8 @@ void Cgrafy::zpravy() {
 
 	 //ShowMessage(delka);
 
-	 //ShowMessage(Form1->d.v.vrat_AVGsumPT_zakazky(zakazka));
-	 //ShowMessage(Form1->d.v.vrat_AVGsumWT_zakazky(zakazka));
+	 ShowMessage(Form1->d.v.vrat_AVGsumPT_zakazky(zakazka));
+	 ShowMessage(Form1->d.v.vrat_AVGsumWT_zakazky(zakazka));
 
 
 
