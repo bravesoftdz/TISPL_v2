@@ -1494,7 +1494,14 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	 //POPUP menu
 	 else//pokud není stisknuto levé tlačítko, předpokládá se volání pop-up menu
 	 {
-			 onPopUP(X,Y);//nastavení zobrazení popUPmenu a jeho volání včetně pozice
+			//nejdříve deaktiviace zaměřovače, je-li aktivní
+			if(Label_zamerovac->Visible)
+			{
+				d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
+				Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;Timer_neaktivity->Enabled=false;//monitoruje dobu nečinosti od znovu
+			}
+			//nastavení zobrazení popUPmenu a jeho volání včetně pozice
+			onPopUP(X,Y);
 	 }
  }
 }
