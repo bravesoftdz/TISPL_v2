@@ -1938,8 +1938,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitLeft = 471
-      ExplicitWidth = 72
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
       Left = 543
@@ -2118,7 +2116,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'vrh'
-      ExplicitLeft = 300
     end
     object scLabel_mezera: TscLabel
       Left = 289
@@ -3509,8 +3506,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 747
-        Top = 910
+        Left = 753
+        Top = 916
         Width = 244
         Height = 31
         Align = alCustom
@@ -4354,7 +4351,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -4447,13 +4443,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton4: TscButton
       Left = 0
-      Top = 240
+      Top = 280
       Width = 0
-      Height = 46
+      Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -4633,7 +4628,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton_report: TscButton
       Left = 0
@@ -4726,11 +4720,10 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scGPSwitch_AA: TscGPSwitch
       Left = 100
-      Top = 380
+      Top = 332
       Width = 42
       Height = 20
       TabOrder = 5
@@ -4758,7 +4751,7 @@ object Form1: TForm1
     end
     object scGPSwitch_grid: TscGPSwitch
       Left = 100
-      Top = 410
+      Top = 362
       Width = 42
       Height = 20
       TabOrder = 6
@@ -4786,7 +4779,7 @@ object Form1: TForm1
     end
     object scLabel11: TscLabel
       Left = 3
-      Top = 380
+      Top = 332
       Width = 65
       Height = 16
       Font.Charset = DEFAULT_CHARSET
@@ -4810,7 +4803,7 @@ object Form1: TForm1
     end
     object scLabel16: TscLabel
       Left = 3
-      Top = 410
+      Top = 362
       Width = 37
       Height = 16
       Font.Charset = DEFAULT_CHARSET
@@ -4923,7 +4916,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton_export: TscButton
       Left = 0
@@ -5016,7 +5008,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
@@ -5109,11 +5100,13 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitLeft = -99
+      ExplicitTop = 384
       ExplicitWidth = 180
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
-      Top = 440
+      Top = 392
       Width = 42
       Height = 20
       TabOrder = 12
@@ -5141,7 +5134,7 @@ object Form1: TForm1
     end
     object scLabel5: TscLabel
       Left = 3
-      Top = 440
+      Top = 392
       Width = 42
       Height = 16
       Font.Charset = DEFAULT_CHARSET
@@ -5254,7 +5247,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton_ulozit: TscButton
       Left = 0
@@ -5348,11 +5340,10 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitWidth = 180
     end
     object scButton_parmlinky_defzakazek: TscButton
       Left = 0
-      Top = 286
+      Top = 240
       Width = 0
       Height = 40
       Align = alTop
@@ -5451,7 +5442,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800F804F80410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800F804FC0410001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6574,7 +6565,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010133002C042C0430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010133002C04300430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22036,7 +22027,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01013300A402A40218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01013300A802A80218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
