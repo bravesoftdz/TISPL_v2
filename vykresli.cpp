@@ -1100,7 +1100,6 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	}
 
 	////////POPISKY
-	////vodorovný popisek - OBJEKTY (ale svislé čáry)
 	//nastavení
 	canv->Pen->Width=2;
 	canv->Pen->Mode=pmCopy;
@@ -1111,7 +1110,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	canv->Font->Size=10;
 	Y=4;
 	X=Xofset;unsigned int Xpuv=X;
-	//samotný výpis
+	////vodorovný popisek - OBJEKTY (ale svislé čáry)
 	canv->MoveTo(X-PosunT.x,Y);if(!A)canv->LineTo(X-PosunT.x,Yofset+PXM*DO/K-PosunT.y);else canv->LineTo(X-PosunT.x,Yofset+PXM);//nakreslení první svislice (začátek pravděpodobně navěšování)
 	ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	while (ukaz!=NULL)
@@ -1121,8 +1120,16 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		canv->MoveTo(X-PosunT.x,Y);
 		if(!A)canv->LineTo(X-PosunT.x,Yofset+Ry*DO/K+Yofset/2-PosunT.y);//pokud se nejedná o animaci, pozn. osa Y si stejně vypisuje nějak divně
 		else canv->LineTo(X-PosunT.x,Yofset+Ry);//pokud se jedná o animaci
-		AnsiString T=ukaz->short_name;
+		AnsiString T=ukaz->short_name;//výpis popisku objektu
 		canv->TextOutW((Xpuv+X)/2-canv->TextWidth(T)/2-PosunT.x,Y+1,T);//+1 pouze grafická korekce
+		if(ukaz->delka_dopravniku>0)//v případě objektu s uvedeného délkou, výpiše i jeho délku a případně rychlost dopravníku
+		{
+			AnsiString T1="";//další řádek
+			T1+=AnsiString(ukaz->delka_dopravniku)+"[m]";
+			if(ukaz->RD!=0)T1+=", "+AnsiString(Form1->m.round2double(ukaz->RD,4))+"[m/s]";//pozor zaokrouhleno na 4desetinná
+			canv->TextOutW((Xpuv+X)/2-canv->TextWidth(T1)/2-PosunT.x,Y+canv->TextHeight(T1)+2,T1);//+2 pouze grafická korekce
+		}
+		//posun na další
 		Xpuv=X;
 		ukaz=ukaz->dalsi;
 	}

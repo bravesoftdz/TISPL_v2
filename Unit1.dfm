@@ -2166,10 +2166,9 @@ object Form1: TForm1
       ParentShowHint = False
       ShowHint = True
       TabOrder = 21
-      TabStop = True
       OnClick = Button_dopravnik_parametryClick
       Animation = False
-      CanFocused = True
+      CanFocused = False
       CustomDropDown = False
       Margin = -1
       Spacing = 1
@@ -2237,7 +2236,7 @@ object Form1: TForm1
       ShowGalleryMenuFromTop = False
       ShowGalleryMenuFromRight = False
       ShowMenuArrow = True
-      ShowFocusRect = True
+      ShowFocusRect = False
       Down = False
       GroupIndex = 0
       AllowAllUp = False
@@ -4221,9 +4220,10 @@ object Form1: TForm1
   object scSplitView_MENU: TscSplitView
     Left = 0
     Top = 34
-    Width = 180
+    Width = 0
     Height = 622
     Anchors = [akLeft, akTop, akBottom]
+    Enabled = False
     TabOrder = 23
     CustomImageIndex = -1
     StyleKind = scpsPanel
@@ -4246,7 +4246,7 @@ object Form1: TForm1
     CompactWidth = 0
     CompactHeight = 20
     GripSize = 0
-    Opened = True
+    Opened = False
     OpenedWidth = 180
     OpenedHeight = 50
     OpenedMinWidth = 0
@@ -4265,7 +4265,7 @@ object Form1: TForm1
     object scButton_konec: TscButton
       Left = 0
       Top = 572
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -4354,11 +4354,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton_otevrit: TscButton
       Left = 0
       Top = 40
-      Width = 180
+      Width = 0
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4446,11 +4447,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton4: TscButton
       Left = 0
       Top = 240
-      Width = 180
+      Width = 0
       Height = 46
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4538,11 +4540,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton_zaloha: TscButton
       Left = 0
       Top = 522
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -4630,11 +4633,12 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton_report: TscButton
       Left = 0
       Top = 160
-      Width = 180
+      Width = 0
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4722,6 +4726,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scGPSwitch_AA: TscGPSwitch
       Left = 100
@@ -4830,7 +4835,7 @@ object Form1: TForm1
     object scButton_ulozjako: TscButton
       Left = 0
       Top = 120
-      Width = 180
+      Width = 0
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -4918,11 +4923,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton_export: TscButton
       Left = 0
       Top = 200
-      Width = 180
+      Width = 0
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -5010,11 +5016,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
       Top = 472
-      Width = 180
+      Width = 0
       Height = 50
       Align = alBottom
       Font.Charset = DEFAULT_CHARSET
@@ -5102,6 +5109,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -5158,7 +5166,7 @@ object Form1: TForm1
     object scButton_novy: TscButton
       Left = 0
       Top = 0
-      Width = 180
+      Width = 0
       Height = 40
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -5246,11 +5254,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton_ulozit: TscButton
       Left = 0
       Top = 80
-      Width = 180
+      Width = 0
       Height = 40
       Align = alTop
       Enabled = False
@@ -5339,11 +5348,12 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
     object scButton_parmlinky_defzakazek: TscButton
       Left = 0
       Top = 286
-      Width = 180
+      Width = 0
       Height = 40
       Align = alTop
       BiDiMode = bdLeftToRight
@@ -5434,6 +5444,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
+      ExplicitWidth = 180
     end
   end
   object ImageList1: TImageList
