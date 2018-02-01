@@ -22,10 +22,10 @@ void Cgrafy::ShowGrafy(bool stav) {
 
 		}
 		Form1->Chart1->Visible = false;
-		Form1->Chart2->Visible = false;
+		Form1->Chart2->Visible = stav;
 		Form1->Chart3->Visible = false;
 		Form1->Chart4->Visible = false;
-		Form1->Chart6->Visible = false;
+		Form1->Chart6->Visible = stav;
 
 		// Form1->Label_wip->Visible = stav;
 		// Form1->Memo1->Visible = stav;
@@ -602,7 +602,7 @@ void Cgrafy::zpravy() {
 				takt_splnen=false;
 				rozdil_tt = Form1->d.v.vrat_AVG_TT_zakazky(zakazka);
 
-		}
+		}     //*1000 vydìlit 1000.0
 
 		zpravy += "Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
 		zprava_dlouha_probox+="Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
