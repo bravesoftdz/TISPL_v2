@@ -474,7 +474,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 						if(C->objekt->rezim==0 && vozik->pozice<=C->objekt->obsazenost)//zohlednění obsazenost objektu v režimu S&G
 							X=C->objekt->obsazenost;//převezme se koncová pozice v objektu z předchozího vozíku
 						else//pro ostatní režimy
-						{
+						{ //NAVěšování
 							if(vozik->pozice==0 && vozik->n!=1)//nejednáli se o první vozík a zároveň se jedná o výchozí pozici v režimu kontinuál či pp (sice trochu nelogické, ale může se uvažovat že navěšování bude kontinuál)
 							X=vozik->predchozi->start+C->objekt->CT/C->objekt->kapacita/60.0*PX2MIN;//tak stanový výchozí pozici dle CT a kapacity (např. při 3min CT a kapacitě 2 je časový offset mezi vozíky 1,5 min)
 							else//ostatní pozice
