@@ -803,7 +803,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object zalozka_schema: TscGPButton
+    object Schema: TscGPButton
       Left = 580
       Top = 0
       Width = 78
@@ -987,7 +987,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object casovosa1: TscGPButton
+    object Analyza: TscGPButton
       Left = 736
       Top = 0
       Width = 78
@@ -1004,9 +1004,9 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 4
-      OnClick = casovosa1Click
+      OnClick = AnalyzaClick
       Animation = True
-      Caption = #268'asov'#225' osa'
+      Caption = 'Anal'#253'za'
       CanFocused = False
       CustomDropDown = False
       Margin = -1
@@ -1079,7 +1079,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
     end
-    object technologickprocesy1: TscGPButton
+    object Synteza: TscGPButton
       Left = 814
       Top = 0
       Width = 78
@@ -1097,9 +1097,9 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 5
-      OnClick = technologickprocesy1Click
+      OnClick = SyntezaClick
       Animation = True
-      Caption = 'Procesy'
+      Caption = 'Synt'#233'za'
       CanFocused = False
       CustomDropDown = False
       Margin = -1
@@ -1642,7 +1642,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-    object layout: TscGPButton
+    object Layout: TscGPButton
       Left = 658
       Top = 0
       Width = 78
@@ -1660,7 +1660,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 12
-      OnClick = layoutClick
+      OnClick = LayoutClick
       Animation = True
       Caption = 'Layout'
       CanFocused = False
@@ -1735,7 +1735,7 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = False
     end
-    object simulace: TscGPButton
+    object Simulace: TscGPButton
       Left = 892
       Top = 0
       Width = 78
@@ -1753,7 +1753,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 13
-      OnClick = casovosa1Click
+      OnClick = AnalyzaClick
       Animation = True
       Caption = 'Simulace'
       CanFocused = False
@@ -3506,8 +3506,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 798
-        Top = 961
+        Left = 804
+        Top = 967
         Width = 244
         Height = 31
         Align = alCustom
@@ -3594,8 +3594,6 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
-        ExplicitLeft = 759
-        ExplicitTop = 922
       end
       object ComboBoxDOmin: TComboBox
         Left = 64
@@ -5531,7 +5529,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118000005000510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118000405040510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6654,7 +6652,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010133003404340430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010133003804380430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22116,7 +22114,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01013300AC02AC0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01013300B002B00218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

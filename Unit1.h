@@ -176,10 +176,10 @@ __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_mainmenu;
 	TscGPGlyphButton *Konec;
 	TscGPGlyphButton *MinButton;
-	TscGPButton *zalozka_schema;
+	TscGPButton *Schema;
 	TscGPButton *PopupMenuButton;
-	TscGPButton *casovosa1;
-	TscGPButton *technologickprocesy1;
+	TscGPButton *Analyza;
+	TscGPButton *Synteza;
 	TscGPGlyphButton *scGPGlyphButton_OPTIONS;
 	TscGPGlyphButton *Toolbar_Ulozit;
 	TscGPGlyphButton *Toolbar_NovySoubor;
@@ -194,8 +194,8 @@ __published:	// IDE-managed Components
 	TscSplitView *scSplitView_OPTIONS;
 	TscStyledForm *scStyledForm1;
 	TscGPGlyphButton *scGPGlyphButton2;
-	TscGPButton *layout;
-	TscGPButton *simulace;
+	TscGPButton *Layout;
+	TscGPButton *Simulace;
 	TscButton *scButton_otevrit;
 	TscButton *scButton_konec;
 	TscButton *scButton4;
@@ -336,11 +336,11 @@ __published:	// IDE-managed Components
 	void __fastcall Button8Click(TObject *Sender);
 	void __fastcall Button9Click(TObject *Sender);
 	void __fastcall Button10Click(TObject *Sender);
-	void __fastcall casovosa1Click(TObject *Sender);
+	void __fastcall AnalyzaClick(TObject *Sender);
 	void __fastcall FormShortCut(TWMKey &Msg, bool &Handled);
 	void __fastcall CheckBoxPALCE_Click(TObject *Sender);
 	void __fastcall Chart1Click(TObject *Sender);
-	void __fastcall technologickprocesy1Click(TObject *Sender);
+	void __fastcall SyntezaClick(TObject *Sender);
 	void __fastcall Zobrazitparametry1Click(TObject *Sender);
 	void __fastcall Rychlexport1Click(TObject *Sender);
 	void __fastcall MagnaClick(TObject *Sender);
@@ -392,7 +392,7 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_log_headerClose(TObject *Sender);
 	void __fastcall scGPGlyphButton_zpravy_ikonaClick(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSOpened(TObject *Sender);
-	void __fastcall layoutClick(TObject *Sender);
+	void __fastcall LayoutClick(TObject *Sender);
 	void __fastcall pohonobjektClick(TObject *Sender);
 	void __fastcall Button12Click(TObject *Sender);
 	void __fastcall scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect);

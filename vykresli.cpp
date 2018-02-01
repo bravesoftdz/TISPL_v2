@@ -100,13 +100,13 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
 		if(v.OBJEKTY->dalsi!=NULL)
 		{
-			if(v.OBJEKTY->predchozi->n>3)Form1->layout->Enabled=true;else Form1->layout->Enabled=false;///pokud je více jak 3 objekty
-			Form1->casovosa1->Enabled=true;
+			if(v.OBJEKTY->predchozi->n>3)Form1->Layout->Enabled=true;else Form1->Layout->Enabled=false;///pokud je více jak 3 objekty
+			Form1->Analyza->Enabled=true;
 		}
 		else
 		{
-			Form1->layout->Enabled=false;
-			Form1->casovosa1->Enabled=false;
+			Form1->Layout->Enabled=false;
+			Form1->Analyza->Enabled=false;
     }
 }
 //---------------------------------------------------------------------------
@@ -560,7 +560,7 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 		vykresli_legendu_casovych_os(canv);
 		//už se nebude ukladat proces znovu, protože byl vypočten a už není třeba zatěžovat znovu systémové prostředky (nehledě na to, že to bylo dost znát)
 		JIZPOCITANO=true;
-		Form1->technologickprocesy1->Enabled=true;//povolí mod technologické procesy
+		Form1->Synteza->Enabled=true;//povolí mod technologické procesy
 	}
 	else
 	{

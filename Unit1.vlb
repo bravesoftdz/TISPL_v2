@@ -55,9 +55,6 @@ Coordinates=969,551,58,36
 [Series3]
 Coordinates=910,557,58,36
 
-[casovosa1]
-Coordinates=318,556,76,36
-
 [Timer_tr]
 Coordinates=683,557,63,36
 
@@ -226,9 +223,6 @@ Coordinates=219,372,104,36
 [RzToolButton6]
 Coordinates=10,372,100,36
 
-[technologickprocesy1]
-Coordinates=941,326,138,36
-
 [scGPButton1]
 Coordinates=841,326,90,36
 
@@ -308,9 +302,6 @@ Coordinates=773,335,104,36
 [DrawGrid_knihovna]
 Coordinates=1292,221,127,36
 
-[simulace]
-Coordinates=73,249,65,36
-
 [Memo2]
 Coordinates=35,153,64,58
 
@@ -332,9 +323,6 @@ Coordinates=104,153,139,58
 [scExPanel_ostatni]
 Coordinates=1322,496,120,36
 
-[layout]
-Coordinates=1145,631,49,36
-
 [scLabel5]
 Coordinates=640,631,66,36
 
@@ -355,9 +343,6 @@ Coordinates=983,510,103,36
 
 [Toolbar_NovySoubor]
 Coordinates=10,510,136,36
-
-[zalozka_schema]
-Coordinates=1113,464,110,36
 
 [Button11]
 Coordinates=538,323,66,58
@@ -427,4 +412,19 @@ Coordinates=10,326,72,36
 
 [scButton_konec]
 Coordinates=699,280,72,36
+
+[Analyza]
+Coordinates=318,556,76,36
+
+[Synteza]
+Coordinates=941,326,138,36
+
+[Schema]
+Coordinates=1113,464,110,36
+
+[Layout]
+Coordinates=1145,631,49,36
+
+[Simulace]
+Coordinates=73,249,65,36
 
