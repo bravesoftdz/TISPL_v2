@@ -334,7 +334,7 @@ void Cgrafy::graf2() {
 
 				if (Form1->d.v.vrat_AVG_TT_zakazky(ukaz) != ukaz->TT) {
 
-						Form1->Series3->Add(Form1->d.v.vrat_AVG_TT_zakazky(ukaz)*60 -
+						Form1->Series3->Add(Form1->d.v.vrat_AVG_TT_zakazky(ukaz) -
 								ukaz->TT, ukaz->n, Form1->m.clIntensive(ukaz->barva, 80));
 						// Form1->Memo1->Lines->Add(AnsiString("Chyba - Uskuteènitelnı TT: ") + Form1->d.v.vrat_AVG_TT_zakazky(ukaz) + AnsiString(" Poadovanı TT: ") + ukaz->TT + AnsiString(" = Zakázka èíslo: ") + ukaz->n);
 						AnsiString tt_uskutec = Form1->d.v.vrat_AVG_TT_zakazky(ukaz);
@@ -597,10 +597,10 @@ void Cgrafy::zpravy() {
 		UnicodeString stav = "splnìn";
 		UnicodeString rozdil_tt = 0;
 
-		if (Form1->d.v.vrat_AVG_TT_zakazky(zakazka)*60 != zakazka->TT) {
+		if (Form1->d.v.vrat_AVG_TT_zakazky(zakazka) != zakazka->TT) {
 				stav = "nesplnìn";
 				takt_splnen=false;
-				rozdil_tt = Form1->d.v.vrat_AVG_TT_zakazky(zakazka) * 60;
+				rozdil_tt = Form1->d.v.vrat_AVG_TT_zakazky(zakazka);
 
 		}
 
@@ -659,40 +659,17 @@ while (ukaz != NULL) {
 
 	if(!rozdilne_kapacity) zpravy+="<i>Nejsou evidovány ádné rozdílné kapacity.</i>";
 
+		zpravy += "<br><b>Informace a doporuèení:</b></br>";      //wt>0 -
+
+		if(Form1->d.legenda_polozky[1]) zpravy+="Na lince se provádí èištìní pistole, dle nastavenıch intervalù.</br>";//zpravy+="èištìní pistole</br>";
+		if(Form1->d.legenda_polozky[2]) zpravy+="Na lince se provádí èištìní pistole a vımìna barev, dle nastavenıch intervalù a opakování.</br>";//zpravy+="èištìní pistole a vımìna barev</br>";
+		if(Form1->d.legenda_polozky[3]) zpravy+="Na lince vzniká buffer nebo èekání, zkontrolujte nastavení dotèenıch objektù.</br>";  //zpravy+="buffer èi èekání</br>";
+		if(Form1->d.legenda_polozky[4]) zpravy+="Na lince se pohybují vozíky èištìní a vımìny barev";//zpravy+="vozíky èištìní a vımìny</br>";
+		if(Form1->d.legenda_polozky[5]) zpravy+="Zkontrolujte CT nìkterıch procesù, kvùli kterım  nemùe bıt zahájen novı proces.</br>";//zpravy+="èekání na pøedchozí proces</br>";
+		if(Form1->d.legenda_polozky[6]) zpravy+="Pohon je pøíliš pomalı, zvate zvıšení rychlosti nebo zkrate jeho délku.</br> ";//zpravy+="nutná doba pøejezdu vozíku</br>";
+		if(Form1->d.legenda_polozky[7]) zpravy+="Pro zkrácení doby èekání na palec zvate sjednocení øeimù objektù.</br>";//zpravy+="doba èekání na palec</br>";
 
 
-
-
- /*	if(Form1->d.legenda_polozky[6]){
-    zpravy+="nutna doba";
-	}
-		if(Form1->d.legenda_polozky[5]){
-		zpravy+="proces doba";
-	}
-
-		if(Form1->d.legenda_polozky[2]){
-    zpravy+="cisti pistol";
-	}   */
-
-	//ShowMessage(Form1->d.zprava_z_legendy);
-
-
-		if(Form1->d.legenda_polozky[1])zpravy+="èištìní pistole</br>";
-		if(Form1->d.legenda_polozky[2])zpravy+="èištìní pistole a vımìna barev</br>";
-		if(Form1->d.legenda_polozky[3])zpravy+="buffer èi èekání</br>";
-		if(Form1->d.legenda_polozky[4])zpravy+="vozíky èištìní a vımìny</br>";
-		if(Form1->d.legenda_polozky[5])zpravy+="èekání na pøedchozí proces</br>";
-		if(Form1->d.legenda_polozky[6])zpravy+="nutná doba pøejezdu vozíku</br>";
-		if(Form1->d.legenda_polozky[7])zpravy+="doba èekání na palec</br>";
-
-	// zpravy+=Form1->d.zprava_z_legendy;
-
-	for(int i=1;i<8;i++){
-
-		//Form1->d.legenda_polozky[i];
-	 //	ShowMessage((int)Form1->d.legenda_polozky[i]);
-
-	}
 
 
    Form1->scHTMLLabel_log_vypis->Caption = zpravy;
