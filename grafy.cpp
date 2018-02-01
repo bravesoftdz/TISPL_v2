@@ -22,10 +22,10 @@ void Cgrafy::ShowGrafy(bool stav) {
 
 		}
 		Form1->Chart1->Visible = false;
-		Form1->Chart2->Visible = stav;
+		Form1->Chart2->Visible = false;
 		Form1->Chart3->Visible = false;
 		Form1->Chart4->Visible = false;
-		Form1->Chart6->Visible = stav;
+		Form1->Chart6->Visible = false;
 
 		// Form1->Label_wip->Visible = stav;
 		// Form1->Memo1->Visible = stav;
@@ -300,7 +300,7 @@ void Cgrafy::graf2() {
 		// Form1->Chart2->Top = Form1->ClientHeight - Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
 		// }
 
-    Form1->Chart2->Height = Form1->ClientHeight / 3;
+    Form1->Chart2->Height = Form1->ClientHeight / 3 * 1;
 		Form1->Chart2->Top = Form1->ClientHeight -
 				Form1->scGPPanel_statusbar->Height - Form1->Chart2->Height;
 		Form1->Chart2->Title->Caption = "Prùmìrnı TT zakázek";
@@ -665,8 +665,8 @@ while (ukaz != NULL) {
 		if(Form1->d.legenda_polozky[2]) zpravy+="Na lince se provádí èištìní pistole a vımìna barev, dle nastavenıch intervalù a opakování.</br>";//zpravy+="èištìní pistole a vımìna barev</br>";
 		if(Form1->d.legenda_polozky[3]) zpravy+="Na lince vzniká buffer nebo èekání, zkontrolujte nastavení dotèenıch objektù.</br>";  //zpravy+="buffer èi èekání</br>";
 		if(Form1->d.legenda_polozky[4]) zpravy+="Na lince se pohybují vozíky èištìní a vımìny barev";//zpravy+="vozíky èištìní a vımìny</br>";
-		if(Form1->d.legenda_polozky[5]) zpravy+="Zkontrolujte CT nìkterıch procesù, kvùli kterım  nemùe bıt zahájen novı proces.</br>";//zpravy+="èekání na pøedchozí proces</br>";
-		if(Form1->d.legenda_polozky[6]) zpravy+="Pohon je pøíliš pomalı, zvate zvıšení rychlosti nebo zkrate jeho délku.</br> ";//zpravy+="nutná doba pøejezdu vozíku</br>";
+		if(Form1->d.legenda_polozky[5]) zpravy+="Zkontrolujte CT nìkterıch procesù, kvùli kterım nemùe bıt zahájen novı proces.</br>";//zpravy+="èekání na pøedchozí proces</br>";
+		if(Form1->d.legenda_polozky[6]) zpravy+="Pohon je pøíliš pomalı, zvate zvıšení rychlosti nebo zkrate jeho délku.</br>";//zpravy+="nutná doba pøejezdu vozíku</br>";
 		if(Form1->d.legenda_polozky[7]) zpravy+="Pro zkrácení doby èekání na palec zvate sjednocení øeimù objektù.</br>";//zpravy+="doba èekání na palec</br>";
 
 
