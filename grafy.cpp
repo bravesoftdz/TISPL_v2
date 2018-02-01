@@ -569,8 +569,8 @@ void Cgrafy::graf1() {
 	 //	if (!Form1->d.JIZPOCITANO) { // pro první zobrazení nastavím default rozmìry - podmínka realizována nyní ve vykresli
 
 
-				Form1->scExPanel_log_header->Left = Form1->zalozka_schema->Left-100;
-				Form1->scExPanel_log_header->Top = Form1->zalozka_schema->Height + 10;
+				Form1->scExPanel_log_header->Left = Form1->Schema->Left-100;
+				Form1->scExPanel_log_header->Top = Form1->Schema->Height + 10;
 				Form1->scExPanel_log_header->Height = 300;
 	 //	}
 

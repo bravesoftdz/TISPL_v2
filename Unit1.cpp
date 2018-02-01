@@ -160,11 +160,11 @@ void TForm1::NewDesignSettings()
  //	scExPanel_ostatni->Color=light_gray;
 
 	//nastaveni barvy prepinacu modu
-	zalozka_schema->Options->PressedColor=light_gray;
-	layout->Options->PressedColor=light_gray;
-	casovosa1->Options->PressedColor=light_gray;
-	technologickprocesy1->Options->PressedColor=light_gray;
-	simulace->Options->PressedColor=light_gray;
+	Schema->Options->PressedColor=light_gray;
+	Layout->Options->PressedColor=light_gray;
+	Analyza->Options->PressedColor=light_gray;
+	Synteza->Options->PressedColor=light_gray;
+	Simulace->Options->PressedColor=light_gray;
 
 	scExPanel_ostatni->Top=72+27;
 
@@ -338,9 +338,9 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 pan_non_locked=false;
 			 zobrazit_barvy_casovych_rezerv=false;
 			 d.cas=0;
-			 casovosa1->Enabled=false;
-			 casovosa1->Down=false;
-			 zalozka_schema->Down=true;
+			 Analyza->Enabled=false;
+			 Analyza->Down=false;
+			 Schema->Down=true;
        SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 			 FileName="Nový.tispl";
 			 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
@@ -700,7 +700,7 @@ void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
 //	Invalidate();
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::layoutClick(TObject *Sender)
+void __fastcall TForm1::LayoutClick(TObject *Sender)
 {
 	ESC();//zruší případnou rozdělanou akci
 	MOD=LAYOUT;
@@ -754,7 +754,7 @@ void __fastcall TForm1::casoverezervy1Click(TObject *Sender)
 //	Invalidate();
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::casovosa1Click(TObject *Sender)
+void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 {
 	d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
 //	if(d.v.ZAKAZKY->dalsi==NULL)//pokud nebyla zakazka definovaná - nyní řeší příkaz nad
@@ -863,7 +863,7 @@ void __fastcall TForm1::scGPGlyphButton_close_legenda_casove_osyClick(TObject *S
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
+void __fastcall TForm1::SyntezaClick(TObject *Sender)
 {
 	MOD=TECHNOPROCESY;
 	ESC();//zruší případně rozdělanou akci
@@ -1320,7 +1320,7 @@ void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 //explicitní klávesové zkratky
 void __fastcall TForm1::FormShortCut(TWMKey &Msg, bool &Handled)
 {
-	if (Msg.CharCode==VK_F9)casovosa1Click(this);
+	if (Msg.CharCode==VK_F9)AnalyzaClick(this);
 	//prozatim jen pro účely vývoje
 	 /*	if (Msg.CharCode==VK_F11)
 		{
@@ -4061,7 +4061,7 @@ void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 		Timer_animace->Enabled=false;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 		ButtonPLAY->Hint="spustit animaci";
-		technologickprocesy1Click(Sender);//vratí statický mod
+		SyntezaClick(Sender);//vratí statický mod
 	}
 }
 //---------------------------------------------------------------------------
@@ -4310,7 +4310,7 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 				Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
 				Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
 				Form_definice_zakazek->ShowModal();
-				casovosa1->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
+				Analyza->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
 				DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
 				REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
 			}
@@ -4516,11 +4516,11 @@ void __fastcall TForm1::hl_spojak_zakazkyClick(TObject *Sender)
 		if (ukaz2==NULL)
 		{
 ShowMessage("NEmam data");
-casovosa1->Enabled=false;
+Analyza->Enabled=false;
 		}
 		else {
 		 ShowMessage("mam data");
-		 casovosa1->Enabled=true;
+		 Analyza->Enabled=true;
 		 } //	casovosa1->Enabled=true; }
 
 
