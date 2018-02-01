@@ -22,10 +22,10 @@ void Cgrafy::ShowGrafy(bool stav) {
 
 		}
 		Form1->Chart1->Visible = false;
-		Form1->Chart2->Visible = false;
+		Form1->Chart2->Visible = stav;
 		Form1->Chart3->Visible = false;
 		Form1->Chart4->Visible = false;
-		Form1->Chart6->Visible = false;
+		Form1->Chart6->Visible = stav;
 
 		// Form1->Label_wip->Visible = stav;
 		// Form1->Memo1->Visible = stav;
@@ -585,6 +585,7 @@ void Cgrafy::zpravy() {
 		takt_splnen=true;
 		UnicodeString zpravy;
 		UnicodeString zprava_dlouha_probox;
+		UnicodeString stav = "splnìn";
 		zpravy += "<b>Poèet zakázek:";
 		zpravy += Form1->d.v.ZAKAZKY->predchozi->n;
 		zpravy += "</b></br>";
@@ -594,15 +595,18 @@ void Cgrafy::zpravy() {
 		UnicodeString tt = zakazka->TT;
 		UnicodeString id = zakazka->id;
 		UnicodeString name = zakazka->name;
-		UnicodeString stav = "splnìn";
-		UnicodeString rozdil_tt = 0;
 
-		if (Form1->d.v.vrat_AVG_TT_zakazky(zakazka) != zakazka->TT) {
+		UnicodeString avg_tt_zakazky = 0;
+
+	//	ShowMessage(Form1->d.v.vrat_AVG_TT_zakazky(zakazka));
+	//	ShowMessage(zakazka->TT);
+
+		if (Form1->ms.MyToDouble(Form1->d.v.vrat_AVG_TT_zakazky(zakazka)) != Form1->ms.MyToDouble(zakazka->TT)) {
 				stav = "nesplnìn";
 				takt_splnen=false;
-				rozdil_tt = Form1->d.v.vrat_AVG_TT_zakazky(zakazka);
+				avg_tt_zakazky = Form1->d.v.vrat_AVG_TT_zakazky(zakazka);
 
-		}
+		}     //*1000 vydìlit 1000.0
 
 		zpravy += "Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
 		zprava_dlouha_probox+="Zakázka è." + id + "- " + name + ", požadovaný takt " + tt + " sekund <b>" + stav + "</b>";
@@ -614,9 +618,9 @@ void Cgrafy::zpravy() {
 
 		}
 
-		if (rozdil_tt > 0) {
-				zpravy +=", vypoèítaný prùmìrný takt " + rozdil_tt + " s</br>";
-				zprava_dlouha_probox+=", vypoèítaný prùmìrný takt " + rozdil_tt + " s</br>";
+		if (avg_tt_zakazky > 0) {
+				zpravy +=", vypoèítaný prùmìrný takt " + avg_tt_zakazky + " s</br>";
+				zprava_dlouha_probox+=", vypoèítaný prùmìrný takt " + avg_tt_zakazky + " s</br>";
 		}
 
 	 //	int delka;
