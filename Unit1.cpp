@@ -3643,8 +3643,7 @@ void __fastcall TForm1::Button3Click(TObject *Sender)
 
 void __fastcall TForm1::Vypicestuktempu1Click(TObject *Sender)
 {
-	S(get_temp_dir());
-	S(Application->ExeName);
+	MB(-1,-1,"<b>Verze: </b>"+VERZE+"<br><br><b>Umístění: </b>"+Application->ExeName+"<br><br><b>Temp : </b>"+get_temp_dir(),"Informace o aplikaci");
 }
 //---------------------------------------------------------------------------
 
