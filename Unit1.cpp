@@ -2885,6 +2885,13 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 						C=NULL;delete C;
 					}
 					delete O;
+					//aktualizace a přepočet kvůli časovým osám a techn.procesům(roma)
+					short WIP=d.v.WIP(1);
+					if(WIP+1!=d.v.VOZIKY->n)//v případě, že aktulní WIP neodpovídá počtu vozíku, zakatulizuje se i počet vozíku, resp. se vygenerují nové ve správném novém počtu (podmínka použita pouze pro šetření strojového času)
+					{
+						d.v.ZAKAZKY->dalsi->pocet_voziku=WIP+1;
+						d.v.generuj_VOZIKY();
+					}
 					d.JIZPOCITANO=false;//nutnost zakutalizovat časové osy
 					if(MOD==TECHNOPROCESY)//v případě technologických procesů (ROMA) i jejich přepočítání
 					{

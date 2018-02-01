@@ -779,8 +779,8 @@ void Cvykresli::vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik,do
 		canv->Font->Name="Arial";
 		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 		AnsiString T="";
-		if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0)+" min";
-		else T=AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0);
+		if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)/60.0*1000000.0)/1000000.0)+" min";
+		else T=AnsiString(floor(v.vrat_TT_voziku(vozik)/60.0*1000000.0)/1000000.0);
 		canv->TextOut((X1+X2)/2-canv->TextWidth(T)/2,Y0-canv->TextHeight(T),T);
 }
 //---------------------------------------------------------------------------
