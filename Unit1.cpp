@@ -643,7 +643,6 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPGlyphButton_close_grafy->Visible=false;
 	scExPanel_log_header->Visible=false;
 
-
 	CheckBoxVymena_barev->Visible=false;
 	Label_zamerovac->Visible=false;
 	ComboBoxODmin->Visible=false;
@@ -656,6 +655,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPCheckBox_ortogon->Align=alTop;
 	scGPCheckBox_ortogon->Left=3;
 	scGPCheckBox_ortogon->Visible=true;
+	scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
  //	scGPButton_header_def_zakazek->Visible=false;
  //	scGPButton_header_param_linky->Visible=false;
@@ -709,6 +709,7 @@ void __fastcall TForm1::layoutClick(TObject *Sender)
 	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
+	scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
 	g.ShowGrafy(false);//vypne grafy (případ pokud by se přecházelo z časových os do layoutu)
@@ -810,6 +811,7 @@ void __fastcall TForm1::casovosa1Click(TObject *Sender)
 
 			Label_zamerovac->Visible=false;
 			scGPCheckBox_ortogon->Visible=false;
+			if(STATUS==NAVRH)scGPCheckBox_pocet_voziku_dle_WIP->Visible=true;
 			scGPGlyphButton_close_legenda_casove_osy->Left=0;
 			scGPGlyphButton_close_legenda_casove_osy->Top=ClientHeight-scGPPanel_statusbar->Height-ClientHeight/3;
 			scGPGlyphButton_close_legenda_casove_osy->Visible=true;
@@ -916,6 +918,7 @@ void __fastcall TForm1::technologickprocesy1Click(TObject *Sender)
 	LabelRoletka->Caption="Filtr minut";
 	LabelRoletka->Font->Color=clBlack;
 	scGPCheckBox_ortogon->Visible=false;
+  scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
 
@@ -1247,7 +1250,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F9
 		case 120:break;
 		//F10
-		case 121:break;
+		case 121: Invalidate();break;
 		//F11
 		case 122:ortogonalizace_on_off();break;//přepíná stav automatické ortogonalizace
 		//F12
@@ -2886,20 +2889,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 					}
 					delete O;
 					//aktualizace a přepočet kvůli časovým osám a techn.procesům(roma)
-					short WIP=d.v.WIP(1);
-					if(WIP+1!=d.v.VOZIKY->n && STATUS==NAVRH)//v případě, že je v návrháři a aktulní WIP neodpovídá počtu vozíku, zakatulizuje se i počet vozíku, resp. se vygenerují nové ve správném novém počtu (podmínka použita pouze pro šetření strojového času)
-					{
-						d.v.ZAKAZKY->dalsi->pocet_voziku=WIP+1;
-						d.v.generuj_VOZIKY();
-					}
-					d.JIZPOCITANO=false;//nutnost zakutalizovat časové osy
-					if(MOD==TECHNOPROCESY)//v případě technologických procesů (ROMA) i jejich přepočítání
-					{
-						Graphics::TBitmap *bmp_temp=new Graphics::TBitmap;bmp_temp->Width=0;bmp_temp->Height=0;//aby se nevykreslovalo přímo do Form1->Canvasu a neproběhl problik časových os, bmp obcházím nutnost vykreslování do canvasu, protože mi jde jen o přepočet časových os, bohužel ve vykresli_casove osy je společně jak výpočet, tak vykreslování, což není z tohoto pohledu dobře (zachováno bylo z důvodu efektivity při vykreslování/výpočtu)
-						d.vykresli_casove_osy(bmp_temp->Canvas);//u ROMA ještě nutno předtím zaktulizovat výpočet na časových osách
-						g.ShowGrafy(false);
-						bmp_temp=NULL; delete bmp_temp;
-					}
+					aktualizace_maro_a_roma();//aktualizace a přepočet hodnot volaná kvůli časovým osám (maro) a techn.procesům(roma)
 				}
 				DuvodUlozit(true);
 				REFRESH();
@@ -2912,6 +2902,29 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
 	}
+}
+//---------------------------------------------------------------------------
+//aktualizace a přepočet hodnot volaná kvůli časovým osám (maro) a techn.procesům(roma)
+void TForm1::aktualizace_maro_a_roma()
+{                //toto je v testování - prvni_zakazka.....
+		d.v.prvni_zakazka_dle_schematu();//pokud první zakázka neexistuje, založí ji a přiřadí ji cestu dle schématu, pokud existuje, tak ji pouze přiřadí cestu dle schématu
+		if(scGPCheckBox_pocet_voziku_dle_WIP->Checked)//pokud je aktulizace dle hodnoty WIP+1 povolena
+		{
+			short WIP=d.v.WIP(1);
+			if(WIP+1!=d.v.VOZIKY->n && STATUS==NAVRH)//v případě, že je v návrháři a aktulní WIP neodpovídá počtu vozíku, zakatulizuje se i počet vozíku, resp. se vygenerují nové ve správném novém počtu (podmínka použita pouze pro šetření strojového času)
+			{
+				d.v.ZAKAZKY->dalsi->pocet_voziku=WIP+1;
+				d.v.generuj_VOZIKY();
+			}
+		}
+		d.JIZPOCITANO=false;//nutnost zakutalizovat časové osy
+		if(MOD==TECHNOPROCESY)//v případě technologických procesů (ROMA) i jejich přepočítání
+		{
+			Graphics::TBitmap *bmp_temp=new Graphics::TBitmap;bmp_temp->Width=0;bmp_temp->Height=0;//aby se nevykreslovalo přímo do Form1->Canvasu a neproběhl problik časových os, bmp obcházím nutnost vykreslování do canvasu, protože mi jde jen o přepočet časových os, bohužel ve vykresli_casove osy je společně jak výpočet, tak vykreslování, což není z tohoto pohledu dobře (zachováno bylo z důvodu efektivity při vykreslování/výpočtu)
+			d.vykresli_casove_osy(bmp_temp->Canvas);//u ROMA ještě nutno předtím zaktulizovat výpočet na časových osách
+			g.ShowGrafy(false);
+			bmp_temp=NULL; delete bmp_temp;
+		}
 }
 //---------------------------------------------------------------------------
 //pokud je označený objekt, zajistí jeho zkopírování, připočítá index 1,2,3
@@ -4060,6 +4073,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 		CheckBoxVymena_barev->Visible=!CheckBoxVymena_barev->Visible;
 		ComboBoxCekani->Visible=!ComboBoxCekani->Visible;
 		scLabel_doba_cekani->Visible=!scLabel_doba_cekani->Visible;
+		scGPCheckBox_pocet_voziku_dle_WIP->Visible=!scGPCheckBox_pocet_voziku_dle_WIP->Visible;
 		//pozice
 		if(d.mod_vytizenost_objektu)CheckBoxVytizenost->Top=scLabel_doba_cekani->Top;
 		else CheckBoxVytizenost->Top=135;
@@ -4676,7 +4690,7 @@ if(scExPanel_log_header->Visible==false){
 
 void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
 {
-scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
+	scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 
 	scGPButton_generuj->Options->NormalColor=scSplitView_OPTIONS->Color;
 	scGPButton_generuj->Options->FocusedColor=scGPButton_generuj->Options->NormalColor;
@@ -4689,8 +4703,6 @@ scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
 	ButtonPLAY->Options->HotColor=scGPButton_generuj->Options->NormalColor;
 	ButtonPLAY->Options->PressedColor=scGPButton_generuj->Options->NormalColor;
 	ButtonPLAY->Options->FramePressedColor=scGPButton_generuj->Options->NormalColor;
-
-
 }
 //---------------------------------------------------------------------------
 
@@ -4736,12 +4748,11 @@ void __fastcall TForm1::Button12Click(TObject *Sender)
 			O=O->dalsi;
 	}
 }
-	void __fastcall TForm1::scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect)
-
+//---------------------------------------------------------------------------
+//při otevření panelu
+void __fastcall TForm1::scSplitView_OPTIONSPanelPaint(TCanvas *ACanvas, TRect &ARect)
 {
-
- //	ShowMessage("panel");
-
+//užitečná metoda při otevření panelu, onclosing nějak nefunguje, toto ano
 }
 //---------------------------------------------------------------------------
 //zajišťuje vygenerování nové doby čekání na palec
@@ -4781,28 +4792,26 @@ void __fastcall TForm1::scExPanel_log_headerMouseActivate(TObject *Sender, TMous
 scSplitView_OPTIONS->Opened=false;
 }
 //---------------------------------------------------------------------------
-
-
-
-
 void __fastcall TForm1::scSplitView_MENUOpened(TObject *Sender)
 {
-// generování buttonu na PL nebo DF dle přepínače režimu
-
- if(STATUS==NAVRH){
-scButton_parmlinky_defzakazek->Caption="Parametry linky";
-scButton_parmlinky_defzakazek->ImageIndex=49;
-
-}
-
-if (STATUS==OVEROVANI) {
-
-scButton_parmlinky_defzakazek->Caption="Definice zakázek";
-scButton_parmlinky_defzakazek->ImageIndex=48;
-
-}
+	// generování buttonu na PL nebo DF dle přepínače režimu
+	if(STATUS==NAVRH)
+	{
+		scButton_parmlinky_defzakazek->Caption="Parametry linky";
+		scButton_parmlinky_defzakazek->ImageIndex=49;
+	}
+	if (STATUS==OVEROVANI)
+	{
+		scButton_parmlinky_defzakazek->Caption="Definice zakázek";
+		scButton_parmlinky_defzakazek->ImageIndex=48;
+	}
 }
 //---------------------------------------------------------------------------
-
-
+//v případě zakliknutí či odkliknutí zohlední změny dle počtu vozíku (buď podle WIP či nikoliv)
+void __fastcall TForm1::scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender)
+{
+	aktualizace_maro_a_roma();
+	REFRESH();
+}
+//---------------------------------------------------------------------------
 

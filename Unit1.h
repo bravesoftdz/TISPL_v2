@@ -256,6 +256,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_header_projekt;
 	TscGPButton *scGPButton_header_def_zakazek;
 	TscButton *scButton_parmlinky_defzakazek;
+	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -404,6 +405,7 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_log_headerMouseActivate(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y, int HitTest, TMouseActivate &MouseActivate);
 	void __fastcall scSplitView_MENUOpened(TObject *Sender);
+	void __fastcall scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender);
 
 
 
@@ -545,7 +547,8 @@ public:		// User declarations
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišuje zápis do INI aplikace
 	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišuje ètení z INI aplikace
 	void kopirovat_objekt();//pokud je oznaèenı objekt, zajistí jeho zkopírování, pøipoèítá index 1,2,3
-  void RM();//korekce chyby oskakování pravého menu
+	void RM();//korekce chyby oskakování pravého menu
+	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovım osám (maro) a techn.procesùm(roma)
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

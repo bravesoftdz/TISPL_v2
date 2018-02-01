@@ -878,8 +878,8 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 			Cvektory::TZakazka *ukaz=v.ZAKAZKY->dalsi;
 			int konec=KrokY;
 			while (ukaz!=NULL)//projede všechny zakázky, cesty
-			{
-				TPointD RET=v.vrat_zacatek_a_konec_zakazky(ukaz);
+			{                                                                  //ze sekund na min
+				TPointD RET=v.vrat_zacatek_a_konec_zakazky(ukaz);RET.x=RET.x/60.0;RET.y=RET.y/60.0;
 				konec+=v.vrat_pocet_voziku_zakazky(ukaz)*KrokY;
 				canv->Pen->Color=ukaz->barva;
 				canv->Pen->Style=psSolid;
@@ -900,7 +900,9 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				canv->Brush->Color=ukaz->barva;
 				canv->Font->Style=TFontStyles()<< fsBold;
 				canv->Font->Color=clWhite;
+				//výpis začátku zakázky
 				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,0,AnsiString(RET.x)+"<");//zobrazuje pouze větší než začátek obrazovky
+				//výpis konce zakázky + LT
 				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,0,"<"+AnsiString(RET.y));//zobrazuje pouze větší než začátek obrazovky
 				ukaz=ukaz->dalsi;
 			}
@@ -1060,7 +1062,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 						Rx=S;Ry=D;
 						//v případě, že se vozík blíží ke konci objektu orotuje jig zase zpět, Xp - X predikce následného výpočtu
 						int Xp=P->segment_cesty->objekt->predchozi->obsazenost+((P->segment_cesty->objekt->obsazenost-P->segment_cesty->objekt->predchozi->obsazenost)*(MIN-P->Tpoc/60.0)/(P->Tcek/60.0-P->Tpoc/60.0))+Xofset+Rx/2;
-            //lze odbrat /2 za Xofset či >= předělat na =, ale stále se nejedná o opticky dokonalý jev, rotace totiž "probíhá" v začátku vozíku nikoliv jeho středu, je dobré, si pro otestování vypsat ve filtru krok po 0,1
+						//lze odbrat /2 za Xofset či >= předělat na =, ale stále se nejedná o opticky dokonalý jev, rotace totiž "probíhá" v začátku vozíku nikoliv jeho středu, je dobré, si pro otestování vypsat ve filtru krok po 0,1
 						if(Xp-Rx/2+Xofset/2>=P->segment_cesty->objekt->obsazenost){Rx=D;Ry=S;}
 					}
 					//výpočet umístění na ose X už jen v rámci objektu, tzn. aby byl znatelný posun (po částech i v rámci objektu)
@@ -1099,7 +1101,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		P=P->dalsi;
 	}
 
-	////////POPISKY
+	////////POPISKY a svislice
 	//nastavení
 	canv->Pen->Width=2;
 	canv->Pen->Mode=pmCopy;
@@ -1110,7 +1112,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	canv->Font->Size=10;
 	Y=4;
 	X=Xofset;unsigned int Xpuv=X;
-	////vodorovný popisek - OBJEKTY (ale svislé čáry)
+	////vodorovný popisek ale svislé čáry - OBJEKTY
 	canv->MoveTo(X-PosunT.x,Y);if(!A)canv->LineTo(X-PosunT.x,Yofset+PXM*DO/K-PosunT.y);else canv->LineTo(X-PosunT.x,Yofset+PXM);//nakreslení první svislice (začátek pravděpodobně navěšování)
 	ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	while (ukaz!=NULL)
