@@ -662,31 +662,19 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
  }
 }
 //---------------------------------------------------------------------------
-
-
 void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-
 {
-if(Key==13)//ENTER
- {
-		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
-		 {
-			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
-			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
-		 }
+	if(Key==13)//ENTER
+	{
+		 if(Button_save->Enabled)Button_saveClick(Sender);//pokud jsou zároveò splnìny podmínky pro stisk OK
 		 else MessageBeep(0);//pípnutím upozorní, že nelze
- }
- if(Key==27)//ESC
- {
-		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
-		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
- }
+	}
+	if(Key==27)//ESC
+	{
+		 Button_stornoClick(Sender);
+	}
 }
 //---------------------------------------------------------------------------
-
-
-
-
 void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
 {
 	Cvektory:: TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
@@ -831,80 +819,28 @@ void __fastcall TForm_parametry_linky::Button_DELMouseMove(TObject *Sender, TShi
 void __fastcall TForm_parametry_linky::rEditNum_delka_jiguKeyDown(TObject *Sender,
           WORD &Key, TShiftState Shift)
 {
- if(Key==13)//ENTER
- {
-		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
-		 {
-			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
-			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
-		 }
-		 else MessageBeep(0);//pípnutím upozorní, že nelze
- }
- if(Key==27)//ESC
- {
-		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
-		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
- }
+	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rEditNum_sirka_jiguKeyDown(TObject *Sender,
-          WORD &Key, TShiftState Shift)
+					WORD &Key, TShiftState Shift)
 {
- if(Key==13)//ENTER
- {
-		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
-		 {
-			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
-			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
-		 }
-		 else MessageBeep(0);//pípnutím upozorní, že nelze
- }
- if(Key==27)//ESC
- {
-		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
-		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
- }
+	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rEditNum_taktKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift)
 {
- if(Key==13)//ENTER
- {
-		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
-		 {
-			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
-			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
-		 }
-		 else MessageBeep(0);//pípnutím upozorní, že nelze
- }
- if(Key==27)//ESC
- {
-		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
-		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
- }
+	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyDown(TObject *Sender,
           WORD &Key, TShiftState Shift)
 {
- if(Key==13)//ENTER
- {
-		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
-		 {
-			Form_parametry_linky->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
-			Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
-		 }
-		 else MessageBeep(0);//pípnutím upozorní, že nelze
- }
- if(Key==27)//ESC
- {
-		 Form_parametry_linky->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
-		 Form_parametry_linky->VisibleChanging();//skryje form, stejné jako visible=false
- }
+  FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
 

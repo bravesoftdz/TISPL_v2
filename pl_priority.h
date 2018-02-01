@@ -38,6 +38,10 @@ __published:	// IDE-managed Components
 	void __fastcall scGPRadioButton2Click(TObject *Sender);
 	void __fastcall scGPRadioButton3Click(TObject *Sender);
 	void __fastcall scGPRadioButton4Click(TObject *Sender);
+	void __fastcall rStringGridEd_tabKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_PL_priority(TComponent* Owner);

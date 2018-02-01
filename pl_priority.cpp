@@ -95,11 +95,43 @@ Form_PL_priority->rStringGridEd_tab->Visible=false;
 Form_PL_priority->rStringGridEd_tab->Visible=true;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_PL_priority::scGPRadioButton4Click(TObject *Sender)
 {
-Form_PL_priority->rStringGridEd_tab->Visible=false;
-Form_PL_priority->rStringGridEd_tab->Visible=true;
+	Form_PL_priority->rStringGridEd_tab->Visible=false;
+	Form_PL_priority->rStringGridEd_tab->Visible=true;
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_PL_priority::rStringGridEd_tabKeyDown(TObject *Sender, WORD &Key,
+					TShiftState Shift)
+{
+  FormKeyDown(Sender, Key, Shift);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_PL_priority::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+ 	if(Key==13)//ENTER
+	{
+		 if(Button_save->Enabled)//pokud jsou zároveò splnìny podmínky pro stisk OK
+		 {       ShowMessage("OK");
+			Form_PL_priority->ModalResult=mrOk;//vrátí stejnou hodnotu jako tlaèítko
+			Form_PL_priority->VisibleChanging();//skryje form, stejné jako visible=false
+		 }
+		 else MessageBeep(0);//pípnutím upozorní, že nelze
+	}
+	if(Key==27)//ESC
+	{
+		 Form_PL_priority->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_PL_priority->VisibleChanging();//skryje form, stejné jako visible=false
+	}
+}
+//---------------------------------------------------------------------------
+//køížek
+void __fastcall TForm_PL_priority::KonecClick(TObject *Sender)
+{
+		 Form_PL_priority->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
+		 Form_PL_priority->VisibleChanging();//skryje form, stejné jako visible=false
+}
+//---------------------------------------------------------------------------
+
+
 

@@ -12,6 +12,7 @@ object Form_PL_priority: TForm_PL_priority
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -46,7 +47,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 3
     TabStop = True
     OnClick = scGPRadioButton1Click
     Animation = False
@@ -56,7 +57,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -144,7 +145,8 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing]
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
+    OnKeyDown = rStringGridEd_tabKeyDown
     Columns = <
       item
         Alignment = taCenter
@@ -201,7 +203,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 4
     TabStop = True
     OnClick = scGPRadioButton2Click
     Animation = False
@@ -211,7 +213,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -296,7 +298,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 5
     TabStop = True
     OnClick = scGPRadioButton3Click
     Animation = False
@@ -306,7 +308,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -384,7 +386,7 @@ object Form_PL_priority: TForm_PL_priority
     Width = 776
     Height = 34
     Align = alTop
-    TabOrder = 4
+    TabOrder = 7
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -421,6 +423,7 @@ object Form_PL_priority: TForm_PL_priority
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -531,7 +534,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 0
     TabStop = True
     Animation = False
     Caption = 'Ulo'#382'it'
@@ -622,7 +625,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 1
     TabStop = True
     OnClick = Button_stornoClick
     Animation = False
@@ -715,7 +718,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 6
     TabStop = True
     OnClick = scGPRadioButton4Click
     Animation = False
@@ -725,7 +728,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
