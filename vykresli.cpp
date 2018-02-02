@@ -474,12 +474,15 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 						if(C->objekt->rezim==0 && vozik->pozice<=C->objekt->obsazenost)//zohlednění obsazenost objektu v režimu S&G
 							X=C->objekt->obsazenost;//převezme se koncová pozice v objektu z předchozího vozíku
 						else//pro ostatní režimy
-						{ //NAVěšování
+						{
 							if(vozik->pozice==0 && vozik->n!=1)//nejednáli se o první vozík a zároveň se jedná o výchozí pozici v režimu kontinuál či pp (sice trochu nelogické, ale může se uvažovat že navěšování bude kontinuál)
 							X=vozik->predchozi->start+C->objekt->CT/C->objekt->kapacita/60.0*PX2MIN;//tak stanový výchozí pozici dle CT a kapacity (např. při 3min CT a kapacitě 2 je časový offset mezi vozíky 1,5 min)
 							else//ostatní pozice
 							X=vozik->pozice;
 						}
+//						unsigned int WIP=v.WIP(1);
+//						if(vozik->pozice==0 && vozik->n>=WIP+1)
+//						X=v.vrat_start_a_pozici_vozikuPX(vozik->n-WIP).x;
 
 						////uložení hodnot pro další využítí
 						if(C->n==1)vozik->start=X;//uloží výchozí X hodnotu, prvního objektu pro daný vozík
@@ -590,8 +593,10 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 // nestandardní - nelogická situace, pokud bude čas procesu včetně času přejezdu vozíku kratší než u totožného přechozího objektu (vozíky např. v rámci CO2 se nemohou předbíhat), přičte se i tato vzdálenost (vykresleno šrafovaně)
 	 double DcS=vozik->zakazka->jig.delka;//old: v.PP.delka_voziku;
 	 if(P->segment_cesty->Rotace)DcS=vozik->zakazka->jig.sirka;
-	 double Xt=C->objekt->obsazenost+m.prejezd_voziku(DcS,C->RD)/60.0*PX2MIN;//musí být takto vyseparované, protože jinak v podmínce dávalo chybu, že např. 60<60 je true
-	 if(X < Xt)//komentář o řádek výše
+	 double Xt=C->objekt->obsazenost;
+	 //pokud se nejedná o S&G objekt je třeba ještě zohledňovat nutnou dobu přejezdu/zpoždění vozíku za objektem, naopak u S&G se předpokládá, že může být v kabině jenom jeden vozík, takže netřeba řešit
+	 if(P->segment_cesty->objekt->rezim!=0)Xt+=m.prejezd_voziku(DcS,C->RD)/60.0*PX2MIN;//musí být takto vyseparované, protože jinak v podmínce dávalo chybu, že např. 60<60 je true
+	 if(X < Xt)//komentář o řádek výše, pokud není u S&G délka může vracet přejezd/zpoždění vozíku
 	 {
 			//dorovnání na čas předchozího vozíku, je-li to nutné
 			X_predchozi=X;//uloží povodní X hodnotu
@@ -779,7 +784,7 @@ void Cvykresli::vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik,do
 		canv->Font->Name="Arial";
 		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 		AnsiString T="";
-		if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)/60.0*1000000.0)/1000000.0)+" min";
+		if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0)+" s";
 		else T=AnsiString(floor(v.vrat_TT_voziku(vozik)/60.0*1000000.0)/1000000.0);
 		canv->TextOut((X1+X2)/2-canv->TextWidth(T)/2,Y0-canv->TextHeight(T),T);
 }
@@ -886,15 +891,33 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				canv->Pen->Width=2;
 				canv->Brush->Style=bsSolid;
 				canv->Brush->Color=clWhite;
-				if(RET.x>0)//x - plete, jedná se jen o začátek
+				//x - plete, jedná se jen o začátek zakázky
+				if(RET.x>0)
 				{
 					canv->MoveTo(RET.x*PX2MIN-PosunT.x,0);
-					canv->LineTo(RET.x*PX2MIN-PosunT.x,konec-+Form1->scGPPanel_mainmenu->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
+					canv->LineTo(RET.x*PX2MIN-PosunT.x,konec-Form1->scGPPanel_mainmenu->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
 				}
-				if(RET.y>0)//y - plete, jedná se jen o konec
+				//náběh linky
+				unsigned int WIP=v.WIP(1);canv->Pen->Style=psDash;canv->Pen->Width=1;
+				if(ukaz->n==1)//pro první zakázku               //y -jen konec
+				{
+					canv->MoveTo(v.VOZIKY->dalsi->pozice-PosunT.x,0);
+					canv->LineTo(v.VOZIKY->dalsi->pozice-PosunT.x,WIP*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y);
+					canv->LineTo(0,WIP*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y);
+				}
+				//doběh linky
+				if(ukaz->predchozi==v.ZAKAZKY->predchozi && v.VOZIKY->predchozi->n-WIP>WIP)//pokud se jedná o poslední zakázku a doběh nastane později než náběh
+				{
+					canv->MoveTo(v.vrat_start_a_pozici_vozikuPX(v.VOZIKY->predchozi->n-WIP).y-PosunT.x,0);
+					canv->LineTo(v.vrat_start_a_pozici_vozikuPX(v.VOZIKY->predchozi->n-WIP).y-PosunT.x,(v.VOZIKY->predchozi->n-WIP)*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y);
+					canv->LineTo(0,(v.VOZIKY->predchozi->n-WIP)*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y);
+				}
+				//y - plete, jedná se jen o konec zakázky
+				canv->Pen->Width=2;	canv->Pen->Style=psSolid;
+				if(RET.y>0)
 				{
 					canv->MoveTo(RET.y*PX2MIN-PosunT.x,0);
-					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-+Form1->scGPPanel_mainmenu->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
+					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-Form1->scGPPanel_mainmenu->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
 				}
 				canv->Brush->Style=bsSolid;
 				canv->Brush->Color=ukaz->barva;
@@ -902,6 +925,10 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				canv->Font->Color=clWhite;
 				//výpis začátku zakázky
 				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,0,AnsiString(RET.x)+"<");//zobrazuje pouze větší než začátek obrazovky
+				//výpis náběhu linky, pro první zakázku
+				if(ukaz->n==1)canv->TextOutW(0,WIP*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-canv->TextHeight("N")-PosunT.y,"NÁBĚH LINKY");
+				//výpis doběh linky,pokud se jedná o poslední zakázku a doběh nastane později než náběh
+				if(ukaz->predchozi==v.ZAKAZKY->predchozi && v.VOZIKY->predchozi->n-WIP>WIP)canv->TextOutW(0,(v.VOZIKY->predchozi->n-WIP)*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y,"DOBĚH LINKY");
 				//výpis konce zakázky + LT
 				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,0,"<"+AnsiString(RET.y));//zobrazuje pouze větší než začátek obrazovky
 				ukaz=ukaz->dalsi;
@@ -1124,7 +1151,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 		else canv->LineTo(X-PosunT.x,Yofset+Ry);//pokud se jedná o animaci
 		AnsiString T=ukaz->short_name;//výpis popisku objektu
 		canv->TextOutW((Xpuv+X)/2-canv->TextWidth(T)/2-PosunT.x,Y+1,T);//+1 pouze grafická korekce
-		if(ukaz->delka_dopravniku>0)//v případě objektu s uvedeného délkou, výpiše i jeho délku a případně rychlost dopravníku
+		if(ukaz->delka_dopravniku>0 && ukaz->kapacita>1)//v případě vícekapacitního objektu s uvedeného délkou, výpiše i jeho délku a případně rychlost dopravníku
 		{
 			AnsiString T1="";//další řádek
 			T1+=AnsiString(ukaz->delka_dopravniku)+"[m]";

@@ -1165,7 +1165,7 @@ object Form_parametry: TForm_parametry
     AutoComplete = False
     Animation = False
     CheckedListMode = False
-    CheckedListWrap = True
+    CheckedListWrap = False
     Items = <>
     ItemIndex = 0
     DropDownCount = 7
@@ -1250,7 +1250,7 @@ object Form_parametry: TForm_parametry
     ListBoxOptions.FrameWidth = 1
     ListBoxOptions.FrameScaleWidth = False
     Color = clWhite
-    OnChange = scComboBox_rezimChange
+    OnChange = scComboBox_pohonChange
     OnKeyDown = FormKeyDown
   end
   object scGPEdit_name: TscGPEdit

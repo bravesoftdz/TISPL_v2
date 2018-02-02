@@ -2771,7 +2771,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 			while (ukaz!=NULL)
 			{
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-				t->Caption=ukaz->name;
+				t->Caption=ukaz->name+" "+AnsiString(m.round2double(ukaz->rychlost_od,2))+"-"+AnsiString(m.round2double(ukaz->rychlost_do,2))+"m/s";
 				ukaz=ukaz->dalsi;
 			}
 			//nastavení comba, aby ukazoval na dříve vybraný pohon
@@ -3700,7 +3700,7 @@ void __fastcall TForm1::Button8Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button9Click(TObject *Sender)
 {
-    Memo1->Lines->Clear();
+		Memo1->Lines->Clear();
 		Memo1->Visible=true;
 //		Memo1->Lines->Add("vypis spojáku VOZIKY:");
 //			Cvektory::TVozik *ukaz=d.v.VOZIKY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku

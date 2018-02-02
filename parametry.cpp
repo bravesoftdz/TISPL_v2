@@ -538,6 +538,24 @@ void __fastcall TForm_parametry::scGPNumericEdit_RDChange(TObject *Sender)
 {
 	if(input_state==NOTHING)//pokud není zadáváno z jiného vstupu
 	input_RD();//pøepoèet hodnot vyplývajících ze zmìny RD
+	//kontrola rozsahu zadaného pohonu
+	if(scComboBox_rezim->ItemIndex!=0)//mimo S&G
+	{
+		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+		if(P!=NULL)
+		{
+			if(scGPNumericEdit_RD->Value<P->rychlost_od || P->rychlost_do<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
+			{
+				vypis("Rychlost neodpovídá rozmezí!",true);
+				scGPButton_OK->Enabled=false;
+			}
+			else
+			{
+				vypis("");
+				scGPButton_OK->Enabled=true;
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaChange(TObject *Sender)
@@ -1369,6 +1387,28 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 	 {
 		scComboBox_rezim->ItemIndex=1;
 	 }
+}
+//---------------------------------------------------------------------------
+//kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
+void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
+{
+	if(scComboBox_rezim->ItemIndex!=0)//mimo S&G
+	{
+		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+		if(P!=NULL)
+		{
+			if(scGPNumericEdit_RD->Value<P->rychlost_od || P->rychlost_do<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
+			{
+				vypis("Pohon neodpovídá rychlosti!",true);
+				scGPButton_OK->Enabled=false;
+			}
+			else
+			{
+				vypis("");
+				scGPButton_OK->Enabled=true;
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------
 

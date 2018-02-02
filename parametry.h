@@ -92,6 +92,7 @@ __published:	// IDE-managed Components
 	void __fastcall scButton_zamek_CTClick(TObject *Sender);
 	void __fastcall scButton_zamek_DDClick(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
+	void __fastcall scComboBox_pohonChange(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent

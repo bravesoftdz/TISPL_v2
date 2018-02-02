@@ -313,7 +313,8 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 {
-	return delka/rychlost_dopravniku;
+	if(rychlost_dopravniku==0 || delka==0)return 0;//pozor mùže být zavadìjící
+	else return delka/rychlost_dopravniku;
 }
 /////////////////////////////////////////////////////////////////////////////
 //zesvìtlí nebo ztmaví barvu
