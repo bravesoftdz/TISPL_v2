@@ -532,6 +532,24 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject 
 {
 	if(input_state==NOTHING)//pokud není zadáváno z jiného vstupu
 	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
+	//hlídání velikosti mezery dle rozteèe
+	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
+	{
+		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+		if(P!=NULL)
+		{                            //je "zbytek po dìlení"
+			if(P->roztec>0 && !Form1->m.cele_cislo(scGPNumericEdit_mezera->Value/P->roztec))//nesplòuje rozmezí
+			{
+				vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
+				//-scGPButton_OK->Enabled=false;
+			}
+			else
+			{
+				vypis("");
+				//-scGPButton_OK->Enabled=true;
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_RDChange(TObject *Sender)
@@ -547,12 +565,12 @@ void __fastcall TForm_parametry::scGPNumericEdit_RDChange(TObject *Sender)
 			if(scGPNumericEdit_RD->Value<P->rychlost_od || P->rychlost_do<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
 			{
 				vypis("Rychlost neodpovídá rozmezí!",true);
-				scGPButton_OK->Enabled=false;
+				//-scGPButton_OK->Enabled=false;
 			}
 			else
 			{
 				vypis("");
-				scGPButton_OK->Enabled=true;
+				//-scGPButton_OK->Enabled=true;
 			}
 		}
 	}
@@ -1400,12 +1418,12 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 			if(scGPNumericEdit_RD->Value<P->rychlost_od || P->rychlost_do<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
 			{
 				vypis("Pohon neodpovídá rychlosti!",true);
-				scGPButton_OK->Enabled=false;
+				//-scGPButton_OK->Enabled=false;
 			}
 			else
 			{
 				vypis("");
-				scGPButton_OK->Enabled=true;
+				//-scGPButton_OK->Enabled=true;
 			}
 		}
 	}
