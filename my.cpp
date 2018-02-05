@@ -311,6 +311,25 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 
 }
 /////////////////////////////////////////////////////////////////////////////
+//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0
+double Cmy::mezera_mezi_voziky(double vozik,double roztec,double mezera)
+{
+	if(roztec!=0)
+	{
+		double min_mezera=ceil(vozik/roztec)*roztec-vozik;//vrátí minimální možnou mezi vozíky, nepokrácené: ceil((vozik/2+vozik/2)/roztec]*roztec-vozik
+		if(mezera==0)
+		{
+			return min_mezera;
+		}
+		else
+		{
+			if(min_mezera>=mezera || mezera<0)return min_mezera;//pokud je minimální možná mezera menší než nebo stejná jak zadaná, pøípadnì chybnì zadaná v podobì záporného èísla tak vrátí minimální možnou resp. zadanou v pøípadì ==
+			else {MessageBeep(0);return min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratí nejbližší možnou mezeru mezi vozíky
+		}
+	}
+	else return 0;//pokud nebude znám rozteè
+}
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 {
 	if(rychlost_dopravniku==0 || delka==0)return 0;//pozor mùže být zavadìjící

@@ -152,13 +152,13 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 {
 	//výchozí zmenšení formuláøe
 	offset=0;
-	if (Form1->STATUS==Form1->NAVRH) rezim+=10;//posunutí o 10 vytváøí režim+navrháø
+	if(Form1->STATUS==Form1->NAVRH) rezim+=10;//posunutí o 10 vytváøí režim+navrháø
 	switch(rezim)
 	{
 		 case 0://STOP & GO
 		 {
 			 set(POHON,READONLY);
-			 set(TIME,READONLY);
+			 set(TIME,HIDE);
 			 set(RYCHLOST,HIDE);
 			 set(DELKA,READONLY);
 			 set(KAPACITA,READONLY);
@@ -284,7 +284,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 				case HIGHLIGHT:scComboBox_pohon->Options->FrameNormalColor=hl_color;scComboBox_pohon->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scComboBox_pohon->Enabled=false;break;
-				case READONLY:scComboBox_pohon->Enabled=false;break;
+				case READONLY:scComboBox_pohon->Enabled=false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
 				case HIDE:		rHTMLLabel_pohon->Visible=false;scComboBox_pohon->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
