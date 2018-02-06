@@ -576,7 +576,6 @@ void Cvykresli::vykresli_casove_osy(TCanvas *canv)
 //vypočítá konec procesu (odbdelníčku)
 double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, double X, int Y, Cvektory::TCesta *C/*segment cesty*/,Cvektory::TVozik *vozik)
 {
-	 double R=0;if(C->objekt->pohon!=NULL)R=C->objekt->pohon->roztec;//rozteč palců + ošetření pokud není pohon přiřazen
 	 TColor barva=vozik->zakazka->barva;
 	 if(vozik->typ)barva=clSilver;//pokud se jedná o servisní vozík, tak bude šedivý
 
@@ -618,10 +617,9 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 
 	 ////PALCE - posun o čekání na palce
 	 P->Trand=0;
-	 Cvektory::TObjekt *Objekt_dalsi=vozik->zakazka->cesta->dalsi->objekt;if(C->dalsi!=NULL)C->dalsi->objekt;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se pohon prvního objektu, jinak se bere pohon v cestě následující
+	 Cvektory::TObjekt *Objekt_dalsi=vozik->zakazka->cesta->dalsi->objekt;if(C->dalsi!=NULL)Objekt_dalsi=C->dalsi->objekt;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se pohon prvního objektu, jinak se bere pohon v cestě následující
 	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
 			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
-			//toto bylo logicko-analyticky špatně: C->objekt->dalsi!=NULL &&//a nejedná se o poslední objekt
 			 (// a zároveň je splňuje následují:
 					 C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
 					(C->objekt->rezim==1 && Objekt_dalsi->rezim==1 && C->objekt->pohon!=Objekt_dalsi->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
@@ -634,8 +632,9 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 			 )
 	 )
 	 {
-			double RD=vozik->zakazka->cesta->dalsi->RD;if(C->dalsi!=NULL)C->dalsi->RD;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se rychlost pohonu prvního objektu, jinak se bere RD objektu v cestě následujícího
-			double Cekani=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,C->RD,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
+			double RD=vozik->zakazka->cesta->dalsi->RD;if(C->dalsi!=NULL)RD=C->dalsi->RD;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se rychlost pohonu prvního objektu, jinak se bere RD objektu v cestě následujícího
+			double R=0;if(Objekt_dalsi->pohon!=NULL)R=Objekt_dalsi->pohon->roztec;//přiřazení rozteče pokud existuje
+			double Cekani=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,RD,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
 			if(Form1->ComboBoxCekani->ItemIndex==2)//pokud je vybraná položka o náhodná hodnota
 			{
 				if(RANDOM){P->Trand=Cekani;}//a má se převzít nová, tak se uloží pro další použítí nově vygenerovanou hodnotu
