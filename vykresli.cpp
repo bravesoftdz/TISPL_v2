@@ -616,23 +616,25 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 }
 	 X_predchozi=X;
 
-	 //PALCE - posun o čekání na palce
+	 ////PALCE - posun o čekání na palce
 	 P->Trand=0;
+	 Cvektory::TObjekt *Objekt_dalsi=vozik->zakazka->cesta->dalsi->objekt;if(C->dalsi!=NULL)C->dalsi->objekt;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se pohon prvního objektu, jinak se bere pohon v cestě následující
 	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
 			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
-			C->objekt->dalsi!=NULL &&//a nejedná se o poslední objekt
+			//toto bylo logicko-analyticky špatně: C->objekt->dalsi!=NULL &&//a nejedná se o poslední objekt
 			 (// a zároveň je splňuje následují:
 					 C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
-					(C->objekt->rezim==1 && C->objekt->dalsi->rezim==1 && C->objekt->pohon!=C->dalsi->objekt->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
-					(C->objekt->rezim==1 && C->objekt->dalsi->rezim==2 && C->objekt->pohon!=C->dalsi->objekt->pohon)||//K->PP a jiný dopravník nebo
-					(C->objekt->rezim==2 && C->objekt->dalsi->rezim==1)||//PP->K nebo
-					(C->objekt->rezim==2 && C->objekt->dalsi->rezim==2 && C->objekt->pohon!=C->dalsi->objekt->pohon)||//PP->PP a jiný dopravník nebo
+					(C->objekt->rezim==1 && Objekt_dalsi->rezim==1 && C->objekt->pohon!=Objekt_dalsi->pohon)||//je to mezi K a K režimem s přechodem na jiný dopravník nebo
+					(C->objekt->rezim==1 && Objekt_dalsi->rezim==2 && C->objekt->pohon!=Objekt_dalsi->pohon)||//K->PP a jiný dopravník nebo
+					(C->objekt->rezim==2 && Objekt_dalsi->rezim==1)||//PP->K nebo
+					(C->objekt->rezim==2 && Objekt_dalsi->rezim==2 && C->objekt->pohon!=Objekt_dalsi->pohon)||//PP->PP a jiný dopravník nebo
 					 C->objekt->stopka==1//když je za objektem stopka (//0-ne,1-ano,2-automaticky) nebo
 					 ||
 					 C->objekt->cekat_na_palce==1//automaticky-uživaztelsky požadovano zohledňování čekání na palce//0-ne,1-ano,2-automaticky
 			 )
 	 )
-	 {                                                       // doplnit
+	 {
+			double RD=vozik->zakazka->cesta->dalsi->RD;if(C->dalsi!=NULL)C->dalsi->RD;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se rychlost pohonu prvního objektu, jinak se bere RD objektu v cestě následujícího
 			double Cekani=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,C->RD,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
 			if(Form1->ComboBoxCekani->ItemIndex==2)//pokud je vybraná položka o náhodná hodnota
 			{
@@ -647,7 +649,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 }
 	 if(X_predchozi!=X)vykresli_proces(canv,C->objekt->short_name,barva,3,m.round(X_predchozi)-PosunT.x,m.round(X)-PosunT.x,Y-PosunT.y);//samotné vykreslení časového obdelníku čakání na palec na časové ose
 	 P->Tcek=X*60.0/PX2MIN; //uložení hodnot pro zcela další použítí (pro zjišťování nutné kapacity, pro ROMA metoda, výpis procesu atp.),nejdříve ale smaže starý spoják
-	 //--
+	 ////--
 
 	 //uložení hodnot pro další použití (v dalších kolech)
 	 C->objekt->obsazenost=X;//nahraje koncovou X hodnotu do obsaženosti objektu pro další využítí
