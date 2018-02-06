@@ -395,11 +395,25 @@ double Cvektory::vrat_soucet_delek_vsech_objektu()
 			SUM+=PP.delka_voziku;
 			else SUM+=PP.sirka_voziku;
 		}
-		else //u kontinuálního a pp se uvažuje jako délka přímo délka dopravníku
+		else//u kontinuálního a pp se uvažuje jako délka přímo délka dopravníku, u S&G jen v případě, že byla délka dopravníku zadána uživatelsky
 		SUM+=O->delka_dopravniku;
 		O=O->dalsi;//posun na další prvek
 	}
 	return SUM;
+}
+//---------------------------------------------------------------------------
+//vrátí počet objektů v režimu S&G
+unsigned int pocet_objektu_SG()
+{
+	unsigned int pocet=0;
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		if(O->rezim==0)pocet++;
+		O=O->dalsi;//posun na další prvek
+	}
+	O=NULL;delete O;
+	return pocet;
 }
 //---------------------------------------------------------------------------
 //změní zařazení objektů ve spojovém seznamu

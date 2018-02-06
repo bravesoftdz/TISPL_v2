@@ -259,6 +259,7 @@ class Cvektory
 		TObjekt *vrat_objekt_z_roma(int X);//dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt
 		void aktualizace_objektu(short typ);//dle zadaného TT  či případně dalších hodnot zaktualizuje paramametry všech objektů//typ -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané //typ -1://dle zamčených a odemčených hodnot při změně TT//typ 0://dle zamčených a odemčených hodnot při změně parametrů vozíku//typ 1://při změně TT změna CT a RD, K a DD zůstává//typ 2://při změně TT změna K,DD,RD zůstává CT//typ 3://při změně parametrů vozíku změna DD, RD zůstává K, CT//typ 4://při změně parametrů vozíku změna u DD, CT zůstává K,RD//typ 5://při změně parametrů vozíku změna u K,CT,RD zůstává DD
 		double vrat_soucet_delek_vsech_objektu();//sečte délky jednotlivých objektů
+		unsigned int pocet_objektu_SG();//vrátí počet objektů v režimu S&G
 		short smaz_objekt(TObjekt *Objekt);//smaže prvek ze seznamu
 		void zmen_poradi_objektu(TObjekt *aktualni_poradi,TObjekt *nove_poradi);
 		void zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi);

@@ -632,7 +632,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 					 C->objekt->cekat_na_palce==1//automaticky-uživaztelsky požadovano zohledňování čekání na palce//0-ne,1-ano,2-automaticky
 			 )
 	 )
-	 {
+	 {                                                       // doplnit
 			double Cekani=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,C->RD,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
 			if(Form1->ComboBoxCekani->ItemIndex==2)//pokud je vybraná položka o náhodná hodnota
 			{
