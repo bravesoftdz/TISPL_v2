@@ -819,6 +819,7 @@ void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 			Invalidate();
 		}
 	}
+	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 //zavře nebo otevře grafy v časových osách
@@ -950,6 +951,7 @@ void __fastcall TForm1::SyntezaClick(TObject *Sender)
 	scListGroupKnihovObjektu->Visible=false;
 	g.ShowGrafy(false);
 	Invalidate();
+	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::simulace1Click(TObject *Sender)
@@ -1498,11 +1500,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	 else//pokud není stisknuto levé tlačítko, předpokládá se volání pop-up menu
 	 {
 			//nejdříve deaktiviace zaměřovače, je-li aktivní
-			if(Label_zamerovac->Visible)
-			{
-				d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
-				Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;Timer_neaktivity->Enabled=false;//monitoruje dobu nečinosti od znovu
-			}
+			deaktivace_zamerovace();
 			//nastavení zobrazení popUPmenu a jeho volání včetně pozice
 			onPopUP(X,Y);
 	 }
@@ -1524,7 +1522,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			SB(UnicodeString((X+d.PosunT.x)/d.PX2MIN)+" min",6);//výpis času na ose procesů dle kurzoru
 			//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
 			Label_zamerovac->Visible=false;
-			pocitadlo_doby_neaktivity=0;Timer_neaktivity->Enabled=true;//monitoruje dobu nečinosti od znovu
+			pocitadlo_doby_neaktivity=0;if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false)Timer_neaktivity->Enabled=true;//monitoruje dobu nečinosti od znovu
 	}
 	else //výpis metrických souřadnic
 	{
@@ -1629,6 +1627,17 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	 //vrat_puvodni_akci();
 	 /*if(X<=RzSizePanel_knihovna_objektu->Width) DrawGrid_knihovna->Enabled=true;
 	 else DrawGrid_knihovna->Enabled=false;*/
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//deaktivuje zaměřovač label a svislice a kolmice
+void  TForm1::deaktivace_zamerovace()
+{
+	if(Label_zamerovac->Visible)
+	{
+		 d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
+		 Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;Timer_neaktivity->Enabled=false;//monitoruje dobu nečinosti od znovu
+	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -4080,7 +4089,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 		else CheckBoxVytizenost->Top=135;
 		SB("");
 		Invalidate();
-		RM();
+		RM();//korekce chyby oskakování pravého menu
 	}
 }
 //---------------------------------------------------------------------------
@@ -4122,7 +4131,7 @@ void __fastcall TForm1::CheckBoxVymena_barev_Click(TObject *Sender)
 {
 	 d.JIZPOCITANO=false;//zajistí přepočet časových os
 	 Invalidate();
-	 RM();
+	 RM();//korekce chyby oskakování pravého menu
 }
 
 //-------------------------------------------------------------
@@ -4132,7 +4141,7 @@ void __fastcall TForm1::ComboBoxODminChange(TObject *Sender)
 
 		d.TP.OD=ms.MyToDouble(ComboBoxODmin->Text);
 		Invalidate();
-		RM();
+		RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 
@@ -4142,7 +4151,7 @@ void __fastcall TForm1::ComboBoxDOminChange(TObject *Sender)
 		//ještě ošetření aby zadal hodnotu od menší nebo rovno hodnotě do
 		d.TP.DO=ms.MyToDouble(ComboBoxDOmin->Text);
 		Invalidate();
-		RM();
+		RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 //zapne či vypne antialiasing
@@ -4152,7 +4161,7 @@ void __fastcall TForm1::scGPSwitch_AAChangeState(TObject *Sender)
 	scSplitView_MENU->Opened=false;
 	DrawGrid_knihovna->Invalidate();
 	Invalidate();//v tomto případě lépe než REFRESH - kvůli efektu
-	RM();
+	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_trTimer(TObject *Sender)
@@ -4240,7 +4249,11 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   ESC();//zruší případnou rozdělanou akci
 	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
-		if(scSplitView_MENU->Opened) scSplitView_MENU->Close();
+	if(scSplitView_MENU->Opened)
+	{
+		scSplitView_MENU->Close();
+		deaktivace_zamerovace();
+	}
 
 }
 //---------------------------------------------------------------------------
@@ -4663,6 +4676,12 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 	REFRESH();
 	if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
 	RM();//korekce chyby oskakování pravého menu, je zajímavé, že tu musí být znovu
+	//pro uživatele kontrola, zda mají objekty přiřazené pohony
+	if(ComboBoxCekani->ItemIndex>0)
+	{
+		AnsiString T=d.v.vypsat_objekty_bez_prirazenych_pohonu();
+		if(T!="")MB("Pozor, pro objekt "+T+" nebyl přiřazen pohon. Doba čekání na palce není u těchto objektů zohledněna!");
+	}
 }
 //---------------------------------------------------------------------------
 

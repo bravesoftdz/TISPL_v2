@@ -423,7 +423,7 @@ AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiSt
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL)//pohon nepřiřazen
+		if(O->pohon==NULL)//pohon nepřiřazen
 		{
 			if(shortname)T+=O->short_name;//vypsat krátký název
 			else T+=O->name;//vypsat celý název
