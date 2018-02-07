@@ -618,7 +618,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 	 ////PALCE - posun o čekání na palce
 	 P->Trand=0;
 	 Cvektory::TObjekt *Objekt_dalsi=vozik->zakazka->cesta->dalsi->objekt;if(C->dalsi!=NULL)Objekt_dalsi=C->dalsi->objekt;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se pohon prvního objektu, jinak se bere pohon v cestě následující
-	 if(Form1->ComboBoxCekani->ItemIndex && //pokud je požadováno v menu
+	 if(Form1->ComboBoxCekani->ItemIndex>0 && //pokud je požadováno v menu
 			C->objekt->cekat_na_palce!=0 && //a zároveň nění uživatelsky zakázáno
 			 (// a zároveň je splňuje následují:
 					 C->objekt->rezim==0 ||//čekání je to po objektu v režimu S&G nebo
@@ -626,8 +626,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 					(C->objekt->rezim==1 && Objekt_dalsi->rezim==2 && C->objekt->pohon!=Objekt_dalsi->pohon)||//K->PP a jiný dopravník nebo
 					(C->objekt->rezim==2 && Objekt_dalsi->rezim==1)||//PP->K nebo
 					(C->objekt->rezim==2 && Objekt_dalsi->rezim==2 && C->objekt->pohon!=Objekt_dalsi->pohon)||//PP->PP a jiný dopravník nebo
-					 C->objekt->stopka==1//když je za objektem stopka (//0-ne,1-ano,2-automaticky) nebo
-					 ||
+					 C->objekt->stopka==1 ||//když je za objektem stopka (//0-ne,1-ano,2-automaticky) nebo
 					 C->objekt->cekat_na_palce==1//automaticky-uživaztelsky požadovano zohledňování čekání na palce//0-ne,1-ano,2-automaticky
 			 )
 	 )
