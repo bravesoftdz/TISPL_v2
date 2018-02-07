@@ -58,7 +58,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_rotace;
 	TscGPComboBox *scComboBox_rotace;
 	TrHTMLLabel *rHTMLLabel_mezera;
-	TscGPNumericEdit *scGPNumericEdit_mezera;
 	TscGPCheckBox *scGPCheckBox_pocet_mezer;
 	TscGPButton *scGPButton_metry_milimetry;
 	TscGPGlyphButton *scGPGlyphButton_copy;
@@ -66,6 +65,8 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_CT;
 	TscButton *scButton_zamek_DD;
 	TscButton *scButton_zamek_RD;
+	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPNumericEdit *scGPNumericEdit_mezera;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -93,11 +94,17 @@ __published:	// IDE-managed Components
 	void __fastcall scButton_zamek_DDClick(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
 	void __fastcall scComboBox_pohonChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_kapacitaClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_CTClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_RDClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_delka_dopravnikuClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_mezeraClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//n·zev souvisejÌcÌch komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchov·v· v˝bÏr input hodnoty (aby se formul·¯e necyklyly)
+	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;
 
 	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajiöùuje zobrazenÌ a napozicov·nÌ pat¯iËnÈ konkrÈtnÌ komponenty a z·roveÚ udrûov·nÌ hodnoty offsetu - to pokud je move==true, jinak jen nastavÌ komponenty
@@ -121,6 +128,7 @@ public:		// User declarations
 	void setForm4Rezim(unsigned short rezim);
 	void vypis(UnicodeString text,bool RED=true);
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
+	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
 	short kapacitaSG;//poûadavek na rozpad na vÌce stejn˝ch S&G objekt˘
 	bool existuje_pohon;
 	bool form_zobrazen;//detekuje zda je form aktu·lnÏ zobrazen, slouûÌ proto aby p¯i zmÏnÏ combo reûim pokud si nastavil uûivatel formula¯ jinam, aby z˘stal nastaven dle uûivatele

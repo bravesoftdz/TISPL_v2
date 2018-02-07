@@ -2791,22 +2791,27 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		}
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
 		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
+		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
 		//název
 		Form_parametry->scGPEdit_name->Text=pom->name;
 		Form_parametry->scGPEdit_shortname->Text=pom->short_name;
 		//režim
 		Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 		//CT
-		Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
+		//Form_parametry->scGPNumericEdit_CT->Decimal=3;
+		//Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
 		//RD
-		Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD);//nastaví zobrazení počtu desetinných míst;
+		//Form_parametry->scGPNumericEdit_RD->Decimal=Form_parametry->scGPNumericEdit_CT->Decimal;
+		//Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
 		//DD
-		Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku);//nastaví zobrazení počtu desetinných míst;
+	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=Form_parametry->scGPNumericEdit_RD->Decimal;
+	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
 		//DM
-		Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
+		//Form_parametry->scGPNumericEdit_mezera->Decimal=Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal;
+	 //	Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;

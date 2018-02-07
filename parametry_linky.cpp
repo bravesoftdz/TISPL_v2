@@ -263,8 +263,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 			while(O!=NULL)
 			{
-			 //	ShowMessage(O->RD*60.0);
-			 //	ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]));
+			//	ShowMessage(O->RD*60.0);
+			// 	ShowMessage(Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]));
 
 				if(
 					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
@@ -297,16 +297,17 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt
 		{
 			//Form_PL_priority->rStringGridEd_tab->Height=Form_PL_priority->rStringGridEd_tab->Height-Form_PL_priority->rStringGridEd_tab->DefaultRowHeight;
-			Form_PL_priority->rStringGridEd_tab->RowCount=4;
+			Form_PL_priority->rStringGridEd_tab->RowCount=3;
 			Form_PL_priority->scGPRadioButton4->Visible=false;
+			Form_PL_priority->scGPRadioButton3->Visible=false;
 			//zustava
 			Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Délka pohonu";
 			Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Technologický èas";
-			Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Individuální nastavení";
+	 //		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Individuální nastavení";
 			//meni se
 			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Technologický èas, Rychlost pohonu";
 			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka pohonu, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Individuální nastavení";
+	 //		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Individuální nastavení";
 
 			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
 
@@ -328,20 +329,21 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 	 }
 	 if(Changes_PP)//pri zmene PP + jiz existuje nejaky objekt
 	 {
-			Form_PL_priority->rStringGridEd_tab->RowCount=5;
+			Form_PL_priority->rStringGridEd_tab->RowCount=4;
 			//Form_PL_priority->rStringGridEd_tab->Height=3*Form_PL_priority->rStringGridEd_tab->DefaultRowHeight+2; //2px kosmetika
 
-			Form_PL_priority->scGPRadioButton4->Visible=true;
+			Form_PL_priority->scGPRadioButton4->Visible=false;
+			Form_PL_priority->scGPRadioButton3->Visible=true;
 						 //zustava
 			Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Technologický èas";
 			Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Kapacita, Rychlost pohonu";
 			Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Délka pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[0][4]="Individuální nastavení";
+		//	Form_PL_priority->rStringGridEd_tab->Cells[0][4]="Individuální nastavení";
 				 //meni se
 			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Délka pohonu, Rychlost pohonu";
 			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Délka pohonu, Technologický èas";
 			Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Kapacita, Technologický èas, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[1][4]="Individuální nastavení";
+		//	Form_PL_priority->rStringGridEd_tab->Cells[1][4]="Individuální nastavení";
 
 			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnám parametrù <font color=#2b579a>vozíku</font>, které ovlivòují parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
 
@@ -351,7 +353,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=3; //Form1->d.v.aktualizace_objektu(3);
 				if(Form_PL_priority->scGPRadioButton2->Checked) aktualizace_id=4; //Form1->d.v.aktualizace_objektu(4);
 				if(Form_PL_priority->scGPRadioButton3->Checked) aktualizace_id=5; //Form1->d.v.aktualizace_objektu(5);
-				if(Form_PL_priority->scGPRadioButton4->Checked) aktualizace_id=0; //Form1->d.v.aktualizace_objektu(0); //indi nastav
+			//	if(Form_PL_priority->scGPRadioButton4->Checked) aktualizace_id=0; //Form1->d.v.aktualizace_objektu(0); //indi nastav
 
 				Ulozit=true;   // predat pro M vybrany parametr z radio
 				volat_aktualizaci=true;
@@ -388,7 +390,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
 
 			if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty())  rychlost_od=0;
-			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60);
+			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60
+			);
 
 			if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty())  rychlost_do=0;
 			else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60);
