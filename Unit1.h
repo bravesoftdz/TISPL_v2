@@ -549,6 +549,7 @@ public:		// User declarations
 	void kopirovat_objekt();//pokud je oznaèený objekt, zajistí jeho zkopírování, pøipoèítá index 1,2,3
 	void RM();//korekce chyby oskakování pravého menu
 	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovým osám (maro) a techn.procesùm(roma)
+	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

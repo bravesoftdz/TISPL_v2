@@ -395,11 +395,44 @@ double Cvektory::vrat_soucet_delek_vsech_objektu()
 			SUM+=PP.delka_voziku;
 			else SUM+=PP.sirka_voziku;
 		}
-		else //u kontinuálního a pp se uvažuje jako délka přímo délka dopravníku
+		else//u kontinuálního a pp se uvažuje jako délka přímo délka dopravníku, u S&G jen v případě, že byla délka dopravníku zadána uživatelsky
 		SUM+=O->delka_dopravniku;
 		O=O->dalsi;//posun na další prvek
 	}
 	return SUM;
+}
+//---------------------------------------------------------------------------
+//vrátí počet objektů v režimu S&G
+unsigned int Cvektory::pocet_objektu_SG()
+{
+	unsigned int pocet=0;
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		if(O->rezim==0)pocet++;
+		O=O->dalsi;//posun na další prvek
+	}
+	O=NULL;delete O;
+	return pocet;
+}
+//---------------------------------------------------------------------------
+//vrátí AnsiString řetezec shortname či name (dle prvního parametru, který je implicitně na shortname=true) seznam objektů, které nemají přiřazený pohon, jednotlivé názvy objektů oddělí dle paramaterů seperátor, implicitně ", " tj. čárka a mezera, v případě že žádný objekt nenajde, vrátí prázdný řetězec
+AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiString seperator)
+{
+	AnsiString T="";
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		if(O->pohon==NULL)//pohon nepřiřazen
+		{
+			if(shortname)T+=O->short_name;//vypsat krátký název
+			else T+=O->name;//vypsat celý název
+			if(O->n!=OBJEKTY->predchozi->n)T+=seperator;//pokud se nejedná o poslední prvek přiřadí i separátor
+		}
+		O=O->dalsi;//posun na další prvek
+	}
+	O=NULL;delete O;
+	return T;
 }
 //---------------------------------------------------------------------------
 //změní zařazení objektů ve spojovém seznamu
