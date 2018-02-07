@@ -242,6 +242,21 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(MEZERA,ENABLED);
 			 set(POCET_MEZER,ENABLED);
 		 }break;
+			case 13://SG - NÁVRHÁØ  - ROZŠÍØENÉ
+		 {
+//		   set(POHON,READONLY);
+//			 set(TIME,HIDE);
+//			 set(RYCHLOST,HIDE);
+//			 set(DELKA,READONLY);
+//			 set(KAPACITA,READONLY);
+//			 set(ODCHYLKA,READONLY);
+//			 set(CEKANI,READONLY);
+//			 set(STOPKA,READONLY);
+//			 set(ROTACE,HIDE);
+//			 set(MEZERA,HIDE);
+//			 set(POCET_MEZER,HIDE);
+//			 scGPNumericEdit_kapacita->Value=1;
+		 }break;
 	}
 
 	//VELIKOST FORMULÁØE
@@ -599,7 +614,7 @@ void TForm_parametry::input_CT()
 	 if(CT>0)//nutné ošetøení pro období zadávání/psaní
 	 {
 			 //default nastavení komponent
-			 scGPNumericEdit_kapacita->Decimal=0;
+			 //ROSTA//scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
 			 scGPButton_OK->Enabled=true;
 			 scGPButton_OK->Caption="Uložit";
@@ -640,7 +655,7 @@ void TForm_parametry::input_CT()
 			 {
 				 //KAPACITA
 				 double K=CT/Form1->d.v.PP.TT;//výpoèet
-    		 scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+				 //ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 				 scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 				 scGPNumericEdit_kapacita->Font->Color=clBlack;
 				 //pokud obsahuje kapacita reálnou èást, vypíše doporuèení
@@ -650,12 +665,13 @@ void TForm_parametry::input_CT()
 					if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 					if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
 					else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
-					scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
+           scGPButton_OK->Enabled=true;
+					//ROSTA-puvodni//scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
 				 }
 				 //DÉLKA DOPRAVNÍKU
 				 double DD=K*dV+(K-p)*m;//ošetøeno i pro stav kdy je stejný poèet mezer jako vozíku
 				 if(DDunit==MM)DD*=1000.0;
-				 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+				 //ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
 				 scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 				 if(DDunit==MM)DD/=1000.0;//vracení do pùvodního stavu k dalšímu použití
 				 //RYCHLOST DOPRAVNÍKU (èistì jen pro KONTINUAL)
@@ -663,7 +679,7 @@ void TForm_parametry::input_CT()
 				 {
 					double RD=DD/CT;
 					if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
-					scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+					//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 					scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 				 }
 			 }
@@ -676,14 +692,14 @@ void TForm_parametry::input_CT()
 //pøepoèet hodnot vyplývajících ze zmìny DD
 void TForm_parametry::input_DD()
 {
-	input_state=DD;//pozor myšleno DD - z ENUM
+ 	input_state=DD;//pozor myšleno DD - z ENUM
 	//default hodnoty
 	double DD=scGPNumericEdit_delka_dopravniku->Value;if(DDunit==MM)DD/=1000.0;//pøevede vždy do metrù
 
 	if(DD>0)//nutné ošetøení pro období zadávání/psaní
 	{
 		//default nastavení komponent
-		scGPNumericEdit_kapacita->Decimal=0;
+		//ROSTA//scGPNumericEdit_kapacita->Decimal=0;
 		vypis("");
 		scGPButton_OK->Enabled=true;
 		scGPButton_OK->Caption="Uložit";
@@ -696,7 +712,7 @@ void TForm_parametry::input_DD()
 
 		//KAPACITA                 //pokud je stejný poèet mezer jako vozíkù
 		double K=(DD+m)/(dV+m);if(p==1)K=DD/(dV+m);
-		scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+		//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 		scGPNumericEdit_kapacita->Font->Color=clBlack;
 		//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
@@ -728,17 +744,17 @@ void TForm_parametry::input_DD()
 		//plnìní a formátování editboxu CT
 		if(CTunit==MIN)
 		{
-			scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
+			//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
 			scGPNumericEdit_CT->Value=CT/60.0;//plnìní patøièného políèka
 		}
 		else
 		{
-			scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+			//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 			scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
 		}
 		//plnìní a formátování editboxu RD
 		if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
-		scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+		//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 	}
 	else
@@ -758,7 +774,7 @@ void TForm_parametry::input_RD()
 	 if(RD>0)//nutné ošetøení pro období zadávání/psaní
 	 {
 			 //default nastavení komponent
-			 scGPNumericEdit_kapacita->Decimal=0;
+			 //ROSTA//scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
     	 scGPButton_OK->Enabled=true;
 			 scGPButton_OK->Caption="Uložit";
@@ -774,7 +790,7 @@ void TForm_parametry::input_RD()
     	 {
     			//KAPACITA
 					K=m/(dV+m-RD*Form1->d.v.PP.TT);
-    			scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+    			//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 					scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 					scGPNumericEdit_kapacita->Font->Color=clBlack;
 					//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
@@ -790,14 +806,14 @@ void TForm_parametry::input_RD()
 					//DÉLKA DOPRAVNÍKU
 					double DD = K*dV+(K-p)*m;
 					if(DDunit==MM)DD*=1000.0;
-					scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+					//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
 					scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 					if(DDunit==MM)DD/=1000.0;//vrácení do pùvodního stavu kvùli dalšímu použit
 
     			//PROCESNÍ ÈAS resp. CT
 					double CT = RD/DD;
 					if(CTunit==MIN)CT/60.0;
-					scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+					//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 					scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
 			 }
     	 else //pokud ne, je nutné získat další nenulový vstup
@@ -810,7 +826,7 @@ void TForm_parametry::input_RD()
 					{
     				//KAPACITA
 						K=RD/DD/Form1->d.v.PP.TT;
-    				scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+						//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 						scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 						scGPNumericEdit_kapacita->Font->Color=clBlack;
 						//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
@@ -826,7 +842,7 @@ void TForm_parametry::input_RD()
     				//PROCESNÍ ÈAS resp. CT
 						double CT = RD/DD;
 						if(CTunit==MIN)CT/60.0;
-						scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+						//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 						scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
     			}
     			else
@@ -836,12 +852,12 @@ void TForm_parametry::input_RD()
         			//DÉLKA DOPRAVNÍKU
 							DD=RD*CT;
 							if(DDunit==MM)DD*=1000.0;
-							scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+							//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
 							scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 
         			//KAPACITA
 							K=CT/Form1->d.v.PP.TT;
-        			scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+        			//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
         			scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
               scGPNumericEdit_kapacita->Font->Color=clBlack;
 							//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
@@ -861,14 +877,14 @@ void TForm_parametry::input_RD()
     						//DÉLKA DOPRAVNÍKU
 								DD=RD*Form1->d.v.PP.TT*K;
 								if(DDunit==MM)DD*=1000.0;
-								scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+								//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
 								scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 								if(DDunit==MM)DD/=1000.0;//navrácení do pùvodního stavu kvùli dalšímu použití
 
     						//PROCESNÍ ÈAS resp. CT
 								double CT = RD/DD;
 								if(CTunit==MIN)CT/60.0;
-								scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+								//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 								scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
     					}
     					else//pokud kromì RD není nic zadané a je požadovaná další hodnota
@@ -891,8 +907,9 @@ void TForm_parametry::input_K()
 	 double K=scGPNumericEdit_kapacita->Value;//získání kapacity od uživatele
 	 if(K>0)//nutné ošetøení pro období zadávání/psaní
 	 {
+	 //ShowMessage(K);
     	 //default nastavení komponent
-    	 scGPNumericEdit_kapacita->Decimal=0;
+    	 //ROSTA//scGPNumericEdit_kapacita->Decimal=0;
 			 vypis("");
 			 scGPButton_OK->Enabled=true;
 			 scGPButton_OK->Caption="Uložit";
@@ -910,12 +927,12 @@ void TForm_parametry::input_K()
 					 CT=Form1->d.v.PP.TT*K;
 					 if(CTunit==MIN)
 					 {
-							scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
+							//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
 							scGPNumericEdit_CT->Value=CT/60.0;//plnìní patøièného políèka
 					 }
 					 else
 					 {
-							scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+							//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 							scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
 					 }
 			 }
@@ -927,7 +944,7 @@ void TForm_parametry::input_K()
        //DÉLKA DOPRAVNÍKU
 			 double DD = K*dV+(K-p)*m;//ošetøeno i pro stav stejného poètu vozíku a mezer;
 			 if(DDunit==MM)DD*=1000.0;
-			 scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+			 //ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
 			 scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 			 if(DDunit==MM)DD/=1000.0;//navrácení do pùvodního stavu kvùli dalšímu použití
 
@@ -936,7 +953,7 @@ void TForm_parametry::input_K()
 			 {
 					double RD=DD/CT;
 					if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
-					scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+					//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 					scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
 			 }
 	 }
@@ -1055,9 +1072,9 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 		RD=scGPNumericEdit_RD->Value*60.0;
 	}
 	//plnìní + poèet desetinných míst
-	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_CT->Value=CT;
-	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_RD->Value=RD;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
@@ -1082,7 +1099,7 @@ void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 		rHTMLLabel_CT->Caption="Technologický èas <font color=#2b579a>[min]</font>";
 	}
 	//plnìní + poèet desetinných míst
-	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_CT->Value=CT;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
@@ -1111,7 +1128,7 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 	}
   RD=RDunitD_funkce(RD);
 	//plnìní + poèet desetinných míst
-	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_RD->Value=RD;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
@@ -1145,7 +1162,7 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		m_mm=M;scGPButton_metry_milimetry->Caption="vše na mm";//samotné tlaèítko,ukazuje název opaènì
 		//DD
 		DDunit=M;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[m]</font>";
+		rHTMLLabel_delka_dopravniku->Caption="Délka kabiny <font color=#2b579a>[m]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value/1000.0;
 		//DM
 		DMunit=M;
@@ -1162,7 +1179,7 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		m_mm=MM;scGPButton_metry_milimetry->Caption="vše na m";//samotné tlaèítko,ukazuje název opaènì
 		//DD
 		DDunit=MM;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[mm]</font>";
+		rHTMLLabel_delka_dopravniku->Caption="Délka kabiny <font color=#2b579a>[mm]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value*1000.0;
 		//DM
 		DMunit=MM;
@@ -1175,11 +1192,11 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		RD=scGPNumericEdit_RD->Value*1000.0;
 	}
 	//plnìní + poèet desetinných míst
-	scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_delka_dopravniku->Value=DD;
-	scGPNumericEdit_mezera->Decimal=Form1->ms.get_count_decimal(DM);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_mezera->Decimal=Form1->ms.get_count_decimal(DM);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_mezera->Value=DM;
-	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_RD->Value=RD;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
@@ -1192,17 +1209,17 @@ void __fastcall TForm_parametry::rHTMLLabel_delka_dopravnikuClick(TObject *Sende
 	if(DDunit==MM)//pokud je v milimetrech, tak pøepne na metry
 	{
 		DDunit=M;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[m]</font>";
+		rHTMLLabel_delka_dopravniku->Caption="Délka kabiny <font color=#2b579a>[m]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value/1000.0;
 	}
 	else//pokud je metrech, tak pøepne na milimetry
 	{
 		DDunit=MM;
-		rHTMLLabel_delka_dopravniku->Caption="Délka dopravníku <font color=#2b579a>[mm]</font>";
+		rHTMLLabel_delka_dopravniku->Caption="Délka kabiny <font color=#2b579a>[mm]</font>";
 		DD=scGPNumericEdit_delka_dopravniku->Value*1000.0;
 	}
 	//plnìní + poèet desetinných míst
-	scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_delka_dopravniku->Value=DD;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
@@ -1227,7 +1244,7 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
 		DM=scGPNumericEdit_mezera->Value*1000.0;
 	}
 	//plnìní + poèet desetinných míst
-	scGPNumericEdit_mezera->Decimal=Form1->ms.get_count_decimal(DM);//nastaví zobrazení poètu desetinných míst
+	//ROSTA//scGPNumericEdit_mezera->Decimal=Form1->ms.get_count_decimal(DM);//nastaví zobrazení poètu desetinných míst
 	scGPNumericEdit_mezera->Value=DM;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
@@ -1327,11 +1344,11 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 	scComboBox_rezim->ItemIndex=Form1->copyObjekt->rezim;
 	if(Form1->copyObjekt->pohon==NULL)scComboBox_pohon->ItemIndex=0;
 	else scComboBox_pohon->ItemIndex=Form1->copyObjekt->pohon->n-1;
-	scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->CT/jednotky_cas);//nastaví zobrazení poètu desetinných míst;
+	//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->CT/jednotky_cas);//nastaví zobrazení poètu desetinných míst;
 	scGPNumericEdit_CT->Value=Form1->copyObjekt->CT/jednotky_cas;
-	scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst;
+	//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst;
 	scGPNumericEdit_RD->Value=Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost;
-	scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst;
+	//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst;
 	scGPNumericEdit_delka_dopravniku->Value=Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost;
 	scComboBox_cekani_palec->ItemIndex=Form1->copyObjekt->cekat_na_palce;
 	scGPNumericEdit_kapacita->Value=Form1->copyObjekt->kapacita;
@@ -1429,4 +1446,5 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+
 

@@ -58,7 +58,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_rotace;
 	TscGPComboBox *scComboBox_rotace;
 	TrHTMLLabel *rHTMLLabel_mezera;
-	TscGPNumericEdit *scGPNumericEdit_mezera;
 	TscGPCheckBox *scGPCheckBox_pocet_mezer;
 	TscGPButton *scGPButton_metry_milimetry;
 	TscGPGlyphButton *scGPGlyphButton_copy;
@@ -66,6 +65,8 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_CT;
 	TscButton *scButton_zamek_DD;
 	TscButton *scButton_zamek_RD;
+	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPNumericEdit *scGPNumericEdit_mezera;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
