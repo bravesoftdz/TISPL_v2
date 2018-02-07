@@ -539,13 +539,13 @@ void __fastcall TForm_parametry::scGPEdit_nameChange(TObject *Sender)
 //pøi zmìnách EDITù
 void __fastcall TForm_parametry::scGPNumericEdit_CTChange(TObject *Sender)
 {
-	if(input_state==NOTHING)//pokud není zadáváno z jiného vstupu
+	if(input_state==NOTHING && input_clicked_edit==CT_klik)//pokud není zadáváno z jiného vstupu
 	input_CT();//pøepoèet hodnot vyplývajících ze zmìny CT
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject *Sender)
 {
-	if(input_state==NOTHING)//pokud není zadáváno z jiného vstupu
+	if(input_state==NOTHING && input_clicked_edit==mezera_klik)//pokud není zadáváno z jiného vstupu
 	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 	//hlídání velikosti mezery dle rozteèe
 	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
@@ -569,7 +569,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject 
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_RDChange(TObject *Sender)
 {
-	if(input_state==NOTHING)//pokud není zadáváno z jiného vstupu
+	if(input_state==NOTHING && input_clicked_edit==RD_klik)//pokud není zadáváno z jiného vstupu
 	input_RD();//pøepoèet hodnot vyplývajících ze zmìny RD
 	//kontrola rozsahu zadaného pohonu
 	if(scComboBox_rezim->ItemIndex!=0)//mimo S&G
@@ -593,13 +593,15 @@ void __fastcall TForm_parametry::scGPNumericEdit_RDChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaChange(TObject *Sender)
 {
-	if(input_state==NOTHING)//pokud není zadáváno z jiného vstupu
+//	ShowMessage("zadavano z jineho vstupu?");
+	if(input_state==NOTHING && input_clicked_edit==C_klik)//pokud není zadáváno z jiného vstupu
+
 	input_K();//pøepoèet hodnot vyplývajících ze zmìny K
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPCheckBox_pocet_mezerClick(TObject *Sender)
 {
- if(input_state==NOTHING)
+ if(input_state==NOTHING && input_clicked_edit==mezera_klik)
  input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 }
 //---------------------------------------------------------------------------
@@ -903,6 +905,8 @@ void TForm_parametry::input_RD()
 //pøepoèet hodnot vyplývajících ze zmìny K
 void TForm_parametry::input_K()
 {
+
+   //ShowMessage("Ne - prepocitam");
 	 input_state=C;
 	 double K=scGPNumericEdit_kapacita->Value;//získání kapacity od uživatele
 	 if(K>0)//nutné ošetøení pro období zadávání/psaní
@@ -1447,4 +1451,35 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm_parametry::scGPNumericEdit_kapacitaClick(TObject *Sender)
+{
+input_clicked_edit=C_klik;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender)
+{
+input_clicked_edit=CT_klik;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPNumericEdit_RDClick(TObject *Sender)
+{
+input_clicked_edit=RD_klik;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick(TObject *Sender)
+
+{
+input_clicked_edit=DD_klik;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPNumericEdit_mezeraClick(TObject *Sender)
+{
+input_clicked_edit==mezera_klik;
+}
+//---------------------------------------------------------------------------
 

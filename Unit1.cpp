@@ -2791,6 +2791,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		}
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
 		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
+		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
 		//název
 		Form_parametry->scGPEdit_name->Text=pom->name;
 		Form_parametry->scGPEdit_shortname->Text=pom->short_name;

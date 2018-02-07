@@ -939,6 +939,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 13
     OnChange = scGPNumericEdit_CTChange
+    OnClick = scGPNumericEdit_CTClick
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_RD: TscGPNumericEdit
@@ -1023,6 +1024,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 14
     OnChange = scGPNumericEdit_RDChange
+    OnClick = scGPNumericEdit_RDClick
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rezim: TscGPComboBox
@@ -1654,6 +1656,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 4
     OnChange = scGPNumericEdit_delka_dopravnikuChange
+    OnClick = scGPNumericEdit_delka_dopravnikuClick
     OnKeyDown = FormKeyDown
   end
   object scGPEdit_shortname: TscGPEdit
@@ -1898,6 +1901,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 16
     OnChange = scGPNumericEdit_kapacitaChange
+    OnClick = scGPNumericEdit_kapacitaClick
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rotace: TscGPComboBox
@@ -2692,6 +2696,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 25
     OnChange = scGPNumericEdit_delka_dopravnikuChange
+    OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
   end
 end
