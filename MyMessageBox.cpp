@@ -29,13 +29,14 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //pøetíená metoda
-int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text)
+int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text,int width)
 {
-	 return Show(-1,-1,text,"",mbTYPE,centrovat_text);
+	 return Show(-1,-1,text,"",mbTYPE,centrovat_text,false,width);
 }
-int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit)
+int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width)
 {
 	short O=26;//vıchozí offset pro zohlednìní checkboxu
+	myMessageBox->Width=width;//vıchozí šíøka MB z implicitního parametru 366px, pokud není uivatelsky zadaná
 
 	////naplnìní daty + naformátování Label_text
 	Label_text->Width=myMessageBox->Width-8-8;//pøevzetí šíøky labelu dle šíøky formu - oba okraje

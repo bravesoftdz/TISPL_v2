@@ -184,6 +184,7 @@ object myMessageBox: TmyMessageBox
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      Visible = False
       Animation = True
       Caption = 'scGPGlyphButton1'
       CanFocused = False
