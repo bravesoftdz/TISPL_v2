@@ -1032,13 +1032,13 @@ void TForm1::S(UnicodeString Text)
 }
 //---------------------------------------------------------------------------
 //vola rychle myMessageBox
-int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit)
+int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width)
 {
-	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit);
+	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit,width);
 }
-int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text)
+int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width)
 {
-	return myMessageBox->Show(text,mbTYPE,centrovat_text);
+	return myMessageBox->Show(text,mbTYPE,centrovat_text,width);
 }
 //---------------------------------------------------------------------------
 //metoda volá kurzory aplikace
@@ -4860,7 +4860,14 @@ void __fastcall TForm1::scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender)
 //vypíše nápovědu k algoritmu čekání na palce
 void __fastcall TForm1::scGPGlyphButton_info_cekaniClick(TObject *Sender)
 {
-  //doplnit
+	MB("<b>Čekání na palce nastane</b> dle nastavení v parametrech objektu (není-li uživatelsky zakázáno):"+AnsiString("<br>")+
+	"• po odchodu z objektu v S&G režimu<br>"+
+	"• mezi kontinuálními objekty, mají-li jiný pohon<br>"+
+	"• mezi postprocesními objekty, mají-li jiný pohon<br>"+
+	"• mezi kontinuálním a postprocesním objektem, mají-li jiný pohon<br>"+
+	"• mezi postprocesním a kontinuálním objektem<br>"+
+	"• vždy, když je za objektem definovaná stopka<br>"+
+	"• vždy, když je čekání uživatelsky nařízeno",MB_OK,false,489);
 }
 //---------------------------------------------------------------------------
 
