@@ -44,7 +44,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_CT;
 	TrHTMLLabel *rHTMLLabel_RD;
 	TscGPNumericEdit *scGPNumericEdit_CT;
-	TscGPNumericEdit *scGPNumericEdit_RD;
+	TscGPNumericEdit *scGPNumericEdit_RD_2;
 	TscGPComboBox *scComboBox_rezim;
 	TscGPComboBox *scComboBox_pohon;
 	TscGPEdit *scGPEdit_name;
@@ -67,6 +67,7 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_RD;
 	TscGPGlyphButton *scGPGlyphButton1;
 	TscGPNumericEdit *scGPNumericEdit_mezera;
+	TrEditNum *scGPNumericEdit_RD;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -80,7 +81,7 @@ __published:	// IDE-managed Components
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPNumericEdit_delka_dopravnikuChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_kapacitaChange(TObject *Sender);
-	void __fastcall scGPNumericEdit_RDChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_RD_Change(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall Button_metry_milimetryClick(TObject *Sender);
 	void __fastcall scGPCheckBox_pocet_mezerClick(TObject *Sender);
@@ -96,7 +97,7 @@ __published:	// IDE-managed Components
 	void __fastcall scComboBox_pohonChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_kapacitaClick(TObject *Sender);
 	void __fastcall scGPNumericEdit_CTClick(TObject *Sender);
-	void __fastcall scGPNumericEdit_RDClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_RD_Click(TObject *Sender);
 	void __fastcall scGPNumericEdit_delka_dopravnikuClick(TObject *Sender);
 	void __fastcall scGPNumericEdit_mezeraClick(TObject *Sender);
 
