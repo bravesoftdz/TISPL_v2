@@ -4857,4 +4857,10 @@ void __fastcall TForm1::scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
+//vypíše nápovědu k algoritmu čekání na palce
+void __fastcall TForm1::scGPGlyphButton_info_cekaniClick(TObject *Sender)
+{
+  //doplnit
+}
+//---------------------------------------------------------------------------
 

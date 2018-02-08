@@ -407,6 +407,7 @@ __published:	// IDE-managed Components
           TShiftState Shift, int X, int Y, int HitTest, TMouseActivate &MouseActivate);
 	void __fastcall scSplitView_MENUOpened(TObject *Sender);
 	void __fastcall scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_info_cekaniClick(TObject *Sender);
 
 
 
