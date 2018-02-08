@@ -640,6 +640,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=false;
 	scLabel_doba_cekani->Visible=false;
+	scGPGlyphButton_info_cekani->Visible=false;
 	scGPGlyphButton_close_grafy->Visible=false;
 	scExPanel_log_header->Visible=false;
 
@@ -791,6 +792,7 @@ void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 			CheckBoxVytizenost->Checked=false;
 			CheckBoxVytizenost->Top=135;
 			scLabel_doba_cekani->Visible=true;
+			scGPGlyphButton_info_cekani->Visible=true;
 			scGPGlyphButton_close_grafy->Visible=true;
 			CheckBoxAnimovatSG->Visible=false;
 			ComboBoxODmin->Visible=false;
@@ -903,6 +905,7 @@ void __fastcall TForm1::SyntezaClick(TObject *Sender)
 
 	CheckBoxVymena_barev->Visible=false;
 	scLabel_doba_cekani->Visible=false;
+	scGPGlyphButton_info_cekani->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=true;
 	//filtrace
 	d.TP.K=0.5;//Krok po kolika minutach se bude zobrazovat
@@ -989,6 +992,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 	CheckBoxAnimovatSG->Visible=false;
 	CheckBoxVymena_barev->Visible=false;
 	scLabel_doba_cekani->Visible=false;
+	scGPGlyphButton_info_cekani->Visible=false;
 	Label_zamerovac->Visible=false;
 	ComboBoxODmin->Visible=false;
 	ComboBoxDOmin->Visible=false;
@@ -4088,6 +4092,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 		CheckBoxVymena_barev->Visible=!CheckBoxVymena_barev->Visible;
 		ComboBoxCekani->Visible=!ComboBoxCekani->Visible;
 		scLabel_doba_cekani->Visible=!scLabel_doba_cekani->Visible;
+		scGPGlyphButton_info_cekani->Visible=!scGPGlyphButton_info_cekani->Visible;
 		scGPCheckBox_pocet_voziku_dle_WIP->Visible=!scGPCheckBox_pocet_voziku_dle_WIP->Visible;
 		//pozice
 		if(d.mod_vytizenost_objektu)CheckBoxVytizenost->Top=scLabel_doba_cekani->Top;
@@ -4626,7 +4631,8 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-//    Memo2->Visible=true;
+		Memo2->Visible=true;
+		Memo2->Lines->Add(m.cekani_na_palec(0,0.5,0.5/60.0,2));
 //		Cvektory::TZakazka *zakazka=d.v.ZAKAZKY->dalsi;
 //		//načítání dat
 //		if(zakazka!=NULL)
@@ -4681,11 +4687,22 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 	REFRESH();
 	if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
 	RM();//korekce chyby oskakování pravého menu, je zajímavé, že tu musí být znovu
-	//pro uživatele kontrola, zda mají objekty přiřazené pohony
+	//pro uživatele kontrola, zda mají objekty přiřazené pohony a pohony, zda mají přiřazené rozteče
 	if(ComboBoxCekani->ItemIndex>0)
 	{
 		AnsiString T=d.v.vypsat_objekty_bez_prirazenych_pohonu();
 		if(T!="")MB("Pozor, pro objekt "+T+" nebyl přiřazen pohon. Doba čekání na palce není u těchto objektů zohledněna!");
+		T=d.v.vypis_objekty_s_pohony_bez_roztece();
+		if(T!="")
+		{
+			if(mrYes==MB("Pozor, následující pohony nemají uvedenou rozteč palců řetezu: "+T+". Doba čekání na palce není tedy u uvedených objektů zohledněna!<br><b>Chcete chybějící rozteče pohonů nyní zadat?</b>",MB_YESNO) && STATUS==NAVRH)
+			{
+				Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+				Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+				Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
+				REFRESH();
+			}
+		}
 	}
 }
 //---------------------------------------------------------------------------

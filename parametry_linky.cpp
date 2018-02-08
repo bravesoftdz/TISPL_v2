@@ -472,7 +472,7 @@ void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 			if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
 			{
 				AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(rStringGridEd_tab_dopravniky->RowCount-1,true);
-						if(mrOk==Form1->MB("Pohon je používán pro objekty: "+objekty+" opravdu má být smazán?",MB_OKCANCEL)){
+						if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být smazán?",MB_OKCANCEL)){
 
 						Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(rStringGridEd_tab_dopravniky->RowCount-1);
 						rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();

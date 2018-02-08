@@ -3318,6 +3318,8 @@ object Form1: TForm1
         ItemHeight = 20
         Align = alCustom
         Color = 10114859
+        Ctl3D = False
+        ParentCtl3D = False
         TabOrder = 0
         Text = #382#225'dn'#225
         StyleKind = scscbDefault
@@ -3506,8 +3508,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 816
-        Top = 979
+        Left = 822
+        Top = 985
         Width = 244
         Height = 31
         Align = alCustom
@@ -4212,6 +4214,82 @@ object Form1: TForm1
         UseFontColorToStyleColor = False
         Caption = 'Zobrazit/Skr'#253't vrstvy'
       end
+    end
+    object scGPGlyphButton_info_cekani: TscGPGlyphButton
+      Left = 218
+      Top = 58
+      Width = 36
+      Height = 28
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNone
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
+      Animation = True
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphTop
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.FrameNormalColor = clBtnText
+      Options.FrameHotColor = clBtnText
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = clHighlight
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 0
+      Options.FrameHotColorAlpha = 0
+      Options.FramePressedColorAlpha = 0
+      Options.FrameFocusedColorAlpha = 0
+      Options.FrameDisabledColorAlpha = 0
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 5
+      Options.ShapeStyle = scgpRoundedRect
+      Options.ArrowSize = 9
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = 16744448
+      GlyphOptions.HotColor = 16744448
+      GlyphOptions.PressedColor = clBtnText
+      GlyphOptions.FocusedColor = 16744448
+      GlyphOptions.DisabledColor = 16744448
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 150
+      GlyphOptions.Kind = scgpbgkInfo
+      GlyphOptions.Thickness = 2
+      GlyphOptions.StyleColors = True
+      TextMargin = 0
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
     end
   end
   object scGPButton_header_def_zakazek: TscGPButton
@@ -5529,7 +5607,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C0101180008050C0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118001005100510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6652,7 +6730,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010133003C04400430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010133004404440430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22114,7 +22192,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01013300B802B80218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01013300BC02BC0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

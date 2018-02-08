@@ -257,6 +257,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_header_def_zakazek;
 	TscButton *scButton_parmlinky_defzakazek;
 	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
+	TscGPGlyphButton *scGPGlyphButton_info_cekani;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);

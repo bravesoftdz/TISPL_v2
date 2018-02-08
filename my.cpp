@@ -298,17 +298,16 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 		//vrátí dobu èekání na palec v sec, rozteè je v m, rychlost dopravníku v m/s
 		double RET=0.0;
 		double MIN=0.0;double MAX=0.0; if(rychlost_dopravniku!=0)MAX=roztec_palcu/rychlost_dopravniku;
-		double ZOI=0.001;if(MAX==0)ZOI=0.0;//korekce pro zajištìní zprava otevøeného intervalu (nemùže být uzavøený, protože to není reálné, dochází v takové situaci ještì k uchopení pùvodním palcem), øád kokekce zvolen neexaktnì, pouze dle úvahy, pokud není MAX hodnota (napøíklad z dùvodu 0 hodnoty rozteèe) kladné èíslo vìtší než nula, tak se korekce neuvažuje, aby se nešlo do mínusu s výpoètem (tedy èekáním)
+		double ZOI=0.1;if(MAX==0)ZOI=0.0;//korekce pro zajištìní zprava otevøeného intervalu (nemùže být uzavøený, protože to není reálné, dochází v takové situaci ještì k uchopení pùvodním palcem), øád kokekce zvolen neexaktnì, pouze dle úvahy, pokud není MAX hodnota (napøíklad z dùvodu 0 hodnoty rozteèe) kladné èíslo vìtší než nula, tak se korekce neuvažuje, aby se nešlo do mínusu s výpoètem (tedy èekáním)
 		switch(funkce)
 		{
 				case 0:RET=MIN;break;//nic resp minimum=0, neèeká na palec vùbec buï vyšel pøesnì nebo se nezohledòuje
 				case 1:RET=(MAX-ZOI+MIN)/2;break;//støední hodnota (v tomto pøípadì i prùmìr) dle normálního rozdìlení pro hodnoty <0,max)
-				case 2:RET=fmod(rand(),MAX*1000)/1000.0+MIN;break;//náhodná hodnota v rozmezí <0,max) èekání na palce, zde ZOI není nutné zohledòovat, protože již vyplývá z použitého algoritmu
+				case 2:RET=fmod(rand(),MAX*10)/10.0+MIN;break;//náhodná hodnota v rozmezí <0,max) èekání na palce, zde ZOI není nutné zohledòovat, protože již vyplývá z použitého algoritmu
 				case 3:RET=MAX-ZOI;break;//max.možná hodnota èekání na pale
 				case 4:/*RET=tady bude exaktní výpoèet pro geometrii*/break;
 		}
 		return RET;
-
 }
 /////////////////////////////////////////////////////////////////////////////
 //metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0

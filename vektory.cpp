@@ -417,7 +417,7 @@ unsigned int Cvektory::pocet_objektu_SG()
 }
 //---------------------------------------------------------------------------
 //vrátí AnsiString řetezec shortname či name (dle prvního parametru, který je implicitně na shortname=true) seznam objektů, které nemají přiřazený pohon, jednotlivé názvy objektů oddělí dle paramaterů seperátor, implicitně ", " tj. čárka a mezera, v případě že žádný objekt nenajde, vrátí prázdný řetězec
-AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiString seperator)
+AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiString separator)
 {
 	AnsiString T="";
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
@@ -425,13 +425,32 @@ AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiSt
 	{
 		if(O->pohon==NULL)//pohon nepřiřazen
 		{
-			if(shortname)T+=O->short_name;//vypsat krátký název
-			else T+=O->name;//vypsat celý název
-			if(O->n!=OBJEKTY->predchozi->n)T+=seperator;//pokud se nejedná o poslední prvek přiřadí i separátor
+			if(shortname)T+="<b>"+O->short_name+"</b>";//vypsat krátký název
+			else T+="<b>"+O->name+"</b>";//vypsat celý název
+			T+=separator;
 		}
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;
+	if(T!="")T=T.SubString(1,T.Length()-separator.Length());//ještě odebere poslední seperator
+	return T;
+}
+//---------------------------------------------------------------------------
+//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů, které mají přiřazený pohon bez uvedené rozteče jednotlivé názvy objektů oddělí  ", " tj. čárkou a mezerou, v případě že žádný objekt nenajde, vrátí prázdný řetězec, pozor pohony bez přiřazení k objektům nevypisuje
+AnsiString Cvektory::vypis_objekty_s_pohony_bez_roztece(bool shortname)
+{
+	AnsiString T="";
+	TPohon *P=POHONY->dalsi;//přeskočí hlavičku
+	while (P!=NULL)
+	{
+		if(P->roztec==0)//pohon neobsahuje uvedenou rozteč
+		{
+			AnsiString To=vypis_objekty_vyuzivajici_pohon(P->n,shortname);
+			if(To!="")T+="<b>"+P->name+"</b> (přiřazen objektům: "+To+")";//pouze pokud je pohon přiřazen
+		}
+		P=P->dalsi;//posun na další prvek
+	}
+	P=NULL;delete P;
 	return T;
 }
 //---------------------------------------------------------------------------
@@ -725,7 +744,7 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 		}
 		O=O->dalsi;
 	}
-	if(nalezen=="")nalezen=nalezen.SubString(1,nalezen.Length()-2);//ještě odebere poslední čárku a mezeru
+	if(nalezen!="")nalezen=nalezen.SubString(1,nalezen.Length()-2);//ještě odebere poslední čárku a mezeru
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
