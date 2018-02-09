@@ -471,9 +471,11 @@ void TForm1::startUP()
 	//////automatický BACKUP
 	//volá obnovu dat ze zálohy, pokud poslední ukončení programu neproběhlo standardně
 	AnsiString status=readINI("Konec","status");
-
 	if(status=="KO")//pokud došlo k pádu programu
 	{
+		//v případě spuštění aplikace po pádu se již znovu nevolá form parametry linky
+		volat_parametry_linky=false;
+
 		//zavře úvodní dialog
 		zavrit_uvod();
 
@@ -492,7 +494,7 @@ void TForm1::startUP()
 		if(ftWrite.dwHighDateTime>=ftWrite_bac.dwHighDateTime)MB("Aplikace nebyla řádně ukončena. Byl obnoven poslední Vámi uložený soubor.");//pokud je uložený soubor mladší nebo stejně starý jako jeho BAC
 		else
 		{
-			if(ID_YES==MB("Aplikace nebyla řádně ukončena. Chcete ze zálohy obnovit poslední neuložený soubor?",MB_YESNO))
+			if(mrYes==MB("Aplikace nebyla řádně ukončena. Chcete ze zálohy obnovit poslední neuložený soubor?",MB_YESNO))
 			{
 				if(Otevrit_soubor(FileName+".bac_"+get_user_name()+"_"+get_computer_name())==1)
 				{
@@ -523,7 +525,7 @@ void TForm1::startUP()
 	//T=readINI("Nastaveni_app","status");
 	//if(T=="0" || T=="")STATUS=NAVRH;else STATUS=OVEROVANI;
 
-	//slouží po startu programu k načtení parametrů linky, nemůže být voláno v tomto okamžiku v souboru nový, protože by jinak vedlo k pádu aplikace
+	//slouží po startu programu k načtení parametrů linky, nemůže být voláno v tomto okamžiku v souboru nový, protože by jinak vedlo k pádu aplikace - pořadí vytváření formulářů, není voláno v případě startu aplikace po pádu
 	if(volat_parametry_linky)
 	{
 		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
@@ -649,6 +651,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	ComboBoxODmin->Visible=false;
 	ComboBoxDOmin->Visible=false;
 	rComboBoxKrok->Visible=false;
+	scLabel_filtrovat->Visible=false;
 	LabelRoletka->Visible=false;
 	CheckBox_pouzit_zadane_kapacity->Visible=false;
 	g.ShowGrafy(false);
@@ -661,7 +664,8 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
  //	scGPButton_header_def_zakazek->Visible=false;
  //	scGPButton_header_param_linky->Visible=false;
 	Pan_bmp->Width=0;Pan_bmp->Height=0;//při přechodu z jiného režimu smaže starou Pan_bmp
-  SB("Kliknutím na libovolné místo přidáte objekt z knihovny nebo lze upravit stávájící schéma");
+	SB("Kliknutím na libovolné místo přidáte objekt z knihovny nebo lze upravit stávájící schéma");
+
 	Invalidate();
 }
 //---------------------------------------------------------------------------
@@ -887,13 +891,13 @@ void __fastcall TForm1::SyntezaClick(TObject *Sender)
 
 	CheckBoxVytizenost->Visible=false;
 	CheckBoxAnimovatSG->Visible=true;
-	scLabel_procesy_header->Visible=true;
+	scLabel_filtrovat->Visible=true;
 	CheckBox_pouzit_zadane_kapacity->Visible=true;
 	ComboBoxDOmin->Visible=true;
 	ComboBoxODmin->Visible=true;
 	rComboBoxKrok->Visible=true;
 
-	scLabel_procesy_header->Top=scLabel_doba_cekani->Top;
+	scLabel_filtrovat->Top=scLabel_doba_cekani->Top;
 	ComboBoxODmin->Top=ComboBoxCekani->Top;
 	ComboBoxDOmin->Top=ComboBoxODmin->Top;
 	ButtonPLAY->Top=ComboBoxODmin->Top-5;

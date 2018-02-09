@@ -278,6 +278,7 @@ void Cvektory::aktualizace_objektu(short typ)
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
+		//testovací MB: ShowMessage("Vstup CT:"+AnsiString(O->CT)+" RD:"+AnsiString(O->RD)+" DD:"+AnsiString(O->delka_dopravniku)+" K:"+AnsiString(O->kapacita)+" dV:"+AnsiString(dV)+" mV:"+AnsiString(O->mV));
 		if(typ==-1)//dle zamčených a odemčených hodnot při změně TT
 		{
 			////při zamčeném CT
@@ -355,8 +356,8 @@ void Cvektory::aktualizace_objektu(short typ)
 					if(O->rezim==1)O->CT=O->delka_dopravniku/O->RD;//pro kontinual
 					else//pro PP
 					{
-						if(O->kapacita==O->mV)PP.TT*(O->delka_dopravniku+O->mezera)/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
-						else O->kapacita=PP.TT*O->delka_dopravniku/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
+						if(O->kapacita==O->mV)PP.TT*(O->delka_dopravniku+O->mezera)/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
+						else O->kapacita=PP.TT*O->delka_dopravniku/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
 					}
 				}
 			}
@@ -368,8 +369,8 @@ void Cvektory::aktualizace_objektu(short typ)
 					//K
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					if(O->kapacita==O->mV)(O->delka_dopravniku+O->mezera)/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
-					else O->kapacita=O->delka_dopravniku/(dV+O->mV);//dle toho, kolik se zohledňuje mezer
+					if(O->kapacita==O->mV)(O->delka_dopravniku+O->mezera)/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
+					else O->kapacita=O->delka_dopravniku/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
 					//CT
 					O->CT=PP.TT*O->kapacita;
 					//RD
@@ -378,8 +379,10 @@ void Cvektory::aktualizace_objektu(short typ)
 			}
 			break;
 		}
+		//testovací MB:ShowMessage("Výstup CT:"+AnsiString(O->CT)+" RD:"+AnsiString(O->RD)+" DD:"+AnsiString(O->delka_dopravniku)+" K:"+AnsiString(O->kapacita)+" dV:"+AnsiString(dV));
 		O=O->dalsi;//posun na další prvek
 	}
+	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
 //sečte délky jednotlivých objektů
