@@ -41,7 +41,7 @@ class Cvektory
 			double kapacita_dop;//doporučená, vypočítáná
 			double rotace;//rotace jigu v objektu
 			double mezera;//mezera mezi vozíky
-			short mV;//rozdíl počet mezer a vozíků
+			short mV;//rozdíl počet mezer a vozíků (většinou o jednu méně tj. 1)
 			TPohon *pohon;//ukazatel na použitý pohon
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
