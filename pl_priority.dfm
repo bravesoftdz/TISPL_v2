@@ -138,6 +138,7 @@ object Form_PL_priority: TForm_PL_priority
     DefaultColWidth = 350
     DefaultRowHeight = 30
     DefaultDrawing = False
+    FixedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15

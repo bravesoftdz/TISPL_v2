@@ -79,9 +79,9 @@ void TForm_parametry::vypis(UnicodeString text,bool RED)
 			rHTMLLabel_InfoText->Font->Color=clRed;
       //zvýraznìní položky technologický èas
 			if(text.Pos("technologický èas") && scGPNumericEdit_CT->Enabled)
-			{scGPNumericEdit_CT->Options->FrameNormalColor=hl_color;scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;}
+			{/*ROSTA-styl//scGPNumericEdit_CT->Options->FrameNormalColor=hl_color;scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;*/}
 			else
-			{scGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;}
+			{/*ROSTA-stylscGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;*/}
 		}
 		else
 		{
@@ -108,7 +108,7 @@ void TForm_parametry::vypis(UnicodeString text,bool RED)
 		scGPGlyphButton_InfoIcon->Visible=false;
 		rHTMLLabel_InfoText->Visible=false;
 		//zvýraznìní položky technologický èas
-		if(scGPNumericEdit_CT->Enabled){scGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;}
+		if(scGPNumericEdit_CT->Enabled){/*ROSTA-styl//scGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;*/}
 		//Form_parametry->Height-=(40+19);
 	}
 }
@@ -290,7 +290,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
-			scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect;
+		 /*ROSTA-styl//	scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect; */
 			rHTMLLabel_pohon->Visible=true;scComboBox_pohon->Visible=true;scComboBox_pohon->Enabled=true;
 			scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameWidth=1;
 			//ty co jsou rozdílné
@@ -314,17 +314,17 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
-			scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect;
+		 /*ROSTA-styl//	scGPNumericEdit_CT->Options->ShapeStyle=scgpessRect;*/
 			rHTMLLabel_CT->Visible=true;scGPNumericEdit_CT->Enabled=true;scGPNumericEdit_CT->Visible=true;
-			scGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;
+			/*ROSTA-styl//scGPNumericEdit_CT->Options->FrameNormalColor=clGray;scGPNumericEdit_CT->Options->FrameWidth=1;*/
 			if(scComboBox_rezim->ItemIndex==1)scButton_zamek_CT->Visible=true;else scButton_zamek_CT->Visible=false;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:scGPNumericEdit_CT->Options->FrameNormalColor=hl_color;scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;break;
+				case HIGHLIGHT:/*ROSTA-styl//scGPNumericEdit_CT->Options->FrameNormalColor=hl_color;scGPNumericEdit_CT->Options->FrameWidth=hlFrameWidth;*/break;
 				case ENABLED:	/*scButton_zamek_CT->ImageIndex=38;CT_zamek=UNLOCKED;*/break;
 				case DISABLED:scGPNumericEdit_CT->Enabled=false;/*scButton_zamek_CT->ImageIndex=37;CT_zamek=LOCKED;*/break;
-				case READONLY:scGPNumericEdit_CT->Options->ShapeStyle=scgpessNone;scButton_zamek_CT->Visible=false;scGPNumericEdit_CT->Enabled=false;break;
+				case READONLY:/*ROSTA-styl//scGPNumericEdit_CT->Options->ShapeStyle=scgpessNone;*/scButton_zamek_CT->Visible=false;scGPNumericEdit_CT->Enabled=false;break;
 				case HIDE:		rHTMLLabel_CT->Visible=false;scGPNumericEdit_CT->Visible=false;scButton_zamek_CT->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
@@ -339,17 +339,17 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
-			scGPNumericEdit_RD->Options->ShapeStyle=scgpessRect;
+			/*ROSTA-styl//scGPNumericEdit_RD->Options->ShapeStyle=scgpessRect;*/
 			rHTMLLabel_RD->Visible=true;scGPNumericEdit_RD->Visible=true;scGPNumericEdit_RD->Enabled=true;
-			scGPNumericEdit_RD->Options->FrameNormalColor=clGray;scGPNumericEdit_RD->Options->FrameWidth=1;
+			/*ROSTA-styl//scGPNumericEdit_RD->Options->FrameNormalColor=clGray;scGPNumericEdit_RD->Options->FrameWidth=1;*/
 			if(scComboBox_rezim->ItemIndex==1)scButton_zamek_RD->Visible=true;else scButton_zamek_RD->Visible=false;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-				case HIGHLIGHT:scGPNumericEdit_RD->Options->FrameNormalColor=hl_color;scGPNumericEdit_RD->Options->FrameWidth=hlFrameWidth;
+				case HIGHLIGHT:/*ROSTA-styl//scGPNumericEdit_RD->Options->FrameNormalColor=hl_color;scGPNumericEdit_RD->Options->FrameWidth=hlFrameWidth;*/
 				case ENABLED:	/*scButton_zamek_RD->ImageIndex=38;RD_zamek=UNLOCKED;*/break;
 				case DISABLED:/*scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->ImageIndex=37;RD_zamek=UNLOCKED;*/break;
-				case READONLY:scGPNumericEdit_RD->Options->ShapeStyle=scgpessNone;scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->Visible=false;break;
+				case READONLY:/*ROSTA-styl//scGPNumericEdit_RD->Options->ShapeStyle=scgpessNone;*/scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->Visible=false;break;
 				case HIDE:		rHTMLLabel_RD->Visible=false;scGPNumericEdit_RD->Visible=false;scButton_zamek_RD->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
@@ -567,7 +567,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject 
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scGPNumericEdit_RDChange(TObject *Sender)
+void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender)
 {
 	if(input_state==NOTHING && input_clicked_edit==RD_klik)//pokud není zadáváno z jiného vstupu
 	input_RD();//pøepoèet hodnot vyplývajících ze zmìny RD
@@ -831,6 +831,8 @@ void TForm_parametry::input_RD()
 						//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 						scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 						scGPNumericEdit_kapacita->Font->Color=clBlack;
+
+						Memo1->Lines->Add(AnsiString(RD)+" "+DD+" "+Form1->d.v.PP.TT);
 						//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 						if(Form1->ms.get_count_decimal(K)>0)
 						{
@@ -846,6 +848,7 @@ void TForm_parametry::input_RD()
 						if(CTunit==MIN)CT/60.0;
 						//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 						scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
+							//Memo1->Lines->Add(K);
     			}
     			else
 					{
@@ -1464,7 +1467,7 @@ input_clicked_edit=CT_klik;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit_RDClick(TObject *Sender)
+void __fastcall TForm_parametry::scGPNumericEdit_RD_Click(TObject *Sender)
 {
 input_clicked_edit=RD_klik;
 }
