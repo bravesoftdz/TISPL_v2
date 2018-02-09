@@ -942,9 +942,9 @@ object Form_parametry: TForm_parametry
     OnClick = scGPNumericEdit_CTClick
     OnKeyDown = FormKeyDown
   end
-  object scGPNumericEdit_RD_2: TscGPNumericEdit
-    Left = 56
-    Top = 220
+  object scGPNumericEdit_RD: TscGPNumericEdit
+    Left = 232
+    Top = 210
     Width = 108
     Height = 29
     Options.NormalColor = clWhite
@@ -1023,9 +1023,8 @@ object Form_parametry: TForm_parametry
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 14
-    Visible = False
-    OnChange = scGPNumericEdit_RD_Change
-    OnClick = scGPNumericEdit_RD_Click
+    OnChange = scGPNumericEdit_RDChange
+    OnClick = scGPNumericEdit_RDClick
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rezim: TscGPComboBox
@@ -2699,22 +2698,5 @@ object Form_parametry: TForm_parametry
     OnChange = scGPNumericEdit_delka_dopravnikuChange
     OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
-  end
-  object scGPNumericEdit_RD: TrEditNum
-    Left = 232
-    Top = 216
-    Width = 108
-    Height = 29
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 26
-    OnChange = scGPNumericEdit_RD_Change
-    OnClick = scGPNumericEdit_RD_Click
-    Style = enFloat
   end
 end

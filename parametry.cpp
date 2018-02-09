@@ -56,11 +56,11 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 	//nastavení defaultních hodnot
 	if(scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
 	{
-		scGPNumericEdit_CT->Value=Form1->d.v.PP.TT/(1+59*CTunit);//d.v.ZAKAZKY->dalsi->TT;
+		scGPNumericEdit_CT->Value=Form1->d.v.PP.TT/(1+59*CTunit);//již nepoužíváme, protože se u první zakázky uvažuje globální TT,d.v.ZAKAZKY->dalsi->TT;
 		scGPNumericEdit_kapacita->Value=1;
 	}
 
-	input_state=NOTHING;//nutnost
+	input_state=NOTHING;//nutnost!!!
 	kapacitaSG=1;//není podnìt k rozkládání na více objektù
 	scGPEdit_name->SetFocus();//nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
 	scGPEdit_name->SelectAll();//oznaèí cele pro editace
@@ -339,17 +339,17 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
-		 //ROSTA-editbox//	scGPNumericEdit_RD->Options->ShapeStyle=scgpessRect;
+			scGPNumericEdit_RD->Options->ShapeStyle=scgpessRect;
 			rHTMLLabel_RD->Visible=true;scGPNumericEdit_RD->Visible=true;scGPNumericEdit_RD->Enabled=true;
-			//ROSTA-editbox//	scGPNumericEdit_RD->Options->FrameNormalColor=clGray;scGPNumericEdit_RD->Options->FrameWidth=1;
+			scGPNumericEdit_RD->Options->FrameNormalColor=clGray;scGPNumericEdit_RD->Options->FrameWidth=1;
 			if(scComboBox_rezim->ItemIndex==1)scButton_zamek_RD->Visible=true;else scButton_zamek_RD->Visible=false;
 			//ty co jsou rozdílné
 			switch (S)
 			{
-			 //	case HIGHLIGHT:scGPNumericEdit_RD->Options->FrameNormalColor=hl_color;scGPNumericEdit_RD->Options->FrameWidth=hlFrameWidth;
+				case HIGHLIGHT:scGPNumericEdit_RD->Options->FrameNormalColor=hl_color;scGPNumericEdit_RD->Options->FrameWidth=hlFrameWidth;
 				case ENABLED:	/*scButton_zamek_RD->ImageIndex=38;RD_zamek=UNLOCKED;*/break;
 				case DISABLED:/*scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->ImageIndex=37;RD_zamek=UNLOCKED;*/break;
-			 	case READONLY:/*scGPNumericEdit_RD->Options->ShapeStyle=scgpessNone;*/scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->Visible=false;break;
+				case READONLY:scGPNumericEdit_RD->Options->ShapeStyle=scgpessNone;scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->Visible=false;break;
 				case HIDE:		rHTMLLabel_RD->Visible=false;scGPNumericEdit_RD->Visible=false;scButton_zamek_RD->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
@@ -567,12 +567,11 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject 
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender)
+void __fastcall TForm_parametry::scGPNumericEdit_RDChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==RD_klik){//pokud není zadáváno z jiného vstupu
+	if(input_state==NOTHING && input_clicked_edit==RD_klik)//pokud není zadáváno z jiného vstupu
 	input_RD();//pøepoèet hodnot vyplývajících ze zmìny RD
 	//kontrola rozsahu zadaného pohonu
-	}
 	if(scComboBox_rezim->ItemIndex!=0)//mimo S&G
 	{
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
@@ -1465,7 +1464,7 @@ input_clicked_edit=CT_klik;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit_RD_Click(TObject *Sender)
+void __fastcall TForm_parametry::scGPNumericEdit_RDClick(TObject *Sender)
 {
 input_clicked_edit=RD_klik;
 }
