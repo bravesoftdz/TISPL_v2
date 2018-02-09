@@ -4690,8 +4690,30 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 	//pro uživatele kontrola, zda mají objekty přiřazené pohony a pohony, zda mají přiřazené rozteče
 	if(ComboBoxCekani->ItemIndex>0)
 	{
+		//kontrola přiřazení pohonů + nabídky na nápravu (pouze ve statusu NAVRH)
 		AnsiString T=d.v.vypsat_objekty_bez_prirazenych_pohonu();
-		if(T!="")MB("Pozor, pro objekt "+T+" nebyl přiřazen pohon. Doba čekání na palce není u těchto objektů zohledněna!");
+		if(T!="")
+		{
+			if(mrYes==MB("Pozor, pro objekt "+T+" nebyl přiřazen pohon. Doba čekání na palce není u těchto objektů zohledněna!<br><b>Chcete pohony objektům přiřadit nyní?</b>",MB_YESNO) && STATUS==NAVRH)
+			{
+				Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+				while(O!=NULL)
+				{
+					if(O->pohon==NULL)
+					{
+						MessageBeep(0);
+						pom=O;
+						if(Form_parametry->ClientHeight==646){int H=366;if(O->rezim==1)H=526;if(O->rezim==1)H=486;Form_parametry->ClientHeight=H;}//pokud se jedná o první spuštění, protože jinak je neznámá výška formu
+						akt_souradnice_kurzoru_PX.x=Form1->ClientWidth/2-Form_parametry->ClientWidth/2-10;
+						akt_souradnice_kurzoru_PX.y=Form1->ClientHeight/2-Form_parametry->ClientHeight/2-10;
+						Nastavitparametry1Click(this);//volá formulář parametry objektů pro přiřazení pohonu ke konkrétnímu objektu
+					}
+					O=O->dalsi;
+				}
+				O=NULL;delete O;
+			}
+		}
+		//kontrola přiřazení rozteče + nabídka na nápravu (pouze ve statusu NAVRH)
 		T=d.v.vypis_objekty_s_pohony_bez_roztece();
 		if(T!="")
 		{

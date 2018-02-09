@@ -56,11 +56,11 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 	//nastavení defaultních hodnot
 	if(scGPNumericEdit_CT->Value==0)//if(d.v.ZAKAZKY->dalsi!=NULL)//pokud existuje první zakázka
 	{
-		scGPNumericEdit_CT->Value=Form1->d.v.PP.TT/(1+59*CTunit);//d.v.ZAKAZKY->dalsi->TT;
+		scGPNumericEdit_CT->Value=Form1->d.v.PP.TT/(1+59*CTunit);//ji nepouíváme, protoe se u první zakázky uvauje globální TT,d.v.ZAKAZKY->dalsi->TT;
 		scGPNumericEdit_kapacita->Value=1;
 	}
 
-	input_state=NOTHING;//nutnost
+	input_state=NOTHING;//nutnost!!!
 	kapacitaSG=1;//není podnìt k rozkládání na více objektù
 	scGPEdit_name->SetFocus();//nastaví vıchozí focus, kde se pøedpokládá vıchozí nastavování
 	scGPEdit_name->SelectAll();//oznaèí cele pro editace
