@@ -306,7 +306,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 	 //		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Individuální nastavení";
 			//meni se
 			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Technologický èas, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka pohonu, Rychlost pohonu";
+			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka kabiny, Rychlost pohonu";
 	 //		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Individuální nastavení";
 
 			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
@@ -337,11 +337,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 						 //zustava
 			Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Technologický èas";
 			Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Kapacita, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Délka pohonu";
+			Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Délka kabiny";
 		//	Form_PL_priority->rStringGridEd_tab->Cells[0][4]="Individuální nastavení";
 				 //meni se
-			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Délka pohonu, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Délka pohonu, Technologický èas";
+			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Délka kabiny, Rychlost pohonu";
+			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Délka kabiny, Technologický èas";
 			Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Kapacita, Technologický èas, Rychlost pohonu";
 		//	Form_PL_priority->rStringGridEd_tab->Cells[1][4]="Individuální nastavení";
 
