@@ -812,6 +812,7 @@ void TForm_parametry::input_RD()
 					scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
 					if(DDunit==MM)DD/=1000.0;//vrácení do pùvodního stavu kvùli dalšímu použit
 
+
     			//PROCESNÍ ÈAS resp. CT
 					double CT = RD/DD;
 					if(CTunit==MIN)CT/60.0;
