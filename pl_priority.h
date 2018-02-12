@@ -41,6 +41,8 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tabKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rStringGridEd_tabMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
 
 private:	// User declarations
 public:		// User declarations

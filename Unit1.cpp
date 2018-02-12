@@ -4897,3 +4897,4 @@ void __fastcall TForm1::scGPGlyphButton_info_cekaniClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+

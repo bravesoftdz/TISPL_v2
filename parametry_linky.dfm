@@ -3,7 +3,7 @@ object Form_parametry_linky: TForm_parametry_linky
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
-  ClientHeight = 527
+  ClientHeight = 537
   ClientWidth = 970
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
@@ -361,7 +361,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_save: TscGPButton
     Left = 202
-    Top = 484
+    Top = 491
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -453,7 +453,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_storno: TscGPButton
     Left = 340
-    Top = 484
+    Top = 491
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET

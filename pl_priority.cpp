@@ -32,11 +32,13 @@ void __fastcall TForm_PL_priority::FormShow(TObject *Sender)
 	// Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 	// Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 
-	 Left=Form_parametry_linky->Left;
-	 Top=Form_parametry_linky->Top;
-	 Width=Form_parametry_linky->Width;
+	 //Left=Form_parametry_linky->Left;
+	 //Top=Form_parametry_linky->Top;
+	 //Width=Form_parametry_linky->Width;
 
-
+	 //zobrazí form uprostøed "mateøského" formu Form_parametry_linky a to i kdyby došlo k posunu formu
+	 Form_PL_priority->Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Form_PL_priority->Width/2;
+	 Form_PL_priority->Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_PL_priority->Height/2;
 }
 //---------------------------------------------------------------------------
 
@@ -132,6 +134,13 @@ void __fastcall TForm_PL_priority::KonecClick(TObject *Sender)
 		 Form_PL_priority->VisibleChanging();//skryje form, stejné jako visible=false
 }
 //---------------------------------------------------------------------------
-
-
+//dle kliknutí na øádek oznaèí combo v rStringGridEd
+void __fastcall TForm_PL_priority::rStringGridEd_tabMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+if (rStringGridEd_tab->Row==1) scGPRadioButton1->Checked=true;
+if (rStringGridEd_tab->Row==2) scGPRadioButton2->Checked=true;
+if (rStringGridEd_tab->Row==3) scGPRadioButton3->Checked=true;
+}
+//---------------------------------------------------------------------------
 

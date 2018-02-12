@@ -3,7 +3,7 @@ object Form_PL_priority: TForm_PL_priority
   Top = 0
   BorderStyle = bsNone
   Caption = 'Form_PL_priority'
-  ClientHeight = 338
+  ClientHeight = 310
   ClientWidth = 776
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -57,7 +57,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -132,22 +132,28 @@ object Form_PL_priority: TForm_PL_priority
   object rStringGridEd_tab: TrStringGridEd
     Left = 48
     Top = 122
-    Width = 705
-    Height = 159
+    Width = 703
+    Height = 125
     ColCount = 2
+    Ctl3D = False
     DefaultColWidth = 350
     DefaultRowHeight = 30
     DefaultDrawing = False
     FixedColor = clWhite
+    FixedCols = 0
+    RowCount = 4
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
+    GradientEndColor = clWhite
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing]
+    ParentCtl3D = False
     ParentFont = False
     TabOrder = 2
     OnKeyDown = rStringGridEd_tabKeyDown
+    OnMouseDown = rStringGridEd_tabMouseDown
     Columns = <
       item
         Alignment = taCenter
@@ -188,7 +194,6 @@ object Form_PL_priority: TForm_PL_priority
       30
       30
       30
-      30
       30)
   end
   object scGPRadioButton2: TscGPRadioButton
@@ -214,7 +219,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -309,7 +314,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
@@ -524,8 +529,8 @@ object Form_PL_priority: TForm_PL_priority
     end
   end
   object Button_save: TscGPButton
-    Left = 222
-    Top = 295
+    Left = 230
+    Top = 263
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -615,8 +620,8 @@ object Form_PL_priority: TForm_PL_priority
     AllowAllUp = False
   end
   object Button_storno: TscGPButton
-    Left = 360
-    Top = 295
+    Left = 368
+    Top = 263
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -729,7 +734,7 @@ object Form_PL_priority: TForm_PL_priority
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
