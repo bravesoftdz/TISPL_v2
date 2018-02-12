@@ -828,7 +828,7 @@ void TForm_parametry::input_RD()
     			if(DD!=0)//pokud je známá délka dopravníku
 					{
     				//KAPACITA
-						K=RD/DD/Form1->d.v.PP.TT;
+						K=DD/RD/Form1->d.v.PP.TT;
 						//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinnıch míst
 						scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 						scGPNumericEdit_kapacita->Font->Color=clBlack;
@@ -845,7 +845,7 @@ void TForm_parametry::input_RD()
 						}
 
     				//PROCESNÍ ÈAS resp. CT
-						double CT = RD/DD;
+						double CT = DD/RD;
 						if(CTunit==MIN)CT/60.0;
 						//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinnıch míst
 						scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
