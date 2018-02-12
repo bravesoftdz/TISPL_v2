@@ -247,7 +247,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_close_legenda_casove_osy;
 	TButton *Button13;
 	TscGPGlyphButton *scGPButton_generuj;
-	TscLabel *scLabel_procesy_header;
+	TscLabel *scLabel_filtrovat;
 	TscLabel *scLabel_doba_cekani;
 	TscGPCheckBox *CheckBoxAnimovatSG;
 	TscGPCheckBox *CheckBox_pouzit_zadane_kapacity;
