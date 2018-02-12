@@ -517,10 +517,10 @@ void TForm1::startUP()
 	writeINI("Konec","status","KO");
 
 	//načte dílčí nastavení aplikace
-	AnsiString T=readINI("Nastaveni_app","ortogonalizace");
-	if(T=="0" || T=="")ortogonalizace_stav=false;else ortogonalizace_stav=true;
+	AnsiString T=readINI("Nastaveni_app","ortogonalizace"); //o_stav musí být až na druhém místě po scGPCheckbox
+	if(T=="0" || T==""){scGPCheckBox_ortogon->Checked=false;ortogonalizace_stav=false;}else{scGPCheckBox_ortogon->Checked=true;ortogonalizace_stav=true;}
 	T=readINI("Nastaveni_app","prichytavat");
-	if(T=="0" || T=="")prichytavat_k_mrizce=0;else prichytavat_k_mrizce=ms.MyToDouble(T);
+	if(T=="0" || T==""){prichytavat_k_mrizce=0;}else{prichytavat_k_mrizce=ms.MyToDouble(T);}
 	//zatím nepoužíváme, bude spíše souviset přímo se souborem, v případě použití nutno vyhodit implicitní volbu návrhář v sobuor novy
 	//T=readINI("Nastaveni_app","status");
 	//if(T=="0" || T=="")STATUS=NAVRH;else STATUS=OVEROVANI;
@@ -1010,7 +1010,7 @@ void __fastcall TForm1::simulace1Click(TObject *Sender)
 //skryje či zobrazí mřížku
 void __fastcall TForm1::scGPSwitch_gridChangeState(TObject *Sender)
 {
-  scSplitView_MENU->Opened=false;
+	scSplitView_MENU->Opened=false;
 	grid=!grid;
 	if(!grid)SB("mřížka skryta",5);
 	else akutalizace_stavu_prichytavani_vSB();
@@ -1529,8 +1529,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
 			SB(UnicodeString((X+d.PosunT.x)/d.PX2MIN)+" min",6);//výpis času na ose procesů dle kurzoru
 			//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
-			Label_zamerovac->Visible=false;
-			pocitadlo_doby_neaktivity=0;if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false)Timer_neaktivity->Enabled=true;//monitoruje dobu nečinosti od znovu
+			Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;//deaktivace_zamerovace();nelze
+			Timer_neaktivity->Enabled=false;
+			if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false && Form_osa_info->Showing==false)Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
 	}
 	else //výpis metrických souřadnic
 	{
@@ -1654,6 +1655,7 @@ void TForm1::onPopUP(int X, int Y)
 {
 	//výchozí skrytí všech položek, další postup je založen na postupném odkrývání a zvětšování panelu UP nebo DOWN
 	close_all_items_popUPmenu();
+  PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
 	//dle statusu Architek x Klient resp. Návrh x Ověrování
 	AnsiString N="Nastavit";if(STATUS==OVEROVANI)N="Zobrazit";
 	//dle modu zobrazí položky, pozor záleží zvláštně!!! na pořadí položek
@@ -2688,8 +2690,6 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 			break;
 	}
 
-
-
 	Form_osa_info->rHTMLLabel_nazev_vypis->Caption=proces_pom->segment_cesty->objekt->name;
 	Form_osa_info->rHTMLLabel_ct_vypis->Caption=proces_pom->segment_cesty->CT;
 	Form_osa_info->rHTMLLabel_cislo_voziku_vypis->Caption=proces_pom->n_v_zakazce;
@@ -2699,19 +2699,20 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 	Form_osa_info->rHTMLLabel_rd_vypis->Caption=proces_pom->segment_cesty->RD*60.0;
 	Form_osa_info->rHTMLLabel_zkratka_vypis->Caption=proces_pom->segment_cesty->objekt->short_name;
 
-		if(proces_pom->segment_cesty->objekt->pohon){
-	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec/100.0)/(proces_pom->segment_cesty->RD*60.0);
-	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec/100.0,proces_pom->segment_cesty->RD*60.0,1);
-	Form_osa_info->rHTMLLabel_palce_vypis->Caption=proces_pom->segment_cesty->objekt->pohon->roztec;
-		 }
-		 else  {
-	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption="neznámá - nepřiřazen pohon";
-	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption;
-	Form_osa_info->rHTMLLabel_palce_vypis->Caption=Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption;
-		 }
-
- //	Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=(proces_pom->segment_cesty->objekt->pohon->roztec)/(proces_pom->segment_cesty->RD);
- //	Form_osa_info->rHTMLLabel_str_dob_cek_vypis->Caption=m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1);
+	if(proces_pom->segment_cesty->objekt->pohon)
+	{
+		Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption=AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,1))+" [sec]";
+		Form_osa_info->rHTMLLabel_nahodna_doba_cekani_vypis->Caption=AnsiString(proces_pom->Trand)+" [sec] - abs. čas na časové ose";
+		Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=AnsiString(m.cekani_na_palec(0,proces_pom->segment_cesty->objekt->pohon->roztec,proces_pom->segment_cesty->RD,3))+" [sec]";
+		Form_osa_info->rHTMLLabel_palce_vypis->Caption=AnsiString(proces_pom->segment_cesty->objekt->pohon->roztec) +" [m]";
+	}
+	else
+	{
+		Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption="neznámá - nepřiřazen pohon";
+		Form_osa_info->rHTMLLabel_nahodna_doba_cekani_vypis->Caption=Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption;
+		Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption=Form_osa_info->rHTMLLabel_str_doba_cekani_vypis->Caption;
+		Form_osa_info->rHTMLLabel_palce_vypis->Caption=Form_osa_info->rHTMLLabel_max_doba_cekani_vypis->Caption;
+	}
 
 	UnicodeString Tpoc=proces_pom->Tpoc;
 	UnicodeString Tkon=proces_pom->Tkon;
@@ -4498,15 +4499,13 @@ void __fastcall TForm1::scExPanel_vrstvyClick(TObject *Sender)
 void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 {
 	scExPanel_ostatni->RollUpState=!scExPanel_ostatni->RollUpState;
-
-	 if(MOD==CASOVAOSA){
-
-
-			CheckBoxVytizenost->Visible=true;
-			CheckBoxVymena_barev->Visible=true;
-			ComboBoxCekani->Visible=true;
+	if(MOD==CASOVAOSA)
+	{
+		CheckBoxVytizenost->Visible=true;
+		CheckBoxVymena_barev->Visible=true;
+		ComboBoxCekani->Visible=true;
+		scGPGlyphButton_info_cekani->Visible=true;
 	}
-
 }
 //---------------------------------------------------------------------------
 //vypnutí či zapnutí ortogonolazice
@@ -4687,10 +4686,6 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 		Form1->scGPButton_generuj->Visible=false;
 		ComboBoxCekani->Width=scSplitView_OPTIONS->Width-7;
 	}
-	if(ComboBoxCekani->ItemIndex==2 && d.RANDOM)d.JIZPOCITANO=false;//musí být před, zajístí přepočet dle nových hodnot
-	REFRESH();
-	if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
-	RM();//korekce chyby oskakování pravého menu, je zajímavé, že tu musí být znovu
 	//pro uživatele kontrola, zda mají objekty přiřazené pohony a pohony, zda mají přiřazené rozteče
 	if(ComboBoxCekani->ItemIndex>0)
 	{
@@ -4726,10 +4721,14 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 				Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 				Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 				Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
-				REFRESH();
 			}
 		}
 	}
+	if(ComboBoxCekani->ItemIndex==2 && d.RANDOM)d.JIZPOCITANO=false;//musí být před, zajístí přepočet dle nových hodnot
+	REFRESH();
+	if(ComboBoxCekani->ItemIndex==2)d.RANDOM=false;//musí být až za refresh
+	RM();//korekce chyby oskakování pravého menu, je zajímavé, že tu musí být znovu
+
 }
 //---------------------------------------------------------------------------
 

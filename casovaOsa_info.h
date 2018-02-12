@@ -44,8 +44,8 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_tkon;
 	TrHTMLLabel *rHTMLLabel_wt_vypis;
 	TrHTMLLabel *rHTMLLabel_mt;
-	TrHTMLLabel *rHTMLLabel_str_dob_cek_vypis;
-	TrHTMLLabel *rHTMLLabel_str_dob_cekani;
+	TrHTMLLabel *rHTMLLabel_str_doba_cekani_vypis;
+	TrHTMLLabel *rHTMLLabel_str_doba_cekani;
 	TrHTMLLabel *rHTMLLabel_max_doba_cekani_vypis;
 	TrHTMLLabel *rHTMLLabel_max_dob_cekani;
 	TrHTMLLabel *rHTMLLabel_pt_vypis;
@@ -61,6 +61,8 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_CTn;
 	TrHTMLLabel *rHTMLLabel_CT_n_vypis;
 	TscGPButton *scGPButton1;
+	TrHTMLLabel *rHTMLLabel_nahodna_doba_cekani;
+	TrHTMLLabel *rHTMLLabel_nahodna_doba_cekani_vypis;
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_osa_info(TComponent* Owner);

@@ -202,6 +202,7 @@ void __fastcall TPopUPmenu::GlyphButton_zobrazit_parametryMouseLeave(TObject *Se
 void __fastcall TPopUPmenu::scLabel_zobrazit_parametryClick(TObject *Sender)
 {
 	closing=true;
+	Item_zobrazit_parametry->FillColor=clBg;//workaround, nutnost takto vytáhnout, jinak se položka pozdìji zvýrazòuje, musí být tady
 	Close();
 	Form1->Zobrazitparametry1Click(Sender);
 }

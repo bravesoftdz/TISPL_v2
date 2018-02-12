@@ -784,8 +784,10 @@ void Cvykresli::vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik,do
 		canv->Font->Name="Arial";
 		canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 		AnsiString T="";
-		if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0)+" s";
-		else T=AnsiString(floor(v.vrat_TT_voziku(vozik)/60.0*1000000.0)/1000000.0);
+		//pro nezokrouhlený výpis čísla: if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0)+" s";
+		//pro nezokrouhlený výpis čísla: else T=AnsiString(floor(v.vrat_TT_voziku(vozik)/60.0*1000000.0)/1000000.0);
+		if(!index)T="TT: "+AnsiString(m.round2double(v.vrat_TT_voziku(vozik),2))+" s";
+		else T=AnsiString(m.round2double(v.vrat_TT_voziku(vozik)/60.0,3));
 		canv->TextOut((X1+X2)/2-canv->TextWidth(T)/2,Y0-canv->TextHeight(T),T);
 }
 //---------------------------------------------------------------------------
@@ -917,7 +919,7 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				if(RET.y>0)
 				{
 					canv->MoveTo(RET.y*PX2MIN-PosunT.x,0);
-					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-Form1->scGPPanel_mainmenu->Height+KrokY/2-3-PosunT.y/*HeightCanvasCasoveOsy*/);
+					canv->LineTo(RET.y*PX2MIN-PosunT.x,konec-Form1->scGPPanel_mainmenu->Height+KrokY-3-PosunT.y/*HeightCanvasCasoveOsy*/);
 				}
 				canv->Brush->Style=bsSolid;
 				canv->Brush->Color=ukaz->barva;

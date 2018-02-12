@@ -16,7 +16,7 @@ object Form_osa_info: TForm_osa_info
   TextHeight = 13
   object rHTMLLabel_nazev: TrHTMLLabel
     Left = 8
-    Top = 56
+    Top = 48
     Width = 179
     Height = 19
     Caption = 'N'#225'zev objektu a zkratka: '
@@ -30,7 +30,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_rezim: TrHTMLLabel
     Left = 8
-    Top = 97
+    Top = 89
     Width = 43
     Height = 19
     Caption = 'Re'#382'im'
@@ -44,7 +44,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_ct: TrHTMLLabel
     Left = 8
-    Top = 129
+    Top = 121
     Width = 44
     Height = 19
     Caption = 'CT [s]'
@@ -58,7 +58,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_nazev_vypis: TrHTMLLabel
     Left = 193
-    Top = 56
+    Top = 48
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -74,7 +74,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_rezim_vypis: TrHTMLLabel
     Left = 63
-    Top = 97
+    Top = 89
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -88,7 +88,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_ct_vypis: TrHTMLLabel
     Left = 64
-    Top = 129
+    Top = 121
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -102,7 +102,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_dop_kap: TrHTMLLabel
     Left = 176
-    Top = 97
+    Top = 89
     Width = 147
     Height = 19
     Caption = 'Doporu'#269'en'#225' kapacita'
@@ -116,7 +116,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_dop_kap_vypis: TrHTMLLabel
     Left = 330
-    Top = 97
+    Top = 89
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -130,7 +130,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_pozad_kap: TrHTMLLabel
     Left = 176
-    Top = 129
+    Top = 121
     Width = 146
     Height = 19
     Caption = 'Po'#382'adovan'#225' kapacita'
@@ -144,7 +144,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_pozad_kap_vypis: TrHTMLLabel
     Left = 330
-    Top = 129
+    Top = 121
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -158,7 +158,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_rd: TrHTMLLabel
     Left = 416
-    Top = 97
+    Top = 89
     Width = 207
     Height = 19
     Caption = 'Rychlost dopravn'#237'ku [m/min]'
@@ -172,7 +172,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_rd_vypis: TrHTMLLabel
     Left = 635
-    Top = 97
+    Top = 89
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -186,7 +186,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_palce: TrHTMLLabel
     Left = 416
-    Top = 129
+    Top = 121
     Width = 133
     Height = 19
     Caption = 'Rozte'#269' palc'#367' [mm]'
@@ -200,7 +200,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_palce_vypis: TrHTMLLabel
     Left = 561
-    Top = 129
+    Top = 121
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -214,7 +214,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_zkratka: TrHTMLLabel
     Left = 282
-    Top = 56
+    Top = 48
     Width = 6
     Height = 19
     Caption = '/'
@@ -228,7 +228,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_zkratka_vypis: TrHTMLLabel
     Left = 294
-    Top = 56
+    Top = 48
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -244,7 +244,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_cislo_voziku_vypis: TrHTMLLabel
     Left = 583
-    Top = 56
+    Top = 48
     Width = 39
     Height = 19
     Caption = 'Value'
@@ -258,7 +258,7 @@ object Form_osa_info: TForm_osa_info
   end
   object rHTMLLabel_cislo_voziku: TrHTMLLabel
     Left = 416
-    Top = 56
+    Top = 48
     Width = 155
     Height = 19
     Caption = #268#237'slo voz'#237'ku v zak'#225'zce'
@@ -354,9 +354,9 @@ object Form_osa_info: TForm_osa_info
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel_str_dob_cek_vypis: TrHTMLLabel
-    Left = 250
-    Top = 187
+  object rHTMLLabel_str_doba_cekani_vypis: TrHTMLLabel
+    Left = 256
+    Top = 166
     Width = 32
     Height = 17
     Caption = 'Value'
@@ -368,9 +368,9 @@ object Form_osa_info: TForm_osa_info
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel_str_dob_cekani: TrHTMLLabel
+  object rHTMLLabel_str_doba_cekani: TrHTMLLabel
     Left = 8
-    Top = 185
+    Top = 164
     Width = 231
     Height = 17
     Caption = 'St'#345'edn'#237' hodnota doby '#269'ek'#225'n'#237' na palec'
@@ -383,7 +383,7 @@ object Form_osa_info: TForm_osa_info
     ParentFont = False
   end
   object rHTMLLabel_max_doba_cekani_vypis: TrHTMLLabel
-    Left = 250
+    Left = 256
     Top = 210
     Width = 32
     Height = 17
@@ -578,6 +578,34 @@ object Form_osa_info: TForm_osa_info
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_nahodna_doba_cekani: TrHTMLLabel
+    Left = 8
+    Top = 187
+    Width = 243
+    Height = 17
+    Caption = 'N'#225'hodn'#225' hodnota doby '#269'ek'#225'n'#237' na palec'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_nahodna_doba_cekani_vypis: TrHTMLLabel
+    Left = 256
+    Top = 189
+    Width = 32
+    Height = 17
+    Caption = 'Value'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 33023
+    Font.Height = 17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
@@ -609,7 +637,6 @@ object Form_osa_info: TForm_osa_info
     Caption = 'Nastaven'#237' Jigu'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 702
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 718
@@ -688,7 +715,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 652
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -766,7 +792,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 552
     end
     object MaxButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -844,7 +869,6 @@ object Form_osa_info: TForm_osa_info
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 602
     end
     object scLabel1: TscLabel
       Left = 0
@@ -876,7 +900,6 @@ object Form_osa_info: TForm_osa_info
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Informace o Objektu'
-      ExplicitWidth = 552
     end
   end
   object ioo_ok: TscGPButton
@@ -1032,7 +1055,7 @@ object Form_osa_info: TForm_osa_info
     RepeatClickInterval = 100
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True

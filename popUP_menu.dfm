@@ -107,7 +107,7 @@
         GlowEffect.GlowSize = 0
         GlowEffect.Offset = 2
         GlowEffect.Intensive = False
-        GlowEffect.StyleColors = True
+        GlowEffect.StyleColors = False
         AutoSize = True
         Layout = tlCenter
         VertAlignment = scvtaCenter
@@ -348,7 +348,7 @@
       Top = 136
       Width = 211
       Height = 34
-      Align = alTop
+      Align = alBottom
       TabOrder = 2
       FrameSides = []
       FillGradientAngle = 90
