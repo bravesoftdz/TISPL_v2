@@ -100,6 +100,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_RD_Click(TObject *Sender);
 	void __fastcall scGPNumericEdit_delka_dopravnikuClick(TObject *Sender);
 	void __fastcall scGPNumericEdit_mezeraClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_mezeraChange(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent

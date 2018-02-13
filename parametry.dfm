@@ -2610,7 +2610,7 @@ object Form_parametry: TForm_parametry
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 24
-    OnChange = scGPNumericEdit_delka_dopravnikuChange
+    OnChange = scGPNumericEdit_mezeraChange
     OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
   end
@@ -2635,12 +2635,13 @@ object Form_parametry: TForm_parametry
     Style = enFloat
   end
   object Memo1: TMemo
-    Left = 13
-    Top = 294
-    Width = 185
-    Height = 89
+    Left = 137
+    Top = 561
+    Width = 52
+    Height = 23
     Lines.Strings = (
       'Memo1')
     TabOrder = 26
+    Visible = False
   end
 end
