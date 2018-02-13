@@ -518,7 +518,9 @@ void TForm1::startUP()
 
 	//načte dílčí nastavení aplikace
 	AnsiString T=readINI("Nastaveni_app","ortogonalizace"); //o_stav musí být až na druhém místě po scGPCheckbox
+	start_ortogonalizace=true;//pouze ošetření, aby se nevolalo scGPCheckBox_ortogon_onclick
 	if(T=="0" || T==""){scGPCheckBox_ortogon->Checked=false;ortogonalizace_stav=false;}else{scGPCheckBox_ortogon->Checked=true;ortogonalizace_stav=true;}
+	start_ortogonalizace=false;
 	T=readINI("Nastaveni_app","prichytavat");
 	if(T=="0" || T==""){prichytavat_k_mrizce=0;}else{prichytavat_k_mrizce=ms.MyToDouble(T);}
 	//zatím nepoužíváme, bude spíše souviset přímo se souborem, v případě použití nutno vyhodit implicitní volbu návrhář v sobuor novy
@@ -1718,6 +1720,7 @@ void TForm1::onPopUP(int X, int Y)
 					PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom->name.UpperCase();
 				}
 				//pozor rozhoduje pořadí
+				PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
 				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				PopUPmenu->Item_kopirovat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
 				PopUPmenu->Item_nastavit_parametry->Visible=true;PopUPmenu->Panel_UP->Height+=34;
@@ -2296,7 +2299,7 @@ void TForm1::ortogonalizace_on_off()
 		 ortogonalizovat();
 		 REFRESH();
 		 SB("Ortogonalizace zapnuta.");
-   }
+	 }
 }
 //---------------------------------------------------------------------------
 //volá ortogonalizaci schéma, pokud je ortogonalizace povolena
@@ -4511,6 +4514,7 @@ void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 //vypnutí či zapnutí ortogonolazice
 void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
 {
+  if(!start_ortogonalizace)//pokud se nejedná o start aplikace, aby se nevolalo v tomto okamžiku
 	ortogonalizace_on_off();
 }
 //---------------------------------------------------------------------------

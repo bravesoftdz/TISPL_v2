@@ -89,6 +89,7 @@ class Cvykresli
 	bool grafickeDilema;//provizorní promìnná na pøepínání stavu, zda se pøi pøidávání objektu a pøesouvání objektu bude zmenšovat písmo nebo nepøekreslovat objekt
 	short legenda_polozky[8];//zobrazení jednotlivých položek, 0 index je však poèet zobrazených (uložených) položek v poli, -1 stav je u daného atributu normál
 	short Xofset;//zajistí správný poèátek prvního objektu dle šíøky nejdelší vypisované minuty v ROMA
+	short precision;//poèet desetinných míst èísel na èasové ose
 
 	protected:
 
