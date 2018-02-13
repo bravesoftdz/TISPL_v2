@@ -2782,7 +2782,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 			t->Caption="nebyl nadefinován";
 			Form_parametry->existuje_pohon=false;
 			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
-			//Form_parametry->scGPButton_header_projekt->Visible=true;
+			Form_parametry->scGPButton_header_projekt->Visible=true;
 			//Form_parametry->scGPButton_header_projekt->Left=Form_parametry->scComboBox_pohon->Left+Form_parametry->scComboBox_pohon->Width-100;
 
 
@@ -2793,10 +2793,16 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nepřiřazen";
 			//plnění existujícím pohony
+			double jednotky_cas_pohon=60.0;
+			UnicodeString caption_jednotky;
+			if(Form_parametry->RDunitT==Form_parametry->MIN){
+			jednotky_cas_pohon=60.0;caption_jednotky="m/min";
+			}
+			else {jednotky_cas_pohon=1.0;caption_jednotky="m/s";}
 			while (ukaz!=NULL)
 			{
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-				t->Caption=ukaz->name+" "+AnsiString(m.round2double(ukaz->rychlost_od,2))+"-"+AnsiString(m.round2double(ukaz->rychlost_do,2))+"m/s";
+				t->Caption=ukaz->name+" "+AnsiString(m.round2double(ukaz->rychlost_od*jednotky_cas_pohon,2))+"-"+AnsiString(m.round2double(ukaz->rychlost_do*jednotky_cas_pohon,2))+caption_jednotky;
 				ukaz=ukaz->dalsi;
 				Form_parametry->scGPButton_header_projekt->Visible=false;
 			}
