@@ -3,6 +3,7 @@
 #pragma hdrstop
 #include "parametry.h"
 #include "unit1.h"
+#include "parametry_linky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -299,7 +300,8 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 				case HIGHLIGHT:scComboBox_pohon->Options->FrameNormalColor=hl_color;scComboBox_pohon->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scComboBox_pohon->Enabled=false;break;
-				case READONLY:scComboBox_pohon->Enabled=false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
+				case READONLY:scComboBox_pohon->Enabled=false;break;
+				//case READONLY:scComboBox_pohon->Enabled=false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
 				case HIDE:		rHTMLLabel_pohon->Visible=false;scComboBox_pohon->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
@@ -545,7 +547,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==mezera_klik)//pokud není zadáváno z jiného vstupu
+	if(input_state==NOTHING && input_clicked_edit==DD_klik)//pokud není zadáváno z jiného vstupu
 	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 	//hlídání velikosti mezery dle rozteèe
 	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
@@ -1484,6 +1486,40 @@ input_clicked_edit=DD_klik;
 void __fastcall TForm_parametry::scGPNumericEdit_mezeraClick(TObject *Sender)
 {
 input_clicked_edit==mezera_klik;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
+{
+	if(input_state==NOTHING && input_clicked_edit==mezera_klik)//pokud není zadáváno z jiného vstupu
+	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
+	//hlídání velikosti mezery dle rozteèe
+	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
+	{
+		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+		if(P!=NULL)
+		{                            //je "zbytek po dìlení"
+			if(P->roztec>0 && !Form1->m.cele_cislo(scGPNumericEdit_mezera->Value/P->roztec))//nesplòuje rozmezí
+			{
+				vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
+				//-scGPButton_OK->Enabled=false;
+			}
+			else
+			{
+				vypis("");
+				//-scGPButton_OK->Enabled=true;
+			}
+		}
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
+
+{
+	 Form_parametry->Close();
+	 Form1->Button_dopravnik_parametryClick(Sender);
+
 }
 //---------------------------------------------------------------------------
 
