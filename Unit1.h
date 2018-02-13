@@ -514,6 +514,7 @@ private:
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito pøi soubor nový
+	bool start_ortogonalizace;
 
 	AnsiString Caption;
 

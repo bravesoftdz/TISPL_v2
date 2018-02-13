@@ -20,6 +20,7 @@ Cvykresli::Cvykresli()
 	oY=5;//ofset na ose Y, 5 pouze grafická korekce
 	grafickeDilema=true;
 	Pom_proces=new Cvektory::TProces;
+	precision=2;//počet desetinných míst čísel na časové ose
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_vektory(TCanvas *canv)
@@ -786,8 +787,8 @@ void Cvykresli::vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik,do
 		AnsiString T="";
 		//pro nezokrouhlený výpis čísla: if(!index)T="TT: "+AnsiString(floor(v.vrat_TT_voziku(vozik)*1000000.0)/1000000.0)+" s";
 		//pro nezokrouhlený výpis čísla: else T=AnsiString(floor(v.vrat_TT_voziku(vozik)/60.0*1000000.0)/1000000.0);
-		if(!index)T="TT: "+AnsiString(m.round2double(v.vrat_TT_voziku(vozik),2))+" s";
-		else T=AnsiString(m.round2double(v.vrat_TT_voziku(vozik)/60.0,3));
+		if(!index)T="TT: "+AnsiString(m.round2double(v.vrat_TT_voziku(vozik),precision))+" s";
+		else T=AnsiString(m.round2double(v.vrat_TT_voziku(vozik)/60.0,precision));
 		canv->TextOut((X1+X2)/2-canv->TextWidth(T)/2,Y0-canv->TextHeight(T),T);
 }
 //---------------------------------------------------------------------------
@@ -926,13 +927,14 @@ void Cvykresli::vykresli_Xosy(TCanvas *canv)
 				canv->Font->Style=TFontStyles()<< fsBold;
 				canv->Font->Color=clWhite;
 				//výpis začátku zakázky
-				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,0,AnsiString(RET.x)+"<");//zobrazuje pouze větší než začátek obrazovky
+				if(RET.x>0)canv->TextOutW(RET.x*PX2MIN-canv->TextWidth(RET.x)/2-PosunT.x,0,AnsiString(m.round2double(RET.x,precision))+"<");//zobrazuje pouze větší než začátek obrazovky
 				//výpis náběhu linky, pro první zakázku
 				if(ukaz->n==1)canv->TextOutW(0,WIP*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-canv->TextHeight("N")-PosunT.y,"NÁBĚH LINKY");
 				//výpis doběh linky,pokud se jedná o poslední zakázku a doběh nastane později než náběh
 				if(ukaz->predchozi==v.ZAKAZKY->predchozi && v.VOZIKY->predchozi->n-WIP>WIP)canv->TextOutW(0,(v.VOZIKY->predchozi->n-WIP)*KrokY+KrokY+KrokY/2-Form1->scGPPanel_mainmenu->Height+oY+oY+2-PosunT.y,"DOBĚH LINKY");
 				//výpis konce zakázky + LT
-				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(RET.y)/2-PosunT.x,0,"<"+AnsiString(RET.y));//zobrazuje pouze větší než začátek obrazovky
+				AnsiString LT=AnsiString(m.round2double(RET.y,precision));
+				if(RET.y>0)canv->TextOutW(RET.y*PX2MIN-canv->TextWidth(LT)/2-PosunT.x,0,"<"+AnsiString(LT));//zobrazuje pouze větší než začátek obrazovky
 				ukaz=ukaz->dalsi;
 			}
 	}
