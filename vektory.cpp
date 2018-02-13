@@ -450,11 +450,12 @@ AnsiString Cvektory::vypis_objekty_s_pohony_bez_roztece(bool shortname)
 		if(P->roztec==0)//pohon neobsahuje uvedenou rozteč
 		{
 			AnsiString To=vypis_objekty_vyuzivajici_pohon(P->n,shortname);
-			if(To!="")T+="<b>"+P->name+"</b> (přiřazen objektům: "+To+")";//pouze pokud je pohon přiřazen
+			if(To!="")T+="<b>"+P->name+"</b> (přiřazen objektům: "+To+"),";//pouze pokud je pohon přiřazen
 		}
 		P=P->dalsi;//posun na další prvek
 	}
 	P=NULL;delete P;
+	T=T.SubString(1,T.Length()-1);//odstraní poslední mezeru
 	return T;
 }
 //---------------------------------------------------------------------------
@@ -1566,7 +1567,7 @@ Cvektory::TProces *Cvektory::najdi_proces(double cas, double vozik)
 	while (P!=NULL)
 	{
 		if(P->vozik->n==vozik && P->Tpoc<=cas && cas<P->Tcek)//pokud se myš nachází nad právě cyklem procházeným procesem
-		{
+		{  //ShowMessage(AnsiString(cas)+","+AnsiString(P->Tpoc)+","+AnsiString(P->Tcek));
 			 RET=P;//proces nalezen
 			 break;//ukončí předčasně while cyklus-zbytečně by se hledalo dál, proces byl již nalezen
 		}
