@@ -68,6 +68,7 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit_mezera;
 	TrEditNum *scGPNumericEdit_RD;
 	TMemo *Memo1;
+	TscGPButton *scGPButton_header_projekt;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -101,6 +102,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_delka_dopravnikuClick(TObject *Sender);
 	void __fastcall scGPNumericEdit_mezeraClick(TObject *Sender);
 	void __fastcall scGPNumericEdit_mezeraChange(TObject *Sender);
+	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent

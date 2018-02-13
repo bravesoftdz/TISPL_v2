@@ -3,6 +3,7 @@
 #pragma hdrstop
 #include "parametry.h"
 #include "unit1.h"
+#include "parametry_linky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -299,7 +300,8 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 				case HIGHLIGHT:scComboBox_pohon->Options->FrameNormalColor=hl_color;scComboBox_pohon->Options->FrameWidth=hlFrameWidth;break;
 				case ENABLED:	break;
 				case DISABLED:scComboBox_pohon->Enabled=false;break;
-				case READONLY:scComboBox_pohon->Enabled=false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
+				case READONLY:scComboBox_pohon->Enabled=false;break;
+				//case READONLY:scComboBox_pohon->Enabled=false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
 				case HIDE:		rHTMLLabel_pohon->Visible=false;scComboBox_pohon->Visible=false;if(move)offset-=O;break;
 			}
 		}	break;
@@ -1509,6 +1511,17 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 			}
 		}
 	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
+
+{
+	 //	Form1->ESC();//zruší pøípadnou rozdìlanou akci
+		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+		Form_parametry_linky->ShowModal();//návratová hodnota se øeši v knihovnì
+	 //	Form1->REFRESH();
 }
 //---------------------------------------------------------------------------
 

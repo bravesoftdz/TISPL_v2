@@ -2771,6 +2771,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 	{
 		////plnění daty
 		//combo POHONY
+		Form_parametry->scGPButton_header_projekt->Visible=false;
 		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
 		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 		Form_parametry->existuje_pohon=true;
@@ -2781,6 +2782,10 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 			t->Caption="nebyl nadefinován";
 			Form_parametry->existuje_pohon=false;
 			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
+			//Form_parametry->scGPButton_header_projekt->Visible=true;
+			//Form_parametry->scGPButton_header_projekt->Left=Form_parametry->scComboBox_pohon->Left+Form_parametry->scComboBox_pohon->Width-100;
+
+
 		}
 		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 		{
@@ -2793,6 +2798,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 				t->Caption=ukaz->name+" "+AnsiString(m.round2double(ukaz->rychlost_od,2))+"-"+AnsiString(m.round2double(ukaz->rychlost_do,2))+"m/s";
 				ukaz=ukaz->dalsi;
+				Form_parametry->scGPButton_header_projekt->Visible=false;
 			}
 			//nastavení comba, aby ukazoval na dříve vybraný pohon
 			if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
