@@ -1517,11 +1517,9 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 
 {
-	 //	Form1->ESC();//zruší pøípadnou rozdìlanou akci
-		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
-		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-		Form_parametry_linky->ShowModal();//návratová hodnota se øeši v knihovnì
-	 //	Form1->REFRESH();
+	 Form_parametry->Close();
+	 Form1->Button_dopravnik_parametryClick(Sender);
+
 }
 //---------------------------------------------------------------------------
 
