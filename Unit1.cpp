@@ -51,6 +51,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 {
 	srand(time(NULL));//nutno tady
 
+	Form1->Width=1290;//workaround bílé mezery v záložkové liště
 
 	NewDesignSettings();//záležitost s novým designem
 
