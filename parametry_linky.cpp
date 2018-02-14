@@ -192,12 +192,12 @@ void TForm_parametry_linky::nacti_pohony (){
 					rStringGridEd_tab_dopravniky->Cells[5][i]="ano";
 				 } else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
 
-				 //ShowMessage(ukaz->n);
+			//	 ShowMessage(ukaz->rychlost_do*60.0);
 			rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
 			rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
-			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60;
-			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60;
-			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000;
+			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60.0;
+			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60.0;
+			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000.0;
 
 				ukaz = ukaz->dalsi;
 				 }
@@ -390,15 +390,15 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
 
 			if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty())  rychlost_od=0;
-			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60
-			);
+			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60.0);
 
 			if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty())  rychlost_do=0;
-			else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60);
+			else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60.0);
 
 			if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())  roztec=0;
-			else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000);
+			else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000.0);
 
+		//	ShowMessage(rychlost_do);
 				 Form1->d.v.vloz_pohon (nazev, //nazev
 																rychlost_od,        //rychlost od
 																rychlost_do,    //rychlost do
