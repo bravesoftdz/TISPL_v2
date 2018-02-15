@@ -270,8 +270,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
 					O->rezim==1 && //je v režimu kontinuál a zároveò
 					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
-					(Form1->ms.MyToDouble(O->RD*60.0)<Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]) ||//je mimo rozsah (pod) nebo
-					 Form1->ms.MyToDouble(O->RD*60.0)>Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))//je mimo rozsah (nad)
+					(Form1->ms.MyToDouble(O->RD)*60.0<Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]) ||//je mimo rozsah (pod) nebo
+					 Form1->ms.MyToDouble(O->RD)*60.0>Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))//je mimo rozsah (nad)
 				)
 				{
 
@@ -390,13 +390,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
 
 			if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty())  rychlost_od=0;
-			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]/60.0);
+			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i])/60.0;
 
 			if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty())  rychlost_do=0;
-			else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]/60.0);
+			else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i])/60.0;
 
 			if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())  roztec=0;
-			else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]/1000.0);
+			else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/1000.0;
 
 		//	ShowMessage(rychlost_do);
 				 Form1->d.v.vloz_pohon (nazev, //nazev

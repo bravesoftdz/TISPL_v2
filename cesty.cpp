@@ -116,9 +116,9 @@ if (CasoveJednotky==S) {  //*60
 
 		try{
 
-				rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i]/60.0);
-				rStringGridEd_cesty->Cells[4][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[4][i]/60.0);
-				rStringGridEd_cesty->Cells[5][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[5][i]/60.0);
+				rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i])/60.0;
+				rStringGridEd_cesty->Cells[4][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[4][i])/60.0;
+				rStringGridEd_cesty->Cells[5][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[5][i])/60.0;
 
 				}
 
@@ -141,9 +141,9 @@ if (CasoveJednotky==S) {  //*60
 
 				try{
 
-					rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i]*60.0);
-					rStringGridEd_cesty->Cells[4][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[4][i]*60.0);
-					rStringGridEd_cesty->Cells[5][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[5][i]*60.0);
+					rStringGridEd_cesty->Cells[2][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[2][i])*60.0;
+					rStringGridEd_cesty->Cells[4][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[4][i])*60.0;
+					rStringGridEd_cesty->Cells[5][i]=Form1->ms.MyToDouble(rStringGridEd_cesty->Cells[5][i])*60.0;
 
 					}
 

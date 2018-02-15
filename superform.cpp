@@ -403,9 +403,9 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 								Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]);
 					}
 					else {  // pøevedu minuty na sekundy
-					CT=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i]*60);       //min na sekundy
-					Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i]*60);
-					Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i]*60);
+					CT=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][i])*60.0;       //min na sekundy
+					Tv=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[4][i])*60.0;
+					Tc=Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[5][i])*60.0;
 					}
 
 					Form1->d.v.vloz_segment_cesty
@@ -416,7 +416,7 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 							Form1->ms.MyToDouble(CT),//CT
 							Form1->ms.MyToDouble(Tv),//Tv
 							Form1->ms.MyToDouble(Tc),//Tc
-							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[3][i]/60), //RD ulozim v m/sec
+							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[3][i])/60.0, //RD ulozim v m/sec
 							Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[6][i])//Opak   //ulozeni stavu pro cestu - roletka
 					);
 				}
