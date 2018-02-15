@@ -582,12 +582,12 @@ void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender)
 			if(scGPNumericEdit_RD->Value<P->rychlost_od || P->rychlost_do<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
 			{
 				vypis("Rychlost neodpovídá rozmezí!",true);
-				//-scGPButton_OK->Enabled=false;
+				scGPButton_OK->Enabled=true;
 			}
 			else
 			{
 				vypis("");
-				//-scGPButton_OK->Enabled=true;
+				scGPButton_OK->Enabled=true;
 			}
 		}
 	}
@@ -726,7 +726,7 @@ void TForm_parametry::input_DD()
 			if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 			if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 			else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
-      scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
+      scGPButton_OK->Enabled=true;//zakáže ukládací tlaèítko
 		}
 
 		/////////CT,RD
