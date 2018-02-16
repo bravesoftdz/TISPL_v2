@@ -275,7 +275,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				)
 				{
 
-					T+="Objekt: "+O->name+" Rychlost:"+O->RD*60+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
+					T+="Objekt: "+O->name+" Rychlost:"+O->RD*60.0+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
 					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
 				}
 				O=O->dalsi;

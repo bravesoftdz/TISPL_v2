@@ -1441,7 +1441,7 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 //kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
-	if(scComboBox_rezim->ItemIndex!=0)//mimo S&G
+	if(scComboBox_rezim->ItemIndex==1)// S&G  a Postprocesní nejsou kontrolovány na rozsah
 	{
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 		if(P!=NULL)
