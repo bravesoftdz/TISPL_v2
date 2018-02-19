@@ -305,17 +305,17 @@ AnsiString TMyString::remove_diacritics(AnsiString text)
 //převede text do double datového typu, řeší nastavení desetinná tečka vs. čárka
 double TMyString::MyToDouble(UnicodeString Text)
 {
-  double number=0.0;
+	double number=0.0;
   if(Text!="")//pokud přijde prázdný řetězec přehodí na nulu
-  {
-    try{number=Text.ToDouble();}//testování výjimky
-	catch(...)//zachycení výjimky
 	{
-		try{number=replace(Text,",",".").ToDouble();}
-		catch(...){;}//vráti nulu pokud se ani po změně oddělovače byl řetězec neplatný
-	}
+    try{number=Text.ToDouble();}//testování výjimky
+		catch(...)//zachycení výjimky
+		{
+			try{number=replace(Text,",",".").ToDouble();}
+			catch(...){;}//vráti nulu pokud se ani po změně oddělovače byl řetězec neplatný
+		}
   }
-  return number;
+	return number;
 }
 //---------------------------------------------------------------------------
 //prevod z carky na tecku v desetiném miste
