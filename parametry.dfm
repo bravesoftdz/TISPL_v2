@@ -2635,10 +2635,10 @@ object Form_parametry: TForm_parametry
     Style = enFloat
   end
   object Memo1: TMemo
-    Left = 137
+    Left = 128
     Top = 561
-    Width = 52
-    Height = 23
+    Width = 167
+    Height = 25
     Lines.Strings = (
       'Memo1')
     TabOrder = 26
@@ -2650,7 +2650,7 @@ object Form_parametry: TForm_parametry
     Top = 130
     Width = 47
     Height = 29
-    Hint = 'parametry linky'
+    Hint = 'P'#345'idat pohon'
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -2681,7 +2681,7 @@ object Form_parametry: TForm_parametry
     Options.PressedColorAlpha = 50
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clBtnFace
+    Options.FrameNormalColor = clGray
     Options.FrameHotColor = 10114859
     Options.FramePressedColor = 10114859
     Options.FrameFocusedColor = 10114859

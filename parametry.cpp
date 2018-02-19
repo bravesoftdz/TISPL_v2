@@ -579,15 +579,18 @@ void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender)
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 		if(P!=NULL)
 		{
-			if(scGPNumericEdit_RD->Value<P->rychlost_od || P->rychlost_do<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
+		double jednotky_cas_pohon=60.0;
+		if(Form_parametry->RDunitT==Form_parametry->MIN)jednotky_cas_pohon=60.0;
+		else jednotky_cas_pohon=1.0;
+			if(scGPNumericEdit_RD->Value<P->rychlost_od*jednotky_cas_pohon || P->rychlost_do*jednotky_cas_pohon<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
 			{
 				vypis("Rychlost neodpovídá rozmezí!",true);
-				//-scGPButton_OK->Enabled=false;
+				scGPButton_OK->Enabled=true;
 			}
 			else
 			{
 				vypis("");
-				//-scGPButton_OK->Enabled=true;
+				scGPButton_OK->Enabled=true;
 			}
 		}
 	}
@@ -699,7 +702,6 @@ void TForm_parametry::input_DD()
  	input_state=DD;//pozor myšleno DD - z ENUM
 	//default hodnoty
 	double DD=scGPNumericEdit_delka_dopravniku->Value;if(DDunit==MM)DD/=1000.0;//pøevede vždy do metrù
-
 	if(DD>0)//nutné ošetøení pro období zadávání/psaní
 	{
 		//default nastavení komponent
@@ -716,6 +718,7 @@ void TForm_parametry::input_DD()
 
 		//KAPACITA                 //pokud je stejný poèet mezer jako vozíkù
 		double K=(DD+m)/(dV+m);if(p==1)K=DD/(dV+m);
+	 //	ShowMessage(K);
 		//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 		scGPNumericEdit_kapacita->Font->Color=clBlack;
@@ -726,7 +729,7 @@ void TForm_parametry::input_DD()
 			if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
 			if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min.");
 			else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s.");
-      scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
+      scGPButton_OK->Enabled=true;//zakáže ukládací tlaèítko
 		}
 
 		/////////CT,RD
@@ -791,10 +794,10 @@ void TForm_parametry::input_RD()
 
     	 double K=0;
 			 if(m>0 && p==1)//pokud je rozdílný poèet mezer jako vozíkù a mezera je nenulova, lze pøímo z RD vypoèítat ostatní hodnoty
-    	 {
+			 {
     			//KAPACITA
 					K=m/(dV+m-RD*Form1->d.v.PP.TT);
-    			//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+					//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 					scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 					scGPNumericEdit_kapacita->Font->Color=clBlack;
 					//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
@@ -827,15 +830,16 @@ void TForm_parametry::input_RD()
 					double CT=scGPNumericEdit_CT->Value;if(CTunit==MIN)CT*60.0; //na sekunkdy
     			double K=scGPNumericEdit_kapacita->Value;
 
-    			if(DD!=0)//pokud je známá délka dopravníku
+    			if(DD!=0)//pokud je známá délka dopravníku resp. délka kabiny
 					{
     				//KAPACITA
 						K=DD/RD/Form1->d.v.PP.TT;
+						//ShowMessage(K);
 						//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
 						scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
 						scGPNumericEdit_kapacita->Font->Color=clBlack;
 
-						Memo1->Lines->Add(AnsiString(RD)+" "+DD+" "+Form1->d.v.PP.TT);
+					 //	Memo1->Lines->Add(AnsiString(DD)+" "+RD+" "+Form1->d.v.PP.TT);
 						//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
 						if(Form1->ms.get_count_decimal(K)>0)
 						{
@@ -1437,7 +1441,7 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 //kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
-	if(scComboBox_rezim->ItemIndex!=0)//mimo S&G
+	if(scComboBox_rezim->ItemIndex==1)// S&G  a Postprocesní nejsou kontrolovány na rozsah
 	{
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 		if(P!=NULL)
@@ -1485,7 +1489,7 @@ input_clicked_edit=DD_klik;
 
 void __fastcall TForm_parametry::scGPNumericEdit_mezeraClick(TObject *Sender)
 {
-input_clicked_edit==mezera_klik;
+input_clicked_edit=mezera_klik;
 }
 //---------------------------------------------------------------------------
 
@@ -1497,12 +1501,17 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
 	{
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+//pøíprava na mezera_mezi_voziky
+//		 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+//		 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+//		 double cislo= Form1->m.mezera_mezi_voziky(dV,P->roztec,scGPNumericEdit_mezera->Value);
 		if(P!=NULL)
 		{                            //je "zbytek po dìlení"
 			if(P->roztec>0 && !Form1->m.cele_cislo(scGPNumericEdit_mezera->Value/P->roztec))//nesplòuje rozmezí
 			{
 				vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
 				//-scGPButton_OK->Enabled=false;
+			//	vypis(cislo);
 			}
 			else
 			{

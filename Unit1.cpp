@@ -2797,12 +2797,14 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nepřiřazen";
 			//plnění existujícím pohony
+			//ShowMessage(Form_parametry->RDunitT);
 			double jednotky_cas_pohon=60.0;
 			UnicodeString caption_jednotky;
-			if(Form_parametry->RDunitT==Form_parametry->MIN){
+			//if(Form_parametry->RDunitT==Form_parametry->MIN){
 			jednotky_cas_pohon=60.0;caption_jednotky="m/min";
-			}
-			else {jednotky_cas_pohon=1.0;caption_jednotky="m/s";}
+			//pri prvnim zobrazeni jsou problemy se zobrazenim jednotek (RDunitT=0), proto natvrdo vzdy zobrazim m/min
+			//}
+			//else {jednotky_cas_pohon=1.0;caption_jednotky="m/s";}
 			while (ukaz!=NULL)
 			{
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
