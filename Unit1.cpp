@@ -2816,6 +2816,28 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 			if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
 			else Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen
 		}
+
+
+	 //výpis doporučené mezery
+		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
+// mezera_mezi_voziky
+		 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+		 if(Form_parametry->scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šířka jigu
+		 double doporuc_mezera= Form1->m.mezera_mezi_voziky(dV,P->roztec,0);
+		if(P!=NULL)
+		{                            //je "zbytek po dělení"
+			if(P->roztec>0)//pokud existuje rozteč
+			{
+				Form_parametry->scGPButton_OK->Enabled=false;
+				Form_parametry->vypis("Doporučená mezera: "+AnsiString(doporuc_mezera)+" m",true);
+			 //mezeru neplním automaticky do editu
+			 //Form_parametry->scGPNumericEdit_mezera->Value=doporuc_mezera;
+			}
+		}
+
+
+
+
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
 		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
@@ -2839,7 +2861,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		//DM
 		//Form_parametry->scGPNumericEdit_mezera->Decimal=Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal;
 	 //	Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
-		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+	 	Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
