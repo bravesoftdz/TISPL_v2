@@ -302,7 +302,7 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 		switch(funkce)
 		{
 				case 0:RET=MIN;break;//nic resp minimum=0, neèeká na palec vùbec buï vyšel pøesnì nebo se nezohledòuje
-				case 1:RET=(MAX-ZOI+MIN)/2;break;//støední hodnota (v tomto pøípadì i prùmìr) dle normálního rozdìlení pro hodnoty <0,max)
+				case 1:RET=(MAX-ZOI+MIN)/2.0;break;//støední hodnota (v tomto pøípadì i prùmìr) dle normálního rozdìlení pro hodnoty <0,max)
 				case 2:RET=fmod(rand(),MAX*10)/10.0+MIN;break;//náhodná hodnota v rozmezí <0,max) èekání na palce, zde ZOI není nutné zohledòovat, protože již vyplývá z použitého algoritmu
 				case 3:RET=MAX-ZOI;break;//max.možná hodnota èekání na pale
 				case 4:/*RET=tady bude exaktní výpoèet pro geometrii*/break;

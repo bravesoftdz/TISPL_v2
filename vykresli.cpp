@@ -631,7 +631,7 @@ double Cvykresli::proces(TCanvas *canv, unsigned int n, double X_predchozi, doub
 					 C->objekt->cekat_na_palce==1//automaticky-uživaztelsky požadovano zohledňování čekání na palce//0-ne,1-ano,2-automaticky
 			 )
 	 )
-	 {
+	 {            //případ první/poslední                            //ostatní připady
 			double RD=vozik->zakazka->cesta->dalsi->RD;if(C->dalsi!=NULL)RD=C->dalsi->RD;//pokud neexistuje následující objekt v cestě, uvažuje se o po přechodu poslední/první objekt (tedy typicky svěšování/navěšování) a vezme se rychlost pohonu prvního objektu, jinak se bere RD objektu v cestě následujícího
 			double R=0;if(Objekt_dalsi->pohon!=NULL)R=Objekt_dalsi->pohon->roztec;//přiřazení rozteče pokud existuje
 			double Cekani=m.cekani_na_palec(X*60.0/PX2MIN+C->CT,R,RD,Form1->ComboBoxCekani->ItemIndex)/60.0*PX2MIN;
