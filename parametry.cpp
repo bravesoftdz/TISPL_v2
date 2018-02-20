@@ -146,6 +146,29 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 				}
 			}
 	}
+				if(scComboBox_rezim->ItemIndex!=0)// S&G  neøeší délku mezery
+	{
+		 //vıpis doporuèené mezery
+		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
+// mezera_mezi_voziky
+		 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+		 if(Form_parametry->scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je poadován šíøka jigu
+		 double doporuc_mezera= Form1->m.mezera_mezi_voziky(dV,P->roztec,0);
+		if(P!=NULL)
+		{                            //je "zbytek po dìlení"
+			if(P->roztec>0)//pokud existuje rozteè
+			{
+			//ShowMessage(doporuc_mezera);
+				//scGPButton_OK->Enabled=false;
+			vypis("Doporuèená mezera: "+AnsiString(doporuc_mezera)+" m",true);
+			 //mezeru neplním automaticky do editu
+			 //Form_parametry->scGPNumericEdit_mezera->Value=doporuc_mezera;
+//			 				if(doporuc_mezera==scGPNumericEdit_mezera->Value){
+//									scGPButton_OK->Enabled=true;  }
+//						else 	scGPButton_OK->Enabled=false;
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------
 //resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé reimy
@@ -313,6 +336,7 @@ void TForm_parametry::set(Tcomponents C,Tcomponents_state S,bool move)
 				rHTMLLabel_CT->Top=L+2*O+offset;
 				scGPNumericEdit_CT->Top=P+2*O+offset;
 				scButton_zamek_CT->Top=scGPNumericEdit_CT->Top;
+				//glyph pro memo - ziskany ct
 			}
 		 ////funkèní vlastnosti
 			//ty co jsou stejné
@@ -1458,6 +1482,9 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 			}
 		}
 	}
+
+
+
 }
 //---------------------------------------------------------------------------
 
@@ -1498,25 +1525,29 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 	if(input_state==NOTHING && input_clicked_edit==mezera_klik)//pokud není zadáváno z jiného vstupu
 	input_DD();//pøepoèet hodnot vyplıvajících ze zmìny délky dopravníku
 	//hlídání velikosti mezery dle rozteèe
+
 	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
 	{
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-//pøíprava na mezera_mezi_voziky
-//		 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
-//		 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je poadován šíøka jigu
-//		 double cislo= Form1->m.mezera_mezi_voziky(dV,P->roztec,scGPNumericEdit_mezera->Value);
+// mezera_mezi_voziky
+		 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+		 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je poadován šíøka jigu
+		 double doporuc_mezera= Form1->m.mezera_mezi_voziky(dV,P->roztec,scGPNumericEdit_mezera->Value);
 		if(P!=NULL)
 		{                            //je "zbytek po dìlení"
-			if(P->roztec>0 && !Form1->m.cele_cislo(scGPNumericEdit_mezera->Value/P->roztec))//nesplòuje rozmezí
+			if(P->roztec>0 /* && !Form1->m.cele_cislo(scGPNumericEdit_mezera->Value/P->roztec)*/)//nesplòuje rozmezí
 			{
-				vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
-				//-scGPButton_OK->Enabled=false;
-			//	vypis(cislo);
+				//vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
+				vypis("Doporuèená mezera: "+AnsiString(doporuc_mezera)+" m",true);
+
+//				if(doporuc_mezera==scGPNumericEdit_mezera->Value){
+//						scGPButton_OK->Enabled=true;  }
+//				 else 	scGPButton_OK->Enabled=false;
 			}
 			else
 			{
 				vypis("");
-				//-scGPButton_OK->Enabled=true;
+				scGPButton_OK->Enabled=true;
 			}
 		}
 	}
