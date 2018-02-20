@@ -406,17 +406,31 @@ double Cvektory::vrat_soucet_delek_vsech_objektu()
 	return SUM;
 }
 //---------------------------------------------------------------------------
-//vrátí počet objektů v režimu S&G
-unsigned int Cvektory::pocet_objektu_SG()
+//vrátí počet objektů v požadovaném režimu, nebo v případě implicitního parametru -1 objekty ve všech režimech
+unsigned int Cvektory::pocet_objektu(short typ)
 {
 	unsigned int pocet=0;
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
-	{
-		if(O->rezim==0)pocet++;
+	{                     //celkový počet
+		if(O->rezim==typ || typ==-1)pocet++;
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;
+	return pocet;
+}
+//---------------------------------------------------------------------------
+//vrátí počet objektů v požadovaném režimu pro danou zakázku, nebo v případě implicitního parametru -1 objekty ve všech režimech pro danou zakázku
+unsigned int Cvektory::pocet_objektu(TZakazka *Zakazka,short typ)
+{
+	unsigned int pocet=0;
+	TCesta *C=Zakazka->cesta->dalsi;//přeskočí hlavičku
+	while (C!=NULL)
+	{                     //celkový počet
+		if(C->objekt->rezim==typ || typ==-1)pocet++;
+		C=C->dalsi;//posun na další prvek
+	}
+	C=NULL;delete C;
 	return pocet;
 }
 //---------------------------------------------------------------------------
