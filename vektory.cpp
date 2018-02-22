@@ -473,6 +473,33 @@ AnsiString Cvektory::vypis_objekty_s_pohony_bez_roztece(bool shortname)
 	return T;
 }
 //---------------------------------------------------------------------------
+//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení
+AnsiString Cvektory::vypis_objekty_mimo_100vytizeni(bool shortname, bool vypsat_procetna, AnsiString separator)
+{
+	 TZakazka *Z=ZAKAZKY->dalsi;
+	 AnsiString T="";
+	 while (Z!=NULL)
+	 {
+		TCesta *C=ZAKAZKY->cesta->dalsi;
+		while (C!=NULL)
+		{
+			double vytizeni=C->CT/C->objekt->kapacita/Z->TT*100.0;
+			if(vytizeni!=100)
+			{
+				AnsiString N=C->objekt->name;if(shortname)C->objekt->short_name;
+				AnsiString V=""; if(vypsat_procetna)"- "+AnsiString(vytizeni)+" %";
+				T=Z->name+"/"+N+V+separator;
+			}
+			C=C->dalsi;//posun na další prvek v seznamu
+		}
+		delete C;
+		Z=Z->dalsi;//posun na další prvek v seznamu
+	 }
+	 delete Z;
+	 T=T.SubString(1,T.Length()-2);
+	 return T;
+}
+//---------------------------------------------------------------------------
 //změní zařazení objektů ve spojovém seznamu
 //přetížená funkce
 void Cvektory::zmen_poradi_objektu(unsigned long aktualni_poradi,unsigned long nove_poradi)
@@ -1042,7 +1069,7 @@ Cvektory::TZakazka *Cvektory::vrat_temp_zakazku(unsigned long n_zakazky)
 	 TZakazka *ukaz=ZAKAZKY_temp->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	 while (ukaz!=NULL)
 	 {
-	 	//akce s ukazatelem
+		//akce s ukazatelem
 		if(ukaz->n==n_zakazky)break;
 		else ukaz=ukaz->dalsi;//posun na další prvek v seznamu
 	 }
