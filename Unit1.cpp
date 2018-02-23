@@ -1251,7 +1251,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F3 - pohled celé schéma
 		case 114:RzToolButton11Click(Sender);break;
 		//F4
-		case 115:Vybratoknem1Click(Sender);break;
+		case 115:if(!ssAlt)Vybratoknem1Click(Sender);break;//pokud se nejedná o ALT+F4
 		//F5
 		case 116:Posouvat1Click(Sender);break;
 		//F6

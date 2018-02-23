@@ -406,17 +406,31 @@ double Cvektory::vrat_soucet_delek_vsech_objektu()
 	return SUM;
 }
 //---------------------------------------------------------------------------
-//vrátí počet objektů v režimu S&G
-unsigned int Cvektory::pocet_objektu_SG()
+//vrátí počet objektů v požadovaném režimu, nebo v případě implicitního parametru -1 objekty ve všech režimech
+unsigned int Cvektory::pocet_objektu(short typ)
 {
 	unsigned int pocet=0;
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
-	{
-		if(O->rezim==0)pocet++;
+	{                     //celkový počet
+		if(O->rezim==typ || typ==-1)pocet++;
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;
+	return pocet;
+}
+//---------------------------------------------------------------------------
+//vrátí počet objektů v požadovaném režimu pro danou zakázku, nebo v případě implicitního parametru -1 objekty ve všech režimech pro danou zakázku
+unsigned int Cvektory::pocet_objektu(TZakazka *Zakazka,short typ)
+{
+	unsigned int pocet=0;
+	TCesta *C=Zakazka->cesta->dalsi;//přeskočí hlavičku
+	while (C!=NULL)
+	{                     //celkový počet
+		if(C->objekt->rezim==typ || typ==-1)pocet++;
+		C=C->dalsi;//posun na další prvek
+	}
+	C=NULL;delete C;
 	return pocet;
 }
 //---------------------------------------------------------------------------
@@ -2531,6 +2545,38 @@ void Cvektory::uloz_doporucene_kapacity_objetku()
 		ukaz->kapacita_dop=vrat_kapacitu_objektu(ukaz);
 		ukaz=ukaz->dalsi;
 	}
+}
+//---------------------------------------------------------------------------
+//vrátí minimální, střední, průměrnou a maximální dobu čekání na palec v sec pro daný objekt (segment cesty) tak, jak bylo vypočteno v analýze/na časových osách, musí být tedy zde zvolena nějaká (libovolná) volba čekání na palec, mimo "žádná"Struktura TMinMedAvgMax_d vrací 4 hodnoty, min, med, agv, max datového typu double, volání výsledků probíhá přes “tečkový selektor”
+TMinMedAvgMax_d Cvektory::vrat_statisticke_doby_cekani_na_palec(TCesta *segment_cesty)
+{
+	 //definice
+	 double min=9999999.9;//pouze velká hodnota
+	 double max=0;
+	 long pocet=0.0;
+	 double soucet=0.0;
+	 TMinMedAvgMax_d RET; RET.Min=0.0;RET.Med=0.0;RET.Avg=0.0;RET.Max=0.0;
+	 //výpočet
+	 TProces *P=PROCESY->dalsi;
+	 while(P!=NULL)
+	 {
+		 if(P->segment_cesty==segment_cesty)
+		 {
+			 double T=P->Tcek-P->Tpre;
+			 if(T>max)max=T;
+			 if(T<min)min=T;
+			 pocet++;
+		 }
+		 P=P->dalsi;
+	 }
+	 delete P;
+	 //návratové hodnoty
+	 if(min!=9999999.9)RET.Min=min;
+	 RET.Med=(max+min)/2.0;
+	 if(pocet>0)RET.Avg=soucet/pocet;
+	 RET.Max=max;
+	 //navrácení hodnoty
+   return RET;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
