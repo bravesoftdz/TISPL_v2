@@ -2635,14 +2635,13 @@ object Form_parametry: TForm_parametry
     Style = enFloat
   end
   object Memo1: TMemo
-    Left = 128
-    Top = 561
+    Left = 8
+    Top = 321
     Width = 167
-    Height = 25
+    Height = 64
     Lines.Strings = (
       'Memo1')
     TabOrder = 26
-    Visible = False
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
