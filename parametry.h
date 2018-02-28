@@ -107,7 +107,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,C};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;
 
@@ -116,6 +116,7 @@ private:	// User declarations
 	void input_DD();//pøepoèet hodnot vyplývajících ze zmìny DD
 	void input_RD();//pøepoèet hodnot vyplývajících ze zmìny RD
 	void input_K();//pøepoèet hodnot vyplývajících ze zmìny Kapacity
+	void input_mezera(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void null_input_value();//vynuluje vstupní hodnoty
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
