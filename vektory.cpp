@@ -67,7 +67,7 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
 	novy->mV=1;//rozdíl počet mezer a vozíků
-	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
+	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
 	novy->delka_dopravniku=PP.delka_voziku;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -100,7 +100,7 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
 	novy->mV=1;//rozdíl počet mezer a vozíků
-	novy->pohon=POHONY->dalsi;//ukazatel na default pohon (tedy hlavní)
+	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu

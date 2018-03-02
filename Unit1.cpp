@@ -2773,51 +2773,9 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 {
 	if(pom!=NULL)
 	{
+		Form_parametry->scGPButton_header_projekt->Visible=false;//toto je k čemu?
 		////plnění daty
-		//combo POHONY
-		Form_parametry->scGPButton_header_projekt->Visible=false;
-		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
-		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
-		Form_parametry->existuje_pohon=true;
-		TscGPListBoxItem *t=NULL;
-		if(ukaz==NULL)//pokud neexitustuje žádný pohon
-		{
-			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-			t->Caption="nebyl nadefinován";
-			Form_parametry->existuje_pohon=false;
-			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
-			Form_parametry->scGPButton_header_projekt->Visible=true;
-			//Form_parametry->scGPButton_header_projekt->Left=Form_parametry->scComboBox_pohon->Left+Form_parametry->scComboBox_pohon->Width-100;
-
-
-		}
-		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
-		{
-			//vytvoření položky nepřiřazen
-			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-			t->Caption="nepřiřazen";
-			//plnění existujícím pohony
-			//ShowMessage(Form_parametry->RDunitT);
-			double jednotky_cas_pohon=60.0;
-			UnicodeString caption_jednotky;
-			//if(Form_parametry->RDunitT==Form_parametry->MIN){
-			jednotky_cas_pohon=60.0;caption_jednotky="m/min";
-			//pri prvnim zobrazeni jsou problemy se zobrazenim jednotek (RDunitT=0), proto natvrdo vzdy zobrazim m/min
-			//}
-			//else {jednotky_cas_pohon=1.0;caption_jednotky="m/s";}
-			while (ukaz!=NULL)
-			{
-				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-				t->Caption=ukaz->name+" "+AnsiString(m.round2double(ukaz->rychlost_od*jednotky_cas_pohon,2))+"-"+AnsiString(m.round2double(ukaz->rychlost_do*jednotky_cas_pohon,2))+caption_jednotky;
-				ukaz=ukaz->dalsi;
-				Form_parametry->scGPButton_header_projekt->Visible=false;
-			}
-			//nastavení comba, aby ukazoval na dříve vybraný pohon
-			if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
-			else Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen
-		}
-
-
+		aktualizace_combobox_pohony_v_PO();
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
 		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
@@ -2947,6 +2905,49 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
 	}
+}
+//---------------------------------------------------------------------------
+//zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
+void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
+{
+		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
+		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
+		Form_parametry->existuje_pohon=true;
+		TscGPListBoxItem *t=NULL;
+		if(ukaz==NULL)//pokud neexitustuje žádný pohon
+		{
+			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+			t->Caption="nebyl nadefinován";
+			Form_parametry->existuje_pohon=false;
+			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
+			Form_parametry->scGPButton_header_projekt->Visible=true;
+		}
+		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
+		{
+			//vytvoření položky nepřiřazen
+			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+			t->Caption="nepřiřazen";
+
+      //příprava vypisovaných jednotek
+			double jednotky_cas_pohon=60.0;	AnsiString Tcas="min";//tzn. min (ač 60 působí nelogicky)
+			if(Form1->readINI("nastaveni_form_parametry","RDt")=="0" || RDunitT==0)
+			{jednotky_cas_pohon=1.0;Tcas="s";}//tzn. sec
+			double jednotky_delka_pohon=100.0;AnsiString Td="mm";//tzn. mm
+			if(Form1->readINI("nastaveni_form_parametry","RDd")=="0"  || RDunitD==0){jednotky_delka_pohon=1.0;Td="m";}//tzn. m
+			UnicodeString caption_jednotky=Td+"/"+Tcas;
+
+			//plnění existujícím pohony
+			while (ukaz!=NULL)
+			{
+				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
+				t->Caption=ukaz->name+" - "+AnsiString(m.round2double(ukaz->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(ukaz->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+" "+caption_jednotky;
+				ukaz=ukaz->dalsi;
+				Form_parametry->scGPButton_header_projekt->Visible=false;//toto je k čemu?
+			}
+			//nastavení comba, aby ukazoval na dříve vybraný pohon
+			if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
+			else Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen
+		}
 }
 //---------------------------------------------------------------------------
 //aktualizace a přepočet hodnot volaná kvůli časovým osám (maro) a techn.procesům(roma)
