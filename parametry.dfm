@@ -2286,7 +2286,6 @@ object Form_parametry: TForm_parametry
     Width = 28
     Height = 29
     TabOrder = 21
-    Visible = False
     OnClick = scButton_zamek_DDClick
     Animation = False
     CanFocused = False
@@ -2371,7 +2370,7 @@ object Form_parametry: TForm_parametry
     Width = 28
     Height = 29
     TabOrder = 22
-    OnClick = scButton_zamek_CTClick
+    OnClick = scButton_zamek_RDClick
     Animation = False
     CanFocused = False
     CustomDropDown = False

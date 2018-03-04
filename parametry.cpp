@@ -1530,13 +1530,25 @@ void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 	{
 		scButton_zamek_DD->ImageIndex=38;
 		DD_zamek=UNLOCKED;
-		//set(DELKA,ENABLED,false);
+
+		scButton_zamek_CT->ImageIndex=37;
+		CT_zamek=LOCKED;
+
+		scButton_zamek_RD->ImageIndex=38;
+		RD_zamek=UNLOCKED;
+			//set(DELKA,ENABLED,false);
 	}
 	else//odemèeno
 	{
 		scButton_zamek_DD->ImageIndex=37;
 		DD_zamek=LOCKED;
-		set(DELKA,DISABLED,false);
+
+		scButton_zamek_CT->ImageIndex=38;
+		CT_zamek=UNLOCKED;
+
+		scButton_zamek_RD->ImageIndex=38;
+		RD_zamek=UNLOCKED;
+		//set(DELKA,DISABLED,false);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1661,6 +1673,37 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 	 Form_parametry->Close();
 	 Form1->Button_dopravnik_parametryClick(Sender);
 
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
+{
+	if(scButton_zamek_RD->ImageIndex==37)//když je zamèeno
+	{
+		//RD
+		scButton_zamek_RD->ImageIndex=38;
+		RD_zamek=UNLOCKED;
+		//CT
+		scButton_zamek_CT->ImageIndex=37;
+		CT_zamek=LOCKED;
+
+		//DD - délka kabiny
+		scButton_zamek_DD->ImageIndex=38;
+		DD_zamek=UNLOCKED;
+	}
+	else//odemèeno
+	{
+		//RD
+		scButton_zamek_RD->ImageIndex=37;
+		RD_zamek=LOCKED;
+		//CT
+		scButton_zamek_CT->ImageIndex=38;
+		CT_zamek=UNLOCKED;
+
+		//DD - délka kabiny
+		scButton_zamek_DD->ImageIndex=38;
+		DD_zamek=UNLOCKED;
+	}
 }
 //---------------------------------------------------------------------------
 
