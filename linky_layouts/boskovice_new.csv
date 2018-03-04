@@ -1,0 +1,27 @@
+Parametry projektu;ELTEP - tispl - [boskovice_new.tispl]
+Poadované celkové mnoství;20000
+Poèet pracovních dní [rok];365
+Poèet pracovních hodin [den];8
+Efektivita [%];95
+Zaèátek vıroby;21.02.2018 8:00:00
+Délka vozíku;1,2
+
+Pøehled pohonù;
+ID;Název;Rychlost od [m/min];Rychlost do [m/min];Rozteè palcù [mm];
+1;hlavni;0;7;360;
+2;kabina_lak;0;3;342,9;
+
+Architekt: Pøehled objektù a jejich parametrù
+ID;Název;Zkratka;Reim;CT [s];Kapacita doporuèená;Kapacita nastavená;Název pohonu;Rychlost pohonu [m/min];Rozsah pohonu [m/min];Rozteè palcù [mm];Délka kabiny [m];Mezera mezi vozíky [m]
+0;navìšování;NAV;STOP & GO;120;1;0;hlavni;nerelevantní;0-7;360;nerelevantní;0
+9;pøejezd;PRE;STOP & GO;120;1;0;hlavni;nerelevantní;0-7;360;nerelevantní;0
+9;pøejezd;PRE;STOP & GO;120;1;0;hlavni;nerelevantní;0-7;360;nerelevantní;0
+11;oeh;OEH;STOP & GO;120;1;0;hlavni;nerelevantní;0-7;360;nerelevantní;0
+2;ionizace;ION;STOP & GO;120;1;0;hlavni;nerelevantní;0-7;360;nerelevantní;0
+3;lakování;LAK;STOP & GO;120;1;0;kabina_lak;nerelevantní;0-3;342,9;nerelevantní;0
+4;vytìkání;VY;POSTPROCESNÍ;180;1,5;0;hlavni;nerelevantní;0-7;360;1,8;0
+9;pøejezd;PRE;STOP & GO;120;1;0;hlavni;nerelevantní;0-7;360;nerelevantní;0
+9;pøejezd;PRE;STOP & GO;120;1;0;hlavni;nerelevantní;0-7;360;nerelevantní;0
+5;sušení;SUŠ;POSTPROCESNÍ;1800;15;0;hlavni;nerelevantní;0-7;360;18;0
+6;chlazení;CHL;POSTPROCESNÍ;120;1;0;hlavni;nerelevantní;0-7;360;1,2;0
+11;svìšování;SVÌŠ;KONTINUÁLNÍ;120;1;0;hlavni;0,6;0-7;360;1,2;0

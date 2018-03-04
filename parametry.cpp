@@ -1502,6 +1502,10 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 		//RD
 		scButton_zamek_RD->ImageIndex=37;
 		RD_zamek=LOCKED;
+
+		//DD - délka kabiny
+		scButton_zamek_DD->ImageIndex=38;
+		DD_zamek=UNLOCKED;
 	}
 	else//odemèeno
 	{
@@ -1511,6 +1515,10 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 		//RD
 		scButton_zamek_RD->ImageIndex=38;
 		RD_zamek=UNLOCKED;
+
+		//DD - délka kabiny
+		scButton_zamek_DD->ImageIndex=38;
+		DD_zamek=UNLOCKED;
 	}
 
 }
@@ -1522,7 +1530,7 @@ void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 	{
 		scButton_zamek_DD->ImageIndex=38;
 		DD_zamek=UNLOCKED;
-		set(DELKA,ENABLED,false);
+		//set(DELKA,ENABLED,false);
 	}
 	else//odemèeno
 	{

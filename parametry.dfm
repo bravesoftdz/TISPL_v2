@@ -2033,6 +2033,7 @@ object Form_parametry: TForm_parametry
     ScaleFrameWidth = True
     ScaleCheckMarkThickness = True
     ShowFocusRect = True
+    UseFontColorToStyleColor = False
   end
   object scGPGlyphButton_copy: TscGPGlyphButton
     Left = 312
@@ -2281,7 +2282,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_zamek_DD: TscButton
     Left = 204
-    Top = 270
+    Top = 245
     Width = 28
     Height = 29
     TabOrder = 21
