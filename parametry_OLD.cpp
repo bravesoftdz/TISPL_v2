@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
-#include "parametry_R_back.h"
+#include "parametry.h"
 #include "unit1.h"
 #include "parametry_linky.h"
 //---------------------------------------------------------------------------
@@ -1558,108 +1558,16 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 	 }
 }
 //---------------------------------------------------------------------------
-//kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
-void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
-{
-	if(scComboBox_rezim->ItemIndex==1)// S&G  a Postprocesní nejsou kontrolovány na rozsah
-	{
-		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-		if(P!=NULL)
-		{
-			if(scGPNumericEdit_RD->Value<P->rychlost_od || P->rychlost_do<scGPNumericEdit_RD->Value)//nesplòuje rozmezí
-			{
-				vypis("Pohon neodpovídá rychlosti!",true);
-				//-scGPButton_OK->Enabled=false;
-			}
-			else
-			{
-				vypis("");
-				//-scGPButton_OK->Enabled=true;
-			}
-		}
-	}
 
 
 
-}
-//---------------------------------------------------------------------------
 
 
-void __fastcall TForm_parametry::scGPNumericEdit_kapacitaClick(TObject *Sender)
-{
-input_clicked_edit=C_klik;
-}
-//---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender)
-{
-input_clicked_edit=CT_klik;
-}
-//---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit_RD_Click(TObject *Sender)
-{
-input_clicked_edit=RD_klik;
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick(TObject *Sender)
-
-{
-input_clicked_edit=DD_klik;
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scGPNumericEdit_mezeraClick(TObject *Sender)
-{
-input_clicked_edit=mezera_klik;
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
-{
-	if(input_state==NOTHING && input_clicked_edit==mezera_klik)//pokud není zadáváno z jiného vstupu
-	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
-	//hlídání velikosti mezery dle rozteèe
-
-	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
-	{
-		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-// mezera_mezi_voziky
-		 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
-		 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
-		 double doporuc_mezera= Form1->m.mezera_mezi_voziky(dV,P->roztec,scGPNumericEdit_mezera->Value);
-		if(P!=NULL)
-		{                            //je "zbytek po dìlení"
-			if(P->roztec>0 /* && !Form1->m.cele_cislo(scGPNumericEdit_mezera->Value/P->roztec)*/)//nesplòuje rozmezí
-			{
-				//vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
-				vypis("Doporuèená mezera: "+AnsiString(doporuc_mezera)+" m",true);
-
-//				if(doporuc_mezera==scGPNumericEdit_mezera->Value){
-//						scGPButton_OK->Enabled=true;  }
-//				 else 	scGPButton_OK->Enabled=false;
-			}
-			else
-			{
-				vypis("");
-				scGPButton_OK->Enabled=true;
-			}
-		}
-	}
-}
-//---------------------------------------------------------------------------
 
 
 
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
-
-{
-	 Form_parametry->Close();
-	 Form1->Button_dopravnik_parametryClick(Sender);
-
-}
-//---------------------------------------------------------------------------
 
