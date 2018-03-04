@@ -17,6 +17,7 @@
 #include "scGPControls.hpp"
 #include <Vcl.Mask.hpp>
 #include "scGPExtControls.hpp"
+#include "parametry_math.h"
 //---------------------------------------------------------------------------
 class TForm_parametry : public TForm
 {
@@ -95,14 +96,6 @@ __published:	// IDE-managed Components
 	void __fastcall scButton_zamek_CTClick(TObject *Sender);
 	void __fastcall scButton_zamek_DDClick(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
-	void __fastcall scComboBox_pohonChange(TObject *Sender);
-	void __fastcall scGPNumericEdit_kapacitaClick(TObject *Sender);
-	void __fastcall scGPNumericEdit_CTClick(TObject *Sender);
-	void __fastcall scGPNumericEdit_RD_Click(TObject *Sender);
-	void __fastcall scGPNumericEdit_delka_dopravnikuClick(TObject *Sender);
-	void __fastcall scGPNumericEdit_mezeraClick(TObject *Sender);
-	void __fastcall scGPNumericEdit_mezeraChange(TObject *Sender);
-	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
@@ -118,6 +111,8 @@ private:	// User declarations
 	void input_K();//pøepoèet hodnot vyplývajících ze zmìny Kapacity
 	void input_mezera(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void null_input_value();//vynuluje vstupní hodnoty
+
+	TParametry_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. parametry_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
 
