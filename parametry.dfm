@@ -939,6 +939,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 13
     OnChange = scGPNumericEdit_CTChange
+    OnClick = scGPNumericEdit_CTClick
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rezim: TscGPComboBox
@@ -1164,6 +1165,7 @@ object Form_parametry: TForm_parametry
     ListBoxOptions.FrameWidth = 1
     ListBoxOptions.FrameScaleWidth = False
     Color = clWhite
+    OnChange = scComboBox_pohonChange
     OnKeyDown = FormKeyDown
   end
   object scGPEdit_name: TscGPEdit
@@ -1569,6 +1571,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 4
     OnChange = scGPNumericEdit_delka_dopravnikuChange
+    OnClick = scGPNumericEdit_delka_dopravnikuClick
     OnKeyDown = FormKeyDown
   end
   object scGPEdit_shortname: TscGPEdit
@@ -1813,6 +1816,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 15
     OnChange = scGPNumericEdit_kapacitaChange
+    OnClick = scGPNumericEdit_kapacitaClick
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rotace: TscGPComboBox
@@ -2278,7 +2282,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_zamek_DD: TscButton
     Left = 204
-    Top = 270
+    Top = 245
     Width = 28
     Height = 29
     TabOrder = 21
@@ -2607,6 +2611,8 @@ object Form_parametry: TForm_parametry
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 24
+    OnChange = scGPNumericEdit_mezeraChange
+    OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_RD: TrEditNum
@@ -2626,13 +2632,14 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 25
     OnChange = scGPNumericEdit_RD_Change
+    OnClick = scGPNumericEdit_RD_Click
     Style = enFloat
   end
   object Memo1: TMemo
-    Left = 8
-    Top = 321
+    Left = 132
+    Top = 552
     Width = 167
-    Height = 64
+    Height = 25
     Lines.Strings = (
       'Memo1')
     TabOrder = 26
@@ -2653,6 +2660,7 @@ object Form_parametry: TForm_parametry
     ShowHint = True
     TabOrder = 27
     Visible = False
+    OnClick = Button_dopravnik_parametryClick
     Animation = False
     CanFocused = False
     CustomDropDown = False
