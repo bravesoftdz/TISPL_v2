@@ -9,6 +9,7 @@ USEFORM("report.cpp", Form_report);
 USEFORM("superform.cpp", Form_definice_zakazek);
 USEFORM("parametry.cpp", Form_parametry);
 USEFORM("parametry_linky.cpp", Form_parametry_linky);
+USEFORM("pl_priority.cpp", Form_PL_priority);
 USEFORM("uvod.cpp", Form_uvod);
 USEFORM("Unit1.cpp", Form1);
 USEFORM("eDesigner.cpp", Form_eDesigner);
@@ -17,7 +18,6 @@ USEFORM("cesty.cpp", Form_cesty);
 USEFORM("MyMessageBox.cpp", myMessageBox);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("kalendar.cpp", Form_kalendar);
-USEFORM("pl_priority.cpp", Form_PL_priority);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
