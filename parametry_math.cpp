@@ -9,7 +9,9 @@
 void TParametry_math::input_CT()
 {
 	if(RD_locked)DD=RD*CT;//pro pøípad RD zamèeno
-	else RD=DD/CT;//pro pøípad DD zamèeno
+	else RD=DD/CT;				//pro pøípad DD zamèeno
+
+	//vyladit
 	K=CT/TT;//výpoèet kapacity
 	if(mV==1)//poèet mezer o jednu menší než poèet vozíkù
 	{
@@ -21,13 +23,15 @@ void TParametry_math::input_CT()
 //pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD
 void TParametry_math::input_RD()
 {
-
+	if(CT_locked)DD=RD*CT;//pro pøípad CT zamèeno
+	else CT=DD/RD;				//pro pøípad DD zamèeno
 }
 //---------------------------------------------------------------------------
 //pøepoèet  souvisejících hodnot vyplývajících ze zmìny DD
 void TParametry_math::input_DD()
 {
-
+	if(RD_locked)CT=DD/RD;//pro pøípad RD zamèeno
+	else RD=DD/CT;				//pro pøípad CT zamèeno
 }
 //---------------------------------------------------------------------------
 //pøepoèet  souvisejících hodnot vyplývajících ze zmìny K

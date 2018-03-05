@@ -5,13 +5,17 @@
 class TParametry_math
 {
 	public:
-    double TT;//takt linky
+		double TT;//takt linky
+		unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
 		double CT;//celkový technologický èáas objektu
 		double RD;//rychlost dopravníku
 		double DD;//délka kabiny
 		double K;//kapacita
 		double M;//mezera mezi vozíky
-		double dV;//užitná délka vozíku (tj. strana dle rotace v objektu)
+		double dV;//délka vozíku z parametrù linky
+		double sV;//šíøka vozíku z parametrù linky
+		double Rotace;
+		double R;//rozteè palcù aktuálního dopravníku
 		short  mV;//rozdíl poèet mezer a vozíkù (vìtšinou o jednu ménì tj. 1)
 		bool CT_locked;//stav zámku
 		bool RD_locked;//stav zámku
