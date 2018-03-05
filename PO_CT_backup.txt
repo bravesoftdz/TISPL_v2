@@ -1,0 +1,89 @@
+ input_state=CT;
+	 double CT=scGPNumericEdit_CT->Value;//CT od uživatele
+	 if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy
+	 if(CT>0)//nutné ošetøení pro období zadávání/psaní
+	 {
+			 //default nastavení komponent
+			 //ROSTA//scGPNumericEdit_kapacita->Decimal=0;
+			 vypis("");
+			 scGPButton_OK->Enabled=true;
+			 scGPButton_OK->Caption="Uložit";
+
+			 //volba šíøka èi délka jigu
+			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+			 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+			 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
+			 short p=!scGPCheckBox_pocet_mezer->Checked;//poèet mezer mezi vozíky
+
+			 //dle øežimu objektu
+			 if(scComboBox_rezim->ItemIndex==0)//S&G
+			 {
+				 //ošetøení a pøípadnì následné øešení situací, kdy není totožný procesní èas a TT
+				 if(CT<Form1->d.v.PP.TT)
+    		 {
+    			scGPButton_OK->Enabled=false;
+					vypis("Technologický èas je nižší než TT!");
+				 }
+				 if(CT>Form1->d.v.PP.TT)
+				 {
+						if(fmod(CT,Form1->d.v.PP.TT)==0)
+    				{
+							kapacitaSG=CT/Form1->d.v.PP.TT;//pro další použití
+    					vypis("Rozložit na "+AnsiString(kapacitaSG)+"x "+scGPEdit_name->Text.UpperCase()+"?");
+    		 			scGPButton_OK->Enabled=true;
+    					scGPButton_OK->Caption="Ano a uložit";
+    		 		}
+    				else
+    		 		{
+							scGPButton_OK->Enabled=false;
+							vypis("Zmìnte režim nebo rozložte do více objektù!");
+						}
+				 }
+				 else kapacitaSG=1;
+    	 }
+    	 else//KONTINUAL+PP
+			 {
+				 //KAPACITA
+					double K=0;
+				 if(m>0) { K=(DD+m)/(dV+m); scGPNumericEdit_kapacita->Value=K; }
+				 else 	 { K=CT/Form1->d.v.PP.TT; scGPNumericEdit_kapacita->Value=K;}//výpoèet když neexistuje (mezera=0)
+
+				 //ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+				//plnìní patøièného políèka
+				 scGPNumericEdit_kapacita->Font->Color=clBlack;
+				 //pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+				 if(Form1->ms.get_count_decimal(K)>0)
+				 {
+					scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+					if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+					if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+					else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+           scGPButton_OK->Enabled=true;
+					//ROSTA-puvodni//scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
+				 }
+				 //DÉLKA DOPRAVNÍKU
+				 double DD=K*dV+(K-p)*m;//ošetøeno i pro stav kdy je stejný poèet mezer jako vozíku
+				 if(DDunit==MM)DD*=1000.0;
+				 //ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+				 scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+				 if(DDunit==MM)DD/=1000.0;//vracení do pùvodního stavu k dalšímu použití
+				 //RYCHLOST DOPRAVNÍKU (èistì jen pro KONTINUAL)
+				 if(scComboBox_rezim->ItemIndex==1)
+				 {
+				 if(RD_zamek==UNLOCKED) {
+					double RD=DD/CT;
+					if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
+					//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
+						}
+					if(RD_zamek==LOCKED) {
+					double RD=scGPNumericEdit_RD->Value;
+								scGPNumericEdit_delka_dopravniku->Value=RD*(CT/60.0);
+
+					}
+				 }
+			 }
+	 }
+	 else
+	 null_input_value();
+	 input_state=NOTHING;
