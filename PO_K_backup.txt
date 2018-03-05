@@ -1,0 +1,63 @@
+
+   //ShowMessage("Ne - prepocitam");
+	 input_state=C;
+	 double K=scGPNumericEdit_kapacita->Value;//získání kapacity od uživatele
+	 if(K>0)//nutné ošetøení pro období zadávání/psaní
+	 {
+	 //ShowMessage(K);
+    	 //default nastavení komponent
+    	 //ROSTA//scGPNumericEdit_kapacita->Decimal=0;
+			 vypis("");
+			 scGPButton_OK->Enabled=true;
+			 scGPButton_OK->Caption="Uložit";
+
+			 //volba šíøka èi délka jigu
+			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+			 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+			 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
+			 short p=!scGPCheckBox_pocet_mezer->Checked;//poèet mezer mezi vozíky
+
+			 //PROCESNÍ ÈAS resp. CT
+			 double CT = 0;//Form1->d.v.PP.TT;
+			 if(CT_zamek==UNLOCKED)
+			 {
+					 CT=Form1->d.v.PP.TT*K;
+					 if(CTunit==MIN)
+					 {
+							//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT/60.0);//nastaví zobrazení poètu desetinných míst
+							scGPNumericEdit_CT->Value=CT/60.0;//plnìní patøièného políèka
+					 }
+					 else
+					 {
+							//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+							scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
+					 }
+			 }
+			 else
+			 {
+						CT=scGPNumericEdit_CT->Value; if(CTunit==MIN)CT*=60;
+			 }
+
+       //DÉLKA DOPRAVNÍKU
+			 double DD = K*dV+(K-p)*m;//ošetøeno i pro stav stejného poètu vozíku a mezer;
+			 if(DDunit==MM)DD*=1000.0;
+			 //ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+			 scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+			 if(DDunit==MM)DD/=1000.0;//navrácení do pùvodního stavu kvùli dalšímu použití
+
+    	 //RYCHLOST DOPRAVNÍKU (èistì jen pro KONTINUAL)
+    	 if(scComboBox_rezim->ItemIndex==1)
+			 {
+					double RD=DD/CT;
+					if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
+					//ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_RD->Value=RD;//plnìní patøièného políèka
+			 }
+	 }
+	 else
+	 {
+		null_input_value();
+		vypis("Doporuèená kapacita je 1!");
+		scGPButton_OK->Enabled=false;
+	 }
+	 input_state=NOTHING;

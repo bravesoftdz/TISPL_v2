@@ -1,0 +1,138 @@
+ input_state=RD;
+	 double RD=scGPNumericEdit_RD->Value;
+	 //pøevede pøípadnì na metr a na jednu sekundu, není-li
+	 if(RDunitD==MM)RD/=1000.0;
+	 if(RDunitT==MIN)RD/=60.0;
+
+	 if(RD>0)//nutné ošetøení pro období zadávání/psaní
+	 {
+			 //default nastavení komponent
+			 //ROSTA//scGPNumericEdit_kapacita->Decimal=0;
+			 vypis("");
+    	 scGPButton_OK->Enabled=true;
+			 scGPButton_OK->Caption="Uložit";
+
+			 //volba šíøka èi délka jigu
+			 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
+			 if(scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
+			 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
+			 short p=!scGPCheckBox_pocet_mezer->Checked;//poèet mezer mezi vozíky
+
+    	 double K=0;
+			 if(m>0 && p==1)//pokud je rozdílný poèet mezer jako vozíkù a mezera je nenulova, lze pøímo z RD vypoèítat ostatní hodnoty
+			 {
+    			//KAPACITA
+					K=m/(dV+m-RD*Form1->d.v.PP.TT);
+					//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
+					scGPNumericEdit_kapacita->Font->Color=clBlack;
+					//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+					if(Form1->ms.get_count_decimal(K)>0)
+					{
+            scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+						if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+						if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+						else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+            scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
+					}
+
+					//DÉLKA DOPRAVNÍKU
+					double DD = K*dV+(K-p)*m;
+					if(DDunit==MM)DD*=1000.0;
+					//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+					if(DDunit==MM)DD/=1000.0;//vrácení do pùvodního stavu kvùli dalšímu použit
+
+
+    			//PROCESNÍ ÈAS resp. CT
+					double CT = RD/DD;
+					if(CTunit==MIN)CT/60.0;
+					//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+					scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
+			 }
+    	 else //pokud ne, je nutné získat další nenulový vstup
+			 {
+					double DD=scGPNumericEdit_delka_dopravniku->Value;if(DDunit==MM)DD/=1000.0; //na metry
+					double CT=scGPNumericEdit_CT->Value;if(CTunit==MIN)CT*60.0; //na sekunkdy
+    			double K=scGPNumericEdit_kapacita->Value;
+
+    			if(DD!=0)//pokud je známá délka dopravníku resp. délka kabiny
+					{
+    				//KAPACITA
+						K=DD/RD/Form1->d.v.PP.TT;
+						//ShowMessage(K);
+						//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+						scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
+						scGPNumericEdit_kapacita->Font->Color=clBlack;
+
+					 //	Memo1->Lines->Add(AnsiString(DD)+" "+RD+" "+Form1->d.v.PP.TT);
+						//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+						if(Form1->ms.get_count_decimal(K)>0)
+						{
+							scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+							if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+							if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+							else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+              scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
+						}
+
+    				//PROCESNÍ ÈAS resp. CT
+						double CT = DD/RD;
+						if(CTunit==MIN)CT/60.0;
+						//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+						scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
+							//Memo1->Lines->Add(K);
+    			}
+    			else
+					{
+						if(CT!=0)//pokud není známá délka ale je známe CT
+    				{
+        			//DÉLKA DOPRAVNÍKU
+							DD=RD*CT;
+							if(DDunit==MM)DD*=1000.0;
+							//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+							scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+
+        			//KAPACITA
+							K=CT/Form1->d.v.PP.TT;
+        			//ROSTA//scGPNumericEdit_kapacita->Decimal=Form1->ms.get_count_decimal(K);//nastaví zobrazení poètu desetinných míst
+        			scGPNumericEdit_kapacita->Value=K;//plnìní patøièného políèka
+              scGPNumericEdit_kapacita->Font->Color=clBlack;
+							//pokud obsahuje kapacita reálnou èást, vypíše doporuèení
+							if(Form1->ms.get_count_decimal(K)>0)
+							{
+                scGPNumericEdit_kapacita->Font->Color=clRed;//zvýraznìní neplatné vyplývající položky
+								if(Form1->m.round(K)==0)K=1;//ošetøení pokud by vycházela kapacita 0,nìco bylo by zaokrouhleno na 0 a tudíž by se vypisoval doporuèený technologický èas 0
+								if(CTunit==MIN)vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT/60.0)+" min!");
+								else vypis("Doporuèený technologický èas je: "+AnsiString(Form1->m.round(K)*Form1->d.v.PP.TT)+" s!");
+                scGPButton_OK->Enabled=false;//zakáže ukládací tlaèítko
+							}
+						}
+    				else
+    				{
+    					if(K!=0)//pokud není známá délka ani CT a je známá K
+    					{
+    						//DÉLKA DOPRAVNÍKU
+								DD=RD*Form1->d.v.PP.TT*K;
+								if(DDunit==MM)DD*=1000.0;
+								//ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(DD);//nastaví zobrazení poètu desetinných míst
+								scGPNumericEdit_delka_dopravniku->Value=DD;//plnìní patøièného políèka
+								if(DDunit==MM)DD/=1000.0;//navrácení do pùvodního stavu kvùli dalšímu použití
+
+    						//PROCESNÍ ÈAS resp. CT
+								double CT = RD/DD;
+								if(CTunit==MIN)CT/60.0;
+								//ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+								scGPNumericEdit_CT->Value=CT;//plnìní patøièného políèka
+    					}
+    					else//pokud kromì RD není nic zadané a je požadovaná další hodnota
+							{
+								vypis("Zadejte libovolnou další hodnotu!");
+              }
+    				}
+    			}
+			 }
+	 }
+	 else
+	 null_input_value();
+	 input_state=NOTHING;
