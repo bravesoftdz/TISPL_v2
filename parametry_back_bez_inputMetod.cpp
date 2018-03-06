@@ -136,18 +136,17 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 			else
 				Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-Form1->scGPPanel_statusbar->Height-10;
 
-
 			//aktualizace hodnot
-//			if(scGPNumericEdit_CT->Value>0)/*input_CT();*/ ShowMessage(input_state);
-//			else
-//			{
-//				if(scGPNumericEdit_delka_dopravniku->Value>0)input_DD();
-//				else
-//				{
-//					 if(scGPNumericEdit_kapacita->Value>0)input_K();
-//					 else input_RD();
-//				}
-//			}
+			if(scGPNumericEdit_CT->Value>0)input_CT();
+			else
+			{
+				if(scGPNumericEdit_delka_dopravniku->Value>0)input_DD();
+				else
+				{
+					 if(scGPNumericEdit_kapacita->Value>0)input_K();
+					 else input_RD();
+				}
+			}
 	}
 				if(scComboBox_rezim->ItemIndex!=0)// S&G  neøeší délku mezery
 	{
@@ -568,17 +567,15 @@ void __fastcall TForm_parametry::scGPEdit_nameChange(TObject *Sender)
 //pøi zmìnách EDITù
 void __fastcall TForm_parametry::scGPNumericEdit_CTChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==CT_klik){
-		 input_CT();//pøepoèet hodnot vyplývajících ze zmìny CT
-	 }
+	if(input_state==NOTHING && input_clicked_edit==CT_klik)//pokud není zadáváno z jiného vstupu
+	input_CT();//pøepoèet hodnot vyplývajících ze zmìny CT
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==DD_klik) {
+	if(input_state==NOTHING && input_clicked_edit==DD_klik)//pokud není zadáváno z jiného vstupu
 	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 	//hlídání velikosti mezery dle rozteèe
-	}
 	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
 	{
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
@@ -627,16 +624,16 @@ void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==C_klik) {
-		 input_K();//pøepoèet hodnot vyplývajících ze zmìny K
-	}
+//	ShowMessage("zadavano z jineho vstupu?");
+	if(input_state==NOTHING && input_clicked_edit==C_klik)//pokud není zadáváno z jiného vstupu
+
+	input_K();//pøepoèet hodnot vyplývajících ze zmìny K
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPCheckBox_pocet_mezerClick(TObject *Sender)
 {
- if(input_state==NOTHING && input_clicked_edit==mezera_klik){
-	 input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
- }
+ if(input_state==NOTHING && input_clicked_edit==mezera_klik)
+ input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -644,23 +641,6 @@ void __fastcall TForm_parametry::scGPCheckBox_pocet_mezerClick(TObject *Sender)
 //pøepoèet hodnot vyplývajících ze zmìny CT
 void TForm_parametry::input_CT()
 {
-		input_state=CT;
-		if(scGPNumericEdit_CT->Value>0)//nutné ošetøení pro období zadávání/psaní
-	 {
-		LoadDataFromFormAndSave();
- //	 Memo1->Lines->Add(AnsiString("CT: ")+CT+AnsiString(" RD: ")+RD+AnsiString(" DD: ")+DD+AnsiString(" K: ")+K+AnsiString(" m: ")+m+AnsiString(" dV: ")+dV+AnsiString(" sV: ")+sV+AnsiString(" rotace: ")+rotace+AnsiString(" pm.R: ")+pm.R+AnsiString(" pm.mV: ")+pm.mV+AnsiString(" rezim: ")+rezim);
-	 pm.input_CT();  //zavolání výpoèetního modelu
-	}
-
-	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
-
- //scGPNumericEdit_CT->Value=pm.CT;   if(CTunit==MIN)scGPNumericEdit_CT->Value/=60.0;   - CT nemohu naèítat když ho mìním - zpùsobuje problémy
- scGPNumericEdit_RD->Value=pm.RD;   if(RDunitT==MIN)scGPNumericEdit_RD->Value/=60.0; if(RDunitD==MM)scGPNumericEdit_RD->Value/=1000.0;
- scGPNumericEdit_delka_dopravniku->Value=pm.DD;   if(DDunit==MM)scGPNumericEdit_delka_dopravniku->Value*=1000.0;
- scGPNumericEdit_kapacita->Value=pm.K;
- scGPNumericEdit_mezera->Value=pm.M;  if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0;
-
-		input_state=NOTHING;
 
 }
 //---------------------------------------------------------------------------
@@ -1190,6 +1170,8 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 		}
 	}
 
+
+
 }
 //---------------------------------------------------------------------------
 
@@ -1346,69 +1328,3 @@ void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
-void TForm_parametry::LoadDataFromFormAndSave() {
-
-  	 /////////////////// nacteni vsech hodnot z formulare do lokalnich promennych////////////////////////////////////////////////////
-	 short rezim;
-	 if(scComboBox_rezim->ItemIndex==0) rezim=0; //S&G
-	 if(scComboBox_rezim->ItemIndex==1) rezim=1; //Kontinual
-	 if(scComboBox_rezim->ItemIndex==2) rezim=2; //Postprocesni
-
-	 double TT=Form1->d.v.PP.TT;
-
-	 double CT=scGPNumericEdit_CT->Value;//CT - novì zadáno uživatelem
-	 double RD=scGPNumericEdit_RD->Value;//RD	od uživatele
-	 double DD=scGPNumericEdit_delka_dopravniku->Value;//DD od uživatele
-	 double K=scGPNumericEdit_kapacita->Value; //K od uživatele
-	 double Odchylka=scGPNumericEdit_odchylka->Value; //odchylka od uživatele
-	 double Nasleduje_cekani=scComboBox_cekani_palec->ItemIndex;   //0 - ne, 1 -ano, 2 - automaticky
-	 double Stop_stanice=scComboBox_stopka->ItemIndex;  //0 - ne, 1 -ano, 2 - automaticky
-	 double dV=Form1->d.v.PP.delka_voziku;// délka jigu
-	 double sV=Form1->d.v.PP.sirka_voziku;//šíøka jigu
-	 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
-	 short p=!scGPCheckBox_pocet_mezer->Checked;//poèet mezer mezi vozíky
-	 bool CT_locked;
-	 bool RD_locked;
-	 bool DD_locked;
-
-	 Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-
-
-	 short rotace;
-	 if(scComboBox_rotace->ItemIndex==0) rotace=0; // na délku
-	 if(scComboBox_rotace->ItemIndex==1) rotace=90; // na šíøku
-
-		//////////////////////// stavy zamku/////////////////////////////////////
-		if(CT_zamek==LOCKED) CT_locked=true;  else   CT_locked=false;
-		if(RD_zamek==LOCKED) RD_locked=true;  else   RD_locked=false;
-		if(DD_zamek==LOCKED) DD_locked=true;  else   DD_locked=false;
-
-
-
-	 //////////////////////// prevody jednotek///////////////////////////////
-
-	 if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
-	 if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
-	 if(DDunit==MM)DD/=1000.0;
-	 if(DMunit==MM) m/=1000.0;
-
-	 ///////////////uložení do výpoèetního modulu PO/////////////////////////
-	 pm.rezim=rezim;
-	 pm.TT=TT;
-	 pm.CT=CT;
-	 pm.RD=RD;
-	 pm.DD=DD;
-	 pm.K=K;
-	 pm.M=m;
-	 pm.dV=dV;
-	 pm.sV=sV;
-	 pm.Rotace=rotace;
-	 if(P!=NULL)pm.R=P->roztec; else pm.R=0;
-	 pm.mV=p;
-	 pm.CT_locked=CT_locked;
-	 pm.RD_locked=RD_locked;
-	 pm.DD_locked=DD_locked;
-
-}
-////////////////////////////////////////////////////////////////////////////
