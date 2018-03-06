@@ -67,9 +67,9 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_RD;
 	TscGPGlyphButton *scGPGlyphButton1;
 	TscGPNumericEdit *scGPNumericEdit_mezera;
+	TrEditNum *scGPNumericEdit_RD;
 	TMemo *Memo1;
 	TscGPButton *scGPButton_header_projekt;
-	TscGPNumericEdit *scGPNumericEdit_RD;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -120,7 +120,6 @@ private:	// User declarations
 	void input_K();//pøepoèet hodnot vyplývajících ze zmìny Kapacity
 	void input_mezera(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void null_input_value();//vynuluje vstupní hodnoty
-	void LoadDataFromFormAndSave();
 	TParametry_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. parametry_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky

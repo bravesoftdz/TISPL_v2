@@ -1652,8 +1652,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_odchylka: TscGPNumericEdit
-    Left = 232
-    Top = 330
+    Left = 233
+    Top = 335
     Width = 108
     Height = 29
     Options.NormalColor = clWhite
@@ -2615,13 +2615,14 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
-    Left = 8
-    Top = 321
-    Width = 218
-    Height = 75
+    Left = 114
+    Top = 522
+    Width = 192
+    Height = 61
     Lines.Strings = (
       'Memo1')
     TabOrder = 25
+    Visible = False
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
@@ -2798,14 +2799,5 @@ object Form_parametry: TForm_parametry
     OnChange = scGPNumericEdit_RD_Change
     OnClick = scGPNumericEdit_RD_Click
     OnKeyDown = FormKeyDown
-  end
-  object Memo2: TMemo
-    Left = 8
-    Top = 414
-    Width = 218
-    Height = 75
-    Lines.Strings = (
-      'Memo1')
-    TabOrder = 28
   end
 end
