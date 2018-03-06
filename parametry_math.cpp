@@ -13,11 +13,7 @@ void TParametry_math::input_CT()
 
 	//vyladit
 	K=CT/TT;//výpoèet kapacity
-	if(mV==1)//poèet mezer o jednu menší než poèet vozíkù
-	{
-		M=(DD-K*dV)/(K-1);
-	}
-
+	Mezera();
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD
@@ -46,3 +42,13 @@ void TParametry_math::input_M()
 
 }
 //---------------------------------------------------------------------------
+//vrátí velikost mezery
+double TParametry_math::Mezera()
+{
+	if(mV==1)//poèet mezer o jednu menší než poèet vozíkù
+	{
+		M=(DD-K*dV)/(K-1);
+	}
+	//else
+
+}

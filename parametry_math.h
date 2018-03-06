@@ -27,6 +27,7 @@ class TParametry_math
 		void input_K();//pøepoèet  souvisejících hodnot vyplývajících ze zmìny K
 		void input_M(); //pøepoèet  souvisejících hodnot vyplývajících ze zmìny M
 	private:
+		double Mezera();//vrátí velikost mezery
 };
 //---------------------------------------------------------------------------
 #endif
