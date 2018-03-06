@@ -67,9 +67,10 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_RD;
 	TscGPGlyphButton *scGPGlyphButton1;
 	TscGPNumericEdit *scGPNumericEdit_mezera;
-	TrEditNum *scGPNumericEdit_RD;
 	TMemo *Memo1;
 	TscGPButton *scGPButton_header_projekt;
+	TscGPNumericEdit *scGPNumericEdit_RD;
+	TMemo *Memo2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);

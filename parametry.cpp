@@ -136,17 +136,18 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 			else
 				Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-Form1->scGPPanel_statusbar->Height-10;
 
+
 			//aktualizace hodnot
-			if(scGPNumericEdit_CT->Value>0)input_CT();
-			else
-			{
-				if(scGPNumericEdit_delka_dopravniku->Value>0)input_DD();
-				else
-				{
-					 if(scGPNumericEdit_kapacita->Value>0)input_K();
-					 else input_RD();
-				}
-			}
+//			if(scGPNumericEdit_CT->Value>0)/*input_CT();*/ ShowMessage(input_state);
+//			else
+//			{
+//				if(scGPNumericEdit_delka_dopravniku->Value>0)input_DD();
+//				else
+//				{
+//					 if(scGPNumericEdit_kapacita->Value>0)input_K();
+//					 else input_RD();
+//				}
+//			}
 	}
 				if(scComboBox_rezim->ItemIndex!=0)// S&G  neøeší délku mezery
 	{
@@ -567,8 +568,11 @@ void __fastcall TForm_parametry::scGPEdit_nameChange(TObject *Sender)
 //pøi zmìnách EDITù
 void __fastcall TForm_parametry::scGPNumericEdit_CTChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==CT_klik)//pokud není zadáváno z jiného vstupu
-	input_CT();//pøepoèet hodnot vyplývajících ze zmìny CT
+	if(input_state==NOTHING && input_clicked_edit==CT_klik){ //pokud není zadáváno z jiného vstupu
+		//Memo1->Lines->Add("zmena na CT");
+		//ShowMessage("zmena na CT on change");
+		input_CT();//pøepoèet hodnot vyplývajících ze zmìny CT
+	 }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject *Sender)
@@ -641,6 +645,88 @@ void __fastcall TForm_parametry::scGPCheckBox_pocet_mezerClick(TObject *Sender)
 //pøepoèet hodnot vyplývajících ze zmìny CT
 void TForm_parametry::input_CT()
 {
+
+	 input_state=CT;
+	 //ShowMessage("volano CT");
+
+	 /////////////////// nacteni vsech hodnot z formulare do lokalnich promennych////////////////////////////////////////////////////
+	 short rezim;
+	 if(scComboBox_rezim->ItemIndex==0) rezim=0; //S&G
+	 if(scComboBox_rezim->ItemIndex==1) rezim=1; //Kontinual
+	 if(scComboBox_rezim->ItemIndex==2) rezim=2; //Postprocesni
+
+	 double TT=Form1->d.v.PP.TT;
+
+	 double CT=scGPNumericEdit_CT->Value;//CT - novì zadáno uživatelem
+	 double RD=scGPNumericEdit_RD->Value;//RD	od uživatele
+	 double DD=scGPNumericEdit_delka_dopravniku->Value;//DD od uživatele
+	 double K=scGPNumericEdit_kapacita->Value; //K od uživatele
+	 double Odchylka=scGPNumericEdit_odchylka->Value; //odchylka od uživatele
+	 double Nasleduje_cekani=scComboBox_cekani_palec->ItemIndex;   //0 - ne, 1 -ano, 2 - automaticky
+	 double Stop_stanice=scComboBox_stopka->ItemIndex;  //0 - ne, 1 -ano, 2 - automaticky
+	 double dV=Form1->d.v.PP.delka_voziku;// délka jigu
+	 double sV=Form1->d.v.PP.sirka_voziku;//šíøka jigu
+	 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
+	 short p=!scGPCheckBox_pocet_mezer->Checked;//poèet mezer mezi vozíky
+	 bool CT_locked;
+	 bool RD_locked;
+	 bool DD_locked;
+
+	 Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+
+
+	 short rotace;
+	 if(scComboBox_rotace->ItemIndex==0) rotace=0; // na délku
+	 if(scComboBox_rotace->ItemIndex==1) rotace=90; // na šíøku
+
+		//////////////////////// stavy zamku/////////////////////////////////////
+		if(CT_zamek==LOCKED) CT_locked=true;  else   CT_locked=false;
+		if(RD_zamek==LOCKED) RD_locked=true;  else   RD_locked=false;
+		if(DD_zamek==LOCKED) DD_locked=true;  else   DD_locked=false;
+
+
+
+	 //////////////////////// prevody jednotek///////////////////////////////
+
+	 if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
+	 if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
+	 if(DDunit==M)DD*=1000.0;
+	 if(DMunit==MM) m*=1000.0;
+
+
+		if(CT>0)//nutné ošetøení pro období zadávání/psaní
+	 {
+	 pm.TT=TT;
+	 pm.CT=CT;
+	 pm.RD=RD;
+	 pm.DD=DD;
+	 pm.K=K;
+	 pm.M=m;
+	 pm.dV=dV;
+	 pm.sV=sV;
+	 pm.Rotace=rotace;
+	 if(P!=NULL)pm.R=P->roztec;
+	 pm.mV=p;
+	 pm.CT_locked=CT_locked;
+	 pm.RD_locked=RD_locked;
+	 pm.DD_locked=DD_locked;
+	 Memo1->Lines->Add(AnsiString("CT: ")+CT+AnsiString(" RD: ")+RD+AnsiString(" DD: ")+DD+AnsiString(" K: ")+K);
+
+	 pm.input_CT();
+	}
+	//	Memo2->Lines->Add(AnsiString("pm.RD:")+ pm.RD+AnsiString("pm.DD:")+pm.DD+AnsiString(" pm.K: ")+pm.K+AnsiString(" pm.M: ")+pm.M);
+
+	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
+ //scGPNumericEdit_CT->Value=pm.CT;   if(CTunit==MIN)scGPNumericEdit_CT->Value/=60.0;   - CT nemohu naèítat když ho mìním - zpùsobuje problémy
+ scGPNumericEdit_RD->Value=pm.RD;   if(RDunitT==MIN)scGPNumericEdit_RD->Value/=60.0; if(RDunitD==MM)scGPNumericEdit_RD->Value/=1000.0;
+ scGPNumericEdit_delka_dopravniku->Value=pm.DD;   if(DDunit==M)scGPNumericEdit_delka_dopravniku->Value/=1000.0;
+ scGPNumericEdit_kapacita->Value=pm.K;
+ scGPNumericEdit_mezera->Value=pm.M;  if(DMunit==M)scGPNumericEdit_mezera->Value/=1000.0;
+
+ //	Memo2->Lines->Add(AnsiString("CT: ")+ scGPNumericEdit_CT->Value+AnsiString(" RD: ")+scGPNumericEdit_RD->Value=pm.RD+AnsiString(" DD: ")+scGPNumericEdit_delka_dopravniku->Value+AnsiString(" K: ")+scGPNumericEdit_kapacita->Value);
+
+
+	  input_state=NOTHING;
 
 }
 //---------------------------------------------------------------------------
