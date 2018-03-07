@@ -2615,8 +2615,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
-    Left = 114
-    Top = 522
+    Left = 2
+    Top = 417
     Width = 192
     Height = 61
     Lines.Strings = (

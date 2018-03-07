@@ -651,11 +651,11 @@ void TForm_parametry::input_CT()
  //	 Memo1->Lines->Add(AnsiString("CT: ")+CT+AnsiString(" RD: ")+RD+AnsiString(" DD: ")+DD+AnsiString(" K: ")+K+AnsiString(" m: ")+m+AnsiString(" dV: ")+dV+AnsiString(" sV: ")+sV+AnsiString(" rotace: ")+rotace+AnsiString(" pm.R: ")+pm.R+AnsiString(" pm.mV: ")+pm.mV+AnsiString(" rezim: ")+rezim);
 	 pm.input_CT();  //zavolání výpoèetního modelu
 	}
-
+	 //	 Memo1->Lines->Add(pm.RD);
 	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 
  //scGPNumericEdit_CT->Value=pm.CT;   if(CTunit==MIN)scGPNumericEdit_CT->Value/=60.0;   - CT nemohu naèítat když ho mìním - zpùsobuje problémy
- scGPNumericEdit_RD->Value=pm.RD;   if(RDunitT==MIN)scGPNumericEdit_RD->Value/=60.0; if(RDunitD==MM)scGPNumericEdit_RD->Value/=1000.0;
+ scGPNumericEdit_RD->Value=pm.RD;   if(RDunitT==MIN)scGPNumericEdit_RD->Value*=60.0; if(RDunitD==MM)scGPNumericEdit_RD->Value*=1000.0;
  scGPNumericEdit_delka_dopravniku->Value=pm.DD;   if(DDunit==MM)scGPNumericEdit_delka_dopravniku->Value*=1000.0;
  scGPNumericEdit_kapacita->Value=pm.K;
  scGPNumericEdit_mezera->Value=pm.M;  if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0;
@@ -1384,15 +1384,16 @@ void TForm_parametry::LoadDataFromFormAndSave() {
 		if(RD_zamek==LOCKED) RD_locked=true;  else   RD_locked=false;
 		if(DD_zamek==LOCKED) DD_locked=true;  else   DD_locked=false;
 
-
-
 	 //////////////////////// prevody jednotek///////////////////////////////
 
 	 if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
-	 if(RDunitT==MIN)RD*=60.0; if(RDunitD==MM)RD*=1000.0;
-	 if(DDunit==MM)DD/=1000.0;
+	 if(RDunitT==MIN)RD/=60.0; if(RDunitD==MM)RD*=1000.0;
+	 //RD=RD/60.0;
+	 if(DDunit==MM)DD/=1000.0; //vždy ukládám do metrù
 	 if(DMunit==MM) m/=1000.0;
+	 Memo1->Lines->Add(RD);
 
+	 //	ShowMessage(RD);
 	 ///////////////uložení do výpoèetního modulu PO/////////////////////////
 	 pm.rezim=rezim;
 	 pm.TT=TT;
