@@ -173,8 +173,8 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_CT: TrHTMLLabel
-    Left = 8
-    Top = 175
+    Left = 23
+    Top = 177
     Width = 159
     Height = 21
     Caption = 'Technologick'#253' '#269'as <font color=#2b579a>[s]</font>'
@@ -2534,13 +2534,14 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
-    Left = 2
-    Top = 417
+    Left = 130
+    Top = 561
     Width = 192
-    Height = 61
+    Height = 23
     Lines.Strings = (
       'Memo1')
     TabOrder = 24
+    Visible = False
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
@@ -2719,16 +2720,27 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_PO_text_memo: TscGPGlyphButton
-    Left = -10
-    Top = 163
-    Width = 30
-    Height = 42
+    Left = -6
+    Top = 170
+    Width = 31
+    Height = 30
     Hint = 'P'#345'idat pozn'#225'mku k CT'
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 27
     TabStop = True
-    Animation = False
+    OnClick = scGPGlyphButton_PO_text_memoClick
+    Animation = True
     Caption = 'scGPGlyphButton_PO_text_memo'
     CanFocused = True
     CustomDropDown = False

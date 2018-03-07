@@ -4,6 +4,7 @@
 #include "parametry.h"
 #include "unit1.h"
 #include "parametry_linky.h"
+#include "PO_poznamky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -1300,7 +1301,7 @@ input_clicked_edit=mezera_klik;
 void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 {
 	if(input_state==NOTHING && input_clicked_edit==mezera_klik)//pokud není zadáváno z jiného vstupu
-	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
+ //	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 	//hlídání velikosti mezery dle rozteèe
 
 	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
@@ -1439,3 +1440,14 @@ void TForm_parametry::LoadDataFromFormAndSave() {
 
 }
 ////////////////////////////////////////////////////////////////////////////
+void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick(TObject *Sender)
+
+{
+  		//formuláø na støed
+		Form_parametry_poznamky->Left=Form1->ClientWidth/2-Form_parametry_poznamky->Width/2;
+		Form_parametry_poznamky->Top=Form1->ClientHeight/2-Form_parametry_poznamky->Height/2;
+		//zobrazeni formuláøe
+		Form_parametry_poznamky->ShowModal();
+}
+//---------------------------------------------------------------------------
+

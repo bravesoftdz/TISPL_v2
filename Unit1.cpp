@@ -2773,9 +2773,9 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 {
 	if(pom!=NULL)
 	{
-		Form_parametry->scGPButton_header_projekt->Visible=false;//toto je k čemu?
+		Form_parametry->scGPButton_header_projekt->Visible=false;//pokud nebude existovat žádný pohon, nabídne se v roletce proklik do PL
 		////plnění daty
-		aktualizace_combobox_pohony_v_PO();
+	 	aktualizace_combobox_pohony_v_PO();
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
 		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox

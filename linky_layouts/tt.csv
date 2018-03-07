@@ -1,0 +1,16 @@
+Parametry projektu;ELTEP - tispl - [tt.tispl]
+Požadované celkové množství;20000
+Poèet pracovních dní [rok];365
+Poèet pracovních hodin [den];8
+Efektivita [%];95
+Zaèátek výroby;07.03.2018 8:00:00
+Délka vozíku;1,2
+
+Pøehled pohonù;
+ID;Název;Rychlost od [m/min];Rychlost do [m/min];Rozteè palcù [mm];
+1;p;0;10;360;
+
+Architekt: Pøehled objektù a jejich parametrù
+ID;Název;Zkratka;Režim;CT [s];Kapacita doporuèená;Kapacita nastavená;Název pohonu;Rychlost pohonu [m/min];Rozsah pohonu [m/min];Rozteè palcù [mm];Délka kabiny [m];Mezera mezi vozíky [m]
+3;lakování;LAK;KONTINUÁLNÍ;120;1;0;p;0,6;0-10;360;1,2;0
+5;sušení;SUŠ;POSTPROCESNÍ;120;1;0;Nedefinovaný;nerelevantní;0-10;;1,2;0
