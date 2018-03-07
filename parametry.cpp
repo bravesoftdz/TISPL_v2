@@ -667,6 +667,21 @@ void TForm_parametry::input_CT()
 //pøepoèet hodnot vyplývajících ze zmìny DD
 void TForm_parametry::input_DD()
 {
+		input_state=DD;
+		if(scGPNumericEdit_delka_dopravniku->Value>0)//nutné ošetøení pro období zadávání/psaní
+	 {
+		LoadDataFromFormAndSave();
+		pm.input_DD();  //zavolání výpoèetního modelu
+	}
+	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
+
+ scGPNumericEdit_CT->Value=pm.CT;   if(CTunit==MIN)scGPNumericEdit_CT->Value/=60.0;
+ scGPNumericEdit_RD->Value=pm.RD;   if(RDunitT==MIN)scGPNumericEdit_RD->Value*=60.0; if(RDunitD==MM)scGPNumericEdit_RD->Value*=1000.0;
+ //scGPNumericEdit_delka_dopravniku->Value=pm.DD;   if(DDunit==MM)scGPNumericEdit_delka_dopravniku->Value*=1000.0; - DD nemohu naèítat když ho mìním - zpùsobuje problémy
+ scGPNumericEdit_kapacita->Value=pm.K;
+ scGPNumericEdit_mezera->Value=pm.M;  if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0;
+
+		input_state=NOTHING;
 
 }
 //-----------------------------------------------------------------------------
@@ -679,7 +694,21 @@ void TForm_parametry::input_mezera()
 //pøepoèet hodnot vyplývajících ze zmìny RD, pouze pro kontinual
 void TForm_parametry::input_RD()
 {
-	
+		input_state=RD;
+		if(scGPNumericEdit_RD->Value>0)//nutné ošetøení pro období zadávání/psaní
+	 {
+		LoadDataFromFormAndSave();
+		pm.input_RD();  //zavolání výpoèetního modelu
+	}
+	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
+
+ scGPNumericEdit_CT->Value=pm.CT;   if(CTunit==MIN)scGPNumericEdit_CT->Value/=60.0;
+ //scGPNumericEdit_RD->Value=pm.RD;   if(RDunitT==MIN)scGPNumericEdit_RD->Value*=60.0; if(RDunitD==MM)scGPNumericEdit_RD->Value*=1000.0; - RD nemohu naèítat když ho mìním - zpùsobuje problémy
+ scGPNumericEdit_delka_dopravniku->Value=pm.DD;   if(DDunit==MM)scGPNumericEdit_delka_dopravniku->Value*=1000.0;
+ scGPNumericEdit_kapacita->Value=pm.K;
+ scGPNumericEdit_mezera->Value=pm.M;  if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0;
+
+		input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
 //pøepoèet hodnot vyplývajících ze zmìny K
@@ -692,10 +721,10 @@ void TForm_parametry::input_K()
 //vynuluje vstupní hodnoty
 void TForm_parametry::null_input_value()
 {
-	scGPNumericEdit_RD->Value=0;
-	scGPNumericEdit_CT->Value=0;
-	scGPNumericEdit_delka_dopravniku->Value=0;
-	scGPNumericEdit_kapacita->Value=0;
+//	scGPNumericEdit_RD->Value=0;
+//	scGPNumericEdit_CT->Value=0;
+//	scGPNumericEdit_delka_dopravniku->Value=0;
+//	scGPNumericEdit_kapacita->Value=0;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1388,12 +1417,10 @@ void TForm_parametry::LoadDataFromFormAndSave() {
 
 	 if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
 	 if(RDunitT==MIN)RD/=60.0; if(RDunitD==MM)RD*=1000.0;
-	 //RD=RD/60.0;
 	 if(DDunit==MM)DD/=1000.0; //vždy ukládám do metrù
 	 if(DMunit==MM) m/=1000.0;
-	 Memo1->Lines->Add(RD);
+	// Memo1->Lines->Add(RD);
 
-	 //	ShowMessage(RD);
 	 ///////////////uložení do výpoèetního modulu PO/////////////////////////
 	 pm.rezim=rezim;
 	 pm.TT=TT;

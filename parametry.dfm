@@ -2622,7 +2622,6 @@ object Form_parametry: TForm_parametry
     Lines.Strings = (
       'Memo1')
     TabOrder = 25
-    Visible = False
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
