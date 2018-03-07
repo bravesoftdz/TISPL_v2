@@ -163,6 +163,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [mm]";
 	 rStringGridEd_tab_dopravniky->Cells[5][0]="Používán";
+	 rStringGridEd_tab_dopravniky->Cells[6][0]="Min. mezera [mm]";
 
 	 rStringGridEd_hlavicka_tabulky->Cells[0][0]=rStringGridEd_tab_dopravniky->Cells[0][0];
 	 rStringGridEd_hlavicka_tabulky->Cells[1][0]=rStringGridEd_tab_dopravniky->Cells[1][0];
@@ -170,6 +171,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_hlavicka_tabulky->Cells[3][0]=rStringGridEd_tab_dopravniky->Cells[3][0];
 	 rStringGridEd_hlavicka_tabulky->Cells[4][0]=rStringGridEd_tab_dopravniky->Cells[4][0];
 	 rStringGridEd_hlavicka_tabulky->Cells[5][0]=rStringGridEd_tab_dopravniky->Cells[5][0];
+	 rStringGridEd_hlavicka_tabulky->Cells[6][0]=rStringGridEd_tab_dopravniky->Cells[6][0];
 
 
 	//	rStringGridEd_tab_dopravniky->Columns->
@@ -726,6 +728,9 @@ if (Col==4 && Row==0) {
 if (Col==5 && Row==0) {
 	CanEdit=false;
 	 }
+if (Col==6 && Row==0) {
+	CanEdit=false;
+	 }
 }
 //---------------------------------------------------------------------------
 
@@ -860,12 +865,46 @@ void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftStat
 {
  // ShowMessage(rStringGridEd_tab_dopravniky->RowCount);
  	if (rStringGridEd_tab_dopravniky->RowCount<=1) {
-	Button_DEL->Enabled=false;
+		 Button_DEL->Enabled=false;
 	}  else Button_DEL->Enabled=true;
 
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
+{
+show_min_mezeru();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+show_min_mezeru();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rEditNum_delka_jiguChange(TObject *Sender)
+
+{
+show_min_mezeru();
+}
 
 
+//---------------------------------------------------------------------------
+
+void TForm_parametry_linky::show_min_mezeru() {
+
+ double jednotky;
+ if(Delkaunit=M) jednotky*1000.0; else jednotky*1.0;
+
+ for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++){
+	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()){
+	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*jednotky,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);;
+
+	 }
+	}
+
+
+}
 

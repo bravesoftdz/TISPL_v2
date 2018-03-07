@@ -4,7 +4,7 @@ object Form_parametry_linky: TForm_parametry_linky
   BorderStyle = bsNone
   Caption = 'Parametry linky'
   ClientHeight = 537
-  ClientWidth = 970
+  ClientWidth = 1092
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clActiveCaption
@@ -15,6 +15,7 @@ object Form_parametry_linky: TForm_parametry_linky
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
   OnMouseMove = FormMouseMove
+  OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -201,15 +202,18 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
+    ColWidths = (
+      150
+      -16)
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 0
     Top = 317
-    Width = 969
+    Width = 1089
     Height = 161
     BorderStyle = bsNone
     Color = clWhite
-    ColCount = 6
+    ColCount = 7
     Ctl3D = False
     DefaultColWidth = 160
     DefaultRowHeight = 30
@@ -232,6 +236,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 1
     OnEnter = rStringGridEd_tab_dopravnikyEnter
     OnKeyDown = rStringGridEd_tab_dopravnikyKeyDown
+    OnKeyUp = rStringGridEd_tab_dopravnikyKeyUp
     Columns = <
       item
         InvalidDataAction = sgaNone
@@ -350,6 +355,16 @@ object Form_parametry_linky: TForm_parametry_linky
         Font.Style = []
         ParentFont = False
         ReadOnly = True
+      end
+      item
+        InvalidDataAction = sgaNone
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -17
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
       end>
     OnGetEditStyle = rStringGridEd_tab_dopravnikyGetEditStyle
     OnCanEdit = rStringGridEd_tab_dopravnikyCanEdit
@@ -543,7 +558,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 970
+    Width = 1092
     Height = 34
     Align = alTop
     TabOrder = 4
@@ -571,9 +586,10 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 970
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 920
+      Left = 1042
       Top = 0
       Width = 50
       Height = 33
@@ -648,11 +664,12 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 920
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 883
+      Width = 1005
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -680,9 +697,10 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
+      ExplicitWidth = 883
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 883
+      Left = 1005
       Top = 0
       Width = 37
       Height = 34
@@ -759,6 +777,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 883
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -1105,6 +1124,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 13
     Visible = False
+    BorderWidth = 1
     BackgroundStyle = scexbgsPanel
     HeaderColor = clInactiveCaption
     ButtonGlyphColor = clBtnText
@@ -1470,6 +1490,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 11
+    OnChange = rEditNum_delka_jiguChange
     OnKeyDown = rEditNum_delka_jiguKeyDown
     Style = enFloat
     Value = 1.000000000000000000
@@ -1663,12 +1684,12 @@ object Form_parametry_linky: TForm_parametry_linky
   object rStringGridEd_hlavicka_tabulky: TrStringGridEd
     Left = 1
     Top = 317
-    Width = 969
+    Width = 1088
     Height = 30
     TabStop = False
     BorderStyle = bsNone
     Color = clWhite
-    ColCount = 6
+    ColCount = 7
     Ctl3D = False
     DefaultColWidth = 160
     DefaultRowHeight = 30
@@ -1809,6 +1830,16 @@ object Form_parametry_linky: TForm_parametry_linky
         Font.Style = []
         ParentFont = False
         ReadOnly = True
+      end
+      item
+        InvalidDataAction = sgaNone
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -17
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
       end>
     OnGetEditStyle = rStringGridEd_tab_dopravnikyGetEditStyle
     OnCanEdit = rStringGridEd_tab_dopravnikyCanEdit

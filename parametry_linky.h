@@ -91,6 +91,10 @@ __published:	// IDE-managed Components
           TShiftState Shift);
 	void __fastcall rStringGridEd_tab_dopravnikyEnter(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall FormPaint(TObject *Sender);
+	void __fastcall rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_delka_jiguChange(TObject *Sender);
+
 
 
 
@@ -107,6 +111,7 @@ public:		// User declarations
 
 	bool data_nalezena;
 	void  nacti_pohony();
+	void show_min_mezeru();
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{S=0,MIN};Tminsec Taktunit;//pøepínaè jednotek èasu

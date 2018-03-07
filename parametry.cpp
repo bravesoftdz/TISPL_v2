@@ -156,13 +156,12 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 // mezera_mezi_voziky
 		 double dV=Form1->d.v.PP.delka_voziku;//delka voziku
 		 if(Form_parametry->scComboBox_rotace->ItemIndex==1)dV=Form1->d.v.PP.sirka_voziku;//pokud je požadován šíøka jigu
-		 double doporuc_mezera= Form1->m.mezera_mezi_voziky(dV,P->roztec,0);
 		if(P!=NULL)
 		{                            //je "zbytek po dìlení"
 			if(P->roztec>0)//pokud existuje rozteè
 			{
-			//ShowMessage(doporuc_mezera);
 				//scGPButton_OK->Enabled=false;
+			 double doporuc_mezera= Form1->m.mezera_mezi_voziky(dV,P->roztec,0);
 			vypis("Doporuèená mezera: "+AnsiString(doporuc_mezera)+" m",true);
 			 //mezeru neplním automaticky do editu
 			 //Form_parametry->scGPNumericEdit_mezera->Value=doporuc_mezera;
