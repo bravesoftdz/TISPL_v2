@@ -1,8 +1,8 @@
 //---------------------------------------------------------------------------
-#ifndef parametry_mathH
-#define parametry_mathH
+#ifndef PO_mathH
+#define PO_mathH
 //---------------------------------------------------------------------------
-class TParametry_math
+class TPO_math
 {
 	public:
 		double TT;//takt linky
@@ -11,6 +11,7 @@ class TParametry_math
 		double RD;//rychlost dopravníku
 		double DD;//délka kabiny
 		double K;//kapacita
+		double P;//kapacita
 		double M;//mezera mezi vozíky
 		double dV;//délka vozíku z parametrù linky
 		double sV;//šíøka vozíku z parametrù linky
@@ -28,6 +29,7 @@ class TParametry_math
 		void input_M(); //pøepoèet  souvisejících hodnot vyplývajících ze zmìny M
 	private:
 		double Mezera();//vrátí velikost mezery
+		double Pozice();//vrátí poèet pozic
 };
 //---------------------------------------------------------------------------
 #endif

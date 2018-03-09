@@ -2806,7 +2806,6 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 		Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
-		Form_parametry->scGPCheckBox_pocet_mezer->Checked=!pom->mV;
 
 		//nadesignování formu podle právě vypisováných hodnot
 		Form_parametry->vypis("");
@@ -2851,7 +2850,6 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				if(Form_parametry->DMunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
 				pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
 				//ostatni
-				pom->mV=!Form_parametry->scGPCheckBox_pocet_mezer->Checked;
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;

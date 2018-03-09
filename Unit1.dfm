@@ -2565,6 +2565,7 @@ object Form1: TForm1
       Top = 0
       Width = 26
       Height = 28
+      Cursor = crSizeNWSE
       Align = alRight
       TabOrder = 3
       Visible = False
@@ -2925,6 +2926,7 @@ object Form1: TForm1
     OnClick = scExPanel_log_headerClick
     OnMouseActivate = scExPanel_log_headerMouseActivate
     OnMouseDown = scExPanel_log_headerMouseDown
+    BorderWidth = 1
     BackgroundStyle = scexbgsPanel
     HeaderColor = clSilver
     ButtonGlyphColor = clBtnText
@@ -2992,6 +2994,7 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 32
     Visible = False
+    BorderWidth = 1
     BackgroundStyle = scexbgsPanel
     HeaderColor = clBtnFace
     ButtonGlyphColor = clBtnText
@@ -3278,6 +3281,7 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 1
       OnClick = scExPanel_ostatniClick
+      BorderWidth = 1
       BackgroundStyle = scexbgsPanel
       HeaderColor = 10114859
       ButtonGlyphColor = clWhite
@@ -3415,6 +3419,7 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        UseFontColorToStyleColor = False
       end
       object CheckBoxVymena_barev: TscGPCheckBox
         Left = 3
@@ -3505,11 +3510,12 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        UseFontColorToStyleColor = False
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 915
-        Top = 1078
+        Left = 921
+        Top = 1084
         Width = 244
         Height = 31
         Align = alCustom
@@ -3596,6 +3602,7 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        UseFontColorToStyleColor = False
       end
       object ComboBoxDOmin: TComboBox
         Left = 64
@@ -3810,6 +3817,7 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        UseFontColorToStyleColor = False
       end
       object CheckBox_pouzit_zadane_kapacity: TscGPCheckBox
         Left = 3
@@ -3900,6 +3908,7 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        UseFontColorToStyleColor = False
       end
       object scGPButton_generuj: TscGPGlyphButton
         Left = 200
@@ -4158,6 +4167,7 @@ object Form1: TForm1
         ScaleFrameWidth = True
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
+        UseFontColorToStyleColor = False
       end
       object scGPGlyphButton_info_cekani: TscGPGlyphButton
         Left = 213
@@ -4252,6 +4262,7 @@ object Form1: TForm1
       TabOrder = 2
       Visible = False
       OnClick = scExPanel_vrstvyClick
+      BorderWidth = 1
       BackgroundStyle = scexbgsPanel
       HeaderColor = 10114859
       ButtonGlyphColor = clWhite
@@ -5608,7 +5619,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C0101180028052C0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003005300510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6731,7 +6742,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010133005C04600430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010133006404640430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22193,7 +22204,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C01013300D802D80218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C01013300DC02DC0218001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF

@@ -17,7 +17,7 @@
 #include "scGPControls.hpp"
 #include <Vcl.Mask.hpp>
 #include "scGPExtControls.hpp"
-#include "parametry_math.h"
+#include "PO_math.h"
 //---------------------------------------------------------------------------
 class TForm_parametry : public TForm
 {
@@ -58,7 +58,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_rotace;
 	TscGPComboBox *scComboBox_rotace;
 	TrHTMLLabel *rHTMLLabel_mezera;
-	TscGPCheckBox *scGPCheckBox_pocet_mezer;
 	TscGPButton *scGPButton_metry_milimetry;
 	TscGPGlyphButton *scGPGlyphButton_copy;
 	TscGPGlyphButton *scGPGlyphButton_paste;
@@ -70,6 +69,10 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_header_projekt;
 	TscGPNumericEdit *scGPNumericEdit_RD;
 	TscGPGlyphButton *scGPGlyphButton_PO_text_memo;
+	TrHTMLLabel *rHTMLLabel_rozestup;
+	TscGPNumericEdit *scGPNumericEdit_rozestup;
+	TrHTMLLabel *rHTMLLabel_pozice;
+	TscGPNumericEdit *scGPNumericEdit_pozice;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -86,7 +89,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_RD_Change(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall Button_metry_milimetryClick(TObject *Sender);
-	void __fastcall scGPCheckBox_pocet_mezerClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_pasteClick(TObject *Sender);
 	void __fastcall rHTMLLabel_CTClick(TObject *Sender);
@@ -108,7 +110,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_PO_text_memoClick(TObject *Sender);
 
 private:	// User declarations
-	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,POCET_MEZER};//název souvisejících komponent
+	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik}; //zjisteni na ktery edit bylo kliknuto
@@ -122,7 +124,7 @@ private:	// User declarations
 	void input_mezera(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void null_input_value();//vynuluje vstupní hodnoty
 	void LoadDataFromFormAndSave();
-	TParametry_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. parametry_math
+	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
 

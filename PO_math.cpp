@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
-#include "parametry_math.h"
+#include "PO_math.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny CT
-void TParametry_math::input_CT()
+void TPO_math::input_CT()
 {
 	if(RD_locked)DD=RD*CT;//pro pøípad RD zamèeno
 	else RD=DD/CT;				//pro pøípad DD zamèeno
@@ -17,33 +17,33 @@ void TParametry_math::input_CT()
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD
-void TParametry_math::input_RD()
+void TPO_math::input_RD()
 {
 	if(CT_locked)DD=RD*CT;//pro pøípad CT zamèeno
 	else CT=DD/RD;				//pro pøípad DD zamèeno
 }
 //---------------------------------------------------------------------------
 //pøepoèet  souvisejících hodnot vyplývajících ze zmìny DD
-void TParametry_math::input_DD()
+void TPO_math::input_DD()
 {
 	if(RD_locked)CT=DD/RD;//pro pøípad RD zamèeno
 	else RD=DD/CT;				//pro pøípad CT zamèeno
 }
 //---------------------------------------------------------------------------
 //pøepoèet  souvisejících hodnot vyplývajících ze zmìny K
-void TParametry_math::input_K()
+void TPO_math::input_K()
 {
 
 }
 //---------------------------------------------------------------------------
 //pøepoèet  souvisejících hodnot vyplývajících ze zmìny M
-void TParametry_math::input_M()
+void TPO_math::input_M()
 {
 
 }
 //---------------------------------------------------------------------------
 //vrátí velikost mezery
-double TParametry_math::Mezera()
+double TPO_math::Mezera()
 {
 	if(mV==1)//poèet mezer o jednu menší než poèet vozíkù
 	{
@@ -52,3 +52,14 @@ double TParametry_math::Mezera()
 	//else
 
 }
+//---------------------------------------------------------------------------
+//vrátí poèet pozic
+double TPO_math::Pozice()
+{
+	 double P=floor(K);
+	 double DVM=(dV+m)*(K-P);
+	 if(DVM>dV)P++;//navýší o celý vozík
+	 else P+=dV*DVM;//navýší o èást vozíku
+	 return P;
+}
+//---------------------------------------------------------------------------
