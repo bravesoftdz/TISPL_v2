@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include "PO_math.h"
-
+#include "math.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
@@ -56,8 +56,8 @@ double TPO_math::Mezera()
 //vrátí poèet pozic
 double TPO_math::Pozice()
 {
-	 double P=floor(K);
-	 double DVM=(dV+m)*(K-P);
+	 double P=floor(K);//celoèíselná kapacita
+	 double DVM=(dV+M)*(K-P);//délka neceloèíselné vozíko mezery v kabinì
 	 if(DVM>dV)P++;//navýší o celý vozík
 	 else P+=dV*DVM;//navýší o èást vozíku
 	 return P;
