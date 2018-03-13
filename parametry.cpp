@@ -599,6 +599,14 @@ void __fastcall TForm_parametry::scGPEdit_nameChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //pøi zmìnách EDITù
+
+void __fastcall TForm_parametry::scGPNumericEdit_poziceChange(TObject *Sender)
+{
+		if(input_state==NOTHING && input_clicked_edit==P_klik) {
+				input_P();
+	}
+}
+//----------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_CTChange(TObject *Sender)
 {
 	if(input_state==NOTHING && input_clicked_edit==CT_klik){
@@ -608,7 +616,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==DD_klik && scComboBox_rezim->ItemIndex!=0) {
+	if(input_state==NOTHING && input_clicked_edit==DD_klik && scComboBox_rezim->ItemIndex!=0) { //pro Kontinual a PP režim
 	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 	//hlídání velikosti mezery dle rozteèe
 	}
@@ -666,6 +674,19 @@ void __fastcall TForm_parametry::scGPNumericEdit_kapacitaChange(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+void  TForm_parametry::input_P(){
+
+				input_state=P;
+
+				if(scGPNumericEdit_pozice->Value>0)//nutné ošetøení pro období zadávání/psaní
+					 {
+						LoadDataFromFormAndSave();
+						pm.input_P();  //zavolání výpoèetního modelu
+					}
+					//naètení dat zpìt do formuláøe po výpoètu
+					LoadDataToFormFromMath();
+}
+
 //---------------------------------------------------------------------------
 //pøepoèet hodnot vyplývajících ze zmìny CT
 void TForm_parametry::input_CT()
@@ -764,9 +785,17 @@ void TForm_parametry::input_DD()
 }
 //-----------------------------------------------------------------------------
 
-void TForm_parametry::input_mezera()
+void TForm_parametry::input_M()
 {
-
+		input_state=mezera;
+		if(scGPNumericEdit_mezera->Value>0)//nutné ošetøení pro období zadávání/psaní
+	 {
+		LoadDataFromFormAndSave();
+		pm.input_M();  //zavolání výpoèetního modelu
+	}
+	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
+		LoadDataToFormFromMath();
+		input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
 //pøepoèet hodnot vyplývajících ze zmìny RD, pouze pro kontinual
@@ -1325,7 +1354,17 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 //doplnit komentáø
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaClick(TObject *Sender)
 {
-	input_clicked_edit=C_klik;
+input_clicked_edit=C_klik;
+}
+//--------------------------------------------------------------------------
+void __fastcall TForm_parametry::scGPNumericEdit_mezeraClick(TObject *Sender)
+{
+input_clicked_edit=mezera_klik;
+}
+//----------------------------------------------------------------------------
+void __fastcall TForm_parametry::scGPNumericEdit_poziceClick(TObject *Sender)
+{
+input_clicked_edit=P_klik;
 }
 //---------------------------------------------------------------------------
 //doplnit komentáø
@@ -1390,17 +1429,11 @@ if(scButton_zamek_DD->ImageIndex==37)//když je zamèeno
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit_mezeraClick(TObject *Sender)
-{
-input_clicked_edit=mezera_klik;
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 {
-	if(input_state==NOTHING && input_clicked_edit==mezera_klik)//pokud není zadáváno z jiného vstupu
- //	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
-	//hlídání velikosti mezery dle rozteèe
+	if(input_state==NOTHING && input_clicked_edit==mezera_klik){//pokud není zadáváno z jiného vstupu
+	 	input_M();
+	 }
 
 	if(scComboBox_rezim->ItemIndex==1 && scGPNumericEdit_mezera->Value>0)//pouze pro kontinuál režim
 	{
@@ -1571,25 +1604,6 @@ void TForm_parametry::LoadDataToFormFromMath() {
 
 }
 
-void __fastcall TForm_parametry::scGPNumericEdit_poziceChange(TObject *Sender)
-{
-		if(input_state==NOTHING && input_clicked_edit==P_klik) {
-				input_P();
-	}
-}
-
-//---------------------------------------------------------------------------
-void  TForm_parametry::input_P(){
-
-}
-
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit_poziceClick(TObject *Sender)
-{
-
-input_clicked_edit=P_klik;
-
-}
-//---------------------------------------------------------------------------
 

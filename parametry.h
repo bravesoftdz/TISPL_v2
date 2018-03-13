@@ -123,8 +123,8 @@ private:	// User declarations
 	void input_DD();//pøepoèet hodnot vyplývajících ze zmìny DD
 	void input_RD();//pøepoèet hodnot vyplývajících ze zmìny RD
 	void input_K();//pøepoèet hodnot vyplývajících ze zmìny Kapacity
-	void input_mezera(); //pøepoèet hodnot vyplývajících ze zmìny mezery
-	void input_P();
+	void input_M(); //pøepoèet hodnot vyplývajících ze zmìny mezery
+	void input_P(); //pøepoèet hodnot vyplývajících ze zmìny poètu pozic
 	void null_input_value();//vynuluje vstupní hodnoty
 	void LoadDataFromFormAndSave();
 	void LoadDataToFormFromMath();
