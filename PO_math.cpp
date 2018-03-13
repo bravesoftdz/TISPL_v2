@@ -1,8 +1,6 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include "PO_math.h"
-#include "math.h"
-#include "my.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
@@ -98,7 +96,7 @@ void TPO_math::input_P()//pøepoèet souvisejících hodnot vyplývajících ze zmìny P
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
 void TPO_math::input_M()
 {
-	RD=(DV+M)/TT;//dle mezery spoèítám novou velikost mezery
+	RD=(UDV()+M)/TT;//dle mezery spoèítám novou velikost mezery
 	input_RD();
 	//možná zde bude nutné zakázat zpìtný pøepoèet M
 }
@@ -135,7 +133,6 @@ double TPO_math::P2K()
 //vrátí užitnou délku vozíku dle hodnoty rotace
 double TPO_math::UDV()
 {
-	Cmy m;
-	m.UDV(dV,sV,rotace);
+	m.UDV(dV,sV,Rotace);
 }
 //---------------------------------------------------------------------------

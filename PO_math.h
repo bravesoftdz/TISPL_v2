@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef PO_mathH
 #define PO_mathH
+#include "my.h"
 //---------------------------------------------------------------------------
 class TPO_math
 {
@@ -29,6 +30,7 @@ class TPO_math
 		void input_P(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny P
 		void input_M(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
 	private:
+		Cmy m;
 		double Mezera();//vrátí velikost mezery
 		double Pozice();//vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double P2K();//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
