@@ -49,6 +49,7 @@ class Cmy
 	double Rz(double M,double DV);//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV() z PM)
 	double Rx(double M,double DV,double R);//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV() z PM)
 	double mezera(double Rx,double R,double DV);//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV() z PM)
+	double UDV(double dV,double sV,double rotace);//vratí užitnou délku vozíku
 	double prejezd_voziku(double delka, double rychlost_dopravniku);
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
 	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox

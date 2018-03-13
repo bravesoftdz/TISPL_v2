@@ -2,11 +2,12 @@
 #pragma hdrstop
 #include "PO_math.h"
 #include "math.h"
+#include "my.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny CT
-void TPO_math::input_CT()
+void TPO_math::input_CT(bool prepocet_K)
 {
 	switch (rezim)
 	{
@@ -18,7 +19,7 @@ void TPO_math::input_CT()
 				RD=DD/CT;
 				M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice a za výpoètem RD
 			}
-			K=CT/TT;//výpoèet kapacity
+			if(prepocet_K)K=CT/TT;//výpoèet kapacity
 			P=Pozice();//výpoèet poètu pozic
 		break;
 		case 2://PP
@@ -78,9 +79,7 @@ void TPO_math::input_K(bool prepocet_CT)
 		case 0:break;//S&G
 		case 1:break;//Kontinuál
 			if(prepocet_CT)CT=TT*K;//výpoèet CT
-			input_CT();
-			//zakazat pøepoèet K
-
+			input_CT(false);//+ zakazaný zpìtný pøepoèet K
 		case 2://PP
 			if(prepocet_CT)CT=TT*K;//výpoèet CT
 			DD=K*(UDV()+M);//délky kabiny
@@ -118,7 +117,7 @@ double TPO_math::Pozice()
 	return P;
 }//---------------------------------------------------------------------------
 //vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
-double  TPO_math::P2K()
+double TPO_math::P2K()
 {
 	if(P-floor(P)>0)//pokud je zadán neceloèíselný poèet pozic
 	{
@@ -132,8 +131,8 @@ double  TPO_math::P2K()
 //---------------------------------------------------------------------------
 //vrátí užitnou délku vozíku dle hodnoty rotace
 double TPO_math::UDV()
-{ //postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
-	if(Rotace==0)return dV;//delka voziku
-	else return sV;// šíøka vozíku
+{
+	Cmy m;
+	m.UDV(dV,sV,rotace);
 }
 //---------------------------------------------------------------------------

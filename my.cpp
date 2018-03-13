@@ -347,6 +347,14 @@ double Cmy::mezera(double Rx,double R,double DV)
 	return (Rx*R)-DV;
 }
 /////////////////////////////////////////////////////////////////////////////
+//vratí užitnou délku vozíku
+double UDV(double dV,double sV,double rotace)
+{
+  //postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
+	if(rotace==0)return dV;//delka voziku
+	else return sV;// šíøka vozíku
+}
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 {
 	if(rychlost_dopravniku==0 || delka==0)return 0;//pozor mùže být zavadìjící
