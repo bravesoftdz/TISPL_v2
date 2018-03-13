@@ -91,19 +91,22 @@ void TPO_math::input_K(bool prepocet_CT)
 void TPO_math::input_P()//pøepoèet souvisejících hodnot vyplývajících ze zmìny P
 {
 	K=P2K();//prvnì si vrátím zjištìnou kapacitu
-	input_K();//potom pracuji jako pøi vkládání kapicity
+	input_K();//potom pracuji jako pøi vkládání kapacity
+	//možná zde bude nutné zakázat zpìtný pøepoèet P
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
 void TPO_math::input_M()
 {
-	//zavolám prvnì výpoèet RD a potom input RD, ale již bez aktualizace M?
+	RD=(DV+M)/TT;//dle mezery spoèítám novou velikost mezery
+	input_RD();
+	//možná zde bude nutné zakázat zpìtný pøepoèet M
 }
 //---------------------------------------------------------------------------
 //vrátí velikost mezery
 double TPO_math::Mezera()
 {
-	(DD-K*dV)/(K-1);
+
 }
 //---------------------------------------------------------------------------
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
