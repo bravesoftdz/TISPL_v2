@@ -2463,13 +2463,14 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
-    Left = 6
-    Top = 242
+    Left = 142
+    Top = 604
     Width = 192
-    Height = 62
+    Height = 22
     Lines.Strings = (
       'Memo1')
     TabOrder = 23
+    Visible = False
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True

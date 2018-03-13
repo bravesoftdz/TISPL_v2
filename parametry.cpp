@@ -786,7 +786,36 @@ void TForm_parametry::input_RD()
 //pøepoèet hodnot vyplývajících ze zmìny K
 void TForm_parametry::input_K()
 {
+		input_state=C;
+		double CT=scGPNumericEdit_CT->Value;//CT od uživatele
+		if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy
+		double K=scGPNumericEdit_kapacita->Value;  //K od uživatele
+		if(K>0 && scComboBox_rezim->ItemIndex==1){  // Kontinuální režim
+		LoadDataFromFormAndSave();
+		pm.input_K();  //zavolání výpoèetního modelu
+	}
 
+//		if(K>0 && scComboBox_rezim->ItemIndex==2){ // PP režim - jiný výpoèet než std postup
+//
+//
+//	 bool jdunaMB=false;
+//	 if(K==CT/Form1->d.v.PP.TT)	pm.input_K();
+//	 else if(Form1->d.v.OBJEKTY->predchozi->n==1)  	pm.input_K();
+//	 else jdunaMB=true; //ShowMessage("volám MB");
+//
+//		 if(jdunaMB){
+//				 if(mrOk==Form1->MB("Mùže být zmìnìn CT?",MB_OKCANCEL)) pm.input_K();
+//				 else if (CT/Form1->d.v.PP.TT<=K) pm.input_K(false); //volat s parametrem pro M - CT fix, DD mìním
+//				 else Form1->MB("Byla zadána neplatná kapacita dojde k pøepoètu CT"); pm.input_K();
+//
+//				 }
+//
+//			}
+
+
+		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
+	LoadDataToFormFromMath();
+	input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1462,11 +1491,12 @@ void TForm_parametry::LoadDataFromFormAndSave() {
 	 double dV=Form1->d.v.PP.delka_voziku;// délka jigu
 	 double sV=Form1->d.v.PP.sirka_voziku;//šíøka jigu
 	 double m=scGPNumericEdit_mezera->Value;//mezera mezi voziky
+	 double P=scGPNumericEdit_pozice->Value;// poèet pozic
 	 bool CT_locked;
 	 bool RD_locked;
 	 bool DD_locked;
 
-	 Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+	 Cvektory::TPohon *Pohon=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 
 
 	 short rotace;
@@ -1494,10 +1524,11 @@ void TForm_parametry::LoadDataFromFormAndSave() {
 	 pm.DD=DD;
 	 pm.K=K;
 	 pm.M=m;
+	 pm.P=P;
 	 pm.dV=dV;
 	 pm.sV=sV;
 	 pm.Rotace=rotace;
-	 if(P!=NULL)pm.R=P->roztec; else pm.R=0;
+	 if(Pohon!=NULL)pm.R=Pohon->roztec; else pm.R=0;
 	 pm.CT_locked=CT_locked;
 	 pm.RD_locked=RD_locked;
 	 pm.DD_locked=DD_locked;
