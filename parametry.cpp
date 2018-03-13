@@ -758,7 +758,7 @@ void TForm_parametry::input_DD()
 		pm.input_DD();  //zavolání výpoèetního modelu
 	}
 	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
-    LoadDataToFormFromMath();
+		LoadDataToFormFromMath();
 		input_state=NOTHING;
 
 }
@@ -795,22 +795,24 @@ void TForm_parametry::input_K()
 		pm.input_K();  //zavolání výpoèetního modelu
 	}
 
-//		if(K>0 && scComboBox_rezim->ItemIndex==2){ // PP režim - jiný výpoèet než std postup
-//
-//
-//	 bool jdunaMB=false;
-//	 if(K==CT/Form1->d.v.PP.TT)	pm.input_K();
-//	 else if(Form1->d.v.OBJEKTY->predchozi->n==1)  	pm.input_K();
-//	 else jdunaMB=true; //ShowMessage("volám MB");
-//
-//		 if(jdunaMB){
-//				 if(mrOk==Form1->MB("Mùže být zmìnìn CT?",MB_OKCANCEL)) pm.input_K();
-//				 else if (CT/Form1->d.v.PP.TT<=K) pm.input_K(false); //volat s parametrem pro M - CT fix, DD mìním
-//				 else Form1->MB("Byla zadána neplatná kapacita dojde k pøepoètu CT"); pm.input_K();
-//
-//				 }
-//
-//			}
+		if(K>0 && scComboBox_rezim->ItemIndex==2){ // PP režim - jiný výpoèet než std postup
+	 LoadDataFromFormAndSave();
+	 bool jdunaMB=false;
+	 if(K==CT/Form1->d.v.PP.TT) pm.input_K();
+	 else if(Form1->d.v.OBJEKTY->predchozi->n==1)	pm.input_K();
+	 else jdunaMB=true; //ShowMessage("volám MB");
+
+		 if(jdunaMB){
+				 if(mrOk==Form1->MB("Mùže být zmìnìn CT?",MB_OKCANCEL)) {ShowMessage("menim CT"); pm.input_K();}
+				 else if (CT/Form1->d.v.PP.TT<=K) {
+						 ShowMessage("nemenim CT");
+						 pm.input_K(false);
+						 } //volat s parametrem pro M - CT fix, DD mìním
+				 else Form1->MB("Byla zadána neplatná kapacita dojde k pøepoètu CT"); pm.input_K();
+
+				 }
+
+			}
 
 
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
@@ -1550,23 +1552,22 @@ void TForm_parametry::LoadDataToFormFromMath() {
 
 
  if(input_state!=CT){
- scGPNumericEdit_CT->Value=pm.CT;   if(CTunit==MIN)scGPNumericEdit_CT->Value/=60.0;
+ if(CTunit==MIN)scGPNumericEdit_CT->Value/=60.0; else scGPNumericEdit_CT->Value=pm.CT;
  }
  if(input_state!=RD){
- scGPNumericEdit_RD->Value=pm.RD;
- if(RDunitT==MIN)scGPNumericEdit_RD->Value*=60.0; if(RDunitD==MM)scGPNumericEdit_RD->Value*=1000.0;
+ if(RDunitT==MIN)scGPNumericEdit_RD->Value*=60.0;  else if(RDunitD==MM)scGPNumericEdit_RD->Value*=1000.0; else  scGPNumericEdit_RD->Value=pm.RD;
  }
  if(input_state!=DD){
- scGPNumericEdit_delka_dopravniku->Value=pm.DD;   if(DDunit==MM)scGPNumericEdit_delka_dopravniku->Value*=1000.0;
+ if(DDunit==MM)scGPNumericEdit_delka_dopravniku->Value*=1000.0; else  scGPNumericEdit_delka_dopravniku->Value=pm.DD;
  }
  if(input_state!=C){
  scGPNumericEdit_kapacita->Value=pm.K;
  }
  if(input_state!=mezera){
- scGPNumericEdit_mezera->Value=pm.M;  if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0;
+if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0; else  scGPNumericEdit_mezera->Value=pm.M;
  }
 
-
+scGPNumericEdit_pozice->Value=pm.P;
 
 }
 

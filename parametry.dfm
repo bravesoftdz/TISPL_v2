@@ -265,7 +265,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_pozice: TrHTMLLabel
     Left = 8
-    Top = 330
+    Top = 338
     Width = 106
     Height = 19
     Caption = 'Pozice [voz'#237'k'#367']'
