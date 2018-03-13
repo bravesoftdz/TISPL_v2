@@ -108,12 +108,14 @@ __published:	// IDE-managed Components
 	void __fastcall Button_dopravnik_parametryClick(TObject *Sender);
 	void __fastcall scButton_zamek_RDClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_PO_text_memoClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_poziceChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_poziceClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
-	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik}; //zjisteni na ktery edit bylo kliknuto
+	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera,P};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;
 
 	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
@@ -122,6 +124,7 @@ private:	// User declarations
 	void input_RD();//pøepoèet hodnot vyplıvajících ze zmìny RD
 	void input_K();//pøepoèet hodnot vyplıvajících ze zmìny Kapacity
 	void input_mezera(); //pøepoèet hodnot vyplıvajících ze zmìny mezery
+	void input_P();
 	void null_input_value();//vynuluje vstupní hodnoty
 	void LoadDataFromFormAndSave();
 	void LoadDataToFormFromMath();

@@ -274,7 +274,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 			 set(STOPKA,HIDE);
 			 set(ROTACE,ENABLED);
 			 set(MEZERA,ENABLED);
-			 set(ROZESTUP,ENABLED);
+			 set(ROZESTUP,HIDE);
 		 }break;
 			case 13://SG - NÁVRHÁØ  - ROZŠÍØENÉ
 		 {
@@ -796,24 +796,21 @@ void TForm_parametry::input_K()
 	}
 
 		if(K>0 && scComboBox_rezim->ItemIndex==2){ // PP režim - jiný výpoèet než std postup
-	 LoadDataFromFormAndSave();
-	 bool jdunaMB=false;
-	 if(K==CT/Form1->d.v.PP.TT) pm.input_K();
-	 else if(Form1->d.v.OBJEKTY->predchozi->n==1)	pm.input_K();
-	 else jdunaMB=true; //ShowMessage("volám MB");
+					 LoadDataFromFormAndSave();
+					 bool jdunaMB=false;
+					 if(K==CT/Form1->d.v.PP.TT) pm.input_K();
+					 else if(Form1->d.v.OBJEKTY->predchozi->n==1)	pm.input_K();
+					 else jdunaMB=true;
 
-		 if(jdunaMB){
-				 if(mrOk==Form1->MB("Mùže být zmìnìn CT?",MB_OKCANCEL)) {ShowMessage("menim CT"); pm.input_K();}
-				 else if (CT/Form1->d.v.PP.TT<=K) {
-						 ShowMessage("nemenim CT");
-						 pm.input_K(false);
-						 } //volat s parametrem pro M - CT fix, DD mìním
-				 else Form1->MB("Byla zadána neplatná kapacita dojde k pøepoètu CT"); pm.input_K();
+							if(jdunaMB){
+								 if(mrOk==Form1->MB("Mùže být zmìnìn CT?",MB_OKCANCEL)) pm.input_K();
+								 else if (CT/Form1->d.v.PP.TT<=K) {
+													pm.input_K(false);   //volání s parametrem pro M - CT fix, DD mìním
+												}
+												else {Form1->MB("Byla zadána neplatná kapacita dojde k pøepoètu CT"); pm.input_K();}
 
-				 }
-
+							}
 			}
-
 
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 	LoadDataToFormFromMath();
@@ -1405,7 +1402,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
  //	input_DD();//pøepoèet hodnot vyplývajících ze zmìny délky dopravníku
 	//hlídání velikosti mezery dle rozteèe
 
-	if(scComboBox_rezim->ItemIndex!=0 && scGPNumericEdit_mezera->Value>0)//mimo S&G
+	if(scComboBox_rezim->ItemIndex==1 && scGPNumericEdit_mezera->Value>0)//pouze pro kontinuál režim
 	{
 		Cvektory::TPohon *P=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 // mezera_mezi_voziky
@@ -1568,10 +1565,31 @@ void TForm_parametry::LoadDataToFormFromMath() {
  scGPNumericEdit_kapacita->Value=pm.K;
  }
  if(input_state!=mezera){
-if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0; else  scGPNumericEdit_mezera->Value=pm.M;
+ if(DMunit==MM)scGPNumericEdit_mezera->Value*=1000.0; else  scGPNumericEdit_mezera->Value=pm.M;
  }
-
-scGPNumericEdit_pozice->Value=pm.P;
+ if(input_state!=P) scGPNumericEdit_pozice->Value=pm.P;
 
 }
+
+void __fastcall TForm_parametry::scGPNumericEdit_poziceChange(TObject *Sender)
+{
+		if(input_state==NOTHING && input_clicked_edit==P_klik) {
+				input_P();
+	}
+}
+
+//---------------------------------------------------------------------------
+void  TForm_parametry::input_P(){
+
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPNumericEdit_poziceClick(TObject *Sender)
+{
+
+input_clicked_edit=P_klik;
+
+}
+//---------------------------------------------------------------------------
 
