@@ -421,7 +421,7 @@ unsigned int Cvektory::pocet_objektu(short typ)
 }
 //---------------------------------------------------------------------------
 //vrátí počet objektů v požadovaném režimu pro danou zakázku, nebo v případě implicitního parametru -1 objekty ve všech režimech pro danou zakázku
-unsigned int Cvektory::pocet_objektu(TZakazka *Zakazka,short typ)
+unsigned int Cvektory::pocet_objektu_zakazky(TZakazka *Zakazka,short typ)
 {
 	unsigned int pocet=0;
 	TCesta *C=Zakazka->cesta->dalsi;//přeskočí hlavičku
