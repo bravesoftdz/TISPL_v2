@@ -2900,8 +2900,8 @@ object Form_parametry: TForm_parametry
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 28
-    OnChange = scGPNumericEdit_kapacitaChange
-    OnClick = scGPNumericEdit_kapacitaClick
+    OnChange = scGPNumericEdit_poziceChange
+    OnClick = scGPNumericEdit_poziceClick
     OnKeyDown = FormKeyDown
   end
 end
