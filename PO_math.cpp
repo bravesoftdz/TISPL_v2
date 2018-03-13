@@ -96,9 +96,18 @@ void TPO_math::input_P()//pøepoèet souvisejících hodnot vyplývajících ze zmìny P
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
 void TPO_math::input_M()
 {
-	RD=(UDV()+M)/TT;//dle mezery spoèítám novou velikost mezery
-	input_RD();
-	//možná zde bude nutné zakázat zpìtný pøepoèet M
+	switch (rezim)
+	{
+		case 0:break;//S&G
+		case 1:break;//Kontinuál
+				RD=(UDV()+M)/TT;//dle mezery spoèítám novou velikost mezery
+				input_RD();
+				//možná zde bude nutné zakázat zpìtný pøepoèet M
+		case 2://PP
+				input_K();
+				//teoreticky by mohla být volba a mohla by se nabízet (pres MB èi zámek zmìna buï K èi DD, nyní se øeší jen K)
+		break;
+	}
 }
 //---------------------------------------------------------------------------
 //vrátí velikost mezery
