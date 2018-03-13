@@ -880,7 +880,6 @@ void __fastcall TForm_parametry::RadioButton_na_delkuClick(TObject *Sender)
 //	 ValueListEditorStringsChange(Sender);//zajistí pøepoèítání hodnot
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry::RadioButton_na_sirkuClick(TObject *Sender)
 {
 //	 vykresli_vozik(false);//na šíøku
@@ -1120,6 +1119,11 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key, TShiftS
  {
 		 Form_parametry->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
 		 Form_parametry->VisibleChanging();//skryje form, stejné jako visible=false
+ }
+ if(Key==123)//F12
+ {
+		 Memo1->Visible=true;
+		 Memo1->Lines->Add(pm.T);
  }
 }
 //---------------------------------------------------------------------------

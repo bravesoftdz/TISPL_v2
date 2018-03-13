@@ -133,6 +133,6 @@ double TPO_math::P2K()
 //vrátí užitnou délku vozíku dle hodnoty rotace
 double TPO_math::UDV()
 {
-	m.UDV(dV,sV,Rotace);
+	return m.UDV(dV,sV,Rotace);
 }
 //---------------------------------------------------------------------------

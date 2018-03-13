@@ -22,6 +22,7 @@ class TPO_math
 		bool CT_locked;//stav zámku
 		bool RD_locked;//stav zámku
 		bool DD_locked;//stav zámku
+		AnsiString T;//test
 
 		void input_CT(bool prepocet_K=true);//pøepoèet souvisejících hodnot vyplývajících ze zmìny CT, pokud je parametr prepocet_K=false, nebude se pøepoèítávat K (slouží pro situaci, kdy input_CT volá input_K)
 		void input_RD();//pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD
