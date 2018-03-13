@@ -8,58 +8,132 @@
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny CT
 void TPO_math::input_CT()
 {
-	if(RD_locked)DD=RD*CT;//pro pøípad RD zamèeno
-	else RD=DD/CT;				//pro pøípad DD zamèeno
-
-	//vyladit
-	K=CT/TT;//výpoèet kapacity
-	Mezera();
+	switch (rezim)
+	{
+		case 0:break;//S&G
+		case 1://Kontinuál
+			if(RD_locked)DD=RD*CT;//pro pøípad RD zamèeno, CT odemèeno (zajištìno v PO)
+			if(DD_locked)//pro pøípad DD zamèeno, CT odemèeno (zajištìno v PO)
+			{
+				RD=DD/CT;
+				M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice a za výpoètem RD
+			}
+			K=CT/TT;//výpoèet kapacity
+			P=Pozice();//výpoèet poètu pozic
+		break;
+		case 2://PP
+			K=CT/TT;//výpoèet kapacity
+			DD=K*(UDV()+M);//délky kabiny
+			P=Pozice();//výpoèet poètu pozic
+		break;
+	}
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD
 void TPO_math::input_RD()
 {
-	if(CT_locked)DD=RD*CT;//pro pøípad CT zamèeno
-	else CT=DD/RD;				//pro pøípad DD zamèeno
+	switch (rezim)
+	{
+		case 0:break;//S&G
+		case 1://Kontinuál
+			if(CT_locked)DD=RD*CT;//pro pøípad CT zamèeno, RD odemèeno (zajištìno v PO)
+			if(DD_locked)CT=DD/RD;//pro pøípad DD zamèeno, RD odemèeno (zajištìno v PO)
+			M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice
+			K=CT/TT;//výpoèet kapacity
+			P=Pozice();//výpoèet poètu pozic
+		break;
+		case 2:break;//PP
+	}
 }
 //---------------------------------------------------------------------------
 //pøepoèet  souvisejících hodnot vyplývajících ze zmìny DD
 void TPO_math::input_DD()
 {
-	if(RD_locked)CT=DD/RD;//pro pøípad RD zamèeno
-	else RD=DD/CT;				//pro pøípad CT zamèeno
+	switch (rezim)
+	{
+		case 0:break;//S&G
+		case 1://Kontinuál
+			if(RD_locked)CT=DD/RD;//pro pøípad RD zamèeno, DD odemèeno (zajištìno v PO)
+			if(CT_locked)
+			{
+				RD=DD/CT;//pro pøípad CT zamèeno, DD odemèeno (zajištìno v PO)
+				M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice
+			}
+			K=CT/TT;//výpoèet kapacity
+			P=Pozice();//výpoèet poètu pozic
+		break;
+		case 2:
+			K=DD/(UDV()+M);//výpoèet kapacity
+			CT=TT*K;//výpoèet CT
+			P=Pozice();//výpoèet poètu pozic
+		break;//PP
+	}
 }
 //---------------------------------------------------------------------------
 //pøepoèet  souvisejících hodnot vyplývajících ze zmìny K
-void TPO_math::input_K()
+void TPO_math::input_K(bool prepocet_CT)
 {
+	switch (rezim)
+	{
+		case 0:break;//S&G
+		case 1:break;//Kontinuál
+			if(prepocet_CT)CT=TT*K;//výpoèet CT
+			input_CT();
+			//zakazat pøepoèet K
 
+		case 2://PP
+			if(prepocet_CT)CT=TT*K;//výpoèet CT
+			DD=K*(UDV()+M);//délky kabiny
+			P=Pozice();//výpoèet poètu pozic
+		break;
+	}
 }
 //---------------------------------------------------------------------------
-//pøepoèet  souvisejících hodnot vyplývajících ze zmìny M
+void TPO_math::input_P()//pøepoèet souvisejících hodnot vyplývajících ze zmìny P
+{
+	K=P2K();//prvnì si vrátím zjištìnou kapacitu
+	input_K();//potom pracuji jako pøi vkládání kapicity
+}
+//---------------------------------------------------------------------------
+//pøepoèet souvisejících hodnot vyplývajících ze zmìny M
 void TPO_math::input_M()
 {
-
+	//zavolám prvnì výpoèet RD a potom input RD, ale již bez aktualizace M?
 }
 //---------------------------------------------------------------------------
 //vrátí velikost mezery
 double TPO_math::Mezera()
 {
-	if(mV==1)//poèet mezer o jednu menší než poèet vozíkù
-	{
-		M=(DD-K*dV)/(K-1);
-	}
-	//else
-
+	(DD-K*dV)/(K-1);
 }
 //---------------------------------------------------------------------------
-//vrátí poèet pozic
+//vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 double TPO_math::Pozice()
 {
-	 double P=floor(K);//celoèíselná kapacita
-	 double DVM=(dV+M)*(K-P);//délka neceloèíselné vozíko mezery v kabinì
-	 if(DVM>dV)P++;//navýší o celý vozík
-	 else P+=dV*DVM;//navýší o èást vozíku
-	 return P;
+	double P=floor(K);//celoèíselná kapacita
+	double DV=UDV();
+	double DVM=(DV+M)*(K-P);//délka èásti poslední vozíko-mezery v kabinì
+	if(DVM>=DV)P++;//navýší o celý vozík, protože je minimálnì celý vozík v kabinì
+	else P+=DVM/DV;//navýší o èást vozíku, protože je jenom èást vozíku v kabinì
+	return P;
+}//---------------------------------------------------------------------------
+//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
+double  TPO_math::P2K()
+{
+	if(P-floor(P)>0)//pokud je zadán neceloèíselný poèet pozic
+	{
+		return (floor(P)*(UDV()+M)+(UDV()*(P-floor(P))))/(UDV()+M);
+	}
+	else//celoèíselný
+	{
+		return (P*UDV()+(P-1)*M)/(UDV()+M);
+	}
+}
+//---------------------------------------------------------------------------
+//vrátí užitnou délku vozíku dle hodnoty rotace
+double TPO_math::UDV()
+{ //postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
+	if(Rotace==0)return dV;//delka voziku
+	else return sV;// šíøka vozíku
 }
 //---------------------------------------------------------------------------

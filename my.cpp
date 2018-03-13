@@ -329,6 +329,24 @@ double Cmy::mezera_mezi_voziky(double vozik,double roztec,double mezera)
 	else return 0;//pokud nebude znám rozteè
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV() z PM)
+double Cmy::Rz(double M,double DV)
+{
+	return M+DV;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV() z PM)
+double Cmy::Rx(double M,double DV,double R)
+{
+	return (M+DV)/R;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV() z PM)
+double Cmy::mezera(double Rx,double R,double DV)
+{
+	return (Rx*R)-DV;
+}
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 {
 	if(rychlost_dopravniku==0 || delka==0)return 0;//pozor mùže být zavadìjící

@@ -24,12 +24,16 @@ class TPO_math
 
 		void input_CT();//pøepoèet souvisejících hodnot vyplývajících ze zmìny CT
 		void input_RD();//pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD
-		void input_DD();//pøepoèet  souvisejících hodnot vyplývajících ze zmìny DD
-		void input_K();//pøepoèet  souvisejících hodnot vyplývajících ze zmìny K
-		void input_M(); //pøepoèet  souvisejících hodnot vyplývajících ze zmìny M
+		void input_DD();//pøepoèet souvisejících hodnot vyplývajících ze zmìny DD
+		void input_K(bool prepocet_CT=true);//pøepoèet souvisejících hodnot vyplývajících ze zmìny K, pokud je parametr prepocet_CT=false, nebude se pøepoèítávat CT (slouží pro situaci, kdy CT/TT<=K)
+		void input_P(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny P
+		void input_M(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
+		double UDV();//vrátí užitnou délku vozíku dle hodnoty rotace
 	private:
 		double Mezera();//vrátí velikost mezery
-		double Pozice();//vrátí poèet pozic
+		double Pozice();//vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
+		double P2K();//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==
+
 };
 //---------------------------------------------------------------------------
 #endif
