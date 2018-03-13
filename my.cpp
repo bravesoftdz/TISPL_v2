@@ -323,10 +323,10 @@ double Cmy::mezera_mezi_voziky(double vozik,double roztec,double mezera)
 		else
 		{
 			if(min_mezera>=mezera || mezera<0)return min_mezera;//pokud je minimální možná mezera menší než nebo stejná jak zadaná, pøípadnì chybnì zadaná v podobì záporného èísla tak vrátí minimální možnou resp. zadanou v pøípadì ==
-			else {/*MessageBeep(0);*/return min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratí nejbližší možnou mezeru mezi vozíky
+			else {return min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratí nejbližší možnou mezeru mezi vozíky
 		}
 	}
-	else return 0;//pokud nebude znám rozteè
+	else return 0;//pokud nebude známa rozteè
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV() z PM)
