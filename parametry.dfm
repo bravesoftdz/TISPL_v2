@@ -173,7 +173,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_CT: TrHTMLLabel
-    Left = 23
+    Left = 8
     Top = 177
     Width = 159
     Height = 21
@@ -2463,14 +2463,13 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
-    Left = 130
-    Top = 601
+    Left = 6
+    Top = 242
     Width = 192
-    Height = 23
+    Height = 62
     Lines.Strings = (
       'Memo1')
     TabOrder = 23
-    Visible = False
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
@@ -2649,10 +2648,10 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_PO_text_memo: TscGPGlyphButton
-    Left = -6
-    Top = 170
+    Left = 309
+    Top = 174
     Width = 31
-    Height = 30
+    Height = 27
     Hint = 'P'#345'idat pozn'#225'mku k CT'
     Margins.Left = 0
     Margins.Top = 0

@@ -124,6 +124,7 @@ private:	// User declarations
 	void input_mezera(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void null_input_value();//vynuluje vstupní hodnoty
 	void LoadDataFromFormAndSave();
+	void LoadDataToFormFromMath();
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
