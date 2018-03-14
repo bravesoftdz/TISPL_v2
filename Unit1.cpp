@@ -1039,13 +1039,13 @@ void TForm1::S(UnicodeString Text)
 }
 //---------------------------------------------------------------------------
 //vola rychle myMessageBox
-int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width)
+int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width,bool default_button_caption)
 {
-	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit,width);
+	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit,width,default_button_caption);
 }
-int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width)
+int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption)
 {
-	return myMessageBox->Show(text,mbTYPE,centrovat_text,width);
+	return myMessageBox->Show(text,mbTYPE,centrovat_text,width,default_button_caption);
 }
 //---------------------------------------------------------------------------
 //metoda volá kurzory aplikace

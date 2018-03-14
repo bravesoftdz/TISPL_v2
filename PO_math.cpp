@@ -29,7 +29,7 @@ void TPO_math::input_CT(bool prepocet_K)
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD
-void TPO_math::input_RD()
+void TPO_math::input_RD(bool prepocet_M)
 {
 	switch (rezim)
 	{
@@ -37,7 +37,7 @@ void TPO_math::input_RD()
 		case 1://Kontinuál
 			if(CT_locked)DD=RD*CT;//pro pøípad CT zamèeno, RD odemèeno (zajištìno v PO)
 			if(DD_locked)CT=DD/RD;//pro pøípad DD zamèeno, RD odemèeno (zajištìno v PO)
-			M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice
+			if(prepocet_M)M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice
 			K=CT/TT;//výpoèet kapacity
 			P=Pozice();//výpoèet poètu pozic
 		break;
@@ -100,9 +100,8 @@ void TPO_math::input_M(bool prepocet_K)
 	{
 		case 0:break;//S&G
 		case 1:break;//Kontinuál
-				RD=(UDV()+M)/TT;//dle mezery spoèítám novou velikost mezery
-				input_RD();
-				//možná zde bude nutné zakázat zpìtný pøepoèet M
+				RD=(UDV()+M)/TT;//dle mezery spoèítám novou rychlost
+				input_RD(false);//již znovu nepøepoèítává mezeru
 		case 2://PP
 				if(prepocet_K)input_DD();
 				else input_K();
