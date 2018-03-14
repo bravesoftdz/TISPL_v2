@@ -31,7 +31,7 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 //pøetížená metoda
 int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption)
 {
-	 return Show(-1,-1,text,"",mbTYPE,centrovat_text,false,width,default_caption);
+	 return Show(-1,-1,text,"",mbTYPE,centrovat_text,false,width,default_button_caption);
 }
 int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width,bool default_button_caption)
 {
