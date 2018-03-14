@@ -139,6 +139,8 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 				Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-Form1->scGPPanel_statusbar->Height-10;
 
 
+
+
 			//aktualizace hodnot
 //			if(scGPNumericEdit_CT->Value>0)/*input_CT();*/ ShowMessage(input_state);
 //			else
@@ -685,6 +687,8 @@ void  TForm_parametry::input_P(){
 					}
 					//naètení dat zpìt do formuláøe po výpoètu
 					LoadDataToFormFromMath();
+
+ input_state=NOTHING;
 }
 
 //---------------------------------------------------------------------------
@@ -704,14 +708,11 @@ void TForm_parametry::input_CT()
 
 			}
 
-
-
 ///////////////////// režim SG - nevstupuje do výpoètu math //////////////////////////
 
 	 double CT=scGPNumericEdit_CT->Value;//CT od uživatele
 	 if(CTunit==MIN)CT=CT*60.0;//pokud bylo zadání v minutách pøevede na sekundy
 	 int pocet_obj_vSG=Form1->d.v.pocet_objektu(0);
-
 
 		/////////////////pokud je CT == TT////////////////////////////////////
 	 if(CT==Form1->ms.MyToDouble(Form1->d.v.PP.TT) && scComboBox_rezim->ItemIndex==0)
@@ -740,10 +741,13 @@ void TForm_parametry::input_CT()
 				 }
 				 else kapacitaSG=1;
 
+
+
 			/////////////////pokud je CT < nežli TT////////////////////////////////////
 	 if(CT<Form1->ms.MyToDouble(Form1->d.v.PP.TT) && scComboBox_rezim->ItemIndex==0) // podmínky pouze pro režim SG!!
 	{
-	 if(Form1->d.v.OBJEKTY->dalsi->n==1){ //první objekt na lince
+	 if(Form1->pom->n==1){ //první objekt na lince
+
 
 				 if(pocet_obj_vSG==1) {
 					scGPButton_OK->Enabled=false;
@@ -754,14 +758,15 @@ void TForm_parametry::input_CT()
 				 if(pocet_obj_vSG>1)  {
 				 scGPButton_OK->Enabled=false;
 				 scGPButton_OK->Caption="Uložit";
-				 vypis("Nastavte CT totožný s TT!");
+				 vypis("Nastavte technologický èas shodný s TT!");
 				 }
 
 			}
-			 if(Form1->d.v.OBJEKTY->predchozi->n>1) //na lince je více objektù, pokud mají nižší CT dovolím je uložit
+	 else  //na lince je více objektù, pokud mají nižší CT dovolím je uložit
 			 {
 				scGPButton_OK->Caption="Uložit";
 				scGPButton_OK->Enabled=true; //ostatní objekty v poøadí na lince mohu uložit s nižším CT než je TT linky
+				vypis("");
 					}
 	}
 
@@ -788,7 +793,7 @@ void TForm_parametry::input_DD()
 void TForm_parametry::input_M()
 {
 		input_state=mezera;
-		if(scGPNumericEdit_mezera->Value>0)//nutné ošetøení pro období zadávání/psaní
+		if(scGPNumericEdit_mezera->Value>=0)//nutné ošetøení pro období zadávání/psaní
 	 {
 		LoadDataFromFormAndSave();
 		pm.input_M();  //zavolání výpoèetního modelu
@@ -1150,6 +1155,8 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key, TShiftS
  {
 		 Memo1->Visible=true;
 		 Memo1->Lines->Add(pm.T);
+		 Memo1->Top=0;
+		 Memo1->Left=0;
  }
 }
 //---------------------------------------------------------------------------
@@ -1606,4 +1613,19 @@ void TForm_parametry::LoadDataToFormFromMath() {
 
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
+{
+	if(input_state!=NO) input_M();     //pokud to není pøi startu (formshow)
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::Button1Click(TObject *Sender)
+{
+ int pocet_obj_vSG=Form1->d.v.pocet_objektu(0);
+
+				 Memo1->Lines->Add(Form1->d.v.OBJEKTY->dalsi->n);
+				 Memo1->Lines->Add(pocet_obj_vSG);
+}
+//---------------------------------------------------------------------------
 

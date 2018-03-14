@@ -1961,7 +1961,7 @@ object Form_parametry: TForm_parametry
     ListBoxOptions.FrameWidth = 1
     ListBoxOptions.FrameScaleWidth = False
     Color = clWhite
-    OnChange = scComboBox_rezimChange
+    OnChange = scComboBox_rotaceChange
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_copy: TscGPGlyphButton
@@ -2463,10 +2463,10 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
-    Left = 2
-    Top = 388
-    Width = 192
-    Height = 101
+    Left = 126
+    Top = 601
+    Width = 169
+    Height = 35
     Lines.Strings = (
       'Memo1')
     TabOrder = 23
