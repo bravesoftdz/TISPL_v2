@@ -29,11 +29,11 @@ void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda
-int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text,int width)
+int TmyMessageBox::Show(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption)
 {
-	 return Show(-1,-1,text,"",mbTYPE,centrovat_text,false,width);
+	 return Show(-1,-1,text,"",mbTYPE,centrovat_text,false,width,default_caption);
 }
-int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width)
+int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width,bool default_button_caption)
 {
 	short O=26;//výchozí offset pro zohlednìní checkboxu
 	myMessageBox->Width=width;//výchozí šíøka MB z implicitního parametru 366px, pokud není uživatelsky zadaná
@@ -56,6 +56,15 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	CheckBox_pamatovat->Top=myMessageBox->Height-O;
 
 	////tlaèítka
+	//caption tlaèítka - pro pøípad, že by v pøedchozím volání MB bylo tlaèítko pøejmenované
+	if(default_button_caption)
+	{
+		Button_OK->Caption="OK";
+		Button_Cancel->Caption="Storno";
+		Button_Yes->Caption="Ano";
+		Button_No->Caption="Ne";
+  }
+
 	//horizontální umístìní
 	switch(mbTYPE) //OK=0,OKCANCEL,YESNO,YESNOCANCEL
 	{

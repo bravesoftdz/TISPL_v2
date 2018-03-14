@@ -94,7 +94,7 @@ void TPO_math::input_P()//pøepoèet souvisejících hodnot vyplývajících ze zmìny P
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
-void TPO_math::input_M()
+void TPO_math::input_M(bool prepocet_K)
 {
 	switch (rezim)
 	{
@@ -104,8 +104,8 @@ void TPO_math::input_M()
 				input_RD();
 				//možná zde bude nutné zakázat zpìtný pøepoèet M
 		case 2://PP
-				input_K();
-				//teoreticky by mohla být volba a mohla by se nabízet (pres MB èi zámek zmìna buï K èi DD, nyní se øeší jen K)
+				if(prepocet_K)input_DD();
+				else input_K();
 		break;
 	}
 }
