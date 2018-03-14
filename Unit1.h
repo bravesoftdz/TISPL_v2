@@ -428,7 +428,9 @@ private:
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
+ public:
 	Cvektory::TObjekt *pom;
+ private:
 	Cvektory::TProces *proces_pom;
 
 	////metody
