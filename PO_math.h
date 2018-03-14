@@ -29,7 +29,7 @@ class TPO_math
 		void input_DD();//pøepoèet souvisejících hodnot vyplývajících ze zmìny DD
 		void input_K(bool prepocet_CT=true);//pøepoèet souvisejících hodnot vyplývajících ze zmìny K, pokud je parametr prepocet_CT=false, nebude se pøepoèítávat CT (slouží pro situaci, kdy CT/TT<=K)
 		void input_P(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny P
-		void input_M(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
+		void input_M(bool prepocet_K=true); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M, pokud je parametr prepocet_K=false, bude se pøepoèítavat DD
 	private:
 		Cmy m;
 		double Mezera();//vrátí velikost mezery
