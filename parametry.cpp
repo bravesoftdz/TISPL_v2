@@ -5,6 +5,7 @@
 #include "unit1.h"
 #include "parametry_linky.h"
 #include "PO_poznamky.h"
+#include "MyMessageBox.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -793,10 +794,20 @@ void TForm_parametry::input_DD()
 void TForm_parametry::input_M()
 {
 		input_state=mezera;
-		if(scGPNumericEdit_mezera->Value>=0)//nutné ošetøení pro období zadávání/psaní
-	 {
 		LoadDataFromFormAndSave();
+		if(scGPNumericEdit_mezera->Value>=0 && scComboBox_rezim->ItemIndex==1)//nutné ošetøení pro období zadávání/psaní
+	 {
 		pm.input_M();  //zavolání výpoèetního modelu
+	}
+
+	if (scGPNumericEdit_mezera->Value>=0 && scComboBox_rezim->ItemIndex==2) { //pouze pøi režimu PP
+
+	 myMessageBox->Button_OK->Caption="Kapacita";
+	 myMessageBox->Button_Cancel->Caption="Délka kabiny";
+	 if(mrOk==Form1->MB("Pøejete si zmìnit délku kabiny nebo kapacitu?",MB_OKCANCEL,true,366,false)) pm.input_M(); //zmìna kapacity
+	 else pm.input_M(false); //zmìna DD
+
+
 	}
 	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 		LoadDataToFormFromMath();

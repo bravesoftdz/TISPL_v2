@@ -18,6 +18,7 @@
 #include <Vcl.Mask.hpp>
 #include "scGPExtControls.hpp"
 #include "PO_math.h"
+
 //---------------------------------------------------------------------------
 class TForm_parametry : public TForm
 {
