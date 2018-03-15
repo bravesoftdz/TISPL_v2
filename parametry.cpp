@@ -787,7 +787,6 @@ void TForm_parametry::input_DD()
 	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 		LoadDataToFormFromMath();
 		input_state=NOTHING;
-
 }
 //-----------------------------------------------------------------------------
 
