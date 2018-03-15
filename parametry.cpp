@@ -806,7 +806,6 @@ void TForm_parametry::input_M()
 	 if(mrOk==Form1->MB("Pøejete si zmìnit délku kabiny nebo kapacitu?",MB_OKCANCEL,true,366,false)) pm.input_M(); //zmìna kapacity
 	 else pm.input_M(false); //zmìna DD
 
-
 	}
 	///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 		LoadDataToFormFromMath();
