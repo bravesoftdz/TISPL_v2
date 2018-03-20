@@ -21,7 +21,7 @@ void TPO_math::input_CT(bool prepocet_K)
 			P=Pozice();//výpoèet poètu pozic
 		break;
 		case 2://PP
-			K=CT/TT;//výpoèet kapacity
+			if(prepocet_K)K=CT/TT;//výpoèet kapacity
 			DD=K*(UDV()+M);//délky kabiny
 			P=Pozice();//výpoèet poètu pozic
 		break;
@@ -109,10 +109,10 @@ void TPO_math::input_M(bool prepocet_K)
 	}
 }
 //---------------------------------------------------------------------------
-//vrátí velikost mezery
+//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè
 double TPO_math::Mezera()
 {
-
+	return RD*TT-DV;
 }
 //---------------------------------------------------------------------------
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
@@ -125,7 +125,7 @@ double TPO_math::Pozice()
 	else P+=DVM/DV;//navýší o èást vozíku, protože je jenom èást vozíku v kabinì
 	return P;
 }//---------------------------------------------------------------------------
-//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
+//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. situace, že K==P
 double TPO_math::P2K()
 {
 	if(P-floor(P)>0)//pokud je zadán neceloèíselný poèet pozic

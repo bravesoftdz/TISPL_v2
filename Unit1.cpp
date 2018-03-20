@@ -4130,7 +4130,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 
- S(m.mezera_mezi_voziky(1,0.325,0));
+ //S(m.mezera_mezi_voziky(1,0.325,0));
  //	ShowMessage(scListGroupNastavProjektu->TabOrder);
  //	ShowMessage(scListGroupKnihovObjektu->TabOrder);
 

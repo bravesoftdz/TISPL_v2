@@ -282,7 +282,6 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrátí dobu èekání na palec v sec, rozteè je v m, rychlost dopravníku v m/s
 {
-
 		//if(zohlednit && rezim!=1)//pokud se jedná o kontinuální režim neøeší se, pøedpokládá se, že jede na stejném dopravníku
 		{
 			//exaktní výpoèet je použitelný jenom v pøípad známe goemetrie, navíc obsahuje chybu
@@ -310,12 +309,14 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 		return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0
-double Cmy::mezera_mezi_voziky(double vozik,double roztec,double mezera)
+//metoda vratí minimální možnou mezeru mezi vozíky pokud je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0
+double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera)
 {
+	double DV=UDV(dV,sV,rotace);//užitná délka vozíku
+
 	if(roztec!=0)
 	{
-		double min_mezera=ceil(vozik/roztec)*roztec-vozik;//vrátí minimální možnou mezi vozíky, nepokrácené: ceil((vozik/2+vozik/2)/roztec]*roztec-vozik
+		double min_mezera=ceil(DV/roztec)*roztec-DV;//vrátí minimální možnou mezi vozíky, nepokrácené: ceil((vozik/2+vozik/2)/roztec]*roztec-vozik
 		if(mezera==0)
 		{
 			return min_mezera;
@@ -329,25 +330,32 @@ double Cmy::mezera_mezi_voziky(double vozik,double roztec,double mezera)
 	else return 0;//pokud nebude známa rozteè
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV())
-double Cmy::Rz(double M,double DV)
+//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
+double Cmy::Rz(double dV,double sV,double rotace,double M)
 {
-	return M+DV;
+	return M+UDV(dV,sV,rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV())
-double Cmy::Rx(double M,double DV,double R)
+//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
+double Cmy::Rx(double dV,double sV,double rotace,double M,double R)
 {
-	return (M+DV)/R;
+	return (M+UDV(dV,sV,rotace))/R;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera, ta musí být zároveò zadáná dle užitného rozmìru (vrací metoda UDV())
-double Cmy::mezera(double Rx,double R,double DV)
+//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
+double Cmy::mezera(double dV,double sV,double rotace,double Rx,double R)
 {
-	return (Rx*R)-DV;
+	return (Rx*R)-UDV(dV,sV,rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
-//vratí užitnou délku vozíku
+//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
+double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double RD)
+{
+	double DV=UDV(dV,sV,rotace);
+	return (DV+mezera_mezi_voziky(dV,sV,rotace,R,TT*RD-DV))/TT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí užitnou délku vozíku
 double Cmy::UDV(double dV,double sV,double rotace)
 {
   //postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90

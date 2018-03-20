@@ -279,6 +279,7 @@ class Cvektory
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
 		bool pohon_je_pouzivan(unsigned long n);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
+		TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL
 		void zrusit_prirazeni_pohunu_k_objektum(unsigned long n);//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
 		void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
 		AnsiString navrhni_POHONY();//navrhne pohony zobrazené v parametrech linky, vráti formou řetězce  pouze seznam unikátních použitých rychlostí

@@ -764,16 +764,32 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 	bool nalezen=false;
 	while (O!=NULL)
 	{
-	if(O->pohon!=NULL){
-		if(O->pohon->n==n)
+		if(O->pohon!=NULL)
 		{
-			nalezen=true;
-			break;//přeruší další vyhledávání
+			if(O->pohon->n==n)
+			{
+				nalezen=true;
+				break;//přeruší další vyhledávání
+			}
 		}
-	}
 		O=O->dalsi;
 	}
 	return nalezen;
+}
+////---------------------------------------------------------------------------
+//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL
+Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt)
+{
+ 	TObjekt *O=OBJEKTY->dalsi;
+	while (O!=NULL)
+	{
+		if(O->pohon!=NULL && O!=mimo_objekt)
+		{
+			if(O->pohon->n==n)break;//přeruší další vyhledávání
+		}
+		O=O->dalsi;
+	}
+	return O;
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu vráti objekty, které pohon používají,, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
@@ -867,7 +883,7 @@ AnsiString Cvektory::navrhni_POHONY()
 	{
 		 if(P->name.Pos("Navržený pohon "))
 		 {
-			short i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
+			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
 			if(i_potencial>i)i=i_potencial;
 		 }
 		 P=P->dalsi;//posun na další prvek
@@ -1620,13 +1636,11 @@ Cvektory::TProces *Cvektory::najdi_proces(double cas, double vozik)
 //vratí následující proces na stejném objektu jako proces zadaný
 Cvektory::TProces *Cvektory::vrat_nasledujici_proces_objektu(TProces *Proces)
 {
-		TProces *RET=NULL;
 		TProces *P=Proces->dalsi;
 		while (P!=NULL)
 		{
 			if(P->segment_cesty->objekt==Proces->segment_cesty->objekt)
 			{
-				RET=P;
 				break;
 			}
 			P=P->dalsi;
@@ -2060,10 +2074,10 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 	}
 }
 ////---------------------------------------------------------------------------
-short int Cvektory::ulozit_report(UnicodeString FileName)
-{
-
-}
+//short int Cvektory::ulozit_report(UnicodeString FileName)
+//{
+//	//
+//}
 //ZDM
 //---------------------------------------------------------------------------
 //AnsiString Cvektory::get_csv_xls(AnsiString S)//S=separator
@@ -2241,7 +2255,7 @@ TPointD Cvektory::vrat_zacatek_a_konec_zakazky(unsigned int ID_zakazky)//ukazate
 	Cvektory::TVozik *vozik=VOZIKY->dalsi;//ukazatel na první objekt v seznamu VOZÍKŮ, přeskočí hlavičku
 	while (vozik!=NULL)
 	{
-		if(vozik->zakazka->n==ID_zakazky){RET.x=vozik->start/Form1->d.PX2MIN*60.0;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
+		if(vozik->zakazka->n==ID_zakazky && prvni){RET.x=vozik->start/Form1->d.PX2MIN*60.0;prvni=false;}//uloží výchozí pozici prvního vozíku na zakázce
 		if(vozik->zakazka->n==ID_zakazky)RET.y=vozik->pozice/Form1->d.PX2MIN*60.0;//uloží koncovou pozici posledního vozíku na zakázce
 		vozik=vozik->dalsi;
 	}

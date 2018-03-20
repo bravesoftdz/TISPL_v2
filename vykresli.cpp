@@ -1148,7 +1148,10 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	ukaz=v.OBJEKTY->dalsi;//ukazatel na první objekt v seznamu OBJEKTU, přeskočí hlavičku
 	while (ukaz!=NULL)
 	{
-		int Rx=D;int Ry=S;if(ukaz->rotace==90){Rx=S;Ry=D;}//rozměr
+		//ověřit proč není použito int Rx=D;
+		//int Ry=S;if(ukaz->rotace==90){Rx=S;Ry=D;}//rozměr
+		//prověřit§§§§
+		int Ry=m.round(m.UDV(S,D,ukaz->rotace));//hodnoty záměrně obráceně
 		X=ukaz->obsazenost+Xofset;
 		canv->MoveTo(X-PosunT.x,Y);
 		if(!A)canv->LineTo(X-PosunT.x,Yofset+Ry*DO/K+Yofset/2-PosunT.y);//pokud se nejedná o animaci, pozn. osa Y si stejně vypisuje nějak divně
