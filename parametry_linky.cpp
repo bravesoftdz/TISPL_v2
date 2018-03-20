@@ -900,7 +900,7 @@ void TForm_parametry_linky::show_min_mezeru() {
 
  for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++){
 	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()){
-	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000.0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);;
+	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000.0,rEditNum_sirka_jigu->Value*1000.0,0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);
 
 	 }
 	}

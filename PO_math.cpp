@@ -79,7 +79,7 @@ void TPO_math::input_K(bool prepocet_CT)
 			if(prepocet_CT)CT=TT*K;//výpoèet CT
 			input_CT(false);//+ zakazaný zpìtný pøepoèet K
 		case 2://PP
-			if(prepocet_CT)CT=TT*K;//výpoèet CT
+			if(!CT_locked)CT=TT*K;//výpoèet CT
 			DD=K*(UDV()+M);//délky kabiny
 			P=Pozice();//výpoèet poètu pozic
 		break;
@@ -103,7 +103,7 @@ void TPO_math::input_M(bool prepocet_K)
 				RD=(UDV()+M)/TT;//dle mezery spoèítám novou rychlost
 				input_RD(false);//již znovu nepøepoèítává mezeru
 		case 2://PP
-				if(prepocet_K)input_DD();
+				if(DD_locked)input_DD();
 				else input_K();
 		break;
 	}

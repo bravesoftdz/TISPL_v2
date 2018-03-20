@@ -74,6 +74,7 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit_rozestup;
 	TrHTMLLabel *rHTMLLabel_pozice;
 	TscGPNumericEdit *scGPNumericEdit_pozice;
+	TscButton *scButton_K_zamek;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -112,14 +113,16 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_poziceChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_poziceClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceChange(TObject *Sender);
+	void __fastcall scButton_K_zamekClick(TObject *Sender);
+	void __fastcall scComboBox_rotaceEnter(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//n·zev souvisejÌcÌch komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera,P};//uchov·v· v˝bÏr input hodnoty (aby se formul·¯e necyklyly)
-	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik}; //zjisteni na ktery edit bylo kliknuto
+	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
-	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;
+	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 
 	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajiöùuje zobrazenÌ a napozicov·nÌ pat¯iËnÈ konkrÈtnÌ komponenty a z·roveÚ udrûov·nÌ hodnoty offsetu - to pokud je move==true, jinak jen nastavÌ komponenty
 	void input_CT();//p¯epoËet hodnot vypl˝vajÌcÌch ze zmÏny CT
@@ -131,7 +134,8 @@ private:	// User declarations
 	void null_input_value();//vynuluje vstupnÌ hodnoty
 	void LoadDataFromFormAndSave();
 	void LoadDataToFormFromMath();
-  void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
+	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
+	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	TPO_math pm;//INSTANCE NA V›PO»ETNÕ »¡ST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podp˘rn· funkce na p¯epoËet jednotek dÈlky

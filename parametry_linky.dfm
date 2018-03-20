@@ -202,9 +202,6 @@ object Form_parametry_linky: TForm_parametry_linky
       ' n'#225'zev'
       ' rychlost [m/min]')
     Visible = False
-    ColWidths = (
-      150
-      -16)
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 0
