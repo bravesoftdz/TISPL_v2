@@ -112,7 +112,7 @@ void TPO_math::input_M(bool prepocet_K)
 //vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè
 double TPO_math::Mezera()
 {
-	return RD*TT-DV;
+	return RD*TT-m.UDV(dV,sV,rotace);
 }
 //---------------------------------------------------------------------------
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
