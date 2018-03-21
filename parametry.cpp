@@ -2354,6 +2354,15 @@ void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender) {
 				scButton_K_zamek->Visible = false;
 		}
 
+			if (input_state==NOTHING && scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
+						input_clicked_edit == Rotace_klik) {
+
+						Form1->MB
+								("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.",
+								MB_OK);
+						scComboBox_rotace->Items->Items[0]->Enabled = false;
+						scComboBox_rotace->Items->Items[1]->Enabled = false;
+							}
 }
 // ---------------------------------------------------------------------------
 
