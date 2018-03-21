@@ -50,6 +50,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender) {
 		DDunit = M;
 		DMunit = M;
 		RDunitD = M;
+		doporuc_mezera = 0;
 		// GLOBAL
 		if (Form1->readINI("nastaveni_form_parametry", "cas") == "1") {
 				minsec = MIN;
@@ -93,7 +94,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender) {
 		form_zobrazen = true;
 		// detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
 
-		//pohon_je_pouzivan  - nastavení zámkù a editboxù dle nastaveného pohonu.
+		// pohon_je_pouzivan  - nastavení zámkù a editboxù dle nastaveného pohonu.
 		Pohon_pouzivan();
 
 }
@@ -150,20 +151,22 @@ void TForm_parametry::vypis(UnicodeString text, bool RED) {
 void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender) {
 		if (input_state != NO) // pokud to není pøi startu (formshow)
 		{
-				// výchozí nastavení zámkù pøi pøekliku režimu
-					if(scComboBox_rezim->ItemIndex==1){
-				CT_zamek = UNLOCKED;  scButton_zamek_CT->ImageIndex = 38;
-				RD_zamek = LOCKED;   	scButton_K_zamek->ImageIndex = 37;
-				DD_zamek = UNLOCKED;  scButton_zamek_DD->ImageIndex = 38;
+				// výchozí nastavení zámkù pøi pøekliku režimu na KK
+				if (scComboBox_rezim->ItemIndex == 1) {
+						CT_zamek = UNLOCKED;
+						scButton_zamek_CT->ImageIndex = 38;
+						RD_zamek = LOCKED;
+						scButton_zamek_RD->ImageIndex = 37;
+						DD_zamek = UNLOCKED;
+						scButton_zamek_DD->ImageIndex = 38;
 				}
-				if(scComboBox_rezim->ItemIndex==2)
-				{
-				K_zamek = LOCKED;
-				scButton_K_zamek->Visible=false;
-				scButton_zamek_DD->ImageIndex = 38;
-				scButton_K_zamek->ImageIndex = 37;
-				 }
-
+				// výchozí nastavení zámkù pøi pøekliku režimu na PP
+				if (scComboBox_rezim->ItemIndex == 2) {
+						K_zamek = LOCKED;
+						scButton_K_zamek->Visible = false;
+						scButton_zamek_DD->ImageIndex = 38;
+						scButton_K_zamek->ImageIndex = 37;
+				}
 
 				// nadesignování a napozicování komponent dle zvoleného režimu
 				setForm4Rezim(scComboBox_rezim->ItemIndex);
@@ -210,13 +213,17 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender) {
 				double dV = Form1->d.v.PP.delka_voziku; // delka voziku
 				double sV = Form1->d.v.PP.sirka_voziku; // delka voziku
 				double rotace;
-				if(scComboBox_rotace->ItemIndex==0) rotace=0; else rotace=90;
+				if (scComboBox_rotace->ItemIndex == 0)
+						rotace = 0;
+				else
+						rotace = 90;
 
 				if (P != NULL) { // je "zbytek po dìlení"
 						if (P->roztec > 0) // pokud existuje rozteè
 						{
 								// scGPButton_OK->Enabled=false;
-								double doporuc_mezera = Form1->m.mezera_mezi_voziky(dV,sV,rotace,P->roztec, 0);
+								double doporuc_mezera =
+										Form1->m.mezera_mezi_voziky(dV, sV, rotace, P->roztec, 0);
 								vypis("Doporuèená mezera: " + AnsiString(doporuc_mezera) +
 										" m", true);
 								// mezeru neplním automaticky do editu
@@ -567,7 +574,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 						rHTMLLabel_kapacita->Visible = true;
 						scGPNumericEdit_kapacita->Visible = true;
 						scGPNumericEdit_kapacita->Enabled = true;
-						scButton_K_zamek->Visible=false;
+						scButton_K_zamek->Visible = false;
 						scGPNumericEdit_kapacita->Options->FrameNormalColor = clGray;
 						scGPNumericEdit_kapacita->Options->FrameWidth = 1;
 						// ty co jsou rozdílné
@@ -907,6 +914,35 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange
 		}
 }
 
+//////////////////////////////////////////////////////
+void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender) {
+		if (input_state == NOTHING && input_clicked_edit == mezera_klik)
+		{ // pokud není zadáváno z jiného vstupu
+				input_M(); // lokální
+		}
+
+		if (input_state == NOTHING) {
+				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
+						input_clicked_edit == mezera_klik) {
+						vypis("Pro zmìnu mezery, povolte zmìnu rychlosti pohonu.", true);
+				} // není zamèeno - doporuèím mezeru, èekám zdali zadá správnou mezeru
+				else if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED &&
+						input_clicked_edit == mezera_klik) {
+						vypis("");
+						Kontrola_mezery();
+						LoadDataFromFormAndSave();
+						if (doporuc_mezera == scGPNumericEdit_mezera->Value) {
+
+								Memo1->Lines->Add("volam input M z mezery");
+								pm.input_M();
+								LoadDataToFormFromMath();
+						}
+
+				}
+
+		}
+}
+
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender) {
 		if (input_state == NOTHING && input_clicked_edit == RD_klik)
@@ -1067,27 +1103,33 @@ void TForm_parametry::input_DD() {
 }
 // -----------------------------------------------------------------------------
 
-void TForm_parametry::input_M (){
+void TForm_parametry::input_M() {
 		input_state = mezera;
 		LoadDataFromFormAndSave();
-		if (scGPNumericEdit_mezera->Value >= 0 && scComboBox_rezim->ItemIndex == 1)
-				// nutné ošetøení pro období zadávání/psaní
-		{
-				pm.input_M(); // zavolání výpoèetního modelu
-		}
+		// Memo1->Lines->Add("ahoj");
+		// nutné ošetøení pro období zadávání/psaní  KK režim
+		// if (scGPNumericEdit_mezera->Value >= 0 && scComboBox_rezim->ItemIndex == 1)
+		// {
+		// if (RD_zamek == LOCKED) {
+		// Form1->MB("Pokud chcete zmìnit velikost mezery, je nejprve nutné odemknout zámek rychlosti pohonu.",MB_OK);
+		// // pm.input_M(); // zavolání výpoèetního modelu v pøípadì, že doporuèená M je shodná se zadanou
+		// }
+		// if(RD_zamek == UNLOCKED) {
+		// Kontrola_mezery();
+		// // pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
+		// if (doporuc_mezera == scGPNumericEdit_mezera->Value) {
+		// Memo1->Lines->Add(AnsiString(doporuc_mezera)+" "+scGPNumericEdit_mezera->Value);
+		// pm.input_M();
+		// } if (doporuc_mezera != scGPNumericEdit_mezera->Value)
+		// {
+		// vypis("Doporuèená mezera (M): " + AnsiString(doporuc_mezera) +" m", true);
+		// scGPButton_OK->Enabled=false;  }
+		// }
+		// }
 
 		if (scGPNumericEdit_mezera->Value >= 0 && scComboBox_rezim->ItemIndex == 2)
 		{ // pouze pøi režimu PP
-
-			/*	myMessageBox->Button_OK->Caption = "Kapacita";
-				myMessageBox->Button_Cancel->Caption = "Délka kabiny";
-				if (mrOk == Form1->MB("Pøejete si zmìnit délku kabiny nebo kapacitu?",MB_OKCANCEL, true, 366, false))
-						pm.input_M(); // zmìna kapacity
-				else
-						pm.input_M(false); // zmìna DD       */
-       	pm.input_M();
-
-
+				pm.input_M();
 		}
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 		LoadDataToFormFromMath();
@@ -1125,29 +1167,29 @@ void TForm_parametry::input_K() {
 
 		if (K > 0 && scComboBox_rezim->ItemIndex == 2)
 		{ // PP režim - jiný výpoèet než std postup
-			pm.input_K();
-			 /*	LoadDataFromFormAndSave();
-				bool jdunaMB = false;
-				if (K == CT / Form1->d.v.PP.TT)
-						pm.input_K();
-				else if (Form1->d.v.OBJEKTY->predchozi->n == 1)
-						pm.input_K();
-				else
-						jdunaMB = true;
+				pm.input_K();
+				/* LoadDataFromFormAndSave();
+				 bool jdunaMB = false;
+				 if (K == CT / Form1->d.v.PP.TT)
+				 pm.input_K();
+				 else if (Form1->d.v.OBJEKTY->predchozi->n == 1)
+				 pm.input_K();
+				 else
+				 jdunaMB = true;
 
-				if (jdunaMB) {
-						if (mrOk == Form1->MB("Mùže být zmìnìn CT?", MB_OKCANCEL))
-								pm.input_K();
-						else if (CT / Form1->d.v.PP.TT <= K) {
-								pm.input_K(false);
-								// volání s parametrem pro M - CT fix, DD mìním
-						}
-						else {
-								Form1->MB("Byla zadána neplatná kapacita dojde k pøepoètu CT");
-								pm.input_K();
-						}
+				 if (jdunaMB) {
+				 if (mrOk == Form1->MB("Mùže být zmìnìn CT?", MB_OKCANCEL))
+				 pm.input_K();
+				 else if (CT / Form1->d.v.PP.TT <= K) {
+				 pm.input_K(false);
+				 // volání s parametrem pro M - CT fix, DD mìním
+				 }
+				 else {
+				 Form1->MB("Byla zadána neplatná kapacita dojde k pøepoètu CT");
+				 pm.input_K();
+				 }
 
-				}  */
+				 } */
 		}
 
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
@@ -1542,6 +1584,7 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				Memo1->Top = 0;
 				Memo1->Left = 0;
 		}
+
 }
 
 // ---------------------------------------------------------------------------
@@ -1697,9 +1740,8 @@ void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender) {
 
 }
 
-void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender)
-{
-    Nastav_zamky(scComboBox_rezim->ItemIndex, C_klik_ico, empty_klik, true);
+void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender) {
+		Nastav_zamky(scComboBox_rezim->ItemIndex, C_klik_ico, empty_klik, true);
 }
 
 // ---------------------------------------------------------------------------
@@ -1728,8 +1770,7 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender) {
 // kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender) {
 
-		Pohon_pouzivan();
- {
+		Pohon_pouzivan(); {
 				if (scComboBox_pohon->ItemIndex == 0)
 						scButton_zamek_RD->Visible = true;
 				Cvektory::TPohon *P =
@@ -1755,19 +1796,20 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender) {
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaClick(TObject *Sender)
 {
 		input_clicked_edit = C_klik;
-		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,C_klik, false);
+		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, C_klik, false);
 }
 
 // --------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_mezeraClick(TObject *Sender) {
 		input_clicked_edit = mezera_klik;
-		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,mezera_klik, false);
+		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,
+				mezera_klik, false);
 }
 
 // ----------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_poziceClick(TObject *Sender) {
 		input_clicked_edit = P_klik;
-    	Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, P_klik, false);
+		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, P_klik, false);
 }
 
 // ---------------------------------------------------------------------------
@@ -1775,6 +1817,12 @@ void __fastcall TForm_parametry::scGPNumericEdit_poziceClick(TObject *Sender) {
 void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender) {
 		input_clicked_edit = CT_klik;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, CT_klik, false);
+}
+
+void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender) {
+		input_clicked_edit = Rotace_klik;
+		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,
+				Rotace_klik, false);
 }
 
 // ---------------------------------------------------------------------------
@@ -1797,39 +1845,6 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 }
 // ---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender) {
-		if (input_state == NOTHING && input_clicked_edit == mezera_klik)
-		{ // pokud není zadáváno z jiného vstupu
-				input_M();
-		}
-
-		if (scComboBox_rezim->ItemIndex == 1 && scGPNumericEdit_mezera->Value > 0) // pouze pro kontinuál režim
-		{
-				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-				// mezera_mezi_voziky
-				double dV = Form1->d.v.PP.delka_voziku; // delka voziku
-				double sV = Form1->d.v.PP.sirka_voziku; // delka voziku
-				double rotace;
-				if (scComboBox_rotace->ItemIndex == 0)   rotace=0; else rotace=90;
-				double doporuc_mezera = Form1->m.mezera_mezi_voziky(dV,sV,rotace, P->roztec,scGPNumericEdit_mezera->Value);
-				if (P != NULL) { // je "zbytek po dìlení"
-						if (P->roztec >0 /* && !Form1->m.cele_cislo(scGPNumericEdit_mezera->Value/P->roztec) */) // nesplòuje rozmezí
-						{
-								// vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
-								vypis("Doporuèená mezera: " + AnsiString(doporuc_mezera) +
-										" m", true);
-
-								// if(doporuc_mezera==scGPNumericEdit_mezera->Value){
-								// scGPButton_OK->Enabled=true;  }
-								// else 	scGPButton_OK->Enabled=false;
-						}
-						else {
-								vypis("");
-								scGPButton_OK->Enabled = true;
-						}
-				}
-		}
-}
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
@@ -1847,32 +1862,6 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick
 void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender) {
 
 		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
-		// if(scButton_zamek_RD->ImageIndex==37)//když je zamèeno
-		// {
-		// //RD
-		// scButton_zamek_RD->ImageIndex=38;
-		// RD_zamek=UNLOCKED;
-		// //CT
-		// scButton_zamek_CT->ImageIndex=38;
-		// CT_zamek=UNLOCKED;
-		//
-		// //DD - délka kabiny
-		// scButton_zamek_DD->ImageIndex=37;
-		// DD_zamek=LOCKED;
-		// }
-		// else//odemèeno
-		// {
-		// //RD
-		// scButton_zamek_RD->ImageIndex=37;
-		// RD_zamek=LOCKED;
-		// //CT
-		// scButton_zamek_CT->ImageIndex=38;
-		// CT_zamek=UNLOCKED;
-		//
-		// //DD - délka kabiny
-		// scButton_zamek_DD->ImageIndex=38;
-		// DD_zamek=UNLOCKED;
-		// }
 }
 // ---------------------------------------------------------------------------
 
@@ -1917,10 +1906,22 @@ void TForm_parametry::LoadDataFromFormAndSave() {
 				rotace = 90; // na šíøku
 
 		//////////////////////// stavy zamku/////////////////////////////////////
-		if (CT_zamek == LOCKED) CT_locked = true; else CT_locked = false;
-		if (RD_zamek == LOCKED) RD_locked = true; else RD_locked = false;
-		if (DD_zamek == LOCKED) DD_locked = true; else DD_locked = false;
-		if (K_zamek == LOCKED)  K_locked = true;  else K_locked = false;
+		if (CT_zamek == LOCKED)
+				CT_locked = true;
+		else
+				CT_locked = false;
+		if (RD_zamek == LOCKED)
+				RD_locked = true;
+		else
+				RD_locked = false;
+		if (DD_zamek == LOCKED)
+				DD_locked = true;
+		else
+				DD_locked = false;
+		if (K_zamek == LOCKED)
+				K_locked = true;
+		else
+				K_locked = false;
 
 		//////////////////////// prevody jednotek///////////////////////////////
 
@@ -1949,12 +1950,14 @@ void TForm_parametry::LoadDataFromFormAndSave() {
 		pm.dV = dV;
 		pm.sV = sV;
 		pm.Rotace = rotace;
-		if (Pohon != NULL) pm.R = Pohon->roztec;
-		else pm.R = 0;
+		if (Pohon != NULL)
+				pm.R = Pohon->roztec;
+		else
+				pm.R = 0;
 		pm.CT_locked = CT_locked;
 		pm.RD_locked = RD_locked;
 		pm.DD_locked = DD_locked;
-		pm.K_locked =  K_locked;
+		pm.K_locked = K_locked;
 
 }
 
@@ -2007,8 +2010,39 @@ void TForm_parametry::LoadDataToFormFromMath() {
 // ---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender) {
-		if (input_state != NO)
-				input_M(); // pokud to není pøi startu (formshow)
+
+		if (scComboBox_rezim->ItemIndex == 2 && input_state == NOTHING &&
+				input_clicked_edit == Rotace_klik) {
+				input_M(); // pøepoèet hodnot vyplývajících ze zmìny CT
+		}
+
+		// KK režim zavolání input_M
+		if (input_state == NOTHING) {
+				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
+						input_clicked_edit == Rotace_klik) {
+
+						Form1->MB
+								("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.",
+								MB_OK);
+						scComboBox_rotace->Items->Items[0]->Enabled = false;
+						scComboBox_rotace->Items->Items[1]->Enabled = false;
+						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
+				} // není zamèeno - doporuèím mezeru, èekám zdali zadá správnou mezeru
+				else if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED &&
+						input_clicked_edit == Rotace_klik) {
+
+						Kontrola_mezery();
+						// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
+						if (doporuc_mezera == scGPNumericEdit_mezera->Value) {
+						    Memo1->Lines->Add("volam input M z rotace");
+								LoadDataFromFormAndSave();
+								pm.input_M();
+								LoadDataToFormFromMath();
+						}
+
+				}
+
+		}
 }
 // ---------------------------------------------------------------------------
 
@@ -2016,7 +2050,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 		Tinput_clicked_edit E, bool ikonka) {
 
 		if (rezim == 1) { // KK režim
-				scButton_K_zamek->Visible=false;
+				scButton_K_zamek->Visible = false;
 				if (ikonka) { // pokud jde o klik na ikonu
 						if (I == CT_klik_ico) { // pokud je kliknuto na ikonu CT
 								if (CT_zamek == LOCKED) // když je zamèeno
@@ -2056,6 +2090,9 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 										// DD - délka kabiny
 										scButton_zamek_DD->ImageIndex = 37;
 										DD_zamek = LOCKED;
+
+										scComboBox_rotace->Items->Items[0]->Enabled = true;
+										scComboBox_rotace->Items->Items[1]->Enabled = true;
 								}
 								else // odemèeno
 								{
@@ -2068,6 +2105,9 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 										// DD - délka kabiny
 										scButton_zamek_DD->ImageIndex = 38;
 										DD_zamek = UNLOCKED;
+
+										scComboBox_rotace->Items->Items[0]->Enabled = false;
+										scComboBox_rotace->Items->Items[1]->Enabled = false;
 								}
 						}
 						if (I == DD_klik_ico) {
@@ -2103,7 +2143,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 
 						if (E == CT_klik) {
 
-								set(RYCHLOST, ENABLED, false);
+								// Pohon_pouzivan();
 								if (CT_zamek == LOCKED) // když je zamèeno
 								{
 										// CT
@@ -2118,7 +2158,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 								}
 						}
 						if (E == RD_klik) {
-								set(RYCHLOST, ENABLED, false);
+								// Pohon_pouzivan();
 								if (RD_zamek == LOCKED) // když je zamèeno
 								{
 										// RD
@@ -2134,7 +2174,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 						}
 
 						if (E == DD_klik) {
-								set(RYCHLOST, ENABLED, false);
+								// Pohon_pouzivan();
 								if (DD_zamek == LOCKED) // když je zamèeno
 								{
 										scButton_zamek_DD->ImageIndex = 38;
@@ -2148,97 +2188,121 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 								}
 						}
 						if (E == mezera_klik) {
-								if (scComboBox_pohon->ItemIndex != 0) {
-										scButton_zamek_DD->ImageIndex = 38;
-										DD_zamek = UNLOCKED;
-										scButton_zamek_CT->Visible = true;
-										scButton_zamek_CT->ImageIndex = 37;
-										CT_zamek = LOCKED;
-										scButton_zamek_RD->Visible = false;
-										RD_zamek = LOCKED;
-										set(RYCHLOST, READONLY, false);
-								}
+								/* if (scComboBox_pohon->ItemIndex != 0) {
+								 scButton_zamek_DD->ImageIndex = 38;
+								 DD_zamek = UNLOCKED;
+								 scButton_zamek_CT->Visible = true;
+								 scButton_zamek_CT->ImageIndex = 37;
+								 CT_zamek = LOCKED;
+								 scButton_zamek_RD->Visible = false;
+								 RD_zamek = LOCKED;
+								 set(RYCHLOST, READONLY, false); */
+								// Pohon_pouzivan();
+
+						}
+						if (E == P_klik) {
+								// Pohon_pouzivan();
+						}
+						if (E == C_klik) {
+								// Pohon_pouzivan();
+						}
+						if (E == Rotace_klik) {
+								// Pohon_pouzivan();
+								// RD_zamek = LOCKED;   //rotace vždy zamkne RD
+								// scButton_zamek_RD->ImageIndex=37;
 						}
 
 				}
 		}
 		//////KONEC KK režimu//////////////////////////////////////////////////
 
-		if (rezim == 2)
-		{ // PP režim
+		if (rezim == 2) { // PP režim
 
-				if(E==mezera_klik && scGPNumericEdit_mezera->Value >= 0)
-				{
+				if (E == mezera_klik && scGPNumericEdit_mezera->Value >= 0) {
 
-				scButton_zamek_DD->Visible=true;
-				scButton_K_zamek->Visible=true;
+						scButton_zamek_DD->Visible = true;
+						scButton_K_zamek->Visible = true;
 
 				}
 
 				if (I == C_klik_ico) {
-								if (K_zamek == LOCKED) // když je zamèeno
-								{
-										scButton_K_zamek->ImageIndex = 38;
-										K_zamek = UNLOCKED;
-
-										scButton_zamek_DD->ImageIndex = 37;
-										DD_zamek = LOCKED;
-								}
-								else // odemèeno
-								{
-										scButton_K_zamek->ImageIndex = 37;
-										K_zamek = LOCKED;
-
-										scButton_zamek_DD->ImageIndex = 38;
-										DD_zamek = UNLOCKED;
-								}
-						}
-				if (I == DD_klik_ico) {
-								if (DD_zamek == LOCKED) // když je zamèeno
-								{
-										scButton_zamek_DD->ImageIndex = 38;
-										DD_zamek = UNLOCKED;
-										scButton_K_zamek->ImageIndex = 37;
-										K_zamek = LOCKED;
-								}
-								else // odemèeno
-								{
-										scButton_zamek_DD->ImageIndex = 37;
-										DD_zamek = LOCKED;
-										scButton_K_zamek->ImageIndex = 38;
-										K_zamek = UNLOCKED;
-								}
-						}
-							if (I == CT_klik_ico) {
-								if (CT_zamek == LOCKED) // když je zamèeno
-								{
-										scButton_zamek_CT->ImageIndex = 38;
-										CT_zamek = UNLOCKED;
-
-								}
-								else // odemèeno
-								{
-										scButton_zamek_CT->ImageIndex = 37;
-										CT_zamek = LOCKED;
-								}
-						}
-
-						if (E == CT_klik)  {scButton_zamek_DD->Visible=false;scButton_K_zamek->Visible=false;scButton_zamek_CT->Visible=false;}
-						if (E == RD_klik)  {scButton_zamek_DD->Visible=false;scButton_K_zamek->Visible=false;scButton_zamek_CT->Visible=false;}
-						if (E == DD_klik)  {scButton_zamek_DD->Visible=false;scButton_K_zamek->Visible=false;scButton_zamek_CT->Visible=false;}
-						if (E == P_klik)   {scButton_zamek_DD->Visible=false;scButton_K_zamek->Visible=false;scButton_zamek_CT->Visible=false;}
-						if (E == C_klik)
+						if (K_zamek == LOCKED) // když je zamèeno
 						{
-						scButton_zamek_DD->Visible=false;
-						scButton_K_zamek->Visible=false;
+								scButton_K_zamek->ImageIndex = 38;
+								K_zamek = UNLOCKED;
 
-						scButton_zamek_CT->Visible=true;
+								scButton_zamek_DD->ImageIndex = 37;
+								DD_zamek = LOCKED;
+						}
+						else // odemèeno
+						{
+								scButton_K_zamek->ImageIndex = 37;
+								K_zamek = LOCKED;
+
+								scButton_zamek_DD->ImageIndex = 38;
+								DD_zamek = UNLOCKED;
+						}
+				}
+				if (I == DD_klik_ico) {
+						if (DD_zamek == LOCKED) // když je zamèeno
+						{
+								scButton_zamek_DD->ImageIndex = 38;
+								DD_zamek = UNLOCKED;
+								scButton_K_zamek->ImageIndex = 37;
+								K_zamek = LOCKED;
+						}
+						else // odemèeno
+						{
+								scButton_zamek_DD->ImageIndex = 37;
+								DD_zamek = LOCKED;
+								scButton_K_zamek->ImageIndex = 38;
+								K_zamek = UNLOCKED;
+						}
+				}
+				if (I == CT_klik_ico) {
+						if (CT_zamek == LOCKED) // když je zamèeno
+						{
+								scButton_zamek_CT->ImageIndex = 38;
+								CT_zamek = UNLOCKED;
 
 						}
-							if (E == mezera_klik) {
-               scButton_zamek_CT->Visible=false;
-							}
+						else // odemèeno
+						{
+								scButton_zamek_CT->ImageIndex = 37;
+								CT_zamek = LOCKED;
+						}
+				}
 
+				if (E == CT_klik) {
+						scButton_zamek_DD->Visible = false;
+						scButton_K_zamek->Visible = false;
+						scButton_zamek_CT->Visible = false;
+				}
+				if (E == RD_klik) {
+						scButton_zamek_DD->Visible = false;
+						scButton_K_zamek->Visible = false;
+						scButton_zamek_CT->Visible = false;
+				}
+				if (E == DD_klik) {
+						scButton_zamek_DD->Visible = false;
+						scButton_K_zamek->Visible = false;
+						scButton_zamek_CT->Visible = false;
+				}
+				if (E == P_klik) {
+						scButton_zamek_DD->Visible = false;
+						scButton_K_zamek->Visible = false;
+						scButton_zamek_CT->Visible = false;
+				}
+				if (E == C_klik) {
+						scButton_zamek_DD->Visible = false;
+						scButton_K_zamek->Visible = false;
+
+						scButton_zamek_CT->Visible = true;
+
+				}
+				if (E == mezera_klik) {
+						scButton_zamek_CT->Visible = false;
+				}
 
 		}
 }
@@ -2247,32 +2311,84 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 
 void TForm_parametry::Pohon_pouzivan() {
 
-	if (scComboBox_rezim->ItemIndex == 1) { // pro KK režim - nastavení
+		if (scComboBox_rezim->ItemIndex == 1) { // pro KK režim - nastavení
 				Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
-					 //ShowMessage(scComboBox_pohon->ItemIndex);
-				if (Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex/*,Form1->pom->n*/)) {
-						RD_zamek = LOCKED;    	// pohon je již použiván - nemohu hýbat RD
+				// ShowMessage(scComboBox_pohon->ItemIndex);
+				if (Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,
+						Form1->pom)) {
+						// ShowMessage(input_state);
+						RD_zamek = LOCKED; // pohon je již použiván - nemohu hýbat RD
+						scButton_zamek_RD->ImageIndex = 37;
 						set(RYCHLOST, READONLY, false);
 						set(MEZERA, READONLY, false);
+						set(ROTACE, READONLY, false);
 						set(ROZESTUP, READONLY, false);
 				}
 				else {
-						set(RYCHLOST, ENABLED, false);   // pohon není používán jiným objektem, dovolím zmìnu RD, M,R
+						// ShowMessage(input_state);
+						if (input_state == NOTHING)
+								// pokud jde o první zobrazení formu - vždy zobrazím takto zámky
+						{
+								RD_zamek = LOCKED;
+								scButton_zamek_RD->ImageIndex = 37;
+						}
+						else {
+								RD_zamek = UNLOCKED;
+								scButton_zamek_RD->ImageIndex = 38;
+						}
+						set(RYCHLOST, ENABLED, false);
+						// pohon není používán jiným objektem, dovolím zmìnu RD, M,R
 						set(MEZERA, ENABLED, false);
 						set(ROZESTUP, ENABLED, false);
+						set(ROTACE, ENABLED, false);
 				}
 		}
 
+}
+
+// ---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender) {
+		if (scComboBox_rezim->ItemIndex == 2) { // PP režim schování zámkù
+				scButton_zamek_DD->Visible = false;
+				scButton_K_zamek->Visible = false;
+		}
+
+}
+// ---------------------------------------------------------------------------
+
+void TForm_parametry::Kontrola_mezery() {
+
+		Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+		// mezera_mezi_voziky
+		double dV = Form1->d.v.PP.delka_voziku; // delka voziku
+		double sV = Form1->d.v.PP.sirka_voziku; // sirka voziku
+		double rotace;
+		if (scComboBox_rotace->ItemIndex == 0)
+				rotace = 0;
+		else
+				rotace = 90;
+		if (P != NULL) { // je "zbytek po dìlení"
+				if (P->roztec > 0) // nesplòuje rozmezí
+				{
+						doporuc_mezera = Form1->m.mezera_mezi_voziky(dV, sV, rotace,
+								P->roztec, scGPNumericEdit_mezera->Value);
+						// vypis("Doporuèeno: "+AnsiString(Form1->m.round(scGPNumericEdit_mezera->Value/P->roztec)*P->roztec)+" m",true);
+						vypis("Doporuèená mezera: " + AnsiString(doporuc_mezera) +
+								" m", true);
+
+						if (doporuc_mezera == scGPNumericEdit_mezera->Value) {
+								scGPButton_OK->Enabled = true;
+						}
+						else
+								scGPButton_OK->Enabled = false;
+				}
+				else {
+						vypis("Mezera OK");
+						scGPButton_OK->Enabled = true;
+				}
+		}
 
 }
 
-
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender)
-{
-if(scComboBox_rezim->ItemIndex==2) {
-scButton_zamek_DD->Visible=false;scButton_K_zamek->Visible=false;}
-}
-//---------------------------------------------------------------------------
-
+// ---------------------------------------------------------------------------

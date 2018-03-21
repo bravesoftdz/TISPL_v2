@@ -888,7 +888,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPNumericEdit_CT: TscGPNumericEdit
     Left = 233
-    Top = 173
+    Top = 175
     Width = 108
     Height = 29
     Options.NormalColor = clWhite
@@ -1860,6 +1860,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentFont = False
     TabOrder = 16
+    OnClick = scComboBox_rotaceClick
     OnEnter = scComboBox_rotaceEnter
     ContentMargin = 0
     AutoComplete = False
@@ -2418,6 +2419,7 @@ object Form_parametry: TForm_parametry
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
     SupportMouseWheel = False
+    Decimal = 4
     ValueType = scvtFloat
     DisplayType = scedtNumeric
     LeftButton.Kind = scgpebCustom
@@ -2816,8 +2818,6 @@ object Form_parametry: TForm_parametry
     ParentBiDiMode = False
     ParentFont = False
     TabOrder = 27
-    OnChange = scGPNumericEdit_mezeraChange
-    OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_pozice: TscGPNumericEdit

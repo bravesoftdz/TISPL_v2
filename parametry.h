@@ -115,12 +115,13 @@ __published:	// IDE-managed Components
 	void __fastcall scComboBox_rotaceChange(TObject *Sender);
 	void __fastcall scButton_K_zamekClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceEnter(TObject *Sender);
+	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera,P};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
-	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,}; //zjisteni na ktery edit bylo kliknuto
+	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 
@@ -134,12 +135,13 @@ private:	// User declarations
 	void null_input_value();//vynuluje vstupní hodnoty
 	void LoadDataFromFormAndSave();
 	void LoadDataToFormFromMath();
+	void Kontrola_mezery();
 	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
-
+  double doporuc_mezera;
 	short offset;
 	short defaultForm_parametryHeight;
 	TColor hl_color;//(TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
