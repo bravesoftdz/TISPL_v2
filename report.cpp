@@ -163,7 +163,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		//////////////////HTML EXPORT V NÁVRHU///////////////////////////////////
 
 		if(Form1->STATUS==Form1->NAVRH) {
-
+      // martin
 
 		data+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
 		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název pohonu</th><th scope=\"col\">Rychlost pohonu [m/min]</th><th scope=\"col\">Rozsah pohonu [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka kabiny [m]</th><th scope=\"col\">Mezera mezi vozíky [m]</th></tr></thead>";
@@ -376,7 +376,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								}
 ////         	//	 ShowMessage(ID+name+short_name+rezim+CT+kapacita+kapacita_dop+nazev_pohonu+rychlost_dopravniku+delka_dopravniku+roztec_palcu+rozsah_pohonu_od+rozsah_pohonu_do);
 							data+=""+ID+S+name+S+short_name+S+rezim+S+CT+S+kapacita+S+kapacita_dop+S+nazev_pohonu+S+rychlost_dopravniku+S+rozsah_pohonu_od+"-"+rozsah_pohonu_do+S+roztec_palcu+S+delka_dopravniku+S+mezera+"\n";
-
+              //  martin
 									O=O->dalsi;
 		}
 	}

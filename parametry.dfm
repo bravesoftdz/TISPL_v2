@@ -217,6 +217,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     OnClick = rHTMLLabel_InfoTextClick
   end
   object rHTMLLabel_rotace: TrHTMLLabel
@@ -966,6 +968,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 13
     OnChange = scGPNumericEdit_CTChange
     OnClick = scGPNumericEdit_CTClick
@@ -1285,6 +1289,8 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 5
     ContentMargin = 0
     AutoComplete = False
@@ -1407,6 +1413,8 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 6
     ContentMargin = 0
     AutoComplete = False
@@ -1598,6 +1606,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
     OnChange = scGPNumericEdit_delka_dopravnikuChange
     OnClick = scGPNumericEdit_delka_dopravnikuClick
@@ -1760,6 +1770,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 14
     OnKeyDown = FormKeyDown
   end
@@ -1843,6 +1855,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 15
     OnChange = scGPNumericEdit_kapacitaChange
     OnClick = scGPNumericEdit_kapacitaClick
@@ -1859,6 +1873,8 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 16
     OnClick = scComboBox_rotaceClick
     OnEnter = scComboBox_rotaceEnter
@@ -2460,6 +2476,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 22
     OnChange = scGPNumericEdit_mezeraChange
     OnClick = scGPNumericEdit_mezeraClick
@@ -2606,6 +2624,7 @@ object Form_parametry: TForm_parametry
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
     SupportMouseWheel = False
+    Decimal = 4
     ValueType = scvtFloat
     DisplayType = scedtNumeric
     LeftButton.Kind = scgpebCustom
@@ -2646,6 +2665,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 25
     OnChange = scGPNumericEdit_RD_Change
     OnClick = scGPNumericEdit_RD_Click
@@ -2817,6 +2838,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 27
     OnKeyDown = FormKeyDown
   end
@@ -2900,6 +2923,8 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 28
     OnChange = scGPNumericEdit_poziceChange
     OnClick = scGPNumericEdit_poziceClick
