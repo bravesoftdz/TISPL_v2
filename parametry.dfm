@@ -253,9 +253,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_rozestup: TrHTMLLabel
     Left = 8
     Top = 574
-    Width = 194
+    Width = 177
     Height = 21
-    Caption = 'Rozestup aktivn'#237' palce <font color=#2b579a>[m]</font>'
+    Caption = 'Rozestup mezi palci <font color=#2b579a>[m]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -1773,6 +1773,7 @@ object Form_parametry: TForm_parametry
     ParentShowHint = False
     ShowHint = True
     TabOrder = 14
+    OnChange = scGPNumericEdit_odchylkaChange
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_kapacita: TscGPNumericEdit
@@ -2841,6 +2842,7 @@ object Form_parametry: TForm_parametry
     ParentShowHint = False
     ShowHint = True
     TabOrder = 27
+    OnChange = scGPNumericEdit_rozestupChange
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_pozice: TscGPNumericEdit
@@ -3014,5 +3016,30 @@ object Form_parametry: TForm_parametry
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scLabel1_rx: TscLabel
+    Left = 187
+    Top = 582
+    Width = 67
+    Height = 16
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 30
+    Visible = False
+    DragForm = False
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clBtnShadow
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    AutoSize = True
+    UseFontColorToStyleColor = False
+    Caption = 'scLabel1_rx'
   end
 end
