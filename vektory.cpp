@@ -2,6 +2,7 @@
 #pragma hdrstop
 #include "vektory.h"
 #include "unit1.h"
+//#include "PO_math.h"
 ////---------------------------------------------------------------------------
 #pragma package(smart_init)
 ////---------------------------------------------------------------------------
@@ -28,13 +29,13 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->rezim=0;
 	novy->CT=0;//pro status návrh
 	novy->RD=0;//pro status návrh
+	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->kapacita=0;
 	novy->kapacita_dop=0;
+	novy->pozice=0;
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
-	novy->mV=1;//rozdíl počet mezer a vozíků
 	novy->pohon=NULL;//ukazatel na použitý pohon
-	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
@@ -62,13 +63,13 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=PP.delka_voziku/novy->CT;//pro status návrh
+	novy->delka_dopravniku=PP.delka_voziku;//delka dopravníku v rámci objektu
 	novy->kapacita=1;
 	novy->kapacita_dop=0;
+	novy->pozice=1;
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
-	novy->mV=1;//rozdíl počet mezer a vozíků
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
-	novy->delka_dopravniku=PP.delka_voziku;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
@@ -95,13 +96,13 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->Y=Y;//přiřadím Y osu
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=PP.delka_voziku/novy->CT;//pro status návrh
+	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->kapacita=1;
 	novy->kapacita_dop=0;
+	novy->pozice=1;
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
-	novy->mV=1;//rozdíl počet mezer a vozíků
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
-	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
@@ -173,13 +174,13 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->rezim=Objekt->rezim;
 		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
 		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
+		novy->delka_dopravniku=Objekt->delka_dopravniku;
 		novy->kapacita=Objekt->kapacita;
 		novy->kapacita_dop=Objekt->kapacita_dop;
+		novy->pozice=Objekt->pozice;
 		novy->rotace=Objekt->rotace;
 		novy->mezera=Objekt->mezera;//velikost mezery mezi vozíky
-		novy->mV=Objekt->mV;//rozdíl počet mezer a vozíků
 		novy->pohon=Objekt->pohon;
-		novy->delka_dopravniku=Objekt->delka_dopravniku;
 		novy->min_prujezdni_profil.x=Objekt->min_prujezdni_profil.x;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->min_prujezdni_profil.y=Objekt->min_prujezdni_profil.y;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
@@ -326,7 +327,7 @@ void Cvektory::aktualizace_objektu(short typ)
 					//DD
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV+(O->kapacita-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*dV*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
 					//RD
 					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 				}
@@ -339,7 +340,7 @@ void Cvektory::aktualizace_objektu(short typ)
 					//DD
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV+(O->kapacita-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*dV*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
 					//RD
 					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 				}
@@ -352,13 +353,12 @@ void Cvektory::aktualizace_objektu(short typ)
 					//DD
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV+(O->kapacita-O->mV)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*dV*O->mezera;//DD
 					//CT
 					if(O->rezim==1)O->CT=O->delka_dopravniku/O->RD;//pro kontinual
 					else//pro PP
 					{
-						if(O->kapacita==O->mV)PP.TT*(O->delka_dopravniku+O->mezera)/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
-						else O->kapacita=PP.TT*O->delka_dopravniku/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
+						O->kapacita=O->delka_dopravniku/(dV+O->mezera);
 					}
 				}
 			}
@@ -370,8 +370,7 @@ void Cvektory::aktualizace_objektu(short typ)
 					//K
 					double dV=PP.delka_voziku;//delka voziku
 					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					if(O->kapacita==O->mV)(O->delka_dopravniku+O->mezera)/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
-					else O->kapacita=O->delka_dopravniku/(dV+O->mezera);//dle toho, kolik se zohledňuje mezer
+					O->kapacita=O->delka_dopravniku/(dV+O->mezera);//K
 					//CT
 					O->CT=PP.TT*O->kapacita;
 					//RD
@@ -380,6 +379,13 @@ void Cvektory::aktualizace_objektu(short typ)
 			}
 			break;
 		}
+		//prozatím zde a takto výpočte počet pozic
+		double P=floor(O->kapacita);//celočíselná kapacita
+		double DV=m.UDV(PP.delka_voziku,PP.sirka_voziku,O->rotace);
+		double DVM=(DV+O->mezera)*(O->kapacita-P);//délka části poslední vozíko-mezery v kabině
+		if(DVM>=DV)P++;//navýší o celý vozík, protože je minimálně celý vozík v kabině
+		else P+=DVM/DV;//navýší o část vozíku, protože je jenom část vozíku v kabině
+		O->pozice=P;
 		//testovací MB:ShowMessage("Výstup CT:"+AnsiString(O->CT)+" RD:"+AnsiString(O->RD)+" DD:"+AnsiString(O->delka_dopravniku)+" K:"+AnsiString(O->kapacita)+" dV:"+AnsiString(dV));
 		O=O->dalsi;//posun na další prvek
 	}
@@ -869,8 +875,8 @@ void Cvektory::generuj_POHONY()
 	}
 }
 ////---------------------------------------------------------------------------
-//navrhne pohony zobrazené v parametrech linky, vráti formou řetězce pouze seznam unikátních použitých rychlostí
-AnsiString Cvektory::navrhni_POHONY()
+//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí
+AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 {
 	AnsiString data="";
 	TObjekt *O=OBJEKTY->dalsi;
@@ -912,7 +918,9 @@ AnsiString Cvektory::navrhni_POHONY()
 				}
 				if(!nalezen)//pokud stále platí, že nebyl nalezen
 				{
-					data+="Navržený pohon "+AnsiString(++i)+", rychlost:"+AnsiString(O->RD*60)+" [m/min] </br>";
+					AnsiString mS=", ";if(separator!="</br>")mS=";";
+
+					data+="Navržený pohon "+AnsiString(++i)+mS+"rychlost:"+AnsiString(O->RD*60)+" [m/min]"+separator;
 					pole_rychlosti[O->n-1]=O->RD;
         }
 			}                //indexuje se od nuly
@@ -1748,7 +1756,7 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					c_ukaz->kapacita=ukaz->kapacita;
 					c_ukaz->rotace=ukaz->rotace;
 					c_ukaz->mezera=ukaz->mezera;
-					c_ukaz->mV=ukaz->mV;
+					c_ukaz->mV=0;//vyhodit!!!
 					if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
 					else c_ukaz->pohon=0;
 					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
@@ -1952,7 +1960,6 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->kapacita_dop=c_ukaz->kapacita_dop;
 						ukaz->rotace=c_ukaz->rotace;
 						ukaz->mezera=c_ukaz->mezera;
-						ukaz->mV=c_ukaz->mV;
 						ukaz->pohon=vrat_pohon(c_ukaz->pohon);
 						ukaz->delka_dopravniku=c_ukaz->delka_dopravniku;
 						ukaz->cekat_na_palce=c_ukaz->cekat_na_palce;

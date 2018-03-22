@@ -2803,6 +2803,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
+		Form_parametry->scGPNumericEdit_pozice->Value=pom->pozice;
 		Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 		Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
@@ -2837,6 +2838,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
 				pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
 				pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
+				pom->pozice=Form_parametry->scGPNumericEdit_pozice->Value;
 				pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
 				pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
 				//DD

@@ -37,13 +37,13 @@ class Cvektory
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
 			double CT;//pro status návrh
 			double RD;//pro status návrh
+			double delka_dopravniku;//delka dopravníku v rámci objektu
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
+			double pozice;//počet vozíků v kabině
 			double rotace;//rotace jigu v objektu
 			double mezera;//mezera mezi vozíky
-			short mV;//rozdíl počet mezer a vozíků (většinou o jednu méně tj. 1)
 			TPohon *pohon;//ukazatel na použitý pohon
-			double delka_dopravniku;//delka dopravníku v rámci objektu
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
@@ -282,7 +282,7 @@ class Cvektory
 		TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL
 		void zrusit_prirazeni_pohunu_k_objektum(unsigned long n);//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
 		void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
-		AnsiString navrhni_POHONY();//navrhne pohony zobrazené v parametrech linky, vráti formou řetězce  pouze seznam unikátních použitých rychlostí
+		AnsiString navrhni_POHONY(AnsiString separator="</br>");//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
 //		double delka_dopravniku(Cvektory::TObjekt *ukaz);
 
