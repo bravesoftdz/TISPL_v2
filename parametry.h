@@ -18,6 +18,8 @@
 #include <Vcl.Mask.hpp>
 #include "scGPExtControls.hpp"
 #include "PO_math.h"
+#include "scHint.hpp"
+#include "rHintWindow.hpp"
 
 //---------------------------------------------------------------------------
 class TForm_parametry : public TForm
@@ -75,6 +77,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_pozice;
 	TscGPNumericEdit *scGPNumericEdit_pozice;
 	TscButton *scButton_K_zamek;
+	TscLabel *scLabel1_rx;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -116,6 +119,8 @@ __published:	// IDE-managed Components
 	void __fastcall scButton_K_zamekClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceEnter(TObject *Sender);
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_odchylkaChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_rozestupChange(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
