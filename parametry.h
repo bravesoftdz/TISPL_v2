@@ -77,7 +77,9 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_pozice;
 	TscGPNumericEdit *scGPNumericEdit_pozice;
 	TscButton *scButton_K_zamek;
-	TscLabel *scLabel1_rx;
+	TscGPNumericEdit *scGPNumericEdit1_rx;
+	TrHTMLLabel *rHTMLLabel_palec_vzd;
+	TrHTMLLabel *rHTMLLabel_jednotky_vzdalenostpalcu;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -120,13 +122,14 @@ __published:	// IDE-managed Components
 	void __fastcall scComboBox_rotaceEnter(TObject *Sender);
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 	void __fastcall scGPNumericEdit_odchylkaChange(TObject *Sender);
-	void __fastcall scGPNumericEdit_rozestupChange(TObject *Sender);
+	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
+	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera,P};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
-	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik}; //zjisteni na ktery edit bylo kliknuto
+	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera,P,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 
@@ -144,6 +147,7 @@ private:	// User declarations
 	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	void Check_rozmezi_RD(); //kontrola  RD vùèi vybranému pohonu
+	void Nacti_rx();
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
