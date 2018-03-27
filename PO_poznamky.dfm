@@ -2,9 +2,9 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  Caption = 'Form_parametry_poznamky'
+  Caption = 'Pozn'#225'mka'
   ClientHeight = 338
-  ClientWidth = 617
+  ClientWidth = 612
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +17,7 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
-    Width = 617
+    Width = 612
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -45,9 +45,10 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 617
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 567
+      Left = 562
       Top = 0
       Width = 50
       Height = 33
@@ -124,12 +125,13 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 567
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
       Left = 10
       Top = 0
-      Width = 557
+      Width = 552
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -157,10 +159,11 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Parametry objektu - Pozn'#225'mky'
+      Caption = 'Pozn'#225'mka'
+      ExplicitWidth = 557
     end
   end
-  object scGPMemo1: TscGPMemo
+  object scGPMemo: TscGPMemo
     Left = 10
     Top = 48
     Width = 591
@@ -202,7 +205,7 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
     ScrollBarOptions.ThumbRounded = False
     ScrollBarOptions.Position = scgpsbDefault
     ScrollBarOptions.Size = 11
-    Color = clBtnFace
+    Color = clWhite
     ContentMarginLeft = 5
     ContentMarginRight = 5
     ContentMarginTop = 5
@@ -213,13 +216,13 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
     Font.Name = 'Tahoma'
     Font.Style = []
     Lines.Strings = (
-      'scGPMemo1')
+      '')
     ParentFont = False
     TabOrder = 1
     Transparent = True
   end
   object scGPButton_OK: TscGPButton
-    Left = 160
+    Left = 168
     Top = 295
     Width = 100
     Height = 35
@@ -308,7 +311,7 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 299
+    Left = 307
     Top = 295
     Width = 100
     Height = 35

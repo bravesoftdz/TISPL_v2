@@ -1110,7 +1110,6 @@ void TForm_parametry::input_CT() {
 										scGPButton_OK->Caption = "Uložit";
 										vypis("Nastavte technologický èas shodný s TT!");
 								}
-
 						}
 						else // na lince je více objektù, pokud mají nižší CT dovolím je uložit
 						{
@@ -2525,19 +2524,13 @@ void TForm_parametry::Check_rozmezi_RD() {
 				// nutné ošetøení pro období zadávání/psaní
 		{
 				double roztec=0;
-				double delka=0;
-				double rotace=0;
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
 
 
-				if(scComboBox_rotace->ItemIndex==0)
-				{
-					delka =Form1->d.v.PP.delka_voziku; rotace=0;
-				} else
-					{
-					delka = Form1->d.v.PP.sirka_voziku; rotace=90;
-					}
+
 
 			double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
 
@@ -2549,7 +2542,7 @@ void TForm_parametry::Check_rozmezi_RD() {
 			//	input_RD(); Memo1->Lines->Add("volam rd"); // zavolání metody pro výpoèetní model
 				}else
 				{
-				double M=(Form1->d.v.PP.TT*RD/60-delka);
+				double M=(Form1->d.v.PP.TT*RD/60-DV);
 				vypis("Zadejte doporuèenou rychlost pohonu: " +AnsiString(dopRD)+ "nebo doporuèenou velikost mezery:" +AnsiString(M)+"m",true);
 				}
 		}
@@ -2564,28 +2557,19 @@ void __fastcall TForm_parametry::scGPNumericEdit_odchylkaChange(TObject *Sender)
 vypis("");
 }
 //---------------------------------------------------------------------------
+ void TForm_parametry::Nacti_rx()
+ {
+		double roztec=0;
+		double rotace=scComboBox_rotace->ItemIndex;
+		Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+		if (P != NULL) roztec=P->roztec;  else  roztec=0;
 
- void TForm_parametry::Nacti_rx() {
-
-				double roztec=0;
-				double delka=0;
-				double rotace=0;
-				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-				if (P != NULL) roztec=P->roztec;  else  roztec=0;
-				if(scComboBox_rotace->ItemIndex==0)
-				{
-					delka =Form1->d.v.PP.delka_voziku; rotace=0;
-				} else
-					{
-					delka = Form1->d.v.PP.sirka_voziku; rotace=90;
-					}
-
-			double rx=Form1->m.Rx(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,scGPNumericEdit_mezera->Value,roztec);
-		 scGPNumericEdit_rozestup->Value = Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.delka_voziku,rotace,scGPNumericEdit_mezera->Value);
-		 scGPNumericEdit1_rx->Value =rx;
-		 scGPNumericEdit1_rx->Hint="tj. každý " +AnsiString(rx)+ " palec zachytává.";
+		double rx=Form1->m.Rx(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,scGPNumericEdit_mezera->Value,roztec);
+		scGPNumericEdit_rozestup->Value = Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,scGPNumericEdit_mezera->Value);
+		scGPNumericEdit1_rx->Value =rx;
+		scGPNumericEdit1_rx->Hint="tj. každý " +AnsiString(rx)+ " palec zachytává.";
  }
-
+//---------------------------------------------------------------------------
 
 
  void __fastcall TForm_parametry::scGPNumericEdit1_rxChange(TObject *Sender)
