@@ -1006,6 +1006,7 @@ object Form_parametry: TForm_parametry
     TabOrder = 13
     OnChange = scGPNumericEdit_CTChange
     OnClick = scGPNumericEdit_CTClick
+    OnEnter = scGPNumericEdit_CTEnter
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rezim: TscGPComboBox
@@ -1644,6 +1645,7 @@ object Form_parametry: TForm_parametry
     TabOrder = 4
     OnChange = scGPNumericEdit_delka_dopravnikuChange
     OnClick = scGPNumericEdit_delka_dopravnikuClick
+    OnEnter = scGPNumericEdit_delka_dopravnikuEnter
     OnKeyDown = FormKeyDown
   end
   object scGPEdit_shortname: TscGPEdit
@@ -1807,6 +1809,7 @@ object Form_parametry: TForm_parametry
     ShowHint = True
     TabOrder = 14
     OnChange = scGPNumericEdit_odchylkaChange
+    OnEnter = scGPNumericEdit_odchylkaEnter
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_kapacita: TscGPNumericEdit
@@ -1894,6 +1897,7 @@ object Form_parametry: TForm_parametry
     TabOrder = 15
     OnChange = scGPNumericEdit_kapacitaChange
     OnClick = scGPNumericEdit_kapacitaClick
+    OnEnter = scGPNumericEdit_kapacitaEnter
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rotace: TscGPComboBox
@@ -2515,6 +2519,7 @@ object Form_parametry: TForm_parametry
     TabOrder = 22
     OnChange = scGPNumericEdit_mezeraChange
     OnClick = scGPNumericEdit_mezeraClick
+    OnEnter = scGPNumericEdit_mezeraEnter
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
@@ -2530,7 +2535,7 @@ object Form_parametry: TForm_parametry
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
     Left = 293
-    Top = 130
+    Top = 135
     Width = 47
     Height = 29
     Hint = 'P'#345'idat pohon'
@@ -2619,7 +2624,7 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_RD: TscGPNumericEdit
-    Left = 233
+    Left = 234
     Top = 210
     Width = 108
     Height = 29
@@ -2704,6 +2709,7 @@ object Form_parametry: TForm_parametry
     TabOrder = 25
     OnChange = scGPNumericEdit_RD_Change
     OnClick = scGPNumericEdit_RD_Click
+    OnEnter = scGPNumericEdit_RDEnter
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_PO_text_memo: TscGPGlyphButton
@@ -2963,6 +2969,7 @@ object Form_parametry: TForm_parametry
     TabOrder = 28
     OnChange = scGPNumericEdit_poziceChange
     OnClick = scGPNumericEdit_poziceClick
+    OnEnter = scGPNumericEdit_poziceEnter
     OnKeyDown = FormKeyDown
   end
   object scButton_K_zamek: TscButton
@@ -3136,5 +3143,67 @@ object Form_parametry: TForm_parametry
     OnChange = scGPNumericEdit1_rxChange
     OnClick = scGPNumericEdit1_rxClick
     OnKeyDown = FormKeyDown
+  end
+  object scCheckBox_zaokrouhlit: TscCheckBox
+    Left = 8
+    Top = 664
+    Width = 215
+    Height = 23
+    TabOrder = 31
+    TabStop = True
+    OnClick = scCheckBox_zaokrouhlitClick
+    CustomCheckedImageIndex = -1
+    CustomCheckedImageHotIndex = -1
+    CustomCheckedImagePressedIndex = -1
+    CustomCheckedImageDisabledIndex = -1
+    CustomUnCheckedImageIndex = -1
+    CustomUnCheckedImageHotIndex = -1
+    CustomUnCheckedImagePressedIndex = -1
+    CustomUnCheckedImageDisabledIndex = -1
+    CustomGrayedImageIndex = -1
+    CustomGrayedImageHotIndex = -1
+    CustomGrayedImagePressedIndex = -1
+    CustomGrayedImageDisabledIndex = -1
+    UseFontColorToStyleColor = False
+    Animation = False
+    Caption = 'zobrazit hodnoty na dv'#283' desetinn'#225' m'#237'sta'
+    CanFocused = True
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    Checked = True
+    State = cbChecked
+    ShowFocusRect = True
+  end
+  object rHTMLHint1: TrHTMLHint
+    HintFont.Charset = DEFAULT_CHARSET
+    HintFont.Color = clWindowText
+    HintFont.Height = -11
+    HintFont.Name = 'Tahoma'
+    HintFont.Style = []
+    Left = 160
+    Top = 336
+  end
+  object scHint1: TscHint
+    LineSeparator = '@@'
+    AlphaBlend = False
+    AlphaBlendValue = 255
+    AlphaBlendAnimation = False
+    Left = 136
+    Top = 272
   end
 end

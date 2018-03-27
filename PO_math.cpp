@@ -80,7 +80,7 @@ void TPO_math::input_K(bool prepocet_CT)
 			input_CT(false);//+ zakazaný zpìtný pøepoèet K
 			break;
 		case 2://PP
-			if(!CT_locked)CT=TT*K;//výpoèet CT
+			if(prepocet_CT)CT=TT*K;//výpoèet CT
 			DD=K*(UDV()+M);//délky kabiny
 			P=Pozice();//výpoèet poètu pozic
 		break;
