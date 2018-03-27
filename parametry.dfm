@@ -1901,8 +1901,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rotace: TscGPComboBox
-    Left = 233
-    Top = 490
+    Left = 234
+    Top = 485
     Width = 108
     Height = 29
     Font.Charset = DEFAULT_CHARSET

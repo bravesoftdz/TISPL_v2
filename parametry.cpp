@@ -87,6 +87,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender) {
 		}
 
 		input_state = NOTHING; // nutnost!!!
+	 //	input_clicked_edit=empty_klik;
 		kapacitaSG = 1; // není podnìt k rozkládání na více objektù
 		scGPEdit_name->SetFocus();
 		// nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
@@ -996,6 +997,13 @@ void __fastcall TForm_parametry::scGPNumericEdit_kapacitaChange(TObject *Sender)
 				vypis("");
 			 //	Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, C_klik, false);
 				input_K(); // pøepoèet hodnot vyplývajících ze zmìny K
+
+				if(scComboBox_rezim->ItemIndex==2){
+             //PP - pokud je CT vyšší než TT nezobrazím zámek u CT
+						if(scGPNumericEdit_CT->Value>Form1->d.v.PP.TT){
+						scButton_zamek_CT->Visible=false;
+						}
+				}
 		}
 }
 
@@ -1004,12 +1012,25 @@ void __fastcall TForm_parametry::scGPNumericEdit_kapacitaChange(TObject *Sender)
 void TForm_parametry::input_P() {
 
 		input_state = P;
-
-		if (scGPNumericEdit_pozice->Value > 0)
+     		Input();
+		if (scGPNumericEdit_pozice->Value > 0) {
+		double K=scGPNumericEdit_kapacita->Value;
+		double CT=scGPNumericEdit_CT->Value;
 				// nutné ošetøení pro období zadávání/psaní
-		{
-				Input();
-				pm.input_P(); // zavolání výpoèetního modelu
+	// PP režim - jiný výpoèet než std postup
+					vypis("");
+					if (CT / Form1->d.v.PP.TT <= K && scButton_zamek_CT->Visible==true  && CT_zamek == LOCKED  && Form1->pom->n>1 && CT<Form1->d.v.PP.TT){
+						 Memo1->Lines->Add("volam KK s false ");
+						pm.input_K(false); }
+					else
+					{
+						if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
+						vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno "+AnsiString(CT/Form1->d.v.PP.TT)+" nebo odemknìte technologický èas a zaktulizujte hodnoty!",true);
+						else//za každé situace standardní volání
+						pm.input_K();
+					}
+
+			 //	pm.input_P(); // zavolání výpoèetního modelu
 		}
 		// naètení dat zpìt do formuláøe po výpoètu
 		Output();
@@ -1124,26 +1145,6 @@ void TForm_parametry::input_DD() {
 void TForm_parametry::input_M() {
 		input_state = mezera;
 		Input();
-		// Memo1->Lines->Add("ahoj");
-		// nutné ošetøení pro období zadávání/psaní  KK režim
-		// if (scGPNumericEdit_mezera->Value >= 0 && scComboBox_rezim->ItemIndex == 1)
-		// {
-		// if (RD_zamek == LOCKED) {
-		// Form1->MB("Pokud chcete zmìnit velikost mezery, je nejprve nutné odemknout zámek rychlosti pohonu.",MB_OK);
-		// // pm.input_M(); // zavolání výpoèetního modelu v pøípadì, že doporuèená M je shodná se zadanou
-		// }
-		// if(RD_zamek == UNLOCKED) {
-		// Kontrola_mezery();
-		// // pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
-		// if (doporuc_mezera == scGPNumericEdit_mezera->Value) {
-		// Memo1->Lines->Add(AnsiString(doporuc_mezera)+" "+scGPNumericEdit_mezera->Value);
-		// pm.input_M();
-		// } if (doporuc_mezera != scGPNumericEdit_mezera->Value)
-		// {
-		// vypis("Doporuèená mezera (M): " + AnsiString(doporuc_mezera) +" m", true);
-		// scGPButton_OK->Enabled=false;  }
-		// }
-		// }
 
 		if (scGPNumericEdit_mezera->Value >= 0 && scComboBox_rezim->ItemIndex == 2)
 		{ // pouze pøi režimu PP
@@ -1815,8 +1816,8 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender) {
 				{
 					scGPNumericEdit_RD->Value=obj->RD*60;
 					scGPNumericEdit_mezera->Value=obj->mezera;
-					if(obj->rotace==0)  	scComboBox_rotace->ItemIndex=0;
-					else    scComboBox_rotace->ItemIndex=1;
+					if(obj->rotace==0) { 	scComboBox_rotace->ItemIndex=0;}
+					else  {  scComboBox_rotace->ItemIndex=1;}
 				}
 			}
 
@@ -1868,9 +1869,10 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender) {
 }
 
 void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender) {
+		if(form_zobrazen){
 		input_clicked_edit = Rotace_klik;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,
-				Rotace_klik, false);
+				Rotace_klik, false);   }
 }
 
 // ---------------------------------------------------------------------------
@@ -2079,13 +2081,13 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender) {
 				input_clicked_edit == Rotace_klik) {
 				input_M(); // pøepoèet hodnot vyplývajících ze zmìny CT
 		}
-
 		// KK režim zavolání input_M
 		if (input_state == NOTHING) {
 				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
 						input_clicked_edit == Rotace_klik) {
-					if(scButton_zamek_RD->Visible){
-						Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.",MB_OK);
+					if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Visible==true){
+            // ShowMessage(input_clicked_edit);
+						Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
             }
 						scComboBox_rotace->Items->Items[0]->Enabled = false;
 						scComboBox_rotace->Items->Items[1]->Enabled = false;
@@ -2097,7 +2099,7 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender) {
 						Kontrola_mezery();
 						// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
 						if (doporuc_mezera == scGPNumericEdit_mezera->Value) {
-						    Memo1->Lines->Add("volam input M z rotace");
+						   // Memo1->Lines->Add("volam input M z rotace");
 								Input();
 								pm.input_M();
 								Output();
@@ -2372,19 +2374,20 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 						scButton_zamek_CT->Visible = false;
-						ShowMessage("DD klik");
+					//	ShowMessage("DD klik");
 				}
 				if (E == P_klik) {
 					 //	scButton_zamek_DD->Visible = false;
 						//scButton_K_zamek->Visible = false;
 						//scButton_zamek_CT->Visible = false;
 				}
-				if (E == C_klik || P_klik ) {
-					ShowMessage("kapacita a P klik");
+				if (E == C_klik ||E == P_klik ) {
+				 //	ShowMessage("kapacita a P klik");
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 
-						if(scGPNumericEdit_CT->Value< Form1->d.v.PP.TT && Form1->pom->n > 1) scButton_zamek_CT->Visible = true;
+						if(scGPNumericEdit_CT->Value< Form1->d.v.PP.TT && Form1->pom->n > 1){
+						 scButton_zamek_CT->Visible = true;  }
 						else
 						{ scButton_zamek_CT->Visible = false; }
 
@@ -2444,16 +2447,17 @@ void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender) {
 				scButton_zamek_DD->Visible = false;
 				scButton_K_zamek->Visible = false;
 		}
-
+		 //	ShowMessage(input_clicked_edit);
 			if (input_state==NOTHING && scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
 						input_clicked_edit == Rotace_klik) {
-
+					 if(scButton_zamek_RD->Visible==true){
 						Form1->MB
 								("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.",
 								MB_OK);
 						scComboBox_rotace->Items->Items[0]->Enabled = false;
 						scComboBox_rotace->Items->Items[1]->Enabled = false;
 							}
+								}
 }
 // ---------------------------------------------------------------------------
 
