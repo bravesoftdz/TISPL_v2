@@ -80,6 +80,9 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit1_rx;
 	TrHTMLLabel *rHTMLLabel_palec_vzd;
 	TrHTMLLabel *rHTMLLabel_jednotky_vzdalenostpalcu;
+	TrHTMLHint *rHTMLHint1;
+	TscHint *scHint1;
+	TscCheckBox *scCheckBox_zaokrouhlit;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -124,6 +127,14 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_odchylkaChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_delka_dopravnikuEnter(TObject *Sender);
+	void __fastcall scGPNumericEdit_RDEnter(TObject *Sender);
+	void __fastcall scGPNumericEdit_CTEnter(TObject *Sender);
+	void __fastcall scGPNumericEdit_poziceEnter(TObject *Sender);
+	void __fastcall scGPNumericEdit_odchylkaEnter(TObject *Sender);
+	void __fastcall scGPNumericEdit_mezeraEnter(TObject *Sender);
+	void __fastcall scGPNumericEdit_kapacitaEnter(TObject *Sender);
+	void __fastcall scCheckBox_zaokrouhlitClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
@@ -141,8 +152,8 @@ private:	// User declarations
 	void input_M(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void input_P(); //pøepoèet hodnot vyplývajících ze zmìny poètu pozic
 	void null_input_value();//vynuluje vstupní hodnoty
-	void LoadDataFromFormAndSave();
-	void LoadDataToFormFromMath();
+	void Input();
+	void Output();
 	void Kontrola_mezery();
 	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
