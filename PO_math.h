@@ -18,12 +18,11 @@ class TPO_math
 		double sV;//šíøka vozíku z parametrù linky
 		double Rotace;
 		double R;//rozteè palcù aktuálního dopravníku
-		short  mV;//rozdíl poèet mezer a vozíkù (vìtšinou o jednu ménì tj. 1)
 		bool CT_locked;//stav zámku
 		bool RD_locked;//stav zámku
 		bool DD_locked;//stav zámku
 		bool K_locked;//stav zámku
-		AnsiString T;//test
+		AnsiString T;//text pro testtest
 
 		void input_CT(bool prepocet_K=true);//pøepoèet souvisejících hodnot vyplývajících ze zmìny CT, pokud je parametr prepocet_K=false, nebude se znovu pøepoèítávat K (slouží pro situaci, kdy input_CT volá input_K)
 		void input_RD(bool prepocet_M=true);//pøepoèet souvisejících  hodnot vyplývajících ze zmìny RD, pokud je parametr prepocet_M=false, nebude se znovu pøepoèítávat M (slouží pro situaci, kdy input_M volá input_RD

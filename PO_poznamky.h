@@ -17,7 +17,7 @@ __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_hlavicka;
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel_titulek;
-	TscGPMemo *scGPMemo1;
+	TscGPMemo *scGPMemo;
 	TscGPButton *scGPButton_OK;
 	TscGPButton *scGPButton_storno;
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
