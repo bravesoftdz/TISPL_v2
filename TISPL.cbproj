@@ -179,6 +179,12 @@
             <DependentOn>jig.h</DependentOn>
             <BuildOrder>16</BuildOrder>
         </CppCompile>
+        <CppCompile Include="kabina_schema.cpp">
+            <Form>Form_kabina_schema</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>kabina_schema.h</DependentOn>
+            <BuildOrder>27</BuildOrder>
+        </CppCompile>
         <CppCompile Include="kalendar.cpp">
             <Form>Form_kalendar</Form>
             <FormType>dfm</FormType>
@@ -229,15 +235,15 @@
             <DependentOn>popUP_menu.h</DependentOn>
             <BuildOrder>18</BuildOrder>
         </CppCompile>
+        <CppCompile Include="poznamky.cpp">
+            <Form>Form_parametry_poznamky</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>poznamky.h</DependentOn>
+            <BuildOrder>26</BuildOrder>
+        </CppCompile>
         <CppCompile Include="PO_math.cpp">
             <DependentOn>PO_math.h</DependentOn>
             <BuildOrder>25</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="PO_poznamky.cpp">
-            <Form>Form_parametry_poznamky</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>PO_poznamky.h</DependentOn>
-            <BuildOrder>26</BuildOrder>
         </CppCompile>
         <CppCompile Include="report.cpp">
             <Form>Form_report</Form>
@@ -278,7 +284,7 @@
             <DependentOn>vykresli.h</DependentOn>
             <BuildOrder>12</BuildOrder>
         </CppCompile>
-        <FormResources Include="PO_poznamky.dfm"/>
+        <FormResources Include="poznamky.dfm"/>
         <FormResources Include="report.dfm"/>
         <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="pl_priority.dfm"/>
@@ -293,6 +299,7 @@
         <FormResources Include="jig.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
         <FormResources Include="kalendar.dfm"/>
+        <FormResources Include="kabina_schema.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
-#ifndef PO_poznamkyH
-#define PO_poznamkyH
+#ifndef poznamkyH
+#define poznamkyH
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>

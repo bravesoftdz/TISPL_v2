@@ -87,10 +87,10 @@ void TPO_math::input_K(bool prepocet_CT)
 	}
 }
 //---------------------------------------------------------------------------
-void TPO_math::input_P()//pøepoèet souvisejících hodnot vyplývajících ze zmìny P
+void TPO_math::input_P(bool prepocet_CT)//pøepoèet souvisejících hodnot vyplývajících ze zmìny P
 {
 	K=P2K();//prvnì si vrátím zjištìnou kapacitu
-	input_K();//potom pracuji jako pøi vkládání kapacity
+	input_K(prepocet_CT);//potom pracuji jako pøi vkládání kapacity
 	//možná zde bude nutné zakázat zpìtný pøepoèet P
 }
 //---------------------------------------------------------------------------
