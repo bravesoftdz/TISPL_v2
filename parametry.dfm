@@ -922,7 +922,7 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_CT: TscGPNumericEdit
-    Left = 233
+    Left = 234
     Top = 175
     Width = 108
     Height = 29
@@ -1006,7 +1006,6 @@ object Form_parametry: TForm_parametry
     TabOrder = 13
     OnChange = scGPNumericEdit_CTChange
     OnClick = scGPNumericEdit_CTClick
-    OnEnter = scGPNumericEdit_CTEnter
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rezim: TscGPComboBox
@@ -1561,7 +1560,7 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_delka_dopravniku: TscGPNumericEdit
-    Left = 233
+    Left = 235
     Top = 250
     Width = 108
     Height = 29
@@ -1645,7 +1644,6 @@ object Form_parametry: TForm_parametry
     TabOrder = 4
     OnChange = scGPNumericEdit_delka_dopravnikuChange
     OnClick = scGPNumericEdit_delka_dopravnikuClick
-    OnEnter = scGPNumericEdit_delka_dopravnikuEnter
     OnKeyDown = FormKeyDown
   end
   object scGPEdit_shortname: TscGPEdit
@@ -1726,7 +1724,7 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_odchylka: TscGPNumericEdit
-    Left = 233
+    Left = 235
     Top = 370
     Width = 108
     Height = 29
@@ -1808,12 +1806,10 @@ object Form_parametry: TForm_parametry
     ParentShowHint = False
     ShowHint = True
     TabOrder = 14
-    OnChange = scGPNumericEdit_odchylkaChange
-    OnEnter = scGPNumericEdit_odchylkaEnter
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_kapacita: TscGPNumericEdit
-    Left = 233
+    Left = 235
     Top = 290
     Width = 108
     Height = 29
@@ -1897,7 +1893,6 @@ object Form_parametry: TForm_parametry
     TabOrder = 15
     OnChange = scGPNumericEdit_kapacitaChange
     OnClick = scGPNumericEdit_kapacitaClick
-    OnEnter = scGPNumericEdit_kapacitaEnter
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rotace: TscGPComboBox
@@ -2434,7 +2429,7 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_mezera: TscGPNumericEdit
-    Left = 232
+    Left = 234
     Top = 531
     Width = 108
     Height = 29
@@ -2473,7 +2468,6 @@ object Form_parametry: TForm_parametry
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
     SupportMouseWheel = False
-    Decimal = 4
     ValueType = scvtFloat
     DisplayType = scedtNumeric
     LeftButton.Kind = scgpebCustom
@@ -2519,7 +2513,6 @@ object Form_parametry: TForm_parametry
     TabOrder = 22
     OnChange = scGPNumericEdit_mezeraChange
     OnClick = scGPNumericEdit_mezeraClick
-    OnEnter = scGPNumericEdit_mezeraEnter
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
@@ -2663,7 +2656,6 @@ object Form_parametry: TForm_parametry
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
     SupportMouseWheel = False
-    Decimal = 4
     ValueType = scvtFloat
     DisplayType = scedtNumeric
     LeftButton.Kind = scgpebCustom
@@ -2709,7 +2701,6 @@ object Form_parametry: TForm_parametry
     TabOrder = 25
     OnChange = scGPNumericEdit_RD_Change
     OnClick = scGPNumericEdit_RD_Click
-    OnEnter = scGPNumericEdit_RDEnter
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_PO_text_memo: TscGPGlyphButton
@@ -2885,7 +2876,7 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_pozice: TscGPNumericEdit
-    Left = 233
+    Left = 235
     Top = 328
     Width = 108
     Height = 29
@@ -2969,7 +2960,6 @@ object Form_parametry: TForm_parametry
     TabOrder = 28
     OnChange = scGPNumericEdit_poziceChange
     OnClick = scGPNumericEdit_poziceClick
-    OnEnter = scGPNumericEdit_poziceEnter
     OnKeyDown = FormKeyDown
   end
   object scButton_K_zamek: TscButton
