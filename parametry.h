@@ -124,22 +124,14 @@ __published:	// IDE-managed Components
 	void __fastcall scButton_K_zamekClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceEnter(TObject *Sender);
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
-	void __fastcall scGPNumericEdit_odchylkaChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
-	void __fastcall scGPNumericEdit_delka_dopravnikuEnter(TObject *Sender);
-	void __fastcall scGPNumericEdit_RDEnter(TObject *Sender);
-	void __fastcall scGPNumericEdit_CTEnter(TObject *Sender);
-	void __fastcall scGPNumericEdit_poziceEnter(TObject *Sender);
-	void __fastcall scGPNumericEdit_odchylkaEnter(TObject *Sender);
-	void __fastcall scGPNumericEdit_mezeraEnter(TObject *Sender);
-	void __fastcall scGPNumericEdit_kapacitaEnter(TObject *Sender);
 	void __fastcall scCheckBox_zaokrouhlitClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,C,mezera,P,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,mezera,P,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
@@ -152,19 +144,20 @@ private:	// User declarations
 	void input_M(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void input_P(); //pøepoèet hodnot vyplývajících ze zmìny poètu pozic
 	void null_input_value();//vynuluje vstupní hodnoty
-	void Input();
-	void Output();
-	void Kontrola_mezery();
+	void INPUT();
+	void OUTPUT();
+	double Kontrola_mezery();
 	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	void Check_rozmezi_RD(); //kontrola  RD vùèi vybranému pohonu
 	void Nacti_rx();
+	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
-  double doporuc_mezera;
 	short offset;
 	short defaultForm_parametryHeight;
+	short VID;//validation ID
 	TColor hl_color;//(TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
 	short hlFrameWidth;//šíøka zvýraznìní rámeèku komponenty napø.pro povinné položky
 
