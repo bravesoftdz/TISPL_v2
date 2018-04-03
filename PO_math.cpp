@@ -69,7 +69,7 @@ void TPO_math::input_DD()
 	}
 }
 //---------------------------------------------------------------------------
-//pøepoèet  souvisejících hodnot vyplývajících ze zmìny K
+//pøepoèet souvisejících hodnot vyplývajících ze zmìny K
 void TPO_math::input_K(bool prepocet_CT)
 {
 	switch (rezim)
