@@ -83,6 +83,7 @@ __published:	// IDE-managed Components
 	TrHTMLHint *rHTMLHint1;
 	TscHint *scHint1;
 	TscCheckBox *scCheckBox_zaokrouhlit;
+	TscGPGlyphButton *scGPGlyphButton1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -127,6 +128,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
 	void __fastcall scCheckBox_zaokrouhlitClick(TObject *Sender);
+	void __fastcall scGPGlyphButton1Click(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
@@ -151,7 +153,7 @@ private:	// User declarations
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	void Check_rozmezi_RD(); //kontrola  RD vùèi vybranému pohonu
 	void Nacti_rx();
-	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math
+	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math, input_state slouží pro rozlišení volání ze vstupu - pøedevším P a K
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky

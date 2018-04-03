@@ -339,7 +339,8 @@ double Cmy::Rz(double dV,double sV,double rotace,double M)
 //vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
 double Cmy::Rx(double dV,double sV,double rotace,double M,double R)
 {
-	return (M+UDV(dV,sV,rotace))/R;
+	if(R==0) return 0;
+	else return (M+UDV(dV,sV,rotace))/R;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
@@ -351,8 +352,12 @@ double Cmy::mezera(double dV,double sV,double rotace,double Rx,double R)
 //vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double RD)
 {
-	double DV=UDV(dV,sV,rotace);
-	return (DV+mezera_mezi_voziky(dV,sV,rotace,R,TT*RD-DV))/TT;
+	if(TT==0)return 0;
+	else
+	{
+		double DV=UDV(dV,sV,rotace);
+		return (DV+mezera_mezi_voziky(dV,sV,rotace,R,TT*RD-DV))/TT;
+	}
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku vozíku

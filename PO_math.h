@@ -29,12 +29,14 @@ class TPO_math
 		void input_DD();//pøepoèet souvisejících hodnot vyplývajících ze zmìny DD
 		void input_K(bool prepocet_CT=true);//pøepoèet souvisejících hodnot vyplývajících ze zmìny K, pokud je parametr prepocet_CT=false, nebude se pøepoèítávat CT (slouží pro situaci, kdy CT/TT<=K)
 		void input_P(bool prepocet_CT=true); //pøepoèet souvisejících hodnot vyplývajících ze zmìny P
-		void input_M(bool prepocet_K=true); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M, pokud je parametr prepocet_K=false, bude se pøepoèítavat DD
+		void input_M(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M, pokud je parametr prepocet_K=false, bude se pøepoèítavat DD
+		double K2P(double K);//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
+		double P2K(double P);//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 	private:
 		Cmy m;
 		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè
-		double Pozice();//vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double P2K();//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
+		double Pozice();//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double UDV();//vrátí užitnou délku vozíku dle hodnoty rotace
 
 };
