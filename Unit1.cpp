@@ -62,6 +62,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	////nastavení aplikace
 	upozornovat_na_zmenu_TT_parametru=true;
+	Application->HintHidePause= 20000; //nastavení délky trvání zobrazení Hintů -  20s
 
 
 	//nastavení knihovnky

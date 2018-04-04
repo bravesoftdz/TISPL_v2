@@ -371,7 +371,6 @@ object Form_parametry: TForm_parametry
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 349
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 300
@@ -451,7 +450,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 299
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -485,7 +483,6 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 289
     end
     object scGPButton_metry_milimetry: TscGPButton
       Left = 227
@@ -3268,18 +3265,19 @@ object Form_parametry: TForm_parametry
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
     HintFont.Color = clWindowText
-    HintFont.Height = -11
+    HintFont.Height = -15
     HintFont.Name = 'Tahoma'
     HintFont.Style = []
+    BorderLeft = 1
+    BorderRight = 1
+    BorderTop = 1
+    BorderBottom = 1
+    LeftBarWidth = 0
+    LeftBarColor = clRed
+    RightBarColor = clRed
+    HintSkipEnter = True
+    UseAsGlobalHint = True
     Left = 160
     Top = 336
-  end
-  object scHint1: TscHint
-    LineSeparator = '@@'
-    AlphaBlend = False
-    AlphaBlendValue = 255
-    AlphaBlendAnimation = False
-    Left = 136
-    Top = 272
   end
 end

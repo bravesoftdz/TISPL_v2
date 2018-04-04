@@ -81,7 +81,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_palec_vzd;
 	TrHTMLLabel *rHTMLLabel_jednotky_vzdalenostpalcu;
 	TrHTMLHint *rHTMLHint1;
-	TscHint *scHint1;
 	TscCheckBox *scCheckBox_zaokrouhlit;
 	TscGPGlyphButton *scGPGlyphButton1;
 	void __fastcall FormShow(TObject *Sender);

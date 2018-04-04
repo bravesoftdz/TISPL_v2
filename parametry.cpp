@@ -4,7 +4,7 @@
 #include "parametry.h"
 #include "unit1.h"
 #include "parametry_linky.h"
-#include "PO_poznamky.h"
+#include "poznamky.h"
 #include "MyMessageBox.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -113,9 +113,8 @@ void TForm_parametry::vypis(UnicodeString text, bool RED)
 		scGPButton_OK->Caption = "Uložit";
 		if (text != "") // zobrazí a vypíše
 		{
-				rHTMLLabel_InfoText->Hint=text;//zajišuje zobrazení celého textu
-				//scHint1->ToString()="hi";
-					 //rHTMLHint1->ToString()=text;
+			 //	rHTMLLabel_InfoText->Hint=text;//zajišuje zobrazení celého textu
+				rHTMLHint1->ToString()=text;
 				// if(!rHTMLLabel_InfoText->Visible)Form_parametry->Height+=(40+19);//pouze pokud byl popisek skrytý
 				if (RED)
 				{
@@ -934,17 +933,16 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 		}
 
 		if (input_state == NOTHING)
-		{
+		{    	vypis("");
 				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&	input_clicked_edit == mezera_klik)
 				{
 						vypis("Povolte zmìnu rychlosti pohonu.");
 
 				} // není zamèeno - doporuèím mezeru, èekám zdali zadá správnou mezeru
 				else
-				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik)
+				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex>0)
 				{
-
-					 //	LoadDataFromFormAndSave();
+							vypis("");
 						if (Kontrola_mezery() == Form1->ms.MyToDouble(scGPNumericEdit_mezera->Value))
 						{
 
@@ -954,7 +952,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 							 //	LoadDataToFormFromMath();
 							 Nacti_rx();
 						}
-				}
+				}  if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex==0) input_M();  // pøípad kdy mìním mezeru ale jsem bez pohonu
 		}
 }
 
@@ -1945,15 +1943,10 @@ void TForm_parametry::INPUT()
 		double TT = Form1->d.v.PP.TT;
 
 		double CT = scGPNumericEdit_CT->Value; // CT - novì zadáno uživatelem
-		scGPNumericEdit_CT->Hint=CT;
 		double RD = scGPNumericEdit_RD->Value; // RD	od uživatele
-		scGPNumericEdit_RD->Hint=RD;
 		double DD = scGPNumericEdit_delka_dopravniku->Value; // DD od uživatele
-		scGPNumericEdit_delka_dopravniku->Hint=DD;
 		double K = scGPNumericEdit_kapacita->Value; // K od uživatele
-		scGPNumericEdit_kapacita->Hint=K;
 		double Odchylka = scGPNumericEdit_odchylka->Value; // odchylka od uživatele
-		scGPNumericEdit_odchylka->Hint=Odchylka;
 		double Nasleduje_cekani = scComboBox_cekani_palec->ItemIndex;
 		// 0 - ne, 1 -ano, 2 - automaticky
 		double Stop_stanice = scComboBox_stopka->ItemIndex;
@@ -1961,9 +1954,8 @@ void TForm_parametry::INPUT()
 		double dV = Form1->d.v.PP.delka_voziku; // délka jigu
 		double sV = Form1->d.v.PP.sirka_voziku; // šíøka jigu
 		double m = scGPNumericEdit_mezera->Value; // mezera mezi voziky
-			scGPNumericEdit_mezera->Hint=m;
 		double P = scGPNumericEdit_pozice->Value; // poèet pozic
-				scGPNumericEdit_pozice->Hint=P;
+
 		bool CT_locked;
 		bool RD_locked;
 		bool DD_locked;
@@ -2091,6 +2083,20 @@ void TForm_parametry::OUTPUT()
 				scGPNumericEdit_pozice->Value = pm.P;
 				if(scCheckBox_zaokrouhlit->Checked)scGPNumericEdit_pozice->Decimal=2;
 		}
+
+		//ZOBRAZENÍ HINTÙ
+			scGPNumericEdit_CT->Hint=scGPNumericEdit_CT->Value;
+			scGPNumericEdit_RD->Hint=scGPNumericEdit_RD->Value;
+			scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
+			scGPNumericEdit_kapacita->Hint=scGPNumericEdit_kapacita->Value;
+		 //	scGPNumericEdit_odchylka->Hint=Odchylka;
+			scGPNumericEdit_mezera->Hint=scGPNumericEdit_mezera->Value;
+			scGPNumericEdit_pozice->Hint=scGPNumericEdit_pozice->Value;
+
+
+
+
+
 		VALIDACE();
 }
 // ---------------------------------------------------------------------------
@@ -2767,22 +2773,8 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					}
 				}
 				//----------------------------------------------------------------------------------------------------------------------//
-//					Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-//				if (P != NULL) {
-//						double jednotky_cas_pohon = 60.0;
-//						if (Form_parametry->RDunitT == Form_parametry->MIN) jednotky_cas_pohon = 60.0;
-//						else jednotky_cas_pohon = 1.0;
-//						Memo1->Lines->Add("èekuju RD");
-//						if (scGPNumericEdit_RD->Value <P->rychlost_od * jednotky_cas_pohon || P->rychlost_do * jednotky_cas_pohon <scGPNumericEdit_RD->Value) // nesplòuje rozmezí
-//						{
-//								vypis("Rychlost neodpovídá zadanému rozmezí!");
-//								VID=25;
-//						}
-//				}
-
-
 		//---------------------------------------------------------------------------------------------------------------------------------//
-				if(scGPNumericEdit_mezera->Value<0)
+				if(scGPNumericEdit_mezera->Value<-0.0000000000000004)   //ROSTA mezera ošetøení viz výše
 				{
 					double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
 					double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_voziku,Form1->d.v.PP.delka_voziku,scComboBox_rotace->ItemIndex);
