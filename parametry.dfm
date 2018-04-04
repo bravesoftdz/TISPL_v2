@@ -3132,10 +3132,19 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scCheckBox_zaokrouhlit: TscCheckBox
-    Left = 8
-    Top = 664
-    Width = 215
-    Height = 23
+    Left = 306
+    Top = 601
+    Width = 42
+    Height = 18
+    Hint = 'Zobrazit na dv'#283' desetinn'#225' '#269#237'sla'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 31
     TabStop = True
     OnClick = scCheckBox_zaokrouhlitClick
@@ -3153,7 +3162,7 @@ object Form_parametry: TForm_parametry
     CustomGrayedImageDisabledIndex = -1
     UseFontColorToStyleColor = False
     Animation = False
-    Caption = 'zobrazit hodnoty na dv'#283' desetinn'#225' m'#237'sta'
+    Caption = '0,00'
     CanFocused = True
     Spacing = 1
     Layout = blGlyphLeft
