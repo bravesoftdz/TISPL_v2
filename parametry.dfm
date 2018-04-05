@@ -371,7 +371,6 @@ object Form_parametry: TForm_parametry
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 349
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 300
@@ -451,7 +450,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 299
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -485,7 +483,6 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 289
     end
     object scGPButton_metry_milimetry: TscGPButton
       Left = 227
@@ -3135,10 +3132,19 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scCheckBox_zaokrouhlit: TscCheckBox
-    Left = 8
-    Top = 664
-    Width = 215
-    Height = 23
+    Left = 306
+    Top = 601
+    Width = 42
+    Height = 18
+    Hint = 'Zobrazit na dv'#283' desetinn'#225' '#269#237'sla'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 31
     TabStop = True
     OnClick = scCheckBox_zaokrouhlitClick
@@ -3156,7 +3162,7 @@ object Form_parametry: TForm_parametry
     CustomGrayedImageDisabledIndex = -1
     UseFontColorToStyleColor = False
     Animation = False
-    Caption = 'zobrazit hodnoty na dv'#283' desetinn'#225' m'#237'sta'
+    Caption = '0,00'
     CanFocused = True
     Spacing = 1
     Layout = blGlyphLeft
@@ -3179,21 +3185,108 @@ object Form_parametry: TForm_parametry
     State = cbChecked
     ShowFocusRect = True
   end
+  object scGPGlyphButton1: TscGPGlyphButton
+    Left = 5
+    Top = 638
+    Width = 31
+    Height = 27
+    Hint = 'P'#345'idat pozn'#225'mku k CT'
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 32
+    TabStop = True
+    OnClick = scGPGlyphButton1Click
+    Animation = True
+    Caption = 'scGPGlyphButton_PO_text_memo'
+    CanFocused = True
+    CustomDropDown = False
+    Layout = blGlyphLeft
+    TransparentBackground = True
+    ColorValue = clRed
+    Options.NormalColor = clBtnFace
+    Options.HotColor = clBtnText
+    Options.PressedColor = clBtnText
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnText
+    Options.NormalColorAlpha = 10
+    Options.HotColorAlpha = 20
+    Options.PressedColorAlpha = 30
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 5
+    Options.FrameNormalColor = clBtnFace
+    Options.FrameHotColor = clBtnFace
+    Options.FramePressedColor = clBtnFace
+    Options.FrameFocusedColor = clBtnFace
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 0
+    Options.FrameHotColorAlpha = 0
+    Options.FramePressedColorAlpha = 0
+    Options.FrameFocusedColorAlpha = 0
+    Options.FrameDisabledColorAlpha = 30
+    Options.FontNormalColor = clBtnFace
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    GlyphOptions.NormalColor = clBlack
+    GlyphOptions.HotColor = clBlack
+    GlyphOptions.PressedColor = clBtnText
+    GlyphOptions.FocusedColor = clBtnText
+    GlyphOptions.DisabledColor = clBtnText
+    GlyphOptions.NormalColorAlpha = 200
+    GlyphOptions.HotColorAlpha = 100
+    GlyphOptions.PressedColorAlpha = 255
+    GlyphOptions.FocusedColorAlpha = 255
+    GlyphOptions.DisabledColorAlpha = 100
+    GlyphOptions.Kind = scgpbgkDetailPoints
+    GlyphOptions.Thickness = 2
+    GlyphOptions.StyleColors = True
+    TextMargin = -1
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
     HintFont.Color = clWindowText
-    HintFont.Height = -11
+    HintFont.Height = -15
     HintFont.Name = 'Tahoma'
     HintFont.Style = []
+    BorderLeft = 1
+    BorderRight = 1
+    BorderTop = 1
+    BorderBottom = 1
+    LeftBarWidth = 0
+    LeftBarColor = clRed
+    RightBarColor = clRed
+    HintSkipEnter = True
+    UseAsGlobalHint = True
     Left = 160
     Top = 336
-  end
-  object scHint1: TscHint
-    LineSeparator = '@@'
-    AlphaBlend = False
-    AlphaBlendValue = 255
-    AlphaBlendAnimation = False
-    Left = 136
-    Top = 272
   end
 end

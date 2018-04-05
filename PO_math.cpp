@@ -95,14 +95,14 @@ void TPO_math::input_P(bool prepocet_CT)//pøepoèet souvisejících hodnot vyplývaj
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny M
-void TPO_math::input_M(bool prepocet_K)
+void TPO_math::input_M()
 {
 	switch (rezim)
 	{
 		case 0:break;//S&G
 		case 1://Kontinuál
 				RD=(UDV()+M)/TT;//dle mezery spoèítám novou rychlost
-				input_RD(false);//již znovu nepøepoèítává mezeru
+				input_RD();//døíve se používalo input_RD(false) znovu nepøepoèítává mezeru
 				break;
 		case 2://PP
 				if(DD_locked)input_DD();
@@ -125,15 +125,21 @@ double TPO_math::Mezera()
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 double TPO_math::Pozice()
 {
+	return K2P(K);
+}
+//---------------------------------------------------------------------------
+//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
+double TPO_math::K2P(double K)
+{
 	double P=floor(K);//celoèíselná kapacita
 	double DV=UDV();
 	double DVM=(DV+M)*(K-P);//délka èásti poslední vozíko-mezery v kabinì
 	if(DVM>=DV)P++;//navýší o celý vozík, protože je minimálnì celý vozík v kabinì
 	else P+=DVM/DV;//navýší o èást vozíku, protože je jenom èást vozíku v kabinì
 	return P;
-}//---------------------------------------------------------------------------
-//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. situace, že K==P
-double TPO_math::P2K()
+}
+//---------------------------------------------------------------------------
+double TPO_math::P2K(double P)//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 {
 	if(P-floor(P)>0)//pokud je zadán neceloèíselný poèet pozic
 	{
@@ -143,6 +149,12 @@ double TPO_math::P2K()
 	{
 		return (P*UDV()+(P-1)*M)/(UDV()+M);
 	}
+}
+//---------------------------------------------------------------------------
+//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. situace, že K==P
+double TPO_math::P2K()
+{
+	return P2K(P);
 }
 //---------------------------------------------------------------------------
 //vrátí užitnou délku vozíku dle hodnoty rotace
