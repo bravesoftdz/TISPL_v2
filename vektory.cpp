@@ -515,13 +515,13 @@ AnsiString Cvektory::vypis_objekty_mimo_100vytizeni(bool shortname, bool vypsat_
 				AnsiString V=""; if(vypsat_procetna)"- "+AnsiString(vytizeni)+" %";
 				T=Z->name+"/"+N+V+separator;
 			}
-			C=C->dalsi;//posun na další prvek v seznamu
+			C=C->dalsi;
 		}
 		delete C;
-		Z=Z->dalsi;//posun na další prvek v seznamu
+		Z=Z->dalsi;
 	 }
 	 delete Z;
-	 T=T.SubString(1,T.Length()-2);
+	 T=T.SubString(1,T.Length()-separator.Length());//odebere ještě poslední separátor
 	 return T;
 }
 //---------------------------------------------------------------------------
@@ -823,7 +823,7 @@ Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_obj
 	return O;
 }
 ////---------------------------------------------------------------------------
-//dle n pohonu vráti objekty, které pohon používají,, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
+//dle n pohonu vráti objekty, které pohon používají, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
 AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_name)
 {
  	TObjekt *O=OBJEKTY->dalsi;
@@ -943,15 +943,15 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 						 P=P->dalsi;//posun na další prvek
 				}
 				if(!nalezen)//pokud stále platí, že nebyl nalezen
-				{
-					AnsiString mS=", ";if(separator!="</br>")mS=";";
-					//název, rychlost
-					data+="Navržený pohon "+AnsiString(++i)+mS+"rychlost:"+AnsiString(O->RD*60)+" [m/min]"+mS;
-					//RZ
-					data+="0°: "+AnsiString(Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,0,0),0))+", 90°: "+AnsiString(Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,90,Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,90,0)));
+				{ //libovolný			  //html tabulka                   //csv
+					AnsiString mS=", ";if(separator=="</tr>")mS="</td>";if(separator!="</tr>" && separator!="</br>")mS=";";
+					//název, rychlost, RZ
+					if(mS==", ")		data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+" [m/min]"+mS+AnsiString(Form1->m.Rz(O->RD))+" [m]";//LIBOVOLNÉ
+					if(mS==";")			data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+mS+AnsiString(Form1->m.Rz(O->RD));//CSV
+					if(mS=="</td>")	data+="<tr><th scope=\"row\">Navržený pohon "+AnsiString(++i)+"</th><td>"+AnsiString(O->RD*60)+mS+"<td>"+AnsiString(Form1->m.Rz(O->RD))+mS;//HTML TABLE
 					data+=separator;
 					pole_rychlosti[O->n-1]=O->RD;
-        }                //indexuje se v poly od nuly ale objekty jsou indexované od 1
+				}                //indexuje se v poly od nuly ale objekty jsou indexované od 1
 			}
 		}
 		O=O->dalsi;//posun na další prvek

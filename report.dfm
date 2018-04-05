@@ -504,7 +504,7 @@ object Form_report: TForm_report
         RepeatClickInterval = 100
         GlowEffect.Enabled = True
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 175
+        GlowEffect.AlphaValue = 95
         GlowEffect.GlowSize = 70
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -543,7 +543,7 @@ object Form_report: TForm_report
         Spacing = 1
         Layout = blGlyphLeft
         Images = Form1.scGPVirtualImageList1
-        ImageIndex = 45
+        ImageIndex = 44
         ImageMargin = 0
         TransparentBackground = True
         ColorOptions.NormalColor = clWhite
@@ -592,7 +592,7 @@ object Form_report: TForm_report
         RepeatClickInterval = 100
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 175
+        GlowEffect.AlphaValue = 95
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True

@@ -33,4 +33,18 @@ void __fastcall TForm_poznamky::KonecClick(TObject *Sender)
 	Close();
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_poznamky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+		if (Key == 13) // ENTER
+		{
+				Form_poznamky->ModalResult = mrOk; // vrátí stejnou hodnotu jako tlaèítko
+				Form_poznamky->VisibleChanging();// skryje form, stejné jako visible=false
+		}
+		if (Key == 27) // ESC
+		{
+				Form_poznamky->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+				Form_poznamky->VisibleChanging();// skryje form, stejné jako visible=false
+		}
+}
+//---------------------------------------------------------------------------
 

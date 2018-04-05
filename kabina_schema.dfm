@@ -12,6 +12,7 @@ object Form_kabina_schema: TForm_kabina_schema
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage

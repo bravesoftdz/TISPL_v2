@@ -5,6 +5,7 @@
 #include "unit1.h"
 #include "parametry_linky.h"
 #include "poznamky.h"
+#include "kabina_schema.h"
 #include "MyMessageBox.h"
 // ---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -384,7 +385,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim) {
 		scGPButton_storno->Top = Form_parametry->Height -	scGPButton_storno->Height - 10;
 		scGPGlyphButton_paste->Top = Form_parametry->Height -	scGPGlyphButton_paste->Height;
 		scGPGlyphButton_copy->Top = scGPGlyphButton_paste->Top - scGPGlyphButton_copy->Height;
-		scCheckBox_zaokrouhlit->Top = scGPGlyphButton_copy->Top-scCheckBox_zaokrouhlit->Height;
+		scGPCheckBox_zaokrouhlit->Top = scGPGlyphButton_copy->Top-scGPCheckBox_zaokrouhlit->Height;
 }
 
 // ---------------------------------------------------------------------------
@@ -1555,11 +1556,9 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender) {
 				DM = scGPNumericEdit_mezera->Value * 1000.0;
 		}
 		// plnìní + poèet desetinných míst
-		// ROSTA//scGPNumericEdit_mezera->Decimal=Form1->ms.get_count_decimal(DM);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_mezera->Value = DM;
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
-
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // pøi stisku klávesy enter nebo esc
@@ -1624,65 +1623,34 @@ void __fastcall TForm_parametry::FormClose(TObject *Sender,
 
 // ---------------------------------------------------------------------------
 // zkopíruje parametry objektu pro další použití
-void __fastcall TForm_parametry::scGPGlyphButton_copyClick(TObject *Sender) {
+void __fastcall TForm_parametry::scGPGlyphButton_copyClick(TObject *Sender)
+{
 		// povolí tlaèítko vkládání
 		scGPGlyphButton_paste->Enabled = true;
 
 		// pøevod jednotek
-		double jednotky_cas = 1.0;
-		if (minsec == MIN)
-				jednotky_cas = 60.0;
-		double jednotky_vzdalenost = 1.0;
-		if (m_mm == MM)
-				jednotky_vzdalenost = 1000.0;
+		double jednotky_cas = 1.0;if (minsec == MIN)jednotky_cas = 60.0;
+		double jednotky_vzdalenost = 1.0;if (m_mm == MM)jednotky_vzdalenost = 1000.0;
 
 		// text do schránky
 		AnsiString T = "";
 
 		// atributy
-		Form1->copyObjekt->name = scGPEdit_name->Text;
-		T = scGPEdit_name->Text;
-		T += ";";
-		Form1->copyObjekt->short_name = scGPEdit_shortname->Text;
-		T += scGPEdit_shortname->Text;
-		T += ";";
-		Form1->copyObjekt->delka_dopravniku =
-				scGPNumericEdit_delka_dopravniku->Value / jednotky_vzdalenost;
-		T += scGPNumericEdit_delka_dopravniku->Value / jednotky_vzdalenost;
-		T += ";";
-		Form1->copyObjekt->pohon =
-				Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex + 1);
-		/* indexuje se od nuly */ T += scComboBox_pohon->ItemIndex + 1;
-		T += ";";
-		Form1->copyObjekt->rezim = scComboBox_rezim->ItemIndex;
-		T += scComboBox_rezim->ItemIndex;
-		T += ";";
-		Form1->copyObjekt->CT = scGPNumericEdit_CT->Value * jednotky_cas;
-		T += Form1->copyObjekt->CT;
-		T += ";";
-		Form1->copyObjekt->cekat_na_palce = scComboBox_cekani_palec->ItemIndex;
-		T += scComboBox_cekani_palec->ItemIndex;
-		T += ";";
-		Form1->copyObjekt->kapacita = scGPNumericEdit_kapacita->Value;
-		T += Form1->copyObjekt->kapacita;
-		T += ";";
-		Form1->copyObjekt->odchylka = scGPNumericEdit_odchylka->Value;
-		T += Form1->copyObjekt->odchylka;
-		T += ";";
-		Form1->copyObjekt->stopka = scComboBox_stopka->ItemIndex;
-		T += Form1->copyObjekt->stopka;
-		T += ";";
-		Form1->copyObjekt->RD =
-				scGPNumericEdit_RD->Value / jednotky_cas / jednotky_vzdalenost;
-		T += Form1->copyObjekt->RD;
-		T += ";";
-		Form1->copyObjekt->rotace = scComboBox_rotace->ItemIndex;
-		T += Form1->copyObjekt->rotace;
-		T += ";";
-		Form1->copyObjekt->mezera =
-				scGPNumericEdit_mezera->Value / jednotky_vzdalenost;
-		T += Form1->copyObjekt->mezera;
-		T += ";";
+		Form1->copyObjekt->name=scGPEdit_name->Text;T=scGPEdit_name->Text;T+=";";
+		Form1->copyObjekt->short_name=scGPEdit_shortname->Text;T+=scGPEdit_shortname->Text;T+=";";
+		Form1->copyObjekt->rezim=scComboBox_rezim->ItemIndex;T+=scComboBox_rezim->ItemIndex;T+=";";
+		Form1->copyObjekt->pohon=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex+1);/* indexuje se od nuly */ T+=scComboBox_pohon->ItemIndex+1;T+=";";
+		Form1->copyObjekt->CT=scGPNumericEdit_CT->Value*jednotky_cas;T+=Form1->copyObjekt->CT;T+=";";
+		Form1->copyObjekt->RD=scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;T+=Form1->copyObjekt->RD;T+=";";
+		Form1->copyObjekt->delka_dopravniku=scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;T+= scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;T += ";";
+		Form1->copyObjekt->kapacita=scGPNumericEdit_kapacita->Value;T+=Form1->copyObjekt->kapacita;T+=";";
+		Form1->copyObjekt->pozice=scGPNumericEdit_pozice->Value;T+=Form1->copyObjekt->pozice;T+=";";
+		Form1->copyObjekt->odchylka=scGPNumericEdit_odchylka->Value;T+=Form1->copyObjekt->odchylka;T+=";";
+		Form1->copyObjekt->cekat_na_palce = scComboBox_cekani_palec->ItemIndex;T+=scComboBox_cekani_palec->ItemIndex;T+=";";
+		Form1->copyObjekt->stopka=scComboBox_stopka->ItemIndex;T+=Form1->copyObjekt->stopka;T+=";";
+		Form1->copyObjekt->rotace=scComboBox_rotace->ItemIndex;T+=Form1->copyObjekt->rotace;T+=";";
+		Form1->copyObjekt->mezera=scGPNumericEdit_mezera->Value/jednotky_vzdalenost;T+=Form1->copyObjekt->mezera;T+=";";
+		//dodìlat Rz,Rx a pøevody jednotek dle individuálu,zámky se pøevezmou? bacha lze vložit až pozdìji...if(scComboBox_pohon->ItemIndex>0)Form1->copyObjekt->pohon!=)
 
 		// zkopírování textu do schránky
 		TClipboard *c = new TClipboard;
@@ -2025,12 +1993,10 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 
 {
 		// formuláø na støed
-		Form_parametry_poznamky->Left = Form1->ClientWidth / 2 -
-				Form_parametry_poznamky->Width / 2;
-		Form_parametry_poznamky->Top = Form1->ClientHeight / 2 -
-				Form_parametry_poznamky->Height / 2;
+		Form_poznamky->Left = Form1->ClientWidth / 2 - Form_poznamky->Width / 2;
+		Form_poznamky->Top = Form1->ClientHeight / 2 - Form_poznamky->Height / 2;
 		// zobrazeni formuláøe
-		Form_parametry_poznamky->ShowModal();
+		Form_poznamky->ShowModal();
 }
 // ---------------------------------------------------------------------------
 
@@ -2043,7 +2009,7 @@ void TForm_parametry::OUTPUT()
 		{
 				scGPNumericEdit_CT->Value = pm.CT;
 				if (CTunit == MIN)scGPNumericEdit_CT->Value /= 60.0;
-				if(scCheckBox_zaokrouhlit->Checked)scGPNumericEdit_CT->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_CT->Decimal=2;
 
 		}
 		if (input_state != RD)
@@ -2051,30 +2017,30 @@ void TForm_parametry::OUTPUT()
 				scGPNumericEdit_RD->Value = pm.RD;
 				if (RDunitT == MIN) scGPNumericEdit_RD->Value *= 60.0;
 				else if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
-				if(scCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=2;
 		}
 		if (input_state != DD)
 		{
 				scGPNumericEdit_delka_dopravniku->Value = pm.DD;
 				if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value *= 1000.0;
 				scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
-				if(scCheckBox_zaokrouhlit->Checked)scGPNumericEdit_delka_dopravniku->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_delka_dopravniku->Decimal=2;
 		}
 		if (input_state != K) {
 				scGPNumericEdit_kapacita->Value = pm.K;
-				if(scCheckBox_zaokrouhlit->Checked)scGPNumericEdit_kapacita->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_kapacita->Decimal=2;
 		}
 		if (input_state != mezera) {
 				scGPNumericEdit_mezera->Value = pm.M;
 			 //	Memo1->Lines->Add("OUTPUT:"+AnsiString(pm.M));
 				if (DMunit == MM)
 				scGPNumericEdit_mezera->Value *= 1000.0;
-				if(scCheckBox_zaokrouhlit->Checked)	scGPNumericEdit_mezera->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)	scGPNumericEdit_mezera->Decimal=2;
 		}
 		if (input_state != P)
 		{
 				scGPNumericEdit_pozice->Value = pm.P;
-				if(scCheckBox_zaokrouhlit->Checked)scGPNumericEdit_pozice->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_pozice->Decimal=2;
 		}
 
 		//ZOBRAZENÍ HINTÙ
@@ -2642,7 +2608,7 @@ input_clicked_edit=Rx_klik;
 //pøepínání zobrazení desetinného èísla na dvì nebo neomezený poèet desetinných míst
 void __fastcall TForm_parametry::scCheckBox_zaokrouhlitClick(TObject *Sender)
 {
-	int N_mist=1000;if(scCheckBox_zaokrouhlit->Checked)N_mist=2;
+	int N_mist=1000;if(scGPCheckBox_zaokrouhlit->Checked)N_mist=2;
 	scGPNumericEdit_CT->Decimal=N_mist;
 	scGPNumericEdit_RD->Decimal=N_mist;
 	scGPNumericEdit_delka_dopravniku->Decimal=N_mist;
@@ -2857,17 +2823,14 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scGPGlyphButton1Click(TObject *Sender)
+//zavolá náhled kabiny
+void __fastcall TForm_parametry::scGPGlyphButton_kabina_schemaClick(TObject *Sender)
 {
 		// formuláø na støed
-		Form_parametry_poznamky->Left = Form1->ClientWidth / 2 -
-				Form_parametry_poznamky->Width / 2;
-		Form_parametry_poznamky->Top = Form1->ClientHeight / 2 -
-				Form_parametry_poznamky->Height / 2;
+		Form_kabina_schema->Left = Form1->ClientWidth / 2 - Form_kabina_schema->Width / 2;
+		Form_kabina_schema->Top = Form1->ClientHeight / 2 - Form_kabina_schema->Height / 2;
 		// zobrazeni formuláøe
-		Form_parametry_poznamky->ShowModal();
-
+		Form_kabina_schema->ShowModal();
 }
 //---------------------------------------------------------------------------
 

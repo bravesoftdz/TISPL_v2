@@ -21,6 +21,7 @@ __published:	// IDE-managed Components
 	TImage *Image1;
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_kabina_schema(TComponent* Owner);

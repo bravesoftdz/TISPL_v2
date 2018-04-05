@@ -12,6 +12,7 @@ object Form_poznamky: TForm_poznamky
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object scGPPanel_hlavicka: TscGPPanel

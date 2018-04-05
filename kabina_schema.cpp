@@ -32,4 +32,18 @@ void __fastcall TForm_kabina_schema::KonecClick(TObject *Sender)
 	Close();
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_kabina_schema::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+		if (Key == 13) // ENTER
+		{
+				Form_kabina_schema->ModalResult = mrOk; // vrátí stejnou hodnotu jako tlaèítko
+				Form_kabina_schema->VisibleChanging();// skryje form, stejné jako visible=false
+		}
+		if (Key == 27) // ESC
+		{
+				Form_kabina_schema->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+				Form_kabina_schema->VisibleChanging();// skryje form, stejné jako visible=false
+		}
+}
+//---------------------------------------------------------------------------
 

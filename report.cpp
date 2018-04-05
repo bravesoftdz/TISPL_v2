@@ -16,18 +16,22 @@ TForm_report *Form_report;
 __fastcall TForm_report::TForm_report(TComponent* Owner)
 	: TForm(Owner)
 {
+	//webrowser naète vytvoøené html k zobrazení, v pøípadì soubor nový se naèítá html soubor z adresáøe aplikace
+	if(Form1->FileName=="Nový.tispl")WebBrowser1->Navigate(ExtractFilePath(Application->ExeName)+"Nový.html");
+	else	WebBrowser1->Navigate(Form1->FileName);
 
-	WebBrowser1->Navigate(Form1->FileName);
+	//pozice formuláøe na støed obrazovky
+	Form_report->Left=Form1->ClientWidth/2-Form_report->Width/2;
+	Form_report->Top=Form1->ClientHeight/2-Form_report->Height/2;
 
-		Form_report->Left=Form1->ClientWidth/2-Form_report->Width/2;
-		Form_report->Top=Form1->ClientHeight/2-Form_report->Height/2;
-
-	 //	scGPPanel1->FillColor=(TColor)RGB(240,240,240);
+	//nastavení barvy formuláøe
+	Form_report->Color=(TColor)RGB(240,240,240);
+	//	scGPPanel1->FillColor=(TColor)RGB(240,240,240);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_report::KonecClick(TObject *Sender)
 {
-Close();
+	Close();
 }
 //---------------------------------------------------------------------------
 short int TForm_report::ulozit_report(UnicodeString FileName)
@@ -151,12 +155,13 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		//}
 
 			//Pøehled doporuèených pohonù
-			if(!Form1->d.v.navrhni_POHONY().IsEmpty())
+			UnicodeString dopP=Form1->d.v.navrhni_POHONY("</tr>");
+			if(dopP!="")
 			{
 				data+="<h4>Pøehled doporuèených pohonù</h4>";
-				//	data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">Název</th><th scope=\"col\">Rychlost</th></tr></thead>";
-				data+=Form1->d.v.navrhni_POHONY();
-				data+="</br>";
+				data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">Název</th><th scope=\"col\">Rychlost[m/min]</th><th scope=\"col\">Rozestup aktivní palce [m]</th></tr></thead>";
+				data+="<tr>"+dopP+"</tr>";
+				data+="</table></br>";
 			}
 
 			//Pøehled nadefinovaných pohonù - doplnil M
@@ -164,7 +169,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			if(P!=NULL)
 			{
 				data+="<h4>Pøehled nadefinovaných pohonù</h4></br>";
-				data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Rychlost od [m/min]</th><th scope=\"col\">Rychlost do [m/min]</th><th scope=\"col\">Akt. rychlost [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Rozestup vzdálenost aktivní palce [m]</th><th scope=\"col\">Rozestup poèet palcù</th></tr></thead>";
+				data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Rychlost od [m/min]</th><th scope=\"col\">Rychlost do [m/min]</th><th scope=\"col\">Akt. rychlost [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Rozestup vzdálenost aktivní palce [m]</th><th scope=\"col\">Rozestup poèet palcù</th><th scope=\"col\">Používán</th></tr></thead>";
 				while(P!=NULL)
 				{
 					UnicodeString ID=P->n;
@@ -175,7 +180,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 					UnicodeString R=P->roztec*1000.0;
 					UnicodeString Rz=P->Rz;
 					UnicodeString Rx=P->Rx;
-					data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+rychlost_od+"</td><td>"+rychlost_do+"</td><td>"+RD+"</td><td>"+R+"</td><td>"+Rz+"</td><td>"+Rx+"</td></tr>";
+					UnicodeString Pouzit=Form1->d.v.vypis_objekty_vyuzivajici_pohon(P->n);if(Pouzit=="")Pouzit="nepoužíván";/*if(Form1->d.v.pohon_je_pouzivan(P->n))Pouzit="Ano";*/
+					data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+rychlost_od+"</td><td>"+rychlost_do+"</td><td>"+RD+"</td><td>"+R+"</td><td>"+Rz+"</td><td>"+Rx+"</td><td>"+Pouzit+"</td></tr>";
 					P=P->dalsi;
 				}
 				data+="</tbody></table></br>";
@@ -187,7 +193,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 		if(Form1->STATUS==Form1->NAVRH)
 		{
-			data+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
+			//data+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
+			data+="<h4>Pøehled objektù a jejich parametrù</h4>";
 			data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">Název pohonu</th><th scope=\"col\">Technolog. èas [s]</th><th scope=\"col\">Rychlost pohonu</th><th scope=\"col\">Délka kabiny</th><th scope=\"col\">Kapacita [vozíku a mezer]</th><th scope=\"col\">Pozice [vozíkù]</th><th scope=\"col\">Orientace[°]</th><th scope=\"col\">Mezera mezi vozíky [m]</th></tr></thead>";
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 			while (O!=NULL)//prochází potenciální segmenty cesty po objektech
@@ -219,6 +226,14 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			}
 			data+="</tbody></table></br>";
 			data+="</form></div></br>";
+
+      //VÝPIS NEVYTÍŽENÝCH OBJEKTÙ
+			UnicodeString Nevytizene_objekty=Form1->d.v.vypis_objekty_mimo_100vytizeni(false);
+			if(Nevytizene_objekty!="")
+			{
+				data+="<h4>Pøehled objektù s menší než 100% vytížeností</h4></br>";
+				data+=Nevytizene_objekty+"</br>";
+      }
 		}
 		//////////////HTML EXPORT - ZAKÁZKY////////////////////////////////////////////////
 	 // zobrazení dat ze zakázek ///////////////////////////////
@@ -466,8 +481,10 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		MemoryStream->SaveToFile(FileName);
 
 
-		 if (export_format==3) {
-       	WebBrowser1->Navigate(FileName);
+		 if (export_format==3)
+		 {
+				if(Form1->FileName=="Nový.tispl")WebBrowser1->Navigate(ExtractFilePath(Application->ExeName)+"Nový.html");
+				else WebBrowser1->Navigate(FileName);
 				ShowModal();
 		 }
 
@@ -479,12 +496,10 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		}
 		catch(...){;}
 }
-
-
+//---------------------------------------------------------------------------
 void __fastcall TForm_report::scButton_csvClick(TObject *Sender)
 {
-if(Form1->d.v.OBJEKTY->dalsi==NULL)//pokud existují nìjaka data
-		Form1->MB("Žádná data k reportu!");
+	if(Form1->d.v.OBJEKTY->dalsi==NULL)Form1->MB("Žádná data k reportu!");//pokud existují nìjaka data
 	else
 	{
 		//pøíprava SaveDialogu
@@ -512,35 +527,6 @@ if(Form1->d.v.OBJEKTY->dalsi==NULL)//pokud existují nìjaka data
 	}
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_report::MaxButtonClick(TObject *Sender)
-{
-	if (FMaximized)//zmenšení
-	{
-			 //BoundsRect =  FOldBoundsRect;
-			 FMaximized = false;
-			// scLabel_titulek->DragForm = true;
-			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
-			// scGPSizeBox->Visible = true;
-			 Form_report->Width=Screen->Width/3*2;//zmenší formuláø na 2/3 jeho velikosti
-			 Form_report->Height=Screen->Height/3*2;//zmenší formuláø na 2/3 jeho velikosti
-		 //	 scSplitView_OPTIONS->Opened=false;
-			// scSplitView_MENU->Opened=false;
-	}
-	else //maximalizace
-	{
-			//FOldBoundsRect = BoundsRect;
-			BoundsRect = scStyledForm1->GetMaximizeBounds();
-			FMaximized = true;
-		 //	scLabel_titulek->DragForm = false;
-			MaxButton->GlyphOptions->Kind = scgpbgkRestore;
-		 //	scGPSizeBox->Visible = false;
-		 //	scSplitView_OPTIONS->Opened=false;
-		//	scSplitView_MENU->Opened=false;
-	}
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TForm_report::scButton_htmlClick(TObject *Sender)
 {
 
@@ -575,3 +561,30 @@ if(Form1->d.v.OBJEKTY->dalsi==NULL)//pokud existují nìjaka data
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_report::MaxButtonClick(TObject *Sender)
+{
+	if (FMaximized)//zmenšení
+	{
+			 //BoundsRect =  FOldBoundsRect;
+			 FMaximized = false;
+			// scLabel_titulek->DragForm = true;
+			 MaxButton->GlyphOptions->Kind = scgpbgkMaximize;
+			// scGPSizeBox->Visible = true;
+			 Form_report->Width=Screen->Width/3*2;//zmenší formuláø na 2/3 jeho velikosti
+			 Form_report->Height=Screen->Height/3*2;//zmenší formuláø na 2/3 jeho velikosti
+		 //	 scSplitView_OPTIONS->Opened=false;
+			// scSplitView_MENU->Opened=false;
+	}
+	else //maximalizace
+	{
+			//FOldBoundsRect = BoundsRect;
+			BoundsRect = scStyledForm1->GetMaximizeBounds();
+			FMaximized = true;
+		 //	scLabel_titulek->DragForm = false;
+			MaxButton->GlyphOptions->Kind = scgpbgkRestore;
+		 //	scGPSizeBox->Visible = false;
+		 //	scSplitView_OPTIONS->Opened=false;
+		//	scSplitView_MENU->Opened=false;
+	}
+}
+//---------------------------------------------------------------------------

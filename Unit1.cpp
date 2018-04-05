@@ -3312,7 +3312,7 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 		//test vytvor_hlavicku_souboru();
 
 		//nastevení adresáře bac souboru k adresáři aplikace pokud se jedná o nový soubor, ještě neuložen pod novým názvem//přidáno 3.6 důsledky neověřeny
-		if(FileName=="Nový.omap")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+		if(FileName=="Nový.tispl")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 
 		//zapis dat do souboru
 		d.v.uloz_do_souboru(FileName+".bac_"+get_user_name()+"_"+get_computer_name());
@@ -3615,16 +3615,15 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
 	scButton_report->Down=false;
-	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
-		MB("Žádná data k reportu!");
+	if(d.v.OBJEKTY->dalsi==NULL)MB("Žádná data k reportu!");//pokud existují nějaka data
 	else
 	{
+			//nastevení adresáře souboru k adresáři aplikace pokud se jedná o nový soubor, ještě neuložen pod novým názvem//přidáno 3.6 důsledky neověřeny
+			if(FileName=="Nový.tispl")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 
 			UnicodeString FN=FileName;
 			if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
 			Form_report->ulozit_report(FN+".html");
-
-
 	}
 }
 //---------------------------------------------------------------------------
