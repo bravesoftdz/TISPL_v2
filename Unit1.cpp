@@ -19,6 +19,7 @@
 #include "eDesigner.h"
 #include "casovaOsa_info.h"
 #include "report.h"
+#include "poznamky.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -2785,21 +2786,24 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		//režim
 		Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 		//CT
-		//Form_parametry->scGPNumericEdit_CT->Decimal=3;
-		//Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
 		//RD
-		//Form_parametry->scGPNumericEdit_RD->Decimal=Form_parametry->scGPNumericEdit_CT->Decimal;
-		//Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
 		//DD
-	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=Form_parametry->scGPNumericEdit_RD->Decimal;
-	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
-		//DM
-		//Form_parametry->scGPNumericEdit_mezera->Decimal=Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal;
-	 //	Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
-	 	Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+		//M
+		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+		//Rx,Rz
+		if(pom->pohon!=NULL)
+		{
+			Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz;
+			Form_parametry->scGPNumericEdit1_rx->Value=pom->pohon->Rx;
+		}
+		else
+		{
+			Form_parametry->scGPNumericEdit_rozestup->Value=0;//zde je na zvážení zda nepočítat bez rozteče
+			Form_parametry->scGPNumericEdit1_rx->Value=0;
+		}
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -2807,8 +2811,17 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 		Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
+		//zámky
+		Form_parametry->CT_zamek=pom->CT_zamek;if(pom->CT_zamek)Form_parametry->scButton_zamek_CT->ImageIndex=38;else Form_parametry->scButton_zamek_CT->ImageIndex=37;
+		Form_parametry->RD_zamek=pom->RD_zamek;if(pom->RD_zamek)Form_parametry->scButton_zamek_RD->ImageIndex=38;else Form_parametry->scButton_zamek_RD->ImageIndex=37;
+		Form_parametry->DD_zamek=pom->DD_zamek;if(pom->DD_zamek)Form_parametry->scButton_zamek_DD->ImageIndex=38;else Form_parametry->scButton_zamek_DD->ImageIndex=37;
+		Form_parametry->K_zamek=pom->K_zamek;if(pom->K_zamek)Form_parametry->scButton_K_zamek->ImageIndex=38;else Form_parametry->scButton_K_zamek->ImageIndex=37;
+		//poznámka
+		Form_poznamky->scGPMemo->MaxLength=pow(2,(double)sizeof(unsigned long)*8);//rozsah unsigned long je max.počet znaků na poznámku
+		Form_poznamky->scGPMemo->Lines->Clear();
+		Form_poznamky->scGPMemo->Lines->Add(pom->poznamka);
 
-		//nadesignování formu podle právě vypisováných hodnot
+		////nadesignování formu podle právě vypisováných hodnot
 		Form_parametry->vypis("");
 		Form_parametry->setForm4Rezim(pom->rezim);
 
@@ -2853,6 +2866,19 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
 				//ostatni
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
+				//zámky
+				pom->CT_zamek=Form_parametry->CT_zamek;
+				pom->RD_zamek=Form_parametry->RD_zamek;
+				pom->DD_zamek=Form_parametry->DD_zamek;
+				pom->K_zamek=Form_parametry->K_zamek;
+				//Rx,Rz
+				if(pom->pohon!=NULL)
+				{
+					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value;
+					pom->pohon->Rx=Form_parametry->scGPNumericEdit1_rx->Value;
+				}
+				//poznámka
+				pom->poznamka=Form_poznamky->scGPMemo->Text;
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
 				if(Form_parametry->kapacitaSG>1 && pom->rezim==0)//pokud je požadovaný rozklad objektu na více objektů, pouze u S&G
@@ -2860,7 +2886,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 						pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
 						Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
 						short N=(int)!ortogonalizace_stav;//pokud je ortogonalizeace aktivní tak N=1, zajištuje, aby se vložilo ortogonalizovaně
-						for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
+						for(unsigned short i=2;i<=Form_parametry->kapacitaSG;i++)
 						{
 							if(cop==NULL)//kopíruje za originál  //pokud je ortoganalizace zapnuta bude odsazení nových objektů větší a algoritmus objekty rovná jen po X ose
 							cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,pom);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
@@ -2875,6 +2901,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				{
 				 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
 				}
+
 				//AKTUALIZACE hodnot první zakázky pokud již existuje, to samé akorát obráceně (z objektů do zakazky) probíhá v při načtení SF - definice zakázek, z určitého pohledu se jedná o duplicitní algoritmus, ale v případě aktualizací jinak než přes parametry objektu lze považovat za nutnost
 				if(d.v.ZAKAZKY->dalsi!=NULL)
 				{

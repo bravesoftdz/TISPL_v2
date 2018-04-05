@@ -335,14 +335,28 @@ double Cmy::Rz(double dV,double sV,double rotace,double M)
 {
 	return M+UDV(dV,sV,rotace);
 }
+////////////////////////
+//vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k RD (a resp. TT)
+double Cmy::Rz(double RD)
+{
+	return RD*Form1->d.v.PP.TT;
+}
 /////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
 double Cmy::Rx(double dV,double sV,double rotace,double M,double R)
 {
-	return (M+UDV(dV,sV,rotace))/R;
+	if(R==0)return 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
+	else return (M+UDV(dV,sV,rotace))/R;
+}
+////////////////////////
+//vrátí rozestup v poètech palcù mezi aktivními palci z RD a R (a resp. TT)
+double Cmy::Rx(double RD,double R)
+{
+	if(R==0) 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
+	else return Rz(RD)/R;
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
+//vrátí mezeru dle rozestupu a velikosti vozíku
 double Cmy::mezera(double dV,double sV,double rotace,double Rx,double R)
 {
 	return (Rx*R)-UDV(dV,sV,rotace);

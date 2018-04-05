@@ -111,10 +111,15 @@ void TPO_math::input_M(bool prepocet_K)
 	}
 }
 //---------------------------------------------------------------------------
-//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè
+//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování
 double TPO_math::Mezera()
 {
-	return RD*TT-m.UDV(dV,sV,Rotace);
+	//return RD*TT-m.UDV(dV,sV,Rotace);
+	//test:
+	double mezera=RD*TT-m.UDV(dV,sV,Rotace);
+	Rx=m.Rx(dV,sV,Rotace,mezera,R);
+	Rz=m.Rz(dV,sV,Rotace,mezera);
+	return mezera;
 }
 //---------------------------------------------------------------------------
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P

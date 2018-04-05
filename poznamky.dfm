@@ -1,4 +1,4 @@
-object Form_parametry_poznamky: TForm_parametry_poznamky
+object Form_poznamky: TForm_poznamky
   Left = 0
   Top = 0
   BorderStyle = bsNone
@@ -45,7 +45,6 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 617
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 562
@@ -125,7 +124,6 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 567
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -160,7 +158,6 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Pozn'#225'mka'
-      ExplicitWidth = 557
     end
   end
   object scGPMemo: TscGPMemo
@@ -215,8 +212,6 @@ object Form_parametry_poznamky: TForm_parametry_poznamky
     Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
-    Lines.Strings = (
-      '')
     ParentFont = False
     TabOrder = 1
     Transparent = True

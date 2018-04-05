@@ -2,7 +2,6 @@
 #pragma hdrstop
 #include "vektory.h"
 #include "unit1.h"
-//#include "PO_math.h"
 ////---------------------------------------------------------------------------
 #pragma package(smart_init)
 ////---------------------------------------------------------------------------
@@ -42,6 +41,11 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+	novy->CT_zamek=0;
+	novy->RD_zamek=0;
+	novy->DD_zamek=0;
+	novy->K_zamek=0;
+	novy->poznamka="";
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -76,6 +80,11 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+	novy->CT_zamek=0;
+	novy->RD_zamek=1;//defautlně zamčeno
+	novy->DD_zamek=0;
+	novy->K_zamek=0;
+	novy->poznamka="";
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -109,6 +118,11 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 	novy->obsazenost=0;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+	novy->CT_zamek=0;
+	novy->RD_zamek=1;//defautlně zamčeno
+	novy->DD_zamek=0;
+	novy->K_zamek=0;
+	novy->poznamka="";
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=p->dalsi;
@@ -187,6 +201,11 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
 		novy->obsazenost=0;//Objekt->obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+		novy->CT_zamek=Objekt->CT_zamek;
+		novy->RD_zamek=Objekt->RD_zamek;
+		novy->DD_zamek=Objekt->DD_zamek;
+		novy->K_zamek=Objekt->K_zamek;
+		novy->poznamka=Objekt->poznamka;
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		novy->dalsi=p->dalsi;
@@ -720,7 +739,10 @@ void Cvektory::hlavicka_POHONY()
 	novy->name="";
 	novy->rychlost_od=0;
 	novy->rychlost_do=0;
+	novy->aRD=0;
 	novy->roztec=0;
+	novy->Rz=0;
+	novy->Rx=0;
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -747,7 +769,10 @@ void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_
 	novy->name=name;
 	novy->rychlost_od=rychlost_od;
 	novy->rychlost_do=rychlost_do;
+	novy->aRD=0;//nepřiřažuje se manuálně
 	novy->roztec=roztec;
+	novy->Rz=0;//nepřiřažuje se manuálně
+	novy->Rx=0;//nepřiřažuje se manuálně
 	vloz_pohon(novy);
 }
 ////---------------------------------------------------------------------------
@@ -831,7 +856,7 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 		}
 }
 ////---------------------------------------------------------------------------
-//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
+//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a /zároveň tomuto objektu tento pohon přiřadí - nepoužíváme/, obsahuje ošetření proti duplicitě
 void Cvektory::generuj_POHONY()
 {
 	TObjekt *O=OBJEKTY->dalsi;
@@ -883,7 +908,7 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je  o max. velikosti počtu objektů
 	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
 	unsigned int i=0;//i vygenerovaného pohonu
-	//prvně najde "i" nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
+	//prvně najde "i" v názvu nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
 	TPohon *P=POHONY->dalsi;
 	while(P!=NULL)
 	{
@@ -897,7 +922,7 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 
 	while (O!=NULL)
 	{
-		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní) nezohledňuje
+		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní - to je již zavádějící, i v těchto režimech) nezohledňuje
 		{
       bool nalezen=false;
 			for(unsigned int j=0;j<O->n;j++)//zajištění UNIKATNOSTI, kontroluje pole unikátních rychlosti
@@ -910,24 +935,30 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 			}
 			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
 			{
-				while(P!=NULL)//ještě kontroluje zda již dříve nebyl uložen stejný pohon
+				P=POHONY->dalsi;
+				while(P!=NULL)//ještě kontroluje zda již dříve nebyl uložen stejný pohon v navržených pohonech
 				{
-						 if(P->name.Pos("Navržený pohon ") && P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==1620.0)//byl-li pohon se stejnými parametry nalezen
+						 if(P->name.Pos("Navržený pohon ") && P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->aRD==O->RD)//byl-li pohon se stejnými parametry nalezen
 						 nalezen=true;
 						 P=P->dalsi;//posun na další prvek
 				}
 				if(!nalezen)//pokud stále platí, že nebyl nalezen
 				{
 					AnsiString mS=", ";if(separator!="</br>")mS=";";
-
-					data+="Navržený pohon "+AnsiString(++i)+mS+"rychlost:"+AnsiString(O->RD*60)+" [m/min]"+separator;
+					//název, rychlost
+					data+="Navržený pohon "+AnsiString(++i)+mS+"rychlost:"+AnsiString(O->RD*60)+" [m/min]"+mS;
+					//RZ
+					data+="0°: "+AnsiString(Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,0,0),0))+", 90°: "+AnsiString(Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,90,Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,90,0)));
+					data+=separator;
 					pole_rychlosti[O->n-1]=O->RD;
-        }
-			}                //indexuje se od nuly
+        }                //indexuje se v poly od nuly ale objekty jsou indexované od 1
+			}
 		}
 		O=O->dalsi;//posun na další prvek
 	}
 	delete [] pole_rychlosti;
+	delete O;
+	delete P;
 	return data;
 }
 ////---------------------------------------------------------------------------
@@ -1722,7 +1753,10 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 c_ukaz1->text_length=ukaz1->name.Length()+1;
 			 c_ukaz1->rychlost_od=ukaz1->rychlost_od;
 			 c_ukaz1->rychlost_do=ukaz1->rychlost_do;
+			 c_ukaz1->aRD=ukaz1->aRD;
 			 c_ukaz1->roztec=ukaz1->roztec;
+			 c_ukaz1->Rz=ukaz1->Rz;
+			 c_ukaz1->Rx=ukaz1->Rx;
 			 FileStream->Write(c_ukaz1,sizeof(C_pohon));//zapiše jeden prvek do souboru
 			 //text - name
 			 wchar_t *name=new wchar_t [c_ukaz1->text_length];
@@ -1754,17 +1788,21 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					c_ukaz->RD=ukaz->RD;
 					c_ukaz->kapacita_dop=ukaz->kapacita_dop;
 					c_ukaz->kapacita=ukaz->kapacita;
+					c_ukaz->pozice=ukaz->pozice;
 					c_ukaz->rotace=ukaz->rotace;
 					c_ukaz->mezera=ukaz->mezera;
-					c_ukaz->mV=0;//vyhodit!!!
 					if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
 					else c_ukaz->pohon=0;
 					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
 					c_ukaz->cekat_na_palce=ukaz->cekat_na_palce;
 					c_ukaz->stopka=ukaz->stopka;
 					c_ukaz->odchylka=ukaz->odchylka;
+					c_ukaz->CT_zamek=ukaz->CT_zamek;
+					c_ukaz->RD_zamek=ukaz->RD_zamek;
+					c_ukaz->DD_zamek=ukaz->DD_zamek;
+					c_ukaz->K_zamek=ukaz->K_zamek;
 					c_ukaz->text_length=ukaz->name.Length()+1;
-					//ZDM c_ukaz->paremetry_text_length=ukaz->techn_parametry.Length()+1;
+					c_ukaz->poznamka_length=ukaz->poznamka.Length()+1;
 					FileStream->Write(c_ukaz,sizeof(C_objekt));//zapiše jeden prvek do souboru
 					//text - short name
 					wchar_t *short_name=new wchar_t[5];//max 4 znaky
@@ -1776,6 +1814,11 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					name=ukaz->name.c_str();
 					FileStream->Write(name,c_ukaz->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
 					name=NULL; delete[] name;
+					//text - poznámka
+					wchar_t *poznamka=new wchar_t [c_ukaz->poznamka_length];
+					poznamka=ukaz->poznamka.c_str();
+					FileStream->Write(poznamka,c_ukaz->poznamka_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+					poznamka=NULL; delete[] poznamka;
 			 }
 			 c_ukaz=NULL;delete c_ukaz;
 			 ukaz=ukaz->dalsi;//posunutí na další pozici v seznamu
@@ -1819,7 +1862,6 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 			 //zápis cesty resp. jednotlivých segmentů
 			 if(c_ukaz2->pocet_segmentu_cesty>0)
 			 {
-				 //ShowMessage(1032);
 				 TCesta *c=ukaz2->cesta->dalsi;//ukazatel na cestu dané zakázky, přeskočí hlavičku
 				 while(c!=NULL)
 				 {
@@ -1923,7 +1965,10 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 					ukaz1->n=c_ukaz1->n;
 					ukaz1->rychlost_od=c_ukaz1->rychlost_od;
 					ukaz1->rychlost_do=c_ukaz1->rychlost_do;
+					ukaz1->aRD=c_ukaz1->aRD;
 					ukaz1->roztec=c_ukaz1->roztec;
+					ukaz1->Rz=c_ukaz1->Rz;
+					ukaz1->Rx=c_ukaz1->Rx;
 
 					//popisek
 					wchar_t *name=new wchar_t[c_ukaz1->text_length];
@@ -1958,6 +2003,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->RD=c_ukaz->RD;
 						ukaz->kapacita=c_ukaz->kapacita;
 						ukaz->kapacita_dop=c_ukaz->kapacita_dop;
+						ukaz->pozice=c_ukaz->pozice;
 						ukaz->rotace=c_ukaz->rotace;
 						ukaz->mezera=c_ukaz->mezera;
 						ukaz->pohon=vrat_pohon(c_ukaz->pohon);
@@ -1965,6 +2011,10 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->cekat_na_palce=c_ukaz->cekat_na_palce;
 						ukaz->stopka=c_ukaz->stopka;
 						ukaz->odchylka=c_ukaz->odchylka;
+						ukaz->CT_zamek=c_ukaz->CT_zamek;
+						ukaz->RD_zamek=c_ukaz->RD_zamek;
+						ukaz->DD_zamek=c_ukaz->DD_zamek;
+						ukaz->K_zamek=c_ukaz->K_zamek;
 
 						//zkratku
 						wchar_t *short_name=new wchar_t [5];
@@ -1973,9 +2023,14 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						short_name=NULL; delete[] short_name;
 						//popisek
 						wchar_t *name=new wchar_t[c_ukaz->text_length];
-						FileStream->Read(name,c_ukaz->text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+						FileStream->Read(name,c_ukaz->text_length*sizeof(wchar_t));
 						ukaz->name=name;
 						name=NULL; delete[] name;
+						//poznámku
+						wchar_t *poznamka=new wchar_t[c_ukaz->poznamka_length];
+						FileStream->Read(poznamka,c_ukaz->poznamka_length*sizeof(wchar_t));
+						ukaz->poznamka=poznamka;
+						poznamka=NULL; delete[] poznamka;
 
 						//vloží prvek do spojového seznamu
 						vloz_objekt(ukaz);

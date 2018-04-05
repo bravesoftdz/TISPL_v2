@@ -18,6 +18,8 @@ class TPO_math
 		double sV;//šíøka vozíku z parametrù linky
 		double Rotace;
 		double R;//rozteè palcù aktuálního dopravníku
+		double Rz;//rozestup aktivních palcù v m
+		double Rx;//rozestup aktivních palcù (poèet aktivních palcù)
 		bool CT_locked;//stav zámku
 		bool RD_locked;//stav zámku
 		bool DD_locked;//stav zámku
@@ -32,7 +34,7 @@ class TPO_math
 		void input_M(bool prepocet_K=true); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M, pokud je parametr prepocet_K=false, bude se pøepoèítavat DD
 	private:
 		Cmy m;
-		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè
+		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování
 		double Pozice();//vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double P2K();//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double UDV();//vrátí užitnou délku vozíku dle hodnoty rotace

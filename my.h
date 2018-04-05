@@ -47,8 +47,10 @@ class Cmy
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (výstupu vozíku z objektu) v min, rozteèe je v m resp. v m za z minu u rychlosti dopravniku
 	double mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera=0);//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku
 	double Rz(double dV,double sV,double rotace,double M);//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
+	double Rz(double RD);//vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k RD (a resp. TT)
 	double Rx(double dV,double sV,double rotace,double M,double R);//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
-	double mezera(double dV,double sV,double rotace,double Rx,double R);//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
+	double Rx(double RD,double R);//vrátí rozestup v poètech palcù mezi aktivními palci z RD a R (a resp. TT)
+	double mezera(double dV,double sV,double rotace,double Rx,double R);//vrátí mezeru dle rozestupu a velikosti vozíku
 	double dopRD(double dV,double sV,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 	double UDV(double dV,double sV,double rotace);//vratí užitnou délku vozíku
 	double prejezd_voziku(double delka, double rychlost_dopravniku);

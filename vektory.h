@@ -3,7 +3,6 @@
 #define vektoryH
 #include <vcl.h>
 #include "knihovna_objektu.h"
-//#include "math.h"
 #include "my.h"
 //#define TITULEK "Omap editor"
 //---------------------------------------------------------------------------
@@ -20,9 +19,12 @@ class Cvektory
 	  	unsigned long n; //pořadí objektu ve spoj.seznamu
 	  	UnicodeString name;//název
 	  	double rychlost_od;//minimální pracovní rychlost dopravníku
-	  	double rychlost_do;//maximální pracovní rychlost dopravníku
-	  	double roztec;//rozteč palců v mm
-	  	struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			double rychlost_do;//maximální pracovní rychlost dopravníku
+			double aRD;//aktuální rychlost dopravníku m/s
+			double roztec;//rozteč palců v m
+			double Rz;//rozestup aktivních palců v m
+			double Rx;//rozestup aktivních palců (počet aktivních palců)
+			struct TPohon *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TPohon *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TPohon *POHONY;//spojový seznam pohonů
@@ -36,7 +38,7 @@ class Cvektory
 			double X, Y;//umístění objektu
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
 			double CT;//pro status návrh
-			double RD;//pro status návrh
+			double RD;//pro status návrh v m/s, je to otázka zda tu zůstane
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
@@ -49,6 +51,11 @@ class Cvektory
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 			double odchylka;//povolená odchylka u PP z CT
 			double obsazenost;//slouží pro uchování času obsazenosti pro vykreslování na časových osách
+			short CT_zamek;
+			short RD_zamek;
+			short DD_zamek;
+			short K_zamek;
+			UnicodeString poznamka;//uloží poznámku ke vzniku CT
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
@@ -389,7 +396,10 @@ private:
 				unsigned int text_length;
 				double rychlost_od;//minimální pracovní rychlost dopravníku
 				double rychlost_do;//maximální pracovní rychlost dopravníku
-				double roztec;//rozteč palců v mm
+				double aRD;//aktuální rychlost dopravníku m/s
+				double roztec;//rozteč palců v m
+				double Rz;//rozestup aktivních palců v m
+				double Rx;//rozestup aktivních palců (počet aktivních palců)
 		};
 		struct C_objekt//pro konverzi do bináru
 		{
@@ -404,14 +414,20 @@ private:
 				double RD;//kvůli návrháři
 				double kapacita;
 				double kapacita_dop;
+				double pozice;//počet vozíků v kabině
 				double rotace;//rotace jigu v objektu
 				double mezera;//mezera mezi vozíky
-				short mV;//rozdíl počet mezer a vozíků
 				unsigned int pohon;//"id" resp. n přidruženého - roletkou vybraného pohonu
 				double delka_dopravniku;//delka dopravníku v rámci objektu
 				unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 				unsigned short  stopka;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
-				double odchylka;//povolená odchylka z CT (hlavně užito u PP)
+				double odchylka;//povolená odchylka z CT (užito u PP)
+				short CT_zamek;
+				short RD_zamek;
+				short DD_zamek;
+				short K_zamek;
+				//UnicodeString poznamka; nelze
+				unsigned long poznamka_length;
 		};
 		struct C_zakazka
 		{
@@ -458,8 +474,7 @@ private:
 //			TColor barva;
 //		};
 //
-//		AnsiString get_csv_xls(AnsiString S);
-//		AnsiString get_html();
+
 		unsigned int vrat_kapacitu_objektu(TObjekt *O);//stačí v sekci private, protože ukládám přímo přímo do atributů objektu pomocí uloz_doporucene_kapacity_objetku();
 //
 //	protected:

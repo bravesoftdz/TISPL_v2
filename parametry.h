@@ -134,7 +134,6 @@ private:	// User declarations
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,mezera,P,Rx};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
-	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 
 	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
 	void input_CT();//pøepoèet hodnot vyplıvajících ze zmìny CT
@@ -165,12 +164,13 @@ public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
 	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
 	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm RDunitD;//pøepínaè jednotek vzdálenost
+	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 	void setForm4Rezim(unsigned short rezim);
 	void vypis(UnicodeString text,bool RED=true);
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
   Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
-	short kapacitaSG;//poadavek na rozpad na více stejnıch S&G objektù
+	unsigned short kapacitaSG;//poadavek na rozpad na více stejnıch S&G objektù
 	bool existuje_pohon;
 	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouí proto aby pøi zmìnì combo reim pokud si nastavil uivatel formulaø jinam, aby zùstal nastaven dle uivatele
 

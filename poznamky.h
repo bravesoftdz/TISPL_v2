@@ -11,7 +11,7 @@
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"
 //---------------------------------------------------------------------------
-class TForm_parametry_poznamky : public TForm
+class TForm_poznamky : public TForm
 {
 __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_hlavicka;
@@ -24,9 +24,9 @@ __published:	// IDE-managed Components
 	void __fastcall KonecClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
-	__fastcall TForm_parametry_poznamky(TComponent* Owner);
+	__fastcall TForm_poznamky(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm_parametry_poznamky *Form_parametry_poznamky;
+extern PACKAGE TForm_poznamky *Form_poznamky;
 //---------------------------------------------------------------------------
 #endif
