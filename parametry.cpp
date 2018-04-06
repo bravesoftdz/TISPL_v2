@@ -23,12 +23,11 @@ TForm_parametry *Form_parametry;
 __fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner) {
 		// nové nastavení barvy formuláøe
 		Form_parametry->Color = (TColor)RGB(240, 240, 240);
+		scGPButton_header_projekt->Options->NormalColor = (TColor)RGB(240, 240, 240);
 
 		// nastavení zvýraznìní
-		hl_color = clRed;
-		// (TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
-		hlFrameWidth = 2;
-		// šíøka zvýraznìní rámeèku komponenty napø.pro povinné položky
+		hl_color = clRed;// (TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
+		hlFrameWidth = 2;// šíøka zvýraznìní rámeèku komponenty napø.pro povinné položky
 
 		// pøevzetí defaultní velikosti formuláøe z designu pro další užití (slouží spíše pro usnadnìní vývoje, než funkènì)
 		defaultForm_parametryHeight = Form_parametry->Height;
