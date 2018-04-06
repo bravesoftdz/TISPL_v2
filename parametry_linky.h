@@ -18,12 +18,13 @@
 #include "scHtmlControls.hpp"
 #include "pl_priority.h"
 #include "scModernControls.hpp"
+#include "scGPExtControls.hpp"
+#include <Vcl.Mask.hpp>
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
 __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_delka_voziku;
-	TValueListEditor *ValueListEditor;
 	TrStringGridEd *rStringGridEd_tab_dopravniky;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
@@ -36,7 +37,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_pohon;
 	TButton *Vypis_pohony;
 	TrHTMLLabel *rHTMLLabel_eDesigner;
-	TrEditNum *rEditNum_takt;
+	TrEditNum *rEditNum_takt_OLD;
 	TrHTMLLabel *rHTMLLabel_takt;
 	TrHTMLLabel *rHTMLLabel_sirka;
 	TrEditNum *rEditNum_sirka_jigu;
@@ -60,6 +61,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Button_ADD;
 	TscGPGlyphButton *Button_DEL;
 	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
+	TscGPNumericEdit *rEditNum_takt;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -69,7 +71,7 @@ __published:	// IDE-managed Components
 	void __fastcall Vypis_pohonyClick(TObject *Sender);
 	void __fastcall scGPButton_doporuceneClick(TObject *Sender);
 	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
-	void __fastcall rEditNum_taktChange(TObject *Sender);
+	void __fastcall rEditNum_takt_Change(TObject *Sender);
 	void __fastcall rHTMLLabel_delkavozikuClick(TObject *Sender);
 	void __fastcall rHTMLLabel_sirkaClick(TObject *Sender);
 	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
@@ -86,7 +88,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button_DELMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall rEditNum_delka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rEditNum_sirka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall rEditNum_taktKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_takt_OLDKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rStringGridEd_tab_dopravnikyKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift);
 	void __fastcall rStringGridEd_tab_dopravnikyEnter(TObject *Sender);

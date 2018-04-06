@@ -15,6 +15,7 @@
 #pragma link "scExtControls"
 #pragma link "scHtmlControls"
 #pragma link "scModernControls"
+#pragma link "scGPExtControls"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -152,7 +153,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
 	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
-	 rEditNum_takt->Text=Form1->d.v.PP.TT;
+	 rEditNum_takt->Value=Form1->d.v.PP.TT;
 
 	 rStringGridEd_tab_dopravniky->SetColumnAutoFit(0);
 	 rStringGridEd_hlavicka_tabulky->SetColumnAutoFit(0);
@@ -188,11 +189,15 @@ void TForm_parametry_linky::nacti_pohony (){
 
 				rStringGridEd_tab_dopravniky->RowCount = Form1->d.v.POHONY->predchozi->n + 1;
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
-				 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)  {
+				 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+				 {
 
-				 if(Form1->d.v.pohon_je_pouzivan(ukaz->n)){
+				 if(Form1->d.v.pohon_je_pouzivan(ukaz->n))
+				 {
 					rStringGridEd_tab_dopravniky->Cells[5][i]="ano";
-				 } else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+					//rStringGridEd_tab_dopravniky->
+				 }
+				 else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
 
 			//	 ShowMessage(ukaz->rychlost_do*60.0);
 			rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
@@ -241,7 +246,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Ulozit=true;
 
 		//pri zmene TT
-		if(Form1->ms.MyToDouble(rEditNum_takt->Text) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		if(Form1->ms.MyToDouble(rEditNum_takt->Value) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
 		 Changes_TT=true;
 		}
@@ -425,7 +430,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			 typ=0;}
 			 else {typ=1;}
 			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(typ);
-			Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Text);
+			Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Value);
 
 			if(volat_aktualizaci)
 			{
@@ -547,7 +552,7 @@ scGPButton_doporucene->Visible=true;
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rEditNum_taktChange(TObject *Sender)
+void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 {
  //	ShowMessage("Se zmìnou taktu linky a následném uložení budou novì pøepoèítány parametry objektù");
 
@@ -713,24 +718,36 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
           int Col, int Row, bool &CanEdit)
 {
 
-if (Col==1 && Row==0) {
-	CanEdit=false;
+		if (Col==1 && Row==0) {
+			CanEdit=false;
+			 }
+		if (Col==2 && Row==0) {
+			CanEdit=false;
+			 }
+		if (Col==3 && Row==0) {
+			CanEdit=false;
+			 }
+		if (Col==4 && Row==0) {
+			CanEdit=false;
+			 }
+		if (Col==5 && Row==0) {
+			CanEdit=false;
+			 }
+		if (Col==6 && Row==0) {
+			CanEdit=false;
+			 }
+
+		//Pokud je pohon používán, nastavím položky rychlost, rozteè atd jako readonly - nelze je mìnit.
+	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+	 {
+		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="ano")
+		 {
+			 if(Row==i && Col>1) CanEdit=false;
+		 }
+
 	 }
-if (Col==2 && Row==0) {
-	CanEdit=false;
-	 }
-if (Col==3 && Row==0) {
-	CanEdit=false;
-	 }
-if (Col==4 && Row==0) {
-	CanEdit=false;
-	 }
-if (Col==5 && Row==0) {
-	CanEdit=false;
-	 }
-if (Col==6 && Row==0) {
-	CanEdit=false;
-	 }
+
+
 }
 //---------------------------------------------------------------------------
 
@@ -838,7 +855,7 @@ void __fastcall TForm_parametry_linky::rEditNum_sirka_jiguKeyDown(TObject *Sende
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rEditNum_taktKeyDown(TObject *Sender, WORD &Key,
+void __fastcall TForm_parametry_linky::rEditNum_takt_OLDKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift)
 {
 	FormKeyDown(Sender,Key,Shift);
@@ -873,6 +890,10 @@ void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftStat
 
 void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
+//ControlPaint.DrawBorder(e.Graphics, this.panel1.ClientRectangle, Color.DarkBlue, ButtonBorderStyle.Solid);
+
+ 	//DrawBorder(Sender,Form_parametry_linky->ClientRect,clBlue,bsNone);
+ //DrawBorder
 show_min_mezeru();
 }
 //---------------------------------------------------------------------------
@@ -898,13 +919,17 @@ void TForm_parametry_linky::show_min_mezeru() {
 // double jednotky;
 // if(Delkaunit=M) jednotky*1000.0; else jednotky*1.0;
 
- for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++){
-	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()){
+ for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
+ {
+	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())
+	 {
 	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000.0,rEditNum_sirka_jigu->Value*1000.0,0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);
-
 	 }
-	}
+ }
 
 
 }
+
+
+
 

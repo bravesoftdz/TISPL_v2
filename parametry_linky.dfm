@@ -2,10 +2,12 @@ object Form_parametry_linky: TForm_parametry_linky
   Left = 0
   Top = 0
   BorderStyle = bsNone
+  BorderWidth = 1
   Caption = 'Parametry linky'
-  ClientHeight = 537
-  ClientWidth = 1110
+  ClientHeight = 535
+  ClientWidth = 1108
   Color = clSilver
+  Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clActiveCaption
   Font.Height = -11
@@ -174,35 +176,6 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     OnClick = rHTMLLabel_delkavozikuClick
   end
-  object ValueListEditor: TValueListEditor
-    Left = 487
-    Top = 478
-    Width = 136
-    Height = 41
-    Align = alCustom
-    BiDiMode = bdLeftToRight
-    BorderStyle = bsNone
-    DefaultRowHeight = 25
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = cl3DDkShadow
-    Font.Height = -17
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    KeyOptions = [keyEdit, keyUnique]
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goTabs, goAlwaysShowEditor, goThumbTracking, goFixedColClick, goFixedRowClick, goFixedHotTrack]
-    ParentBiDiMode = False
-    ParentFont = False
-    ScrollBars = ssNone
-    Strings.Strings = (
-      'hlavn'#237' dopravn'#237'k=5'
-      'vedlej'#353#237' dopravn'#237'k=3')
-    TabOrder = 0
-    TitleCaptions.Strings = (
-      ' n'#225'zev'
-      ' rychlost [m/min]')
-    Visible = False
-  end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 0
     Top = 317
@@ -230,7 +203,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentCtl3D = False
     ParentFont = False
     ScrollBars = ssNone
-    TabOrder = 1
+    TabOrder = 0
     OnEnter = rStringGridEd_tab_dopravnikyEnter
     OnKeyDown = rStringGridEd_tab_dopravnikyKeyDown
     OnKeyUp = rStringGridEd_tab_dopravnikyKeyUp
@@ -381,7 +354,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 1
     TabStop = True
     OnClick = Button_saveClick
     Animation = False
@@ -473,7 +446,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 2
     TabStop = True
     OnClick = Button_stornoClick
     Animation = False
@@ -556,10 +529,10 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 1110
+    Width = 1108
     Height = 34
     Align = alTop
-    TabOrder = 4
+    TabOrder = 3
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -584,9 +557,10 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 1110
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1060
+      Left = 1058
       Top = 0
       Width = 50
       Height = 33
@@ -661,11 +635,12 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1060
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 1023
+      Width = 1021
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -693,9 +668,10 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
+      ExplicitWidth = 1023
     end
     object scGPGlyphButton15: TscGPGlyphButton
-      Left = 1023
+      Left = 1021
       Top = 0
       Width = 37
       Height = 34
@@ -772,6 +748,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1023
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -786,7 +763,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 4
     Animation = False
     Caption = '  Voz'#237'k'
     CanFocused = False
@@ -866,7 +843,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Left = 698
     Top = 106
     Width = 84
-    Height = 28
+    Height = 26
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -874,7 +851,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 5
     Visible = False
     OnClick = rEditNum_delkavozikuClick
     Style = enFloat
@@ -892,7 +869,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 6
     Animation = False
     Caption = '  Pohon'
     CanFocused = False
@@ -974,15 +951,15 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 75
     Height = 25
     Caption = 'Vypis_pohony'
-    TabOrder = 8
+    TabOrder = 7
     Visible = False
     OnClick = Vypis_pohonyClick
   end
-  object rEditNum_takt: TrEditNum
-    Left = 65
+  object rEditNum_takt_OLD: TrEditNum
+    Left = 847
     Top = 106
     Width = 100
-    Height = 28
+    Height = 26
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -992,18 +969,20 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
+    TabOrder = 8
     Visible = False
-    OnChange = rEditNum_taktChange
-    OnKeyDown = rEditNum_taktKeyDown
+    OnChange = rEditNum_takt_Change
+    OnKeyDown = rEditNum_takt_OLDKeyDown
     Style = enFloat
+    MinValue = 1.000000000000000000
+    MaxValue = 1000000.000000000000000000
     Value = 120.000000000000000000
   end
   object rEditNum_sirka_jigu: TrEditNum
     Left = 172
     Top = 217
     Width = 100
-    Height = 28
+    Height = 26
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -1011,7 +990,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 9
     OnKeyDown = rEditNum_sirka_jiguKeyDown
     Style = enFloat
     Value = 1.000000000000000000
@@ -1028,7 +1007,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 12
+    TabOrder = 11
     Animation = False
     Caption = '  Takt'
     CanFocused = False
@@ -1116,7 +1095,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 12
     Visible = False
     BorderWidth = 1
     BackgroundStyle = scexbgsPanel
@@ -1253,7 +1232,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 605
     end
   end
   object scGPButton_doporucene: TscGPButton
@@ -1268,7 +1246,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 14
+    TabOrder = 13
     OnClick = scGPButton_doporuceneClick
     Animation = False
     CanFocused = False
@@ -1349,7 +1327,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Top = 497
     Width = 118
     Height = 13
-    TabOrder = 15
+    TabOrder = 14
     Visible = False
     DragForm = False
     GlowEffect.Enabled = False
@@ -1370,7 +1348,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Height = 30
     Lines.Strings = (
       'Memo1')
-    TabOrder = 16
+    TabOrder = 15
     Visible = False
   end
   object Button1: TButton
@@ -1379,7 +1357,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 75
     Height = 25
     Caption = 'Button1'
-    TabOrder = 17
+    TabOrder = 16
     Visible = False
     OnClick = Button1Click
   end
@@ -1395,7 +1373,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 18
+    TabOrder = 17
     Visible = False
     Animation = False
     Caption = '  Jig'
@@ -1476,7 +1454,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Left = 66
     Top = 217
     Width = 100
-    Height = 28
+    Height = 26
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -1484,7 +1462,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 11
+    TabOrder = 10
     OnChange = rEditNum_delka_jiguChange
     OnKeyDown = rEditNum_delka_jiguKeyDown
     Style = enFloat
@@ -1500,7 +1478,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Margins.Right = 1
     Margins.Bottom = 1
     Align = alCustom
-    TabOrder = 19
+    TabOrder = 18
     Visible = False
     Animation = True
     Color = clRed
@@ -1531,7 +1509,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Hint = 'P'#345'idat pohon'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 20
+    TabOrder = 19
     TabStop = True
     OnClick = Button_ADD_Click
     Animation = False
@@ -1607,7 +1585,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Hint = 'Smazat posledn'#237' p'#345'idan'#253' pohon'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 21
+    TabOrder = 20
     TabStop = True
     OnClick = Button_DEL_Click
     OnMouseMove = Button_DELMouseMove
@@ -1704,7 +1682,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentCtl3D = False
     ParentFont = False
     ScrollBars = ssNone
-    TabOrder = 22
+    TabOrder = 21
     OnEnter = rStringGridEd_tab_dopravnikyEnter
     OnKeyDown = rStringGridEd_tab_dopravnikyKeyDown
     Columns = <
@@ -1840,5 +1818,95 @@ object Form_parametry_linky: TForm_parametry_linky
     OnCanEdit = rStringGridEd_tab_dopravnikyCanEdit
     RowHeights = (
       30)
+  end
+  object rEditNum_takt: TscGPNumericEdit
+    Left = 65
+    Top = 114
+    Width = 100
+    Height = 29
+    Options.NormalColor = clWhite
+    Options.HotColor = clWhite
+    Options.FocusedColor = clWhite
+    Options.DisabledColor = clWhite
+    Options.NormalColorAlpha = 200
+    Options.HotColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 150
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = 1871359
+    Options.FrameFocusedColor = 10114859
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 50
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clBlack
+    Options.FontFocusedColor = clBlack
+    Options.FontDisabledColor = clGrayText
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpessRect
+    Options.ScaleFrameWidth = False
+    Options.StyleColors = True
+    ContentMarginLeft = 5
+    ContentMarginRight = 5
+    ContentMarginTop = 5
+    ContentMarginBottom = 5
+    PromptTextColor = clNone
+    Transparent = True
+    Increment = 1.000000000000000000
+    SupportUpDownKeys = False
+    SupportMouseWheel = False
+    ValueType = scvtFloat
+    MinValue = 1.000000000000000000
+    MaxValue = 1000000.000000000000000000
+    Value = 1.000000000000000000
+    DisplayType = scedtNumeric
+    LeftButton.Kind = scgpebCustom
+    LeftButton.Enabled = True
+    LeftButton.Visible = False
+    LeftButton.ImageIndex = -1
+    LeftButton.ImageHotIndex = -1
+    LeftButton.ImagePressedIndex = -1
+    LeftButton.RepeatClick = False
+    LeftButton.RepeatClickInterval = 200
+    LeftButton.ShowHint = False
+    LeftButton.GlyphColor = clWindowText
+    LeftButton.GlyphColorAlpha = 180
+    LeftButton.GlyphColorHotAlpha = 240
+    LeftButton.GlyphColorPressedAlpha = 150
+    LeftButton.GlyphThickness = 2
+    RightButton.Kind = scgpebCustom
+    RightButton.Enabled = True
+    RightButton.Visible = False
+    RightButton.ImageIndex = -1
+    RightButton.ImageHotIndex = -1
+    RightButton.ImagePressedIndex = -1
+    RightButton.RepeatClick = False
+    RightButton.RepeatClickInterval = 200
+    RightButton.ShowHint = False
+    RightButton.GlyphColor = clWindowText
+    RightButton.GlyphColorAlpha = 180
+    RightButton.GlyphColorHotAlpha = 240
+    RightButton.GlyphColorPressedAlpha = 150
+    RightButton.GlyphThickness = 2
+    BiDiMode = bdLeftToRight
+    Color = clWhite
+    Ctl3D = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentBiDiMode = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 22
+    OnChange = rEditNum_takt_Change
+    OnKeyDown = FormKeyDown
   end
 end
