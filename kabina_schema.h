@@ -10,6 +10,7 @@
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"
 #include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Imaging.jpeg.hpp>
 //---------------------------------------------------------------------------
 class TForm_kabina_schema : public TForm
 {
@@ -18,7 +19,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel_titulek;
 	TscGPButton *scGPButton_OK;
-	TImage *Image1;
+	TImage *Image_nahled;
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);

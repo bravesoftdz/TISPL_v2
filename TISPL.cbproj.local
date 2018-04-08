@@ -106,9 +106,13 @@
     <File Path="PO_math.cpp"/>
     <File Path="PO_math.cpp"/>
     <File Path="PO_math.h"/>
-    <File Path="PO_poznamky.cpp"/>
-    <File Path="PO_poznamky.cpp"/>
-    <File Path="PO_poznamky.dfm"/>
-    <File Path="PO_poznamky.h"/>
+    <File Path="kabina_schema.cpp"/>
+    <File Path="kabina_schema.cpp"/>
+    <File Path="kabina_schema.dfm"/>
+    <File Path="kabina_schema.h"/>
+    <File Path="poznamky.cpp"/>
+    <File Path="poznamky.cpp"/>
+    <File Path="poznamky.dfm"/>
+    <File Path="poznamky.h"/>
   </ProjectSortOrder>
 </BorlandProject>
