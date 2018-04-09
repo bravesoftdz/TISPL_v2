@@ -126,8 +126,8 @@ __published:	// IDE-managed Components
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
-	void __fastcall scCheckBox_zaokrouhlitClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_kabina_schemaClick(TObject *Sender);
+	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
