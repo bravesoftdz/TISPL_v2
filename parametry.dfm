@@ -297,9 +297,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_jednotky_vzdalenostpalcu: TrHTMLLabel
     Left = 318
     Top = 574
-    Width = 33
-    Height = 21
-    Caption = '<font color=#2b579a>[m]</font>'
+    Width = 14
+    Height = 19
+    Caption = 'm'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -307,7 +307,6 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    OnClick = rHTMLLabel_mezeraClick
   end
   object Edit_name: TEdit
     Left = 43
@@ -3230,6 +3229,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 32
     TabStop = True
+    OnClick = scGPCheckBox_zaokrouhlitClick
     Animation = False
     Caption = '0,00'
     CanFocused = True
