@@ -19,7 +19,6 @@
 #include "eDesigner.h"
 #include "casovaOsa_info.h"
 #include "report.h"
-#include "poznamky.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -575,15 +574,16 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 void TForm1::log2web(UnicodeString Text)
 {
 	//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-	try
-	{
+//	try
+//	{
+	ShowMessage("loguj");
 			AnsiString relation_id=GetCurrentProcessId();
 			AnsiString send_log_time= TIME.CurrentDateTime();
 			AnsiString ID ="1";
-			AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
-			//FDConnection1->ExecSQL(strSQL);
-	}
-	catch(...){;}//např. není připojení k internetu
+			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+			FDConnection1->ExecSQL(strSQL);
+//	}
+//	catch(...){;}//např. není připojení k internetu
 
 }
 //pouze text
@@ -2787,24 +2787,21 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		//režim
 		Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 		//CT
+		//Form_parametry->scGPNumericEdit_CT->Decimal=3;
+		//Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
 		//RD
+		//Form_parametry->scGPNumericEdit_RD->Decimal=Form_parametry->scGPNumericEdit_CT->Decimal;
+		//Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
 		//DD
+	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=Form_parametry->scGPNumericEdit_RD->Decimal;
+	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
-		//M
-		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
-		//Rx,Rz
-		if(pom->pohon!=NULL)
-		{
-			Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz;
-			Form_parametry->scGPNumericEdit1_rx->Value=pom->pohon->Rx;
-		}
-		else
-		{
-			Form_parametry->scGPNumericEdit_rozestup->Value=0;//zde je na zvážení zda nepočítat bez rozteče
-			Form_parametry->scGPNumericEdit1_rx->Value=0;
-		}
+		//DM
+		//Form_parametry->scGPNumericEdit_mezera->Decimal=Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal;
+	 //	Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
+	 	Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -2812,17 +2809,8 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 		Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 		Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
-		//zámky
-		Form_parametry->CT_zamek=pom->CT_zamek;if(pom->CT_zamek)Form_parametry->scButton_zamek_CT->ImageIndex=38;else Form_parametry->scButton_zamek_CT->ImageIndex=37;
-		Form_parametry->RD_zamek=pom->RD_zamek;if(pom->RD_zamek)Form_parametry->scButton_zamek_RD->ImageIndex=38;else Form_parametry->scButton_zamek_RD->ImageIndex=37;
-		Form_parametry->DD_zamek=pom->DD_zamek;if(pom->DD_zamek)Form_parametry->scButton_zamek_DD->ImageIndex=38;else Form_parametry->scButton_zamek_DD->ImageIndex=37;
-		Form_parametry->K_zamek=pom->K_zamek;if(pom->K_zamek)Form_parametry->scButton_K_zamek->ImageIndex=38;else Form_parametry->scButton_K_zamek->ImageIndex=37;
-		//poznámka
-		Form_poznamky->scGPMemo->MaxLength=pow(2,(double)sizeof(unsigned long)*8);//rozsah unsigned long je max.počet znaků na poznámku
-		Form_poznamky->scGPMemo->Lines->Clear();
-		Form_poznamky->scGPMemo->Lines->Add(pom->poznamka);
 
-		////nadesignování formu podle právě vypisováných hodnot
+		//nadesignování formu podle právě vypisováných hodnot
 		Form_parametry->vypis("");
 		Form_parametry->setForm4Rezim(pom->rezim);
 
@@ -2867,19 +2855,6 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
 				//ostatni
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-				//zámky
-				pom->CT_zamek=Form_parametry->CT_zamek;
-				pom->RD_zamek=Form_parametry->RD_zamek;
-				pom->DD_zamek=Form_parametry->DD_zamek;
-				pom->K_zamek=Form_parametry->K_zamek;
-				//Rx,Rz
-				if(pom->pohon!=NULL)
-				{
-					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value;
-					pom->pohon->Rx=Form_parametry->scGPNumericEdit1_rx->Value;
-				}
-				//poznámka
-				pom->poznamka=Form_poznamky->scGPMemo->Text;
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
 				if(Form_parametry->kapacitaSG>1 && pom->rezim==0)//pokud je požadovaný rozklad objektu na více objektů, pouze u S&G
@@ -2887,7 +2862,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 						pom->CT=Form_parametry->scGPNumericEdit_CT->Value/Form_parametry->kapacitaSG*jednotky_cas;//navrácení správného CT
 						Cvektory::TObjekt *cop=new Cvektory::TObjekt;cop=NULL;
 						short N=(int)!ortogonalizace_stav;//pokud je ortogonalizeace aktivní tak N=1, zajištuje, aby se vložilo ortogonalizovaně
-						for(unsigned short i=2;i<=Form_parametry->kapacitaSG;i++)
+						for(unsigned int i=2;i<=Form_parametry->kapacitaSG;i++)
 						{
 							if(cop==NULL)//kopíruje za originál  //pokud je ortoganalizace zapnuta bude odsazení nových objektů větší a algoritmus objekty rovná jen po X ose
 							cop=d.v.kopiruj_objekt(pom,(3+3*N)*(i-1),-6*(i-1)*N,i,false,pom);//zkopíruje objekt do totožných objektů odsazených o 20m vertikálně i horizonátlně
@@ -2902,7 +2877,6 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 				{
 				 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
 				}
-
 				//AKTUALIZACE hodnot první zakázky pokud již existuje, to samé akorát obráceně (z objektů do zakazky) probíhá v při načtení SF - definice zakázek, z určitého pohledu se jedná o duplicitní algoritmus, ale v případě aktualizací jinak než přes parametry objektu lze považovat za nutnost
 				if(d.v.ZAKAZKY->dalsi!=NULL)
 				{
@@ -3312,7 +3286,7 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 		//test vytvor_hlavicku_souboru();
 
 		//nastevení adresáře bac souboru k adresáři aplikace pokud se jedná o nový soubor, ještě neuložen pod novým názvem//přidáno 3.6 důsledky neověřeny
-		if(FileName=="Nový.tispl")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+		if(FileName=="Nový.omap")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 
 		//zapis dat do souboru
 		d.v.uloz_do_souboru(FileName+".bac_"+get_user_name()+"_"+get_computer_name());
@@ -3615,15 +3589,16 @@ void __fastcall TForm1::html1Click(TObject *Sender)
 {
 	scSplitView_MENU->Opened=false;
 	scButton_report->Down=false;
-	if(d.v.OBJEKTY->dalsi==NULL)MB("Žádná data k reportu!");//pokud existují nějaka data
+	if(d.v.OBJEKTY->dalsi==NULL)//pokud existují nějaka data
+		MB("Žádná data k reportu!");
 	else
 	{
-			//nastevení adresáře souboru k adresáři aplikace pokud se jedná o nový soubor, ještě neuložen pod novým názvem//přidáno 3.6 důsledky neověřeny
-			if(FileName=="Nový.tispl")SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 
 			UnicodeString FN=FileName;
 			if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
 			Form_report->ulozit_report(FN+".html");
+
+
 	}
 }
 //---------------------------------------------------------------------------
