@@ -842,6 +842,7 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 }
 ////---------------------------------------------------------------------------
 //vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)
+//dalo by se ještě pro určtité účely i zefektivnit, že pokud je pohon přiřazen k nějakém KK objektu, není třeba dále hledat, protože je již zajištěno minRD...
 double Cvektory::minRD(TPohon *pohon)
 {
 	TObjekt *O=OBJEKTY->dalsi;
@@ -856,6 +857,25 @@ double Cvektory::minRD(TPohon *pohon)
 	}
 	O=NULL;delete O;
 	return min;
+}
+////---------------------------------------------------------------------------
+//vypíše objekt přiřazené k danému pohonu nestíhající přejezd dle navrhovaného testRD
+AnsiString Cvektory::objekty_nestihajici_prejezd(TPohon *pohon,double testRD)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	AnsiString objekty="";
+	while (O!=NULL)
+	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
+		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
+		{
+			if(testRD<O->delka_dopravniku/O->CT)
+			objekty=O->short_name+", ";
+		}
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
+	if(objekty!="")objekty=objekty.SubString(1,objekty.Length()-2);//ještě odebere poslední čárku a mezeru
+	return objekty;
 }
 ////---------------------------------------------------------------------------
 //všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
