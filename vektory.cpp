@@ -826,11 +826,11 @@ Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_obj
 //dle n pohonu vráti objekty, které pohon používají, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
 AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_name)
 {
- 	TObjekt *O=OBJEKTY->dalsi;
+	TObjekt *O=OBJEKTY->dalsi;
 	AnsiString nalezen="";
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL && O->pohon->n==n)
+		if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
 		{
 			if(short_name)nalezen+=O->short_name+", ";
 			else nalezen+=O->name+", ";
@@ -841,6 +841,23 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
+//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)
+double Cvektory::minRD(TPohon *pohon)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	double min=12356.0;//jen náhodně velké číslo
+	while (O!=NULL)
+	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
+		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
+		{
+			if(O->delka_dopravniku/O->CT<min)min=O->delka_dopravniku/O->CT;//tak z těchto objektů najde nejmenší možné RD
+		}
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
+	return min;
+}
+////---------------------------------------------------------------------------
 //všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
 void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 {
@@ -848,7 +865,7 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 		TObjekt *O=OBJEKTY->dalsi;
 		while(O!=NULL)
 		{
-			if(O->pohon!=NULL && O->pohon->n==n)//pokud objekt má pohon přiřazen a zároveň
+			if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
 			{
 				O->pohon=NULL;//pohon již nepřiřazen
 			}
