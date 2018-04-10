@@ -805,6 +805,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 		}
 		O=O->dalsi;
 	}
+	O=NULL;delete O;
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
@@ -826,19 +827,57 @@ Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_obj
 //dle n pohonu vráti objekty, které pohon používají, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
 AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_name)
 {
- 	TObjekt *O=OBJEKTY->dalsi;
+	TObjekt *O=OBJEKTY->dalsi;
 	AnsiString nalezen="";
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL && O->pohon->n==n)
+		if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
 		{
 			if(short_name)nalezen+=O->short_name+", ";
 			else nalezen+=O->name+", ";
 		}
 		O=O->dalsi;
 	}
+	O=NULL;delete O;
 	if(nalezen!="")nalezen=nalezen.SubString(1,nalezen.Length()-2);//ještě odebere poslední čárku a mezeru
 	return nalezen;
+}
+////---------------------------------------------------------------------------
+//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)
+//dalo by se ještě pro určtité účely i zefektivnit, že pokud je pohon přiřazen k nějakém KK objektu, není třeba dále hledat, protože je již zajištěno minRD...
+double Cvektory::minRD(TPohon *pohon)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	double min=12356.0;//jen náhodně velké číslo
+	while (O!=NULL)
+	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
+		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
+		{
+			if(O->delka_dopravniku/O->CT<min)min=O->delka_dopravniku/O->CT;//tak z těchto objektů najde nejmenší možné RD
+		}
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
+	return min;
+}
+////---------------------------------------------------------------------------
+//vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD
+AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	AnsiString objekty="";
+	while (O!=NULL)
+	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
+		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
+		{
+			if(testRD<O->delka_dopravniku/O->CT)
+			objekty=O->short_name+", ";
+		}
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
+	if(objekty!="")objekty=objekty.SubString(1,objekty.Length()-2);//ještě odebere poslední čárku a mezeru
+	return objekty;
 }
 ////---------------------------------------------------------------------------
 //všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
@@ -848,12 +887,13 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 		TObjekt *O=OBJEKTY->dalsi;
 		while(O!=NULL)
 		{
-			if(O->pohon!=NULL && O->pohon->n==n)//pokud objekt má pohon přiřazen a zároveň
+			if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
 			{
 				O->pohon=NULL;//pohon již nepřiřazen
 			}
 			O=O->dalsi;
 		}
+		O=NULL;delete O;
 }
 ////---------------------------------------------------------------------------
 //vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a /zároveň tomuto objektu tento pohon přiřadí - nepoužíváme/, obsahuje ošetření proti duplicitě

@@ -9,7 +9,9 @@ void TPO_math::input_CT(bool prepocet_K)
 {
 	switch (rezim)
 	{
-		case 0:break;//S&G
+		case 0:
+    RD=DD/CT;//test min.RD
+		break;//S&G
 		case 1://Kontinuál
 			if(RD_locked)DD=RD*CT;//pro pøípad RD zamèeno, CT odemèeno (zajištìno v PO)
 			if(DD_locked)//pro pøípad DD zamèeno, CT odemèeno (zajištìno v PO)
@@ -23,6 +25,7 @@ void TPO_math::input_CT(bool prepocet_K)
 		case 2://PP
 			if(prepocet_K)K=CT/TT;//výpoèet kapacity
 			DD=K*(UDV()+M);//délky kabiny
+			RD=DD/CT;//test min.RD
 			P=Pozice();//výpoèet poètu pozic
 		break;
 	}
@@ -50,7 +53,8 @@ void TPO_math::input_DD()
 {
 	switch (rezim)
 	{
-		case 0:break;//S&G
+		case 0:RD=DD/CT;//test min.RD
+		break;//S&G
 		case 1://Kontinuál
 			if(RD_locked)CT=DD/RD;//pro pøípad RD zamèeno, DD odemèeno (zajištìno v PO)
 			if(CT_locked)
@@ -64,6 +68,7 @@ void TPO_math::input_DD()
 		case 2:
 			K=DD/(UDV()+M);//výpoèet kapacity
 			CT=TT*K;//výpoèet CT
+			RD=DD/CT;//test min.RD
 			P=Pozice();//výpoèet poètu pozic
 		break;//PP
 	}
