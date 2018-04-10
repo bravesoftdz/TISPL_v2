@@ -37,6 +37,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
 
+			if(Form1->d.v.OBJEKTY->dalsi!=NULL){
+
+			rEditNum_takt->Enabled=false;
+			rEditNum_delka_jigu->Enabled=false;
+			rEditNum_sirka_jigu->Enabled=false;
+
+			}
+
 
 		if(Form1->d.v.OBJEKTY->dalsi==NULL){
 			scGPButton_doporucene->Visible=false;

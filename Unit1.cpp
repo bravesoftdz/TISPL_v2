@@ -229,7 +229,7 @@ void TForm1::edice()
 void TForm1::aktualizace()
 {
 		//zjištění aktuální verze
-		UnicodeString AKT_VERZE=IdHTTP1->Get("http://85.255.0.237/TISPL/verze.txt");
+		UnicodeString AKT_VERZE=IdHTTP1->Get("http://81.2.243.72/TISPL/verze.txt");
 		//porovnání akt. verze a používané verze aplikace
 		if(AKT_VERZE!=VERZE)//je k dispozici aktualizace
 		{
@@ -244,7 +244,7 @@ void TForm1::aktualizace()
 				if(SaveDialog->Execute())
 				{
 						TMemoryStream *MemoryStream=new TMemoryStream();
-						IdHTTP1->Get("http://85.255.0.237/TISPL/LIC/"+LICENCE+"/tispl.exe",MemoryStream);
+						IdHTTP1->Get("http://81.2.243.72/TISPL/LIC/"+LICENCE+"/tispl.exe",MemoryStream);
 						MemoryStream->SaveToFile(SaveDialog->FileName);
 						log2web("aktualizace_z_"+AKT_VERZE+"_na_"+VERZE);
 						ShellExecute(0,L"open",SaveDialog->FileName.c_str(),0,0,SW_SHOWNORMAL);
@@ -455,6 +455,7 @@ bool TForm1::ttr(UnicodeString Text)
 void TForm1::startUP()
 {
 	//////otevrení posledního souboru
+	log2web("start");
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
   volat_parametry_linky=true;//následně je případně znegováno
 	UnicodeString user_file=ms.delete_repeat(ms.delete_repeat(Parametry,"\"",2),"\"").Trim();
@@ -574,16 +575,15 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 void TForm1::log2web(UnicodeString Text)
 {
 	//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-//	try
-//	{
-	ShowMessage("loguj");
+	try
+	{
 			AnsiString relation_id=GetCurrentProcessId();
 			AnsiString send_log_time= TIME.CurrentDateTime();
 			AnsiString ID ="1";
-			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
+			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
 			FDConnection1->ExecSQL(strSQL);
-//	}
-//	catch(...){;}//např. není připojení k internetu
+	}
+	catch(...){;}//např. není připojení k internetu
 
 }
 //pouze text
@@ -4534,7 +4534,7 @@ void __fastcall TForm1::scExPanel_ostatniClick(TObject *Sender)
 //vypnutí či zapnutí ortogonolazice
 void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
 {
-  if(!start_ortogonalizace)//pokud se nejedná o start aplikace, aby se nevolalo v tomto okamžiku
+	if(!start_ortogonalizace)//pokud se nejedná o start aplikace, aby se nevolalo v tomto okamžiku
 	ortogonalizace_on_off();
 }
 //---------------------------------------------------------------------------

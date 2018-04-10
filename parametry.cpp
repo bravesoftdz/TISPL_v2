@@ -2770,6 +2770,8 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 		///////////////////////////////////S&G////////////////////////////////////
 		case 0:
 		{
+
+
 				double CT = scGPNumericEdit_CT->Value; // CT od uživatele
 				if (CTunit == MIN)CT = CT * 60.0; // pokud bylo zadání v minutách pøevede na sekundy
 				int pocet_obj_vSG = Form1->d.v.pocet_objektu(0);
@@ -2783,10 +2785,15 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				Cvektory::TObjekt *O=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
 				if(O!=NULL)
 				{
-					if(pm.DD/pm.CT>O->RD)
+					if(pm.DD/pm.CT>O->RD && CT<Form1->d.v.PP.TT && Form1->pom->n>1)
 					{
-						vypis("Vozík nestíhá pøejezd, zvolte jiný pohon!");
+						vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon, nebo upravte délku kabiny èi technolog.èas.");
 						VID=11;
+					}
+					else if (pm.DD/pm.CT>O->RD && CT>=TT && Form1->pom->n==1)
+					{
+						 vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon, nebo upravte délku kabiny.");
+						 VID=11;
 					}
 				}
 				O=NULL;delete O;
@@ -2885,6 +2892,23 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				{
 					vypis("Pro zmìnu rozestupu nejdøíve povolte zmìnu rychlosti pohonu.");
 				}
+		///---------------------------------------------------------------
+		//Pøiøazen používaný pohon, RD<minimální možné RD objektù (S&G èi PP) na pøiøazeném pohonu (fce minRD)
+
+				if (scComboBox_pohon->ItemIndex != 0)
+				{
+				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
+				minRD=Form1->d.v.minRD(Form1->pom->pohon);
+
+						if (obj!=NULL && obj->RD<minRD)
+						{
+						AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->pom->pohon,obj->RD);
+						vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s]."
+						VID=29;
+						}
+				}
+
+
 		//-----------------------------------------------------------------------------------------------------------------------------//
 		}
 		break;
@@ -2901,7 +2925,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				{
 					if((Form1->m.UDV(pm.dV,pm.sV,pm.Rotace)+pm.M)/pm.TT>O->RD)
 					{
-						vypis("Vozík nestíhá pøejezd, zvolte jiný pohon!");
+						vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon nebo, upravte délku kabiny èi technologický èas.");
 						VID=40;
 					}
 				}

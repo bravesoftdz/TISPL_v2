@@ -1,0 +1,3 @@
+srvone
+login: administrator , pass: 1123581321aA
+db name: tispl_db , username: app_tispl, pass: NbtDnKJqGX76rVeB, server 81.2.243.72
