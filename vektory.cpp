@@ -805,6 +805,7 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 		}
 		O=O->dalsi;
 	}
+	O=NULL;delete O;
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
@@ -837,6 +838,7 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 		}
 		O=O->dalsi;
 	}
+	O=NULL;delete O;
 	if(nalezen!="")nalezen=nalezen.SubString(1,nalezen.Length()-2);//ještě odebere poslední čárku a mezeru
 	return nalezen;
 }
@@ -859,8 +861,8 @@ double Cvektory::minRD(TPohon *pohon)
 	return min;
 }
 ////---------------------------------------------------------------------------
-//vypíše objekt přiřazené k danému pohonu nestíhající přejezd dle navrhovaného testRD
-AnsiString Cvektory::objekty_nestihajici_prejezd(TPohon *pohon,double testRD)
+//vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD
+AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD)
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	AnsiString objekty="";
@@ -891,6 +893,7 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 			}
 			O=O->dalsi;
 		}
+		O=NULL;delete O;
 }
 ////---------------------------------------------------------------------------
 //vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a /zároveň tomuto objektu tento pohon přiřadí - nepoužíváme/, obsahuje ošetření proti duplicitě
