@@ -62,6 +62,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Button_DEL;
 	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
 	TscGPNumericEdit *rEditNum_takt;
+	TrHTMLLabel *rHTMLLabel5;
+	TscGPGlyphButton *scGPGlyphButton1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -113,7 +115,7 @@ public:		// User declarations
 
 	bool data_nalezena;
 	void  nacti_pohony();
-	void show_min_mezeru();
+	void show_min_Rz();
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{S=0,MIN};Tminsec Taktunit;//pøepínaè jednotek èasu

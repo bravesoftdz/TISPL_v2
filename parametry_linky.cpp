@@ -166,13 +166,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->SetColumnAutoFit(0);
 	 rStringGridEd_hlavicka_tabulky->SetColumnAutoFit(0);
 
+
 	 rStringGridEd_tab_dopravniky->Cells[0][0]="ID";
 	 rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
 	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [mm]";
 	 rStringGridEd_tab_dopravniky->Cells[5][0]="Používán";
-	 rStringGridEd_tab_dopravniky->Cells[6][0]="Min. mezera [mm]";
+	 rStringGridEd_tab_dopravniky->Cells[6][0]="min. Rz [m]*";
 
 	 rStringGridEd_hlavicka_tabulky->Cells[0][0]=rStringGridEd_tab_dopravniky->Cells[0][0];
 	 rStringGridEd_hlavicka_tabulky->Cells[1][0]=rStringGridEd_tab_dopravniky->Cells[1][0];
@@ -672,7 +673,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
 	//plnìní øádku a parsování daty
 	rStringGridEd_tab_dopravniky->Cells[0][i]=i;
 	rStringGridEd_tab_dopravniky->Cells[1][i]=Form1->ms.TrimRightFrom(T,",");T=Form1->ms.TrimLeftFromText(T,", ");
-	rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,"rychlost:"," [");T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
+	rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,","," [");T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
 	rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
 	//smazání jednoho již nepotøebného záznamu
@@ -902,42 +903,48 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 
  	//DrawBorder(Sender,Form_parametry_linky->ClientRect,clBlue,bsNone);
  //DrawBorder
-show_min_mezeru();
+show_min_Rz();
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender,
           WORD &Key, TShiftState Shift)
 {
-show_min_mezeru();
+show_min_Rz();
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rEditNum_delka_jiguChange(TObject *Sender)
 
 {
-show_min_mezeru();
+show_min_Rz();
 }
 
 
 //---------------------------------------------------------------------------
 
-void TForm_parametry_linky::show_min_mezeru() {
+void TForm_parametry_linky::show_min_Rz() {
 
-// double jednotky;
+ double min_mezera_voziky;
+ double rotace;
 // if(Delkaunit=M) jednotky*1000.0; else jednotky*1.0;
 
  for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
  {
 	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())
 	 {
-	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000.0,rEditNum_sirka_jigu->Value*1000.0,0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);
+	 min_mezera_voziky= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000,rEditNum_sirka_jigu->Value*1000,0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);
+
+	// ShowMessage(min_mezera_voziky);
+
+		if(rEditNum_delka_jigu->Value<rEditNum_sirka_jigu->Value)rotace=0;
+		else rotace=90;
+
+	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.Rz(rEditNum_delka_jigu->Value,rEditNum_sirka_jigu->Value,rotace,min_mezera_voziky/1000);
+
 	 }
  }
 
 
 }
-
-
-
 

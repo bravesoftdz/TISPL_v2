@@ -355,14 +355,14 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	else
 	{
-//		//toto odkomentovat pro spuštění TTR
-//		if(!ttr("start"))
-//		{
-//			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-//			Close();
-//		}
-//		else
-		Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
+		//toto odkomentovat pro spuštění TTR
+		if(!ttr("start"))
+		{
+			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+			Close();
+		}
+		else
+	 //	Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
 		startUP();//toto vždy odkomentované
 	}
 }
@@ -385,7 +385,7 @@ bool TForm1::ttr(UnicodeString Text)
 		//Response=IdHTTP1->Get(AnsiString("http://85.255.8.81/tispl/")+LIC_FILE+UnicodeString(".lic"));
 
 		FDQuery1->Active = False;
-		FDQuery1->Open("SELECT  DATE_FORMAT(expiration_date ,'%d.%m.%Y %h:%m:%s') AS expiration_date FROM app_setup WHERE id=\"1\"");  //id nahradit id z ini
+		FDQuery1->Open("SELECT  DATE_FORMAT(expiration_date ,'%d.%m.%Y %H:%i:%s') AS expiration_date FROM app_setup WHERE id=\"1\"");  //id nahradit id z ini
 		FDQuery1->Active = True;
 		AnsiString Response = FDQuery1->Fields->Fields[0]->AsAnsiString;
 
