@@ -2790,7 +2790,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon, nebo upravte délku kabiny èi technolog.èas.");
 						VID=11;
 					}
-					else if (pm.DD/pm.CT>O->RD && CT>=TT && Form1->pom->n==1)
+					else if (pm.DD/pm.CT>O->RD && CT>=Form1->d.v.PP.TT && Form1->pom->n==1)
 					{
 						 vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon, nebo upravte délku kabiny.");
 						 VID=11;
@@ -2898,13 +2898,13 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				if (scComboBox_pohon->ItemIndex != 0)
 				{
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
-				minRD=Form1->d.v.minRD(Form1->pom->pohon);
+				double minRD=Form1->d.v.minRD(Form1->pom->pohon);
 
 						if (obj!=NULL && obj->RD<minRD)
 						{
-						AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->pom->pohon,obj->RD);
-						vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s]."
-						VID=29;
+							AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->pom->pohon,obj->RD);
+							vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s].");
+							VID=29;
 						}
 				}
 

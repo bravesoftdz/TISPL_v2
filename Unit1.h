@@ -304,7 +304,6 @@ __published:	// IDE-managed Components
 	void __fastcall RzToolButton9Click(TObject *Sender);
 	void __fastcall RzToolButton11Click(TObject *Sender);
 	void __fastcall Smazat1Click(TObject *Sender);
-	void __fastcall Nastavitparametry1Click(TObject *Sender);
 	void __fastcall RzStatusPane5Click(TObject *Sender);
 	void __fastcall Edit_takt_timeChange(TObject *Sender);
 	void __fastcall Edit_pocet_vozikuChange(TObject *Sender);
@@ -479,12 +478,10 @@ private:
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void ortogonalizovat();//ortogonalizuje schéma
 
-
 	////promìnné
 	TDateTime TIME;
 	UnicodeString LICENCE;
-	UnicodeString VERZE;
-
+	short n_prihlaseni;
 	bool ortogonalizace_stav;
 	int vybrany_objekt;
 
@@ -528,6 +525,7 @@ private:
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
+	UnicodeString VERZE;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
 	TMyString ms;
 	Cmy m;
@@ -542,7 +540,9 @@ public:		// User declarations
 	bool zobrazit_barvy_casovych_rezerv;
 	bool antialiasing;
 	double Zoom_predchozi_AA;//pøi antialiasingu
+	bool TZF;//TRIAL_zakazat_funkcionality
 
+	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
