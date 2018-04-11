@@ -81,8 +81,8 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_palec_vzd;
 	TrHTMLLabel *rHTMLLabel_jednotky_vzdalenostpalcu;
 	TrHTMLHint *rHTMLHint1;
-	TscGPGlyphButton *scGPGlyphButton_kabina_schema;
 	TscGPCheckBox *scGPCheckBox_zaokrouhlit;
+	TscGPGlyphButton *scGPGlyphButton_info;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -126,8 +126,8 @@ __published:	// IDE-managed Components
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_kabina_schemaClick(TObject *Sender);
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent

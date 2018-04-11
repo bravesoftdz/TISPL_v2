@@ -133,6 +133,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(TZF)scGPSwitch_rezim->Enabled=false;
 
 	copyObjekt=new Cvektory::TObjekt;
+	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -3312,6 +3313,7 @@ void TForm1::vse_odstranit()
 		pom=NULL;delete pom;
 		proces_pom=NULL;delete proces_pom;
 		copyObjekt=NULL;delete copyObjekt;
+		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

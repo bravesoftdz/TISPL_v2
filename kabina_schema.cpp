@@ -46,4 +46,10 @@ void __fastcall TForm_kabina_schema::FormKeyDown(TObject *Sender, WORD &Key, TSh
 		}
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_kabina_schema::FormPaint(TObject *Sender)
+{
+	//orámování formuláøe
+	Form1->m.frameForm(Form_kabina_schema,clWebOrange,1);
+}
+//---------------------------------------------------------------------------
 

@@ -13,6 +13,7 @@ object Form_kabina_schema: TForm_kabina_schema
   Font.Style = []
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
+  OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
   object Image_nahled: TImage
@@ -1240,7 +1241,6 @@ object Form_kabina_schema: TForm_kabina_schema
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 732
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 687
@@ -1320,7 +1320,6 @@ object Form_kabina_schema: TForm_kabina_schema
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 682
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -1355,7 +1354,6 @@ object Form_kabina_schema: TForm_kabina_schema
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Sch'#233'ma kabiny'
-      ExplicitWidth = 672
     end
   end
   object scGPButton_OK: TscGPButton
