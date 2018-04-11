@@ -64,7 +64,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	upozornovat_na_zmenu_TT_parametru=true;
 	Application->HintHidePause= 20000; //nastavení délky trvání zobrazení Hintů -  20s
 
-
 	//nastavení knihovnky
 	//DrawGrid_knihovna->Enabled=false;
 	DrawGrid_knihovna->RowCount=pocet_objektu_knihovny/2;//velikosti buněk
@@ -129,6 +128,9 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	LICENCE="TRIAL_GALATEK";
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
+	n_prihlaseni=0;
+	TZF=true;//TRIAL_zakazat_funkcionality
+	if(TZF)scGPSwitch_rezim->Enabled=false;
 
 	copyObjekt=new Cvektory::TObjekt;
 }
@@ -428,7 +430,7 @@ bool TForm1::ttr(UnicodeString Text)
 			S(Text_error);
 			duvod_k_ulozeni=false;
 			Timer_tr->Enabled=false;
-			Close();
+			if(++n_prihlaseni>=3)Close();
 		}
 	}
 	catch(...)//nezdařilo se připojení k licenčnímu serveru
@@ -437,14 +439,14 @@ bool TForm1::ttr(UnicodeString Text)
 		S(Text_error);
 		duvod_k_ulozeni=false;
 		Timer_tr->Enabled=false;
-		Close();
+		if(++n_prihlaseni>=3)Close();
 	}
 
 	if(!STATUS)//dvojúrovňová ochranu
 	{
 		duvod_k_ulozeni=false;
 		Timer_tr->Enabled=false;
-		Close();
+		if(++n_prihlaseni>=3)Close();
 		return false;//dvaapůl úrovňová ochrana
 	}
 	else
@@ -1335,7 +1337,7 @@ void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 //explicitní klávesové zkratky
 void __fastcall TForm1::FormShortCut(TWMKey &Msg, bool &Handled)
 {
-	if (Msg.CharCode==VK_F9)AnalyzaClick(this);
+	//if (Msg.CharCode==VK_F9)AnalyzaClick(this);
 	//prozatim jen pro účely vývoje
 	 /*	if (Msg.CharCode==VK_F11)
 		{
@@ -2771,7 +2773,8 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
+//volá form na nastevení parametrů, dřívější nastavparametry1click
+void TForm1::NP()
 {
 	if(pom!=NULL)
 	{
@@ -2902,7 +2905,7 @@ void __fastcall TForm1::Nastavitparametry1Click(TObject *Sender)
 			catch(...)
 			{
 				MB("Neplatná hodnota!");
-				Nastavitparametry1Click(this);//nové zadání
+				NP();//nové zadání, //volá form na nastevení parametrů, dřívější nastavparemetry1click
 			}
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
@@ -4363,7 +4366,7 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 				Form_definice_zakazek->Left=Form1->ClientWidth/2-Form_definice_zakazek->Width/2;
 				Form_definice_zakazek->Top=Form1->ClientHeight/2-Form_definice_zakazek->Height/2;
 				Form_definice_zakazek->ShowModal();
-				Analyza->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
+				if(!TZF)Analyza->Enabled=true;//stačí takto pokud první zakázka nepůjde smazat nebo se v případě neexistence bude vytvářet nová, což se momentálně děje při příchodu do časových os
 				DuvodUlozit(true);//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou
 				REFRESH();//požaduje se vždy, protože i storno při prvním zobrazení ukládá default zakázku s default cestou a je tedy potřeba překreslit
 			}
@@ -4729,7 +4732,7 @@ void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 						if(Form_parametry->ClientHeight==646){int H=366;if(O->rezim==1)H=526;if(O->rezim==1)H=486;Form_parametry->ClientHeight=H;}//pokud se jedná o první spuštění, protože jinak je neznámá výška formu
 						akt_souradnice_kurzoru_PX.x=Form1->ClientWidth/2-Form_parametry->ClientWidth/2-10;
 						akt_souradnice_kurzoru_PX.y=Form1->ClientHeight/2-Form_parametry->ClientHeight/2-10;
-						Nastavitparametry1Click(this);//volá formulář parametry objektů pro přiřazení pohonu ke konkrétnímu objektu
+						NP();//volá formulář parametry objektů pro přiřazení pohonu ke konkrétnímu objektu//volá form na nastevení parametrů, dřívější nastavparemetry1click
 					}
 					O=O->dalsi;
 				}

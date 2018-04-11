@@ -99,7 +99,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 			O=O->dalsi;//posun na další prvek
 		}
 		//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
-		if(v.OBJEKTY->dalsi!=NULL)
+		if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
 		{
 			if(v.OBJEKTY->predchozi->n>3)Form1->Layout->Enabled=true;else Form1->Layout->Enabled=false;///pokud je více jak 3 objekty
 			Form1->Analyza->Enabled=true;

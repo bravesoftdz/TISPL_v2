@@ -2902,9 +2902,9 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 						if (obj!=NULL && obj->RD<minRD)
 						{
-						AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->pom->pohon,obj->RD);
+							AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->pom->pohon,obj->RD);
 						vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s].");
-						VID=29;
+							VID=29;
 						}
 				}
 
