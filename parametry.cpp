@@ -2930,7 +2930,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				{
 					if((Form1->m.UDV(pm.dV,pm.sV,pm.Rotace)+pm.M)/pm.TT>O->RD)
 					{
-						vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon nebo, upravte délku kabiny èi technologický èas.");
+					 //	vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon nebo, upravte délku kabiny èi technologický èas.");
 						VID=40;
 					}
 				}
