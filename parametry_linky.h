@@ -40,7 +40,7 @@ __published:	// IDE-managed Components
 	TrEditNum *rEditNum_takt_OLD;
 	TrHTMLLabel *rHTMLLabel_takt;
 	TrHTMLLabel *rHTMLLabel_sirka;
-	TrEditNum *rEditNum_sirka_jigu;
+	TrEditNum *rEditNum_sirka_jigu_OLD;
 	TscGPButton *scGPButton_obecne;
 	TrHTMLLabel *rHTMLLabel_doporuc_pohony;
 	TscExPanel *scExPanel_doporuc_pohony;
@@ -52,7 +52,7 @@ __published:	// IDE-managed Components
 	TButton *Button1;
 	TscGPButton *scGPButton_jig;
 	TrHTMLLabel *rHTMLLabel_delka_jigu;
-	TrEditNum *rEditNum_delka_jigu;
+	TrEditNum *rEditNum_delka_jigu_old;
 	TscGPSwitch *scGPSwitch;
 	TrHTMLLabel *rHTMLLabel3;
 	TrHTMLLabel *rHTMLLabel4;
@@ -62,8 +62,9 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Button_DEL;
 	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
 	TscGPNumericEdit *rEditNum_takt;
-	TrHTMLLabel *rHTMLLabel5;
-	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *scGPGlyphButton_hint_Rz;
+	TscGPNumericEdit *rEditNum_delka_jigu;
+	TscGPNumericEdit *rEditNum_sirka_jigu;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -88,8 +89,8 @@ __published:	// IDE-managed Components
 	void __fastcall rHTMLLabel_delka_jiguClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_vozikuClick(TObject *Sender);
 	void __fastcall Button_DELMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
-	void __fastcall rEditNum_delka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall rEditNum_sirka_jiguKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_delka_jigu_oldKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_sirka_jigu_OLDKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rEditNum_takt_OLDKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rStringGridEd_tab_dopravnikyKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift);
@@ -97,6 +98,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall rEditNum_sirka_jiguChange(TObject *Sender);
 	void __fastcall rEditNum_delka_jiguChange(TObject *Sender);
 
 
