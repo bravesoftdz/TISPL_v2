@@ -265,19 +265,24 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender) {
 						}  else    vypis("",false);
 				}  */
 
-    Kontrola_mezery();
+		Kontrola_mezery();
 
 		}
 }
 
 // ---------------------------------------------------------------------------
 // resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
-void TForm_parametry::setForm4Rezim(unsigned short rezim) {
+void TForm_parametry::setForm4Rezim(unsigned short rezim)
+{
 		// výchozí zmenšení formuláøe
 		offset = 0;
-		if (Form1->STATUS == Form1->NAVRH)
-				rezim += 10; // posunutí o 10 vytváøí režim+navrháø
-		switch (rezim) {
+		if (Form1->STATUS == Form1->NAVRH)rezim += 10; // posunutí o 10 vytváøí režim+navrháø
+		//pozice hlavièkových komponent (+použito následnì v kodu)
+		scGPGlyphButton_info->Visible=false;
+		scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width;
+		scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width;
+		switch (rezim)
+		{
 		case 0: // STOP & GO
 				{
 						set(POHON, READONLY);
@@ -325,6 +330,10 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim) {
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
 						set(ROZESTUP, READONLY);
+						//hlavièkové komponenty
+						scGPGlyphButton_info->Visible=true;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_info->Width;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_info->Width;
 				} break;
 		case 11: // KONTINUÁLNÍ - NÁVRHÁØ
 				{
@@ -340,6 +349,10 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim) {
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
 						set(ROZESTUP, READONLY);
+						//hlavièkové komponenty
+						scGPGlyphButton_info->Visible=true;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_info->Width;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_info->Width;
 				} break;
 		case 2: // POSTPROCESNÍ
 				{
@@ -390,14 +403,15 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim) {
 
 		// VELIKOST FORMULÁØE
 		Form_parametry->Height = defaultForm_parametryHeight + offset;
-		// vertikální POZICE TLAÈÍTEK OK,STORNO,COPY,PASTE
+		// vertikální (popø. horizontální) POZICE TLAÈÍTEK OK,STORNO,COPY,PASTE
 		scGPButton_OK->Top = Form_parametry->Height - scGPButton_OK->Height - 10;
 		scGPButton_storno->Top = Form_parametry->Height -	scGPButton_storno->Height - 10;
+		scGPGlyphButton_copy->Top = Form_parametry->Height  - scGPGlyphButton_copy->Height;
+		scGPGlyphButton_copy->Left=0;
 		scGPGlyphButton_paste->Top = Form_parametry->Height -	scGPGlyphButton_paste->Height;
-		scGPGlyphButton_copy->Top = scGPGlyphButton_paste->Top - scGPGlyphButton_copy->Height;
-		scGPCheckBox_zaokrouhlit->Top = scGPGlyphButton_copy->Top-scGPCheckBox_zaokrouhlit->Height;
+		scGPGlyphButton_paste->Left=scGPGlyphButton_copy->Width+scGPGlyphButton_copy->Left;
+		scGPCheckBox_zaokrouhlit->Top = Form_parametry->Height -scGPCheckBox_zaokrouhlit->Height;
 }
-
 // ---------------------------------------------------------------------------
 // zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udržování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
 void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
@@ -1666,7 +1680,10 @@ void __fastcall TForm_parametry::scGPGlyphButton_copyClick(TObject *Sender)
 		Form1->copyObjekt->stopka=scComboBox_stopka->ItemIndex;T+=Form1->copyObjekt->stopka;T+=";";
 		Form1->copyObjekt->rotace=scComboBox_rotace->ItemIndex;T+=Form1->copyObjekt->rotace;T+=";";
 		Form1->copyObjekt->mezera=scGPNumericEdit_mezera->Value/jednotky_vzdalenost;T+=Form1->copyObjekt->mezera;T+=";";
-		//dodìlat Rz,Rx a pøevody jednotek dle individuálu,zámky se pøevezmou? bacha lze vložit až pozdìji...if(scComboBox_pohon->ItemIndex>0)Form1->copyObjekt->pohon!=)
+		Form1->copyObjektRzRx.x=scGPNumericEdit1_rx->Value;T+=Form1->copyObjektRzRx.x;T+=";";
+		Form1->copyObjektRzRx.y=scGPNumericEdit_rozestup->Value/jednotky_vzdalenost;T+=Form1->copyObjektRzRx.x;T+=";";
+		//ještì zvážit kopírování nastavení zámkù
+
 
 		// zkopírování textu do schránky
 		TClipboard *c = new TClipboard;
@@ -1674,43 +1691,34 @@ void __fastcall TForm_parametry::scGPGlyphButton_copyClick(TObject *Sender)
 		c = NULL;
 		delete c;
 }
-
 // ---------------------------------------------------------------------------
 // zajišuje vložení objektu
-void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender) {
+void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
+{
 		// aby se nevolalo pøepoèítávání pøi editu položek
 		input_state = NO;
 
 		// pøevod jednotek
-		double jednotky_cas = 1.0;
-		if (minsec == MIN)
-				jednotky_cas = 60.0;
-		double jednotky_vzdalenost = 1.0;
-		if (m_mm == MM)
-				jednotky_vzdalenost = 1000.0;
+		double jednotky_cas = 1.0;if (minsec == MIN)jednotky_cas = 60.0;
+		double jednotky_vzdalenost = 1.0;if (m_mm == MM)jednotky_vzdalenost = 1000.0;
 
 		scGPEdit_name->Text = Form1->copyObjekt->name;
 		scGPEdit_shortname->Text = Form1->copyObjekt->short_name;
 		scComboBox_rezim->ItemIndex = Form1->copyObjekt->rezim;
-		if (Form1->copyObjekt->pohon == NULL)
-				scComboBox_pohon->ItemIndex = 0;
-		else
-				scComboBox_pohon->ItemIndex = Form1->copyObjekt->pohon->n - 1;
-		// ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->CT/jednotky_cas);//nastaví zobrazení poètu desetinných míst;
-		scGPNumericEdit_CT->Value = Form1->copyObjekt->CT / jednotky_cas;
-		// ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst;
-		scGPNumericEdit_RD->Value =
-				Form1->copyObjekt->RD * jednotky_cas * jednotky_vzdalenost;
-		// ROSTA//scGPNumericEdit_delka_dopravniku->Decimal=Form1->ms.get_count_decimal(Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost);//nastaví zobrazení poètu desetinných míst;
-		scGPNumericEdit_delka_dopravniku->Value =
-				Form1->copyObjekt->delka_dopravniku * jednotky_vzdalenost;
-		scComboBox_cekani_palec->ItemIndex = Form1->copyObjekt->cekat_na_palce;
-		scGPNumericEdit_kapacita->Value = Form1->copyObjekt->kapacita;
-		scGPNumericEdit_odchylka->Value = Form1->copyObjekt->odchylka;
-		scComboBox_stopka->ItemIndex = Form1->copyObjekt->stopka;
-		scComboBox_rotace->ItemIndex = Form1->copyObjekt->rotace;
-		scGPNumericEdit_mezera->Value =
-				Form1->copyObjekt->mezera * jednotky_vzdalenost;
+		if (Form1->copyObjekt->pohon == NULL)scComboBox_pohon->ItemIndex=0;
+		else scComboBox_pohon->ItemIndex=Form1->copyObjekt->pohon->n-1;
+		scGPNumericEdit_CT->Value=Form1->copyObjekt->CT/jednotky_cas;
+		scGPNumericEdit_RD->Value=Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost;
+		scGPNumericEdit_delka_dopravniku->Value=Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost;
+		scComboBox_cekani_palec->ItemIndex=Form1->copyObjekt->cekat_na_palce;
+		scGPNumericEdit_kapacita->Value=Form1->copyObjekt->kapacita;
+		scGPNumericEdit_odchylka->Value=Form1->copyObjekt->odchylka;
+		scComboBox_stopka->ItemIndex=Form1->copyObjekt->stopka;
+		scComboBox_rotace->ItemIndex=Form1->copyObjekt->rotace;
+		scGPNumericEdit_mezera->Value=Form1->copyObjekt->mezera*jednotky_vzdalenost;
+		scGPNumericEdit1_rx->Value=Form1->copyObjektRzRx.x;
+		scGPNumericEdit_rozestup->Value=Form1->copyObjektRzRx.y*jednotky_vzdalenost;
+		//ještì zvážit pøebírání stavu zámkù
 
 		// nastavení aktuálního režimu objektu
 		setForm4Rezim(scComboBox_rezim->ItemIndex);
@@ -1888,14 +1896,11 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::Button_dopravnik_parametryClick
-		(TObject *Sender)
-
+void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
 		//Form_parametry->Close();
+		Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 		Form1->Button_dopravnik_parametryClick(Sender);
-
 }
 // ---------------------------------------------------------------------------
 
@@ -2981,18 +2986,6 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 }
 //---------------------------------------------------------------------------
-//zavolá náhled kabiny
-void __fastcall TForm_parametry::scGPGlyphButton_kabina_schemaClick(TObject *Sender)
-{
-		// formuláø na støed
-		Form_kabina_schema->Left = Form1->ClientWidth / 2 - Form_kabina_schema->Width / 2;
-		Form_kabina_schema->Top = Form1->ClientHeight / 2 - Form_kabina_schema->Height / 2;
-		// zobrazeni formuláøe
-		Form_kabina_schema->ShowModal();
-}
-//---------------------------------------------------------------------------
-
-
 void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
 {
 //pøepínání zobrazení desetinného èísla na dvì nebo neomezený poèet desetinných míst
@@ -3004,7 +2997,16 @@ void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
 	scGPNumericEdit_mezera->Decimal=N_mist;
 	scGPNumericEdit_pozice->Decimal=N_mist;
 	OUTPUT();
-
+}
+//---------------------------------------------------------------------------
+//zavolá náhled kabiny, pøípadnì v budoucnu info a o požadovaných parametrech
+void __fastcall TForm_parametry::scGPGlyphButton_infoClick(TObject *Sender)
+{
+		// formuláø na støed
+		Form_kabina_schema->Left = Form1->ClientWidth / 2 - Form_kabina_schema->Width / 2;
+		Form_kabina_schema->Top = Form1->ClientHeight / 2 - Form_kabina_schema->Height / 2;
+		// zobrazeni formuláøe
+		Form_kabina_schema->ShowModal();
 }
 //---------------------------------------------------------------------------
 

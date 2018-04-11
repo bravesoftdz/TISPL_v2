@@ -5,7 +5,7 @@ object Form_parametry: TForm_parametry
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
   ClientHeight = 683
-  ClientWidth = 350
+  ClientWidth = 400
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -131,8 +131,8 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_shortname: TrHTMLLabel
-    Left = 232
-    Top = 53
+    Left = 282
+    Top = 55
     Width = 52
     Height = 19
     Caption = 'Zkratka'
@@ -253,9 +253,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_rozestup: TrHTMLLabel
     Left = 8
     Top = 574
-    Width = 94
+    Width = 64
     Height = 19
-    Caption = 'Aktivn'#237' ka'#382'd'#253
+    Caption = 'Rozestup'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -280,11 +280,11 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_palec_vzd: TrHTMLLabel
-    Left = 144
+    Left = 114
     Top = 574
-    Width = 120
+    Width = 183
     Height = 19
-    Caption = 'palec, vzd'#225'lenost'
+    Caption = '[aktivn'#237' palce], vzd'#225'lenost'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -295,7 +295,7 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_mezeraClick
   end
   object rHTMLLabel_jednotky_vzdalenostpalcu: TrHTMLLabel
-    Left = 318
+    Left = 375
     Top = 574
     Width = 14
     Height = 19
@@ -342,7 +342,7 @@ object Form_parametry: TForm_parametry
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
-    Width = 350
+    Width = 400
     Height = 34
     Align = alTop
     TabOrder = 11
@@ -370,9 +370,10 @@ object Form_parametry: TForm_parametry
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 350
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 300
+      Left = 350
       Top = 0
       Width = 50
       Height = 33
@@ -449,12 +450,13 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 300
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
       Left = 10
       Top = 0
-      Width = 290
+      Width = 303
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -482,9 +484,10 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
+      ExplicitWidth = 290
     end
     object scGPButton_metry_milimetry: TscGPButton
-      Left = 227
+      Left = 190
       Top = 19
       Width = 72
       Height = 15
@@ -572,7 +575,7 @@ object Form_parametry: TForm_parametry
       AllowAllUp = False
     end
     object scGPButton_min_sec: TscGPButton
-      Left = 227
+      Left = 190
       Top = 0
       Width = 72
       Height = 15
@@ -659,10 +662,91 @@ object Form_parametry: TForm_parametry
       GroupIndex = 0
       AllowAllUp = False
     end
+    object scGPGlyphButton_info: TscGPGlyphButton
+      Left = 313
+      Top = 0
+      Width = 37
+      Height = 34
+      Align = alRight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNone
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      OnClick = scGPGlyphButton_infoClick
+      Animation = True
+      Caption = 'scGPGlyphButton1'
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.FrameNormalColor = clBtnText
+      Options.FrameHotColor = clBtnText
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = clHighlight
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 0
+      Options.FrameHotColorAlpha = 0
+      Options.FramePressedColorAlpha = 0
+      Options.FrameFocusedColorAlpha = 0
+      Options.FrameDisabledColorAlpha = 0
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 5
+      Options.ShapeStyle = scgpRoundedRect
+      Options.ArrowSize = 9
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = 16744448
+      GlyphOptions.HotColor = 16744448
+      GlyphOptions.PressedColor = clBtnText
+      GlyphOptions.FocusedColor = 16744448
+      GlyphOptions.DisabledColor = 16744448
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 150
+      GlyphOptions.Kind = scgpbgkInfo
+      GlyphOptions.Thickness = 2
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+      ExplicitLeft = 262
+      ExplicitTop = -1
+    end
   end
   object scGPButton_OK: TscGPButton
-    Left = 56
-    Top = 643
+    Left = 101
+    Top = 642
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -750,8 +834,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 195
-    Top = 643
+    Left = 216
+    Top = 642
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -920,7 +1004,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_CT: TscGPNumericEdit
     Left = 234
     Top = 175
-    Width = 108
+    Width = 156
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -1007,7 +1091,7 @@ object Form_parametry: TForm_parametry
   object scComboBox_rezim: TscGPComboBox
     Left = 56
     Top = 90
-    Width = 284
+    Width = 334
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1127,9 +1211,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_pohon: TscGPComboBox
-    Left = 57
+    Left = 56
     Top = 135
-    Width = 284
+    Width = 334
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1233,7 +1317,7 @@ object Form_parametry: TForm_parametry
   object scGPEdit_name: TscGPEdit
     Left = 56
     Top = 50
-    Width = 170
+    Width = 218
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -1308,9 +1392,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_cekani_palec: TscGPComboBox
-    Left = 233
+    Left = 235
     Top = 410
-    Width = 108
+    Width = 154
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1432,9 +1516,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_stopka: TscGPComboBox
-    Left = 233
+    Left = 235
     Top = 450
-    Width = 108
+    Width = 154
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1558,7 +1642,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_delka_dopravniku: TscGPNumericEdit
     Left = 235
     Top = 250
-    Width = 108
+    Width = 155
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -1643,7 +1727,7 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPEdit_shortname: TscGPEdit
-    Left = 290
+    Left = 340
     Top = 50
     Width = 50
     Height = 29
@@ -1722,7 +1806,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_odchylka: TscGPNumericEdit
     Left = 235
     Top = 370
-    Width = 108
+    Width = 154
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -1807,7 +1891,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_kapacita: TscGPNumericEdit
     Left = 235
     Top = 290
-    Width = 108
+    Width = 155
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -1892,9 +1976,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rotace: TscGPComboBox
-    Left = 234
-    Top = 485
-    Width = 108
+    Left = 235
+    Top = 490
+    Width = 154
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2012,8 +2096,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_copy: TscGPGlyphButton
-    Left = 312
-    Top = 625
+    Left = 0
+    Top = 649
     Width = 37
     Height = 34
     Align = alCustom
@@ -2092,8 +2176,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPGlyphButton_paste: TscGPGlyphButton
-    Left = 312
-    Top = 652
+    Left = 34
+    Top = 649
     Width = 37
     Height = 34
     Align = alCustom
@@ -2427,7 +2511,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_mezera: TscGPNumericEdit
     Left = 234
     Top = 531
-    Width = 108
+    Width = 155
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -2523,7 +2607,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
-    Left = 293
+    Left = 343
     Top = 135
     Width = 47
     Height = 29
@@ -2615,7 +2699,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_RD: TscGPNumericEdit
     Left = 234
     Top = 210
-    Width = 108
+    Width = 156
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -2700,8 +2784,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_PO_text_memo: TscGPGlyphButton
-    Left = 309
-    Top = 174
+    Left = 358
+    Top = 176
     Width = 31
     Height = 27
     Hint = 'P'#345'idat pozn'#225'mku k CT'
@@ -2786,9 +2870,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_rozestup: TscGPNumericEdit
-    Left = 265
+    Left = 303
     Top = 566
-    Width = 47
+    Width = 66
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -2874,7 +2958,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_pozice: TscGPNumericEdit
     Left = 235
     Top = 328
-    Width = 108
+    Width = 155
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -3044,7 +3128,7 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit1_rx: TscGPNumericEdit
-    Left = 108
+    Left = 78
     Top = 566
     Width = 30
     Height = 29
@@ -3130,95 +3214,9 @@ object Form_parametry: TForm_parametry
     OnClick = scGPNumericEdit1_rxClick
     OnKeyDown = FormKeyDown
   end
-  object scGPGlyphButton_kabina_schema: TscGPGlyphButton
-    Left = 5
-    Top = 638
-    Width = 31
-    Height = 27
-    Hint = 'P'#345'idat pozn'#225'mku k CT'
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 31
-    TabStop = True
-    OnClick = scGPGlyphButton_kabina_schemaClick
-    Animation = True
-    Caption = 'scGPGlyphButton_PO_text_memo'
-    CanFocused = True
-    CustomDropDown = False
-    Layout = blGlyphLeft
-    TransparentBackground = True
-    ColorValue = clRed
-    Options.NormalColor = clBtnFace
-    Options.HotColor = clBtnText
-    Options.PressedColor = clBtnText
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnText
-    Options.NormalColorAlpha = 10
-    Options.HotColorAlpha = 20
-    Options.PressedColorAlpha = 30
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.FrameNormalColor = clBtnFace
-    Options.FrameHotColor = clBtnFace
-    Options.FramePressedColor = clBtnFace
-    Options.FrameFocusedColor = clBtnFace
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 0
-    Options.FrameHotColorAlpha = 0
-    Options.FramePressedColorAlpha = 0
-    Options.FrameFocusedColorAlpha = 0
-    Options.FrameDisabledColorAlpha = 30
-    Options.FontNormalColor = clBtnFace
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    GlyphOptions.NormalColor = clBlack
-    GlyphOptions.HotColor = clBlack
-    GlyphOptions.PressedColor = clBtnText
-    GlyphOptions.FocusedColor = clBtnText
-    GlyphOptions.DisabledColor = clBtnText
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 100
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 100
-    GlyphOptions.Kind = scgpbgkDetailPoints
-    GlyphOptions.Thickness = 2
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
   object scGPCheckBox_zaokrouhlit: TscGPCheckBox
-    Left = 300
-    Top = 601
+    Left = 346
+    Top = 662
     Width = 46
     Height = 21
     Font.Charset = DEFAULT_CHARSET
@@ -3227,7 +3225,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 32
+    TabOrder = 31
     TabStop = True
     OnClick = scGPCheckBox_zaokrouhlitClick
     Animation = False
@@ -3310,7 +3308,7 @@ object Form_parametry: TForm_parametry
     State = cbChecked
     ScaleFrameWidth = True
     ScaleCheckMarkThickness = True
-    ShowFocusRect = True
+    ShowFocusRect = False
     UseFontColorToStyleColor = False
   end
   object rHTMLHint1: TrHTMLHint
@@ -3328,7 +3326,7 @@ object Form_parametry: TForm_parametry
     RightBarColor = clRed
     HintSkipEnter = True
     UseAsGlobalHint = True
-    Left = 104
+    Left = 32
     Top = 600
   end
 end

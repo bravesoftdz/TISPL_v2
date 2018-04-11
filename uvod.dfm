@@ -38,7 +38,7 @@ object Form_uvod: TForm_uvod
     Top = 246
     Width = 105
     Height = 13
-    Caption = #169' ELTEP, s.r.o., 2017'
+    Caption = #169' ELTEP, s.r.o., 2018'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
     Font.Height = 11
