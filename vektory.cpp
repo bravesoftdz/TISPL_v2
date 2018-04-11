@@ -1749,7 +1749,7 @@ long Cvektory::vymaz_seznam_PROCESY()
 //zapis hlavičky souboru
 void Cvektory::vytvor_hlavicku_souboru()
 {
-		File_hlavicka.Verze=0.9;
+		File_hlavicka.Verze=Form1->ms.MyToDouble(Form1->VERZE);
 		File_hlavicka.Mod=Form1->MOD;
 		File_hlavicka.Zoom=Form1->Zoom;
 		File_hlavicka.PosunutiX=Form1->Posun.x;
