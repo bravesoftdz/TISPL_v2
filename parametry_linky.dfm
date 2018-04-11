@@ -176,23 +176,6 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     OnClick = rHTMLLabel_delkavozikuClick
   end
-  object rHTMLLabel5: TrHTMLLabel
-    Left = 487
-    Top = 494
-    Width = 382
-    Height = 32
-    Caption = 
-      'Min. Rz = minim'#225'ln'#237' rozte'#269'ov'#225' vzd'#225'lenost,'#13'po'#269#237'tan'#225' na z'#225'klad'#283' za' +
-      'dan'#233' rozte'#269'e a rozm'#283'r'#367' voz'#237'ku p'#345'i 0'#176' rotaci.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    Visible = False
-  end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
     Left = 0
     Top = 317
@@ -574,7 +557,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 1110
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 1079
@@ -652,7 +634,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1060
     end
     object scLabel1: TscLabel
       Left = 0
@@ -685,7 +666,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 1023
     end
     object scGPGlyphButton15: TscGPGlyphButton
       Left = 1042
@@ -765,7 +745,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1023
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -995,9 +974,9 @@ object Form_parametry_linky: TForm_parametry_linky
     MaxValue = 1000000.000000000000000000
     Value = 120.000000000000000000
   end
-  object rEditNum_sirka_jigu: TrEditNum
-    Left = 172
-    Top = 217
+  object rEditNum_sirka_jigu_OLD: TrEditNum
+    Left = 847
+    Top = 138
     Width = 100
     Height = 26
     Font.Charset = DEFAULT_CHARSET
@@ -1008,7 +987,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 9
-    OnKeyDown = rEditNum_sirka_jiguKeyDown
+    Visible = False
+    OnKeyDown = rEditNum_sirka_jigu_OLDKeyDown
     Style = enFloat
     Value = 1.000000000000000000
   end
@@ -1467,9 +1447,9 @@ object Form_parametry_linky: TForm_parametry_linky
     GroupIndex = 0
     AllowAllUp = False
   end
-  object rEditNum_delka_jigu: TrEditNum
-    Left = 66
-    Top = 217
+  object rEditNum_delka_jigu_old: TrEditNum
+    Left = 698
+    Top = 138
     Width = 100
     Height = 26
     Font.Charset = DEFAULT_CHARSET
@@ -1480,8 +1460,8 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 10
-    OnChange = rEditNum_delka_jiguChange
-    OnKeyDown = rEditNum_delka_jiguKeyDown
+    Visible = False
+    OnKeyDown = rEditNum_delka_jigu_oldKeyDown
     Style = enFloat
     Value = 1.000000000000000000
   end
@@ -1913,7 +1893,6 @@ object Form_parametry_linky: TForm_parametry_linky
     RightButton.GlyphThickness = 2
     BiDiMode = bdLeftToRight
     Color = clWhite
-    Ctl3D = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -1928,15 +1907,16 @@ object Form_parametry_linky: TForm_parametry_linky
     OnChange = rEditNum_takt_Change
     OnKeyDown = FormKeyDown
   end
-  object scGPGlyphButton1: TscGPGlyphButton
+  object scGPGlyphButton_hint_Rz: TscGPGlyphButton
     Left = 1091
     Top = 317
     Width = 37
     Height = 30
     Hint = 
-      'Min. Rz = minim'#225'ln'#237' rozte'#269'ov'#225' vzd'#225'lenost,'#13'po'#269#237'tan'#225' na z'#225'klad'#283' za' +
-      'dan'#233' rozte'#269'e a rozm'#283'r'#367' voz'#237'ku p'#345'i 0'#176' rotaci.'
+      'Min. Rz = minim'#225'ln'#237' rozte'#269'ov'#225' vzd'#225'lenost,po'#269#237'tan'#225' na z'#225'klad'#283' zad' +
+      'an'#233' rozte'#269'e a d'#233'lky voz'#237'ku.'
     Align = alCustom
+    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -11
@@ -1948,7 +1928,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ShowHint = True
     TabOrder = 23
     Animation = True
-    Caption = 'scGPGlyphButton1'
+    Caption = 'scGPGlyphButton_hint_Rz'
     CanFocused = False
     CustomDropDown = False
     Layout = blGlyphLeft
@@ -2011,5 +1991,181 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object rEditNum_delka_jigu: TscGPNumericEdit
+    Left = 66
+    Top = 217
+    Width = 100
+    Height = 29
+    Options.NormalColor = clWhite
+    Options.HotColor = clWhite
+    Options.FocusedColor = clWhite
+    Options.DisabledColor = clWhite
+    Options.NormalColorAlpha = 200
+    Options.HotColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 150
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = 1871359
+    Options.FrameFocusedColor = 10114859
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 50
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clBlack
+    Options.FontFocusedColor = clBlack
+    Options.FontDisabledColor = clGrayText
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpessRect
+    Options.ScaleFrameWidth = False
+    Options.StyleColors = True
+    ContentMarginLeft = 5
+    ContentMarginRight = 5
+    ContentMarginTop = 5
+    ContentMarginBottom = 5
+    PromptTextColor = clNone
+    Transparent = True
+    Increment = 1.000000000000000000
+    SupportUpDownKeys = False
+    SupportMouseWheel = False
+    ValueType = scvtFloat
+    MaxValue = 1000000.000000000000000000
+    Value = 1.000000000000000000
+    DisplayType = scedtNumeric
+    LeftButton.Kind = scgpebCustom
+    LeftButton.Enabled = True
+    LeftButton.Visible = False
+    LeftButton.ImageIndex = -1
+    LeftButton.ImageHotIndex = -1
+    LeftButton.ImagePressedIndex = -1
+    LeftButton.RepeatClick = False
+    LeftButton.RepeatClickInterval = 200
+    LeftButton.ShowHint = False
+    LeftButton.GlyphColor = clWindowText
+    LeftButton.GlyphColorAlpha = 180
+    LeftButton.GlyphColorHotAlpha = 240
+    LeftButton.GlyphColorPressedAlpha = 150
+    LeftButton.GlyphThickness = 2
+    RightButton.Kind = scgpebCustom
+    RightButton.Enabled = True
+    RightButton.Visible = False
+    RightButton.ImageIndex = -1
+    RightButton.ImageHotIndex = -1
+    RightButton.ImagePressedIndex = -1
+    RightButton.RepeatClick = False
+    RightButton.RepeatClickInterval = 200
+    RightButton.ShowHint = False
+    RightButton.GlyphColor = clWindowText
+    RightButton.GlyphColorAlpha = 180
+    RightButton.GlyphColorHotAlpha = 240
+    RightButton.GlyphColorPressedAlpha = 150
+    RightButton.GlyphThickness = 2
+    BiDiMode = bdLeftToRight
+    Color = clWhite
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentBiDiMode = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 24
+    OnChange = rEditNum_delka_jiguChange
+    OnKeyDown = FormKeyDown
+  end
+  object rEditNum_sirka_jigu: TscGPNumericEdit
+    Left = 172
+    Top = 217
+    Width = 100
+    Height = 29
+    Options.NormalColor = clWhite
+    Options.HotColor = clWhite
+    Options.FocusedColor = clWhite
+    Options.DisabledColor = clWhite
+    Options.NormalColorAlpha = 200
+    Options.HotColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 150
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = 1871359
+    Options.FrameFocusedColor = 10114859
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 50
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clBlack
+    Options.FontFocusedColor = clBlack
+    Options.FontDisabledColor = clGrayText
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpessRect
+    Options.ScaleFrameWidth = False
+    Options.StyleColors = True
+    ContentMarginLeft = 5
+    ContentMarginRight = 5
+    ContentMarginTop = 5
+    ContentMarginBottom = 5
+    PromptTextColor = clNone
+    Transparent = True
+    Increment = 1.000000000000000000
+    SupportUpDownKeys = False
+    SupportMouseWheel = False
+    ValueType = scvtFloat
+    MaxValue = 1000000.000000000000000000
+    Value = 1.000000000000000000
+    DisplayType = scedtNumeric
+    LeftButton.Kind = scgpebCustom
+    LeftButton.Enabled = True
+    LeftButton.Visible = False
+    LeftButton.ImageIndex = -1
+    LeftButton.ImageHotIndex = -1
+    LeftButton.ImagePressedIndex = -1
+    LeftButton.RepeatClick = False
+    LeftButton.RepeatClickInterval = 200
+    LeftButton.ShowHint = False
+    LeftButton.GlyphColor = clWindowText
+    LeftButton.GlyphColorAlpha = 180
+    LeftButton.GlyphColorHotAlpha = 240
+    LeftButton.GlyphColorPressedAlpha = 150
+    LeftButton.GlyphThickness = 2
+    RightButton.Kind = scgpebCustom
+    RightButton.Enabled = True
+    RightButton.Visible = False
+    RightButton.ImageIndex = -1
+    RightButton.ImageHotIndex = -1
+    RightButton.ImagePressedIndex = -1
+    RightButton.RepeatClick = False
+    RightButton.RepeatClickInterval = 200
+    RightButton.ShowHint = False
+    RightButton.GlyphColor = clWindowText
+    RightButton.GlyphColorAlpha = 180
+    RightButton.GlyphColorHotAlpha = 240
+    RightButton.GlyphColorPressedAlpha = 150
+    RightButton.GlyphThickness = 2
+    BiDiMode = bdLeftToRight
+    Color = clWhite
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentBiDiMode = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 25
+    OnChange = rEditNum_sirka_jiguChange
+    OnKeyDown = FormKeyDown
   end
 end

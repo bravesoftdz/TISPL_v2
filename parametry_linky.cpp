@@ -156,8 +156,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
 
 	 //nahrání hodnot
-	 rEditNum_delka_jigu->Text=Form1->d.v.PP.delka_voziku;
-	 rEditNum_sirka_jigu->Text=Form1->d.v.PP.sirka_voziku;
+	 rEditNum_delka_jigu->Value=Form1->d.v.PP.delka_voziku;
+	 rEditNum_sirka_jigu->Value=Form1->d.v.PP.sirka_voziku;
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
 	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
@@ -260,12 +260,12 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 Changes_TT=true;
 		}
 		//pri zmene delky voziku
-		if(Form1->ms.MyToDouble(rEditNum_delka_jigu->Text) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		if(Form1->ms.MyToDouble(rEditNum_delka_jigu->Value) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
 		 Changes_PP=true;
 		}
 		//pri zmene sirky voziku
-			if(Form1->ms.MyToDouble(rEditNum_sirka_jigu->Text) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+			if(Form1->ms.MyToDouble(rEditNum_sirka_jigu->Value) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
 		 Changes=true;
 		 Changes_PP=true;
 		}
@@ -430,11 +430,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 //	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
 		 //	}
 		 //	else
-				Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delka_jigu->Text);
+				Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delka_jigu->Value);
 
 			int typ;
 			//Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-			Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirka_jigu->Text);   //zavadejici docasne reseni
+			Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirka_jigu->Value);   //zavadejici docasne reseni
 			if(scGPSwitch->State==scswOff) {
 			 typ=0;}
 			 else {typ=1;}
@@ -850,14 +850,14 @@ void __fastcall TForm_parametry_linky::Button_DELMouseMove(TObject *Sender, TShi
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rEditNum_delka_jiguKeyDown(TObject *Sender,
+void __fastcall TForm_parametry_linky::rEditNum_delka_jigu_oldKeyDown(TObject *Sender,
           WORD &Key, TShiftState Shift)
 {
 	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rEditNum_sirka_jiguKeyDown(TObject *Sender,
+void __fastcall TForm_parametry_linky::rEditNum_sirka_jigu_OLDKeyDown(TObject *Sender,
 					WORD &Key, TShiftState Shift)
 {
 	FormKeyDown(Sender,Key,Shift);
@@ -913,20 +913,13 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyUp(TObject
 show_min_Rz();
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::rEditNum_delka_jiguChange(TObject *Sender)
-
-{
-show_min_Rz();
-}
-
-
 //---------------------------------------------------------------------------
 
 void TForm_parametry_linky::show_min_Rz() {
 
  double min_mezera_voziky;
  double rotace;
+ scGPGlyphButton_hint_Rz->Enabled=true;
 // if(Delkaunit=M) jednotky*1000.0; else jednotky*1.0;
 
  for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
@@ -937,8 +930,16 @@ void TForm_parametry_linky::show_min_Rz() {
 
 	// ShowMessage(min_mezera_voziky);
 
-		if(rEditNum_delka_jigu->Value<rEditNum_sirka_jigu->Value)rotace=0;
-		else rotace=90;
+		if(rEditNum_delka_jigu->Value<rEditNum_sirka_jigu->Value)
+		{
+		rotace=0;
+		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a šíøky vozíku.";
+		}
+		else
+		{
+		rotace=90;
+		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a délky vozíku.";
+		}
 
 	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.Rz(rEditNum_delka_jigu->Value,rEditNum_sirka_jigu->Value,rotace,min_mezera_voziky/1000);
 
@@ -947,4 +948,18 @@ void TForm_parametry_linky::show_min_Rz() {
 
 
 }
+
+void __fastcall TForm_parametry_linky::rEditNum_sirka_jiguChange(TObject *Sender)
+
+{
+show_min_Rz();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rEditNum_delka_jiguChange(TObject *Sender)
+
+{
+show_min_Rz();
+}
+//---------------------------------------------------------------------------
 
