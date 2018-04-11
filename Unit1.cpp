@@ -49,6 +49,8 @@ AnsiString Parametry;
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
+	db_connection();
+
 	srand(time(NULL));//nutno tady
 
 	Form1->Width=1290;//workaround bílé mezery v záložkové liště
@@ -4922,5 +4924,15 @@ void __fastcall TForm1::scGPGlyphButton_info_cekaniClick(TObject *Sender)
 	"• vždy, když je čekání uživatelsky nařízeno",MB_OK,false,489);
 }
 //---------------------------------------------------------------------------
+
+void TForm1::db_connection()
+
+{
+	FDConnection1->Params->Database="tispl_db";
+	FDConnection1->Params->UserName="app_tispl";
+	FDConnection1->Params->Password="NbtDnKJqGX76rVeB";
+	FDConnection1->Params->DriverID="Mysql";
+	FDConnection1->Params->Add("Server=81.2.243.72");
+}
 
 

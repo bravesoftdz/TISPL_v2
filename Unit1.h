@@ -477,6 +477,7 @@ private:
 	void ortogonalizace_on_off();//zapíná èi vypíná automatickou ortogonalizaci
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void ortogonalizovat();//ortogonalizuje schéma
+	void db_connection();  // pøipojení k DB serveru
 
 	////promìnné
 	TDateTime TIME;
