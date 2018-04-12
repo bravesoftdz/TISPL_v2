@@ -414,7 +414,7 @@ bool TForm1::ttr(UnicodeString Text)
 					if(TIME_expirace<TIME && TIME!="1.1.1990 0:00:00")
 					{
 						log2web(ms.replace(Response,"_"," ")+"-"+Text+"_EXPIRACE");
-						S(Text_error);//vypršela licence resp. program expiroval;
+						MB(Text_error);//vypršela licence resp. program expiroval;
 						duvod_k_ulozeni=false;
 						Timer_tr->Enabled=false;
 						Close();
@@ -430,7 +430,7 @@ bool TForm1::ttr(UnicodeString Text)
 		catch(...)//nezdařilo se připojení k time serveru, timeout
 		{
 			log2web(ms.replace(Response,"_"," ")+"-"+Text+"_TIMESERVER_ERR");
-			S(Text_error);
+			MB(Text_error);
 			duvod_k_ulozeni=false;
 			Timer_tr->Enabled=false;
 			if(++n_prihlaseni>=3)Close();
@@ -439,7 +439,7 @@ bool TForm1::ttr(UnicodeString Text)
 	catch(...)//nezdařilo se připojení k licenčnímu serveru
 	{
 		//tady nemůže být log
-		S(Text_error);
+		MB(Text_error);
 		duvod_k_ulozeni=false;
 		Timer_tr->Enabled=false;
 		if(++n_prihlaseni>=3)Close();

@@ -5,6 +5,7 @@
 
 #include "parametry_linky.h"
 #include "Unit1.h"
+#include "kabina_schema.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -22,14 +23,14 @@ TForm_parametry_linky *Form_parametry_linky;
 __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	: TForm(Owner)
 {
+  //designové záležitosti
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
+	zobrazitFrameForm=false;
 
 	Delkaunit=MM;
 	Sirkaunit=Delkaunit;
 	Taktunit=S;
-
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
@@ -903,14 +904,15 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 
  	//DrawBorder(Sender,Form_parametry_linky->ClientRect,clBlue,bsNone);
  //DrawBorder
-show_min_Rz();
+	show_min_Rz();
+	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender,
           WORD &Key, TShiftState Shift)
 {
-show_min_Rz();
+	show_min_Rz();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -960,6 +962,18 @@ void __fastcall TForm_parametry_linky::rEditNum_delka_jiguChange(TObject *Sender
 
 {
 show_min_Rz();
+}
+//---------------------------------------------------------------------------
+//zavolá náhled kabiny, pøípadnì v budoucnu info a o požadovaných parametrech
+void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender)
+{
+		bool zFFtemp=false;if(zobrazitFrameForm){zFFtemp=true;zobrazitFrameForm=false;Invalidate();}//pokud je orámování, tak zruší, aby mohlo mít orámování jen na formu kabina_schema, ale zapamatuje si stav pro následné navrácení
+		// formuláø na støed
+		Form_kabina_schema->Left = Form1->ClientWidth / 2 - Form_kabina_schema->Width / 2;
+		Form_kabina_schema->Top = Form1->ClientHeight / 2 - Form_kabina_schema->Height / 2;
+		// zobrazeni formuláøe
+		Form_kabina_schema->ShowModal();
+		if(zFFtemp)zobrazitFrameForm=true;//pokud bylo orámování, tak vrátí
 }
 //---------------------------------------------------------------------------
 

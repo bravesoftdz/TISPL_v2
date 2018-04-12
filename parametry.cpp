@@ -107,16 +107,20 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender) {
 
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
-void TForm_parametry::vypis(UnicodeString text, bool RED)
+void TForm_parametry::vypis(UnicodeString text,bool red,bool link)
 {
 		scGPButton_OK->Enabled=true;
 		scGPButton_OK->Caption = "Uložit";
 		if (text != "") // zobrazí a vypíše
 		{
-			 //	rHTMLLabel_InfoText->Hint=text;//zajišuje zobrazení celého textu
-				rHTMLHint1->ToString()=text;
+				//rHTMLLabel_InfoText->Hint=text;//zajišuje zobrazení celého textu
+				rHTMLHint1->ToString()=text;//natežení do hintu
 				// if(!rHTMLLabel_InfoText->Visible)Form_parametry->Height+=(40+19);//pouze pokud byl popisek skrytý
-				if (RED)
+
+				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+
+				if (red)
 				{
 						scGPButton_OK->Enabled=false;
 						scGPGlyphButton_InfoIcon->GlyphOptions->NormalColor = clRed;
@@ -1899,8 +1903,9 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
 		//Form_parametry->Close();
-		Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
+		Form_parametry_linky->zobrazitFrameForm=true;
 		Form1->Button_dopravnik_parametryClick(Sender);
+		Form_parametry_linky->zobrazitFrameForm=false;
 }
 // ---------------------------------------------------------------------------
 
@@ -2074,16 +2079,11 @@ void TForm_parametry::OUTPUT()
 			scGPNumericEdit_pozice->Hint=scGPNumericEdit_pozice->Value;
 
 
-
-
-
 		VALIDACE();
 }
 // ---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender) {
-
-
+void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
+{
 		if (scComboBox_rezim->ItemIndex == 2 && input_state == NOTHING && input_clicked_edit == Rotace_klik)
 		{
 				input_M(); // pøepoèet hodnot vyplývajících ze zmìny CT  pro režim PP

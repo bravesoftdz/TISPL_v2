@@ -31,7 +31,7 @@ __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel1;
-	TscGPGlyphButton *scGPGlyphButton15;
+	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_vozik;
 	TrEditNum *rEditNum_delkavoziku;
 	TscGPButton *scGPButton_pohon;
@@ -100,6 +100,7 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rEditNum_sirka_jiguChange(TObject *Sender);
 	void __fastcall rEditNum_delka_jiguChange(TObject *Sender);
+	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
 
 
 
@@ -125,6 +126,7 @@ public:		// User declarations
 	bool Changes_TT;    // konkretni zmena TT
 	bool Changes_PP;   // konkretni zmena PP
 	bool Ulozit;
+	bool zobrazitFrameForm;
 
 };
 //---------------------------------------------------------------------------

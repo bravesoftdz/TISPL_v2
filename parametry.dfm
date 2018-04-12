@@ -370,7 +370,6 @@ object Form_parametry: TForm_parametry
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 350
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 350
@@ -450,7 +449,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 300
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -484,7 +482,6 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 290
     end
     object scGPButton_metry_milimetry: TscGPButton
       Left = 190
@@ -740,8 +737,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 262
-      ExplicitTop = -1
     end
   end
   object scGPButton_OK: TscGPButton

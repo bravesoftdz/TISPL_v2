@@ -2,10 +2,9 @@ object Form_parametry_linky: TForm_parametry_linky
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  BorderWidth = 1
   Caption = 'Parametry linky'
-  ClientHeight = 535
-  ClientWidth = 1129
+  ClientHeight = 537
+  ClientWidth = 1131
   Color = clSilver
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -529,7 +528,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 1129
+    Width = 1131
     Height = 34
     Align = alTop
     TabOrder = 3
@@ -557,9 +556,10 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 1129
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1079
+      Left = 1081
       Top = 0
       Width = 50
       Height = 33
@@ -634,11 +634,12 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1079
     end
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 1042
+      Width = 1044
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -666,9 +667,10 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
+      ExplicitWidth = 1042
     end
-    object scGPGlyphButton15: TscGPGlyphButton
-      Left = 1042
+    object scGPGlyphButton_info: TscGPGlyphButton
+      Left = 1044
       Top = 0
       Width = 37
       Height = 34
@@ -681,8 +683,9 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Quality = fqClearType
       ParentFont = False
       TabOrder = 2
+      OnClick = scGPGlyphButton_infoClick
       Animation = True
-      Caption = 'scGPGlyphButton1'
+      Caption = 'Info'
       CanFocused = False
       CustomDropDown = False
       Layout = blGlyphLeft
@@ -745,6 +748,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 1042
     end
   end
   object scGPButton_vozik: TscGPButton

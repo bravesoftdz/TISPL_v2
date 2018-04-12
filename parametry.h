@@ -167,7 +167,7 @@ public:		// User declarations
 	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm RDunitD;//pøepínaè jednotek vzdálenost
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 	void setForm4Rezim(unsigned short rezim);
-	void vypis(UnicodeString text,bool RED=true);
+	void vypis(UnicodeString text,bool red=true,bool link=false);
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
   Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
