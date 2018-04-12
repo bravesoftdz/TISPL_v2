@@ -430,26 +430,34 @@ bool TForm1::ttr(UnicodeString Text)
 		catch(...)//nezdařilo se připojení k time serveru, timeout
 		{
 			log2web(ms.replace(Response,"_"," ")+"-"+Text+"_TIMESERVER_ERR");
-			MB(Text_error);
-			duvod_k_ulozeni=false;
-			Timer_tr->Enabled=false;
-			if(++n_prihlaseni>=3)Close();
+			if(++n_prihlaseni>=3)//až při třetím chybovém stavu
+			{
+				Text_error="Nezdařilo se připojení k time serveru, aplikace nebude spuštěna!";
+				MB(Text_error);
+				duvod_k_ulozeni=false;
+				Timer_tr->Enabled=false;
+				Close();
+			}
 		}
 	}
 	catch(...)//nezdařilo se připojení k licenčnímu serveru
 	{
 		//tady nemůže být log
-		MB(Text_error);
-		duvod_k_ulozeni=false;
-		Timer_tr->Enabled=false;
-		if(++n_prihlaseni>=3)Close();
+		Text_error="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!";
+		if(++n_prihlaseni>=3)//až při třetím chybovém stavu
+		{
+			MB(Text_error);
+			duvod_k_ulozeni=false;
+			Timer_tr->Enabled=false;
+			Close();
+		}
 	}
 
-	if(!STATUS)//dvojúrovňová ochranu
+	if(!STATUS && n_prihlaseni>=3)//dvojúrovňová ochranu
 	{
 		duvod_k_ulozeni=false;
 		Timer_tr->Enabled=false;
-		if(++n_prihlaseni>=3)Close();
+		Close();
 		return false;//dvaapůl úrovňová ochrana
 	}
 	else
@@ -4214,9 +4222,6 @@ void __fastcall TForm1::Timer_trTimer(TObject *Sender)
 	if(!ttr("TimerTr")){Timer_tr->Enabled=false;Close();}//kontrola zda nevypršela trial verze
 }
 //---------------------------------------------------------------------------
-
-
-
 void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 {
 

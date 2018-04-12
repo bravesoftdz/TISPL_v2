@@ -1635,9 +1635,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_delka_dopravniku: TscGPNumericEdit
-    Left = 235
+    Left = 234
     Top = 250
-    Width = 155
+    Width = 156
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -1799,9 +1799,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_odchylka: TscGPNumericEdit
-    Left = 235
+    Left = 234
     Top = 370
-    Width = 154
+    Width = 156
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -1884,9 +1884,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_kapacita: TscGPNumericEdit
-    Left = 235
+    Left = 234
     Top = 290
-    Width = 155
+    Width = 156
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -2951,9 +2951,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_pozice: TscGPNumericEdit
-    Left = 235
+    Left = 234
     Top = 328
-    Width = 155
+    Width = 156
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite

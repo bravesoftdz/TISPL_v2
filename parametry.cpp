@@ -478,6 +478,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 								scGPGlyphButton_PO_text_memo->Top = scGPNumericEdit_CT->Top + 1;
 								// glyph pro memo - ziskany ct
 						}
+						scGPNumericEdit_CT->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						scGPNumericEdit_CT->Options->ShapeStyle = scgpessRect;
@@ -523,6 +524,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 								scGPNumericEdit_RD->Top = P + 3 * O + offset;
 								scButton_zamek_RD->Top = scGPNumericEdit_RD->Top;
 						}
+						scGPNumericEdit_RD->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						scGPNumericEdit_RD->Options->ShapeStyle = scgpessRect;
@@ -567,6 +569,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 								scGPNumericEdit_delka_dopravniku->Top = P + 4 * O + offset;
 								scButton_zamek_DD->Top = scGPNumericEdit_delka_dopravniku->Top;
 						}
+						scGPNumericEdit_delka_dopravniku->Left=234;
 						// ty co jsou stejné
 						scGPNumericEdit_delka_dopravniku->Options->ShapeStyle = scgpessRect;
 						rHTMLLabel_delka_dopravniku->Visible = true;
@@ -619,6 +622,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 						rHTMLLabel_kapacita->Top = L + 5 * O + offset;
 						scGPNumericEdit_kapacita->Top = P + 5 * O + offset;
 						scButton_K_zamek->Top = scGPNumericEdit_kapacita->Top;
+						scGPNumericEdit_kapacita->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						scGPNumericEdit_kapacita->Options->ShapeStyle = scgpessRect;
@@ -656,6 +660,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 						////pozice
 						rHTMLLabel_pozice->Top = L + 6 * O + offset;
 						scGPNumericEdit_pozice->Top = P + 6 * O + offset;
+						scGPNumericEdit_pozice->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						scGPNumericEdit_pozice->Options->ShapeStyle = scgpessRect;
@@ -692,6 +697,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 						////pozice
 						rHTMLLabel_odchylka->Top = L + 7 * O + offset;
 						scGPNumericEdit_odchylka->Top = P + 7 * O + offset;
+						scGPNumericEdit_odchylka->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						scGPNumericEdit_odchylka->Options->ShapeStyle = scgpessRect;
@@ -726,10 +732,12 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 		case CEKANI: // èekání
 				{
 						////pozice
-						if (move) {
+						if (move)
+						{
 								rHTMLLabel_cekani->Top = L + 8 * O + offset;
 								scComboBox_cekani_palec->Top = P + 8 * O + offset;
 						}
+						scComboBox_cekani_palec->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						scComboBox_cekani_palec->Options->FrameNormalColor = clGray;
@@ -766,6 +774,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 								rHTMLLabel_stopka->Top = L + 9 * O + offset;
 								scComboBox_stopka->Top = P + 9 * O + offset;
 						}
+						scComboBox_stopka->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						rHTMLLabel_stopka->Visible = true;
@@ -802,6 +811,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 								rHTMLLabel_rotace->Top = L + 10 * O + offset;
 								scComboBox_rotace->Top = P + 10 * O + offset;
 						}
+						scComboBox_rotace->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						rHTMLLabel_rotace->Visible = true;
@@ -838,6 +848,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 								rHTMLLabel_mezera->Top = L + 11 * O + offset;
 								scGPNumericEdit_mezera->Top = P + 11 * O + offset;
 						}
+						scGPNumericEdit_mezera->Left=234;
 						////funkèní vlastnosti
 						// ty co jsou stejné
 						scGPNumericEdit_mezera->Options->ShapeStyle = scgpessRect;
@@ -872,7 +883,8 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
 		case ROZESTUP: // požadována vs. zjištìná kapacita objektu
 				{
 						////pozice
-						if (move) {
+						if (move)
+						{
 								rHTMLLabel_rozestup->Top = L + 12 * O + offset;
 								scGPNumericEdit_rozestup->Top = P + 12 * O + offset;
 								scGPNumericEdit1_rx->Top=scGPNumericEdit_rozestup->Top;
@@ -2827,7 +2839,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 								if (pocet_obj_vSG == 1)
 								{
-										vypis("Mùžete vstoupit na PL a snížit TT linky!");
+										vypis("Techn. èas je nižší než TT. Ve formuláøi parametrù linky mùžete snížit TT linky!");
 										VID=14;
 								}
 

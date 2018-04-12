@@ -38,23 +38,30 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
 
-			if(Form1->d.v.OBJEKTY->dalsi!=NULL){
-
+    //provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
+		if(Form1->d.v.OBJEKTY->dalsi!=NULL)
+		{
 			rEditNum_takt->Enabled=false;
 			rEditNum_delka_jigu->Enabled=false;
 			rEditNum_sirka_jigu->Enabled=false;
+		}
+		else
+		{
+			rEditNum_takt->Enabled=true;
+			rEditNum_delka_jigu->Enabled=true;
+			rEditNum_sirka_jigu->Enabled=true;
+    }
 
-			}
 
-
-		if(Form1->d.v.OBJEKTY->dalsi==NULL){
+		if(Form1->d.v.OBJEKTY->dalsi==NULL)
+		{
 			scGPButton_doporucene->Visible=false;
 			rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
 		}
-		else {
-
-				scGPButton_doporucene->Visible=true;
-				rHTMLLabel_doporuc_pohony->Caption="Doporuèené rychlosti pohonù";
+		else
+		{
+			scGPButton_doporucene->Visible=true;
+			rHTMLLabel_doporuc_pohony->Caption="Doporuèené rychlosti pohonù";
 		}
 
 		if(Form1->STATUS==Form1->NAVRH)    //Architekt
