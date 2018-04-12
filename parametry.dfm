@@ -280,7 +280,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_palec_vzd: TrHTMLLabel
-    Left = 114
+    Left = 108
     Top = 574
     Width = 183
     Height = 19
@@ -295,11 +295,11 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_mezeraClick
   end
   object rHTMLLabel_jednotky_vzdalenostpalcu: TrHTMLLabel
-    Left = 375
+    Left = 358
     Top = 574
-    Width = 14
-    Height = 19
-    Caption = 'm'
+    Width = 42
+    Height = 21
+    Caption = '<font color=#2b579a>[mm]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -2865,9 +2865,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_rozestup: TscGPNumericEdit
-    Left = 303
-    Top = 566
-    Width = 66
+    Left = 294
+    Top = 569
+    Width = 62
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -3123,8 +3123,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit1_rx: TscGPNumericEdit
-    Left = 78
-    Top = 566
+    Left = 75
+    Top = 569
     Width = 30
     Height = 29
     Options.NormalColor = clWhite
