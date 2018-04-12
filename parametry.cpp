@@ -1586,6 +1586,7 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
 {
 		input_state = NO; // zámìr, aby se nepøepoèítavaly hodnoty
 		double DM = 0.0;
+		double Rz=0.0;
 		if (DMunit == MM) // pokud je v milimetrech, tak pøepne na metry
 		{
 				// DM
@@ -1593,6 +1594,7 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
 				rHTMLLabel_mezera->Caption = "Mezera mezi vozíky <font color=#2b579a>[m]</font>";
 				DM = scGPNumericEdit_mezera->Value / 1000.0;
 				rHTMLLabel_jednotky_vzdalenostpalcu->Caption=" <font color=#2b579a>[m]";
+				Rz = scGPNumericEdit_rozestup->Value / 1000.0;
 		}
 		else // pokud je metrech, tak pøepne na milimetry
 		{
@@ -1601,9 +1603,11 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
 				rHTMLLabel_mezera->Caption = "Mezera mezi vozíky <font color=#2b579a>[mm]</font>";
 				DM = scGPNumericEdit_mezera->Value * 1000.0;
 				rHTMLLabel_jednotky_vzdalenostpalcu->Caption="<font color=#2b579a>[mm]";
+				Rz = scGPNumericEdit_rozestup->Value * 1000.0;
 		}
 		// plnìní + poèet desetinných míst
 		scGPNumericEdit_mezera->Value = DM;
+		scGPNumericEdit_rozestup->Value=Rz;
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 // ---------------------------------------------------------------------------

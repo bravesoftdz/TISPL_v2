@@ -263,7 +263,6 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    OnClick = rHTMLLabel_mezeraClick
   end
   object rHTMLLabel_pozice: TrHTMLLabel
     Left = 8
@@ -292,14 +291,13 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    OnClick = rHTMLLabel_mezeraClick
   end
   object rHTMLLabel_jednotky_vzdalenostpalcu: TrHTMLLabel
     Left = 358
     Top = 574
-    Width = 42
+    Width = 28
     Height = 21
-    Caption = '<font color=#2b579a>[mm]'
+    Caption = '<font color=#2b579a>[m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -307,6 +305,7 @@ object Form_parametry: TForm_parametry
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_mezeraClick
   end
   object Edit_name: TEdit
     Left = 43
@@ -2865,9 +2864,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_rozestup: TscGPNumericEdit
-    Left = 294
+    Left = 290
     Top = 569
-    Width = 62
+    Width = 71
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
