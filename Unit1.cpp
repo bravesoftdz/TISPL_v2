@@ -360,15 +360,24 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 	if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	else
 	{
-		//toto odkomentovat pro spuštění TTR
-		if(!ttr("start"))
+		if(!DEBUG)
 		{
-			Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
-			Close();
+			//toto odkomentovat pro spuštění TTR
+			if(!ttr("start"))
+			{
+				Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
+				Close();
+			}
+			else
+			//	Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
+			startUP();//toto vždy odkomentované
 		}
 		else
-	 //	Timer_tr->Enabled=false;// toto zakomentovat po spuštění TTR
-		startUP();//toto vždy odkomentované
+		{
+			MessageBeep(0);
+			Timer_tr->Enabled=false;
+			startUP();
+    }
 	}
 }
 //---------------------------------------------------------------------------

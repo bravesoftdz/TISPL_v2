@@ -2,6 +2,7 @@
 
 #ifndef Unit1H
 #define Unit1H
+
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -96,6 +97,11 @@
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
+//podmínìný pøeklad, zda se jedná èí nejedná o debug
+bool DEBUG=false;
+#ifdef _DEBUG
+DEBUG=true;
+#endif
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
