@@ -845,10 +845,11 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 ////---------------------------------------------------------------------------
 //vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)
 //dalo by se ještě pro určtité účely i zefektivnit, že pokud je pohon přiřazen k nějakém KK objektu, není třeba dále hledat, protože je již zajištěno minRD...
+//pokud vrátí 0, znamená, že pohon není využíván
 double Cvektory::minRD(TPohon *pohon)
 {
 	TObjekt *O=OBJEKTY->dalsi;
-	double min=12356.0;//jen náhodně velké číslo
+	double min=123567.0;//jen náhodně velké číslo
 	while (O!=NULL)
 	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
 		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
@@ -858,6 +859,7 @@ double Cvektory::minRD(TPohon *pohon)
 		O=O->dalsi;
 	}
 	O=NULL;delete O;
+	if(min==123567.0)min=0;//pokud vrátí 0, znamená, že pohon není využíván
 	return min;
 }
 ////---------------------------------------------------------------------------
