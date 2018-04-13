@@ -374,7 +374,6 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		}
 		else
 		{
-			MessageBeep(0);
 			Timer_tr->Enabled=false;
 			startUP();
     }

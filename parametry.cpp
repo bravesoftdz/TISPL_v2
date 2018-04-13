@@ -1630,7 +1630,7 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				Form_parametry->VisibleChanging();
 				// skryje form, stejné jako visible=false
 		}
-		if (Key == 123) // F12
+		if (Key == 123 && DEBUG) // F12 + pouze v DEBUGU
 		{
 				Memo1->Visible = true;
 				Memo1->Lines->Clear();
@@ -1638,9 +1638,7 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				Memo1->Top = 0;
 				Memo1->Left = 0;
 		}
-
 }
-
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // pøi stisku storna

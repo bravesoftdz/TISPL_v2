@@ -98,9 +98,10 @@
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
 //podmínìný pøeklad, zda se jedná èí nejedná o debug
-bool DEBUG=false;
 #ifdef _DEBUG
-DEBUG=true;
+bool DEBUG=true;
+#else
+bool DEBUG=false;
 #endif
 //---------------------------------------------------------------------------
 class TForm1 : public TForm

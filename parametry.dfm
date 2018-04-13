@@ -2094,6 +2094,7 @@ object Form_parametry: TForm_parametry
     Top = 649
     Width = 37
     Height = 34
+    Hint = 'Zkop'#237'rovat paremetry objektu'
     Align = alCustom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -2170,10 +2171,11 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPGlyphButton_paste: TscGPGlyphButton
-    Left = 34
+    Left = 35
     Top = 649
     Width = 37
     Height = 34
+    Hint = 'Vlo'#382'it parametry objektu ze schr'#225'nky'
     Align = alCustom
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
