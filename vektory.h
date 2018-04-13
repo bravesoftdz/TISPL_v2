@@ -289,6 +289,7 @@ class Cvektory
 		TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL
 		double minRD(TPohon *pohon);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
 		AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD);//vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD
+		TPohon *najdi_pohon_dle_RD(double RD);//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
 		void zrusit_prirazeni_pohunu_k_objektum(unsigned long n);//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
 		void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
 		AnsiString navrhni_POHONY(AnsiString separator="</br>");//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí

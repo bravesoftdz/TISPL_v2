@@ -882,6 +882,18 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 	return objekty;
 }
 ////---------------------------------------------------------------------------
+//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
+Cvektory::TPohon *Cvektory::najdi_pohon_dle_RD(double RD)
+{
+	TPohon *p=POHONY->dalsi;//přeskočí hlavičku
+	while (p!=NULL)
+	{
+		if(p->aRD==RD)break;//akce s ukazatelem popř. pokud by se nepoužívalo aktivně aRD (nyní v Form1 v NP())by se musela hledat RD v objektech a z nalezeného objektu by se vrátil přiřazený pohon, pokud by obsahoval, pokud ne, hledalo by se dál
+		else p=p->dalsi;//posun na další prvek v seznamu
+	}
+	return p;
+}
+////---------------------------------------------------------------------------
 //všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
 void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 {
