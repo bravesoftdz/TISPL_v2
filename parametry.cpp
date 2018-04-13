@@ -1908,7 +1908,10 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
 		Form_parametry_linky->zobrazitFrameForm=true;
-		Form1->Button_dopravnik_parametryClick(Sender);
+		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+		//nemùže tady být toto!!!:Form1->Button_dopravnik_parametryClick(Sender);ale toto
+		Form_parametry_linky->ShowModal();//pøípadná návratová hodnota se øeši v knihovnì
 		Form_parametry_linky->zobrazitFrameForm=false;
 		if(Form1->d.v.POHONY->dalsi!=NULL)//pokud již existuje pohon
 		{

@@ -81,8 +81,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		 //	scRadioGroup_typVoziku->Visible=true;
 			//rEditNum_delkavoziku->Visible=true;
 			//rHTMLLabel_delka_voziku->Visible=true;
-
-
 		}
 		else          //Klient
 		{
@@ -104,15 +102,13 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scGPButton_obecne->Visible=false;
 			rHTMLLabel_takt->Visible=false;
 			rEditNum_takt->Visible=false;
-
-
 		}
 
 		nacti_pohony();
 
 		if(!data_nalezena)
 		{
-		rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
+			rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
 		}
 
 		//	Form1->d.v.vymaz_seznam_POHONY();
@@ -121,7 +117,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	// rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
 
 	 scHTMLLabel_doporuc_pohony->Color=(TColor)RGB(230,230,230);
-
 
 	 scGPButton_vozik->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_vozik->Options->FocusedColor=Form_parametry_linky->Color;
@@ -146,7 +141,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_obecne->Options->FrameNormalColor=Form_parametry_linky->Color;
 	 scGPButton_obecne->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_obecne->Options->FramePressedColor=Form_parametry_linky->Color;
-
 
 	 scGPButton_jig->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_jig->Options->FocusedColor=Form_parametry_linky->Color;
@@ -174,7 +168,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->SetColumnAutoFit(0);
 	 rStringGridEd_hlavicka_tabulky->SetColumnAutoFit(0);
 
-
 	 rStringGridEd_tab_dopravniky->Cells[0][0]="ID";
 	 rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
 	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
@@ -191,13 +184,12 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_hlavicka_tabulky->Cells[5][0]=rStringGridEd_tab_dopravniky->Cells[5][0];
 	 rStringGridEd_hlavicka_tabulky->Cells[6][0]=rStringGridEd_tab_dopravniky->Cells[6][0];
 
-
 	//	rStringGridEd_tab_dopravniky->Columns->
-
 }
 //---------------------------------------------------------------------------
-
-void TForm_parametry_linky::nacti_pohony (){
+//
+void TForm_parametry_linky::nacti_pohony ()
+{
 
    data_nalezena=false;
 	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
@@ -234,24 +226,20 @@ void TForm_parametry_linky::nacti_pohony (){
 	}
 
 }
-
+//---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 {
-
-		for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++){
-			rStringGridEd_tab_dopravniky->Rows[i]->Clear();
-			rStringGridEd_tab_dopravniky->RowCount--;
-			}
-		Form_parametry_linky->Close();
-
-
-
+	for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
+	{
+		rStringGridEd_tab_dopravniky->Rows[i]->Clear();
+		rStringGridEd_tab_dopravniky->RowCount--;
+	}
+	Form_parametry_linky->Close();
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 {
-	Form_parametry_linky->Close();
+	Button_stornoClick(Sender);//stejná funkcionalita jako u storna
 }
 //---------------------------------------------------------------------------
 
