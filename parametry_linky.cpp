@@ -718,15 +718,14 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
 {
 
-//if (Col==1 && Row==5) {
-
- //	EditStyle=sgbDropDown;   //vyber typu
-
-// SetFocus();
-
-
-
- //	 }
+//if (Col==4 && Row==3) {
+//
+//		EditStyle=sgbDropDown;   //vyber typu
+//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Clear();
+//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("Ano");
+//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("Ne");
+//
+//	 }
 
 }
 //---------------------------------------------------------------------------

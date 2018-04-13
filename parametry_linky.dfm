@@ -556,7 +556,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 1129
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 1081
@@ -634,7 +633,6 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1079
     end
     object scLabel1: TscLabel
       Left = 0
@@ -667,7 +665,6 @@ object Form_parametry_linky: TForm_parametry_linky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry linky'
-      ExplicitWidth = 1042
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 1044
@@ -748,11 +745,10 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1042
     end
   end
   object scGPButton_vozik: TscGPButton
-    Left = 0
+    Left = 1
     Top = 149
     Width = 130
     Height = 35
@@ -858,7 +854,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 1.000000000000000000
   end
   object scGPButton_pohon: TscGPButton
-    Left = 0
+    Left = 1
     Top = 274
     Width = 130
     Height = 35
@@ -997,7 +993,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 1.000000000000000000
   end
   object scGPButton_obecne: TscGPButton
-    Left = 0
+    Left = 1
     Top = 38
     Width = 130
     Height = 35
@@ -1912,7 +1908,7 @@ object Form_parametry_linky: TForm_parametry_linky
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_hint_Rz: TscGPGlyphButton
-    Left = 1091
+    Left = 1093
     Top = 317
     Width = 37
     Height = 30
