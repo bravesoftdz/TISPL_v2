@@ -1207,7 +1207,7 @@ object Form_parametry: TForm_parametry
   object scComboBox_pohon: TscGPComboBox
     Left = 56
     Top = 135
-    Width = 334
+    Width = 288
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2614,7 +2614,6 @@ object Form_parametry: TForm_parametry
     ParentShowHint = False
     ShowHint = True
     TabOrder = 24
-    Visible = False
     OnClick = Button_dopravnik_parametryClick
     Animation = False
     CanFocused = False

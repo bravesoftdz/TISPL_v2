@@ -1380,9 +1380,9 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender) {
 		scGPNumericEdit_CT->Value = CT;
 		// ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_RD->Value = RD;
+		Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
-
 // ---------------------------------------------------------------------------
 // požadavek na zmìnu jednotek CT
 void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender) {
@@ -1448,6 +1448,7 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender) {
 		// plnìní + poèet desetinných míst
 		// ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_RD->Value = RD;
+		Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 
@@ -1492,28 +1493,21 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender) {
 		double RD = 0.0;
 		if (m_mm == MM) // pokud je v milimetrech, tak pøepne na metry
 		{
-				m_mm = M;
-				scGPButton_metry_milimetry->Caption = "vše na mm";
+				m_mm = M;scGPButton_metry_milimetry->Caption = "vše na mm";
 				// samotné tlaèítko,ukazuje název opaènì
 				// DD
 				DDunit = M;
-				rHTMLLabel_delka_dopravniku->Caption =
-						"Délka kabiny <font color=#2b579a>[m]</font>";
+				rHTMLLabel_delka_dopravniku->Caption ="Délka kabiny <font color=#2b579a>[m]</font>";
 				DD = scGPNumericEdit_delka_dopravniku->Value / 1000.0;
 				// DM
 				DMunit = M;
-				rHTMLLabel_mezera->Caption =
-						"Mezera mezi vozíky <font color=#2b579a>[m]</font>";
+				rHTMLLabel_mezera->Caption = "Mezera mezi vozíky <font color=#2b579a>[m]</font>";
 				DM = scGPNumericEdit_mezera->Value / 1000.0;
 				// RD
 				RDunitD = M;
-				if (minsec == MIN)
-						rHTMLLabel_RD->Caption =
-								"Rychlost pohonu <font color=#2b579a>[m/min]</font>";
+				if (minsec == MIN)rHTMLLabel_RD->Caption ="Rychlost pohonu <font color=#2b579a>[m/min]</font>";
 				// pokud je v minutách
-				else
-						rHTMLLabel_RD->Caption =
-								"Rychlost pohonu <font color=#2b579a>[m/s]</font>";
+				else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>";
 				// pokud je v sekundách
 				RD = scGPNumericEdit_RD->Value / 1000.0;
 		}
@@ -1551,6 +1545,7 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender) {
 		scGPNumericEdit_mezera->Value = DM;
 		// ROSTA//scGPNumericEdit_RD->Decimal=Form1->ms.get_count_decimal(RD);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_RD->Value = RD;
+		Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 
@@ -1829,16 +1824,15 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 }
 // ---------------------------------------------------------------------------
 // kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
-void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender) {
-
+void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
+{
 	INPUT();
 	OUTPUT();
 		Pohon_pouzivan();
 		Nacti_rx();
 		if (scComboBox_pohon->ItemIndex != 0)
 		{   // POKUD je pohon již používán, natáhnu si jeho data
-		Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
-
+				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
 				if (obj!=NULL)
 				{
 					scGPNumericEdit_RD->Value=obj->RD*60;
@@ -1849,16 +1843,12 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender) {
 						if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 
 				}
-
-				else {
-				if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
-
-						}
+				else
+				{
+					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+				}
 		}
-
-
 }
-
 // ---------------------------------------------------------------------------
 // doplnit komentáø
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaClick(TObject *Sender)
@@ -1919,10 +1909,16 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
-		//Form_parametry->Close();
 		Form_parametry_linky->zobrazitFrameForm=true;
 		Form1->Button_dopravnik_parametryClick(Sender);
 		Form_parametry_linky->zobrazitFrameForm=false;
+		if(Form1->d.v.POHONY->dalsi!=NULL)//pokud již existuje pohon
+		{
+			scComboBox_pohon->Enabled=true;//povolení vybírání pohonu
+			Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
+			scComboBox_pohon->ItemIndex=Form1->d.v.POHONY->predchozi->n;//pøíøadíme poslení vytvoøený pohon - to je trochu na zvážení, zda mu ho takto podsouvat
+		}
+		else scComboBox_pohon->Enabled=false;//i tato vìtev má význam, pokud by již novì neexistoval
 }
 // ---------------------------------------------------------------------------
 
@@ -2095,8 +2091,8 @@ void TForm_parametry::OUTPUT()
 			scGPNumericEdit_mezera->Hint=scGPNumericEdit_mezera->Value;
 			scGPNumericEdit_pozice->Hint=scGPNumericEdit_pozice->Value;
 
-
 		VALIDACE();
+
 }
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
@@ -2864,29 +2860,29 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 		///////////////////////////////////KK////////////////////////////////////
 		case 1:
 		{
-					if(input_clicked_edit==C_klik)
+				if(input_clicked_edit==C_klik)
 				{ //  pokud je nastaveno, že bylo kliknuto do K
-      	double CT = scGPNumericEdit_CT->Value; // CT od uživatele
-				if (CTunit == MIN) CT = CT * 60.0; // pokud bylo zadání v minutách pøevede na sekundy
-				double K = scGPNumericEdit_kapacita->Value; // K od uživatele
-				if (CT / Form1->d.v.PP.TT <= K && scButton_zamek_CT->Visible==true  && CT_zamek == LOCKED  && Form1->pom->n>1 && CT<Form1->d.v.PP.TT)
-				{;}
-				else
-						{
+					double CT = scGPNumericEdit_CT->Value; // CT od uživatele
+					if (CTunit == MIN) CT = CT * 60.0; // pokud bylo zadání v minutách pøevede na sekundy
+					double K = scGPNumericEdit_kapacita->Value; // K od uživatele
+					if (CT / Form1->d.v.PP.TT <= K && scButton_zamek_CT->Visible==true  && CT_zamek == LOCKED  && Form1->pom->n>1 && CT<Form1->d.v.PP.TT)
+					{;}
+					else
+					{
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
 								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno "+AnsiString(CT/Form1->d.v.PP.TT)+" nebo odemknìte technologický èas a zaktulizujte hodnoty!",true);
 								VID=22;
 							}
-						}
+					}
 				}
 				//-------------------------------------------------------------------------------------------------//
 		    // deklarace promìnných je výše = je shodná, jen je potøeba odlišit výpis, zdali se vztahuje k K nebo P
 				if(input_clicked_edit==P_klik)
 				{ //  pokud je nastaveno, že bylo kliknuto do P
 					//Memo1->Lines->Add("klik do P");
-						if (CT / Form1->d.v.PP.TT <= K && scButton_zamek_CT->Visible==true  && CT_zamek == LOCKED  && Form1->pom->n>1 && CT<Form1->d.v.PP.TT)
-						{;}
+					if (CT / Form1->d.v.PP.TT <= K && scButton_zamek_CT->Visible==true  && CT_zamek == LOCKED  && Form1->pom->n>1 && CT<Form1->d.v.PP.TT)
+					{;}
 					else
 					{
 						if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
@@ -2895,7 +2891,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					}
 				}
 				//----------------------------------------------------------------------------------------------------------------------//
-		//---------------------------------------------------------------------------------------------------------------------------------//
+				//---------------------------------------------------------------------------------------------------------------------------------//
 				if(scGPNumericEdit_mezera->Value<-0.0000000000000004)   //ROSTA mezera ošetøení viz výše
 				{
 					double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
@@ -2917,17 +2913,27 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 		///---------------------------------------------------------------
 		//Pøiøazen používaný pohon, RD<minimální možné RD objektù (S&G èi PP) na pøiøazeném pohonu (fce minRD)
 
+//				if (scComboBox_pohon->ItemIndex != 0)
+//				{
+//					Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
+//					double	minRD=Form1->d.v.minRD(Form1->pom->pohon);
+//					if (obj!=NULL && obj->RD<minRD)
+//					{
+//							AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->pom->pohon,obj->RD);
+//					// TODO - KONTROLA 	//vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s].");
+//							VID=29;
+//					}
+//				}
+//OPRAVA MARTIN:
 				if (scComboBox_pohon->ItemIndex != 0)
-				{
-				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
-				double	minRD=Form1->d.v.minRD(Form1->pom->pohon);
-
-						if (obj!=NULL && obj->RD<minRD)
-						{
-							AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->pom->pohon,obj->RD);
-					// TODO - KONTROLA 	//vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s].");
+				{                                                       //z roletky uvažovaný pohon (ale pom->pohon ho ještì nemá!!!
+					double	minRD=Form1->d.v.minRD(Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex));//vratí nejnižší možnou rychlost pro objekt, který používá tento pohon
+					if (pm.RD<minRD)//pokud by novým RD byl pod minRD (tj. pod RD nejrizikovìjšího objektu, tak je problém)
+					{
+							AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex),pm.RD);
+							vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s].");
 							VID=29;
-						}
+					}
 				}
 
 

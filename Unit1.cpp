@@ -443,7 +443,7 @@ bool TForm1::ttr(UnicodeString Text)
 	catch(...)//nezdařilo se připojení k licenčnímu serveru
 	{
 		//tady nemůže být log
-		Text_error="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!";
+		Text_error="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!"+AnsiString(n_prihlaseni+1);
 		if(++n_prihlaseni>=3)//až při třetím chybovém stavu
 		{
 			MB(Text_error);
@@ -2789,9 +2789,10 @@ void TForm1::NP()
 {
 	if(pom!=NULL)
 	{
-		Form_parametry->scGPButton_header_projekt->Visible=false;//pokud nebude existovat žádný pohon, nabídne se v roletce proklik do PL
+		//Form_parametry->scGPButton_header_projekt->Visible=false;//pokud nebude existovat žádný pohon, nabídne se v roletce proklik do PL
 		////plnění daty
-	 	aktualizace_combobox_pohony_v_PO();
+		aktualizace_combobox_pohony_v_PO();
+		if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
 		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
 		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
@@ -2801,21 +2802,13 @@ void TForm1::NP()
 		//režim
 		Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 		//CT
-		//Form_parametry->scGPNumericEdit_CT->Decimal=3;
-		//Form_parametry->scGPNumericEdit_CT->Decimal=ms.get_count_decimal(pom->CT);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
 		//RD
-		//Form_parametry->scGPNumericEdit_RD->Decimal=Form_parametry->scGPNumericEdit_CT->Decimal;
-		//Form_parametry->scGPNumericEdit_RD->Decimal=ms.get_count_decimal(pom->RD);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
 		//DD
-	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=Form_parametry->scGPNumericEdit_RD->Decimal;
-	 //	Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal=ms.get_count_decimal(pom->delka_dopravniku);//nastaví zobrazení počtu desetinných míst;
 		Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
 		//DM
-		//Form_parametry->scGPNumericEdit_mezera->Decimal=Form_parametry->scGPNumericEdit_delka_dopravniku->Decimal;
-	 //	Form_parametry->scGPNumericEdit_mezera->Decimal=ms.get_count_decimal(pom->mezera);//nastaví zobrazení počtu desetinných míst;
-	 	Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -2915,7 +2908,7 @@ void TForm1::NP()
 			}
 			catch(...)
 			{
-				MB("Neplatná hodnota!");
+				if(mrOk==MB("Neplatná hodnota!"))//lepé přes mrOk
 				NP();//nové zadání, //volá form na nastevení parametrů, dřívější nastavparemetry1click
 			}
 		}
@@ -2926,44 +2919,48 @@ void TForm1::NP()
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
 void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 {
+		Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
-		Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
-		Form_parametry->existuje_pohon=true;
 		TscGPListBoxItem *t=NULL;
-		if(ukaz==NULL)//pokud neexitustuje žádný pohon
+		if(P==NULL)//pokud neexitustuje žádný pohon
 		{
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nebyl nadefinován";
 			Form_parametry->existuje_pohon=false;
 			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
-			Form_parametry->scGPButton_header_projekt->Visible=true;
+			//Form_parametry->scGPButton_header_projekt->Visible=true;
+
 		}
 		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 		{
+			Form_parametry->existuje_pohon=true;
+			//Form_parametry->scGPButton_header_projekt->Visible=false;
+
 			//vytvoření položky nepřiřazen
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nepřiřazen";
 
       //příprava vypisovaných jednotek
-			double jednotky_cas_pohon=60.0;	AnsiString Tcas="min";//tzn. min (ač 60 působí nelogicky)
-			if(Form1->readINI("nastaveni_form_parametry","RDt")=="0" || RDunitT==0)
-			{jednotky_cas_pohon=1.0;Tcas="s";}//tzn. sec
-			double jednotky_delka_pohon=100.0;AnsiString Td="mm";//tzn. mm
-			if(Form1->readINI("nastaveni_form_parametry","RDd")=="0"  || RDunitD==0){jednotky_delka_pohon=1.0;Td="m";}//tzn. m
+			double jednotky_cas_pohon=60.0;AnsiString Tcas="min";//tzn. min (ač 60 působí nelogicky)
+			if(RDunitT==-1){if(Form1->readINI("nastaveni_form_parametry","RDt")=="0"){jednotky_cas_pohon=1.0;Tcas="s";}}//tzn. sec při načítání z ini
+			else{if(RDunitT==0){jednotky_cas_pohon=1.0;Tcas="s";}}//tzn. sec při načítání z ini
+			double jednotky_delka_pohon=1000.0;AnsiString Td="mm";//tzn. mm
+			if(RDunitD==-1){if(Form1->readINI("nastaveni_form_parametry","RDd")=="0"){jednotky_delka_pohon=1.0;Td="m";}}//tzn. m
+			else{if(RDunitD==0){jednotky_delka_pohon=1.0;Td="m";}}//tzn. m
 			UnicodeString caption_jednotky=Td+"/"+Tcas;
 
 			//plnění existujícím pohony
-			while (ukaz!=NULL)
+			while (P!=NULL)
 			{
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-				t->Caption=ukaz->name+" - "+AnsiString(m.round2double(ukaz->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(ukaz->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+" "+caption_jednotky;
-				ukaz=ukaz->dalsi;
-				Form_parametry->scGPButton_header_projekt->Visible=false;//toto je k čemu?
+				t->Caption=P->name+" - "+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+" "+caption_jednotky;
+				P=P->dalsi;
+				//Form_parametry->scGPButton_header_projekt->Visible=false;
 			}
 			//nastavení comba, aby ukazoval na dříve vybraný pohon
-			if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;
-			else Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen
+			if(d.v.POHONY->dalsi==NULL)Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen
 		}
+		Form_parametry->scComboBox_pohon->Refresh();
 }
 //---------------------------------------------------------------------------
 //aktualizace a přepočet hodnot volaná kvůli časovým osám (maro) a techn.procesům(roma)
@@ -4225,14 +4222,14 @@ void __fastcall TForm1::Timer_trTimer(TObject *Sender)
 void __fastcall TForm1::SQL_processIDClick(TObject *Sender)
 {
 
-		FDQuery1->Active = False;
-		FDQuery1->Open("select * from app_setup where id=\"1\"");  //id nahradit id z ini     a udelat podmínku zda platí lokální údaje o pc s uloženými
-		FDQuery1->Active = True;
+	FDQuery1->Active = False;
+	FDQuery1->Open("select * from app_setup where id=\"1\"");  //id nahradit id z ini     a udelat podmínku zda platí lokální údaje o pc s uloženými
+	FDQuery1->Active = True;
 
 
-	 //ZDM if(get_computer_name()!=FDQuery1->Fields->Fields[2]->AsAnsiString || get_user_name()!=FDQuery1->Fields->Fields[3]->AsAnsiString) {
-	 //ZDM ShowMessage("neplatne udaje v PC a na serveru");
-	 //ZDM }
+	//ZDM if(get_computer_name()!=FDQuery1->Fields->Fields[2]->AsAnsiString || get_user_name()!=FDQuery1->Fields->Fields[3]->AsAnsiString) {
+	//ZDM ShowMessage("neplatne udaje v PC a na serveru");
+	//ZDM }
 
 	//ZDM AnsiString send_log_time= TIME.CurrentDateTime();
 	AnsiString relation_id=GetCurrentProcessId();
