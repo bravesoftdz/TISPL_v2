@@ -1907,17 +1907,22 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
+		//!!!!!toto dostane možná trochu jinou podobu podle nové úvahy, pravdìpodobnì za situace, že bude námìt na pøídání nového pohonu (bude vysvíceno tlaèítko na pøidání pohonu)
+		bool priradit_posledni=false;
+		if(scComboBox_pohon->ItemIndex==0)priradit_posledni=true;//když ještì nebyl pøiøazen, jinak mu nevnucovat jiný pohon, aby mohlo tlaèítko také dále fungovat ke správì pohonù
+
 		Form_parametry_linky->zobrazitFrameForm=true;
 		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-		//nemùže tady být toto!!!:Form1->Button_dopravnik_parametryClick(Sender);ale toto
+		//nemùže tady být toto!!!:Form1->Button_dopravnik_parametryClick(Sender) ale musí být toto:
 		Form_parametry_linky->ShowModal();//pøípadná návratová hodnota se øeši v knihovnì
 		Form_parametry_linky->zobrazitFrameForm=false;
+
 		if(Form1->d.v.POHONY->dalsi!=NULL)//pokud již existuje pohon
 		{
 			scComboBox_pohon->Enabled=true;//povolení vybírání pohonu
 			Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
-			scComboBox_pohon->ItemIndex=Form1->d.v.POHONY->predchozi->n;//pøíøadíme poslení vytvoøený pohon - to je trochu na zvážení, zda mu ho takto podsouvat
+			if(priradit_posledni)scComboBox_pohon->ItemIndex=Form1->d.v.POHONY->predchozi->n;//pøíøadíme poslení vytvoøený pohon - to je trochu na zvážení, zda mu ho takto podsouvat
 		}
 		else scComboBox_pohon->Enabled=false;//i tato vìtev má význam, pokud by již novì neexistoval
 }
