@@ -416,17 +416,16 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_info_cekaniClick(TObject *Sender);
 
 
-
-
-
 // User declarations
 	////struktury, výèty
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
+	Cvektory::TObjekt *pom;
 	Cvektory::TObjekt *copyObjekt;
 	TPointD copyObjektRzRx;
+
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
@@ -435,17 +434,12 @@ private:
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
- public:
-	Cvektory::TObjekt *pom;
- private:
 	Cvektory::TProces *proces_pom;
 
 	////metody
 	void edice();
 	void ESC();
 	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizují posuny obrazu
-	void ZOOM_IN();//pøiblížení
-	void ZOOM_OUT();//oddálení
 	void ZOOM();//samotný ZOOM
 	void ZOOM_WINDOW();//pøiblížení oknem
 	void on_change_zoom_change_scGPTrackBar();
@@ -552,6 +546,8 @@ public:		// User declarations
 	bool TZF;//TRIAL_zakazat_funkcionality
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
+	void ZOOM_IN();//pøiblížení
+	void ZOOM_OUT();//oddálení
 	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5

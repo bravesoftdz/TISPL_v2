@@ -18,8 +18,8 @@ USEFORM("jig.cpp", Form_jig);
 USEFORM("casovaOsa_info.cpp", Form_osa_info);
 USEFORM("cesty.cpp", Form_cesty);
 USEFORM("MyMessageBox.cpp", myMessageBox);
-USEFORM("kalendar.cpp", Form_kalendar);
 USEFORM("kabina_schema.cpp", Form_kabina_schema);
+USEFORM("kalendar.cpp", Form_kalendar);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {

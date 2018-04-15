@@ -1683,7 +1683,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_copyClick(TObject *Sender)
 		Form1->copyObjekt->name=scGPEdit_name->Text;T=scGPEdit_name->Text;T+=";";
 		Form1->copyObjekt->short_name=scGPEdit_shortname->Text;T+=scGPEdit_shortname->Text;T+=";";
 		Form1->copyObjekt->rezim=scComboBox_rezim->ItemIndex;T+=scComboBox_rezim->ItemIndex;T+=";";
-		Form1->copyObjekt->pohon=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex+1);/* indexuje se od nuly */ T+=scComboBox_pohon->ItemIndex+1;T+=";";
+		Form1->copyObjekt->pohon=Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);/* indexuje se od nuly */ T+=scComboBox_pohon->ItemIndex;T+=";";
 		Form1->copyObjekt->CT=scGPNumericEdit_CT->Value*jednotky_cas;T+=Form1->copyObjekt->CT;T+=";";
 		Form1->copyObjekt->RD=scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;T+=Form1->copyObjekt->RD;T+=";";
 		Form1->copyObjekt->delka_dopravniku=scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;T+= scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;T += ";";
@@ -1720,7 +1720,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 		scGPEdit_shortname->Text = Form1->copyObjekt->short_name;
 		scComboBox_rezim->ItemIndex = Form1->copyObjekt->rezim;
 		if (Form1->copyObjekt->pohon == NULL)scComboBox_pohon->ItemIndex=0;
-		else scComboBox_pohon->ItemIndex=Form1->copyObjekt->pohon->n-1;
+		else scComboBox_pohon->ItemIndex=Form1->copyObjekt->pohon->n;
 		scGPNumericEdit_CT->Value=Form1->copyObjekt->CT/jednotky_cas;
 		scGPNumericEdit_RD->Value=Form1->copyObjekt->RD*jednotky_cas*jednotky_vzdalenost;
 		scGPNumericEdit_delka_dopravniku->Value=Form1->copyObjekt->delka_dopravniku*jednotky_vzdalenost;

@@ -54,13 +54,14 @@ class Cvykresli
 	void vykresli_technologicke_procesy(TCanvas *canv);//ROMA metoda, vykreslí graf technologickıch procesù vùèi jednotlivım t-objektùm v èase
 	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
 	unsigned int vykresli_pozice(TCanvas *canv, unsigned int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double mezera);//zajišuje vykreslení pozic v layoutu a vratí index poslední vykreslené pozice
+	void vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Z);//XY -umístìní L zaèátek (støed dopravníku) objektu v m, Z - zoom,faktor zvìtšení
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
 //	void vykresli_linku(TCanvas *canv);//zajišuje vykreslení osy linky
 //	void umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz);//zajišuje umístìní vozíku na lince
 //	void vykresli_vozik(TCanvas *canv,Cvektory::TVozik *ukaz,long X,long Y,bool NEW);//zajišuje vykreslení vozíku pøi simulaci, pokud je NEW==1, tak se vykreslí novı, pøi 0 se smae starı
 //	void priprav_palce();//pøidá novı palec do seznamu PALCE s umístìním pøímo na linku dle stanovené rozteèe
 //	void umisti_palec(TCanvas *canv,Cvektory::TPalec *ukaz);//zajišuje aktuální umístìní vozíku na lince vùèi animaci
-//	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW);//zajišuje samotné vykreslení vozíku (rotovanı obdelník)
+	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajišuje samotné vykreslení palce, parametr NEW rozlišuje novı palec a palace starı ji ke smazání (to slouí pro simulaci), poslední parametr znaèí, zda palec oznaèit jako aktivní
 	void rotace_textu(TCanvas *canv, long rotace);//úhel rotace je desetinách stupnì
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
 	void set_color(TCanvas *canv, double time);
@@ -74,7 +75,7 @@ class Cvykresli
 	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p, bool odecti_region=true);
 	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region=true);
 	void sound();
-	void meritko(TCanvas *canv);
+	void meritko(TCanvas *canv,long X=-1,long Y=-1);
 
 	short O_width,O_height;//logické parametry, nezoomovat
 	unsigned long cas;//ms

@@ -23,10 +23,18 @@ TForm_parametry_linky *Form_parametry_linky;
 __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	: TForm(Owner)
 {
-  //designové záležitosti
+	//designové záležitosti
+	Form_parametry_linky->Color=(TColor)RGB(240,240,240); //nastavení barvy formuláøe
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 	zobrazitFrameForm=false;
+
+	//popup menu
+	PopUPmenu->Height=34*3;//zobrazené dvì položky
+	PopUPmenu->Color=(TColor)RGB(240,240,240); //nastavení barvy
+	Item_kopirovat->FillColor=PopUPmenu->Color;
+	Item_smazat->FillColor=PopUPmenu->Color;
+	Item_smazat_nepouzite->FillColor=PopUPmenu->Color;
 
 	Delkaunit=MM;
 	Sirkaunit=Delkaunit;
@@ -37,6 +45,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
+		PopUPmenu->Visible=false;
 
     //provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
 		if(Form1->d.v.OBJEKTY->dalsi!=NULL)
@@ -194,28 +203,25 @@ void TForm_parametry_linky::nacti_pohony ()
    data_nalezena=false;
 	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
 
-	 if (ukaz!=NULL) {
-
+	 if (ukaz!=NULL)
+	 {
 				rStringGridEd_tab_dopravniky->RowCount = Form1->d.v.POHONY->predchozi->n + 1;
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
 				 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 				 {
+						//pùvodní if(Form1->d.v.pohon_je_pouzivan(ukaz->n))rStringGridEd_tab_dopravniky->Cells[5][i]="ano";else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+						AnsiString OBJEKTY_POUZIVAJICI_POHON=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
+						if(OBJEKTY_POUZIVAJICI_POHON!="")rStringGridEd_tab_dopravniky->Cells[5][i]=OBJEKTY_POUZIVAJICI_POHON;
+						else rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
 
-				 if(Form1->d.v.pohon_je_pouzivan(ukaz->n))
-				 {
-					rStringGridEd_tab_dopravniky->Cells[5][i]="ano";
-					//rStringGridEd_tab_dopravniky->
-				 }
-				 else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+						//	 ShowMessage(ukaz->rychlost_do*60.0);
+						rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
+						rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
+						rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60.0;
+						rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60.0;
+						rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000.0;
 
-			//	 ShowMessage(ukaz->rychlost_do*60.0);
-			rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
-			rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
-			rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60.0;
-			rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60.0;
-			rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000.0;
-
-				ukaz = ukaz->dalsi;
+						ukaz = ukaz->dalsi;
 				 }
 
 	}
@@ -477,10 +483,8 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-
 void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 {
-
 			if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
 			{
 				AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(rStringGridEd_tab_dopravniky->RowCount-1,true);
@@ -686,6 +690,9 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	}
 	if(Key==27)//ESC
 	{
+		 if(PopUPmenu->Visible)//pokud je zobrazeno pop-up, tak skryje to
+		 PopUPmenu->Visible=false;
+		 else //jinak ukonèení formuláøe
 		 Button_stornoClick(Sender);
 	}
 }
@@ -968,6 +975,101 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender
 		// zobrazeni formuláøe
 		Form_kabina_schema->ShowModal();
 		if(zFFtemp)zobrazitFrameForm=true;//pokud bylo orámování, tak vrátí
+}
+//---------------------------------------------------------------------------
+//volání pop-up menu
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyMouseDown(TObject *Sender,
+          TMouseButton Button, TShiftState Shift, int X, int Y)
+{
+	 if(Button==mbRight)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
+	 {
+			PopUPmenu->Left=X;PopUPmenu->Top=Y+rStringGridEd_tab_dopravniky->Top;
+			scLabel_kopirovat->Caption="  Kopírovat pohon "+AnsiString(rStringGridEd_tab_dopravniky->Row);
+			scLabel_smazat->Caption="  Smazat pohon "+AnsiString(rStringGridEd_tab_dopravniky->Row);
+			PopUPmenu->Visible=true;
+	 }
+}
+//---------------------------------------------------------------------------
+//køížek, který skryje pop-up menu
+void __fastcall TForm_parametry_linky::GlyphButton_closeClick(TObject *Sender)
+{
+	PopUPmenu->Visible=false;
+}
+//---------------------------------------------------------------------------
+//zajišuje zkopírování pohonu, vloží na konec, nevkládáme za kopírovaný objekt, protože podle poøadí zùstává pøiøaøení k jednotlivým objektùm
+void __fastcall TForm_parametry_linky::scLabel_kopirovatClick(TObject *Sender)
+{
+	int ROW=rStringGridEd_tab_dopravniky->Row;
+	//zvýšení celkového poètu øádkù o jednièku
+	rStringGridEd_tab_dopravniky->RowCount++;
+	int COUNT=rStringGridEd_tab_dopravniky->RowCount;
+	//zkopírování øádku až na konec (zámìrnì, viz popis výše)
+	rStringGridEd_tab_dopravniky->Rows[COUNT-1]=rStringGridEd_tab_dopravniky->Rows[ROW];
+	//indexace
+	rStringGridEd_tab_dopravniky->Cells[0][COUNT-1]=COUNT-1;
+	//název pøejmenování
+	rStringGridEd_tab_dopravniky->Cells[1][COUNT-1]=rStringGridEd_tab_dopravniky->Cells[1][COUNT-1]+" - kopie";
+	//skrytí pop-up menu
+	PopUPmenu->Visible=false;
+}
+//---------------------------------------------------------------------------
+//zajišuje smázání pohonu
+void __fastcall TForm_parametry_linky::scLabel_smazatClick(TObject *Sender)
+{
+	int ROW=rStringGridEd_tab_dopravniky->Row;
+	bool smazat=false;
+	if(Form1->d.v.pohon_je_pouzivan(ROW))//pohon je používaný
+	{
+			AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ROW,true);
+			if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být smazán?",MB_OKCANCEL))
+			{
+				Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(ROW);
+				smazat=true;
+			}
+	}
+	else//pohon není používaný a mùžeme tedy smazat rovnou
+	{
+		smazat=true;
+	}
+	if(smazat)
+	{
+		//samotné smazání øádku
+		rStringGridEd_tab_dopravniky->Rows[ROW]->Clear();
+		//pøesunutí všech následujících položek, jsou-li
+		for (int i=ROW;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+		{
+			rStringGridEd_tab_dopravniky->Rows[i]=rStringGridEd_tab_dopravniky->Rows[i+1];
+			rStringGridEd_tab_dopravniky->Cells[0][i] = i;//správné pøeindexování
+		}
+		//snížení celkového poètu øádkù o jednièku
+		rStringGridEd_tab_dopravniky->RowCount--;
+	}
+	//skrytí pop-up menu
+	PopUPmenu->Visible=false;
+}
+//---------------------------------------------------------------------------
+//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
+{
+	int ROW=rStringGridEd_tab_dopravniky->Row;
+	for(unsigned int j=1;j<=rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+	{
+		if(!Form1->d.v.pohon_je_pouzivan(ROW))//pohon je používaný
+		{
+			//samotné smazání øádku
+			rStringGridEd_tab_dopravniky->Rows[ROW]->Clear();
+			//pøesunutí všech následujících položek, jsou-li
+			for (int i=ROW;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+			{
+				rStringGridEd_tab_dopravniky->Rows[i]=rStringGridEd_tab_dopravniky->Rows[i+1];
+				rStringGridEd_tab_dopravniky->Cells[0][i] = i;//správné pøeindexování
+			}
+			//snížení celkového poètu øádkù o jednièku
+			rStringGridEd_tab_dopravniky->RowCount--;
+		}
+	}
+	//skrytí pop-up menu
+	PopUPmenu->Visible=false;
 }
 //---------------------------------------------------------------------------
 

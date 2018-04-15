@@ -65,6 +65,23 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_hint_Rz;
 	TscGPNumericEdit *rEditNum_delka_jigu;
 	TscGPNumericEdit *rEditNum_sirka_jigu;
+	TscGPPanel *PopUPmenu;
+	TscGPPanel *Item_zobrazit_parametry;
+	TscLabel *scLabel_zobrazit_parametry;
+	TscGPGlyphButton *GlyphButton_zobrazit_parametry;
+	TscGPPanel *Item_smazat;
+	TscGPGlyphButton *GlyphButton_smazat;
+	TscLabel *scLabel_smazat;
+	TscGPPanel *Item_smazat_nepouzite;
+	TscLabel *scLabel_smazat_nepouzite;
+	TscGPGlyphButton *GlyphButton_smazat_nepouzite;
+	TscGPPanel *Item_kopirovat;
+	TscLabel *scLabel_kopirovat;
+	TscGPGlyphButton *GlyphButton_kopirovat;
+	TscGPPanel *Item_nastavit_parametry;
+	TscLabel *scLabel_nastavit_parametry;
+	TscGPGlyphButton *GlyphButton_nastavit_parametry;
+	TscGPGlyphButton *GlyphButton_close;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -101,6 +118,12 @@ __published:	// IDE-managed Components
 	void __fastcall rEditNum_sirka_jiguChange(TObject *Sender);
 	void __fastcall rEditNum_delka_jiguChange(TObject *Sender);
 	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
+	void __fastcall rStringGridEd_tab_dopravnikyMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
+	void __fastcall GlyphButton_closeClick(TObject *Sender);
+	void __fastcall scLabel_kopirovatClick(TObject *Sender);
+	void __fastcall scLabel_smazatClick(TObject *Sender);
+	void __fastcall scLabel_smazat_nepouziteClick(TObject *Sender);
 
 
 

@@ -131,7 +131,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	EDICE=ARCHITECT;//ARCHITECT,CLIENT,VIEWER,DEMO
 	edice();//zakázání či povolení grafických uživatelských prvků dle úrovně edice
 	n_prihlaseni=0;
-	TZF=true;//TRIAL_zakazat_funkcionality
+	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
 	if(TZF)scGPSwitch_rezim->Enabled=false;
 
 	copyObjekt=new Cvektory::TObjekt;
@@ -595,17 +595,19 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 //automaticky přidá parametry (čas, uživatel, licence)
 void TForm1::log2web(UnicodeString Text)
 {
-	//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
-	try
+	//if(!DEBUG)
 	{
+		//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
+		try
+		{
 			AnsiString relation_id=GetCurrentProcessId();
 			AnsiString send_log_time= TIME.CurrentDateTime();
 			AnsiString ID ="1";
 			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
 			FDConnection1->ExecSQL(strSQL);
+		}
+		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
 	}
-	catch(...){;}//např. není připojení k internetu
-
 }
 //pouze text
 void TForm1::log2webOnlyText(UnicodeString Text)
@@ -4947,5 +4949,6 @@ void TForm1::db_connection()
 	FDConnection1->Params->DriverID="Mysql";
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
+
 
 
