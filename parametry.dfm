@@ -2544,6 +2544,7 @@ object Form_parametry: TForm_parametry
     Increment = 1.000000000000000000
     SupportUpDownKeys = False
     SupportMouseWheel = False
+    Decimal = 3
     ValueType = scvtFloat
     DisplayType = scedtNumeric
     LeftButton.Kind = scgpebCustom
