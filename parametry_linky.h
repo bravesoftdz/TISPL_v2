@@ -82,6 +82,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_nastavit_parametry;
 	TscGPGlyphButton *GlyphButton_nastavit_parametry;
 	TscGPGlyphButton *GlyphButton_close;
+	TscGPGlyphButton *scGPGlyphButton_ADD;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -124,23 +125,36 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_kopirovatClick(TObject *Sender);
 	void __fastcall scLabel_smazatClick(TObject *Sender);
 	void __fastcall scLabel_smazat_nepouziteClick(TObject *Sender);
-
-
-
-
-
-
-
+	void __fastcall scLabel_smazat_nepouziteMouseEnter(TObject *Sender);
+	void __fastcall scLabel_smazat_nepouziteMouseLeave(TObject *Sender);
+	void __fastcall GlyphButton_smazat_nepouziteMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_smazat_nepouziteMouseLeave(TObject *Sender);
+	void __fastcall GlyphButton_smazatMouseLeave(TObject *Sender);
+	void __fastcall scLabel_smazatMouseLeave(TObject *Sender);
+	void __fastcall scLabel_smazatMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_smazatMouseEnter(TObject *Sender);
+	void __fastcall scLabel_kopirovatMouseEnter(TObject *Sender);
+	void __fastcall scLabel_kopirovatMouseLeave(TObject *Sender);
+	void __fastcall GlyphButton_kopirovatMouseEnter(TObject *Sender);
+	void __fastcall GlyphButton_kopirovatMouseLeave(TObject *Sender);
 
 private:	// User declarations
 
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
-
+	void pasiveColor();//nastaví všechny položky pop-up na pasivní resp. default barvu
+	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
+	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;//barvy položek pop-up menu
+	unsigned int getPID(int ROW);//vrátí pohon ID na daném øádku
+	unsigned int getMaxPID();//najde max použité ID pohonu (protože ID nejsou seøazena,nelze vzít index posledního øádku)
+	bool *zrusena_prirazeni_PID;
+	unsigned int zrusena_prirazeni_PID_size;
+	void zrusit_prirazeni_smazanych_pohunu_k_objektum();
+	void pozice_scGPGlyphButton_hint();
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 
 	bool data_nalezena;
-	void  nacti_pohony();
+	void nacti_pohony();
 	void show_min_Rz();
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
@@ -150,7 +164,6 @@ public:		// User declarations
 	bool Changes_PP;   // konkretni zmena PP
 	bool Ulozit;
 	bool zobrazitFrameForm;
-
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry_linky *Form_parametry_linky;

@@ -17,6 +17,7 @@ __fastcall TmyMessageBox::TmyMessageBox(TComponent* Owner)
 	: TForm(Owner)
 {
 	myMessageBox->Color=(TColor)RGB(240,240,240);//nastavení pozadí barvy formuláøe
+	zobrazitFrameForm=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TmyMessageBox::FormShow(TObject *Sender)
@@ -152,10 +153,10 @@ void __fastcall TmyMessageBox::FormKeyDown(TObject *Sender, WORD &Key, TShiftSta
 	}
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
-
+void __fastcall TmyMessageBox::FormPaint(TObject *Sender)
+{
+	//zajišuje pøekreslování orámování okolo
+	if(zobrazitFrameForm)Form1->m.frameForm(myMessageBox,clWebOrange,1);
+}
+//---------------------------------------------------------------------------
 

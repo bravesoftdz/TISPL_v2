@@ -4,7 +4,7 @@ object myMessageBox: TmyMessageBox
   BorderStyle = bsNone
   ClientHeight = 151
   ClientWidth = 366
-  Color = clBtnFace
+  Color = 15790320
   Font.Charset = EASTEUROPE_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,6 +12,7 @@ object myMessageBox: TmyMessageBox
   Font.Style = []
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
+  OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -703,5 +704,6 @@ object myMessageBox: TmyMessageBox
     ScaleFrameWidth = True
     ScaleCheckMarkThickness = True
     ShowFocusRect = True
+    UseFontColorToStyleColor = False
   end
 end

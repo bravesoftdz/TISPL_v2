@@ -595,7 +595,7 @@ AnsiString TForm1::readINI(AnsiString Section,AnsiString Ident)
 //automaticky přidá parametry (čas, uživatel, licence)
 void TForm1::log2web(UnicodeString Text)
 {
-	//if(!DEBUG)
+	if(!DEBUG)
 	{
 		//log2webOnlyText(ms.DeleteSpace(LICENCE)+"_"+get_computer_name()+"_"+get_user_name()+"_"+TIME.CurrentDate()+"_"+TIME.CurrentTime()+"|"+Text);
 		try
@@ -4949,6 +4949,7 @@ void TForm1::db_connection()
 	FDConnection1->Params->DriverID="Mysql";
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
+
 
 
 

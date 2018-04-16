@@ -63,7 +63,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -210,7 +210,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 0
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = cl3DLight
       FrameColor = clBtnShadow
@@ -357,7 +357,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 1
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = cl3DLight
@@ -505,7 +505,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -652,7 +652,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clWhite
@@ -834,7 +834,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -982,7 +982,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1130,7 +1130,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1278,7 +1278,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1426,7 +1426,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1574,7 +1574,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1722,7 +1722,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow

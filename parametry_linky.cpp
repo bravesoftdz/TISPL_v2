@@ -6,6 +6,7 @@
 #include "parametry_linky.h"
 #include "Unit1.h"
 #include "kabina_schema.h"
+#include "MyMessageBox.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -23,29 +24,72 @@ TForm_parametry_linky *Form_parametry_linky;
 __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	: TForm(Owner)
 {
-	//designové záležitosti
+	////designové záležitosti
 	Form_parametry_linky->Color=(TColor)RGB(240,240,240); //nastavení barvy formuláøe
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 	zobrazitFrameForm=false;
 
-	//popup menu
-	PopUPmenu->Height=34*3;//zobrazené dvì položky
-	PopUPmenu->Color=(TColor)RGB(240,240,240); //nastavení barvy
-	Item_kopirovat->FillColor=PopUPmenu->Color;
-	Item_smazat->FillColor=PopUPmenu->Color;
-	Item_smazat_nepouzite->FillColor=PopUPmenu->Color;
+	//pop-up menu
+	//pozadí
+	clBg=(TColor)RGB(240,240,240); //pasive
+	clAcBg=(TColor)RGB(212,208,200);//active
+	clAcBg2=(TColor)RGB(195,192,184);//active køížku
+	//výplò glyphu
+	clGlyph=(TColor)RGB(43,87,154);//pasive
+	clAcGlyph=(TColor)RGB(0,128,255);//active
+	PopUPmenu->Color=clBg;//nastavení pozadí barvy formuláøe
+	pasiveColor();//nastaví všechny položky na pasivní resp. default barvu
+	//------
 
+	////jednotky
 	Delkaunit=MM;
 	Sirkaunit=Delkaunit;
 	Taktunit=S;
 }
+//---------------------------------------------------------------------------
+void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pasivní resp. default barvu
+{
+	Item_zobrazit_parametry->FillColor=clBg;
+	Item_nastavit_parametry->FillColor=clBg;
+	Item_kopirovat->FillColor=clBg;
+	Item_smazat->FillColor=clBg;
+	Item_smazat_nepouzite->FillColor=PopUPmenu->Color;
+
+	GlyphButton_close->Options->NormalColor=clAcBg;
+	GlyphButton_close->Options->HotColor=clRed;
+	GlyphButton_close->Options->FocusedColor=clAcBg;
+	GlyphButton_close->Options->FrameNormalColor=clAcBg;
+	GlyphButton_close->Options->FrameHotColor=clRed;
+	GlyphButton_close->Options->FrameFocusedColor=clAcBg;
+	GlyphButton_zobrazit_parametry->Options->NormalColor=clGlyph;
+	GlyphButton_zobrazit_parametry->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_zobrazit_parametry->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_nastavit_parametry->Options->NormalColor=clGlyph;
+	GlyphButton_nastavit_parametry->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_nastavit_parametry->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_kopirovat->Options->NormalColor=clGlyph;
+	GlyphButton_kopirovat->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_kopirovat->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_smazat->Options->NormalColor=clGlyph;
+	GlyphButton_smazat->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_smazat->GlyphOptions->NormalColorAlpha=200;
+	GlyphButton_smazat_nepouzite->Options->NormalColor=clGlyph;
+	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColor=clWhite;
+	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColorAlpha=200;
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
+		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
+		zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
+		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
+		for(unsigned int PID=0;PID<=zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
+
 
     //provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
 		if(Form1->d.v.OBJEKTY->dalsi!=NULL)
@@ -84,8 +128,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		 //	rEditNum_sirkavoziku->Visible=true;
 
 			rStringGridEd_tab_dopravniky->Visible=true;
-			Button_ADD->Visible=true;
-			Button_DEL->Visible=true;
+			//Button_ADD->Visible=true;
+			//Button_DEL->Visible=true;
 
 		 //	scRadioGroup_typVoziku->Visible=true;
 			//rEditNum_delkavoziku->Visible=true;
@@ -194,6 +238,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_hlavicka_tabulky->Cells[6][0]=rStringGridEd_tab_dopravniky->Cells[6][0];
 
 	//	rStringGridEd_tab_dopravniky->Columns->
+	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+	 pozice_scGPGlyphButton_hint();
 }
 //---------------------------------------------------------------------------
 //
@@ -241,6 +287,7 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 		rStringGridEd_tab_dopravniky->RowCount--;
 	}
 	Form_parametry_linky->Close();
+	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
@@ -447,6 +494,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			{
 				Form1->d.v.aktualizace_objektu(aktualizace_id);
 				//doplnil 1.2.2018 M, aktualizace i èasových os a popø. ROMA, nutná z dùvodu zmìny parametrù objektu
+				//zvážit zda neimplementovat rovnou do aktualizace objektu
 				Form1->aktualizace_maro_a_roma();//aktualizace a pøepoèet volaná kvùli èasovým osám (maro) a techn.procesùm(roma)
 			}
 
@@ -459,7 +507,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
 	rStringGridEd_tab_dopravniky->RowCount++;
@@ -469,28 +516,30 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 
 		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
 
-		rStringGridEd_tab_dopravniky->Cells[0][i] = i;
+		rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
 		rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
 		rStringGridEd_tab_dopravniky->Cells[2][i] = "0";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
 		rStringGridEd_tab_dopravniky->Cells[3][i] = "0";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
 		rStringGridEd_tab_dopravniky->Cells[4][i] = "0";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
 		rStringGridEd_tab_dopravniky->Cells[5][i] = "ne";
-
-
-
-
+		rStringGridEd_tab_dopravniky->Cells[6][i] = "0";
 	}
+	rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;//pøesune focus na poslední øádek
+
+	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+	pozice_scGPGlyphButton_hint();
 }
 //---------------------------------------------------------------------------
-
+//smaže poslední øádek
 void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 {
 			if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
 			{
-				AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(rStringGridEd_tab_dopravniky->RowCount-1,true);
+				AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
 						if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být smazán?",MB_OKCANCEL)){
 
-						Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(rStringGridEd_tab_dopravniky->RowCount-1);
+						//Form1->d.v.zrusit_prirazeni_pohunu_k_objektum();
+						zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)]=true;
 						rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
 							if(rStringGridEd_tab_dopravniky->RowCount>1)
@@ -517,6 +566,8 @@ void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 	 //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 	 //	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
 
+	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+	pozice_scGPGlyphButton_hint();
 }
 //---------------------------------------------------------------------------
 
@@ -659,26 +710,32 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 //tlaèítko na kopírování na kopírování doporuèených pohonù do striggridu, nepøidává ale do pohonù
 void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
 {
- //již se používá z dùvodu storna
- //Form1->d.v.generuj_POHONY();
- //nacti_pohony();
+	 //již se používá z dùvodu storna
+	 //Form1->d.v.generuj_POHONY();
+	 //nacti_pohony();
 
- //nová konstrukce zajišující pouze vložení do stringgridu, o samotné uložení pohonù se stará až tlaèítko uložit
- AnsiString T=scHTMLLabel_doporuc_pohony->Caption;
- while(T.Pos("</br>"))//bude parsovat dokud bude </br>
- {
-	//zvýšení poètu øádkù
-	rStringGridEd_tab_dopravniky->RowCount++;
-	unsigned short i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
-	//plnìní øádku a parsování daty
-	rStringGridEd_tab_dopravniky->Cells[0][i]=i;
-	rStringGridEd_tab_dopravniky->Cells[1][i]=Form1->ms.TrimRightFrom(T,",");T=Form1->ms.TrimLeftFromText(T,", ");
-	rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,","," [");T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
-	rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
-	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
-	//smazání jednoho již nepotøebného záznamu
-	T=Form1->ms.TrimLeftFromText(T,"</br>");
- }
+	 //najde max použité ID pohonu (ID nejsou seøazena)
+	 unsigned int ID=getMaxPID();
+
+	 //nová konstrukce zajišující pouze vložení do stringgridu, o samotné uložení pohonù se stará až tlaèítko uložit
+	 AnsiString T=scHTMLLabel_doporuc_pohony->Caption;
+	 while(T.Pos("</br>"))//bude parsovat dokud bude </br>
+	 {
+	 	//zvýšení poètu øádkù
+   	rStringGridEd_tab_dopravniky->RowCount++;
+   	unsigned int i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
+	 	//plnìní øádku a parsování daty
+	 	rStringGridEd_tab_dopravniky->Cells[0][i]=++ID;
+	 	rStringGridEd_tab_dopravniky->Cells[1][i]=Form1->ms.TrimRightFrom(T,",");T=Form1->ms.TrimLeftFromText(T,", ");
+	 	rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,","," [");T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
+	 	rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
+	 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+	 	//smazání jednoho již nepotøebného záznamu
+	 	T=Form1->ms.TrimLeftFromText(T,"</br>");
+	 }
+	 rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;//pøesune focus na poslední øádek
+	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+	 pozice_scGPGlyphButton_hint();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -757,8 +814,6 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 		 }
 
 	 }
-
-
 }
 //---------------------------------------------------------------------------
 
@@ -965,6 +1020,7 @@ void __fastcall TForm_parametry_linky::rEditNum_delka_jiguChange(TObject *Sender
 show_min_Rz();
 }
 //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //zavolá náhled kabiny, pøípadnì v budoucnu info a o požadovaných parametrech
 void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender)
 {
@@ -977,18 +1033,80 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender
 		if(zFFtemp)zobrazitFrameForm=true;//pokud bylo orámování, tak vrátí
 }
 //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//vrátí ID pohonu na daném øádku
+unsigned int TForm_parametry_linky::getPID(int ROW)
+{
+	try
+	{
+		return rStringGridEd_tab_dopravniky->Cells[0][ROW].ToInt();
+	}
+	catch(...)
+	{
+		return 0;
+	}
+}
+//---------------------------------------------------------------------------
+//najde max použité ID pohonu (protože ID nejsou seøazena,nelze vzít index posledního øádku)
+unsigned int TForm_parametry_linky::getMaxPID()
+{
+	unsigned int ID=0;//id
+	for(unsigned i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+	if(ID<getPID(i))ID=getPID(i);
+	return ID;
+}
+//---------------------------------------------------------------------------
+void TForm_parametry_linky::zrusit_prirazeni_smazanych_pohunu_k_objektum()
+{
+	for(unsigned PID=1;PID<=zrusena_prirazeni_PID_size;PID++)
+	{
+		if(zrusena_prirazeni_PID[PID])
+		Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(PID);
+	}
+	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
+}
+//---------------------------------------------------------------------------
+//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+void TForm_parametry_linky::pozice_scGPGlyphButton_hint()
+{
+	 if(rStringGridEd_tab_dopravniky->RowCount<=5)scGPGlyphButton_hint_Rz->Left=Width-scGPGlyphButton_hint_Rz->Width;
+	 else scGPGlyphButton_hint_Rz->Left=1079;
+}
+//---------------------------------------------------------------------------
+//-------------------------POP-UP MENU---------------------------------------
+//---------------------------------------------------------------------------
 //volání pop-up menu
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyMouseDown(TObject *Sender,
-          TMouseButton Button, TShiftState Shift, int X, int Y)
+					TMouseButton Button, TShiftState Shift, int X, int Y)
 {
-	 if(Button==mbRight)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
+	 if(Button==mbRight && rStringGridEd_tab_dopravniky->Row>0)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
 	 {
-			PopUPmenu->Left=X;PopUPmenu->Top=Y+rStringGridEd_tab_dopravniky->Top;
-			scLabel_kopirovat->Caption="  Kopírovat pohon "+AnsiString(rStringGridEd_tab_dopravniky->Row);
-			scLabel_smazat->Caption="  Smazat pohon "+AnsiString(rStringGridEd_tab_dopravniky->Row);
+			PopUPmenu->Height=34*2;//zobrazené dvì položky
+			PopUPmenu->Left=X;PopUPmenu->Top=Y+rStringGridEd_tab_dopravniky->Top;//pozice
+			//nastávení textu polože
+			scLabel_kopirovat->Caption="  Kopírovat "+rStringGridEd_tab_dopravniky->Cells[1][rStringGridEd_tab_dopravniky->Row];
+			scLabel_smazat->Caption="  Smazat "+rStringGridEd_tab_dopravniky->Cells[1][rStringGridEd_tab_dopravniky->Row];
+			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitýchzobrazovat
+			Item_smazat_nepouzite->Visible=false;
+			for(unsigned int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+			{
+				if(!Form1->d.v.pohon_je_pouzivan(getPID(i)))//pohon není používaný
+				{
+					PopUPmenu->Height=34*3;//zobrazené již tøi položky
+					Item_smazat_nepouzite->Visible=true;
+					break;//staèí najít jeden
+				}
+			}
+			//ošetøení, pokud je mimo obrazovku + 5 px okraj
+			if(PopUPmenu->Left>=ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
+			PopUPmenu->Left=ClientWidth-PopUPmenu->Width-5;
+			if(PopUPmenu->Top>=rStringGridEd_tab_dopravniky->Top+rStringGridEd_tab_dopravniky->Height-PopUPmenu->Height)
+			PopUPmenu->Top=rStringGridEd_tab_dopravniky->Top+rStringGridEd_tab_dopravniky->Height-PopUPmenu->Height-5;
 			PopUPmenu->Visible=true;
 	 }
 }
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //køížek, který skryje pop-up menu
 void __fastcall TForm_parametry_linky::GlyphButton_closeClick(TObject *Sender)
@@ -996,80 +1114,175 @@ void __fastcall TForm_parametry_linky::GlyphButton_closeClick(TObject *Sender)
 	PopUPmenu->Visible=false;
 }
 //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
+void TForm_parametry_linky::top_positon(int top)
+{
+	if(top==0)
+	{
+		GlyphButton_close->Options->NormalColor=clAcBg2;
+		GlyphButton_close->Options->FocusedColor=clAcBg2;
+		GlyphButton_close->Options->FrameFocusedColor=clAcBg2;
+		GlyphButton_close->Options->FrameNormalColor=clAcBg2;
+	}
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //zajišuje zkopírování pohonu, vloží na konec, nevkládáme za kopírovaný objekt, protože podle poøadí zùstává pøiøaøení k jednotlivým objektùm
 void __fastcall TForm_parametry_linky::scLabel_kopirovatClick(TObject *Sender)
 {
 	int ROW=rStringGridEd_tab_dopravniky->Row;
-	//zvýšení celkového poètu øádkù o jednièku
-	rStringGridEd_tab_dopravniky->RowCount++;
-	int COUNT=rStringGridEd_tab_dopravniky->RowCount;
-	//zkopírování øádku až na konec (zámìrnì, viz popis výše)
-	rStringGridEd_tab_dopravniky->Rows[COUNT-1]=rStringGridEd_tab_dopravniky->Rows[ROW];
-	//indexace
-	rStringGridEd_tab_dopravniky->Cells[0][COUNT-1]=COUNT-1;
+	rStringGridEd_tab_dopravniky->InsertRowEx(ROW+1,false);
+	//zkopírování øádku za kopírovaný pohon
+	rStringGridEd_tab_dopravniky->Rows[ROW+1]=rStringGridEd_tab_dopravniky->Rows[ROW];
 	//název pøejmenování
-	rStringGridEd_tab_dopravniky->Cells[1][COUNT-1]=rStringGridEd_tab_dopravniky->Cells[1][COUNT-1]+" - kopie";
+	rStringGridEd_tab_dopravniky->Cells[1][ROW+1]=rStringGridEd_tab_dopravniky->Cells[1][ROW]+" - kopie";
+	//nepoužíván
+	rStringGridEd_tab_dopravniky->Cells[5][ROW+1]="ne";
+	//indexace
+	rStringGridEd_tab_dopravniky->Cells[0][ROW+1]=getMaxPID()+1;
+	//pøesune focus na poslední øádek
+	rStringGridEd_tab_dopravniky->Row=ROW+1;
 	//skrytí pop-up menu
 	PopUPmenu->Visible=false;
+	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+	pozice_scGPGlyphButton_hint();
 }
 //---------------------------------------------------------------------------
-//zajišuje smázání pohonu
+void __fastcall TForm_parametry_linky::scLabel_kopirovatMouseEnter(TObject *Sender)
+{
+	pasiveColor();
+	Item_kopirovat->FillColor=clAcBg;
+	GlyphButton_kopirovat->Options->NormalColor=clAcBg;
+	GlyphButton_kopirovat->Options->HotColor=clAcBg;
+	GlyphButton_kopirovat->Options->FocusedColor=clAcBg;
+	GlyphButton_kopirovat->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_kopirovat->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_kopirovat->Top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::scLabel_kopirovatMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::GlyphButton_kopirovatMouseEnter(TObject *Sender)
+{
+	scLabel_kopirovatMouseEnter(Sender);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::GlyphButton_kopirovatMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//zajišuje smázání pohonu na vybraném øádku
 void __fastcall TForm_parametry_linky::scLabel_smazatClick(TObject *Sender)
 {
 	int ROW=rStringGridEd_tab_dopravniky->Row;
 	bool smazat=false;
-	if(Form1->d.v.pohon_je_pouzivan(ROW))//pohon je používaný
+	if(Form1->d.v.pohon_je_pouzivan(getPID(ROW)))//pohon je používaný
 	{
-			AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ROW,true);
-			if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být smazán?",MB_OKCANCEL))
+			AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
+			myMessageBox->zobrazitFrameForm=true;//zajistí orámování MB
+			if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL))
 			{
-				Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(ROW);
+				//Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW));
+				zrusena_prirazeni_PID[getPID(ROW)];//nahrazeno novou filozofii, z dùvodu možného storna formu
 				smazat=true;
 			}
+			myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
 	}
 	else//pohon není používaný a mùžeme tedy smazat rovnou
 	{
 		smazat=true;
 	}
-	if(smazat)
-	{
-		//samotné smazání øádku
-		rStringGridEd_tab_dopravniky->Rows[ROW]->Clear();
-		//pøesunutí všech následujících položek, jsou-li
-		for (int i=ROW;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-		{
-			rStringGridEd_tab_dopravniky->Rows[i]=rStringGridEd_tab_dopravniky->Rows[i+1];
-			rStringGridEd_tab_dopravniky->Cells[0][i] = i;//správné pøeindexování
-		}
-		//snížení celkového poètu øádkù o jednièku
-		rStringGridEd_tab_dopravniky->RowCount--;
-	}
+	//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
+	if(smazat)rStringGridEd_tab_dopravniky->DeleteRowEx(ROW);
 	//skrytí pop-up menu
 	PopUPmenu->Visible=false;
+	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+	pozice_scGPGlyphButton_hint();
 }
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::scLabel_smazatMouseEnter(TObject *Sender)
+{
+	pasiveColor();
+	Item_smazat->FillColor=clAcBg;
+	GlyphButton_smazat->Options->NormalColor=clAcBg;
+	GlyphButton_smazat->Options->HotColor=clAcBg;
+	GlyphButton_smazat->Options->FocusedColor=clAcBg;
+	GlyphButton_smazat->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_smazat->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_smazat->Top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::scLabel_smazatMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseEnter(TObject *Sender)
+{
+	scLabel_smazatMouseEnter(Sender);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //prochází všechny pohany a pokud je pohon nepoužíván, smažeho
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
 {
-	int ROW=rStringGridEd_tab_dopravniky->Row;
-	for(unsigned int j=1;j<=rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+	for(unsigned int j=1;j<rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
 	{
-		if(!Form1->d.v.pohon_je_pouzivan(ROW))//pohon je používaný
+		if(Form1->d.v.pohon_je_pouzivan(getPID(j))==false)//pohon není používaný
 		{
-			//samotné smazání øádku
-			rStringGridEd_tab_dopravniky->Rows[ROW]->Clear();
-			//pøesunutí všech následujících položek, jsou-li
-			for (int i=ROW;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-			{
-				rStringGridEd_tab_dopravniky->Rows[i]=rStringGridEd_tab_dopravniky->Rows[i+1];
-				rStringGridEd_tab_dopravniky->Cells[0][i] = i;//správné pøeindexování
-			}
-			//snížení celkového poètu øádkù o jednièku
-			rStringGridEd_tab_dopravniky->RowCount--;
+			//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
+			rStringGridEd_tab_dopravniky->DeleteRowEx(j);
 		}
 	}
 	//skrytí pop-up menu
 	PopUPmenu->Visible=false;
+
+	pozice_scGPGlyphButton_hint();//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseEnter(TObject *Sender)
+{
+	pasiveColor();
+	Item_smazat_nepouzite->FillColor=clAcBg;
+	GlyphButton_smazat_nepouzite->Options->NormalColor=clAcBg;
+	GlyphButton_smazat_nepouzite->Options->HotColor=clAcBg;
+	GlyphButton_smazat_nepouzite->Options->FocusedColor=clAcBg;
+	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColor=clAcGlyph;
+	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColorAlpha=255;
+	top_positon(Item_smazat_nepouzite->Top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseEnter(TObject *Sender)
+{
+	scLabel_smazat_nepouziteMouseEnter(Sender);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseLeave(TObject *Sender)
+{
+	pasiveColor();
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+
+
+
+
 
