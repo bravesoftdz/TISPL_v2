@@ -83,6 +83,7 @@ __published:	// IDE-managed Components
 	TrHTMLHint *rHTMLHint1;
 	TscGPCheckBox *scGPCheckBox_zaokrouhlit;
 	TscGPGlyphButton *scGPGlyphButton_info;
+	TButton *Button1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -128,6 +129,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall scGPButton_OKClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
@@ -144,20 +147,20 @@ private:	// User declarations
 	void input_M(); //pøepoèet hodnot vyplývajících ze zmìny mezery
 	void input_P(); //pøepoèet hodnot vyplývajících ze zmìny poètu pozic
 	void null_input_value();//vynuluje vstupní hodnoty
-	void INPUT();
-	void OUTPUT();
 	double Kontrola_mezery();
 	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	void Check_rozmezi_RD(); //kontrola  RD vùèi vybranému pohonu
 	void Nacti_rx();
-	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math, input_state slouží pro rozlišení volání ze vstupu - pøedevším P a K
+	void INPUT();
+	void OUTPUT();
+
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
 	short offset;
 	short defaultForm_parametryHeight;
-	short VID;//validation ID
+
 	TColor hl_color;//(TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
 	short hlFrameWidth;//šíøka zvýraznìní rámeèku komponenty napø.pro povinné položky
 
@@ -174,7 +177,8 @@ public:		// User declarations
 	unsigned short kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
 	bool existuje_pohon;
 	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
-
+	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math, input_state slouží pro rozlišení volání ze vstupu - pøedevším P a K
+	short VID;//validation ID
 	void vykresli_vozik(bool na_delku=true);
 };
 //---------------------------------------------------------------------------

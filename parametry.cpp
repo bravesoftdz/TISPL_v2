@@ -102,6 +102,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender) {
 		Nacti_rx(); // vypoèítání Rx a zobrazeni
 		INPUT();   // pøi prvním zobrazení formu "otisknu" data z formu do math struktury, bez žádných výpoètù, primárnì použito pro nastavení decimal checkboxu, kdy potøebuje mít data v output již pøi formshow
 		OUTPUT();  // naètení dat ze struktury
+		Check_rozmezi_RD();
 
 }
 
@@ -980,6 +981,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 
 	 Nacti_rx();
 	 double mezera=0.0;
+	 Check_rozmezi_RD();
 		if (input_state == NOTHING && input_clicked_edit == mezera_klik && scComboBox_rezim->ItemIndex == 2)
 		{ // pokud není zadáváno z jiného vstupu
 				input_M(); // lokální pøi PP režimu
@@ -1014,13 +1016,15 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender) {
+
+     Check_rozmezi_RD();
 		if (input_state == NOTHING && input_clicked_edit == RD_klik)
 		{
 
 		if (scComboBox_rezim->ItemIndex==1) // controller pro KK režim
 		{
 		 input_RD();
-		 Check_rozmezi_RD();
+
 		}
 
 	}
@@ -2610,9 +2614,14 @@ double TForm_parametry::Kontrola_mezery()
 						// Memo1->Lines->Add(mezera);
 
 						vypis("Doporuèená mezera: " + AnsiString(doporuc_mezera) + jednotky +"");
+						VID=28;
 
 						if (Form1->ms.MyToDouble(Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku, Form1->d.v.PP.sirka_voziku, scComboBox_rotace->ItemIndex,P->roztec,mezera)) == Form1->ms.MyToDouble(mezera))
-						{vypis("",false); scGPButton_OK->Enabled = true; }
+						{
+							vypis("",false);
+							scGPButton_OK->Enabled = true;
+							VID=-1;
+						}
 						else
 						{
 						 scGPButton_OK->Enabled = false;
@@ -2620,7 +2629,7 @@ double TForm_parametry::Kontrola_mezery()
 				}
 				else
 				{
-						scGPButton_OK->Enabled = true;
+						scGPButton_OK->Enabled = true; VID=-1;
 				}
 		}
 		return doporuc_mezera;
@@ -2664,10 +2673,12 @@ void TForm_parametry::Check_rozmezi_RD() {
 				if(mimo_rozmezi==true)
 				{
 					vypis("Rychlost neodpovídá rozmezí!");
+					VID=25;
 				}
 				if(Form1->ms.MyToDouble(dopRD)!= Form1->ms.MyToDouble(RD) && mimo_rozmezi)
 				{
 					vypis("Rychlost neodpovídá rozmezí!");
+					VID=25;
 				}
 				if(scComboBox_pohon->ItemIndex!=0 && roztec>0 && Form1->ms.MyToDouble(dopRD)!= Form1->ms.MyToDouble(RD) && mimo_rozmezi==false)
 				{
@@ -2678,6 +2689,7 @@ void TForm_parametry::Check_rozmezi_RD() {
 				if (Form1->ms.MyToDouble(dopRD)== Form1->ms.MyToDouble(RD) && mimo_rozmezi)
 				{
 						vypis("Rychlost neodpovídá rozmezí!");
+						VID=25;
 					}
 				if (Form1->ms.MyToDouble(dopRD)== Form1->ms.MyToDouble(RD) && mimo_rozmezi==false) {
 						vypis("");
@@ -2937,7 +2949,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					if (pm.RD<minRD)//pokud by novým RD byl pod minRD (tj. pod RD nejrizikovìjšího objektu, tak je problém)
 					{
 							AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex),pm.RD);
-							vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD)+" [m/s].");
+							vypis("Pøi zvolené rychlosti pohonu, by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD*60.0)+" [m/min].");
 							VID=29;
 					}
 				}
@@ -3050,6 +3062,19 @@ void __fastcall TForm_parametry::scGPGlyphButton_infoClick(TObject *Sender)
 		Form_kabina_schema->Top = Form1->ClientHeight / 2 - Form_kabina_schema->Height / 2;
 		// zobrazeni formuláøe
 		Form_kabina_schema->ShowModal();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::Button1Click(TObject *Sender)
+{
+Memo1->Lines->Add(VID);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
+{
+INPUT();
+Check_rozmezi_RD();
 }
 //---------------------------------------------------------------------------
 
