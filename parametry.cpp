@@ -1017,13 +1017,14 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender) {
 
-     Check_rozmezi_RD();
 		if (input_state == NOTHING && input_clicked_edit == RD_klik)
 		{
 
 		if (scComboBox_rezim->ItemIndex==1) // controller pro KK režim
 		{
+
 		 input_RD();
+		 Check_rozmezi_RD();
 
 		}
 
@@ -1116,94 +1117,53 @@ void TForm_parametry::input_P() {
 void TForm_parametry::input_CT() {
 		input_state = CT;
 		INPUT();
-		if (scComboBox_rezim->ItemIndex != 0)
-		{ // pokud je v režimu SG nevolá se výpoèetní model
-			 //	if (scGPNumericEdit_CT->Value > 0)
-						// nutné ošetøení pro období zadávání/psaní
-			 //	{
-						pm.input_CT(); // zavolání výpoèetního modelu
-						////////naètení dat zpìt do formuláøe po výpoètu////////////
-						OUTPUT(); // u SG toto vùbec nevolám
-			 //	}
+		if (scComboBox_rezim->ItemIndex == 1)
+		{ //KK režim
+
+
+						pm.input_CT();
+						OUTPUT();
+
+				double roztec=0;
+				double RD=scGPNumericEdit_RD->Value;
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60;
+				double DD=scGPNumericEdit_delka_dopravniku->Value;
+				double CT =0;
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double rotace=scComboBox_rotace->ItemIndex;
+				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+				if (P != NULL) roztec=P->roztec;  else  roztec=0;
+
+				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
+
+				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }
+				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
+				if (DDunit == MM)  DD = DD / 1000.0;
+
+
+			if(dopRD!=RD)
+
+			{
+				CT = DD/dopRD*60;
+				vypis("Doporuèené CT : " +AnsiString(CT) +" s ");
+				VID=30;
+			}
+
 
 		}
 
 		if (scComboBox_rezim->ItemIndex == 0)
 		{ // pokud je v režimu SG nevolá se výpoèetní model
-//				if (scGPNumericEdit_CT->Value > 0)
-//						// nutné ošetøení pro období zadávání/psaní
-//				{
-//						//pm.input_CT(); // zavolání výpoèetního modelu
-						////////naètení dat zpìt do formuláøe po výpoètu////////////
-					 	OUTPUT(); // u SG toto vùbec nevolám
-		 //		}
+						OUTPUT();
+
 
 		}
-					//OUTPUT(); //
 
-//		///////////////////// režim SG - nevstupuje do výpoètu math //////////////////////////
-//		if (scComboBox_rezim->ItemIndex == 0)
-//		{ // pokud je v režimu SG nevolá se výpoèetní model
-//				double CT = scGPNumericEdit_CT->Value; // CT od uživatele
-//				if (CTunit == MIN)
-//						CT = CT * 60.0; // pokud bylo zadání v minutách pøevede na sekundy
-//				int pocet_obj_vSG = Form1->d.v.pocet_objektu(0);
-//
-//				/////////////////pokud je CT == TT////////////////////////////////////
-//				if (CT == Form1->ms.MyToDouble(Form1->d.v.PP.TT)
-//						&& scComboBox_rezim->ItemIndex == 0) {
-//						scGPButton_OK->Enabled = true;
-//						scGPButton_OK->Caption = "Uložit";
-//
-//				}
-//
-//				/////////////////pokud je CT > nežli TT////////////////////////////////////
-//				if (CT > Form1->ms.MyToDouble(Form1->d.v.PP.TT)
-//						&& scComboBox_rezim->ItemIndex == 0) {
-//						if (fmod(CT, Form1->d.v.PP.TT) == 0) {
-//								kapacitaSG = CT / Form1->d.v.PP.TT; // pro další použití
-//								vypis(" Rozložit na " + AnsiString(kapacitaSG) + "x " +
-//										scGPEdit_name->Text.UpperCase() + "?");
-//								scGPButton_OK->Enabled = true;
-//								scGPButton_OK->Caption = "Ano a uložit";
-//						}
-//						else {
-//								scGPButton_OK->Enabled = false;
-//								scGPButton_OK->Caption = "Uložit";
-//								vypis("Zmìnte režim nebo rozložte do více objektù!");
-//						}
-//				}
-//				else
-//						kapacitaSG = 1;
-//
-//				/////////////////pokud je CT < nežli TT////////////////////////////////////
-//				if (CT < Form1->ms.MyToDouble(Form1->d.v.PP.TT)
-//						&& scComboBox_rezim->ItemIndex == 0)
-//						// podmínky pouze pro režim SG!!
-//				{
-//						if (Form1->pom->n == 1) { // první objekt na lince
-//
-//								if (pocet_obj_vSG == 1) {
-//										scGPButton_OK->Enabled = false;
-//										scGPButton_OK->Caption = "Uložit";
-//										vypis("Mùžete vstoupit na PL a snížit TT linky!");
-//								}
-//
-//								if (pocet_obj_vSG > 1) {
-//										scGPButton_OK->Enabled = false;
-//										scGPButton_OK->Caption = "Uložit";
-//										vypis("Nastavte technologický èas shodný s TT!");
-//								}
-//						}
-//						else // na lince je více objektù, pokud mají nižší CT dovolím je uložit
-//						{
-//								scGPButton_OK->Caption = "Uložit";
-//								scGPButton_OK->Enabled = true;
-//								// ostatní objekty v poøadí na lince mohu uložit s nižším CT než je TT linky
-//
-//						}
-//				}
-//		}
+			if (scComboBox_rezim->ItemIndex == 2)
+				{
+								pm.input_CT();
+								OUTPUT();
+				}
 
 		input_state = NOTHING;
 
@@ -1214,11 +1174,63 @@ void TForm_parametry::input_CT() {
 void TForm_parametry::input_DD() {
 		input_state = DD;
 		INPUT();
-		if (/*scGPNumericEdit_delka_dopravniku->Value > 0 && */scComboBox_rezim->ItemIndex>0) // KK a PP režim
+		if (/*scGPNumericEdit_delka_dopravniku->Value > 0 && */scComboBox_rezim->ItemIndex==1) // KK a PP režim
 				// nutné ošetøení pro období zadávání/psaní
 		{
 				pm.input_DD(); // zavolání výpoèetního modelu
 				OUTPUT();
+
+
+				double roztec=0;
+				double RD=scGPNumericEdit_RD->Value;
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60;
+				double DD=scGPNumericEdit_delka_dopravniku->Value;
+				double CT =scGPNumericEdit_CT->Value;
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double rotace=scComboBox_rotace->ItemIndex;
+				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+				if (P != NULL) roztec=P->roztec;  else  roztec=0;
+
+				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
+
+				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }
+				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
+				if (DDunit == MM)  DD = DD / 1000.0;
+				if (CTunit == M)  CT = CT / 60.0;
+
+
+			if(dopRD!=RD)
+
+			{
+			Memo1->Lines->Add(CT);
+			Memo1->Lines->Add(dopRD);
+				DD = CT*dopRD;
+				vypis("Doporuèená délka kabiny : " +AnsiString(DD) +" [m] ");
+				VID=31;
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		}
+
+
+			if (/*scGPNumericEdit_delka_dopravniku->Value > 0 && */scComboBox_rezim->ItemIndex==2) // KK a PP režim
+				// nutné ošetøení pro období zadávání/psaní
+		{
+				pm.input_DD(); // zavolání výpoèetního modelu
+				OUTPUT();
+
 		}
 
 			if (/*scGPNumericEdit_delka_dopravniku->Value > 0 && */scComboBox_rezim->ItemIndex==0)
@@ -3073,8 +3085,8 @@ Memo1->Lines->Add(VID);
 
 void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 {
-INPUT();
-Check_rozmezi_RD();
+//INPUT();
+//Check_rozmezi_RD();
 }
 //---------------------------------------------------------------------------
 

@@ -14,6 +14,8 @@ object Form_parametry: TForm_parametry
   Font.Style = []
   OldCreateOrder = False
   ParentBiDiMode = False
+  PopupMode = pmExplicit
+  PopupParent = Form_parametry_linky.Owner
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
