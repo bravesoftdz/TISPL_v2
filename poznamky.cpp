@@ -47,4 +47,10 @@ void __fastcall TForm_poznamky::FormKeyDown(TObject *Sender, WORD &Key, TShiftSt
 		}
 }
 //---------------------------------------------------------------------------
+//vykreslí orámování
+void __fastcall TForm_poznamky::FormPaint(TObject *Sender)
+{
+	Form1->m.frameForm(Form_poznamky,clWebOrange,1);
+}
+//---------------------------------------------------------------------------
 

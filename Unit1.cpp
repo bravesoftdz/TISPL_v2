@@ -1292,7 +1292,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F11
 		case 122:ortogonalizace_on_off();break;//přepíná stav automatické ortogonalizace
 		//F12
-		case 123:ortogonalizovat();SB("Ortogonalizace schématu dokončena.");REFRESH();break;//ortogonalizuje schéma
+		case 123:ortogonalizovat();SB("Ortogonalizace schématu dokončena.");REFRESH();DuvodUlozit(true);break;//ortogonalizuje schéma
 		//CTRL, SHIFT pro další použití, pro klávesové zkratky např. if(ssCtrl && Key==86) jako ctrl+V
 		default:
 		{
@@ -4939,9 +4939,7 @@ void __fastcall TForm1::scGPGlyphButton_info_cekaniClick(TObject *Sender)
 	"• vždy, když je čekání uživatelsky nařízeno",MB_OK,false,489);
 }
 //---------------------------------------------------------------------------
-
 void TForm1::db_connection()
-
 {
 	FDConnection1->Params->Database="tispl_db";
 	FDConnection1->Params->UserName="app_tispl";
@@ -4949,6 +4947,7 @@ void TForm1::db_connection()
 	FDConnection1->Params->DriverID="Mysql";
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
+//---------------------------------------------------------------------------
 
 
 

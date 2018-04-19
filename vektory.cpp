@@ -46,6 +46,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->DD_zamek=0;
 	novy->K_zamek=0;
 	novy->poznamka="";
+	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -85,6 +86,7 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->DD_zamek=0;
 	novy->K_zamek=0;
 	novy->poznamka="";
+	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -123,6 +125,7 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->DD_zamek=0;
 	novy->K_zamek=0;
 	novy->poznamka="";
+	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=p->dalsi;
@@ -206,6 +209,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->DD_zamek=Objekt->DD_zamek;
 		novy->K_zamek=Objekt->K_zamek;
 		novy->poznamka=Objekt->poznamka;
+		novy->probehla_aktualizace_prirazeni_pohonu=Objekt->probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		novy->dalsi=p->dalsi;
@@ -324,11 +328,12 @@ void Cvektory::aktualizace_objektu(short typ)
 
 		switch(typ)
 		{
-			case -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
-			{
-				if(O->pohon!=NULL)//přiřazuje pouze pokud byl pohon již přiřazen
-				O->pohon=vrat_pohon(O->pohon->n);
-			}
+//asi se již nepoužívá
+//			case -2://zaktualizuje přiřazení pohonu k objektu, nutné pokud proběhla změna v pohonech, protože původní jsou smazané
+//			{
+//				if(O->pohon!=NULL)//přiřazuje pouze pokud byl pohon již přiřazen
+//				O->pohon=vrat_pohon(O->pohon->n);
+//			}
       break;
 			case 1://při změně TT změna CT a RD, K a DD zůstává
 			{
@@ -409,6 +414,34 @@ void Cvektory::aktualizace_objektu(short typ)
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;
+}
+//---------------------------------------------------------------------------
+//všem objektům, které měly přiřazen pohon s oldN(oldID), přiřadí pohon s newN(newID), podle toho, jak jsou ukládány nově do spojáku, důležité, pokud dojde k narušení pořadí ID resp n pohonů a pořadí jednotlivých řádků ve stringridu, např. kopirováním, smazáním, změnou pořadí řádků atp.
+void Cvektory::aktualizace_prirazeni_pohonu_k_objektum(unsigned int oldN,unsigned int newN)
+{
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		if(O->pohon!=NULL && oldN==O->pohon->n && O->probehla_aktualizace_prirazeni_pohonu==false)//objekt měl přiřazen pohon a ještě nebyl nově přepřiřazen
+		{
+			O->pohon=vrat_pohon(newN);//danému objektu přiřadíme nové ID resp. n původního pohonu
+			O->probehla_aktualizace_prirazeni_pohonu=true;//již se s tímto objektem nebude pracovat v dalších přiřazování dané aktualizace, důležitné např. pro situaci 2->3,3->4 (aby prvně nebyl přiřezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože měly být přiřazený jen některé...)
+		}
+		O=O->dalsi;//posun na další prvek
+	}
+	O=NULL;delete O;//odstranění již nepotřebného ukazatele
+}
+//---------------------------------------------------------------------------
+//po dokončení aktualizace přiřazení pohonu (při ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektů na false, aby bylo připraveno k dalšímu opětovnému užítí, nepřímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
+void Cvektory::aktualizace_prirazeni_pohonu_dokoncena()
+{
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		O->probehla_aktualizace_prirazeni_pohonu=false;
+		O=O->dalsi;//posun na další prvek
+	}
+	O=NULL;delete O;//odstranění již nepotřebného ukazatele
 }
 //---------------------------------------------------------------------------
 //sečte délky jednotlivých objektů
@@ -921,7 +954,7 @@ void Cvektory::generuj_POHONY()
 	{
 		 if(P->name.Pos("Navržený pohon "))
 		 {
-			short i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
+			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
 			if(i_potencial>i)i=i_potencial;
 		 }
 		 P=P->dalsi;//posun na další prvek
@@ -959,62 +992,111 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 {
 	AnsiString data="";
 	TObjekt *O=OBJEKTY->dalsi;
-	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je  o max. velikosti počtu objektů
+	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
 	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
-	unsigned int i=0;//i vygenerovaného pohonu
-	//prvně najde "i" v názvu nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
+	AnsiString *pole_pohonu=new AnsiString[OBJEKTY->predchozi->n];//dynamické pole unikátních pohonu, pole je o max. velikosti počtu objektů
+	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_pohonu[j]="";//vynulování pole
 	TPohon *P=POHONY->dalsi;
-	while(P!=NULL)
-	{
-		 if(P->name.Pos("Navržený pohon "))
-		 {
-			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
-			if(i_potencial>i)i=i_potencial;
-		 }
-		 P=P->dalsi;//posun na další prvek
-	}
 
+	//projíždí jedntolivé objekty, které nemají přiřařezen pohon, tak jim doporučí, s tím, že navrhuje sloučit se stejnou rychlostí
 	while (O!=NULL)
 	{
-		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní - to je již zavádějící, i v těchto režimech) nezohledňuje
+		if(O->pohon==NULL && O->RD>0)//řeší pouze pro pohony bez přiřazených pohonů (ty jsou již definované) a zároveň pokud je rychlost dopravníku nenulová
 		{
-      bool nalezen=false;
-			for(unsigned int j=0;j<O->n;j++)//zajištění UNIKATNOSTI, kontroluje pole unikátních rychlosti
+			bool nalezen=false;
+			for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
 			{
-				if(pole_rychlosti[j]==O->RD)//shodný nalezen
+				if(pole_rychlosti[j]==O->RD)//RD je již v poli
 				{
-					nalezen=true;
-					//break;//přeruší další zbytečné vyhledávání ve for, může se přejít na další objekt a tedy potenciální rychlost
+					pole_pohonu[j]+=", "+O->short_name;
+					break;
 				}
-			}
-			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
-			{
-				P=POHONY->dalsi;
-				while(P!=NULL)//ještě kontroluje zda již dříve nebyl uložen stejný pohon v navržených pohonech
+				if(pole_rychlosti[j]==0)//neni, přídání nově do obou polí
 				{
-						 if(P->name.Pos("Navržený pohon ") && P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->aRD==O->RD)//byl-li pohon se stejnými parametry nalezen
-						 nalezen=true;
-						 P=P->dalsi;//posun na další prvek
+					pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(O->RD*60)+" [m/min] pro objekt(y): "+O->short_name;
+					pole_rychlosti[j]=O->RD;
+					break;
 				}
-				if(!nalezen)//pokud stále platí, že nebyl nalezen
-				{ //libovolný			  //html tabulka                   //csv
-					AnsiString mS=", ";if(separator=="</tr>")mS="</td>";if(separator!="</tr>" && separator!="</br>")mS=";";
-					//název, rychlost, RZ
-					if(mS==", ")		data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+" [m/min]"+mS+AnsiString(Form1->m.Rz(O->RD))+" [m]";//LIBOVOLNÉ
-					if(mS==";")			data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+mS+AnsiString(Form1->m.Rz(O->RD));//CSV
-					if(mS=="</td>")	data+="<tr><th scope=\"row\">Navržený pohon "+AnsiString(++i)+"</th><td>"+AnsiString(O->RD*60)+mS+"<td>"+AnsiString(Form1->m.Rz(O->RD))+mS;//HTML TABLE
-					data+=separator;
-					pole_rychlosti[O->n-1]=O->RD;
-				}                //indexuje se v poly od nuly ale objekty jsou indexované od 1
 			}
 		}
 		O=O->dalsi;//posun na další prvek
 	}
+
+	//překopíruje pole_pohonu do dat k navrácení, pokud není záznam prázdný
+	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
+	{
+		if(pole_pohonu[j]!="")data+=pole_pohonu[j]+separator;
+	}
+
+	//odstranění již nepotřebných dat z paměti
 	delete [] pole_rychlosti;
-	delete O;
-	delete P;
+	delete [] pole_pohonu;
+	O=NULL;delete O;
+	P=NULL;delete P;
+
 	return data;
 }
+//zaloha old provedení
+//AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
+//{
+//	AnsiString data="";
+//	TObjekt *O=OBJEKTY->dalsi;
+//	double *pole_rychlosti=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je  o max. velikosti počtu objektů
+//	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
+//	unsigned int i=0;//i vygenerovaného pohonu
+//	//prvně najde "i" v názvu nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
+//	TPohon *P=POHONY->dalsi;
+//	while(P!=NULL)
+//	{
+//		 if(P->name.Pos("Navržený pohon "))
+//		 {
+//			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
+//			if(i_potencial>i)i=i_potencial;
+//		 }
+//		 P=P->dalsi;//posun na další prvek
+//	}
+//
+//	while (O!=NULL)
+//	{
+//		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní - to je již zavádějící, i v těchto režimech) nezohledňuje
+//		{
+//			bool nalezen=false;
+//			for(unsigned int j=0;j<O->n;j++)//zajištění UNIKATNOSTI, kontroluje pole unikátních rychlosti
+//			{
+//				if(pole_rychlosti[j]==O->RD)//shodný nalezen
+//				{
+//					nalezen=true;
+//					//break;//přeruší další zbytečné vyhledávání ve for, může se přejít na další objekt a tedy potenciální rychlost
+//				}
+//			}
+//			if(!nalezen)//pokud nebyla rychlost nalezena, tak vypíše a uloží ji do pole_rychlostí kvůli kontrole dalšího prvku//zajištění UNIKATNOSTI
+//			{
+//				P=POHONY->dalsi;
+//				while(P!=NULL)//ještě kontroluje zda již dříve nebyl uložen stejný pohon v navržených pohonech
+//				{
+//						 if(P->name.Pos("Navržený pohon ") && P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->aRD==O->RD)//byl-li pohon se stejnými parametry nalezen
+//						 nalezen=true;
+//						 P=P->dalsi;//posun na další prvek
+//				}
+//				if(!nalezen)//pokud stále platí, že nebyl nalezen
+//				{ //libovolný			  //html tabulka                   //csv
+//					AnsiString mS=", ";if(separator=="</tr>")mS="</td>";if(separator!="</tr>" && separator!="</br>")mS=";";
+//					//název, rychlost, RZ
+//					if(mS==", ")		data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+" [m/min]"+mS+AnsiString(Form1->m.Rz(O->RD))+" [m]";//LIBOVOLNÉ
+//					if(mS==";")			data+="Navržený pohon "+AnsiString(++i)+mS+AnsiString(O->RD*60)+mS+AnsiString(Form1->m.Rz(O->RD));//CSV
+//					if(mS=="</td>")	data+="<tr><th scope=\"row\">Navržený pohon "+AnsiString(++i)+"</th><td>"+AnsiString(O->RD*60)+mS+"<td>"+AnsiString(Form1->m.Rz(O->RD))+mS;//HTML TABLE
+//					data+=separator;
+//					pole_rychlosti[O->n-1]=O->RD;
+//				}                //indexuje se v poly od nuly ale objekty jsou indexované od 1
+//			}
+//		}
+//		O=O->dalsi;//posun na další prvek
+//	}
+//	delete [] pole_rychlosti;
+//	delete O;
+//	delete P;
+//	return data;
+//}
 ////---------------------------------------------------------------------------
 //smaze body z pameti
 long Cvektory::vymaz_seznam_POHONY()
@@ -2069,6 +2151,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->RD_zamek=c_ukaz->RD_zamek;
 						ukaz->DD_zamek=c_ukaz->DD_zamek;
 						ukaz->K_zamek=c_ukaz->K_zamek;
+						ukaz->probehla_aktualizace_prirazeni_pohonu=false;//neukládá se do binárky
 
 						//zkratku
 						wchar_t *short_name=new wchar_t [5];

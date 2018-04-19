@@ -13,6 +13,7 @@ object Form_poznamky: TForm_poznamky
   Font.Style = []
   OldCreateOrder = False
   OnKeyDown = FormKeyDown
+  OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
   object scGPPanel_hlavicka: TscGPPanel

@@ -84,16 +84,16 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rHTMLLabel_sirkaClick
   end
   object rHTMLLabel_doporuc_pohony: TrHTMLLabel
-    Left = 830
-    Top = 285
-    Width = 214
+    Left = 635
+    Top = 284
+    Width = 445
     Height = 19
-    Caption = 'Doporu'#269'en'#233' rychlosti pohon'#367':'
+    Caption = 'Navr'#382'en'#233' pohony pro objekty bez p'#345'i'#345'azen'#253'ch pohon'#367':'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
-    Font.Height = 19
+    Font.Height = -16
     Font.Name = 'Tahoma'
-    Font.Style = []
+    Font.Style = [fsBold]
     Font.Quality = fqClearType
     ParentFont = False
   end
@@ -230,7 +230,6 @@ object Form_parametry_linky: TForm_parametry_linky
       end
       item
         InvalidDataAction = sgaNone
-        Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
@@ -337,6 +336,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Font.Style = []
         ParentFont = False
       end>
+    OnGetCellParams = rStringGridEd_tab_dopravnikyGetCellParams
     OnGetEditStyle = rStringGridEd_tab_dopravnikyGetEditStyle
     OnCanEdit = rStringGridEd_tab_dopravnikyCanEdit
     RowHeights = (
@@ -1082,7 +1082,7 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object scExPanel_doporuc_pohony: TscExPanel
-    Left = 320
+    Left = 341
     Top = 192
     Width = 782
     Height = 119
@@ -1097,7 +1097,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
     BorderWidth = 1
     BackgroundStyle = scexbgsPanel
-    HeaderColor = clInactiveCaption
+    HeaderColor = clBtnFace
     ButtonGlyphColor = clBtnText
     HeaderStyle = scexphsColor
     CaptionImageIndex = -1
@@ -1116,7 +1116,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Sizeable = True
     HideControlsInRollUpState = True
     StorePaintBuffer = False
-    Caption = 'P'#345'ehled doporu'#269'en'#253'ch pohon'#367' - n'#225'zev, rychlost, vzd'#225'lenost palc'#367
+    Caption = 'Navr'#382'en'#233' pohony pro objekty bez p'#345'i'#345'azen'#253'ch pohon'#367
     OnClose = scExPanel_doporuc_pohonyClose
     object scHTMLLabel_doporuc_pohony: TscHTMLLabel
       Left = 3
@@ -1233,7 +1233,7 @@ object Form_parametry_linky: TForm_parametry_linky
     end
   end
   object scGPButton_doporucene: TscGPButton
-    Left = 1050
+    Left = 1078
     Top = 276
     Width = 45
     Height = 35
@@ -3097,6 +3097,89 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphOptions.FocusedColorAlpha = 255
     GlyphOptions.DisabledColorAlpha = 150
     GlyphOptions.Kind = scgpbgkPlus
+    GlyphOptions.Thickness = 2
+    GlyphOptions.StyleColors = True
+    TextMargin = -1
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = False
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object scGPGlyphButton_DEL_nepouzite: TscGPGlyphButton
+    Left = 1094
+    Top = 480
+    Width = 37
+    Height = 34
+    Hint = 'Smazat nepou'#382'it'#233' pohony'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNone
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 28
+    Visible = False
+    OnClick = scLabel_smazat_nepouziteClick
+    Animation = True
+    Caption = 'Info'
+    CanFocused = False
+    CustomDropDown = False
+    Layout = blGlyphLeft
+    TransparentBackground = True
+    ColorValue = clRed
+    Options.NormalColor = clBtnText
+    Options.HotColor = clBtnText
+    Options.PressedColor = clBtnText
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnText
+    Options.NormalColorAlpha = 0
+    Options.HotColorAlpha = 20
+    Options.PressedColorAlpha = 30
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 5
+    Options.FrameNormalColor = clBtnText
+    Options.FrameHotColor = clBtnText
+    Options.FramePressedColor = clBtnText
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 0
+    Options.FrameHotColorAlpha = 0
+    Options.FramePressedColorAlpha = 0
+    Options.FrameFocusedColorAlpha = 0
+    Options.FrameDisabledColorAlpha = 0
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 5
+    Options.ShapeStyle = scgpRoundedRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    GlyphOptions.NormalColor = 16744448
+    GlyphOptions.HotColor = 16744448
+    GlyphOptions.PressedColor = clBtnText
+    GlyphOptions.FocusedColor = 16744448
+    GlyphOptions.DisabledColor = 16744448
+    GlyphOptions.NormalColorAlpha = 200
+    GlyphOptions.HotColorAlpha = 255
+    GlyphOptions.PressedColorAlpha = 255
+    GlyphOptions.FocusedColorAlpha = 255
+    GlyphOptions.DisabledColorAlpha = 150
+    GlyphOptions.Kind = scgpbgkTrash
     GlyphOptions.Thickness = 2
     GlyphOptions.StyleColors = True
     TextMargin = -1

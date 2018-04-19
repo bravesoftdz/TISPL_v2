@@ -106,7 +106,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     }
 
 
-		if(Form1->d.v.OBJEKTY->dalsi==NULL)
+		if(Form1->d.v.navrhni_POHONY()=="")
 		{
 			scGPButton_doporucene->Visible=false;
 			rHTMLLabel_doporuc_pohony->Caption=""; // neexistují žádné objekty -> neumím spoèítat doporuè. rychlosti
@@ -114,7 +114,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		else
 		{
 			scGPButton_doporucene->Visible=true;
-			rHTMLLabel_doporuc_pohony->Caption="Doporuèené rychlosti pohonù";
+			rHTMLLabel_doporuc_pohony->Caption="Navržené pohony pro objekty bez pøiøazených pohonù:";
 		}
 
 		if(Form1->STATUS==Form1->NAVRH)    //Architekt
@@ -226,7 +226,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
 	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [mm]";
-	 rStringGridEd_tab_dopravniky->Cells[5][0]="Používán";
+	 rStringGridEd_tab_dopravniky->Cells[5][0]="Pøiøazen";
 	 rStringGridEd_tab_dopravniky->Cells[6][0]="min. Rz [m]*";
 
 	 rStringGridEd_hlavicka_tabulky->Cells[0][0]=rStringGridEd_tab_dopravniky->Cells[0][0];
@@ -238,8 +238,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_hlavicka_tabulky->Cells[6][0]=rStringGridEd_tab_dopravniky->Cells[6][0];
 
 	//	rStringGridEd_tab_dopravniky->Columns->
+	 rStringGridEd_tab_dopravniky->Row=1;rStringGridEd_tab_dopravniky->Col=5;//rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
+
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();
+
+	 //testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+	 if(existuji_nepouzivane_pohony())scGPGlyphButton_DEL_nepouzite->Visible=true;
+	 else scGPGlyphButton_DEL_nepouzite->Visible=false;
 }
 //---------------------------------------------------------------------------
 //
@@ -437,40 +443,37 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		// ukladej
 		if (Ulozit)
 		{
+			zrusit_prirazeni_smazanych_pohunu_k_objektum();
 			Form1->d.v.vymaz_seznam_POHONY();
 			Form1->d.v.hlavicka_POHONY();
 
-			 if (Form1->d.v.OBJEKTY->dalsi!=NULL) {  // kdyz ukladam a existuje i nejaky objekt tak udelam aktualizaci obj.
-			 //	Form1->d.v.aktualizace_objektu();
-			}
-
-			for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
+			for (unsigned int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 			{
-			 double rychlost_od;
-			 double rychlost_do;
-			 double roztec;
-			 UnicodeString nazev;
+				double rychlost_od;
+				double rychlost_do;
+				double roztec;
+				UnicodeString nazev;
 
-			if (rStringGridEd_tab_dopravniky->Cells[1][i].IsEmpty())  nazev="nový pohon";
-			else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
+				if (rStringGridEd_tab_dopravniky->Cells[1][i].IsEmpty()) nazev="nový pohon";
+				else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
 
-			if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty())  rychlost_od=0;
-			else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i])/60.0;
+				if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty()) rychlost_od=0;
+				else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i])/60.0;
 
-			if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty())  rychlost_do=0;
-			else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i])/60.0;
+				if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty()) rychlost_do=0;
+				else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i])/60.0;
 
-			if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())  roztec=0;
-			else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/1000.0;
+				if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()) roztec=0;
+				else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/1000.0;
 
-		//	ShowMessage(rychlost_do);
-				 Form1->d.v.vloz_pohon (nazev, //nazev
-																rychlost_od,        //rychlost od
-																rychlost_do,    //rychlost do
-																roztec);      //roztec
+				//uložení pohonu do spojáku
+				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,roztec);
+
+				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
+				Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
 			}
-			//po aktualizaci (resp. smazání a uložení) pohonù musí následovat aktualizace pøiøazení pohonù k objektum:
-			if (Form1->d.v.OBJEKTY->dalsi!=NULL)Form1->d.v.aktualizace_objektu(-2);
+			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
+			Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
 
 
 			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
@@ -484,9 +487,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			int typ;
 			//Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
 			Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirka_jigu->Value);   //zavadejici docasne reseni
-			if(scGPSwitch->State==scswOff) {
-			 typ=0;}
-			 else {typ=1;}
+			if(scGPSwitch->State==scswOff){typ=0;}
+			else {typ=1;}
 			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(typ);
 			Form1->d.v.PP.TT=Form1->ms.MyToDouble(rEditNum_takt->Value);
 
@@ -494,7 +496,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			{
 				Form1->d.v.aktualizace_objektu(aktualizace_id);
 				//doplnil 1.2.2018 M, aktualizace i èasových os a popø. ROMA, nutná z dùvodu zmìny parametrù objektu
-				//zvážit zda neimplementovat rovnou do aktualizace objektu
+				//zvážit zda neimplementovat rovnou do aktualizace objektu, ale zatím nejde z dùvodu, že se volá ve Form1 z dùvodu "falešného" pøekreslední èasových os pøed ROMA
 				Form1->aktualizace_maro_a_roma();//aktualizace a pøepoèet volaná kvùli èasovým osám (maro) a techn.procesùm(roma)
 			}
 
@@ -512,8 +514,8 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	rStringGridEd_tab_dopravniky->RowCount++;
 	rStringGridEd_tab_dopravniky->Cols[0]->Add(rStringGridEd_tab_dopravniky->RowCount - 1);
 
-	if (rStringGridEd_tab_dopravniky->RowCount > 2) {
-
+	if (rStringGridEd_tab_dopravniky->RowCount > 2)
+	{
 		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
 
 		rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
@@ -528,40 +530,41 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 
 	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	pozice_scGPGlyphButton_hint();
+
+	//existuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+	scGPGlyphButton_DEL_nepouzite->Visible=true;
 }
 //---------------------------------------------------------------------------
-//smaže poslední øádek
+//smaže poslední øádek - již se nepoužívá, ale nechvám
 void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 {
-			if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
-			{
-				AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
-						if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být smazán?",MB_OKCANCEL)){
+	if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
+	{
+		AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
+				if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL)){
 
-						//Form1->d.v.zrusit_prirazeni_pohunu_k_objektum();
-						zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)]=true;
-						rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
-
-							if(rStringGridEd_tab_dopravniky->RowCount>1)
-							{
-							rStringGridEd_tab_dopravniky->RowCount--;
-							}
-						 //	Form1->MB("Smazano");
-						}
-						else { //storno   - nic se nedìje
-
-								}
-				}
-
-			else {  // pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
-
+				//nefunguje správnì pro pøípad storna, øeší proto následující øádek, Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(rStringGridEd_tab_dopravniky->RowCount-1));
+				zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)]=true;
 				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
-				if(rStringGridEd_tab_dopravniky->RowCount>1)
-				{
-				 rStringGridEd_tab_dopravniky->RowCount--;
-				 }
+					if(rStringGridEd_tab_dopravniky->RowCount>1)
+					{
+					rStringGridEd_tab_dopravniky->RowCount--;
+					}
+				 //	Form1->MB("Smazano");
+				}
+				else { //storno   - nic se nedìje
+
 						}
+	}
+	else// pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
+	{
+		rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
+		if(rStringGridEd_tab_dopravniky->RowCount>1)
+		{
+			rStringGridEd_tab_dopravniky->RowCount--;
+		}
+	}
 
 	 //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
 	 //	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
@@ -586,24 +589,27 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 				 }
 }
 //---------------------------------------------------------------------------
-
-
-
-
+//zobrazí panel se navrženými pohony
 void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sender)
-
 {
-
-	 //	scExPanel_doporuc_pohony->Left=1;
-	 //	scExPanel_doporuc_pohony->Width=Form_parametry_linky->Width;
 		scExPanel_doporuc_pohony->Visible=true;
 		scGPButton_doporucene->Visible=false;
 		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY();
-
+		if(scHTMLLabel_doporuc_pohony->Caption=="")
+		{
+			scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";
+			scGPGlyphButton_add_mezi_pohony;
+			scGPGlyphButton_add_mezi_pohony->Visible=false;
+		}
+		else
+		{
+			scGPGlyphButton_add_mezi_pohony->Visible=true;
+		}
+		//šíøka komponenty dle aktuálnì zobrazeného textu
+		//Canvas->Font=scExPanel_doporuc_pohony->Font;
+		//scExPanel_doporuc_pohony->Width=Canvas->TextWidth(Form1->ms.TrimLeftFrom_UTF(scHTMLLabel_doporuc_pohony->Caption," </br>"));
 }
 //---------------------------------------------------------------------------
-
-
 void __fastcall TForm_parametry_linky::scExPanel_doporuc_pohonyClose(TObject *Sender)
 
 {
@@ -707,14 +713,10 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
-//tlaèítko na kopírování na kopírování doporuèených pohonù do striggridu, nepøidává ale do pohonù
+//tlaèítko na kopírování doporuèených pohonù do striggridu, nepøidává ale do pohonù
 void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
 {
-	 //již se používá z dùvodu storna
-	 //Form1->d.v.generuj_POHONY();
-	 //nacti_pohony();
-
-	 //najde max použité ID pohonu (ID nejsou seøazena)
+	 //najde max použité ID pohonu (protože ID nejsou seøazena, nutno hledat, nikoliv vzít id z posledního øádku)
 	 unsigned int ID=getMaxPID();
 
 	 //nová konstrukce zajišující pouze vložení do stringgridu, o samotné uložení pohonù se stará až tlaèítko uložit
@@ -725,17 +727,25 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
    	rStringGridEd_tab_dopravniky->RowCount++;
    	unsigned int i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
 	 	//plnìní øádku a parsování daty
-	 	rStringGridEd_tab_dopravniky->Cells[0][i]=++ID;
-	 	rStringGridEd_tab_dopravniky->Cells[1][i]=Form1->ms.TrimRightFrom(T,",");T=Form1->ms.TrimLeftFromText(T,", ");
-	 	rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,","," [");T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
-	 	rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
-	 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
-	 	//smazání jednoho již nepotøebného záznamu
+		rStringGridEd_tab_dopravniky->Cells[0][i]=++ID;//ID
+		rStringGridEd_tab_dopravniky->Cells[1][i]="Navržený pohon pro"+Form1->ms.EP(T,":","</br>");//název pohonu a vyèeštìní øetìzce pro další užití
+		rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,"Navržený pohon s rychlostí"," [");//T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
+		rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
+		//pro aRD až bude sloupec: rStringGridEd_tab_dopravniky->Cells[?][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
+		rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+		//smazání jednoho již nepotøebného záznamu
 	 	T=Form1->ms.TrimLeftFromText(T,"</br>");
 	 }
-	 rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;//pøesune focus na poslední øádek
+	 //smazání již nahraných a skrytí panelu
+	 scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";
+	 scExPanel_doporuc_pohony->Visible=false;
+	 scGPButton_doporucene->Visible=true;
+	 //pøesune focus na poslední øádek
+	 rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();
+	 //existují urèitì nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+	 scGPGlyphButton_DEL_nepouzite->Visible=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -1058,8 +1068,8 @@ unsigned int TForm_parametry_linky::getMaxPID()
 }
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::zrusit_prirazeni_smazanych_pohunu_k_objektum()
-{
-	for(unsigned PID=1;PID<=zrusena_prirazeni_PID_size;PID++)
+{   //pøeindexovat nesmazané nebo jim dat nový odkaz, nebo mazat jen konkrétní
+	for(unsigned PID=0;PID<=zrusena_prirazeni_PID_size;PID++)
 	{
 		if(zrusena_prirazeni_PID[PID])
 		Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(PID);
@@ -1072,6 +1082,22 @@ void TForm_parametry_linky::pozice_scGPGlyphButton_hint()
 {
 	 if(rStringGridEd_tab_dopravniky->RowCount<=5)scGPGlyphButton_hint_Rz->Left=Width-scGPGlyphButton_hint_Rz->Width;
 	 else scGPGlyphButton_hint_Rz->Left=1079;
+}
+//---------------------------------------------------------------------------
+//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
+//musí být zde, nikoliv ve vektorech, protože zde mohou vznikat novéh návrhy na pohony, které nejsou ještì ve spojáku POHONY
+bool TForm_parametry_linky::existuji_nepouzivane_pohony()
+{
+	 bool RET=false;
+	 for(unsigned int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+	 {
+		if(!Form1->d.v.pohon_je_pouzivan(getPID(i)))//pohon není používaný
+		{
+			RET=true;
+			break;//staèí najít jeden
+		}
+	 }
+	 return RET;
 }
 //---------------------------------------------------------------------------
 //-------------------------POP-UP MENU---------------------------------------
@@ -1087,16 +1113,17 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyMouseDown(TOb
 			//nastávení textu polože
 			scLabel_kopirovat->Caption="  Kopírovat "+rStringGridEd_tab_dopravniky->Cells[1][rStringGridEd_tab_dopravniky->Row];
 			scLabel_smazat->Caption="  Smazat "+rStringGridEd_tab_dopravniky->Cells[1][rStringGridEd_tab_dopravniky->Row];
-			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitýchzobrazovat
-			Item_smazat_nepouzite->Visible=false;
-			for(unsigned int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+			if(existuji_nepouzivane_pohony())
 			{
-				if(!Form1->d.v.pohon_je_pouzivan(getPID(i)))//pohon není používaný
-				{
-					PopUPmenu->Height=34*3;//zobrazené již tøi položky
-					Item_smazat_nepouzite->Visible=true;
-					break;//staèí najít jeden
-				}
+				PopUPmenu->Height=34*3;//zobrazené již tøi položky
+				Item_smazat_nepouzite->Visible=true;
+				scGPGlyphButton_DEL_nepouzite->Visible=true;
+			}
+			else
+			{
+				Item_smazat_nepouzite->Visible=false;
+				scGPGlyphButton_DEL_nepouzite->Visible=false;
 			}
 			//ošetøení, pokud je mimo obrazovku + 5 px okraj
 			if(PopUPmenu->Left>=ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
@@ -1147,6 +1174,8 @@ void __fastcall TForm_parametry_linky::scLabel_kopirovatClick(TObject *Sender)
 	PopUPmenu->Visible=false;
 	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	pozice_scGPGlyphButton_hint();
+	//existuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+	scGPGlyphButton_DEL_nepouzite->Visible=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_kopirovatMouseEnter(TObject *Sender)
@@ -1247,8 +1276,10 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Se
 	}
 	//skrytí pop-up menu
 	PopUPmenu->Visible=false;
-
+	rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
 	pozice_scGPGlyphButton_hint();//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+	//neexistuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých nezobrazovat
+	scGPGlyphButton_DEL_nepouzite->Visible=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseEnter(TObject *Sender)
@@ -1281,8 +1312,17 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseLeave(TO
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-
-
-
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams(TObject *Sender,
+					int Col, int Row, TFont *AFont, TColor &Background, bool &Highlight)
+{
+//chová se divnì, chce to doladit
+//	Highlight=false;
+// if (Row==rStringGridEd_tab_dopravniky->Row)
+// {
+//		Background=(TColor)RGB(202,217,240);
+//	Highlight=true;
+// }
+}
+//---------------------------------------------------------------------------
 
 

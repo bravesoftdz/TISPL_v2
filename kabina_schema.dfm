@@ -5,7 +5,7 @@
   Caption = 'Pozn'#225'mka'
   ClientHeight = 423
   ClientWidth = 737
-  Color = clBtnFace
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -1491,7 +1491,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1505,11 +1505,10 @@
       CaptionGlowEffect.Offset = 0
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
-      Color = clBtnFace
+      Color = 15790320
       Caption = 'Item1'
       TransparentBackground = True
       StorePaintBuffer = True
-      ExplicitTop = 171
       object scLabel_cely_pohled: TscLabel
         Left = 37
         Top = 0
@@ -1634,7 +1633,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1648,11 +1647,10 @@
       CaptionGlowEffect.Offset = 0
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
-      Color = clBtnFace
+      Color = 15790320
       Caption = 'Item1'
       TransparentBackground = True
       StorePaintBuffer = True
-      ExplicitTop = 103
       object scLabel_oddálit: TscLabel
         Left = 37
         Top = 0
@@ -1777,7 +1775,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1791,11 +1789,10 @@
       CaptionGlowEffect.Offset = 0
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
-      Color = clBtnFace
+      Color = 15790320
       Caption = 'Item1'
       TransparentBackground = True
       StorePaintBuffer = True
-      ExplicitTop = 137
       object scLabel_vybrat_oknem: TscLabel
         Left = 37
         Top = 0
@@ -1920,7 +1917,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -1934,11 +1931,10 @@
       CaptionGlowEffect.Offset = 0
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
-      Color = clBtnFace
+      Color = 15790320
       Caption = 'Item1'
       TransparentBackground = True
       StorePaintBuffer = True
-      ExplicitTop = 69
       object scLabel_priblizit: TscLabel
         Left = 37
         Top = 0
@@ -2065,7 +2061,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -2079,11 +2075,10 @@
       CaptionGlowEffect.Offset = 0
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
-      Color = clBtnFace
+      Color = 15790320
       Caption = 'Item1'
       TransparentBackground = True
       StorePaintBuffer = True
-      ExplicitTop = 35
       object scLabel_posunout: TscLabel
         Left = 37
         Top = 0
@@ -2208,7 +2203,7 @@
       FillGradientBeginColorOffset = 25
       FillGradientEndColorOffset = 25
       FrameWidth = 0
-      FillColor = cl3DLight
+      FillColor = 15790320
       FillColorAlpha = 255
       FillColor2 = clNone
       FrameColor = clBtnShadow
@@ -2222,11 +2217,10 @@
       CaptionGlowEffect.Offset = 0
       CaptionGlowEffect.Intensive = True
       CaptionGlowEffect.StyleColors = True
-      Color = clBtnFace
+      Color = 15790320
       Caption = 'Item1'
       TransparentBackground = True
       StorePaintBuffer = True
-      ExplicitTop = 1
       object GlyphButton_posouvat: TscGPGlyphButton
         Left = 0
         Top = 0

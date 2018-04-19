@@ -4,6 +4,7 @@
 
 #include "kabina_schema.h"
 #include "unit1.h"
+#include "antialiasing.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
@@ -83,9 +84,11 @@ void __fastcall TForm_kabina_schema::FormKeyDown(TObject *Sender, WORD &Key, TSh
 		}
 		break;
 		//F7
-		case 118:Form1->ZOOM_IN();Invalidate();break;
+		case 118:Form1->ZOOM_IN();Invalidate();//návrat do pùvodního stavu
+		break;
 		//F8
-		case 119:Form1->ZOOM_OUT();Invalidate();break;
+		case 119:Form1->ZOOM_OUT();Invalidate();//návrat do pùvodního stavu
+		break;
 	 }
 }
 //---------------------------------------------------------------------------
@@ -104,10 +107,24 @@ void __fastcall TForm_kabina_schema::FormPaint(TObject *Sender)
 	if(Form1->pom!=NULL)
 	{
 		//náhled objektu
-		Form1->d.vykresli_objekt(Canvas,Form1->pom,Form1->m.P2Lx(Left+10),Form1->m.P2Ly(Form1->Height/2),1);
+		if(!Form1->antialiasing)Form1->d.vykresli_objekt(Canvas,Form1->pom,Form1->m.P2Lx(Left+10),Form1->m.P2Ly(Form1->Height/2),1);
+		else
+		{
+//			Cantialising a;
+//			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//			//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvkù LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+//			bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//			Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//			d.vykresli_vektory(bmp_in->Canvas);
+//			Zoom=Zoom_predchozi_AA;//navrácení zoomu na pùvodní hodnotu
+//			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
+//			Canvas->Draw(0,0,bmp_out);
+//			delete (bmp_out);//velice nutné
+//			delete (bmp_in);//velice nutné
+		}
 
-		//mìøítko
-		Form1->d.meritko(Canvas,Height-10,0+10);
+		//grafické mìøítko
+		if(Form1->scGPSwitch_meritko->State==true)Form1->d.meritko(Canvas,Top+Height-10,0+10);
 	}
 
 	//orámování formuláøe

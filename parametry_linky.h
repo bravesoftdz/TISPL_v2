@@ -83,6 +83,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_nastavit_parametry;
 	TscGPGlyphButton *GlyphButton_close;
 	TscGPGlyphButton *scGPGlyphButton_ADD;
+	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -137,6 +138,8 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_kopirovatMouseLeave(TObject *Sender);
 	void __fastcall GlyphButton_kopirovatMouseEnter(TObject *Sender);
 	void __fastcall GlyphButton_kopirovatMouseLeave(TObject *Sender);
+	void __fastcall rStringGridEd_tab_dopravnikyGetCellParams(TObject *Sender, int Col,
+          int Row, TFont *AFont, TColor &Background, bool &Highlight);
 
 private:	// User declarations
 
@@ -150,11 +153,12 @@ private:	// User declarations
 	unsigned int zrusena_prirazeni_PID_size;
 	void zrusit_prirazeni_smazanych_pohunu_k_objektum();
 	void pozice_scGPGlyphButton_hint();
+	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
+	void nacti_pohony();
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 
 	bool data_nalezena;
-	void nacti_pohony();
 	void show_min_Rz();
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
