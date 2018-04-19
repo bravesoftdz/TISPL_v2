@@ -2848,12 +2848,12 @@ void TForm1::NP()
 		//navrácení dat + volání zobrazení formu
 		if(Form_parametry->ShowModal()==mrOk)
 		{
-			if(Form_parametry->VID!=-1)  //ověření, zdali skutečně mohu uložit zadaná data
-			{
-				if(mrOk==MB("Některý z ukládaných údajů byl zadán chybně, zkuste znovu zadat parametry!"))//lepé přes mrOk
-				NP();
-				Form_parametry->scComboBox_rezim->ItemIndex=pm.rezim;
-			}
+//			if(Form_parametry->VID!=-1)  //ověření, zdali skutečně mohu uložit zadaná data
+//			{
+//				if(mrOk==MB("Některý z ukládaných údajů byl zadán chybně, zkuste znovu zadat parametry!"))//lepé přes mrOk
+//				NP();
+//				Form_parametry->scComboBox_rezim->ItemIndex=pm.rezim;
+//			}
 			try
 			{
 				//navrácení hodnot z Form_Parametry, v případě stisku OK
