@@ -14,6 +14,8 @@ object Form_parametry: TForm_parametry
   Font.Style = []
   OldCreateOrder = False
   ParentBiDiMode = False
+  PopupMode = pmExplicit
+  PopupParent = Form_parametry_linky.Owner
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -751,6 +753,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     TabOrder = 7
     TabStop = True
+    OnClick = scGPButton_OKClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -3306,6 +3309,15 @@ object Form_parametry: TForm_parametry
     ScaleCheckMarkThickness = True
     ShowFocusRect = False
     UseFontColorToStyleColor = False
+  end
+  object Button1: TButton
+    Left = 152
+    Top = 328
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 32
+    OnClick = Button1Click
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET

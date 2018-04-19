@@ -93,6 +93,7 @@
 #include "scWebBrowser.hpp"
 #include <SHDocVw.hpp>
 #include <Vcl.OleCtrls.hpp>
+#include "PO_math.h"
 
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
@@ -425,6 +426,7 @@ public:
 	Cvektory::TObjekt *pom;
 	Cvektory::TObjekt *copyObjekt;
 	TPointD copyObjektRzRx;
+	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
