@@ -238,7 +238,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_hlavicka_tabulky->Cells[6][0]=rStringGridEd_tab_dopravniky->Cells[6][0];
 
 	//	rStringGridEd_tab_dopravniky->Columns->
-	 rStringGridEd_tab_dopravniky->Row=1;rStringGridEd_tab_dopravniky->Col=5;//rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemnı vizuální efekt
+
+	 if(rStringGridEd_tab_dopravniky->RowCount>1 && rStringGridEd_tab_dopravniky->ColCount>=5){rStringGridEd_tab_dopravniky->Row=1;rStringGridEd_tab_dopravniky->Col=5;}//rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemnı vizuální efekt
 
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();

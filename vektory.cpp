@@ -842,15 +842,22 @@ bool Cvektory::pohon_je_pouzivan(unsigned long n)
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
-//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL
-Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt)
+//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režim, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
+Cvektory::TObjekt *Cvektory::pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,unsigned short rezim)
 {
  	TObjekt *O=OBJEKTY->dalsi;
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL && O!=mimo_objekt)
+		if(O->pohon!=NULL && O!=mimo_objekt)//byl objekt s pohonem nalezen a nejedná se o vynechávaný objekt
 		{
-			if(O->pohon->n==n)break;//přeruší další vyhledávání
+			if(O->pohon->n==n)//byl objekt s daným pohonem nalezen
+			{
+				if(rezim==-1)break;//pokud se neřeší konkrétní režim, tak přeruší další vyhledávání, objekt nalezen
+				else//řesí se konkrétní režim
+				{
+					if(O->rezim==rezim)break;//přeruší další vyhledávání, objekt v požadovaném režimu nalezen
+				}
+			}
 		}
 		O=O->dalsi;
 	}
