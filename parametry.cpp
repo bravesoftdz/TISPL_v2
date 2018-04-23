@@ -103,6 +103,11 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender) {
 		INPUT();   // pøi prvním zobrazení formu "otisknu" data z formu do math struktury, bez žádných výpoètù, primárnì použito pro nastavení decimal checkboxu, kdy potøebuje mít data v output již pøi formshow
 		OUTPUT();  // naètení dat ze struktury
 		if(scComboBox_rezim->ItemIndex==1) 	Check_rozmezi_RD();
+		if(scComboBox_rezim->ItemIndex!=1)  // pro jiné režimy vždy povolím zobrazení zámkù
+		{
+		scButton_zamek_CT->Enabled=true;
+		scButton_zamek_DD->Enabled=true;
+		}
 
 
 }
@@ -207,7 +212,7 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender) {
 				INPUT();  // uložení dat z editù do struktury pøi zmìnì režimu
 				OUTPUT(); // naètení ze struktury - aby probìhla validace dat pøi zmìnì režimu
 
-				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
+				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
 				if (scComboBox_rezim->ItemIndex == 1 && obj!=NULL ){  // u KK režimu pokud je pohon používán - natáhnutí správné mezery z dat
 
 					 scGPNumericEdit_mezera->Value=obj->mezera;
@@ -1908,20 +1913,30 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 // kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
-	INPUT();
-	OUTPUT();
+		INPUT();
+		OUTPUT();
 		Pohon_pouzivan();
 		Nacti_rx();
+		if(scComboBox_rezim->ItemIndex!=1){
+		scButton_zamek_CT->Enabled=true;
+		scButton_zamek_DD->Enabled=true;
+		}
 		if (scComboBox_pohon->ItemIndex != 0)
 		{   // POKUD je pohon již používán, natáhnu si jeho data
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
 				if (obj!=NULL)
 				{
+				double RD=obj->RD;
+
 
 				Memo1->Lines->Add(obj->RD);
-				//if(RDunitT == S) scGPNumericEdit_RD->Value=obj->RD;
-				//else
-						 scGPNumericEdit_RD->Value=obj->RD*60.0;
+				Memo1->Lines->Add(obj->mezera);
+
+
+				if (RDunitT == MIN)RD *= 60.0;
+				if (RDunitD == MM) RD /= 1000.0;
+
+						 scGPNumericEdit_RD->Value=RD;
 						 scGPNumericEdit_mezera->Value=obj->mezera;
 					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
 					else scComboBox_rotace->ItemIndex=1;
@@ -2623,8 +2638,8 @@ void TForm_parametry::Pohon_pouzivan() {
 		if (scComboBox_rezim->ItemIndex == 1) { // pro KK režim - nastavení
 				Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
 				// ShowMessage(scComboBox_pohon->ItemIndex);
-				if (Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,
-						Form1->pom)) {
+				if (Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1))
+				{
 						// ShowMessage(input_state);
 						RD_zamek = LOCKED; // pohon je již použiván - nemohu hýbat RD
 						CT_zamek = UNLOCKED;
@@ -2645,19 +2660,19 @@ void TForm_parametry::Pohon_pouzivan() {
 					 {
 							double roztec=0.0;
 							Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-							if (P != NULL) roztec=P->roztec;  else  roztec=0;
+							if (P != NULL) roztec=P->roztec;  else  roztec=0.0;
 
 						 double rotace=0.0;
-						 if (scComboBox_rotace->ItemIndex==0) rotace=10; else rotace=0;  //potenciální hodnota pro výpoèet Rz
+						 if (scComboBox_rotace->ItemIndex==0) rotace=10; else rotace=0.0;  //potenciální hodnota pro výpoèet Rz
 
 						 double mezera=0.0;
-						 Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
-						 if (obj!=NULL)   mezera=obj->mezera; else mezera = 0;
+						 Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
+						 if (obj!=NULL)   mezera=obj->mezera; else mezera = 0.0;
 
 
 						double M = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,roztec,mezera);
 						double Rz_potencial =	Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,M);  //rotace je zde obracena nezli je nastaveno v editu
-						double Rz_akt =       Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex,obj->mezera);
+						double Rz_akt =  Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex,obj->mezera);
 
 						Memo1->Lines->Add(Rz_potencial);
             Memo1->Lines->Add(Rz_akt);
