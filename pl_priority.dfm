@@ -5,7 +5,7 @@ object Form_PL_priority: TForm_PL_priority
   Caption = 'Form_PL_priority'
   ClientHeight = 310
   ClientWidth = 776
-  Color = clBtnFace
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
