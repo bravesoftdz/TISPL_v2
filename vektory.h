@@ -214,7 +214,7 @@ class Cvektory
 			struct TText *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TText *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
-	struct TText TEXTY;
+	struct TText *TEXTY;
 
 	struct TLinie
 	{
@@ -225,9 +225,20 @@ class Cvektory
 			TColor barva;
 			unsigned short int typ;//typ čáry
 			struct TLinie *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TLinieText *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+			struct TLinie *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
-	struct TLinie LINIE;//seznam linií sloužicích jako poznámky
+	struct TLinie *LINIE;//seznam linií sloužicích jako poznámky
+
+	struct TRetez
+	{
+		unsigned int n; //pořadí objektu ve spoj.seznamu
+		UnicodeString name;//název řetězu
+		double roztec;//rozteč palců na řetězů v metrech
+		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+	};
+	struct TRetez *RETEZY;
+
 
 		struct TFile_hlavicka
 		{
@@ -351,6 +362,12 @@ public:
 		TProces *vrat_nasledujici_proces_objektu(TProces *Proces);//vratí následující proces na stejném objektu jako proces zadaný
 		long vymaz_seznam_PROCESY();
 
+//metody pro RETEZY
+	void hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy
+	void vloz_retez(UnicodeString name, double roztec);//uloží retez a jeho parametry do spojového seznamu
+	UnicodeString vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator=",",AnsiString total_separator=";");//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula
+	long vymaz_seznam_RETEZY();//smaze RETEZY z pameti
+
 //metody pro PALCE
 //		void hlavicka_palce();
 //		void vloz_palec();//přidá nový vozík do seznamu PALCE
@@ -364,6 +381,9 @@ public:
 		short int uloz_do_souboru(UnicodeString FileName);
 		short int nacti_ze_souboru(UnicodeString FileName);
 		short int ulozit_report(UnicodeString FileName);
+		void nacti_CSV_retezy(AnsiString FileName);
+		AnsiString ReadFromTextFile(AnsiString FileName);
+		void SaveText2File(AnsiString Text,AnsiString FileName);
 
 //		//technické, statistické a ekonomické ukazatele
 //		void get_LT_a_max_min_TT();

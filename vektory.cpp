@@ -12,6 +12,7 @@ Cvektory::Cvektory()
 	hlavicka_POHONY();//vytvoří novou hlavičku pro pohony
 	hlavicka_ZAKAZKY();//vytvoří novou hlavičku pro zakazky
 	hlavicka_VOZIKY();//vytvoří novou hlavičku pro vozíky
+	hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy
 	//	hlavicka_palce();
 }
 ////---------------------------------------------------------------------------
@@ -1003,8 +1004,10 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rychlosti[j]=0;//vynulování pole
 	AnsiString *pole_pohonu=new AnsiString[OBJEKTY->predchozi->n];//dynamické pole unikátních pohonu, pole je o max. velikosti počtu objektů
 	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_pohonu[j]="";//vynulování pole
-	TPohon *P=POHONY->dalsi;
+	double *pole_rozteci=new double[OBJEKTY->predchozi->n];//dynamické pole unikátních rychlostí, pole je o max. velikosti počtu objektů
+	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)pole_rozteci[j]=0;//vynulování pole
 
+	TPohon *P=POHONY->dalsi;
 	//projíždí jedntolivé objekty, které nemají přiřařezen pohon, tak jim doporučí, s tím, že navrhuje sloučit se stejnou rychlostí
 	while (O!=NULL)
 	{
@@ -1018,10 +1021,11 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 					pole_pohonu[j]+=", "+O->short_name;
 					break;
 				}
-				if(pole_rychlosti[j]==0)//neni, přídání nově do obou polí
+				if(pole_rychlosti[j]==0)//neni, přídání nově do všech třech polí
 				{
 					pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(O->RD*60)+" [m/min] pro objekt(y): "+O->short_name;
 					pole_rychlosti[j]=O->RD;
+					pole_rozteci[j]=m.Rz(O->RD);
 					break;
 				}
 			}
@@ -1032,12 +1036,19 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 	//překopíruje pole_pohonu do dat k navrácení, pokud není záznam prázdný
 	for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
 	{
-		if(pole_pohonu[j]!="")data+=pole_pohonu[j]+separator;
+		if(pole_pohonu[j]!="")data+=pole_pohonu[j]+".";
+		if(pole_rozteci[j]!=0)
+		{
+		 AnsiString CH=vypis_retezy_s_pouzitelnou_rozteci(pole_rozteci[j],",");
+		 if(CH!="")data+=" Použ. řetezy s roztečí [m]:"+CH;
+		}
+		if(pole_pohonu[j]!="")data+=separator;
 	}
 
 	//odstranění již nepotřebných dat z paměti
 	delete [] pole_rychlosti;
 	delete [] pole_pohonu;
+	delete [] pole_rozteci;
 	O=NULL;delete O;
 	P=NULL;delete P;
 
@@ -1843,6 +1854,68 @@ long Cvektory::vymaz_seznam_PROCESY()
 
 	return pocet_smazanych_objektu;
 }
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+////vytvoří novou hlavičku pro řetězy
+void Cvektory::hlavicka_RETEZY()
+{
+	TRetez *novy=new TRetez;
+	novy->n=0;
+	novy->name="";//celý název objektu
+
+	novy->predchozi=novy;//ukazuje sam na sebe
+	novy->dalsi=NULL;
+	RETEZY=novy;//RETEZY
+}
+////---------------------------------------------------------------------------
+////uloží retez a jeho parametry do spojového seznamu
+void Cvektory::vloz_retez(UnicodeString name, double roztec)
+{
+	TRetez *novy=new TRetez;
+
+	novy->n=RETEZY->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	novy->name=name;
+	novy->roztec=roztec;
+
+	RETEZY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+	novy->predchozi=RETEZY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->dalsi=NULL;
+	RETEZY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+//---------------------------------------------------------------------------
+//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula
+UnicodeString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator)
+{
+	UnicodeString RET="";
+	if(Rz)
+	{
+			TRetez *CH=RETEZY->dalsi;
+			while(CH!=NULL)
+			{
+				if(m.mod_d(Rz,CH->roztec)==0)//zbytek po dělení je nula, tzn. vhodný řetěz s roztečí vhodnou pro požadovaný rozestup nalezen
+				RET+=CH->name+separator+AnsiString(CH->roztec)+total_separator;
+				CH=CH->dalsi;
+			}
+			CH=NULL;delete CH;
+	}
+	return RET;
+}
+//---------------------------------------------------------------------------
+//smaze RETEZY z pameti
+long Cvektory::vymaz_seznam_RETEZY()
+{
+	long pocet_smazanych_objektu=0;
+	while (RETEZY!=NULL)
+	{
+		pocet_smazanych_objektu++;
+		RETEZY->predchozi=NULL;
+		delete RETEZY->predchozi;
+		RETEZY=RETEZY->dalsi;
+	};
+
+	return pocet_smazanych_objektu;
+};
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2278,6 +2351,56 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			}
 			catch(...){;return 2;}//jiná chyba, např. špatný formát souboru
 	}
+}
+////---------------------------------------------------------------------------
+void Cvektory::nacti_CSV_retezy(AnsiString FileName)
+{
+	try
+	{
+		AnsiString DATA=ReadFromTextFile(FileName);
+
+		//parsování a ukládání do spojového seznamu
+		if(DATA.Pos("název") || DATA.Pos("name"))DATA=Form1->ms.delete_repeat(DATA,"\r\n",1);//smaže případnou hlavičku csv souboru
+		while(DATA.Pos(";"))//bude parsovat, dokud budou data obsahovat středník
+		{
+			//pársování
+			AnsiString name=DATA.SubString(1,DATA.Pos(";")-1);DATA=Form1->ms.delete_repeat(DATA,";",1);
+			AnsiString roztec=DATA.SubString(1,DATA.Pos("\r\n")-1);DATA=Form1->ms.delete_repeat(DATA,"\r\n",1);//smaže konec řádku
+			//uložení do spojáku pro další využítí
+			vloz_retez(name,Form1->ms.MyToDouble(roztec));
+		}
+	}
+	catch(...)//např. soubor nenalezen
+	{
+		; //nic se neděje
+  }
+}
+////---------------------------------------------------------------------------
+AnsiString Cvektory::ReadFromTextFile(AnsiString FileName)
+{
+	///////////////////////////načtení dat ze souboru
+	TMemoryStream* MemoryStream=new TMemoryStream();
+	MemoryStream->LoadFromFile(FileName);
+	char *data_ch=new char[MemoryStream->Size];
+	MemoryStream->Read(data_ch,MemoryStream->Size);
+	return AnsiString(data_ch);
+}
+//---------------------------------------------------------------------------
+void Cvektory::SaveText2File(AnsiString Text,AnsiString FileName)
+{
+  ///////////////////////////převod dat do UTF8
+	/*WideString WData=Text;
+	char *CHData=new char[Text.Length()+1];
+	WideCharToMultiByte(/*CP_ACP*//*CP_UTF8,0,WData,Text.Length()+1,CHData,Text.Length()+1,NULL,NULL);
+	*/
+
+	///////////////////////////zapis data do souboru
+	TMemoryStream* MemoryStream=new TMemoryStream();
+	MemoryStream->Clear();
+	MemoryStream->Write(Text.c_str(),Text.Length());//Win
+	//MemoryStream->Write(Text.w_str(),Text.Length()*2);//UTF8
+	MemoryStream->SaveToFile(FileName);
+	delete MemoryStream;
 }
 ////---------------------------------------------------------------------------
 //short int Cvektory::ulozit_report(UnicodeString FileName)
@@ -2881,6 +3004,14 @@ void Cvektory::vse_odstranit()
 			delete PROCESY; PROCESY=NULL;
 		}
 		hlavicka_PROCESY();
+
+		//retezy
+		if(RETEZY!=NULL && RETEZY->predchozi->n>0)//pokud je více objektů
+		{
+			vymaz_seznam_RETEZY();//vymaze objekty z paměti
+			delete RETEZY; RETEZY=NULL;
+		}
+		hlavicka_RETEZY();//nutnost
 
 
 

@@ -17,7 +17,11 @@ __fastcall TForm_report::TForm_report(TComponent* Owner)
 	: TForm(Owner)
 {
 	//webrowser naète vytvoøené html k zobrazení, v pøípadì soubor nový se naèítá html soubor z adresáøe aplikace
-	if(Form1->FileName=="Nový.tispl")WebBrowser1->Navigate(ExtractFilePath(Application->ExeName)+"Nový.html");
+	if(Form1->FileName=="Nový.tispl")
+	{
+		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+		WebBrowser1->Navigate(ExtractFilePath(Application->ExeName)+"Nový.html");
+	}
 	else	WebBrowser1->Navigate(Form1->FileName);
 
 	//pozice formuláøe na støed obrazovky

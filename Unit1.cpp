@@ -50,9 +50,9 @@ AnsiString Parametry;
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
-	db_connection();
+	srand(time(NULL));//nutno tady tj. úplně první!!!
 
-	srand(time(NULL));//nutno tady
+	db_connection();//připojení k DB
 
 	Form1->Width=1290;//workaround bílé mezery v záložkové liště
 
@@ -121,7 +121,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	volat_parametry_linky=false;
 
 	//zjistí verzi aplikace
-	DWORD  ver=GetFileVersion(Application->ExeName);
+	DWORD ver=GetFileVersion(Application->ExeName);
 	VERZE=UnicodeString(HIWORD(ver))+"."+UnicodeString(LOWORD(ver));
 	//VERZE=UnicodeString(UnicodeString(HIWORD(ver) >> 16)+"."+UnicodeString(HIWORD(ver) & 0xFFFF)+"."+UnicodeString(LOWORD(ver) >> 16)+"."+UnicodeString(LOWORD(ver) & 0xFFFF));
 
@@ -137,6 +137,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	copyObjekt=new Cvektory::TObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
+
+	//načtení řetězů - jsou-li k dispozici
+	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+	d.v.nacti_CSV_retezy("řetězy.csv");
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
