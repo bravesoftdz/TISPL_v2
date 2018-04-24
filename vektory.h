@@ -232,7 +232,7 @@ class Cvektory
 	struct TRetez
 	{
 		unsigned int n; //pořadí objektu ve spoj.seznamu
-		UnicodeString name;//název řetězu
+		AnsiString name;//název řetězu
 		double roztec;//rozteč palců na řetězů v metrech
 		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
@@ -364,8 +364,9 @@ public:
 
 //metody pro RETEZY
 	void hlavicka_RETEZY();//vytvoří novou hlavičku pro řetězy
-	void vloz_retez(UnicodeString name, double roztec);//uloží retez a jeho parametry do spojového seznamu
-	UnicodeString vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator=",",AnsiString total_separator=";");//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula
+	void vloz_retez(AnsiString name, double roztec);//uloží retez a jeho parametry do spojového seznamu
+	double vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator=",");//z položky (předpoklad vybrané) v comboboxů řetězů vrátí pouze hodnotu rozteče
+	AnsiString vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator=",",AnsiString total_separator=";");//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula
 	long vymaz_seznam_RETEZY();//smaze RETEZY z pameti
 
 //metody pro PALCE

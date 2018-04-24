@@ -1870,7 +1870,7 @@ void Cvektory::hlavicka_RETEZY()
 }
 ////---------------------------------------------------------------------------
 ////uloží retez a jeho parametry do spojového seznamu
-void Cvektory::vloz_retez(UnicodeString name, double roztec)
+void Cvektory::vloz_retez(AnsiString name, double roztec)
 {
 	TRetez *novy=new TRetez;
 
@@ -1884,10 +1884,16 @@ void Cvektory::vloz_retez(UnicodeString name, double roztec)
 	RETEZY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
-//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula
-UnicodeString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator)
+//z položky (předpoklad vybrané) v comboboxů řetězů vrátí pouze hodnotu rozteče
+double Cvektory::vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator)
 {
-	UnicodeString RET="";
+	return Form1->ms.MyToDouble(Form1->ms.TrimLeftFromText(item,separator));
+}
+//---------------------------------------------------------------------------
+//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula
+AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator)
+{
+	AnsiString RET="";
 	if(Rz)
 	{
 			TRetez *CH=RETEZY->dalsi;

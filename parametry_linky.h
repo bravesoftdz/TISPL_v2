@@ -24,7 +24,6 @@
 class TForm_parametry_linky : public TForm
 {
 __published:	// IDE-managed Components
-	TrHTMLLabel *rHTMLLabel_delka_voziku;
 	TrStringGridEd *rStringGridEd_tab_dopravniky;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
@@ -33,14 +32,11 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel1;
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_vozik;
-	TrEditNum *rEditNum_delkavoziku;
 	TscGPButton *scGPButton_pohon;
 	TButton *Vypis_pohony;
 	TrHTMLLabel *rHTMLLabel_eDesigner;
-	TrEditNum *rEditNum_takt_OLD;
 	TrHTMLLabel *rHTMLLabel_takt;
 	TrHTMLLabel *rHTMLLabel_sirka;
-	TrEditNum *rEditNum_sirka_jigu_OLD;
 	TscGPButton *scGPButton_obecne;
 	TrHTMLLabel *rHTMLLabel_doporuc_pohony;
 	TscExPanel *scExPanel_doporuc_pohony;
@@ -52,11 +48,9 @@ __published:	// IDE-managed Components
 	TButton *Button1;
 	TscGPButton *scGPButton_jig;
 	TrHTMLLabel *rHTMLLabel_delka_jigu;
-	TrEditNum *rEditNum_delka_jigu_old;
 	TscGPSwitch *scGPSwitch;
 	TrHTMLLabel *rHTMLLabel3;
 	TrHTMLLabel *rHTMLLabel4;
-	TrHTMLLabel *rHTMLLabel1;
 	TrHTMLLabel *rHTMLLabel2;
 	TscGPGlyphButton *Button_ADD;
 	TscGPGlyphButton *Button_DEL;
@@ -84,6 +78,12 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_close;
 	TscGPGlyphButton *scGPGlyphButton_ADD;
 	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
+	TrHTMLLabel *rHTMLLabel5;
+	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
+	TrHTMLLabel *rHTMLLabel6;
+	TrHTMLLabel *rHTMLLabel_delka_podvozek;
+	TscGPNumericEdit *scGPNumericEdit_delka_podvozek;
+	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

@@ -149,8 +149,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			Button_DEL->Visible=true;
 
 		 //	scRadioGroup_typVoziku->Visible=true;
-			rEditNum_delkavoziku->Visible=true;
-			rHTMLLabel_delka_voziku->Visible=true;
 
 			scGPButton_obecne->Visible=false;
 			rHTMLLabel_takt->Visible=false;
@@ -722,6 +720,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
 
 	 //nová konstrukce zajišující pouze vložení do stringgridu, o samotné uložení pohonù se stará až tlaèítko uložit
 	 AnsiString T=scHTMLLabel_doporuc_pohony->Caption;
+
 	 while(T.Pos("</br>"))//bude parsovat dokud bude </br>
 	 {
 	 	//zvýšení poètu øádkù
@@ -729,16 +728,16 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
    	unsigned int i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
 	 	//plnìní øádku a parsování daty
 		rStringGridEd_tab_dopravniky->Cells[0][i]=++ID;//ID
-		rStringGridEd_tab_dopravniky->Cells[1][i]="Navržený pohon pro"+Form1->ms.EP(T,":","</br>");//název pohonu a vyèeštìní øetìzce pro další užití
+		rStringGridEd_tab_dopravniky->Cells[1][i]="Navržený pohon pro"+Form1->ms.EP(T,":",".");//název pohonu a vyèeštìní øetìzce pro další užití
 		rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,"Navržený pohon s rychlostí"," [");//T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
 		rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
 		//pro aRD až bude sloupec: rStringGridEd_tab_dopravniky->Cells[?][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
 		rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
 		//smazání jednoho již nepotøebného záznamu
-	 	T=Form1->ms.TrimLeftFromText(T,"</br>");
+		T=Form1->ms.TrimLeftFromText(T,"</br>");
 	 }
 	 //smazání již nahraných a skrytí panelu
-	 scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";
+	 scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";//nepoužívá se tento výpis viditelnì, situace nenastane
 	 scExPanel_doporuc_pohony->Visible=false;
 	 scGPButton_doporucene->Visible=true;
 	 //pøesune focus na poslední øádek
@@ -840,18 +839,18 @@ void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender
 	{
 		Delkaunit=M;
 		//delka - pøepoèítání
-		delka=rEditNum_delkavoziku->Value*1000.0;
-		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[mm]</font>";
+		delka=scGPNumericEdit_delka_podvozek->Value*1000.0;
+		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 		//delka - pøepoèítání
-			delka=rEditNum_delkavoziku->Value/1000.0;
-		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[m]</font>";
+		delka=scGPNumericEdit_delka_podvozek->Value/1000.0;
+		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
 	}
 	//plnìní
-	rEditNum_delkavoziku->Value=delka;
+	scGPNumericEdit_delka_podvozek->Value=delka;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
@@ -891,18 +890,18 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sen
 	{
 		Delkaunit=M;
 		//delka - pøepoèítání
-		delka=rEditNum_delkavoziku->Value*1000.0;
-		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[mm]</font>";
+		delka=scGPNumericEdit_delka_podvozek->Value*1000.0;
+		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 		//delka - pøepoèítání
-			delka=rEditNum_delkavoziku->Value/1000.0;
-		rHTMLLabel_delka_voziku->Caption="délka <font color=#2b579a>[m]</font>";
+			delka=scGPNumericEdit_delka_podvozek->Value/1000.0;
+		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
 	}
 	//plnìní
-	rEditNum_delkavoziku->Value=delka;
+	scGPNumericEdit_delka_podvozek->Value=delka;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 
 }
