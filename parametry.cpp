@@ -2805,14 +2805,20 @@ void TForm_parametry::Check_rozmezi_RD() {
 						double jednotky_cas_pohon = 60.0;
 						if (Form_parametry->RDunitT == Form_parametry->MIN) jednotky_cas_pohon = 60.0;
 						else jednotky_cas_pohon = 1.0;
-						if (scGPNumericEdit_RD->Value < Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon) || scGPNumericEdit_RD->Value > Form1->ms.MyToDouble(P->rychlost_do * jednotky_cas_pohon)) // nesplòuje rozmezí
+		 //				if (scGPNumericEdit_RD->Value < Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon) || scGPNumericEdit_RD->Value > Form1->ms.MyToDouble(P->rychlost_do * jednotky_cas_pohon)) // nesplòuje rozmezí
+		 // náhrada pùvodního IF novým - chová se jako klasické between porovnání
+					if ((unsigned)(scGPNumericEdit_RD->Value - Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon)) <= Form1->ms.MyToDouble(P->rychlost_do * jednotky_cas_pohon) - Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon))
 						{
-							//Memo1->Lines->Add(scGPNumericEdit_RD->Value);
-						//	Memo1->Lines->Add(P->rychlost_do*jednotky_cas_pohon);
+							//Memo1->Lines->Add("OK v rozmezi");
+							;
+						}
+						else
+						{
 
-							if(scGPNumericEdit_RD->Value>P->rychlost_do)  VID=25;
+            	if(scGPNumericEdit_RD->Value>P->rychlost_do)  VID=25;
 							if(scGPNumericEdit_RD->Value<P->rychlost_od)  VID=26;
 								 mimo_rozmezi=true;
+									//Memo1->Lines->Add("mimo rozmezi");
 						}
 				}
 			double RD=scGPNumericEdit_RD->Value;
