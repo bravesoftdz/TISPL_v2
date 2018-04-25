@@ -388,7 +388,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(DELKA, ENABLED);
 						set(KAPACITA, ENABLED);
 						set(POZICE, ENABLED);
-						set(ODCHYLKA, HIDE);
+						set(ODCHYLKA, ENABLED);
 						set(CEKANI, HIDE);
 						set(STOPKA, HIDE);
 						set(ROTACE, ENABLED);
@@ -997,7 +997,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 		{    	//vypis("");
 				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&	input_clicked_edit == mezera_klik)
 				{
-					if (!Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom)) 	vypis("Povolte zmìnu rychlosti pohonu.");  // pokud není pohon používán, dám výpis, jinak výpis nemá smysl - již nelze mìnit rychlost
+					if (!Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1)) 	vypis("Povolte zmìnu rychlosti pohonu.");  // pokud není pohon používán, dám výpis, jinak výpis nemá smysl - již nelze mìnit rychlost
 
 
 				} // není zamèeno - doporuèím mezeru, èekám zdali zadá správnou mezeru
@@ -1104,9 +1104,9 @@ void TForm_parametry::input_K() {
 
 			if(dopRD!=RD)
 			{
-			Memo1->Lines->Add(DD);
-			Memo1->Lines->Add(dopRD);
-			Memo1->Lines->Add(Form1->d.v.PP.TT);
+			//Memo1->Lines->Add(DD);
+		 //	Memo1->Lines->Add(dopRD);
+			//Memo1->Lines->Add(Form1->d.v.PP.TT);
 				K =  (DD/dopRD) / (Form1->d.v.PP.TT/60.0);
 				vypis("Doporuèená kapacita : " +AnsiString(K) +" ");
 				VID=32;
@@ -1175,10 +1175,10 @@ void TForm_parametry::input_P() {
 			if(dopRD!=RD)
 			{
 				K =  (DD/dopRD) / (Form1->d.v.PP.TT/60.0);
-				Memo1->Lines->Add(K);
+				//Memo1->Lines->Add(K);
 				double dop_K =  pm.K2P(K);
 				if(dop_K != Pozice )  {
-			  Memo1->Lines->Add(dop_K);
+			 // Memo1->Lines->Add(dop_K);
 				vypis("Doporuèený poèet pozic : " +AnsiString(dop_K) +" ");
 				VID=33; }
 			} else vypis("",false);
@@ -1283,8 +1283,8 @@ void TForm_parametry::input_DD() {
 
 					double	 DD_dop = CT*dopRD;
 
-					Memo1->Lines->Add(DD_dop);
-					Memo1->Lines->Add(DD);
+				 //	Memo1->Lines->Add(DD_dop);
+				 //	Memo1->Lines->Add(DD);
 
 						if(Form1->ms.MyToDouble(DD_dop)!= Form1->ms.MyToDouble(DD))
 						{
@@ -1748,7 +1748,7 @@ void __fastcall TForm_parametry::FormClose(TObject *Sender,
 		Form1->writeINI("nastaveni_form_parametry", "cas", minsec);
 		Form1->writeINI("nastaveni_form_parametry", "vzdalenost", m_mm);
 		Form1->writeINI("nastaveni_form_parametry", "CT", CTunit);
-		Form1->writeINI("nastaveni_form_parametry", "RDt", RDunitT);
+	 	Form1->writeINI("nastaveni_form_parametry", "RDt", RDunitT);
 		Form1->writeINI("nastaveni_form_parametry", "RDd", RDunitD);
 		Form1->writeINI("nastaveni_form_parametry", "DD", DDunit);
 		Form1->writeINI("nastaveni_form_parametry", "DM", DMunit);
@@ -1923,26 +1923,20 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 		}
 		if (scComboBox_pohon->ItemIndex != 0)
 		{   // POKUD je pohon již používán, natáhnu si jeho data
-				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
+				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
 				if (obj!=NULL)
 				{
 				double RD=obj->RD;
-
-
-				Memo1->Lines->Add(obj->RD);
-				Memo1->Lines->Add(obj->mezera);
-
-
-				if (RDunitT == MIN)RD *= 60.0;
+  			if (RDunitT == MIN)RD *= 60.0;
 				if (RDunitD == MM) RD /= 1000.0;
 
 						 scGPNumericEdit_RD->Value=RD;
 						 scGPNumericEdit_mezera->Value=obj->mezera;
+
 					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
 					else scComboBox_rotace->ItemIndex=1;
 
 						if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
-
 				}
 				else
 				{
@@ -2109,7 +2103,9 @@ void TForm_parametry::INPUT()
 				DD /= 1000.0; // vždy ukládám do metrù
 		if (DMunit == MM)
 				m /= 1000.0;
-		// Memo1->Lines->Add(RD);
+		 Memo1->Lines->Add("RD_UnitT INPUT: "+AnsiString(RDunitT));
+		 Memo1->Lines->Add("RD INPUT: "+AnsiString(RD));
+
 
 		///////////////uložení do výpoèetního modulu PO/////////////////////////
 		pm.rezim = rezim;
@@ -2161,10 +2157,14 @@ void TForm_parametry::OUTPUT()
 		}
 		if (input_state != RD)
 		{
+		 Memo1->Lines->Add("RD_UnitT OUTPUT: "+AnsiString(RDunitT));
+		 Memo1->Lines->Add("RD OUTPUT: "+AnsiString(pm.RD));
+			//	 RDunitT=S;
 				scGPNumericEdit_RD->Value = pm.RD;
 				if (RDunitT == MIN) scGPNumericEdit_RD->Value *= 60.0;
-				else if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
+				if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
 				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=2;
+
 		}
 		if (input_state != DD)
 		{
@@ -2674,8 +2674,8 @@ void TForm_parametry::Pohon_pouzivan() {
 						double Rz_potencial =	Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,M);  //rotace je zde obracena nezli je nastaveno v editu
 						double Rz_akt =  Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex,obj->mezera);
 
-						Memo1->Lines->Add(Rz_potencial);
-            Memo1->Lines->Add(Rz_akt);
+					 //	Memo1->Lines->Add(Rz_potencial);
+           // Memo1->Lines->Add(Rz_akt);
 
 
 						if(Rz_potencial == Rz_akt){
@@ -2807,8 +2807,8 @@ void TForm_parametry::Check_rozmezi_RD() {
 						else jednotky_cas_pohon = 1.0;
 						if (scGPNumericEdit_RD->Value < Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon) || scGPNumericEdit_RD->Value > Form1->ms.MyToDouble(P->rychlost_do * jednotky_cas_pohon)) // nesplòuje rozmezí
 						{
-							Memo1->Lines->Add(scGPNumericEdit_RD->Value);
-							Memo1->Lines->Add(P->rychlost_do*jednotky_cas_pohon);
+							//Memo1->Lines->Add(scGPNumericEdit_RD->Value);
+						//	Memo1->Lines->Add(P->rychlost_do*jednotky_cas_pohon);
 
 							if(scGPNumericEdit_RD->Value>P->rychlost_do)  VID=25;
 							if(scGPNumericEdit_RD->Value<P->rychlost_od)  VID=26;
@@ -3138,18 +3138,18 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 				if(O!=NULL)
 				{
-				Memo1->Lines->Add(Form1->m.UDV(pm.dV,pm.sV,pm.Rotace));
-				Memo1->Lines->Add(pm.M);
-				Memo1->Lines->Add(pm.TT);
+			 //	Memo1->Lines->Add(Form1->m.UDV(pm.dV,pm.sV,pm.Rotace));
+				//Memo1->Lines->Add(pm.M);
+			 //	Memo1->Lines->Add(pm.TT);
 				double DD_CT = DD/CT;
 				//double UDVM_TT = Form1->m.UDV(pm.dV,pm.sV,pm.Rotace)+pm.M/pm.TT;
 			 //	Memo1->Lines->Add(DD_CT);
-				Memo1->Lines->Add(O->RD);
+			 //	Memo1->Lines->Add(O->RD);
 
 						//akt RD je vyšší než RD uloženého pohonu -> tzn s uloženou RD pohonu bych nestihl pøejet DD
 					if(Form1->ms.MyToDouble(DD_CT) > Form1->ms.MyToDouble(O->RD))
 					{
-						Memo1->Lines->Add("DD_CT > RD");
+					 //	Memo1->Lines->Add("DD_CT > RD");
 						vypis("Vozík nestíhá pøejezd! Zvolte jinou mezeru, nebo vyberte jiný pohon.",true);
 						VID=40;
 					}

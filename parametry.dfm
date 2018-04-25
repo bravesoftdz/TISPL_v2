@@ -92,9 +92,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_odchylka: TrHTMLLabel
     Left = 8
     Top = 375
-    Width = 201
+    Width = 185
     Height = 19
-    Caption = 'Povolen'#225' odchylka z CT [%]'
+    Caption = 'Odchylka z techn. '#269'asu [s]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -2603,7 +2603,7 @@ object Form_parametry: TForm_parametry
     Lines.Strings = (
       'Memo1')
     TabOrder = 23
-    Visible = False
+    WantReturns = False
   end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
@@ -3311,8 +3311,8 @@ object Form_parametry: TForm_parametry
     UseFontColorToStyleColor = False
   end
   object Button1: TButton
-    Left = 152
-    Top = 328
+    Left = 153
+    Top = 265
     Width = 75
     Height = 25
     Caption = 'Button1'
