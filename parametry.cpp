@@ -2021,11 +2021,14 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 		bool priradit_posledni=false;
 		if(scComboBox_pohon->ItemIndex==0)priradit_posledni=true;//když ještì nebyl pøiøazen, jinak mu nevnucovat jiný pohon, aby mohlo tlaèítko také dále fungovat ke správì pohonù
 
+		//zobrazení formu PL
 		Form_parametry_linky->zobrazitFrameForm=true;
+		//nemùže tady být toto!!!:Form1->Button_dopravnik_parametryClick(Sender) ale musí být toto:
 		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-		//nemùže tady být toto!!!:Form1->Button_dopravnik_parametryClick(Sender) ale musí být toto:
+		Form_parametry->Visible=false;//nutnost
 		Form_parametry_linky->ShowModal();//pøípadná návratová hodnota se øeši v knihovnì
+		Form_parametry->Visible=true;//nutnost
 		Form_parametry_linky->zobrazitFrameForm=false;
 
 		if(Form1->d.v.POHONY->dalsi!=NULL)//pokud již existuje pohon

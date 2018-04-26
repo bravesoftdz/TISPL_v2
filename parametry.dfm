@@ -62,7 +62,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_kapacita: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 296
     Width = 181
     Height = 19
@@ -90,7 +90,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_odchylka: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 375
     Width = 185
     Height = 19
@@ -104,7 +104,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_delka_dopravniku: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 255
     Width = 128
     Height = 21
@@ -147,7 +147,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_cekani: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 415
     Width = 181
     Height = 19
@@ -161,7 +161,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_stopka: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 455
     Width = 215
     Height = 19
@@ -175,7 +175,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_CT: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 177
     Width = 159
     Height = 21
@@ -190,7 +190,7 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_CTClick
   end
   object rHTMLLabel_RD: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 215
     Width = 169
     Height = 21
@@ -224,7 +224,7 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_InfoTextClick
   end
   object rHTMLLabel_rotace: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 495
     Width = 99
     Height = 19
@@ -238,7 +238,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_mezera: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 535
     Width = 174
     Height = 21
@@ -253,7 +253,7 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_mezeraClick
   end
   object rHTMLLabel_rozestup: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 574
     Width = 64
     Height = 19
@@ -267,7 +267,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_pozice: TrHTMLLabel
-    Left = 8
+    Left = 7
     Top = 338
     Width = 106
     Height = 19
