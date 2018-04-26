@@ -20,7 +20,8 @@
 TForm_parametry *Form_parametry;
 
 // ---------------------------------------------------------------------------
-__fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner) {
+__fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner)
+{
 		// nové nastavení barvy formuláøe
 		Form_parametry->Color = (TColor)RGB(240, 240, 240);
 		scGPButton_header_projekt->Options->NormalColor = (TColor)RGB(240, 240, 240);
@@ -43,7 +44,8 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner) {
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TForm_parametry::FormShow(TObject *Sender) {
+void __fastcall TForm_parametry::FormShow(TObject *Sender)
+{
 		// formuláø bude pøi prvním zobrazení v sekundách a metrech nebo dle INI v odvozených jednotkách, jinak dle SI
 		minsec = S;
 		CTunit = S;
@@ -108,10 +110,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender) {
 		scButton_zamek_CT->Enabled=true;
 		scButton_zamek_DD->Enabled=true;
 		}
-
-
 }
-
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 void TForm_parametry::vypis(UnicodeString text,bool red,bool link)
@@ -172,7 +171,8 @@ void TForm_parametry::vypis(UnicodeString text,bool red,bool link)
 }
 
 // ---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender) {
+void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
+{
 		if (input_state != NO) // pokud to není pøi startu (formshow)
 		{
 
@@ -425,521 +425,533 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 }
 // ---------------------------------------------------------------------------
 // zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udržování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
-void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move) {
-		// defaultní hodnoty
-		short O = 40; // vertikální velikost odsazení komponent
-		int L = rHTMLLabel_rezim->Top; // výchozí komponenta
-		int P = scComboBox_rezim->Top; // výchozí komponenta
+void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
+{
+	// defaultní hodnoty
+	short O = 40;//vertikální velikost odsazení komponent
+	int L = rHTMLLabel_rezim->Top;//výchozí komponenta pro usazení horní pozice levé komponenty
+	int P = scComboBox_rezim->Top;//výchozí komponenta pro usazení horní pozice prave komponenty
+	int Le=234;//levé umístìní kratších editboxu a comboboxu (od tech.èasu níže)
+	int W=156;//šíøka kratších editboxu a comboboxu (od tech.èasu níže)
 
-		switch (C) {
-		case POHON: {
-						////ošetøení pokud není nadefinován žádný pohon
-						if (!existuje_pohon)
-								S = READONLY;
-						////pozice
-						if (move) {
-								rHTMLLabel_pohon->Top = L + O;
-								scComboBox_pohon->Top = P + O;
-								scGPButton_header_projekt->Top=scComboBox_pohon->Top;
-						}
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_CT->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_pohon->Visible = true;
-						scComboBox_pohon->Visible = true;
-						scComboBox_pohon->Enabled = true;
-						rHTMLLabel_pohon->Left = 8;
-						scComboBox_pohon->Options->FrameNormalColor = clGray;
-						scComboBox_pohon->Options->FrameWidth = 1;
-						scComboBox_pohon->Left = 56;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scComboBox_pohon->Options->FrameNormalColor = hl_color;
-								scComboBox_pohon->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scComboBox_pohon->Enabled = false;
-								break;
-						case READONLY:
-								scComboBox_pohon->Enabled = false;
-								break;
-								// case READONLY:scComboBox_pohon->Enabled=false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
-						case HIDE:
-								rHTMLLabel_pohon->Visible = false;
-								scComboBox_pohon->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+	switch (C)
+	{
+		case POHON:
+		{
+			 ////ošetøení pokud není nadefinován žádný pohon
+			 if (!existuje_pohon)S = READONLY;
+			 ////pozice
+			 if (move)
+			 {
+					rHTMLLabel_pohon->Top = L + O;
+					scComboBox_pohon->Top = P + O;
+					scGPButton_header_projekt->Top=scComboBox_pohon->Top;
+			 }
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_CT->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_pohon->Visible = true;
+			 scComboBox_pohon->Visible = true;
+			 scComboBox_pohon->Enabled = true;
+			 rHTMLLabel_pohon->Left = 8;
+			 scComboBox_pohon->Options->FrameNormalColor = clGray;
+			 scComboBox_pohon->Options->FrameWidth = 1;
+			 scComboBox_pohon->Left = 56;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scComboBox_pohon->Options->FrameNormalColor = hl_color;
+					scComboBox_pohon->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scComboBox_pohon->Enabled = false;
+			 		break;
+				case READONLY:
+			 		scComboBox_pohon->Enabled = false;
+					break;
+			 		// case READONLY:scComboBox_pohon->Enabled=false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
+				case HIDE:
+			 		rHTMLLabel_pohon->Visible = false;
+					scComboBox_pohon->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case TIME: // technologický èas v režimu návrháø
-				{
-						////pozice
-						if (move) {
-								rHTMLLabel_CT->Top = L + 2 * O + offset;
-								scGPNumericEdit_CT->Top = P + 2 * O + offset;
-								scButton_zamek_CT->Top = scGPNumericEdit_CT->Top;
-								scGPGlyphButton_PO_text_memo->Top = scGPNumericEdit_CT->Top + 1;
-								// glyph pro memo - ziskany ct
-						}
-						scGPNumericEdit_CT->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_CT->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_CT->Visible = true;
-						scGPNumericEdit_CT->Enabled = true;
-						scGPNumericEdit_CT->Visible = true;
-						scGPNumericEdit_CT->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_CT->Options->FrameWidth = 1;
-						if (scComboBox_rezim->ItemIndex == 1)
-								scButton_zamek_CT->Visible = true;
-						else
-								scButton_zamek_CT->Visible = false;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_CT->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_CT->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED: // scButton_zamek_CT->ImageIndex=38;CT_zamek=UNLOCKED;
-								break;
-						case DISABLED:
-								scGPNumericEdit_CT->Enabled = false;
-								/* scButton_zamek_CT->ImageIndex=37;CT_zamek=LOCKED; */ break;
-						case READONLY:
-								scGPNumericEdit_CT->Options->ShapeStyle = scgpessNone;
-								scButton_zamek_CT->Visible = false;
-								scGPNumericEdit_CT->Enabled = false;
-								break;
-						case HIDE:
-								rHTMLLabel_CT->Visible = false;
-								scGPNumericEdit_CT->Visible = false;
-								scButton_zamek_CT->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 if (move)
+			 {
+					rHTMLLabel_CT->Top = L + 2 * O + offset;
+			 		scGPNumericEdit_CT->Top = P + 2 * O + offset;
+					scButton_zamek_CT->Top = scGPNumericEdit_CT->Top;
+					scGPGlyphButton_PO_text_memo->Top = scGPNumericEdit_CT->Top + 1;
+					// glyph pro memo - ziskany ct
+			 }
+			 scGPNumericEdit_CT->Left=Le;
+			 scGPNumericEdit_CT->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_CT->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_CT->Visible = true;
+			 scGPNumericEdit_CT->Enabled = true;
+			 scGPNumericEdit_CT->Visible = true;
+			 scGPNumericEdit_CT->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_CT->Options->FrameWidth = 1;
+			 if (scComboBox_rezim->ItemIndex == 1)scButton_zamek_CT->Visible = true;
+			 else	scButton_zamek_CT->Visible = false;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_CT->Options->FrameNormalColor = hl_color;
+			 		scGPNumericEdit_CT->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED: // scButton_zamek_CT->ImageIndex=38;CT_zamek=UNLOCKED;
+					break;
+				case DISABLED:
+					scGPNumericEdit_CT->Enabled = false;
+			 		/* scButton_zamek_CT->ImageIndex=37;CT_zamek=LOCKED; */ break;
+				case READONLY:
+			 		scGPNumericEdit_CT->Options->ShapeStyle = scgpessNone;
+					scButton_zamek_CT->Visible = false;
+			 		scGPNumericEdit_CT->Enabled = false;
+					break;
+				case HIDE:
+					rHTMLLabel_CT->Visible = false;
+			 		scGPNumericEdit_CT->Visible = false;
+					scButton_zamek_CT->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case RYCHLOST: // RD v režimu návrháø
-				{
-						////pozice
-						if (move) {
-								rHTMLLabel_RD->Top = L + 3 * O + offset;
-								scGPNumericEdit_RD->Top = P + 3 * O + offset;
-								scButton_zamek_RD->Top = scGPNumericEdit_RD->Top;
-						}
-						scGPNumericEdit_RD->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_RD->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_RD->Visible = true;
-						scGPNumericEdit_RD->Visible = true;
-						scGPNumericEdit_RD->Enabled = true;
-						scGPNumericEdit_RD->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_RD->Options->FrameWidth = 1;
-						if (scComboBox_rezim->ItemIndex == 1)
-								scButton_zamek_RD->Visible = true;
-						else
-								scButton_zamek_RD->Visible = false;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_RD->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_RD->Options->FrameWidth = hlFrameWidth;
-						case ENABLED: // scButton_zamek_RD->ImageIndex=38;RD_zamek=UNLOCKED;
-								break;
-						case DISABLED
-										: // scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->ImageIndex=37;RD_zamek=UNLOCKED;
-								break;
-						case READONLY:
-								scGPNumericEdit_RD->Options->ShapeStyle = scgpessNone;
-								scGPNumericEdit_RD->Enabled = false;
-								scButton_zamek_RD->Visible = false;
-								break;
-						case HIDE:
-								rHTMLLabel_RD->Visible = false;
-								scGPNumericEdit_RD->Visible = false;
-								scButton_zamek_RD->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 if (move)
+			 {
+					rHTMLLabel_RD->Top = L + 3 * O + offset;
+			 		scGPNumericEdit_RD->Top = P + 3 * O + offset;
+					scButton_zamek_RD->Top = scGPNumericEdit_RD->Top;
+			 }
+			 scGPNumericEdit_RD->Left=Le;
+			 scGPNumericEdit_RD->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_RD->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_RD->Visible = true;
+			 scGPNumericEdit_RD->Visible = true;
+			 scGPNumericEdit_RD->Enabled = true;
+			 scGPNumericEdit_RD->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_RD->Options->FrameWidth = 1;
+			 if (scComboBox_rezim->ItemIndex == 1)
+					scButton_zamek_RD->Visible = true;
+			 else
+			 		scButton_zamek_RD->Visible = false;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_RD->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_RD->Options->FrameWidth = hlFrameWidth;
+				case ENABLED: // scButton_zamek_RD->ImageIndex=38;RD_zamek=UNLOCKED;
+					break;
+				case DISABLED
+							: // scGPNumericEdit_RD->Enabled=false;scButton_zamek_RD->ImageIndex=37;RD_zamek=UNLOCKED;
+					break;
+				case READONLY:
+					scGPNumericEdit_RD->Options->ShapeStyle = scgpessNone;
+			 		scGPNumericEdit_RD->Enabled = false;
+					scButton_zamek_RD->Visible = false;
+			 		break;
+				case HIDE:
+			 		rHTMLLabel_RD->Visible = false;
+					scGPNumericEdit_RD->Visible = false;
+			 		scButton_zamek_RD->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case DELKA: // délka dopravníku
-				{
-						////pozice
-						if (move) {
-								rHTMLLabel_delka_dopravniku->Top = L + 4 * O + offset;
-								scGPNumericEdit_delka_dopravniku->Top = P + 4 * O + offset;
-								scButton_zamek_DD->Top = scGPNumericEdit_delka_dopravniku->Top;
-						}
-						scGPNumericEdit_delka_dopravniku->Left=234;
-						// ty co jsou stejné
-						scGPNumericEdit_delka_dopravniku->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_delka_dopravniku->Visible = true;
-						scGPNumericEdit_delka_dopravniku->Visible = true;
-						scGPNumericEdit_delka_dopravniku->Enabled = true;
-						scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor =
-								clGray;
-						scGPNumericEdit_delka_dopravniku->Options->FrameWidth = 1;
-						if (scComboBox_rezim->ItemIndex == 0 ||
-								scComboBox_rezim->ItemIndex == 2)
-								scButton_zamek_DD->Visible = false;
-						else
-								scButton_zamek_DD->Visible = true;
-						// ty co jsou rozdílné
-						////funkèní vlastnosti
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor =
-										hl_color;
-								scGPNumericEdit_delka_dopravniku->Options->FrameWidth =
-										hlFrameWidth;
-								break;
-						case ENABLED:
-								// scButton_zamek_DD->ImageIndex = 38;
-								// DD_zamek = UNLOCKED;
-								break;
-						case DISABLED:
-								scGPNumericEdit_delka_dopravniku->Enabled = false;
-								// scButton_zamek_DD->ImageIndex = 37;
-								// DD_zamek = LOCKED;
-								break;
-						case READONLY:
-								scGPNumericEdit_delka_dopravniku->Options->ShapeStyle =
-										scgpessNone;
-								scGPNumericEdit_delka_dopravniku->Enabled = false;
-								scButton_zamek_DD->Visible = false;
-								break;
-						case HIDE:
-								rHTMLLabel_delka_dopravniku->Visible = false;
-								scGPNumericEdit_delka_dopravniku->Visible = false;
-								scButton_zamek_DD->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 if (move)
+			 {
+			 		rHTMLLabel_delka_dopravniku->Top = L + 4 * O + offset;
+					scGPNumericEdit_delka_dopravniku->Top = P + 4 * O + offset;
+			 		scButton_zamek_DD->Top = scGPNumericEdit_delka_dopravniku->Top;
+			 }
+			 scGPNumericEdit_delka_dopravniku->Left=Le;
+			 scGPNumericEdit_delka_dopravniku->Width=W;
+			 // ty co jsou stejné
+			 scGPNumericEdit_delka_dopravniku->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_delka_dopravniku->Visible = true;
+			 scGPNumericEdit_delka_dopravniku->Visible = true;
+			 scGPNumericEdit_delka_dopravniku->Enabled = true;
+			 scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_delka_dopravniku->Options->FrameWidth = 1;
+			 if (scComboBox_rezim->ItemIndex == 0 || scComboBox_rezim->ItemIndex == 2)scButton_zamek_DD->Visible = false;
+			 else	scButton_zamek_DD->Visible = true;
+			 // ty co jsou rozdílné
+			 ////funkèní vlastnosti
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor =	hl_color;
+					scGPNumericEdit_delka_dopravniku->Options->FrameWidth = hlFrameWidth;
+			 		break;
+				case ENABLED:
+			 		// scButton_zamek_DD->ImageIndex = 38;
+					// DD_zamek = UNLOCKED;
+			 		break;
+			 case DISABLED:
+					scGPNumericEdit_delka_dopravniku->Enabled = false;
+					// scButton_zamek_DD->ImageIndex = 37;
+			 		// DD_zamek = LOCKED;
+					break;
+			 case READONLY:
+					scGPNumericEdit_delka_dopravniku->Options->ShapeStyle =
+			 				scgpessNone;
+					scGPNumericEdit_delka_dopravniku->Enabled = false;
+			 		scButton_zamek_DD->Visible = false;
+					break;
+			 case HIDE:
+					rHTMLLabel_delka_dopravniku->Visible = false;
+					scGPNumericEdit_delka_dopravniku->Visible = false;
+					scButton_zamek_DD->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case KAPACITA: // požadována kapacita objektu
-				{
-						////pozice
-						rHTMLLabel_kapacita->Top = L + 5 * O + offset;
-						scGPNumericEdit_kapacita->Top = P + 5 * O + offset;
-						scButton_K_zamek->Top = scGPNumericEdit_kapacita->Top;
-						scGPNumericEdit_kapacita->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_kapacita->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_kapacita->Visible = true;
-						scGPNumericEdit_kapacita->Visible = true;
-						scGPNumericEdit_kapacita->Enabled = true;
-						scButton_K_zamek->Visible = false;
-						scGPNumericEdit_kapacita->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_kapacita->Options->FrameWidth = 1;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_kapacita->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_kapacita->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scGPNumericEdit_kapacita->Enabled = false;
-								break;
-						case READONLY:
-								scGPNumericEdit_kapacita->Options->ShapeStyle = scgpessNone;
-								scGPNumericEdit_kapacita->Enabled = false;
-								break;
-						case HIDE:
-								rHTMLLabel_kapacita->Visible = false;
-								scGPNumericEdit_kapacita->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 rHTMLLabel_kapacita->Top = L + 5 * O + offset;
+			 scGPNumericEdit_kapacita->Top = P + 5 * O + offset;
+			 scButton_K_zamek->Top = scGPNumericEdit_kapacita->Top;
+			 scGPNumericEdit_kapacita->Left=Le;
+			 scGPNumericEdit_kapacita->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_kapacita->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_kapacita->Visible = true;
+			 scGPNumericEdit_kapacita->Visible = true;
+			 scGPNumericEdit_kapacita->Enabled = true;
+			 scButton_K_zamek->Visible = false;
+			 scGPNumericEdit_kapacita->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_kapacita->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_kapacita->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_kapacita->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scGPNumericEdit_kapacita->Enabled = false;
+					break;
+				case READONLY:
+					scGPNumericEdit_kapacita->Options->ShapeStyle = scgpessNone;
+					scGPNumericEdit_kapacita->Enabled = false;
+					break;
+				case HIDE:
+					rHTMLLabel_kapacita->Visible = false;
+					scGPNumericEdit_kapacita->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case POZICE: // zjištìná kapacita objektu
-				{
-						////pozice
-						rHTMLLabel_pozice->Top = L + 6 * O + offset;
-						scGPNumericEdit_pozice->Top = P + 6 * O + offset;
-						scGPNumericEdit_pozice->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_pozice->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_pozice->Visible = true;
-						scGPNumericEdit_pozice->Visible = true;
-						scGPNumericEdit_pozice->Enabled = true;
-						scGPNumericEdit_pozice->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_pozice->Options->FrameWidth = 1;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_pozice->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_pozice->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scGPNumericEdit_pozice->Enabled = false;
-								break;
-						case READONLY:
-								scGPNumericEdit_pozice->Options->ShapeStyle = scgpessNone;
-								scGPNumericEdit_pozice->Enabled = false;
-								break;
-						case HIDE:
-								rHTMLLabel_pozice->Visible = false;
-								scGPNumericEdit_pozice->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+				////pozice
+			 rHTMLLabel_pozice->Top = L + 6 * O + offset;
+			 scGPNumericEdit_pozice->Top = P + 6 * O + offset;
+			 scGPNumericEdit_pozice->Left=Le;
+			 scGPNumericEdit_pozice->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_pozice->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_pozice->Visible = true;
+			 scGPNumericEdit_pozice->Visible = true;
+			 scGPNumericEdit_pozice->Enabled = true;
+			 scGPNumericEdit_pozice->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_pozice->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_pozice->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_pozice->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scGPNumericEdit_pozice->Enabled = false;
+					break;
+				case READONLY:
+					scGPNumericEdit_pozice->Options->ShapeStyle = scgpessNone;
+					scGPNumericEdit_pozice->Enabled = false;
+					break;
+				case HIDE:
+					rHTMLLabel_pozice->Visible = false;
+					scGPNumericEdit_pozice->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case ODCHYLKA: // povolená odchylka z CT
-				{
-						////pozice
-						rHTMLLabel_odchylka->Top = L + 7 * O + offset;
-						scGPNumericEdit_odchylka->Top = P + 7 * O + offset;
-						scGPNumericEdit_odchylka->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_odchylka->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_odchylka->Visible = true;
-						scGPNumericEdit_odchylka->Visible = true;
-						scGPNumericEdit_odchylka->Enabled = true;
-						scGPNumericEdit_odchylka->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_odchylka->Options->FrameWidth = 1;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_odchylka->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_odchylka->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scGPNumericEdit_odchylka->Enabled = false;
-								break;
-						case READONLY:
-								scGPNumericEdit_odchylka->Options->ShapeStyle = scgpessNone;
-								scGPNumericEdit_odchylka->Visible = false;
-								break;
-						case HIDE:
-								rHTMLLabel_odchylka->Visible = false;
-								scGPNumericEdit_odchylka->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 rHTMLLabel_odchylka->Top = L + 7 * O + offset;
+			 scGPNumericEdit_odchylka->Top = P + 7 * O + offset;
+			 scGPNumericEdit_odchylka->Left=Le;
+			 scGPNumericEdit_odchylka->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_odchylka->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_odchylka->Visible = true;
+			 scGPNumericEdit_odchylka->Visible = true;
+			 scGPNumericEdit_odchylka->Enabled = true;
+			 scGPNumericEdit_odchylka->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_odchylka->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_odchylka->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_odchylka->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scGPNumericEdit_odchylka->Enabled = false;
+					break;
+				case READONLY:
+					scGPNumericEdit_odchylka->Options->ShapeStyle = scgpessNone;
+					scGPNumericEdit_odchylka->Visible = false;
+			 		break;
+				case HIDE:
+			 		rHTMLLabel_odchylka->Visible = false;
+					scGPNumericEdit_odchylka->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case CEKANI: // èekání
-				{
-						////pozice
-						if (move)
-						{
-								rHTMLLabel_cekani->Top = L + 8 * O + offset;
-								scComboBox_cekani_palec->Top = P + 8 * O + offset;
-						}
-						scComboBox_cekani_palec->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scComboBox_cekani_palec->Options->FrameNormalColor = clGray;
-						scComboBox_cekani_palec->Options->FrameWidth = 1;
-						rHTMLLabel_cekani->Visible = true;
-						scComboBox_cekani_palec->Visible = true;
-						scComboBox_cekani_palec->Enabled = true;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scComboBox_cekani_palec->Options->FrameNormalColor = hl_color;
-								scComboBox_cekani_palec->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scComboBox_cekani_palec->Enabled = false;
-								break;
-						case READONLY:
-								scComboBox_cekani_palec->Enabled = false;
-								break;
-						case HIDE:
-								rHTMLLabel_cekani->Visible = false;
-								scComboBox_cekani_palec->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 if (move)
+			 {
+					rHTMLLabel_cekani->Top = L + 8 * O + offset;
+			 		scComboBox_cekani_palec->Top = P + 8 * O + offset;
+			 }
+			 scComboBox_cekani_palec->Left=Le;
+			 scComboBox_cekani_palec->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scComboBox_cekani_palec->Options->FrameNormalColor = clGray;
+			 scComboBox_cekani_palec->Options->FrameWidth = 1;
+			 rHTMLLabel_cekani->Visible = true;
+			 scComboBox_cekani_palec->Visible = true;
+			 scComboBox_cekani_palec->Enabled = true;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scComboBox_cekani_palec->Options->FrameNormalColor = hl_color;
+					scComboBox_cekani_palec->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scComboBox_cekani_palec->Enabled = false;
+			 		break;
+				case READONLY:
+			 		scComboBox_cekani_palec->Enabled = false;
+					break;
+				case HIDE:
+					rHTMLLabel_cekani->Visible = false;
+					scComboBox_cekani_palec->Visible = false;
+					if (move)offset -= O;
+			 		break;
+			 }
+		} break;
 		case STOPKA: // stop stanice na konci objektu
-				{
-						////pozice
-						if (move) {
-								rHTMLLabel_stopka->Top = L + 9 * O + offset;
-								scComboBox_stopka->Top = P + 9 * O + offset;
-						}
-						scComboBox_stopka->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						rHTMLLabel_stopka->Visible = true;
-						scComboBox_stopka->Visible = true;
-						scComboBox_stopka->Enabled = true;
-						scComboBox_stopka->Options->FrameNormalColor = clGray;
-						scComboBox_stopka->Options->FrameWidth = 1;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scComboBox_stopka->Options->FrameNormalColor = hl_color;
-								scComboBox_stopka->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scComboBox_stopka->Enabled = false;
-								break;
-						case READONLY:
-								scComboBox_stopka->Enabled = false;
-								break;
-						case HIDE:
-								rHTMLLabel_stopka->Visible = false;
-								scComboBox_stopka->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 if (move)
+			 {
+			 		rHTMLLabel_stopka->Top = L + 9 * O + offset;
+					scComboBox_stopka->Top = P + 9 * O + offset;
+			 }
+			 scComboBox_stopka->Left=Le;
+			 scComboBox_stopka->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 rHTMLLabel_stopka->Visible = true;
+			 scComboBox_stopka->Visible = true;
+			 scComboBox_stopka->Enabled = true;
+			 scComboBox_stopka->Options->FrameNormalColor = clGray;
+			 scComboBox_stopka->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scComboBox_stopka->Options->FrameNormalColor = hl_color;
+					scComboBox_stopka->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scComboBox_stopka->Enabled = false;
+					break;
+				case READONLY:
+					scComboBox_stopka->Enabled = false;
+					break;
+				case HIDE:
+					rHTMLLabel_stopka->Visible = false;
+					scComboBox_stopka->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+		} break;
 		case ROTACE: // rotace jigu v objektu, zatím jen pøepínátko 0-90
-				{
-						////pozice
-						if (move) {
-								rHTMLLabel_rotace->Top = L + 10 * O + offset;
-								scComboBox_rotace->Top = P + 10 * O + offset;
-						}
-						scComboBox_rotace->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						rHTMLLabel_rotace->Visible = true;
-						scComboBox_rotace->Visible = true;
-						scComboBox_rotace->Enabled = true;
-						scComboBox_rotace->Options->FrameNormalColor = clGray;
-						scComboBox_rotace->Options->FrameWidth = 1;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scComboBox_rotace->Options->FrameNormalColor = hl_color;
-								scComboBox_rotace->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scComboBox_rotace->Enabled = false;
-								break;
-						case READONLY:
-								scComboBox_rotace->Enabled = false;
-								break;
-						case HIDE:
-								rHTMLLabel_rotace->Visible = false;
-								scComboBox_rotace->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 if (move)
+			 {
+					rHTMLLabel_rotace->Top = L + 10 * O + offset;
+			 		scComboBox_rotace->Top = P + 10 * O + offset;
+			 }
+			 scComboBox_rotace->Left=Le;
+			 scComboBox_rotace->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 rHTMLLabel_rotace->Visible = true;
+			 scComboBox_rotace->Visible = true;
+			 scComboBox_rotace->Enabled = true;
+			 scComboBox_rotace->Options->FrameNormalColor = clGray;
+			 scComboBox_rotace->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scComboBox_rotace->Options->FrameNormalColor = hl_color;
+			 		scComboBox_rotace->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scComboBox_rotace->Enabled = false;
+					break;
+				case READONLY:
+			 		scComboBox_rotace->Enabled = false;
+					break;
+				case HIDE:
+					rHTMLLabel_rotace->Visible = false;
+			 		scComboBox_rotace->Visible = false;
+					if (move)offset -= O;
+			 		break;
+			 }
+		} break;
 		case MEZERA: // požadována vs. zjištìná kapacita objektu
-				{
-						////pozice
-						if (move) {
-								rHTMLLabel_mezera->Top = L + 11 * O + offset;
-								scGPNumericEdit_mezera->Top = P + 11 * O + offset;
-						}
-						scGPNumericEdit_mezera->Left=234;
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_mezera->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_mezera->Visible = true;
-						scGPNumericEdit_mezera->Visible = true;
-						scGPNumericEdit_mezera->Enabled = true;
-						scGPNumericEdit_mezera->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_mezera->Options->FrameWidth = 1;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_mezera->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_mezera->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scGPNumericEdit_mezera->Enabled = false;
-								break;
-						case READONLY:
-								scGPNumericEdit_mezera->Options->ShapeStyle = scgpessNone;
-								scGPNumericEdit_mezera->Enabled = false;
-								break;
-						case HIDE:
-								rHTMLLabel_mezera->Visible = false;
-								scGPNumericEdit_mezera->Visible = false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
+		{
+			 ////pozice
+			 if (move)
+			 {
+					rHTMLLabel_mezera->Top = L + 11 * O + offset;
+					scGPNumericEdit_mezera->Top = P + 11 * O + offset;
+			 }
+			 scGPNumericEdit_mezera->Left=Le;
+			 scGPNumericEdit_mezera->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_mezera->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_mezera->Visible = true;
+			 scGPNumericEdit_mezera->Visible = true;
+			 scGPNumericEdit_mezera->Enabled = true;
+			 scGPNumericEdit_mezera->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_mezera->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_mezera->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_mezera->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scGPNumericEdit_mezera->Enabled = false;
+					break;
+				case READONLY:
+			 		scGPNumericEdit_mezera->Options->ShapeStyle = scgpessNone;
+					scGPNumericEdit_mezera->Enabled = false;
+			 		break;
+				case HIDE:
+			 		rHTMLLabel_mezera->Visible = false;
+					scGPNumericEdit_mezera->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+			} break;
 		case ROZESTUP: // požadována vs. zjištìná kapacita objektu
-				{
-						////pozice
-						if (move)
-						{
-								rHTMLLabel_rozestup->Top = L + 12 * O + offset;
-								scGPNumericEdit_rozestup->Top = P + 12 * O + offset;
-								scGPNumericEdit1_rx->Top=scGPNumericEdit_rozestup->Top;
-								rHTMLLabel_palec_vzd->Top=rHTMLLabel_rozestup->Top;
-								rHTMLLabel_jednotky_vzdalenostpalcu->Top=rHTMLLabel_palec_vzd->Top;
-						}
-						////funkèní vlastnosti
-						// ty co jsou stejné
-						scGPNumericEdit_rozestup->Options->ShapeStyle = scgpessRect;
-						rHTMLLabel_rozestup->Visible = true;
-						scGPNumericEdit1_rx->Visible=true;
-						scGPNumericEdit_rozestup->Visible = true;
-						rHTMLLabel_palec_vzd->Visible=true;
-						rHTMLLabel_jednotky_vzdalenostpalcu->Visible=true;
-						scGPNumericEdit_rozestup->Enabled = true;
-						scGPNumericEdit_rozestup->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_rozestup->Options->FrameWidth = 1;
-						// ty co jsou rozdílné
-						switch (S) {
-						case HIGHLIGHT:
-								scGPNumericEdit_rozestup->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_rozestup->Options->FrameWidth = hlFrameWidth;
-								break;
-						case ENABLED:
-								break;
-						case DISABLED:
-								scGPNumericEdit_rozestup->Enabled = false;
-								scGPNumericEdit1_rx->Enabled=false;
-								break;
-						case READONLY:
-								scGPNumericEdit_rozestup->Options->ShapeStyle = scgpessNone;
-								scGPNumericEdit_rozestup->Enabled = false;
-								scGPNumericEdit1_rx->Enabled=true; //zmena oproti rozestupu
-								break;
-						case HIDE:
-								rHTMLLabel_rozestup->Visible = false;
-								scGPNumericEdit_rozestup->Visible = false;
-								scGPNumericEdit1_rx->Visible=false;
-								rHTMLLabel_palec_vzd->Visible=false;
-								rHTMLLabel_jednotky_vzdalenostpalcu->Visible=false;
-								if (move)
-										offset -= O;
-								break;
-						}
-				} break;
-		}
+		{
+			 	////pozice
+			if (move)
+			{
+					rHTMLLabel_rozestup->Top = L + 12 * O + offset;
+					scGPNumericEdit_rozestup->Top = P + 12 * O + offset;
+					scGPNumericEdit1_rx->Top=scGPNumericEdit_rozestup->Top;
+					rHTMLLabel_palec_vzd->Top=rHTMLLabel_rozestup->Top;
+					rHTMLLabel_jednotky_vzdalenostpalcu->Top=rHTMLLabel_palec_vzd->Top;
+			}
+			////funkèní vlastnosti
+			// ty co jsou stejné
+			scGPNumericEdit_rozestup->Options->ShapeStyle = scgpessRect;
+			rHTMLLabel_rozestup->Visible = true;
+			scGPNumericEdit1_rx->Visible=true;
+			scGPNumericEdit_rozestup->Visible = true;
+			rHTMLLabel_palec_vzd->Visible=true;
+			rHTMLLabel_jednotky_vzdalenostpalcu->Visible=true;
+			scGPNumericEdit_rozestup->Enabled = true;
+			scGPNumericEdit_rozestup->Options->FrameNormalColor = clGray;
+			scGPNumericEdit_rozestup->Options->FrameWidth = 1;
+			// ty co jsou rozdílné
+			switch (S)
+			{
+				case HIGHLIGHT:
+					scGPNumericEdit_rozestup->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_rozestup->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scGPNumericEdit_rozestup->Enabled = false;
+					scGPNumericEdit1_rx->Enabled=false;
+					break;
+				case READONLY:
+					scGPNumericEdit_rozestup->Options->ShapeStyle = scgpessNone;
+					scGPNumericEdit_rozestup->Enabled = false;
+					scGPNumericEdit1_rx->Enabled=true; //zmena oproti rozestupu
+					break;
+				case HIDE:
+					rHTMLLabel_rozestup->Visible = false;
+					scGPNumericEdit_rozestup->Visible = false;
+					scGPNumericEdit1_rx->Visible=false;
+					rHTMLLabel_palec_vzd->Visible=false;
+					rHTMLLabel_jednotky_vzdalenostpalcu->Visible=false;
+					if (move)offset -= O;
+					break;
+			}
+		} break;
+	}
 }
-
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // pøi psaní názvu objektu se mìní titulek a generuje zkratka
