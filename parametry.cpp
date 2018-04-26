@@ -3155,7 +3155,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				if(scComboBox_rezim->ItemIndex==1)
 		{
 
-		bool  mimo_rozmezi = false;
+			  MIMO_ROZMEZI = false;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL)
 				{
@@ -3173,10 +3173,11 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						}
 						else
 						{
-								mimo_rozmezi=true;
+								MIMO_ROZMEZI=true;
 								//scGPNumericEdit_RD->Font->Color=clRed;
 								scGPNumericEdit_RD->Options->FrameNormalColor = hl_color;
 								scGPNumericEdit_RD->Options->FrameWidth = hlFrameWidth;
+								scGPButton_OK->Enabled=false;
 								scGPNumericEdit_RD->Hint="rychlost je mimo nastavený rozsah pohonu";
 								vypis("Rychlost pohonu je mimo nastavený rozsah");
 								VID=25;
@@ -3187,6 +3188,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				}
 
 		}
+
 
 
 		//-----------------------------------------------------------------------------------------------------------------------------//
@@ -3311,21 +3313,12 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 {
 //INPUT();
 //Check_rozmezi_RD();
-if(hlFrameWidth==2){
- //Form1->MB("Údaje nejsou zadány korektnì a není možné je uložit");
- VID=0;
- }
+//if(hlFrameWidth==2){
+// //Form1->MB("Údaje nejsou zadány korektnì a není možné je uložit");
+// VID=0;
+// }
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPButton_OKPaintContent(TCanvas *ACanvas, TRect &ARect,
-          TscsCtrlState AState)
-{
-	 if(hlFrameWidth==2)
-	 {
-		vypis("Údaje nejsou zadány korektnì a není možné je uložit");
-		VID=0;
-	 }
-}
 //---------------------------------------------------------------------------
 

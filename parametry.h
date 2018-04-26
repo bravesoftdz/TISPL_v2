@@ -176,6 +176,7 @@ public:		// User declarations
   Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
 	unsigned short kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
 	bool existuje_pohon;
+	bool MIMO_ROZMEZI;
 	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
 	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math, input_state slouží pro rozlišení volání ze vstupu - pøedevším P a K
 	short VID;//validation ID
