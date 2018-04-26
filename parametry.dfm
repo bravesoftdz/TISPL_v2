@@ -177,9 +177,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_CT: TrHTMLLabel
     Left = 7
     Top = 177
-    Width = 158
+    Width = 159
     Height = 21
-    Caption = 'Pechnologick'#253' '#269'as <font color=#2b579a>[s]</font>'
+    Caption = 'Technologick'#253' '#269'as <font color=#2b579a>[s]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
