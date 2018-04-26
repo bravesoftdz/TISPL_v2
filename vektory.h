@@ -132,7 +132,9 @@ class Cvektory
 			double TT;//pro návrháře
 			double delka_voziku;
 			double sirka_voziku;
-			double typ_voziku;//0 - podlahový, 1 - podvěsný
+			double vyska_voziku;
+			double delka_podvozku;
+			short typ_voziku;//0 - podlahový, 1 - podvěsný
 	};
 	T_parametry_projektu PP;
 

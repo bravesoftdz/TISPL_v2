@@ -79,11 +79,11 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_ADD;
 	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
 	TrHTMLLabel *rHTMLLabel5;
-	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
 	TrHTMLLabel *rHTMLLabel6;
 	TrHTMLLabel *rHTMLLabel_delka_podvozek;
-	TscGPNumericEdit *scGPNumericEdit_delka_podvozek;
 	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
+	TscGPNumericEdit *scGPNumericEdit_delka_podvozku;
+	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

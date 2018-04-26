@@ -53,7 +53,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel_sirka: TrHTMLLabel
     Left = 218
-    Top = 184
+    Top = 160
     Width = 71
     Height = 21
     Caption = #353#237#345'ka <font color=#2b579a>[m]</font>'
@@ -83,7 +83,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel_delka_jigu: TrHTMLLabel
     Left = 111
-    Top = 184
+    Top = 160
     Width = 75
     Height = 21
     Caption = 'd'#233'lka <font color=#2b579a>[m]</font>'
@@ -98,7 +98,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel3: TrHTMLLabel
     Left = 137
-    Top = 155
+    Top = 131
     Width = 73
     Height = 19
     Caption = 'podlahov'#253
@@ -114,7 +114,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel4: TrHTMLLabel
     Left = 265
-    Top = 155
+    Top = 131
     Width = 67
     Height = 19
     Caption = 'podv'#283'sn'#253
@@ -130,7 +130,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel2: TrHTMLLabel
     Left = 71
-    Top = 208
+    Top = 184
     Width = 20
     Height = 19
     Caption = 'Jig'
@@ -145,7 +145,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel5: TrHTMLLabel
     Left = 324
-    Top = 184
+    Top = 160
     Width = 77
     Height = 21
     Caption = 'v'#253#353'ka <font color=#2b579a>[m]</font>'
@@ -161,7 +161,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel6: TrHTMLLabel
     Left = 1
-    Top = 266
+    Top = 241
     Width = 111
     Height = 19
     Caption = 'Podvozek/zav'#283's'
@@ -177,7 +177,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rHTMLLabel_delka_podvozek: TrHTMLLabel
     Left = 111
-    Top = 238
+    Top = 214
     Width = 75
     Height = 21
     Caption = 'd'#233'lka <font color=#2b579a>[m]</font>'
@@ -766,7 +766,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPButton_vozik: TscGPButton
     Left = 1
-    Top = 147
+    Top = 123
     Width = 130
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -1407,7 +1407,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPSwitch: TscGPSwitch
     Left = 214
-    Top = 155
+    Top = 131
     Width = 47
     Height = 22
     Margins.Left = 1
@@ -1936,7 +1936,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rEditNum_delka_jigu: TscGPNumericEdit
     Left = 112
-    Top = 206
+    Top = 182
     Width = 100
     Height = 29
     Options.NormalColor = clWhite
@@ -2024,7 +2024,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rEditNum_sirka_jigu: TscGPNumericEdit
     Left = 218
-    Top = 206
+    Top = 182
     Width = 100
     Height = 29
     Options.NormalColor = clWhite
@@ -3134,98 +3134,88 @@ object Form_parametry_linky: TForm_parametry_linky
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPNumericEdit_vyska_jig: TscGPNumericEdit
-    Left = 324
-    Top = 206
-    Width = 100
-    Height = 29
-    Options.NormalColor = clWhite
-    Options.HotColor = clWhite
-    Options.FocusedColor = clWhite
-    Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
-    Options.HotColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 150
-    Options.FrameNormalColor = clGray
-    Options.FrameHotColor = 1871359
-    Options.FrameFocusedColor = 10114859
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 50
-    Options.FontNormalColor = clBlack
-    Options.FontHotColor = clBlack
-    Options.FontFocusedColor = clBlack
-    Options.FontDisabledColor = clGrayText
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpessRect
-    Options.ScaleFrameWidth = False
-    Options.StyleColors = True
-    ContentMarginLeft = 5
-    ContentMarginRight = 5
-    ContentMarginTop = 5
-    ContentMarginBottom = 5
-    PromptTextColor = clNone
-    Transparent = True
-    Increment = 1.000000000000000000
-    SupportUpDownKeys = False
-    SupportMouseWheel = False
-    ValueType = scvtFloat
-    MaxValue = 1000000.000000000000000000
-    Value = 1.000000000000000000
-    DisplayType = scedtNumeric
-    LeftButton.Kind = scgpebCustom
-    LeftButton.Enabled = True
-    LeftButton.Visible = False
-    LeftButton.ImageIndex = -1
-    LeftButton.ImageHotIndex = -1
-    LeftButton.ImagePressedIndex = -1
-    LeftButton.RepeatClick = False
-    LeftButton.RepeatClickInterval = 200
-    LeftButton.ShowHint = False
-    LeftButton.GlyphColor = clWindowText
-    LeftButton.GlyphColorAlpha = 180
-    LeftButton.GlyphColorHotAlpha = 240
-    LeftButton.GlyphColorPressedAlpha = 150
-    LeftButton.GlyphThickness = 2
-    RightButton.Kind = scgpebCustom
-    RightButton.Enabled = True
-    RightButton.Visible = False
-    RightButton.ImageIndex = -1
-    RightButton.ImageHotIndex = -1
-    RightButton.ImagePressedIndex = -1
-    RightButton.RepeatClick = False
-    RightButton.RepeatClickInterval = 200
-    RightButton.ShowHint = False
-    RightButton.GlyphColor = clWindowText
-    RightButton.GlyphColorAlpha = 180
-    RightButton.GlyphColorHotAlpha = 240
-    RightButton.GlyphColorPressedAlpha = 150
-    RightButton.GlyphThickness = 2
-    BiDiMode = bdLeftToRight
-    Color = clWhite
+  object scGPGlyphButton_takttime_kalkulator: TscGPGlyphButton
+    Left = 218
+    Top = 78
+    Width = 39
+    Height = 34
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -16
+    Font.Color = clNone
+    Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
-    ParentBiDiMode = False
     ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
     TabOrder = 25
     Visible = False
-    OnChange = rEditNum_sirka_jiguChange
-    OnKeyDown = FormKeyDown
+    Animation = False
+    Caption = 'GlyphButton_zobrazit_parametry'
+    CanFocused = False
+    CustomDropDown = False
+    Layout = blGlyphLeft
+    TransparentBackground = False
+    ColorValue = clRed
+    Options.NormalColor = 10114859
+    Options.HotColor = clBtnText
+    Options.PressedColor = clBtnText
+    Options.FocusedColor = clRed
+    Options.DisabledColor = clBtnText
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 0
+    Options.PressedColorAlpha = 30
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 5
+    Options.FrameNormalColor = clBtnText
+    Options.FrameHotColor = clBtnText
+    Options.FramePressedColor = clBtnText
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 0
+    Options.FrameHotColorAlpha = 0
+    Options.FramePressedColorAlpha = 0
+    Options.FrameFocusedColorAlpha = 0
+    Options.FrameDisabledColorAlpha = 0
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 1
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    GlyphOptions.NormalColor = clWhite
+    GlyphOptions.HotColor = 16744448
+    GlyphOptions.PressedColor = clBtnText
+    GlyphOptions.FocusedColor = 16744448
+    GlyphOptions.DisabledColor = 16744448
+    GlyphOptions.NormalColorAlpha = 200
+    GlyphOptions.HotColorAlpha = 255
+    GlyphOptions.PressedColorAlpha = 255
+    GlyphOptions.FocusedColorAlpha = 255
+    GlyphOptions.DisabledColorAlpha = 150
+    GlyphOptions.Kind = scgpbgkCalendar
+    GlyphOptions.Thickness = 2
+    GlyphOptions.StyleColors = True
+    TextMargin = -1
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = False
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
-  object scGPNumericEdit_delka_podvozek: TscGPNumericEdit
+  object scGPNumericEdit_delka_podvozku: TscGPNumericEdit
     Left = 111
-    Top = 263
+    Top = 239
     Width = 100
     Height = 29
     Options.NormalColor = clWhite
@@ -3308,86 +3298,96 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentShowHint = False
     ShowHint = True
     TabOrder = 26
-    Visible = False
+    OnChange = rEditNum_delka_jiguChange
     OnKeyDown = FormKeyDown
   end
-  object scGPGlyphButton_takttime_kalkulator: TscGPGlyphButton
-    Left = 218
-    Top = 78
-    Width = 39
-    Height = 34
+  object scGPNumericEdit_vyska_jig: TscGPNumericEdit
+    Left = 324
+    Top = 182
+    Width = 100
+    Height = 29
+    Options.NormalColor = clWhite
+    Options.HotColor = clWhite
+    Options.FocusedColor = clWhite
+    Options.DisabledColor = clWhite
+    Options.NormalColorAlpha = 200
+    Options.HotColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 150
+    Options.FrameNormalColor = clGray
+    Options.FrameHotColor = 1871359
+    Options.FrameFocusedColor = 10114859
+    Options.FrameDisabledColor = clBtnText
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 50
+    Options.FontNormalColor = clBlack
+    Options.FontHotColor = clBlack
+    Options.FontFocusedColor = clBlack
+    Options.FontDisabledColor = clGrayText
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpessRect
+    Options.ScaleFrameWidth = False
+    Options.StyleColors = True
+    ContentMarginLeft = 5
+    ContentMarginRight = 5
+    ContentMarginTop = 5
+    ContentMarginBottom = 5
+    PromptTextColor = clNone
+    Transparent = True
+    Increment = 1.000000000000000000
+    SupportUpDownKeys = False
+    SupportMouseWheel = False
+    ValueType = scvtFloat
+    MaxValue = 1000000.000000000000000000
+    Value = 1.000000000000000000
+    DisplayType = scedtNumeric
+    LeftButton.Kind = scgpebCustom
+    LeftButton.Enabled = True
+    LeftButton.Visible = False
+    LeftButton.ImageIndex = -1
+    LeftButton.ImageHotIndex = -1
+    LeftButton.ImagePressedIndex = -1
+    LeftButton.RepeatClick = False
+    LeftButton.RepeatClickInterval = 200
+    LeftButton.ShowHint = False
+    LeftButton.GlyphColor = clWindowText
+    LeftButton.GlyphColorAlpha = 180
+    LeftButton.GlyphColorHotAlpha = 240
+    LeftButton.GlyphColorPressedAlpha = 150
+    LeftButton.GlyphThickness = 2
+    RightButton.Kind = scgpebCustom
+    RightButton.Enabled = True
+    RightButton.Visible = False
+    RightButton.ImageIndex = -1
+    RightButton.ImageHotIndex = -1
+    RightButton.ImagePressedIndex = -1
+    RightButton.RepeatClick = False
+    RightButton.RepeatClickInterval = 200
+    RightButton.ShowHint = False
+    RightButton.GlyphColor = clWindowText
+    RightButton.GlyphColorAlpha = 180
+    RightButton.GlyphColorHotAlpha = 240
+    RightButton.GlyphColorPressedAlpha = 150
+    RightButton.GlyphThickness = 2
+    BiDiMode = bdLeftToRight
+    Color = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNone
-    Font.Height = -11
+    Font.Color = clBlack
+    Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
+    ParentBiDiMode = False
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 27
     Visible = False
-    Animation = False
-    Caption = 'GlyphButton_zobrazit_parametry'
-    CanFocused = False
-    CustomDropDown = False
-    Layout = blGlyphLeft
-    TransparentBackground = False
-    ColorValue = clRed
-    Options.NormalColor = 10114859
-    Options.HotColor = clBtnText
-    Options.PressedColor = clBtnText
-    Options.FocusedColor = clRed
-    Options.DisabledColor = clBtnText
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 0
-    Options.PressedColorAlpha = 30
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 5
-    Options.FrameNormalColor = clBtnText
-    Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = clBtnText
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 2
-    Options.FrameNormalColorAlpha = 0
-    Options.FrameHotColorAlpha = 0
-    Options.FramePressedColorAlpha = 0
-    Options.FrameFocusedColorAlpha = 0
-    Options.FrameDisabledColorAlpha = 0
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 1
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    GlyphOptions.NormalColor = clWhite
-    GlyphOptions.HotColor = 16744448
-    GlyphOptions.PressedColor = clBtnText
-    GlyphOptions.FocusedColor = 16744448
-    GlyphOptions.DisabledColor = 16744448
-    GlyphOptions.NormalColorAlpha = 200
-    GlyphOptions.HotColorAlpha = 255
-    GlyphOptions.PressedColorAlpha = 255
-    GlyphOptions.FocusedColorAlpha = 255
-    GlyphOptions.DisabledColorAlpha = 150
-    GlyphOptions.Kind = scgpbgkCalendar
-    GlyphOptions.Thickness = 2
-    GlyphOptions.StyleColors = True
-    TextMargin = -1
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = False
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
+    OnChange = rEditNum_sirka_jiguChange
+    OnKeyDown = FormKeyDown
   end
 end
