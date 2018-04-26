@@ -128,7 +128,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
     OnClick = rHTMLLabel_delkavozikuClick
   end
-  object rHTMLLabel2: TrHTMLLabel
+  object rHTMLLabel_JIG: TrHTMLLabel
     Left = 71
     Top = 184
     Width = 20
@@ -159,9 +159,9 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
     OnClick = rHTMLLabel_sirkaClick
   end
-  object rHTMLLabel6: TrHTMLLabel
+  object rHTMLLabel_podvozek_zaves: TrHTMLLabel
     Left = 1
-    Top = 241
+    Top = 244
     Width = 111
     Height = 19
     Caption = 'Podvozek/zav'#283's'
@@ -172,7 +172,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    Visible = False
     OnClick = rHTMLLabel_delkavozikuClick
   end
   object rHTMLLabel_delka_podvozek: TrHTMLLabel
@@ -790,7 +789,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clSilver
+    Options.PressedColor = 15790320
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -878,7 +877,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clSilver
+    Options.PressedColor = 15790320
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255
@@ -976,7 +975,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = True
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
-    Options.PressedColor = clSilver
+    Options.PressedColor = 15790320
     Options.FocusedColor = clRed
     Options.DisabledColor = clPurple
     Options.NormalColorAlpha = 255

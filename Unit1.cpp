@@ -2991,6 +2991,7 @@ void TForm1::NP()
 		{
 			Zoom=Form_objekt_nahled->Zoom_predchozi;//navrátí schématu původní správný zoom
 			Form_objekt_nahled->Visible=false;//tak skryje
+			nahled_objektu=false;
 			REFRESH();
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
@@ -3275,9 +3276,11 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.dni_rok=d.v.File_hlavicka.dni_rok;
 			d.v.PP.TT=d.v.File_hlavicka.TT;
 			d.v.PP.efektivita=d.v.File_hlavicka.efektivita;
-			d.v.PP.delka_voziku=d.v.File_hlavicka.delka_voziku;
-      d.v.PP.sirka_voziku=d.v.File_hlavicka.sirka_voziku;
-			d.v.PP.typ_voziku=d.v.File_hlavicka.typ_voziku;
+			d.v.PP.typ_voziku=d.v.File_hlavicka.typ_vozik;
+			d.v.PP.delka_voziku=d.v.File_hlavicka.delka_jig;
+			d.v.PP.sirka_voziku=d.v.File_hlavicka.sirka_jig;
+			d.v.PP.vyska_voziku=d.v.File_hlavicka.vyska_jig;
+			d.v.PP.delka_podvozku=d.v.File_hlavicka.delka_podvozek;
 			MOD=d.v.File_hlavicka.Mod;
 			switch(MOD)
 			{

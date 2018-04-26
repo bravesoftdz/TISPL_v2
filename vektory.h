@@ -260,9 +260,11 @@ class Cvektory
 					double dni_rok;//počet hodin za den
 					double efektivita;//přepokládaná výrobní efektivina
 					double TT;//globální TT linky
-					double delka_voziku;
-					double sirka_voziku;
-					double typ_voziku;
+					double delka_jig;
+					double sirka_jig;
+					double vyska_jig;
+					double delka_podvozek;
+					double typ_vozik;
 		};
 		TFile_hlavicka File_hlavicka;
 

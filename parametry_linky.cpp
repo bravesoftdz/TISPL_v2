@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 
@@ -90,20 +89,21 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
 		for(unsigned int PID=0;PID<=zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
-
-    //provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
+		//provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
 		if(Form1->d.v.OBJEKTY->dalsi!=NULL)
 		{
 			rEditNum_takt->Enabled=false;
 			rEditNum_delka_jigu->Enabled=false;
 			rEditNum_sirka_jigu->Enabled=false;
+			scGPNumericEdit_delka_podvozku->Enabled=false;
 		}
 		else
 		{
 			rEditNum_takt->Enabled=true;
 			rEditNum_delka_jigu->Enabled=true;
 			rEditNum_sirka_jigu->Enabled=true;
-    }
+			scGPNumericEdit_delka_podvozku->Enabled=true;
+		}
 
 
 		if(Form1->d.v.navrhni_POHONY()=="")

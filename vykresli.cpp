@@ -1068,7 +1068,7 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 
 	////////VOZÍKY
 	//nastavení popisku
-	SetBkMode(canv->Handle,/*TRANSPARENT*/OPAQUE);//nastvení transparentního pozadí
+	SetBkMode(canv->Handle,/*TRANSPARENT*/OPAQUE);//nastvení netransparentního pozadí
 	canv->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 	canv->Font->Size=12;
 	canv->Font->Name="Arial";
@@ -1742,16 +1742,19 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,unsigned int i,TPointD OD,
 {
 	TPointD S;S=OD;
 	double akt_pozice=0;
-	canv->Pen->Color=clPurple;
-	canv->Brush->Color=clPurple;
+
+	//grafické nastavení
+	canv->Brush->Color=clWhite;//pozadí textu a podvozku a jigu
+	canv->Brush->Style=bsClear;//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
+	canv->Pen->Width=1/3.0*F->Zoom;
 
 	//font
 	rotace_textu(canv,0);
 	short SF_puv=canv->Font->Size;//uchování původní velikosti textu
-	canv->Font->Color=clPurple;
-	SetBkMode(canv->Handle,OPAQUE);
-	canv->Font->Size=Form1->Zoom*5; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
 	canv->Font->Name="Arial";
+	canv->Font->Style = TFontStyles();
+	canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
+	canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
 
 	//vykreslování jednotlivých obdelníčků - pozic
 	double PO=delkaV/delka;//pomer delky vozíku a delky objektu
@@ -1764,24 +1767,28 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,unsigned int i,TPointD OD,
 			S.x+=(DO.x-OD.x)*PO;//posun ze začátku objektu nakonec
 			S.y+=(DO.y-OD.y)*PO;//posun ze začátku objektu nakonec
 		}
-		//pozice podvozku
-		canv->Brush->Color=clWhite;
+		//podvozek
 		canv->Pen->Color=clBlack;
-		canv->Pen->Width=1/3.0*F->Zoom;
-		//canv->Rectangle(m.L2Px((S.x+delkaP)/2-delkaP),m.L2Py(S.y+0.1),m.L2Px((S.x+delkaP)/2+delkaP),m.L2Py(S.y-0.1));//vykreslení pozice podvozku
-//		canv->MoveTo(m.L2Px(S.x),m.L2Py(S.y));
-//		canv->LineTo(m.L2Px(S.x+delkaV),m.L2Py(S.y));
-		//pozice jigu
-		TRect R=TRect(m.L2Px(S.x),m.L2Py(S.y+sirkaV/2),m.L2Px(S.x+delkaV),m.L2Py(S.y-sirkaV/2));
-		canv->Brush->Color=clPurple;
-		canv->FrameRect(R);//vykreslení pozice jigu
-		canv->Brush->Color=clWhite;
-		++i;j++;
-		canv->TextOutW(m.L2Px((S.x+S.x+delkaV)/2)-canv->TextWidth(i)/2,m.L2Py((S.y+S.y+sirkaV)/2)+canv->TextHeight(i)/5,i);//indexace pozice v rámci objektu
+		canv->Rectangle(m.L2Px((S.x+S.x+delkaV-delkaP)/2.0),m.L2Py(S.y+0.1),m.L2Px((S.x+S.x+delkaV+delkaP)/2.0),m.L2Py(S.y-0.1));//vykreslení pozice podvozku
+		//jigu
+		canv->Pen->Color=clPurple;
+		canv->Rectangle(m.L2Px(S.x),m.L2Py(S.y+sirkaV/2.0),m.L2Px(S.x+delkaV),m.L2Py(S.y-sirkaV/2.0));
+		//bílý framing textu
+		canv->Font->Color=clWhite;
+		canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+		canv->Font->Size=Form1->Zoom*5; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*6;
+		canv->TextOutW(m.L2Px((S.x+S.x+delkaV)/2.0)-canv->TextWidth(i)/2.0,m.L2Py((S.y+S.y+sirkaV)/2.0)-canv->TextHeight(i)/2.0,i);//indexace pozice v rámci objektu
+		//text aktuální pozice
+		canv->Font->Color=clPurple;
+		canv->Font->Style = TFontStyles();//vypnutí tučného písma
+		canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
+		canv->TextOutW(m.L2Px((S.x+S.x+delkaV)/2.0)-canv->TextWidth(i)/2.0,m.L2Py((S.y+S.y+sirkaV)/2.0)-canv->TextHeight(i)/2.0,i);//indexace pozice v rámci objektu
 		//posun o mezeru
 		S.x+=(DO.x-OD.x)*POm;//posun ze začátku objektu nakonec
 		S.y+=(DO.y-OD.y)*POm;//posun ze začátku objektu nakonec
 		akt_pozice+=delkaV+mezera;//posun na další pozici
+		//inkrementace
+		i++;j++;
 	}
 	canv->Font->Size=SF_puv;//vrátí původní velikost fontu
 	return i;
@@ -1808,18 +1815,18 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 	//pero+výplň
 	canv->Brush->Color=clWhite;
 	canv->Brush->Style=bsSolid;
-	canv->Pen->Color=clRed;
-	canv->Pen->Width=Form1->Zoom*0.5;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.5;
+	canv->Pen->Color=clRed;        //pův. 0.5 bez duble linie
+	canv->Pen->Width=Form1->Zoom*0.2;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.1;
 //		//font
 //		canv->Font->Color=clRed;
 //		SetBkMode(canv->Handle,TRANSPARENT);
 //		canv->Font->Size=Form1->Zoom*9; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*9;
 //		canv->Font->Name="Arial";
-	//samotné vykreslení obrysu kabiny
-	canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));
-
-	////jednotlivé pozice/vozíky
-	vykresli_pozice(canv,0,S,K,DD,DV,SV,v.PP.delka_podvozku,M);
+	//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
+	short Ov=Form1->Zoom*0.4;
+	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+SV/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-SV/2)+Ov);//vnější
+	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+SV/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-SV/2)-Ov);//vnitřní
+	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jeden
 
 	////vykreslení řetězu a palců řetězu
 	//řetez - je-li přiřazen pohon
@@ -1832,24 +1839,30 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 		if(R>0)//pokud je rozteč tak se vykreslí i palce
 		{
 			//palce řetězu
-			double startR=0;//start roztec
+			double startR=-R+DV/2.0;//start roztec
 			int Rx=F->m.round((M+DV)/R);//může být zaokrouhlenou, protože musí vycházet celé číslo
 			int j=0;
 			for(double i=startR;i<=DD;i+=R)
 			{
-				if(i>=DV/2)
+				if(i>0)
 				{
-					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
+					if(i>=DV/2)
 					{
-						if(j++%Rx==0){vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);}//palec vyšel do rozestupu
-						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);
+						try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
+						{
+							if(j++%Rx==0){vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);}//palec vyšel do rozestupu, jedná se o aktivní palec
+							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
+						}
+						catch(...){;}
 					}
-					catch(...){;}
+					else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//pasivní pro první
 				}
-				else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);
 			}
 		}
 	}
+
+	////jednotlivé pozice/vozíky
+	vykresli_pozice(canv,1,S,K,DD,DV,SV,v.PP.delka_podvozku,M);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

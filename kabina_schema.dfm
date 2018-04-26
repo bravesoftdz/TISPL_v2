@@ -1356,8 +1356,6 @@
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'hled objektu'
-      ExplicitLeft = 0
-      ExplicitWidth = 687
     end
     object reposition_windowButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1436,7 +1434,6 @@
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1052
     end
     object Max_Min_Button: TscGPGlyphButton
       AlignWithMargins = True

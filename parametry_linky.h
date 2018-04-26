@@ -51,7 +51,7 @@ __published:	// IDE-managed Components
 	TscGPSwitch *scGPSwitch;
 	TrHTMLLabel *rHTMLLabel3;
 	TrHTMLLabel *rHTMLLabel4;
-	TrHTMLLabel *rHTMLLabel2;
+	TrHTMLLabel *rHTMLLabel_JIG;
 	TscGPGlyphButton *Button_ADD;
 	TscGPGlyphButton *Button_DEL;
 	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
@@ -79,7 +79,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_ADD;
 	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
 	TrHTMLLabel *rHTMLLabel5;
-	TrHTMLLabel *rHTMLLabel6;
+	TrHTMLLabel *rHTMLLabel_podvozek_zaves;
 	TrHTMLLabel *rHTMLLabel_delka_podvozek;
 	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
 	TscGPNumericEdit *scGPNumericEdit_delka_podvozku;

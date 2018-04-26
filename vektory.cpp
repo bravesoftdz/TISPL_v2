@@ -1942,9 +1942,11 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.dni_rok=PP.dni_rok;
 		File_hlavicka.efektivita=PP.efektivita;
 		File_hlavicka.TT=PP.TT;
-		File_hlavicka.delka_voziku=PP.delka_voziku;
-		File_hlavicka.sirka_voziku=PP.sirka_voziku;
-		File_hlavicka.typ_voziku=PP.typ_voziku;
+		File_hlavicka.typ_vozik=PP.typ_voziku;
+		File_hlavicka.delka_jig=PP.delka_voziku;
+		File_hlavicka.sirka_jig=PP.sirka_voziku;
+		File_hlavicka.vyska_jig=PP.vyska_voziku;
+		File_hlavicka.delka_podvozek=PP.delka_podvozku;
 		//objektové záležitosti
 		File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
 		File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;

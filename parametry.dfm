@@ -106,9 +106,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_delka_dopravniku: TrHTMLLabel
     Left = 7
     Top = 255
-    Width = 128
+    Width = 135
     Height = 21
-    Caption = 'D'#233'lka kabiny <font color=#2b579a>[m]</font>'
+    Caption = 'D'#233'lka objektu <font color=#2b579a>[m]</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -2611,7 +2611,7 @@ object Form_parametry: TForm_parametry
     Top = 133
     Width = 47
     Height = 29
-    Hint = 'P'#345'idat pohon'
+    Hint = 'P'#345'idat '#269'i upravit pohon'
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -2631,7 +2631,7 @@ object Form_parametry: TForm_parametry
     ImageIndex = 49
     ImageMargin = 0
     TransparentBackground = True
-    Options.NormalColor = clBtnFace
+    Options.NormalColor = 15790320
     Options.HotColor = clWhite
     Options.PressedColor = 10114859
     Options.FocusedColor = 10114859

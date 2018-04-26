@@ -131,7 +131,7 @@ void __fastcall TForm_objekt_nahled::FormPaint(TObject *Sender)
 	//náhled objektu
 	if(pom!=NULL)
 	{
-		if(!F->antialiasing)F->d.vykresli_objekt(Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)));
+		if(!F->antialiasing)F->d.vykresli_objekt(Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)/2.0)));
 		else
 		{
 			Cantialising a;
