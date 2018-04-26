@@ -5,7 +5,7 @@ object Form_poznamky: TForm_poznamky
   Caption = 'Pozn'#225'mka'
   ClientHeight = 338
   ClientWidth = 612
-  Color = clBtnFace
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

@@ -660,7 +660,7 @@ object Form_parametry: TForm_parametry
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scGPGlyphButton_info: TscGPGlyphButton
+    object scGPGlyphButton_view: TscGPGlyphButton
       Left = 313
       Top = 0
       Width = 37
@@ -673,7 +673,7 @@ object Form_parametry: TForm_parametry
       Font.Style = []
       ParentFont = False
       TabOrder = 4
-      OnClick = scGPGlyphButton_infoClick
+      OnClick = scGPGlyphButton_viewClick
       Animation = True
       Caption = 'scGPGlyphButton1'
       CanFocused = False
@@ -723,7 +723,7 @@ object Form_parametry: TForm_parametry
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
       GlyphOptions.DisabledColorAlpha = 150
-      GlyphOptions.Kind = scgpbgkInfo
+      GlyphOptions.Kind = scgpbgkView
       GlyphOptions.Thickness = 2
       GlyphOptions.StyleColors = True
       TextMargin = -1

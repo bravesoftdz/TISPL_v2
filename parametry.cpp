@@ -289,7 +289,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		offset = 0;
 		if (Form1->STATUS == Form1->NAVRH)rezim += 10; // posunutí o 10 vytváøí režim+navrháø
 		//pozice hlavièkových komponent (+použito následnì v kodu)
-		scGPGlyphButton_info->Visible=false;
+		scGPGlyphButton_view->Visible=false;
 		scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width;
 		scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width;
 		switch (rezim)
@@ -342,9 +342,9 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(MEZERA, ENABLED);
 						set(ROZESTUP, READONLY);
 						//hlavièkové komponenty
-						scGPGlyphButton_info->Visible=true;
-						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_info->Width;
-						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_info->Width;
+						scGPGlyphButton_view->Visible=true;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_view->Width;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_view->Width;
 				} break;
 		case 11: // KONTINUÁLNÍ - NÁVRHÁØ
 				{
@@ -361,9 +361,9 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(MEZERA, ENABLED);
 						set(ROZESTUP, READONLY);
 						//hlavièkové komponenty
-						scGPGlyphButton_info->Visible=true;
-						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_info->Width;
-						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_info->Width;
+						scGPGlyphButton_view->Visible=true;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_view->Width;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_view->Width;
 				} break;
 		case 2: // POSTPROCESNÍ
 				{
@@ -3242,7 +3242,7 @@ void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //zavolá náhled kabiny, pøípadnì v budoucnu info a o požadovaných parametrech
-void __fastcall TForm_parametry::scGPGlyphButton_infoClick(TObject *Sender)
+void __fastcall TForm_parametry::scGPGlyphButton_viewClick(TObject *Sender)
 {
 		// formuláø na støed
 		Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
