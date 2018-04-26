@@ -11,8 +11,9 @@
 #include "scGPExtControls.hpp"
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Imaging.jpeg.hpp>
+#include "vektory.h"
 //---------------------------------------------------------------------------
-class TForm_kabina_schema : public TForm
+class TForm_objekt_nahled : public TForm
 {
 __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel_hlavicka;
@@ -40,20 +41,38 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_posouvat;
 	TscLabel *scLabel_posouvat;
 	TscGPGlyphButton *GlyphButton_close;
-	void __fastcall scGPButton_stornoClick(TObject *Sender);
+	TscGPGlyphButton *reposition_windowButton;
+	TscGPGlyphButton *Max_Min_Button;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall scLabel_priblizitClick(TObject *Sender);
 	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y);
+	void __fastcall GlyphButton_closeClick(TObject *Sender);
+	void __fastcall GlyphButton_oddalitClick(TObject *Sender);
+	void __fastcall GlyphButton_priblizitClick(TObject *Sender);
+	void __fastcall GlyphButton_cely_pohledClick(TObject *Sender);
+	void __fastcall reposition_windowButtonClick(TObject *Sender);
+	void __fastcall Max_Min_ButtonClick(TObject *Sender);
+
+
+
 private:	// User declarations
-	double Zoom_predchozi;
+	void REFRESH(bool invalidate=true);//vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing)
+	void ENTIRE();//cely_nahled, zajistí výpoèet zoomu tak, aby se objekt zobrazil pøes celé okno, ale vèetnì okraje Ox
+	void OUTPUT();//naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totoži není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
+
+	Cvektory::TObjekt *pom;
+	unsigned short Ox;//okraj
+
 public:		// User declarations
-	__fastcall TForm_kabina_schema(TComponent* Owner);
+	__fastcall TForm_objekt_nahled(TComponent* Owner);
+	void REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
+	double Zoom_predchozi;//slouží na uchování hodnoty aktuálního zoom ve schématu
+	bool zobrazitFrameForm;//zda se má èi nemá zobrazit orámování formuláøe
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm_kabina_schema *Form_kabina_schema;
+extern PACKAGE TForm_objekt_nahled *Form_objekt_nahled;
 //---------------------------------------------------------------------------
 #endif

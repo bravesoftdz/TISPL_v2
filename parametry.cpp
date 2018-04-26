@@ -2028,6 +2028,9 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 			if(priradit_posledni)scComboBox_pohon->ItemIndex=Form1->d.v.POHONY->predchozi->n;//pøíøadíme poslení vytvoøený pohon - to je trochu na zvážení, zda mu ho takto podsouvat
 		}
 		else scComboBox_pohon->Enabled=false;//i tato vìtev má význam, pokud by již novì neexistoval
+
+		//pokud je náhled z PO zobrazen, zajišuje zároveò okamžitou aktualizaci hodnot v náhledu z PO
+		if(Form_objekt_nahled->Visible)Form_objekt_nahled->REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
 }
 // ---------------------------------------------------------------------------
 
@@ -3203,8 +3206,9 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 		break;
 	}
 
-
-	}
+	//pokud je náhled z PO zobrazen, zajišuje zároveò okamžitou aktualizaci hodnot v náhledu z PO
+	if(Form_objekt_nahled->Visible)Form_objekt_nahled->REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
+}
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
 {
@@ -3223,10 +3227,11 @@ void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
 void __fastcall TForm_parametry::scGPGlyphButton_infoClick(TObject *Sender)
 {
 		// formuláø na støed
-		Form_kabina_schema->Left = Form1->ClientWidth / 2 - Form_kabina_schema->Width / 2;
-		Form_kabina_schema->Top = Form1->ClientHeight / 2 - Form_kabina_schema->Height / 2;
+		Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
+		Form_objekt_nahled->Top = Form1->ClientHeight / 2 - Form_objekt_nahled->Height / 2;
 		// zobrazeni formuláøe
-		Form_kabina_schema->ShowModal();
+		Form_objekt_nahled->zobrazitFrameForm=true;
+		Form_objekt_nahled->Show();//nemodální zobrazení
 }
 //---------------------------------------------------------------------------
 
