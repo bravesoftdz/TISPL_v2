@@ -2807,15 +2807,20 @@ void TForm_parametry::Check_rozmezi_RD() {
 						else jednotky_cas_pohon = 1.0;
 		 //				if (scGPNumericEdit_RD->Value < Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon) || scGPNumericEdit_RD->Value > Form1->ms.MyToDouble(P->rychlost_do * jednotky_cas_pohon)) // nesplòuje rozmezí
 		 // náhrada pùvodního IF novým - chová se jako klasické between porovnání
-					if ((unsigned)(scGPNumericEdit_RD->Value - Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon)) <= Form1->ms.MyToDouble(P->rychlost_do * jednotky_cas_pohon) - Form1->ms.MyToDouble(P->rychlost_od * jednotky_cas_pohon))
+		 double RD   = scGPNumericEdit_RD->Value;
+		 double P_od = P->rychlost_od*jednotky_cas_pohon;
+		 double P_do = P->rychlost_do*jednotky_cas_pohon;
+
+					//if ((unsigned)(RD - Form1->ms.MyToDouble(P_od)) <= (Form1->ms.MyToDouble(P_do) - Form1->ms.MyToDouble(P_od)))
+					if(RD >= P_od && RD <= P_do)
 						{
-							//Memo1->Lines->Add("OK v rozmezi");
-							;
+						 //	Memo1->Lines->Add("OK rozmezi");
+						;
 						}
 						else
 						{
 
-            	if(scGPNumericEdit_RD->Value>P->rychlost_do)  VID=25;
+							if(scGPNumericEdit_RD->Value>P->rychlost_do)  VID=25;
 							if(scGPNumericEdit_RD->Value<P->rychlost_od)  VID=26;
 								 mimo_rozmezi=true;
 									//Memo1->Lines->Add("mimo rozmezi");
@@ -3087,6 +3092,8 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					{
 						vypis("Mezera je záporná, zkuste rotaci jigu"); VID=23;
 					}
+
+
 					else
 					{
 						vypis("Mezera je záporná, zkuste následující palec, nebo zvažte zmìnu rozmìrù jigu"); VID=24;
@@ -3118,12 +3125,48 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
 
 					if (obj!=NULL && pm.RD<minRD)//pokud by novým RD byl pod minRD (tj. pod RD nejrizikovìjšího objektu, tak je problém)
-					{
+					{    // TODO PRAVDEPODOBNE BUDE ROZSIRENE
 							AnsiString vypis_nestihaji=Form1->d.v.vypis_objekty_nestihajici_prejezd(Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex),pm.RD);
 							vypis("Pøi zvolené rychlosti pohonu by nebylo možné stíhat pøejezd v tìchto objektech "+vypis_nestihaji+", navyšte hodnotu RD minimálnì na "+AnsiString(minRD*60.0)+" [m/min].");
 							VID=29;
 					}
 				}
+
+				if(scComboBox_rezim->ItemIndex==1)
+		{
+
+		bool  mimo_rozmezi = false;
+				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+				if (P != NULL)
+				{
+						double jednotky_cas_pohon = 60.0;
+						if (Form_parametry->RDunitT == Form_parametry->MIN) jednotky_cas_pohon = 60.0;
+						else jednotky_cas_pohon = 1.0;
+						double RD   = scGPNumericEdit_RD->Value;
+						double P_od = P->rychlost_od*jednotky_cas_pohon;
+						double P_do = P->rychlost_do*jednotky_cas_pohon;
+					//if ((unsigned)(RD - Form1->ms.MyToDouble(P_od)) <= (Form1->ms.MyToDouble(P_do) - Form1->ms.MyToDouble(P_od)))
+					if(RD >= P_od && RD <= P_do)
+						{
+						scGPNumericEdit_RD->Options->FrameNormalColor = clGray;
+						scGPNumericEdit_RD->Options->FrameWidth = 1;
+						}
+						else
+						{
+								mimo_rozmezi=true;
+								//scGPNumericEdit_RD->Font->Color=clRed;
+								scGPNumericEdit_RD->Options->FrameNormalColor = hl_color;
+								scGPNumericEdit_RD->Options->FrameWidth = hlFrameWidth;
+								scGPNumericEdit_RD->Hint="rychlost je mimo nastavený rozsah pohonu";
+								vypis("Rychlost pohonu je mimo nastavený rozsah");
+								VID=25;
+						}
+
+
+
+				}
+
+		}
 
 
 		//-----------------------------------------------------------------------------------------------------------------------------//
