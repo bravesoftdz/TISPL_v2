@@ -65,10 +65,10 @@ Graphics::TBitmap *Cantialising::antialiasing(Graphics::TBitmap *bmp_in)
 
 	//výstupní bitmapa
 	Graphics::TBitmap *bmp_out=new Graphics::TBitmap;
-	bmp_out->PixelFormat=pf24bit;//nutné!!!
+	bmp_out->PixelFormat=pf24bit;//nutné!!! i pro pøípadnou transparentnost
 	bmp_out->Width=bmp_in->Width/Z;bmp_out->Height=bmp_in->Height/Z;//tøetinová velikost výsledné bitmapy
 
-	//if(grid){bmp_out->Transparent=true;bmp_out->TransparentColor=clWhite;bmp_out->TransparentMode = tmAuto;}//již se nevyužívá, ale nechávám pro pøípadné další použití
+	//if(grid){bmp_out->Transparent=true;bmp_out->TransparentColor=clWhite;bmp_out->TransparentMode = tmAuto;}//již se nevyužívá, ale nechávám pro pøípadné další použití, je nutné ale mít bmp_out->PixelFormat=pf24bit;
 
 	for(int Y=0;Y<=bmp_out->Height-1;Y++)// pro všechny øadky
 	{

@@ -2,6 +2,7 @@
 #pragma hdrstop
 #include "vykresli.h"
 #include "Unit1.h"
+#include "kabina_schema.h"
 #include "stdlib.h"
 //--------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -1735,14 +1736,10 @@ bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,lo
 //			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)+canv->TextHeight(T6)*1,T6);
 //		 }
 //	}
-//}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-//zajišťuje vykreslení pozic v layoutu
-unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,unsigned int i,TPointD OD, TPointD DO,double delka,double delkaV,double sirkaV,double delkaP,double mezera)
+//}////------------------------------------------------------------------------------------------------------------------------------------------------------
+//zajišťuje vykreslení pozic v layoutu + příprava konstrukce když nebudu chtít vykreslovat objekt vodorovně, pouze bude nutné zajistit ještě rotaci pozic a podvozků
+unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD DO,double delka,double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice)
 {
-	TPointD S;S=OD;
-	double akt_pozice=0;
-
 	//grafické nastavení
 	canv->Brush->Color=clWhite;//pozadí textu a podvozku a jigu
 	canv->Brush->Style=bsClear;//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
@@ -1757,38 +1754,39 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,unsigned int i,TPointD OD,
 	canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
 
 	//vykreslování jednotlivých obdelníčků - pozic
+	TPointD S;S=OD;//konstrukce proto,když nebudu chtít vykreslovat objekt vodorovně, pouze bude nutné zajistit ještě rotaci pozic a podvozků
+	S.x+=(DO.x-OD.x)*akt_pozice/delka;//start pozice
+	S.y+=(DO.y-OD.y)*akt_pozice/delka;//start pozice
 	double PO=delkaV/delka;//pomer delky vozíku a delky objektu
 	double POm=mezera/delka;//poměr délky mezery a délky objekty
-	unsigned int j=0;
+	//unsigned int j=0;
 	while(akt_pozice<=delka)
 	{
-		if(j>0)//při prvním kroku je již nastaveno z parametrů metoda
-		{
-			S.x+=(DO.x-OD.x)*PO;//posun ze začátku objektu nakonec
-			S.y+=(DO.y-OD.y)*PO;//posun ze začátku objektu nakonec
-		}
 		//podvozek
+		canv->Brush->Style=bsClear;//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 		canv->Pen->Color=clBlack;
 		canv->Rectangle(m.L2Px((S.x+S.x+delkaV-delkaP)/2.0),m.L2Py(S.y+0.1),m.L2Px((S.x+S.x+delkaV+delkaP)/2.0),m.L2Py(S.y-0.1));//vykreslení pozice podvozku
 		//jigu
 		canv->Pen->Color=clPurple;
 		canv->Rectangle(m.L2Px(S.x),m.L2Py(S.y+sirkaV/2.0),m.L2Px(S.x+delkaV),m.L2Py(S.y-sirkaV/2.0));
-		//bílý framing textu
-		canv->Font->Color=clWhite;
-		canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
-		canv->Font->Size=Form1->Zoom*5; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*6;
-		canv->TextOutW(m.L2Px((S.x+S.x+delkaV)/2.0)-canv->TextWidth(i)/2.0,m.L2Py((S.y+S.y+sirkaV)/2.0)-canv->TextHeight(i)/2.0,i);//indexace pozice v rámci objektu
 		//text aktuální pozice
+		canv->Brush->Style=bsSolid;//netransparentní pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
 		canv->Font->Color=clPurple;
 		canv->Font->Style = TFontStyles();//vypnutí tučného písma
 		canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
-		canv->TextOutW(m.L2Px((S.x+S.x+delkaV)/2.0)-canv->TextWidth(i)/2.0,m.L2Py((S.y+S.y+sirkaV)/2.0)-canv->TextHeight(i)/2.0,i);//indexace pozice v rámci objektu
+		short iz=0;
+		//if(i<=0)iz=v.WIP(4);//při animaci, globální indexování vozíku
+		if(i<=0)iz=Form_objekt_nahled->pom->pozice;//při animaci pouze pořád dokola
+		canv->TextOutW(m.L2Px((S.x+S.x+delkaV)/2.0)-canv->TextWidth(i+iz)/2.0,m.L2Py((S.y+S.y+sirkaV)/2.0)-canv->TextHeight(i+iz)/2.0,i+iz);//indexace pozice v rámci objektu
+		//posun o další vozík
+		S.x+=(DO.x-OD.x)*PO;//posun ze začátku objektu nakonec
+		S.y+=(DO.y-OD.y)*PO;//posun ze začátku objektu nakonec
 		//posun o mezeru
 		S.x+=(DO.x-OD.x)*POm;//posun ze začátku objektu nakonec
 		S.y+=(DO.y-OD.y)*POm;//posun ze začátku objektu nakonec
 		akt_pozice+=delkaV+mezera;//posun na další pozici
 		//inkrementace
-		i++;j++;
+		i++;
 	}
 	canv->Font->Size=SF_puv;//vrátí původní velikost fontu
 	return i;
@@ -1799,8 +1797,8 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 {
 	vykresli_objekt(canv,v.OBJEKTY->dalsi,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y);
 }
-//zajistí vykreslení náhledu objektu
-void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y)//XY -umístění L začátek (střed dopravníku) objektu v m, Z - zoom,faktor zvětšení
+//zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu,může sloužit na animaci či návaznost v případě layoutu
+void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)//XY -umístění L začátek (střed dopravníku) objektu v m, Z - zoom,faktor zvětšení
 {
 	////vychozí geometrické proměnné
 	double DD=O->delka_dopravniku;//délka objektu v metrech
@@ -1817,17 +1815,11 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 	canv->Brush->Style=bsSolid;
 	canv->Pen->Color=clRed;        //pův. 0.5 bez duble linie
 	canv->Pen->Width=Form1->Zoom*0.2;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.1;
-//		//font
-//		canv->Font->Color=clRed;
-//		SetBkMode(canv->Handle,TRANSPARENT);
-//		canv->Font->Size=Form1->Zoom*9; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*9;
-//		canv->Font->Name="Arial";
 	//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
 	short Ov=Form1->Zoom*0.4;
 	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+SV/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-SV/2)+Ov);//vnější
 	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+SV/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-SV/2)-Ov);//vnitřní
 	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jeden
-
 	////vykreslení řetězu a palců řetězu
 	//řetez - je-li přiřazen pohon
 	if(O->pohon!=NULL)
@@ -1840,11 +1832,14 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 		{
 			//palce řetězu
 			int Rx=F->m.round((M+DV)/R);//může být zaokrouhleno, protože musí vycházet celé číslo
-			double startR=-(M+DV)+DV/2.0;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a offset je +DV/2.0, což je kalibrace posunutí řetězu
-			unsigned int j=0;//musí
-			for(double i=startR;i<=DD;i+=R)
-			{
-				if(i>=0 && Rx>0)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
+													 //*O->pozice - používát jen v animaci
+			double startR=-(M+DV)+DV/2.0+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a offset je +DV/2.0, což je kalibrace posunutí řetězu
+			if(animace)startR=-(M+DV)*O->pozice+DV/2.0+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a offset je +DV/2.0, což je kalibrace posunutí řetězu
+
+			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neřezávalo palce
+			for(double i=startR;i<=DD+R;i+=R)
+			{     //již využívám přemaskování bílým obdélnikem, nakonci metody,zajišťuje lepší grafický efekt
+				if(/*i>=0 && */Rx>0)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
 				{
 					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
 					{
@@ -1859,7 +1854,14 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 	}
 
 	////jednotlivé pozice/vozíky
-	vykresli_pozice(canv,1,S,K,DD,DV,SV,v.PP.delka_podvozku,M);
+	if(!animace)vykresli_pozice(canv,1,S,K,DD,DV,SV,v.PP.delka_podvozku,M,Poffset);
+	else vykresli_pozice(canv,-O->pozice+1,S,K,DD,DV,SV,v.PP.delka_podvozku,M,-(M+DV)*O->pozice+Poffset);
+
+	//maskování vstupu a výstup, aby nebyly vidět vstupující a vystupující vozíky, může být však i nežádoucí
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
+	canv->FillRect(TRect(0,m.L2Py(Y+SV/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-SV/2)+Ov));//nalevo
+	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+SV/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-SV/2)+Ov));//napravo
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

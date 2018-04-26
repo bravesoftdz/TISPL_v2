@@ -1325,9 +1325,9 @@
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
-      Left = 10
+      Left = 99
       Top = 0
-      Width = 577
+      Width = 488
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -1356,6 +1356,8 @@
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'hled objektu'
+      ExplicitLeft = 10
+      ExplicitWidth = 577
     end
     object reposition_windowButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1498,6 +1500,89 @@
       GlyphOptions.DisabledColorAlpha = 100
       GlyphOptions.Kind = scgpbgkMaximize
       GlyphOptions.Thickness = 1
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+    end
+    object ButtonPLAY: TscGPGlyphButton
+      Left = 0
+      Top = 0
+      Width = 89
+      Height = 34
+      Hint = 'spustit animaci'
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+      TabStop = True
+      OnClick = ButtonPLAYClick
+      Animation = False
+      Caption = '0 [sec]'
+      CanFocused = True
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = 10114859
+      Options.DisabledColor = clBtnText
+      Options.NormalColorAlpha = 10
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.FrameNormalColor = 10114859
+      Options.FrameHotColor = 10114859
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = 10114859
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 70
+      Options.FrameHotColorAlpha = 100
+      Options.FramePressedColorAlpha = 150
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 30
+      Options.FontNormalColor = 33023
+      Options.FontHotColor = 33023
+      Options.FontPressedColor = 33023
+      Options.FontFocusedColor = 33023
+      Options.FontDisabledColor = 33023
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = 33023
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = clWhite
+      GlyphOptions.DisabledColor = clBtnText
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 100
+      GlyphOptions.Kind = scgpbgkPlay
+      GlyphOptions.Thickness = 2
       GlyphOptions.StyleColors = True
       TextMargin = -1
       WidthWithCaption = 0
@@ -2580,5 +2665,11 @@
       GroupIndex = 0
       AllowAllUp = True
     end
+  end
+  object Timer_animace: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer_animaceTimer
+    Top = 392
   end
 end

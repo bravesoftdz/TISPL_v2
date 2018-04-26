@@ -457,3 +457,10 @@ void Cmy::frameForm(TForm *form,TColor color,short width)
 		C->Rectangle(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o);
 }
 /////////////////////////////////////////////////////////////////////////////
+//z rychlosti v m/s vratí èas milisekundách potøebný na pøekreslení jednoho pixelu pøi daném zoomu, parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se vhodný èas na pøehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer
+double Cmy::get_timePERpx(double speed,double A)//A je akcelerace
+{
+		if(A==0)return F->m2px/F->Zoom/speed*1000/24.0;//vrátí èas, tak aby se jednalo o kontinální animaci
+		else return F->m2px/F->Zoom/speed*1000/A;//vrátí èas na posun o jeden pixel
+}
+/////////////////////////////////////////////////////////////////////////////

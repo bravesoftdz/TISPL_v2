@@ -43,6 +43,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_close;
 	TscGPGlyphButton *reposition_windowButton;
 	TscGPGlyphButton *Max_Min_Button;
+	TTimer *Timer_animace;
+	TscGPGlyphButton *ButtonPLAY;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormPaint(TObject *Sender);
@@ -55,6 +57,8 @@ __published:	// IDE-managed Components
 	void __fastcall GlyphButton_cely_pohledClick(TObject *Sender);
 	void __fastcall reposition_windowButtonClick(TObject *Sender);
 	void __fastcall Max_Min_ButtonClick(TObject *Sender);
+	void __fastcall ButtonPLAYClick(TObject *Sender);
+	void __fastcall Timer_animaceTimer(TObject *Sender);
 
 
 
@@ -63,12 +67,14 @@ private:	// User declarations
 	void ENTIRE();//cely_nahled, zajistí výpoèet zoomu tak, aby se objekt zobrazil pøes celé okno, ale vèetnì okraje Ox
 	void OUTPUT();//naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totoži není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
 
-	Cvektory::TObjekt *pom;
 	unsigned short Ox;//okraj
+	double Poffset;
+	double timerTakt;
 
 public:		// User declarations
 	__fastcall TForm_objekt_nahled(TComponent* Owner);
 	void REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
+	Cvektory::TObjekt *pom;
 	double Zoom_predchozi;//slouží na uchování hodnoty aktuálního zoom ve schématu
 	bool zobrazitFrameForm;//zda se má èi nemá zobrazit orámování formuláøe
 };

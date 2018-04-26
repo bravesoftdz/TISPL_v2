@@ -2881,7 +2881,18 @@ double Cvektory::WIP(short typ_vypoctu)
 		}break;
 		//tradiční výpočet
 		case 3:
-		pocet_final=(1/PP.TT)*vrat_LT();break;
+		pocet_final=(1/PP.TT)*vrat_LT();
+		break;
+		//součtem pozic zadaných (resp. v návrháru/architektovi vypočítaných)
+		case 4:
+		{
+			Cvektory::TObjekt *ukaz=OBJEKTY->dalsi;//přeskočí hlavičku
+			while (ukaz!=NULL)
+			{
+				pocet_final+=ukaz->pozice;
+				ukaz=ukaz->dalsi;//posun na další prvek
+			}
+		}break;
 	}
 	return pocet_final;
 }
