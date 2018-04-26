@@ -1836,27 +1836,24 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 		canv->Pen->Width=F->Zoom*0.5;
 		canv->MoveTo(m.L2Px(X),m.L2Py(Y));
 		canv->LineTo(m.L2Px(K.x),m.L2Py(K.y));
-		if(R>0)//pokud je rozteč tak se vykreslí i palce
+		if(R>0)//pokud je zadaná rozteč tak se vykreslí i palce
 		{
 			//palce řetězu
-			double startR=-R+DV/2.0;//start roztec
-			int Rx=F->m.round((M+DV)/R);//může být zaokrouhlenou, protože musí vycházet celé číslo
-			int j=0;
+			int Rx=F->m.round((M+DV)/R);//může být zaokrouhleno, protože musí vycházet celé číslo
+			double startR=-(M+DV)+DV/2.0;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a offset je +DV/2.0, což je kalibrace posunutí řetězu
+			unsigned int j=0;//musí
 			for(double i=startR;i<=DD;i+=R)
 			{
-				if(i>0)
+				if(i>=0 && Rx>0)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
 				{
-					if(i>=DV/2)
+					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
 					{
-						try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
-						{
-							if(j++%Rx==0){vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);}//palec vyšel do rozestupu, jedná se o aktivní palec
-							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
-						}
-						catch(...){;}
+						if(j%Rx==0){vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);}//palec vyšel do rozestupu, jedná se o aktivní palec
+						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
 					}
-					else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//pasivní pro první
+					catch(...){;}
 				}
+				j++;//musí být mimo
 			}
 		}
 	}
