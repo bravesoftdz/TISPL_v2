@@ -565,7 +565,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 				case READONLY:
 					scGPNumericEdit_RD->Options->ShapeStyle = scgpessNone;
 			 		scGPNumericEdit_RD->Enabled = false;
-					scButton_zamek_RD->Visible = false;
+					scButton_zamek_RD->Visible = true;
 			 		break;
 				case HIDE:
 			 		rHTMLLabel_RD->Visible = false;
@@ -1952,6 +1952,7 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				}
 				else
 				{
+				  scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
 					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 		}
@@ -2121,8 +2122,8 @@ void TForm_parametry::INPUT()
 				DD /= 1000.0; // vždy ukládám do metrù
 		if (DMunit == MM)
 				m /= 1000.0;
-		 Memo1->Lines->Add("RD_UnitT INPUT: "+AnsiString(RDunitT));
-		 Memo1->Lines->Add("RD INPUT: "+AnsiString(RD));
+		// Memo1->Lines->Add("RD_UnitT INPUT: "+AnsiString(RDunitT));
+	 //	 Memo1->Lines->Add("RD INPUT: "+AnsiString(RD));
 
 
 		///////////////uložení do výpoèetního modulu PO/////////////////////////
@@ -2231,7 +2232,7 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 		if (input_state == NOTHING) {
 				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
 						input_clicked_edit == Rotace_klik && scButton_zamek_RD->Visible==true) {
-					if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Visible==true){
+					if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled==true){
             // ShowMessage(input_clicked_edit);
 						Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
             }
@@ -2665,6 +2666,7 @@ void TForm_parametry::Pohon_pouzivan() {
 
 						scButton_zamek_CT->Enabled=false;
 						scButton_zamek_DD->Enabled=false;
+            scButton_zamek_RD->Enabled=false;
 
 						scButton_zamek_RD->ImageIndex = 37;
 						scButton_zamek_CT->ImageIndex = 38;
@@ -3149,11 +3151,11 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 							VID=29;
 					}
 				}
-
+//----------------------------------------------------------------------------------------------------------------
 				if(scComboBox_rezim->ItemIndex==1)
 		{
 
-		bool  mimo_rozmezi = false;
+			  MIMO_ROZMEZI = false;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL)
 				{
@@ -3171,10 +3173,11 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						}
 						else
 						{
-								mimo_rozmezi=true;
+								MIMO_ROZMEZI=true;
 								//scGPNumericEdit_RD->Font->Color=clRed;
 								scGPNumericEdit_RD->Options->FrameNormalColor = hl_color;
 								scGPNumericEdit_RD->Options->FrameWidth = hlFrameWidth;
+								scGPButton_OK->Enabled=false;
 								scGPNumericEdit_RD->Hint="rychlost je mimo nastavený rozsah pohonu";
 								vypis("Rychlost pohonu je mimo nastavený rozsah");
 								VID=25;
@@ -3185,6 +3188,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				}
 
 		}
+
 
 
 		//-----------------------------------------------------------------------------------------------------------------------------//
@@ -3309,6 +3313,12 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 {
 //INPUT();
 //Check_rozmezi_RD();
+//if(hlFrameWidth==2){
+// //Form1->MB("Údaje nejsou zadány korektnì a není možné je uložit");
+// VID=0;
+// }
 }
+//---------------------------------------------------------------------------
+
 //---------------------------------------------------------------------------
 

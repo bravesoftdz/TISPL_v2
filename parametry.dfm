@@ -3311,12 +3311,13 @@ object Form_parametry: TForm_parametry
     UseFontColorToStyleColor = False
   end
   object Button1: TButton
-    Left = 153
-    Top = 265
+    Left = 308
+    Top = 601
     Width = 75
     Height = 25
     Caption = 'Button1'
     TabOrder = 32
+    Visible = False
     OnClick = Button1Click
   end
   object rHTMLHint1: TrHTMLHint
