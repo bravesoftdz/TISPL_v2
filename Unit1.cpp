@@ -20,6 +20,7 @@
 #include "casovaOsa_info.h"
 #include "report.h"
 #include "PO_math.h"
+#include "kabina_schema.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -45,12 +46,15 @@
 #pragma link "scWebBrowser"
 #pragma resource "*.dfm"
 TForm1 *Form1;
+TForm1 *F;//pouze zkrácený zapis
 AnsiString Parametry;
 //---------------------------------------------------------------------------
 __fastcall TForm1::TForm1(TComponent* Owner)
 	: TForm(Owner)
 {
 	srand(time(NULL));//nutno tady tj. úplně první!!!
+
+	F=Form1;//pouze zkrácení zápisu
 
 	db_connection();//připojení k DB
 
@@ -331,7 +335,9 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.TT=120.0;
 			 d.v.PP.efektivita=95;
 			 d.v.PP.delka_voziku=1;
-			 d.v.PP.sirka_voziku=d.v.PP.delka_voziku;
+			 d.v.PP.sirka_voziku=1;
+			 d.v.PP.vyska_voziku=1;
+			 d.v.PP.delka_podvozku=1;
 			 d.v.PP.typ_voziku=0;
 
 			 Akce=NIC;Screen->Cursor=crDefault;//změní kurzor na default
@@ -343,6 +349,7 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 vycentrovat=true;
 			 posun_objektu=false;//nutnost, aby se během realizace posunu neaktivoval další posun
 			 zneplatnit_minulesouradnice();
+			 dblClick=false;
 			 probehl_zoom=false;
 			 add_posledni=true;
 			 stisknute_leve_tlacitko_mysi=false;
@@ -1088,6 +1095,8 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
+	if(!nahled_objektu)
+	{
 	//vykreslení gridu
 	if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
 
@@ -1192,6 +1201,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
+  }
 }
 //---------------------------------------------------------------------------
 //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing)
@@ -1485,67 +1495,107 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
- if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
- {
-	 scSplitView_MENU->Opened=false;
-	 scSplitView_OPTIONS->Opened=false;
- }
- else
- {
-	 if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
-	 {
-			stisknute_leve_tlacitko_mysi=true;
-			vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
-
-			//aktivuje POSUN OBJEKTU,pokud je kliknuto v místě objektu (v jeho vnitřku)
-			if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
+	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
+	{
+		scSplitView_MENU->Opened=false;
+		scSplitView_OPTIONS->Opened=false;
+	}
+	else
+	{
+		if(!dblClick)//v případě, že se nejedná o double click
+		{
+			if(Button==mbLeft/* && MOD!=REZERVY*/)//je stisknuto levé tlačítko myši
 			{
-				if(MOD==SCHEMA)
-				{
-					pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
-					if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
-					else {Akce=PAN;pan_non_locked=true;}//test - přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
-				}
-				else {Akce=PAN;pan_non_locked=true;}//test - přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
-			}
+					stisknute_leve_tlacitko_mysi=true;
+					vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
 
-			if(funkcni_klavesa==1 || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
-			///Akce=PAN; pouze pokud bych nechtěl pomocí mezerníku aktivovat PAN
-			switch(Akce)
-			{
-				case PAN:
-				{
-					kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
-					int W=scSplitView_LEFTTOOLBAR->Width;
-					if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
-					short H=scGPPanel_mainmenu->Height;// zmena designu RzToolbar1->Height;
-					int Gh=vrat_max_vysku_grafu();
-					Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
-					Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
-					//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
-					break;
-				}
-				case ZOOM_W:
-				{
-					kurzor(window);
-					predchozi_souradnice_kurzoru=vychozi_souradnice_kurzoru;
-					break;
-				}
-				//case MOVE: testovací mod 23.listopadu 2017 při přesování se měnila velikost písma sice deteail...
-				case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
-				default: break;
+					//aktivuje POSUN OBJEKTU,pokud je kliknuto v místě objektu (v jeho vnitřku)
+					if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
+					{
+						if(MOD==SCHEMA)
+						{
+							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+							if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
+							else {Akce=PAN;pan_non_locked=true;}//test - přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
+						}
+						else {Akce=PAN;pan_non_locked=true;}//test - přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
+					}
+
+					if(funkcni_klavesa==1 || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
+					///Akce=PAN; pouze pokud bych nechtěl pomocí mezerníku aktivovat PAN
+					switch(Akce)
+					{
+						case PAN:
+						{
+							kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
+							int W=scSplitView_LEFTTOOLBAR->Width;
+							if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
+							short H=scGPPanel_mainmenu->Height;// zmena designu RzToolbar1->Height;
+							int Gh=vrat_max_vysku_grafu();
+							Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
+							Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
+							//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
+							break;
+						}
+						case ZOOM_W:
+						{
+							kurzor(window);
+							predchozi_souradnice_kurzoru=vychozi_souradnice_kurzoru;
+							break;
+						}
+						//case MOVE: testovací mod 23.listopadu 2017 při přesování se měnila velikost písma sice deteail...
+						case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
+						default: break;
+					}
+					DuvodUlozit(true);
 			}
-			DuvodUlozit(true);
-	 }
-	 //POPUP menu
-	 else//pokud není stisknuto levé tlačítko, předpokládá se volání pop-up menu
-	 {
-			//nejdříve deaktiviace zaměřovače, je-li aktivní
-			deaktivace_zamerovace();
-			//nastavení zobrazení popUPmenu a jeho volání včetně pozice
-			onPopUP(X,Y);
-	 }
- }
+			//POPUP menu
+			else//pokud není stisknuto levé tlačítko, předpokládá se volání pop-up menu
+			{
+					//nejdříve deaktiviace zaměřovače, je-li aktivní
+					deaktivace_zamerovace();
+					//nastavení zobrazení popUPmenu a jeho volání včetně pozice
+					onPopUP(X,Y);
+			}
+		}
+		else dblClick=false;
+	}
+}
+//---------------------------------------------------------------------------
+//při double clicku volá přímo formulář parametry objektu
+void __fastcall TForm1::FormDblClick(TObject *Sender)
+{
+	dblClick=true;Akce=NIC;
+	long X=akt_souradnice_kurzoru_PX.x;long Y=akt_souradnice_kurzoru_PX.y;//pouze zkrácení zápisu
+	switch(MOD)
+	{
+		case CASOVAOSA:
+		{														 //min                      //vozik
+			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
+			{
+				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
+				{
+					pom=proces_pom->segment_cesty->objekt;
+				}
+			}
+		}break;
+		case TECHNOPROCESY:
+		{
+			pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
+		}
+		break;
+		case SIMULACE:break;
+		default://pro SCHEMA
+		{
+			//povoluje nastavení položek kopírování či smazání objektu
+			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
+		}break;
+	}
+	if(pom!=NULL)
+	{
+		NP();//dřívější volání nastavparametry1click
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
@@ -1688,7 +1738,7 @@ void TForm1::onPopUP(int X, int Y)
 {
 	//výchozí skrytí všech položek, další postup je založen na postupném odkrývání a zvětšování panelu UP nebo DOWN
 	close_all_items_popUPmenu();
-  PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
+	PopUPmenu->Item_zobrazit_parametry->FillColor=(TColor)RGB(240,240,240);//workaround, nutnost takto vytáhnout, jinak se položka zvýrazňuje, musí být tady
 	//dle statusu Architek x Klient resp. Návrh x Ověrování
 	AnsiString N="Nastavit";if(STATUS==OVEROVANI)N="Zobrazit";
 	//dle modu zobrazí položky, pozor záleží zvláštně!!! na pořadí položek
@@ -1874,6 +1924,8 @@ void TForm1::ZOOM_OUT()
 //samotný ZOOM
 void TForm1::ZOOM()
 {
+	if(!nahled_objektu)//uchovává stav, zda se jedná o náhled objekt či regulerní zobrazení ve form1, zajišťuje, aby se zbytečně nepřekresloval obraz
+	{
 		probehl_zoom=true;
 		zneplatnit_minulesouradnice();
 
@@ -1889,6 +1941,7 @@ void TForm1::ZOOM()
 		vycentrovat=true;
 		REFRESH();
 		DuvodUlozit(true);
+	}
 }
 //---------------------------------------------------------------------------
 void TForm1::ZOOM_WINDOW()
@@ -2933,6 +2986,12 @@ void TForm1::NP()
 				if(mrOk==MB("Neplatná hodnota!"))//lepé přes mrOk
 				NP();//nové zadání, //volá form na nastevení parametrů, dřívější nastavparemetry1click
 			}
+		}
+		if(Form_objekt_nahled->Visible)//pokud je případně zobrazen náhled objektu
+		{
+			Zoom=Form_objekt_nahled->Zoom_predchozi;//navrátí schématu původní správný zoom
+			Form_objekt_nahled->Visible=false;//tak skryje
+			REFRESH();
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
 	}
@@ -4959,6 +5018,8 @@ void TForm1::db_connection()
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
 //---------------------------------------------------------------------------
+
+
 
 
 

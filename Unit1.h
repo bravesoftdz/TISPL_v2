@@ -415,6 +415,7 @@ __published:	// IDE-managed Components
 	void __fastcall scSplitView_MENUOpened(TObject *Sender);
 	void __fastcall scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_info_cekaniClick(TObject *Sender);
+	void __fastcall FormDblClick(TObject *Sender);
 
 
 // User declarations
@@ -545,7 +546,9 @@ public:		// User declarations
 	bool zobrazit_barvy_casovych_rezerv;
 	bool antialiasing;
 	double Zoom_predchozi_AA;//pøi antialiasingu
+	bool nahled_objektu;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
 	bool TZF;//TRIAL_zakazat_funkcionality
+	bool dblClick;
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void ZOOM_IN();//pøiblížení
@@ -566,6 +569,7 @@ public:		// User declarations
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
+extern PACKAGE TForm1 *F;//pouze zkrácený zapis
 extern AnsiString Parametry; //pøíjímá parametry programu, dùležité pro otevírání programu konrkétním souborem
 //---------------------------------------------------------------------------
 #endif

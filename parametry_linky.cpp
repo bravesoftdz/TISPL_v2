@@ -309,17 +309,26 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Ulozit=true;
 
 		//pri zmene TT
-		if(Form1->ms.MyToDouble(rEditNum_takt->Value) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		if(Form1->ms.MyToDouble(rEditNum_takt->Value) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		{
 		 Changes=true;
 		 Changes_TT=true;
 		}
 		//pri zmene delky voziku
-		if(Form1->ms.MyToDouble(rEditNum_delka_jigu->Value) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		if(Form1->ms.MyToDouble(rEditNum_delka_jigu->Value) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		{
 		 Changes=true;
 		 Changes_PP=true;
 		}
 		//pri zmene sirky voziku
-			if(Form1->ms.MyToDouble(rEditNum_sirka_jigu->Value) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL){
+		if(Form1->ms.MyToDouble(rEditNum_sirka_jigu->Value) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		{
+		 Changes=true;
+		 Changes_PP=true;
+		}
+		//pri zmene delky podvozku
+		if(Form1->ms.MyToDouble(scGPNumericEdit_delka_podvozku->Value) != Form1->d.v.PP.delka_podvozku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		{
 		 Changes=true;
 		 Changes_PP=true;
 		}
@@ -481,11 +490,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 //	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
 		 //	}
 		 //	else
-				Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delka_jigu->Value);
-
+			F->d.v.PP.delka_voziku=F->ms.MyToDouble(rEditNum_delka_jigu->Value);
+			F->d.v.PP.sirka_voziku=F->ms.MyToDouble(rEditNum_sirka_jigu->Value);
+			F->d.v.PP.delka_podvozku=scGPNumericEdit_delka_podvozku->Value;
 			int typ;
-			//Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-			Form1->d.v.PP.sirka_voziku=Form1->ms.MyToDouble(rEditNum_sirka_jigu->Value);   //zavadejici docasne reseni
 			if(scGPSwitch->State==scswOff){typ=0;}
 			else {typ=1;}
 			Form1->d.v.PP.typ_voziku=Form1->ms.MyToDouble(typ);
@@ -839,18 +847,18 @@ void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender
 	{
 		Delkaunit=M;
 		//delka - pøepoèítání
-		delka=scGPNumericEdit_delka_podvozek->Value*1000.0;
+		delka=scGPNumericEdit_delka_podvozku->Value*1000.0;
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 		//delka - pøepoèítání
-		delka=scGPNumericEdit_delka_podvozek->Value/1000.0;
+		delka=scGPNumericEdit_delka_podvozku->Value/1000.0;
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
 	}
 	//plnìní
-	scGPNumericEdit_delka_podvozek->Value=delka;
+	scGPNumericEdit_delka_podvozku->Value=delka;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
@@ -890,18 +898,18 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sen
 	{
 		Delkaunit=M;
 		//delka - pøepoèítání
-		delka=scGPNumericEdit_delka_podvozek->Value*1000.0;
+		delka=scGPNumericEdit_delka_podvozku->Value*1000.0;
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 		//delka - pøepoèítání
-			delka=scGPNumericEdit_delka_podvozek->Value/1000.0;
+			delka=scGPNumericEdit_delka_podvozku->Value/1000.0;
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
 	}
 	//plnìní
-	scGPNumericEdit_delka_podvozek->Value=delka;
+	scGPNumericEdit_delka_podvozku->Value=delka;
 	input_state=NOTHING;//už se mohou pøepoèítávat
 
 }
@@ -1036,10 +1044,11 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender
 {
 		bool zFFtemp=false;if(zobrazitFrameForm){zFFtemp=true;zobrazitFrameForm=false;Invalidate();}//pokud je orámování, tak zruší, aby mohlo mít orámování jen na formu kabina_schema, ale zapamatuje si stav pro následné navrácení
 		// formuláø na støed
-		Form_kabina_schema->Left = Form1->ClientWidth / 2 - Form_kabina_schema->Width / 2;
-		Form_kabina_schema->Top = Form1->ClientHeight / 2 - Form_kabina_schema->Height / 2;
+		Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
+		Form_objekt_nahled->Top = Form1->ClientHeight / 2 - Form_objekt_nahled->Height / 2;
 		// zobrazeni formuláøe
-		Form_kabina_schema->ShowModal();
+		Form_objekt_nahled->zobrazitFrameForm=true;
+		Form_objekt_nahled->ShowModal();
 		if(zFFtemp)zobrazitFrameForm=true;//pokud bylo orámování, tak vrátí
 }
 //---------------------------------------------------------------------------

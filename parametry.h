@@ -82,7 +82,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_jednotky_vzdalenostpalcu;
 	TrHTMLHint *rHTMLHint1;
 	TscGPCheckBox *scGPCheckBox_zaokrouhlit;
-	TscGPGlyphButton *scGPGlyphButton_info;
+	TscGPGlyphButton *scGPGlyphButton_view;
 	TButton *Button1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
@@ -128,7 +128,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_viewClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 

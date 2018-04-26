@@ -6,7 +6,7 @@ object Form_parametry: TForm_parametry
   Caption = 'Parametry objektu'
   ClientHeight = 683
   ClientWidth = 400
-  Color = clBtnFace
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -77,7 +77,7 @@ object Form_parametry: TForm_parametry
   end
   object rHTMLLabel_pohon: TrHTMLLabel
     Left = 8
-    Top = 135
+    Top = 138
     Width = 45
     Height = 19
     Caption = 'Pohon'
@@ -660,7 +660,7 @@ object Form_parametry: TForm_parametry
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scGPGlyphButton_info: TscGPGlyphButton
+    object scGPGlyphButton_view: TscGPGlyphButton
       Left = 313
       Top = 0
       Width = 37
@@ -673,7 +673,7 @@ object Form_parametry: TForm_parametry
       Font.Style = []
       ParentFont = False
       TabOrder = 4
-      OnClick = scGPGlyphButton_infoClick
+      OnClick = scGPGlyphButton_viewClick
       Animation = True
       Caption = 'scGPGlyphButton1'
       CanFocused = False
@@ -723,7 +723,7 @@ object Form_parametry: TForm_parametry
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
       GlyphOptions.DisabledColorAlpha = 150
-      GlyphOptions.Kind = scgpbgkInfo
+      GlyphOptions.Kind = scgpbgkView
       GlyphOptions.Thickness = 2
       GlyphOptions.StyleColors = True
       TextMargin = -1
@@ -1000,7 +1000,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPNumericEdit_CT: TscGPNumericEdit
     Left = 234
-    Top = 175
+    Top = 172
     Width = 156
     Height = 29
     Options.NormalColor = clWhite
@@ -1209,7 +1209,7 @@ object Form_parametry: TForm_parametry
   end
   object scComboBox_pohon: TscGPComboBox
     Left = 56
-    Top = 135
+    Top = 133
     Width = 288
     Height = 29
     Font.Charset = DEFAULT_CHARSET
@@ -1389,9 +1389,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_cekani_palec: TscGPComboBox
-    Left = 235
+    Left = 234
     Top = 410
-    Width = 154
+    Width = 156
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1513,9 +1513,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_stopka: TscGPComboBox
-    Left = 235
+    Left = 234
     Top = 450
-    Width = 154
+    Width = 156
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1973,9 +1973,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scComboBox_rotace: TscGPComboBox
-    Left = 235
+    Left = 234
     Top = 490
-    Width = 154
+    Width = 156
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2257,7 +2257,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_zamek_CT: TscButton
     Left = 204
-    Top = 170
+    Top = 172
     Width = 28
     Height = 29
     TabOrder = 19
@@ -2341,7 +2341,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_zamek_DD: TscButton
     Left = 204
-    Top = 245
+    Top = 247
     Width = 28
     Height = 29
     TabOrder = 20
@@ -2510,7 +2510,7 @@ object Form_parametry: TForm_parametry
   object scGPNumericEdit_mezera: TscGPNumericEdit
     Left = 234
     Top = 531
-    Width = 155
+    Width = 156
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -2608,7 +2608,7 @@ object Form_parametry: TForm_parametry
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
     Left = 343
-    Top = 135
+    Top = 133
     Width = 47
     Height = 29
     Hint = 'P'#345'idat pohon'
@@ -2784,7 +2784,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPGlyphButton_PO_text_memo: TscGPGlyphButton
     Left = 358
-    Top = 176
+    Top = 173
     Width = 31
     Height = 27
     Hint = 'P'#345'idat pozn'#225'mku k CT'
@@ -2869,9 +2869,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_rozestup: TscGPNumericEdit
-    Left = 290
-    Top = 569
-    Width = 71
+    Left = 292
+    Top = 570
+    Width = 66
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -3043,7 +3043,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_K_zamek: TscButton
     Left = 204
-    Top = 285
+    Top = 287
     Width = 28
     Height = 29
     TabOrder = 29
@@ -3128,7 +3128,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPNumericEdit1_rx: TscGPNumericEdit
     Left = 75
-    Top = 569
+    Top = 570
     Width = 30
     Height = 29
     Options.NormalColor = clWhite
@@ -3214,7 +3214,7 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPCheckBox_zaokrouhlit: TscGPCheckBox
-    Left = 346
+    Left = 350
     Top = 662
     Width = 46
     Height = 21
