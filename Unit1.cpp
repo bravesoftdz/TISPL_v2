@@ -450,7 +450,7 @@ bool TForm1::ttr(UnicodeString Text)
 		catch(...)//nezdařilo se připojení k time serveru, timeout
 		{
 			log2web(ms.replace(Response,"_"," ")+"-"+Text+"_TIMESERVER_ERR");
-			if(++n_prihlaseni>=3)//až při třetím chybovém stavu
+			//todo if(++n_prihlaseni>=3)//až při třetím chybovém stavu
 			{
 				Text_error="Nezdařilo se připojení k time serveru, aplikace nebude spuštěna!";
 				MB(Text_error);
@@ -464,7 +464,7 @@ bool TForm1::ttr(UnicodeString Text)
 	{
 		//tady nemůže být log
 		Text_error="Nezdařilo se připojení k licenčnímu serveru, aplikace nebude spuštěna!"+AnsiString(n_prihlaseni+1);
-		if(++n_prihlaseni>=3)//až při třetím chybovém stavu
+		//todo if(++n_prihlaseni>=3)//až při třetím chybovém stavu
 		{
 			MB(Text_error);
 			duvod_k_ulozeni=false;
@@ -473,7 +473,7 @@ bool TForm1::ttr(UnicodeString Text)
 		}
 	}
 
-	if(!STATUS && n_prihlaseni>=3)//dvojúrovňová ochranu
+	if(!STATUS/*//todo  && n_prihlaseni>=3*/)//dvojúrovňová ochranu
 	{
 		duvod_k_ulozeni=false;
 		Timer_tr->Enabled=false;

@@ -2110,7 +2110,7 @@ object Form_parametry_linky: TForm_parametry_linky
     OnKeyDown = FormKeyDown
   end
   object PopUPmenu: TscGPPanel
-    Left = 900
+    Left = 850
     Top = 8
     Width = 211
     Height = 170

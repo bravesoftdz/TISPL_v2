@@ -47,6 +47,7 @@ void __fastcall TForm_objekt_nahled::FormShow(TObject *Sender)
 	{
 		//animace
 		Poffset=0;
+		ButtonPLAY->Visible=true;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 		ButtonPLAY->Hint="spustit animaci";
 		Timer_animace->Enabled=false;
@@ -68,6 +69,7 @@ void __fastcall TForm_objekt_nahled::FormShow(TObject *Sender)
 		Form_objekt_nahled->Color=(TColor)RGB(240,240,240);
 		F->nahled_objektu=false;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
 		Max_Min_Button->Visible=false;
+		ButtonPLAY->Visible=false;
 		reposition_windowButton->Visible=false;
 	}
 }

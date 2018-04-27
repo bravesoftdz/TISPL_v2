@@ -2381,7 +2381,7 @@ void Cvektory::nacti_CSV_retezy(AnsiString FileName)
 	catch(...)//např. soubor nenalezen
 	{
 		; //nic se neděje
-  }
+	}
 }
 ////---------------------------------------------------------------------------
 AnsiString Cvektory::ReadFromTextFile(AnsiString FileName)
