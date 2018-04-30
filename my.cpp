@@ -409,59 +409,60 @@ TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
 //nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox
 void Cmy::designButton(TscGPButton *button,TForm *form,short rank,short sum,short horizontal_space,short vertikal_space)
 {
-		//horizontální pozice
-		switch(sum)
+	//horizontální pozice
+	switch(sum)
+	{
+		//celkem jedno tlaèítko
+		case 1:button->Left=form->Width/2-button->Width/2;break;//na støed
+		//celkem dvì tlaèítka
+		case 2:
 		{
-			//celkem jedno tlaèítko
-			case 1:button->Left=form->Width/2-button->Width/2;break;//na støed
-			//celkem dvì tlaèítka
-			case 2:
-			{
-				if(rank==1)button->Left=form->Width/2-button->Width-horizontal_space/2; //první tlaèítko
-				else button->Left=form->Width/2+horizontal_space/2;//druhé tlaèítko
-			}
-			break;
-			//celkem tøi tlaèítka
-			case 3:
-			{
-				switch(rank)
-				{
-					case 1:button->Left=form->Width/2-button->Width/2-horizontal_space-button->Width; break;//první
-					case 2:button->Left=form->Width/2-button->Width/2;break;//druhé na støed
-					case 3:button->Left=form->Width/2+button->Width/2+horizontal_space-button->Width;break;//tøetí
-				}
-			}
-			break;
+			if(rank==1)button->Left=form->Width/2-button->Width-horizontal_space/2; //první tlaèítko
+			else button->Left=form->Width/2+horizontal_space/2;//druhé tlaèítko
 		}
+		break;
+		//celkem tøi tlaèítka
+		case 3:
+		{
+			switch(rank)
+			{
+				case 1:button->Left=form->Width/2-button->Width/2-horizontal_space-button->Width; break;//první
+				case 2:button->Left=form->Width/2-button->Width/2;break;//druhé na støed
+				case 3:button->Left=form->Width/2+button->Width/2+horizontal_space-button->Width;break;//tøetí
+			}
+		}
+		break;
+	}
 
-		//vertikální pozice
-		button->Top=form->Height-button->Height-vertikal_space;
+	//vertikální pozice
+	button->Top=form->Height-button->Height-vertikal_space;
 
-		//pøebírání designu z referenèních tlaèítek v MyMessageBox
-		if(button->ModalResult==mrYes){*button->Options=*myMessageBox->Button_Yes->Options;button->Layout=myMessageBox->Button_Yes->Layout;}
-		if(button->ModalResult==mrOk){*button->Options=*myMessageBox->Button_OK->Options;button->Layout=myMessageBox->Button_OK->Layout;}
-		if(button->ModalResult==mrCancel){*button->Options=*myMessageBox->Button_Cancel->Options;button->Layout=myMessageBox->Button_Cancel->Layout;}
-		if(button->ModalResult==mrNo){*button->Options=*myMessageBox->Button_No->Options;button->Layout=myMessageBox->Button_No->Layout;}
+	//pøebírání designu z referenèních tlaèítek v MyMessageBox
+	if(button->ModalResult==mrYes){*button->Options=*myMessageBox->Button_Yes->Options;button->Layout=myMessageBox->Button_Yes->Layout;}
+	if(button->ModalResult==mrOk){*button->Options=*myMessageBox->Button_OK->Options;button->Layout=myMessageBox->Button_OK->Layout;}
+	if(button->ModalResult==mrCancel){*button->Options=*myMessageBox->Button_Cancel->Options;button->Layout=myMessageBox->Button_Cancel->Layout;}
+	if(button->ModalResult==mrNo){*button->Options=*myMessageBox->Button_No->Options;button->Layout=myMessageBox->Button_No->Layout;}
 }
 /////////////////////////////////////////////////////////////////////////////
 //vykreslí danému oknu transparentní (kvùli možnému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad použití: frameForm(Form_parametry,clWebOrange,1);
 void Cmy::frameForm(TForm *form,TColor color,short width)
 {
-		TCanvas *C=new(TCanvas);
-		C->Handle=GetWindowDC(HWND_DESKTOP);
-		C->Pen->Color=color;
-		C->Pen->Mode=pmNotXor;
-		C->Pen->Width=width;
-		C->Brush->Style=bsClear;
-		short o=floor(width/2.0);
-		C->Rectangle(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o);
+	TCanvas *C=new(TCanvas);
+	C->Handle=GetWindowDC(HWND_DESKTOP);
+	C->Pen->Color=color;
+	C->Pen->Mode=pmNotXor;
+	C->Pen->Width=width;
+	C->Brush->Style=bsClear;
+	short o=floor(width/2.0);
+	C->Rectangle(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o);
 }
 /////////////////////////////////////////////////////////////////////////////
 //z rychlosti v m/s vratí èas milisekundách potøebný na pøekreslení jednoho pixelu pøi daném zoomu, parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se vhodný èas na pøehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer
 double Cmy::get_timePERpx(double speed,double A)//A je akcelerace
 {
-		if(A==0)return F->m2px/F->Zoom/speed*1000/24.0;//vrátí èas, tak aby se jednalo o kontinální animaci
-		else return F->m2px/F->Zoom/speed*1000/A;//vrátí èas na posun o jeden pixel
+	double Z=F->Zoom;if(F->antialiasing)Z/=3.0;//pokud je spuštìn antialiasing, staèí 1/3 rychlost (vyplývá z principu algoritmu AA)
+	if(A==0)return F->m2px/Z/speed*1000/F->fps;//vrátí èas, tak aby se jednalo o kontinální animaci
+	else return F->m2px/Z/speed*1000/A;//vrátí èas na posun o jeden pixel
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrací true èi false zda se daná hodnota nachází èí nenachází v intervalu, interval mùže být uzavøený (tzn. vèetnì hodnoty hranice intervalu) nebo otevøený a to i rozdílnì pro obì meze, implicitnì jsou hranice nastaveny na uzavøený interval z obou stran, tzn. do podmínky se zahrnuje vèetnì obou hodnot

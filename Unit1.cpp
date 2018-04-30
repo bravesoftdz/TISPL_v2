@@ -58,18 +58,19 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	db_connection();//připojení k DB
 
-	Form1->Width=1290;//workaround bílé mezery v záložkové liště
+	Form1->Width=1290;//workaround bílé mezery v záložkové liště - nefunguje
 
 	NewDesignSettings();//záležitost s novým designem
 
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
+	fps=24*3;//frames per second, četnost snímků za sekundu - používá se pro animace a simulace, *3 ne kvůli AA, ale hráči her doporučují min fps 60 + min obnovovací frekvence monitoru 60Hz
 
 	//vytvoření TEMP adresáře (pro ini)
 	MkDir(get_temp_dir()+"TISPL");
 
 	////nastavení aplikace
 	upozornovat_na_zmenu_TT_parametru=true;
-	Application->HintHidePause= 20000; //nastavení délky trvání zobrazení Hintů -  20s
+	Application->HintHidePause=20000; //nastavení délky trvání zobrazení Hintů -  20s
 
 	//nastavení knihovnky
 	//DrawGrid_knihovna->Enabled=false;

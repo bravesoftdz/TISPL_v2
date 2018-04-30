@@ -2701,6 +2701,16 @@
       'Nelze zobrazit n'#225'hled objektu s v'#237'ce jak s "+AnsiString(MAX_pozi' +
       'c)+" pozicemi.'
   end
+  object Button1: TButton
+    Left = 104
+    Top = 384
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 4
+    Visible = False
+    OnClick = Button1Click
+  end
   object Timer_animace: TTimer
     Enabled = False
     Interval = 100

@@ -307,7 +307,7 @@ void __fastcall TForm_objekt_nahled::ButtonPLAYClick(TObject *Sender)
 		ButtonPLAY->Hint="zastavit animaci";
 		ButtonPLAY->ShowCaption=true;
 		//ShowMessage(F->m.get_timePERpx(pom->RD,0));
-		Timer_animace->Interval=F->m.round(F->m.get_timePERpx(pom->RD,0));
+		Timer_animace->Interval=F->m.round(F->m.get_timePERpx(pom->RD,0)); //nyní øeším na úrovní ENTIRE z dùvodu totožné rychlosti pøi normálním i fullscreen oknì
 	}
 	else//animace zastavena
 	{
@@ -318,14 +318,15 @@ void __fastcall TForm_objekt_nahled::ButtonPLAYClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 {
-	Poffset+=F->m2px/F->Zoom;//zajistí posun o 1px (tedy nejmenší možnou jednotku
-	//nastal takt
-	if(F->m.round(timerTakt*24*Timer_animace->Interval/1000.0)%F->m.round(F->d.v.PP.TT)==0)ButtonPLAY->Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
-	else ButtonPLAY->Font->Style=TFontStyles();//vypnutí tuèného písma
+	Poffset+=F->m2px/F->Zoom;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
+	double Z=1;if(F->antialiasing)Z=3.0;
+//	//nastal takt - špatná úvaha
+//	if(F->m.round(timerTakt*F->fps*Timer_animace->Interval/1000.0)%F->m.round(F->d.v.PP.TT)==0)ButtonPLAY->Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
+//	else ButtonPLAY->Font->Style=TFontStyles();//vypnutí tuèného písma
 	//vypisuje aktuální CT
-	ButtonPLAY->Caption=AnsiString(F->m.round(++timerTakt*24*Timer_animace->Interval/1000.0))+" [s]";
+	ButtonPLAY->Caption=AnsiString(F->m.round(++timerTakt*F->fps/Z*Timer_animace->Interval/1000.0))+" [s]";
   //zastaví animaci po dovršení CT
-	if(F->m.round(timerTakt*24*Timer_animace->Interval/1000.0)>=pom->CT)//zastaví animaci, jak vypršel CT
+	if(F->m.round(timerTakt*F->fps/Z*Timer_animace->Interval/1000.0)>=pom->CT)//zastaví animaci, jak vypršel CT
 	{
 		Timer_animace->Enabled/*pojistka proti pauze*/;
 		ButtonPLAYClick(Sender);
@@ -337,4 +338,10 @@ void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+
+void __fastcall TForm_objekt_nahled::Button1Click(TObject *Sender)
+{
+ShowMessage(Timer_animace->Interval);
+}
+//---------------------------------------------------------------------------
 

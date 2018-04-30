@@ -1797,7 +1797,8 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 {
 	vykresli_objekt(canv,v.OBJEKTY->dalsi,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y);
 }
-//zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu,může sloužit na animaci či návaznost v případě layoutu
+//zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+//za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
 void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)//XY -umístění L začátek (střed dopravníku) objektu v m, Z - zoom,faktor zvětšení
 {
 	////vychozí geometrické proměnné
@@ -1806,6 +1807,7 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 	double SV=m.UDV(v.PP.sirka_voziku,v.PP.delka_voziku,O->rotace);//šířka vozíku a tím pádem i kabiny
 	double M=O->mezera;//mezera
 	double R=0;if(O->pohon!=NULL)R=O->pohon->roztec;//rozteč palců řetězu
+	double KR=DV/2.0;//kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec
 	TPointD S;S.x=X;S.y=Y;//Start
 	TPointD K;K.x=X+DD;K.y=Y;//Konec
 
@@ -1833,8 +1835,8 @@ void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,doub
 			//palce řetězu
 			int Rx=F->m.round((M+DV)/R);//může být zaokrouhleno, protože musí vycházet celé číslo
 													 //*O->pozice - používát jen v animaci
-			double startR=-(M+DV)+DV/2.0+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a offset je +DV/2.0, což je kalibrace posunutí řetězu
-			if(animace)startR=-(M+DV)*O->pozice+DV/2.0+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a offset je +DV/2.0, což je kalibrace posunutí řetězu
+			double startR=-(M+DV)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+			if(animace)startR=-(M+DV)*O->pozice+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
 
 			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neřezávalo palce
 			for(double i=startR;i<=DD+R;i+=R)

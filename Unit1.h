@@ -533,6 +533,7 @@ public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
 	UnicodeString VERZE;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
+	double fps;//frames per second, èetnost snímkù za sekundu - používá se pro animace a simulace
 	TMyString ms;
 	Cmy m;
 	Cvykresli d;

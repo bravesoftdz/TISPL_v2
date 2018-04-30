@@ -46,6 +46,7 @@ __published:	// IDE-managed Components
 	TTimer *Timer_animace;
 	TscGPGlyphButton *ButtonPLAY;
 	TscGPLabel *scGPLabel_info;
+	TButton *Button1;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormPaint(TObject *Sender);
@@ -60,6 +61,7 @@ __published:	// IDE-managed Components
 	void __fastcall Max_Min_ButtonClick(TObject *Sender);
 	void __fastcall ButtonPLAYClick(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
 
 
 
