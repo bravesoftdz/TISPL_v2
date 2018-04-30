@@ -1049,6 +1049,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender
 			Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
 			Form_objekt_nahled->Top = Form1->ClientHeight / 2 - Form_objekt_nahled->Height / 2;
 			// zobrazeni formuláøe
+			Form_objekt_nahled->scLabel_titulek->Visible=false;
 			Form_objekt_nahled->zobrazitFrameForm=true;
 			Form_objekt_nahled->ShowModal();
 			if(zFFtemp)zobrazitFrameForm=true;//pokud bylo orámování, tak vrátí

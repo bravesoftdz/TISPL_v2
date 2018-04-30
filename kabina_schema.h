@@ -45,6 +45,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Max_Min_Button;
 	TTimer *Timer_animace;
 	TscGPGlyphButton *ButtonPLAY;
+	TscGPLabel *scGPLabel_info;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormPaint(TObject *Sender);
@@ -63,10 +64,13 @@ __published:	// IDE-managed Components
 
 
 private:	// User declarations
+	void PREVIEW();
+	void MODEL();
 	void REFRESH(bool invalidate=true);//vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing)
 	void ENTIRE();//cely_nahled, zajistí výpoèet zoomu tak, aby se objekt zobrazil pøes celé okno, ale vèetnì okraje Ox
 	void OUTPUT();//naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totoži není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
 
+	unsigned short MAX_pozic;//maximální hodnota zobrazených pozic, jinak ilustrativní náhled
 	unsigned short Ox;//okraj
 	double Poffset;
 	double timerTakt;
