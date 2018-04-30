@@ -464,3 +464,14 @@ double Cmy::get_timePERpx(double speed,double A)//A je akcelerace
 		else return F->m2px/F->Zoom/speed*1000/A;//vrátí èas na posun o jeden pixel
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrací true èi falce zda se daná hodnota nachází èí nenachází v intervalu, interval mùže být uzavøený (tzn. vèetnì hodnoty hranice intervalu) nebo otevøený a to i rozdílnì pro obì meze, implicitnì jsou hranice nastaveny na uzavøený interval z obou stran, tzn. do podmínky se zahrnuje vèetnì obou hodnot
+bool Cmy::between(double value,double from, double to, bool left_closed, bool right_closed)
+{
+	bool RET=false;
+	if(left_closed && right_closed && from<=to && value>=from && value<=to)RET=true;
+	if(!left_closed && right_closed && from<to && value>from && value<=to)RET=true;
+	if(left_closed && !right_closed && from<to && value>=from && value<to)RET=true;
+	if(!left_closed && !right_closed && from<to && value>from && value<to)RET=true;
+	return RET;
+}
+/////////////////////////////////////////////////////////////////////////////
