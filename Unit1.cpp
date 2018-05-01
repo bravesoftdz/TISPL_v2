@@ -64,6 +64,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 	fps=24*3;//frames per second, četnost snímků za sekundu - používá se pro animace a simulace, *3 ne kvůli AA, ale hráči her doporučují min fps 60 + min obnovovací frekvence monitoru 60Hz
+	//https://cdr.cz/blog/30-fps-vs-60-fps-shrnuti-velke-internetove-debaty
 
 	//vytvoření TEMP adresáře (pro ini)
 	MkDir(get_temp_dir()+"TISPL");

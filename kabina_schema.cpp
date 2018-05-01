@@ -100,7 +100,7 @@ void TForm_objekt_nahled::MODEL()
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 		ButtonPLAY->Hint="spustit animaci";
 		Timer_animace->Enabled=false;
-		ButtonPLAY->Caption=0+" [s]";timerTakt=0;
+		ButtonPLAY->Caption="0 [s]";timerTakt=0;
 		//--
 		scGPButton_OK->Visible=false;
 		Image_nahled->Visible=false;
