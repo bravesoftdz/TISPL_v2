@@ -252,7 +252,7 @@ void TForm1::aktualizace()
 			if(mrYes==MB("Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?",MB_YESNO,false))
 			{
 				MB("Po dokončení staženým souborem přepište současný EXE soubor.");
-				zobraz_tip("Probíhá stahování aktualizace, po dokončení stahování bude program ukončen.Staženým souborem přepište současný EXE soubor.");
+				zobraz_tip("Probíhá stahování aktualizace, neukončujte aplikaci!!! Po dokončení stahování bude program ukončen.");
 				SaveDialog->Title="Uložit soubor jako";
 				SaveDialog->DefaultExt="*.exe";
 				SaveDialog->Filter="Aktualizace TISPLu (*.exe)|*.exe";

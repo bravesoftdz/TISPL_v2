@@ -341,7 +341,9 @@ void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 
 void __fastcall TForm_objekt_nahled::Button1Click(TObject *Sender)
 {
-ShowMessage(Timer_animace->Interval);
+//ShowMessage(F->Zoom);
+//ShowMessage(Timer_animace->Interval);
+Timer_animace->Interval=3.838541666666875;
 }
 //---------------------------------------------------------------------------
 
