@@ -1003,9 +1003,10 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 
 		if (input_state == NOTHING)
 		{    	//vypis("");
+
 				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&	input_clicked_edit == mezera_klik)
 				{
-					if (!Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1)) 	vypis("Povolte zmìnu rychlosti pohonu.");  // pokud není pohon používán, dám výpis, jinak výpis nemá smysl - již nelze mìnit rychlost
+					if (!Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom)) 	vypis("Povolte zmìnu rychlosti pohonu.");  // pokud není pohon používán, dám výpis, jinak výpis nemá smysl - již nelze mìnit rychlost
 
 
 				} // není zamèeno - doporuèím mezeru, èekám zdali zadá správnou mezeru
@@ -1021,7 +1022,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 						if (Kontrola_mezery() == Form1->ms.MyToDouble(mezera))
 						{
 
-						   input_M(); // lokální
+							 input_M(); // lokální
 							 Nacti_rx();
 						}
 				}  if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex==0) input_M();  // pøípad kdy mìním mezeru ale jsem bez pohonu
@@ -1086,7 +1087,7 @@ void TForm_parametry::input_K() {
 		}
 
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
-			OUTPUT();
+		 OUTPUT();
 
 			if(scComboBox_rezim->ItemIndex==1 && scButton_zamek_RD->ImageIndex==38 && scComboBox_pohon->ItemIndex>0)
 		{  // u KK probíhá kontrola vypoèítaných dat a doporuèí K pokud RD!=dopRD
@@ -1328,7 +1329,7 @@ void TForm_parametry::input_DD() {
 void TForm_parametry::input_M() {
 		input_state = mezera;
 		INPUT();
-
+		 //	ShowMessage("volano");
 		pm.input_M();
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 		OUTPUT();
@@ -1843,7 +1844,7 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 			else//za každé situace standardní volání
 			pm.input_K();
 		}
-		OUTPUT();
+	 	OUTPUT();
 }
 
 // ---------------------------------------------------------------------------
@@ -1906,7 +1907,7 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
 		INPUT();
-		OUTPUT();
+	 	OUTPUT();
 		Pohon_pouzivan();
 		Nacti_rx();
 		if(scComboBox_rezim->ItemIndex!=1)
@@ -1914,7 +1915,7 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 			scButton_zamek_CT->Enabled=true;
 			scButton_zamek_DD->Enabled=true;
 		}
-		if (scComboBox_pohon->ItemIndex != 0)
+		if (scComboBox_pohon->ItemIndex != 0 && scComboBox_rezim->ItemIndex==1 )
 		{   // POKUD je pohon již používán, natáhnu si jeho data
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
 				if (obj!=NULL)
@@ -2223,30 +2224,25 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
 						input_clicked_edit == Rotace_klik && scButton_zamek_RD->Visible==true) {
 					if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled==true){
-            // ShowMessage(input_clicked_edit);
+						// ShowMessage(input_clicked_edit);
 						Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
-            }
+						}
 						scComboBox_rotace->Items->Items[0]->Enabled = false;
 						scComboBox_rotace->Items->Items[1]->Enabled = false;
 						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
 				}
-				if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Visible==false){
-
+				if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled==false)
+				{
 						//if podminka splnena - povolim zmenu orientace
 						scComboBox_rotace->Items->Items[0]->Enabled = true;
 						scComboBox_rotace->Items->Items[1]->Enabled = true;
-
-
 				}
 
-
 				// není zamèeno - doporuèím mezeru
-				 if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == Rotace_klik) {
-
-
-						//vždy dovolím volání input_m bez ohledu, zda vyjde RD OK vùèi rozteèi
-
-						// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
+				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == Rotace_klik)
+				 {
+					//vždy dovolím volání input_m bez ohledu, zda vyjde RD OK vùèi rozteèi
+					// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
 					//	if (Kontrola_mezery() == scGPNumericEdit_mezera->Value) {
 							 // Memo1->Lines->Add("volam input M z rotace");
 								INPUT();
@@ -2549,6 +2545,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 				if (E == mezera_klik && scGPNumericEdit_mezera->Value >= 0) {
 
 						scButton_zamek_DD->Visible = true;
+						scButton_zamek_DD->Enabled = true;
 						scButton_K_zamek->Visible = true;
 
 				}
@@ -2627,10 +2624,15 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 
-						if(scGPNumericEdit_CT->Value< Form1->d.v.PP.TT && Form1->pom->n > 1){
-						 scButton_zamek_CT->Visible = true;  }
+						if(scGPNumericEdit_CT->Value< Form1->d.v.PP.TT && Form1->pom->n > 1)
+						{
+						 scButton_zamek_CT->Visible = true;
+             scButton_zamek_CT->Enabled = true;
+						 }
 						else
-						{ scButton_zamek_CT->Visible = false; }
+						{
+						scButton_zamek_CT->Visible = false;
+						}
 
 				}
 				if (E == mezera_klik) {
@@ -2730,6 +2732,7 @@ void TForm_parametry::Pohon_pouzivan() {
 						scGPNumericEdit1_rx->Enabled=true;
 						scButton_zamek_CT->Enabled=true;
 						scButton_zamek_DD->Enabled=true;
+						scButton_zamek_RD->Enabled=true;
 				}
 		}
 
@@ -2821,8 +2824,10 @@ void TForm_parametry::Check_rozmezi_RD() {
 		 double P_od = P->rychlost_od*jednotky_cas_pohon;
 		 double P_do = P->rychlost_do*jednotky_cas_pohon;
 
+
 					//if ((unsigned)(RD - Form1->ms.MyToDouble(P_od)) <= (Form1->ms.MyToDouble(P_do) - Form1->ms.MyToDouble(P_od)))
-					if(RD >= P_od && RD <= P_do)
+					//if(RD >= P_od && RD <= P_do)
+					if(Form1->m.between(RD,P_od,P_do))
 						{
 						 //	Memo1->Lines->Add("OK rozmezi");
 						;
@@ -2950,16 +2955,19 @@ void TForm_parametry::Check_rozmezi_RD() {
  double mezera=Form1->m.mezera(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,scGPNumericEdit1_rx->Value,roztec);
  double rz= Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.delka_voziku,rotace,mezera);
 
-	 if(input_state == NOTHING || scButton_zamek_RD->Visible==false) {
+	 if(input_state == NOTHING || scButton_zamek_RD->Enabled==false)
+	 {
 			//spocitani mezery pri prvnim zobrazeni formu
-			if(scButton_zamek_RD->Visible==true
+			if(scButton_zamek_RD->Enabled==true
 			&& RD_zamek==UNLOCKED
 			&& input_state==NOTHING
 			&& scComboBox_rezim->ItemIndex==1)
 
-	if(input_clicked_edit==Rx)scGPNumericEdit_mezera->Value=mezera; // pøi zmìnì Rx vrátím dopoèítanou mezeru
-	scGPNumericEdit_rozestup->Value=rz;
-	input_M();   }
+			if(input_clicked_edit==Rx)scGPNumericEdit_mezera->Value=mezera; // pøi zmìnì Rx vrátím dopoèítanou mezeru
+			scGPNumericEdit_rozestup->Value=rz;
+				 //	ShowMessage("z rx");
+			input_M();
+	}
 
 }
 //---------------------------------------------------------------------------
@@ -3022,7 +3030,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						&& scComboBox_rezim->ItemIndex == 0) {
 						if (fmod(CT, Form1->d.v.PP.TT) == 0) {
 								kapacitaSG = CT / Form1->d.v.PP.TT; // pro další použití
-								vypis(" Rozložit na " + AnsiString(kapacitaSG) + "x " + scGPEdit_name->Text.UpperCase() + "?");
+								vypis(" Rozložit na " + AnsiString(kapacitaSG) + "x " + scGPEdit_name->Text.UpperCase() + "?",true);
 								scGPButton_OK->Caption = "Ano a uložit";
 								VID=12;
 						}

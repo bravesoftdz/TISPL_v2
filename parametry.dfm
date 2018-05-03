@@ -3213,37 +3213,44 @@ object Form_parametry: TForm_parametry
     OnClick = scGPNumericEdit1_rxClick
     OnKeyDown = FormKeyDown
   end
-  object scGPCheckBox_zaokrouhlit: TscGPCheckBox
-    Left = 350
-    Top = 662
-    Width = 46
-    Height = 21
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
+  object Button1: TButton
+    Left = 308
+    Top = 601
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
     TabOrder = 31
+    Visible = False
+    OnClick = Button1Click
+  end
+  object scGPCheckBox_zaokrouhlit: TscGPCheckBox
+    Left = 348
+    Top = 658
+    Width = 52
+    Height = 25
+    Hint = 'zobrazit na dv'#283' desetinn'#225' m'#237'sta'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 32
     TabStop = True
     OnClick = scGPCheckBox_zaokrouhlitClick
     Animation = False
     Caption = '0,00'
     CanFocused = True
-    Spacing = 0
+    Spacing = 1
     Layout = blGlyphLeft
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 6
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
     GlowEffect.StyleColors = True
     GlowEffect.HotColor = clNone
     GlowEffect.PressedColor = clNone
     GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 6
+    GlowEffect.PressedGlowSize = 7
     GlowEffect.PressedAlphaValue = 255
     GlowEffect.States = [scsHot, scsPressed, scsFocused]
     ImageGlow = True
@@ -3287,7 +3294,7 @@ object Form_parametry: TForm_parametry
     OptionsChecked.FrameHotColor = clHighlight
     OptionsChecked.FramePressedColor = clHighlight
     OptionsChecked.FrameDisabledColor = clBtnShadow
-    OptionsChecked.FrameWidth = 1
+    OptionsChecked.FrameWidth = 2
     OptionsChecked.FrameNormalColorAlpha = 255
     OptionsChecked.FrameHotColorAlpha = 255
     OptionsChecked.FramePressedColorAlpha = 255
@@ -3300,25 +3307,15 @@ object Form_parametry: TForm_parametry
     OptionsChecked.CheckMarkHotColorAlpha = 255
     OptionsChecked.CheckMarkPressedColorAlpha = 255
     OptionsChecked.CheckMarkDisabledColorAlpha = 125
-    OptionsChecked.ShapeSize = 15
+    OptionsChecked.ShapeSize = 20
     OptionsChecked.CheckMarkThickness = 2
     OptionsChecked.StyleColors = True
     Checked = True
     State = cbChecked
     ScaleFrameWidth = True
     ScaleCheckMarkThickness = True
-    ShowFocusRect = False
+    ShowFocusRect = True
     UseFontColorToStyleColor = False
-  end
-  object Button1: TButton
-    Left = 308
-    Top = 601
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 32
-    Visible = False
-    OnClick = Button1Click
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
