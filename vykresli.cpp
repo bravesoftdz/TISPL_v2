@@ -138,7 +138,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 			size=m.round(size*2*Form1->Zoom);
 			short sklon=230;
 
-			//varianta střed v těžišti
+			//střed v těžišti
 			if(!bez_vyplne)//barevná výplň trojúhelníku
 			{
 				POINT body[3]={{X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size},{X+m.rotace(1,0,azimut).x*size,Y+m.rotace(1,0,azimut).y*size},{X+m.rotace(1,360-sklon,azimut).x*size,Y+m.rotace(1,360-sklon,azimut).y*size}};

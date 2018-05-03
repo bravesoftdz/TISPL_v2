@@ -2413,7 +2413,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	TCanvas* C=DrawGrid_knihovna->Canvas;
 	int W=DrawGrid_knihovna->DefaultColWidth;
 	int H=DrawGrid_knihovna->DefaultRowHeight;
+	//short Z=3; nedokázal jsme zatím implementovat Z jako zoom vykreslovaného
+	//zvážit variantu bmp pro každý objekt.....
 	int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+
+//	Cantialising a;
+//	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//	bmp_in->Width=W*3;bmp_in->Height=H*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//	TCanvas* C=bmp_in->Canvas;
 
 	unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
 	C->Font->Style = TFontStyles()<< fsBold;
@@ -2427,14 +2434,24 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 	{
 		UnicodeString text=knihovna_objektu[n-1].short_name;
-		//odelník
-		C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
+		//symbol objektu
+		if(10!=n-1)//obdélník
+			C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
+		else//trojúhelník
+		{
+			POINT body[3]={{((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P},{((n+1)%2+1)*W-obdelnik_okrajX,(((ceil(n/2.0)-1)*H+obdelnik_okrajY+P)+(ceil(n/2.0)*H-obdelnik_okrajY+P))/2},{((n+1)%2)*W+obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P}};
+			C->Polygon((TPoint*)body,2);
+		}
 		//packy
 		C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
 		C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
 		//písmo
 		C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
 	}
+//	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+//	DrawGrid_knihovna->Canvas->Draw(0,0,bmp_out);
+//	delete (bmp_out);//velice nutné
+//	delete (bmp_in);//velice nutné
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -2859,7 +2876,7 @@ void TForm1::NP()
 {
 	if(pom!=NULL)
 	{
-		//Form_parametry->scGPButton_header_projekt->Visible=false;//pokud nebude existovat žádný pohon, nabídne se v roletce proklik do PL
+		//////////////////////////plnění dat do formu z daného objektu
 		////plnění daty
 		aktualizace_combobox_pohony_v_PO();
 		if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
@@ -2904,7 +2921,7 @@ void TForm1::NP()
 		//nastevní titulku
 		Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
 
-		//navrácení dat + volání zobrazení formu
+		//////////////////////////navrácení dat + volání zobrazení formu
 		if(Form_parametry->ShowModal()==mrOk)
 		{
 //			if(Form_parametry->VID!=-1)  //ověření, zdali skutečně mohu uložit zadaná data
@@ -3012,25 +3029,37 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 			t->Caption="nebyl nadefinován";
 			Form_parametry->existuje_pohon=false;
 			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
-			//Form_parametry->scGPButton_header_projekt->Visible=true;
-
 		}
 		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 		{
 			Form_parametry->existuje_pohon=true;
-			//Form_parametry->scGPButton_header_projekt->Visible=false;
 
 			//vytvoření položky nepřiřazen
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nepřiřazen";
 
-      //příprava vypisovaných jednotek
+			////příprava vypisovaných jednotek
+			//čas
 			double jednotky_cas_pohon=60.0;AnsiString Tcas="min";//tzn. min (ač 60 působí nelogicky)
-			if(RDunitT==-1){if(Form1->readINI("nastaveni_form_parametry","RDt")=="0"){jednotky_cas_pohon=1.0;Tcas="s";}}//tzn. sec při načítání z ini
-			else{if(RDunitT==0){jednotky_cas_pohon=1.0;Tcas="s";}}//tzn. sec při načítání z ini
+			if(RDunitT==-1)
+			{
+				if(readINI("nastaveni_form_parametry","RDt")=="0"){jednotky_cas_pohon=1.0;Tcas="s";}//tzn. sec při načítání z ini
+			}
+			else
+			{
+				if(RDunitT==0){jednotky_cas_pohon=1.0;Tcas="s";}//tzn. sec z parametru
+			}
+
+			//délka
 			double jednotky_delka_pohon=1000.0;AnsiString Td="mm";//tzn. mm
-			if(RDunitD==-1){if(Form1->readINI("nastaveni_form_parametry","RDd")=="0"){jednotky_delka_pohon=1.0;Td="m";}}//tzn. m
-			else{if(RDunitD==0){jednotky_delka_pohon=1.0;Td="m";}}//tzn. m
+			if(RDunitD==-1)
+			{
+				if(readINI("nastaveni_form_parametry","RDd")=="0"){jednotky_delka_pohon=1.0;Td="m";}//tzn. m z ini
+			}
+			else
+			{
+				if(RDunitD==0){jednotky_delka_pohon=1.0;Td="m";}//tzn. m z parametru
+			}
 			UnicodeString caption_jednotky=Td+"/"+Tcas;
 
 			//plnění existujícím pohony
@@ -3039,7 +3068,6 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 				t->Caption=P->name+" - "+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+" "+caption_jednotky;
 				P=P->dalsi;
-				//Form_parametry->scGPButton_header_projekt->Visible=false;
 			}
 			//nastavení comba, aby ukazoval na dříve vybraný pohon
 			if(d.v.POHONY->dalsi==NULL)Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen

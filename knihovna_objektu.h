@@ -12,6 +12,6 @@ Tknihovna_objektu knihovna_objektu[12]=
 	 {8 , "BUF", "buffer"},
 	 {9 , "VÝT", "výtah"},
 	 {10, "PRE", "pøejezd"},
-	 {11, "VYH", "výhybka"},
+	 {11, "V ", "výhybka"},
 	 {12, "...", "nedefinovaný"},
 };
