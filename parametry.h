@@ -81,9 +81,9 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_palec_vzd;
 	TrHTMLLabel *rHTMLLabel_jednotky_vzdalenostpalcu;
 	TrHTMLHint *rHTMLHint1;
-	TscGPCheckBox *scGPCheckBox_zaokrouhlit;
 	TscGPGlyphButton *scGPGlyphButton_view;
 	TButton *Button1;
+	TscGPCheckBox *scGPCheckBox_zaokrouhlit;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
