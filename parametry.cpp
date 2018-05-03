@@ -1724,6 +1724,10 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				Memo1->Top = 0;
 				Memo1->Left = 0;
 		}
+		if(Key==78 && Shift.Contains(ssCtrl))//ctrl+n
+		{
+				ShowMessage("");
+    }
 }
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------

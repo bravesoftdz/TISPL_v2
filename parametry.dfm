@@ -712,12 +712,12 @@ object Form_parametry: TForm_parametry
       Options.ShapeStyle = scgpRoundedRect
       Options.ArrowSize = 9
       Options.StyleColors = True
-      GlyphOptions.NormalColor = 16744448
-      GlyphOptions.HotColor = 16744448
-      GlyphOptions.PressedColor = clBtnText
-      GlyphOptions.FocusedColor = 16744448
+      GlyphOptions.NormalColor = 33023
+      GlyphOptions.HotColor = 1871359
+      GlyphOptions.PressedColor = clWhite
+      GlyphOptions.FocusedColor = 1871359
       GlyphOptions.DisabledColor = 16744448
-      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.NormalColorAlpha = 255
       GlyphOptions.HotColorAlpha = 255
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
