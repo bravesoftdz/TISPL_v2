@@ -1742,7 +1742,7 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while(O!=NULL)//pokud existuje nějaký objekt
 	{
-		vykresli_objekt(canv,O,0,50);
+		//vykresli_objekt(canv,O,0,50);
 		//vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
 		O=O->dalsi;	}	O=NULL;delete O;}////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
