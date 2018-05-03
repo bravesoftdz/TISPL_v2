@@ -58,18 +58,20 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	db_connection();//připojení k DB
 
-	Form1->Width=1290;//workaround bílé mezery v záložkové liště
+	Form1->Width=1290;//workaround bílé mezery v záložkové liště - nefunguje
 
 	NewDesignSettings();//záležitost s novým designem
 
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
+	fps=24*3;//frames per second, četnost snímků za sekundu - používá se pro animace a simulace, *3 ne kvůli AA, ale hráči her doporučují min fps 60 + min obnovovací frekvence monitoru 60Hz
+	//https://cdr.cz/blog/30-fps-vs-60-fps-shrnuti-velke-internetove-debaty
 
 	//vytvoření TEMP adresáře (pro ini)
 	MkDir(get_temp_dir()+"TISPL");
 
 	////nastavení aplikace
 	upozornovat_na_zmenu_TT_parametru=true;
-	Application->HintHidePause= 20000; //nastavení délky trvání zobrazení Hintů -  20s
+	Application->HintHidePause=20000; //nastavení délky trvání zobrazení Hintů -  20s
 
 	//nastavení knihovnky
 	//DrawGrid_knihovna->Enabled=false;
@@ -250,7 +252,7 @@ void TForm1::aktualizace()
 			if(mrYes==MB("Je k dispozici aktualizace TISPLu. Chcete ji stáhnout?",MB_YESNO,false))
 			{
 				MB("Po dokončení staženým souborem přepište současný EXE soubor.");
-				zobraz_tip("Probíhá stahování aktualizace, po dokončení stahování bude program ukončen.Staženým souborem přepište současný EXE soubor.");
+				zobraz_tip("Probíhá stahování aktualizace, neukončujte aplikaci!!! Po dokončení stahování bude program ukončen.");
 				SaveDialog->Title="Uložit soubor jako";
 				SaveDialog->DefaultExt="*.exe";
 				SaveDialog->Filter="Aktualizace TISPLu (*.exe)|*.exe";

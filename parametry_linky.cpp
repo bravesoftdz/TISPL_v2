@@ -211,6 +211,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //nahrání hodnot
 	 rEditNum_delka_jigu->Value=Form1->d.v.PP.delka_voziku;
 	 rEditNum_sirka_jigu->Value=Form1->d.v.PP.sirka_voziku;
+	 scGPNumericEdit_delka_podvozku->Value=Form1->d.v.PP.delka_podvozku;
+
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
 	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
@@ -508,12 +510,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			}
 
 			Form1->DuvodUlozit(true);
-			Form_parametry_linky->Close();
+			//M toto tu nesmí být:Form_parametry_linky->Close();
 		}
-		else//stisknul storno - zustavam na PL a nic jsem neulozil
-		{
-			 Form1->DuvodUlozit(false);
-		}
+		//M - následující vìtev nechápu
+//		else//stisknul storno - zustavam na PL a nic jsem neulozil
+//		{
+//			 Form1->DuvodUlozit(false);
+//		}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
@@ -1049,6 +1052,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_infoClick(TObject *Sender
 			Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
 			Form_objekt_nahled->Top = Form1->ClientHeight / 2 - Form_objekt_nahled->Height / 2;
 			// zobrazeni formuláøe
+			Form_objekt_nahled->scLabel_titulek->Visible=false;
 			Form_objekt_nahled->zobrazitFrameForm=true;
 			Form_objekt_nahled->ShowModal();
 			if(zFFtemp)zobrazitFrameForm=true;//pokud bylo orámování, tak vrátí

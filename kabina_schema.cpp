@@ -37,41 +37,15 @@ __fastcall TForm_objekt_nahled::TForm_objekt_nahled(TComponent* Owner)
 	Item_cely_pohled->FillColor=PopUPmenu->Color;
 
 	pom=NULL;//pomocný ukazatel na objekt s kterým se bude pracovat
+	MAX_pozic=50;//maximální hodnota zobrazených pozic, jinak ilustrativní náhled
 
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::FormShow(TObject *Sender)
 {
 	Zoom_predchozi=F->Zoom;
-	if(F->pom!=NULL)//pokud je náhled volán z PO a jedná se o náhled konkrétního objektu, zde je F->pom OK
-	{
-		//animace
-		Poffset=0;
-		ButtonPLAY->Visible=true;
-		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
-		ButtonPLAY->Hint="spustit animaci";
-		Timer_animace->Enabled=false;
-		ButtonPLAY->Caption=0+" [s]";timerTakt=0;
-		//--
-		scGPButton_OK->Visible=false;
-		Image_nahled->Visible=false;
-		Form_objekt_nahled->Color=clWhite;
-		F->nahled_objektu=true;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
-		Max_Min_Button->Visible=true;
-		reposition_windowButton->Visible=true;
-		OUTPUT();
-		ENTIRE();//celý pohled, max pøiblížení objektu
-	}
-	else//pokud je náhled volán z PL a jedná se pouze o ilustrativní náhled a bude zobrazen pouze ilustrativní obrázek
-	{
-		scGPButton_OK->Visible=true;
-		Image_nahled->Visible=true;
-		Form_objekt_nahled->Color=(TColor)RGB(240,240,240);
-		F->nahled_objektu=false;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
-		Max_Min_Button->Visible=false;
-		ButtonPLAY->Visible=false;
-		reposition_windowButton->Visible=false;
-	}
+	if(F->pom!=NULL)MODEL();//pokud je náhled volán z PO a jedná se o náhled konkrétního objektu, zde je F->pom OK
+	else PREVIEW();//pokud je náhled volán z PL a jedná se pouze o ilustrativní náhled a bude zobrazen pouze ilustrativní obrázek, mohlo by se zdát, že se jedná o zbyteènou vìtev, protože se to øeší v OUTPUTu, ale toto má speciální význam pro situaci odchodu z PO a pøíchodu na PL a volání tohoto formu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -114,6 +88,43 @@ void __fastcall TForm_objekt_nahled::FormMouseDown(TObject *Sender, TMouseButton
 	 }
 }
 //---------------------------------------------------------------------------
+//pokud je náhled volán z PO a jedná se o náhled konkrétního objektu, zde je F->pom OK
+void TForm_objekt_nahled::MODEL()
+{
+	OUTPUT();//naètení dat z PO
+	if(pom->pozice<=MAX_pozic)
+	{
+		//sekce animaèní nastavení
+		Poffset=0;
+		ButtonPLAY->Visible=true;
+		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+		ButtonPLAY->Hint="spustit animaci";
+		Timer_animace->Enabled=false;
+		ButtonPLAY->Caption="0 [s]";timerTakt=0;
+		//--
+		scGPButton_OK->Visible=false;
+		Image_nahled->Visible=false;
+		Form_objekt_nahled->Color=clWhite;
+		F->nahled_objektu=true;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
+		Max_Min_Button->Visible=true;
+		reposition_windowButton->Visible=true;
+		ENTIRE();//celý pohled, max pøiblížení objektu
+	}
+}
+//---------------------------------------------------------------------------
+//pokud je náhled volán z PL a jedná se pouze o ilustrativní náhled a bude zobrazen pouze ilustrativní obrázek
+void TForm_objekt_nahled::PREVIEW()
+{
+	Invalidate();
+	scGPButton_OK->Visible=true;
+	Image_nahled->Visible=true;
+	Form_objekt_nahled->Color=(TColor)RGB(240,240,240);
+	F->nahled_objektu=false;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
+	Max_Min_Button->Visible=false;
+	ButtonPLAY->Visible=false;
+	reposition_windowButton->Visible=false;
+}
+//---------------------------------------------------------------------------
 //cely_nahled, zajistí výpoèet zoomu tak, aby se objekt zobrazil pøes celé okno, ale vèetnì okraje Ox
 void TForm_objekt_nahled::ENTIRE()
 {
@@ -140,22 +151,26 @@ void __fastcall TForm_objekt_nahled::FormPaint(TObject *Sender)
 	//náhled objektu
 	if(pom!=NULL)
 	{
-		if(!F->antialiasing)F->d.vykresli_objekt(Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)/2.0)),Poffset,Timer_animace->Enabled);
-		else
+		if(pom->pozice<=MAX_pozic)//aby se nevykreslovalo pod obrázekem
 		{
-			Cantialising a;
-			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-			bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-			F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-			F->d.vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
-			F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
-			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
-			Canvas->Draw(0,0,bmp_out);
-			delete (bmp_out);//velice nutné
-			delete (bmp_in);//velice nutné
+			scGPLabel_info->Visible=false;
+			if(!F->antialiasing)F->d.vykresli_objekt(Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)/2.0)),Poffset,Timer_animace->Enabled);
+			else
+			{
+				Cantialising a;
+				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+				F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+				F->d.vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
+				F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
+				Canvas->Draw(0,0,bmp_out);
+				delete (bmp_out);//velice nutné
+				delete (bmp_in);//velice nutné
+			}
+			//grafické mìøítko                        //tím že není v bmp-tak pøi animaci problikává, zkoušel jsem i zvolit i jít pøes druhou bmp s transparentností, ale také docházelo k problikávání, jediné øešení je asi také aplikace do bmp_in v rámci AA, ale mìøítko by se muselo na výšku (asi 3x) zvìtšit a to samé font mìøítka
+			if(F->scGPSwitch_meritko->State==true && !Timer_animace->Enabled)F->d.meritko(Canvas,Ox/*Ox/3/F->m2px*/,/*0+scGPPanel_hlavicka->Height+Ox/2*/Height-22);
 		}
-		//grafické mìøítko                        //tím že není v bmp-tak pøi animaci problikává, zkoušel jsem i zvolit i jít pøes druhou bmp s transparentností, ale také docházelo k problikávání, jediné øešení je asi také aplikace do bmp_in v rámci AA, ale mìøítko by se muselo na výšku (asi 3x) zvìtšit a to samé font mìøítka
-		if(F->scGPSwitch_meritko->State==true && !Timer_animace->Enabled)F->d.meritko(Canvas,Ox/*Ox/3/F->m2px*/,/*0+scGPPanel_hlavicka->Height+Ox/2*/Height-22);
 	}
 
 	//orámování formuláøe    //rám rušivì pøi animaci blikal
@@ -193,12 +208,21 @@ void TForm_objekt_nahled::OUTPUT()
 	 //CT
 	 if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
 	 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
+
+	 if(pom->pozice>MAX_pozic)//Nelze zobrazit náhled objektu s více jak s MAX_pozic pozicemi, bude zobrazen pouze ilustrativní náhled
+	 {
+		 scGPLabel_info->Caption="Nelze zobrazit náhled objektu s více jak s "+AnsiString(MAX_pozic)+" pozicemi.";
+		 scGPLabel_info->Left=Width-scGPLabel_info->Width-10;
+		 scGPLabel_info->Visible=true;
+		 PREVIEW();
+	 }
 }
 //---------------------------------------------------------------------------
 //odchod z okna a to i pøi stisku tlaèítka OK
 void __fastcall TForm_objekt_nahled::KonecClick(TObject *Sender)
 {
 	Timer_animace->Enabled=false;
+	scGPLabel_info->Visible=false;
 	F->Zoom=Zoom_predchozi;//návrat do pùvodního stavu
 	F->nahled_objektu=false;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
 	pom=NULL; delete pom;
@@ -283,7 +307,7 @@ void __fastcall TForm_objekt_nahled::ButtonPLAYClick(TObject *Sender)
 		ButtonPLAY->Hint="zastavit animaci";
 		ButtonPLAY->ShowCaption=true;
 		//ShowMessage(F->m.get_timePERpx(pom->RD,0));
-		Timer_animace->Interval=F->m.round(F->m.get_timePERpx(pom->RD,0));
+		Timer_animace->Interval=F->m.round(F->m.get_timePERpx(pom->RD,0)); //nyní øeším na úrovní ENTIRE z dùvodu totožné rychlosti pøi normálním i fullscreen oknì
 	}
 	else//animace zastavena
 	{
@@ -294,14 +318,15 @@ void __fastcall TForm_objekt_nahled::ButtonPLAYClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 {
-	Poffset+=F->m2px/F->Zoom;//zajistí posun o 1px (tedy nejmenší možnou jednotku
-	//nastal takt
-	if(F->m.round(timerTakt*24*Timer_animace->Interval/1000.0)%F->m.round(F->d.v.PP.TT)==0)ButtonPLAY->Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
-	else ButtonPLAY->Font->Style=TFontStyles();//vypnutí tuèného písma
+	Poffset+=F->m2px/F->Zoom;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
+	double Z=1;if(F->antialiasing)Z=3.0;
+//	//nastal takt - špatná úvaha
+//	if(F->m.round(timerTakt*F->fps*Timer_animace->Interval/1000.0)%F->m.round(F->d.v.PP.TT)==0)ButtonPLAY->Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
+//	else ButtonPLAY->Font->Style=TFontStyles();//vypnutí tuèného písma
 	//vypisuje aktuální CT
-	ButtonPLAY->Caption=AnsiString(F->m.round(++timerTakt*24*Timer_animace->Interval/1000.0))+" [s]";
+	ButtonPLAY->Caption=AnsiString(F->m.round(++timerTakt*F->fps/Z*Timer_animace->Interval/1000.0))+" [s]";
   //zastaví animaci po dovršení CT
-	if(F->m.round(timerTakt*24*Timer_animace->Interval/1000.0)>=pom->CT)//zastaví animaci, jak vypršel CT
+	if(F->m.round(timerTakt*F->fps/Z*Timer_animace->Interval/1000.0)>=pom->CT)//zastaví animaci, jak vypršel CT
 	{
 		Timer_animace->Enabled/*pojistka proti pauze*/;
 		ButtonPLAYClick(Sender);
@@ -309,6 +334,13 @@ void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 		zobrazitFrameForm=true;
 	}
 	REFRESH_DATA();//naète aktuální data (umožòuje tedy i bìhem animace mìnit za bìhu parametry - možná blbost),zistí vhodné mìøítka a na závìr REFRESHNE obraz
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_objekt_nahled::Button1Click(TObject *Sender)
+{
+//ShowMessage(F->Zoom);
+//ShowMessage(Timer_animace->Interval);
+Timer_animace->Interval=3.838541666666875;
 }
 //---------------------------------------------------------------------------
 

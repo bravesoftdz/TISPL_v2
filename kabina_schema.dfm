@@ -1356,8 +1356,6 @@
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'hled objektu'
-      ExplicitLeft = 10
-      ExplicitWidth = 577
     end
     object reposition_windowButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -1531,6 +1529,7 @@
       ShowHint = True
       TabOrder = 4
       TabStop = True
+      Visible = False
       OnClick = ButtonPLAYClick
       Animation = False
       Caption = '0 [sec]'
@@ -2665,6 +2664,52 @@
       GroupIndex = 0
       AllowAllUp = True
     end
+  end
+  object scGPLabel_info: TscGPLabel
+    Left = 115
+    Top = 40
+    Width = 614
+    Height = 29
+    Font.Charset = EASTEUROPE_CHARSET
+    Font.Color = clGray
+    Font.Height = -16
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 3
+    Visible = False
+    DragForm = False
+    ContentMarginLeft = 5
+    ContentMarginRight = 5
+    ContentMarginTop = 5
+    ContentMarginBottom = 5
+    FrameWidth = 0
+    FillColor = clBtnText
+    FillColorAlpha = 0
+    FrameColor = clBtnText
+    FrameColorAlpha = 40
+    FrameRadius = 5
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clBtnShadow
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    AutoSize = True
+    Caption = 
+      'Nelze zobrazit n'#225'hled objektu s v'#237'ce jak s "+AnsiString(MAX_pozi' +
+      'c)+" pozicemi.'
+  end
+  object Button1: TButton
+    Left = 104
+    Top = 384
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 4
+    Visible = False
+    OnClick = Button1Click
   end
   object Timer_animace: TTimer
     Enabled = False
