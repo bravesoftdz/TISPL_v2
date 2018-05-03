@@ -637,6 +637,8 @@ object Form_parametry_linky: TForm_parametry_linky
       GlyphOptions.Kind = scgpbgkClose
       GlyphOptions.Thickness = 1
       GlyphOptions.StyleColors = True
+      ModalResult = 8
+      ModalSetting = True
       TextMargin = -1
       WidthWithCaption = 0
       WidthWithoutCaption = 0

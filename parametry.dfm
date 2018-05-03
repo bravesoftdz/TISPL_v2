@@ -15,7 +15,6 @@ object Form_parametry: TForm_parametry
   OldCreateOrder = False
   ParentBiDiMode = False
   PopupMode = pmExplicit
-  PopupParent = Form_parametry_linky.Owner
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -295,7 +294,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_jednotky_vzdalenostpalcu: TrHTMLLabel
-    Left = 358
+    Left = 356
     Top = 574
     Width = 28
     Height = 21
@@ -3242,7 +3241,7 @@ object Form_parametry: TForm_parametry
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 255
+    GlowEffect.AlphaValue = 175
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True

@@ -293,7 +293,7 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 		rStringGridEd_tab_dopravniky->Rows[i]->Clear();
 		rStringGridEd_tab_dopravniky->RowCount--;
 	}
-	Form_parametry_linky->Close();
+	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
 }
 //---------------------------------------------------------------------------

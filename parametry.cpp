@@ -46,7 +46,10 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner)
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
-		// formuláø bude pøi prvním zobrazení v sekundách a metrech nebo dle INI v odvozených jednotkách, jinak dle SI
+	input_state = NOTHING; // nutnost!!! - test pøesunuto nahoru
+	// formuláø bude pøi prvním zobrazení v sekundách a metrech nebo dle INI v odvozených jednotkách, jinak dle SI
+	if(form_zobrazen==false)
+	{
 		minsec = S;
 		m_mm = M;
 		CTunit = S;
@@ -69,8 +72,8 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 		// CT
 		if (Form1->readINI("nastaveni_form_parametry", "CT") == "1")rHTMLLabel_CTClick(this); // pøevede na min tzn. CTunit=MIN;
 		// RD
-		if (Form1->readINI("nastaveni_form_parametry", "RDt") == "1")rHTMLLabel_RDClick(this); // pøevede na min tzn. RDunitT=MIN;
-		if (Form1->readINI("nastaveni_form_parametry", "RDd") == "1")rHTMLLabel_RDClick(this); // pøevede na mm tzn. RDunitD=MM;
+		if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")rHTMLLabel_RDClick(this); // pøevede na min tzn. RDunitT=MIN;
+		//if (Form1->readINI("nastaveni_form_parametry", "RDd") == "1")rHTMLLabel_RDClick(this); // pøevede na mm tzn. RDunitD=MM;
 		// DD
 		if (Form1->readINI("nastaveni_form_parametry", "DD") == "1")rHTMLLabel_delka_dopravnikuClick(this); // pøevede na mm tzn. DDunit=MM;
 		// DM
@@ -83,9 +86,9 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 				// již nepoužíváme, protože se u první zakázky uvažuje globální TT,d.v.ZAKAZKY->dalsi->TT;
 				scGPNumericEdit_kapacita->Value = 1;
 		}
+	}
 
-		input_state = NOTHING; // nutnost!!!
-	 //	input_clicked_edit=empty_klik;
+		//	input_clicked_edit=empty_klik;
 		kapacitaSG = 1; // není podnìt k rozkládání na více objektù
 		scGPEdit_name->SetFocus();
 		// nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
@@ -169,112 +172,112 @@ void TForm_parametry::vypis(UnicodeString text,bool red,bool link)
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 {
-//		if (input_state != NO) // pokud to není pøi startu (formshow)
-//		{
-//
-//				// výchozí nastavení zámkù pøi pøekliku režimu na KK
-//				if (scComboBox_rezim->ItemIndex == 1) {
-//						CT_zamek = UNLOCKED;
-//						scButton_zamek_CT->ImageIndex = 38;
-//						RD_zamek = LOCKED;
-//						scButton_zamek_RD->ImageIndex = 37;
-//						DD_zamek = UNLOCKED;
-//						scButton_zamek_DD->ImageIndex = 38;
-//
-//						K_zamek=CT_zamek;
-//						scButton_K_zamek->Visible = false;
-//						scButton_K_zamek->ImageIndex = 	scButton_zamek_CT->ImageIndex;
-//				}
-//				// výchozí nastavení zámkù pøi pøekliku režimu na PP
-//				if (scComboBox_rezim->ItemIndex == 2) {
-//						K_zamek = LOCKED;
-//						DD_zamek = UNLOCKED;
-//						scButton_K_zamek->Visible = false;
-//						scButton_zamek_DD->ImageIndex = 38;
-//						scButton_K_zamek->ImageIndex = 37;
-//
-//				}
-//
-//
-//				// nadesignování a napozicování komponent dle zvoleného režimu
-//				setForm4Rezim(scComboBox_rezim->ItemIndex);
-//				// resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
-//
-//				//nastaví edity, podle toho, zdali je pohon používán èi nikoliv - volat až po setForm4Režim
-//				Pohon_pouzivan();
-//
-//				if(scComboBox_rezim->ItemIndex == 0) scGPNumericEdit_pozice->Value=1;
-//
-//				INPUT();  // uložení dat z editù do struktury pøi zmìnì režimu
-//				OUTPUT(); // naètení ze struktury - aby probìhla validace dat pøi zmìnì režimu
-//
-//				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
-//				if (scComboBox_rezim->ItemIndex == 1 && obj!=NULL ){  // u KK režimu pokud je pohon používán - natáhnutí správné mezery z dat
-//
-//					 scGPNumericEdit_mezera->Value=obj->mezera;
-//					}
-//
-//				// napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru, pouze pro prvotní zobrazení dle souøadnic kurzoru myši, jinak dle uživatele
-//				long X = Form1->akt_souradnice_kurzoru_PX.x + 10;
-//				long Y = Form1->akt_souradnice_kurzoru_PX.y + 10;
-//				if (form_zobrazen) {
-//						X = Form_parametry->Left;
-//						Y = Form_parametry->Top;
-//				}
-//
-//				if (X + Form_parametry->ClientWidth < Form1->ClientWidth) Form_parametry->Left = X;
-//				else
-//						Form_parametry->Left = Form1->ClientWidth - Form_parametry->ClientWidth - 10;
-//				if (Y + Form_parametry->ClientHeight < Form1->ClientHeight) Form_parametry->Top = Y;
-//				else
-//						Form_parametry->Top = Form1->ClientHeight - Form_parametry->ClientHeight - Form1->scGPPanel_statusbar->Height - 10;
-//
-//				// aktualizace hodnot
-//				// if(scGPNumericEdit_CT->Value>0)/*input_CT();*/ ShowMessage(input_state);
-//				// else
-//				// {
-//				// if(scGPNumericEdit_delka_dopravniku->Value>0)input_DD();
-//				// else
-//				// {
-//				// if(scGPNumericEdit_kapacita->Value>0)input_K();
-//				// else input_RD();
-//				// }
-//				// }
-//			 //	vypis("",false);
-//		}
-//		if (scComboBox_rezim->ItemIndex == 1) // mezera se doporucuje pouze u KK rezimu
-//		{
-//	 /*			// výpis doporuèené mezery
-//				Cvektory::TPohon *P =	Form1->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
-//				// mezera_mezi_voziky
-//				double dV = Form1->d.v.PP.delka_voziku; // delka voziku
-//				double sV = Form1->d.v.PP.sirka_voziku; // delka voziku
-//				double rotace;
-//				if (scComboBox_rotace->ItemIndex == 0)
-//						rotace = 0;
-//				else
-//						rotace = 90;
-//
-//				if (P != NULL)
-//				{ //pokud existuje pohon
-//						if (P->roztec > 0) // pokud existuje rozteè
-//						{
-//								double mezera=0;
-//								if(scGPNumericEdit_mezera->Value==0) mezera=0;
-//								else mezera=scGPNumericEdit_mezera->Value;
-//
-//								double doporuc_mezera = Form1->m.mezera_mezi_voziky(dV, sV, rotace, P->roztec, mezera);
-//								if(Form1->ms.MyToDouble(doporuc_mezera)!=Form1->ms.MyToDouble(mezera))
-//								{
-//								vypis("Doporuèená mezera: " + AnsiString(doporuc_mezera) + " m");
-//								VID=28;
-//								} else vypis("",false);
-//						}  else    vypis("",false);
-//				}  */
-//
-//		Kontrola_mezery();
-//
-//		}
+		if (input_state != NO) // pokud to není pøi startu (formshow)
+		{
+
+				// výchozí nastavení zámkù pøi pøekliku režimu na KK
+				if (scComboBox_rezim->ItemIndex == 1) {
+						CT_zamek = UNLOCKED;
+						scButton_zamek_CT->ImageIndex = 38;
+						RD_zamek = LOCKED;
+						scButton_zamek_RD->ImageIndex = 37;
+						DD_zamek = UNLOCKED;
+						scButton_zamek_DD->ImageIndex = 38;
+
+						K_zamek=CT_zamek;
+						scButton_K_zamek->Visible = false;
+						scButton_K_zamek->ImageIndex = 	scButton_zamek_CT->ImageIndex;
+				}
+				// výchozí nastavení zámkù pøi pøekliku režimu na PP
+				if (scComboBox_rezim->ItemIndex == 2) {
+						K_zamek = LOCKED;
+						DD_zamek = UNLOCKED;
+						scButton_K_zamek->Visible = false;
+						scButton_zamek_DD->ImageIndex = 38;
+						scButton_K_zamek->ImageIndex = 37;
+
+				}
+
+
+				// nadesignování a napozicování komponent dle zvoleného režimu
+				setForm4Rezim(scComboBox_rezim->ItemIndex);
+				// resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
+
+				//nastaví edity, podle toho, zdali je pohon používán èi nikoliv - volat až po setForm4Režim
+				Pohon_pouzivan();
+
+				if(scComboBox_rezim->ItemIndex == 0) scGPNumericEdit_pozice->Value=1;
+
+				INPUT();  // uložení dat z editù do struktury pøi zmìnì režimu
+				OUTPUT(); // naètení ze struktury - aby probìhla validace dat pøi zmìnì režimu
+
+				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
+				if (scComboBox_rezim->ItemIndex == 1 && obj!=NULL ){  // u KK režimu pokud je pohon používán - natáhnutí správné mezery z dat
+
+					 scGPNumericEdit_mezera->Value=obj->mezera;
+					}
+
+				// napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru, pouze pro prvotní zobrazení dle souøadnic kurzoru myši, jinak dle uživatele
+				long X = Form1->akt_souradnice_kurzoru_PX.x + 10;
+				long Y = Form1->akt_souradnice_kurzoru_PX.y + 10;
+				if (form_zobrazen) {
+						X = Form_parametry->Left;
+						Y = Form_parametry->Top;
+				}
+
+				if (X + Form_parametry->ClientWidth < Form1->ClientWidth) Form_parametry->Left = X;
+				else
+						Form_parametry->Left = Form1->ClientWidth - Form_parametry->ClientWidth - 10;
+				if (Y + Form_parametry->ClientHeight < Form1->ClientHeight) Form_parametry->Top = Y;
+				else
+						Form_parametry->Top = Form1->ClientHeight - Form_parametry->ClientHeight - Form1->scGPPanel_statusbar->Height - 10;
+
+				// aktualizace hodnot
+				// if(scGPNumericEdit_CT->Value>0)/*input_CT();*/ ShowMessage(input_state);
+				// else
+				// {
+				// if(scGPNumericEdit_delka_dopravniku->Value>0)input_DD();
+				// else
+				// {
+				// if(scGPNumericEdit_kapacita->Value>0)input_K();
+				// else input_RD();
+				// }
+				// }
+			 //	vypis("",false);
+		}
+		if (scComboBox_rezim->ItemIndex == 1) // mezera se doporucuje pouze u KK rezimu
+		{
+	 /*			// výpis doporuèené mezery
+				Cvektory::TPohon *P =	Form1->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
+				// mezera_mezi_voziky
+				double dV = Form1->d.v.PP.delka_voziku; // delka voziku
+				double sV = Form1->d.v.PP.sirka_voziku; // delka voziku
+				double rotace;
+				if (scComboBox_rotace->ItemIndex == 0)
+						rotace = 0;
+				else
+						rotace = 90;
+
+				if (P != NULL)
+				{ //pokud existuje pohon
+						if (P->roztec > 0) // pokud existuje rozteè
+						{
+								double mezera=0;
+								if(scGPNumericEdit_mezera->Value==0) mezera=0;
+								else mezera=scGPNumericEdit_mezera->Value;
+
+								double doporuc_mezera = Form1->m.mezera_mezi_voziky(dV, sV, rotace, P->roztec, mezera);
+								if(Form1->ms.MyToDouble(doporuc_mezera)!=Form1->ms.MyToDouble(mezera))
+								{
+								vypis("Doporuèená mezera: " + AnsiString(doporuc_mezera) + " m");
+								VID=28;
+								} else vypis("",false);
+						}  else    vypis("",false);
+				}  */
+
+		Kontrola_mezery();
+
+		}
 }
 
 // ---------------------------------------------------------------------------
@@ -1527,9 +1530,9 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 				// pokud je v milimetrech
 				else rHTMLLabel_RD->Caption ="Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v metrech
 				RD = scGPNumericEdit_RD->Value * 60.0;
-				RD = RDunitD_funkce(RD);//tady ano
+				//zrušeno užití RD = RDunitD_funkce(RD);//tady ano
 		}
-		RD = RDunitD_funkce(RD);//ano tady opravdu znovu
+		//zrušeno užití RD = RDunitD_funkce(RD);//ano tady opravdu znovu
 
 		// plnìní + poèet desetinných míst
 		scGPNumericEdit_RD->Value = RD;
@@ -1537,22 +1540,23 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 // ---------------------------------------------------------------------------
+//zrušeno užití
 double TForm_parametry::RDunitD_funkce(double RD)// podpùrná metoda výše uvedené
 {
-		if (RDunitD == MM) // pokud je v milimetrech, tak pøepne na metry
-		{
-				RDunitD = M;
-				if (RDunitT == MIN)	rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v minutách
-				else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>"; // pokud je v sekundách
-				return RD / 1000.0;
-		}
-		else //pokud je v metrech, tak pøepne na milimetry
-		{
-				RDunitD = MM;
-				if (RDunitT == MIN)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";// pokud je v minutách
-				else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v sekundách
-				return RD * 1000.0;
-		}
+//		if (RDunitD == MM) // pokud je v milimetrech, tak pøepne na metry
+//		{
+//				RDunitD = M;
+//				if (RDunitT == MIN)	rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v minutách
+//				else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>"; // pokud je v sekundách
+//				return RD / 1000.0;
+//		}
+//		else //pokud je v metrech, tak pøepne na milimetry
+//		{
+//				RDunitD = MM;
+//				if (RDunitT == MIN)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";// pokud je v minutách
+//				else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v sekundách
+//				return RD * 1000.0;
+//		}
 }
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
@@ -1585,14 +1589,14 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 					rHTMLLabel_jednotky_vzdalenostpalcu->Caption=" <font color=#2b579a>[m]";
 					Rz = scGPNumericEdit_rozestup->Value / 1000.0;
 				}
-				// RD
-				if(RDunitD != M)
-				{
-					RDunitD = M;
-					if (RDunitT == MIN)rHTMLLabel_RD->Caption ="Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v minutách
-					else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v sekundách
-					RD = scGPNumericEdit_RD->Value / 1000.0;
-				}
+				// RD //zrušeno užití
+//				if(RDunitD != M)
+//				{
+//					RDunitD = M;
+//					if (RDunitT == MIN)rHTMLLabel_RD->Caption ="Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v minutách
+//					else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v sekundách
+//					RD = scGPNumericEdit_RD->Value / 1000.0;
+//				}
 		}
 		else // pokud je metrech, tak pøepne na milimetry
 		{
@@ -1614,14 +1618,14 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 					rHTMLLabel_jednotky_vzdalenostpalcu->Caption=" <font color=#2b579a>[mm]";
 					Rz = scGPNumericEdit_rozestup->Value * 1000.0;
 				}
-				// RD
-				if(RDunitD != MM)
-				{
-					RDunitD = MM;
-					if (RDunitT == MIN)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";// pokud je v minutách
-					else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v sekundách
-					RD = scGPNumericEdit_RD->Value * 1000.0;
-        }
+				// RD  //zrušeno užití
+//				if(RDunitD != MM)
+//				{
+//					RDunitD = MM;
+//					if (RDunitT == MIN)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";// pokud je v minutách
+//					else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v sekundách
+//					RD = scGPNumericEdit_RD->Value * 1000.0;
+//				}
 		}
 		// plnìní + poèet desetinných míst
 		scGPNumericEdit_delka_dopravniku->Value = DD;
@@ -1993,9 +1997,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 
 }
 // ---------------------------------------------------------------------------
-
 // ---------------------------------------------------------------------------
-
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
@@ -2101,21 +2103,11 @@ void TForm_parametry::INPUT()
 				K_locked = false;
 
 		//////////////////////// prevody jednotek///////////////////////////////
-
-		if (CTunit == MIN)
-				CT = CT * 60.0;
-		// pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
-		if (RDunitT == MIN)
-				RD /= 60.0;
-		if (RDunitD == MM)
-				RD /= 1000.0;
-		if (DDunit == MM)
-				DD /= 1000.0; // vždy ukládám do metrù
-		if (DMunit == MM)
-				m /= 1000.0;
-		// Memo1->Lines->Add("RD_UnitT INPUT: "+AnsiString(RDunitT));
-	 //	 Memo1->Lines->Add("RD INPUT: "+AnsiString(RD));
-
+		if (CTunit == MIN) CT *= 60.0;// pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
+		if (RDunitT == MIN) RD *= 60.0;
+		if (RDunitD == MM) RD /= 1000.0;//již ale zrušeno, nicménì nevadí zanechání
+		if (DDunit == MM)DD /= 1000.0; // vždy ukládám do metrù
+		if (DMunit == MM)m /= 1000.0;
 
 		///////////////uložení do výpoèetního modulu PO/////////////////////////
 		pm.rezim = rezim;
@@ -2171,7 +2163,7 @@ void TForm_parametry::OUTPUT()
 		 Memo1->Lines->Add("RD OUTPUT: "+AnsiString(pm.RD));
 			//	 RDunitT=S;
 				scGPNumericEdit_RD->Value = pm.RD;
-				if (RDunitT == MIN) scGPNumericEdit_RD->Value *= 60.0;
+				if (RDunitT == MIN) scGPNumericEdit_RD->Value /= 60.0;
 				if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
 				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=2;
 
@@ -2183,11 +2175,13 @@ void TForm_parametry::OUTPUT()
 				scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
 				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_delka_dopravniku->Decimal=2;
 		}
-		if (input_state != K) {
+		if (input_state != K)
+		{
 				scGPNumericEdit_kapacita->Value = pm.K;
 				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_kapacita->Decimal=2;
 		}
-		if (input_state != mezera) {
+		if (input_state != mezera)
+		{
 				scGPNumericEdit_mezera->Value = pm.M;
 			 //	Memo1->Lines->Add("OUTPUT:"+AnsiString(pm.M));
 				if (DMunit == MM)
