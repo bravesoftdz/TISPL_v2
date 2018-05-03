@@ -336,9 +336,6 @@ void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 	REFRESH_DATA();//naète aktuální data (umožòuje tedy i bìhem animace mìnit za bìhu parametry - možná blbost),zistí vhodné mìøítka a na závìr REFRESHNE obraz
 }
 //---------------------------------------------------------------------------
-
-
-
 void __fastcall TForm_objekt_nahled::Button1Click(TObject *Sender)
 {
 //ShowMessage(F->Zoom);

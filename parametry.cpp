@@ -2018,7 +2018,8 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
 		//!!!!!toto dostane možná trochu jinou podobu podle nové úvahy, pravdìpodobnì za situace, že bude námìt na pøídání nového pohonu (bude vysvíceno tlaèítko na pøidání pohonu)
-		bool priradit_posledni=false;
+		bool priradit_posledni=false; bool aktualizace_combo_pohony=false;
+		unsigned int n_pohonu=F->d.v.POHONY->predchozi->n;
 		if(scComboBox_pohon->ItemIndex==0)priradit_posledni=true;//když ještì nebyl pøiøazen, jinak mu nevnucovat jiný pohon, aby mohlo tlaèítko také dále fungovat ke správì pohonù
 
 		//zobrazení formu PL
@@ -2027,15 +2028,23 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 		Form_parametry->Visible=false;//nutnost
-		Form_parametry_linky->ShowModal();//pøípadná návratová hodnota se øeši v knihovnì
+		if(mrOk!=Form_parametry_linky->ShowModal())//pøípadná návratová hodnota se øeši v knihovnì
+			priradit_posledni=false;//pokud bude stisknuto storno tak se urèitì nepøiøazuje
+		else
+			aktualizace_combo_pohony=true;
 		Form_parametry->Visible=true;//nutnost
 		Form_parametry_linky->zobrazitFrameForm=false;
 
-		if(Form1->d.v.POHONY->dalsi!=NULL)//pokud již existuje pohon
+		if(F->d.v.POHONY->dalsi!=NULL)//pokud již existuje pohon
 		{
-			scComboBox_pohon->Enabled=true;//povolení vybírání pohonu
-			Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
-			if(priradit_posledni)scComboBox_pohon->ItemIndex=Form1->d.v.POHONY->predchozi->n;//pøíøadíme poslení vytvoøený pohon - to je trochu na zvážení, zda mu ho takto podsouvat
+			scComboBox_pohon->Enabled=true;//povolení vybírání pohonu - musí být samostatnì
+			if(aktualizace_combo_pohony)//nebylo na PL stisknuto storno
+			{
+				Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
+				//POKUD NEBYL PÙVODNÌ PØIØAZEN POHON, NEBYLO STISKNUTO STORNO, PØIBYL NOVÝ POHON A UŽIVATEL S TÍM SOUHLASÍ
+				if(priradit_posledni && n_pohonu<F->d.v.POHONY->predchozi->n && mrYes==F->MB("Chcete pøiøadit poslední vytvoøený pohon?",MB_YESNO))
+				scComboBox_pohon->ItemIndex=Form1->d.v.POHONY->predchozi->n;//pøíøadíme poslení vytvoøený pohon - to je trochu na zvážení, zda mu ho takto podsouvat ale s MB asi OK
+			}
 		}
 		else scComboBox_pohon->Enabled=false;//i tato vìtev má význam, pokud by již novì neexistoval
 

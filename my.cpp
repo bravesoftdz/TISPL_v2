@@ -376,9 +376,18 @@ double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double R
 //vrátí užitnou délku vozíku
 double Cmy::UDV(double dV,double sV,double rotace)
 {
-  //postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
-	if(rotace==0)return dV;//delka voziku
-	else return sV;// šíøka vozíku
+	//postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
+	double UDV=0;
+	UDV=UDJ(dV,sV,rotace);
+	if(UDV<F->d.v.PP.delka_podvozku)UDV=F->d.v.PP.delka_podvozku;
+	return UDV;
+}
+//vrátí užitnou délku jigu
+double Cmy::UDJ(double dJ,double sJ,double rotace)
+{
+	//postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
+	if(rotace==0)return dJ;//delka voziku
+	else return sJ;// šíøka vozíku
 }
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)

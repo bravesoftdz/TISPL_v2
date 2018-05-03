@@ -1736,7 +1736,89 @@ bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,lo
 //			canv->TextOutW(m.L2Px((P[0].x+P[1].x)/2)-W/2,m.L2Py((P[0].y+P[3].y)/2)+canv->TextHeight(T6)*1,T6);
 //		 }
 //	}
-//}////------------------------------------------------------------------------------------------------------------------------------------------------------
+//}////------------------------------------------------------------------------------------------------------------------------------------------------------//duplicita - pouze pro testovací účely, hlavní odstavena
+void Cvykresli::vykresli_layout(TCanvas *canv)
+{
+	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
+	while(O!=NULL)//pokud existuje nějaký objekt
+	{
+		vykresli_objekt(canv,O,0,50);
+		//vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
+		O=O->dalsi;	}	O=NULL;delete O;}////------------------------------------------------------------------------------------------------------------------------------------------------------
+//zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+//za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
+unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)//XY -umístění L začátek (střed dopravníku) objektu v m, Z - zoom,faktor zvětšení
+{
+	////vychozí geometrické proměnné
+	double DD=O->delka_dopravniku;//délka objektu v metrech
+	double DV=m.UDJ(v.PP.delka_voziku,v.PP.sirka_voziku,O->rotace);//délka jigu
+	double SV=m.UDJ(v.PP.sirka_voziku,v.PP.delka_voziku,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double DP=v.PP.delka_podvozku;
+	double M=O->mezera;//mezera
+	double R=0;if(O->pohon!=NULL)R=O->pohon->roztec;//rozteč palců řetězu
+	double KR=DV/2.0;//kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec, či libovolný v m od začátku vozíků
+	TPointD S;S.x=X;S.y=Y;//Start
+	TPointD K;K.x=X+DD;K.y=Y;//Konec
+
+	////obrys objektu
+	//pero+výplň
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsSolid;
+	canv->Pen->Color=clRed;        //pův. 0.5 bez duble linie
+	canv->Pen->Width=Form1->Zoom*0.2;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.1;
+	//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
+	short Ov=Form1->Zoom*0.4;
+	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+SV/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-SV/2)+Ov);//dvojitý rám - vnější
+	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+SV/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-SV/2)-Ov);//dvojitý rám - vnitřní
+	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jednoduché orámování
+
+	////vykreslení řetězu a palců řetězu
+	if(O->pohon!=NULL)
+	{
+		//řetez - je-li přiřazen pohon
+		canv->Pen->Color=clBlack;
+		canv->Pen->Width=F->Zoom*0.5;
+		canv->MoveTo(m.L2Px(X),m.L2Py(Y));
+		canv->LineTo(m.L2Px(K.x),m.L2Py(K.y));
+		//palce, pokud je zadaná rozteč tak se vykreslí
+		if(R>0)
+		{
+			//palce řetězu
+			int Rx=F->m.round((M+DV)/R);//může být zaokrouhleno, protože musí vycházet celé číslo
+													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
+			double startR=-(M+DV)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+			if(animace)startR=-(M+DV)*ceil(O->pozice)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neřezávalo palce
+			for(double i=startR;i<=DD+R;i+=R)
+			{     //již využívám přemaskování bílým obdélnikem, nakonci této metody, zajišťuje lepší grafický efekt
+				if(/*i>=0 && */Rx>0)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
+				{
+					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
+					{
+						if(j%Rx==0){vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);}//palec vyšel do rozestupu, jedná se o aktivní palec
+						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
+					}
+					catch(...){;}
+				}
+				j++;//musí být mimo
+			}
+		}
+	}
+
+	////jednotlivé pozice/vozíky
+	unsigned int RET;
+	if(!animace)RET=vykresli_pozice(canv,ceil(O->pozice)/*bylo pro číslování od jedné: 1*/,S,K,DD,DV,SV,DP,M,Poffset);
+	else RET=vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,DV,SV,v.PP.delka_podvozku,M,-(M+DV)*ceil(O->pozice)+Poffset);
+
+	////maskování vstupu a výstup, aby nebyly vidět vstupující a vystupující vozíky, může být však i nežádoucí
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
+	canv->FillRect(TRect(0,m.L2Py(Y+SV/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-SV/2)+Ov));//nalevo
+	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+SV/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-SV/2)+Ov));//napravo
+
+	return RET;//vrátí index
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajišťuje vykreslení pozic v layoutu + příprava konstrukce když nebudu chtít vykreslovat objekt vodorovně, pouze bude nutné zajistit ještě rotaci pozic a podvozků
 unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD DO,double delka,double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice)
 {
@@ -1796,81 +1878,6 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 	}
 	canv->Font->Size=SF_puv;//vrátí původní velikost fontu
 	return i;
-}
-////------------------------------------------------------------------------------------------------------------------------------------------------------
-//duplicita - pouze pro testovací účely, hlavní odstavena
-void Cvykresli::vykresli_layout(TCanvas *canv)
-{
-	vykresli_objekt(canv,v.OBJEKTY->dalsi,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y);
-}
-//zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
-//za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
-void Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)//XY -umístění L začátek (střed dopravníku) objektu v m, Z - zoom,faktor zvětšení
-{
-	////vychozí geometrické proměnné
-	double DD=O->delka_dopravniku;//délka objektu v metrech
-	double DV=m.UDV(v.PP.delka_voziku,v.PP.sirka_voziku,O->rotace);//délka jigu
-	double SV=m.UDV(v.PP.sirka_voziku,v.PP.delka_voziku,O->rotace);//šířka jigu a tím pádem i minimální kabiny
-	double M=O->mezera;//mezera
-	double R=0;if(O->pohon!=NULL)R=O->pohon->roztec;//rozteč palců řetězu
-	double KR=DV/2.0;//kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec, či libovolný v m od začátku vozíků
-	TPointD S;S.x=X;S.y=Y;//Start
-	TPointD K;K.x=X+DD;K.y=Y;//Konec
-
-	////obrys objektu
-	//pero+výplň
-	canv->Brush->Color=clWhite;
-	canv->Brush->Style=bsSolid;
-	canv->Pen->Color=clRed;        //pův. 0.5 bez duble linie
-	canv->Pen->Width=Form1->Zoom*0.2;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.1;
-	//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
-	short Ov=Form1->Zoom*0.4;
-	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+SV/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-SV/2)+Ov);//dvojitý rám - vnější
-	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+SV/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-SV/2)-Ov);//dvojitý rám - vnitřní
-	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jednoduché orámování
-
-	////vykreslení řetězu a palců řetězu
-	//řetez - je-li přiřazen pohon
-	if(O->pohon!=NULL)
-	{
-		canv->Pen->Color=clBlack;
-		canv->Pen->Width=F->Zoom*0.5;
-		canv->MoveTo(m.L2Px(X),m.L2Py(Y));
-		canv->LineTo(m.L2Px(K.x),m.L2Py(K.y));
-		if(R>0)//pokud je zadaná rozteč tak se vykreslí i palce
-		{
-			//palce řetězu
-			int Rx=F->m.round((M+DV)/R);//může být zaokrouhleno, protože musí vycházet celé číslo
-													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
-			double startR=-(M+DV)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
-			if(animace)startR=-(M+DV)*ceil(O->pozice)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
-
-			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neřezávalo palce
-			for(double i=startR;i<=DD+R;i+=R)
-			{     //již využívám přemaskování bílým obdélnikem, nakonci této metody, zajišťuje lepší grafický efekt
-				if(/*i>=0 && */Rx>0)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
-				{
-					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
-					{
-						if(j%Rx==0){vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);}//palec vyšel do rozestupu, jedná se o aktivní palec
-						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
-					}
-					catch(...){;}
-				}
-				j++;//musí být mimo
-			}
-		}
-	}
-
-	////jednotlivé pozice/vozíky
-	if(!animace)vykresli_pozice(canv,ceil(O->pozice)/*bylo pro číslování od jedné: 1*/,S,K,DD,DV,SV,v.PP.delka_podvozku,M,Poffset);
-	else vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,DV,SV,v.PP.delka_podvozku,M,-(M+DV)*ceil(O->pozice)+Poffset);
-
-	////maskování vstupu a výstup, aby nebyly vidět vstupující a vystupující vozíky, může být však i nežádoucí
-	canv->Brush->Color=clWhite;
-	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
-	canv->FillRect(TRect(0,m.L2Py(Y+SV/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-SV/2)+Ov));//nalevo
-	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+SV/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-SV/2)+Ov));//napravo
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

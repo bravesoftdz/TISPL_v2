@@ -53,6 +53,7 @@ class Cmy
 	double mezera(double dV,double sV,double rotace,double Rx,double R);//vrátí mezeru dle rozestupu a velikosti vozíku
 	double dopRD(double dV,double sV,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 	double UDV(double dV,double sV,double rotace);//vratí užitnou délku vozíku
+	double UDJ(double dJ,double sJ,double rotace);//vrátí užitnou délku jigu
 	double prejezd_voziku(double delka, double rychlost_dopravniku);
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
 	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox
