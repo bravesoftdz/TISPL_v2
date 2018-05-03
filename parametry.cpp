@@ -2240,23 +2240,18 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 						scComboBox_rotace->Items->Items[1]->Enabled = false;
 						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
 				}
-				if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Visible==false){
-
+				if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled==false)
+				{
 						//if podminka splnena - povolim zmenu orientace
 						scComboBox_rotace->Items->Items[0]->Enabled = true;
 						scComboBox_rotace->Items->Items[1]->Enabled = true;
-
-
 				}
 
-
 				// není zamèeno - doporuèím mezeru
-				 if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == Rotace_klik) {
-
-
-						//vždy dovolím volání input_m bez ohledu, zda vyjde RD OK vùèi rozteèi
-
-						// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
+				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == Rotace_klik)
+				 {
+					//vždy dovolím volání input_m bez ohledu, zda vyjde RD OK vùèi rozteèi
+					// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
 					//	if (Kontrola_mezery() == scGPNumericEdit_mezera->Value) {
 							 // Memo1->Lines->Add("volam input M z rotace");
 								INPUT();
@@ -2740,6 +2735,7 @@ void TForm_parametry::Pohon_pouzivan() {
 						scGPNumericEdit1_rx->Enabled=true;
 						scButton_zamek_CT->Enabled=true;
 						scButton_zamek_DD->Enabled=true;
+						scButton_zamek_RD->Enabled=true;
 				}
 		}
 
@@ -3032,7 +3028,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						&& scComboBox_rezim->ItemIndex == 0) {
 						if (fmod(CT, Form1->d.v.PP.TT) == 0) {
 								kapacitaSG = CT / Form1->d.v.PP.TT; // pro další použití
-								vypis(" Rozložit na " + AnsiString(kapacitaSG) + "x " + scGPEdit_name->Text.UpperCase() + "?");
+								vypis(" Rozložit na " + AnsiString(kapacitaSG) + "x " + scGPEdit_name->Text.UpperCase() + "?",true);
 								scGPButton_OK->Caption = "Ano a uložit";
 								VID=12;
 						}
