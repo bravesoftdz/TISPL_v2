@@ -55,6 +55,7 @@ class Cvykresli
 	void vykresli_layout(TCanvas *canv);//zajišuje vykreslení layout
 	unsigned int  vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset=0,bool animace=false);//zajistí vykreslení náhledu objektu, XY -umístìní L zaèátek (støed dopravníku) objektu v m, Poffset - pozièní poloha, vıchozí poloha prvního vozíku/pozice v objektu,mùe slouit na animaci èi návaznost v pøípadì layoutu
 	unsigned int vykresli_pozice(TCanvas *canv, int i, TPointD OD, TPointD DO,double delka, double delkaV,double sirkaV,double delkaP,double mezera,double akt_pozice=0);//zajišuje vykreslení pozic v layoutu a vratí index poslední vykreslené pozice  + pøíprava konstrukce kdy nebudu chtít vykreslovat objekt vodorovnì, pouze bude nutné zajistit ještì rotaci pozic a podvozkù
+	void vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP,double dJ,double sJ,double rotaceP=0,double rotaceJ=0,TColor clChassis=clBlack, TColor clJig=clPurple);
 //	void vykresli_simulaci(TCanvas *canv);//zajišuje vykreslení simulace
 //	void vykresli_linku(TCanvas *canv);//zajišuje vykreslení osy linky
 //	void umisti_vozik(TCanvas *canv,Cvektory::TVozik *ukaz);//zajišuje umístìní vozíku na lince

@@ -95,7 +95,7 @@ void TForm_objekt_nahled::MODEL()
 	if(pom->pozice<=MAX_pozic)
 	{
 		//sekce animaèní nastavení
-		Poffset=0;
+//není již potøeba		Poffset=F->m.UDV(pom->rotace)/2;//celý vozík na zaèátku kabiny pùv. 0 - to by bylo z pùlky vozíku
 		ButtonPLAY->Visible=true;
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 		ButtonPLAY->Hint="spustit animaci";
@@ -209,13 +209,24 @@ void TForm_objekt_nahled::OUTPUT()
 	 if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
 	 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
 
-	 if(pom->pozice>MAX_pozic)//Nelze zobrazit náhled objektu s více jak s MAX_pozic pozicemi, bude zobrazen pouze ilustrativní náhled
+	 //nová výchozí pozice po rotaci vozíku
+	 START_POZICE();
+
+	 //Nelze zobrazit náhled objektu s více jak s MAX_pozic pozicemi, bude zobrazen pouze ilustrativní náhled
+	 if(pom->pozice>MAX_pozic)
 	 {
 		 scGPLabel_info->Caption="Nelze zobrazit náhled objektu s více jak s "+AnsiString(MAX_pozic)+" pozicemi.";
 		 scGPLabel_info->Left=Width-scGPLabel_info->Width-10;
 		 scGPLabel_info->Visible=true;
 		 PREVIEW();
 	 }
+}
+//---------------------------------------------------------------------------
+//nová výchozí pozice po rotaci vozíku
+void TForm_objekt_nahled::START_POZICE()
+{
+	if(Timer_animace->Enabled==false)//zmìna pozice nazákladì rotace je možná jen a pouze pokud nebìží animace
+	Poffset=F->m.UDV(pom->rotace)/2;//slouží pro pøípad rotace vozíku//celý vozík na zaèátku kabiny pùv. 0 - to by bylo z pùlky vozíku,tzn. v mementu aktivnihé palce
 }
 //---------------------------------------------------------------------------
 //odchod z okna a to i pøi stisku tlaèítka OK
@@ -330,10 +341,11 @@ void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 	{
 		Timer_animace->Enabled/*pojistka proti pauze*/;
 		ButtonPLAYClick(Sender);
-		Poffset=0;ButtonPLAY->Caption="0 [s]";timerTakt=0;
+		START_POZICE();//výchozí pozice vozíkù
+		ButtonPLAY->Caption="0 [s]";timerTakt=0;
 		zobrazitFrameForm=true;
 	}
-	REFRESH_DATA();//naète aktuální data (umožòuje tedy i bìhem animace mìnit za bìhu parametry - možná blbost),zistí vhodné mìøítka a na závìr REFRESHNE obraz
+	REFRESH_DATA();//naète aktuální data (umožòuje tedy i bìhem animace mìnit za bìhu parametry - možná blbost),zjistí vhodné mìøítka a na závìr REFRESHNE obraz
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::Button1Click(TObject *Sender)

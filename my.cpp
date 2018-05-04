@@ -382,6 +382,13 @@ double Cmy::UDV(double dV,double sV,double rotace)
 	if(UDV<F->d.v.PP.delka_podvozku)UDV=F->d.v.PP.delka_podvozku;
 	return UDV;
 }
+/////////////////////////////////////////////////////////////////////////////
+//vratí užitnou délku vozíku, parametry bere z PP
+double Cmy::UDV(double rotace)
+{
+	return UDV(F->d.v.PP.delka_voziku,F->d.v.PP.sirka_voziku,rotace);
+}
+/////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku jigu
 double Cmy::UDJ(double dJ,double sJ,double rotace)
 {

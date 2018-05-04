@@ -1751,12 +1751,13 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 {
 	////vychozí geometrické proměnné
 	double DD=O->delka_dopravniku;//délka objektu v metrech
-	double DV=m.UDJ(v.PP.delka_voziku,v.PP.sirka_voziku,O->rotace);//délka jigu
-	double SV=m.UDJ(v.PP.sirka_voziku,v.PP.delka_voziku,O->rotace);//šířka jigu a tím pádem i minimální kabiny
-	double DP=v.PP.delka_podvozku;
+	double dJ=m.UDJ(v.PP.delka_voziku,v.PP.sirka_voziku,O->rotace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_voziku,v.PP.delka_voziku,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dP=v.PP.delka_podvozku;
+	double DV=dJ;if(dP>dJ)DV=dP;
 	double M=O->mezera;//mezera
 	double R=0;if(O->pohon!=NULL)R=O->pohon->roztec;//rozteč palců řetězu
-	double KR=DV/2.0;//kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec, či libovolný v m od začátku vozíků
+	double KR=0;//kalibrace řetězu vůči vozíku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku vozíků
 	TPointD S;S.x=X;S.y=Y;//Start
 	TPointD K;K.x=X+DD;K.y=Y;//Konec
 
@@ -1768,8 +1769,8 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	canv->Pen->Width=Form1->Zoom*0.2;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.1;
 	//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
 	short Ov=Form1->Zoom*0.4;
-	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+SV/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-SV/2)+Ov);//dvojitý rám - vnější
-	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+SV/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-SV/2)-Ov);//dvojitý rám - vnitřní
+	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+sJ/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-sJ/2)+Ov);//dvojitý rám - vnější
+	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+sJ/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-sJ/2)-Ov);//dvojitý rám - vnitřní
 	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jednoduché orámování
 
 	////vykreslení řetězu a palců řetězu
@@ -1788,9 +1789,9 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
 			double startR=-(M+DV)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
 			if(animace)startR=-(M+DV)*ceil(O->pozice)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
-			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neřezávalo palce
+			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neořezávalo palce
 			for(double i=startR;i<=DD+R;i+=R)
-			{     //již využívám přemaskování bílým obdélnikem, nakonci této metody, zajišťuje lepší grafický efekt
+			{     //již využívám přemaskování bílým obdélníkem, nakonci této metody, zajišťuje lepší grafický efekt
 				if(/*i>=0 && */Rx>0)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
 				{
 					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
@@ -1807,14 +1808,14 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 
 	////jednotlivé pozice/vozíky
 	unsigned int RET;
-	if(!animace)RET=vykresli_pozice(canv,ceil(O->pozice)/*bylo pro číslování od jedné: 1*/,S,K,DD,DV,SV,DP,M,Poffset);
-	else RET=vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,DV,SV,v.PP.delka_podvozku,M,-(M+DV)*ceil(O->pozice)+Poffset);
+	if(!animace)RET=vykresli_pozice(canv,ceil(O->pozice)/*bylo pro číslování od jedné: 1*/,S,K,DD,dJ,sJ,dP,M,Poffset);
+	else RET=vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,dJ,sJ,dP,M,-(M+DV)*ceil(O->pozice)+Poffset);
 
 	////maskování vstupu a výstup, aby nebyly vidět vstupující a vystupující vozíky, může být však i nežádoucí
 	canv->Brush->Color=clWhite;
 	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
-	canv->FillRect(TRect(0,m.L2Py(Y+SV/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-SV/2)+Ov));//nalevo
-	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+SV/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-SV/2)+Ov));//napravo
+	canv->FillRect(TRect(0,m.L2Py(Y+sJ/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-sJ/2)+Ov));//nalevo
+	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+sJ/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-sJ/2)+Ov));//napravo
 
 	return RET;//vrátí index
 }
@@ -1837,35 +1838,14 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 
 	//vykreslování jednotlivých obdelníčků - pozic
 	TPointD S;S=OD;//konstrukce proto,když nebudu chtít vykreslovat objekt vodorovně, pouze bude nutné zajistit ještě rotaci pozic a podvozků
-	S.x+=(DO.x-OD.x)*akt_pozice/delka;//start pozice
-	S.y+=(DO.y-OD.y)*akt_pozice/delka;//start pozice
-	double PO=delkaV/delka;//pomer delky vozíku a delky objektu
+	S.x+=(DO.x-OD.x)*akt_pozice/delka;//sřed pozice
+	S.y+=(DO.y-OD.y)*akt_pozice/delka;//střed pozice
+	double PO=delkaV/delka;if(delkaV<delkaP)PO=delkaP/delka;//pomer užitné delky vozíku a delky objektu
 	double POm=mezera/delka;//poměr délky mezery a délky objekty
 	while(akt_pozice<=delka)
 	{
-		//podvozek
-		canv->Brush->Style=bsClear;//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
-		canv->Pen->Color=clBlack;                                  //šířka podvozku                                       //šířka podvozku
-		canv->Rectangle(m.L2Px((S.x+S.x+delkaV-delkaP)/2.0),m.L2Py(S.y+0.1),m.L2Px((S.x+S.x+delkaV+delkaP)/2.0),m.L2Py(S.y-0.1));//vykreslení pozice podvozku
-		//jigu
-		if(i==Form_objekt_nahled->pom->pozice && akt_pozice!=0)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
-		{
-			canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
-			canv->Rectangle(m.L2Px(S.x),m.L2Py(S.y+sirkaV/2.0),m.L2Px(S.x+delkaV),m.L2Py(S.y-sirkaV/2.0));
-			canv->Pen->Width=1/3.0*F->Zoom;
-		}
-		canv->Pen->Color=clPurple;//samotný jig
-		canv->Rectangle(m.L2Px(S.x),m.L2Py(S.y+sirkaV/2.0),m.L2Px(S.x+delkaV),m.L2Py(S.y-sirkaV/2.0));
-
-		//text aktuální pozice
-		canv->Brush->Style=bsSolid;//netransparentní pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
-		canv->Font->Color=clPurple;
-		canv->Font->Style = TFontStyles();//vypnutí tučného písma
-		canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
-		short iz=0; //pro číslování od 1
-		//if(i<=0)iz=v.WIP(4);//při animaci, globální indexování vozíku
-		//if(i<=0)iz=Form_objekt_nahled->pom->pozice;//při animaci pouze pořád dokola
-		canv->TextOutW(m.L2Px((S.x+S.x+delkaV)/2.0)-canv->TextWidth(i+iz)/2.0,m.L2Py((S.y+S.y+sirkaV)/2.0)-canv->TextHeight(i+iz)/2.0,i+iz);//indexace pozice v rámci objektu
+		//volání kompelexního vykreslení jednoho vozíku (podvozek včetně jigu)
+		vykresli_vozik(canv,i,S.x,S.y,delkaP,delkaV,sirkaV);
 		//posun o další vozík
 		S.x+=(DO.x-OD.x)*PO;//posun ze začátku objektu nakonec
 		S.y+=(DO.y-OD.y)*PO;//posun ze začátku objektu nakonec
@@ -1878,6 +1858,34 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 	}
 	canv->Font->Size=SF_puv;//vrátí původní velikost fontu
 	return i;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslení jednoho komplexního vozíku (podvozek včetně jigu)
+void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP,double dJ,double sJ,double rotaceP,double rotaceJ,TColor clChassis, TColor clJig)
+{
+	////podvozek
+	canv->Brush->Style=bsClear;//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
+	canv->Pen->Color=clChassis;                                 //šířka podvozku jen stanovena                                       //šířka podvozku
+	canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+0.1),m.L2Px(X+dP/2),m.L2Py(Y-0.1));//vykreslení pozice podvozku
+
+	////jig
+	//zvýraznění animovaného dle CT
+	if(ID==ceil(Form_objekt_nahled->pom->pozice) && Form_objekt_nahled->Timer_animace->Enabled)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
+	{
+		canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
+		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));
+		canv->Pen->Width=1/3.0*F->Zoom;
+	}
+	//samotný jig
+	canv->Pen->Color=clJig;
+	canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));
+
+	////text - ID vozíku
+	canv->Brush->Style=bsSolid;//netransparentní pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
+	canv->Font->Color=clJig;
+	canv->Font->Style = TFontStyles();//vypnutí tučného písma
+	canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
+	canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
