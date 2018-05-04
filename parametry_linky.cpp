@@ -521,22 +521,24 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
+	//navýší poèet øádkù
 	rStringGridEd_tab_dopravniky->RowCount++;
-	rStringGridEd_tab_dopravniky->Cols[0]->Add(rStringGridEd_tab_dopravniky->RowCount - 1);
 
-	if (rStringGridEd_tab_dopravniky->RowCount > 2)
-	{
-		int i = rStringGridEd_tab_dopravniky->RowCount - 1;
+	//zaène plnit jednotlivé øádky
+	int i = rStringGridEd_tab_dopravniky->RowCount - 1;//poøadí øádku o jednièku nižší než poèet øádkù
+	rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
+	rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon "+AnsiString(getMaxPID());//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
+	rStringGridEd_tab_dopravniky->Cells[2][i] = "0";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
+	rStringGridEd_tab_dopravniky->Cells[3][i] = "0";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
+	rStringGridEd_tab_dopravniky->Cells[4][i] = "0";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
+	rStringGridEd_tab_dopravniky->Cells[5][i] = "ne";
+	rStringGridEd_tab_dopravniky->Cells[6][i] = "0";
 
-		rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
-		rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[2][i] = "0";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[3][i] = "0";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[4][i] = "0";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
-		rStringGridEd_tab_dopravniky->Cells[5][i] = "ne";
-		rStringGridEd_tab_dopravniky->Cells[6][i] = "0";
-	}
-	rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;//pøesune focus na poslední øádek
+	//doplní min Rz
+	show_min_Rz();
+
+	//pøesune focus na poslední øádek
+	rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;
 
 	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	pozice_scGPGlyphButton_hint();
@@ -1280,7 +1282,7 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sen
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+//prochází všechny pohany a pokud je pohon nepoužíván, smaže ho
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
 {
 	for(unsigned int j=1;j<rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
@@ -1289,6 +1291,7 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Se
 		{
 			//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
 			rStringGridEd_tab_dopravniky->DeleteRowEx(j);
+			j--;//musí po smazání nutnì snížit index
 		}
 	}
 	//skrytí pop-up menu
