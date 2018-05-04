@@ -1089,6 +1089,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Quality = fqClearType
       ParentFont = False
       TabOrder = 0
+      OnClick = scHTMLLabel_doporuc_pohonyClick
       AutoSizeHeight = True
       AutoSizeWidth = True
       AutoExecuteURL = True

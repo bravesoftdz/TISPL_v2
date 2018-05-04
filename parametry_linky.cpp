@@ -1344,5 +1344,10 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 // }
 }
 //---------------------------------------------------------------------------
-
+void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *Sender)
+{
+		// zavolá funkcionalitu tlaèítka na kopírování navržených pohonù do striggridu, nepøidává ale do pohonù
+	scGPGlyphButton_add_mezi_pohonyClick(Sender);
+}
+//---------------------------------------------------------------------------
 

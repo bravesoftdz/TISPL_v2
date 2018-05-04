@@ -140,6 +140,7 @@ __published:	// IDE-managed Components
 	void __fastcall GlyphButton_kopirovatMouseLeave(TObject *Sender);
 	void __fastcall rStringGridEd_tab_dopravnikyGetCellParams(TObject *Sender, int Col,
           int Row, TFont *AFont, TColor &Background, bool &Highlight);
+	void __fastcall scHTMLLabel_doporuc_pohonyClick(TObject *Sender);
 
 private:	// User declarations
 

@@ -2,6 +2,7 @@
 #pragma hdrstop
 #include "vektory.h"
 #include "unit1.h"
+#include "parametry.h"
 ////---------------------------------------------------------------------------
 #pragma package(smart_init)
 ////---------------------------------------------------------------------------
@@ -872,10 +873,22 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	AnsiString nalezen="";
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
+		if(O==F->pom && F->pom!=NULL)//pokud je voláno z editovaného PO
 		{
-			if(short_name)nalezen+=O->short_name+", ";
-			else nalezen+=O->name+", ";
+       //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
+				if(Form_parametry->scComboBox_pohon->ItemIndex>0  && Form_parametry->scComboBox_pohon->ItemIndex==n)//pokud má pohon přiřazen a jedná se o stejný pohon
+				{
+					if(short_name)nalezen+=O->short_name+", ";
+					else nalezen+=O->name+", ";
+				}
+		}
+		else//pro ostatní objekty mimo editaci na PO
+		{
+			if(O->pohon!=NULL && O->pohon->n==n)//pokud má pohon přiřazen a jedná se o stejný pohon
+			{
+				if(short_name)nalezen+=O->short_name+", ";
+				else nalezen+=O->name+", ";
+			}
 		}
 		O=O->dalsi;
 	}
@@ -995,8 +1008,10 @@ void Cvektory::generuj_POHONY()
 	}
 }
 ////---------------------------------------------------------------------------
-//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí
-AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
+//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí, lze nastavit jednotky zobrazení rychlosti pohonu, implicintě m/min
+//řeší pouze pro objekty bez přiřazených pohonů
+//umí řešit i pro aktuální PO parametry
+AnsiString Cvektory::navrhni_POHONY(AnsiString separator,bool m_min)
 {
 	AnsiString data="";
 	TObjekt *O=OBJEKTY->dalsi;
@@ -1011,21 +1026,41 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator)
 	//projíždí jedntolivé objekty, které nemají přiřařezen pohon, tak jim doporučí, s tím, že navrhuje sloučit se stejnou rychlostí
 	while (O!=NULL)
 	{
-		if(O->pohon==NULL && O->RD>0)//řeší pouze pro pohony bez přiřazených pohonů (ty jsou již definované) a zároveň pokud je rychlost dopravníku nenulová
+		//hodnoty z procházeného objektu
+		double RD=O->RD;
+		bool pohon_prirazen=false;if(O->pohon!=NULL)pohon_prirazen=true;
+		AnsiString short_name=O->short_name;
+
+		//pokud dochází k volání z PO, tzn. je třeba zohlednti aktulně zadaná data z jednotlivých editů
+		//tak se převezmetou tyto hodnoty
+		if(F->pom!=NULL)
+		{   //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
+				if(O==F->pom && Form_parametry->scComboBox_pohon->ItemIndex==0)//a nemá přiřazen pohon
+				{
+					pohon_prirazen=false;
+					short_name=Form_parametry->scGPEdit_shortname->Text;
+					RD=Form_parametry->scGPNumericEdit_RD->Value; // RD	od uživatele
+					if(Form_parametry->RDunitT == Form_parametry->MIN)RD /= 60.0;//převod jednotek
+				}
+		}
+
+		//řeší pouze pro objekty bez přiřazených pohonů (ty jsou již definovatelné) a zároveň pokud je rychlost dopravníku nenulová
+		if(pohon_prirazen==false && RD>0)
 		{
 			bool nalezen=false;
 			for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
 			{
-				if(pole_rychlosti[j]==O->RD)//RD je již v poli
+				if(pole_rychlosti[j]==RD)//RD je již v poli, užívá ho jiný objekt
 				{
-					pole_pohonu[j]+=", "+O->short_name;
+					pole_pohonu[j]+=", "+short_name;
 					break;
 				}
 				if(pole_rychlosti[j]==0)//neni, přídání nově do všech třech polí
 				{
-					pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(O->RD*60)+" [m/min] pro objekt(y): "+O->short_name;
-					pole_rychlosti[j]=O->RD;
-					pole_rozteci[j]=m.Rz(O->RD);
+					if(m_min)pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD*60)+" [m/min] pro objekt(y): "+short_name;//v m/min
+					else pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD)+" [m/min] pro objekt(y): "+short_name;//v m/s
+					pole_rychlosti[j]=RD;
+					pole_rozteci[j]=m.Rz(RD);
 					break;
 				}
 			}
