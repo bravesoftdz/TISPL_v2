@@ -87,8 +87,8 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 				scGPNumericEdit_kapacita->Value = 1;
 		}
 	}
-
-		//	input_clicked_edit=empty_klik;
+		//M: byl zde než jsem ho pøesunul zcela nahoru: input_state = NOTHING; // nutnost!!!
+		//	input_clicked_edit=empty_klik; M: toto bylo i pøedtím zakomentované, prosím, pokud není zcela tøeba mazat, a není zavadìjící
 		kapacitaSG = 1; // není podnìt k rozkládání na více objektù
 		scGPEdit_name->SetFocus();
 		// nastaví výchozí focus, kde se pøedpokládá výchozí nastavování
@@ -1695,7 +1695,8 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
 // ---------------------------------------------------------------------------
 // pøi stisku klávesy enter nebo esc
 void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
-		TShiftState Shift) {
+		TShiftState Shift)
+{
 		if (Key == 13) // ENTER
 		{
 				if (scGPButton_OK->Enabled)
@@ -1724,10 +1725,13 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				Memo1->Top = 0;
 				Memo1->Left = 0;
 		}
-		if(Key==78 && Shift.Contains(ssCtrl))//ctrl+n
+		if(Key==116 && Shift.Contains(ssCtrl))//ctrl+F5
 		{
-				ShowMessage("");
-    }
+				if(mrYes==F->MB("Chcete nastavit výchozí hodnoty parametrù? Nastavením výchozích hodnot boudou souèasné hodnoty parametrù ztraceny!",MB_YESNO))
+				{
+						//nastavení hodnot parametrù do default
+        }
+		}
 }
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
