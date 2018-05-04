@@ -6,6 +6,7 @@
 #include "Unit1.h"
 #include "kabina_schema.h"
 #include "MyMessageBox.h"
+#include "parametry.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -605,8 +606,8 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sender)
 {
 		scExPanel_doporuc_pohony->Visible=true;
-		scGPButton_doporucene->Visible=false;
-		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY();
+		scGPButton_doporucene->Visible=false;                                 //zajistí zobrazení ve stejných jednotkách jako na PO
+		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY("</br>",Form_parametry->RDunitT);
 		if(scHTMLLabel_doporuc_pohony->Caption=="")
 		{
 			scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";

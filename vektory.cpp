@@ -1011,7 +1011,7 @@ void Cvektory::generuj_POHONY()
 //navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí, lze nastavit jednotky zobrazení rychlosti pohonu, implicintě m/min
 //řeší pouze pro objekty bez přiřazených pohonů
 //umí řešit i pro aktuální PO parametry
-AnsiString Cvektory::navrhni_POHONY(AnsiString separator,bool m_min)
+AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
 {
 	AnsiString data="";
 	TObjekt *O=OBJEKTY->dalsi;
@@ -1058,7 +1058,7 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator,bool m_min)
 				if(pole_rychlosti[j]==0)//neni, přídání nově do všech třech polí
 				{
 					if(m_min)pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD*60)+" [m/min] pro objekt(y): "+short_name;//v m/min
-					else pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD)+" [m/min] pro objekt(y): "+short_name;//v m/s
+					else pole_pohonu[j]="Navržený pohon s rychlostí "+AnsiString(RD)+" [m/s] pro objekt(y): "+short_name;//v m/s
 					pole_rychlosti[j]=RD;
 					pole_rozteci[j]=m.Rz(RD);
 					break;
