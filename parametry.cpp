@@ -2040,36 +2040,27 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 		if(Form_objekt_nahled->Visible)Form_objekt_nahled->REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
 }
 // ---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender) {
-
+void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
+{
 		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
 }
 // ---------------------------------------------------------------------------
-
 void TForm_parametry::INPUT()
 {
-
 		/////////////////// nacteni vsech hodnot z formulare do lokalnich promennych////////////////////////////////////////////////////
 		short rezim;
-		if (scComboBox_rezim->ItemIndex == 0)
-				rezim = 0; // S&G
-		if (scComboBox_rezim->ItemIndex == 1)
-				rezim = 1; // Kontinual
-		if (scComboBox_rezim->ItemIndex == 2)
-				rezim = 2; // Postprocesni
+		if (scComboBox_rezim->ItemIndex == 0)	rezim = 0; // S&G
+		if (scComboBox_rezim->ItemIndex == 1) rezim = 1; // Kontinual
+		if (scComboBox_rezim->ItemIndex == 2) rezim = 2; // Postprocesni
 
 		double TT = Form1->d.v.PP.TT;
-
 		double CT = scGPNumericEdit_CT->Value; // CT - novì zadáno uživatelem
 		double RD = scGPNumericEdit_RD->Value; // RD	od uživatele
 		double DD = scGPNumericEdit_delka_dopravniku->Value; // DD od uživatele
 		double K = scGPNumericEdit_kapacita->Value; // K od uživatele
 		double Odchylka = scGPNumericEdit_odchylka->Value; // odchylka od uživatele
-		double Nasleduje_cekani = scComboBox_cekani_palec->ItemIndex;
-		// 0 - ne, 1 -ano, 2 - automaticky
-		double Stop_stanice = scComboBox_stopka->ItemIndex;
-		// 0 - ne, 1 -ano, 2 - automaticky
+		//short Nasleduje_cekani = scComboBox_cekani_palec->ItemIndex;// 0 - ne, 1 -ano, 2 - automaticky
+		//short Stop_stanice = scComboBox_stopka->ItemIndex;// 0 - ne, 1 -ano, 2 - automaticky
 		double dV = Form1->d.v.PP.delka_voziku; // délka jigu
 		double sV = Form1->d.v.PP.sirka_voziku; // šíøka jigu
 		double m = scGPNumericEdit_mezera->Value; // mezera mezi voziky
@@ -2080,38 +2071,22 @@ void TForm_parametry::INPUT()
 		bool DD_locked;
 		bool K_locked;
 
-		Cvektory::TPohon *Pohon = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-
-		short rotace;
-		if (scComboBox_rotace->ItemIndex == 0)
-				rotace = 0; // na délku
-		if (scComboBox_rotace->ItemIndex == 1)
-				rotace = 90; // na šíøku
+		double rotace;
+		if (scComboBox_rotace->ItemIndex == 0)rotace = 0; // na délku
+		if (scComboBox_rotace->ItemIndex == 1)rotace = 90; // na šíøku
 
 		//////////////////////// stavy zamku/////////////////////////////////////
-		if (CT_zamek == LOCKED)
-				CT_locked = true;
-		else
-				CT_locked = false;
-		if (RD_zamek == LOCKED)
-				RD_locked = true;
-		else
-				RD_locked = false;
-		if (DD_zamek == LOCKED)
-				DD_locked = true;
-		else
-				DD_locked = false;
-		if (K_zamek == LOCKED)
-				K_locked = true;
-		else
-				K_locked = false;
+		if (CT_zamek == LOCKED)CT_locked = true;  else CT_locked = false;
+		if (RD_zamek == LOCKED) RD_locked = true; else RD_locked = false;
+		if (DD_zamek == LOCKED) DD_locked = true;	else DD_locked = false;
+		if (K_zamek == LOCKED) K_locked = true;   else K_locked = false;
 
 		//////////////////////// prevody jednotek///////////////////////////////
 		if (CTunit == MIN) CT *= 60.0;// pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
-		if (RDunitT == MIN) RD *= 60.0;
-		if (RDunitD == MM) RD /= 1000.0;//již ale zrušeno, nicménì nevadí zanechání
-		if (DDunit == MM)DD /= 1000.0; // vždy ukládám do metrù
-		if (DMunit == MM)m /= 1000.0;
+		if (RDunitT == MIN)RD *= 60.0;
+		if (RDunitD == MM) RD /= 1000.0;//již využítí zrušeno, nicménì nevadí zanechání
+		if (DDunit == MM)	 DD /= 1000.0; // vždy ukládám do metrù
+		if (DMunit == MM)		m /= 1000.0;
 
 		///////////////uložení do výpoèetního modulu PO/////////////////////////
 		pm.rezim = rezim;
@@ -2125,30 +2100,15 @@ void TForm_parametry::INPUT()
 		pm.dV = dV;
 		pm.sV = sV;
 		pm.Rotace = rotace;
-		if (Pohon != NULL)
-				pm.R = Pohon->roztec;
-		else
-				pm.R = 0;
 		pm.CT_locked = CT_locked;
 		pm.RD_locked = RD_locked;
 		pm.DD_locked = DD_locked;
 		pm.K_locked = K_locked;
-
-}
-
-////////////////////////////////////////////////////////////////////////////
-void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
-		(TObject *Sender)
-
-{
-		// formuláø na støed
-		Form_poznamky->Left = Form1->ClientWidth / 2 - Form_poznamky->Width / 2;
-		Form_poznamky->Top = Form1->ClientHeight / 2 - Form_poznamky->Height / 2;
-		// zobrazeni formuláøe
-		Form_poznamky->ShowModal();
+		Cvektory::TPohon *Pohon = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+		if (Pohon != NULL) pm.R = Pohon->roztec; else pm.R = 0;
+		Pohon=NULL;delete Pohon;
 }
 // ---------------------------------------------------------------------------
-
 void TForm_parametry::OUTPUT()
 {
 					// pokud bylo zadáváno napø. z input_CT nebudu z math modelu tento údaj znovu natahovat do formu,
@@ -2209,6 +2169,16 @@ void TForm_parametry::OUTPUT()
 
 		VALIDACE();
 
+}
+// ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
+		(TObject *Sender)
+{
+		// formuláø na støed
+		Form_poznamky->Left = Form1->ClientWidth / 2 - Form_poznamky->Width / 2;
+		Form_poznamky->Top = Form1->ClientHeight / 2 - Form_poznamky->Height / 2;
+		// zobrazeni formuláøe
+		Form_poznamky->ShowModal();
 }
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
