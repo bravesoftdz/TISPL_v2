@@ -1747,7 +1747,7 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 		O=O->dalsi;	}	O=NULL;delete O;}////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
 //za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
-unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)//XY -umístění L začátek (střed dopravníku) objektu v m, Z - zoom,faktor zvětšení
+unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)
 {
 	////vychozí geometrické proměnné
 	double DD=O->delka_dopravniku;//délka objektu v metrech
@@ -1757,7 +1757,7 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	double DV=dJ;if(dP>dJ)DV=dP;
 	double M=O->mezera;//mezera
 	double R=0;if(O->pohon!=NULL)R=O->pohon->roztec;//rozteč palců řetězu
-	double KR=0;//kalibrace řetězu vůči vozíku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku vozíků
+	double KR=0;//kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
 	TPointD S;S.x=X;S.y=Y;//Start
 	TPointD K;K.x=X+DD;K.y=Y;//Konec
 

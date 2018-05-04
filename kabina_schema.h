@@ -66,23 +66,23 @@ __published:	// IDE-managed Components
 
 
 private:	// User declarations
-	void PREVIEW();
-	void MODEL();
-	void REFRESH(bool invalidate=true);//vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing)
+	void PREVIEW();//zajištuje zobrazení pouze ilustrativního náhledu
+	void MODEL();//zajištuje zobrazení modelu, odpovídajícímu zobrazení v PO
+	void REFRESH(bool invalidate=true);//vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing), slouží na pøekreslení obrazu
 	void ENTIRE();//cely_nahled, zajistí výpoèet zoomu tak, aby se objekt zobrazil pøes celé okno, ale vèetnì okraje Ox
-	void OUTPUT();//naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totoži není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
-	void START_POZICE();//nová výchozí pozice po rotaci vozíku
+	void OUTPUT();//naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totiž není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
+	void START_POZICE();//nová výchozí pozice po rotaci vozíku, pøiklad pozicování F->m.UDV(pom->rotace)/2 je celý vozík na zaèátku kabiny, pokud by bylo uvedeno 0, bylo by z pùlky vozíku (tedy od aktivního palce), animace by byla probíhala do poloviny vozíku vystupujícího z kabiny, tj. opìt po aktivní palec øetìzu daného pohonu.
 
 	unsigned short MAX_pozic;//maximální hodnota zobrazených pozic, jinak nastane ilustrativní náhled
-	unsigned short Ox;//okraj
-	double Poffset;
-	double timerTakt;
+	unsigned short Ox;//okraj vykresleného náhledu
+	double Poffset;//zajišuje posun vozíkù, vhodné pro výchozí pozici (realizováno pomocí START_POZICE), nebo pro animaci
+	double timerTakt;//poèítá takt timeru animace
 
 public:		// User declarations
 	__fastcall TForm_objekt_nahled(TComponent* Owner);
 	void REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
-	Cvektory::TObjekt *pom;
-	double Zoom_predchozi;//slouží na uchování hodnoty aktuálního zoom ve schématu
+	Cvektory::TObjekt *pom;//pøebírá hodnoty z formuláøe parametry objektu, protože F->pom, není v tomto momentu volání knihonvy z dùvodu probíhajících zmìna zcela aktuální
+	double Zoom_predchozi;//slouží na uchování hodnoty aktuálního zoom ve schématu, protože Zoom je sdílený i pro schéme a i pro náhled objektu (z dùvodu použítí totožných metod, kde je již promìnná Zoom zakomponovaná)
 	bool zobrazitFrameForm;//zda se má èi nemá zobrazit orámování formuláøe
 };
 //---------------------------------------------------------------------------
