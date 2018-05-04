@@ -3223,18 +3223,24 @@ object Form_parametry: TForm_parametry
     OnClick = Button1Click
   end
   object scGPCheckBox_zaokrouhlit: TscGPCheckBox
-    Left = 348
+    Left = 343
     Top = 658
     Width = 52
     Height = 25
-    Hint = 'zobrazit na dv'#283' desetinn'#225' m'#237'sta'
+    Hint = 'zobrazit na t'#345'i desetinn'#225' m'#237'sta'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 32
     TabStop = True
     OnClick = scGPCheckBox_zaokrouhlitClick
     Animation = False
-    Caption = '0,00'
+    Caption = '0,000'
     CanFocused = True
     Spacing = 1
     Layout = blGlyphLeft

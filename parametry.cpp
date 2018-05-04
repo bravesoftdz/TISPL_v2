@@ -2087,7 +2087,7 @@ void TForm_parametry::INPUT()
 
 		//////////////////////// prevody jednotek///////////////////////////////
 		if (CTunit == MIN) CT *= 60.0;// pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
-		if (RDunitT == MIN)RD *= 60.0;
+		if (RDunitT == MIN)RD /= 60.0;//opravdu dìleno
 		if (RDunitD == MM) RD /= 1000.0;//již využítí zrušeno, nicménì nevadí zanechání
 		if (DDunit == MM)	 DD /= 1000.0; // vždy ukládám do metrù
 		if (DMunit == MM)		m /= 1000.0;
@@ -2122,18 +2122,18 @@ void TForm_parametry::OUTPUT()
 		{
 				scGPNumericEdit_CT->Value = pm.CT;
 				if (CTunit == MIN)scGPNumericEdit_CT->Value /= 60.0;
-				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_CT->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_CT->Decimal=3;
 
 		}
 		if (input_state != RD)
 		{
-		 Memo1->Lines->Add("RD_UnitT OUTPUT: "+AnsiString(RDunitT));
-		 Memo1->Lines->Add("RD OUTPUT: "+AnsiString(pm.RD));
+		 //Memo1->Lines->Add("RD_UnitT OUTPUT: "+AnsiString(RDunitT));
+		 //Memo1->Lines->Add("RD OUTPUT: "+AnsiString(pm.RD));
 			//	 RDunitT=S;
 				scGPNumericEdit_RD->Value = pm.RD;
-				if (RDunitT == MIN) scGPNumericEdit_RD->Value /= 60.0;
+				if (RDunitT == MIN) scGPNumericEdit_RD->Value *= 60.0;
 				if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
-				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=3;
 
 		}
 		if (input_state != DD)
@@ -2141,12 +2141,12 @@ void TForm_parametry::OUTPUT()
 				scGPNumericEdit_delka_dopravniku->Value = pm.DD;
 				if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value *= 1000.0;
 				scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
-				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_delka_dopravniku->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_delka_dopravniku->Decimal=3;
 		}
 		if (input_state != K)
 		{
 				scGPNumericEdit_kapacita->Value = pm.K;
-				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_kapacita->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_kapacita->Decimal=3;
 		}
 		if (input_state != mezera)
 		{
@@ -2159,7 +2159,7 @@ void TForm_parametry::OUTPUT()
 		if (input_state != P)
 		{
 				scGPNumericEdit_pozice->Value = pm.P;
-				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_pozice->Decimal=2;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_pozice->Decimal=3;
 		}
 
 		//ZOBRAZENÍ HINTÙ
@@ -2691,10 +2691,13 @@ void TForm_parametry::Pohon_pouzivan() {
 						{
 								RD_zamek = LOCKED;
 								scButton_zamek_RD->ImageIndex = 37;
+							//	Memo1->Lines->Add("zamkni");
 						}
 						else {
-								RD_zamek = UNLOCKED;
-								scButton_zamek_RD->ImageIndex = 38;
+						    //ShowMessage(input_state);
+							 //	RD_zamek = UNLOCKED;
+							//	scButton_zamek_RD->ImageIndex = 38;
+							//	Memo1->Lines->Add("odemkni");
 						}
 						set(RYCHLOST, ENABLED, false);
 						// pohon není používán jiným objektem, dovolím zmìnu RD, M,R
@@ -3251,7 +3254,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
 {
 //pøepínání zobrazení desetinného èísla na dvì nebo neomezený poèet desetinných míst
-	int N_mist=1000;if(scGPCheckBox_zaokrouhlit->Checked)N_mist=2;
+	int N_mist=1000;if(scGPCheckBox_zaokrouhlit->Checked)N_mist=3;
 	scGPNumericEdit_CT->Decimal=N_mist;
 	scGPNumericEdit_RD->Decimal=N_mist;
 	scGPNumericEdit_delka_dopravniku->Decimal=N_mist;
