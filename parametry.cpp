@@ -1730,7 +1730,18 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				if(mrYes==F->MB("Chcete nastavit výchozí hodnoty parametrù? Nastavením výchozích hodnot boudou souèasné hodnoty parametrù ztraceny!",MB_YESNO))
 				{
 						//nastavení hodnot parametrù do default
-        }
+					 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60;
+					 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
+					 if(RDunitT==MIN)    scGPNumericEdit_RD->Value=  Form1->pom->RD*60.0;
+					 else scGPNumericEdit_RD->Value =  Form1->pom->RD;
+					 if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku* 1000.0;
+					 else scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku;
+
+					 scGPNumericEdit_kapacita->Value = Form1->pom->kapacita;
+					 scGPNumericEdit_pozice->Value   = Form1->pom->pozice;
+					 scGPNumericEdit_mezera->Value   = Form1->pom->mezera;
+				 //	 scGPNumericEdit1_rx->Value=    Form1->pom-> - tyto hodnoty nemám v pom
+				}
 		}
 }
 // ---------------------------------------------------------------------------
