@@ -1999,7 +1999,7 @@ void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender) {
 		if(form_zobrazen)
 		{
 		input_clicked_edit = Rotace_klik;
-				if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
+			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
 		}
 }
@@ -2212,31 +2212,31 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 		// KK režim zavolání input_M
 		if (input_state == NOTHING)
 		{
-				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled)
-				{
-						if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled)
-						{
-
-							if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
-								{
-								 RD_zamek=UNLOCKED;
-								 scButton_zamek_RD->ImageIndex = 38;
-
-								 scButton_zamek_DD->ImageIndex = 37;
-								 DD_zamek = LOCKED;
-
-								 CT_zamek=UNLOCKED;
-								 scButton_zamek_CT->ImageIndex = 38;
-
-								 vypis("Byl odemèen zámek rychlosti pohonu",false);
-								}
-							// ShowMessage(input_clicked_edit);
-						 //	Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
-						}
-						//scComboBox_rotace->Items->Items[0]->Enabled = false;
-						//scComboBox_rotace->Items->Items[1]->Enabled = false;
-						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
-				}
+//				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled)
+//				{
+//						if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled)
+//						{
+//
+//							if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
+//								{
+//								 RD_zamek=UNLOCKED;
+//								 scButton_zamek_RD->ImageIndex = 38;
+//
+//								 scButton_zamek_DD->ImageIndex = 37;
+//								 DD_zamek = LOCKED;
+//
+//								 CT_zamek=UNLOCKED;
+//								 scButton_zamek_CT->ImageIndex = 38;
+//
+//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
+//								}
+//							// ShowMessage(input_clicked_edit);
+//						 //	Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
+//						}
+//						//scComboBox_rotace->Items->Items[0]->Enabled = false;
+//						//scComboBox_rotace->Items->Items[1]->Enabled = false;
+//						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
+//				}
 				if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled==false)
 				{
 						//if podminka splnena - povolim zmenu orientace
@@ -2729,18 +2729,18 @@ void TForm_parametry::Pohon_pouzivan()
 				else
 				{
 						// ShowMessage(input_state);
-						if (input_state == NOTHING)
+						if (input_state == NOTHING || input_state==NO)
 								// pokud jde o první zobrazení formu - vždy zobrazím takto zámky
 						{
 								RD_zamek = LOCKED;
 								scButton_zamek_RD->ImageIndex = 37;
 							//	Memo1->Lines->Add("zamkni");
 						}
-						else
+						else // musí zde být i else vìtev - jinak pøi odpøiøazení pohonu nastane situace, že zùstanou 2 zámky uzamèeny, což je špatnì
 						{
-						    //ShowMessage(input_state);
-							 //	RD_zamek = UNLOCKED;
-							//	scButton_zamek_RD->ImageIndex = 38;
+								ShowMessage(input_state);
+							 	RD_zamek = UNLOCKED;
+								scButton_zamek_RD->ImageIndex = 38;
 							//	Memo1->Lines->Add("odemkni");
 						}
 						set(RYCHLOST, ENABLED, false);
