@@ -19,10 +19,10 @@ void TPO_math::input_CT(bool prepocet_K)
 				RD=DD/CT;
 				M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice a za výpoètem RD
 			}
-			else
-			{ //jedná se vlastnì o volání z K
-				if(prepocet_K==false)DD=K*(UDV()+M);//délky kabiny  M pøidal 5. kvìtna 2018 - test, nemìnila se délka kabiny, pokud se mìnilo K
-			}
+//			else  toto není tøeba je obslouženo výše,chyba byla jinde, pozdìji toto zakomentované smazat
+//			{ //jedná se vlastnì o volání z K
+//				if(prepocet_K==false)DD=K*(UDV()+M);//délky kabiny  M pøidal 5. kvìtna 2018 - test, nemìnila se délka kabiny, pokud se mìnilo K
+//			}
 			if(prepocet_K)K=CT/TT;//výpoèet kapacity
 			P=Pozice();//výpoèet poètu pozic
 		break;
