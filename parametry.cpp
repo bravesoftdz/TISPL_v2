@@ -1948,22 +1948,23 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				if (RDunitT == MIN)RD *= 60.0;
 				if (RDunitD == MM) RD /= 1000.0;
 
-				//scButton_zamek_RD->ImageIndex=37;
-				//RD_zamek=LOCKED;
 
-						 scGPNumericEdit_RD->Value=RD;
-						 scGPNumericEdit_mezera->Value=obj->mezera;
+				scGPNumericEdit_RD->Value=RD;
+				scGPNumericEdit_mezera->Value=obj->mezera;
+				//Memo1->Lines->Add(obj->rotace);
 
 					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
 					else scComboBox_rotace->ItemIndex=1;
 
-						if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 				else
 				{
 					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
 					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
+
+				Memo1->Lines->Add(scComboBox_rotace->ItemIndex);
 		}
 }
 // ---------------------------------------------------------------------------
@@ -2668,6 +2669,13 @@ void TForm_parametry::Pohon_pouzivan()
 		{ // pro KK režim - nastavení
 				Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
 				// ShowMessage(scComboBox_pohon->ItemIndex);
+				if(scComboBox_pohon->ItemIndex==0) {
+					 // pokud je pohon nedefinován nebo nepøiøazen, vždy povolím rotaci a nastavit délku nebo šíøku
+        	scComboBox_rotace->Items->Items[0]->Enabled = true;
+					scComboBox_rotace->Items->Items[1]->Enabled = true;
+					set(ROTACE,ENABLED, false);
+
+				}
 				if (Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1))
 				{
 						RD_zamek = LOCKED; // pohon je již použiván - nemohu hýbat RD
@@ -2686,7 +2694,7 @@ void TForm_parametry::Pohon_pouzivan()
 						set(MEZERA, READONLY, false);
 
 					 //	rz ze vzoru
-				if(!scButton_zamek_RD->Enabled)
+				if(scButton_zamek_RD->Enabled==false)
 				{
 							double roztec=0.0;
 							Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
@@ -2703,22 +2711,23 @@ void TForm_parametry::Pohon_pouzivan()
 						double M = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,roztec,mezera);
 						double Rz_potencial =	Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,M);  //rotace je zde obracena nezli je nastaveno v editu
 						double Rz_akt =  Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex,obj->mezera);
-						if(Rz_potencial == Rz_akt)
-						{
 
+				if(Rz_potencial == Rz_akt)
+						{
 						//if podminka splnena - povolim zmenu orientace
 						scComboBox_rotace->Items->Items[0]->Enabled = true;
 						scComboBox_rotace->Items->Items[1]->Enabled = true;
 						set(ROTACE,ENABLED, false);
 						}
-						else
+
+				else
 						{
-						if(scComboBox_pohon->ItemIndex!=0)
-						{
-						scComboBox_rotace->Items->Items[0]->Enabled = false;
-						scComboBox_rotace->Items->Items[1]->Enabled = false;
-						set(ROTACE,READONLY, false);
-						}
+								if(scComboBox_pohon->ItemIndex!=0)
+								{
+							 //	scComboBox_rotace->Items->Items[0]->Enabled = false;
+							 //	scComboBox_rotace->Items->Items[1]->Enabled = false;
+								set(ROTACE,READONLY, false);
+								}
 						}
 
 				}
