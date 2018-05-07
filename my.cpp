@@ -377,10 +377,9 @@ double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double R
 double Cmy::UDV(double dV,double sV,double rotace)
 {
 	//postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
-	double UDV=0;
-	UDV=UDJ(dV,sV,rotace);
-	if(UDV<F->d.v.PP.delka_podvozku)UDV=F->d.v.PP.delka_podvozku;
-	return UDV;
+	double DV=UDJ(dV,sV,rotace);
+	if(DV<F->d.v.PP.delka_podvozku)DV=F->d.v.PP.delka_podvozku;
+	return DV;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí užitnou délku vozíku, parametry bere z PP

@@ -176,7 +176,8 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 		{
 
 				// výchozí nastavení zámkù pøi pøekliku režimu na KK
-				if (scComboBox_rezim->ItemIndex == 1) {
+				if (scComboBox_rezim->ItemIndex == 1)
+				{
 						CT_zamek = UNLOCKED;
 						scButton_zamek_CT->ImageIndex = 38;
 						RD_zamek = LOCKED;
@@ -189,7 +190,8 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 						scButton_K_zamek->ImageIndex = 	scButton_zamek_CT->ImageIndex;
 				}
 				// výchozí nastavení zámkù pøi pøekliku režimu na PP
-				if (scComboBox_rezim->ItemIndex == 2) {
+				if (scComboBox_rezim->ItemIndex == 2)
+				{
 						K_zamek = LOCKED;
 						DD_zamek = UNLOCKED;
 						scButton_K_zamek->Visible = false;
@@ -995,7 +997,6 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuChange(TObject 
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 {
-
 	 Nacti_rx();
 	 double mezera=0.0;
 	 Check_rozmezi_RD();
@@ -2203,12 +2204,14 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 				input_M(); // pøepoèet hodnot vyplývajících ze zmìny CT  pro režim PP
 		}
 		// KK režim zavolání input_M
-		if (input_state == NOTHING) {
+		if (input_state == NOTHING)
+		{
 				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
 						input_clicked_edit == Rotace_klik && scButton_zamek_RD->Visible==true) {
-					if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled==true){
-						// ShowMessage(input_clicked_edit);
-						Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
+						if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled==true)
+						{
+							// ShowMessage(input_clicked_edit);
+							Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
 						}
 						scComboBox_rotace->Items->Items[0]->Enabled = false;
 						scComboBox_rotace->Items->Items[1]->Enabled = false;
@@ -2234,7 +2237,7 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 					//	}
 
 				}
-
+				Nacti_rx();//M - pøidal 5. kvìtna 2018, test, chybìla aktualizace Rz a Rx po rotaci vozíku
 		}
 }
 // ---------------------------------------------------------------------------
@@ -2624,10 +2627,10 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 
 		}
 }
-
+// ---------------------------------------------------------------------------
 ////metoda která kontroluje zdali je vybraný pohon používán èi nikoliv, dle toho nastavuje viditelnost editboxù
-
-void TForm_parametry::Pohon_pouzivan() {
+void TForm_parametry::Pohon_pouzivan()
+{
 
 		if (scComboBox_rezim->ItemIndex == 1) { // pro KK režim - nastavení
 				Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
@@ -2881,8 +2884,8 @@ void TForm_parametry::Check_rozmezi_RD() {
 		double rz=0;
 		double rotace=scComboBox_rotace->ItemIndex;
 
-			if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
-			else  mezera=scGPNumericEdit_mezera->Value;
+		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
+		else  mezera=scGPNumericEdit_mezera->Value;
 				 //vždy pøedám do metody v metrech
 
 		Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
@@ -2892,18 +2895,20 @@ void TForm_parametry::Check_rozmezi_RD() {
 		{
 			scGPNumericEdit1_rx->ReadOnly=false;
 			rx=Form1->m.Rx(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,mezera,roztec);
-			}	else
-			{
-					scGPNumericEdit1_rx->ReadOnly=true;
-					scGPNumericEdit1_rx->Enabled=false;
-			}
+		}
+		else
+		{
+			scGPNumericEdit1_rx->ReadOnly=true;
+			scGPNumericEdit1_rx->Enabled=false;
+		}
 
+		scGPNumericEdit1_rx->Value =rx;//M 5. kvìtna 2018 pøesunuto sem - dìlalo níže problémy pokud bylo za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
 		rz = Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,mezera);
-
+		//ShowMessage(rz);
 		if(DMunit == MM) scGPNumericEdit_rozestup->Value=rz*1000;
 		else        		 scGPNumericEdit_rozestup->Value=rz;
 
-		scGPNumericEdit1_rx->Value =rx;
+		//scGPNumericEdit1_rx->Value =rx; M 5. kvìtna 2018 pøesunuto výše - dìlalo problémy za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
 		scGPNumericEdit1_rx->Hint="tj. každý " +AnsiString(rx)+ " palec zachytává.";
  }
 //---------------------------------------------------------------------------
@@ -2951,7 +2956,7 @@ void TForm_parametry::Check_rozmezi_RD() {
 
 			if(input_clicked_edit==Rx)scGPNumericEdit_mezera->Value=mezera; // pøi zmìnì Rx vrátím dopoèítanou mezeru
 			scGPNumericEdit_rozestup->Value=rz;
-				 //	ShowMessage("z rx");
+		 	//ShowMessage("z rx"+AnsiString(rz));
 			input_M();
 	}
 

@@ -2340,7 +2340,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_zamek_DD: TscButton
     Left = 204
-    Top = 247
+    Top = 250
     Width = 28
     Height = 29
     TabOrder = 20
@@ -3042,7 +3042,7 @@ object Form_parametry: TForm_parametry
   end
   object scButton_K_zamek: TscButton
     Left = 204
-    Top = 287
+    Top = 290
     Width = 28
     Height = 29
     TabOrder = 29
@@ -3247,7 +3247,7 @@ object Form_parametry: TForm_parametry
     ImageIndex = -1
     GlowEffect.Enabled = False
     GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 175
+    GlowEffect.AlphaValue = 95
     GlowEffect.GlowSize = 7
     GlowEffect.Offset = 0
     GlowEffect.Intensive = True
