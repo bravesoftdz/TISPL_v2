@@ -2250,15 +2250,18 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 				 {
 					//vždy dovolím volání input_m bez ohledu, zda vyjde RD OK vùèi rozteèi
 					// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
-					//	if (Kontrola_mezery() == scGPNumericEdit_mezera->Value) {
+						if (Kontrola_mezery() == scGPNumericEdit_mezera->Value)//odkomentoval M 7.5.2018
+						{
 							 // Memo1->Lines->Add("volam input M z rotace");
 								INPUT();
 								pm.input_M();
 								OUTPUT();
-					//	}
+						}
+						else //pøidal M 7.5.2018
+						Kontrola_mezery();//pøidal M 7.5.2018
 
 				}
-				Nacti_rx();//M - pøidal 5. kvìtna 2018, test, chybìla aktualizace Rz a Rx po rotaci vozíku
+				//Nacti_rx();//toto je tu nyní navíc pokud používám výše uvedené//M - pøidal 5. kvìtna 2018, test, chybìla aktualizace Rz a Rx po rotaci vozíku
 		}
 }
 // ---------------------------------------------------------------------------
