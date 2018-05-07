@@ -2969,11 +2969,11 @@ void TForm_parametry::Check_rozmezi_RD() {
 
  void __fastcall TForm_parametry::scGPNumericEdit1_rxChange(TObject *Sender)
 {
-						double  mezer=0;
-  	if (DMunit == MM) // pokud je v milimetrech, tak pøepne na metry
-		{
-							mezer=scGPNumericEdit_mezera->Value/1000;
-		} else	  mezer=scGPNumericEdit_mezera->Value;
+        double  mezer=0;
+				if (DMunit == MM) // pokud je v milimetrech, tak pøepne na metry
+				{
+									mezer=scGPNumericEdit_mezera->Value/1000;
+				} else	  mezer=scGPNumericEdit_mezera->Value;
 
 
 				double roztec=0;
@@ -2981,19 +2981,15 @@ void TForm_parametry::Check_rozmezi_RD() {
 				double rotace=0;
 				double rx=0;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-				if (P != NULL) roztec=P->roztec;  else  roztec=0;
+				if (P != NULL) roztec=P->roztec;  else  roztec=0;    // pokud existuje pohon, vrátím si jeho rozteè
 
 
-				if(scComboBox_rotace->ItemIndex==0)
-				{
-					delka =Form1->d.v.PP.delka_voziku; rotace=0;
-				} else
-					{
-					delka = Form1->d.v.PP.sirka_voziku; rotace=90;
-					}
+				if(scComboBox_rotace->ItemIndex==0)rotace=0;
+				else rotace=1;
 
 
-		if (P != NULL)rx=Form1->m.Rx(pm.dV,pm.sV,rotace,mezer,roztec);
+
+		if (P != NULL)rx=Form1->m.Rx(pm.dV,pm.sV,rotace,mezer,roztec);  // vypoèítám si Rx
 		else rx=0;
 				//Memo1->Lines->Add(rx);
  double mezera=Form1->m.mezera(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,scGPNumericEdit1_rx->Value,roztec);
