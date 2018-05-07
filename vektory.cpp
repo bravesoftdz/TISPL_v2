@@ -69,8 +69,8 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->CT=PP.TT;//pro status návrh
-	novy->RD=PP.delka_voziku/novy->CT;//pro status návrh
-	novy->delka_dopravniku=PP.delka_voziku;//delka dopravníku v rámci objektu
+	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
+	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
 	novy->kapacita=1;
 	novy->kapacita_dop=0;
 	novy->pozice=1;
@@ -108,8 +108,8 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
 	novy->CT=PP.TT;//pro status návrh
-	novy->RD=PP.delka_voziku/novy->CT;//pro status návrh
-	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
+	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
+	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
 	novy->kapacita=1;
 	novy->kapacita_dop=0;
 	novy->pozice=1;
