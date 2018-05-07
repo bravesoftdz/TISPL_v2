@@ -1948,19 +1948,23 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				if (RDunitT == MIN)RD *= 60.0;
 				if (RDunitD == MM) RD /= 1000.0;
 
-						 scGPNumericEdit_RD->Value=RD;
-						 scGPNumericEdit_mezera->Value=obj->mezera;
+
+				scGPNumericEdit_RD->Value=RD;
+				scGPNumericEdit_mezera->Value=obj->mezera;
+				//Memo1->Lines->Add(obj->rotace);
 
 					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
 					else scComboBox_rotace->ItemIndex=1;
 
-						if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 				else
 				{
 					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
 					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
+
+				Memo1->Lines->Add(scComboBox_rotace->ItemIndex);
 		}
 }
 // ---------------------------------------------------------------------------
@@ -1992,10 +1996,13 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender) {
 }
 
 void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender) {
-		if(form_zobrazen){
+
+		if(form_zobrazen)
+		{
 		input_clicked_edit = Rotace_klik;
-		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,
-				Rotace_klik, false);   }
+			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
+		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
+		}
 }
 
 // ---------------------------------------------------------------------------
@@ -2206,17 +2213,31 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 		// KK režim zavolání input_M
 		if (input_state == NOTHING)
 		{
-				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
-						input_clicked_edit == Rotace_klik && scButton_zamek_RD->Visible==true) {
-						if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled==true)
-						{
-							// ShowMessage(input_clicked_edit);
-							Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
-						}
-						scComboBox_rotace->Items->Items[0]->Enabled = false;
-						scComboBox_rotace->Items->Items[1]->Enabled = false;
-						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
-				}
+//				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled)
+//				{
+//						if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled)
+//						{
+//
+//							if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
+//								{
+//								 RD_zamek=UNLOCKED;
+//								 scButton_zamek_RD->ImageIndex = 38;
+//
+//								 scButton_zamek_DD->ImageIndex = 37;
+//								 DD_zamek = LOCKED;
+//
+//								 CT_zamek=UNLOCKED;
+//								 scButton_zamek_CT->ImageIndex = 38;
+//
+//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
+//								}
+//							// ShowMessage(input_clicked_edit);
+//						 //	Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
+//						}
+//						//scComboBox_rotace->Items->Items[0]->Enabled = false;
+//						//scComboBox_rotace->Items->Items[1]->Enabled = false;
+//						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
+//				}
 				if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled==false)
 				{
 						//if podminka splnena - povolim zmenu orientace
@@ -2313,8 +2334,8 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 										scButton_zamek_DD->ImageIndex = 38;
 										DD_zamek = UNLOCKED;
 
-										scComboBox_rotace->Items->Items[0]->Enabled = false;
-										scComboBox_rotace->Items->Items[1]->Enabled = false;
+									 //	scComboBox_rotace->Items->Items[0]->Enabled = false;
+									//	scComboBox_rotace->Items->Items[1]->Enabled = false;
 								}
 						}
 
@@ -2437,7 +2458,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 							scButton_K_zamek->Visible = true;
 							scButton_K_zamek->ImageIndex = scButton_zamek_CT->ImageIndex;
-								if(RD_zamek==LOCKED)
+								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
 								{
 
 								 RD_zamek=UNLOCKED;
@@ -2465,7 +2486,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 						 scButton_K_zamek->Visible = true;
 						 scButton_K_zamek->ImageIndex = scButton_zamek_CT->ImageIndex;
-							if(RD_zamek==LOCKED)
+							if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) // pokud je RD zamcen a zaroven povolen k editace
 								{
 
 								 RD_zamek=UNLOCKED;
@@ -2518,8 +2539,20 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						if (E == Rotace_klik) {
 						scButton_K_zamek->Visible = false;
 
-								// RD_zamek = LOCKED;   //rotace vždy zamkne RD
-								// scButton_zamek_RD->ImageIndex=37;
+								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
+								{
+
+								 RD_zamek=UNLOCKED;
+								 scButton_zamek_RD->ImageIndex = 38;
+
+								 scButton_zamek_DD->ImageIndex = 37;
+								 DD_zamek = LOCKED;
+
+								 CT_zamek=UNLOCKED;
+								 scButton_zamek_CT->ImageIndex = 38;
+
+								 vypis("Byl odemèen zámek rychlosti pohonu",false);
+								}
 						}
 
 				}
@@ -2632,12 +2665,19 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 void TForm_parametry::Pohon_pouzivan()
 {
 
-		if (scComboBox_rezim->ItemIndex == 1) { // pro KK režim - nastavení
+		if (scComboBox_rezim->ItemIndex == 1)
+		{ // pro KK režim - nastavení
 				Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
 				// ShowMessage(scComboBox_pohon->ItemIndex);
+				if(scComboBox_pohon->ItemIndex==0) {
+					 // pokud je pohon nedefinován nebo nepøiøazen, vždy povolím rotaci a nastavit délku nebo šíøku
+        	scComboBox_rotace->Items->Items[0]->Enabled = true;
+					scComboBox_rotace->Items->Items[1]->Enabled = true;
+					set(ROTACE,ENABLED, false);
+
+				}
 				if (Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1))
 				{
-						// ShowMessage(input_state);
 						RD_zamek = LOCKED; // pohon je již použiván - nemohu hýbat RD
 						CT_zamek = UNLOCKED;
 						DD_zamek = UNLOCKED;
@@ -2654,8 +2694,8 @@ void TForm_parametry::Pohon_pouzivan()
 						set(MEZERA, READONLY, false);
 
 					 //	rz ze vzoru
-					 if(!scButton_zamek_RD->Visible)
-					 {
+				if(scButton_zamek_RD->Enabled==false)
+				{
 							double roztec=0.0;
 							Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 							if (P != NULL) roztec=P->roztec;  else  roztec=0.0;
@@ -2672,45 +2712,44 @@ void TForm_parametry::Pohon_pouzivan()
 						double Rz_potencial =	Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,M);  //rotace je zde obracena nezli je nastaveno v editu
 						double Rz_akt =  Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex,obj->mezera);
 
-					 //	Memo1->Lines->Add(Rz_potencial);
-           // Memo1->Lines->Add(Rz_akt);
-
-
-						if(Rz_potencial == Rz_akt){
-
+				if(Rz_potencial == Rz_akt)
+						{
 						//if podminka splnena - povolim zmenu orientace
 						scComboBox_rotace->Items->Items[0]->Enabled = true;
 						scComboBox_rotace->Items->Items[1]->Enabled = true;
 						set(ROTACE,ENABLED, false);
-						}  else
+						}
 
+				else
 						{
-						scComboBox_rotace->Items->Items[0]->Enabled = false;
-						scComboBox_rotace->Items->Items[1]->Enabled = false;
-						set(ROTACE,READONLY, false);
-
-
+								if(scComboBox_pohon->ItemIndex!=0)
+								{
+							 //	scComboBox_rotace->Items->Items[0]->Enabled = false;
+							 //	scComboBox_rotace->Items->Items[1]->Enabled = false;
+								set(ROTACE,READONLY, false);
+								}
 						}
 
 				}
-
 						set(ROTACE,READONLY, false);
 						set(ROZESTUP, READONLY, false);
 						scGPNumericEdit1_rx->Enabled=false;
 				}
-				else {
+				else
+				{
 						// ShowMessage(input_state);
-						if (input_state == NOTHING)
+						if (input_state == NOTHING || input_state==NO)
 								// pokud jde o první zobrazení formu - vždy zobrazím takto zámky
 						{
 								RD_zamek = LOCKED;
 								scButton_zamek_RD->ImageIndex = 37;
 							//	Memo1->Lines->Add("zamkni");
 						}
-						else {
-						    //ShowMessage(input_state);
-							 //	RD_zamek = UNLOCKED;
-							//	scButton_zamek_RD->ImageIndex = 38;
+						else // musí zde být i else vìtev - jinak pøi odpøiøazení pohonu nastane situace, že zùstanou 2 zámky uzamèeny, což je špatnì
+						{
+								ShowMessage(input_state);
+							 	RD_zamek = UNLOCKED;
+								scButton_zamek_RD->ImageIndex = 38;
 							//	Memo1->Lines->Add("odemkni");
 						}
 						set(RYCHLOST, ENABLED, false);
@@ -2729,22 +2768,36 @@ void TForm_parametry::Pohon_pouzivan()
 
 // ---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender) {
-		if (scComboBox_rezim->ItemIndex == 2) { // PP režim schování zámkù
+void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender)
+{
+		if (scComboBox_rezim->ItemIndex == 2)
+		{ // PP režim schování zámkù
 				scButton_zamek_DD->Visible = false;
 				scButton_K_zamek->Visible = false;
 		}
+
 		 //	ShowMessage(input_clicked_edit);
-			if (input_state==NOTHING && scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&
-						input_clicked_edit == Rotace_klik) {
-					 if(scButton_zamek_RD->Visible==true){
-						Form1->MB
-								("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.",
-								MB_OK);
-						scComboBox_rotace->Items->Items[0]->Enabled = false;
-						scComboBox_rotace->Items->Items[1]->Enabled = false;
-							}
+			if (input_state==NOTHING && scComboBox_rezim->ItemIndex == 1 && scButton_zamek_RD->ImageIndex == 37)
+			{
+					 if(scButton_zamek_RD->Enabled)
+					 {
+
+						if(scButton_zamek_RD->ImageIndex == 37)
+								{
+								 RD_zamek=UNLOCKED;
+								 scButton_zamek_RD->ImageIndex = 38;
+
+								 scButton_zamek_DD->ImageIndex = 37;
+								 DD_zamek = LOCKED;
+
+								 CT_zamek=UNLOCKED;
+								 scButton_zamek_CT->ImageIndex = 38;
+
+								 vypis("Byl odemèen zámek rychlosti pohonu",false);
 								}
+					 }
+			}
+
 }
 // ---------------------------------------------------------------------------
 //
@@ -2916,11 +2969,11 @@ void TForm_parametry::Check_rozmezi_RD() {
 
  void __fastcall TForm_parametry::scGPNumericEdit1_rxChange(TObject *Sender)
 {
-						double  mezer=0;
-  	if (DMunit == MM) // pokud je v milimetrech, tak pøepne na metry
-		{
-							mezer=scGPNumericEdit_mezera->Value/1000;
-		} else	  mezer=scGPNumericEdit_mezera->Value;
+        double  mezer=0;
+				if (DMunit == MM) // pokud je v milimetrech, tak pøepne na metry
+				{
+									mezer=scGPNumericEdit_mezera->Value/1000;
+				} else	  mezer=scGPNumericEdit_mezera->Value;
 
 
 				double roztec=0;
@@ -2928,19 +2981,15 @@ void TForm_parametry::Check_rozmezi_RD() {
 				double rotace=0;
 				double rx=0;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-				if (P != NULL) roztec=P->roztec;  else  roztec=0;
+				if (P != NULL) roztec=P->roztec;  else  roztec=0;    // pokud existuje pohon, vrátím si jeho rozteè
 
 
-				if(scComboBox_rotace->ItemIndex==0)
-				{
-					delka =Form1->d.v.PP.delka_voziku; rotace=0;
-				} else
-					{
-					delka = Form1->d.v.PP.sirka_voziku; rotace=90;
-					}
+				if(scComboBox_rotace->ItemIndex==0)rotace=0;
+				else rotace=1;
 
 
-		if (P != NULL)rx=Form1->m.Rx(pm.dV,pm.sV,rotace,mezer,roztec);
+
+		if (P != NULL)rx=Form1->m.Rx(pm.dV,pm.sV,rotace,mezer,roztec);  // vypoèítám si Rx
 		else rx=0;
 				//Memo1->Lines->Add(rx);
  double mezera=Form1->m.mezera(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,scGPNumericEdit1_rx->Value,roztec);
