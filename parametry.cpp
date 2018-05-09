@@ -207,21 +207,7 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 
 				//nastaví edity, podle toho, zdali je pohon používán èi nikoliv - volat až po setForm4Režim
 				Pohon_pouzivan();
-
-
-
-   if(RD_zamek==LOCKED)
-	 {
-    //pøevod jednotek
-    double mezera=scGPNumericEdit_mezera->Value;
-		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
-
-		if(Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera)){set(ROTACE,ENABLED,false); /*ShowMessage("povolena rotace pøi RD zamcen");*/  }
-		else set(ROTACE,READONLY,false);
-	 }
-		else set(ROTACE,ENABLED,false);
-
-
+				Povol_comboRotace();
 
 
 				if(scComboBox_rezim->ItemIndex == 0) scGPNumericEdit_pozice->Value=1;
@@ -3371,3 +3357,17 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 
 //---------------------------------------------------------------------------
 
+void	TForm_parametry::Povol_comboRotace(){
+
+	 if(RD_zamek==LOCKED)
+	 {
+		//pøevod jednotek
+		double mezera=scGPNumericEdit_mezera->Value;
+		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
+
+		if(Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera)){set(ROTACE,ENABLED,false); /*ShowMessage("povolena rotace pøi RD zamcen");*/  }
+		else set(ROTACE,READONLY,false);
+	 }
+		else set(ROTACE,ENABLED,false);
+
+	}
