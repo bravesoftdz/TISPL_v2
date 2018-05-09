@@ -397,10 +397,10 @@ double Cmy::UDJ(double dJ,double sJ,double rotace)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
-bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera)
+bool Cmy::lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera)
 {
 	bool RET=false;
-	if(fabs(UDV(0)-UDV(90)<=mezera)RET=true;
+	if(fabs(UDV(0)-UDV(90))<=mezera)RET=true;
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
