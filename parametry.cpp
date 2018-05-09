@@ -2185,6 +2185,18 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 		}
 }
 // ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender)
+{
+
+	if(form_zobrazen)
+		{
+			input_clicked_edit = Rotace_klik;
+			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
+			Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
+		}
+
+}
+//---------------------------------------------------------------------------
 
 void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_clicked_edit E, bool ikonka)
 {
@@ -3311,3 +3323,4 @@ void	TForm_parametry::Povol_comboRotace(){
 		else set(ROTACE,ENABLED,false);
 
 	}
+

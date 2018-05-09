@@ -130,6 +130,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_viewClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
+	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
