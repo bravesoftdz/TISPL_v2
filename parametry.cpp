@@ -1983,17 +1983,6 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender) {
 		input_clicked_edit = CT_klik;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, CT_klik, false);
 }
-
-void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender) {
-
-		if(form_zobrazen)
-		{
-		input_clicked_edit = Rotace_klik;
-			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
-		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
-		}
-}
-
 // ---------------------------------------------------------------------------
 // doplnit komentáø
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Click(TObject *Sender) {
@@ -2193,6 +2182,16 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 		Form_poznamky->ShowModal();
 }
 // ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender)
+{
+		if(form_zobrazen)
+		{
+			input_clicked_edit = Rotace_klik;
+			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
+			Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
+		}
+}
+// ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 {
 		if (scComboBox_rezim->ItemIndex == 2 && input_state == NOTHING && input_clicked_edit == Rotace_klik)
@@ -2239,18 +2238,24 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 				 {
 					//vždy dovolím volání input_m bez ohledu, zda vyjde RD OK vùèi rozteèi
 					// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
-						if (Kontrola_mezery() == scGPNumericEdit_mezera->Value)//odkomentoval M 7.5.2018
+
+//						double mezera=scGPNumericEdit_mezera->Value;
+//						if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
+//
+//						if (Kontrola_mezery() == mezera || fabs(F->m.UDV(0)-F->m.UDV(90))<=mezera)//odkomentoval a doplnil M 7.5.2018
 						{
 							 // Memo1->Lines->Add("volam input M z rotace");
+
 								INPUT();
+								//pm.M=F->m.mezera(pm.dV,pm.sV,pm.Rotace,pm.Rx,pm.R);
+								pm.M=F->m.Rz(pm.RD)-F->m.UDV(pm.Rotace);
 								pm.input_M();
 								OUTPUT();
 						}
-						else //pøidal M 7.5.2018
-						Kontrola_mezery();//pøidal M 7.5.2018
-
-				}
-				//Nacti_rx();//toto je tu nyní navíc pokud používám výše uvedené//M - pøidal 5. kvìtna 2018, test, chybìla aktualizace Rz a Rx po rotaci vozíku
+//						else //pøidal M 7.5.2018
+//						Kontrola_mezery();//pøidal M 7.5.2018
+				 }
+				 //Nacti_rx();//zakomentoval M 7.5.2018 toto je tu nyní navíc pokud používám výše uvedené//M - pøidal 5. kvìtna 2018, test, chybìla aktualizace Rz a Rx po rotaci vozíku
 		}
 }
 // ---------------------------------------------------------------------------
