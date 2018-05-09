@@ -124,7 +124,6 @@ __published:	// IDE-managed Components
 	void __fastcall scComboBox_rotaceChange(TObject *Sender);
 	void __fastcall scButton_K_zamekClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceEnter(TObject *Sender);
-	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
 	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);

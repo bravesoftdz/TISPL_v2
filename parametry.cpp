@@ -2182,80 +2182,20 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 		Form_poznamky->ShowModal();
 }
 // ---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender)
-{
-		if(form_zobrazen)
-		{
-			input_clicked_edit = Rotace_klik;
-			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
-			Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
-		}
-}
-// ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 {
-		if (scComboBox_rezim->ItemIndex == 2 && input_state == NOTHING && input_clicked_edit == Rotace_klik)
+		if (input_state == NOTHING)//ošetøení pouzekvùli formshow
 		{
-				input_M(); // pøepoèet hodnot vyplývajících ze zmìny CT  pro režim PP
-		}
-		// KK režim zavolání input_M
-		if (input_state == NOTHING)
-		{
-//				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled)
-//				{
-//						if(scGPNumericEdit_RD->ReadOnly==false && scButton_zamek_RD->Enabled)
-//						{
-//
-//							if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
-//								{
-//								 RD_zamek=UNLOCKED;
-//								 scButton_zamek_RD->ImageIndex = 38;
-//
-//								 scButton_zamek_DD->ImageIndex = 37;
-//								 DD_zamek = LOCKED;
-//
-//								 CT_zamek=UNLOCKED;
-//								 scButton_zamek_CT->ImageIndex = 38;
-//
-//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
-//								}
-//							// ShowMessage(input_clicked_edit);
-//						 //	Form1->MB("Pokud chcete zmìnit orientaci jigu, je nejprve nutné odemknutím zámku rychlosti pohonu povolit zmìnu hodnoty.");
-//						}
-//						//scComboBox_rotace->Items->Items[0]->Enabled = false;
-//						//scComboBox_rotace->Items->Items[1]->Enabled = false;
-//						// scComboBox_rotace->ItemIndex=0;  // zaène se cyklit - zde by to chtìlo close combobox
-//				}
-				if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED && input_clicked_edit == Rotace_klik && scButton_zamek_RD->Enabled==false)
-				{
-						//if podminka splnena - povolim zmenu orientace
-						scComboBox_rotace->Items->Items[0]->Enabled = true;
-						scComboBox_rotace->Items->Items[1]->Enabled = true;
-				}
+			//pøíprava jednotek
+			double mezera=scGPNumericEdit_mezera->Value;
+			if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
 
-				// není zamèeno - doporuèím mezeru
-				if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == Rotace_klik)
-				 {
-					//vždy dovolím volání input_m bez ohledu, zda vyjde RD OK vùèi rozteèi
-					// pro pøípad kdy orotuji jig a vyplnìná mezera z pøedtím bude OK, èili pak hned volám input M
-
-//						double mezera=scGPNumericEdit_mezera->Value;
-//						if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
-//
-//						if (Kontrola_mezery() == mezera || fabs(F->m.UDV(0)-F->m.UDV(90))<=mezera)//odkomentoval a doplnil M 7.5.2018
-						{
-							 // Memo1->Lines->Add("volam input M z rotace");
-
-								INPUT();
-								//pm.M=F->m.mezera(pm.dV,pm.sV,pm.Rotace,pm.Rx,pm.R);
-								pm.M=F->m.Rz(pm.RD)-F->m.UDV(pm.Rotace);
-								pm.input_M();
-								OUTPUT();
-						}
-//						else //pøidal M 7.5.2018
-//						Kontrola_mezery();//pøidal M 7.5.2018
-				 }
-				 //Nacti_rx();//zakomentoval M 7.5.2018 toto je tu nyní navíc pokud používám výše uvedené//M - pøidal 5. kvìtna 2018, test, chybìla aktualizace Rz a Rx po rotaci vozíku
+      //výpoèet zmìných souvisejícíh parametrù
+			INPUT();
+			//dodateèné dosazení (suplování INPUT()) aktální nové èi popø. staronové mezery, musí být až za samotným INPUT
+			F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,mezera);//po rotaci je nová mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
+			pm.input_M();//výloní výpoètu ostatních parametrù z nové èi staronové mezery
+			OUTPUT();
 		}
 }
 // ---------------------------------------------------------------------------
