@@ -1985,6 +1985,7 @@ object Form_parametry: TForm_parametry
     ParentShowHint = False
     ShowHint = True
     TabOrder = 16
+    OnClick = scComboBox_rotaceClick
     OnEnter = scComboBox_rotaceEnter
     ContentMargin = 0
     AutoComplete = False
