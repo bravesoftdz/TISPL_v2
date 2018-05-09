@@ -41,6 +41,8 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner)
 		CT_zamek = UNLOCKED;
 		DD_zamek = UNLOCKED;
 		RD_zamek = LOCKED;
+		// povolení/ zakázání nastavení combo rotace, podle nastavení zámku RD a použití pohonu
+	 //	Povol_comboRotace();
 }
 
 // ---------------------------------------------------------------------------
@@ -207,7 +209,8 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 
 				//nastaví edity, podle toho, zdali je pohon používán èi nikoliv - volat až po setForm4Režim
 				Pohon_pouzivan();
-				Povol_comboRotace();
+				// povolení/ zakázání nastavení combo rotace, podle nastavení zámku RD a použití pohonu
+			 //	Povol_comboRotace();
 
 
 				if(scComboBox_rezim->ItemIndex == 0) scGPNumericEdit_pozice->Value=1;
@@ -2068,6 +2071,9 @@ void TForm_parametry::INPUT()
 		if (DD_zamek == LOCKED) DD_locked = true;	else DD_locked = false;
 		if (K_zamek == LOCKED) K_locked = true;   else K_locked = false;
 
+		//povolí nebo zakáže vstup do zmìny rotace
+		Povol_comboRotace();
+
 		//////////////////////// prevody jednotek///////////////////////////////
 		if (CTunit == MIN) CT *= 60.0;// pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
 		if (RDunitT == MIN)RD /= 60.0;//opravdu dìleno
@@ -2445,33 +2451,29 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 
 						}
 
-						if (E == C_klik || E == P_klik) {
+						if (E == C_klik || E == P_klik)
+						{
 								scButton_K_zamek->Visible = false;
 
-								if(scGPNumericEdit_CT->Value>=Form1->d.v.PP.TT) {  //CT je vetsi nez TT
+								if(scGPNumericEdit_CT->Value>=Form1->d.v.PP.TT)
+								{  //CT je vetsi nez TT
 
-								if(CT_zamek==LOCKED){
+										if(CT_zamek==LOCKED)
+										{
+										 CT_zamek=UNLOCKED;
+										 scButton_zamek_CT->ImageIndex = 38;
 
-								 CT_zamek=UNLOCKED;
-								 scButton_zamek_CT->ImageIndex = 38;
+										 scButton_zamek_RD->ImageIndex = 37;
+										 RD_zamek = LOCKED;
 
-								 scButton_zamek_RD->ImageIndex = 37;
-								 RD_zamek = LOCKED;
-
-									scButton_zamek_DD->ImageIndex = 38;
-									DD_zamek = UNLOCKED;
-
-									 }
-
-
-								} else //CT je menší než TT
-								{
-
-
+											scButton_zamek_DD->ImageIndex = 38;
+											DD_zamek = UNLOCKED;
+										}
 
 								}
 						}
-						if (E == Rotace_klik) {
+						if (E == Rotace_klik)
+						{
 						scButton_K_zamek->Visible = false;
 
 //								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
@@ -3311,7 +3313,7 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 
 void	TForm_parametry::Povol_comboRotace(){
 
-	 if(RD_zamek==LOCKED)
+	 if(RD_zamek==LOCKED || scButton_zamek_RD->ImageIndex==37)  //37 pouze pojistka podminky, kdyby nekde nesedel korektne stav zamku tak imageindex je vzdy OK
 	 {
 		//pøevod jednotek
 		double mezera=scGPNumericEdit_mezera->Value;
@@ -3319,6 +3321,7 @@ void	TForm_parametry::Povol_comboRotace(){
 
 		if(Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera)){set(ROTACE,ENABLED,false); /*ShowMessage("povolena rotace pøi RD zamcen");*/  }
 		else set(ROTACE,READONLY,false);
+
 	 }
 		else set(ROTACE,ENABLED,false);
 
