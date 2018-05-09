@@ -2033,6 +2033,7 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
 {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
+		Povol_comboRotace();
 }
 // ---------------------------------------------------------------------------
 void TForm_parametry::INPUT()
@@ -3317,7 +3318,10 @@ void	TForm_parametry::Povol_comboRotace(){
 		double mezera=scGPNumericEdit_mezera->Value;
 		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
 
-		if(Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera)){set(ROTACE,ENABLED,false); /*ShowMessage("povolena rotace pøi RD zamcen");*/  }
+		if(Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera))
+		{
+		set(ROTACE,ENABLED,false); ShowMessage("povolena rotace pøi RD zamcen - shodne RzRxRD..");
+		}
 		else set(ROTACE,READONLY,false);
 
 	 }
