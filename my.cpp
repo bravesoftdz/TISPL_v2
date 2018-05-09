@@ -396,6 +396,14 @@ double Cmy::UDJ(double dJ,double sJ,double rotace)
 	else return sJ;// šíøka vozíku
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
+bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera)
+{
+	bool RET=false;
+	if(fabs(UDV(0)-UDV(90)<=mezera)RET=true;
+	return RET;
+}
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 {
 	if(rychlost_dopravniku==0 || delka==0)return 0;//pozor mùže být zavadìjící
