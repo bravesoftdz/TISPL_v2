@@ -2176,7 +2176,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 {
-		if (input_state == NOTHING)//ošetøení pouzekvùli formshow
+		if (input_state == NOTHING)//ošetøení pouze kvùli formshow, další ošetøení zda možno rotovat èi nikoliv øeští Rosa extra metoudou na úrovni zamèeného èi odemèeného zámku
 		{
 			//pøíprava jednotek
 			double mezera=scGPNumericEdit_mezera->Value;
@@ -2185,25 +2185,23 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
       //výpoèet zmìných souvisejícíh parametrù
 			INPUT();
 			//dodateèné dosazení (suplování INPUT()) aktální nové èi popø. staronové mezery, musí být až za samotným INPUT
-			F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,mezera);//po rotaci je nová mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
-			pm.input_M();//výloní výpoètu ostatních parametrù z nové èi staronové mezery
+			pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,mezera);//po rotaci je nová mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
+			pm.input_M();//výpoèet ostatních parametrù z nové èi staronové mezery
 			OUTPUT();
+			Nacti_rx();
 		}
 }
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender)
 {
-
-	if(form_zobrazen)
+		if(form_zobrazen)
 		{
 			input_clicked_edit = Rotace_klik;
 			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
 			Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
 		}
-
 }
 //---------------------------------------------------------------------------
-
 void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_clicked_edit E, bool ikonka)
 {
 
