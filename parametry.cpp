@@ -2542,20 +2542,20 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						if (E == Rotace_klik) {
 						scButton_K_zamek->Visible = false;
 
-								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
-								{
-
-								 RD_zamek=UNLOCKED;
-								 scButton_zamek_RD->ImageIndex = 38;
-
-								 scButton_zamek_DD->ImageIndex = 37;
-								 DD_zamek = LOCKED;
-
-								 CT_zamek=UNLOCKED;
-								 scButton_zamek_CT->ImageIndex = 38;
-
-								 vypis("Byl odemèen zámek rychlosti pohonu",false);
-								}
+//								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
+//								{
+//
+//								 RD_zamek=UNLOCKED;
+//								 scButton_zamek_RD->ImageIndex = 38;
+//
+//								 scButton_zamek_DD->ImageIndex = 37;
+//								 DD_zamek = LOCKED;
+//
+//								 CT_zamek=UNLOCKED;
+//								 scButton_zamek_CT->ImageIndex = 38;
+//
+//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
+//								}
 						}
 
 				}
@@ -2780,25 +2780,39 @@ void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender)
 		}
 
 		 //	ShowMessage(input_clicked_edit);
-			if (input_state==NOTHING && scComboBox_rezim->ItemIndex == 1 && scButton_zamek_RD->ImageIndex == 37)
+			if (input_state==NOTHING && scComboBox_rezim->ItemIndex == 1 /*&& scButton_zamek_RD->ImageIndex == 37*/)
 			{
-					 if(scButton_zamek_RD->Enabled)
-					 {
+			double mezera =0;
 
-						if(scButton_zamek_RD->ImageIndex == 37)
-								{
-								 RD_zamek=UNLOCKED;
-								 scButton_zamek_RD->ImageIndex = 38;
+			if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000;
+			else mezera = scGPNumericEdit_mezera->Value;
 
-								 scButton_zamek_DD->ImageIndex = 37;
-								 DD_zamek = LOCKED;
+			if(!Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera))
+			{
+			 Form1->MB("Zmìna rotace by mìla vliv na rychlost pohonu. Pokud si pøejete zmìnit rotaci, povolte nejdøíve zmìnu rychlosti pohonu.");
+			}
+			else
+			{
+       Form1->MB("RD nebude ovlivnìn, pøepoèítám");
 
-								 CT_zamek=UNLOCKED;
-								 scButton_zamek_CT->ImageIndex = 38;
-
-								 vypis("Byl odemèen zámek rychlosti pohonu",false);
-								}
-					 }
+			}
+//					 if(scButton_zamek_RD->Enabled)
+//					 {
+//
+//						if(scButton_zamek_RD->ImageIndex == 37)
+//								{
+//								 RD_zamek=UNLOCKED;
+//								 scButton_zamek_RD->ImageIndex = 38;
+//
+//								 scButton_zamek_DD->ImageIndex = 37;
+//								 DD_zamek = LOCKED;
+//
+//								 CT_zamek=UNLOCKED;
+//								 scButton_zamek_CT->ImageIndex = 38;
+//
+//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
+//								}
+//					 }
 			}
 
 }
