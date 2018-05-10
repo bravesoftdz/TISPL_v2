@@ -1906,10 +1906,10 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 // kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
-		INPUT();
-	 	OUTPUT();
-		Pohon_pouzivan();
-		Nacti_rx();
+//		INPUT();
+//		OUTPUT();
+//		Pohon_pouzivan();
+//		Nacti_rx();
 
 
 		if(scComboBox_rezim->ItemIndex!=1)
@@ -1922,27 +1922,30 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
 				if (obj!=NULL)
 				{
-				double RD=obj->RD;
-				if (RDunitT == MIN)RD *= 60.0;
-				if (RDunitD == MM) RD /= 1000.0;
 
+				Memo1->Lines->Add(obj->RD);
+				Memo1->Lines->Add(obj->mezera);
+				Memo1->Lines->Add(obj->rotace);
+//
+//				double RD=obj->RD;
+//				if (RDunitT == MIN)RD *= 60.0;
+//				if (RDunitD == MM) RD /= 1000.0;
 
-				scGPNumericEdit_RD->Value=RD;
+				scGPNumericEdit_RD->Value=obj->RD*60;
 				scGPNumericEdit_mezera->Value=obj->mezera;
-				//Memo1->Lines->Add(obj->rotace);
-
-					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
-					else scComboBox_rotace->ItemIndex=1;
-
-					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
-				}
-				else
-				{
-					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
-					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 
-				Memo1->Lines->Add(scComboBox_rotace->ItemIndex);
+//					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
+//					else scComboBox_rotace->ItemIndex=1;
+//
+//					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+//				}
+//				else
+//				{
+//					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
+//					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+//				}
+
 		}
 }
 // ---------------------------------------------------------------------------
