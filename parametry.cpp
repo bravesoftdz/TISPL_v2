@@ -1993,6 +1993,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender) {
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Click(TObject *Sender) {
 		input_clicked_edit = RD_klik;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, RD_klik, false);
+		Povol_comboRotace();
 
 }
 
