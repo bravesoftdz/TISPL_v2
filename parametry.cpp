@@ -201,21 +201,6 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 						scButton_K_zamek->ImageIndex = 37;
 
 				}
-				double return_rotace_index=0;
-				// ShowMessage(scComboBox_rezim->ItemIndex);
-				 if(scComboBox_rezim->ItemIndex==2)
-				 {
-
-				 return_rotace_index=scComboBox_rotace->ItemIndex;
-					}
-					if(scComboBox_rezim->ItemIndex==1){
-
-						scComboBox_rotace->ItemIndex=return_rotace_index;
-					}
-
-
-
-
 				// nadesignování a napozicování komponent dle zvoleného režimu
 				setForm4Rezim(scComboBox_rezim->ItemIndex);
 				// resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
@@ -1061,7 +1046,7 @@ void TForm_parametry::input_K() {
 		input_state = K;
 		INPUT();
 		double CT = scGPNumericEdit_CT->Value; // CT od uživatele
-		if (CTunit == MIN)CT = CT * 60.0; // pokud bylo zadání v minutách pøevede na sekundy
+		if (CTunit == MIN)CT = CT * 60.0; //REVIZE pokud bylo zadání v minutách pøevede na sekundy
 		double K = scGPNumericEdit_kapacita->Value; // K od uživatele
 
 		//if (K > 0)   // shodne volání pro KK i PP režimy
@@ -1082,16 +1067,16 @@ void TForm_parametry::input_K() {
 		}
 
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
-		 OUTPUT();       je takto vyseparovano output správnì?
+		 OUTPUT(); //REVIZE  -    je takto vyseparovano output správnì? Ano výpoèetní model vráti data a dále pokud je splnìn IF tak se zaènou data porovnávat
 
 			if(scComboBox_rezim->ItemIndex==1 && scButton_zamek_RD->ImageIndex==38 && scComboBox_pohon->ItemIndex>0)
 		{  // u KK probíhá kontrola vypoèítaných dat a doporuèí K pokud RD!=dopRD
 
 				double roztec=0;
 				double RD=scGPNumericEdit_RD->Value;
-				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//správnì
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//REVIZE správnì
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
-				double CT =scGPNumericEdit_CT->Value;
+			//	double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
 				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
@@ -1100,10 +1085,11 @@ void TForm_parametry::input_K() {
 
 				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
 
-				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }  špatnì proè znovu RD*=60
-				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
+
+		 //		if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; } //REVIZE- pøevod je za úèelem následného výpoètu pro K, špatnì proè znovu RD*=60
+			 //	if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;} //REVIZE -  tento pøevod již není používán
 				if (DDunit == MM)  DD = DD / 1000.0;
-				if (CTunit == M)  CT = CT / 60.0;    je ok?
+			//	if (CTunit == M)  CT = CT / 60.0; //REVIZE - v této metodì se CT nepoužívá,  je ok?
 
 
 			if(dopRD!=RD)
@@ -1111,7 +1097,7 @@ void TForm_parametry::input_K() {
 			//Memo1->Lines->Add(DD);
 		 //	Memo1->Lines->Add(dopRD);
 			//Memo1->Lines->Add(Form1->d.v.PP.TT);
-				K =  (DD/dopRD) / (Form1->d.v.PP.TT/60.0);
+				K =  (DD/dopRD) / (Form1->d.v.PP.TT);
 				vypis("Doporuèená kapacita : " +AnsiString(K) +" ");
 				VID=32;
 			}
@@ -1160,7 +1146,7 @@ void TForm_parametry::input_P() {
 				double RD=scGPNumericEdit_RD->Value;
 				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
-				double CT =scGPNumericEdit_CT->Value;
+//				double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
 				double Pozice = scGPNumericEdit_pozice->Value;
 				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
@@ -1170,15 +1156,15 @@ void TForm_parametry::input_P() {
 
 				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
 
-				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }
-				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
+//				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }   //REVIZE - K poèítan bez pøevodu, není nutné zde pøevádìt
+		 //		if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
 				if (DDunit == MM)  DD = DD / 1000.0;
-				if (CTunit == M)  CT = CT / 60.0;
+//				if (CTunit == M)  CT = CT / 60.0;
 
 
 			if(dopRD!=RD)
 			{
-				K =  (DD/dopRD) / (Form1->d.v.PP.TT/60.0);
+				K =  (DD/dopRD) / (Form1->d.v.PP.TT);
 				//Memo1->Lines->Add(K);
 				double dop_K =  pm.K2P(K);
 				if(dop_K != Pozice )  {
@@ -1206,7 +1192,7 @@ void TForm_parametry::input_CT() {
 		 {
 				double roztec=0;
 				double RD=scGPNumericEdit_RD->Value;
-				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//správnì
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//správnì  - pøevedu do m/s kvùli použití v metodì
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =0;
 				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
@@ -1216,15 +1202,14 @@ void TForm_parametry::input_CT() {
 
 				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
 
-				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }špatnì  a proè je tam duplicitní RD*=60, když je výše
-				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;} to samé
+			 //	if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; } //REVIZE - pøevod k nièemu
+				//if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;} //REVIZE - již se nepoužívá, to samé
 				if (DDunit == MM)  DD = DD / 1000.0;
-
 
 					if(dopRD!=RD)
 
 					{
-						CT = DD/dopRD*60.0;  proè když už je pøevedeno dopRD na sekundy výše pøípadnì bacha na závorky
+						CT = DD/dopRD; //REVIZE - upraveno bez pøevodu,  proè když už je pøevedeno dopRD na sekundy výše pøípadnì bacha na závorky
 						if(Form1->ms.MyToDouble(CT)!=Form1->ms.MyToDouble(scGPNumericEdit_CT->Value))
 						{
 						vypis("Doporuèený techn.èas : " +AnsiString(CT) +" s ");
@@ -1276,19 +1261,16 @@ void TForm_parametry::input_DD() {
 
 				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
 
-				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }
-				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
-				if (DDunit == MM) { DD = DD / 1000.0; }
-				if (CTunit == M)  CT = CT / 60.0;
+			//	if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }  //REVIZE - pøevody nejsou nutné
+			//	if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
+			//	if (DDunit == MM) { DD = DD / 1000.0; }
+			//	if (CTunit == M)  CT = CT / 60.0;
 
 					if(dopRD!=RD)
 
 					{
 
 					double	 DD_dop = CT*dopRD;
-
-				 //	Memo1->Lines->Add(DD_dop);
-				 //	Memo1->Lines->Add(DD);
 
 						if(Form1->ms.MyToDouble(DD_dop)!= Form1->ms.MyToDouble(DD))
 						{
@@ -1848,7 +1830,7 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 		INPUT();
 		double	K=scGPNumericEdit_kapacita->Value;
 		double  CT=scGPNumericEdit_CT->Value; // CT od uživatele
-		if (CTunit == MIN) CT = CT * 60.0; // pokud bylo zadání v minutách pøevede na sekundy
+		if (CTunit == MIN) CT = CT * 60.0; //REVIZE pokud bylo zadání v minutách pøevede na sekundy
 
 		if (CT / Form1->d.v.PP.TT <= K && scButton_zamek_CT->Visible==true  && CT_zamek == LOCKED  && Form1->pom->n>1 && CT<Form1->d.v.PP.TT){
 		// Memo1->Lines->Add("volam KK s false ");
@@ -1924,10 +1906,12 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 // kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
-		INPUT();
-	 	OUTPUT();
-		Pohon_pouzivan();
-		Nacti_rx();
+//		INPUT();
+//		OUTPUT();
+//		Pohon_pouzivan();
+//		Nacti_rx();
+
+
 		if(scComboBox_rezim->ItemIndex!=1)
 		{
 			scButton_zamek_CT->Enabled=true;
@@ -1938,27 +1922,30 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
 				if (obj!=NULL)
 				{
-				double RD=obj->RD;
-				if (RDunitT == MIN)RD *= 60.0;
-				if (RDunitD == MM) RD /= 1000.0;
 
+				Memo1->Lines->Add(obj->RD);
+				Memo1->Lines->Add(obj->mezera);
+				Memo1->Lines->Add(obj->rotace);
+//
+//				double RD=obj->RD;
+//				if (RDunitT == MIN)RD *= 60.0;
+//				if (RDunitD == MM) RD /= 1000.0;
 
-				scGPNumericEdit_RD->Value=RD;
+				scGPNumericEdit_RD->Value=obj->RD*60;
 				scGPNumericEdit_mezera->Value=obj->mezera;
-				//Memo1->Lines->Add(obj->rotace);
-
-					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
-					else scComboBox_rotace->ItemIndex=1;
-
-					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
-				}
-				else
-				{
-					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
-					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 
-				Memo1->Lines->Add(scComboBox_rotace->ItemIndex);
+//					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
+//					else scComboBox_rotace->ItemIndex=1;
+//
+//					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+//				}
+//				else
+//				{
+//					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
+//					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+//				}
+
 		}
 }
 // ---------------------------------------------------------------------------
