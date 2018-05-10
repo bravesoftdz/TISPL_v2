@@ -202,7 +202,7 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 
 				}
 				double return_rotace_index=0;
-				 ShowMessage(scComboBox_rezim->ItemIndex);
+				// ShowMessage(scComboBox_rezim->ItemIndex);
 				 if(scComboBox_rezim->ItemIndex==2)
 				 {
 
@@ -3336,7 +3336,6 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 
 //---------------------------------------------------------------------------
 void	TForm_parametry::Povol_comboRotace()
-void	TForm_parametry::Povol_comboRotace()
 {
 
 	if(scComboBox_rezim->ItemIndex==1)
@@ -3356,5 +3355,4 @@ void	TForm_parametry::Povol_comboRotace()
 
 }
 
-	}
 
