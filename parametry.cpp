@@ -201,6 +201,19 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 						scButton_K_zamek->ImageIndex = 37;
 
 				}
+				double return_rotace_index=0;
+				// ShowMessage(scComboBox_rezim->ItemIndex);
+				 if(scComboBox_rezim->ItemIndex==2)
+				 {
+
+				 return_rotace_index=scComboBox_rotace->ItemIndex;
+					}
+					if(scComboBox_rezim->ItemIndex==1){
+
+						scComboBox_rotace->ItemIndex=return_rotace_index;
+					}
+
+
 
 
 				// nadesignování a napozicování komponent dle zvoleného režimu
@@ -1829,7 +1842,8 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 // zámek procesního èasu
 void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 {
-	 	Nastav_zamky(scComboBox_rezim->ItemIndex, CT_klik_ico, empty_klik, true);
+		Nastav_zamky(scComboBox_rezim->ItemIndex, CT_klik_ico, empty_klik, true);
+		scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 
 		INPUT();
 		double	K=scGPNumericEdit_kapacita->Value;
@@ -1853,11 +1867,13 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 // zámek délky dopravníku
 void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender) {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, DD_klik_ico, empty_klik, true);
+		scButton_zamek_DD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 
 }
 
 void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender) {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, C_klik_ico, empty_klik, true);
+		scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 }
 
 // ---------------------------------------------------------------------------
@@ -2033,6 +2049,7 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
 {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
+		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 		Povol_comboRotace();
 }
 // ---------------------------------------------------------------------------
@@ -3325,18 +3342,22 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void	TForm_parametry::Povol_comboRotace()
 {
-	 if(RD_zamek==LOCKED || scButton_zamek_RD->ImageIndex==37)  //37 pouze pojistka podminky, kdyby nekde nesedel korektne stav zamku tak imageindex je vzdy OK
-	 {
-			//pøevod jednotek
-			double mezera=scGPNumericEdit_mezera->Value;
-			if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
 
-			if(Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera))
-			{
-				set(ROTACE,ENABLED,false); ShowMessage("povolena rotace pøi RD zamcen - shodne RzRxRD..");
-			}
-			else set(ROTACE,READONLY,false);
-	 }
+	if(scComboBox_rezim->ItemIndex==1)
+	{
+	 if(RD_zamek==LOCKED || scButton_zamek_RD->ImageIndex==37)  //37 pouze pojistka podminky, kdyby nekde nesedel korektne stav zamku tak imageindex je vzdy OK
+			 {
+				//pøevod jednotek
+				double mezera=scGPNumericEdit_mezera->Value;
+				if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
+
+				if(Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera)) set(ROTACE,ENABLED,false);/* ShowMessage(mezera)*/
+				else set(ROTACE,READONLY,false);
+
+			 }
 	 else set(ROTACE,ENABLED,false);
+	}
+
 }
+
 
