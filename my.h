@@ -46,11 +46,12 @@ class Cmy
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (výstupu vozíku z objektu) v min, rozteèe je v m resp. v m za z minu u rychlosti dopravniku
 	double mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera=0);//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku
+	double mezera(double dV,double sV,double rotace,double Rx,double R);//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace
+	double mezera(double rotace,double Rz);//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace)
 	double Rz(double dV,double sV,double rotace,double M);//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
 	double Rz(double RD);//vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k RD (a resp. TT)
 	double Rx(double dV,double sV,double rotace,double M,double R);//vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
 	double Rx(double RD,double R);//vrátí rozestup v poètech palcù mezi aktivními palci z RD a R (a resp. TT)
-	double mezera(double dV,double sV,double rotace,double Rx,double R);//vrátí mezeru dle rozestupu a velikosti vozíku
 	double dopRD(double dV,double sV,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 	double UDV(double dV,double sV,double rotace);//vratí užitnou délku vozíku
 	double UDV(double rotace);//vratí užitnou délku vozíku, parametry bere z PP

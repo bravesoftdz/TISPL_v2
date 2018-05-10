@@ -2955,7 +2955,7 @@ object Form_parametry: TForm_parametry
   end
   object scGPNumericEdit_pozice: TscGPNumericEdit
     Left = 234
-    Top = 328
+    Top = 330
     Width = 156
     Height = 29
     Options.NormalColor = clWhite

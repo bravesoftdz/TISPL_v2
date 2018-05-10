@@ -2193,8 +2193,9 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 }
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
-{
-		if (input_state == NOTHING)//ošetøení pouze kvùli formshow, další ošetøení zda možno rotovat èi nikoliv øeští Rosa extra metoudou na úrovni zamèeného èi odemèeného zámku
+{   //pozn. ošetøení zda možno rotovat èi nikoliv øeští Rosa extra metoudou na úrovni zamèeného èi odemèeného zámku
+		//nesledující metoda už øeší jen rotaci rotovatelného (tzn. pokud je zamèen RD, tak zda nemá rotace vliv na RD, èi RD odemèen),  a výpoèet souvesejích paramaterù
+		if (input_state == NOTHING)//ošetøení pouze kvùli formshow
 		{
 			//pøíprava jednotek
 			double mezera=scGPNumericEdit_mezera->Value;
@@ -2203,7 +2204,15 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
       //výpoèet zmìných souvisejícíh parametrù
 			INPUT();
 			//dodateèné dosazení (suplování INPUT()) aktální nové èi popø. staronové mezery, musí být až za samotným INPUT
-			pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,mezera);//po rotaci je nová mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
+			//37 pouze pojistka podminky, kdyby nekde nesedel korektne stav zamku tak imageindex je vzdy OK
+			if(RD_zamek == LOCKED || scButton_zamek_RD->ImageIndex == 37)//pokud je zámek zamèený a lze mìnit rotaci jedná se o situaci, kdy se mìní M a nemìní se RD, Rz a Rx
+			{
+				pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			}
+			else//odemèený zámek, tudíž mùžu zmìnit RD a tím pádem M, Rz,Rx, M tedy hledám doporuèenou nejmenší nikoliv nebližší, proto poslední paremetr=0, jinak použit na poslední paremtr lokální promìnnou mezera, pokud bych chtìl hledat nejbližší mezeru
+			{
+				pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,0);//po rotaci je nová mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
+			}
 			pm.input_M();//výpoèet ostatních parametrù z nové èi staronové mezery
 			OUTPUT();
 			Nacti_rx();
@@ -3326,7 +3335,7 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-
+void	TForm_parametry::Povol_comboRotace()
 void	TForm_parametry::Povol_comboRotace()
 {
 
@@ -3342,9 +3351,10 @@ void	TForm_parametry::Povol_comboRotace()
 				else set(ROTACE,READONLY,false);
 
 			 }
-		else set(ROTACE,ENABLED,false);
+	 else set(ROTACE,ENABLED,false);
 	}
 
+}
 
 	}
 

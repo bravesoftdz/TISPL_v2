@@ -330,6 +330,18 @@ double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,d
 	else return 0;//pokud nebude známa rozteè
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace
+double Cmy::mezera(double dV,double sV,double rotace,double Rx,double R)
+{
+	return (Rx*R)-UDV(dV,sV,rotace);
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace)
+double Cmy::mezera(double rotace,double Rz)
+{
+	return Rz-UDV(rotace);
+}
+/////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
 double Cmy::Rz(double dV,double sV,double rotace,double M)
 {
@@ -354,12 +366,6 @@ double Cmy::Rx(double RD,double R)
 {
 	if(R==0) 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
 	else return Rz(RD)/R;
-}
-/////////////////////////////////////////////////////////////////////////////
-//vrátí mezeru dle rozestupu a velikosti vozíku
-double Cmy::mezera(double dV,double sV,double rotace,double Rx,double R)
-{
-	return (Rx*R)-UDV(dV,sV,rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
