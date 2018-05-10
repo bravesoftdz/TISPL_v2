@@ -2175,30 +2175,35 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 		Form_poznamky->ShowModal();
 }
 // ---------------------------------------------------------------------------
+//událost zajišující rotaci jigu, pøi kliknutí do roletky rotace
+//pozn. ošetøení zda možno rotovat èi nikoliv øeští Rosa extra metoudou na úrovni hlídání zamèeného èi odemèeného zámku RD resp. roletky rotace (ta je možná pokud se vozíky vejdou i pøi zamèeném RD, tzn. beze zmìny RD, Rz a Rx, pouze zmìnou M)
+//tzn. nesledující metoda už øeší jen rotaci rotovatelného (tzn. pokud je zamèen RD, tak zda nemá rotace vliv na RD, èi RD odemèen),  a výpoèet souvesejích paramaterù
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
-{   //pozn. ošetøení zda možno rotovat èi nikoliv øeští Rosa extra metoudou na úrovni zamèeného èi odemèeného zámku
-		//nesledující metoda už øeší jen rotaci rotovatelného (tzn. pokud je zamèen RD, tak zda nemá rotace vliv na RD, èi RD odemèen),  a výpoèet souvesejích paramaterù
+{
 		if (input_state == NOTHING)//ošetøení pouze kvùli formshow
 		{
-			//pøíprava jednotek
-			double mezera=scGPNumericEdit_mezera->Value;
-			if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
-
-      //výpoèet zmìných souvisejícíh parametrù
-			INPUT();
-			//dodateèné dosazení (suplování INPUT()) aktální nové èi popø. staronové mezery, musí být až za samotným INPUT
+			INPUT();//nahrání hodnot z PO pro výpoèetní model
+			//dodateèné dosazení (suplování INPUT() pomocí pm.M) aktuální nové èi popø. staronové mezery, musí být až za samotným INPUT
 			//37 pouze pojistka podminky, kdyby nekde nesedel korektne stav zamku tak imageindex je vzdy OK
-			if(RD_zamek == LOCKED || scButton_zamek_RD->ImageIndex == 37)//pokud je zámek zamèený a lze mìnit rotaci jedná se o situaci, kdy se mìní M a nemìní se RD, Rz a Rx
+			if(RD_zamek == LOCKED || scButton_zamek_RD->ImageIndex == 37)//pokud je zámek RD zamèený a lze mìnit rotaci jedná se o situaci, kdy se mìní M a nemìní se RD, Rz a Rx
 			{
-				pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+				pm.M=F->m.mezera(pm.Rotace,pm.Rz);//jedná se o situaci, kdy se mìní M a nemìní se RD, Rz a Rx
 			}
-			else//odemèený zámek, tudíž mùžu zmìnit RD a tím pádem M, Rz,Rx, M tedy hledám doporuèenou nejmenší nikoliv nebližší, proto poslední paremetr=0, jinak použit na poslední paremtr lokální promìnnou mezera, pokud bych chtìl hledat nejbližší mezeru
+			else//odemèený zámek, tudíž mùžu zmìnit RD a tím pádem M, Rz,Rx. M tedy hledám doporuèenou nejmenší (poslední parametr=0 neboé nebližší) dle rozhodnutí uživatele pomocí MB, MB pouze není zobrazen, pokud nemá smysl zobrazovat
 			{
-				pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,0);//po rotaci je nová mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
+				if(F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,F->m.mezera(pm.Rotace,pm.Rz))==F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,0))//pokud nemá cenu MB zobrazovat, jedná se stejnì o nejmenší možnou mezeru, tak ji použije rovnou bez zobrazení MB
+					pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,0);//po rotaci je nová nejmenší možná mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
+				else
+				{
+					if(mrYes==F->MB("Chcete zachovat co nejbližší možný rozestup? Pokud ne, bude nalezen nejmenší možný rozestup.",MB_YESNO))
+						pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,F->m.mezera(pm.Rotace,pm.Rz));//bude nalezena nejbližší možná dle pùvodního Rz
+					else
+						pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,0);//po rotaci je nová nejmenší možná mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
+				}
 			}
-			pm.input_M();//výpoèet ostatních parametrù z nové èi staronové mezery
-			OUTPUT();
-			Nacti_rx();
+			pm.input_M();//výpoèet ostatních parametrù z nové èi pøípadnì staronové mezery
+			OUTPUT();//návrat do PO po výpoètu
+			Nacti_rx();//aktualizace hodnot Rz, Rx
 		}
 }
 // ---------------------------------------------------------------------------
