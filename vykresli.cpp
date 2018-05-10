@@ -1774,9 +1774,8 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jednoduché orámování
 
 	////vykreslení řetězu a palců řetězu
-	if(O->pohon!=NULL)
+	if(O->pohon!=NULL && O->rezim==1)//řetez - je-li přiřazen pohon a jedná se kontinuální režim
 	{
-		//řetez - je-li přiřazen pohon
 		canv->Pen->Color=clBlack;
 		canv->Pen->Width=F->Zoom*0.5;
 		canv->MoveTo(m.L2Px(X),m.L2Py(Y));

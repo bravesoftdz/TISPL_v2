@@ -356,6 +356,10 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
 						set(ROZESTUP, HIDE);
+						//hlavièkové komponenty
+						scGPGlyphButton_view->Visible=true;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_view->Width;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_view->Width;
 				} break;
 		case 12: // POSTPROCESNÍ - NÁVRHÁØ
 				{
@@ -371,6 +375,10 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
 						set(ROZESTUP, HIDE);
+						//hlavièkové komponenty
+						scGPGlyphButton_view->Visible=true;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_view->Width;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_view->Width;
 				} break;
 		case 13: // SG - NÁVRHÁØ  - ROZŠÍØENÉ
 				{
@@ -1671,52 +1679,86 @@ void __fastcall TForm_parametry::rHTMLLabel_mezeraClick(TObject *Sender)
 void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 		TShiftState Shift)
 {
-		if (Key == 13) // ENTER
-		{
-				if (scGPButton_OK->Enabled)
-						// pokud jsou zároveò splnìny podmínky pro stisk OK
-				{
-						Form_parametry->ModalResult = mrOk;
-						// vrátí stejnou hodnotu jako tlaèítko
-						Form_parametry->VisibleChanging();
-						// skryje form, stejné jako visible=false
+	 switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+		 	if (scGPButton_OK->Enabled)
+		 			// pokud jsou zároveò splnìny podmínky pro stisk OK
+		 	{
+		 			Form_parametry->ModalResult = mrOk;
+		 			// vrátí stejnou hodnotu jako tlaèítko
+		 			Form_parametry->VisibleChanging();
+		 			// skryje form, stejné jako visible=false
+		 	}
+		 	else
+		 			MessageBeep(0); // pípnutím upozorní, e nelze
+		 }break;
+		 case 27:// ESC
+		 {
+		 	Form_parametry->ModalResult = mrCancel;
+		 	// vrátí stejnou hodnotu jako tlaèítko
+		 	Form_parametry->VisibleChanging();
+		 	// skryje form, stejné jako visible=false
+		 }break;
+		 case 67://c nebo C
+		 {
+		 	if(Shift.Contains(ssCtrl))//CTRL+C
+			{
+				scGPGlyphButton_copyClick(Sender);//to samé co ikona kopírovat
+			}
+		 }break;
+		 case 86://v nebo V
+		 {
+		 	if(Shift.Contains(ssCtrl))//CTRL+V
+		 	{
+		 		if(mrYes==F->MB("Chcete vloit hodnoty parametrù ze schránky? Souèasné hodnoty budou pøepsány.",MB_YESNO))
+		 		{
+					scGPGlyphButton_pasteClick(Sender);//to samé co ikona vloit
 				}
-				else
-						MessageBeep(0); // pípnutím upozorní, e nelze
-		}
-		if (Key == 27) // ESC
-		{
-				Form_parametry->ModalResult = mrCancel;
-				// vrátí stejnou hodnotu jako tlaèítko
-				Form_parametry->VisibleChanging();
-				// skryje form, stejné jako visible=false
-		}
-		if (Key == 123 && DEBUG) // F12 + pouze v DEBUGU
-		{
-				Memo1->Visible = true;
-				Memo1->Lines->Clear();
-			 //	Memo1->Lines->Add(pm.T);
-				Memo1->Top = 0;
-				Memo1->Left = 0;
-		}
-		if(Key==116 && Shift.Contains(ssCtrl))//ctrl+F5
-		{
-				if(mrYes==F->MB("Chcete nastavit vıchozí hodnoty parametrù? Nastavením vıchozích hodnot boudou souèasné hodnoty parametrù ztraceny!",MB_YESNO))
-				{
-						//nastavení hodnot parametrù do default
-					 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60.0;
-					 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
-					 if(RDunitT==MIN)    scGPNumericEdit_RD->Value=  Form1->pom->RD*60.0;
-					 else scGPNumericEdit_RD->Value =  Form1->pom->RD;
-					 if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku* 1000.0;
-					 else scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku;
+		 	}
+		 }break;
+		 case 90://z nebo Z
+		 {
+		 	if(Shift.Contains(ssCtrl))//CTRL+Z
+		 	{
+		 		//if(mrYes==F->MB("Chcete nastavit pøedchozí hodnoty parametrù?",MB_YESNO))
+		 		{
+		 			//
+		 		}
+		 	}
+		 }break;
+		 case 116://F5
+		 {
+		 	if(mrYes==F->MB("Chcete nastavit vıchozí hodnoty parametrù? Nastavením vıchozích hodnot boudou souèasné hodnoty parametrù ztraceny!",MB_YESNO))
+		 	{
+		 			//nastavení hodnot parametrù do default
+		 		 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60.0;
+		 		 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
+		 		 if(RDunitT==MIN)    scGPNumericEdit_RD->Value=  Form1->pom->RD*60.0;
+		 		 else scGPNumericEdit_RD->Value =  Form1->pom->RD;
+		 		 if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku* 1000.0;
+		 		 else scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku;
 
-					 scGPNumericEdit_kapacita->Value = Form1->pom->kapacita;
-					 scGPNumericEdit_pozice->Value   = Form1->pom->pozice;
-					 scGPNumericEdit_mezera->Value   = Form1->pom->mezera;
-				 //	 scGPNumericEdit1_rx->Value=    Form1->pom-> - tyto hodnoty nemám v pom
-				}
-		}
+		 		 scGPNumericEdit_kapacita->Value = Form1->pom->kapacita;
+		 		 scGPNumericEdit_pozice->Value   = Form1->pom->pozice;
+		 		 scGPNumericEdit_mezera->Value   = Form1->pom->mezera;
+		 		 //	 scGPNumericEdit1_rx->Value=    Form1->pom-> - tyto hodnoty nemám v pom_
+		 		 Nacti_rx();//pøidal M
+		 	}
+		 }break;
+		 case 123:// F12
+		 {
+		 	if (DEBUG) // pouze v DEBUGU
+		 	{
+		 		Memo1->Visible = true;
+		 		Memo1->Lines->Clear();
+		 		//	Memo1->Lines->Add(pm.T);
+		 		Memo1->Top = 0;
+		 		Memo1->Left = 0;
+		 	}
+		 }break;
+	 }
 }
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
