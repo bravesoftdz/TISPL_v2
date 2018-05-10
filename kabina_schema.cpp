@@ -96,7 +96,7 @@ void TForm_objekt_nahled::MODEL()
 	{
 		//sekce animaèní nastavení
 //není ji potøeba		Poffset=F->m.UDV(pom->rotace)/2;//celı vozík na zaèátku kabiny pùv. 0 - to by bylo z pùlky vozíku
-		ButtonPLAY->Visible=true;
+		if(pom->rezim==1)ButtonPLAY->Visible=true;else ButtonPLAY->Visible=false;//pouze v kontinuálním reimu je moná animace
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 		ButtonPLAY->Hint="spustit animaci";
 		Timer_animace->Enabled=false;
