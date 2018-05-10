@@ -2192,7 +2192,7 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 			{
 				pm.M=F->m.mezera(pm.Rotace,pm.Rz);
 			}
-			else//odemèený zámek, tudíž mùžu zmìnit RD a tím pádem M, Rz,Rx, M tedy hledám doporuèenou nejmenší nikoliv nebližší, proto poslední paremetr=0, jinak použit na poslední paremtr promìnnou mezera
+			else//odemèený zámek, tudíž mùžu zmìnit RD a tím pádem M, Rz,Rx, M tedy hledám doporuèenou nejmenší nikoliv nebližší, proto poslední paremetr=0, jinak použit na poslední paremtr lokální promìnnou mezera, pokud bych chtìl hledat nejbližší mezeru
 			{
 				pm.M=F->m.mezera_mezi_voziky(pm.dV,pm.sV,pm.Rotace,pm.R,0);//po rotaci je nová mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
 			}
@@ -2200,9 +2200,6 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 			OUTPUT();
 			Nacti_rx();
 		}
-		//pm.M=F->m.mezera(pm.dV,pm.sV,pm.Rotace,pm.Rx,pm.R);//vrací mezeru dle rozestupu
-		//pm.M=F->m.Rz(pm.RD)-F->m.UDV(pm.Rotace);//vrací mezeru dle RD
-
 }
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender)

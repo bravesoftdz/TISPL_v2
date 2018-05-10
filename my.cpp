@@ -404,7 +404,7 @@ double Cmy::UDJ(double dJ,double sJ,double rotace)
 /////////////////////////////////////////////////////////////////////////////
 //vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
 bool Cmy::lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera)
-{    chybí tady ošetøení situace, pokud bude napø. nulová mezera (ale platí i pro menší než pozdìjší) a orotuji kratší stranou (+vznikne mezera
+{
 	bool RET=false;
 	if(fabs(UDV(0)-UDV(90))<=mezera)RET=true;
 	return RET;
