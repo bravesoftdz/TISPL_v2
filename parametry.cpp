@@ -1082,14 +1082,14 @@ void TForm_parametry::input_K() {
 		}
 
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
-		 OUTPUT();
+		 OUTPUT();       je takto vyseparovano output správnì?
 
 			if(scComboBox_rezim->ItemIndex==1 && scButton_zamek_RD->ImageIndex==38 && scComboBox_pohon->ItemIndex>0)
 		{  // u KK probíhá kontrola vypoèítaných dat a doporuèí K pokud RD!=dopRD
 
 				double roztec=0;
 				double RD=scGPNumericEdit_RD->Value;
-				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60;
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//správnì
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
@@ -1100,10 +1100,10 @@ void TForm_parametry::input_K() {
 
 				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
 
-				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }
+				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }  špatnì proè znovu RD*=60
 				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
 				if (DDunit == MM)  DD = DD / 1000.0;
-				if (CTunit == M)  CT = CT / 60.0;
+				if (CTunit == M)  CT = CT / 60.0;    je ok?
 
 
 			if(dopRD!=RD)
@@ -1158,7 +1158,7 @@ void TForm_parametry::input_P() {
 
 				double roztec=0;
 				double RD=scGPNumericEdit_RD->Value;
-				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60;
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
@@ -1206,7 +1206,7 @@ void TForm_parametry::input_CT() {
 		 {
 				double roztec=0;
 				double RD=scGPNumericEdit_RD->Value;
-				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60;
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//správnì
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =0;
 				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
@@ -1216,15 +1216,15 @@ void TForm_parametry::input_CT() {
 
 				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
 
-				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }
-				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
+				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }špatnì  a proè je tam duplicitní RD*=60, když je výše
+				if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;} to samé
 				if (DDunit == MM)  DD = DD / 1000.0;
 
 
 					if(dopRD!=RD)
 
 					{
-						CT = DD/dopRD*60.0;
+						CT = DD/dopRD*60.0;  proè když už je pøevedeno dopRD na sekundy výše pøípadnì bacha na závorky
 						if(Form1->ms.MyToDouble(CT)!=Form1->ms.MyToDouble(scGPNumericEdit_CT->Value))
 						{
 						vypis("Doporuèený techn.èas : " +AnsiString(CT) +" s ");
@@ -1266,7 +1266,7 @@ void TForm_parametry::input_DD() {
 
 				double roztec=0;
 				double RD=scGPNumericEdit_RD->Value;
-				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60;
+				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =scGPNumericEdit_CT->Value;
 				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
@@ -1722,7 +1722,7 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				if(mrYes==F->MB("Chcete nastavit výchozí hodnoty parametrù? Nastavením výchozích hodnot boudou souèasné hodnoty parametrù ztraceny!",MB_YESNO))
 				{
 						//nastavení hodnot parametrù do default
-					 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60;
+					 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60.0;
 					 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
 					 if(RDunitT==MIN)    scGPNumericEdit_RD->Value=  Form1->pom->RD*60.0;
 					 else scGPNumericEdit_RD->Value =  Form1->pom->RD;
@@ -2895,7 +2895,7 @@ void TForm_parametry::Check_rozmezi_RD() {
 				}
 				if(scComboBox_pohon->ItemIndex!=0 && roztec>0 && Form1->ms.MyToDouble(dopRD)!= Form1->ms.MyToDouble(RD) && mimo_rozmezi==false)
 				{
-					double M=(Form1->d.v.PP.TT*RD/60-DV);
+					double M=(Form1->d.v.PP.TT*RD/60.0-DV);
 					vypis("Zadejte doporuèenou rychlost pohonu: " +AnsiString(dopRD)/*+ ", nebo doporuèenou velikost mezery:" +AnsiString(M)+"m"*zakomentováno, protože nebyl smysl vypisovat M - bylo matoucí*/);
 					VID=27;
 				}
