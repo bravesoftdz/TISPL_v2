@@ -95,8 +95,7 @@ void TForm_objekt_nahled::MODEL()
 	if(pom->pozice<=MAX_pozic)
 	{
 		//sekce animaèní nastavení
-//není již potøeba		Poffset=F->m.UDV(pom->rotace)/2;//celý vozík na zaèátku kabiny pùv. 0 - to by bylo z pùlky vozíku
-		if(pom->rezim==1)ButtonPLAY->Visible=true;else ButtonPLAY->Visible=false;//pouze v kontinuálním režimu je možná animace
+//není již potøeba øeší START_POZICE		Poffset=F->m.UDV(pom->rotace)/2;//celý vozík na zaèátku kabiny pùv. 0 - to by bylo z pùlky vozíku
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 		ButtonPLAY->Hint="spustit animaci";
 		Timer_animace->Enabled=false;
@@ -211,6 +210,9 @@ void TForm_objekt_nahled::OUTPUT()
 
 	 //nová výchozí pozice po rotaci vozíku
 	 START_POZICE();
+
+	 //povolení zobrazení animace
+	 if(pom->rezim==1)ButtonPLAY->Visible=true;else ButtonPLAY->Visible=false;//pouze v kontinuálním režimu je možná animace
 
 	 //Nelze zobrazit náhled objektu s více jak s MAX_pozic pozicemi, bude zobrazen pouze ilustrativní náhled
 	 if(pom->pozice>MAX_pozic)
