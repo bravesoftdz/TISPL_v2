@@ -4464,8 +4464,8 @@ void __fastcall TForm1::scGPGlyphButton2Click(TObject *Sender)
 //volání parametrů linky nebo definice zakázek - dle zvoleného režimu
 void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
-	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
-	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
+	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scButton_parmlinky_defzakazek->Down=false;
 	if(scGPButton_header_projekt->ImageIndex==49)

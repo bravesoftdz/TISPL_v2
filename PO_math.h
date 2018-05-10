@@ -8,7 +8,7 @@ class TPO_math
 	public:
 		double TT;//takt linky
 		unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
-		double CT;//celkový technologický èáas objektu
+		double CT;//celkový technologický èás objektu
 		double RD;//rychlost dopravníku
 		double DD;//délka kabiny
 		double K;//kapacita
