@@ -127,7 +127,15 @@ void TForm_objekt_nahled::PREVIEW()
 //cely_nahled, zajistí výpoèet zoomu tak, aby se objekt zobrazil pøes celé okno, ale vèetnì okraje Ox
 void TForm_objekt_nahled::ENTIRE()
 {
-	F->Zoom=Width/(Ox+pom->delka_dopravniku/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený
+	if(pom!=NULL)
+	{                 //zámìrnou zámìnou parametrù získám užitou šíøku
+			double S=F->m.UDJ(F->d.v.PP.sirka_voziku,F->d.v.PP.delka_voziku,pom->rotace);
+			double D=pom->delka_dopravniku;
+			if(D>=S)//dle délky objektu a šíøky formuláøe
+				F->Zoom=Width/(Ox+D/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený
+			else //dle šíøky jigu a výšky formuláøe
+				F->Zoom=Height/(Ox+S/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený
+	}
 }
 //---------------------------------------------------------------------------
 //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing)
