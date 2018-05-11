@@ -2868,8 +2868,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_rozestup: TscGPNumericEdit
-    Left = 292
-    Top = 570
+    Left = 297
+    Top = 573
     Width = 66
     Height = 29
     Options.NormalColor = clWhite
