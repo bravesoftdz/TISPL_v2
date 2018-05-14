@@ -1732,17 +1732,19 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 		 	{
 		 			//nastavení hodnot parametrù do default
 		 		 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60.0;
-		 		 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
+				 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
 		 		 if(RDunitT==MIN)    scGPNumericEdit_RD->Value=  Form1->pom->RD*60.0;
 		 		 else scGPNumericEdit_RD->Value =  Form1->pom->RD;
 		 		 if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku* 1000.0;
 		 		 else scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku;
 
-		 		 scGPNumericEdit_kapacita->Value = Form1->pom->kapacita;
+				 scGPNumericEdit_kapacita->Value = Form1->pom->kapacita;
 		 		 scGPNumericEdit_pozice->Value   = Form1->pom->pozice;
 				 scGPNumericEdit_mezera->Value   = Form1->pom->mezera;
+				 if(scComboBox_pohon->ItemIndex!=0){   //data z pohonu naèítám pouze když je nìjaký pohon vybrán
 				 scGPNumericEdit1_rx->Value      = Form1->pom->pohon->Rx;
 				 scGPNumericEdit_rozestup->Value = Form1->pom->pohon->Rz;
+				 }
 				 //Nacti_rx();//pøidal M
 			}
 		 }break;
@@ -2018,7 +2020,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender) {
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Click(TObject *Sender) {
 		input_clicked_edit = RD_klik;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, RD_klik, false);
-		Povol_comboRotace();
+		Nastav_M_R_Rx();
 
 }
 
@@ -2076,7 +2078,7 @@ void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
 {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
 		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
-		Povol_comboRotace();
+		Nastav_M_R_Rx();
 }
 // ---------------------------------------------------------------------------
 void TForm_parametry::INPUT()
@@ -2117,8 +2119,8 @@ void TForm_parametry::INPUT()
 		if (DD_zamek == LOCKED) DD_locked = true;	else DD_locked = false;
 		if (K_zamek == LOCKED) K_locked = true;   else K_locked = false;
 
-		//povolí nebo zakáže vstup do zmìny rotace
-		Povol_comboRotace();
+		//povolí nebo zakáže vstup do zmìny rotace, mezery a Rx
+		Nastav_M_R_Rx();
 
 		//////////////////////// prevody jednotek///////////////////////////////
 		if (CTunit == MIN) CT *= 60.0;// pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
@@ -3080,12 +3082,16 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				Cvektory::TObjekt *O=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom);
 				if(O!=NULL)
 				{
-					if(pm.DD/pm.CT>O->RD && CT<Form1->d.v.PP.TT && Form1->pom->n>1)
+					if(pm.DD/pm.CT>O->RD*60.0 && CT<Form1->d.v.PP.TT && Form1->pom->n>1)
 					{
+					Memo1->Lines->Add(pm.DD);
+					Memo1->Lines->Add(pm.CT);
+					Memo1->Lines->Add(O->RD);
+
 						vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon, nebo upravte délku kabiny èi technolog.èas.");
 						VID=11;
 					}
-					else if (pm.DD/pm.CT>O->RD && CT>=Form1->d.v.PP.TT && Form1->pom->n==1)
+					else if (pm.DD/pm.CT>O->RD*60.0 && CT>=Form1->d.v.PP.TT && Form1->pom->n==1)
 					{
 						 vypis("Vozík nestíhá pøejezd! Zvolte jiný pohon, nebo upravte délku kabiny.");
 						 VID=11;
@@ -3386,7 +3392,7 @@ void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-void	TForm_parametry::Povol_comboRotace()
+void	TForm_parametry::Nastav_M_R_Rx()
 {
 
 	if(scComboBox_rezim->ItemIndex==1)
@@ -3402,7 +3408,23 @@ void	TForm_parametry::Povol_comboRotace()
 
 			 }
 				else set(ROTACE,ENABLED,false);
-	}
+
+		if(RD_zamek==LOCKED)
+			{
+
+				set(MEZERA,DISABLED,false);
+				//set(ROZESTUP,DISABLED,false);
+			 	scGPNumericEdit1_rx->Enabled=false;
+			}
+			else
+			{
+				set(MEZERA,ENABLED,false);
+				//set(ROZESTUP,ENABLED,false);
+					scGPNumericEdit1_rx->Enabled=true;
+
+			}
+
+		}
 
 }
 
