@@ -152,7 +152,7 @@ private:	// User declarations
 	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	void Check_rozmezi_RD(); //kontrola  RD vùèi vybranému pohonu
-	void Povol_comboRotace();
+	void Nastav_M_R_Rx();
 	void Nacti_rx();
 	void INPUT();
 	void OUTPUT();

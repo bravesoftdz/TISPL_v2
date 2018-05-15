@@ -2956,6 +2956,10 @@ void TForm1::NP()
 				pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
 				//ostatni
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
+				if(Form_parametry->scComboBox_pohon->ItemIndex!=0){  //pouze pokud je prirazen pohon tak ulozim do nej hodnoty Rx,Rz
+				pom->pohon->Rx=Form_parametry->scGPNumericEdit1_rx->Value;
+				pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value;
+				}
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
 				if(Form_parametry->kapacitaSG>1 && pom->rezim==0)//pokud je požadovaný rozklad objektu na více objektů, pouze u S&G

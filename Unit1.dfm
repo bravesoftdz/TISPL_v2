@@ -902,6 +902,7 @@ object Form1: TForm1
       Top = 0
       Width = 81
       Height = 34
+      Hint = 'Menu'
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
@@ -913,6 +914,8 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       Animation = True
       Caption = 'Menu'
@@ -1179,11 +1182,14 @@ object Form1: TForm1
       Top = 0
       Width = 35
       Height = 33
+      Hint = 'Nastaven'#237' re'#382'imu'
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 5
       Margins.Bottom = 1
       Align = alRight
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 6
       OnClick = scGPGlyphButton_OPTIONSClick
       Animation = True
@@ -1257,11 +1263,14 @@ object Form1: TForm1
       Top = 0
       Width = 35
       Height = 33
+      Hint = 'Ulo'#382'it'
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alLeft
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 7
       OnClick = UlozitClick
       Animation = True
@@ -1335,11 +1344,14 @@ object Form1: TForm1
       Top = 0
       Width = 35
       Height = 33
+      Hint = 'Nov'#253
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alLeft
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 8
       OnClick = NovySouborClick
       Animation = True
@@ -1413,11 +1425,14 @@ object Form1: TForm1
       Top = 0
       Width = 35
       Height = 33
+      Hint = 'Otev'#345#237't'
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
       Margins.Bottom = 1
       Align = alLeft
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 9
       OnClick = Toolbar_OtevritClick
       Animation = True
@@ -1834,6 +1849,7 @@ object Form1: TForm1
       Top = 0
       Width = 37
       Height = 34
+      Hint = 'O aplikaci'
       Align = alRight
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clNone
@@ -1841,6 +1857,8 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 14
       OnClick = Vypicestuktempu1Click
       Animation = True
@@ -3515,8 +3533,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1029
-        Top = 1192
+        Left = 1035
+        Top = 1198
         Width = 244
         Height = 31
         Align = alCustom
@@ -5620,7 +5638,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118007405780510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180074057C0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6743,7 +6761,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013300A804AC0430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013300A804B00430003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000007002000001002000000000000050
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -22205,7 +22223,7 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {
-      494C010133002403240318001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
+      494C010133002803280318001800FFFFFFFF0500FFFFFFFFFFFFFFFF424D7600
       000000000000760000002800000060000000380100000100040000000000803A
       0000000000000000000000000000000000000000000000008000008000000080
       800080000000800080008080000080808000C0C0C0000000FF0000FF000000FF
