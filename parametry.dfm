@@ -321,7 +321,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 18
   end
   object Edit_shortname: TEdit
     Left = 245
@@ -338,7 +338,7 @@ object Form_parametry: TForm_parametry
     Font.Style = [fsBold]
     MaxLength = 4
     ParentFont = False
-    TabOrder = 10
+    TabOrder = 19
   end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
@@ -346,7 +346,7 @@ object Form_parametry: TForm_parametry
     Width = 400
     Height = 34
     Align = alTop
-    TabOrder = 11
+    TabOrder = 20
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -751,7 +751,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 15
     TabStop = True
     OnClick = scGPButton_OKClick
     Animation = False
@@ -841,7 +841,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 16
     TabStop = True
     OnClick = scGPButton_stornoClick
     Animation = False
@@ -932,7 +932,7 @@ object Form_parametry: TForm_parametry
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 12
+    TabOrder = 21
     Animation = True
     Caption = 'scGPGlyphButton_InfoIcon'
     CanFocused = False
@@ -1080,7 +1080,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 13
+    TabOrder = 4
     OnChange = scGPNumericEdit_CTChange
     OnClick = scGPNumericEdit_CTClick
     OnKeyDown = FormKeyDown
@@ -1401,7 +1401,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 10
     ContentMargin = 0
     AutoComplete = False
     Animation = False
@@ -1525,7 +1525,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 11
     ContentMargin = 0
     AutoComplete = False
     Animation = False
@@ -1718,7 +1718,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 6
     OnChange = scGPNumericEdit_delka_dopravnikuChange
     OnClick = scGPNumericEdit_delka_dopravnikuClick
     OnKeyDown = FormKeyDown
@@ -1882,7 +1882,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 14
+    TabOrder = 9
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_kapacita: TscGPNumericEdit
@@ -1967,7 +1967,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 15
+    TabOrder = 7
     OnChange = scGPNumericEdit_kapacitaChange
     OnClick = scGPNumericEdit_kapacitaClick
     OnKeyDown = FormKeyDown
@@ -1985,7 +1985,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 16
+    TabOrder = 12
     OnClick = scComboBox_rotaceClick
     OnEnter = scComboBox_rotaceEnter
     ContentMargin = 0
@@ -2017,23 +2017,23 @@ object Form_parametry: TForm_parametry
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
+    Options.DisabledColorAlpha = 150
     Options.FrameNormalColor = clGray
     Options.FrameHotColor = 1871359
     Options.FramePressedColor = clHighlight
     Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameDisabledColor = clBtnText
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
     Options.FrameHotColorAlpha = 255
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 50
     Options.FontNormalColor = clBtnText
     Options.FontHotColor = clBtnText
     Options.FontPressedColor = clBtnText
     Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
+    Options.FontDisabledColor = clGrayText
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeCornerRadius = 10
@@ -2107,7 +2107,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 17
+    TabOrder = 22
     OnClick = scGPGlyphButton_copyClick
     Animation = True
     CanFocused = False
@@ -2189,7 +2189,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 18
+    TabOrder = 23
     OnClick = scGPGlyphButton_pasteClick
     Animation = True
     CanFocused = False
@@ -2260,7 +2260,7 @@ object Form_parametry: TForm_parametry
     Top = 172
     Width = 28
     Height = 29
-    TabOrder = 19
+    TabOrder = 24
     OnClick = scButton_zamek_CTClick
     Animation = False
     CanFocused = False
@@ -2344,7 +2344,7 @@ object Form_parametry: TForm_parametry
     Top = 250
     Width = 28
     Height = 29
-    TabOrder = 20
+    TabOrder = 25
     OnClick = scButton_zamek_DDClick
     Animation = False
     CanFocused = False
@@ -2428,7 +2428,7 @@ object Form_parametry: TForm_parametry
     Top = 210
     Width = 28
     Height = 29
-    TabOrder = 21
+    TabOrder = 26
     OnClick = scButton_zamek_RDClick
     Animation = False
     CanFocused = False
@@ -2590,7 +2590,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 22
+    TabOrder = 13
     OnChange = scGPNumericEdit_mezeraChange
     OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
@@ -2602,7 +2602,7 @@ object Form_parametry: TForm_parametry
     Height = 35
     Lines.Strings = (
       'Memo1')
-    TabOrder = 23
+    TabOrder = 27
     WantReturns = False
   end
   object scGPButton_header_projekt: TscGPButton
@@ -2619,7 +2619,7 @@ object Form_parametry: TForm_parametry
     Align = alCustom
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 24
+    TabOrder = 32
     OnClick = Button_dopravnik_parametryClick
     Animation = False
     CanFocused = False
@@ -2777,7 +2777,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 25
+    TabOrder = 5
     OnChange = scGPNumericEdit_RD_Change
     OnClick = scGPNumericEdit_RD_Click
     OnKeyDown = FormKeyDown
@@ -2800,7 +2800,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 26
+    TabOrder = 28
     TabStop = True
     OnClick = scGPGlyphButton_PO_text_memoClick
     Animation = True
@@ -2951,7 +2951,7 @@ object Form_parametry: TForm_parametry
     ParentShowHint = False
     ReadOnly = True
     ShowHint = True
-    TabOrder = 27
+    TabOrder = 29
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_pozice: TscGPNumericEdit
@@ -3036,7 +3036,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 28
+    TabOrder = 8
     OnChange = scGPNumericEdit_poziceChange
     OnClick = scGPNumericEdit_poziceClick
     OnKeyDown = FormKeyDown
@@ -3046,7 +3046,7 @@ object Form_parametry: TForm_parametry
     Top = 290
     Width = 28
     Height = 29
-    TabOrder = 29
+    TabOrder = 30
     Visible = False
     OnClick = scButton_K_zamekClick
     Animation = False
@@ -3208,7 +3208,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 30
+    TabOrder = 14
     OnChange = scGPNumericEdit1_rxChange
     OnClick = scGPNumericEdit1_rxClick
     OnKeyDown = FormKeyDown
@@ -3237,7 +3237,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 32
+    TabOrder = 17
     TabStop = True
     OnClick = scGPCheckBox_zaokrouhlitClick
     Animation = False
