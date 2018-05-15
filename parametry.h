@@ -131,6 +131,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
+	void __fastcall FormPaint(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
@@ -155,6 +156,7 @@ private:	// User declarations
 	void Nacti_rx();
 	void INPUT();
 	void OUTPUT();
+	void packa_RD(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 

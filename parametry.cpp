@@ -1473,23 +1473,22 @@ void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 				CTunit = S;
 				// CT - pøepoèítání
 				CT = scGPNumericEdit_CT->Value * 60.0;
-				rHTMLLabel_CT->Caption =
-						"Technologický èas <font color=#2b579a>[s]</font>";
+				rHTMLLabel_CT->Caption = "Technologický èas <font color=#2b579a>[s]</font>";
+				Form_objekt_nahled->ButtonPLAY->Caption = "0 [s]";
 		}
 		else // pokud je v sekundách pøepne na minuty
 		{
 				CTunit = MIN;
 				// CT - pøepoèítání
 				CT = scGPNumericEdit_CT->Value / 60.0;
-				rHTMLLabel_CT->Caption =
-						"Technologický èas <font color=#2b579a>[min]</font>";
+				rHTMLLabel_CT->Caption = "Technologický èas <font color=#2b579a>[min]</font>";
+				Form_objekt_nahled->ButtonPLAY->Caption = "0 [min]";
 		}
 		// plnìní + poèet desetinných míst
 		// ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
 		scGPNumericEdit_CT->Value = CT;
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
-
 // ---------------------------------------------------------------------------
 // požadavek na zmìnu jednotek RD
 void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
@@ -2081,6 +2080,7 @@ void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
 		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
 		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 		Povol_comboRotace();
+		Invalidate();//kvùli packám
 }
 // ---------------------------------------------------------------------------
 void TForm_parametry::INPUT()
@@ -3389,5 +3389,44 @@ void	TForm_parametry::Povol_comboRotace()
 	}
 
 }
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry::FormPaint(TObject *Sender)
+{
+	packa_RD(Canvas);
+}
+//---------------------------------------------------------------------------
+//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
+void TForm_parametry::packa_RD(TCanvas *canv)
+{
+  //vykreslí packu/spojnici k hodnotám souvisejícím se zámkem RD, pouze v kontinuálním režimu
+ if(RD_zamek == LOCKED && scComboBox_rezim->ItemIndex==1)
+ {
+	 double mezera=0.0;
+	 if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
+	 else  						 mezera=scGPNumericEdit_mezera->Value;
 
+	 int X1=scButton_zamek_RD->Left;
+	 int Y1=scButton_zamek_RD->Top+scButton_zamek_RD->Height/2;
+	 int X2=scComboBox_rotace->Left;
+	 int Y2=scComboBox_rotace->Top+scComboBox_rotace->Height/2;
 
+	 if(!F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera))//tuto packu øešit pouze pokud nemá rotace význam
+	 {
+			F->d.vykresli_packu(canv,X1,Y1,X2,Y2);
+			X2=X1;
+			X1=scGPNumericEdit_mezera->Left;
+			Y1=scGPNumericEdit_mezera->Top+scGPNumericEdit_mezera->Height/2;
+			F->d.vykresli_packu(canv,X2,Y2,X1,Y1);
+	 }
+	 else
+	 {
+			X2=scGPNumericEdit_mezera->Left;
+			Y2=scGPNumericEdit_mezera->Top+scGPNumericEdit_mezera->Height/2;
+			F->d.vykresli_packu(canv,X1,Y1,X2,Y2);
+	 }
+
+	 X2=rHTMLLabel_palec_vzd->Left+rHTMLLabel_palec_vzd->Width/2;
+	 Y2=rHTMLLabel_palec_vzd->Top;
+	 F->d.vykresli_packu(canv,X2+5,Y1,X2,Y2); //tato je odskoèena
+ }
+}

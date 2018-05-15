@@ -1810,7 +1810,8 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	if(!animace)RET=vykresli_pozice(canv,ceil(O->pozice)/*bylo pro číslování od jedné: 1*/,S,K,DD,dJ,sJ,dP,M,Poffset);
 	else RET=vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,dJ,sJ,dP,M,-(M+DV)*ceil(O->pozice)+Poffset);
 
-	////maskování vstupu a výstup, aby nebyly vidět vstupující a vystupující vozíky, může být však i nežádoucí
+	////maskování vstupu a výstup, řetězu, pokud budu chtít,
+	//aby byly vidět vstupující a vystupující vozíky musím přesunout před ////jednotlivé pozice/vozíky  nyní nejsou vidět
 	canv->Brush->Color=clWhite;
 	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
 	canv->FillRect(TRect(0,m.L2Py(Y+sJ/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-sJ/2)+Ov));//nalevo
@@ -1852,7 +1853,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 		S.x+=(DO.x-OD.x)*POm;//posun ze začátku objektu nakonec
 		S.y+=(DO.y-OD.y)*POm;//posun ze začátku objektu nakonec
 		akt_pozice+=delkaV+mezera;//posun na další pozici
-		//inkrementace
+		//dekrementace
 		i--;
 	}
 	canv->Font->Size=SF_puv;//vrátí původní velikost fontu
@@ -1862,20 +1863,25 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 //vykreslení jednoho komplexního vozíku (podvozek včetně jigu)
 void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP,double dJ,double sJ,double rotaceP,double rotaceJ,TColor clChassis, TColor clJig)
 {
-	////podvozek
-	canv->Brush->Style=bsClear;//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
-	canv->Pen->Color=clChassis;                                 //šířka podvozku jen stanovena                                       //šířka podvozku
-	canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+0.1),m.L2Px(X+dP/2),m.L2Py(Y-0.1));//vykreslení pozice podvozku
+	float sP=0.12;//šířka podvozku, pouze stanovane
 
-	////jig
-	//zvýraznění animovaného dle CT
+	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
+	canv->Brush->Style=bsClear;
+
+	////zvýraznění animovaného dle CT
 	if(ID==ceil(Form_objekt_nahled->pom->pozice) && Form_objekt_nahled->Timer_animace->Enabled)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
 	{
 		canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
-		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));
+		canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//podvozek
+		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));//jig
 		canv->Pen->Width=1/3.0*F->Zoom;
 	}
-	//samotný jig
+
+	////podvozek
+	canv->Pen->Color=clChassis;
+	canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//vykreslení pozice podvozku
+
+	////jig
 	canv->Pen->Color=clJig;
 	canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));
 
@@ -2336,6 +2342,20 @@ void Cvykresli::meritko(TCanvas *canv,long X,long Y)
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslí packu jako spojnici mezi komponentami
+void Cvykresli::vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor color,short Width,short OffsetX)
+{
+	//nastavení pera
+	canv->Pen->Width=Width;
+	canv->Pen->Color=color;
+	//vykreslení spojnice
+	canv->MoveTo(X1,Y1);
+	canv->LineTo(X1+OffsetX,Y1);
+	canv->LineTo(X1+OffsetX,Y2);
+	canv->LineTo(X2,Y2);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+
 //vytvoří zvuk
 void Cvykresli::sound()
 {

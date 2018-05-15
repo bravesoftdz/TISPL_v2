@@ -17,6 +17,7 @@ object Form_parametry: TForm_parametry
   PopupMode = pmExplicit
   OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

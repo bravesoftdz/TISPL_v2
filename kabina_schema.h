@@ -47,6 +47,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *ButtonPLAY;
 	TscGPLabel *scGPLabel_info;
 	TButton *Button1;
+	TscGPGlyphButton *scGPGlyphButton_info;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormPaint(TObject *Sender);
@@ -62,6 +63,7 @@ __published:	// IDE-managed Components
 	void __fastcall ButtonPLAYClick(TObject *Sender);
 	void __fastcall Timer_animaceTimer(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
 
 
 
@@ -76,7 +78,8 @@ private:	// User declarations
 	unsigned short MAX_pozic;//maximální hodnota zobrazenıch pozic, jinak nastane ilustrativní náhled
 	unsigned short Ox;//okraj vykresleného náhledu
 	double Poffset;//zajišuje posun vozíkù, vhodné pro vıchozí pozici (realizováno pomocí START_POZICE), nebo pro animaci
-	double timerTakt;//poèítá takt timeru animace
+	unsigned long timerTakt;//poèítá takt timeru animace
+	bool nahledZmodelu;//eviduje zda byl zobrazen náhled z modelu, slouí k monosti navrácení do modelu
 
 public:		// User declarations
 	__fastcall TForm_objekt_nahled(TComponent* Owner);

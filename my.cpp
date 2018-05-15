@@ -486,12 +486,20 @@ void Cmy::frameForm(TForm *form,TColor color,short width)
 	C->Rectangle(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o);
 }
 /////////////////////////////////////////////////////////////////////////////
-//z rychlosti v m/s vratí èas milisekundách potøebný na pøekreslení jednoho pixelu pøi daném zoomu, parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se vhodný èas na pøehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer
-double Cmy::get_timePERpx(double speed,double A)//A je akcelerace
+//z rychlosti v m/s vratí èas v milisekundách (proto *1000) potøebný na pøekreslení jednoho pixelu pøi daném zoomu
+//parametr A=je rychlost animace, kdy implicitní 1 originální rychlost - tedy 100%, pokud je parametr A=0, vrátí se minimální vhodný èas na pøehrání kontinuální animace, metoda je vhodná na animace a simulace pro timer nehledì na rychlost
+//pokud je (i implicitní) parametr speed_min==0, tzn. pøevezme se hodnota aktuálního poèítaného RD, tzn. všechny animace se promítnou se stejným afps dle fps, tj. všechny animace se zobrazí kontinuálnì (netrhnanì), v pøípadì nenulové hodnoty je speed_min stanovane jako minimální možná rychlost pro zobrazení kontinuální (netrhnané) simulace,
+//pokud by byl paremetr speed nižší než nenulový speed_min, nebude se jednat kontinuální (netrhnanou) simulaci
+double Cmy::get_timePERpx(double speed,double A,double speed_min)//A je akcelerace
 {
 	double Z=F->Zoom;if(F->antialiasing)Z/=3.0;//pokud je spuštìn antialiasing, staèí 1/3 rychlost (vyplývá z principu algoritmu AA)
-	if(A==0)return F->m2px/Z/speed*1000/F->fps;//vrátí èas, tak aby se jednalo o kontinální animaci
-	else return F->m2px/Z/speed*1000/A;//vrátí èas na posun o jeden pixel
+	if(A==0)//v pøípadì implicitního zrychlení je uvažováno spoèítat zrychlení vhodné k tomu, aby se animace zobrazovala kontinuálnì (netrhnanì)
+	{                           //bacha pokud není speed_min 0, stejnì pøi animaci se nechovalo korektnì
+		if(speed_min==0)speed_min=speed;//pokud je (i implicitní) parametr speed_min==0, tzn. pøevezme se hodnota aktuálního poèítaného RD, tzn. všechny animace se promítnou se stejným afps dle fps, tj. všechny animace se zobrazí kontinuálnì (netrhnanì), v pøípadì nenulové hodnoty je speed_min stanovane jako minimální možná rychlost pro zobrazení kontinuální (netrhnané) simulace
+		F->afps=F->fps/(1/F->m2px*speed_min);//korekce, nepokrátím výrazy v níže uvedeném vzorci, protože afps se používá na více místech a zásah by byl pøíliš komplikovaný
+		return F->m2px/Z/speed*1000.0/F->afps;//pùvodnì chybná úvaha (proto korekce výše), (bez korekce) koncipováno pouze pro rychlosti 0,1 m/s (hodnota m2px) a vyšší//vrátí èas, tak aby se jednalo o kontinální animaci
+	}
+	else return F->m2px/Z/speed*1000.0/A;//vrátí èas na posun o jeden pixel
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrací true èi false zda se daná hodnota nachází èí nenachází v intervalu, interval mùže být uzavøený (tzn. vèetnì hodnoty hranice intervalu) nebo otevøený a to i rozdílnì pro obì meze, implicitnì jsou hranice nastaveny na uzavøený interval z obou stran, tzn. do podmínky se zahrnuje vèetnì obou hodnot

@@ -24,8 +24,8 @@ __fastcall TForm_objekt_nahled::TForm_objekt_nahled(TComponent* Owner)
 	//defaultní design a pozicování tlaèítek OK
 	F->m.designButton(scGPButton_OK,Form_objekt_nahled,1,1);
 
-	//Okraj x vykreslovaného náhledu
-	Ox=10;
+	//Okraj x vykreslovaného náhledu v px
+	Ox=5;
 
 	//design pop-up menu
 	PopUPmenu->Color=(TColor)RGB(240,240,240); //nastavení barvy
@@ -75,6 +75,8 @@ void __fastcall TForm_objekt_nahled::FormKeyDown(TObject *Sender, WORD &Key, TSh
 		case 118:GlyphButton_priblizitClick(Sender);break;
 		//F8
 		case 119:GlyphButton_oddalitClick(Sender);break;
+		//F12
+		case 123:if(DEBUG && !Button1->Visible)Button1->Visible=true;else Button1->Visible=false;break;
 	 }
 }
 //---------------------------------------------------------------------------
@@ -99,7 +101,9 @@ void TForm_objekt_nahled::MODEL()
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
 		ButtonPLAY->Hint="spustit animaci";
 		Timer_animace->Enabled=false;
-		ButtonPLAY->Caption="0 [s]";timerTakt=0;
+		timerTakt=0;
+		if(Form_parametry->CTunit==0)ButtonPLAY->Caption="0 [s]";
+		else ButtonPLAY->Caption="0 [min]";
 		//--
 		scGPButton_OK->Visible=false;
 		Image_nahled->Visible=false;
@@ -107,6 +111,8 @@ void TForm_objekt_nahled::MODEL()
 		F->nahled_objektu=true;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
 		Max_Min_Button->Visible=true;
 		reposition_windowButton->Visible=true;
+		scGPGlyphButton_info->Visible=true;//pro zobrazení info náhledu
+		nahledZmodelu=false;//eviduje zda byl zobrazen náhled z modelu, slouží k možnosti navrácení do modelu
 		ENTIRE();//celý pohled, max pøiblížení objektu
 	}
 }
@@ -114,6 +120,7 @@ void TForm_objekt_nahled::MODEL()
 //pokud je náhled volán z PL a jedná se pouze o ilustrativní náhled a bude zobrazen pouze ilustrativní obrázek
 void TForm_objekt_nahled::PREVIEW()
 {
+	scGPGlyphButton_info->Visible=false;//musí být pravdìpodobnì pøed invalidate
 	Invalidate();
 	scGPButton_OK->Visible=true;
 	Image_nahled->Visible=true;
@@ -129,12 +136,12 @@ void TForm_objekt_nahled::ENTIRE()
 {
 	if(pom!=NULL)
 	{                 //zámìrnou zámìnou parametrù získám užitou šíøku
-			double S=F->m.UDJ(F->d.v.PP.sirka_voziku,F->d.v.PP.delka_voziku,pom->rotace);
-			double D=pom->delka_dopravniku;
-			if(D>=S)//dle délky objektu a šíøky formuláøe
-				F->Zoom=Width/(Ox+D/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený
-			else //dle šíøky jigu a výšky formuláøe
-				F->Zoom=Height/(Ox+S/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený
+		double S=F->m.UDJ(F->d.v.PP.sirka_voziku,F->d.v.PP.delka_voziku,pom->rotace);
+		double D=pom->delka_dopravniku;
+		if(D>=S)//dle délky objektu a šíøky formuláøe
+			F->Zoom=Width/(Ox+D/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený
+		else //dle šíøky jigu a výšky formuláøe
+			F->Zoom=Height/(Ox+S/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený
 	}
 }
 //---------------------------------------------------------------------------
@@ -160,15 +167,15 @@ void __fastcall TForm_objekt_nahled::FormPaint(TObject *Sender)
 	{
 		if(pom->pozice<=MAX_pozic)//aby se nevykreslovalo pod obrázekem
 		{
-			scGPLabel_info->Visible=false;
-			if(!F->antialiasing)F->d.vykresli_objekt(Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)/2.0)),Poffset,Timer_animace->Enabled);
+			scGPLabel_info->Visible=false;                                             //záloha F->m.P2Lx(Ox/F->m2px)
+			if(!F->antialiasing)F->d.vykresli_objekt(Canvas,pom,F->m.P2Lx(F->m.round((Width-pom->delka_dopravniku*F->Zoom/F->m2px)/2.0)),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)/2.0)),Poffset,Timer_animace->Enabled);
 			else
 			{
 				Cantialising a;
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-				F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-				F->d.vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
+				F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu           //popø. neøeší "krátké" objekty, záloha F->m.P2Lx(Ox/F->m2px)
+				F->d.vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(F->m.round((Width*3-pom->delka_dopravniku*F->Zoom/F->m2px)/2.0)),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
 				F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
 				Canvas->Draw(0,0,bmp_out);
@@ -176,7 +183,7 @@ void __fastcall TForm_objekt_nahled::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//grafické mìøítko                        //tím že není v bmp-tak pøi animaci problikává, zkoušel jsem i zvolit i jít pøes druhou bmp s transparentností, ale také docházelo k problikávání, jediné øešení je asi také aplikace do bmp_in v rámci AA, ale mìøítko by se muselo na výšku (asi 3x) zvìtšit a to samé font mìøítka
-			if(F->scGPSwitch_meritko->State==true && !Timer_animace->Enabled)F->d.meritko(Canvas,Ox/*Ox/3/F->m2px*/,/*0+scGPPanel_hlavicka->Height+Ox/2*/Height-22);
+			if(F->scGPSwitch_meritko->State==true && !Timer_animace->Enabled)F->d.meritko(Canvas,Ox/F->m2px,/*0+scGPPanel_hlavicka->Height+Ox/2*/Height-22);
 		}
 	}
 
@@ -236,18 +243,26 @@ void TForm_objekt_nahled::OUTPUT()
 void TForm_objekt_nahled::START_POZICE()
 {
 	if(Timer_animace->Enabled==false)//zmìna pozice nazákladì rotace je možná jen a pouze pokud nebìží animace
-	Poffset=F->m.UDV(pom->rotace)/2;//slouží pro pøípad rotace vozíku//celý vozík na zaèátku kabiny pùv. 0 - to by bylo z pùlky vozíku,tzn. v mementu aktivnihé palce
+	Poffset=F->m.UDV(pom->rotace)/2;//slouží pro pøípad rotace vozíku//celý vozík na zaèátku kabiny pùv. 0 - to by bylo z pùlky vozíku,tzn. v momentu aktivnihé palce
 }
 //---------------------------------------------------------------------------
 //odchod z okna a to i pøi stisku tlaèítka OK
 void __fastcall TForm_objekt_nahled::KonecClick(TObject *Sender)
 {
-	Timer_animace->Enabled=false;
-	scGPLabel_info->Visible=false;
-	F->Zoom=Zoom_predchozi;//návrat do pùvodního stavu
-	F->nahled_objektu=false;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
-	pom=NULL; delete pom;
-	Close();
+	if(!nahledZmodelu)
+	{
+		Timer_animace->Enabled=false;
+		scGPLabel_info->Visible=false;
+		F->Zoom=Zoom_predchozi;//návrat do pùvodního stavu
+		F->nahled_objektu=false;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
+		pom=NULL; delete pom;
+		Close();
+	}
+	else
+	{
+    MODEL();
+		nahledZmodelu=false;
+	}
 }
 //---------------------------------------------------------------------------
 //maximalizuje nebo minalizuje pohled
@@ -259,12 +274,14 @@ void __fastcall TForm_objekt_nahled::Max_Min_ButtonClick(TObject *Sender)
 		Height=F->Height-Top;Width=F->Width;
 		Max_Min_Button->GlyphOptions->Kind=scgpbgkRestore;
 		reposition_windowButton->Visible=false;
+		scGPGlyphButton_info->Visible=false;//workaround kvùli poøadí
 		zobrazitFrameForm=false;
 	}
 	else
 	{
 		Konec->Visible=false;//workaround kvùli poøadí
 		Max_Min_Button->Visible=false;//workaround kvùli poøadí
+		scGPGlyphButton_info->Visible=false;//workaround kvùli poøadí
 		reposition_windowButtonClick(Sender);//volá porovnání oken
 		Max_Min_Button->GlyphOptions->Kind=scgpbgkMaximize;
 		zobrazitFrameForm=true;
@@ -284,7 +301,8 @@ void __fastcall TForm_objekt_nahled::reposition_windowButtonClick(TObject *Sende
 {
 	Width=737;Height=423;Left=5;Top=Form_parametry->Top;
 	Form_parametry->Left=Left+Form_objekt_nahled->Width+5;
-	reposition_windowButton->Visible=true;
+	scGPGlyphButton_info->Visible=true;//workaround kvùli poøadí
+	reposition_windowButton->Visible=true;//workaround kvùli poøadí
 	Max_Min_Button->Visible=true;//workaround kvùli poøadí
 	Konec->Visible=true;//workaround kvùli poøadí
 }
@@ -316,6 +334,14 @@ void __fastcall TForm_objekt_nahled::GlyphButton_closeClick(TObject *Sender)
 	PopUPmenu->Visible=false;
 }
 //---------------------------------------------------------------------------
+//pøepne do ilustrativního náhledu s popisky
+void __fastcall TForm_objekt_nahled::scGPGlyphButton_infoClick(TObject *Sender)
+{
+	nahledZmodelu=true;
+	PREVIEW();
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 //ANIMACE
@@ -327,8 +353,8 @@ void __fastcall TForm_objekt_nahled::ButtonPLAYClick(TObject *Sender)
 		ButtonPLAY->GlyphOptions->Kind=scgpbgkPause;
 		ButtonPLAY->Hint="zastavit animaci";
 		ButtonPLAY->ShowCaption=true;
-		//ShowMessage(F->m.get_timePERpx(pom->RD,0));
-		Timer_animace->Interval=F->m.round(F->m.get_timePERpx(pom->RD,0)); //nyní øeším na úrovní ENTIRE z dùvodu totožné rychlosti pøi normálním i fullscreen oknì
+		Timer_animace->Interval=F->m.round(F->m.get_timePERpx(pom->RD,0));//stejná rychlost pro všechny RD
+		//Timer_animace->Interval=ceil(F->m.get_timePERpx(pom->RD,0,F->d.v.vrat_min_rychlost_prejezdu()));//rùzná rychlost dle RD, s afps se poèítá dle min RD, ale nìjak špatnì vycházela animace ke konci (nestihl vozík vyjet)
 	}
 	else//animace zastavena
 	{
@@ -339,20 +365,29 @@ void __fastcall TForm_objekt_nahled::ButtonPLAYClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 {
-	Poffset+=F->m2px/F->Zoom;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
+	Poffset+=1*F->m2px/F->Zoom;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
+
 	double Z=1;if(F->antialiasing)Z=3.0;
+
 //	//nastal takt - špatná úvaha
 //	if(F->m.round(timerTakt*F->fps*Timer_animace->Interval/1000.0)%F->m.round(F->d.v.PP.TT)==0)ButtonPLAY->Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 //	else ButtonPLAY->Font->Style=TFontStyles();//vypnutí tuèného písma
+
+	//výpoèet aktuálního èasu
+	double Time=F->m.round(++timerTakt*F->afps/Z*Timer_animace->Interval/1000.0);//chybná úvaha, koncipováno pouze pro rychlosti 1m/s a vyšší//vrátí èas, tak aby se jednalo o kontinální animaci
+
 	//vypisuje aktuální CT
-	ButtonPLAY->Caption=AnsiString(F->m.round(++timerTakt*F->fps/Z*Timer_animace->Interval/1000.0))+" [s]";
-  //zastaví animaci po dovršení CT
-	if(F->m.round(timerTakt*F->fps/Z*Timer_animace->Interval/1000.0)>=pom->CT)//zastaví animaci, jak vypršel CT
+	if(Form_parametry->CTunit==0)ButtonPLAY->Caption=AnsiString(F->m.round(Time))+" [s]";
+	else ButtonPLAY->Caption=AnsiString(F->m.round2double(Time/60.0,2))+" [min]";
+
+	//zastaví animaci po dovršení CT
+	if(Time>=pom->CT)//zastaví animaci, jak vypršel CT
 	{
-		Timer_animace->Enabled/*pojistka proti pauze*/;
 		ButtonPLAYClick(Sender);
 		START_POZICE();//výchozí pozice vozíkù
-		ButtonPLAY->Caption="0 [s]";timerTakt=0;
+		if(Form_parametry->CTunit==0)ButtonPLAY->Caption="0 [s]";
+		else ButtonPLAY->Caption="0 [min]";
+		timerTakt=0;//vynuluje èas do výchozí hodnoty
 		zobrazitFrameForm=true;
 	}
 	REFRESH_DATA();//naète aktuální data (umožòuje tedy i bìhem animace mìnit za bìhu parametry - možná blbost),zjistí vhodné mìøítka a na závìr REFRESHNE obraz
@@ -360,9 +395,15 @@ void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::Button1Click(TObject *Sender)
 {
+		if(1/F->fps*1000<Timer_animace->Interval)ShowMessage("Animace nebude vykreslena kontinuálnì èi zcela kontinuálnì!");
+		else ShowMessage("Animace by mìla být vykreslena kontinuálnì");
+
+//ShowMessage(F->m2px/F->Zoom);
 //ShowMessage(F->Zoom);
-//ShowMessage(Timer_animace->Interval);
-Timer_animace->Interval=3.838541666666875;
+ShowMessage(Timer_animace->Interval);
+//Timer_animace->Interval=3.838541666666875;
 }
 //---------------------------------------------------------------------------
+
+
 
