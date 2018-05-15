@@ -157,12 +157,14 @@ private:	// User declarations
 	void INPUT();
 	void OUTPUT();
 	void packa_RD(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
+  double getM();
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
 	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
 	short offset;
 	short defaultForm_parametryHeight;
+	short ComboRotace_predchozi_stav;//uloží pøedchozí stav pro další použití
 
 	TColor hl_color;//(TColor)RGB(255,141,28);//barva zvýraznìní rámeèku komponenty napø.pro povinné položky
 	short hlFrameWidth;//šíøka zvýraznìní rámeèku komponenty napø.pro povinné položky

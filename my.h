@@ -56,7 +56,7 @@ class Cmy
 	double UDV(double dV,double sV,double rotace);//vratí užitnou délku vozíku
 	double UDV(double rotace);//vratí užitnou délku vozíku, parametry bere z PP
 	double UDJ(double dJ,double sJ,double rotace);//vrátí užitnou délku jigu
-	bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera);//vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
+	bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace);//vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
 	double prejezd_voziku(double delka, double rychlost_dopravniku);
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
 	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox

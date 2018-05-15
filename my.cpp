@@ -403,10 +403,17 @@ double Cmy::UDJ(double dJ,double sJ,double rotace)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
-bool Cmy::lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera)
+bool Cmy::lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace)
 {
 	bool RET=false;
-	if(fabs(UDV(0)-UDV(90))<=mezera)RET=true;
+	if(akt_rotace==0)
+	{
+		if(UDV(90)-UDV(0)<=mezera)RET=true;
+	}
+	else
+	{
+		if(UDV(0)-UDV(90)<=mezera)RET=true;
+	}
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -479,7 +486,7 @@ void Cmy::frameForm(TForm *form,TColor color,short width)
 	TCanvas *C=new(TCanvas);
 	C->Handle=GetWindowDC(HWND_DESKTOP);
 	C->Pen->Color=color;
-	C->Pen->Mode=pmNotXor;
+	C->Pen->Mode=pmCopy;//pmNotXor;
 	C->Pen->Width=width;
 	C->Brush->Style=bsClear;
 	short o=floor(width/2.0);
@@ -513,3 +520,4 @@ bool Cmy::between(double value,double from, double to, bool left_closed, bool ri
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+
