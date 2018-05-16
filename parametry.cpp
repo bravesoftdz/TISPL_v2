@@ -1005,7 +1005,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 	 					 input_M(); // lokální
 	 					 Nacti_rx();
 	 				}
-	 		}  if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex==0) input_M();  // pøípad kdy mìním mezeru ale jsem bez pohonu
+			}  if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex==0) input_M();  // pøípad kdy mìním mezeru ale jsem bez pohonu
 	 }
 }
 // ---------------------------------------------------------------------------
@@ -1744,6 +1744,7 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 		 		Memo1->Top = 0;
 				Memo1->Left = 0;
 				//test
+				frameCorrelation();
         TCanvas *C=new(TCanvas);
 				C->Handle=GetWindowDC(HWND_DESKTOP);
 				C->Pen->Color=clWebOrange;
@@ -2007,6 +2008,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTClick(TObject *Sender)
 {
 		input_clicked_edit = CT_klik;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, CT_klik, false);
+		frameCorrelation();//stejnou barvou orámuje hodnoty v korelaci
 }
 // ---------------------------------------------------------------------------
 // doplnit komentáø
@@ -3504,6 +3506,99 @@ void TForm_parametry::packa_RD(TCanvas *canv)
 	 Y2=rHTMLLabel_palec_vzd->Top;
 	 F->d.vykresli_packu(canv,X2+5,Y1,X2,Y2);//packa mezera - Rx,Rz
  }
+}
+/////////////////////////////////////////////////////////////////////////////
+//stejnou barvou orámuje hodnoty v korelaci
+void TForm_parametry::frameCorrelation()
+{
+	//definice barev
+	TColor nColor=clGray;//normální barva
+	TColor cColor=10114859;//focus barva (modrá), oznaèující korelaci
+
+	//default stav
+	cCT(nColor);
+	cRD(nColor);
+	cDD(nColor);
+	cK(nColor);
+	cP(nColor);
+	cRo(nColor);
+	cM(nColor);
+	cRx(nColor);
+
+	//volání jednotlivých situací nazáklde input_clicked_edit stavu, který vzniká pøi kliku do daného konkrétního editu
+	switch(input_clicked_edit)
+	{
+		////////CT
+		case CT_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1://KK
+					{
+						if(RD_zamek == LOCKED){cDD(cColor);cK(cColor);cP(cColor);}
+						if(DD_zamek == LOCKED){cRD(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);}
+          }
+					break;
+					case 2:break;//PP
+			 }
+		}break;
+		case RD_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1:break;//KK
+					case 2:break;//PP
+			 }
+		}break;
+		case DD_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1:break;//KK
+					case 2:break;//PP
+			 }
+		}break;
+		case C_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1:break;//KK
+					case 2:break;//PP
+			 }
+		}break;
+		case P_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1:break;//KK
+					case 2:break;//PP
+			 }
+		}break;
+		case Rotace_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1:break;//KK
+					case 2:break;//PP
+			 }
+		}break;
+		case mezera_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1:break;//KK
+					case 2:break;//PP
+		}
+		}break;
+		case Rx_klik:
+		{
+			 switch(scComboBox_rezim->ItemIndex)
+			 {
+					case 1:break;//KK
+					case 2:break;//PP
+			 }
+		}break;
+	}
 }
 /////////////////////////////////////////////////////////////////////////////
 //metoda zajistí vrácení mezery pøevedené do SI + ošetøuje divné chování okolo nuly

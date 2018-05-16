@@ -157,7 +157,16 @@ private:	// User declarations
 	void INPUT();
 	void OUTPUT();
 	void packa_RD(TCanvas *canv);//vykreslÌ packu od zamËenÈho z·mku RD k souvisejÌcÌm hodnot·m
-  double getM();
+	double getM();
+	void frameCorrelation();//stejnou barvou or·muje hodnoty v korelaci
+	void cCT(TColor Color){scGPNumericEdit_CT->Options->FrameNormalColor=Color;}//inline metoda
+	void cRD(TColor Color){scGPNumericEdit_RD->Options->FrameNormalColor=Color;}//inline metoda
+	void cDD(TColor Color){scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor=Color;}//inline metoda
+	void cK(TColor Color){scGPNumericEdit_kapacita->Options->FrameNormalColor=Color;}//inline metoda
+	void cP(TColor Color){scGPNumericEdit_pozice->Options->FrameNormalColor=Color;}//inline metoda
+	void cRo(TColor Color){scComboBox_rotace->Options->FrameNormalColor=Color;}//inline metoda
+	void cM(TColor Color){scGPNumericEdit_mezera->Options->FrameNormalColor=Color;}//inline metoda
+	void cRx(TColor Color){scGPNumericEdit1_rx->Options->FrameNormalColor=Color;}//inline metoda
 
 	TPO_math pm;//INSTANCE NA V›PO»ETNÕ »¡ST PO tj. PO_math
 
