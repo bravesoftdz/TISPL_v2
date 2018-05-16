@@ -1946,10 +1946,11 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
 		INPUT();
-	 	OUTPUT();
+		OUTPUT();
+
 		Pohon_pouzivan();
 		Nacti_rx(); //buï vypoèítá rx nebo v pøípadì používaného pohonu rx a rz naète z dat
-
+		Nastav_M_R_Rx();
 		if(scComboBox_rezim->ItemIndex!=1)
 		{
 			scButton_zamek_CT->Enabled=true;
@@ -3385,14 +3386,15 @@ void	TForm_parametry::Nastav_M_R_Rx()
 		{
 			 double mezera=getM();//pøevod jednotek
 																																									//musí se použít stav pøedchozí
-			 if(F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera,ComboRotace_predchozi_stav/*scComboBox_rotace->ItemIndex*/))set(ROTACE,ENABLED,false);
-			 else set(ROTACE,DISABLED,false);
+			 if(F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera,ComboRotace_predchozi_stav/*scComboBox_rotace->ItemIndex*/)){set(ROTACE,ENABLED,false);	set(RYCHLOST,DISABLED,false); }
+			 else { set(ROTACE,DISABLED,false);  set(RYCHLOST, DISABLED, false);}
 		}
-		else set(ROTACE,ENABLED,false);
+		else { set(ROTACE,ENABLED,false);  	set(RYCHLOST, ENABLED, false);}
 
 		if(RD_zamek==LOCKED)
 		{
 			set(MEZERA,DISABLED,false);
+			set(RYCHLOST, DISABLED, false);
 			//set(ROZESTUP,DISABLED,false);
 			scGPNumericEdit1_rx->Enabled=false;
 		}
@@ -3401,6 +3403,7 @@ void	TForm_parametry::Nastav_M_R_Rx()
 			set(MEZERA,ENABLED,false);
 			//set(ROZESTUP,ENABLED,false);
 			scGPNumericEdit1_rx->Enabled=true;
+			set(RYCHLOST, ENABLED, false);
 		}
 	}
 }
