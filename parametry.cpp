@@ -1865,7 +1865,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, CT_klik_ico, empty_klik, true);
-		scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+	 	scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 
 		INPUT();
 		double	K=scGPNumericEdit_kapacita->Value;
@@ -2600,25 +2600,42 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scButton_zamek_DD->Visible = true;
 						scButton_zamek_DD->Enabled = true;
 						scButton_K_zamek->Visible = true;
+//						if(DD_zamek==LOCKED){
+//						 set(DELKA,DISABLED,false);
+//						 scGPNumericEdit_kapacita->Enabled=true;
+//						 }
+//						else
+//						{
+//						 set(DELKA,ENABLED,false);
+//						 scGPNumericEdit_kapacita->Enabled=false;
+//						 }
+
 
 				}
 
 				if (I == C_klik_ico) {
-						if (K_zamek == LOCKED) // když je zamèeno
+						if (scButton_K_zamek->ImageIndex==37  /*K_zamek == LOCKED*/) // když je zamèeno - pojistka
 						{
 								scButton_K_zamek->ImageIndex = 38;
 								K_zamek = UNLOCKED;
+							 //	set(KAPACITA,ENABLED,false);
+							 scGPNumericEdit_kapacita->Enabled=true;
 
 								scButton_zamek_DD->ImageIndex = 37;
 								DD_zamek = LOCKED;
+								set(DELKA,DISABLED,false);
+
 						}
 						else // odemèeno
 						{
 								scButton_K_zamek->ImageIndex = 37;
 								K_zamek = LOCKED;
+								//	set(KAPACITA,DISABLED,false);
+								 scGPNumericEdit_kapacita->Enabled=false;
 
 								scButton_zamek_DD->ImageIndex = 38;
 								DD_zamek = UNLOCKED;
+								set(DELKA,ENABLED,false);
 						}
 				}
 				if (I == DD_klik_ico) {
@@ -2626,15 +2643,20 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 								scButton_zamek_DD->ImageIndex = 38;
 								DD_zamek = UNLOCKED;
+								set(DELKA,ENABLED,false);
 								scButton_K_zamek->ImageIndex = 37;
 								K_zamek = LOCKED;
+							 //	set(KAPACITA,DISABLED,false);
+								scGPNumericEdit_kapacita->Enabled=false;
 						}
 						else // odemèeno
 						{
 								scButton_zamek_DD->ImageIndex = 37;
 								DD_zamek = LOCKED;
+								set(DELKA,DISABLED,false);
 								scButton_K_zamek->ImageIndex = 38;
 								K_zamek = UNLOCKED;
+								scGPNumericEdit_kapacita->Enabled=true;
 						}
 				}
 				if (I == CT_klik_ico) {
@@ -2642,12 +2664,14 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 								scButton_zamek_CT->ImageIndex = 38;
 								CT_zamek = UNLOCKED;
+								set(TIME,ENABLED,false);
 
 						}
 						else // odemèeno
 						{
 								scButton_zamek_CT->ImageIndex = 37;
 								CT_zamek = LOCKED;
+								set(TIME,DISABLED,false);
 						}
 				}
 
