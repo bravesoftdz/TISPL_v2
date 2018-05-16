@@ -1865,7 +1865,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, CT_klik_ico, empty_klik, true);
-		scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+	 	scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 
 		INPUT();
 		double	K=scGPNumericEdit_kapacita->Value;
@@ -1895,7 +1895,7 @@ void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender) {
 
 void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender) {
 		Nastav_zamky(scComboBox_rezim->ItemIndex, C_klik_ico, empty_klik, true);
-		scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+	 	scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 }
 
 // ---------------------------------------------------------------------------
@@ -1951,7 +1951,7 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 
 		Pohon_pouzivan();
 		Nacti_rx(); //buï vypoèítá rx nebo v pøípadì používaného pohonu rx a rz naète z dat
-		Nastav_M_R_Rx();
+	 	Nastav_M_R_Rx();
 		if(scComboBox_rezim->ItemIndex!=1)
 		{
 			scButton_zamek_CT->Enabled=true;
@@ -2274,49 +2274,63 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 					{ // pokud je kliknuto na ikonu CT
 										if (CT_zamek == LOCKED) // když je zamèeno
 										{
+
 												// CT
 												scButton_zamek_CT->ImageIndex = 38;
 												CT_zamek = UNLOCKED;
+												set (TIME,ENABLED,false);
 												// RD
 												scButton_zamek_RD->ImageIndex = 37;
 												RD_zamek = LOCKED;
+												set (RYCHLOST,DISABLED,false);
 												// DD - délka kabiny
 												scButton_zamek_DD->ImageIndex = 38;
 												DD_zamek = UNLOCKED;
+												set (DELKA,ENABLED,false);
+
+
+
 										}
 										else // odemèeno
 											{
 												// CT
 												scButton_zamek_CT->ImageIndex = 37;
 												CT_zamek = LOCKED;
+												set (TIME,DISABLED,false);
 												// RD
 												scButton_zamek_RD->ImageIndex = 38;
 												RD_zamek = UNLOCKED;
+												set (RYCHLOST,ENABLED,false);
 												// DD - délka kabiny
 												scButton_zamek_DD->ImageIndex = 38;
 												DD_zamek = UNLOCKED;
+												set (DELKA,ENABLED,false);
 											}
 
 											if (scButton_K_zamek->Visible==true) {
 													//scButton_K_zamek->Visible = true;
 													scButton_K_zamek->ImageIndex=scButton_zamek_CT->ImageIndex;
+													scGPNumericEdit_kapacita->Enabled=scGPNumericEdit_CT->Enabled;
 											}
 
 					}
 						if (I == RD_klik_ico)
 						{
 							scButton_K_zamek->Visible = false;
-								if (RD_zamek == LOCKED) // když je zamèeno
+								if (RD_zamek == LOCKED) // když je zamèeno   - SET RD má svojí metodu
 								{
 										// RD
 										scButton_zamek_RD->ImageIndex = 38;
 										RD_zamek = UNLOCKED;
+										set (RYCHLOST,ENABLED,false);
 										// CT
 										scButton_zamek_CT->ImageIndex = 38;
 										CT_zamek = UNLOCKED;
+										set (TIME,ENABLED,false);
 										// DD - délka kabiny
 										scButton_zamek_DD->ImageIndex = 37;
 										DD_zamek = LOCKED;
+										set (DELKA,DISABLED,false);
 
 										scComboBox_rotace->Items->Items[0]->Enabled = true;
 										scComboBox_rotace->Items->Items[1]->Enabled = true;
@@ -2326,12 +2340,15 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 										// RD
 										scButton_zamek_RD->ImageIndex = 37;
 										RD_zamek = LOCKED;
+										set (RYCHLOST,DISABLED,false);
 										// CT
 										scButton_zamek_CT->ImageIndex = 38;
 										CT_zamek = UNLOCKED;
+										set (TIME,ENABLED,false);
 										// DD - délka kabiny
 										scButton_zamek_DD->ImageIndex = 38;
 										DD_zamek = UNLOCKED;
+										set (DELKA,ENABLED,false);
 
 									 //	scComboBox_rotace->Items->Items[0]->Enabled = false;
 									//	scComboBox_rotace->Items->Items[1]->Enabled = false;
@@ -2344,26 +2361,32 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 								{
 										scButton_zamek_DD->ImageIndex = 38;
 										DD_zamek = UNLOCKED;
+                    set (DELKA,ENABLED,false);
 
 										scButton_zamek_CT->ImageIndex = 37;
 										CT_zamek = LOCKED;
+										set (TIME,DISABLED,false);
 
 										scButton_zamek_RD->ImageIndex = 38;
 										RD_zamek = UNLOCKED;
+										set (RYCHLOST,ENABLED,false);
 										// set(DELKA,ENABLED,false);
 								}
 								else // odemèeno
 								{
 										scButton_zamek_DD->ImageIndex = 37;
 										DD_zamek = LOCKED;
-
+                    set (DELKA,DISABLED,false);
 										scButton_zamek_CT->ImageIndex = 38;
 										CT_zamek = UNLOCKED;
-
+										set (TIME,ENABLED,false);
 										scButton_zamek_RD->ImageIndex = 38;
 										RD_zamek = UNLOCKED;
+										set (RYCHLOST,ENABLED,false);
 										// set(DELKA,DISABLED,false);
 								}
+								 if(RD_zamek==UNLOCKED) { 	set(MEZERA,ENABLED,false); scGPNumericEdit1_rx->Enabled=true;}
+								 else { set(MEZERA,DISABLED,false); scGPNumericEdit1_rx->Enabled=false;}
 						}
 
 								if (I ==	C_klik_ico)
@@ -2373,30 +2396,40 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 												// CT
 												scButton_zamek_CT->ImageIndex = 38;
 												CT_zamek = UNLOCKED;
+												set(TIME,ENABLED,false);
 													// KAPACITA
 												scButton_K_zamek->ImageIndex = 38;
 												K_zamek = UNLOCKED;
+										 //		set(KAPACITA,ENABLED,false);  nešlo mi nastavit pøes SET
+										 scGPNumericEdit_kapacita->Enabled=true;
 												// RD
 												scButton_zamek_RD->ImageIndex = 38;
 												RD_zamek = UNLOCKED;
+												set(RYCHLOST,ENABLED,false);
 												// DD - délka kabiny
 												scButton_zamek_DD->ImageIndex = 37;
 												DD_zamek = LOCKED;
+												set(DELKA,DISABLED,false);
 										}
 										else // odemèeno
 										{
 												// CT
 												scButton_zamek_CT->ImageIndex = 37;
 												CT_zamek = LOCKED;
+												set(TIME,DISABLED,false);
 													// KAPACITA
 												scButton_K_zamek->ImageIndex = 37;
 												K_zamek =  LOCKED;
+										 //		set(KAPACITA,DISABLED,false); nešlo mi nastavit pøes SET
+										 scGPNumericEdit_kapacita->Enabled=false;
 												// RD
 												scButton_zamek_RD->ImageIndex = 38;
 												RD_zamek = UNLOCKED;
+												set(RYCHLOST,ENABLED,false);
 												// DD - délka kabiny
 												scButton_zamek_DD->ImageIndex = 38;
 												DD_zamek = UNLOCKED;
+												set(DELKA,ENABLED,false);
 										}
 
 								}
@@ -2407,23 +2440,26 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 
 						if (E == CT_klik) {
 								 scButton_K_zamek->Visible = false;
-
+								 scGPNumericEdit_kapacita->Enabled=true;
 								if (CT_zamek == LOCKED) // když je zamèeno
 								{
 										// CT
 										scButton_zamek_CT->ImageIndex = 38;
 										CT_zamek = UNLOCKED;
+											set(TIME,ENABLED,false);
 										// RD
 										scButton_zamek_RD->ImageIndex = 37;
 										RD_zamek = LOCKED;
+											set(RYCHLOST,DISABLED,false);
 										// DD - délka kabiny
 										scButton_zamek_DD->ImageIndex = 38;
 										DD_zamek = UNLOCKED;
+											set(DELKA,ENABLED,false);
 								}
 						}
 						if (E == RD_klik) {
 								scButton_K_zamek->Visible = false;
-
+								scGPNumericEdit_kapacita->Enabled=true;
 								if (RD_zamek == LOCKED) // když je zamèeno
 								{
 										// RD
@@ -2440,7 +2476,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 
 						if (E == DD_klik) {
 							scButton_K_zamek->Visible = false;
-
+							scGPNumericEdit_kapacita->Enabled=true;
 								if (DD_zamek == LOCKED) // když je zamèeno
 								{
 										scButton_zamek_DD->ImageIndex = 38;
@@ -2456,20 +2492,25 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						if (E == mezera_klik)
 						{
 							scButton_K_zamek->Visible = true;
+						 if(CT_zamek==UNLOCKED) scGPNumericEdit_kapacita->Enabled=true;
+						 else  scGPNumericEdit_kapacita->Enabled=false;
 							scButton_K_zamek->ImageIndex = scButton_zamek_CT->ImageIndex;
-								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
+								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)  //tohle myslím už není potøeba
 								{
-
-								 RD_zamek=UNLOCKED;
-								 scButton_zamek_RD->ImageIndex = 38;
-
-								 scButton_zamek_DD->ImageIndex = 37;
-								 DD_zamek = LOCKED;
-
-								 CT_zamek=UNLOCKED;
-								 scButton_zamek_CT->ImageIndex = 38;
-
-								 vypis("Byl odemèen zámek rychlosti pohonu",false);
+//
+//								 RD_zamek=UNLOCKED;
+//								 scButton_zamek_RD->ImageIndex = 38;
+//								 set(RYCHLOST,ENABLED,false);
+//
+//								 scButton_zamek_DD->ImageIndex = 37;
+//								 DD_zamek = LOCKED;
+//								 set(DELKA,DISABLED,false);
+//
+//								 CT_zamek=UNLOCKED;
+//								 scButton_zamek_CT->ImageIndex = 38;
+//								 set(TIME,ENABLED,false);
+//
+//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
 								}
 
 								if(scButton_K_zamek->Visible==false)
@@ -2484,20 +2525,25 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						if(E == Rx_klik)
 						{
 						 scButton_K_zamek->Visible = true;
+						 if(CT_zamek==UNLOCKED) scGPNumericEdit_kapacita->Enabled=true;
+						 else  scGPNumericEdit_kapacita->Enabled=false;
 						 scButton_K_zamek->ImageIndex = scButton_zamek_CT->ImageIndex;
 							if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) // pokud je RD zamcen a zaroven povolen k editace
 								{
-
-								 RD_zamek=UNLOCKED;
-								 scButton_zamek_RD->ImageIndex = 38;
-
-								 scButton_zamek_DD->ImageIndex = 37;
-								 DD_zamek = LOCKED;
-
-								 CT_zamek=UNLOCKED;
-								 scButton_zamek_CT->ImageIndex = 38;
-
-								 vypis("Byl odemèen zámek rychlosti pohonu",false);
+//                 //tohle se asi už nedìje - editace je povolena pouze když je RD odemèen
+//								 RD_zamek=UNLOCKED;
+//								 scButton_zamek_RD->ImageIndex = 38;
+//								 set(RYCHLOST,ENABLED,false);
+//
+//								 scButton_zamek_DD->ImageIndex = 37;
+//								 DD_zamek = LOCKED;
+//								 set(DELKA,DISABLED,false);
+//
+//								 CT_zamek=UNLOCKED;
+//								 scButton_zamek_CT->ImageIndex = 38;
+//								 set(TIME,ENABLED,false);
+//
+//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
 								}
 
 									if(!scButton_K_zamek->Visible)
@@ -2512,6 +2558,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						if (E == C_klik || E == P_klik)
 						{
 								scButton_K_zamek->Visible = false;
+								scGPNumericEdit_kapacita->Enabled=true;
 
 								if(scGPNumericEdit_CT->Value>=Form1->d.v.PP.TT)
 								{  //CT je vetsi nez TT
@@ -2520,12 +2567,15 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 										{
 										 CT_zamek=UNLOCKED;
 										 scButton_zamek_CT->ImageIndex = 38;
+										 set(TIME,ENABLED,false);
 
 										 scButton_zamek_RD->ImageIndex = 37;
 										 RD_zamek = LOCKED;
+										 set(RYCHLOST,DISABLED,false);
 
 											scButton_zamek_DD->ImageIndex = 38;
 											DD_zamek = UNLOCKED;
+											set(DELKA,ENABLED,false);
 										}
 
 								}
@@ -2533,21 +2583,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						if (E == Rotace_klik)
 						{
 						scButton_K_zamek->Visible = false;
-
-//								if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled)
-//								{
-//
-//								 RD_zamek=UNLOCKED;
-//								 scButton_zamek_RD->ImageIndex = 38;
-//
-//								 scButton_zamek_DD->ImageIndex = 37;
-//								 DD_zamek = LOCKED;
-//
-//								 CT_zamek=UNLOCKED;
-//								 scButton_zamek_CT->ImageIndex = 38;
-//
-//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
-//								}
+						scGPNumericEdit_kapacita->Enabled=true;
 						}
 
 				}
@@ -2561,25 +2597,42 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scButton_zamek_DD->Visible = true;
 						scButton_zamek_DD->Enabled = true;
 						scButton_K_zamek->Visible = true;
+//						if(DD_zamek==LOCKED){
+//						 set(DELKA,DISABLED,false);
+//						 scGPNumericEdit_kapacita->Enabled=true;
+//						 }
+//						else
+//						{
+//						 set(DELKA,ENABLED,false);
+//						 scGPNumericEdit_kapacita->Enabled=false;
+//						 }
+
 
 				}
 
 				if (I == C_klik_ico) {
-						if (K_zamek == LOCKED) // když je zamèeno
+						if (scButton_K_zamek->ImageIndex==37  /*K_zamek == LOCKED*/) // když je zamèeno - pojistka
 						{
 								scButton_K_zamek->ImageIndex = 38;
 								K_zamek = UNLOCKED;
+							 //	set(KAPACITA,ENABLED,false);
+							 scGPNumericEdit_kapacita->Enabled=true;
 
 								scButton_zamek_DD->ImageIndex = 37;
 								DD_zamek = LOCKED;
+								set(DELKA,DISABLED,false);
+
 						}
 						else // odemèeno
 						{
 								scButton_K_zamek->ImageIndex = 37;
 								K_zamek = LOCKED;
+								//	set(KAPACITA,DISABLED,false);
+								 scGPNumericEdit_kapacita->Enabled=false;
 
 								scButton_zamek_DD->ImageIndex = 38;
 								DD_zamek = UNLOCKED;
+								set(DELKA,ENABLED,false);
 						}
 				}
 				if (I == DD_klik_ico) {
@@ -2587,15 +2640,20 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 								scButton_zamek_DD->ImageIndex = 38;
 								DD_zamek = UNLOCKED;
+								set(DELKA,ENABLED,false);
 								scButton_K_zamek->ImageIndex = 37;
 								K_zamek = LOCKED;
+							 //	set(KAPACITA,DISABLED,false);
+								scGPNumericEdit_kapacita->Enabled=false;
 						}
 						else // odemèeno
 						{
 								scButton_zamek_DD->ImageIndex = 37;
 								DD_zamek = LOCKED;
+								set(DELKA,DISABLED,false);
 								scButton_K_zamek->ImageIndex = 38;
 								K_zamek = UNLOCKED;
+								scGPNumericEdit_kapacita->Enabled=true;
 						}
 				}
 				if (I == CT_klik_ico) {
@@ -2603,12 +2661,14 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 								scButton_zamek_CT->ImageIndex = 38;
 								CT_zamek = UNLOCKED;
+								set(TIME,ENABLED,false);
 
 						}
 						else // odemèeno
 						{
 								scButton_zamek_CT->ImageIndex = 37;
 								CT_zamek = LOCKED;
+								set(TIME,DISABLED,false);
 						}
 				}
 
@@ -2686,6 +2746,8 @@ void TForm_parametry::Pohon_pouzivan()
 
 					 set(RYCHLOST, DISABLED, false);
 					 set(MEZERA, DISABLED, false);
+					 set(TIME,ENABLED,false);
+					 set(DELKA,ENABLED,false);
 					 //	rz ze vzoru
 					if(scButton_zamek_RD->Enabled==false)
 					{
@@ -2745,6 +2807,8 @@ void TForm_parametry::Pohon_pouzivan()
 					}
 					set(RYCHLOST, ENABLED, false);
 					// pohon není používán jiným objektem, dovolím zmìnu RD, M,R
+					set(TIME,ENABLED,false);
+					set(DELKA,ENABLED,false);
 					set(MEZERA, ENABLED, false);
 					set(ROZESTUP, READONLY, false);
 					set(ROTACE, ENABLED, false);
@@ -2752,6 +2816,13 @@ void TForm_parametry::Pohon_pouzivan()
 					scButton_zamek_CT->Enabled=true;
 					scButton_zamek_DD->Enabled=true;
 					scButton_zamek_RD->Enabled=true;
+
+					CT_zamek = UNLOCKED;
+					DD_zamek = UNLOCKED;
+					scButton_zamek_DD->ImageIndex = 38;
+					scButton_zamek_CT->ImageIndex = 38;
+
+
 				}
 		}
 }
@@ -3385,10 +3456,22 @@ void	TForm_parametry::Nastav_M_R_Rx()
 		{
 			 double mezera=getM();//pøevod jednotek
 																																									//musí se použít stav pøedchozí
-			 if(F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera,ComboRotace_predchozi_stav/*scComboBox_rotace->ItemIndex*/)){set(ROTACE,ENABLED,false);	set(RYCHLOST,DISABLED,false); }
-			 else { set(ROTACE,DISABLED,false);  set(RYCHLOST, DISABLED, false);}
+			 if(F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera,ComboRotace_predchozi_stav/*scComboBox_rotace->ItemIndex*/))
+			 {
+			 set(ROTACE,ENABLED,false);
+			 set(RYCHLOST,DISABLED,false);
+			 }
+			 else
+			 {
+			 set(ROTACE,DISABLED,false);
+			 set(RYCHLOST, DISABLED,false);
+			 }
 		}
-		else { set(ROTACE,ENABLED,false);  	set(RYCHLOST, ENABLED, false);}
+		else
+		{
+		set(ROTACE,ENABLED,false);
+		set(RYCHLOST, ENABLED,false);
+		}
 
 		if(RD_zamek==LOCKED)
 		{
@@ -3416,7 +3499,7 @@ void __fastcall TForm_parametry::FormPaint(TObject *Sender)
 //vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
 void TForm_parametry::packa_RDzamek(TCanvas *canv)
 {
-  //vykreslí packu/spojnici k hodnotám souvisejícím se zámkem RD, pouze v kontinuálním režimu
+	//vykreslí packu/spojnici k hodnotám souvisejícím se zámkem RD, pouze v kontinuálním režimu
  if(RD_zamek == LOCKED && scComboBox_rezim->ItemIndex==1)
  {
 	 double mezera=getM();
