@@ -176,7 +176,6 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 {
 		if (input_state != NO) // pokud to není pøi startu (formshow)
 		{
-
 				// výchozí nastavení zámkù pøi pøekliku režimu na KK
 				if (scComboBox_rezim->ItemIndex == 1)
 				{
@@ -217,10 +216,10 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 				OUTPUT(); // naètení ze struktury - aby probìhla validace dat pøi zmìnì režimu
 
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
-				if (scComboBox_rezim->ItemIndex == 1 && obj!=NULL ){  // u KK režimu pokud je pohon používán - natáhnutí správné mezery z dat
-
+				if (scComboBox_rezim->ItemIndex == 1 && obj!=NULL )  // u KK režimu pokud je pohon používán - natáhnutí správné mezery z dat
+				{
 					 scGPNumericEdit_mezera->Value=obj->mezera;
-					}
+				}
 
 				// napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru, pouze pro prvotní zobrazení dle souøadnic kurzoru myši, jinak dle uživatele
 				long X = Form1->akt_souradnice_kurzoru_PX.x + 10;
@@ -252,12 +251,11 @@ void __fastcall TForm_parametry::scComboBox_rezimChange(TObject *Sender)
 		}
 		if (scComboBox_rezim->ItemIndex == 1) // mezera se doporucuje pouze u KK rezimu
 		{
-		Kontrola_mezery();
+			Kontrola_mezery();
 		}
-
-
+		Invalidate();//kvùli všem packám + zajištuje zároveò volání frameCorrelation()//stejnou barvou orámuje hodnoty v korelaci + vykreslí korelaèní packy
+		FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
-
 // ---------------------------------------------------------------------------
 // resize a napozicování formuláøe+povoleni a zakazani komponent pro jednotlivé režimy
 void TForm_parametry::setForm4Rezim(unsigned short rezim)
@@ -1098,11 +1096,10 @@ void TForm_parametry::input_K() {
 		}
 		input_state = NOTHING;
 }
-
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
-void TForm_parametry::input_P() {
-
+void TForm_parametry::input_P()
+{
 		input_state = P;
 		INPUT();
 
@@ -1167,18 +1164,17 @@ void TForm_parametry::input_P() {
 			} else vypis("",false);
 
 	 }
-
 		input_state = NOTHING;
 }
-
 // ---------------------------------------------------------------------------
 // pøepoèet hodnot vyplývajících ze zmìny CT
-void TForm_parametry::input_CT() {
+void TForm_parametry::input_CT()
+{
 		input_state = CT;
 		INPUT();
 
 		if (scComboBox_rezim->ItemIndex == 1)
-	{ //KK režim
+		{ //KK režim
 						pm.input_CT();
 						OUTPUT();
 			 if(scButton_zamek_RD->ImageIndex==38 && scComboBox_pohon->ItemIndex>0)
@@ -1212,7 +1208,7 @@ void TForm_parametry::input_CT() {
 
 
 		 }
-	}
+		}
 
 		if (scComboBox_rezim->ItemIndex == 0)
 		{ // pokud je v režimu SG nevolá se výpoèetní model
@@ -1884,20 +1880,19 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 		}
 		OUTPUT();
 }
-
 // ---------------------------------------------------------------------------
 // zámek délky dopravníku
-void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender) {
+void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
+{
 		Nastav_zamky(scComboBox_rezim->ItemIndex, DD_klik_ico, empty_klik, true);
 		scButton_zamek_DD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
-
 }
-
-void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender) {
+// ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender)
+{
 		Nastav_zamky(scComboBox_rezim->ItemIndex, C_klik_ico, empty_klik, true);
 	 	scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 }
-
 // ---------------------------------------------------------------------------
 // pøi kliknutí na doporuèení nastane aplikace doporuèení do daného editboxu
 void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
@@ -2070,7 +2065,6 @@ void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
 		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
 		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 		Nastav_M_R_Rx();
-		Invalidate();//kvùli packám
 }
 // ---------------------------------------------------------------------------
 void TForm_parametry::INPUT()
@@ -2713,7 +2707,8 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scButton_zamek_CT->Visible = false;
 				}
 		}
-		Invalidate();//kvùli packám + zajištuje volání frameCorrelation();//stejnou barvou orámuje hodnoty v korelaci
+		Invalidate();//kvùli všem packám + zajištuje zároveò volání frameCorrelation()//stejnou barvou orámuje hodnoty v korelaci + vykreslí korelaèní packy
+		FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
 // ---------------------------------------------------------------------------
 ////metoda která kontroluje zdali je vybraný pohon používán èi nikoliv, dle toho nastavuje viditelnost editboxù
@@ -3422,12 +3417,12 @@ void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
 //zavolá náhled kabiny, pøípadnì v budoucnu info a o požadovaných parametrech
 void __fastcall TForm_parametry::scGPGlyphButton_viewClick(TObject *Sender)
 {
-		// formuláø na støed
-		Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
-		Form_objekt_nahled->Top = Form1->ClientHeight / 2 - Form_objekt_nahled->Height / 2;
-		// zobrazeni formuláøe
-		Form_objekt_nahled->zobrazitFrameForm=true;
-		Form_objekt_nahled->Show();//nemodální zobrazení
+	 // formuláø na støed
+	 Form_objekt_nahled->Left = Form1->ClientWidth / 2 - Form_objekt_nahled->Width / 2;
+	 Form_objekt_nahled->Top = Form1->ClientHeight / 2 - Form_objekt_nahled->Height / 2;
+	 // zobrazeni formuláøe
+	 Form_objekt_nahled->zobrazitFrameForm=true;
+	 Form_objekt_nahled->Show();//nemodální zobrazení
 }
 //---------------------------------------------------------------------------
 
@@ -3458,19 +3453,19 @@ void	TForm_parametry::Nastav_M_R_Rx()
 																																									//musí se použít stav pøedchozí
 			 if(F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera,ComboRotace_predchozi_stav/*scComboBox_rotace->ItemIndex*/))
 			 {
-			 set(ROTACE,ENABLED,false);
-			 set(RYCHLOST,DISABLED,false);
+			   set(ROTACE,ENABLED,false);
+				 set(RYCHLOST,DISABLED,false);
 			 }
 			 else
 			 {
-			 set(ROTACE,DISABLED,false);
-			 set(RYCHLOST, DISABLED,false);
+				 set(ROTACE,DISABLED,false);
+				 set(RYCHLOST, DISABLED,false);
 			 }
 		}
 		else
 		{
-		set(ROTACE,ENABLED,false);
-		set(RYCHLOST, ENABLED,false);
+			set(ROTACE,ENABLED,false);
+			set(RYCHLOST, ENABLED,false);
 		}
 
 		if(RD_zamek==LOCKED)
@@ -3493,7 +3488,7 @@ void	TForm_parametry::Nastav_M_R_Rx()
 void __fastcall TForm_parametry::FormPaint(TObject *Sender)
 {
 	packa_RDzamek(Canvas);
-	//frameCorrelation();//zajišuje stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do výchozího stavu, zároveò kreslí pravé packy
+	frameCorrelation();//zajišuje stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do výchozího stavu, zároveò kreslí pravé packy
 }
 //---------------------------------------------------------------------------
 //vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
@@ -3543,7 +3538,7 @@ void TForm_parametry::frameCorrelation(bool default_value)
 	//definice barev
 	TColor nColor=clGray;//normální barva
 	TColor cColor=10114859;//focus barva (modrá), oznaèující korelaci
-								//1871359; - oranžová
+								//1871359;// - oranžová
 	//default stav
 	cCT(nColor);
 	cRD(nColor);
@@ -3580,7 +3575,8 @@ void TForm_parametry::frameCorrelation(bool default_value)
 						break;
 						case 2://PP
 						{
-							cDD(cColor);cK(cColor);cP(cColor);
+							cCT(cColor);cDD(cColor);cK(cColor);cP(cColor);
+							packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
 						}
 						break;
 				 }
@@ -3592,8 +3588,16 @@ void TForm_parametry::frameCorrelation(bool default_value)
 				 {
 						case 1:
 						{
-							if(DD_zamek == LOCKED){cCT(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);}
-							if(CT_zamek == LOCKED){cDD(cColor);cP(cColor);cM(cColor);cRx(cColor);}
+							if(DD_zamek == LOCKED)
+							{
+								cCT(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+							if(CT_zamek == LOCKED)
+							{
+								cDD(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								packa(RYCHLOST,DELKA);packa(DELKA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
 						}
 						break;//KK
 						case 2:break;//PP
@@ -3606,13 +3610,22 @@ void TForm_parametry::frameCorrelation(bool default_value)
 				 {
 						case 1://KK
 						{
-							if(RD_zamek == LOCKED){cCT(cColor);cK(cColor);cP(cColor);}
-							if(CT_zamek == LOCKED){cRD(cColor);cP(cColor);cM(cColor);cRx(cColor);}
+							if(RD_zamek == LOCKED)
+							{
+								cCT(cColor);cK(cColor);cP(cColor);
+								packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
+							}
+							if(CT_zamek == LOCKED)
+							{
+								cRD(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								packa(RYCHLOST,DELKA);packa(DELKA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
 						}
 						break;
 						case 2://PP
 						{
-							cCT(cColor);cK(cColor);cP(cColor);
+							cCT(cColor);cDD(cColor);cK(cColor);cP(cColor);
+							packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
 						}
 						break;
 				 }
@@ -3622,39 +3635,132 @@ void TForm_parametry::frameCorrelation(bool default_value)
 			{
 				 switch(scComboBox_rezim->ItemIndex)
 				 {
-						case 1:break;//KK
-						case 2:break;//PP
+						case 1://KK
+						{
+							if(DD_zamek == LOCKED)
+							{
+								cCT(cColor);cRD(cColor);cK(cColor);cP(cColor);
+								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);
+							}
+							if(RD_zamek == LOCKED)
+							{
+								cCT(cColor);cDD(cColor);cK(cColor);cP(cColor);
+								packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
+							}
+						}
+						break;
+						case 2://PP
+						{
+							cCT(cColor);cDD(cColor);cK(cColor);cP(cColor);
+							packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
+						}
+						break;
 				 }
 			}break;
 			case P_klik:
 			{
 				 switch(scComboBox_rezim->ItemIndex)
 				 {
-						case 1:break;//KK
-						case 2:break;//PP
+						case 1://KK
+						{
+							if(DD_zamek == LOCKED)
+							{
+								cCT(cColor);cRD(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+							if(RD_zamek == LOCKED)
+							{
+								cCT(cColor);cDD(cColor);cK(cColor);cP(cColor);
+								packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
+							}
+						}
+						break;
+						case 2://PP
+						{
+							cCT(cColor);cDD(cColor);cK(cColor);cP(cColor);
+							packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
+						}
+						break;
 				 }
 			}break;
 			case Rotace_klik:
 			{
 				 switch(scComboBox_rezim->ItemIndex)
 				 {
-						case 1:break;//KK
-						case 2:break;//PP
+						case 1://KK
+						{
+							if(DD_zamek == LOCKED)
+							{
+								cCT(cColor);cRD(cColor);cK(cColor);cP(cColor);cRo(cColor);cM(cColor);cRx(cColor);
+								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);packa(POZICE,ROTACE);packa(ROTACE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+							if(CT_zamek == LOCKED)
+							{
+								cRD(cColor);cDD(cColor);cRo(cColor);cM(cColor);cRx(cColor);
+								packa(RYCHLOST,DELKA);packa(DELKA,ROTACE);packa(ROTACE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+							if(RD_zamek == LOCKED)
+							{
+								if(F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(getM(),ComboRotace_predchozi_stav))//pouze pokud nemá rotace vliv na RD
+								{
+									cP(cColor);cRo(cColor);cM(cColor);
+                  packa(POZICE,ROTACE);packa(ROTACE,MEZERA);
+                }
+							}
+						}
+						break;
+						case 2://PP
+						{
+							cP(cColor);cM(cColor);
+							packa(POZICE,MEZERA);
+						}
+						break;
 				 }
 			}break;
 			case mezera_klik:
 			{
 				 switch(scComboBox_rezim->ItemIndex)
 				 {
-						case 1:break;//KK
-						case 2:break;//PP
-			}
+						case 1://KK
+						{
+							if(DD_zamek == LOCKED)
+							{
+								cCT(cColor);cRD(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+							if(CT_zamek == LOCKED || K_zamek == LOCKED)
+							{
+								cRD(cColor);cDD(cColor);cM(cColor);cRx(cColor);
+								packa(RYCHLOST,DELKA);packa(DELKA,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+						}
+						break;
+						case 2://PP
+						{
+							cDD(cColor);cP(cColor);
+							packa(DELKA,POZICE);
+						}
+						break;
+				 }
 			}break;
 			case Rx_klik:
 			{
 				 switch(scComboBox_rezim->ItemIndex)
 				 {
-						case 1:break;//KK
+						case 1://KK
+						{
+							if(DD_zamek == LOCKED)
+							{
+								cCT(cColor);cRD(cColor);cK(cColor);cM(cColor);cRx(cColor);
+								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+							if(CT_zamek == LOCKED || K_zamek == LOCKED)
+							{
+								cRD(cColor);cDD(cColor);cM(cColor);cRx(cColor);
+								packa(RYCHLOST,DELKA);packa(DELKA,MEZERA);packa(MEZERA,ROZESTUP);
+							}
+						}
+						break;
 						case 2:break;//PP
 				 }
 			}break;
@@ -3671,12 +3777,12 @@ TPoint TForm_parametry::getRMComponent(Tinput_state C)
 		//case POHON: break;
 		case TIME:		R.x=scGPNumericEdit_CT->Left+scGPNumericEdit_CT->Width; 							R.y=scGPNumericEdit_CT->Top+scGPNumericEdit_CT->Height/2;break;
 		case RYCHLOST:R.x=scGPNumericEdit_RD->Left+scGPNumericEdit_RD->Width;								R.y=scGPNumericEdit_RD->Top+scGPNumericEdit_RD->Height/2;break;
-		case DELKA:		R.x=scGPNumericEdit_delka_dopravniku->Left+scGPNumericEdit_delka_dopravniku->Width;	R.y=scGPNumericEdit_delka_dopravniku->Top+scGPNumericEdit_delka_dopravniku->Height/2;break;
+		case DELKA:		R.x=scGPNumericEdit_delka_dopravniku->Left+scGPNumericEdit_delka_dopravniku->Width;		R.y=scGPNumericEdit_delka_dopravniku->Top+scGPNumericEdit_delka_dopravniku->Height/2;break;
 		case KAPACITA:R.x=scGPNumericEdit_kapacita->Left+scGPNumericEdit_kapacita->Width;		R.y=scGPNumericEdit_kapacita->Top+scGPNumericEdit_kapacita->Height/2;break;
 		case POZICE:	R.x=scGPNumericEdit_pozice->Left+scGPNumericEdit_pozice->Width;				R.y=scGPNumericEdit_pozice->Top+scGPNumericEdit_pozice->Height/2;break;
 		case ROTACE:	R.x=scComboBox_rotace->Left+scComboBox_rotace->Width;									R.y=scComboBox_rotace->Top+scComboBox_rotace->Height/2;break;
 		case MEZERA:	R.x=scGPNumericEdit_mezera->Left+scGPNumericEdit_mezera->Width;				R.y=scGPNumericEdit_mezera->Top+scGPNumericEdit_mezera->Height/2;break;
-		case ROZESTUP:R.x=scGPNumericEdit1_rx->Left+scGPNumericEdit1_rx->Width;							R.y=scGPNumericEdit1_rx->Top+scGPNumericEdit1_rx->Height/2;break;
+		case ROZESTUP:R.x=rHTMLLabel_jednotky_vzdalenostpalcu->Left+rHTMLLabel_jednotky_vzdalenostpalcu->Width;		R.y=rHTMLLabel_jednotky_vzdalenostpalcu->Top+rHTMLLabel_jednotky_vzdalenostpalcu->Height/2;break;
 		//case STOPKA:break;
 		//case CEKANI:break;
 		//case ODCHYLKA:break;
