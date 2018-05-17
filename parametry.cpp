@@ -2875,6 +2875,8 @@ void TForm_parametry::Pohon_pouzivan()
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender)
 {
+		input_clicked_edit = Rotace_klik;
+		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, Rotace_klik, false);
 		if (scComboBox_rezim->ItemIndex == 2)
 		{ // PP režim schování zámkù
 				scButton_zamek_DD->Visible = false;
