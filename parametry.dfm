@@ -2256,7 +2256,7 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scButton_zamek_CT: TscButton
-    Left = 204
+    Left = 206
     Top = 172
     Width = 28
     Height = 29
@@ -2265,8 +2265,8 @@ object Form_parametry: TForm_parametry
     Animation = False
     CanFocused = False
     CustomDropDown = False
-    Margin = -1
-    Spacing = 1
+    Margin = -2
+    Spacing = 0
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
     ImageIndex = 38
@@ -2340,7 +2340,7 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scButton_zamek_DD: TscButton
-    Left = 204
+    Left = 206
     Top = 250
     Width = 28
     Height = 29
@@ -2349,8 +2349,8 @@ object Form_parametry: TForm_parametry
     Animation = False
     CanFocused = False
     CustomDropDown = False
-    Margin = -1
-    Spacing = 1
+    Margin = -2
+    Spacing = 0
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
     ImageIndex = 38
@@ -2424,17 +2424,21 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scButton_zamek_RD: TscButton
-    Left = 204
+    Left = 206
     Top = 210
     Width = 28
     Height = 29
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
     TabOrder = 26
     OnClick = scButton_zamek_RDClick
     Animation = False
     CanFocused = False
     CustomDropDown = False
-    Margin = -1
-    Spacing = 1
+    Margin = -2
+    Spacing = 0
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
     ImageIndex = 37
@@ -2450,7 +2454,7 @@ object Form_parametry: TForm_parametry
     ColorOptions.FramePressedColor = clHighlight
     ColorOptions.FrameFocusedColor = clHighlight
     ColorOptions.FrameDisabledColor = clBackground
-    ColorOptions.FrameWidth = 1
+    ColorOptions.FrameWidth = 0
     ColorOptions.FontNormalColor = clBackground
     ColorOptions.FontHotColor = clBackground
     ColorOptions.FontPressedColor = clBackground
@@ -3042,7 +3046,7 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scButton_K_zamek: TscButton
-    Left = 204
+    Left = 206
     Top = 290
     Width = 28
     Height = 29
@@ -3052,8 +3056,8 @@ object Form_parametry: TForm_parametry
     Animation = False
     CanFocused = False
     CustomDropDown = False
-    Margin = -1
-    Spacing = 1
+    Margin = -2
+    Spacing = 0
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
     ImageIndex = 38

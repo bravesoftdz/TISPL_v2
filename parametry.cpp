@@ -3497,14 +3497,19 @@ void TForm_parametry::packa_RDzamek(TCanvas *canv)
 	//vykreslí packu/spojnici k hodnotám souvisejícím se zámkem RD, pouze v kontinuálním režimu
  if(RD_zamek == LOCKED && scComboBox_rezim->ItemIndex==1)
  {
-	 double mezera=getM();
-
+	 //výchozí hodnoty - zámek RD levý okraj, na výšku polovina ikony
 	 int X1=scButton_zamek_RD->Left;
 	 int Y1=scButton_zamek_RD->Top+scButton_zamek_RD->Height/2;
 	 int X2=scComboBox_rotace->Left;
 	 int Y2=scComboBox_rotace->Top+scComboBox_rotace->Height/2;
 
-	 if(!F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera,scComboBox_rotace->ItemIndex))//tuto packu øešit pouze pokud nemá rotace význam
+	 //pøetažení vodorovné èásti packy RD
+	 canv->Pen->Color=(TColor)RGB(170,170,170);canv->Pen->Width=2;
+	 canv->MoveTo(X1,Y1);
+	 canv->LineTo(scGPNumericEdit_RD->Left,Y1);
+
+																														 //zde mùže být aktuální stav rotace
+	 if(!F->m.lze_rotovat_jig_bez_zmeny_RzRxRD(getM(),scComboBox_rotace->ItemIndex))//tuto packu øešit pouze pokud nemá rotace význam
 	 {
 			F->d.vykresli_packu(canv,X1,Y1,X2,Y2); //packa zámek RD - rotace
 			X2=X1;
@@ -3521,7 +3526,7 @@ void TForm_parametry::packa_RDzamek(TCanvas *canv)
 
 	 X2=rHTMLLabel_palec_vzd->Left+rHTMLLabel_palec_vzd->Width/2;
 	 Y2=rHTMLLabel_palec_vzd->Top;
-	 F->d.vykresli_packu(canv,X2+5,Y1,X2,Y2);//packa mezera - Rx,Rz
+	 F->d.vykresli_packu(canv,X2+7,Y1,X2+1,Y2);//packa mezera - Rx,Rz
  }
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -3529,6 +3534,7 @@ void TForm_parametry::packa_RDzamek(TCanvas *canv)
 void TForm_parametry::packa(Tinput_state start,Tinput_state end)
 {
 	TPoint S=getRMComponent(start);TPoint E=getRMComponent(end);
+	if(scGPNumericEdit_pozice->Left+scGPNumericEdit_pozice->Width==E.x)E.x-=1;//workaround divné 1px mezery u P
 	F->d.vykresli_packu(Canvas,S.x,S.y,E.x,E.y,scGPNumericEdit_CT->Options->FrameFocusedColor,1,4);
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -3563,12 +3569,12 @@ void TForm_parametry::frameCorrelation(bool default_value)
 						{
 							if(RD_zamek == LOCKED)
 							{
-								cDD(cColor);cK(cColor);cP(cColor);
+								cCT(cColor);cDD(cColor);cK(cColor);cP(cColor);
 								packa(TIME,DELKA);packa(DELKA,KAPACITA);packa(KAPACITA,POZICE);
 							}
 							if(DD_zamek == LOCKED)
 							{
-								cRD(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								cCT(cColor);cRD(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);
 								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
 							}
 						}
@@ -3730,8 +3736,8 @@ void TForm_parametry::frameCorrelation(bool default_value)
 							}
 							if(CT_zamek == LOCKED || K_zamek == LOCKED)
 							{
-								cRD(cColor);cDD(cColor);cM(cColor);cRx(cColor);
-								packa(RYCHLOST,DELKA);packa(DELKA,MEZERA);packa(MEZERA,ROZESTUP);
+								cRD(cColor);cDD(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								packa(RYCHLOST,DELKA);packa(DELKA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
 							}
 						}
 						break;
@@ -3751,13 +3757,13 @@ void TForm_parametry::frameCorrelation(bool default_value)
 						{
 							if(DD_zamek == LOCKED)
 							{
-								cCT(cColor);cRD(cColor);cK(cColor);cM(cColor);cRx(cColor);
+								cCT(cColor);cRD(cColor);cK(cColor);cP(cColor);cM(cColor);cRx(cColor);
 								packa(TIME,RYCHLOST);packa(RYCHLOST,KAPACITA);packa(KAPACITA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
 							}
 							if(CT_zamek == LOCKED || K_zamek == LOCKED)
 							{
-								cRD(cColor);cDD(cColor);cM(cColor);cRx(cColor);
-								packa(RYCHLOST,DELKA);packa(DELKA,MEZERA);packa(MEZERA,ROZESTUP);
+								cRD(cColor);cDD(cColor);cP(cColor);cM(cColor);cRx(cColor);
+								packa(RYCHLOST,DELKA);packa(DELKA,POZICE);packa(POZICE,MEZERA);packa(MEZERA,ROZESTUP);
 							}
 						}
 						break;
