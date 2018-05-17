@@ -156,9 +156,10 @@ private:	// User declarations
 	void Nacti_rx();
 	void INPUT();
 	void OUTPUT();
-	void packa_RD(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
+	void packa_RDzamek(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
+	void packa(Tinput_state start,Tinput_state end);//vykreslí packu mezi edity a comby
 	double getM();
-	void frameCorrelation();//stejnou barvou orámuje hodnoty v korelaci
+	void frameCorrelation(bool default_value=false);//stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do výchozího stavu
 	void cCT(TColor Color){scGPNumericEdit_CT->Options->FrameNormalColor=Color;}//inline metoda
 	void cRD(TColor Color){scGPNumericEdit_RD->Options->FrameNormalColor=Color;}//inline metoda
 	void cDD(TColor Color){scGPNumericEdit_delka_dopravniku->Options->FrameNormalColor=Color;}//inline metoda
@@ -167,6 +168,7 @@ private:	// User declarations
 	void cRo(TColor Color){scComboBox_rotace->Options->FrameNormalColor=Color;}//inline metoda
 	void cM(TColor Color){scGPNumericEdit_mezera->Options->FrameNormalColor=Color;}//inline metoda
 	void cRx(TColor Color){scGPNumericEdit1_rx->Options->FrameNormalColor=Color;}//inline metoda
+	TPoint getRMComponent(Tinput_state C);//vrátí souøadnice pravého okraje a horního okraje+poloviny výšky komponenty
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
