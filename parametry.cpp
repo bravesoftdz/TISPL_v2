@@ -1860,6 +1860,8 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 // zámek procesního èasu
 void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 {
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=CT_klik_ico;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, CT_klik_ico, empty_klik, true);
 	 	scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 
@@ -1879,19 +1881,36 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 			pm.input_K();
 		}
 		OUTPUT();
+		input_clicked_icon=empty_klik_ico;
 }
 // ---------------------------------------------------------------------------
 // zámek délky dopravníku
 void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 {
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=DD_klik_ico;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, DD_klik_ico, empty_klik, true);
 		scButton_zamek_DD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		input_clicked_icon=empty_klik_ico;
+}
+// ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
+{
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=RD_klik_ico;
+		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
+		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		Nastav_M_R_Rx();
+		input_clicked_icon=empty_klik_ico;
 }
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender)
 {
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=C_klik_ico;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, C_klik_ico, empty_klik, true);
-	 	scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		input_clicked_icon=empty_klik_ico;
 }
 // ---------------------------------------------------------------------------
 // pøi kliknutí na doporuèení nastane aplikace doporuèení do daného editboxu
@@ -2021,6 +2040,11 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, DD_klik, false);
 }
 // ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scGPNumericEdit1_rxClick(TObject *Sender)
+{
+input_clicked_edit=Rx_klik;
+Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, Rx_klik, false);
+}
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
@@ -2059,13 +2083,7 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 		//pokud je náhled z PO zobrazen, zajišuje zároveò okamžitou aktualizaci hodnot v náhledu z PO
 		if(Form_objekt_nahled->Visible)Form_objekt_nahled->REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
 }
-// ---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
-{
-		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
-		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
-		Nastav_M_R_Rx();
-}
+
 // ---------------------------------------------------------------------------
 void TForm_parametry::INPUT()
 {
@@ -3125,11 +3143,6 @@ void TForm_parametry::Check_rozmezi_RD() {
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit1_rxClick(TObject *Sender)
-{
-input_clicked_edit=Rx_klik;
-Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, Rx_klik, false);
-}
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
