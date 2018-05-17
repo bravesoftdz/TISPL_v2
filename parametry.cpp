@@ -1860,6 +1860,8 @@ void __fastcall TForm_parametry::scGPGlyphButton_pasteClick(TObject *Sender)
 // zámek procesního èasu
 void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 {
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=CT_klik_ico;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, CT_klik_ico, empty_klik, true);
 	 	scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 
@@ -1879,19 +1881,36 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 			pm.input_K();
 		}
 		OUTPUT();
+		input_clicked_icon=empty_klik_ico;
 }
 // ---------------------------------------------------------------------------
 // zámek délky dopravníku
 void __fastcall TForm_parametry::scButton_zamek_DDClick(TObject *Sender)
 {
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=DD_klik_ico;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, DD_klik_ico, empty_klik, true);
 		scButton_zamek_DD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		input_clicked_icon=empty_klik_ico;
+}
+// ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
+{
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=RD_klik_ico;
+		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
+		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		Nastav_M_R_Rx();
+		input_clicked_icon=empty_klik_ico;
 }
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scButton_K_zamekClick(TObject *Sender)
 {
+		input_clicked_edit=empty_klik;
+		input_clicked_icon=C_klik_ico;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, C_klik_ico, empty_klik, true);
-	 	scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		scButton_K_zamek->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		input_clicked_icon=empty_klik_ico;
 }
 // ---------------------------------------------------------------------------
 // pøi kliknutí na doporuèení nastane aplikace doporuèení do daného editboxu
@@ -2021,6 +2040,11 @@ void __fastcall TForm_parametry::scGPNumericEdit_delka_dopravnikuClick
 		Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, DD_klik, false);
 }
 // ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scGPNumericEdit1_rxClick(TObject *Sender)
+{
+input_clicked_edit=Rx_klik;
+Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, Rx_klik, false);
+}
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
@@ -2059,13 +2083,7 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 		//pokud je náhled z PO zobrazen, zajišuje zároveò okamžitou aktualizaci hodnot v náhledu z PO
 		if(Form_objekt_nahled->Visible)Form_objekt_nahled->REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
 }
-// ---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scButton_zamek_RDClick(TObject *Sender)
-{
-		Nastav_zamky(scComboBox_rezim->ItemIndex, RD_klik_ico, empty_klik, true);
-		scButton_zamek_RD->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
-		Nastav_M_R_Rx();
-}
+
 // ---------------------------------------------------------------------------
 void TForm_parametry::INPUT()
 {
@@ -2591,15 +2609,17 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scButton_zamek_DD->Visible = true;
 						scButton_zamek_DD->Enabled = true;
 						scButton_K_zamek->Visible = true;
-//						if(DD_zamek==LOCKED){
-//						 set(DELKA,DISABLED,false);
-//						 scGPNumericEdit_kapacita->Enabled=true;
-//						 }
-//						else
-//						{
-//						 set(DELKA,ENABLED,false);
-//						 scGPNumericEdit_kapacita->Enabled=false;
-//						 }
+						if(DD_zamek==LOCKED){
+					 //	 set(DELKA,DISABLED,false); //nešlo pøes set nastavit
+						 scGPNumericEdit_kapacita->Enabled=true;
+						 scGPNumericEdit_delka_dopravniku->Enabled=false;
+						 }
+						else if(K_zamek == LOCKED)
+						{
+					 //	 set(DELKA,ENABLED,false);
+						 scGPNumericEdit_kapacita->Enabled=false;
+						 scGPNumericEdit_delka_dopravniku->Enabled=true;
+						 }
 
 
 				}
@@ -2614,7 +2634,8 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 
 								scButton_zamek_DD->ImageIndex = 37;
 								DD_zamek = LOCKED;
-								set(DELKA,DISABLED,false);
+							//	set(DELKA,DISABLED,false);
+								scGPNumericEdit_delka_dopravniku->Enabled=false;
 
 						}
 						else // odemèeno
@@ -2626,7 +2647,8 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 
 								scButton_zamek_DD->ImageIndex = 38;
 								DD_zamek = UNLOCKED;
-								set(DELKA,ENABLED,false);
+							//	set(DELKA,ENABLED,false);
+							scGPNumericEdit_delka_dopravniku->Enabled=true;
 						}
 				}
 				if (I == DD_klik_ico) {
@@ -2634,7 +2656,8 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 								scButton_zamek_DD->ImageIndex = 38;
 								DD_zamek = UNLOCKED;
-								set(DELKA,ENABLED,false);
+								//set(DELKA,ENABLED,false);
+								scGPNumericEdit_delka_dopravniku->Enabled=true;
 								scButton_K_zamek->ImageIndex = 37;
 								K_zamek = LOCKED;
 							 //	set(KAPACITA,DISABLED,false);
@@ -2644,7 +2667,8 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 								scButton_zamek_DD->ImageIndex = 37;
 								DD_zamek = LOCKED;
-								set(DELKA,DISABLED,false);
+							//	set(DELKA,DISABLED,false);
+								scGPNumericEdit_delka_dopravniku->Enabled=false;
 								scButton_K_zamek->ImageIndex = 38;
 								K_zamek = UNLOCKED;
 								scGPNumericEdit_kapacita->Enabled=true;
@@ -2655,14 +2679,16 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						{
 								scButton_zamek_CT->ImageIndex = 38;
 								CT_zamek = UNLOCKED;
-								set(TIME,ENABLED,false);
+								//set(TIME,ENABLED,false);
+								scGPNumericEdit_CT->Enabled=true;
 
 						}
 						else // odemèeno
 						{
 								scButton_zamek_CT->ImageIndex = 37;
 								CT_zamek = LOCKED;
-								set(TIME,DISABLED,false);
+							 //	set(TIME,DISABLED,false);
+								scGPNumericEdit_CT->Enabled=false;
 						}
 				}
 
@@ -2670,16 +2696,29 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 						scButton_zamek_CT->Visible = false;
+
+						scGPNumericEdit_delka_dopravniku->Enabled=true;
+						scGPNumericEdit_kapacita->Enabled=true;
+						scGPNumericEdit_CT->Enabled=true;
+
 				}
 				if (E == RD_klik) {
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 						scButton_zamek_CT->Visible = false;
+
+						scGPNumericEdit_delka_dopravniku->Enabled=true;
+						scGPNumericEdit_kapacita->Enabled=true;
+						scGPNumericEdit_CT->Enabled=true;
 				}
 				if (E == DD_klik) {
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 						scButton_zamek_CT->Visible = false;
+
+						scGPNumericEdit_delka_dopravniku->Enabled=true;
+						scGPNumericEdit_kapacita->Enabled=true;
+						scGPNumericEdit_CT->Enabled=true;
 					//	ShowMessage("DD klik");
 				}
 				if (E == P_klik) {
@@ -2692,19 +2731,30 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 
+						scGPNumericEdit_delka_dopravniku->Enabled=true;
+						scGPNumericEdit_kapacita->Enabled=true;
+
+
 						if(scGPNumericEdit_CT->Value< Form1->d.v.PP.TT && Form1->pom->n > 1)
 						{
 						 scButton_zamek_CT->Visible = true;
-             scButton_zamek_CT->Enabled = true;
+						 scButton_zamek_CT->Enabled = true;
+						 if(CT_zamek == LOCKED) 	scGPNumericEdit_CT->Enabled=false;
+						 else  	scGPNumericEdit_CT->Enabled=true;
+
 						 }
 						else
 						{
 						scButton_zamek_CT->Visible = false;
+
+						scGPNumericEdit_CT->Enabled=true;
 						}
 
 				}
 				if (E == mezera_klik) {
 						scButton_zamek_CT->Visible = false;
+
+						scGPNumericEdit_CT->Enabled=true;
 				}
 		}
 		Invalidate();//kvùli všem packám + zajištuje zároveò volání frameCorrelation()//stejnou barvou orámuje hodnoty v korelaci + vykreslí korelaèní packy
@@ -3093,11 +3143,6 @@ void TForm_parametry::Check_rozmezi_RD() {
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::scGPNumericEdit1_rxClick(TObject *Sender)
-{
-input_clicked_edit=Rx_klik;
-Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, Rx_klik, false);
-}
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
