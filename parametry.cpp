@@ -1962,7 +1962,6 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
 		INPUT();
 		OUTPUT();
-
 		Pohon_pouzivan();
 		Nacti_rx(); //buï vypoèítá rx nebo v pøípadì používaného pohonu rx a rz naète z dat
 	 	Nastav_M_R_Rx();
@@ -1995,6 +1994,7 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 		}
+		input_clicked_edit=empty_klik; // výbìrem pohonu dochází k volání onchange rotace a to zpùsobí zobrazení pacek, což je nežádoucí, proto pøi zmìnì pohonu vždy nastavím, že jde o prázdný klik
 }
 // ---------------------------------------------------------------------------
 // doplnit komentáø
@@ -2046,6 +2046,16 @@ input_clicked_edit=Rx_klik;
 Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, Rx_klik, false);
 }
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender)
+{
+		if(form_zobrazen)
+		{
+			input_clicked_edit = Rotace_klik;
+			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
+			Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
+		}
+}
 // ---------------------------------------------------------------------------
 void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender)
 {
@@ -2264,16 +2274,7 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 		}
 		ComboRotace_predchozi_stav=scComboBox_rotace->ItemIndex;//uloží pøedchozí stav pro další použití
 }
-// ---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scComboBox_rotaceClick(TObject *Sender)
-{
-		if(form_zobrazen)
-		{
-			input_clicked_edit = Rotace_klik;
-			//	if(RD_zamek==LOCKED && scButton_zamek_RD->Enabled) vypis("Byl odemèen zámek rychlosti pohonu",false);
-			Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico,Rotace_klik, false);
-		}
-}
+
 //---------------------------------------------------------------------------
 void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_clicked_edit E, bool ikonka)
 {
