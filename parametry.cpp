@@ -3008,6 +3008,8 @@ void TForm_parametry::Check_rozmezi_RD() {
 				if (RDunitT == MIN)RD /= 60.0;
 				if (RDunitD == MM) RD *= 1000.0;
 
+	 if(scComboBox_rezim->ItemIndex==1) //hlídání pouze u KK režimu
+	 {
 		if (scGPNumericEdit_RD->Value > 0)
 				// nutné ošetøení pro období zadávání/psaní
 		{
@@ -3048,6 +3050,8 @@ void TForm_parametry::Check_rozmezi_RD() {
 					}
 		}
 		else vypis("Neplatná hodnota rychlosti pohonu!");
+
+	 }
 	}
 //-------------------------------------------------------------------------------------------------------------------------------
  void TForm_parametry::Nacti_rx()
@@ -3392,8 +3396,9 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					if(Form1->ms.MyToDouble(DD_CT) > Form1->ms.MyToDouble(O->RD))
 					{
 					 //	Memo1->Lines->Add("DD_CT > RD");
-						vypis("Vozík nestíhá pøejezd! Zvolte jinou mezeru, nebo vyberte jiný pohon.",true);
 						VID=40;
+						vypis("Vozík nestíhá pøejezd! Zvolte jinou mezeru, nebo vyberte jiný pohon.");
+
 					}
 				}
 			 	O=NULL;delete O;
@@ -3408,7 +3413,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
 								VID=44;
-								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno "+AnsiString(CT/Form1->d.v.PP.TT)+", nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k zadané kapacitì! kód chyby: "+AnsiString(VID)+"",true);
+								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno "+AnsiString(CT/Form1->d.v.PP.TT)+", nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k zadané kapacitì! kód chyby: "+AnsiString(VID)+"");
 
 							}
 						}
@@ -3422,7 +3427,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						else
 						{
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
-							vypis("Byl zadán neplatný poèet pozic! Zvolte poèet pozic vyšší nebo rovno "+AnsiString(pm.K2P(CT/Form1->d.v.PP.TT))+" , nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k poètu pozic!",true);
+							vypis("Byl zadán neplatný poèet pozic! Zvolte poèet pozic vyšší nebo rovno "+AnsiString(pm.K2P(CT/Form1->d.v.PP.TT))+" , nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k poètu pozic!");
 							VID=44;
 						}
 				}
