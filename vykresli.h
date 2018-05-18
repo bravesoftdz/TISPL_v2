@@ -77,7 +77,7 @@ class Cvykresli
 	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region=true);
 	void sound();
 	void meritko(TCanvas *canv,long X=-1,long Y=-1);
-	void vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor color=/*clBtnShadow*/(TColor)RGB(170,170,170),short Width=2,short OffsetX=-5);//vykreslí packu jako spojnici mezi komponentami
+	void vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor color=/*clBtnShadow*/(TColor)RGB(170,170,170),short Width=1,short OffsetX=-5);//vykreslí packu jako spojnici mezi komponentami
 
 	short O_width,O_height;//logické parametry, nezoomovat
 	unsigned long cas;//ms
