@@ -1089,7 +1089,7 @@ void TForm_parametry::input_K() {
 		 //	Memo1->Lines->Add(dopRD);
 			//Memo1->Lines->Add(Form1->d.v.PP.TT);
 				K =  (DD/dopRD) / (Form1->d.v.PP.TT);
-				vypis("Doporuèená kapacita : " +AnsiString(K) +" ");
+				vypis("Doporuèená kapacita : <u>" +AnsiString(K) +"</u> ");
 				VID=32;
 				AnsiString relation_id=GetCurrentProcessId();
 					AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(K)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
@@ -1164,7 +1164,7 @@ void TForm_parametry::input_P()
 				if(dop_K != Pozice )
 				{
 			 // Memo1->Lines->Add(dop_K);
-				vypis("Doporuèený poèet pozic : " +AnsiString(dop_K) +" ");
+				vypis("Doporuèený poèet pozic : <u>" +AnsiString(dop_K) +"</u> ");
 				VID=33;
 				AnsiString relation_id=GetCurrentProcessId();
 					AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(dop_K)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
@@ -1212,7 +1212,7 @@ void TForm_parametry::input_CT()
 						CT = DD/dopRD; //REVIZE - upraveno bez pøevodu,  proè když už je pøevedeno dopRD na sekundy výše pøípadnì bacha na závorky
 						if(Form1->ms.MyToDouble(CT)!=Form1->ms.MyToDouble(scGPNumericEdit_CT->Value))
 						{
-						vypis("Doporuèený techn.èas : " +AnsiString(CT) +" s ");
+						vypis("Doporuèený techn.èas : <u>" +AnsiString(CT) +"</u> s ");
 						VID=30;
 						AnsiString relation_id=GetCurrentProcessId();
 								AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(CT)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
@@ -1279,7 +1279,7 @@ void TForm_parametry::input_DD() {
 
 						if(Form1->ms.MyToDouble(DD_dop)!= Form1->ms.MyToDouble(DD))
 						{
-						vypis("Doporuèená délka kabiny : " +AnsiString(DD_dop) +" [m] ");
+						vypis("Doporuèená délka kabiny : <u>" +AnsiString(DD_dop) +"</u> [m] ");
 						VID=31;
 						AnsiString relation_id=GetCurrentProcessId();
 						AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(DD_dop)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
@@ -3048,7 +3048,7 @@ double TForm_parametry::Kontrola_mezery()
 						// Memo1->Lines->Add(doporuc_mezera);
 						// Memo1->Lines->Add(mezera);
 					  double	doporuc_hodnota=doporuc_mezera;
-						vypis("Doporuèená mezera: " + AnsiString(doporuc_hodnota) + jednotky +"");
+						vypis("Doporuèená mezera: <u>"+AnsiString(doporuc_hodnota) + jednotky +"</u>");
 						VID=28;
 						AnsiString relation_id=GetCurrentProcessId();
 							AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
@@ -3140,13 +3140,14 @@ void TForm_parametry::Check_rozmezi_RD() {
 				{
 					double M=(Form1->d.v.PP.TT*RD/60.0-DV);
 					double doporuc_hodnota = dopRD;
-					vypis("Zadejte doporuèenou rychlost pohonu: " +AnsiString(doporuc_hodnota)/*+ ", nebo doporuèenou velikost mezery:" +AnsiString(M)+"m"*zakomentováno, protože nebyl smysl vypisovat M - bylo matoucí*/);
+					vypis("Zadejte doporuèenou rychlost pohonu:<u>"+AnsiString(doporuc_hodnota)+"</u>");
 					VID=27;
 					AnsiString relation_id=GetCurrentProcessId();
 					AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
 				 //	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(dopRD)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
 					Form1->FDConnection1->ExecSQL(strSQL);
-
+				//	Form1->IBQuery1->SQL->Add(strSQL);
+				//	Form1->IBQuery1->Open();
 				}
 				if (Form1->ms.MyToDouble(dopRD)== Form1->ms.MyToDouble(RD) && mimo_rozmezi)
 				{
@@ -3377,7 +3378,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
 							 double doporuc_hodnota = CT/Form1->d.v.PP.TT;
-								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno "+AnsiString(doporuc_hodnota)+" nebo odemknìte technologický èas a zaktulizujte hodnoty!",true);
+								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u> nebo odemknìte technologický èas a zaktulizujte hodnoty!",true);
 								VID=22;
 									AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
 								//AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(CT/Form1->d.v.PP.TT)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
@@ -3395,7 +3396,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					else
 					{
 						if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
-						vypis("Byl zadán neplatný poèet pozic! Zvolte poèet pozic vyšší nebo rovno "+AnsiString(pm.K2P(CT/Form1->d.v.PP.TT))+" , nebo odemknìte technologický èas a zaktulizujte hodnoty!",true);
+						vypis("Byl zadán neplatný poèet pozic! Zvolte poèet pozic vyšší nebo rovno <u>"+AnsiString(pm.K2P(CT/Form1->d.v.PP.TT))+"</u> , nebo odemknìte technologický èas a zaktulizujte hodnoty!",true);
 						VID=22;
 
 					}
@@ -3537,7 +3538,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 							{
 								VID=44;
 								double doporuc_hodnota =	(CT/Form1->d.v.PP.TT);
-								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno "+AnsiString(doporuc_hodnota)+", nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k zadané kapacitì! kód chyby: "+AnsiString(VID)+"");
+								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u>, nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k zadané kapacitì! kód chyby: "+AnsiString(VID)+"");
 									AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
 							//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(CT/Form1->d.v.PP.TT)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
 								Form1->FDConnection1->ExecSQL(strSQL);
@@ -3555,7 +3556,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
 							double doporuc_hodnota = pm.K2P(CT/Form1->d.v.PP.TT);
-							vypis("Byl zadán neplatný poèet pozic! Zvolte poèet pozic vyšší nebo rovno "+AnsiString(doporuc_hodnota)+" , nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k poètu pozic!");
+							vypis("Byl zadán neplatný poèet pozic! Zvolte poèet pozic vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u> , nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k poètu pozic!");
 							VID=45;
 						 //	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(pm.K2P(CT/Form1->d.v.PP.TT))+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
 							AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
