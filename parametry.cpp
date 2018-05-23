@@ -129,7 +129,7 @@ void TForm_parametry::vypis(UnicodeString text,bool red,bool link)
 
 				if (red)
 				{
-						scGPButton_OK->Enabled=false;
+					 	scGPButton_OK->Enabled=false;
 						scGPGlyphButton_InfoIcon->GlyphOptions->NormalColor = clRed;
 						rHTMLLabel_InfoText->Font->Color = clRed;
 						// zvýraznìní položky technologický èas
@@ -1090,11 +1090,10 @@ void TForm_parametry::input_K() {
 			//Memo1->Lines->Add(Form1->d.v.PP.TT);
 				K =  (DD/dopRD) / (Form1->d.v.PP.TT);
 				vypis("Doporuèená kapacita : <u>" +AnsiString(K) +"</u> ");
-				VID=32;
-				AnsiString relation_id=GetCurrentProcessId();
-					AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(K)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-			 //	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(K)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-				Form1->FDConnection1->ExecSQL(strSQL);
+				VID=32;VID_value=K;
+					//AnsiString relation_id=GetCurrentProcessId();
+					//AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(K)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+					//Form1->FDConnection1->ExecSQL(strSQL);
 			}
 
 		}
@@ -1166,10 +1165,10 @@ void TForm_parametry::input_P()
 			 // Memo1->Lines->Add(dop_K);
 				vypis("Doporuèený poèet pozic : <u>" +AnsiString(dop_K) +"</u> ");
 				VID=33;
-				AnsiString relation_id=GetCurrentProcessId();
-					AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(dop_K)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-			 //	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(dop_K)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-				Form1->FDConnection1->ExecSQL(strSQL);
+				VID_value=dop_K;
+					//AnsiString relation_id=GetCurrentProcessId();
+					//AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(dop_K)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+					//Form1->FDConnection1->ExecSQL(strSQL);
 
 				}
 			} else vypis("",false);
@@ -1214,10 +1213,10 @@ void TForm_parametry::input_CT()
 						{
 						vypis("Doporuèený techn.èas : <u>" +AnsiString(CT) +"</u> s ");
 						VID=30;
-						AnsiString relation_id=GetCurrentProcessId();
-								AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(CT)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-					//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(CT)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-						Form1->FDConnection1->ExecSQL(strSQL);
+						VID_value=CT;
+						//AnsiString relation_id=GetCurrentProcessId();
+						//		AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(CT)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+						//		Form1->FDConnection1->ExecSQL(strSQL);
 						}
 								else vypis("",false);
 					}
@@ -1281,10 +1280,10 @@ void TForm_parametry::input_DD() {
 						{
 						vypis("Doporuèená délka kabiny : <u>" +AnsiString(DD_dop) +"</u> [m] ");
 						VID=31;
-						AnsiString relation_id=GetCurrentProcessId();
-						AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(DD_dop)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-						//AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(DD_dop)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-						Form1->FDConnection1->ExecSQL(strSQL);
+						VID_value=DD_dop;
+				//		AnsiString relation_id=GetCurrentProcessId();
+				//		AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(DD_dop)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+				//		Form1->FDConnection1->ExecSQL(strSQL);
 
 						} else vypis("",false);
 					}
@@ -1969,18 +1968,20 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 			case 16:break;   //žádná hodnota k vyplnìní
 			case 21:    //doporuc kapacitu
 			{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"21\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_kapacita->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"21\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_kapacita->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+				scGPNumericEdit_kapacita->Value=VID_value;
 			}
 			break;
 			case 22:    //doporuc pozice
 			{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"22\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_pozice->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"22\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_pozice->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					scGPNumericEdit_pozice->Value=VID_value;
 			}
 			break;
 			case 23:break;   //žádná hodnota k vyplnìní
@@ -1989,47 +1990,53 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 			case 26:break;   //žádná hodnota k vyplnìní
 			case 27:    // doporuè rychlost pohonu
 				{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"27\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_RD->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"27\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_RD->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					scGPNumericEdit_RD->Value=VID_value;
 				}
 				break;
 			case 28:
 				{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"28\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_mezera->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"28\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_mezera->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					scGPNumericEdit_mezera->Value=VID_value;
 				} break;
 			case 30:
 				{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"30\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_CT->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"30\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_CT->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					 scGPNumericEdit_CT->Value=VID_value;
 				} break;
 
 			case 31:
 				{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"31\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_delka_dopravniku->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"31\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_delka_dopravniku->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					scGPNumericEdit_delka_dopravniku->Value=VID_value;
 				} break;
 			case 32:
 			{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"32\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_kapacita->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"32\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_kapacita->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					 scGPNumericEdit_kapacita->Value=VID_value;
 			}
 				case 33:
 			{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"33\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_pozice->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"33\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_pozice->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					scGPNumericEdit_pozice->Value=VID_value;
 			}
 			break;
 			case 40:break;   //žádná hodnota k vyplnìní
@@ -2037,18 +2044,20 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 			case 42:break;    //žádná hodnota k vyplnìní
 			case 44:
 			{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"44\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_kapacita->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"44\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_kapacita->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					scGPNumericEdit_kapacita->Value=VID_value;
 			}
 			break;
 			case 45:
 			{
-				Form1->FDQuery1->Active = False;
-				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"45\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
-				Form1->FDQuery1->Active = True;
-				scGPNumericEdit_pozice->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+//				Form1->FDQuery1->Active = False;
+//				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"45\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
+//				Form1->FDQuery1->Active = True;
+//				scGPNumericEdit_pozice->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
+					scGPNumericEdit_pozice->Value=VID_value;
 			}
 			break;
 		}
@@ -3046,13 +3055,13 @@ double TForm_parametry::Kontrola_mezery()
 						}
 						// Memo1->Lines->Add(doporuc_mezera);
 						// Memo1->Lines->Add(mezera);
-					  double	doporuc_hodnota=doporuc_mezera;
-						vypis("Doporuèená mezera: <u>"+AnsiString(doporuc_hodnota) + jednotky +"</u>");
+						vypis("Doporuèená mezera: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
 						VID=28;
-						AnsiString relation_id=GetCurrentProcessId();
-							AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-					//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(doporuc_mezera)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-						Form1->FDConnection1->ExecSQL(strSQL);
+						VID_value=doporuc_mezera;
+//						AnsiString relation_id=GetCurrentProcessId();
+//						AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+//					  AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(doporuc_mezera)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
+					 //	Form1->FDConnection1->ExecSQL(strSQL);
 
 						if (Form1->ms.MyToDouble(Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku, Form1->d.v.PP.sirka_voziku, scComboBox_rotace->ItemIndex,P->roztec,mezera)) == Form1->ms.MyToDouble(mezera))
 						{
@@ -3141,10 +3150,10 @@ void TForm_parametry::Check_rozmezi_RD() {
 					double doporuc_hodnota = dopRD;
 					vypis("Zadejte doporuèenou rychlost pohonu:<u>"+AnsiString(doporuc_hodnota)+"</u>");
 					VID=27;
-					AnsiString relation_id=GetCurrentProcessId();
-					AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-				 //	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(dopRD)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-					Form1->FDConnection1->ExecSQL(strSQL);
+					VID_value=doporuc_hodnota;
+				 //	AnsiString relation_id=GetCurrentProcessId();
+				 //	AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+				//	Form1->FDConnection1->ExecSQL(strSQL);
 				//	Form1->IBQuery1->SQL->Add(strSQL);
 				//	Form1->IBQuery1->Open();
 				}
@@ -3277,11 +3286,11 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 	 if(VID==-1)
 					{
-					AnsiString dop_hodnota=0;
-				//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(dop_hodnota)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID > \""+VID+"\"";
-						AnsiString strSQL = "DELETE FROM vid_validace  WHERE username = \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\"";
-
-					Form1->FDConnection1->ExecSQL(strSQL);
+//					AnsiString dop_hodnota=0;
+//				//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(dop_hodnota)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID > \""+VID+"\"";
+//						AnsiString strSQL = "DELETE FROM vid_validace  WHERE username = \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\"";
+//
+//					Form1->FDConnection1->ExecSQL(strSQL);
 					}
 
 	 switch(scComboBox_rezim->ItemIndex)
@@ -3379,9 +3388,9 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 							 double doporuc_hodnota = CT/Form1->d.v.PP.TT;
 								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u> nebo odemknìte technologický èas a zaktulizujte hodnoty!",true);
 								VID=21;
-									AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-								//AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(CT/Form1->d.v.PP.TT)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-								Form1->FDConnection1->ExecSQL(strSQL);
+								VID_value=doporuc_hodnota;
+//								 AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+//								Form1->FDConnection1->ExecSQL(strSQL);
 							}
 					}
 				}
@@ -3535,12 +3544,13 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						{
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
-								VID=44;
+
 								double doporuc_hodnota =	(CT/Form1->d.v.PP.TT);
 								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u>, nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k zadané kapacitì! kód chyby: "+AnsiString(VID)+"");
-									AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-							//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(CT/Form1->d.v.PP.TT)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-								Form1->FDConnection1->ExecSQL(strSQL);
+									VID=44; VID_value=doporuc_hodnota;
+								//									AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+//							//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(CT/Form1->d.v.PP.TT)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
+//								Form1->FDConnection1->ExecSQL(strSQL);
 							}
 						}
 				}
@@ -3556,10 +3566,9 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 							{
 							double doporuc_hodnota = pm.K2P(CT/Form1->d.v.PP.TT);
 							vypis("Byl zadán neplatný poèet pozic! Zvolte poèet pozic vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u> , nebo odemknìte technologický èas a dojde k jeho pøepoètu ve vztahu k poètu pozic!");
-							VID=45;
-						 //	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(pm.K2P(CT/Form1->d.v.PP.TT))+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
-							AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-							Form1->FDConnection1->ExecSQL(strSQL);
+							VID=45;  VID_value=doporuc_hodnota;
+//							AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+//							Form1->FDConnection1->ExecSQL(strSQL);
 							}
 						}
 				}

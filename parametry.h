@@ -196,6 +196,7 @@ public:		// User declarations
 	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
 	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math, input_state slouží pro rozlišení volání ze vstupu - pøedevším P a K
 	short VID;//validation ID
+	double VID_value;
 	void vykresli_vozik(bool na_delku=true);
 };
 //---------------------------------------------------------------------------
