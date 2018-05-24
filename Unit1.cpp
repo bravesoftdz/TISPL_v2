@@ -618,6 +618,7 @@ void TForm1::log2web(UnicodeString Text)
 			AnsiString send_log_time= TIME.CurrentDateTime();
 			AnsiString ID ="1";
 			AnsiString strSQL = "INSERT INTO log_table (app_id,app_start,username,send_log_time,command,relation_id,verze) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\",\""+VERZE+"\")";
+
 			FDConnection1->ExecSQL(strSQL);
 		}
 		catch(...){;}//např. není připojení k internetu, tak pouze nezaloguje, dořešit uložení logu do doby získání připojení a volání opětovného odeslání logu
@@ -3471,6 +3472,7 @@ UnicodeString TForm1::get_temp_dir()
 //načte nastavení programu z INI souboru
 void TForm1::nacist_nastaveni()
 {
+
 	/*ChangeFileExt(Application->ExeName, ".ini");
   TIniFile *ini;
   if(FileExists(ExtractFilePath(Application->ExeName) + "omap_editor_"+get_user_name()+"_"+get_computer_name()+".ini"))//načte uživatelovo nastavení

@@ -428,6 +428,7 @@ public:
 	Cvektory::TObjekt *copyObjekt;
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
+	UnicodeString get_user_name();
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
@@ -463,7 +464,7 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
-	UnicodeString get_user_name();
+
 	UnicodeString get_temp_dir();
 	AnsiString FileName_short(AnsiString FileName);
 	void nacist_nastaveni();
