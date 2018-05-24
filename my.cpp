@@ -367,7 +367,13 @@ double Cmy::Rx(double RD,double R)
 	if(R==0) 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
 	else return Rz(RD)/R;
 }
-/////////////////////////////////////////////////////////////////////////////
+////////////////////////
+//vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstažnosti s TT
+double Cmy::RD(double Rz)
+{
+	return Rz/Form1->d.v.PP.TT;
+}
+////////////////////////
 //vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double RD)
 {
