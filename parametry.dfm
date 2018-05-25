@@ -1007,7 +1007,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -1320,7 +1320,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -1645,7 +1645,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -1732,7 +1732,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -1809,7 +1809,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -1894,7 +1894,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -2520,7 +2520,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -2708,7 +2708,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -2967,7 +2967,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150
@@ -3139,7 +3139,7 @@ object Form_parametry: TForm_parametry
     Options.HotColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
-    Options.NormalColorAlpha = 200
+    Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 150

@@ -49,7 +49,7 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	myMessageBox->ClientHeight=139-O+Label_text->Height-19;//poèítáno oproti výchozí pozici
 
 	//Caption naplnìní daty
-	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption="TISPL"; //hlídání zda nepøijde prázdný øetezec
+	if(caption_text!="")scLabel_caption->Caption=caption_text;else scLabel_caption->Caption=Application->Title; //hlídání zda nepøijde prázdný øetezec
 
 	//checkbox
 	CheckBox_pamatovat->Visible=checkbox_zobrazit;
@@ -116,8 +116,8 @@ int TmyMessageBox::Show(long left,long top,UnicodeString text,UnicodeString capt
 	////pozice formuláøe
 	if(left<0 && top<0)//na støed, pokud se zadá libovolné záporné èíslo
 	{
-		myMessageBox->Left=Form1->ClientWidth/2-myMessageBox->Width/2;
-		myMessageBox->Top=Form1->ClientHeight/2-myMessageBox->Height/2;
+		myMessageBox->Left=Form1->Left+Form1->Width/2-myMessageBox->Width/2;
+		myMessageBox->Top=Form1->Top+Form1->Height/2-myMessageBox->Height/2;
 	}
 	else//dle zadaných souøadnic
 	{
