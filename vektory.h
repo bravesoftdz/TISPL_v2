@@ -301,8 +301,8 @@ class Cvektory
 
 //metody pro POHONY
 		void hlavicka_POHONY();
-		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
+		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
 		bool pohon_je_pouzivan(unsigned long n);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 		TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim=-1);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režim, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim

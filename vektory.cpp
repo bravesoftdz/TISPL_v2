@@ -813,16 +813,16 @@ void Cvektory::vloz_pohon(TPohon *pohon)
 }
 ////---------------------------------------------------------------------------
 //vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
-void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double roztec)
+void Cvektory::vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx)
 {
 	TPohon *novy=new TPohon;
 	novy->name=name;
 	novy->rychlost_od=rychlost_od;
 	novy->rychlost_do=rychlost_do;
-	novy->aRD=0;//nepřiřažuje se manuálně
-	novy->roztec=roztec;
-	novy->Rz=0;//nepřiřažuje se manuálně
-	novy->Rx=0;//nepřiřažuje se manuálně
+	novy->aRD=aRD;
+	novy->roztec=R;
+	novy->Rz=Rz;
+	novy->Rx=Rx;
 	vloz_pohon(novy);
 }
 ////---------------------------------------------------------------------------
@@ -979,48 +979,49 @@ void Cvektory::zrusit_prirazeni_pohunu_k_objektum(unsigned long n)
 		O=NULL;delete O;
 }
 ////---------------------------------------------------------------------------
+//metodu nepoužíváme, proto je zakomentovaná
 //vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a /zároveň tomuto objektu tento pohon přiřadí - nepoužíváme/, obsahuje ošetření proti duplicitě
 void Cvektory::generuj_POHONY()
 {
-	TObjekt *O=OBJEKTY->dalsi;
-	int i=0;//i vygenerovaného pohonu
-	//prvně najde "i" nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
-	TPohon *P=POHONY->dalsi;
-	while(P!=NULL)
-	{
-		 if(P->name.Pos("Navržený pohon "))
-		 {
-			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
-			if(i_potencial>i)i=i_potencial;
-		 }
-		 P=P->dalsi;//posun na další prvek
-	}
-
-	while (O!=NULL)
-	{
-		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní) nezohledňuje
-		{
-			TPohon *P=POHONY->dalsi;
-			bool pohon_nenalezen=true;
-			while(P!=NULL)
-			{
-				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==1620.0)//byl-li pohon se stejnými parametry nalezen
-				 {
-						pohon_nenalezen=false;//tzn. že již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
-						//již nepoužíváme O->pohon=P;//přiřazení pohonu k danému objektu
-						break;//nalezen tak se může jít ověřovat další objekt
-				 }
-				 P=P->dalsi;//posun na další prvek
-			}
-			//byl-li předchozí konstrukcí pohon nenanlezen přidá, musí být až po dokončení while(P
-			if(pohon_nenalezen)
-			{
-				vloz_pohon("Navržený pohon "+AnsiString(++i),O->RD,O->RD,1620.0);
-				//již nepoužíváme O->pohon=POHONY->predchozi;
-			}
-		}
-		O=O->dalsi;//posun na další prvek
-	}
+//	TObjekt *O=OBJEKTY->dalsi;
+//	int i=0;//i vygenerovaného pohonu
+//	//prvně najde "i" nejvýššího dříve navrženého pohonu (který se generoval v jiném zobrazení formuláře)
+//	TPohon *P=POHONY->dalsi;
+//	while(P!=NULL)
+//	{
+//		 if(P->name.Pos("Navržený pohon "))
+//		 {
+//			unsigned int i_potencial=Form1->ms.a2i(Form1->ms.TrimLeftFromText(P->name,"ý pohon "));
+//			if(i_potencial>i)i=i_potencial;
+//		 }
+//		 P=P->dalsi;//posun na další prvek
+//	}
+//
+//	while (O!=NULL)
+//	{
+//		if(O->RD>0)//vypisuje pouze pokud je rychlost dopravníku nenulová,nulové pohony (tj. z režimu S&G a post-procesní) nezohledňuje
+//		{
+//			TPohon *P=POHONY->dalsi;
+//			bool pohon_nenalezen=true;
+//			while(P!=NULL)
+//			{
+//				 if(P->rychlost_od==O->RD && P->rychlost_do==O->RD && P->roztec==1620.0)//byl-li pohon se stejnými parametry nalezen
+//				 {
+//						pohon_nenalezen=false;//tzn. že již neplatí, že nebyl nenelezen, byl naopak nalezen se stejnými parametry, takže se nebude přidávat, protože by se jednalo o duplicitu
+//						//již nepoužíváme O->pohon=P;//přiřazení pohonu k danému objektu
+//						break;//nalezen tak se může jít ověřovat další objekt
+//				 }
+//				 P=P->dalsi;//posun na další prvek
+//			}
+//			//byl-li předchozí konstrukcí pohon nenanlezen přidá, musí být až po dokončení while(P
+//			if(pohon_nenalezen)
+//			{
+//				vloz_pohon("Navržený pohon "+AnsiString(++i),O->RD,O->RD,1620.0);
+//				//již nepoužíváme O->pohon=POHONY->predchozi;
+//			}
+//		}
+//		O=O->dalsi;//posun na další prvek
+//	}
 }
 ////---------------------------------------------------------------------------
 //navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí, lze nastavit jednotky zobrazení rychlosti pohonu, implicintě m/min
@@ -1062,7 +1063,6 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
 		//řeší pouze pro objekty bez přiřazených pohonů (ty jsou již definovatelné) a zároveň pokud je rychlost dopravníku nenulová
 		if(pohon_prirazen==false && RD>0)
 		{
-			bool nalezen=false;
 			for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
 			{
 				if(pole_rychlosti[j]==RD)//RD je již v poli, užívá ho jiný objekt
