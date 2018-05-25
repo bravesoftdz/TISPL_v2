@@ -3,8 +3,8 @@ object Form_parametry_linky: TForm_parametry_linky
   Top = 0
   BorderStyle = bsNone
   Caption = 'Parametry linky'
-  ClientHeight = 565
-  ClientWidth = 1131
+  ClientHeight = 650
+  ClientWidth = 1270
   Color = 15790320
   Ctl3D = False
   Font.Charset = DEFAULT_CHARSET
@@ -21,8 +21,8 @@ object Form_parametry_linky: TForm_parametry_linky
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_eDesigner: TrHTMLLabel
-    Left = 447
-    Top = 502
+    Left = 467
+    Top = 601
     Width = 308
     Height = 19
     Caption = 'Zadejte parametry linky nebo zvolte storno.'
@@ -191,15 +191,15 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = rEditNum_delkavozikuClick
   end
   object rStringGridEd_tab_dopravniky: TrStringGridEd
-    Left = 0
-    Top = 317
-    Width = 1131
-    Height = 161
+    Left = 1
+    Top = 358
+    Width = 1280
+    Height = 169
     BorderStyle = bsNone
     Color = clWhite
-    ColCount = 7
+    ColCount = 9
     Ctl3D = False
-    DefaultColWidth = 160
+    DefaultColWidth = 140
     DefaultRowHeight = 30
     DefaultDrawing = False
     DrawingStyle = gdsGradient
@@ -208,7 +208,7 @@ object Form_parametry_linky: TForm_parametry_linky
     FixedRows = 0
     Font.Charset = DEFAULT_CHARSET
     Font.Color = cl3DDkShadow
-    Font.Height = -17
+    Font.Height = -15
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
@@ -229,18 +229,11 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
         TitleCaption = 'ID'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
         TitleAlignment = taCenter
       end
       item
@@ -248,7 +241,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -256,13 +249,6 @@ object Form_parametry_linky: TForm_parametry_linky
           're'#225'ln'#225
           'servisn'#237)
         TitleCaption = 'N'#225'zev'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
         TitleAlignment = taCenter
       end
       item
@@ -272,18 +258,11 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
         TitleCaption = 'Rychlost od [m/min]'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
         TitleAlignment = taCenter
       end
       item
@@ -293,18 +272,43 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TitleCaption = 'do [m/min]'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleFont.Quality = fqClearType
-        TitleParentFont = False
+        TitleAlignment = taCenter
+      end
+      item
+        DataType = sgdNumber
+        MaxValue = 10000.000000000000000000
+        InvalidDataAction = sgaNone
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TitleAlignment = taCenter
+      end
+      item
+        ButtonStyle = sgbDropDown
+        DataType = sgdNumber
+        InvalidDataAction = sgaNone
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        PickList.Strings = (
+          '342,9'
+          '380'
+          '1620'
+          '3089')
         TitleAlignment = taCenter
       end
       item
@@ -314,52 +318,49 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
-        Font.Quality = fqClearType
         ParentFont = False
-        TitleCaption = 'Rozte'#269' [m]'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = cl3DDkShadow
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
+        TitleAlignment = taCenter
+        WordWrap = True
+      end
+      item
+        DataType = sgdNumber
+        InvalidDataAction = sgaNone
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
         TitleAlignment = taCenter
       end
       item
+        DataType = sgdNumber
         InvalidDataAction = sgaNone
         Alignment = taCenter
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        ReadOnly = True
-      end
-      item
-        InvalidDataAction = sgaNone
-        Alignment = taCenter
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -17
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
+        TitleAlignment = taCenter
       end>
+    TitleRowHeight = 38
     OnGetCellParams = rStringGridEd_tab_dopravnikyGetCellParams
     OnGetEditStyle = rStringGridEd_tab_dopravnikyGetEditStyle
     OnCanEdit = rStringGridEd_tab_dopravnikyCanEdit
     RowHeights = (
-      30)
+      38)
   end
   object Button_save: TscGPButton
-    Left = 202
-    Top = 522
+    Left = 214
+    Top = 573
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -450,8 +451,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object Button_storno: TscGPButton
-    Left = 340
-    Top = 522
+    Left = 352
+    Top = 573
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -544,7 +545,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 1131
+    Width = 1270
     Height = 34
     Align = alTop
     TabOrder = 3
@@ -574,7 +575,7 @@ object Form_parametry_linky: TForm_parametry_linky
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 1081
+      Left = 1220
       Top = 0
       Width = 50
       Height = 33
@@ -655,7 +656,7 @@ object Form_parametry_linky: TForm_parametry_linky
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 1044
+      Width = 1183
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -685,7 +686,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Caption = 'Parametry linky'
     end
     object scGPGlyphButton_info: TscGPGlyphButton
-      Left = 1044
+      Left = 1183
       Top = 0
       Width = 37
       Height = 34
@@ -1597,15 +1598,15 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object rStringGridEd_hlavicka_tabulky: TrStringGridEd
     Left = 1
-    Top = 317
-    Width = 1115
+    Top = 326
+    Width = 1280
     Height = 30
     TabStop = False
     BorderStyle = bsNone
     Color = clWhite
-    ColCount = 7
+    ColCount = 9
     Ctl3D = False
-    DefaultColWidth = 160
+    DefaultColWidth = 140
     DefaultRowHeight = 30
     DefaultDrawing = False
     DrawingStyle = gdsGradient
@@ -1619,7 +1620,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Style = []
     Font.Quality = fqClearType
     GradientEndColor = clWhite
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goRangeSelect, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
     ParentCtl3D = False
     ParentFont = False
     ParentShowHint = False
@@ -1635,7 +1636,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -1644,7 +1645,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        TitleFont.Style = [fsBold]
         TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
@@ -1655,7 +1656,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -1667,7 +1668,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        TitleFont.Style = [fsBold]
         TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
@@ -1679,7 +1680,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -1688,7 +1689,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        TitleFont.Style = [fsBold]
         TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
@@ -1700,7 +1701,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -1709,7 +1710,7 @@ object Form_parametry_linky: TForm_parametry_linky
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        TitleFont.Style = [fsBold]
         TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
@@ -1721,17 +1722,17 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         Font.Quality = fqClearType
         ParentFont = False
-        TitleCaption = 'Rozte'#269' [m]'
+        TitleCaption = 'aRD'
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = cl3DDkShadow
         TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        TitleFont.Style = [fsBold]
         TitleParentFont = False
         TitleAlignment = taCenter
       end
@@ -1741,21 +1742,64 @@ object Form_parametry_linky: TForm_parametry_linky
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
         ReadOnly = True
+        TitleCaption = 'Rozte'#269
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = [fsBold]
+        TitleParentFont = False
       end
       item
         InvalidDataAction = sgaNone
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGrayText
-        Font.Height = -17
+        Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = [fsBold]
+        TitleParentFont = False
+      end
+      item
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = [fsBold]
+        TitleParentFont = False
+      end
+      item
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = cl3DDkShadow
+        TitleFont.Height = -15
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = [fsBold]
+        TitleParentFont = False
       end>
     OnGetEditStyle = rStringGridEd_tab_dopravnikyGetEditStyle
     OnCanEdit = rStringGridEd_tab_dopravnikyCanEdit
@@ -1852,8 +1896,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_hint_Rz: TscGPGlyphButton
-    Left = 1079
-    Top = 317
+    Left = 1129
+    Top = 279
     Width = 37
     Height = 30
     Hint = 
@@ -2972,8 +3016,8 @@ object Form_parametry_linky: TForm_parametry_linky
     end
   end
   object scGPGlyphButton_ADD: TscGPGlyphButton
-    Left = 63
-    Top = 480
+    Left = 39
+    Top = 527
     Width = 37
     Height = 34
     Hint = 'P'#345'idat nov'#253' pohon'
@@ -3391,5 +3435,135 @@ object Form_parametry_linky: TForm_parametry_linky
     Visible = False
     OnChange = rEditNum_sirka_jiguChange
     OnKeyDown = FormKeyDown
+  end
+  object rMemoEx_Nazev: TrMemoEx
+    Left = 142
+    Top = 344
+    Width = 140
+    Height = 40
+    BiDiMode = bdLeftToRight
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    Lines.Strings = (
+      'rMemoEx_Nazev')
+    ParentBiDiMode = False
+    ParentFont = False
+    PopupMenu = rMemoEx_Nazev.pmSearch
+    ReadOnly = True
+    TabOrder = 28
+  end
+  object rMemoEx_ID: TrMemoEx
+    Left = 2
+    Top = 344
+    Width = 138
+    Height = 40
+    BiDiMode = bdLeftToRight
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    Lines.Strings = (
+      'rMemoEx1')
+    ParentBiDiMode = False
+    ParentFont = False
+    PopupMenu = rMemoEx_Nazev.pmSearch
+    ReadOnly = True
+    TabOrder = 29
+  end
+  object rMemoEx1_rychlost: TrMemoEx
+    Left = 408
+    Top = 326
+    Width = 296
+    Height = 30
+    BiDiMode = bdLeftToRight
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    Lines.Strings = (
+      'rMemoEx_Nazev')
+    ParentBiDiMode = False
+    ParentFont = False
+    PopupMenu = rMemoEx_Nazev.pmSearch
+    ReadOnly = True
+    TabOrder = 30
+  end
+  object rMemoEx1_roztec: TrMemoEx
+    Left = 706
+    Top = 344
+    Width = 139
+    Height = 25
+    BiDiMode = bdLeftToRight
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    Lines.Strings = (
+      'rMemoEx_Nazev')
+    ParentBiDiMode = False
+    ParentFont = False
+    PopupMenu = rMemoEx_Nazev.pmSearch
+    ReadOnly = True
+    TabOrder = 31
+    WordWrap = False
+  end
+  object rMemoEx1_rozestup: TrMemoEx
+    Left = 887
+    Top = 326
+    Width = 203
+    Height = 30
+    Hint = 'Rz - Rozte'#269'ov'#225' vzd'#225'lenost , Rx - Zachyt'#225'v'#225' ka'#382'd'#253' x palec'
+    BiDiMode = bdLeftToRight
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    Lines.Strings = (
+      'rMemoEx_Nazev')
+    ParentBiDiMode = False
+    ParentFont = False
+    ParentShowHint = False
+    PopupMenu = rMemoEx_Nazev.pmSearch
+    ReadOnly = True
+    ShowHint = True
+    TabOrder = 32
+  end
+  object rMemoEx2_prirazen: TrMemoEx
+    Left = 1129
+    Top = 344
+    Width = 138
+    Height = 25
+    BiDiMode = bdLeftToRight
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    Lines.Strings = (
+      'rMemoEx_Nazev')
+    ParentBiDiMode = False
+    ParentFont = False
+    PopupMenu = rMemoEx_Nazev.pmSearch
+    ReadOnly = True
+    TabOrder = 33
   end
 end

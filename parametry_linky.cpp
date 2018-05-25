@@ -85,6 +85,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		input_state=NOTHING;//nutnost
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
+		Button_save->SetFocus();
 		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
 		zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
 		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
@@ -222,21 +223,25 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->SetColumnAutoFit(0);
 	 rStringGridEd_hlavicka_tabulky->SetColumnAutoFit(0);
 
-	 rStringGridEd_tab_dopravniky->Cells[0][0]="ID";
-	 rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
-	 rStringGridEd_tab_dopravniky->Cells[2][0]="Rychlost od [m/min]";
-	 rStringGridEd_tab_dopravniky->Cells[3][0]="Rychlost do [m/min]";
-	 rStringGridEd_tab_dopravniky->Cells[4][0]="Rozteè [mm]";
-	 rStringGridEd_tab_dopravniky->Cells[5][0]="Pøiøazen";
-	 rStringGridEd_tab_dopravniky->Cells[6][0]="min. Rz [m]*";
+	 //rStringGridEd_tab_dopravniky->Cells[0][0]="ID";
+	 //rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
+	 rStringGridEd_tab_dopravniky->Cells[2][0]="od";
+	 rStringGridEd_tab_dopravniky->Cells[3][0]="do";
+	 rStringGridEd_tab_dopravniky->Cells[4][0]="aktuální";
+	 rStringGridEd_tab_dopravniky->Cells[5][0]="";
+	 rStringGridEd_tab_dopravniky->Cells[6][0]="vzdálenost aktivních palcù [m]";
+	 rStringGridEd_tab_dopravniky->Cells[7][0]="poèet palcù";
+	 //rStringGridEd_tab_dopravniky->Cells[8][0]="pøiøazen";
 
-	 rStringGridEd_hlavicka_tabulky->Cells[0][0]=rStringGridEd_tab_dopravniky->Cells[0][0];
-	 rStringGridEd_hlavicka_tabulky->Cells[1][0]=rStringGridEd_tab_dopravniky->Cells[1][0];
-	 rStringGridEd_hlavicka_tabulky->Cells[2][0]=rStringGridEd_tab_dopravniky->Cells[2][0];
-	 rStringGridEd_hlavicka_tabulky->Cells[3][0]=rStringGridEd_tab_dopravniky->Cells[3][0];
-	 rStringGridEd_hlavicka_tabulky->Cells[4][0]=rStringGridEd_tab_dopravniky->Cells[4][0];
-	 rStringGridEd_hlavicka_tabulky->Cells[5][0]=rStringGridEd_tab_dopravniky->Cells[5][0];
-	 rStringGridEd_hlavicka_tabulky->Cells[6][0]=rStringGridEd_tab_dopravniky->Cells[6][0];
+	 rStringGridEd_hlavicka_tabulky->Cells[0][0]="";
+	 rStringGridEd_hlavicka_tabulky->Cells[1][0]="";
+	 rStringGridEd_hlavicka_tabulky->Cells[2][0]="";
+	 //rStringGridEd_hlavicka_tabulky->Cells[3][0]="Rychlost [m/min]";
+	 rStringGridEd_hlavicka_tabulky->Cells[4][0]="";
+	 rStringGridEd_hlavicka_tabulky->Cells[5][0]="";
+	// rStringGridEd_hlavicka_tabulky->Cells[6][0]="Rozestup";
+	 rStringGridEd_hlavicka_tabulky->Cells[7][0]="";
+	 rStringGridEd_hlavicka_tabulky->Cells[8][0]="";
 
 	//	rStringGridEd_tab_dopravniky->Columns->
 
@@ -248,6 +253,16 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
 	 if(existuji_nepouzivane_pohony())scGPGlyphButton_DEL_nepouzite->Visible=true;
 	 else scGPGlyphButton_DEL_nepouzite->Visible=false;
+
+	 rMemoEx_ID->Text="";rMemoEx_Nazev->Text="";rMemoEx1_rychlost->Text="";
+	 rMemoEx2_prirazen->Text="";rMemoEx1_rozestup->Text="";rMemoEx1_roztec->Text="";
+
+	 rMemoEx_ID->Lines->Add("    ID");
+	 rMemoEx_Nazev->Lines->Add("    Název");
+	 rMemoEx1_rychlost->Lines->Add("   Rychlost [m/min]");
+	 rMemoEx1_roztec->Lines->Add(" Rozteè palcù [mm]");
+	 rMemoEx1_rozestup->Lines->Add("   Rozestup");
+	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
 }
 //---------------------------------------------------------------------------
 //
@@ -265,15 +280,33 @@ void TForm_parametry_linky::nacti_pohony ()
 				 {
 						//pùvodní if(Form1->d.v.pohon_je_pouzivan(ukaz->n))rStringGridEd_tab_dopravniky->Cells[5][i]="ano";else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
 						AnsiString OBJEKTY_POUZIVAJICI_POHON=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
-						if(OBJEKTY_POUZIVAJICI_POHON!="")rStringGridEd_tab_dopravniky->Cells[5][i]=OBJEKTY_POUZIVAJICI_POHON;
-						else rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+						if(OBJEKTY_POUZIVAJICI_POHON!="")rStringGridEd_tab_dopravniky->Cells[8][i]=OBJEKTY_POUZIVAJICI_POHON;
+						else rStringGridEd_tab_dopravniky->Cells[8][i]="nepoužíván";
+
+					 //	ShowMessage(ukaz->roztec*1000.0);
 
 						//	 ShowMessage(ukaz->rychlost_do*60.0);
 						rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
 						rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
-						rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60.0;
-						rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60.0;
-						rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->roztec*1000.0;
+
+					 //	if(ukaz->rychlost_od==0)  	rStringGridEd_tab_dopravniky->Cells[2][i] = "";
+					//	else
+						 rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60.0;
+
+						if(ukaz->rychlost_do==0)   rStringGridEd_tab_dopravniky->Cells[3][i] ="";
+						else rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60.0;
+
+						if(ukaz->aRD==0)  	rStringGridEd_tab_dopravniky->Cells[4][i] = "";
+						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*60.0;
+
+						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
+						else rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*1000.0;
+
+						if(ukaz->Rz==0) rStringGridEd_tab_dopravniky->Cells[6][i]="";
+						else rStringGridEd_tab_dopravniky->Cells[6][i] = ukaz->Rz;
+
+						if(ukaz->Rx==0) rStringGridEd_tab_dopravniky->Cells[7][i]="";
+						else rStringGridEd_tab_dopravniky->Cells[7][i] = ukaz->Rx;
 
 						ukaz = ukaz->dalsi;
 				 }
@@ -463,6 +496,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				double rychlost_od;
 				double rychlost_do;
 				double roztec;
+				double aRD;
+				double Rz;
+				double Rx;
 				UnicodeString nazev;
 
 				if (rStringGridEd_tab_dopravniky->Cells[1][i].IsEmpty()) nazev="nový pohon";
@@ -474,11 +510,20 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty()) rychlost_do=0;
 				else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i])/60.0;
 
-				if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()) roztec=0;
-				else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/1000.0;
+				if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()) aRD=0;
+				else aRD=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/60.0;
+
+				if(rStringGridEd_tab_dopravniky->Cells[5][i].IsEmpty()) roztec=0;
+				else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000.0;
+
+				if(rStringGridEd_tab_dopravniky->Cells[6][i].IsEmpty()) Rz=0;
+				else Rz=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
+
+				if(rStringGridEd_tab_dopravniky->Cells[7][i].IsEmpty()) Rx=0;
+				else Rx=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
 
 				//uložení pohonu do spojáku
-				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,roztec);
+				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
 				Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
@@ -529,11 +574,13 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	int i = rStringGridEd_tab_dopravniky->RowCount - 1;//poøadí øádku o jednièku nižší než poèet øádkù
 	rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
 	rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon "+AnsiString(getMaxPID());//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[2][i] = "0";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[3][i] = "0";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[4][i] = "0";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[5][i] = "ne";
-	rStringGridEd_tab_dopravniky->Cells[6][i] = "0";
+	rStringGridEd_tab_dopravniky->Cells[2][i] = "";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
+	rStringGridEd_tab_dopravniky->Cells[3][i] = "";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
+	rStringGridEd_tab_dopravniky->Cells[4][i] = "";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
+	rStringGridEd_tab_dopravniky->Cells[5][i] = "";
+	rStringGridEd_tab_dopravniky->Cells[6][i] = "";
+	rStringGridEd_tab_dopravniky->Cells[7][i] = "";
+	rStringGridEd_tab_dopravniky->Cells[8][i] = "nepoužíván";
 
 	//doplní min Rz
 	show_min_Rz();
@@ -746,7 +793,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
 		rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,"Navržený pohon s rychlostí"," [");//T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
 		rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
 		//pro aRD až bude sloupec: rStringGridEd_tab_dopravniky->Cells[?][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
-		rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
+		rStringGridEd_tab_dopravniky->Cells[8][i]="nepoužíván";
 		//smazání jednoho již nepotøebného záznamu
 		T=Form1->ms.TrimLeftFromText(T,"</br>");
 	 }
@@ -794,20 +841,24 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
 {
 
-//if (Col==4 && Row==3) {
+//	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+//	 {
+//	if (Col==5 && Row==i) {
 //
 //		EditStyle=sgbDropDown;   //vyber typu
 //		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Clear();
-//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("Ano");
-//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("Ne");
+//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("1650");
+//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("342,9");
+//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("350");
 //
 //	 }
+	// }
 
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender,
-          int Col, int Row, bool &CanEdit)
+					int Col, int Row, bool &CanEdit)
 {
 
 		if (Col==1 && Row==0) {
@@ -828,13 +879,20 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 		if (Col==6 && Row==0) {
 			CanEdit=false;
 			 }
+		if (Col==7 && Row==0) {
+			CanEdit=false;
+			 }
+		if (Col==8 && Row==0) {
+			CanEdit=false;
+			 }
 
 		//Pokud je pohon používán, nastavím položky rychlost, rozteè atd jako readonly - nelze je mìnit.
 	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 	 {
-		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="ano")
+		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="" && rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
 		 {
-			 if(Row==i && Col>1) CanEdit=false;
+			 if(Row==i && Col==6) CanEdit=false;
+			 if(Row==i && Col==7) CanEdit=false;
 		 }
 
 	 }
@@ -990,7 +1048,7 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender,
-          WORD &Key, TShiftState Shift)
+					WORD &Key, TShiftState Shift)
 {
 	show_min_Rz();
 }
@@ -999,34 +1057,34 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyUp(TObject
 
 void TForm_parametry_linky::show_min_Rz() {
 
- double min_mezera_voziky;
- double rotace;
- scGPGlyphButton_hint_Rz->Enabled=true;
-// if(Delkaunit=M) jednotky*1000.0; else jednotky*1.0;
-
- for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
- {
-	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())
-	 {
-	 min_mezera_voziky= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000,rEditNum_sirka_jigu->Value*1000,0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);
-
-	// ShowMessage(min_mezera_voziky);
-
-		if(rEditNum_delka_jigu->Value<rEditNum_sirka_jigu->Value)
-		{
-		rotace=0;
-		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a šíøky vozíku.";
-		}
-		else
-		{
-		rotace=90;
-		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a délky vozíku.";
-		}
-
-	 rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.Rz(rEditNum_delka_jigu->Value,rEditNum_sirka_jigu->Value,rotace,min_mezera_voziky/1000);
-
-	 }
- }
+// double min_mezera_voziky;
+// double rotace;
+// scGPGlyphButton_hint_Rz->Enabled=true;
+//// if(Delkaunit=M) jednotky*1000.0; else jednotky*1.0;
+//
+// for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
+// {
+//	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())
+//	 {
+//	 min_mezera_voziky= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000,rEditNum_sirka_jigu->Value*1000,0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);
+//
+//	// ShowMessage(min_mezera_voziky);
+//
+//		if(rEditNum_delka_jigu->Value<rEditNum_sirka_jigu->Value)
+//		{
+//		rotace=0;
+//		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a šíøky vozíku.";
+//		}
+//		else
+//		{
+//		rotace=90;
+//		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a délky vozíku.";
+//		}
+//
+//	// rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.Rz(rEditNum_delka_jigu->Value,rEditNum_sirka_jigu->Value,rotace,min_mezera_voziky/1000);
+//
+//	 }
+// }
 
 
 }
@@ -1185,7 +1243,7 @@ void __fastcall TForm_parametry_linky::scLabel_kopirovatClick(TObject *Sender)
 	//název pøejmenování
 	rStringGridEd_tab_dopravniky->Cells[1][ROW+1]=rStringGridEd_tab_dopravniky->Cells[1][ROW]+" - kopie";
 	//nepoužíván
-	rStringGridEd_tab_dopravniky->Cells[5][ROW+1]="ne";
+	rStringGridEd_tab_dopravniky->Cells[8][ROW+1]="nepoužíván";
 	//indexace
 	rStringGridEd_tab_dopravniky->Cells[0][ROW+1]=getMaxPID()+1;
 	//pøesune focus na poslední øádek
@@ -1343,6 +1401,16 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 //		Background=(TColor)RGB(202,217,240);
 //	Highlight=true;
 // }
+
+	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+	 {
+		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="" && rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
+		 {
+			 if(Row==i && Col==6)	Background=(TColor)RGB(211,211,211);
+			 if(Row==i && Col==7)	Background=(TColor)RGB(211,211,211);
+		 }
+
+	 }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *Sender)
@@ -1351,4 +1419,8 @@ void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *
 	scGPGlyphButton_add_mezi_pohonyClick(Sender);
 }
 //---------------------------------------------------------------------------
+
+
+
+
 

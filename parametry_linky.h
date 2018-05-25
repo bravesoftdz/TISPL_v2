@@ -84,6 +84,12 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
 	TscGPNumericEdit *scGPNumericEdit_delka_podvozku;
 	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
+	TrMemoEx *rMemoEx_ID;
+	TrMemoEx *rMemoEx_Nazev;
+	TrMemoEx *rMemoEx1_rychlost;
+	TrMemoEx *rMemoEx1_roztec;
+	TrMemoEx *rMemoEx1_rozestup;
+	TrMemoEx *rMemoEx2_prirazen;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
