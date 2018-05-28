@@ -840,19 +840,47 @@ void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender,
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
 {
+			 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+		for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+					{
 
-//	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-//	 {
-//	if (Col==5 && Row==i) {
-//
-//		EditStyle=sgbDropDown;   //vyber typu
-//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Clear();
-//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("1650");
-//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("342,9");
-//		rStringGridEd_tab_dopravniky->Columns->Items[4]->PickList->Add("350");
-//
-//	 }
+			if (Col==5 && Row==i)
+			{
+
+				if (Col==5 && Row==i)
+				{
+					double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]); //pøedám Rz
+					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,":",";");
+			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
+				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
+				TStringList *S=new TStringList;
+				S->Add(data);
+				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
+				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
+				S->DelimitedText=data;
+				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
+				}
+						double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]); //pøedám Rz
+						AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,":",";");
+
+
+	 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
+		rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
+		TStringList *S=new TStringList;
+		S->Add(data);
+		S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
+		S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
+		S->DelimitedText=data;
+		rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
+//		rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Add("342,9");
+//		rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Add("350");
+
+		}
+			}
+
+
 	// }
+//	 }
 
 }
 //---------------------------------------------------------------------------
@@ -1404,7 +1432,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 
 	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 	 {
-		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="" && rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
+		 if(/*rStringGridEd_tab_dopravniky->Cells[5][i]=="" &&* - trochu matoucí*/ rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
 		 {
 			 if(Row==i && Col==6)	Background=(TColor)RGB(211,211,211);
 			 if(Row==i && Col==7)	Background=(TColor)RGB(211,211,211);
@@ -1419,8 +1447,4 @@ void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *
 	scGPGlyphButton_add_mezi_pohonyClick(Sender);
 }
 //---------------------------------------------------------------------------
-
-
-
-
 

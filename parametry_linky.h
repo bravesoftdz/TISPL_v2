@@ -90,6 +90,7 @@ __published:	// IDE-managed Components
 	TrMemoEx *rMemoEx1_roztec;
 	TrMemoEx *rMemoEx1_rozestup;
 	TrMemoEx *rMemoEx2_prirazen;
+	TMemo *Memo2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
