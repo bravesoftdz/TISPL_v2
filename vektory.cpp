@@ -1061,6 +1061,7 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
 		}
 
 		//řeší pouze pro objekty bez přiřazených pohonů (ty jsou již definovatelné) a zároveň pokud je rychlost dopravníku nenulová
+    //zvažit zda nepřeskakovat již navržené stažené do správy pohonů, takto se duplikují ve správě pohonu (ve stringridu po přidání)
 		if(pohon_prirazen==false && RD>0)
 		{
 			for(unsigned int j=0;j<OBJEKTY->predchozi->n;j++)
@@ -1940,7 +1941,7 @@ double Cvektory::vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator)
 	return Form1->ms.MyToDouble(Form1->ms.TrimLeftFromText(item,separator));
 }
 //---------------------------------------------------------------------------
-//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula
+//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv použiji parametr Rz=-1
 AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator)
 {
 	AnsiString RET="";
@@ -1948,8 +1949,8 @@ AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString sep
 	{
 			TRetez *CH=RETEZY->dalsi;
 			while(CH!=NULL)
-			{
-				if(m.mod_d(Rz,CH->roztec)==0)//zbytek po dělení je nula, tzn. vhodný řetěz s roztečí vhodnou pro požadovaný rozestup nalezen
+			{                                 //pokud chci vypsat vše
+				if(m.mod_d(Rz,CH->roztec)==0 || Rz==-1)//zbytek po dělení je nula, tzn. vhodný řetěz s roztečí vhodnou pro požadovaný rozestup nalezen nebo -1 pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv
 				RET+=CH->name+separator+AnsiString(CH->roztec)+total_separator;
 				CH=CH->dalsi;
 			}

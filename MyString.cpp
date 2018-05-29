@@ -311,7 +311,8 @@ double TMyString::MyToDouble(UnicodeString Text)
     try{number=Text.ToDouble();}//testování výjimky
 		catch(...)//zachycení výjimky
 		{
-			try{number=replace(Text,",",".").ToDouble();}
+			//try{number=replace(Text,",",".").ToDouble();}
+			try{number=replace(Text,get_locale_decimal(),".").ToDouble();}//podle oddělovače na daném systému, nahrazeno za konkretní čárku
 			catch(...){;}//vráti nulu pokud se ani po změně oddělovače byl řetězec neplatný
 		}
   }
@@ -385,7 +386,7 @@ long long TMyString::a2ll(AnsiString Vstup)
 }
 //---------------------------------------------------------------------------
 //vrátí oddělovač desetinného místa na daném systému
-UnicodeString TMyString::get_local_decimal()
+UnicodeString TMyString::get_locale_decimal()
 {
  char text[5];
  GetLocaleInfoA(LOCALE_USER_DEFAULT,LOCALE_SDECIMAL,text,sizeof(text));
@@ -394,9 +395,9 @@ UnicodeString TMyString::get_local_decimal()
 //---------------------------------------------------------------------------
 //vrátí reálné číslo s oddělovač desetinného místa na daném systému
 //určeno pro výstupy ze systému
-UnicodeString TMyString::get_local_double(double number)
+UnicodeString TMyString::get_locale_double(double number)
 {
-	UnicodeString oddelovac=get_local_decimal();
+	UnicodeString oddelovac=get_locale_decimal();
 	if(UnicodeString(number).Pos(oddelovac)>0)//oddělovač byl nastaven správne
 		return UnicodeString(number);
 	else
@@ -497,7 +498,7 @@ double TMyString::get_decimal(double number)
 {
 	try
 	{
-		double N=TrimLeftFrom_UTF(number,get_local_decimal()).ToDouble();
+		double N=TrimLeftFrom_UTF(number,get_locale_decimal()).ToDouble();
 		if(N==0)return 0;
 		return N;
 	}

@@ -653,8 +653,11 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sender)
 {
 		scExPanel_doporuc_pohony->Visible=true;
-		scGPButton_doporucene->Visible=false;                                 //zajistí zobrazení ve stejných jednotkách jako na PO
-		scHTMLLabel_doporuc_pohony->Caption=Form1->d.v.navrhni_POHONY("</br>",Form_parametry->RDunitT);
+		scGPButton_doporucene->Visible=false;
+		if(F->pom==NULL)//pokud je voláno PL pøímo                        //zajistí zobrazení ve stejných jednotkách jako na PO
+		scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",F->ms.a2i(F->readINI("nastaveni_form_parametry", "RDt")));
+		else// pokud je PL voláno z PO                                    //zajistí zobrazení ve stejných jednotkách jako na PO
+		scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",Form_parametry->RDunitT);
 		if(scHTMLLabel_doporuc_pohony->Caption=="")
 		{
 			scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";

@@ -190,7 +190,7 @@ public:		// User declarations
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
   Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
-	unsigned short kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
+	unsigned int kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
 	bool existuje_pohon;
 	bool MIMO_ROZMEZI;
 	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
