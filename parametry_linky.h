@@ -91,6 +91,7 @@ __published:	// IDE-managed Components
 	TrMemoEx *rMemoEx1_rozestup;
 	TrMemoEx *rMemoEx2_prirazen;
 	TMemo *Memo2;
+	TMemo *Memo3;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -148,6 +149,8 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyGetCellParams(TObject *Sender, int Col,
           int Row, TFont *AFont, TColor &Background, bool &Highlight);
 	void __fastcall scHTMLLabel_doporuc_pohonyClick(TObject *Sender);
+	void __fastcall scGPSwitchChangeState(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 
 private:	// User declarations
 
@@ -174,6 +177,7 @@ public:		// User declarations
 	bool Changes;  //obecna zmena = zmena PP ci TT
 	bool Changes_TT;    // konkretni zmena TT
 	bool Changes_PP;   // konkretni zmena PP
+	bool Changes_roztec;   // konkretni zmena PP
 	bool Ulozit;
 	bool zobrazitFrameForm;
 };
