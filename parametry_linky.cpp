@@ -43,8 +43,8 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	//------
 
 	////jednotky
-	Delkaunit=MM;
-	Sirkaunit=Delkaunit;
+	//Delkaunit=MM;
+	//Sirkaunit=Delkaunit;
 	Taktunit=S;
 }
 //---------------------------------------------------------------------------
@@ -82,13 +82,15 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
+
+		//Delkaunit=MM;
 		// GLOBAL naètení délka, šíøka, podvozek
-	if (Form1->readINI("nastaveni_form_parametry_linky", "rozmery") == "0")
-		{
-				rHTMLLabel_delka_jiguClick(this);
-				rHTMLLabel_sirkaClick(this);
-				rEditNum_delkavozikuClick(this);
-		}
+//	if (Form1->readINI("nastaveni_form_parametry_linky", "rozmery") == "1")
+//		{
+//				rHTMLLabel_delka_jiguClick(this);
+//				rHTMLLabel_sirkaClick(this);
+//				rEditNum_delkavozikuClick(this);
+//		}
 
 
 		scExPanel_doporuc_pohony->Visible=false;
@@ -222,9 +224,21 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
 
 	 //nahrání hodnot
+	 if(Delkaunit == MM)
+	 {
+	 rEditNum_delka_jigu->Value=Form1->d.v.PP.delka_voziku*1000;
+	 rEditNum_sirka_jigu->Value=Form1->d.v.PP.sirka_voziku*1000;
+	 scGPNumericEdit_delka_podvozku->Value=Form1->d.v.PP.delka_podvozku*1000;
+	 }
+	 else // jsem v Metrech, naètu uložená data (vždy v metrech)
+	 {
+
 	 rEditNum_delka_jigu->Value=Form1->d.v.PP.delka_voziku;
 	 rEditNum_sirka_jigu->Value=Form1->d.v.PP.sirka_voziku;
 	 scGPNumericEdit_delka_podvozku->Value=Form1->d.v.PP.delka_podvozku;
+	 }
+
+
 
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
 	 else  { scGPSwitch->State=scswOn; }
@@ -355,6 +369,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Changes_PP=false;   // konkretni zmena PP
 		Changes_roztec=false;
 		Ulozit=true;
+		 double delka_jigu;
+		 double sirka_jigu;
+		 double delka_podvozku;
 
 		//pri zmene TT
 		if(Form1->ms.MyToDouble(rEditNum_takt->Value) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL)
@@ -363,19 +380,22 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 Changes_TT=true;
 		}
 		//pri zmene delky voziku
-		if(Form1->ms.MyToDouble(rEditNum_delka_jigu->Value) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		if(Delkaunit==MM) delka_jigu=rEditNum_delka_jigu->Value/1000.0; else delka_jigu=rEditNum_delka_jigu->Value;
+		if(Form1->ms.MyToDouble(delka_jigu) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
 		{
 		 Changes=true;
 		 Changes_PP=true;
 		}
 		//pri zmene sirky voziku
-		if(Form1->ms.MyToDouble(rEditNum_sirka_jigu->Value) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+			if(Delkaunit==MM)  sirka_jigu=rEditNum_sirka_jigu->Value/1000.0; else sirka_jigu=rEditNum_sirka_jigu->Value;
+		if(Form1->ms.MyToDouble(sirka_jigu) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
 		{
 		 Changes=true;
 		 Changes_PP=true;
 		}
 		//pri zmene delky podvozku
-		if(Form1->ms.MyToDouble(scGPNumericEdit_delka_podvozku->Value) != Form1->d.v.PP.delka_podvozku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		if(Delkaunit==MM)  delka_podvozku=scGPNumericEdit_delka_podvozku->Value/1000.0; else delka_podvozku=scGPNumericEdit_delka_podvozku->Value;
+		if(Form1->ms.MyToDouble(delka_podvozku) != Form1->d.v.PP.delka_podvozku && Form1->d.v.OBJEKTY->dalsi!=NULL)
 		{
 		 Changes=true;
 		 Changes_PP=true;
@@ -587,9 +607,19 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 //	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
 		 //	}
 		 //	else
+		 if(Delkaunit==MM)
+		 {
+			F->d.v.PP.delka_voziku=F->ms.MyToDouble(rEditNum_delka_jigu->Value)/1000.0;
+			F->d.v.PP.sirka_voziku=F->ms.MyToDouble(rEditNum_sirka_jigu->Value)/1000.0;
+			F->d.v.PP.delka_podvozku=scGPNumericEdit_delka_podvozku->Value/1000.0;
+			}
+			else  //Metry
+			{
 			F->d.v.PP.delka_voziku=F->ms.MyToDouble(rEditNum_delka_jigu->Value);
 			F->d.v.PP.sirka_voziku=F->ms.MyToDouble(rEditNum_sirka_jigu->Value);
 			F->d.v.PP.delka_podvozku=scGPNumericEdit_delka_podvozku->Value;
+
+			}
 			int typ;
 			if(scGPSwitch->State==scswOff){typ=0;}
 			else {typ=1;}
@@ -863,6 +893,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(
 
 					double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]); //pøedám Rz
 					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
+
 			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
 				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
 				TStringList *S=new TStringList;
@@ -870,6 +901,11 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(
 				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
 				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
 				S->DelimitedText=data;
+
+				//tady bych potreboval od indexu 0 až po : vyhodit text a zanechat zbytek po støedník
+				 //	AnsiString data_orez=Form1->d.v.vrat_roztec_retezu_z_item(AnsiString(S->DelimitedText),";");
+				 //	Memo2->Lines->Add(AnsiString(S->DelimitedText));
+
 				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
 				}
 
@@ -940,21 +976,6 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jiguClick(TObject *Sende
 		Delkaunit=M;
 		//delka - pøepoèítání
 
-		rHTMLLabel_delka_jigu->Caption="délka <font color=#2b579a>[mm]</font>";
-		rEditNum_delka_jigu->Value=rEditNum_delka_jigu->Value*1000.0;
-
-
-		rHTMLLabel_sirka->Caption="šíøka <font color=#2b579a>[mm]</font>";
-		rEditNum_sirka_jigu->Value=rEditNum_sirka_jigu->Value*1000.0;
-
-		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
-		scGPNumericEdit_delka_podvozku->Value=scGPNumericEdit_delka_podvozku->Value*1000.0;
-
-	}
-	else//metrech tak se pøepne na MM
-	{
-		Delkaunit=MM;
-
 		rHTMLLabel_delka_jigu->Caption="délka <font color=#2b579a>[m]</font>";
 		rEditNum_delka_jigu->Value=rEditNum_delka_jigu->Value/1000.0;
 
@@ -964,6 +985,21 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jiguClick(TObject *Sende
 
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
 		scGPNumericEdit_delka_podvozku->Value=scGPNumericEdit_delka_podvozku->Value/1000.0;
+
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Delkaunit=MM;
+
+		rHTMLLabel_delka_jigu->Caption="délka <font color=#2b579a>[mm]</font>";
+		rEditNum_delka_jigu->Value=rEditNum_delka_jigu->Value*1000.0;
+
+
+		rHTMLLabel_sirka->Caption="šíøka <font color=#2b579a>[mm]</font>";
+		rEditNum_sirka_jigu->Value=rEditNum_sirka_jigu->Value*1000.0;
+
+		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
+		scGPNumericEdit_delka_podvozku->Value=scGPNumericEdit_delka_podvozku->Value*1000.0;
 	}
 
 }
@@ -1045,12 +1081,6 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender,
-					WORD &Key, TShiftState Shift)
-{
-	show_min_Rz();
-}
-//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 
 void TForm_parametry_linky::show_min_Rz() {
@@ -1400,6 +1430,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 //	Highlight=true;
 // }
 
+//nastavení podbarvení bunìk u nepoužívaného pohonu
 	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 	 {
 		 if(/*rStringGridEd_tab_dopravniky->Cells[5][i]=="" &&* - trochu matoucí*/ rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
@@ -1432,7 +1463,34 @@ else  {rHTMLLabel_podvozek_zaves->Caption="Závìs"; rHTMLLabel_podvozek_zaves->Le
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
 
 {
-	Form1->writeINI("nastaveni_form_parametry_linky", "rozmery", Delkaunit);
+	//ShowMessage(Delkaunit);
+ 	Form1->writeINI("nastaveni_form_parametry_linky", "rozmery", Delkaunit);
+}
+//---------------------------------------------------------------------------
+
+void TForm_parametry_linky::ukaz_dop_RzRxR()
+{
+
+
+//
+
+}
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(TObject *Sender,
+          int ACol, int ARow, const UnicodeString Value)
+{
+		if (ACol==4)   // tohle je dobrý, že v ARow mám pøedanej øádek zrovna, který edituji, èili pak velmi jednoduše to pøedám tam kam potøebuji
+		{
+				//Doporuèení Rz
+				rStringGridEd_tab_dopravniky->Cells[6][ARow]=F->m.Rz(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0);
+
+				//Doporuèení Rx
+				rStringGridEd_tab_dopravniky->Cells[6][ARow]=F->m.Rz(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0);
+
+				//Doporuèení R
+				rStringGridEd_tab_dopravniky->Cells[6][ARow]=F->m.Rz(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0);
+
+		}
 }
 //---------------------------------------------------------------------------
 

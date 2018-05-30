@@ -124,7 +124,6 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyEnter(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikyKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rEditNum_sirka_jiguChange(TObject *Sender);
 	void __fastcall rEditNum_delka_jiguChange(TObject *Sender);
 	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
@@ -151,6 +150,9 @@ __published:	// IDE-managed Components
 	void __fastcall scHTMLLabel_doporuc_pohonyClick(TObject *Sender);
 	void __fastcall scGPSwitchChangeState(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall rStringGridEd_tab_dopravnikySetEditText(TObject *Sender, int ACol,
+          int ARow, const UnicodeString Value);
+
 
 private:	// User declarations
 
@@ -166,6 +168,7 @@ private:	// User declarations
 	void pozice_scGPGlyphButton_hint();
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
+	void ukaz_dop_RzRxR();
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 
