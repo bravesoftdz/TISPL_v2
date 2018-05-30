@@ -86,10 +86,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
 		Button_save->SetFocus();
-		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
-		zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
-		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
-		for(unsigned int PID=0;PID<=zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
 		//provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
 		if(Form1->d.v.OBJEKTY->dalsi!=NULL)
@@ -164,7 +160,12 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
 		}
 
-		//	Form1->d.v.vymaz_seznam_POHONY();
+		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
+		//musí být umístìno až za nacti_pohony
+		zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
+		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
+		for(unsigned int PID=0;PID<zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
+
 
 	 Form_parametry_linky->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
 	// rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
@@ -487,7 +488,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		// ukladej
 		if (Ulozit)
 		{
-			zrusit_prirazeni_smazanych_pohunu_k_objektum();
+			zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum();
 			Form1->d.v.vymaz_seznam_POHONY();
 			Form1->d.v.hlavicka_POHONY();
 
@@ -603,8 +604,8 @@ void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 		AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
 				if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL)){
 
-				//nefunguje správnì pro pøípad storna, øeší proto následující øádek, Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(rStringGridEd_tab_dopravniky->RowCount-1));
-				zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)]=true;
+				//pùvodní zakomentovaná konstrukcenefunguje správnì pro pøípad storna, proto øeší následující øádek, Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(rStringGridEd_tab_dopravniky->RowCount-1));
+				zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)-1]=true;
 				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
 
 					if(rStringGridEd_tab_dopravniky->RowCount>1)
@@ -825,6 +826,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 		 PopUPmenu->Visible=false;
 		 else //jinak ukonèení formuláøe
 		 Button_stornoClick(Sender);
+	}
+	if(Key==123)//F12
+	{
+
 	}
 }
 //---------------------------------------------------------------------------
@@ -1176,12 +1181,12 @@ unsigned int TForm_parametry_linky::getMaxPID()
 	return ID;
 }
 //---------------------------------------------------------------------------
-void TForm_parametry_linky::zrusit_prirazeni_smazanych_pohunu_k_objektum()
+void TForm_parametry_linky::zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum()
 {   //pøeindexovat nesmazané nebo jim dat nový odkaz, nebo mazat jen konkrétní
-	for(unsigned PID=0;PID<=zrusena_prirazeni_PID_size;PID++)
+	for(unsigned PID=0;PID<zrusena_prirazeni_PID_size;PID++)
 	{
 		if(zrusena_prirazeni_PID[PID])
-		Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(PID);
+		Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(PID+1);
 	}
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
 }
@@ -1324,10 +1329,11 @@ void __fastcall TForm_parametry_linky::scLabel_smazatClick(TObject *Sender)
 	{
 			AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
 			myMessageBox->zobrazitFrameForm=true;//zajistí orámování MB
-			if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL))
+			if(mrYes==Form1->MB("Pohon je používán objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_YESNO))
 			{
-				//Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW));
-				zrusena_prirazeni_PID[getPID(ROW)];//nahrazeno novou filozofii, z dùvodu možného storna formu
+				//Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW)); pùvodní pøímé smazání, ale nereflektovalo by pøípadné storno
+				//pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
+				zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
 				smazat=true;
 			}
 			myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
