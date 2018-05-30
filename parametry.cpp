@@ -3334,7 +3334,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						&& scComboBox_rezim->ItemIndex == 0) {
 						if (fmod(CT, Form1->d.v.PP.TT) == 0) {
 								kapacitaSG = CT / Form1->d.v.PP.TT; // pro další použití
-								vypis(" Rozložit na " + AnsiString(kapacitaSG) + "x " + scGPEdit_name->Text.UpperCase() + "?",true);
+								vypis(" Rozložit na " + AnsiString(kapacitaSG) + "x " + scGPEdit_name->Text.UpperCase() + "?",false);
 								scGPButton_OK->Caption = "Ano a uložit";
 								VID=12;
 						}
