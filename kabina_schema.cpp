@@ -369,10 +369,6 @@ void __fastcall TForm_objekt_nahled::Timer_animaceTimer(TObject *Sender)
 
 	double Z=1;if(F->antialiasing)Z=3.0;
 
-//	//nastal takt - špatná úvaha
-//	if(F->m.round(timerTakt*F->fps*Timer_animace->Interval/1000.0)%F->m.round(F->d.v.PP.TT)==0)ButtonPLAY->Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
-//	else ButtonPLAY->Font->Style=TFontStyles();//vypnutí tuèného písma
-
 	//výpoèet aktuálního èasu
 	double Time=F->m.round(++timerTakt*F->afps/Z*Timer_animace->Interval/1000.0);//chybná úvaha, koncipováno pouze pro rychlosti 1m/s a vyšší//vrátí èas, tak aby se jednalo o kontinální animaci
 

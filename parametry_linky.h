@@ -164,7 +164,7 @@ private:	// User declarations
 	unsigned int getMaxPID();//najde max použité ID pohonu (protože ID nejsou seøazena,nelze vzít index posledního øádku)
 	bool *zrusena_prirazeni_PID;
 	unsigned int zrusena_prirazeni_PID_size;
-	void zrusit_prirazeni_smazanych_pohunu_k_objektum();
+	void zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum();
 	void pozice_scGPGlyphButton_hint();
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
