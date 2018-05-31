@@ -390,6 +390,13 @@ double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double R
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrací true pokud nová rozteè (R) ovlivní Rx resp RD
+bool Cmy::kontrola_zda_zmena_R_ovlivni_RxRD(double R_puvodni,double R_nove)
+{
+		if(fmod(R_puvodni,R_nove))return true;
+		else return false;
+}
+/////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku vozíku
 double Cmy::UDV(double dV,double sV,double rotace)
 {
