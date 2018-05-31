@@ -364,10 +364,15 @@ double Cmy::Rx(double dV,double sV,double rotace,double M,double R)
 //vrátí rozestup v poètech palcù mezi aktivními palci z RD a R (a resp. TT)
 double Cmy::Rx(double RD,double R)
 {
-	if(R==0) 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
-	else return Rz(RD)/R;
+	return Rx2(Rz(RD),R);
 }
 ////////////////////////
+//vrátí rozestup v poètech palcù mezi aktivními palci z Rx a R
+double Rx2(double Rz,double R)
+{
+	if(R==0) 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
+	else return Rz/R;
+}
 //vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstažnosti s TT
 double Cmy::RD(double Rz)
 {
