@@ -367,7 +367,7 @@ double Cmy::Rx(double RD,double R)
 	return Rx2(Rz(RD),R);
 }
 ////////////////////////
-//vrátí rozestup v poètech palcù mezi aktivními palci z Rx a R
+//vrátí rozestup v poètech palcù mezi aktivními palci z Rz a R
 double Rx2(double Rz,double R)
 {
 	if(R==0) 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
