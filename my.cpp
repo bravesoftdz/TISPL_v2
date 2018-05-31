@@ -501,14 +501,20 @@ void Cmy::designButton(TscGPButton *button,TForm *form,short rank,short sum,shor
 //vykreslí danému oknu transparentní (kvùli možnému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad použití: frameForm(Form_parametry,clWebOrange,1);
 void Cmy::frameForm(TForm *form,TColor color,short width)
 {
+	short o=floor(width/2.0);
+	frameRect(TRect(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o),color,width);
+}
+/////////////////////////////////////////////////////////////////////////////
+//nakresli na libovolném místì na monitoru obdelník dle zadaných souøadnic, je možné nastavit barvu a šíøku èáry tohoto obdelníku
+void Cmy::frameRect(TRect Rect,TColor color,short width)
+{
 	TCanvas *C=new(TCanvas);
 	C->Handle=GetWindowDC(HWND_DESKTOP);
 	C->Pen->Color=color;
 	C->Pen->Mode=pmCopy;//pmNotXor;
 	C->Pen->Width=width;
 	C->Brush->Style=bsClear;
-	short o=floor(width/2.0);
-	C->Rectangle(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o);
+	C->Rectangle(Rect);
 }
 /////////////////////////////////////////////////////////////////////////////
 //z rychlosti v m/s vratí èas v milisekundách (proto *1000) potøebný na pøekreslení jednoho pixelu pøi daném zoomu
