@@ -168,7 +168,6 @@ private:	// User declarations
 	void pozice_scGPGlyphButton_hint();
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
-	void ukaz_dop_RzRxR();
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 
@@ -181,8 +180,13 @@ public:		// User declarations
 	bool Changes_TT;    // konkretni zmena TT
 	bool Changes_PP;   // konkretni zmena PP
 	bool Changes_roztec;   // konkretni zmena PP
+	bool Changes_prirazen;
+	bool Changes_aRD;
+	bool Changes_Rz;
+	bool Changes_Rx;
 	bool Ulozit;
 	bool zobrazitFrameForm;
+	int roletka_data;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry_linky *Form_parametry_linky;
