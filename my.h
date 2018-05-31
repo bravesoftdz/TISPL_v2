@@ -55,7 +55,7 @@ class Cmy
 	double Rx2(double Rz,double R);//vrátí rozestup v poètech palcù mezi aktivními palci z Rz a R
 	double RD(double Rz);//vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstažnosti s TT
 	double dopRD(double dV,double sV,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
-	bool kontrola_zda_zmena_R_ovlivni_RxRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteè (R) ovlivní Rx resp RD
+	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteè (R) ovlivní Rz resp RD
 	double UDV(double dV,double sV,double rotace);//vratí užitnou délku vozíku
 	double UDV(double rotace);//vratí užitnou délku vozíku, parametry bere z PP
 	double UDJ(double dJ,double sJ,double rotace);//vrátí užitnou délku jigu
