@@ -505,7 +505,7 @@ void Cmy::frameForm(TForm *form,TColor color,short width)
 	frameRect(TRect(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o),color,width);
 }
 /////////////////////////////////////////////////////////////////////////////
-//nakresli na libovolném místì na monitoru obdelník dle zadaných souøadnic, je možné nastavit barvu a šíøku èáry tohoto obdelníku
+//nakresli na libovolném místì na monitoru obdélník dle zadaných souøadnic ve formátu TRect, je možné nastavit barvu a šíøku èáry tohoto obdélníku
 void Cmy::frameRect(TRect Rect,TColor color,short width)
 {
 	TCanvas *C=new(TCanvas);
