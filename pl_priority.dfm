@@ -3,8 +3,8 @@ object Form_PL_priority: TForm_PL_priority
   Top = 0
   BorderStyle = bsNone
   Caption = 'Form_PL_priority'
-  ClientHeight = 310
-  ClientWidth = 776
+  ClientHeight = 544
+  ClientWidth = 1118
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -34,9 +34,23 @@ object Form_PL_priority: TForm_PL_priority
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_hlavika_tabulky: TrHTMLLabel
+    Left = 48
+    Top = 141
+    Width = 122
+    Height = 19
+    Caption = 'Hlavi'#269'ka pohonu '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
   object scGPRadioButton1: TscGPRadioButton
-    Left = 12
-    Top = 151
+    Left = 480
+    Top = 118
     Width = 30
     Height = 35
     BiDiMode = bdLeftToRight
@@ -47,7 +61,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 2
     TabStop = True
     OnClick = scGPRadioButton1Click
     Animation = False
@@ -129,76 +143,9 @@ object Form_PL_priority: TForm_PL_priority
     ScaleFrameWidth = True
     ShowFocusRect = True
   end
-  object rStringGridEd_tab: TrStringGridEd
-    Left = 48
-    Top = 122
-    Width = 703
-    Height = 125
-    ColCount = 2
-    Ctl3D = False
-    DefaultColWidth = 350
-    DefaultRowHeight = 30
-    DefaultDrawing = False
-    FixedColor = clWhite
-    FixedCols = 0
-    RowCount = 4
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -15
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    GradientEndColor = clWhite
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing]
-    ParentCtl3D = False
-    ParentFont = False
-    TabOrder = 2
-    OnKeyDown = rStringGridEd_tabKeyDown
-    OnMouseDown = rStringGridEd_tabMouseDown
-    Columns = <
-      item
-        Alignment = taCenter
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'Z'#367'stane zachov'#225'no'
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taCenter
-      end
-      item
-        Alignment = taCenter
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TitleCaption = 'Dojde ke zm'#283'n'#283
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -15
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        TitleParentFont = False
-        TitleAlignment = taCenter
-      end>
-    OnGetCellParams = rStringGridEd_tabGetCellParams
-    RowHeights = (
-      30
-      30
-      30
-      30)
-  end
   object scGPRadioButton2: TscGPRadioButton
-    Left = 12
-    Top = 183
+    Left = 780
+    Top = 118
     Width = 30
     Height = 35
     BiDiMode = bdLeftToRight
@@ -209,7 +156,7 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 3
     TabStop = True
     OnClick = scGPRadioButton2Click
     Animation = False
@@ -292,8 +239,8 @@ object Form_PL_priority: TForm_PL_priority
     ShowFocusRect = True
   end
   object scGPRadioButton3: TscGPRadioButton
-    Left = 12
-    Top = 214
+    Left = 1038
+    Top = 57
     Width = 30
     Height = 35
     BiDiMode = bdLeftToRight
@@ -304,8 +251,9 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 4
     TabStop = True
+    Visible = False
     OnClick = scGPRadioButton3Click
     Animation = False
     CanFocused = True
@@ -389,10 +337,10 @@ object Form_PL_priority: TForm_PL_priority
   object scGPPanel_header: TscGPPanel
     Left = 0
     Top = 0
-    Width = 776
+    Width = 1118
     Height = 34
     Align = alTop
-    TabOrder = 7
+    TabOrder = 6
     FillGradientAngle = 90
     FillGradientBeginAlpha = 255
     FillGradientEndAlpha = 255
@@ -419,7 +367,7 @@ object Form_PL_priority: TForm_PL_priority
     StorePaintBuffer = True
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 726
+      Left = 1068
       Top = 0
       Width = 50
       Height = 33
@@ -498,7 +446,7 @@ object Form_PL_priority: TForm_PL_priority
     object scLabel_header: TscLabel
       Left = 0
       Top = 0
-      Width = 726
+      Width = 1068
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -529,8 +477,8 @@ object Form_PL_priority: TForm_PL_priority
     end
   end
   object Button_save: TscGPButton
-    Left = 230
-    Top = 263
+    Left = 302
+    Top = 471
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -620,8 +568,8 @@ object Form_PL_priority: TForm_PL_priority
     AllowAllUp = False
   end
   object Button_storno: TscGPButton
-    Left = 368
-    Top = 263
+    Left = 480
+    Top = 471
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -712,8 +660,8 @@ object Form_PL_priority: TForm_PL_priority
     AllowAllUp = False
   end
   object scGPRadioButton4: TscGPRadioButton
-    Left = 12
-    Top = 246
+    Left = 1038
+    Top = 89
     Width = 30
     Height = 35
     BiDiMode = bdLeftToRight
@@ -724,8 +672,9 @@ object Form_PL_priority: TForm_PL_priority
     Font.Style = []
     ParentBiDiMode = False
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 5
     TabStop = True
+    Visible = False
     OnClick = scGPRadioButton4Click
     Animation = False
     CanFocused = True
@@ -805,5 +754,164 @@ object Form_PL_priority: TForm_PL_priority
     Checked = False
     ScaleFrameWidth = True
     ShowFocusRect = True
+  end
+  object rStringGridEd_tab: TrStringGridEd
+    Left = 48
+    Top = 166
+    Width = 849
+    Height = 283
+    BorderStyle = bsNone
+    Color = clWhite
+    ColCount = 6
+    Ctl3D = False
+    DefaultColWidth = 140
+    DefaultRowHeight = 30
+    DefaultDrawing = False
+    DrawingStyle = gdsGradient
+    FixedColor = clWhite
+    RowCount = 9
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = cl3DDkShadow
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    GradientEndColor = clWhite
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goTabs, goAlwaysShowEditor]
+    ParentCtl3D = False
+    ParentFont = False
+    ScrollBars = ssVertical
+    TabOrder = 7
+    OnClick = rStringGridEd_tabClick
+    Columns = <
+      item
+        InvalidDataAction = sgaNone
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        TitleCaption = 'Pohon'
+        TitleAlignment = taCenter
+        Width = 140
+      end
+      item
+        InvalidDataAction = sgaNone
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        PickList.Strings = (
+          're'#225'ln'#225
+          'servisn'#237)
+        TitleCaption = 'objekt'
+        TitleAlignment = taCenter
+        Width = 140
+      end
+      item
+        ButtonStyle = sgbCheckbox
+        DataType = sgdNumber
+        InvalidDataAction = sgaNone
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        TitleCaption = 'V1'
+        TitleAlignment = taCenter
+        Width = 140
+      end
+      item
+        ButtonStyle = sgbCheckbox
+        DataType = sgdNumber
+        InvalidDataAction = sgaNone
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        TitleCaption = 'V2'
+        TitleAlignment = taCenter
+        Width = 140
+      end
+      item
+        ButtonStyle = sgbCheckbox
+        DataType = sgdNumber
+        MaxValue = 10000.000000000000000000
+        InvalidDataAction = sgaNone
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -15
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        TitleCaption = 'V3'
+        TitleAlignment = taCenter
+        Width = 140
+      end
+      item
+        ButtonStyle = sgbCheckbox
+        DataType = sgdNumber
+        Alignment = taCenter
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Font.Quality = fqClearType
+        ParentFont = False
+        TitleCaption = 'V4'
+        TitleAlignment = taCenter
+        Width = 140
+      end>
+    TitleRowHeight = 35
+    OnCanEdit = rStringGridEd_tabCanEdit
+    OnFinishCellEditing = rStringGridEd_tabFinishCellEditing
+    ColWidths = (
+      140
+      140
+      140
+      140
+      140
+      140)
+    RowHeights = (
+      35
+      30
+      30
+      30
+      30
+      30
+      30
+      30
+      30)
+  end
+  object Memo1: TMemo
+    Left = 656
+    Top = 35
+    Width = 185
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 8
   end
 end

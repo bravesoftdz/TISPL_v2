@@ -526,22 +526,54 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt
 		{
-			//Form_PL_priority->rStringGridEd_tab->Height=Form_PL_priority->rStringGridEd_tab->Height-Form_PL_priority->rStringGridEd_tab->DefaultRowHeight;
-			Form_PL_priority->rStringGridEd_tab->RowCount=3;
-			Form_PL_priority->scGPRadioButton4->Visible=false;
-			Form_PL_priority->scGPRadioButton3->Visible=false;
-			//zustava
-			Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Délka pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Technologický èas";
-	 //		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Individuální nastavení";
-			//meni se
-			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Technologický èas, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka kabiny, Rychlost pohonu";
-	 //		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Individuální nastavení";
 
-			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
+			Cvektory::TPohon *pohon=Form1->d.v.POHONY->dalsi;
+			Cvektory::TObjekt *obj=Form1->d.v.OBJEKTY->dalsi;
+			 Form_PL_priority->rStringGridEd_tab->RowCount=9;
 
-			if(mrOk==Form_PL_priority->ShowModal())
+			//	TrStringGridEd *sGrid=new TrStringGridEd;
+
+
+				Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
+
+	while (obj!=NULL)
+	{
+
+	// TStringGrid  *grid = new TrStringGridEd;
+
+		if(obj->pohon!=NULL)
+		{
+		if(rStringGridEd_tab_dopravniky->Cells[8][obj->pohon->n]!="nepoužíván")
+					//objekt má pøiøazen pohon
+		{
+					Form_PL_priority->rHTMLLabel_hlavika_tabulky->Caption="Hlavièka pohonu ";
+
+					 //		ShowMessage(obj->pohon->n);   sloupec, øádek
+
+
+					 //Form_PL_priority->rStringGridEd_tab->Cells[0][0]=obj->pohon->name;
+
+					 Form_PL_priority->rStringGridEd_tab->Cells[0][obj->n]=obj->pohon->name;
+					 Form_PL_priority->rStringGridEd_tab->Cells[1][obj->n]=obj->name;
+
+
+		}
+
+		}
+			 else //objekt nemá pøiøazen pohon
+
+			 {
+							ShowMessage("nepøiøazen");
+					 //	Form_PL_priority->rStringGridEd_tab->RowCount=obj->predchozi->n;
+
+
+			 }
+
+     	obj=obj->dalsi;
+
+		 }
+
+		 	if(mrOk==Form_PL_priority->ShowModal())
 			{
 				// volani aktualizacni fce
 				if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=1;//Form1->d.v.aktualizace_objektu(1);
@@ -555,8 +587,46 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			{
 				volat_aktualizaci=false;
 				Ulozit=false;
+				 Form_PL_priority->rStringGridEd_tab->RowCount=1;
 			}
+
+
+
+
+//			//Form_PL_priority->rStringGridEd_tab->Height=Form_PL_priority->rStringGridEd_tab->Height-Form_PL_priority->rStringGridEd_tab->DefaultRowHeight;
+//			Form_PL_priority->rStringGridEd_tab->RowCount=3;
+//			Form_PL_priority->scGPRadioButton4->Visible=false;
+//			Form_PL_priority->scGPRadioButton3->Visible=false;
+//			//zustava
+//			Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Délka pohonu";
+//			Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Technologický èas";
+//	 //		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Individuální nastavení";
+//			//meni se
+//			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Technologický èas, Rychlost pohonu";
+//			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka kabiny, Rychlost pohonu";
+//	 //		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Individuální nastavení";
+//
+//			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
+//
+//			if(mrOk==Form_PL_priority->ShowModal())
+//			{
+//				// volani aktualizacni fce
+//				if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=1;//Form1->d.v.aktualizace_objektu(1);
+//				if(Form_PL_priority->scGPRadioButton2->Checked) aktualizace_id=2;//Form1->d.v.aktualizace_objektu(2);
+//				if(Form_PL_priority->scGPRadioButton3->Checked) aktualizace_id=-1; //Form1->d.v.aktualizace_objektu(-1); //indi nastav
+//
+//				volat_aktualizaci=true;
+//				Ulozit=true;
+//			}
+//			else
+//			{
+//				volat_aktualizaci=false;
+//				Ulozit=false;
+//			}
+
+
 	 }
+
 	 if(Changes_PP)//pri zmene PP + jiz existuje nejaky objekt
 	 {
 			Form_PL_priority->rStringGridEd_tab->RowCount=4;
@@ -984,7 +1054,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(
 					}  else Rz=-1;
 
 
-					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
+					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,": ",";");
 
 			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
 				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
@@ -1693,6 +1763,15 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 		{
 		 rStringGridEd_tab_dopravniky->Cells[5][ARow] = (F->d.v.PP.TT * F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0) / F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
 		}
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyClick(TObject *Sender)
+
+{
+		rStringGridEd_tab_dopravniky->
 }
 //---------------------------------------------------------------------------
 

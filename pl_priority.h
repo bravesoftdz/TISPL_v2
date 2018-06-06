@@ -21,7 +21,6 @@ class TForm_PL_priority : public TForm
 __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_text;
 	TscGPRadioButton *scGPRadioButton1;
-	TrStringGridEd *rStringGridEd_tab;
 	TscGPRadioButton *scGPRadioButton2;
 	TscGPRadioButton *scGPRadioButton3;
 	TscGPPanel *scGPPanel_header;
@@ -30,6 +29,9 @@ __published:	// IDE-managed Components
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
 	TscGPRadioButton *scGPRadioButton4;
+	TrHTMLLabel *rHTMLLabel_hlavika_tabulky;
+	TrStringGridEd *rStringGridEd_tab;
+	TMemo *Memo1;
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall rStringGridEd_tabGetCellParams(TObject *Sender, int Col, int Row,
@@ -43,6 +45,12 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall rStringGridEd_tabMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
+	void __fastcall rStringGridEd_tabCanEdit(TObject *Sender, int Col, int Row, bool &CanEdit);
+	void __fastcall rStringGridEd_tabClick(TObject *Sender);
+	void __fastcall rStringGridEd_tabFinishCellEditing(TObject *Sender, int Col, int Row);
+
+
+
 
 private:	// User declarations
 public:		// User declarations

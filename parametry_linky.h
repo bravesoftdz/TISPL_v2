@@ -152,6 +152,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall rStringGridEd_tab_dopravnikySetEditText(TObject *Sender, int ACol,
           int ARow, const UnicodeString Value);
+	void __fastcall rStringGridEd_tab_dopravnikyClick(TObject *Sender);
 
 
 private:	// User declarations
