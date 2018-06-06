@@ -19,10 +19,6 @@ void TPO_math::input_CT(bool prepocet_K)
 				RD=DD/CT;
 				M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice a za výpoètem RD
 			}
-//			else  toto není tøeba je obslouženo výše,chyba byla jinde, pozdìji toto zakomentované smazat
-//			{ //jedná se vlastnì o volání z K
-//				if(prepocet_K==false)DD=K*(UDV()+M);//délky kabiny  M pøidal 5. kvìtna 2018 - test, nemìnila se délka kabiny, pokud se mìnilo K
-//			}
 			if(prepocet_K)K=CT/TT;//výpoèet kapacity
 			P=Pozice();//výpoèet poètu pozic
 		break;
@@ -103,7 +99,7 @@ void TPO_math::input_P(bool prepocet_CT)//pøepoèet souvisejících hodnot vyplývaj
 	//možná zde bude nutné zakázat zpìtný pøepoèet P
 }
 //---------------------------------------------------------------------------
-//pøepoèet souvisejících hodnot vyplývajících ze zmìny M
+//pøepoèet souvisejících hodnot vyplývajících ze zmìny kritické vozíkové mezery
 void TPO_math::input_M()
 {
 	switch (rezim)
@@ -118,17 +114,33 @@ void TPO_math::input_M()
 				else input_K();
 		break;
 	}
+	MJ=M+fabs(m.UDJ(dJ,sJ,Rotace)-m.UDV(dJ,sJ,Rotace));
+	MP=M+fabs(dP-m.UDV(dJ,sJ,Rotace));
 }
 //---------------------------------------------------------------------------
 //vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování
 double TPO_math::Mezera()
 {
-	//return RD*TT-m.UDV(dV,sV,Rotace);
-	//test:
-	double mezera=RD*TT-m.UDV(dV,sV,Rotace);
-	Rx=m.Rx(dV,sV,Rotace,mezera,R);
-	Rz=m.Rz(dV,sV,Rotace,mezera);
+	double mezera=RD*TT-m.UDV(dJ,sJ,Rotace);
+	Rx=m.Rx(dJ,sJ,Rotace,mezera,R);
+	Rz=m.Rz(dJ,sJ,Rotace,mezera);
+	MJ=RD*TT-m.UDJ(dJ,sJ,Rotace);
+	MP=RD*TT-dP;
 	return mezera;
+}
+//---------------------------------------------------------------------------
+//pøepoèet souvisejících hodnot vyplývajících ze zmìny mezery jigu
+void TPO_math::input_MJ()
+{
+	M=MJ-fabs(m.UDJ(dJ,sJ,Rotace)-m.UDV(dJ,sJ,Rotace));
+	input_M();
+}
+//---------------------------------------------------------------------------
+//pøepoèet souvisejících hodnot vyplývajících ze zmìny mezery podvozku
+void TPO_math::input_MP()
+{
+	M=MP-fabs(dP-m.UDV(dJ,sJ,Rotace));
+	input_M();
 }
 //---------------------------------------------------------------------------
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
@@ -169,6 +181,6 @@ double TPO_math::P2K()
 //vrátí užitnou délku vozíku dle hodnoty rotace
 double TPO_math::UDV()
 {
-	return m.UDV(dV,sV,Rotace);
+	return m.UDV(dJ,sJ,Rotace);
 }
 //---------------------------------------------------------------------------

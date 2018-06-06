@@ -60,7 +60,7 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit_kapacita;
 	TrHTMLLabel *rHTMLLabel_rotace;
 	TscGPComboBox *scComboBox_rotace;
-	TrHTMLLabel *rHTMLLabel_mezera;
+	TrHTMLLabel *rHTMLLabel_mezera_jednotky;
 	TscGPButton *scGPButton_metry_milimetry;
 	TscGPGlyphButton *scGPGlyphButton_copy;
 	TscGPGlyphButton *scGPGlyphButton_paste;
@@ -84,6 +84,9 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_view;
 	TButton *Button1;
 	TscGPCheckBox *scGPCheckBox_zaokrouhlit;
+	TscGPNumericEdit *scGPNumericEdit_mezera_JIG;
+	TscGPNumericEdit *scGPNumericEdit_mezera_PODVOZEK;
+	TrHTMLLabel *rHTMLLabel_mezera;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -104,7 +107,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_pasteClick(TObject *Sender);
 	void __fastcall rHTMLLabel_CTClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_dopravnikuClick(TObject *Sender);
-	void __fastcall rHTMLLabel_mezeraClick(TObject *Sender);
+	void __fastcall rHTMLLabel_mezera_jednotkyClick(TObject *Sender);
 	void __fastcall rHTMLLabel_RDClick(TObject *Sender);
 	void __fastcall scButton_zamek_CTClick(TObject *Sender);
 	void __fastcall scButton_zamek_DDClick(TObject *Sender);
@@ -132,14 +135,17 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
+	void __fastcall scGPNumericEdit_mezera_JIGChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_mezera_PODVOZEKChange(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,mezera,P,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,P,mezera,mezera_jig,mezera_podvozek,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
 
+	void position();//hlídá a øeší pozici formuláøe,// napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru, pouze pro prvotní zobrazení dle souøadnic kurzoru myši, jinak dle uživatele
 	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udržování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
 	void input_CT();//pøepoèet hodnot vyplývajících ze zmìny CT
 	void input_DD();//pøepoèet hodnot vyplývajících ze zmìny DD
@@ -158,7 +164,8 @@ private:	// User declarations
 	void OUTPUT();
 	void packa_RDzamek(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
 	void packa(Tinput_state start,Tinput_state end);//vykreslí packu mezi edity a comby
-	double getM();
+	double getM();//vrátí hodnotu mezery z editboxu dle nastavených jednotek mezery mezera pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
+	double getM(double M);//vrátí hodnotu parametru dle nastavených jednotek mezery pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
 	void frameCorrelation(bool default_value=false);//stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do výchozího stavu
 	void cCT(TColor Color){scGPNumericEdit_CT->Options->FrameNormalColor=Color;}//inline metoda
 	void cRD(TColor Color){scGPNumericEdit_RD->Options->FrameNormalColor=Color;}//inline metoda
@@ -167,6 +174,8 @@ private:	// User declarations
 	void cP(TColor Color){scGPNumericEdit_pozice->Options->FrameNormalColor=Color;}//inline metoda
 	void cRo(TColor Color){scComboBox_rotace->Options->FrameNormalColor=Color;}//inline metoda
 	void cM(TColor Color){scGPNumericEdit_mezera->Options->FrameNormalColor=Color;}//inline metoda
+	void cMJ(TColor Color){scGPNumericEdit_mezera_JIG->Options->FrameNormalColor=Color;}//inline metoda
+	void cMP(TColor Color){scGPNumericEdit_mezera_PODVOZEK->Options->FrameNormalColor=Color;}//inline metoda
 	void cRx(TColor Color){scGPNumericEdit1_rx->Options->FrameNormalColor=Color;}//inline metoda
 	TPoint getRMComponent(Tinput_state C);//vrátí souøadnice pravého okraje a horního okraje+poloviny výšky komponenty
 

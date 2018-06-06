@@ -75,7 +75,9 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->kapacita_dop=0;
 	novy->pozice=1;
 	novy->rotace=0;//rotace jigu v objektu
-	novy->mezera=0;//velikost mezery mezi vozíky
+	novy->mezera=0;//mezera mezi vozíky (kritická mezera)
+	novy->mezera_jig=0;//mezera mezi jigy
+	novy->mezera_podvozek=0;//mezera mezi podvozky
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -114,7 +116,9 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->kapacita_dop=0;
 	novy->pozice=1;
 	novy->rotace=0;//rotace jigu v objektu
-	novy->mezera=0;//velikost mezery mezi vozíky
+	novy->mezera=0;//velikost mezery mezi vozíky  (kritická mezera)
+	novy->mezera_jig=0;//mezera mezi jigy
+	novy->mezera_podvozek=0;//mezera mezi podvozky
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
@@ -198,7 +202,9 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->kapacita_dop=Objekt->kapacita_dop;
 		novy->pozice=Objekt->pozice;
 		novy->rotace=Objekt->rotace;
-		novy->mezera=Objekt->mezera;//velikost mezery mezi vozíky
+		novy->mezera=Objekt->mezera;//velikost mezery mezi vozíky (kritická mezera)
+		novy->mezera_jig=Objekt->mezera_jig;//mezera mezi jigy
+		novy->mezera_podvozek=Objekt->mezera_podvozek;//mezera mezi podvozky
 		novy->pohon=Objekt->pohon;
 		novy->min_prujezdni_profil.x=Objekt->min_prujezdni_profil.x;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->min_prujezdni_profil.y=Objekt->min_prujezdni_profil.y;//výška a šířka minimálního průjezdního profilu v objektu
@@ -1090,7 +1096,7 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
 		if(pole_pohonu[j]!="")data+=pole_pohonu[j]+".";
 		if(pole_rozteci[j]!=0)
 		{
-		 AnsiString CH=vypis_retezy_s_pouzitelnou_rozteci(pole_rozteci[j],",");
+		 AnsiString CH=vypis_retezy_s_pouzitelnou_rozteci(pole_rozteci[j],"",",");
 		 if(CH!="")data+=" Použ. řetezy s roztečí [m]:"+CH;
 		}
 		if(pole_pohonu[j]!="")data+=separator;
@@ -1941,7 +1947,7 @@ double Cvektory::vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator)
 	return Form1->ms.MyToDouble(Form1->ms.TrimLeftFromText(item,separator));
 }
 //---------------------------------------------------------------------------
-//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv použiji parametr Rz=-1
+//vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv použiji parametr Rz=-1, pokud není požadován výpis názvu řetězu použiji prázdné uvozovky
 AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator)
 {
 	AnsiString RET="";
@@ -1951,7 +1957,10 @@ AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString sep
 			while(CH!=NULL)
 			{                                 //pokud chci vypsat vše
 				if(m.mod_d(Rz,CH->roztec)==0 || Rz==-1)//zbytek po dělení je nula, tzn. vhodný řetěz s roztečí vhodnou pro požadovaný rozestup nalezen nebo -1 pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv
-				RET+=CH->name+separator+AnsiString(CH->roztec)+total_separator;
+				{
+					if(separator=="")RET+=AnsiString(CH->roztec)+total_separator;//pokud není požadován výpis názvu řetězu
+					else RET+=CH->name+separator+AnsiString(CH->roztec)+total_separator;
+				}
 				CH=CH->dalsi;
 			}
 			CH=NULL;delete CH;
@@ -2066,6 +2075,8 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 					c_ukaz->pozice=ukaz->pozice;
 					c_ukaz->rotace=ukaz->rotace;
 					c_ukaz->mezera=ukaz->mezera;
+					c_ukaz->mezera_jig=ukaz->mezera_jig;
+					c_ukaz->mezera_podvozek=ukaz->mezera_podvozek;
 					if(ukaz->pohon!=NULL)c_ukaz->pohon=ukaz->pohon->n;
 					else c_ukaz->pohon=0;
 					c_ukaz->delka_dopravniku=ukaz->delka_dopravniku;
@@ -2281,6 +2292,8 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 						ukaz->pozice=c_ukaz->pozice;
 						ukaz->rotace=c_ukaz->rotace;
 						ukaz->mezera=c_ukaz->mezera;
+						ukaz->mezera_jig=c_ukaz->mezera_jig;
+						ukaz->mezera_podvozek=c_ukaz->mezera_podvozek;
 						ukaz->pohon=vrat_pohon(c_ukaz->pohon);
 						ukaz->delka_dopravniku=c_ukaz->delka_dopravniku;
 						ukaz->cekat_na_palce=c_ukaz->cekat_na_palce;

@@ -142,6 +142,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	TZF=!DEBUG;//TRIAL_zakazat_funkcionality - nyní nastaveno pro RELEASE
 	if(TZF)scGPSwitch_rezim->Enabled=false;
 
+  //pomocné objekty pro kopírování paremtrů v PO
 	copyObjekt=new Cvektory::TObjekt;
 	copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 
@@ -2896,8 +2897,10 @@ void TForm1::NP()
 		Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
 		//DD
 		Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
-		//DM
+		//MEZERY
 		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+		Form_parametry->scGPNumericEdit_mezera_JIG->Value=pom->mezera_jig;
+		Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value=pom->mezera_podvozek;
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -2926,12 +2929,6 @@ void TForm1::NP()
 		//////////////////////////navrácení dat + volání zobrazení formu
 		if(Form_parametry->ShowModal()==mrOk)
 		{
-//			if(Form_parametry->VID!=-1)  //ověření, zdali skutečně mohu uložit zadaná data
-//			{
-//				if(mrOk==MB("Některý z ukládaných údajů byl zadán chybně, zkuste znovu zadat parametry!"))//lepé přes mrOk
-//				NP();
-//				Form_parametry->scComboBox_rezim->ItemIndex=pm.rezim;
-//			}
 			try
 			{
 				//navrácení hodnot z Form_Parametry, v případě stisku OK
@@ -2953,14 +2950,17 @@ void TForm1::NP()
 				if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
 				pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
 				if(pom->pohon!=NULL && pom->rezim==1)pom->pohon->aRD=pom->RD;//uloží i aktulání rychlost pohonu
-				//DM
+				//MEZERY
 				if(Form_parametry->DMunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
 				pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
+				pom->mezera_jig=Form_parametry->scGPNumericEdit_mezera_JIG->Value/jednotky_vzdalenost;
+				pom->mezera_podvozek=Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value/jednotky_vzdalenost;
 				//ostatni
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-				if(Form_parametry->scComboBox_pohon->ItemIndex!=0){  //pouze pokud je prirazen pohon tak ulozim do nej hodnoty Rx,Rz
-				pom->pohon->Rx=Form_parametry->scGPNumericEdit1_rx->Value;
-				pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value;
+				if(Form_parametry->scComboBox_pohon->ItemIndex!=0)//pouze pokud je prirazen pohon tak ulozim do nej hodnoty Rx,Rz
+				{
+					pom->pohon->Rx=Form_parametry->scGPNumericEdit1_rx->Value;
+					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value;
 				}
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;

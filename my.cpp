@@ -393,8 +393,8 @@ double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double R
 //vrací true pokud nová rozteè (R) ovlivní Rz resp RD
 bool Cmy::kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove)
 {
-		if(fmod(R_puvodni,R_nove))return true;
-		else return false;
+	if(fmod(R_puvodni,R_nove))return true;
+	else return false;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku vozíku
@@ -409,7 +409,7 @@ double Cmy::UDV(double dV,double sV,double rotace)
 //vratí užitnou délku vozíku, parametry bere z PP
 double Cmy::UDV(double rotace)
 {
-	return UDV(F->d.v.PP.delka_voziku,F->d.v.PP.sirka_voziku,rotace);
+	return UDV(F->d.v.PP.delka_voziku,F->d.v.PP.sirka_voziku,rotace);//je to takto v poøádku
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku jigu
@@ -418,6 +418,12 @@ double Cmy::UDJ(double dJ,double sJ,double rotace)
 	//postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
 	if(rotace==0)return dJ;//delka voziku
 	else return sJ;// šíøka vozíku
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí užitnou délku jigu, parametry bere z PP
+double Cmy::UDJ(double rotace)
+{
+	return UDJ(F->d.v.PP.delka_voziku,F->d.v.PP.sirka_voziku,rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
@@ -501,14 +507,20 @@ void Cmy::designButton(TscGPButton *button,TForm *form,short rank,short sum,shor
 //vykreslí danému oknu transparentní (kvùli možnému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad použití: frameForm(Form_parametry,clWebOrange,1);
 void Cmy::frameForm(TForm *form,TColor color,short width)
 {
+	short o=floor(width/2.0);
+	frameRect(TRect(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o),color,width);
+}
+/////////////////////////////////////////////////////////////////////////////
+//nakresli na libovolném místì na monitoru obdélník dle zadaných souøadnic ve formátu TRect, je možné nastavit barvu a šíøku èáry tohoto obdélníku
+void Cmy::frameRect(TRect Rect,TColor color,short width)
+{
 	TCanvas *C=new(TCanvas);
 	C->Handle=GetWindowDC(HWND_DESKTOP);
 	C->Pen->Color=color;
 	C->Pen->Mode=pmCopy;//pmNotXor;
 	C->Pen->Width=width;
 	C->Brush->Style=bsClear;
-	short o=floor(width/2.0);
-	C->Rectangle(form->Left-o,form->Top-o,form->Left+form->Width+o,form->Top+form->Height+o);
+	C->Rectangle(Rect);
 }
 /////////////////////////////////////////////////////////////////////////////
 //z rychlosti v m/s vratí èas v milisekundách (proto *1000) potøebný na pøekreslení jednoho pixelu pøi daném zoomu
