@@ -156,8 +156,8 @@ void TForm_definice_zakazek::uloz_Defaulttemp_zakazku()
 {
 	Cvektory::TJig j;
 	//defaultní hodnoty jigu
-	j.sirka=Form1->d.v.PP.sirka_voziku;
-	j.delka=Form1->d.v.PP.delka_voziku;
+	j.sirka=Form1->d.v.PP.sirka_jig;
+	j.delka=Form1->d.v.PP.delka_jig;
 	j.vyska=1;j.ks=1;
 	Form1->d.v.vloz_temp_zakazku
 	(

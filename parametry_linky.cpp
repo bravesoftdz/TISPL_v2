@@ -139,7 +139,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			//scGPButton_obecne->Caption="   Takt time";
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
-			rHTMLLabel_sirka->Visible=true;
+			rHTMLLabel_sirka_jig->Visible=true;
 		 //	rEditNum_sirkavoziku->Visible=true;
 
 			rStringGridEd_tab_dopravniky->Visible=true;
@@ -156,7 +156,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scGPButton_vozik->ImageIndex=19;
 			scGPButton_pohon->Caption="   Pohon";
 
-			rHTMLLabel_sirka->Visible=false;
+			rHTMLLabel_sirka_jig->Visible=false;
 		 //	rEditNum_sirkavoziku->Visible=false;
 
 			rStringGridEd_tab_dopravniky->Visible=true;
@@ -231,18 +231,16 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //nahrání hodnot
 	 if(Delkaunit == MM)
 	 {
-	 rEditNum_delka_jigu->Value=Form1->d.v.PP.delka_voziku*1000;
-	 rEditNum_sirka_jigu->Value=Form1->d.v.PP.sirka_voziku*1000;
-	 scGPNumericEdit_delka_podvozku->Value=Form1->d.v.PP.delka_podvozku*1000;
+			scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig*1000;
+			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig*1000;
+			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek*1000;
 	 }
 	 else // jsem v Metrech, naètu uložená data (vždy v metrech)
 	 {
-
-	 rEditNum_delka_jigu->Value=Form1->d.v.PP.delka_voziku;
-	 rEditNum_sirka_jigu->Value=Form1->d.v.PP.sirka_voziku;
-	 scGPNumericEdit_delka_podvozku->Value=Form1->d.v.PP.delka_podvozku;
+			scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig;
+			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig;
+			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek;
 	 }
-
 
 
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
@@ -380,12 +378,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Changes_Rz=false;
 		Changes_Rx=false;
 
-		 Ulozit=true;
-		 double delka_jigu;
-		 double sirka_jigu;
-		 double delka_podvozku;
-		 double Takt;
-
+		Ulozit=true;
+		double delka_jig;
+		double sirka_jig;
+		double delka_podvozek;
+		double Takt;
 
 		if(Taktunit==MIN)  Takt=rEditNum_takt->Value*60.0; else Takt=rEditNum_takt->Value;
 	 //	ShowMessage(Takt); ShowMessage(Form1->d.v.PP.TT);
@@ -395,22 +392,22 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		 Changes_TT=true;
 		}
 		//pri zmene delky voziku
-		if(Delkaunit==MM) delka_jigu=rEditNum_delka_jigu->Value/1000.0; else delka_jigu=rEditNum_delka_jigu->Value;
-		if(Form1->ms.MyToDouble(delka_jigu) != Form1->d.v.PP.delka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		if(Delkaunit==MM) delka_jig=scGPNumericEdit_delka_jig->Value/1000.0; else delka_jig=scGPNumericEdit_delka_jig->Value;
+		if(Form1->ms.MyToDouble(delka_jig) != Form1->d.v.PP.delka_jig && Form1->d.v.OBJEKTY->dalsi!=NULL)
 		{
 		 Changes=true;
 		 Changes_PP=true;
 		}
 		//pri zmene sirky voziku
-			if(Delkaunit==MM)  sirka_jigu=rEditNum_sirka_jigu->Value/1000.0; else sirka_jigu=rEditNum_sirka_jigu->Value;
-		if(Form1->ms.MyToDouble(sirka_jigu) != Form1->d.v.PP.sirka_voziku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		if(Delkaunit==MM)  sirka_jig=scGPNumericEdit_sirka_jig->Value/1000.0; else sirka_jig=scGPNumericEdit_sirka_jig->Value;
+		if(Form1->ms.MyToDouble(sirka_jig) != Form1->d.v.PP.sirka_jig && Form1->d.v.OBJEKTY->dalsi!=NULL)
 		{
 		 Changes=true;
 		 Changes_PP=true;
 		}
 		//pri zmene delky podvozku
-		if(Delkaunit==MM)  delka_podvozku=scGPNumericEdit_delka_podvozku->Value/1000.0; else delka_podvozku=scGPNumericEdit_delka_podvozku->Value;
-		if(Form1->ms.MyToDouble(delka_podvozku) != Form1->d.v.PP.delka_podvozku && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		if(Delkaunit==MM)  delka_podvozek=scGPNumericEdit_delka_podvozek->Value/1000.0; else delka_podvozek=scGPNumericEdit_delka_podvozek->Value;
+		if(Form1->ms.MyToDouble(delka_podvozek) != Form1->d.v.PP.delka_podvozek && Form1->d.v.OBJEKTY->dalsi!=NULL)
 		{
 		 Changes=true;
 		 Changes_PP=true;
@@ -753,23 +750,22 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 
 			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
-		 //	if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
-		 //	{
-		 //	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
-		 //	}
-		 //	else
-		 if(Delkaunit==MM)
-		 {
-			F->d.v.PP.delka_voziku=F->ms.MyToDouble(rEditNum_delka_jigu->Value)/1000.0;
-			F->d.v.PP.sirka_voziku=F->ms.MyToDouble(rEditNum_sirka_jigu->Value)/1000.0;
-			F->d.v.PP.delka_podvozku=scGPNumericEdit_delka_podvozku->Value/1000.0;
+			//	if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
+			//	{
+			//	Form1->d.v.PP.delka_voziku=Form1->ms.MyToDouble(rEditNum_delkavoziku->Text);
+			//	}
+			//	else
+			if(Delkaunit==MM)
+			{
+				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value)/1000.0;
+				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value)/1000.0;
+				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value/1000.0;
 			}
 			else  //Metry
 			{
-			F->d.v.PP.delka_voziku=F->ms.MyToDouble(rEditNum_delka_jigu->Value);
-			F->d.v.PP.sirka_voziku=F->ms.MyToDouble(rEditNum_sirka_jigu->Value);
-			F->d.v.PP.delka_podvozku=scGPNumericEdit_delka_podvozku->Value;
-
+				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value);
+				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value);
+				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value;
 			}
 			int typ;
 			if(scGPSwitch->State==scswOff){typ=0;}
@@ -933,20 +929,16 @@ void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rHTMLLabel_delkavozikuClick(TObject *Sender)
 {
-rHTMLLabel_delka_jiguClick(Sender);
+	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::rHTMLLabel_sirkaClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::rHTMLLabel_sirka_jigClick(TObject *Sender)
 {
-
-rHTMLLabel_delka_jiguClick(Sender);
+	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 {
 //
@@ -1129,64 +1121,50 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 	 }
 }
 //---------------------------------------------------------------------------
-
-
-
-
 void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender)
-
 {
-rHTMLLabel_delka_jiguClick(Sender);
+	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jiguClick(TObject *Sender)
-
+void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender)
 {
 	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
 	{
 		Delkaunit=M;
 		//delka - pøepoèítání
 
-		rHTMLLabel_delka_jigu->Caption="délka <font color=#2b579a>[m]</font>";
-		rEditNum_delka_jigu->Value=rEditNum_delka_jigu->Value/1000.0;
+		rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[m]</font>";
+		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value/1000.0;
 
 
-		rHTMLLabel_sirka->Caption="šíøka <font color=#2b579a>[m]</font>";
-		rEditNum_sirka_jigu->Value=rEditNum_sirka_jigu->Value/1000.0;
+		rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[m]</font>";
+		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value/1000.0;
 
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
-		scGPNumericEdit_delka_podvozku->Value=scGPNumericEdit_delka_podvozku->Value/1000.0;
+		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value/1000.0;
 
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 
-		rHTMLLabel_delka_jigu->Caption="délka <font color=#2b579a>[mm]</font>";
-		rEditNum_delka_jigu->Value=rEditNum_delka_jigu->Value*1000.0;
+		rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[mm]</font>";
+		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value*1000.0;
 
 
-		rHTMLLabel_sirka->Caption="šíøka <font color=#2b579a>[mm]</font>";
-		rEditNum_sirka_jigu->Value=rEditNum_sirka_jigu->Value*1000.0;
+		rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[mm]</font>";
+		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value*1000.0;
 
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
-		scGPNumericEdit_delka_podvozku->Value=scGPNumericEdit_delka_podvozku->Value*1000.0;
+		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value*1000.0;
 	}
-
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sender)
-
 {
-rHTMLLabel_delka_jiguClick(Sender);
-
+	rHTMLLabel_delka_jigClick(Sender);
 }
 //---------------------------------------------------------------------------
-
-
-
 void __fastcall TForm_parametry_linky::Button_DELMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
@@ -1194,43 +1172,36 @@ void __fastcall TForm_parametry_linky::Button_DELMouseMove(TObject *Sender, TShi
  //		else  Button_DEL->Enabled=true;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rEditNum_delka_jigu_oldKeyDown(TObject *Sender,
           WORD &Key, TShiftState Shift)
 {
 	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rEditNum_sirka_jigu_OLDKeyDown(TObject *Sender,
 					WORD &Key, TShiftState Shift)
 {
 	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rEditNum_takt_OLDKeyDown(TObject *Sender, WORD &Key,
           TShiftState Shift)
 {
 	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyDown(TObject *Sender,
           WORD &Key, TShiftState Shift)
 {
 	FormKeyDown(Sender,Key,Shift);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyEnter(TObject *Sender)
 
 {
  rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width;
 }
 //---------------------------------------------------------------------------
-
-
 void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
@@ -1241,7 +1212,6 @@ void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftStat
 
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
 //ControlPaint.DrawBorder(e.Graphics, this.panel1.ClientRectangle, Color.DarkBlue, ButtonBorderStyle.Solid);
@@ -1252,11 +1222,9 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 }
 //---------------------------------------------------------------------------
-
 //---------------------------------------------------------------------------
-
-void TForm_parametry_linky::show_min_Rz() {
-
+void TForm_parametry_linky::show_min_Rz()
+{
 // double min_mezera_voziky;
 // double rotace;
 // scGPGlyphButton_hint_Rz->Enabled=true;
@@ -1285,21 +1253,16 @@ void TForm_parametry_linky::show_min_Rz() {
 //
 //	 }
 // }
-
-
-}
-
-void __fastcall TForm_parametry_linky::rEditNum_sirka_jiguChange(TObject *Sender)
-
-{
-show_min_Rz();
 }
 //---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::rEditNum_delka_jiguChange(TObject *Sender)
-
+void __fastcall TForm_parametry_linky::scGPNumericEdit_sirka_jigChange(TObject *Sender)
 {
-show_min_Rz();
+	show_min_Rz();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::scGPNumericEdit_delka_jigChange(TObject *Sender)
+{
+	show_min_Rz();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -36,7 +36,7 @@ __published:	// IDE-managed Components
 	TButton *Vypis_pohony;
 	TrHTMLLabel *rHTMLLabel_eDesigner;
 	TrHTMLLabel *rHTMLLabel_takt;
-	TrHTMLLabel *rHTMLLabel_sirka;
+	TrHTMLLabel *rHTMLLabel_sirka_jig;
 	TscGPButton *scGPButton_obecne;
 	TrHTMLLabel *rHTMLLabel_doporuc_pohony;
 	TscExPanel *scExPanel_doporuc_pohony;
@@ -47,7 +47,7 @@ __published:	// IDE-managed Components
 	TMemo *Memo1;
 	TButton *Button1;
 	TscGPButton *scGPButton_jig;
-	TrHTMLLabel *rHTMLLabel_delka_jigu;
+	TrHTMLLabel *rHTMLLabel_delka_jig;
 	TscGPSwitch *scGPSwitch;
 	TrHTMLLabel *rHTMLLabel3;
 	TrHTMLLabel *rHTMLLabel4;
@@ -57,8 +57,8 @@ __published:	// IDE-managed Components
 	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
 	TscGPNumericEdit *rEditNum_takt;
 	TscGPGlyphButton *scGPGlyphButton_hint_Rz;
-	TscGPNumericEdit *rEditNum_delka_jigu;
-	TscGPNumericEdit *rEditNum_sirka_jigu;
+	TscGPNumericEdit *scGPNumericEdit_delka_jig;
+	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
 	TscGPPanel *PopUPmenu;
 	TscGPPanel *Item_zobrazit_parametry;
 	TscLabel *scLabel_zobrazit_parametry;
@@ -78,11 +78,11 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *GlyphButton_close;
 	TscGPGlyphButton *scGPGlyphButton_ADD;
 	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
-	TrHTMLLabel *rHTMLLabel5;
+	TrHTMLLabel *rHTMLLabel_vyska_jig;
 	TrHTMLLabel *rHTMLLabel_podvozek_zaves;
 	TrHTMLLabel *rHTMLLabel_delka_podvozek;
 	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
-	TscGPNumericEdit *scGPNumericEdit_delka_podvozku;
+	TscGPNumericEdit *scGPNumericEdit_delka_podvozek;
 	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
 	TrMemoEx *rMemoEx_ID;
 	TrMemoEx *rMemoEx_Nazev;
@@ -103,7 +103,7 @@ __published:	// IDE-managed Components
 	void __fastcall scExPanel_doporuc_pohonyClose(TObject *Sender);
 	void __fastcall rEditNum_takt_Change(TObject *Sender);
 	void __fastcall rHTMLLabel_delkavozikuClick(TObject *Sender);
-	void __fastcall rHTMLLabel_sirkaClick(TObject *Sender);
+	void __fastcall rHTMLLabel_sirka_jigClick(TObject *Sender);
 	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
@@ -113,7 +113,7 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender, int Col, int Row,
           bool &CanEdit);
 	void __fastcall rEditNum_delkavozikuClick(TObject *Sender);
-	void __fastcall rHTMLLabel_delka_jiguClick(TObject *Sender);
+	void __fastcall rHTMLLabel_delka_jigClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_vozikuClick(TObject *Sender);
 	void __fastcall Button_DELMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall rEditNum_delka_jigu_oldKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
@@ -124,8 +124,8 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyEnter(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
-	void __fastcall rEditNum_sirka_jiguChange(TObject *Sender);
-	void __fastcall rEditNum_delka_jiguChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_sirka_jigChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_delka_jigChange(TObject *Sender);
 	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
 	void __fastcall rStringGridEd_tab_dopravnikyMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);

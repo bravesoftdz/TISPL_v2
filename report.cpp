@@ -89,15 +89,15 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 //			ukaz=ukaz->dalsi;
 //			}
 
+		 UnicodeString titulek_projektu;
+		 UnicodeString PP_TT=Form1->d.v.PP.TT;
 		 UnicodeString PP_mnozstvi=Form1->d.v.PP.mnozstvi;
 		 UnicodeString dni_rok=Form1->d.v.PP.dni_rok;
 		 UnicodeString hod_den=Form1->d.v.PP.hod_den;
 		 UnicodeString efektivita=Form1->d.v.PP.efektivita;
 		 UnicodeString cas_start=Form1->d.v.PP.cas_start;
-		 UnicodeString delka_voziku=Form1->d.v.PP.delka_voziku;
-		 UnicodeString titulek_projektu;
-		 UnicodeString PP_TT=Form1->d.v.PP.TT;
-		 UnicodeString sirka_voziku=Form1->d.v.PP.sirka_voziku;
+		 UnicodeString delka_voziku=Form1->d.v.PP.delka_jig;
+		 UnicodeString sirka_voziku=Form1->d.v.PP.sirka_jig;
 
 		 try{
 

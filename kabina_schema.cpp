@@ -136,7 +136,7 @@ void TForm_objekt_nahled::ENTIRE()
 {
 	if(pom!=NULL)
 	{                 //zámìrnou zámìnou parametrù získám užitou šíøku
-		double S=F->m.UDJ(F->d.v.PP.sirka_voziku,F->d.v.PP.delka_voziku,pom->rotace);
+		double S=F->m.UDJ(F->d.v.PP.sirka_jig,F->d.v.PP.delka_jig,pom->rotace);
 		double D=pom->delka_dopravniku;
 		if(D>=S)//dle délky objektu a šíøky formuláøe
 			F->Zoom=Width/(Ox+D/F->m2px+Ox);//stanovení velikosti zoomu tak, aby se zobrazil celý objekt, co nejvíce zvìtšený

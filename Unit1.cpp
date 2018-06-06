@@ -338,10 +338,10 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.dni_rok=365;
 			 d.v.PP.TT=120.0;
 			 d.v.PP.efektivita=95;
-			 d.v.PP.delka_voziku=1;
-			 d.v.PP.sirka_voziku=1;
-			 d.v.PP.vyska_voziku=1;
-			 d.v.PP.delka_podvozku=1;
+			 d.v.PP.delka_jig=1;
+			 d.v.PP.sirka_jig=1;
+			 d.v.PP.vyska_jig=1;
+			 d.v.PP.delka_podvozek=1;
 			 d.v.PP.typ_voziku=0;
 
 			 Akce=NIC;Screen->Cursor=crDefault;//změní kurzor na default
@@ -1222,7 +1222,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 { //ShowMessage(Key);
 	funkcni_klavesa=0;
 	int HG=0; if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
-	int PXM=50;int D=Form1->m.round(d.v.PP.delka_voziku*PXM);int S=Form1->m.round(d.v.PP.sirka_voziku*PXM);short Yofset=D;if(S>D)Yofset=S;//pro posun obrazu v technologických procesech
+	int PXM=50;int D=Form1->m.round(d.v.PP.delka_jig*PXM);int S=Form1->m.round(d.v.PP.sirka_jig*PXM);short Yofset=D;if(S>D)Yofset=S;//pro posun obrazu v technologických procesech
 	switch(Key)
 	{
 		//BACKSPACE
@@ -2784,7 +2784,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 //zobrazí paramety jednoho procesu na časových osách
 void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 {
-	double prozatim_delka_voziku=Form1->d.v.PP.delka_voziku;
+	double prozatim_delka_voziku=m.UDV(0);//doplnit rotaci, bylo zde Form1->d.v.PP.delka_jigu;
 	AnsiString rezim="";
 	AnsiString delka="v tuto chvíli neznamá";
 	AnsiString delka_dop=delka;
@@ -3313,10 +3313,10 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			d.v.PP.TT=d.v.File_hlavicka.TT;
 			d.v.PP.efektivita=d.v.File_hlavicka.efektivita;
 			d.v.PP.typ_voziku=d.v.File_hlavicka.typ_vozik;
-			d.v.PP.delka_voziku=d.v.File_hlavicka.delka_jig;
-			d.v.PP.sirka_voziku=d.v.File_hlavicka.sirka_jig;
-			d.v.PP.vyska_voziku=d.v.File_hlavicka.vyska_jig;
-			d.v.PP.delka_podvozku=d.v.File_hlavicka.delka_podvozek;
+			d.v.PP.delka_jig=d.v.File_hlavicka.delka_jig;
+			d.v.PP.sirka_jig=d.v.File_hlavicka.sirka_jig;
+			d.v.PP.vyska_jig=d.v.File_hlavicka.vyska_jig;
+			d.v.PP.delka_podvozek=d.v.File_hlavicka.delka_podvozek;
 			MOD=d.v.File_hlavicka.Mod;
 			switch(MOD)
 			{

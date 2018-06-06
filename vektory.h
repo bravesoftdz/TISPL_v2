@@ -132,10 +132,10 @@ class Cvektory
 			double dni_rok;//počet hodin za den
 			double efektivita;//přepokládaná výrobní efektivina
 			double TT;//pro návrháře
-			double delka_voziku;
-			double sirka_voziku;
-			double vyska_voziku;
-			double delka_podvozku;
+			double delka_jig;
+			double sirka_jig;
+			double vyska_jig;
+			double delka_podvozek;
 			short typ_voziku;//0 - podlahový, 1 - podvěsný
 	};
 	T_parametry_projektu PP;

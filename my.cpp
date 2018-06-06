@@ -402,14 +402,14 @@ double Cmy::UDV(double dV,double sV,double rotace)
 {
 	//postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
 	double DV=UDJ(dV,sV,rotace);
-	if(DV<F->d.v.PP.delka_podvozku)DV=F->d.v.PP.delka_podvozku;
+	if(DV<F->d.v.PP.delka_podvozek)DV=F->d.v.PP.delka_podvozek;
 	return DV;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vratí užitnou délku vozíku, parametry bere z PP
 double Cmy::UDV(double rotace)
 {
-	return UDV(F->d.v.PP.delka_voziku,F->d.v.PP.sirka_voziku,rotace);//je to takto v poøádku
+	return UDV(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,rotace);//je to takto v poøádku
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku jigu
@@ -423,7 +423,7 @@ double Cmy::UDJ(double dJ,double sJ,double rotace)
 //vrátí užitnou délku jigu, parametry bere z PP
 double Cmy::UDJ(double rotace)
 {
-	return UDJ(F->d.v.PP.delka_voziku,F->d.v.PP.sirka_voziku,rotace);
+	return UDJ(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD

@@ -1034,8 +1034,8 @@ void Cvykresli::vykresli_technologicke_procesy(TCanvas *canv)
 	//--
 	//výchozí proměnné
 	int PXM=50;//měřítko pixelů na metr v tomto modu, zároveň však používám jako krok posunu na ose Y (přetížení proměnné)
-	int D=Form1->m.round(v.PP.delka_voziku*PXM);//vozik délka
-	int S=Form1->m.round(v.PP.sirka_voziku*PXM);//vozik šířka
+	int D=Form1->m.round(v.PP.delka_jig*PXM);//vozik délka
+	int S=Form1->m.round(v.PP.sirka_jig*PXM);//vozik šířka
 	unsigned int X=0;//posun po X-ové ose
 	short Yofset=D;if(S>D)Yofset=S;//výška řádku - daného časového úseku, podle šířky vozíku či největší hodnoty šířka/délka
 	unsigned int Y=Yofset;//Posun po Y-oso včetně výchozí pozice
@@ -1751,9 +1751,9 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 {
 	////vychozí geometrické proměnné
 	double DD=O->delka_dopravniku;//délka objektu v metrech
-	double dJ=m.UDJ(v.PP.delka_voziku,v.PP.sirka_voziku,O->rotace);//délka jigu
-	double sJ=m.UDJ(v.PP.sirka_voziku,v.PP.delka_voziku,O->rotace);//šířka jigu a tím pádem i minimální kabiny
-	double dP=v.PP.delka_podvozku;
+	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dP=v.PP.delka_podvozek;
 	double DV=dJ;if(dP>dJ)DV=dP;
 	double M=O->mezera;//mezera
 	double R=0;if(O->pohon!=NULL)R=O->pohon->roztec;//rozteč palců řetězu
@@ -1811,11 +1811,11 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	else RET=vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,dJ,sJ,dP,M,-(M+DV)*ceil(O->pozice)+Poffset);
 
 	////maskování vstupu a výstup, řetězu, pokud budu chtít,
-	//aby byly vidět vstupující a vystupující vozíky musím přesunout před ////jednotlivé pozice/vozíky  nyní nejsou vidět
-	canv->Brush->Color=clWhite;
-	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
-	canv->FillRect(TRect(0,m.L2Py(Y+sJ/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-sJ/2)+Ov));//nalevo
-	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+sJ/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-sJ/2)+Ov));//napravo
+	//aby byly vidět vstupující a vystupující vozíky musím přesunout před "////jednotlivé pozice/vozíky"  ,takto nyní nejsou vidět
+//	canv->Brush->Color=clWhite;
+//	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
+//	canv->FillRect(TRect(0,m.L2Py(Y+sJ/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-sJ/2)+Ov));//nalevo
+//	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+sJ/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-sJ/2)+Ov));//napravo
 
 	return RET;//vrátí index
 }

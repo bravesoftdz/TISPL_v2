@@ -357,9 +357,7 @@ void Cvektory::aktualizace_objektu(short typ)
 					//K
 					O->kapacita=O->CT/PP.TT;
 					//DD
-					double dV=PP.delka_voziku;//delka voziku
-					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*m.UDV(O->rotace)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
 					//RD
 					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 				}
@@ -370,9 +368,7 @@ void Cvektory::aktualizace_objektu(short typ)
 				if(O->rezim!=0)//pro kontinuál a PP
 				{
 					//DD
-					double dV=PP.delka_voziku;//delka voziku
-					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
+					O->delka_dopravniku=O->kapacita*m.UDV(O->rotace)*O->mezera;//ošetřeno i pro stav kdy je stejný počet mezer jako vozíku
 					//RD
 					if(O->rezim==1)O->RD=O->delka_dopravniku/O->CT;//u kontinuálního
 				}
@@ -383,14 +379,12 @@ void Cvektory::aktualizace_objektu(short typ)
 				if(O->rezim!=0)//pro kontinuál a PP
 				{
 					//DD
-					double dV=PP.delka_voziku;//delka voziku
-					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->delka_dopravniku=O->kapacita*dV*O->mezera;//DD
+					O->delka_dopravniku=O->kapacita*m.UDV(O->rotace)*O->mezera;//DD
 					//CT
 					if(O->rezim==1)O->CT=O->delka_dopravniku/O->RD;//pro kontinual
 					else//pro PP
 					{
-						O->kapacita=O->delka_dopravniku/(dV+O->mezera);
+						O->kapacita=O->delka_dopravniku/(m.UDV(O->rotace)+O->mezera);
 					}
 				}
 			}
@@ -400,9 +394,7 @@ void Cvektory::aktualizace_objektu(short typ)
 				if(O->rezim!=0)//pro kontinuál a PP
 				{
 					//K
-					double dV=PP.delka_voziku;//delka voziku
-					if(O->rotace==90)dV=PP.sirka_voziku;//pokud je požadován šířka jigu
-					O->kapacita=O->delka_dopravniku/(dV+O->mezera);//K
+					O->kapacita=O->delka_dopravniku/(m.UDV(O->rotace)+O->mezera);//K
 					//CT
 					O->CT=PP.TT*O->kapacita;
 					//RD
@@ -413,7 +405,7 @@ void Cvektory::aktualizace_objektu(short typ)
 		}
 		//prozatím zde a takto výpočte počet pozic
 		double P=floor(O->kapacita);//celočíselná kapacita
-		double DV=m.UDV(PP.delka_voziku,PP.sirka_voziku,O->rotace);
+		double DV=m.UDV(O->rotace);
 		double DVM=(DV+O->mezera)*(O->kapacita-P);//délka části poslední vozíko-mezery v kabině
 		if(DVM>=DV)P++;//navýší o celý vozík, protože je minimálně celý vozík v kabině
 		else P+=DVM/DV;//navýší o část vozíku, protože je jenom část vozíku v kabině
@@ -459,13 +451,6 @@ double Cvektory::vrat_soucet_delek_vsech_objektu()
 	double SUM=0.0;
 	while (O!=NULL)
 	{
-		if(O->rezim==0 && O->delka_dopravniku==0)//S&G a pokud není zadaná uživatelsky, u tohoto režimu se bere délka nebo šířka vozíku, dle nastaveného
-		{
-			if(O->rotace==0)
-			SUM+=PP.delka_voziku;
-			else SUM+=PP.sirka_voziku;
-		}
-		else//u kontinuálního a pp se uvažuje jako délka přímo délka dopravníku, u S&G jen v případě, že byla délka dopravníku zadána uživatelsky
 		SUM+=O->delka_dopravniku;
 		O=O->dalsi;//posun na další prvek
 	}
@@ -1525,7 +1510,7 @@ void Cvektory::prvni_zakazka_dle_schematu()
 		Z->id=1;Z->typ=1;Z->name="Nová zakázka";Z->barva=clRed;Z->pomer=100;Z->TT=PP.TT;Z->pocet_voziku=WIP(1)+1;Z->serv_vozik_pocet=0;Z->opakov_servis=0;
 		Z->cesta=NULL;
 		Cvektory::TJig j;
-		j.sirka=Form1->d.v.PP.sirka_voziku;j.delka=Form1->d.v.PP.delka_voziku;j.vyska=1;j.ks=1;//defaultní hodnoty jigu
+		j.sirka=F->d.v.PP.sirka_jig;j.delka=F->d.v.PP.delka_jig;j.vyska=F->d.v.PP.vyska_jig;j.ks=1;//defaultní hodnoty jigu
 		Z->jig=j;
 		vloz_zakazku(Z);//vloží hotovou zakázku do spojového seznamu ZAKÁZKY
 	}//jinak přepíše novou cestou (zajištění aktualizace parametrů z objektu) stávající první zakázku
@@ -2003,10 +1988,10 @@ void Cvektory::vytvor_hlavicku_souboru()
 		File_hlavicka.efektivita=PP.efektivita;
 		File_hlavicka.TT=PP.TT;
 		File_hlavicka.typ_vozik=PP.typ_voziku;
-		File_hlavicka.delka_jig=PP.delka_voziku;
-		File_hlavicka.sirka_jig=PP.sirka_voziku;
-		File_hlavicka.vyska_jig=PP.vyska_voziku;
-		File_hlavicka.delka_podvozek=PP.delka_podvozku;
+		File_hlavicka.delka_jig=PP.delka_jig;
+		File_hlavicka.sirka_jig=PP.sirka_jig;
+		File_hlavicka.vyska_jig=PP.vyska_jig;
+		File_hlavicka.delka_podvozek=PP.delka_podvozek;
 		//objektové záležitosti
 		File_hlavicka.pocet_pohonu=POHONY->predchozi->n;
 		File_hlavicka.pocet_objektu=OBJEKTY->predchozi->n;

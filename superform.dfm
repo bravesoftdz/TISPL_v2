@@ -271,6 +271,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Po'#345'ad'#237
         TitleFont.Charset = DEFAULT_CHARSET
@@ -278,8 +279,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         ButtonStyle = sgbDropDownList
@@ -291,6 +294,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         PickList.Strings = (
           '0'
@@ -302,8 +306,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         Alignment = taCenter
@@ -313,6 +319,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'N'#225'zev'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -320,8 +327,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         ButtonStyle = sgbDropDownColor
@@ -336,6 +345,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Barva'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -343,8 +353,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
         FieldName = 'Polozky'
       end
       item
@@ -356,6 +368,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Pom'#283'r'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -363,8 +376,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         ButtonStyle = sgbButton
@@ -375,6 +390,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Jig'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -382,8 +398,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         DataType = sgdNumber
@@ -394,6 +412,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Voz'#237'ky po'#269'et'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -401,8 +420,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         DataType = sgdNumber
@@ -413,6 +434,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Serv.voz po'#269'et'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -420,8 +442,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         DataType = sgdNumber
@@ -432,6 +456,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Opakov'#225'n'#237
         TitleFont.Charset = DEFAULT_CHARSET
@@ -439,8 +464,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         ButtonStyle = sgbButton
@@ -451,6 +478,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'Cesta'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -458,8 +486,10 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end
       item
         DataType = sgdNumber
@@ -470,6 +500,7 @@ object Form_definice_zakazek: TForm_definice_zakazek
         Font.Height = -15
         Font.Name = 'Tahoma'
         Font.Style = []
+        Font.Quality = fqClearType
         ParentFont = False
         TitleCaption = 'TakTime [s]'
         TitleFont.Charset = DEFAULT_CHARSET
@@ -477,10 +508,24 @@ object Form_definice_zakazek: TForm_definice_zakazek
         TitleFont.Height = -13
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        TitleFont.Quality = fqClearType
         TitleParentFont = False
         TitleAlignment = taCenter
+        Width = 90
       end>
     ChangedCellsBkColor = clWhite
+    ColWidths = (
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90
+      90)
     RowHeights = (
       30
       30)

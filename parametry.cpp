@@ -1085,12 +1085,12 @@ void TForm_parametry::input_K()
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 			//	double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
 
-				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
+				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,roztec,Form1->d.v.PP.TT,RD);
 
 
 		 //		if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; } //REVIZE- pøevod je za úèelem následného výpoètu pro K, špatnì proè znovu RD*=60
@@ -1158,12 +1158,12 @@ void TForm_parametry::input_P()
 //				double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
 				double Pozice = scGPNumericEdit_pozice->Value;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
 
-				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
+				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,roztec,Form1->d.v.PP.TT,RD);
 
 //				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }   //REVIZE - K poèítan bez pøevodu, není nutné zde pøevádìt
 		 //		if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
@@ -1210,12 +1210,12 @@ void TForm_parametry::input_CT()
 				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//správnì  - pøevedu do m/s kvùli použití v metodì
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =0;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
 
-				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
+				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,roztec,Form1->d.v.PP.TT,RD);
 
 			 //	if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; } //REVIZE - pøevod k nièemu
 				//if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;} //REVIZE - již se nepoužívá, to samé
@@ -1271,12 +1271,12 @@ void TForm_parametry::input_DD()
 				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =scGPNumericEdit_CT->Value;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
 
-				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
+				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,roztec,Form1->d.v.PP.TT,RD);
 
 			//	if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0; }  //REVIZE - pøevody nejsou nutné
 			//	if (RDunitD == MM) {dopRD /= 1000.0;  RD /= 1000.0;}
@@ -2302,9 +2302,9 @@ void TForm_parametry::INPUT()
 		pm.MJ	= MJ;
 		pm.MP = MP;
 		pm.P = P;
-		pm.dJ = Form1->d.v.PP.delka_voziku; // délka jigu
-		pm.sJ = Form1->d.v.PP.sirka_voziku; // šíøka jigu
-		pm.dP = Form1->d.v.PP.delka_podvozku; // délka podvozku/zavesu
+		pm.dJ = Form1->d.v.PP.delka_jig; // délka jigu
+		pm.sJ = Form1->d.v.PP.sirka_jig; // šíøka jigu
+		pm.dP = Form1->d.v.PP.delka_podvozek; // délka podvozku/zavesu
 		pm.Rotace = rotace;
 		pm.Rz = Rz;
 		pm.Rx = Rx;
@@ -3119,7 +3119,7 @@ double TForm_parametry::Kontrola_mezery()
 				if (P->roztec > 0) // pokud existuje rozteè
 				{
 						//vždy vrátím v metrech  a taky mezeru vždy pøedávám v metrech
-						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku, Form1->d.v.PP.sirka_voziku, scComboBox_rotace->ItemIndex,P->roztec,mezera);
+						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera);
 
 						if(DMunit == MM)
 						{
@@ -3140,7 +3140,7 @@ double TForm_parametry::Kontrola_mezery()
 //					  AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(doporuc_mezera)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
 					 //	Form1->FDConnection1->ExecSQL(strSQL);
 
-						if (Form1->ms.MyToDouble(Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_voziku, Form1->d.v.PP.sirka_voziku, scComboBox_rotace->ItemIndex,P->roztec,mezera)) == Form1->ms.MyToDouble(mezera))
+						if (Form1->ms.MyToDouble(Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera)) == Form1->ms.MyToDouble(mezera))
 						{
 							vypis("",false);
 							scGPButton_OK->Enabled = true;
@@ -3201,12 +3201,12 @@ void TForm_parametry::Check_rozmezi_RD()
 				// nutné ošetøení pro období zadávání/psaní
 		{
 				double roztec=0;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
 
-				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,roztec,Form1->d.v.PP.TT,RD);
+				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,roztec,Form1->d.v.PP.TT,RD);
 
 				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0;}
 				if (RDunitD == MM) dopRD /= 1000.0;
@@ -3267,7 +3267,7 @@ void TForm_parametry::Check_rozmezi_RD()
 		if (P != NULL)
 		{
 			scGPNumericEdit1_rx->ReadOnly=false;
-			rx=Form1->m.Rx(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,mezera,roztec);
+			rx=Form1->m.Rx(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,mezera,roztec);
 		}
 		else
 		{
@@ -3286,7 +3286,7 @@ void TForm_parametry::Check_rozmezi_RD()
 		else
 		{
 			scGPNumericEdit1_rx->Value =rx;//M 5. kvìtna 2018 pøesunuto sem - dìlalo níže problémy pokud bylo za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
-			rz = Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,mezera);
+			rz = Form1->m.Rz(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,mezera);
 			//ShowMessage(rz);
 			if(!input_state_Rz)   {  // Rz v tomto pøípadì nebudu plnit daty
 			if(DMunit == MM) scGPNumericEdit_rozestup->Value=rz*1000;
@@ -3318,8 +3318,8 @@ void __fastcall TForm_parametry::scGPNumericEdit1_rxChange(TObject *Sender)
 	if (P != NULL)rx=Form1->m.Rx(pm.dJ,pm.sJ,rotace,mezer,roztec);  // vypoèítám si Rx
 	else rx=0;
 			//Memo1->Lines->Add(rx);
-	double mezera=Form1->m.mezera(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,scGPNumericEdit1_rx->Value,roztec);
-	double rz= Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.delka_voziku,rotace,mezera);
+	double mezera=Form1->m.mezera(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,scGPNumericEdit1_rx->Value,roztec);
+	double rz= Form1->m.Rz(Form1->d.v.PP.delka_jig,Form1->d.v.PP.delka_jig,rotace,mezera);
 
 	if(input_state == NOTHING || scButton_zamek_RD->Enabled==false)
 	{
@@ -3483,8 +3483,8 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				//---------------------------------------------------------------------------------------------------------------------------------//
 				if(scGPNumericEdit_mezera->Value<-0.0000000000000004)   //ROSTA mezera ošetøení viz výše
 				{
-					double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
-					double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_voziku,Form1->d.v.PP.delka_voziku,scComboBox_rotace->ItemIndex);
+					double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
+					double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_jig,Form1->d.v.PP.delka_jig,scComboBox_rotace->ItemIndex);
 					if(scGPNumericEdit_mezera->Value+DV-RDV>=0)
 					{
 						vypis("Mezera je záporná, zkuste rotaci jigu"); VID=23;
@@ -3645,8 +3645,8 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 			 //---------------------------------------------------------------------------------------------------//
 			 if(scGPNumericEdit_mezera->Value<-0.0000000000000004)
 				{
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,scComboBox_rotace->ItemIndex);
-				double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_voziku,Form1->d.v.PP.delka_voziku,scComboBox_rotace->ItemIndex);
+				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
+				double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_jig,Form1->d.v.PP.delka_jig,scComboBox_rotace->ItemIndex);
 				if(scGPNumericEdit_mezera->Value+DV-RDV>=0)
 				{
 				vypis("Mezera je záporná, zkuste rotaci jigu"); VID=41;
