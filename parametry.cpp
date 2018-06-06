@@ -43,6 +43,7 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner)
 		RD_zamek = LOCKED;
 		// povolení/ zakázání nastavení combo rotace, podle nastavení zámku RD a použití pohonu
 	 //	Povol_comboRotace();
+	 input_state_Rz=false; // separátní nastavení pro Rz
 }
 
 //---------------------------------------------------------------------------
@@ -2516,6 +2517,11 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 
 										scComboBox_rotace->Items->Items[0]->Enabled = true;
 										scComboBox_rotace->Items->Items[1]->Enabled = true;
+
+											if(scComboBox_pohon->ItemIndex==0 && 	RD_zamek == UNLOCKED)
+											{
+											set(ROZESTUP, ENABLED, false);
+											} else  set(ROZESTUP, READONLY, false);
 								}
 								else // odemèeno
 								{
@@ -2531,6 +2537,11 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 										scButton_zamek_DD->ImageIndex = 38;
 										DD_zamek = UNLOCKED;
 										set (DELKA,ENABLED,false);
+
+										if(scComboBox_pohon->ItemIndex==0 && 	RD_zamek == UNLOCKED)
+											{
+											set(ROZESTUP, ENABLED, false);
+											} else  set(ROZESTUP, READONLY, false);
 
 									 //	scComboBox_rotace->Items->Items[0]->Enabled = false;
 									//	scComboBox_rotace->Items->Items[1]->Enabled = false;
@@ -3025,6 +3036,10 @@ void TForm_parametry::Pohon_pouzivan()
 					set(DELKA,ENABLED,false);
 					set(MEZERA, ENABLED, false);
 					set(ROZESTUP, READONLY, false);
+					if(scComboBox_pohon->ItemIndex==0 && 	RD_zamek == UNLOCKED)
+					{
+					set(ROZESTUP, ENABLED, false);
+					} else  set(ROZESTUP, READONLY, false);
 					set(ROTACE, ENABLED, false);
 					scGPNumericEdit1_rx->Enabled=true;
 					scButton_zamek_CT->Enabled=true;
@@ -3267,14 +3282,16 @@ void TForm_parametry::Check_rozmezi_RD()
 			scGPNumericEdit_rozestup->Value=obj->pohon->Rz;
 			Memo1->Lines->Add(scGPNumericEdit1_rx->Value);
 			Memo1->Lines->Add(scGPNumericEdit_rozestup->Value);
-		}
+		}    //pohon není používán
 		else
 		{
 			scGPNumericEdit1_rx->Value =rx;//M 5. kvìtna 2018 pøesunuto sem - dìlalo níže problémy pokud bylo za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
 			rz = Form1->m.Rz(Form1->d.v.PP.delka_voziku,Form1->d.v.PP.sirka_voziku,rotace,mezera);
 			//ShowMessage(rz);
+			if(!input_state_Rz)   {  // Rz v tomto pøípadì nebudu plnit daty
 			if(DMunit == MM) scGPNumericEdit_rozestup->Value=rz*1000;
 			else        		 scGPNumericEdit_rozestup->Value=rz;
+			}
 			//scGPNumericEdit1_rx->Value =rx; M 5. kvìtna 2018 pøesunuto výše - dìlalo problémy za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
 		}
 		scGPNumericEdit1_rx->Hint="tj. každý " +AnsiString(rx)+ " palec zachytává.";
@@ -4092,3 +4109,34 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezera_PODVOZEKChange(TObject *
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPNumericEdit_rozestupChange(TObject *Sender)
+{
+ input_state_Rz=true;
+
+ if(input_clicked_edit==Rz_klik)
+ {
+
+			double Rz=0;
+			if (DMunit == MM)
+		{
+			double Rz=0;
+			Rz=scGPNumericEdit_rozestup->Value/1000.0;
+		}
+				 else Rz=scGPNumericEdit_rozestup->Value;
+		if(RDunitT == MIN)
+		{
+				scGPNumericEdit_RD->Value = Form1->m.RD(Rz)*60;
+				} else 	scGPNumericEdit_RD->Value = Form1->m.RD(Rz);
+ }
+
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_parametry::scGPNumericEdit_rozestupClick(TObject *Sender)
+{
+input_clicked_edit=Rz_klik;
+}
+//---------------------------------------------------------------------------
+

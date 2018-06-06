@@ -2967,9 +2967,10 @@ object Form_parametry: TForm_parametry
     ParentBiDiMode = False
     ParentFont = False
     ParentShowHint = False
-    ReadOnly = True
     ShowHint = True
     TabOrder = 29
+    OnChange = scGPNumericEdit_rozestupChange
+    OnClick = scGPNumericEdit_rozestupClick
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_pozice: TscGPNumericEdit

@@ -137,12 +137,14 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPNumericEdit_mezera_JIGChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_mezera_PODVOZEKChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_rozestupChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_rozestupClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,P,mezera,mezera_jig,mezera_podvozek,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
-	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik}; //zjisteni na ktery edit bylo kliknuto
+	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik,Rz_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
 
 	void position();//hlídá a øeší pozici formuláøe,// napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru, pouze pro prvotní zobrazení dle souøadnic kurzoru myši, jinak dle uživatele
@@ -207,6 +209,7 @@ public:		// User declarations
 	short VID;//validation ID
 	double VID_value;
 	void vykresli_vozik(bool na_delku=true);
+	bool input_state_Rz;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry *Form_parametry;
