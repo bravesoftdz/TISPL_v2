@@ -192,27 +192,38 @@ void __fastcall TForm_PL_priority::rStringGridEd_tabFinishCellEditing(TObject *S
 			 }
 		}
 
-		if(Col==3)    //v3
+		if(Col==3)    //v2
 		{
 
 				if(rStringGridEd_tab->BoolCells[Col][Row]) // pokud je checked sloupec 3
 			 {
 				rStringGridEd_tab->BoolCells[Col-1][Row]=false; //zruším checked na pøedchozím sloupci
-				rStringGridEd_tab->BoolCells[Col+1][Row]=false;
-				rStringGridEd_tab->BoolCells[Col+2][Row]=false;
+				rStringGridEd_tab->BoolCells[Col+1][Row]=false;   //zruším checked na následujícím
+				rStringGridEd_tab->BoolCells[Col+2][Row]=false;   //zruším checked na následujícím
 
 			 }
 
 		}
 
-		if(Col==4)    //v4
+		if(Col==4)    //v3
 		{
 
 				if(rStringGridEd_tab->BoolCells[Col][Row]) // pokud je checked sloupec 4
 			 {
-				rStringGridEd_tab->BoolCells[Col-1][Row]=false; //zruším checked na následujícím sloupci
-				rStringGridEd_tab->BoolCells[Col-2][Row]=false;
-				rStringGridEd_tab->BoolCells[Col-3][Row]=false;
+				rStringGridEd_tab->BoolCells[Col+1][Row]=false; //zruším checked na pøedchozím sloupci
+				rStringGridEd_tab->BoolCells[Col-1][Row]=false; //zruším checked na pøedchozím sloupci
+				rStringGridEd_tab->BoolCells[Col-2][Row]=false; //zruším checked na pøedchozím sloupci
+			 }
+
+		}
+			if(Col==5)    //v4
+		{
+
+				if(rStringGridEd_tab->BoolCells[Col][Row]) // pokud je checked sloupec 4
+			 {
+				rStringGridEd_tab->BoolCells[Col-1][Row]=false; //zruším checked na pøedchozím sloupci
+				rStringGridEd_tab->BoolCells[Col-2][Row]=false; //zruším checked na pøedchozím sloupci
+				rStringGridEd_tab->BoolCells[Col-3][Row]=false; //zruším checked na pøedchozím sloupci
 			 }
 
 		}

@@ -1768,10 +1768,4 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 
 
 
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyClick(TObject *Sender)
-
-{
-		rStringGridEd_tab_dopravniky->
-}
-//---------------------------------------------------------------------------
 
