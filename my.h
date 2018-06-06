@@ -59,6 +59,7 @@ class Cmy
 	double UDV(double dV,double sV,double rotace);//vratí užitnou délku vozíku
 	double UDV(double rotace);//vratí užitnou délku vozíku, parametry bere z PP
 	double UDJ(double dJ,double sJ,double rotace);//vrátí užitnou délku jigu
+	double UDJ(double rotace);//vrátí užitnou délku jigu, parametry bere z PP
 	bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace);//vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
 	double prejezd_voziku(double delka, double rychlost_dopravniku);
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);

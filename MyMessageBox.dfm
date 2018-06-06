@@ -279,7 +279,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clLime
-    Options.FocusedColor = 1871359
+    Options.FocusedColor = 33023
     Options.DisabledColor = 33023
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
@@ -287,9 +287,9 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 100
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 33023
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = 33023
-    Options.FrameFocusedColor = 1871359
+    Options.FrameFocusedColor = 33023
     Options.FrameDisabledColor = 33023
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -369,7 +369,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clRed
-    Options.FocusedColor = 1871359
+    Options.FocusedColor = 33023
     Options.DisabledColor = 33023
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
@@ -377,9 +377,9 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 100
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 33023
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = 33023
-    Options.FrameFocusedColor = 1871359
+    Options.FrameFocusedColor = 33023
     Options.FrameDisabledColor = 33023
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -459,7 +459,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = clLime
-    Options.FocusedColor = 1871359
+    Options.FocusedColor = 33023
     Options.DisabledColor = 33023
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
@@ -467,9 +467,9 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 100
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 33023
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = 33023
-    Options.FrameFocusedColor = 1871359
+    Options.FrameFocusedColor = 33023
     Options.FrameDisabledColor = 33023
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
@@ -549,7 +549,7 @@ object myMessageBox: TmyMessageBox
     Options.NormalColor = 33023
     Options.HotColor = 1871359
     Options.PressedColor = 33023
-    Options.FocusedColor = 1871359
+    Options.FocusedColor = 33023
     Options.DisabledColor = 33023
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
@@ -557,9 +557,9 @@ object myMessageBox: TmyMessageBox
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 100
     Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 33023
+    Options.FrameHotColor = 1871359
     Options.FramePressedColor = 33023
-    Options.FrameFocusedColor = 1871359
+    Options.FrameFocusedColor = 33023
     Options.FrameDisabledColor = 33023
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255

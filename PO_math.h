@@ -14,8 +14,11 @@ class TPO_math
 		double K;//kapacita
 		double P;//kapacita
 		double M;//mezera mezi vozíky
-		double dV;//délka vozíku z parametrù linky
-		double sV;//šíøka vozíku z parametrù linky
+		double MJ;//mezera mezi jig
+		double MP;//mezera mezi podvozky
+		double dJ;//délka jigu z parametrù linky
+		double sJ;//šíøka jigu z parametrù linky
+		double dP;//délka jigu z parametrù linky
 		double Rotace;
 		double R;//rozteè palcù aktuálního dopravníku
 		double Rz;//rozestup aktivních palcù v m
@@ -31,12 +34,14 @@ class TPO_math
 		void input_DD();//pøepoèet souvisejících hodnot vyplývajících ze zmìny DD
 		void input_K(bool prepocet_CT=true);//pøepoèet souvisejících hodnot vyplývajících ze zmìny K, pokud je parametr prepocet_CT=false, nebude se pøepoèítávat CT (slouží pro situaci, kdy CT/TT<=K)
 		void input_P(bool prepocet_CT=true); //pøepoèet souvisejících hodnot vyplývajících ze zmìny P
-		void input_M(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny M, pokud je parametr prepocet_K=false, bude se pøepoèítavat DD
+		void input_M(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny kritické vozíkové mezery
+		void input_MJ();//pøepoèet souvisejících hodnot vyplývajících ze zmìny mezery jigu
+		void input_MP();//pøepoèet souvisejících hodnot vyplývajících ze zmìny mezery podvozku
 		double K2P(double K);//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double P2K(double P);//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 	private:
 		Cmy m;
-		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování
+		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování (to se nepoužívá, protože se používá nacti_rx pøímo v PO)
 		double P2K();//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double Pozice();//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double UDV();//vrátí užitnou délku vozíku dle hodnoty rotace
