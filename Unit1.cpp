@@ -2959,7 +2959,7 @@ void TForm1::NP()
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
 				if(Form_parametry->scComboBox_pohon->ItemIndex!=0)//pouze pokud je prirazen pohon tak ulozim do nej hodnoty Rx,Rz
 				{
-					pom->pohon->Rx=Form_parametry->scGPNumericEdit1_rx->Value;
+					pom->pohon->Rx=Form_parametry->scGPNumericEdit_rx->Value;
 					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value;
 				}
 				//CT

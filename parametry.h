@@ -42,7 +42,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_name;
 	TrHTMLLabel *rHTMLLabel_shortname;
 	TrHTMLLabel *rHTMLLabel_cekani;
-	TscGPGlyphButton *scGPGlyphButton_InfoIcon;
 	TrHTMLLabel *rHTMLLabel_stopka;
 	TscGPButton *scGPButton_min_sec;
 	TrHTMLLabel *rHTMLLabel_CT;
@@ -77,7 +76,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_pozice;
 	TscGPNumericEdit *scGPNumericEdit_pozice;
 	TscButton *scButton_K_zamek;
-	TscGPNumericEdit *scGPNumericEdit1_rx;
+	TscGPNumericEdit *scGPNumericEdit_rx;
 	TrHTMLLabel *rHTMLLabel_palec_vzd;
 	TrHTMLLabel *rHTMLLabel_jednotky_vzdalenostpalcu;
 	TrHTMLHint *rHTMLHint1;
@@ -88,6 +87,7 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit_mezera_PODVOZEK;
 	TrHTMLLabel *rHTMLLabel_mezera;
 	TrHTMLLabel *rHTMLLabel_jig_podvozek;
+	TrHTMLLabel *rHTMLLabel_kriticka;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -128,8 +128,8 @@ __published:	// IDE-managed Components
 	void __fastcall scComboBox_rotaceChange(TObject *Sender);
 	void __fastcall scButton_K_zamekClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceEnter(TObject *Sender);
-	void __fastcall scGPNumericEdit1_rxChange(TObject *Sender);
-	void __fastcall scGPNumericEdit1_rxClick(TObject *Sender);
+	void __fastcall scGPNumericEdit_rxChange(TObject *Sender);
+	void __fastcall scGPNumericEdit_rxClick(TObject *Sender);
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_viewClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
@@ -166,7 +166,7 @@ private:	// User declarations
 	void INPUT();
 	void OUTPUT();
 	void packa_RDzamek(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
-	void packa(Tinput_state start,Tinput_state end);//vykreslí packu mezi edity a comby
+	void packa(Tcomponents start,Tcomponents end);//vykreslí packu mezi edity a comby
 	double getM();//vrátí hodnotu mezery z editboxu dle nastavených jednotek mezery mezera pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
 	double getM(double M);//vrátí hodnotu parametru dle nastavených jednotek mezery pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
 	void frameCorrelation(bool default_value=false);//stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do výchozího stavu
@@ -179,8 +179,10 @@ private:	// User declarations
 	void cM(TColor Color){scGPNumericEdit_mezera->Options->FrameNormalColor=Color;}//inline metoda
 	void cMJ(TColor Color){scGPNumericEdit_mezera_JIG->Options->FrameNormalColor=Color;}//inline metoda
 	void cMP(TColor Color){scGPNumericEdit_mezera_PODVOZEK->Options->FrameNormalColor=Color;}//inline metoda
-	void cRx(TColor Color){scGPNumericEdit1_rx->Options->FrameNormalColor=Color;}//inline metoda
-	TPoint getRMComponent(Tinput_state C);//vrátí souøadnice pravého okraje a horního okraje+poloviny výšky komponenty
+	void cRx(TColor Color){scGPNumericEdit_rx->Options->FrameNormalColor=Color;}//inline metoda
+	TPoint getRMComponent(Tcomponents C);//vrátí souøadnice pravého okraje a horního okraje+poloviny výšky komponenty
+	void frameKritickaMezer(TCanvas *C);//obkreslí obrysem kritickou mezeru
+	bool JKM();//vratí true, pokude je mezera_JIG kritická mezera, false pokud je mezera_PODVOZEK kritická mezera
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
