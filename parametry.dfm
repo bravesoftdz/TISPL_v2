@@ -4,7 +4,7 @@ object Form_parametry: TForm_parametry
   BiDiMode = bdLeftToRight
   BorderStyle = bsNone
   Caption = 'Parametry objektu'
-  ClientHeight = 683
+  ClientHeight = 707
   ClientWidth = 400
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
@@ -206,8 +206,8 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_RDClick
   end
   object rHTMLLabel_InfoText: TrHTMLLabel
-    Left = 34
-    Top = 608
+    Left = 35
+    Top = 640
     Width = 491
     Height = 19
     AutoSize = False
@@ -238,8 +238,8 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_mezera_jednotky: TrHTMLLabel
-    Left = 356
-    Top = 537
+    Left = 118
+    Top = 536
     Width = 33
     Height = 21
     Caption = '<font color=#2b579a>[m]</font>'
@@ -253,8 +253,8 @@ object Form_parametry: TForm_parametry
     OnClick = rHTMLLabel_mezera_jednotkyClick
   end
   object rHTMLLabel_rozestup: TrHTMLLabel
-    Left = 7
-    Top = 574
+    Left = 8
+    Top = 606
     Width = 64
     Height = 19
     Caption = 'Rozestup'
@@ -281,8 +281,8 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_palec_vzd: TrHTMLLabel
-    Left = 108
-    Top = 574
+    Left = 109
+    Top = 606
     Width = 183
     Height = 19
     Caption = '[aktivn'#237' palce], vzd'#225'lenost'
@@ -295,8 +295,8 @@ object Form_parametry: TForm_parametry
     ParentFont = False
   end
   object rHTMLLabel_jednotky_vzdalenostpalcu: TrHTMLLabel
-    Left = 356
-    Top = 574
+    Left = 369
+    Top = 606
     Width = 33
     Height = 21
     Caption = '<font color=#2b579a>[m]</font>'
@@ -312,9 +312,23 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_mezera: TrHTMLLabel
     Left = 8
     Top = 537
-    Width = 344
+    Width = 104
     Height = 19
-    Caption = 'Mezera kritick'#225'           jig            podvozek        '
+    Caption = 'Mezera kritick'#225
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel_jig_podvozek: TrHTMLLabel
+    Left = 8
+    Top = 574
+    Width = 157
+    Height = 19
+    Caption = 'Mezera jig a podvozek'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -755,8 +769,8 @@ object Form_parametry: TForm_parametry
     end
   end
   object scGPButton_OK: TscGPButton
-    Left = 101
-    Top = 642
+    Left = 92
+    Top = 666
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -845,8 +859,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 216
-    Top = 642
+    Left = 207
+    Top = 666
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -935,8 +949,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPGlyphButton_InfoIcon: TscGPGlyphButton
-    Left = 0
-    Top = 601
+    Left = 1
+    Top = 633
     Width = 37
     Height = 34
     Align = alCustom
@@ -2107,8 +2121,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPGlyphButton_copy: TscGPGlyphButton
-    Left = 0
-    Top = 649
+    Left = -9
+    Top = 673
     Width = 37
     Height = 34
     Hint = 'Zkop'#237'rovat paremetry objektu'
@@ -2188,8 +2202,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPGlyphButton_paste: TscGPGlyphButton
-    Left = 35
-    Top = 649
+    Left = 26
+    Top = 673
     Width = 37
     Height = 34
     Hint = 'Vlo'#382'it parametry objektu ze schr'#225'nky'
@@ -2526,9 +2540,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_mezera: TscGPNumericEdit
-    Left = 116
-    Top = 525
-    Width = 50
+    Left = 234
+    Top = 530
+    Width = 158
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -2614,12 +2628,13 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Memo1: TMemo
-    Left = 133
-    Top = 601
-    Width = 169
+    Left = 19
+    Top = 673
+    Width = 43
     Height = 35
     Lines.Strings = (
-      'Memo1')
+      'Memo'
+      '1')
     TabOrder = 27
     WantReturns = False
   end
@@ -2887,9 +2902,9 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit_rozestup: TscGPNumericEdit
-    Left = 297
-    Top = 573
-    Width = 66
+    Left = 317
+    Top = 605
+    Width = 52
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -3146,8 +3161,8 @@ object Form_parametry: TForm_parametry
     AllowAllUp = False
   end
   object scGPNumericEdit1_rx: TscGPNumericEdit
-    Left = 75
-    Top = 570
+    Left = 76
+    Top = 602
     Width = 30
     Height = 29
     Options.NormalColor = clWhite
@@ -3233,8 +3248,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Button1: TButton
-    Left = 308
-    Top = 601
+    Left = 11
+    Top = 698
     Width = 75
     Height = 25
     Caption = 'Button1'
@@ -3243,8 +3258,8 @@ object Form_parametry: TForm_parametry
     OnClick = Button1Click
   end
   object scGPCheckBox_zaokrouhlit: TscGPCheckBox
-    Left = 343
-    Top = 658
+    Left = 334
+    Top = 682
     Width = 52
     Height = 25
     Hint = 'zobrazit na t'#345'i desetinn'#225' m'#237'sta'
@@ -3343,9 +3358,9 @@ object Form_parametry: TForm_parametry
     UseFontColorToStyleColor = False
   end
   object scGPNumericEdit_mezera_JIG: TscGPNumericEdit
-    Left = 193
-    Top = 525
-    Width = 50
+    Left = 234
+    Top = 565
+    Width = 75
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -3431,9 +3446,9 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object scGPNumericEdit_mezera_PODVOZEK: TscGPNumericEdit
-    Left = 308
-    Top = 525
-    Width = 50
+    Left = 317
+    Top = 565
+    Width = 75
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -3533,7 +3548,7 @@ object Form_parametry: TForm_parametry
     RightBarColor = clRed
     HintSkipEnter = True
     UseAsGlobalHint = True
-    Left = 32
-    Top = 600
+    Left = 33
+    Top = 632
   end
 end

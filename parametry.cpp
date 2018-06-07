@@ -99,6 +99,10 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 		scGPButton_OK->Enabled = true;
 		scGPButton_OK->Caption = "Uložit";
 		form_zobrazen = true;
+
+		if(Form_parametry_linky->scGPSwitch->State==0)
+		rHTMLLabel_jig_podvozek->Caption="Mezera jig a podvozek";
+		else rHTMLLabel_jig_podvozek->Caption="Mezera jig a závìs";
 		// detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
 
 		// pohon_je_pouzivan  - nastavení zámkù a editboxù dle nastaveného pohonu.
@@ -286,6 +290,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(STOPKA, READONLY);
 						set(ROTACE, HIDE);
 						set(MEZERA, HIDE);
+						set(MEZERA_JIG, HIDE);
+						set(MEZERA_PODVOZEK, HIDE);
 						set(ROZESTUP, HIDE);
 						scGPNumericEdit_kapacita->Value = 1;
 				} break;
@@ -303,6 +309,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(STOPKA, HIDE);
 						set(ROTACE, HIDE);
 						set(MEZERA, HIDE);
+						set(MEZERA_JIG, HIDE);
+						set(MEZERA_PODVOZEK, HIDE);
 						set(ROZESTUP, HIDE);
 						scGPNumericEdit_kapacita->Value = 1;
 				} break;
@@ -319,6 +327,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(STOPKA, READONLY);
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
+						set(MEZERA_JIG, ENABLED);
+						set(MEZERA_PODVOZEK, ENABLED);
 						set(ROZESTUP, READONLY);
 						//hlavièkové komponenty
 						scGPGlyphButton_view->Visible=true;
@@ -338,6 +348,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(STOPKA, HIDE);
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
+						set(MEZERA_JIG, ENABLED);
+						set(MEZERA_PODVOZEK, ENABLED);
 						set(ROZESTUP, READONLY);
 						//hlavièkové komponenty
 						scGPGlyphButton_view->Visible=true;
@@ -357,6 +369,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(STOPKA, ENABLED);
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
+						set(MEZERA_JIG, ENABLED);
+						set(MEZERA_PODVOZEK, ENABLED);
 						set(ROZESTUP, HIDE);
 						//hlavièkové komponenty
 						scGPGlyphButton_view->Visible=true;
@@ -376,6 +390,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(STOPKA, HIDE);
 						set(ROTACE, ENABLED);
 						set(MEZERA, ENABLED);
+						set(MEZERA_JIG, ENABLED);
+						set(MEZERA_PODVOZEK, ENABLED);
 						set(ROZESTUP, HIDE);
 						//hlavièkové komponenty
 						scGPGlyphButton_view->Visible=true;
@@ -415,7 +431,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 {
 	// defaultní hodnoty
-	short O = 40;//vertikální velikost odsazení komponent
+	short O = 39;//vertikální velikost odsazení komponent
 	int L = rHTMLLabel_rezim->Top;//výchozí komponenta pro usazení horní pozice levé komponenty
 	int P = scComboBox_rezim->Top;//výchozí komponenta pro usazení horní pozice prave komponenty
 	int Le=234;//levé umístìní kratších editboxu a comboboxu (od tech.èasu níže)
@@ -851,8 +867,6 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 					rHTMLLabel_mezera->Top = L + 11 * O + offset;
 					rHTMLLabel_mezera_jednotky->Top=rHTMLLabel_mezera->Top;
 					scGPNumericEdit_mezera->Top = P + 11 * O + offset;
-					scGPNumericEdit_mezera_JIG->Top=scGPNumericEdit_mezera->Top;
-					scGPNumericEdit_mezera_PODVOZEK->Top=scGPNumericEdit_mezera->Top;
 			 }
 			 //prozatimscGPNumericEdit_mezera->Left=Le;
 			 //prozatim scGPNumericEdit_mezera->Width=W;
@@ -862,6 +876,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 			 rHTMLLabel_mezera->Visible = true;
 			 scGPNumericEdit_mezera->Visible = true;
 			 scGPNumericEdit_mezera->Enabled = true;
+			 rHTMLLabel_mezera_jednotky->Visible = true;
 			 scGPNumericEdit_mezera->Options->FrameNormalColor = clGray;
 			 scGPNumericEdit_mezera->Options->FrameWidth = 1;
 			 // ty co jsou rozdílné
@@ -883,6 +898,8 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 				case HIDE:
 					rHTMLLabel_mezera->Visible = false;
 					scGPNumericEdit_mezera->Visible = false;
+					rHTMLLabel_mezera_jednotky->Visible = false;
+
 					if (move)offset -= O;
 					break;
 			 }
@@ -900,13 +917,100 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 			 scGPNumericEdit_mezera_PODVOZEK->Visible=scGPNumericEdit_mezera->Visible;
 			 scGPNumericEdit_mezera_PODVOZEK->Enabled=scGPNumericEdit_mezera->Enabled;
 		} break;
+			case MEZERA_JIG:
+		{
+			 ////pozice
+			 if (move)
+			 {
+					rHTMLLabel_jig_podvozek->Top = L + 12 * O + offset;
+					scGPNumericEdit_mezera_JIG->Top = P + 12 * O + offset;
+
+			 }
+			 //prozatimscGPNumericEdit_mezera->Left=Le;
+			 //prozatim scGPNumericEdit_mezera->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_mezera_JIG->Options->ShapeStyle = scgpessRect;
+			 rHTMLLabel_jig_podvozek->Visible = true;
+			 scGPNumericEdit_mezera_JIG->Visible = true;
+			 scGPNumericEdit_mezera_JIG->Enabled = true;
+			 scGPNumericEdit_mezera_JIG->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_mezera_JIG->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_mezera_JIG->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_mezera_JIG->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scGPNumericEdit_mezera_JIG->Enabled = false;
+					break;
+				case READONLY:
+					scGPNumericEdit_mezera_JIG->Options->ShapeStyle = scgpessNone;
+					scGPNumericEdit_mezera_JIG->Enabled = false;
+
+					break;
+				case HIDE:
+					rHTMLLabel_jig_podvozek->Visible = false;
+					scGPNumericEdit_mezera_JIG->Visible = false;
+					if (move)offset -= O;
+					break;
+			 }
+
+		} break;
+				case MEZERA_PODVOZEK: //
+		{
+			 ////pozice
+			 if (move)
+			 {
+					scGPNumericEdit_mezera_PODVOZEK->Top = P + 12 * O + offset;
+					scGPNumericEdit_mezera_PODVOZEK->Left = scGPNumericEdit_mezera_JIG->Left +  scGPNumericEdit_mezera_JIG->Width + 10;
+
+			 }
+			 //prozatimscGPNumericEdit_mezera->Left=Le;
+			 //prozatim scGPNumericEdit_mezera->Width=W;
+			 ////funkèní vlastnosti
+			 // ty co jsou stejné
+			 scGPNumericEdit_mezera_PODVOZEK->Options->ShapeStyle = scgpessRect;
+			 //rHTMLLabel_mezera->Visible = true;
+			 scGPNumericEdit_mezera_PODVOZEK->Visible = true;
+			 scGPNumericEdit_mezera_PODVOZEK->Enabled = true;
+			 scGPNumericEdit_mezera_PODVOZEK->Options->FrameNormalColor = clGray;
+			 scGPNumericEdit_mezera_PODVOZEK->Options->FrameWidth = 1;
+			 // ty co jsou rozdílné
+			 switch (S)
+			 {
+				case HIGHLIGHT:
+					scGPNumericEdit_mezera_PODVOZEK->Options->FrameNormalColor = hl_color;
+					scGPNumericEdit_mezera_PODVOZEK->Options->FrameWidth = hlFrameWidth;
+					break;
+				case ENABLED:
+					break;
+				case DISABLED:
+					scGPNumericEdit_mezera_PODVOZEK->Enabled = false;
+					break;
+				case READONLY:
+					scGPNumericEdit_mezera_PODVOZEK->Options->ShapeStyle = scgpessNone;
+					scGPNumericEdit_mezera_PODVOZEK->Enabled = false;
+					break;
+				case HIDE:
+					scGPNumericEdit_mezera_PODVOZEK->Visible = false;
+
+					if (move)offset -= O;
+					break;
+			 }
+
+		} break;
 		case ROZESTUP: // požadována vs. zjištìná kapacita objektu
 		{
-			 	////pozice
+				////pozice
 			if (move)
 			{
-					rHTMLLabel_rozestup->Top = L + 12 * O + offset;
-					scGPNumericEdit_rozestup->Top = P + 12 * O + offset;
+					rHTMLLabel_rozestup->Top = L + 13 * O + offset;
+					scGPNumericEdit_rozestup->Top = P + 13 * O + offset;
 					scGPNumericEdit1_rx->Top=scGPNumericEdit_rozestup->Top;
 					rHTMLLabel_palec_vzd->Top=rHTMLLabel_rozestup->Top;
 					rHTMLLabel_jednotky_vzdalenostpalcu->Top=rHTMLLabel_palec_vzd->Top;
@@ -978,6 +1082,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_CTChange(TObject *Sender) {
 		if (input_state == NOTHING && input_clicked_edit == CT_klik) {
 
 				input_CT(); // pøepoèet hodnot vyplývajících ze zmìny CT
+
 		}
 }
 //---------------------------------------------------------------------------
@@ -1024,13 +1129,16 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender)
 {
-		if (input_state == NOTHING && input_clicked_edit == RD_klik && scButton_zamek_RD->Enabled)
+			if (input_state == NOTHING && scButton_zamek_RD->Enabled)
 		{
-			if (scComboBox_rezim->ItemIndex==1) // controller pro KK režim
-			{
-				input_RD();
-				Check_rozmezi_RD();
-			}
+				if(input_clicked_edit == RD_klik || input_state_Rz)
+				{
+					if (scComboBox_rezim->ItemIndex==1) // controller pro KK režim
+					{
+						input_RD();
+						Check_rozmezi_RD();
+					}
+				}
 		}
 }
 //---------------------------------------------------------------------------
@@ -1246,6 +1354,8 @@ void TForm_parametry::input_CT()
 
 		if (scComboBox_rezim->ItemIndex == 2)
 		{
+
+           	Nastav_zamky(scComboBox_rezim->ItemIndex, empty_klik_ico, CT_klik, false); // pøi každé zmìnì CT volám nastavení zámkù, kvùli tomu aby když je zadávané CT nižší než TT aby došlo ihned k zobrazení zámku
 						pm.input_CT();
 						OUTPUT();
 		}
@@ -1928,7 +2038,7 @@ void __fastcall TForm_parametry::scButton_zamek_CTClick(TObject *Sender)
 		input_clicked_edit=empty_klik;
 		input_clicked_icon=CT_klik_ico;
 		Nastav_zamky(scComboBox_rezim->ItemIndex, CT_klik_ico, empty_klik, true);
-	 	scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
+		scButton_zamek_CT->SetFocus(); // ošetøení proti zmìnì dat pøi zamèeném zámku
 
 		INPUT();
 		double	K=scGPNumericEdit_kapacita->Value;
@@ -2782,19 +2892,27 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 		{
 				if (E == mezera_klik && scGPNumericEdit_mezera->Value >= 0)
 				{
+
+
 						scButton_zamek_DD->Visible = true;
 						scButton_zamek_DD->Enabled = true;
+					 //	scButton_zamek_DD->ImageIndex = 38;
+					//	DD_zamek=UNLOCKED;
+				 //		scButton_K_zamek->ImageIndex = 37;
+				 //   K_zamek=LOCKED;
 						scButton_K_zamek->Visible = true;
 						if(DD_zamek==LOCKED)
 						{
 					 //	 set(DELKA,DISABLED,false); //nešlo pøes set nastavit
 						 scGPNumericEdit_kapacita->Enabled=true;
 						 scGPNumericEdit_delka_dopravniku->Enabled=false;
+
 						 }
 						else if(K_zamek == LOCKED)
 						{
 					 //	 set(DELKA,ENABLED,false);
 						 scGPNumericEdit_kapacita->Enabled=false;
+						 scButton_K_zamek->ImageIndex = 37;
 						 scGPNumericEdit_delka_dopravniku->Enabled=true;
 						}
 				}
@@ -2860,6 +2978,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 								//set(TIME,ENABLED,false);
 								scGPNumericEdit_CT->Enabled=true;
 
+
 						}
 						else // odemèeno
 						{
@@ -2869,12 +2988,27 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 								scGPNumericEdit_CT->Enabled=false;
 						}
 				}
-
+							//PP režim
 				if (E == CT_klik)
 				{
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
-						scButton_zamek_CT->Visible = false;
+
+						 double CT=0.0;
+						if (CTunit==MIN) {
+								CT=scGPNumericEdit_CT->Value*60.0;
+						} else CT=scGPNumericEdit_CT->Value;
+
+						if(CT < F->d.v.PP.TT) {
+						scButton_zamek_CT->Visible = true;
+						scGPNumericEdit_CT->Enabled=true;
+            scButton_zamek_CT->ImageIndex = 38;
+						}  else
+
+						{
+
+             	scButton_zamek_CT->Visible = false;
+						}
 
 						scGPNumericEdit_delka_dopravniku->Enabled=true;
 						scGPNumericEdit_kapacita->Enabled=true;
@@ -4118,16 +4252,11 @@ void __fastcall TForm_parametry::scGPNumericEdit_rozestupChange(TObject *Sender)
  {
 
 			double Rz=0;
-			if (DMunit == MM)
-		{
-			double Rz=0;
-			Rz=scGPNumericEdit_rozestup->Value/1000.0;
-		}
-				 else Rz=scGPNumericEdit_rozestup->Value;
-		if(RDunitT == MIN)
-		{
-				scGPNumericEdit_RD->Value = Form1->m.RD(Rz)*60;
-				} else 	scGPNumericEdit_RD->Value = Form1->m.RD(Rz);
+			if (DMunit == M) Rz=scGPNumericEdit_rozestup->Value;
+			else Rz=scGPNumericEdit_rozestup->Value/1000.0;
+
+			if(RDunitT == MIN) scGPNumericEdit_RD->Value = Form1->m.RD(Rz)*60;
+		  else 	scGPNumericEdit_RD->Value = Form1->m.RD(Rz);
  }
 
 }
