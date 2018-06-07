@@ -87,6 +87,7 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit_mezera_JIG;
 	TscGPNumericEdit *scGPNumericEdit_mezera_PODVOZEK;
 	TrHTMLLabel *rHTMLLabel_mezera;
+	TrHTMLLabel *rHTMLLabel_jig_podvozek;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -141,7 +142,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_rozestupClick(TObject *Sender);
 
 private:	// User declarations
-	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,ROZESTUP};//název souvisejících komponent
+	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,MEZERA_JIG,MEZERA_PODVOZEK,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
 	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,P,mezera,mezera_jig,mezera_podvozek,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik,Rz_klik}; //zjisteni na ktery edit bylo kliknuto
