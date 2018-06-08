@@ -99,6 +99,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 		scGPButton_OK->Enabled = true;
 		scGPButton_OK->Caption = "Uložit";
 		form_zobrazen = true;
+		pohon_pouzivan = false;
 
 		if(Form_parametry_linky->scGPSwitch->State==0)rHTMLLabel_jig_podvozek->Caption="jig a podvozek";
 		else rHTMLLabel_jig_podvozek->Caption="jig a závìs";
@@ -1083,21 +1084,21 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 
 	 if (input_state == NOTHING)
 	 {    	//vypis("");
-	 		if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&	input_clicked_edit == mezera_klik)
-	 		{
-	 			if (!Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom)) 	vypis("Povolte zmìnu rychlosti pohonu.");  // pokud není pohon používán, dám výpis, jinak výpis nemá smysl - již nelze mìnit rychlost
+			if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == LOCKED &&	input_clicked_edit == mezera_klik)
+			{
+				if (!Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom)) 	vypis("Povolte zmìnu rychlosti pohonu.");  // pokud není pohon používán, dám výpis, jinak výpis nemá smysl - již nelze mìnit rychlost
 
 
-	 		} // není zamèeno - doporuèím mezeru, èekám zdali zadá správnou mezeru
-	 		else
-	 		if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex>0)
-	 		{
+			} // není zamèeno - doporuèím mezeru, èekám zdali zadá správnou mezeru
+			else
+			if (scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex>0)
+			{
 					vypis("");
 					if (Kontrola_mezery() == Form1->ms.MyToDouble(getM()))
 					{
 						 input_M(); // lokální
-	 					 Nacti_rx();
-	 				}
+						 Nacti_rx();
+					}
 			}
 			if(scComboBox_rezim->ItemIndex == 1 && RD_zamek == UNLOCKED && input_clicked_edit == mezera_klik && scComboBox_pohon->ItemIndex==0) input_M();  // pøípad kdy mìním mezeru ale jsem bez pohonu
 	 }
@@ -1407,7 +1408,7 @@ void TForm_parametry::input_M()
 {
 		input_state = mezera;
 		INPUT();
-		 //	ShowMessage("volano");
+		// 	ShowMessage("volano");
 		pm.input_M();
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 		OUTPUT();
@@ -2170,15 +2171,24 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 //				Form1->FDQuery1->Active = True;
 //				scGPNumericEdit_pozice->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
 					scGPNumericEdit_pozice->Value=VID_value;
-			}
-			break;
+			} break;
+
+					case 50:
+			{
+					scGPNumericEdit_mezera_JIG->Value=VID_value;
+			} break;
+
+					case 51:
+			{
+					scGPNumericEdit_mezera_PODVOZEK->Value=VID_value;
+			} break;
 		}
 }
 //---------------------------------------------------------------------------
 // kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
-		INPUT();
+    INPUT();
 		OUTPUT();
 		Pohon_pouzivan();
 		Nacti_rx(); //buï vypoèítá rx nebo v pøípadì používaného pohonu rx a rz naète z dat
@@ -2193,6 +2203,7 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
 				if (obj!=NULL)
 				{
+				pohon_pouzivan=true;
 					//RD
 					double RD=obj->RD;
 					if (RDunitT == MIN)RD *= 60.0;
@@ -2204,6 +2215,7 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 					{
 						scGPNumericEdit_mezera->Value=obj->mezera;
 						scGPNumericEdit_mezera_JIG->Value=obj->mezera_jig;
+				 //		ShowMessage(obj->mezera_jig);
 						scGPNumericEdit_mezera_PODVOZEK->Value=obj->mezera_podvozek;
 						//scGPNumericEdit1_rx->Value=obj->pohon->Rx; patrnì se dopoèítává formou nacti_rx
 					}
@@ -2222,10 +2234,12 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				}
 				else
 				{
+				  pohon_pouzivan=false;
 					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
 					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 		}
+
 		input_clicked_edit=empty_klik; // výbìrem pohonu dochází k volání onchange rotace a to zpùsobí zobrazení pacek, což je nežádoucí, proto pøi zmìnì pohonu vždy nastavím, že jde o prázdný klik
 }
 //---------------------------------------------------------------------------
@@ -2420,16 +2434,18 @@ void TForm_parametry::OUTPUT()
 
 		}
 		/////RYCHLOST DOPRAVNÍKU
-		if (input_state != RD)
+		if(!pohon_pouzivan) // v pøípadì, že v roletce pohonu vyberu pohon, který je již používán  natáhnu data pøi onchange nikoliv tady
 		{
-			//	 Memo1->Lines->Add("RD_UnitT OUTPUT: "+AnsiString(RDunitT));
-			//	 Memo1->Lines->Add("RD OUTPUT: "+AnsiString(pm.RD));
-			//		 RDunitT=S;
-				scGPNumericEdit_RD->Value = pm.RD;
-				if (RDunitT == MIN) scGPNumericEdit_RD->Value *= 60.0;
-				if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
-				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=3;
-
+				if (input_state != RD)
+				{
+					//	 Memo1->Lines->Add("RD_UnitT OUTPUT: "+AnsiString(RDunitT));
+					//	 Memo1->Lines->Add("RD OUTPUT: "+AnsiString(pm.RD));
+					//		 RDunitT=S;
+						scGPNumericEdit_RD->Value = pm.RD;
+						if (RDunitT == MIN) scGPNumericEdit_RD->Value *= 60.0;
+						if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
+						if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=3;
+				}
 		}
 		/////DÉLKA OBJEKTU
 		if (input_state != DD)
@@ -2453,27 +2469,30 @@ void TForm_parametry::OUTPUT()
 		}
 		/////MEZERY
 		//mezera mezi vozíky, kritická mezera
-		if(input_state != mezera)
+		if(!pohon_pouzivan) // v pøípadì, že v roletce pohonu vyberu pohon, který je již používán  natáhnu data pøi onchange nikoliv tady
 		{
-				scGPNumericEdit_mezera->Value = pm.M;
-				if (DMunit == MM)scGPNumericEdit_mezera->Value *= 1000.0;
-				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera->Decimal=3;
-		}
-		//mezera mezi jigy
-		if(input_state != mezera_jig)
-		{
-			scGPNumericEdit_mezera_JIG->Value = pm.MJ;
-			if (DMunit == MM)scGPNumericEdit_mezera_JIG->Value *= 1000.0;
-			if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_JIG->Decimal=3;
-		}
-		//mezera mezi podvozky
-		if(input_state != mezera_podvozek)
-		{
-			scGPNumericEdit_mezera_PODVOZEK->Value = pm.MP;
-			if (DMunit == MM)scGPNumericEdit_mezera_PODVOZEK->Value *= 1000.0;
-			if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_PODVOZEK->Decimal=3;
-		}
-
+				if(input_state != mezera)
+				{
+						scGPNumericEdit_mezera->Value = pm.M;
+						if (DMunit == MM)scGPNumericEdit_mezera->Value *= 1000.0;
+						if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera->Decimal=3;
+				}
+				//mezera mezi jigy
+				if(input_state != mezera_jig)
+				{
+					scGPNumericEdit_mezera_JIG->Value = pm.MJ;
+					if (DMunit == MM)scGPNumericEdit_mezera_JIG->Value *= 1000.0;
+					if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_JIG->Decimal=3;
+				}
+				//mezera mezi podvozky
+				if(input_state != mezera_podvozek)
+				{
+				//ShowMessage("zobraz");
+					scGPNumericEdit_mezera_PODVOZEK->Value = pm.MP;
+					if (DMunit == MM)scGPNumericEdit_mezera_PODVOZEK->Value *= 1000.0;
+					if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_PODVOZEK->Decimal=3;
+				}
+	 }
 		////ZOBRAZENÍ HINTÙ
 		scGPNumericEdit_CT->Hint=scGPNumericEdit_CT->Value;
 		scGPNumericEdit_RD->Hint=scGPNumericEdit_RD->Value;
@@ -2604,7 +2623,7 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 										scComboBox_rotace->Items->Items[0]->Enabled = true;
 										scComboBox_rotace->Items->Items[1]->Enabled = true;
 
-											if(scComboBox_pohon->ItemIndex==0 && 	RD_zamek == UNLOCKED)
+											if(scComboBox_pohon->ItemIndex>=0 && 	RD_zamek == UNLOCKED)
 											{
 											set(ROZESTUP, ENABLED, false);
 											} else  set(ROZESTUP, READONLY, false);
@@ -3222,7 +3241,7 @@ double TForm_parametry::Kontrola_mezery()
 		double mezera=0.0;
 		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
 		else  						mezera=scGPNumericEdit_mezera->Value;
-
+		// 	ShowMessage("volam kontrolu");
 		Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 		if (P != NULL)
 		{
@@ -3242,9 +3261,26 @@ double TForm_parametry::Kontrola_mezery()
 						}
 						// Memo1->Lines->Add(doporuc_mezera);
 						// Memo1->Lines->Add(mezera);
-						vypis("Doporuèená mezera: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
-						VID=28;
-						VID_value=doporuc_mezera;
+						if(JKM())
+						{
+				 //		ShowMessage("krize jig");
+							 //jig má menší mezeru a je kritická vzd.právì tato
+								vypis("Dop. mezera mezi jigy: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+								VID=50;
+								VID_value=doporuc_mezera;
+						}
+						else
+						{
+					 //		ShowMessage("krize podvoz");
+							 //podvozek má menší mezeru a je kritická vzd.právì tato
+								vypis("Dop. mezera mezi podvozky : <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+								VID=51;
+								VID_value=doporuc_mezera;
+						}
+
+					//	vypis("Doporuèená mezera: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+					//	VID=28;
+				 //		VID_value=doporuc_mezera;
 //						AnsiString relation_id=GetCurrentProcessId();
 //						AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
 //					  AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(doporuc_mezera)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
@@ -3438,11 +3474,9 @@ void __fastcall TForm_parametry::scGPNumericEdit_rxChange(TObject *Sender)
 	 	&& input_state==NOTHING
 	 	&& scComboBox_rezim->ItemIndex==1)
 
+		if(input_clicked_edit==Rx_klik) scGPNumericEdit_mezera->Value=mezera; // pøi zmìnì Rx vrátím dopoèítanou mezeru
 
-	 	if(input_clicked_edit==Rx)scGPNumericEdit_mezera->Value=mezera; // pøi zmìnì Rx vrátím dopoèítanou mezeru
-	 	scGPNumericEdit_rozestup->Value=rz;
-	 	//ShowMessage("z rx"+AnsiString(rz));
-	 //	ShowMessage("rx");
+		scGPNumericEdit_rozestup->Value=rz;
 		if(scButton_zamek_RD->Enabled)	input_M();
 	}
 }
@@ -4216,6 +4250,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezera_JIGChange(TObject *Sende
 		INPUT();
 		pm.input_MJ();//zavolání výpoèetního modelu
 		OUTPUT();
+		Kontrola_mezery();
 		input_state = NOTHING;
 	}
 }
@@ -4228,6 +4263,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezera_PODVOZEKChange(TObject *
 		INPUT();
 		pm.input_MP();//zavolání výpoèetního modelu
 		OUTPUT();
+		Kontrola_mezery();
 		input_state = NOTHING;
 	}
 }
