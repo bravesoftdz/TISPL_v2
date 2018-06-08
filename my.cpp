@@ -342,6 +342,13 @@ double Cmy::mezera(double rotace,double Rz)
 	return Rz-UDV(rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
+//vrátí
+double Cmy::minM(double RD1,double RD2,double R2)
+{
+//	 double maxTcek=0.0;
+//	 if(RD2>=RD1)maxTcek=M
+}
+/////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
 double Cmy::Rz(double dV,double sV,double rotace,double M)
 {

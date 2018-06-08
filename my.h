@@ -48,6 +48,7 @@ class Cmy
 	double mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera=0);//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku
 	double mezera(double dV,double sV,double rotace,double Rx,double R);//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace
 	double mezera(double rotace,double Rz);//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace)
+	double minM(double RD1,double RD2,double R2);//rozpracovano
 	double Rz(double dV,double sV,double rotace,double M);//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
 	double Rz(double RD);//vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k RD (a resp. TT)
 	double Rz(double Rx,double R);//vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k Rx a R

@@ -4,12 +4,11 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
-USEFORM("poznamky.cpp", Form_poznamky);
-USEFORM("report.cpp", Form_report);
 USEFORM("popUP_menu.cpp", PopUPmenu);
-USEFORM("parametry.cpp", Form_parametry);
-USEFORM("parametry_linky.cpp", Form_parametry_linky);
+USEFORM("poznamky.cpp", Form_poznamky);
 USEFORM("pl_priority.cpp", Form_PL_priority);
+USEFORM("parametry_linky.cpp", Form_parametry_linky);
+USEFORM("report.cpp", Form_report);
 USEFORM("uvod.cpp", Form_uvod);
 USEFORM("Unit1.cpp", Form1);
 USEFORM("superform.cpp", Form_definice_zakazek);
@@ -17,8 +16,9 @@ USEFORM("eDesigner.cpp", Form_eDesigner);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("casovaOsa_info.cpp", Form_osa_info);
 USEFORM("cesty.cpp", Form_cesty);
-USEFORM("MyMessageBox.cpp", myMessageBox);
 USEFORM("kabina_schema.cpp", Form_objekt_nahled);
+USEFORM("MyMessageBox.cpp", myMessageBox);
+USEFORM("parametry.cpp", Form_parametry);
 USEFORM("kalendar.cpp", Form_kalendar);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)

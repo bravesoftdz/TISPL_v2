@@ -223,6 +223,10 @@
             <DependentOn>parametry_linky.h</DependentOn>
             <BuildOrder>17</BuildOrder>
         </CppCompile>
+        <CppCompile Include="PL_math.cpp">
+            <DependentOn>PL_math.h</DependentOn>
+            <BuildOrder>28</BuildOrder>
+        </CppCompile>
         <CppCompile Include="pl_priority.cpp">
             <Form>Form_PL_priority</Form>
             <FormType>dfm</FormType>
@@ -284,12 +288,11 @@
             <DependentOn>vykresli.h</DependentOn>
             <BuildOrder>12</BuildOrder>
         </CppCompile>
-        <FormResources Include="poznamky.dfm"/>
-        <FormResources Include="report.dfm"/>
         <FormResources Include="popUP_menu.dfm"/>
-        <FormResources Include="parametry.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
+        <FormResources Include="poznamky.dfm"/>
         <FormResources Include="pl_priority.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
+        <FormResources Include="report.dfm"/>
         <FormResources Include="uvod.dfm"/>
         <FormResources Include="Unit1.dfm"/>
         <FormResources Include="superform.dfm"/>
@@ -297,8 +300,9 @@
         <FormResources Include="jig.dfm"/>
         <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="cesty.dfm"/>
-        <FormResources Include="MyMessageBox.dfm"/>
         <FormResources Include="kabina_schema.dfm"/>
+        <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="parametry.dfm"/>
         <FormResources Include="kalendar.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

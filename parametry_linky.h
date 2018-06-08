@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #ifndef parametry_linkyH
 #define parametry_linkyH
 //---------------------------------------------------------------------------
@@ -20,6 +19,7 @@
 #include "scModernControls.hpp"
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
+#include "PL_math.h"
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
@@ -153,9 +153,8 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikySetEditText(TObject *Sender, int ACol,
           int ARow, const UnicodeString Value);
 
-
 private:	// User declarations
-
+	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	void pasiveColor();//nastaví všechny položky pop-up na pasivní resp. default barvu
 	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
@@ -168,7 +167,8 @@ private:	// User declarations
 	void pozice_scGPGlyphButton_hint();
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
-public:		// User declarations
+
+	public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 
 	bool data_nalezena;
