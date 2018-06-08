@@ -65,7 +65,7 @@ class Cvykresli
 	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajišuje samotné vykreslení palce, parametr NEW rozlišuje novı palec a palace starı ji ke smazání (to slouí pro simulaci), poslední parametr znaèí, zda palec oznaèit jako aktivní
 	void rotace_textu(TCanvas *canv, long rotace);//úhel rotace je desetinách stupnì
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
-	void set_color(TCanvas *canv, double time);
+	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);
 	void drawRectText(TCanvas *canv,TRect Rect, UnicodeString Text);
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno

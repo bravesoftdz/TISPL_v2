@@ -165,9 +165,12 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 
 //		if(Form1->zobrazit_barvy_casovych_rezerv)
 //		{
-//			set_color(canv,ukaz->TTo);
-//			unsigned short O=m.round(4*Form1->Zoom);//Okraj nutno zaokrouhlit tady
-//			canv->Rectangle(S.x-O,S.y-O,S.x+W+O,S.y+H+O);
+			TColor errorColor=set_color(canv,ukaz);
+			if(errorColor!=0)
+			{
+			unsigned short O=m.round(6*Form1->Zoom);//Okraj nutno zaokrouhlit tady
+			canv->Rectangle(S.x-O,S.y-O,S.x+W+O,S.y+H+O);
+      }
 //		}
 
 		////obdelník objektu
@@ -202,6 +205,8 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 			canv->Font->Size=11;//tady zajist rozšíření písma
 		}
 		rotace_textu(canv,0);
+
+		//barva
 		canv->Font->Color=(TColor)RGB(254,254,254);//clBlack;//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
 
 		short zAA=1;//zvětšení pro antialising, jinak 1
@@ -1230,17 +1235,24 @@ void Cvykresli::set_pen(TCanvas *canv, TColor color, int width, int style)//PS_E
 		canv->Pen->Handle = ExtCreatePen(pStyle, pWidth, &lBrush, NULL, NULL);
 }
 ////---------------------------------------------------------------------------
-void  Cvykresli::set_color(TCanvas *canv, double time)
+TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 {
-		double taktTime=0;//Form1->PP.TT;//Form1->Edit_takt_time->Text.ToDouble();
-
 		unsigned short i=0;
-		if(time>0)
+		Cvektory::TObjekt *D=O->dalsi;
+		if(O!=NULL && D==NULL)D=v.OBJEKTY->dalsi;//jedná se o poslední objekt a další bude první
+		if(O->pohon!=NULL && D->pohon!=NULL)//pro situaci kdy je pohon přiřazen
 		{
-			if(time>taktTime)i=1;
-			if(time<taktTime)i=6;
-			if(time==taktTime)i=5;
+			if(D->pohon->roztec==0)i=10;//pokud je u dalšího pohon přiřazen, ale není zadaná rozteč, není kompletní a kompetentní info
+			else//je k dispozici
+			{                         //zvažit zda RD či aRD (kvůli PP)
+				if(O->mezera>=m.minM(O->pohon->aRD,D->pohon->aRD,D->pohon->roztec))i=0;//je v pořádku
+				else i=1;//není v pořádku nestíhá se čekání
+      }
 		}
+		else//situace kdy nejsou pohony přiřazeny
+		i=10;//červeně šrafování, není kompletní a kompetentní info
+
+
 	 /*	rgb(255,140,0) - DarkOrange
 		rgb(255,215,0) - Gold (žlutá)
 		rgb(218,112,214) - Orchid (fialová)
@@ -1255,16 +1267,18 @@ void  Cvykresli::set_color(TCanvas *canv, double time)
 		if(m.cele_cislo(Form1->Zoom)==false && i>0)canv->Pen->Style=psSolid;
 		switch(i)
 		{
+			case 0:/*canv->Pen->Color=clWhite;canv->Brush->Color=clWhite*/;break;
 			case 1:canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
 			case 2:canv->Pen->Color=(TColor)RGB(255,140,0);canv->Brush->Color=(TColor)RGB(255,140,0);break;
 			case 3:canv->Pen->Color=(TColor)RGB(255,215,0);canv->Brush->Color=(TColor)RGB(255,215,0);break;
 			case 4:canv->Pen->Color=(TColor)RGB(218,112,214);canv->Brush->Color=(TColor)RGB(218,112,214);break;
 			case 5:canv->Pen->Color=(TColor)RGB(135,206,250);canv->Brush->Color=(TColor)RGB(135,206,250);break;
 			case 6:canv->Pen->Color=(TColor)RGB(152,251,152);canv->Brush->Color=(TColor)RGB(152,251,152);break;
-			//default:canv->Pen->Color=clWhite;canv->Brush->Color=clWhite;break;
-			default:canv->Brush->Style=bsBDiagonal;canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
+			//default:
+			default:canv->Brush->Style=bsDiagCross;canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
 		}
-
+		if(i==0) return 0;
+		else return canv->Pen->Color;
 }
 //---------------------------------------------------------------------------
 //nakreslí editační okno

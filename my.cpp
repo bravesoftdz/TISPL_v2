@@ -309,7 +309,7 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 		return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//metoda vratí minimální možnou mezeru mezi vozíky pokud je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0
+//metoda vratí minimální možnou mezeru mezi vozíky, pokud je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0
 double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera)
 {
 	double DV=UDV(dV,sV,rotace);//užitná délka vozíku
@@ -342,11 +342,14 @@ double Cmy::mezera(double rotace,double Rz)
 	return Rz-UDV(rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí
+//vrátí velikokost minimální mezery tak, aby se
 double Cmy::minM(double RD1,double RD2,double R2)
 {
-//	 double maxTcek=0.0;
-//	 if(RD2>=RD1)maxTcek=M
+	double M=0.0;
+	double maxTcek=cekani_na_palec(0,R2,RD2,3);//R2/RD2-ZOI;//maximální doba èekání na uchycení na palec
+	if(RD2>=RD1)M=maxTcek*RD1;
+	else M=maxTcek/(2*(1/RD1-1/RD2));
+	return M;
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
