@@ -183,6 +183,7 @@ private:	// User declarations
 	TPoint getRMComponent(Tcomponents C);//vrátí souøadnice pravého okraje a horního okraje+poloviny výšky komponenty
 	void frameKritickaMezer(TCanvas *C);//obkreslí obrysem kritickou mezeru
 	bool JKM();//vratí true, pokude je mezera_JIG kritická mezera, false pokud je mezera_PODVOZEK kritická mezera
+	bool pohon_pouzivan;
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 

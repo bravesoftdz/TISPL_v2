@@ -3186,8 +3186,8 @@ object Form_parametry: TForm_parametry
     OnKeyDown = FormKeyDown
   end
   object Button1: TButton
-    Left = 313
-    Top = 619
+    Left = 147
+    Top = 608
     Width = 75
     Height = 25
     Caption = 'Button1'
