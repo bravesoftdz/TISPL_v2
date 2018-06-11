@@ -309,23 +309,37 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 		return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
-//metoda vratí minimální možnou mezeru mezi vozíky, pokud je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0
-double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera)
+//metoda vratí minimální možnou mezeru mezi vozíky, pokud je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0, lze parametrizovat vracený výsledek 0 (implicitnì) - kritická mezera, 1 èi 281 - mezera mezi JIG, 2 èi 282 mezera mezi PODVOZKY
+double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera,unsigned short typ)
 {
-	double DV=UDV(dV,sV,rotace);//užitná délka vozíku
+	//požadovaná hodnota
+	double DV=UDV(dV,sV,rotace);//kritická mezera
+	double RET=0.0;
 
 	if(roztec!=0)
 	{
 		double min_mezera=ceil(DV/roztec)*roztec-DV;//vrátí minimální možnou mezi vozíky, nepokrácené: ceil((vozik/2+vozik/2)/roztec]*roztec-vozik
 		if(mezera==0)
 		{
-			return min_mezera;
+			RET=min_mezera;
 		}
-		else
+		if(mezera!=0)//pokud by bylo nula, tak by vrátilo hodnotu min_mezera
 		{
-			if(min_mezera>=mezera || mezera<0)return min_mezera;//pokud je minimální možná mezera menší než nebo stejná jak zadaná, pøípadnì chybnì zadaná v podobì záporného èísla tak vrátí minimální možnou resp. zadanou v pøípadì ==
-			else {return min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratí nejbližší možnou mezeru mezi vozíky
+			if(min_mezera>=mezera || mezera<0)RET=min_mezera;//pokud je minimální možná mezera menší než nebo stejná jak zadaná, pøípadnì chybnì zadaná v podobì záporného èísla tak vrátí minimální možnou resp. zadanou v pøípadì ==
+			else {RET=min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratí nejbližší možnou mezeru mezi vozíky
 		}
+		//pokud je požadovaná mezi jigy èi vozíky
+		bool JMK=false; if(UDV(dV,sV,rotace)==UDJ(dV,sV,rotace))JMK=true;//mezera mezi JIGy je kritická
+		switch(typ)
+		{
+			//jig
+			case 1:
+			case 251: if(JMK)RET=min_mezera;else RET=min_mezera+F->d.v.PP.delka_podvozek-UDJ(dV,sV,rotace);break;
+			//podvozek
+			case 2:
+			case 252:	if(!JMK)RET=min_mezera;else RET=min_mezera+F->d.v.PP.delka_podvozek-UDJ(dV,sV,rotace);break;
+		}
+		return RET;
 	}
 	else return 0;//pokud nebude známa rozteè
 }
@@ -361,7 +375,7 @@ double Cmy::Rz(double dV,double sV,double rotace,double M)
 //vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k RD (a resp. TT)
 double Cmy::Rz(double RD)
 {
-	return RD*Form1->d.v.PP.TT;
+	return RD*F->d.v.PP.TT;
 }
 ////////////////////////
 //vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k Rx a R
