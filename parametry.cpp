@@ -289,6 +289,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(MEZERA_PODVOZEK, HIDE);
 						set(ROZESTUP, HIDE);
 						scGPNumericEdit_kapacita->Value = 1;
+						offset+=40;//workaround kvùli skryté mezeøe
 				} break;
 				case 1: // KONTINUÁLNÍ
 				{
@@ -391,7 +392,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 				} break;
 		}
 
-		// VELIKOST FORMULÁØE
+		// VELIKOST FORMULÁØE                                  //offset mám k dispozici dle z pøedchozích volání set
 		Form_parametry->Height = defaultForm_parametryHeight + offset;
 		// vertikální (popø. horizontální) POZICE TLAÈÍTEK OK,STORNO,COPY,PASTE
 		scGPButton_OK->Top = Form_parametry->Height - scGPButton_OK->Height - 10;
@@ -928,7 +929,6 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 				case READONLY:
 					scGPNumericEdit_mezera_JIG->Options->ShapeStyle = scgpessNone;
 					scGPNumericEdit_mezera_JIG->Enabled = false;
-
 					break;
 				case HIDE:
 					rHTMLLabel_jig_podvozek->Visible = false;
@@ -938,14 +938,13 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 			 }
 
 		} break;
-		case MEZERA_PODVOZEK: //
+		case MEZERA_PODVOZEK:
 		{
 			 ////pozice
 			 if (move)
 			 {
 					scGPNumericEdit_mezera_PODVOZEK->Top = P + 11 * O + offset;
 					scGPNumericEdit_mezera_PODVOZEK->Left = scGPNumericEdit_mezera_JIG->Left +  scGPNumericEdit_mezera_JIG->Width + 10;
-
 			 }
 			 scGPNumericEdit_mezera_PODVOZEK->Left=Le+scGPNumericEdit_mezera_JIG->Width+8;
 			 scGPNumericEdit_mezera_PODVOZEK->Width=scGPNumericEdit_mezera_JIG->Width;
@@ -975,15 +974,15 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 					break;
 				case HIDE:
 					scGPNumericEdit_mezera_PODVOZEK->Visible = false;
-
-					if (move)offset -= O;
+					if (scGPNumericEdit_mezera_JIG->Enabled==false)rHTMLLabel_jig_podvozek->Visible = false;//protože jsou na stejném øádku, tak jen pokud if(scGPNumericEdit_mezera_JIG->Enabled==false)
+					if (move && scGPNumericEdit_mezera_JIG->Enabled==false)offset -= O;//protože jsou na stejném øádku, tak jen pokud if(scGPNumericEdit_mezera_JIG->Enabled==false)
 					break;
 			 }
 
 		} break;
 		case ROZESTUP: // požadována vs. zjištìná kapacita objektu
 		{
-				////pozice
+			////pozice
 			if (move)
 			{
 					rHTMLLabel_rozestup->Top = L + 12 * O + offset;
