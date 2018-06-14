@@ -5,14 +5,14 @@
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny TT
-void TPL_math::input_TT()
-{
-	if(aRD>0 && Rz>0)//Pokud honodty aRD a Rz nejsou k dispozici (jsou buï k dispozici obì nebo žádná - vyplývá z dalších níže uvedených bodù), tak neprobíhá žádný výpoèet, pokud jsou k dispozici, tak je dle zámkù na aRD a Rz volena jedna z následujících variant
-	{
-		if(aRD_locked){Rz=TT*aRD;input_Rz(false);}
-		else aRD=Rz/TT;
-	}
-}
+//void TPL_math::input_TT()
+//{
+//	if(aRD>0 && Rz>0)//Pokud honodty aRD a Rz nejsou k dispozici (jsou buï k dispozici obì nebo žádná - vyplývá z dalších níže uvedených bodù), tak neprobíhá žádný výpoèet, pokud jsou k dispozici, tak je dle zámkù na aRD a Rz volena jedna z následujících variant
+//	{
+//		if(aRD_locked){Rz=TT*aRD;input_Rz(false);}
+//		else aRD=Rz/TT;
+//	}
+//}
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny aRD
 void TPL_math::input_aRD()
