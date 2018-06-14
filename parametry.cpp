@@ -2172,12 +2172,12 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 					scGPNumericEdit_pozice->Value=VID_value;
 			} break;
 
-					case 50:
+					case 281:
 			{
 					scGPNumericEdit_mezera_JIG->Value=VID_value;
 			} break;
 
-					case 51:
+					case 282:
 			{
 					scGPNumericEdit_mezera_PODVOZEK->Value=VID_value;
 			} break;
@@ -3247,7 +3247,13 @@ double TForm_parametry::Kontrola_mezery()
 				if (P->roztec > 0) // pokud existuje rozteè
 				{
 						//vždy vrátím v metrech  a taky mezeru vždy pøedávám v metrech
-						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera);
+
+						double typ=0;
+						if(input_state == mezera_jig     && 	input_clicked_edit == mezera_klik) typ=1;
+						if(input_state == mezera_podvozek && 	input_clicked_edit == mezera_klik) typ=2;
+
+						ShowMessage(typ);
+						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera,typ);
 
 						if(DMunit == MM)
 						{
@@ -3260,22 +3266,38 @@ double TForm_parametry::Kontrola_mezery()
 						}
 						// Memo1->Lines->Add(doporuc_mezera);
 						// Memo1->Lines->Add(mezera);
-						if(JKM())
-						{
-				 //		ShowMessage("krize jig");
-							 //jig má menší mezeru a je kritická vzd.právì tato
+//						if(JKM())
+//						{
+//				 //		ShowMessage("krize jig");
+//							 //jig má menší mezeru a je kritická vzd.právì tato
+//								vypis("Dop. mezera mezi jigy: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+//								VID=281;
+//								VID_value=doporuc_mezera;
+//						}
+//						else
+//						{
+//					 //		ShowMessage("krize podvoz");
+//							 //podvozek má menší mezeru a je kritická vzd.právì tato
+//								vypis("Dop. mezera mezi podvozky : <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+//								VID=282;
+//								VID_value=doporuc_mezera;
+//						}
+
+
+								if(input_state == mezera_jig)
+								{
 								vypis("Dop. mezera mezi jigy: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
-								VID=50;
+								VID=281;
 								VID_value=doporuc_mezera;
-						}
-						else
-						{
-					 //		ShowMessage("krize podvoz");
-							 //podvozek má menší mezeru a je kritická vzd.právì tato
-								vypis("Dop. mezera mezi podvozky : <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
-								VID=51;
+								}
+
+								if(input_state == mezera_podvozek)
+								{
+								vypis("Dop. mezera mezi podvozky: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+								VID=282;
 								VID_value=doporuc_mezera;
-						}
+								}
+
 
 					//	vypis("Doporuèená mezera: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
 					//	VID=28;
