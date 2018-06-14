@@ -2492,16 +2492,37 @@ void TForm_parametry::OUTPUT()
 					if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_PODVOZEK->Decimal=3;
 				}
 	 }
-		////ZOBRAZENÍ HINTÙ
-		scGPNumericEdit_CT->Hint=scGPNumericEdit_CT->Value;
-		scGPNumericEdit_RD->Hint=scGPNumericEdit_RD->Value;
-		scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
-		scGPNumericEdit_kapacita->Hint=scGPNumericEdit_kapacita->Value;
-		//scGPNumericEdit_odchylka->Hint=Odchylka;
-		scGPNumericEdit_mezera->Hint=scGPNumericEdit_mezera->Value;
-		scGPNumericEdit_mezera_JIG->Hint=scGPNumericEdit_mezera_JIG->Value;
-		scGPNumericEdit_mezera_PODVOZEK->Hint=scGPNumericEdit_mezera_PODVOZEK->Value;
-		scGPNumericEdit_pozice->Hint=scGPNumericEdit_pozice->Value;
+
+
+		////ZOBRAZENÍ HINTÙ + odfiltrování velmi malého èísla, které nìkdy naplnilo hint
+		// pokud je èíslo velmi malé do hintu se zobrazí 0
+
+			if(scGPNumericEdit_CT->Value < 0.0000000000000004)	scGPNumericEdit_CT->Hint=0;
+			else 		scGPNumericEdit_CT->Hint=	scGPNumericEdit_CT->Value;
+
+			if(scGPNumericEdit_RD->Value < 0.0000000000000004)	scGPNumericEdit_RD->Hint=0;
+			else 	scGPNumericEdit_RD->Hint=scGPNumericEdit_RD->Value;
+
+			if(scGPNumericEdit_delka_dopravniku->Value < 0.0000000000000004)	scGPNumericEdit_delka_dopravniku->Hint=0;
+			else 	scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
+
+			if(scGPNumericEdit_kapacita->Value < 0.0000000000000004)	scGPNumericEdit_kapacita->Hint=0;
+			else 	scGPNumericEdit_kapacita->Hint=scGPNumericEdit_kapacita->Value;
+
+			if(scGPNumericEdit_odchylka->Value < 0.0000000000000004)	scGPNumericEdit_odchylka->Hint=0;
+			else 	scGPNumericEdit_odchylka->Hint=scGPNumericEdit_odchylka->Value;
+
+			if(scGPNumericEdit_mezera->Value < 0.0000000000000004)	scGPNumericEdit_mezera->Hint=0;
+			else 	scGPNumericEdit_mezera->Hint=scGPNumericEdit_mezera->Value;
+
+			if(scGPNumericEdit_mezera_JIG->Value < 0.0000000000000004)	scGPNumericEdit_mezera_JIG->Hint=0;
+			else 	scGPNumericEdit_mezera_JIG->Hint=scGPNumericEdit_mezera_JIG->Value;
+
+			if(scGPNumericEdit_mezera_PODVOZEK->Value < 0.0000000000000004)	scGPNumericEdit_mezera_PODVOZEK->Hint=0;
+			else 	scGPNumericEdit_mezera_PODVOZEK->Hint=scGPNumericEdit_mezera_PODVOZEK->Value;
+
+			if(scGPNumericEdit_pozice->Value < 0.0000000000000004)	scGPNumericEdit_pozice->Hint=0;
+			else 	scGPNumericEdit_pozice->Hint=scGPNumericEdit_pozice->Value;
 
 		VALIDACE();
 }
@@ -3252,7 +3273,7 @@ double TForm_parametry::Kontrola_mezery()
 						if(input_state == mezera_jig     && 	input_clicked_edit == mezera_klik) typ=1;
 						if(input_state == mezera_podvozek && 	input_clicked_edit == mezera_klik) typ=2;
 
-						ShowMessage(typ);
+					 //	ShowMessage(typ);
 						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera,typ);
 
 						if(DMunit == MM)
@@ -3264,8 +3285,7 @@ double TForm_parametry::Kontrola_mezery()
 						{
 							 jednotky=" m";
 						}
-						// Memo1->Lines->Add(doporuc_mezera);
-						// Memo1->Lines->Add(mezera);
+
 //						if(JKM())
 //						{
 //				 //		ShowMessage("krize jig");
@@ -3282,7 +3302,6 @@ double TForm_parametry::Kontrola_mezery()
 //								VID=282;
 //								VID_value=doporuc_mezera;
 //						}
-
 
 								if(input_state == mezera_jig)
 								{
