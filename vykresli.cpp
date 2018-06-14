@@ -2357,7 +2357,7 @@ void Cvykresli::meritko(TCanvas *canv,long X,long Y)
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí packu jako spojnici mezi komponentami
-void Cvykresli::vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor color,short Width,short OffsetX)
+void Cvykresli::vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor color,short Width,short OffsetX,short OffsetY)
 {
 	//nastavení pera
 	canv->Pen->Width=Width;
