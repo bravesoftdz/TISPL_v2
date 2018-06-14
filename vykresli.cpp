@@ -2364,8 +2364,8 @@ void Cvykresli::vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor
 	canv->Pen->Color=color;
 	//vykreslení spojnice
 	canv->MoveTo(X1,Y1);
-	canv->LineTo(X1+OffsetX,Y1);
-	canv->LineTo(X1+OffsetX,Y2);
+	canv->LineTo(X1+OffsetX,Y1+OffsetY);
+	canv->LineTo(X1+OffsetX,Y2+OffsetY);
 	canv->LineTo(X2,Y2);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
