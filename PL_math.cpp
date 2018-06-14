@@ -9,8 +9,8 @@ void TPL_math::input_TT()
 {
 	if(aRD>0 && Rz>0)//Pokud honodty aRD a Rz nejsou k dispozici (jsou buï k dispozici obì nebo žádná - vyplývá z dalších níže uvedených bodù), tak neprobíhá žádný výpoèet, pokud jsou k dispozici, tak je dle zámkù na aRD a Rz volena jedna z následujících variant
 	{
-		if(aRD_locked)input_Rz(false);
-		else aRD=m.RD(Rz);
+		if(aRD_locked){Rz=TT*aRD;input_Rz(false);}
+		else aRD=Rz/TT;
 	}
 }
 //---------------------------------------------------------------------------
@@ -19,7 +19,7 @@ void TPL_math::input_aRD()
 {
 	if(aRD>0)
 	{
-		Rz=m.Rz(aRD);
+		Rz=aRD*TT;
 		input_Rz(false);
 	}
 }
@@ -31,14 +31,14 @@ void TPL_math::input_R()
 	{
 		if(aRD_locked && aRD>0 || Rx<=0)
 		{
-			Rx=m.Rx(aRD,R);
+			Rx=m.Rx2(aRD*TT,R);
 		}
 		else
 		{
-			if(Rx>0/*&& m.kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove)*/)
+			if(Rx>0/*&& popø.m.kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove)*/)
 			{
-				aRD=m.RD(m.Rz(Rx,R));
 				Rz=m.Rz(Rx,R);
+				aRD=Rz/TT;
 			}
 		}
 	}
@@ -49,7 +49,7 @@ void TPL_math::input_Rz(bool prepocet_aRD)
 {
 	if(Rz>0)
 	{
-		if(prepocet_aRD)aRD=m.RD(Rz);
+		if(prepocet_aRD)aRD=Rz/TT;
 
 		if(R>0 || Rx>0)//pokud alespoò jedna z hodnot je nenulová
 		{
@@ -73,8 +73,8 @@ void TPL_math::ipnut_Rx()
 		}
 		else
 		{
-			aRD=m.RD(m.Rz(Rx,R));
 			Rz=m.Rz(Rx,R);
+			aRD=Rz/TT;
 		}
 	}
 }

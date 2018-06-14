@@ -20,7 +20,7 @@ class TPL_math
 		AnsiString T;//text pro testovací výpis
 
     //plnohodnotná dokumentace k metodám se nachází v aDoc a pDoc
-		void input_TT();//pøepoèet souvisejících hodnot vyplývajících ze zmìny TT
+		//již se nepoužívá void input_TT();//pøepoèet souvisejících hodnot vyplývajících ze zmìny TT
 		void input_aRD();//pøepoèet souvisejících hodnot vyplývajících ze zmìny aRD
 		void input_R();//pøepoèet souvisejících hodnot vyplývajících ze zmìny R
 		void input_Rz(bool prepocet_aRD=true);//pokud je parametr prepocet_aRD=false, nebude se znovu pøepoèítávat aRD (slouží pro situaci, kdy input_aRD volá input_Rz)
