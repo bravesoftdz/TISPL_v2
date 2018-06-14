@@ -3268,7 +3268,6 @@ double TForm_parametry::Kontrola_mezery()
 				if (P->roztec > 0) // pokud existuje rozteè
 				{
 						//vždy vrátím v metrech  a taky mezeru vždy pøedávám v metrech
-
 						double typ=0;
 						if(input_state == mezera_jig     && 	input_clicked_edit == mezera_klik) typ=1;
 						if(input_state == mezera_podvozek && 	input_clicked_edit == mezera_klik) typ=2;
@@ -3286,37 +3285,19 @@ double TForm_parametry::Kontrola_mezery()
 							 jednotky=" m";
 						}
 
-//						if(JKM())
-//						{
-//				 //		ShowMessage("krize jig");
-//							 //jig má menší mezeru a je kritická vzd.právì tato
-//								vypis("Dop. mezera mezi jigy: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
-//								VID=281;
-//								VID_value=doporuc_mezera;
-//						}
-//						else
-//						{
-//					 //		ShowMessage("krize podvoz");
-//							 //podvozek má menší mezeru a je kritická vzd.právì tato
-//								vypis("Dop. mezera mezi podvozky : <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
-//								VID=282;
-//								VID_value=doporuc_mezera;
-//						}
+						if(input_state == mezera_jig)
+						{
+							vypis("Doporuèená mezera mezi jigy: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+							VID=281;
+							VID_value=doporuc_mezera;
+						}
 
-								if(input_state == mezera_jig)
-								{
-								vypis("Dop. mezera mezi jigy: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
-								VID=281;
-								VID_value=doporuc_mezera;
-								}
-
-								if(input_state == mezera_podvozek)
-								{
-								vypis("Dop. mezera mezi podvozky: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
-								VID=282;
-								VID_value=doporuc_mezera;
-								}
-
+						if(input_state == mezera_podvozek)
+						{
+							vypis("Doporuèená mezera mezi podvozky: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+							VID=282;
+							VID_value=doporuc_mezera;
+						}
 
 					//	vypis("Doporuèená mezera: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
 					//	VID=28;
