@@ -18,6 +18,7 @@
 #pragma link "scHtmlControls"
 #pragma link "scModernControls"
 #pragma link "scGPExtControls"
+#pragma link "rHintWindow"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -95,11 +96,15 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 //				rHTMLLabel_sirkaClick(this);
 //				rEditNum_delkavozikuClick(this);
 //		}
-
+	 input_state = NOTHING;   //výchozí nastavení stavu
+	 onchange = NOChange;
+	 Nastav_zamky(empty_klik_ico,empty_klik);
 
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
-		Button_save->SetFocus();
+		//Button_save->SetFocus();
+		rMemoEx_Nazev->SetFocus();
+		zobrazOramovani=false;
 
 		if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
 		else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
@@ -205,6 +210,38 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_pohon->Options->FramePressedColor=Form_parametry_linky->Color;
 
+	 scGPButton_zamek_aRD->Options->NormalColor=clWhite;
+	 scGPButton_zamek_aRD->Options->FocusedColor=clWhite;
+	 scGPButton_zamek_aRD->Options->HotColor=clWhite;
+	 scGPButton_zamek_aRD->Options->PressedColor=clWhite;
+	 scGPButton_zamek_aRD->Options->FrameNormalColor=clWhite;
+	 scGPButton_zamek_aRD->Options->PressedColor=clWhite;
+	 scGPButton_zamek_aRD->Options->FramePressedColor=clWhite;
+
+	 scGPButton_zamek_roztec->Options->NormalColor=clWhite;
+	 scGPButton_zamek_roztec->Options->FocusedColor=clWhite;
+	 scGPButton_zamek_roztec->Options->HotColor=clWhite;
+	 scGPButton_zamek_roztec->Options->PressedColor=clWhite;
+	 scGPButton_zamek_roztec->Options->FrameNormalColor=clWhite;
+	 scGPButton_zamek_roztec->Options->PressedColor=clWhite;
+	 scGPButton_zamek_roztec->Options->FramePressedColor=clWhite;
+
+	 scGPButton_zamek_Rz->Options->NormalColor=clWhite;
+	 scGPButton_zamek_Rz->Options->FocusedColor=clWhite;
+	 scGPButton_zamek_Rz->Options->HotColor=clWhite;
+	 scGPButton_zamek_Rz->Options->PressedColor=clWhite;
+	 scGPButton_zamek_Rz->Options->FrameNormalColor=clWhite;
+	 scGPButton_zamek_Rz->Options->PressedColor=clWhite;
+	 scGPButton_zamek_Rz->Options->FramePressedColor=clWhite;
+
+	 scGPButton_zamek_Rx->Options->NormalColor=clWhite;
+	 scGPButton_zamek_Rx->Options->FocusedColor=clWhite;
+	 scGPButton_zamek_Rx->Options->HotColor=clWhite;
+	 scGPButton_zamek_Rx->Options->PressedColor=clWhite;
+	 scGPButton_zamek_Rx->Options->FrameNormalColor=clWhite;
+	 scGPButton_zamek_Rx->Options->PressedColor=clWhite;
+	 scGPButton_zamek_Rx->Options->FramePressedColor=clWhite;
+
 	 scGPButton_obecne->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_obecne->Options->FocusedColor=Form_parametry_linky->Color;
 	 scGPButton_obecne->Options->HotColor=Form_parametry_linky->Color;
@@ -259,8 +296,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="do";
 	 rStringGridEd_tab_dopravniky->Cells[4][0]="aktuální";
 	 rStringGridEd_tab_dopravniky->Cells[5][0]="";
-	 rStringGridEd_tab_dopravniky->Cells[6][0]="vzdálenost aktivních palcù [m]";
-	 rStringGridEd_tab_dopravniky->Cells[7][0]="poèet palcù";
+	 rStringGridEd_tab_dopravniky->Cells[6][0]="vzdálenost [m]";
+	 rStringGridEd_tab_dopravniky->Cells[7][0]="každý n-tý palec";
 	 //rStringGridEd_tab_dopravniky->Cells[8][0]="pøiøazen";
 
 	 rStringGridEd_hlavicka_tabulky->Cells[0][0]="";
@@ -286,12 +323,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	 rMemoEx_ID->Text="";rMemoEx_Nazev->Text="";rMemoEx1_rychlost->Text="";
 	 rMemoEx2_prirazen->Text="";rMemoEx1_rozestup->Text="";rMemoEx1_roztec->Text="";
+	 rMemoEx1_rozestup_akt_unas->Text="";
 
 	 rMemoEx_ID->Lines->Add("    ID");
 	 rMemoEx_Nazev->Lines->Add("    Název");
 	 rMemoEx1_rychlost->Lines->Add("   Rychlost [m/min]");
-	 rMemoEx1_roztec->Lines->Add(" Rozteè palcù [m]");
-	 rMemoEx1_rozestup->Lines->Add("   Rozestup");
+	 rMemoEx1_roztec->Lines->Add("    Rozteè [m]");
+	 rMemoEx1_rozestup->Lines->Add("   Palce");
+	 rMemoEx1_rozestup_akt_unas->Lines->Add("rozestup aktivní unašeèe");
 	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
 }
 //---------------------------------------------------------------------------
@@ -798,6 +837,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
 	//navýší poèet øádkù
 	rStringGridEd_tab_dopravniky->RowCount++;
+	//zobrazOramovani=false;
 
 	//zaène plnit jednotlivé øádky
 	int i = rStringGridEd_tab_dopravniky->RowCount - 1;//poøadí øádku o jednièku nižší než poèet øádkù
@@ -912,21 +952,12 @@ scGPButton_doporucene->Visible=true;
 
 void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 {
- //	ShowMessage("Se zmìnou taktu linky a následném uložení budou novì pøepoèítány parametry objektù");
+	if(input_state==NOTHING && input_clicked_edit==TT_klik)
+	{
 
-      //Sleep(3000);    - sice poèká, ale do editu nejde nic psát
+	input_TT();
 
-
-	 //	scLabel_TT_change_hint->Visible=true;
-	 //	scLabel_TT_change_hint->Caption="Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.";
-
-	 //	rEditNum_takt->ShowHint=true;
-	 //	rEditNum_takt->Hint="Pozor, pøi zmìnì TT dojde k pøepoèítání parametrù objektù.";
-
-
-
-   // scLabel_TT_change_hint->Visible=false;
-
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_delkavozikuClick(TObject *Sender)
@@ -1031,42 +1062,9 @@ void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender,
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
 {
-		for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-		{
+	if(Col==5) Roletka_roztec(Row);
 
-			if (Col==5 && Row==i)
-			{
-
-					double Rz;
-											 //pokud Rz není prázdné, uložím si jeho hodnotu a použiju k pøedání.
-											 //jinak nastavím Rz na -1 tzn., že do roletky zobrazím všechny rozteèe z katalogu
-					if(!rStringGridEd_tab_dopravniky->Cells[6][i].IsEmpty())
-					{
-					Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
-					}  else Rz=-1;
-
-
-					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,": ",";");
-
-			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
-				TStringList *S=new TStringList;
-				S->Add(data);
-				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
-				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
-				S->DelimitedText=data;
-
-				//tady bych potreboval od indexu 0 až po : vyhodit text a zanechat zbytek po støedník
-				 //	AnsiString data_orez=Form1->d.v.vrat_roztec_retezu_z_item(AnsiString(S->DelimitedText),";");
-				 //	Memo2->Lines->Add(AnsiString(S->DelimitedText));
-			 //	 roletka_data=0; // po vybrání z roletky, zruším zvýraznìní buòky
-
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
-				}
-
-		}
-
-   // pokud je pohon ve stavu používán, vygeneruji roletku která umožní provést zmìnu na nepoužíván
+	 // pokud je pohon ve stavu používán, vygeneruji roletku která umožní provést zmìnu na nepoužíván
 
 		if(Col==8 && rStringGridEd_tab_dopravniky->Cells[8][Row]!="nepoužíván") {
 
@@ -1110,15 +1108,38 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 			 }
 
 		//Pokud je pohon používán, nastavím položky rychlost, rozteè atd jako readonly - nelze je mìnit.
-	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-	 {
-		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="" && rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
-		 {
-			// if(Row==i && Col==6) CanEdit=false;      //nakonec je vždy povoleno editovat
-		 //	 if(Row==i && Col==7) CanEdit=false;
-		 }
+//	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+//	 {
+//		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="" && rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
+//		 {
+//			// if(Row==i && Col==6) CanEdit=false;      //nakonec je vždy povoleno editovat
+//		 //	 if(Row==i && Col==7) CanEdit=false;
+//		 }
+//
+//	 }
 
-	 }
+			for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+			 {
+					 //aRD
+					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==37)CanEdit=false;
+					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==38)CanEdit=true;
+
+					 //R
+					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==37)CanEdit=false;
+					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==38)CanEdit=true;
+
+					 //Rz
+					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==37)CanEdit=false;
+					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==38)CanEdit=true;
+
+					 //Rx
+					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==37)CanEdit=false;
+					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==38)CanEdit=true;
+				 }
+
+
+
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender)
@@ -1558,13 +1579,6 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseLeave(TO
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams(TObject *Sender,
 					int Col, int Row, TFont *AFont, TColor &Background, bool &Highlight)
 {
-//chová se divnì, chce to doladit
-//	Highlight=false;
-// if (Row==rStringGridEd_tab_dopravniky->Row)
-// {
-//		Background=(TColor)RGB(202,217,240);
-//	Highlight=true;
-// }
 
 //nastavení podbarvení bunìk u nepoužívaného pohonu
 //	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
@@ -1575,47 +1589,50 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 //			 if(Row==i && Col==7)	Background=(TColor)RGB(211,211,211);
 //		 }
 
-//Memo2->Lines->Add(roletka_data);
-
-	// }
 
 
- //	if(roletka_data==0 && Col==5) Highlight=false;
+	// øešení níže je OK, ale obarví celý sloupec vèetnì hlavièky tabulky
 
-// 	for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-//		{
+ //	if(Col==4 && scGPButton_zamek_aRD->ImageIndex==37) Background=(TColor)RGB(212,212,212);
+ //	if(Col==4 && scGPButton_zamek_aRD->ImageIndex==38) 	Highlight=false;
+
+
+
+ // vynechá první øádek a obarví sloupec tak jak má - pokud je zamèen zámek, je šedivý sloupec a nastaví se,
+ // že není možné sloupec editovat - to se nastavuje v metodì rStringGridEd_tab_dopravnikyCanEdit
+
+				for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+			 {
+					 //aRD
+					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==37)Background=(TColor)RGB(212,212,212);
+					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==38)Background=(TColor)RGB(255,255,255);
+
+					 //R
+					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==37)Background=(TColor)RGB(212,212,212);
+					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==38)Background=(TColor)RGB(255,255,255);
+
+					 //Rz
+					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==37)Background=(TColor)RGB(212,212,212);
+					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==38)Background=(TColor)RGB(255,255,255);
+
+					 //Rx
+					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==37)Background=(TColor)RGB(212,212,212);
+					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==38)Background=(TColor)RGB(255,255,255);
+
+
+
+
+
+				 }
+
+//					if(Col==5 && Row && zobrazOramovani==true){
 //
-//			if (Col==5 && Row==i)
-//			{
-//					Memo2->Lines->Add(Row);
-//					Memo3->Lines->Add(roletka_data);
-//			if(Row==roletka_data)
-//				Highlight=true;
+//							Highlight=true;
 //
-//			}
 //
-//		}
-
-	//	Memo2->Lines->Add(Row);
-	//	Memo3->Lines->Add(roletka_data);
-//	 if(Row==roletka_data && Col==5)
-//	 {	Highlight=true;
-//
-//		Memo2->Lines->Add(Row);
-//		Memo3->Lines->Add(roletka_data);
-//	 }
-	 //	}
-//
-//	 else
-//	 {
-//			for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-//			 {
-//					// if(Row==i && Col==5)Background=(TColor)RGB(255,255,255);
-//				 }
-//
+//			} else 	Highlight=false;
 
 
-	// }
 
 
 }
@@ -1643,92 +1660,955 @@ void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &
 }
 //---------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(TObject *Sender,
-          int ACol, int ARow, const UnicodeString Value)
+void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 {
-		if (ACol==4)  //aRD  // tohle je dobrý, že v ARow mám pøedanej øádek zrovna, který edituji, èili pak velmi jednoduše to pøedám tam kam potøebuji
+		Button_save->Enabled=true;
+		Button_save->Caption = "Uložit";
+		if (text != "") // zobrazí a vypíše
 		{
+				rHTMLHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
+				//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
 
-				//  pokud má rozteè a je nepoužívaný tak dovolím dopoèítávat resp. navrhovat hodnoty k uložení
-		 if(!rStringGridEd_tab_dopravniky->Cells[5][ARow].IsEmpty() /*&& rStringGridEd_tab_dopravniky->Cells[8][ARow]=="nepoužíván"*/)
+				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+
+				if (red)
+				{
+						Button_save->Enabled=false;
+						rHTMLLabel_InfoText->Font->Color = clRed;
+				}
+				else
+				{
+						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+				}
+				rHTMLLabel_InfoText->Left = 8;
+				rHTMLLabel_InfoText->Top = Form_parametry_linky->Height - 74;
+				rHTMLLabel_InfoText->Caption = text;
+				rHTMLLabel_InfoText->Visible = true;
+		}
+		else // skryje
+		{
+				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
+				rHTMLLabel_InfoText->Visible = false;
+		}
+
+
+}
+
+
+void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
+{
+//
+		 input_clicked_edit=TT_klik;
+		 input_clicked_icon=empty_klik_ico;
+		 Nastav_zamky(empty_klik_ico,TT_klik);
+
+		 //pøekreslení podbarvení sloupcù
+		 rStringGridEd_tab_dopravniky->Visible=false;
+		 rStringGridEd_tab_dopravniky->Visible=true;
+
+		 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
+}
+//---------------------------------------------------------------------------
+
+void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_edit E)
+{
+
+ if(I==empty_klik_ico && E==empty_klik) //výchozí nastavení zámkù - pøi formshowformu
+ {
+
+		scGPButton_zamek_Rz->Visible=true;
+
+		scGPButton_zamek_aRD->ImageIndex=37; // zamknu aRD
+		scGPButton_zamek_Rz->ImageIndex=37; // zamknu Rz - jsou v korelaci
+
+		//odemèeno  Rx a Rz
+		scGPButton_zamek_Rx->ImageIndex=38;
+		scGPButton_zamek_roztec->ImageIndex=38;
+ }
+
+ ///////////////////////////////////////////////
+
+	if(I==empty_klik_ico && E==TT_klik) // nastavení zámkù pøi kliku do TT
+ {
+		//	 ShowMessage("nastav");
+		scGPButton_zamek_aRD->ImageIndex=37; // zamknu aRD
+		scGPButton_zamek_Rz->ImageIndex=38; // odemknu Rz
+
+		//odemèeno  Rx a Rz
+		scGPButton_zamek_Rx->ImageIndex=38;
+		scGPButton_zamek_roztec->ImageIndex=38;
+ }
+
+ ///////////////////////////////////////////////////////////////
+
+ if(I==aRD_klik_ico && E==TT_klik) {  //nastavení zámkù pøi kliku do TT  a zaènu mìnit zámek aRD
+
+
+ 	if(scGPButton_zamek_aRD->ImageIndex==37) //odemèeno
 			{
-				//Doporuèení Rz
-				rStringGridEd_tab_dopravniky->Cells[6][ARow]=F->m.Rz(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0);
+				scGPButton_zamek_aRD->ImageIndex=38; // odemknu aRD
+				scGPButton_zamek_Rz->ImageIndex=37; // zamknu Rz
 
-			//Doporuèení rozteèí
-				double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); //pøedám Rz
-					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
-
-			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
-				TStringList *S=new TStringList;
-				S->Add(data);
-				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
-				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
-				S->DelimitedText=data;
-
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
-	    ////////////////////////////////////////////////////////////////////////////////////////////////////////
-				Memo2->Lines->Clear();
-				Memo2->Lines->Add("vypis - menim obsah roletky R"+AnsiString (ARow));
-			//rStringGridEd_tab_dopravniky->Columns->Items[5]->Font->Color=(TColor)RGB(211,211,211);   //=Background=(TColor)RGB(211,211,211);
-
-				//Doporuèení Rx
-				rStringGridEd_tab_dopravniky->Cells[7][ARow]=F->m.Rx(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]));
-
-				roletka_data=ARow;
-			 }
-		}
-
-		if (ACol==5)  // rozteè R
-
-		{      //v pøípadì, že v roletce vyberu rozteè, dojde k pøepoètu Rx
-				if(!rStringGridEd_tab_dopravniky->Cells[5][ARow].IsEmpty() /*&& rStringGridEd_tab_dopravniky->Cells[8][ARow]=="nepoužíván"*/)
+				 //odemèeno roztec
+				scGPButton_zamek_roztec->ImageIndex=38; //odemèeno
+				scGPButton_zamek_Rx->ImageIndex=38;
+			}
+			else
 			{
+			//odemèeno
+			 scGPButton_zamek_aRD->ImageIndex=37;  //zamknu aRD
+			 scGPButton_zamek_Rz->ImageIndex=38;   //odemknu Rz
 
-				//Doporuèení Rx
-				rStringGridEd_tab_dopravniky->Cells[7][ARow]=F->m.Rx(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]));
+				 //odemceno  roztec   a Rx
+				scGPButton_zamek_roztec->ImageIndex=38;
+				scGPButton_zamek_Rx->ImageIndex=38;
+
+
+			}
+ }
+
+ ///////////////////////////////////////////////////////////////////////
+
+
+	if(I==aRD_klik_ico && E==empty_klik)   //obecné nastavení zámku aRD bez ovlivnìní vstupu TT
+	{
+
+	   ShowMessage("pxco");
+			if(scGPButton_zamek_aRD->ImageIndex==37) //zamèeno
+			{
+				scGPButton_zamek_aRD->ImageIndex=38; // odemknu aRD
+				scGPButton_zamek_Rz->ImageIndex=38; // odemknu Rz - jsou v korelaci
+
+				scGPButton_zamek_roztec->ImageIndex=37; //zamèeno
+				scGPButton_zamek_Rx->ImageIndex=38;      //odemèeno
+			}
+			else
+			{
+			//zamknu
+			 scGPButton_zamek_aRD->ImageIndex=37;
+			 scGPButton_zamek_Rz->ImageIndex=37;
+
+				 //odemknu  roztec   a zamknu Rx
+				scGPButton_zamek_roztec->ImageIndex=38;     //odemèeno
+				scGPButton_zamek_Rx->ImageIndex=37;       //zamèeno
+
+
+			}
+
+	}
+		 // nastavení chování zámku Rx, v pøípadì, že pøedtím došlo ke vstupu do buòky aRD
+
+	//Nastav_zamky(Rx_klik_ico,aRD_klik)
+
+	if(E==aRD_klik) {
+
+					 //Rz není vidìt a lze jej mìnit
+				// scGPButton_zamek_Rz->ImageIndex=38;
+			 //	 scGPButton_zamek_Rz->Visible=false;
+
+	}
+//////////////////////////////////////////////////////////////////
+																				 //	Nastav_zamky(Rx_klik_ico,aRD_klik)
+	if(I==Rx_klik_ico && E==aRD_klik)
+	{
+
+			 if(scGPButton_zamek_Rx->ImageIndex==37)
+			 {
+
+				 scGPButton_zamek_Rx->ImageIndex=38;
+				 scGPButton_zamek_roztec->ImageIndex=37;  //zamknu R
+
+				 //Rz není vidìt a lze jej mìnit
+				 scGPButton_zamek_Rz->ImageIndex=38;
+				// scGPButton_zamek_Rz->Visible=false;
+
+			 } else
+
+			 {
+
+				 scGPButton_zamek_Rx->ImageIndex=37;
+				 scGPButton_zamek_roztec->ImageIndex=38;  //odemknu R
+
+				 //Rz není vidìt a lze jej mìnit
+				 scGPButton_zamek_Rz->ImageIndex=38;
+			 //	 scGPButton_zamek_Rz->Visible=false;
 			 }
 
+
+	}
+
+
+		if(I==R_klik_ico && E==aRD_klik)
+	{
+
+			 if(scGPButton_zamek_roztec->ImageIndex==37)
+			 {
+
+				 scGPButton_zamek_roztec->ImageIndex=38;
+				 scGPButton_zamek_Rx->ImageIndex=37;  //zamknu Rx
+
+				 //Rz není vidìt a lze jej mìnit
+				 scGPButton_zamek_Rz->ImageIndex=38;
+				// scGPButton_zamek_Rz->Visible=false;
+
+			 } else
+
+			 {
+
+				 scGPButton_zamek_Rx->ImageIndex=38;
+				 scGPButton_zamek_roztec->ImageIndex=37;  //odemknu R
+
+				 //Rz není vidìt a lze jej mìnit
+				 scGPButton_zamek_Rz->ImageIndex=38;
+			 //	 scGPButton_zamek_Rz->Visible=false;
+			 }
+
+
+	}
+			 if(I==aRD_klik_ico && E==R_klik)
+			 {
+				 //ShowMessage("ted");
+				if(scGPButton_zamek_aRD->ImageIndex==38)
+				{
+
+						scGPButton_zamek_aRD->ImageIndex=37;
+						scGPButton_zamek_Rz->ImageIndex=37;
+
+						scGPButton_zamek_Rx->ImageIndex=38;
+
+				}   else
+
+				{
+						scGPButton_zamek_aRD->ImageIndex=38;
+						scGPButton_zamek_Rz->ImageIndex=38;
+
+						scGPButton_zamek_Rx->ImageIndex=37;
+
+				}
+
+			 }
+
+//				 if(I==Rz_klik_ico && E==Rz_klik) //asi k nicemu kdyby byl zamek po kliku pryc
+//			 {
+//
+//				if(scGPButton_zamek_Rz->ImageIndex==37)
+//				{
+//						scGPButton_zamek_Rz->ImageIndex=38;
+//
+//						if(scGPButton_zamek_roztec->ImageIndex==37){
+//							 scGPButton_zamek_Rx->ImageIndex=38;
+//						 }
+//						 else
+//						 {
+//							scGPButton_zamek_roztec->ImageIndex=38;
+//							scGPButton_zamek_Rx->ImageIndex=37;
+//						 }
+//
+//
+//				}
+//				else
+//
+//				{
+//					scGPButton_zamek_Rz->ImageIndex=37;
+//
+//          	if(scGPButton_zamek_roztec->ImageIndex==37){
+//							 scGPButton_zamek_Rx->ImageIndex=38;
+//						 }
+//						 else
+//						 {
+//							scGPButton_zamek_roztec->ImageIndex=38;
+//							scGPButton_zamek_Rx->ImageIndex=37;
+//						 }
+//
+//				}
+//
+//			 }
+
+       if(I==R_klik_ico && E==Rx_klik)
+			 {
+
+				if(scGPButton_zamek_roztec->ImageIndex==37)
+				{
+						scGPButton_zamek_roztec->ImageIndex=38;
+
+						scGPButton_zamek_aRD->ImageIndex=37;
+						scGPButton_zamek_Rz->ImageIndex=37;
+
+				}   else
+
+				{
+						scGPButton_zamek_roztec->ImageIndex=37;
+
+						scGPButton_zamek_Rz->ImageIndex=38;
+						scGPButton_zamek_aRD->ImageIndex=38;
+				}
+
+			 }
+
+			//  Nastav_zamky(Rx_klik_ico,Rz_klik);
+			//Nastav_zamky(R_klik_ico,Rz_klik);
+
+			 if(I==Rx_klik_ico && E==Rz_klik)
+			 {
+
+				if(scGPButton_zamek_roztec->ImageIndex==37)
+				{
+						scGPButton_zamek_roztec->ImageIndex=38;
+						scGPButton_zamek_Rx->ImageIndex=37;
+
+
+				}   else
+
+				{
+						scGPButton_zamek_Rx->ImageIndex=38;
+						scGPButton_zamek_roztec->ImageIndex=37;
+
+				}
+
+			 }
+
+			 //-------------------------------------------------------------
+				// if(input_clicked_edit==Rx_klik)  Nastav_zamky(aRD_klik_ico, Rx_klik);
+
+				 if(I==aRD_klik_ico && E==Rx_klik)
+			 {
+
+				if(scGPButton_zamek_Rx->ImageIndex==37)
+				{
+						scGPButton_zamek_roztec->ImageIndex=37;
+						scGPButton_zamek_Rx->ImageIndex=38;
+
+				}   else
+
+				{
+						scGPButton_zamek_roztec->ImageIndex=38;
+						scGPButton_zamek_Rx->ImageIndex=37;
+
+				}
+
+			 }
+
+
+
+//-----------------------------------------------------
+			 if(I==R_klik_ico && E==Rz_klik)
+			 {
+
+				if(scGPButton_zamek_roztec->ImageIndex==37)
+				{
+						scGPButton_zamek_roztec->ImageIndex=38;
+						scGPButton_zamek_Rx->ImageIndex=37;
+
+
+				}   else
+
+				{
+						scGPButton_zamek_Rx->ImageIndex=38;
+						scGPButton_zamek_roztec->ImageIndex=37;
+
+				}
+
+			 }
+
+
+			 //Rz nastavení
+		 if(I==Rz_klik_ico && E==R_klik)
+			 {
+
+				if(scGPButton_zamek_aRD->ImageIndex==37)
+				{
+						scGPButton_zamek_aRD->ImageIndex=38;
+						scGPButton_zamek_Rz->ImageIndex=38;
+
+						scGPButton_zamek_Rx->ImageIndex=37;
+
+
+
+				}   else
+
+				{
+						scGPButton_zamek_aRD->ImageIndex=37;
+						scGPButton_zamek_Rz->ImageIndex=37;
+
+						scGPButton_zamek_Rx->ImageIndex=38;
+
+				}
+
+			 }
+	//*************************************************************************
+				 if(I==Rz_klik_ico && E==Rx_klik)    //vstup z Rx editace do zamku Rz
+			 {
+
+				if(scGPButton_zamek_roztec->ImageIndex==38)
+				{
+						scGPButton_zamek_aRD->ImageIndex=38;
+						scGPButton_zamek_Rz->ImageIndex=38;
+
+						scGPButton_zamek_roztec->ImageIndex=37;
+
+
+
+				}   else
+
+				{
+						scGPButton_zamek_aRD->ImageIndex=37;
+						scGPButton_zamek_Rz->ImageIndex=37;
+
+						scGPButton_zamek_roztec->ImageIndex=38;
+
+				}
+
+			 }
+
+
+}
+void __fastcall TForm_parametry_linky::scGPButton_zamek_aRDClick(TObject *Sender)
+
+{
+
+		 //pokud pøed klikem do aRD bylo kliknuto do TT, volá se jiné chování zámkù - aRD a Rz nemusí být provázány
+	 input_clicked_icon=aRD_klik_ico;
+
+	 if(input_clicked_edit==TT_klik) Nastav_zamky(aRD_klik_ico,TT_klik);
+	 if(input_clicked_edit==R_klik)  Nastav_zamky(aRD_klik_ico, R_klik);
+	 if(input_clicked_edit==Rx_klik)  Nastav_zamky(aRD_klik_ico, Rx_klik);
+
+	 if(input_clicked_edit==empty_klik) Nastav_zamky(aRD_klik_ico, empty_klik);
+
+		//workaround
+		//tato konstukce zaøídí, že se okamžitì nastaví šedé pozadí pro zamèený zámek
+		// pokud by to zde nebylo, tak se šedé pozadí vykreslí až pøi pøejetí myší pøes zamèený sloupec, což je pozdì
+		rStringGridEd_tab_dopravniky->Visible=false;
+		rStringGridEd_tab_dopravniky->Visible=true;
+}
+//---------------------------------------------------------------------------
+
+void TForm_parametry_linky::input_TT()
+
+{
+	input_state=TT;
+	INPUT(0,0);   // pøi volání INPUT z TT je souèástí rovnou i volání OUTPUT + volání výpoèetního modelu
+	input_state=NOTHING;
+
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
+{
+		 Memo2->Lines->Add("INPUT"+ AnsiString(input_state));
+	 //Nastavení zámkù
+	 if(scGPButton_zamek_aRD->ImageIndex==37)  pm.aRD_locked=true;    //zamèen aRD
+	 else  pm.aRD_locked=false;
+
+	 if(scGPButton_zamek_roztec->ImageIndex==37)  pm.R_locked=true;    //zamèen R
+	 else  pm.R_locked=false;
+
+	 if(scGPButton_zamek_Rz->ImageIndex==37)  pm.Rz_locked=true;    //zamèen Rz
+	 else  pm.Rz_locked=false;
+
+	 if(scGPButton_zamek_Rz->ImageIndex==37)  pm.Rx_locked=true;    //zamèen Rx
+	 else  pm.Rx_locked=false;
+
+
+
+ if(input_state==TT)
+ {
+
+ for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+	 {
+
+		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/60.0;
+		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]);
+		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
+		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
+	//	ShowMessage("napln do dat"+AnsiString(i));
+
+	 //	pm.input_TT();
+		OUTPUT(i,0,0);
+	 //	VALIDACE();
+	 }
+
+	} else
+
+	{
+		 // uložení do struktury konkrétního øádku
+		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][Radek])/60.0;
+		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][Radek]);
+		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Radek]);
+		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][Radek]);
+
+		Memo2->Lines->Add(pm.aRD);
+		Memo2->Lines->Add(pm.R);
+		Memo2->Lines->Add(pm.Rz);
+		Memo2->Lines->Add(pm.Rx);
+
 		}
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			if (ACol==6)  // Rz  - zmìna Rz dopoèítá nové RD a obsah roletky Rozteèe
 
-		{
+void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
+{
 
-		 rStringGridEd_tab_dopravniky->Cells[4][ARow]=F->m.RD(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]))*60.0;
+		Memo3->Lines->Add("OUTPUT"+ AnsiString(input_state));
 
-		 // + roletka rozteèe
+	 if(i>0) // plnìní celé tabulky, pouze v pøípadì zmìny TT
 
-		 	//Doporuèení rozteèí
-				double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); //pøedám Rz
-					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
+	 {
+		rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD*60.0;
+		rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R;
+		rStringGridEd_tab_dopravniky->Cells[6][i]=pm.Rz;
+		rStringGridEd_tab_dopravniky->Cells[7][i]=pm.Rx;
+	 }
 
-			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
-				TStringList *S=new TStringList;
-				S->Add(data);
-				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
-				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
-				S->DelimitedText=data;
-					Memo3->Lines->Clear();
-        	Memo3->Lines->Add("vypis - menim obsah roletky R"+AnsiString(ARow));
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
-      /////////////////////////////////////////////////////////////
-			 //  nastavi pro celý sloupec :-/
-			 // rStringGridEd_tab_dopravniky->Columns->Items[5]->Font->Size=5;
-			 roletka_data=ARow;
-		}
+	 else
+	 {
+			// naplnìní konkrétního øádku na kterém došlo ke zmìnì
 
-				if (ACol==7)  // Rx  - zmìna Rx vypoèítá novou rozteè - pøesnou hodnotu
+		if(input_state!=aRD) rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*60.0;
+		if(input_state!=R)   rStringGridEd_tab_dopravniky->Cells[5][Radek]=pm.R;
+		if(input_state!=RZ)  rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz;
+		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=pm.Rx;
 
-		{
-		 rStringGridEd_tab_dopravniky->Cells[5][ARow] = (F->d.v.PP.TT * F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0) / F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
-		}
+
+
+			 //	VALIDACE();
+
+		Memo3->Lines->Add(pm.aRD);
+		Memo3->Lines->Add(pm.R);
+		Memo3->Lines->Add(pm.Rz);
+		Memo3->Lines->Add(pm.Rx);
+
+	 }
+
+
+
+}
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCellClick(TObject *Sender,
+					int ACol, int ARow)
+{
+
+if(ACol==1) {
+
+
+ scGPButton_zamek_Rz->Visible=true;
+ scGPButton_zamek_aRD->Visible=true;
+ scGPButton_zamek_Rz->Visible=true;
+ scGPButton_zamek_Rx->Visible=true;
+
+}
+if(ACol==2) {
+
+
+ scGPButton_zamek_Rz->Visible=true;
+ scGPButton_zamek_aRD->Visible=true;
+ scGPButton_zamek_Rz->Visible=true;
+ scGPButton_zamek_Rx->Visible=true;
+
+}
+if(ACol==3) {
+
+
+ scGPButton_zamek_Rz->Visible=true;
+ scGPButton_zamek_aRD->Visible=true;
+ scGPButton_zamek_Rz->Visible=true;
+ scGPButton_zamek_Rx->Visible=true;
+
+
+}
+
+
+if(ACol==4) {    //zmìna aRD
+
+ input_clicked_edit=aRD_klik;
+ Nastav_zamky(empty_klik_ico,aRD_klik);
+ if(scGPButton_zamek_aRD->ImageIndex==38) scGPButton_zamek_aRD->Visible=false;
+ else  scGPButton_zamek_aRD->Visible=true;
+
+	scGPButton_zamek_Rz->Visible=true;
+	scGPButton_zamek_Rx->Visible=true;
+	scGPButton_zamek_roztec->Visible=true;
+
+
+
+}
+if(ACol==5) {    //zmìna R
+
+
+ input_clicked_edit=R_klik;
+ Nastav_zamky(empty_klik_ico,R_klik);
+
+ Roletka_roztec(ARow);
+ if(scGPButton_zamek_roztec->ImageIndex==38)  scGPButton_zamek_roztec->Visible=false;
+ else   scGPButton_zamek_roztec->Visible=true;
+	scGPButton_zamek_Rz->Visible=true;
+	scGPButton_zamek_Rx->Visible=true;
+	scGPButton_zamek_aRD->Visible=true;
+
+
+
+
+}
+if(ACol==6) {    //zmìna Rz
+
+ input_clicked_edit=Rz_klik;
+ Nastav_zamky(empty_klik_ico,Rz_klik);
+	if(scGPButton_zamek_Rz->ImageIndex==38)  scGPButton_zamek_Rz->Visible=false;
+ else scGPButton_zamek_Rz->Visible=true;
+
+	scGPButton_zamek_Rx->Visible=true;
+	scGPButton_zamek_aRD->Visible=true;
+	scGPButton_zamek_roztec->Visible=true;
+
+
+
+}
+if(ACol==7) {    //zmìna Rx
+
+ input_clicked_edit=Rx_klik;
+ Nastav_zamky(empty_klik_ico,Rx_klik);
+	if(scGPButton_zamek_Rx->ImageIndex==38)  scGPButton_zamek_Rx->Visible=false;
+  else scGPButton_zamek_Rx->Visible=true;
+
+	scGPButton_zamek_aRD->Visible=true;
+	scGPButton_zamek_roztec->Visible=true;
+	scGPButton_zamek_Rz->Visible=true;
+
+
+
+}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPButton_zamek_RxClick(TObject *Sender)
+{
+
+	if(input_clicked_edit==aRD_klik) Nastav_zamky(Rx_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
+	if(input_clicked_edit==Rz_klik) Nastav_zamky(Rx_klik_ico,Rz_klik);
+
+	else   Nastav_zamky(Rx_klik_ico,empty_klik);
+
+		rStringGridEd_tab_dopravniky->Visible=false;
+		rStringGridEd_tab_dopravniky->Visible=true;
+
 }
 //---------------------------------------------------------------------------
 
 
 
+
+
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(TObject *Sender,
+					int ACol, int ARow, const UnicodeString Value)
+{
+
+				 //tato událost je volána vždy, nikoliv pouze pøi zmìnì obsahu - stringgrid nemá nativnì onchange událost
+				 // z tohoto dùvodu je pøi splnìní podmínky ihned uložen obsah buòky, a následnì porovnán.
+				 // pokud je rozdílný, došlo ke zmìnì a volám výpoèetní model
+
+	if(ACol==4)
+		{
+				if(input_state==NOTHING && input_clicked_edit==aRD_klik)
+				{
+
+				if(rStringGridEd_tab_dopravniky->Cells[4][ARow]!=pm.aRD*60.0)
+				{
+				Memo2->Lines->Clear();
+				Memo2->Lines->Add("volam model pm.input_aRD");
+				input_state=aRD;
+				INPUT(ACol,ARow);
+				pm.input_aRD();
+				OUTPUT(0,ACol,ARow);
+				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",true);
+				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
+				zobrazOramovani=true;
+
+				input_state=NOTHING;
+				}
+
+				}
+
+
+		}
+
+	 if(ACol==5)
+		{
+				if(input_state==NOTHING && input_clicked_edit==R_klik)
+				{
+
+				if(rStringGridEd_tab_dopravniky->Cells[5][ARow]!=pm.R)
+				{
+				Memo2->Lines->Clear();
+				Memo2->Lines->Add("volam model pm.input_R");
+				input_state=R;
+				INPUT(ACol,ARow);
+				pm.input_R();
+				OUTPUT(0,ACol,ARow);
+			 if(scGPButton_zamek_aRD->ImageIndex==38)  //pokud je aRD odemèeno volám akt.data do roletky
+			 {	Roletka_roztec(ARow);
+					vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",true);
+					Memo2->Lines->Add("volam aktualiz R");
+					zobrazOramovani=true;
+			 } //vypoèítání nových dat do roletky na základì zmìny Rz
+			 else zobrazOramovani=false;
+
+				input_state=NOTHING;
+				}
+
+				}
+
+
+
+		}
+
+		 if(ACol==6)
+		{
+				if(input_state==NOTHING && input_clicked_edit==Rz_klik)
+				{
+
+				if(rStringGridEd_tab_dopravniky->Cells[6][ARow]!=pm.Rz)
+				{
+				Memo2->Lines->Clear();
+				Memo2->Lines->Add("volam model pm.input_Rz");
+				input_state=RZ;
+				INPUT(ACol,ARow);
+				pm.input_Rz();
+				OUTPUT(0,ACol,ARow);
+				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",true);
+				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
+				zobrazOramovani=true;
+
+				input_state=NOTHING;
+				}
+
+				}
+
+
+
+		}
+
+	if(ACol==7)
+		{
+		if(input_state==NOTHING && input_clicked_edit==Rx_klik)
+				{
+
+				if(rStringGridEd_tab_dopravniky->Cells[7][ARow]!=pm.Rx)
+				{
+				Memo2->Lines->Clear();
+				Memo2->Lines->Add("volam model pm.input_Rx");
+				input_state=RX;
+				INPUT(ACol,ARow);
+				pm.input_Rx();
+				OUTPUT(0,ACol,ARow);
+				if(scGPButton_zamek_roztec->ImageIndex==37)
+				{
+				zobrazOramovani=true;
+				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",true);
+				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
+				}    else zobrazOramovani=false;
+
+				input_state=NOTHING;
+				}
+
+				}
+
+		}
+
+
+
+//		if (ACol==4)  //aRD  // tohle je dobrý, že v ARow mám pøedanej øádek zrovna, který edituji, èili pak velmi jednoduše to pøedám tam kam potøebuji
+//		{
+//
+//				//  pokud má rozteè a je nepoužívaný tak dovolím dopoèítávat resp. navrhovat hodnoty k uložení
+//		 if(!rStringGridEd_tab_dopravniky->Cells[5][ARow].IsEmpty() /*&& rStringGridEd_tab_dopravniky->Cells[8][ARow]=="nepoužíván"*/)
+//			{
+//				//Doporuèení Rz
+//				rStringGridEd_tab_dopravniky->Cells[6][ARow]=F->m.Rz(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0);
+//
+//			//Doporuèení rozteèí
+//				double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); //pøedám Rz
+//					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
+//
+//			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
+//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
+//				TStringList *S=new TStringList;
+//				S->Add(data);
+//				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
+//				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
+//				S->DelimitedText=data;
+//
+//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
+//			////////////////////////////////////////////////////////////////////////////////////////////////////////
+//				Memo2->Lines->Clear();
+//				Memo2->Lines->Add("vypis - menim obsah roletky R"+AnsiString (ARow));
+//			//rStringGridEd_tab_dopravniky->Columns->Items[5]->Font->Color=(TColor)RGB(211,211,211);   //=Background=(TColor)RGB(211,211,211);
+//
+//				//Doporuèení Rx
+//				rStringGridEd_tab_dopravniky->Cells[7][ARow]=F->m.Rx(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]));
+//
+//				roletka_data=ARow;
+//			 }
+//		}
+//
+//		if (ACol==5)  // rozteè R
+//
+//		{      //v pøípadì, že v roletce vyberu rozteè, dojde k pøepoètu Rx
+//				if(!rStringGridEd_tab_dopravniky->Cells[5][ARow].IsEmpty() /*&& rStringGridEd_tab_dopravniky->Cells[8][ARow]=="nepoužíván"*/)
+//			{
+//
+//				//Doporuèení Rx
+//				rStringGridEd_tab_dopravniky->Cells[7][ARow]=F->m.Rx(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]));
+//			 }
+//
+//		}
+//
+//			if (ACol==6)  // Rz  - zmìna Rz dopoèítá nové RD a obsah roletky Rozteèe
+//
+//		{
+//
+//		 rStringGridEd_tab_dopravniky->Cells[4][ARow]=F->m.RD(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]))*60.0;
+//
+//		 // + roletka rozteèe
+//
+//		 	//Doporuèení rozteèí
+//				double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); //pøedám Rz
+//					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
+//
+//			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
+//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
+//				TStringList *S=new TStringList;
+//				S->Add(data);
+//				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
+//				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
+//				S->DelimitedText=data;
+//					Memo3->Lines->Clear();
+//        	Memo3->Lines->Add("vypis - menim obsah roletky R"+AnsiString(ARow));
+//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
+//      /////////////////////////////////////////////////////////////
+//			 //  nastavi pro celý sloupec :-/
+//			 // rStringGridEd_tab_dopravniky->Columns->Items[5]->Font->Size=5;
+//			 roletka_data=ARow;
+//		}
+//
+//				if (ACol==7)  // Rx  - zmìna Rx vypoèítá novou rozteè - pøesnou hodnotu
+//
+//		{
+//		 rStringGridEd_tab_dopravniky->Cells[5][ARow] = (F->d.v.PP.TT * F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0) / F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
+//		}
+}
+//---------------------------------------------------------------------------
+
+
+
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditText(TObject *Sender,
+					int ACol, int ARow, UnicodeString &Value)
+{
+
+    //tato událost je volána okamžitì po vstupu do buòky a uloží do struktury akt.zobrazená data
+		 if(ACol==4)	pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0;
+
+		 if(ACol==5)  pm.R = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]);
+
+		 if(ACol==6)  pm.Rz = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]);
+
+		 if(ACol==7)  pm.Rx = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPButton_zamek_roztecClick(TObject *Sender)
+
+{
+		if(input_clicked_edit==aRD_klik) Nastav_zamky(R_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
+	//	if(input_clicked_edit==R_klik) Nastav_zamky(R_klik_ico,R_klik);  - není potøeba, je schován zámek
+		if(input_clicked_edit==Rz_klik) Nastav_zamky(R_klik_ico,Rz_klik);
+		if(input_clicked_edit==Rx_klik) Nastav_zamky(R_klik_ico,Rx_klik);
+
+		if(input_clicked_edit==empty_klik) Nastav_zamky(R_klik_ico,empty_klik);   // std.chování
+
+
+		rStringGridEd_tab_dopravniky->Visible=false;
+		rStringGridEd_tab_dopravniky->Visible=true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::scGPButton_zamek_RzClick(TObject *Sender)
+{
+
+	 input_clicked_icon=Rz_klik_ico;
+	// if(input_clicked_edit==Rz_klik) Nastav_zamky(Rz_klik_ico,Rz_klik);   - není potøeba, je schován zámek
+	 if(input_clicked_edit==R_klik)	 Nastav_zamky(Rz_klik_ico,R_klik);
+	 if(input_clicked_edit==Rx_klik)	 Nastav_zamky(Rz_klik_ico,Rx_klik);
+
+	 if(input_clicked_edit==empty_klik) Nastav_zamky(Rz_klik_ico,empty_klik);  //samostatný klik do zámku, bez pøedchozího vstupu do bunky
+
+		rStringGridEd_tab_dopravniky->Visible=false;
+		rStringGridEd_tab_dopravniky->Visible=true;
+}
+
+//---------------------------------------------------------------------------
+
+void TForm_parametry_linky::Roletka_roztec(double Row)
+
+{
+					double Rz;
+											 //pokud Rz není prázdné, uložím si jeho hodnotu a použiju k pøedání.
+											 //jinak nastavím Rz na -1 tzn., že do roletky zobrazím všechny rozteèe z katalogu
+					if(!rStringGridEd_tab_dopravniky->Cells[6][Row].IsEmpty())
+					{
+					Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Row]);
+					}  else Rz=-1;
+
+
+					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
+
+				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
+				TStringList *S=new TStringList;
+				S->Add(data);
+				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
+				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
+				S->DelimitedText=data;
+
+				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
+				//zobrazOramovani=true;
+				//F->m.frameRect(Rect(200,100,60,80),clBlue,2);
+
+		}
+
+
+
+
+
+
+void __fastcall TForm_parametry_linky::FormClick(TObject *Sender)
+{
+//zobrazení všech zámkù pøi kliku do formu
+ scGPButton_zamek_roztec->Visible=true;
+ scGPButton_zamek_aRD->Visible=true;
+ scGPButton_zamek_Rz->Visible=true;
+ scGPButton_zamek_Rx->Visible=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyDrawCell(TObject *Sender,
+					int ACol, int ARow, TRect &Rect, TGridDrawState State)
+{
+if (ACol==5) {
+
+	//F->m.frameRect(Rect,clBlue,2);
+ //   Rect=
+}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender,
+          int Col, int Row, TStringList *&PickList)
+{
+if(Col==5)  vypis("",false);
+}
+//---------------------------------------------------------------------------
 

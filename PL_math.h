@@ -24,7 +24,7 @@ class TPL_math
 		void input_aRD();//pøepoèet souvisejících hodnot vyplývajících ze zmìny aRD
 		void input_R();//pøepoèet souvisejících hodnot vyplývajících ze zmìny R
 		void input_Rz(bool prepocet_aRD=true);//pokud je parametr prepocet_aRD=false, nebude se znovu pøepoèítávat aRD (slouží pro situaci, kdy input_aRD volá input_Rz)
-		void ipnut_Rx();//pøepoèet souvisejících hodnot vyplývajících ze zmìny Rx
+		void input_Rx();//pøepoèet souvisejících hodnot vyplývajících ze zmìny Rx
 
 	private:
 		Cmy m;

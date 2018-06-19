@@ -20,6 +20,7 @@
 #include "scGPExtControls.hpp"
 #include <Vcl.Mask.hpp>
 #include "PL_math.h"
+#include "rHintWindow.hpp"
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
@@ -92,6 +93,13 @@ __published:	// IDE-managed Components
 	TrMemoEx *rMemoEx2_prirazen;
 	TMemo *Memo2;
 	TMemo *Memo3;
+	TrMemoEx *rMemoEx1_rozestup_akt_unas;
+	TscGPButton *scGPButton_zamek_aRD;
+	TscGPButton *scGPButton_zamek_roztec;
+	TscGPButton *scGPButton_zamek_Rz;
+	TscGPButton *scGPButton_zamek_Rx;
+	TrHTMLHint *rHTMLHint1;
+	TrHTMLLabel *rHTMLLabel_InfoText;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -150,12 +158,36 @@ __published:	// IDE-managed Components
 	void __fastcall scHTMLLabel_doporuc_pohonyClick(TObject *Sender);
 	void __fastcall scGPSwitchChangeState(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall rEditNum_taktClick(TObject *Sender);
+	void __fastcall scGPButton_zamek_aRDClick(TObject *Sender);
+	void __fastcall rStringGridEd_tab_dopravnikyCellClick(TObject *Sender, int ACol,
+          int ARow);
+	void __fastcall scGPButton_zamek_RxClick(TObject *Sender);
 	void __fastcall rStringGridEd_tab_dopravnikySetEditText(TObject *Sender, int ACol,
           int ARow, const UnicodeString Value);
+	void __fastcall rStringGridEd_tab_dopravnikyGetEditText(TObject *Sender, int ACol,
+          int ARow, UnicodeString &Value);
+	void __fastcall scGPButton_zamek_roztecClick(TObject *Sender);
+	void __fastcall scGPButton_zamek_RzClick(TObject *Sender);
+	void __fastcall FormClick(TObject *Sender);
+	void __fastcall rStringGridEd_tab_dopravnikyDrawCell(TObject *Sender, int ACol,
+          int ARow, TRect &Rect, TGridDrawState State);
+	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
+          int Row, TStringList *&PickList);
+
+
+
+
 
 private:	// User declarations
 	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
-	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ,RX,aRD,R};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
+	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto
+	enum Tinput_onchange {NOChange,aRDChange,RChange,RzChange,RxChange}; //zjisteni na kterou ikonku zámku bylo kliknuto
+
+
+
 	void pasiveColor();//nastaví všechny položky pop-up na pasivní resp. default barvu
 	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
 	TColor clBg,clAcBg,clAcBg2,clGlyph,clAcGlyph;//barvy položek pop-up menu
@@ -167,13 +199,23 @@ private:	// User declarations
 	void pozice_scGPGlyphButton_hint();
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
+	void Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_edit E);
 
 	public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
+		void vypis(UnicodeString text,bool red=true,bool link=false);
+		void input_TT();
+		void INPUT(double Sloupec, double Radek);
+		void OUTPUT(double i,double Sloupec, double Radek);
+		void Roletka_roztec(double Row);
+
 
 	bool data_nalezena;
 	void show_min_Rz();
-	Tinput_state input_state;//stav vstupu CT,RD,DD,K
+	Tinput_state input_state;//stav vstupu DV,SV,TT...atd
+	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
+	Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
+	Tinput_onchange   onchange;
 	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{S=0,MIN};Tminsec Taktunit;//pøepínaè jednotek èasu
 	bool Changes;  //obecna zmena = zmena PP ci TT
@@ -186,6 +228,8 @@ private:	// User declarations
 	bool Changes_Rx;
 	bool Ulozit;
 	bool zobrazitFrameForm;
+	bool zobrazOramovani;
+
 	int roletka_data;
 };
 //---------------------------------------------------------------------------
