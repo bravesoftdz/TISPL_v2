@@ -63,7 +63,7 @@ void TPL_math::input_Rz(bool prepocet_aRD)
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny Rx
-void TPL_math::ipnut_Rx()
+void TPL_math::input_Rx()
 {
 	if(aRD>0 || R>0)//Pokud chybí hodnoty R i aRD resp. Rz, tak neprobíhá žádný výpoèet.
 	{
