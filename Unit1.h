@@ -83,18 +83,17 @@
 #include <Vcl.WinXCtrls.hpp>
 #include "scDrawUtils.hpp"
 #include "scGPImages.hpp"
-
-#include "MyString.h"
-#include "my.h"
-#include "vykresli.h"
 #include <Vcl.ComCtrls.hpp>
-#include "grafy.h"
 #include "scHtmlControls.hpp"
 #include "scWebBrowser.hpp"
 #include <SHDocVw.hpp>
 #include <Vcl.OleCtrls.hpp>
-#include "PO_math.h"
 
+#include "MyString.h"
+#include "my.h"
+#include "vykresli.h"
+#include "grafy.h"
+#include "PO_math.h"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 

@@ -1933,9 +1933,10 @@ double Cvektory::vrat_roztec_retezu_z_item(AnsiString item,AnsiString separator)
 }
 //---------------------------------------------------------------------------
 //vypíše všechny použitelné řetezy použitelné pro zadané rozmezí dle užité rozteče, separátor odděluje název řetězu od rozteče, totál separátor jednotlivé řetězy, pokud je Rz zadané nulové vrátí hodnotu nula, pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv použiji parametr Rz=-1, pokud není požadován výpis názvu řetězu použiji prázdné uvozovky
-AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator)
+AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString separator,AnsiString total_separator,bool mm)
 {
 	AnsiString RET="";
+	short J=1.0;if(mm)J=1000.0;
 	if(Rz)
 	{
 			TRetez *CH=RETEZY->dalsi;
@@ -1943,8 +1944,8 @@ AnsiString Cvektory::vypis_retezy_s_pouzitelnou_rozteci(double Rz,AnsiString sep
 			{                                 //pokud chci vypsat vše
 				if(m.mod_d(Rz,CH->roztec)==0 || Rz==-1)//zbytek po dělení je nula, tzn. vhodný řetěz s roztečí vhodnou pro požadovaný rozestup nalezen nebo -1 pokud chci vypsat všechny načtené řetězy ze souboru retezy.csv
 				{
-					if(separator=="")RET+=AnsiString(CH->roztec)+total_separator;//pokud není požadován výpis názvu řetězu
-					else RET+=CH->name+separator+AnsiString(CH->roztec)+total_separator;
+					if(separator=="")RET+=AnsiString(J*CH->roztec)+total_separator;//pokud není požadován výpis názvu řetězu
+					else RET+=CH->name+separator+AnsiString(J*CH->roztec)+total_separator;
 				}
 				CH=CH->dalsi;
 			}
