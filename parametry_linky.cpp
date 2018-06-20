@@ -50,6 +50,8 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	//Delkaunit=MM;
 	//Sirkaunit=Delkaunit;
 	 Taktunit=S;
+	 Runit=M;
+	 Rzunit=M;
 	//roletka_data=0;
 }
 //---------------------------------------------------------------------------
@@ -325,10 +327,13 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rMemoEx2_prirazen->Text="";rMemoEx1_rozestup->Text="";rMemoEx1_roztec->Text="";
 	 rMemoEx1_rozestup_akt_unas->Text="";
 
+
+
 	 rMemoEx_ID->Lines->Add("    ID");
 	 rMemoEx_Nazev->Lines->Add("    Název");
 	 rMemoEx1_rychlost->Lines->Add("   Rychlost [m/min]");
-	 rMemoEx1_roztec->Lines->Add("    Rozteè [m]");
+	 if(Runit==M)  rMemoEx1_roztec->Lines->Add("    Rozteè [m]");
+	 else rMemoEx1_roztec->Lines->Add("    Rozteè [mm]");
 	 rMemoEx1_rozestup->Lines->Add("   Palce");
 	 rMemoEx1_rozestup_akt_unas->Lines->Add("rozestup aktivní unašeèe");
 	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
@@ -369,7 +374,8 @@ void TForm_parametry_linky::nacti_pohony ()
 						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*60.0;
 
 						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
-						else rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec;
+						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*1000.0;
+						else    rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec;
 
 						if(ukaz->Rz==0) rStringGridEd_tab_dopravniky->Cells[6][i]="";
 						else rStringGridEd_tab_dopravniky->Cells[6][i] = ukaz->Rz;
@@ -494,8 +500,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
 			while(P!=NULL)
 			{
-
-					if(rStringGridEd_tab_dopravniky->Cells[8][P->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[5][P->n]!=P->roztec)
+			     double roztec;
+					 if(Runit==M) roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n]);
+					 else 				roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n])/1000.0;
+					if(rStringGridEd_tab_dopravniky->Cells[8][P->n]!="nepoužíván"  && roztec!=P->roztec)
 					{
 					if(rStringGridEd_tab_dopravniky->Cells[5][P->n]!="")  //osetreni situace kdyz odmazu pohon a N je prazdne
 					{
@@ -769,6 +777,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				else aRD=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/60.0;
 
 				if(rStringGridEd_tab_dopravniky->Cells[5][i].IsEmpty()) roztec=0;
+				if(Runit==MM) roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000.0;
 				else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]);
 
 
@@ -1776,7 +1785,7 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 	if(I==aRD_klik_ico && E==empty_klik)   //obecné nastavení zámku aRD bez ovlivnìní vstupu TT
 	{
 
-	   ShowMessage("pxco");
+
 			if(scGPButton_zamek_aRD->ImageIndex==37) //zamèeno
 			{
 				scGPButton_zamek_aRD->ImageIndex=38; // odemknu aRD
@@ -2114,24 +2123,23 @@ void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
 
 
 
- if(input_state==TT)
+ if(input_state==TT || input_state==jednotky_prevod)  //vìtev TT - aktuálnì není využívána
  {
 
  for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 	 {
-
+		
 		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/60.0;
-		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]);
-		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
+		if(Runit==MM)	pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000;
+		else       	  pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]);
+		pm.Rz =  getRz(i);
 		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
-	//	ShowMessage("napln do dat"+AnsiString(i));
 
-	 //	pm.input_TT();
-		OUTPUT(i,0,0);
+		OUTPUT(i,0,0);  // po projití øádku, okamžité volání output - naplnìní obsahem konkrétního øádku
 	 //	VALIDACE();
 	 }
 
-	} else
+	} else    // aktuálnì využívána pouze tato konstukce níže
 
 	{
 		 // uložení do struktury konkrétního øádku
@@ -2155,11 +2163,13 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 
 		Memo3->Lines->Add("OUTPUT"+ AnsiString(input_state));
 
-	 if(i>0) // plnìní celé tabulky, pouze v pøípadì zmìny TT
+	 if(i>0) // plnìní celé tabulky, pouze v pøípadì zmìny TT nebo pøevodu jednotek
 
 	 {
-		rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD*60.0;
-		rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R;
+	   rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD*60.0;
+		 if(Runit==M)		rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R*1000.0;
+		 else       	  rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R;
+
 		rStringGridEd_tab_dopravniky->Cells[6][i]=pm.Rz;
 		rStringGridEd_tab_dopravniky->Cells[7][i]=pm.Rx;
 	 }
@@ -2248,8 +2258,6 @@ if(ACol==5) {    //zmìna R
 	scGPButton_zamek_Rz->Visible=true;
 	scGPButton_zamek_Rx->Visible=true;
 	scGPButton_zamek_aRD->Visible=true;
-
-
 
 
 }
@@ -2361,8 +2369,6 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				}
 
 				}
-
-
 
 		}
 
@@ -2563,14 +2569,16 @@ void TForm_parametry_linky::Roletka_roztec(double Row)
 					Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Row]);
 					}  else Rz=-1;
 
-
-					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
+					AnsiString	data;
+				 if(Runit==MM) data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",true);
+				 else          data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",false);
 
 				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
 				TStringList *S=new TStringList;
 				S->Add(data);
 				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
 				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
+				S->DelimitedText=data;
 				S->DelimitedText=data;
 
 				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
@@ -2611,4 +2619,37 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyPicklistDropd
 if(Col==5)  vypis("",false);
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rMemoEx1_roztecClick(TObject *Sender)
+{
+
+		input_state = jednotky_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
+		double R = 0.0;
+		if (Runit == MM) // pokud je v milimetrech, tak pøepne na metry
+		{
+
+			  rMemoEx1_roztec->Text="    Rozteè [m]";
+				INPUT(0,0);   //tento input volá zároveò i output
+				Runit = M;
+		}
+		else // pokud je metrech, tak pøepne na milimetry
+		{
+			rMemoEx1_roztec->Text="    Rozteè [mm]";
+			INPUT(0,0);    //tento input volá zároveò i output
+			Runit = MM;
+		}
+	
+		input_state = NOTHING; // už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
+
+double  TForm_parametry_linky::getRz(double i)
+{
+	double Rz=0;
+	if(Rzunit==M) Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
+	else          Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])*1000.0;
+	return Rz;
+}
+
+
 
