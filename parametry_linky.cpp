@@ -2122,6 +2122,9 @@ void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
 	 else  pm.Rx_locked=false;
 
 
+	 pm.TT=getTT();
+
+
 
  if(input_state==TT || input_state==jednotky_prevod)  //vìtev TT - aktuálnì není využívána
  {
@@ -2649,6 +2652,14 @@ double  TForm_parametry_linky::getRz(double i)
 	if(Rzunit==M) Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
 	else          Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])*1000.0;
 	return Rz;
+}
+
+double  TForm_parametry_linky::getTT()
+{
+	double TT=0;
+	if(Taktunit==S) TT=rEditNum_takt->Value;
+	else            TT=rEditNum_takt->Value*60.0;
+	return TT;
 }
 
 

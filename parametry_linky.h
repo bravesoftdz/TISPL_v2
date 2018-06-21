@@ -210,6 +210,7 @@ private:	// User declarations
 		void OUTPUT(double i,double Sloupec, double Radek);
 		void Roletka_roztec(double Row);
 		double getRz(double i);
+		double getTT();
 
 
 
