@@ -21,8 +21,14 @@ class TmGrid
 
 	struct TColumns
 	{
-	 unsigned short	ColWidth;
+	 unsigned short	Width;
 	 long Left;
+	};
+
+	struct TRows
+	{
+	 unsigned short	Height;
+	 long Top;
 	};
 
 	struct TCells
@@ -44,11 +50,11 @@ class TmGrid
 	~TmGrid();//destruktor
 	void Create();//vytvoøí tabulku
 	void Create(unsigned long ColCount,unsigned long RowCount);//pøetížená metoda - vytvoøí tabulku s pøedepsaným poètem sloupcù a øádkù
-	void Delete();//odstraní tabulku
+	void Delete(TForm *Form);//odstraní tabulku, pøidružené komponenty a ukazatel na mGrid z pamìti
 	void Show(TForm *Form);//zajistí vykreslení celé tabulky
 	void SetColumnAutoFit(long ColIdx=-1);//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
-	void ClearColumn(unsigned long ColIdx);//smaže celý sloupec
-	void ClearRow(unsigned long RowIdx);//smaže celý øádek
+	void ClearColumn(unsigned long ColIdx);//smaže text v celém sloupec
+	void ClearRow(unsigned long RowIdx);//smaže text v celém øádku
 	void Clear();//smaže text celé tabulku
 	void MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//spojí dvì buòky do jedné
 	void HighlightCell(unsigned long Col,unsigned long Row,unsigned short Width=2,TColor Color=clRed);//zajistí zvýraznìní dané buòky
@@ -63,15 +69,16 @@ class TmGrid
 	long Left,Top;//umístìní celé komponenty
 	unsigned long ColCount,RowCount;//poèet øádkù a sloupcù
 	unsigned short DefaultColWidth,DefaultRowHeight;//výchozí výška a šíøka øádku
-	unsigned long Row,Col;//aktuální øádek a sloupec
 	TmBorder Border;//orámování celé tabulky
 	bool AntiAliasing;//ano x ne - zatím nefunguje
 	TCells **Cells;//alokace dvourozmerneho dynamickeho pole bunìk
 	TColumns *Columns;//alokace jednorozmìrneho dynamickeho pole sloupcù
+	TRows *Rows;//alokace jednorozmìrneho dynamickeho pole øádkù
 	TCells DefaultCell;//deafultní vzorová buòka, podle ní se nastaví všechny
 
  protected:
 	long Width,Height;//velikost komponenty. lze jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
+	unsigned long Row,Col;//aktuální øádek a sloupec
 
  private:
 	void __fastcall getTagOnClick(TObject *Sender);
@@ -84,12 +91,14 @@ class TmGrid
 	void SetEdit(TForm *Form, TRect R,unsigned long X,unsigned long Y,TCells Cell);//nastaví danou buòku na edit, pomocná metoda výše uvedené
 	void SetNumeric(TForm *Form, TRect R,unsigned long X,unsigned long Y,TCells Cell);//nastaví danou buòku na numericedit, pomocná metoda objednu výše uvedené
 	void rcc(unsigned long cc,unsigned long rc);//pouze obejití lokální promìnné, v c++ je na to nìjaké klíèové slovo, ale nevzpomenu si
-	void DeleteComponents(TForm *Form);//odstraní dynamicky vytoøené komponenty
+	void Delete();//odstraní tabulku z pamìti
+	void DeleteComponents(TForm *Form);//odstraní dynamicky vytoøené komponenty, nutno volat pøed Delete()
 	void executeColumnsAutoFit(TCanvas *Canv);//nastaví šíøku bunìk sloupcù dle šíøky textu dle zvoleného parametru
 	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
   void realock(TForm *Form);//zajistí realokaci pole Cells dle nové velikosti
 
 	unsigned long getWidth();//vrátí celkovou šíøku tabulky
+	unsigned long getHeight();//vrátí celkovou výšku tabulky
 	unsigned long getTag(unsigned long Col,unsigned long Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
 	unsigned long getColFromTag(unsigned long Tag);//z tagu vratí èíslo sloupce
 	unsigned long getRowFromTag(unsigned long Tag);//z tagu vratí èíslo øádku

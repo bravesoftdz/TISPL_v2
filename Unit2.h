@@ -19,10 +19,14 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm2(TComponent* Owner);
 	void OnClick(unsigned long Col,unsigned long Row);
+	void OnEnter(unsigned long Col,unsigned long Row);
+	void OnChange(unsigned long Col,unsigned long Row);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm2 *Form2;

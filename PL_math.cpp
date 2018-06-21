@@ -52,7 +52,7 @@ void TPL_math::input_Rz(bool prepocet_aRD)
 
 		if(R>0 || Rx>0)//pokud alespoò jedna z hodnot je nenulová
 		{
-			if(R_locked && R>0 || Rx<=0)Rx=m.Rx(Rz,R);
+			if(R_locked && R>0 || Rx<=0)Rx=m.Rx2(Rz,R);
 			else
 			{
 				if(Rx>0)R=m.R(Rz,Rx);

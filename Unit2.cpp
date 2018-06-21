@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 
@@ -15,11 +14,20 @@ TForm2 *Form2;
 __fastcall TForm2::TForm2(TComponent* Owner)
 	: TForm(Owner)
 {
-	mGrid=new TmGrid;
-	mGrid->Left=50;mGrid->Top=50;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm2::FormShow(TObject *Sender)
+{
+	mGrid=new TmGrid;//vždy nutno jako první
+	mGrid->Left=50;mGrid->Top=50;//vhodné jako druhé (popø. by bylo nutné pøekreslovat
+	mGrid->Create(10,10);//vhodné jako tøetí
+
 	//mGrid->Border.Width=1;
-	mGrid->Create(10,10);
+
 	mGrid->MergeCells(1,2,2,2);
+
+	mGrid->Rows[1].Height=2*mGrid->DefaultRowHeight;
+	mGrid->Rows[5].Height=100;
 
 	mGrid->Cells[2][3].Background->Color=clRed;
 	mGrid->Cells[2][3].Font->Color=clWhite;
@@ -32,11 +40,19 @@ __fastcall TForm2::TForm2(TComponent* Owner)
 	mGrid->HighlightCell(1,1);
 	mGrid->SetColumnAutoFit(2);
 
-	mGrid->Cells[4][5].Type=mGrid->CHECK;
+	mGrid->Cells[1][5].Type=mGrid->CHECK;
+	//mGrid->Cells[1][5].Valign=mGrid->TOP;
+	//mGrid->Cells[1][5].Align=mGrid->LEFT;
+
 	mGrid->Cells[2][5].Type=mGrid->RADIO;
+
 	mGrid->Cells[3][5].Type=mGrid->readNUMERIC;
+
 	mGrid->Cells[4][5].Type=mGrid->EDIT;
+	mGrid->Cells[4][5].Text="tady je edit";
+
 	mGrid->Cells[5][5].Type=mGrid->BUTTON;
+	mGrid->Cells[5][5].Text="tlaèítko";
 
 	mGrid->Cells[6][5].Text="COMBO";
 	mGrid->Cells[6][5].Type=mGrid->COMBO;
@@ -55,27 +71,46 @@ void __fastcall TForm2::Button1Click(TObject *Sender)
 	TscGPListBoxItem *t=C->Items->Add();t->Caption="test1";
 	t=NULL;t=C->Items->Add();t->Caption="test2";
 	C->ItemIndex=1;
+	t=NULL;delete t;
 	C=NULL;delete C;
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button2Click(TObject *Sender)
 {
-	if(mGrid->getRadio(2,5,this)->Checked)ShowMessage("zaškrnuto");
-	else ShowMessage("nezaškrtnuto");
-//	mGrid->Row=5;mGrid->Col=5;
-//		Invalidate();
-//		FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
+	//if(mGrid->getRadio(2,5,this)->Checked)ShowMessage("zaškrnuto");
+	//else ShowMessage("nezaškrtnuto");
+
+	mGrid->RowCount=6;mGrid->ColCount=6;//zajistí realokaci tabulky
+	Invalidate();
+	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
 //---------------------------------------------------------------------------
 //test volání pøi onclick
 void TForm2::OnClick(unsigned long Col,unsigned long Row)
 {
-		ShowMessage("Došlo ke kliku na buòce: "+AnsiString(Col)+","+AnsiString(Row));
-		mGrid->HighlightCell(Col,Row);
-		mGrid->Cells[0][0].Text="test";
-		Invalidate();
-		FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
+	//ShowMessage("Došlo ke kliku na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	mGrid->HighlightCell(Col,Row);
+	mGrid->Cells[0][0].Text="test";
+	Invalidate();
+	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
+//---------------------------------------------------------------------------
+void TForm2::OnEnter(unsigned long Col,unsigned long Row)
+{
+
+}
+//---------------------------------------------------------------------------
+void TForm2::OnChange(unsigned long Col,unsigned long Row)
+{
+
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)
+{
+	 mGrid->Delete(this);//pokud chci odstranit a nechci použít na další použití
+}
+//---------------------------------------------------------------------------
 //pøiklady
 /*
 ///////////vytvvoøení
@@ -146,3 +181,8 @@ C=NULL;delete C;
 		FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 
 */
+
+
+
+
+
