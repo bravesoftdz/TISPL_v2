@@ -100,6 +100,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_zamek_Rx;
 	TrHTMLHint *rHTMLHint1;
 	TrHTMLLabel *rHTMLLabel_InfoText;
+	TMemo *Memo4;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -211,6 +212,9 @@ private:	// User declarations
 		void Roletka_roztec(double Row);
 		double getRz(double i);
 		double getTT();
+		void VALIDACE(int ACol, int ARow);
+		short VID;//validation ID
+	  double VID_value;
 
 
 
