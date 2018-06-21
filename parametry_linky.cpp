@@ -112,7 +112,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
 
 		//provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
-//		if(Form1->d.v.OBJEKTY->dalsi!=NULL)
+//		if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
 //		{
 //			rEditNum_takt->Enabled=false;
 //			rEditNum_delka_jigu->Enabled=false;
@@ -1129,6 +1129,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 
 			for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 			 {
+			 bool edit=true;
 					 //aRD
 					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==37)CanEdit=false;
 					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==38)CanEdit=true;
@@ -1138,13 +1139,17 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==38)CanEdit=true;
 
 					 //Rz
-					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==37)CanEdit=false;
-					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==38)CanEdit=true;
+					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==37)CanEdit=false; edit=false;
+					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==38)CanEdit=true; edit=true;
 
 					 //Rx
 					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==37)CanEdit=false;
 					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==38)CanEdit=true;
-				 }
+
+//					 if(Row==i && Col==4 &&  scGPButton_zamek_Rz->ImageIndex==37)
+//					 {scGPButton_zamek_Rz->Visible=true; /*ShowMessage("kuk"); */  }
+
+			 }
 
 
 
@@ -1630,7 +1635,14 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 
 
 
-
+//					 if(Row==i && Col==6 && !scGPButton_zamek_Rz->Visible){
+//
+//					 ShowMessage("ted");
+//					 Background=(TColor)RGB(255,255,255);
+//					 rStringGridEd_tab_dopravniky->Visible=false;
+//					 rStringGridEd_tab_dopravniky->Visible=true;
+//
+//					}
 
 				 }
 
@@ -1718,6 +1730,11 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 		 rStringGridEd_tab_dopravniky->Visible=false;
 		 rStringGridEd_tab_dopravniky->Visible=true;
 
+	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
+	 {
+
+	 }
+
 		 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
 }
 //---------------------------------------------------------------------------
@@ -1749,6 +1766,27 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 		//odemèeno  Rx a Rz
 		scGPButton_zamek_Rx->ImageIndex=38;
 		scGPButton_zamek_roztec->ImageIndex=38;
+ }
+
+	if(I==aRD_klik_ico && E==aRD_klik) // nastavení zámkù pøi kliku do aRD s pøedchozím vstupem do aRD - souvisí s formshow
+ {
+		//	 ShowMessage("nastav");
+		if(scGPButton_zamek_aRD->ImageIndex==37)
+		{
+				scGPButton_zamek_aRD->ImageIndex=38;
+				scGPButton_zamek_Rx->ImageIndex=38;
+				scGPButton_zamek_roztec->ImageIndex=37;
+
+
+
+		} else
+		{
+
+				scGPButton_zamek_aRD->ImageIndex=37;
+				scGPButton_zamek_Rx->ImageIndex=38;
+				scGPButton_zamek_roztec->ImageIndex=37;
+
+		}
  }
 
  ///////////////////////////////////////////////////////////////
@@ -2084,8 +2122,14 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_aRDClick(TObject *Sender
 	 if(input_clicked_edit==TT_klik) Nastav_zamky(aRD_klik_ico,TT_klik);
 	 if(input_clicked_edit==R_klik)  Nastav_zamky(aRD_klik_ico, R_klik);
 	 if(input_clicked_edit==Rx_klik)  Nastav_zamky(aRD_klik_ico, Rx_klik);
+	 if(input_clicked_edit==aRD_klik) Nastav_zamky(aRD_klik_ico,aRD_klik);
 
 	 if(input_clicked_edit==empty_klik) Nastav_zamky(aRD_klik_ico, empty_klik);
+
+
+		//	ShowMessage(input_clicked_edit);  //6
+	 //	ShowMessage(input_clicked_icon);   //0
+
 
 		//workaround
 		//tato konstukce zaøídí, že se okamžitì nastaví šedé pozadí pro zamèený zámek
@@ -2188,7 +2232,7 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 
 
 
-			 //	VALIDACE();
+		VALIDACE(Sloupec,Radek);
 
 		Memo3->Lines->Add(pm.aRD);
 		Memo3->Lines->Add(pm.R);
@@ -2239,12 +2283,18 @@ if(ACol==4) {    //zmìna aRD
 
  input_clicked_edit=aRD_klik;
  Nastav_zamky(empty_klik_ico,aRD_klik);
+// if(ReadOnly) scGPButton_zamek_aRD->Visible=true;
+ scGPButton_zamek_Rz->Visible=false; //tato promìnná je vždy ovlivnìna, schovám její zámek
+
  if(scGPButton_zamek_aRD->ImageIndex==38) scGPButton_zamek_aRD->Visible=false;
  else  scGPButton_zamek_aRD->Visible=true;
 
-	scGPButton_zamek_Rz->Visible=true;
 	scGPButton_zamek_Rx->Visible=true;
 	scGPButton_zamek_roztec->Visible=true;
+
+ //	ShowMessage(input_clicked_edit);  //6
+ //	ShowMessage(input_clicked_icon);   //0
+ Invalidate();
 
 
 
@@ -2262,20 +2312,18 @@ if(ACol==5) {    //zmìna R
 	scGPButton_zamek_Rx->Visible=true;
 	scGPButton_zamek_aRD->Visible=true;
 
-
 }
 if(ACol==6) {    //zmìna Rz
 
- input_clicked_edit=Rz_klik;
- Nastav_zamky(empty_klik_ico,Rz_klik);
+  input_clicked_edit=Rz_klik;
+	Nastav_zamky(empty_klik_ico,Rz_klik);
+	scGPButton_zamek_aRD->Visible=false;   //tato promìnná je vždy ovlivnìna, schovám její zámek
+
 	if(scGPButton_zamek_Rz->ImageIndex==38)  scGPButton_zamek_Rz->Visible=false;
  else scGPButton_zamek_Rz->Visible=true;
 
 	scGPButton_zamek_Rx->Visible=true;
-	scGPButton_zamek_aRD->Visible=true;
 	scGPButton_zamek_roztec->Visible=true;
-
-
 
 }
 if(ACol==7) {    //zmìna Rx
@@ -2661,6 +2709,45 @@ double  TForm_parametry_linky::getTT()
 	else            TT=rEditNum_takt->Value*60.0;
 	return TT;
 }
+
+
+void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
+{
+
+vypis("");
+
+ switch(ACol)
+	 {
+		///////////////////////////////////////////////////////////////////////
+				case 4:     //aRD
+				{
+				 Memo4->Lines->Add("aRD");
+				}	break;
+				case 5:    //R
+				{
+				Memo4->Lines->Add("R");
+				}break;
+					case 6:    //Rz
+				{
+				Memo4->Lines->Add("Rz");
+				}break;
+					case 7:     //Rx
+				{
+        Memo4->Lines->Add("Rx");
+				}break;
+
+	 }
+
+
+
+
+
+
+
+
+}
+
+
 
 
 
