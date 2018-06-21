@@ -174,6 +174,7 @@ __published:	// IDE-managed Components
           int ARow, TRect &Rect, TGridDrawState State);
 	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
           int Row, TStringList *&PickList);
+	void __fastcall rMemoEx1_roztecClick(TObject *Sender);
 
 
 
@@ -181,7 +182,7 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
 	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
-	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ,RX,aRD,R};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto
 	enum Tinput_onchange {NOChange,aRDChange,RChange,RzChange,RxChange}; //zjisteni na kterou ikonku zámku bylo kliknuto
@@ -208,6 +209,8 @@ private:	// User declarations
 		void INPUT(double Sloupec, double Radek);
 		void OUTPUT(double i,double Sloupec, double Radek);
 		void Roletka_roztec(double Row);
+		double getRz(double i);
+
 
 
 	bool data_nalezena;
@@ -216,7 +219,7 @@ private:	// User declarations
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
 	Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
 	Tinput_onchange   onchange;
-	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
+	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{S=0,MIN};Tminsec Taktunit;//pøepínaè jednotek èasu
 	bool Changes;  //obecna zmena = zmena PP ci TT
 	bool Changes_TT;    // konkretni zmena TT
