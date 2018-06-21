@@ -36,9 +36,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	mGrid->Cells[2][3].Text="nìjaký dlouhý text";
 
 	mGrid->Cells[1][1].Font->Orientation=900;
-
 	mGrid->HighlightCell(1,1);
-	mGrid->SetColumnAutoFit(2);
 
 	mGrid->Cells[1][5].Type=mGrid->CHECK;
 	//mGrid->Cells[1][5].Valign=mGrid->TOP;
@@ -56,32 +54,56 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 	mGrid->Cells[6][5].Text="COMBO";
 	mGrid->Cells[6][5].Type=mGrid->COMBO;
+
+	mGrid->SetColumnAutoFit(2);
+
+	//ukázka pøebírání vlastností spoleèného orámování bunìk
+	mGrid->Cells[8][8].TopBorder->Width=3;
+	mGrid->Cells[8][8].TopBorder->Color=clBlue;
+	mGrid->Cells[8][7].BottomBorder->Color=clWebOrange;
+//	if(mGrid->Cells[8][7].BottomBorder->Color==clWebOrange)
+//	ShowMessage("clWebOrange");
+	mGrid->Cells[8][8].LeftBorder->Color=clWebOrange;
+	mGrid->Cells[7][8].RightBorder->Color=clBlue;
+
+	//nastaví oblast bunìk na stejnými vlastnostmi (vhodné napø. na fixed cells, orámování nìjaké oblasti, disabled/read-only oblast atp.)
+	mGrid->Cells[0][0].Text="Nadpis";
+	mGrid->Cells[0][0].Background->Color=clBtnFace;
+	mGrid->SetCells(mGrid->Cells[0][0],0,0,0,7);
+	mGrid->SetCells(mGrid->Cells[0][0],0,0,7,0);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormPaint(TObject *Sender)
 {
 	mGrid->Show(this);
+	//nastaví formuláø dle velikosti tabulky, musí být až po Show
+	Form2->Width=mGrid->Width+50+50;
+	Form2->Height=mGrid->Height+50+50;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button1Click(TObject *Sender)
 {
+	//plnìní comba
 	TscGPComboBox *C=mGrid->getCombo(6,5,this);
 	//C->Options->další možnosti
-	C->Items->Clear();//smazání pøípadného pùvodního obsahu
+	//C->Items->Clear();//smazání pøípadného pùvodního obsahu  - nepouživat pokud je prázdný
 	TscGPListBoxItem *t=C->Items->Add();t->Caption="test1";
 	t=NULL;t=C->Items->Add();t->Caption="test2";
 	C->ItemIndex=1;
 	t=NULL;delete t;
-	C=NULL;delete C;
+	C=NULL;delete C;//nejsem si jistý zda používat nebo ne, pokud bude padat, tak vyzkoušet tady
+
 
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button2Click(TObject *Sender)
 {
+	//testování checkboxu
 	//if(mGrid->getRadio(2,5,this)->Checked)ShowMessage("zaškrnuto");
 	//else ShowMessage("nezaškrtnuto");
 
-	mGrid->RowCount=6;mGrid->ColCount=6;//zajistí realokaci tabulky
+	//zmìna velikosti tabulky
+	mGrid->RowCount=6;mGrid->ColCount=6;//zajistí realokaci tabulky (pokud je následnì voláno invalidate)
 	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
