@@ -3,6 +3,7 @@
 #include "TmGrid.h"
 #include "antialiasing.h"
 #include "MyString.h"
+#include "Unit2.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -16,7 +17,7 @@ TmGrid::TmGrid()
 	DefaultColWidth=90,DefaultRowHeight=25;//výchozí výška a šíøka øádku
 	Row=0;Col=0;//aktuální øádek a sloupec
 	AntiAliasing=false;
-	SetColumnAutoFitColIdx=-3;//-3, nepøizpùsobuje se velikost,-2 vše stejnì podle nejvìtší, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec
+	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	//orámování - default
 	TmBorder defBorder;
 	defBorder.Color=clLtGray;
@@ -231,7 +232,7 @@ void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,T
 	switch(Cell.Type)
 	{
 		case DRAW:
-		{   Cell.Text=getTag(X,Y);//provizorní
+		{   //Cell.Text=getTag(X,Y);//provizorní
 			TCanvas *Canv=Form->Canvas;//pouze zkrácení zapisu
 			//nastavení fontu
 			Canv->Font=Cell.Font;
@@ -595,9 +596,10 @@ TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row,TForm *
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 {
-	ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
+	//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+	Form2->OnClick(Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnEnter(TObject *Sender)

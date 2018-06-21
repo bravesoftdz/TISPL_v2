@@ -46,7 +46,7 @@ class TmGrid
 	void Create(unsigned long ColCount,unsigned long RowCount);//pøetížená metoda - vytvoøí tabulku s pøedepsaným poètem sloupcù a øádkù
 	void Delete();//odstraní tabulku
 	void Show(TForm *Form);//zajistí vykreslení celé tabulky
-	void SetColumnAutoFit(long ColIdx=-1);//nastaví šíøku bunìk daného sloupce dle nejdelšího šíøky textu buòky ze sloupce uvedeného parametrem ColIdx sloupce
+	void SetColumnAutoFit(long ColIdx=-1);//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	void ClearColumn(unsigned long ColIdx);//smaže celý sloupec
 	void ClearRow(unsigned long RowIdx);//smaže celý øádek
 	void Clear();//smaže text celé tabulku
@@ -65,7 +65,7 @@ class TmGrid
 	unsigned short DefaultColWidth,DefaultRowHeight;//výchozí výška a šíøka øádku
 	unsigned long Row,Col;//aktuální øádek a sloupec
 	TmBorder Border;//orámování celé tabulky
-	bool AntiAliasing;//ano x ne
+	bool AntiAliasing;//ano x ne - zatím nefunguje
 	TCells **Cells;//alokace dvourozmerneho dynamickeho pole bunìk
 	TColumns *Columns;//alokace jednorozmìrneho dynamickeho pole sloupcù
 	TCells DefaultCell;//deafultní vzorová buòka, podle ní se nastaví všechny
