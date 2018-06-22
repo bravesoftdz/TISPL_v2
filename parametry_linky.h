@@ -178,7 +178,6 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
           int Row, TStringList *&PickList);
 	void __fastcall rMemoEx1_roztecClick(TObject *Sender);
-	void __fastcall rEditNum_taktEnter(TObject *Sender);
 	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_vozik_editClick(TObject *Sender);
 

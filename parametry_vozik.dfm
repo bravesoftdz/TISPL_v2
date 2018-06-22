@@ -746,8 +746,6 @@ object Form_parametry_vozik: TForm_parametry_vozik
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitLeft = -619
-    ExplicitWidth = 1270
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 601
@@ -826,7 +824,6 @@ object Form_parametry_vozik: TForm_parametry_vozik
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1220
     end
     object scLabel1: TscLabel
       Left = 0
@@ -859,7 +856,6 @@ object Form_parametry_vozik: TForm_parametry_vozik
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry voz'#237'k'
-      ExplicitWidth = 1183
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 564
@@ -939,7 +935,6 @@ object Form_parametry_vozik: TForm_parametry_vozik
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1183
     end
   end
 end

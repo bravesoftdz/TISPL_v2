@@ -27,7 +27,10 @@ void __fastcall TForm_parametry_vozik::FormShow(TObject *Sender)
 {
 		 NastavDesign();
 
-
+		 scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
+		 scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
+		 scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
+		 scGPNumericEdit_delka_podvozek->Value=F->d.v.PP.delka_podvozek;
 }
 //---------------------------------------------------------------------------
 
