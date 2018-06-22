@@ -4,20 +4,22 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
-USEFORM("poznamky.cpp", Form_poznamky);
 USEFORM("report.cpp", Form_report);
-USEFORM("popUP_menu.cpp", PopUPmenu);
-USEFORM("parametry_linky.cpp", Form_parametry_linky);
-USEFORM("pl_priority.cpp", Form_PL_priority);
 USEFORM("superform.cpp", Form_definice_zakazek);
+USEFORM("pl_priority.cpp", Form_PL_priority);
+USEFORM("poznamky.cpp", Form_poznamky);
+USEFORM("popUP_menu.cpp", PopUPmenu);
 USEFORM("uvod.cpp", Form_uvod);
 USEFORM("Unit1.cpp", Form1);
+USEFORM("TT_kalkulator.cpp", Form_TT_kalkulator);
+USEFORM("parametry_vozik.cpp", Form_parametry_vozik);
 USEFORM("eDesigner.cpp", Form_eDesigner);
+USEFORM("kabina_schema.cpp", Form_objekt_nahled);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("casovaOsa_info.cpp", Form_osa_info);
 USEFORM("cesty.cpp", Form_cesty);
-USEFORM("kabina_schema.cpp", Form_objekt_nahled);
 USEFORM("MyMessageBox.cpp", myMessageBox);
+USEFORM("parametry_linky.cpp", Form_parametry_linky);
 USEFORM("parametry.cpp", Form_parametry);
 USEFORM("kalendar.cpp", Form_kalendar);
 USEFORM("Unit2.cpp", Form2);
@@ -44,6 +46,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_PL_priority), &Form_PL_priority);
 		Application->CreateForm(__classid(TForm_poznamky), &Form_poznamky);
 		Application->CreateForm(__classid(TForm_objekt_nahled), &Form_objekt_nahled);
+		Application->CreateForm(__classid(TForm_TT_kalkulator), &Form_TT_kalkulator);
+		Application->CreateForm(__classid(TForm_parametry_vozik), &Form_parametry_vozik);
 		Application->CreateForm(__classid(TForm2), &Form2);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();

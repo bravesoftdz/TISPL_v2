@@ -7,6 +7,8 @@
 #include "kabina_schema.h"
 #include "MyMessageBox.h"
 #include "parametry.h"
+#include "TT_kalkulator.h"
+#include "parametry_vozik.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -961,6 +963,7 @@ scGPButton_doporucene->Visible=true;
 
 void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 {
+
 	if(input_state==NOTHING && input_clicked_edit==TT_klik)
 	{
 
@@ -1726,14 +1729,15 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 		 input_clicked_icon=empty_klik_ico;
 		 Nastav_zamky(empty_klik_ico,TT_klik);
 
+		Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
+		Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
+
 		 //pøekreslení podbarvení sloupcù
 		 rStringGridEd_tab_dopravniky->Visible=false;
 		 rStringGridEd_tab_dopravniky->Visible=true;
 
-	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
-	 {
+	
 
-	 }
 
 		 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
 }
@@ -2750,4 +2754,51 @@ vypis("");
 
 
 
+
+void __fastcall TForm_parametry_linky::rEditNum_taktEnter(TObject *Sender)
+{
+	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
+	 {
+  //  Form_TT_kalkulator->ShowModal();
+	 }
+}
+//---------------------------------------------------------------------------
+
+
+
+
+
+
+void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
+{
+	Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
+	Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
+
+	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
+	 {
+
+				if(mrOk==Form_TT_kalkulator->ShowModal())
+				{
+				 //
+					 if(Form_TT_kalkulator->rEditNum_takt->Value!=F->d.v.PP.TT){
+
+					 ShowMessage("Došlo ke zmìne TT - volání GAPO");
+					 }
+				}
+
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPGlyphButton_vozik_editClick(TObject *Sender)
+
+{
+		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
+		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
+	if(mrOk==Form_parametry_vozik->ShowModal())
+	{
+	// naplnìní nových dat do struktury
+	 }
+}
+//---------------------------------------------------------------------------
 

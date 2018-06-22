@@ -223,6 +223,12 @@
             <DependentOn>parametry_linky.h</DependentOn>
             <BuildOrder>17</BuildOrder>
         </CppCompile>
+        <CppCompile Include="parametry_vozik.cpp">
+            <Form>Form_parametry_vozik</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>parametry_vozik.h</DependentOn>
+            <BuildOrder>32</BuildOrder>
+        </CppCompile>
         <CppCompile Include="PL_math.cpp">
             <DependentOn>PL_math.h</DependentOn>
             <BuildOrder>28</BuildOrder>
@@ -272,6 +278,12 @@
             <DependentOn>TmGrid.h</DependentOn>
             <BuildOrder>29</BuildOrder>
         </CppCompile>
+        <CppCompile Include="TT_kalkulator.cpp">
+            <Form>Form_TT_kalkulator</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>TT_kalkulator.h</DependentOn>
+            <BuildOrder>31</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Unit1.cpp">
             <Form>Form1</Form>
             <FormType>dfm</FormType>
@@ -282,7 +294,7 @@
             <Form>Form2</Form>
             <FormType>dfm</FormType>
             <DependentOn>Unit2.h</DependentOn>
-            <BuildOrder>30</BuildOrder>
+            <BuildOrder>32</BuildOrder>
         </CppCompile>
         <CppCompile Include="uvod.cpp">
             <Form>Form_uvod</Form>
@@ -298,20 +310,22 @@
             <DependentOn>vykresli.h</DependentOn>
             <BuildOrder>12</BuildOrder>
         </CppCompile>
-        <FormResources Include="poznamky.dfm"/>
         <FormResources Include="report.dfm"/>
-        <FormResources Include="popUP_menu.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
-        <FormResources Include="pl_priority.dfm"/>
         <FormResources Include="superform.dfm"/>
+        <FormResources Include="pl_priority.dfm"/>
+        <FormResources Include="poznamky.dfm"/>
+        <FormResources Include="popUP_menu.dfm"/>
         <FormResources Include="uvod.dfm"/>
         <FormResources Include="Unit1.dfm"/>
+        <FormResources Include="TT_kalkulator.dfm"/>
+        <FormResources Include="parametry_vozik.dfm"/>
         <FormResources Include="eDesigner.dfm"/>
+        <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="cesty.dfm"/>
-        <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="parametry.dfm"/>
         <FormResources Include="kalendar.dfm"/>
         <FormResources Include="Unit2.dfm"/>
