@@ -101,6 +101,8 @@ __published:	// IDE-managed Components
 	TrHTMLHint *rHTMLHint1;
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TMemo *Memo4;
+	TscGPGlyphButton *scGPGlyphButton_TT;
+	TscGPGlyphButton *scGPGlyphButton_vozik_edit;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -176,6 +178,8 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
           int Row, TStringList *&PickList);
 	void __fastcall rMemoEx1_roztecClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_vozik_editClick(TObject *Sender);
 
 
 

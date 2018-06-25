@@ -7,6 +7,9 @@
 #include "kabina_schema.h"
 #include "MyMessageBox.h"
 #include "parametry.h"
+#include "TT_kalkulator.h"
+#include "parametry_vozik.h"
+#include "Unit2.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -568,56 +571,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		bool volat_aktualizaci=false;
 		int aktualizace_id;
 
-		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt
-		{
+	
 
-			Cvektory::TPohon *pohon=Form1->d.v.POHONY->dalsi;
-			Cvektory::TObjekt *obj=Form1->d.v.OBJEKTY->dalsi;
-			 Form_PL_priority->rStringGridEd_tab->RowCount=9;
-
-			//	TrStringGridEd *sGrid=new TrStringGridEd;
-
-
-				Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
-
-	while (obj!=NULL)
-	{
-
-	// TStringGrid  *grid = new TrStringGridEd;
-
-		if(obj->pohon!=NULL)
-		{
-		if(rStringGridEd_tab_dopravniky->Cells[8][obj->pohon->n]!="nepoužíván")
-					//objekt má pøiøazen pohon
-		{
-					Form_PL_priority->rHTMLLabel_hlavika_tabulky->Caption="Hlavièka pohonu ";
-
-					 //		ShowMessage(obj->pohon->n);   sloupec, øádek
-
-
-					 //Form_PL_priority->rStringGridEd_tab->Cells[0][0]=obj->pohon->name;
-
-					 Form_PL_priority->rStringGridEd_tab->Cells[0][obj->n]=obj->pohon->name;
-					 Form_PL_priority->rStringGridEd_tab->Cells[1][obj->n]=obj->name;
-
-
-		}
-
-		}
-			 else //objekt nemá pøiøazen pohon
-
-			 {
-							ShowMessage("nepøiøazen");
-					 //	Form_PL_priority->rStringGridEd_tab->RowCount=obj->predchozi->n;
-
-
-			 }
-
-     	obj=obj->dalsi;
-
-		 }
-
-		 	if(mrOk==Form_PL_priority->ShowModal())
+			if(mrOk==Form_PL_priority->ShowModal())
 			{
 				// volani aktualizacni fce
 				if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=1;//Form1->d.v.aktualizace_objektu(1);
@@ -636,40 +592,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 
 
-
-//			//Form_PL_priority->rStringGridEd_tab->Height=Form_PL_priority->rStringGridEd_tab->Height-Form_PL_priority->rStringGridEd_tab->DefaultRowHeight;
-//			Form_PL_priority->rStringGridEd_tab->RowCount=3;
-//			Form_PL_priority->scGPRadioButton4->Visible=false;
-//			Form_PL_priority->scGPRadioButton3->Visible=false;
-//			//zustava
-//			Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Délka pohonu";
-//			Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Technologický èas";
-//	 //		Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Individuální nastavení";
-//			//meni se
-//			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Technologický èas, Rychlost pohonu";
-//			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Kapacita, Délka kabiny, Rychlost pohonu";
-//	 //		Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Individuální nastavení";
-//
-//			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnì parametru <font color=#2b579a>Tak Time</font>, který ovlivòuje parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
-//
-//			if(mrOk==Form_PL_priority->ShowModal())
-//			{
-//				// volani aktualizacni fce
-//				if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=1;//Form1->d.v.aktualizace_objektu(1);
-//				if(Form_PL_priority->scGPRadioButton2->Checked) aktualizace_id=2;//Form1->d.v.aktualizace_objektu(2);
-//				if(Form_PL_priority->scGPRadioButton3->Checked) aktualizace_id=-1; //Form1->d.v.aktualizace_objektu(-1); //indi nastav
-//
-//				volat_aktualizaci=true;
-//				Ulozit=true;
-//			}
-//			else
-//			{
-//				volat_aktualizaci=false;
-//				Ulozit=false;
-//			}
-
-
-	 }
 
 	 if(Changes_PP)//pri zmene PP + jiz existuje nejaky objekt
 	 {
@@ -961,6 +883,7 @@ scGPButton_doporucene->Visible=true;
 
 void __fastcall TForm_parametry_linky::rEditNum_takt_Change(TObject *Sender)
 {
+
 	if(input_state==NOTHING && input_clicked_edit==TT_klik)
 	{
 
@@ -1726,14 +1649,15 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 		 input_clicked_icon=empty_klik_ico;
 		 Nastav_zamky(empty_klik_ico,TT_klik);
 
+		Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
+		Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
+
 		 //pøekreslení podbarvení sloupcù
 		 rStringGridEd_tab_dopravniky->Visible=false;
 		 rStringGridEd_tab_dopravniky->Visible=true;
 
-	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
-	 {
+	
 
-	 }
 
 		 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
 }
@@ -2738,16 +2662,85 @@ vypis("");
 
 	 }
 
-
-
-
-
-
-
-
 }
 
 
+void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
+{
 
+	bool Changes_TT=false;
+	Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
+	Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
 
+	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
+	 {
+
+				if(mrOk==Form_TT_kalkulator->ShowModal())
+				{
+				 //
+					 if(Form_TT_kalkulator->rEditNum_takt->Value!=F->d.v.PP.TT)
+					 {
+
+					// ShowMessage("Došlo ke zmìne TT - volání GAPO");
+					 Changes_TT=true;
+					 rEditNum_takt->Value=Form_TT_kalkulator->rEditNum_takt->Value;
+					 }
+				}
+		}
+
+		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt nebo pohon
+		{
+			Form2->ShowModal();
+			//Cvektory::TPohon *pohon=Form1->d.v.POHONY->dalsi;
+			//Cvektory::TObjekt *obj=Form1->d.v.OBJEKTY->dalsi;
+
+//			while (obj!=NULL)
+//			{
+//
+//			// TStringGrid  *grid = new TrStringGridEd;
+//
+//				if(obj->pohon!=NULL)
+//				{
+//					if(rStringGridEd_tab_dopravniky->Cells[8][obj->pohon->n]!="nepoužíván")
+//						//objekt má pøiøazen pohon
+//						{
+//									Form_PL_priority->rHTMLLabel_hlavika_tabulky->Caption="Hlavièka pohonu ";
+//
+//									 Form_PL_priority->rStringGridEd_tab->Cells[0][obj->n]=obj->pohon->name;
+//									 Form_PL_priority->rStringGridEd_tab->Cells[1][obj->n]=obj->name;
+//						}
+//				}
+//					 else //objekt nemá pøiøazen pohon
+//					 {
+//									ShowMessage("nepøiøazen");
+//					 }
+//
+//					obj=obj->dalsi;
+//
+//			 }
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::scGPGlyphButton_vozik_editClick(TObject *Sender)
+
+{
+		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
+		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
+	if(mrOk==Form_parametry_vozik->ShowModal())
+	{
+	// naplnìní nových dat do struktury
+
+	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) ShowMessage("zmena delka jigu - GAPO");
+	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) ShowMessage("zmena sirky jigu - GAPO");
+	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) ShowMessage("zmena vysky jigu - GAPO");
+	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  ShowMessage("zmena podvozku jigu - GAPO");
+
+	scGPNumericEdit_delka_jig->Value=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
+	scGPNumericEdit_sirka_jig->Value=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
+	scGPNumericEdit_vyska_jig->Value=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value;
+	scGPNumericEdit_delka_podvozek->Value=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
+	}
+}
+//---------------------------------------------------------------------------
 
