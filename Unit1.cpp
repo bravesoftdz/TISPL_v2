@@ -21,7 +21,8 @@
 #include "report.h"
 #include "PO_math.h"
 #include "kabina_schema.h"
-
+#include "Unit2.h"
+#include "gapo.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -5061,9 +5062,12 @@ void TForm1::db_connection()
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
+void __fastcall TForm1::Button14Click(TObject *Sender)
+{
+	 //Form2->ShowModal();
+	 Form_gapo->gapoTyp=Form_gapo->R;//nastaví typ GAPA resp. tabulky, která se zobrazí
+	 Form_gapo->Left=50;Form_gapo->Top=50;
+	 Form_gapo->ShowModal();
+}
+//---------------------------------------------------------------------------
 

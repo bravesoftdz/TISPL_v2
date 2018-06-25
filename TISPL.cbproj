@@ -169,6 +169,12 @@
             <DependentOn>eDesigner.h</DependentOn>
             <BuildOrder>19</BuildOrder>
         </CppCompile>
+        <CppCompile Include="gapo.cpp">
+            <Form>Form_gapo</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>gapo.h</DependentOn>
+            <BuildOrder>31</BuildOrder>
+        </CppCompile>
         <CppCompile Include="grafy.cpp">
             <DependentOn>grafy.h</DependentOn>
             <BuildOrder>21</BuildOrder>
@@ -299,22 +305,23 @@
             <BuildOrder>12</BuildOrder>
         </CppCompile>
         <FormResources Include="poznamky.dfm"/>
-        <FormResources Include="report.dfm"/>
-        <FormResources Include="popUP_menu.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
-        <FormResources Include="pl_priority.dfm"/>
         <FormResources Include="superform.dfm"/>
+        <FormResources Include="report.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
+        <FormResources Include="popUP_menu.dfm"/>
+        <FormResources Include="pl_priority.dfm"/>
         <FormResources Include="uvod.dfm"/>
+        <FormResources Include="Unit2.dfm"/>
         <FormResources Include="Unit1.dfm"/>
         <FormResources Include="eDesigner.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="cesty.dfm"/>
-        <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
         <FormResources Include="parametry.dfm"/>
         <FormResources Include="kalendar.dfm"/>
-        <FormResources Include="Unit2.dfm"/>
+        <FormResources Include="kabina_schema.dfm"/>
+        <FormResources Include="gapo.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

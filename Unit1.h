@@ -265,6 +265,7 @@ __published:	// IDE-managed Components
 	TscButton *scButton_parmlinky_defzakazek;
 	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
 	TscGPGlyphButton *scGPGlyphButton_info_cekani;
+	TButton *Button14;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -415,6 +416,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_info_cekaniClick(TObject *Sender);
 	void __fastcall FormDblClick(TObject *Sender);
+	void __fastcall Button14Click(TObject *Sender);
 
 
 // User declarations

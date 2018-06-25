@@ -3,20 +3,23 @@
 #include "TmGrid.h"
 #include "antialiasing.h"
 #include "MyString.h"
-#include "Unit2.h"
+#include "gapo.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
 //---------------------------------------------------------------------------
 //konstruktor
-TmGrid::TmGrid()
+TmGrid::TmGrid(TForm *Owner)
 {
+	Form=Owner;
 	////nastavení TABULKY
+	Tag=0;//ID komponenty (vyuitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
 	Left=0;Top=0;//umístìní celé komponenty
 	RowCount=0;ColCount=0;//poèet øádkù a sloupcù
 	DefaultColWidth=90,DefaultRowHeight=25;//vıchozí vıška a šíøka øádku
 	Row=0;Col=0;//aktuální øádek a sloupec
-	AntiAliasing=false;
+	AntiAliasing_grid=false;
+	AntiAliasing_text=false;
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a uije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se kadı sloupec individuálnì, 0 a více jen konkrétní sloupec uvedenı pomoc ColIdx
 	//orámování - default
 	TBorder defBorder;
@@ -26,10 +29,12 @@ TmGrid::TmGrid()
 	Border=defBorder;Border.Width=2;
 
 	////nastavení defalní BUÒKY
+	//vytvoøí novou buòku (alokuje ji pamì)
+	CreateCell(DefaultCell);
+
 	//typ
 	DefaultCell.Type = DRAW;//defaultní komponenta
 	//text
-	DefaultCell.Font=new TFont();
 	DefaultCell.Font->Size=12;
 	DefaultCell.Font->Color=clBlack;
 	DefaultCell.Font->Orientation=0;
@@ -37,31 +42,30 @@ TmGrid::TmGrid()
 	DefaultCell.Font->Pitch=TFontPitch::fpVariable;//kadé písmeno fontu stejnì široké
 	DefaultCell.Font->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	DefaultCell.Font->Name="Arial";
+	DefaultCell.TextPositon.X=0;
+	DefaultCell.TextPositon.Y=0;
 	DefaultCell.Text="";
 	//zarovnání
 	DefaultCell.Align=CENTER;
 	DefaultCell.Valign=MIDDLE;
-	DefaultCell.TopMargin=2;
-	DefaultCell.BottomMargin=2;
-	DefaultCell.LeftMargin=2;
-	DefaultCell.RightMargin=2;
+	DefaultCell.TopMargin=1;
+	DefaultCell.BottomMargin=1;
+	DefaultCell.LeftMargin=1;
+	DefaultCell.RightMargin=1;
 	//pozadí
-	DefaultCell.Background=new TBrush();
 	DefaultCell.Background->Color=clWhite;
 	DefaultCell.Background->Style=bsSolid;
 	//orámování
-	DefaultCell.TopBorder=new TBorder;		*DefaultCell.TopBorder=defBorder;
-	DefaultCell.BottomBorder=new TBorder;	*DefaultCell.BottomBorder=defBorder;
-	DefaultCell.LeftBorder=new TBorder;		*DefaultCell.LeftBorder=defBorder;
-	DefaultCell.RightBorder=new TBorder;	*DefaultCell.RightBorder=defBorder;
+	*DefaultCell.TopBorder=defBorder;
+	*DefaultCell.BottomBorder=defBorder;
+	*DefaultCell.LeftBorder=defBorder;
+	*DefaultCell.RightBorder=defBorder;
 }
 //---------------------------------------------------------------------------
 //destruktor, probíhá pøi ukonèování programu, tj. zváit zda není pozdì
 TmGrid::~TmGrid()
 {
-	//uvolnìní pamìti
-	Delete();
-	mGrid=NULL; delete mGrid;
+		Delete();
 }
 //---------------------------------------------------------------------------
 //vytvoøí tabulku
@@ -73,52 +77,25 @@ void TmGrid::Create()
 	//alokace jednorozmìrného dynamického pole
 	Columns = new TColumns[ColCount];
 	Rows = new TRows[RowCount];
-
 	//smazání + nastavení hodnot musí bıt v extra cyklu
 	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
 	{
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
+			////BUÒKY
 			//Cells[X][Y]=DefaultCell; //- nelze, takto pøevezme celı ukazatel
-			////typ
-			Cells[X][Y].Type=DefaultCell.Type;
-			////text + font
 			Cells[X][Y].Font=new TFont();
-			Cells[X][Y].Font->Size=DefaultCell.Font->Size;
-			Cells[X][Y].Font->Color=DefaultCell.Font->Color;
-			Cells[X][Y].Font->Orientation=DefaultCell.Font->Orientation;
-			Cells[X][Y].Font->Style=DefaultCell.Font->Style;
-			Cells[X][Y].Font->Pitch=DefaultCell.Font->Pitch;
-			Cells[X][Y].Font->Name=DefaultCell.Font->Name;
-			Cells[X][Y].Text=DefaultCell.Text;
-			////zarovnání
-			Cells[X][Y].Align=DefaultCell.Align;
-			Cells[X][Y].Valign=DefaultCell.Valign;
-			Cells[X][Y].TopMargin=DefaultCell.TopMargin;
-			Cells[X][Y].BottomMargin=DefaultCell.BottomMargin;
-			Cells[X][Y].LeftMargin=DefaultCell.LeftMargin;
-			Cells[X][Y].RightMargin=DefaultCell.RightMargin;
-			////pozadí
-			Cells[X][Y].Background=new TBrush();
-			Cells[X][Y].Background->Color=DefaultCell.Background->Color;
-			Cells[X][Y].Background->Style=DefaultCell.Background->Style;
-			////orámování
-			//top (pøebírá, propojuje se s horním, nejedná-li se o první)
-			if(Y==0){Cells[X][Y].TopBorder=new TBorder;*Cells[X][Y].TopBorder=*DefaultCell.TopBorder;}
-			else Cells[X][Y].TopBorder=Cells[X][Y-1].BottomBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
-			//botom
-			Cells[X][Y].BottomBorder=new TBorder;*Cells[X][Y].BottomBorder=*DefaultCell.BottomBorder;
-			//left (pøebírá, propojuje se s levım, nejedná-li se o první)
-			if(X==0){Cells[X][Y].LeftBorder=new TBorder;*Cells[X][Y].LeftBorder=*DefaultCell.LeftBorder;}
-			else Cells[X][Y].LeftBorder=Cells[X-1][Y].RightBorder;
-			//right
-			Cells[X][Y].RightBorder=new TBorder;*Cells[X][Y].RightBorder=*DefaultCell.RightBorder;
-			////øádky
+			Cells[X][Y].Background=new TBrush();//alokace pamìti
+			CopyAreaCell(DefaultCell,Cells[X][Y],true);//kopie vlastností, bez orámování
+			////orámování bunìk ukazatelem
+			CreateLinkBorder(X,Y,DefaultCell);
+			////ØÁDKY
 			Rows[Y].Height=DefaultRowHeight;
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Y*DefaultRowHeight;else Rows[0].Top=0;
 		}
+		////SLOUPCE
 		Columns[X].Width=DefaultColWidth;
-		if(X>0)Columns[X].Left=Columns[X-1].Left+X*DefaultColWidth;else Columns[0].Left=0;
+		if(X>0){Columns[X].Left=Columns[X-1].Left+X*DefaultColWidth;}else Columns[0].Left=0;
 	}
 	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
 }
@@ -136,129 +113,255 @@ void TmGrid::rcc(unsigned long cc,unsigned long rc)
 	ColCount=cc;RowCount=rc;
 }
 //---------------------------------------------------------------------------
+//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
+void TmGrid::CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell)
+{
+	//top (pøebírá, propojuje se s horním, nejedná-li se o první)
+	if(Y==0){Cells[X][Y].TopBorder=new TBorder;*Cells[X][Y].TopBorder=*refCell.TopBorder;}
+	else Cells[X][Y].TopBorder=Cells[X][Y-1].BottomBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
+	//botom
+	Cells[X][Y].BottomBorder=new TBorder;*Cells[X][Y].BottomBorder=*refCell.BottomBorder;
+	//left (pøebírá, propojuje se s levım, nejedná-li se o první)
+	if(X==0){Cells[X][Y].LeftBorder=new TBorder;*Cells[X][Y].LeftBorder=*refCell.LeftBorder;}
+	else Cells[X][Y].LeftBorder=Cells[X-1][Y].RightBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
+	//right
+	Cells[X][Y].RightBorder=new TBorder;*Cells[X][Y].RightBorder=*refCell.RightBorder;
+}
+//---------------------------------------------------------------------------
+//vytvoøí novou buòku (alokuje ji pamì)
+void TmGrid::CreateCell(TCells &NewCell)
+{
+	NewCell.Font=new TFont();
+	NewCell.Background=new TBrush();
+	NewCell.TopBorder=new TBorder;
+	NewCell.BottomBorder=new TBorder;
+	NewCell.LeftBorder=new TBorder;
+	NewCell.RightBorder=new TBorder;
+}
+//---------------------------------------------------------------------------
+//smae buòku z pamìti
+void TmGrid::DeleteCell(TCells &DelCell)
+{
+	DelCell.TopBorder=NULL;			delete DelCell.TopBorder;
+	DelCell.BottomBorder=NULL;  delete DelCell.BottomBorder;
+	DelCell.LeftBorder=NULL;    delete DelCell.LeftBorder;
+	DelCell.RightBorder=NULL;   delete DelCell.RightBorder;
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //odstraní tabulku, pøidruené komponenty a ukazatel na mGrid z pamìti
-void TmGrid::Delete(TForm *Form)
+void TmGrid::Delete()
 {
 	//odstranìní v tabulce pouitıch komponent
-	DeleteComponents(Form);
+	DeleteComponents();
 	//uvolnìní pamìti
-	Delete();
+	DeleteTable();
+	DeleteCell(DefaultCell);
 	mGrid=NULL; delete mGrid;
 }
 //---------------------------------------------------------------------------
-//odstraní tabulku
-void TmGrid::Delete()
+//odstraní pouze tabulku, pomocná metoda vıše uvedené a destruktoru
+void TmGrid::DeleteTable()
 {
 	for(unsigned long X=0;X<ColCount;X++)//po øádcích
 	{
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
-			Cells[X][Y].TopBorder=NULL;			delete Cells[X][Y].TopBorder;
-			Cells[X][Y].BottomBorder=NULL;  delete Cells[X][Y].BottomBorder;
-			Cells[X][Y].LeftBorder=NULL;    delete Cells[X][Y].LeftBorder;
-			Cells[X][Y].RightBorder=NULL;   delete Cells[X][Y].RightBorder;
+			DeleteCell(Cells[X][Y]);
 		}
 		Cells[X]=NULL; delete Cells[X];
 	}
 	Cells=NULL; delete Cells;
 	Columns=NULL; delete Columns;
 	Rows=NULL; delete Rows;
-	DefaultCell.TopBorder=NULL;			delete DefaultCell.TopBorder;
-	DefaultCell.BottomBorder=NULL;  delete DefaultCell.BottomBorder;
-	DefaultCell.LeftBorder=NULL;    delete DefaultCell.LeftBorder;
-	DefaultCell.RightBorder=NULL;   delete DefaultCell.RightBorder;
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení celé tabulky
-void TmGrid::Show(TForm *Form)
+void TmGrid::Show()
 {
-	if(mGrid!=NULL)
+	//if(mGrid!=NULL)
 	{
 		if(ColCount!=bufColCount || RowCount!=bufRowCount)//pokud dojde k poadavku na zmìnu poètu øádkù a sloupcù volá se realokace
 		{
-			realock(Form);
+			realock();
+			Form->Refresh();
 		}
 
-		if(!AntiAliasing)DrawGrid(Form,1);
-//	else
-//	{
-//		Cantialising a;
-//		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-//    pozor width a height potøebu je znát hodnoty po autofit
-//		bmp_in->Width=ColWidth*ColCount*3;bmp_in->Height=RowHeight*RowCount*3;//velikost canvasu//*3 vyplıvá z logiky algoritmu antialiasingu
-//		DrawGrid(Canvas,Form,3);
-//		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
-//		Canvas->Draw(Left,Top,bmp_out);
-//		delete (bmp_out);//velice nutné
-//		delete (bmp_in);//velice nutné
-//	}
+		//nastavení šíøky sloupcù a vıšky øádkù+autofit sloupcù nastaví Columns[X].ColWidth
+		SetColRow();
+
+		//ošetøení proti situaci AntiAliasing_text=true; a AntiAliasing_grid=false, která nemùe nastat resp. byla by zbyteèná
+		if(AntiAliasing_text==false)AntiAliasing_grid=false;
+
+		if(AntiAliasing_grid==false && AntiAliasing_text==false)Draw(Form->Canvas);
+		else
+		{
+			Cantialising a;
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+			bmp_in->Width=Width*3;bmp_in->Height=Height*3;//velikost canvasu//*3 vyplıvá z logiky algoritmu antialiasingu
+			Draw(bmp_in->Canvas);
+			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
+			Form->Canvas->Draw(Left,Top,bmp_out);
+			if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Form->Canvas);//kreslí se a nahoru
+			delete (bmp_out);//velice nutné
+			delete (bmp_in);//velice nutné
+		}
 	}
 }
 //---------------------------------------------------------------------------
-//zajistí vykreslení celé tabulky
-void TmGrid::DrawGrid(TForm *Form,double Zoom)
+//zajistí vyvolání pøekreslení celé tabulky s pøeblikem, ale lépe pouívat pøímo ve v daném formuláøi FormPaint(this), co zajistí pøekreslení bez probliku
+void TmGrid::Refresh()
 {
-	TCanvas *C=Form->Canvas;//pouze zkrácení zapisu
-
-	//autofit sloupcù nastaví Columns[X].ColWidth
-	executeColumnsAutoFit(Form->Canvas);
+	 Form->Repaint();
+}
+//---------------------------------------------------------------------------
+//zajistí vykreslení celé tabulky vèetnì gridu, pokud
+void TmGrid::Draw(TCanvas *C)
+{
+	//////TABULKA - orámování celé, pouze nastavuje jednotlivım buòkám jejich orámování
+	if(Border.Width>0)//pokud je border poadován
+	{
+		TCells RefCell;CreateCell(RefCell);
+		*RefCell.TopBorder=*RefCell.LeftBorder=*RefCell.RightBorder=*RefCell.BottomBorder=Border;
+		SetRegion(RefCell,0,0,ColCount-1,RowCount-1);
+		DeleteCell(RefCell);
+	}
 
 	//////BUÒKY jednotlivé
+	short Zoom_g=1; if(AntiAliasing_grid)Zoom_g=3;
+	short Zoom_b=1; if(AntiAliasing_text)Zoom_b=3;
 	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
 	{
 		////oblast buòky
-		TRect R;
-		if(X>0)Columns[X].Left=Columns[X-1].Left+Columns[X-1].Width;else Columns[0].Left=0;//vıpoèet levého okraje buòky dle buòky pøedchozí
-		R.Left	=	Left+Columns[X].Left*Zoom;
-		R.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom;
+		TRect R;//grid
+		TRect Rb;//pozadí buòky
+		TRect Rc;//componenty
+		R.Left	=	Left+Columns[X].Left*Zoom_g;
+		Rb.Left	=	Left+Columns[X].Left*Zoom_b;
+		Rc.Left	=	Left+Columns[X].Left;
+		R.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom_g;
+		Rb.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom_b;
+		Rc.Right	=	Left+(Columns[X].Left+Columns[X].Width);
 
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
 			////oblast buòky
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//vıpoèet horního okraje buòky dle buòky pøedchozí
-			R.Top		=	Top+Rows[Y].Top*Zoom;
-			R.Bottom=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom;
+			R.Top			=	Top+Rows[Y].Top*Zoom_g;
+			Rb.Top		=	Top+Rows[Y].Top*Zoom_b;
+			Rc.Top		=	Top+Rows[Y].Top;
+			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_g;
+			Rb.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
+			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
 			////barva pozadí buòky
 			C->Brush->Color=Cells[X][Y].Background->Color;
 			C->Brush->Style=Cells[X][Y].Background->Style;
-			C->FillRect(R);
+			C->FillRect(Rb);
 
 			////komponenta v buòce
-			SetComponents(Form,R,X,Y,Cells[X][Y]);
+			SetComponents(C,Rc,X,Y,Cells[X][Y]);
 
 			////orámování buòky
-			//top
-			SetBorder(C,Cells[X][Y].TopBorder);
-			C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
-			//bottom
-			SetBorder(C,Cells[X][Y].BottomBorder);
-			C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
-			//left
-			SetBorder(C,Cells[X][Y].LeftBorder);
-			C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
-			//right
-			SetBorder(C,Cells[X][Y].RightBorder);
-			C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
+			//pouívám duplicitnì (k DrawGrid) zde, kvùli akceleraci v pøípadì totálnì vypnutého AA nebo totálnì zapnutého AA, v takovém pøípadì potom nebìí DrawGrid, mohl bych ho sice volat zde, ale chci si ušetøit opakovanı prùchod cykly, DrawGrid bìí jenom v momentu AntiAliasing_text=false a AntiAliasing_grid=true
+			if(!(AntiAliasing_grid==false && AntiAliasing_text==true))
+			{
+				//top
+				if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+				{
+					SetBorder(C,Cells[X][Y].TopBorder);
+					C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
+				}
+				//bottom
+				if(Y==RowCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie ne ukazování na stejné orámování, ale zde z dùvodu moného pøekryvu s náplní pøedchozí buòky
+				{
+					SetBorder(C,Cells[X][Y].BottomBorder);
+					C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
+				}
+				//left
+				if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+				{
+					SetBorder(C,Cells[X][Y].LeftBorder);
+					C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
+				}
+				//right                                 udìlat pøíznak na slouèenu buòku té nekreslit støe
+				if(X==ColCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie ne ukazování na stejné orámování, ale zde z dùvodu moného pøekryvu s náplní pøedchozí buòky
+				{
+					SetBorder(C,Cells[X][Y].RightBorder);
+					C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
+				}
+			}
 		}
 	}
+}
+//---------------------------------------------------------------------------
+//zajistí vykreslení jen gridu
+void TmGrid::DrawGrid(TCanvas *C)
+{
+	TRect R;//grid
+	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
+	{
+		R.Left	=	Left+Columns[X].Left;
+		R.Right	=	Left+(Columns[X].Left+Columns[X].Width);
+		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
+		{
+			R.Top			=	Top+Rows[Y].Top;
+			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
+			////orámování buòky
+			//top
+			if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+			{
+				SetBorder(C,Cells[X][Y].TopBorder);
+				C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
+			}
+			//bottom
+			if(Y==RowCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie ne ukazování na stejné orámování, ale zde z dùvodu moného pøekryvu s náplní pøedchozí buòky
+			{
+				SetBorder(C,Cells[X][Y].BottomBorder);
+				C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
+			}
+			//left
+			if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+			{
+				SetBorder(C,Cells[X][Y].LeftBorder);
+				C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
+			}
+			//right
+			if(X==ColCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie ne ukazování na stejné orámování, ale zde z dùvodu moného pøekryvu s náplní pøedchozí buòky
+			{
+				SetBorder(C,Cells[X][Y].RightBorder);
+				C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
+			}
+		}
+	}
+}
+//---------------------------------------------------------------------------
+//nastaví velikost sloupcù a øádkù
+void TmGrid::SetColRow()
+{
+	executeColumnsAutoFit(Form->Canvas);
 
-	//////TABULKA - orámování celé + vıpoèet celkové šíøky a vıšky
-	TBorder *B=new TBorder;*B=Border;
-	SetBorder(C,B);B=NULL;delete B;
-	Width=getWidth();//zároveò nastavuje celkovou hodnotu Width
-	Height=getHeight();//zároveò nastavuje celkovou hodnotu Height
-	C->MoveTo(Left,Top);C->LineTo(Width+Left,Top);C->LineTo(Width+Left,Top);C->LineTo(Width+Left,Height+Top);C->LineTo(Left,Height+Top);C->LineTo(Left,Top);
+	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
+	{
+		if(X>0)Columns[X].Left=Columns[X-1].Left+Columns[X-1].Width;else Columns[0].Left=0;//vıpoèet levého okraje buòky dle buòky pøedchozí
+	}
+	for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
+	{
+		if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//vıpoèet horního okraje buòky dle buòky pøedchozí
+	}
 
-	C=NULL; delete C;
+	////vıpoèet celkové šíøky a vıšky tabulky
+	Width=getWidth();//zároveò nastavuje celkovou hodnotu Width, musí bıt a tady!!!, protoe vıše se to teprvé nastavuje
+	Height=getHeight();//zároveò nastavuje celkovou hodnotu Height, musí bıt a tady!!!, protoe vıše se to teprvé nastavuje
 }
 //---------------------------------------------------------------------------
 //nastaví grafické pero na poadované parametry
 void TmGrid::SetBorder(TCanvas *C,TBorder *Border)
 {
 	DeleteObject(C->Pen->Handle);//zruší pùvodní pero       //PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE
-	DWORD pStyle = PS_GEOMETRIC | PS_SOLID | PS_ENDCAP_SQUARE /*| PS_JOIN_BEVEL*/ | PS_INSIDEFRAME;
+	DWORD pStyle = PS_GEOMETRIC | PS_SOLID | PS_ENDCAP_SQUARE/* PS_ENDCAP_ROUND PS_ENDCAP_SQUARE PS_ENDCAP_FLAT | PS_JOIN_BEVEL | PS_INSIDEFRAME*/;
 	DWORD pWidth = Border->Width;
+	if(AntiAliasing_grid)pWidth *=3;
 
 	LOGBRUSH lBrush;
 	lBrush.lbStyle = BS_SOLID;
@@ -269,59 +372,63 @@ void TmGrid::SetBorder(TCanvas *C,TBorder *Border)
 }
 //---------------------------------------------------------------------------
 //nastaví danou buòku dle typu
-void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCells Cell)
+void TmGrid::SetComponents(TCanvas *Canv,TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
 	switch(Cell.Type)
 	{
 		case DRAW:
-		{   //Cell.Text=getTag(X,Y);//provizorní
-			TCanvas *Canv=Form->Canvas;//pouze zkrácení zapisu
+		{   //Cell.Text=getTag(X,Y);//provizorní pokud chci oèíslovat jednotlivé buòky
+			short Zoom=1;if(AntiAliasing_text)Zoom=3;
 			//nastavení fontu
 			Canv->Font=Cell.Font;
+			Canv->Font->Size*=Zoom;
 			//SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
 			Canv->Brush->Color=clWhite;Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 			//zarovnání
 			//samotnı vıpis
-			//Canv->TextRect(R,0,0,"test"); - nefunguje
 			long L=R.Left,T=R.Top;
-			unsigned int W=Canv->TextWidth(Cell.Text);
-			unsigned int H=Canv->TextHeight(Cell.Text);
-			if(Cell.Font->Orientation==900){W=H;H=Canv->TextWidth(Cell.Text);}
+			if(AntiAliasing_text){L=(L-Left)*Zoom+Left;T=(T-Top)*Zoom+Top;}//vrací zpìt vynásobí 3x a potom zase posune o posunutí tabulky, šlo by take rovnou øešit pøes COLUMNS[] a ROWS[]
+			int W=getWidthHeightText(Cell).X;
+			int H=getWidthHeightText(Cell).Y;
+			if(Cell.Font->Orientation==900){H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
+			if(Cell.Font->Orientation==2700){W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
 			switch(Cell.Align)
 			{
-				case LEFT:	L=L+Cell.LeftMargin;break;
+				case aNO:   L+=Cell.TextPositon.X;
+				case LEFT:	L=L+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
 				case CENTER:L=(R.Left+R.Right)/2-W/2;break;
-				case RIGHT:	L=R.Right-W-Cell.RightMargin;break;
+				case RIGHT:	L=R.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2*Zoom;if(Cell.Font->Orientation==2700)L-=H;break;
 			}
 			switch(Cell.Valign)
 			{
-				case TOP:		T=T+Cell.TopMargin;break;
+				case vNO:		T+=Cell.TextPositon.Y;
+				case TOP:		T=T+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
 				case MIDDLE:T=(R.Top+R.Bottom)/2-H/2;break;
-				case BOTTOM:T=R.Bottom-H-Cell.BottomMargin;break;
+				case BOTTOM:T=R.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2*Zoom;break;
 			}
+			Cell.TextPositon.X=L;Cell.TextPositon.Y=T;
 			Canv->TextOut(L,T,Cell.Text);
-			Canv=NULL; delete Canv;
 		}break;
 		case readEDIT:
 		{
-			SetEdit(Form,R,X,Y,Cell);
+			SetEdit(R,X,Y,Cell);
 		}break;
 		case EDIT:
 		{
-			SetEdit(Form,R,X,Y,Cell);
+			SetEdit(R,X,Y,Cell);
 		}break;
 		case readNUMERIC:
 		{
-			SetNumeric(Form,R,X,Y,Cell);
+			SetNumeric(R,X,Y,Cell);
 		}break;
 		case NUMERIC:
 		{
-			SetNumeric(Form,R,X,Y,Cell);
+			SetNumeric(R,X,Y,Cell);
 		}break;
 		case BUTTON:
 		{
 			//zaloení + tag + název
-			TscGPButton *B=getButton(X,Y,Form);//pokud ji existuje
+			TscGPButton *B=getButton(X,Y);//pokud ji existuje
 			if(B==NULL)
 			{
 				B=new TscGPButton(Form);//pokud ne
@@ -346,7 +453,7 @@ void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,T
 		case COMBO:
 		{
 			//zaloení + tag + název
-			TscGPComboBox *C=getCombo(X,Y,Form);//pokud ji existuje
+			TscGPComboBox *C=getCombo(X,Y);//pokud ji existuje
 			if(C==NULL)
 			{
 				C=new TscGPComboBox(Form);//pokud ne
@@ -378,7 +485,7 @@ void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,T
 		case CHECK:
 		{
 			//zaloení + tag + název
-			TscGPCheckBox *Ch = getCheck(X,Y,Form);//pokud ji existuje
+			TscGPCheckBox *Ch = getCheck(X,Y);//pokud ji existuje
 			if(Ch==NULL)
 			{
 				Ch = new TscGPCheckBox(Form);//pokud ne
@@ -401,10 +508,10 @@ void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,T
 				case MIDDLE:Ch->Top=R.Top+1;Ch->Height=Rows[Y].Height-2;break;
 				case BOTTOM:Ch->Height=Ch->OptionsChecked->ShapeSize;Ch->Top=R.Top+Rows[Y].Height-Ch->Height;break;
 			}
-//			Ch->Options->NormalColor=Cell.Background->Color;
-//			Ch->Options->NormalColorAlpha=255;
-//			Ch->Options->FrameNormalColor=clWhite;
-//			Ch->Options->FrameNormalColorAlpha=255;
+			Ch->Options->NormalColor=Cell.Background->Color;
+			Ch->Options->NormalColorAlpha=255;
+			Ch->Options->FrameNormalColor=clWhite;
+			Ch->Options->FrameNormalColorAlpha=255;
 			Ch->Font=Cell.Font;
 			Ch->Caption=Cell.Text;
 			//vlastník
@@ -414,7 +521,7 @@ void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,T
 		case RADIO:
 		{
 			//zaloení + tag + název
-			TscGPRadioButton *Ra = getRadio(X,Y,Form);//pokud ji existuje
+			TscGPRadioButton *Ra = getRadio(X,Y);//pokud ji existuje
 			if(Ra==NULL)//pokud ne
 			{
 				Ra = new TscGPRadioButton(Form);
@@ -438,10 +545,10 @@ void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,T
 				case MIDDLE:Ra->Top=R.Top+1;Ra->Height=Rows[Y].Height-2;break;
 				case BOTTOM:Ra->Height=Ra->OptionsChecked->ShapeSize;Ra->Top=R.Top+Rows[Y].Height-Ra->Height;break;
 			}
-//			Ra->Options->NormalColor=Cell.Background->Color;
+//			Ra->Options->NormalColor=clWhite;Cell.Background->Color;
 //			Ra->Options->NormalColorAlpha=255;
-//			Ra->Options->FrameNormalColor=clWhite;
-//			Ra->Options->FrameNormalColorAlpha=255;
+			//Ra->Options->FrameNormalColor=clWhite;
+			//Ra->Options->FrameNormalColorAlpha=255;
 			Ra->Font=Cell.Font;
 			Ra->Caption=Cell.Text;
 			//vlastník
@@ -452,10 +559,10 @@ void TmGrid::SetComponents(TForm *Form,TRect R,unsigned long X,unsigned long Y,T
 }
 //---------------------------------------------------------------------------
 //nastaví danou buòku na edit, pomocná metoda vıše uvedené
-void TmGrid::SetEdit(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCells Cell)
+void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
 	//zaloení + tag + název
-	TscGPEdit *E=getEdit(X,Y,Form);//pokud ji existuje
+	TscGPEdit *E=getEdit(X,Y);//pokud ji existuje
 	if(E==NULL)//pokud ne
 	{
 		E=new TscGPEdit(Form);
@@ -475,7 +582,7 @@ void TmGrid::SetEdit(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCells 
 	E->Height=Rows[Y].Height-1;
 	E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
-	E->Options->FrameNormalColor=clWhite;
+	E->Options->FrameNormalColor=Cell.Background->Color;
 	E->Options->FrameNormalColorAlpha=255;
 	E->Options->FrameDisabledColor=E->Options->DisabledColor;
 	E->Margins->Left=0;E->Margins->Right=0;E->Margins->Top=0;E->Margins->Bottom=0;
@@ -486,12 +593,11 @@ void TmGrid::SetEdit(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCells 
 		case RIGHT:	E->Alignment=taRightJustify;break;
 	}
 	E->ContentMarginBottom=0;
-	Form->Canvas->Font=Cell.Font;
 	switch(Cell.Valign)
 	{
 		case TOP:		E->ContentMarginTop=0;break;
-		case MIDDLE:E->ContentMarginTop=E->Height/2-Form->Canvas->TextHeight(Cell.Text)/2;break;
-		case BOTTOM:E->ContentMarginTop=E->Height-Form->Canvas->TextHeight(Cell.Text);break;
+		case MIDDLE:E->ContentMarginTop=E->Height/2-getWidthHeightText(Cell).Y/2;break;
+		case BOTTOM:E->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
 	}
 	E->Font=Cell.Font;
 	E->Text=Cell.Text;
@@ -501,10 +607,10 @@ void TmGrid::SetEdit(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCells 
 }
 //---------------------------------------------------------------------------
 //nastaví danou buòku na numericedit, pomocná metoda objednu vıše uvedené
-void TmGrid::SetNumeric(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCells Cell)
+void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
 	//zaloení + tag + název
-	TscGPNumericEdit *N=getNumeric(X,Y,Form);//pokud ji existuje
+	TscGPNumericEdit *N=getNumeric(X,Y);//pokud ji existuje
 	if(N==NULL)//pokud ne
 	{
 		N=new TscGPNumericEdit(Form);
@@ -525,7 +631,7 @@ void TmGrid::SetNumeric(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCel
 	N->Height=Rows[Y].Height-1;
 	N->Options->NormalColor=Cell.Background->Color;
 	N->Options->NormalColorAlpha=255;
-	N->Options->FrameNormalColor=clWhite;
+	N->Options->FrameNormalColor=Cell.Background->Color;
 	N->Options->FrameNormalColorAlpha=255;
 	N->Options->FrameDisabledColor=N->Options->DisabledColor;
 	N->Margins->Left=0;N->Margins->Right=0;N->Margins->Top=0;N->Margins->Bottom=0;
@@ -536,12 +642,11 @@ void TmGrid::SetNumeric(TForm *Form,TRect R,unsigned long X,unsigned long Y,TCel
 		case RIGHT:	N->Alignment=taRightJustify;break;
 	}
 	N->ContentMarginBottom=0;
-	Form->Canvas->Font=Cell.Font;
 	switch(Cell.Valign)
 	{
 		case TOP:		N->ContentMarginTop=0;break;
-		case MIDDLE:N->ContentMarginTop=N->Height/2-Form->Canvas->TextHeight(Cell.Text)/2;break;
-		case BOTTOM:N->ContentMarginTop=N->Height-Form->Canvas->TextHeight(Cell.Text);break;
+		case MIDDLE:N->ContentMarginTop=N->Height/2-getWidthHeightText(Cell).Y/2;break;
+		case BOTTOM:N->ContentMarginTop=N->Height-getWidthHeightText(Cell).Y;break;
 	}
 	N->Font=Cell.Font;
 	TMyString ms;
@@ -559,7 +664,9 @@ unsigned long TmGrid::getTag(unsigned long Col,unsigned long Row)
 //z tagu vratí èíslo sloupce
 unsigned long TmGrid::getColFromTag(unsigned long Tag)
 {
-	return Tag%ColCount;
+	long RET=Tag%ColCount-1;
+	if(RET>=0)return RET;
+	else return RET=ColCount-1;
 }
 //---------------------------------------------------------------------------
 //z tagu vratí èíslo øádku
@@ -573,6 +680,7 @@ unsigned long TmGrid::getRowFromTag(unsigned long Tag)
 void TmGrid::SetColumnAutoFit(long ColIdx)
 {
 	SetColumnAutoFitColIdx=ColIdx;
+	SetColRow();//nastaví velikost sloupcù a øádkù
 }
 //---------------------------------------------------------------------------
 //nastaví šíøku bunìk sloupcù dle šíøky textu dle zvoleného parametru
@@ -596,9 +704,8 @@ void TmGrid::executeColumnsAutoFit(TCanvas *Canv)
 			{
 				for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 				{
-					Canv->Font=Cells[X][Y].Font;
-					unsigned int W=Canv->TextWidth(Cells[X][Y].Text)+Cells[X][Y].LeftMargin+Cells[X][Y].RightMargin;
-					if(Cells[X][Y].Type==CHECK || Cells[X][Y].Type==RADIO)W+=20+Cells[X][Y].LeftMargin+Cells[X][Y].RightMargin;//zámìrnì podruhé
+					unsigned int W=getWidthHeightText(Cells[X][Y]).X+Cells[X][Y].LeftMargin+Cells[X][Y].LeftBorder->Width/2+Cells[X][Y].RightMargin+Cells[X][Y].RightBorder->Width/2;
+					if(Cells[X][Y].Type==CHECK || Cells[X][Y].Type==RADIO)W+=20;
 					if(W>MaxColWidth)MaxColWidth=W;//najde nejšiøší
 				}
 			}
@@ -626,12 +733,10 @@ void TmGrid::executeColumnsAutoFit(TCanvas *Canv)
 //nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
 void TmGrid::executeColumnAutoFit(TCanvas *Canv,long ColIdx)
 {
-	Canv->Font=Cells[ColIdx][0].Font;
-	unsigned int ColWidth=Canv->TextWidth(Cells[ColIdx][0].Text); //vıchozí hodnota
+	unsigned int ColWidth=getWidthHeightText(Cells[ColIdx][0]).X;//vıchozí hodnota
 	for(unsigned long Y=1;Y<RowCount;Y++)
 	{
-		Canv->Font=Cells[ColIdx][Y].Font;
-		unsigned int W=Canv->TextWidth(Cells[ColIdx][Y].Text);
+		unsigned int W=getWidthHeightText(Cells[ColIdx][Y]).X+Cells[ColIdx][Y].LeftMargin+Cells[ColIdx][Y].LeftBorder->Width/2+Cells[ColIdx][Y].RightMargin+Cells[ColIdx][Y].RightBorder->Width/2;
 		if(Cells[ColIdx][Y].Type==CHECK || Cells[ColIdx][Y].Type==RADIO)W+=20+4+4;
 		if(W>ColWidth)ColWidth=W;//najde nejšiøší
 	}
@@ -651,21 +756,49 @@ unsigned long TmGrid::getHeight()
 	return Rows[RowCount-1].Top+Rows[RowCount-1].Height;
 }
 //---------------------------------------------------------------------------
+//vrátí šíøku a vıšku textu buòky v pixelech
+TPoint TmGrid::getWidthHeightText(TCells &Cell)
+{
+	TPoint RET;
+	Form->Canvas->Font=Cell.Font;//nastavení fontu
+	if(Cell.Font->Orientation==900 || Cell.Font->Orientation==2700)
+	{
+		RET.Y=Form->Canvas->TextWidth(Cell.Text);
+		RET.X=Form->Canvas->TextHeight(Cell.Text);
+	}
+	else
+	{
+		RET.X=Form->Canvas->TextWidth(Cell.Text);
+		RET.Y=Form->Canvas->TextHeight(Cell.Text);
+  }
+	return RET;
+}
+//---------------------------------------------------------------------------
+//zajistí rotaci textu
+void TmGrid::rotace_textu(long rotace)
+{
+	LOGFONT LogRec;
+	GetObject(Form->Canvas->Font->Handle,sizeof(LogRec),&LogRec);
+	LogRec.lfEscapement=rotace;
+	Form->Canvas->Font->Handle=CreateFontIndirect(&LogRec);
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //dle zadaného  èísla sloupce a èísla øádku  vrátí ukazatel nadanou komponentu
-TscGPEdit *TmGrid::getEdit(unsigned long Col,unsigned long Row,TForm *Form){return (TscGPEdit *)Form->FindComponent("mGrid_EDIT_"+AnsiString(getTag(Col,Row)));}
-TscGPButton *TmGrid::getButton(unsigned long Col,unsigned long Row,TForm *Form){return (TscGPButton *)Form->FindComponent("mGrid_BUTTON_"+AnsiString(getTag(Col,Row)));}
-TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row,TForm *Form){return (TscGPComboBox *)Form->FindComponent("mGrid_COMBO_"+AnsiString(getTag(Col,Row)));}
-TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row,TForm *Form){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row,TForm *Form){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row,TForm *Form){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPEdit *TmGrid::getEdit(unsigned long Col,unsigned long Row){return (TscGPEdit *)Form->FindComponent("mGrid_EDIT_"+AnsiString(getTag(Col,Row)));}
+TscGPButton *TmGrid::getButton(unsigned long Col,unsigned long Row){return (TscGPButton *)Form->FindComponent("mGrid_BUTTON_"+AnsiString(getTag(Col,Row)));}
+TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row){return (TscGPComboBox *)Form->FindComponent("mGrid_COMBO_"+AnsiString(getTag(Col,Row)));}
+TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 {
 	//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-	Form2->OnClick(Col,Row);
+	TComponent *K;
+	Form_gapo->OnClick(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
@@ -673,7 +806,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 	//ShowMessage(AnsiString("OnEnter ")+IntToStr(((TComponent*)(Sender))->Tag));
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-	Form2->OnEnter(Col,Row);
+	Form_gapo->OnEnter(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnChange(TObject *Sender)
@@ -681,51 +814,115 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	//ShowMessage(AnsiString("OnChange ")+IntToStr(((TComponent*)(Sender))->Tag));
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-	Form2->OnChange(Col,Row);
+	Form_gapo->OnChange(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //spojí dvì buòky do jedné
 void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)
 {
-//	for(unsigned long X=ColCell_1;X<=ColCell_2;X++)
-//	{
-//		for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)
-//		{
-//			UnicodeString Text=Cells[X][Y].Text;//záloha textu
-//			Cells[X][Y]=RefCell;
-//			Cells[X][Y].Text=Text;//navrácení textu
-//		}
-//	}
-//	 if(ColCell_1==ColCell_2)//varianta pod sebou
-//	 {
-//		 Cells[ColCell_1][RowCell_1].BottomBorder.Color=Cells[ColCell_1][RowCell_1].Background->Color;
-//		 Cells[ColCell_2][RowCell_2].TopBorder.Color=Cells[ColCell_1][RowCell_1].Background->Color;
-//		 //zanést do buòky 1-1, asi novou šíøku
-//	 }
-//	 if(RowCell_1==RowCell_2)//varianta vedle sebe
-//	 {
-//		 Cells[ColCell_1][RowCell_1].RightBorder.Color=Cells[ColCell_1][RowCell_1].Background->Color;
-//		 Cells[ColCell_2][RowCell_2].LeftBorder.Color=Cells[ColCell_1][RowCell_1].Background->Color;
-//	 }
-//	 Cells[ColCell_2][RowCell_2].Background->Color=Cells[ColCell_1][RowCell_1].Background->Color;
+	////kopie referenèní buòky //TCells RefCell=Cells[ColCell_1][RowCell_1];// - nelze však pouít takto na pøedávání borders, proto metoda níe, pøedávalo by i ukazatel
+	TCells RefCell;CreateCell(RefCell);
+	CopyCell(Cells[ColCell_1][RowCell_1],RefCell,false);
+
+	////nastavení referenèní buòky kvùli orámování všech bunìk oblasti na totonou barvu
+	TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
+	*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
+
+	////projde nejdøíve všechny buòky nastaví jim prvnì dle pozadí první buòky stejné pozadí a dle barvy pozadí i barvu orámování
+	SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,true);
+
+	////vytvoøí resp. pøedá orámování oblasti dle referenèní buòky, šlo by øešit v ve vıše volaném prùchodu, bylo by sice systomovì ménì nároèné, ale více komplikované na realizaci
+	SetRegion(RefCell,ColCell_1,RowCell_1,ColCell_2,RowCell_2);
+
+	////text
+	Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení ze zálohy do poslední buòky, protoe ta se vykresluje jako poslední
+	unsigned int W=getWidthHeightText(RefCell).X;
+	unsigned int H=getWidthHeightText(RefCell).Y;
+	if(RefCell.Font->Orientation==900){W=H;H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
+	if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
+	//if(Cell.Font->Orientation==2700)L-=H;
+
+	//if(RefCell.Type==DRAW)//jinak se neøeší
+	{
+			Cells[ColCell_2][RowCell_2].Align=aNO;
+			Cells[ColCell_2][RowCell_2].Valign=vNO;
+			//zarovnání (zarovnává dle první buòky, ale pracuje s poslední, protoe ta se vykresluje zcela poslední)
+			switch(Cells[ColCell_1][RowCell_1].Align)
+			{
+				 case LEFT:
+				 {
+					 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_1].Left-Columns[ColCell_2].Left+Cells[ColCell_2][RowCell_2].LeftMargin+Cells[ColCell_2][RowCell_2].LeftBorder->Width/2;
+				 }
+				 break;
+				 case CENTER:
+				 {
+					 TscGPRadioButton *Ra=getRadio(ColCell_1,RowCell_1);
+					 if(Ra==NULL)Cells[ColCell_2][RowCell_2].TextPositon.X=(Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-W/2;
+					 if(Ra!=NULL)
+					 {
+							Ra->Left=(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
+           }
+				 }break;
+				 case RIGHT:
+				 {
+					 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W-Cells[ColCell_2][RowCell_2].RightMargin-Cells[ColCell_2][RowCell_2].RightBorder->Width/2;
+				 }break;
+			}
+			switch(Cells[ColCell_1][RowCell_1].Valign)
+			{
+				 case TOP:
+				 {
+					 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top+Cells[ColCell_2][RowCell_2].TopMargin+Cells[ColCell_2][RowCell_2].TopBorder->Width/2;
+				 }break;
+				 case MIDDLE:
+				 {
+					 Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
+				 }
+				 break;
+				 case BOTTOM:
+				 {
+					 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H-Cells[ColCell_2][RowCell_2].BottomMargin-Cells[ColCell_2][RowCell_2].BottomBorder->Width/2;
+				 }
+				 break;
+			}
+	}
 }
 //---------------------------------------------------------------------------
-//nastaví oblast bunìk totonımi vlastnostmi dle referenèní buòky (text zanechá), zaèínat zadávat od nejvyšší a nejvíce vlevo
-void TmGrid::SetCells(TCells RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)
+//nastaví oblast bunìk totonımi vlastnostmi dle referenèní buòky, text podle posledního parametru buï -1 -smae, 0 - zanechá pùvodní (implicitnì), 1 zkopíruje všude stejnı), zaèínat zadávat od nejvyšší a nejvíce vlevo
+void TmGrid::SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,short setText,bool copyComponent)
 {
 	for(unsigned long X=ColCell_1;X<=ColCell_2;X++)
 	{
 		for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)
 		{
-			UnicodeString Text=Cells[X][Y].Text;//záloha textu
-			Cells[X][Y]=RefCell;
+			UnicodeString Text=Cells[X][Y].Text;//záloha textu, varianta zanechá pùvodní
+			if(setText==-1)Text="";//varianta smae
+			if(setText==1)Text=RefCell.Text;//varianta všude stejnı
+			//Cells[X][Y]=RefCell;// - nelze však pouít na pøedávání borders, proto metoda níe
+			CopyCell(RefCell,Cells[X][Y],copyComponent);
 			Cells[X][Y].Text=Text;//navrácení textu
 		}
 	}
 }
 //---------------------------------------------------------------------------
-void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,unsigned short Width,TColor Color)
+void TmGrid::SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)//totonì ohranièí danou oblast bunìk dle referenèní buòky (zohledòuje i rozdíly horní,dolní,levé pravé orámování), zaèínat zadávat od nejvyšší a nejvíce vlevo
+{
+	//top a bottom okraj
+	for(unsigned long X=ColCell_1;X<=ColCell_2;X++)
+	{
+		*Cells[X][RowCell_1].TopBorder=*RefCell.TopBorder;
+		*Cells[X][RowCell_2].BottomBorder=*RefCell.BottomBorder;
+	}
+	//left a right okraj
+	for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)
+	{
+		*Cells[ColCell_1][Y].LeftBorder=*RefCell.LeftBorder;
+		*Cells[ColCell_2][Y].RightBorder=*RefCell.RightBorder;
+	}
+}
+//---------------------------------------------------------------------------
+void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
 {
 //	switch(Cell[Col][Row])
 //	{
@@ -741,6 +938,55 @@ void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,unsigned short Wi
 			*Cells[Col][Row].BottomBorder=hlBorder;
 //		}break;
 //	}
+}
+//---------------------------------------------------------------------------
+//zkopíruje obsah, formát a orámování z buòky na buòku (bez ukazatelového propojení)
+void TmGrid::CopyCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
+{
+	//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
+	CopyAreaCell(RefCell,CopyCell,copyComponent);
+	//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
+	CopyBordesCell(RefCell,CopyCell);
+}
+//---------------------------------------------------------------------------
+//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
+void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
+{
+	////typ
+	if(copyComponent)CopyCell.Type=RefCell.Type;
+	else CopyCell.Type=DRAW;
+	////text + font
+	//*CopyCell.Font=*RefCell.Font;
+	CopyCell.Font->Size=RefCell.Font->Size;
+	CopyCell.Font->Color=RefCell.Font->Color;
+	CopyCell.Font->Orientation=RefCell.Font->Orientation;
+	CopyCell.Font->Style=RefCell.Font->Style;
+	CopyCell.Font->Pitch=RefCell.Font->Pitch;
+	CopyCell.Font->Name=RefCell.Font->Name;
+	CopyCell.TextPositon.X=RefCell.TextPositon.X;
+	CopyCell.TextPositon.Y=RefCell.TextPositon.Y;
+	CopyCell.Text=RefCell.Text;
+	////zarovnání
+	CopyCell.Align=RefCell.Align;
+	CopyCell.Valign=RefCell.Valign;
+	//osazení
+	CopyCell.TopMargin=RefCell.TopMargin;
+	CopyCell.BottomMargin=RefCell.BottomMargin;
+	CopyCell.LeftMargin=RefCell.LeftMargin;
+	CopyCell.RightMargin=RefCell.RightMargin;
+	////pozadí
+	//*CopyCell.Background=*RefCell.Background;
+	CopyCell.Background->Color=RefCell.Background->Color;
+	CopyCell.Background->Style=RefCell.Background->Style;
+}
+//---------------------------------------------------------------------------
+//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
+void TmGrid::CopyBordesCell(TCells &RefCell,TCells &CopyCell)
+{
+	*CopyCell.TopBorder=*RefCell.TopBorder;
+	*CopyCell.BottomBorder=*RefCell.BottomBorder;
+	*CopyCell.LeftBorder=*RefCell.LeftBorder;
+	*CopyCell.RightBorder=*RefCell.RightBorder;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -773,25 +1019,32 @@ void TmGrid::Clear()
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //zajistí realokaci pole Cells dle nové velikosti
-void TmGrid::realock(TForm *Form)
+void TmGrid::realock()
 {
 	//kopie do záloního pole a smazání
 	TCells **bufCells = new TCells*[bufColCount];//vytvoøí dynamické pole ukazatelu typu TCells dle poètu poadovanıch sloupcù
 	for(unsigned long X=0;X<bufColCount;X++)
 	{
 		bufCells[X] = new TCells[bufRowCount];//pruchod po sloupcich, slupcùm dynamamického pole alokuje pamìt pro jednotlivé øádky- cyklus musí bıt samostatnì
-		bufCells[X] = Cells[X];//zkopírování pùvodních hodnot do zálohy
+		//*bufCells[X] = *Cells[X];//zkopírování pùvodních hodnot do zálohy //takto asi nevhodné kopírovat (zùstane ukazatel), s hvìzdickou sice hodnoty ale je potøeba pøidìlit pamìt pomocí new pro TBrush TFont a TBorders
+		for(unsigned long Y=0;Y<bufRowCount;Y++)
+		{
+			CreateCell(bufCells[X][Y]);
+			CopyCell(Cells[X][Y],bufCells[X][Y],true);
+		}
 	}
 
+	//smazání pùvodních hodnot
 	unsigned long bufColCount2=ColCount;unsigned long bufRowCount2=RowCount;
-	ColCount=bufColCount;RowCount=bufRowCount;//provizorní vrácení
-	DeleteComponents(Form);
-	Delete();
-	ColCount=bufColCount2;RowCount=bufRowCount2;//zpìt
+	ColCount=bufColCount;RowCount=bufRowCount;
+	DeleteComponents();
+	//pokud bych pùvodní chtìl komponenty zachovat, ale nefunguje zcela správnì DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);
+	ColCount=bufColCount2;RowCount=bufRowCount2;
+	DeleteTable();
 
 	//vytvoøení nového realokovaného pole
 	bufColCount2=bufColCount;bufRowCount2=bufRowCount;//urèeno pøi další realokaci pole, create toti pøepisuje buf hodnoty
-	Create();
+	Create(ColCount,RowCount);
 
 	//zkopírování pùvodních hodnot zpìt
 	if(bufColCount2>ColCount)bufColCount=ColCount;else bufColCount=bufColCount2;//podle toho, co je menší
@@ -800,7 +1053,13 @@ void TmGrid::realock(TForm *Form)
 	{
 		for(unsigned long Y=0;Y<bufRowCount;Y++)
 		{
-			Cells[X][Y] = bufCells[X][Y];
+			//nelze celı ukazatel Cells[X][Y] = bufCells[X][Y];
+			////typ
+			Cells[X][Y].Font=new TFont();
+			Cells[X][Y].Background=new TBrush();//alokace pamìti
+			CopyAreaCell(bufCells[X][Y],Cells[X][Y]);//kopie vlastností, bez orámování
+			////orámování
+			CreateLinkBorder(X,Y,bufCells[X][Y]);
 		}
 	}
 
@@ -809,10 +1068,7 @@ void TmGrid::realock(TForm *Form)
 	{
 		for(unsigned long Y=0;Y<bufRowCount2;Y++)//po øádcích
 		{
-			Cells[X][Y].TopBorder=NULL;		 delete Cells[X][Y].TopBorder;
-			Cells[X][Y].BottomBorder=NULL; delete Cells[X][Y].BottomBorder;
-			Cells[X][Y].LeftBorder=NULL;   delete Cells[X][Y].LeftBorder;
-			Cells[X][Y].RightBorder=NULL;  delete Cells[X][Y].RightBorder;
+			DeleteCell(bufCells[X][Y]);
 		}
 		bufCells[X]=NULL; delete bufCells[X];
 	}
@@ -821,22 +1077,28 @@ void TmGrid::realock(TForm *Form)
 }
 //---------------------------------------------------------------------------
 //odstraní dynamicky vytoøené komponenty, nutno volat pøed Delete()
-void TmGrid::DeleteComponents(TForm *Form)
+void TmGrid::DeleteComponents()
 {
-	for(unsigned long X=0;X<ColCount;X++)//po øádcích
+	DeleteComponents(0,0,ColCount-1,RowCount-1);
+}
+//---------------------------------------------------------------------------
+//odstraní dynamicky vytoøené komponenty od - do poètu sloupcù a øádkù, nutno volat pøed Delete()
+void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow)
+{
+	for(unsigned long X=sCol;X<=fCol;X++)//po øádcích
 	{
-		for(unsigned long Y=0;Y<RowCount;Y++)//po sloupcích
+		for(unsigned long Y=sRow;Y<=fRow;Y++)//po sloupcích
 		{
 			switch(Cells[X][Y].Type)
 			{
-				case readEDIT: {TscGPEdit *E=getEdit(X,Y,Form);E->Free();E=NULL;delete E;}break;
-				case EDIT: {TscGPEdit *E=getEdit(X,Y,Form);E->Free();E=NULL;delete E;}break;
-				case NUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y,Form);N->Free();N=NULL;delete N;}break;
-				case readNUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y,Form);N->Free();N=NULL;delete N;}break;
-				case BUTTON: {TscGPButton *B=getButton(X,Y,Form);B->Free();B=NULL;delete B;}break;
-				case COMBO: {TscGPComboBox *C=getCombo(X,Y,Form);C->Free();C=NULL;delete C;}break;
-				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y,Form);CH->Free();CH=NULL;delete CH;}break;
-				case RADIO:{TscGPRadioButton *R=getRadio(X,Y,Form);R->Free();R=NULL;delete R;}break;
+				case readEDIT: {TscGPEdit *E=getEdit(X,Y);E->Free();E=NULL;delete E;}break;
+				case EDIT: {TscGPEdit *E=getEdit(X,Y);E->Free();E=NULL;delete E;}break;
+				case NUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y);N->Free();N=NULL;delete N;}break;
+				case readNUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y);N->Free();N=NULL;delete N;}break;
+				case BUTTON: {TscGPButton *B=getButton(X,Y);B->Free();B=NULL;delete B;}break;
+				case COMBO: {TscGPComboBox *C=getCombo(X,Y);C->Free();C=NULL;delete C;}break;
+				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y);CH->Free();CH=NULL;delete CH;}break;
+				case RADIO:{TscGPRadioButton *R=getRadio(X,Y);R->Free();R=NULL;delete R;}break;
 			}
 		}
 	}
