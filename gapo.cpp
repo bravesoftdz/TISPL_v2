@@ -71,7 +71,7 @@ void __fastcall TForm_gapo::FormActivate(TObject *Sender)
 			mGrid->Cells[13][0].Text="Rotace";
 
 			//pøiøadí celo oblasti bunìk totožné vlastnosti jako u referenèní buòky
-			mGrid->SetCells(mGrid->Cells[0][0],0,0,13,0,0,false);
+			mGrid->SetCells(mGrid->Cells[0][0],0,0,13,0);
 
 			//manualfit výšky 0tého øádku (zatím není pøipravena metoda)
 			Canvas->Font=mGrid->Cells[6][0].Font;	//nejdelší použitý text
@@ -84,11 +84,17 @@ void __fastcall TForm_gapo::FormActivate(TObject *Sender)
 																				mGrid->Cells[1][3].Text="CO2";
 																				mGrid->Cells[1][4].Text="LAK";
 			mGrid->MergeCells(0,2,0,4);//slouèení
+
 			//volby
 			mGrid->Cells[2][1].Type=mGrid->RADIO;mGrid->Cells[4][1].Type=mGrid->RADIO;mGrid->MergeCells(2,1,3,1);mGrid->RADIO;mGrid->MergeCells(4,1,5,1);//slouèení
 			mGrid->Cells[2][2].Type=mGrid->RADIO;mGrid->Cells[4][2].Type=mGrid->RADIO;mGrid->MergeCells(2,2,3,2);mGrid->RADIO;mGrid->MergeCells(4,2,5,2);
 			mGrid->Cells[2][3].Type=mGrid->RADIO;mGrid->Cells[4][3].Type=mGrid->RADIO;mGrid->MergeCells(2,3,3,3);mGrid->RADIO;mGrid->MergeCells(4,3,5,3);
 			mGrid->Cells[2][4].Type=mGrid->RADIO;mGrid->Cells[4][4].Type=mGrid->RADIO;mGrid->MergeCells(2,4,3,4);mGrid->RADIO;mGrid->MergeCells(4,4,5,4);
+
+			//prozatim, rozdìlení sekcí
+			mGrid->Cells[5][1].RightBorder->Width=mGrid->Cells[5][0].RightBorder->Width=2;
+			mGrid->SetCells(mGrid->Cells[5][1],5,2,5,3);
+			mGrid->Cells[5][4].RightBorder->Width=mGrid->Cells[5][1].RightBorder->Width;
 		}break;
 	}
 	//nastavení velikosti sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show()
