@@ -356,7 +356,7 @@ double Cmy::mezera(double rotace,double Rz)
 	return Rz-UDV(rotace);
 }
 /////////////////////////////////////////////////////////////////////////////
-//vrátí velikokost minimální mezery tak, aby se
+//vrátí velikokost minimální mezery tak, aby se stíhálo èekání na palce a vozíky se nesrazily
 double Cmy::minM(double RD1,double RD2,double R2)
 {
 	double M=0.0;

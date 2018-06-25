@@ -94,19 +94,21 @@ class TmGrid
 	unsigned long Row,Col;//aktuální øádek a sloupec, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
 
  private:
+	TForm *Form;
+
 	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter
 	void __fastcall getTagOnChange(TObject *Sender);//vrací událost pøi OnChange
 
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky vèetnì gridu
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
-	void SetColRow();//nastaví velikost sloupcù a øádkù
+	void SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøebe
 	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na poadované parametry
-	void SetComponents(TCanvas *Canv,TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku dle typu
+	void SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku dle typu
 	void SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na edit, pomocná metoda vıše uvedené
 	void SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na numericedit, pomocná metoda objednu vıše uvedené
 	void rcc(unsigned long cc,unsigned long rc);//pouze obejití lokální promìnné, v c++ je na to nìjaké klíèové slovo, ale nevzpomenu si
-  void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
+	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
 	void CreateCell(TCells &NewCell);//vytvoøí novou buòku (alokuje ji pamì)
 	void DeleteCell(TCells &DelCell);//smae buòku z pamìti
 	void DeleteTable();//odstraní pouze tabulku z pamìti
@@ -116,8 +118,9 @@ class TmGrid
 	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
 	void realock();//zajistí realokaci pole Cells dle nové velikosti
 	void rotace_textu(long rotace);//zajistí rotaci textu
+	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 
-	TForm *Form;
 	unsigned long getWidth();//vrátí celkovou šíøku tabulky
 	unsigned long getHeight();//vrátí celkovou vıšku tabulky
 	TPoint getWidthHeightText(TCells &Cell);//vrátí šíøku a vıšku textu buòky v pixelech

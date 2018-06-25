@@ -13,7 +13,6 @@ object Form_gapo: TForm_gapo
   Font.Style = []
   OldCreateOrder = False
   OnActivate = FormActivate
-  OnClose = FormClose
   OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
@@ -48,7 +47,6 @@ object Form_gapo: TForm_gapo
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 463
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 1057
@@ -127,7 +125,6 @@ object Form_gapo: TForm_gapo
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 413
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -162,7 +159,6 @@ object Form_gapo: TForm_gapo
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367
-      ExplicitWidth = 316
     end
     object Max_Min_Button: TscGPGlyphButton
       AlignWithMargins = True
@@ -239,7 +235,6 @@ object Form_gapo: TForm_gapo
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 363
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 970
@@ -319,7 +314,6 @@ object Form_gapo: TForm_gapo
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 326
     end
   end
   object scGPButton_OK: TscGPButton
@@ -409,5 +403,14 @@ object Form_gapo: TForm_gapo
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Button1: TButton
+    Left = 696
+    Top = 360
+    Width = 75
+    Height = 25
+    Caption = 'test AA'
+    TabOrder = 2
+    OnClick = Button1Click
   end
 end

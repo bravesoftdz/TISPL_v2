@@ -23,7 +23,7 @@ TmGrid::TmGrid(TForm *Owner)
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	//orámování - default
 	TBorder defBorder;
-	defBorder.Color=clLtGray;
+	defBorder.Color=(TColor)RGB(200,200,200);
 	defBorder.Width=1;
 	defBorder.Style=psSolid;
 	Border=defBorder;Border.Width=2;
@@ -36,7 +36,7 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.Type = DRAW;//defaultní komponenta
 	//text
 	DefaultCell.Font->Size=12;
-	DefaultCell.Font->Color=clBlack;
+	DefaultCell.Font->Color=clBlack;(TColor)RGB(128,128,128);
 	DefaultCell.Font->Orientation=0;
 	DefaultCell.Font->Style=TFontStyles();
 	DefaultCell.Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
@@ -152,12 +152,17 @@ void TmGrid::DeleteCell(TCells &DelCell)
 //odstraní tabulku, pøidružené komponenty a ukazatel na mGrid z pamìti
 void TmGrid::Delete()
 {
-	//odstranìní v tabulce použitých komponent
-	DeleteComponents();
-	//uvolnìní pamìti
-	DeleteTable();
-	DeleteCell(DefaultCell);
-	mGrid=NULL; delete mGrid;
+	try
+	{
+		//odstranìní v tabulce použitých komponent
+		DeleteComponents();
+		//uvolnìní pamìti
+		DeleteTable();
+		DeleteCell(DefaultCell);
+		mGrid=NULL; delete mGrid;
+	}
+	catch(...)
+	{MessageBeep(0);}
 }
 //---------------------------------------------------------------------------
 //odstraní pouze tabulku, pomocná metoda výše uvedené a destruktoru
@@ -188,7 +193,7 @@ void TmGrid::Show()
 		}
 
 		//nastavení šíøky sloupcù a výšky øádkù+autofit sloupcù nastaví Columns[X].ColWidth
-		SetColRow();
+		SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
 
 		//ošetøení proti situaci AntiAliasing_text=true; a AntiAliasing_grid=false, která nemùže nastat resp. byla by zbyteèná
 		if(AntiAliasing_text==false)AntiAliasing_grid=false;
@@ -234,7 +239,7 @@ void TmGrid::Draw(TCanvas *C)
 	{
 		////oblast buòky
 		TRect R;//grid
-		TRect Rb;//pozadí buòky
+		TRect Rb;//pozadí buòky + text
 		TRect Rc;//componenty
 		R.Left	=	Left+Columns[X].Left*Zoom_g;
 		Rb.Left	=	Left+Columns[X].Left*Zoom_b;
@@ -260,32 +265,32 @@ void TmGrid::Draw(TCanvas *C)
 			C->FillRect(Rb);
 
 			////komponenta v buòce
-			SetComponents(C,Rc,X,Y,Cells[X][Y]);
+			SetComponents(C,Rc,Rb,X,Y,Cells[X][Y]);
 
 			////orámování buòky
 			//používám duplicitnì (k DrawGrid) zde, kvùli akceleraci v pøípadì totálnì vypnutého AA nebo totálnì zapnutého AA, v takovém pøípadì potom nebìží DrawGrid, mohl bych ho sice volat zde, ale chci si ušetøit opakovaný prùchod cykly, DrawGrid bìží jenom v momentu AntiAliasing_text=false a AntiAliasing_grid=true
 			if(!(AntiAliasing_grid==false && AntiAliasing_text==true))
 			{
 				//top
-				if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+				//nefunguje správnì:if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
 				{
 					SetBorder(C,Cells[X][Y].TopBorder);
 					C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
 				}
 				//bottom
-				if(Y==RowCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+				if(Y==RowCount-1)//nefunguje správnì: && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 				{
 					SetBorder(C,Cells[X][Y].BottomBorder);
 					C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 				}
 				//left
-				if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+				//nefunguje správnì:if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
 				{
 					SetBorder(C,Cells[X][Y].LeftBorder);
 					C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
 				}
 				//right                                 udìlat pøíznak na slouèenu buòku té nekreslit støe
-				if(X==ColCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+				if(X==ColCount-1)//nefunguje správnì: && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 				{
 					SetBorder(C,Cells[X][Y].RightBorder);
 					C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
@@ -309,25 +314,25 @@ void TmGrid::DrawGrid(TCanvas *C)
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 			////orámování buòky
 			//top
-			if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+			//nefunguje správnì: if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
 			{
 				SetBorder(C,Cells[X][Y].TopBorder);
 				C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
 			}
 			//bottom
-			if(Y==RowCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+			if(Y==RowCount-1)//nefunguje správnì:  && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 			{
 				SetBorder(C,Cells[X][Y].BottomBorder);
 				C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 			}
 			//left
-			if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+			//nefunguje správnì: if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
 			{
 				SetBorder(C,Cells[X][Y].LeftBorder);
 				C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
 			}
 			//right
-			if(X==ColCount-1 && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+			if(X==ColCount-1) //nefunguje správnì: && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 			{
 				SetBorder(C,Cells[X][Y].RightBorder);
 				C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
@@ -336,7 +341,7 @@ void TmGrid::DrawGrid(TCanvas *C)
 	}
 }
 //---------------------------------------------------------------------------
-//nastaví velikost sloupcù a øádkù
+//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
 void TmGrid::SetColRow()
 {
 	executeColumnsAutoFit(Form->Canvas);
@@ -372,42 +377,42 @@ void TmGrid::SetBorder(TCanvas *C,TBorder *Border)
 }
 //---------------------------------------------------------------------------
 //nastaví danou buòku dle typu
-void TmGrid::SetComponents(TCanvas *Canv,TRect R,unsigned long X,unsigned long Y,TCells &Cell)
+void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell)
 {
 	switch(Cell.Type)
 	{
 		case DRAW:
-		{   //Cell.Text=getTag(X,Y);//provizorní pokud chci oèíslovat jednotlivé buòky
+		{   //Cell.Text=getTag(X,Y);//provizorní výpis pokud chci oèíslovat jednotlivé buòky
 			short Zoom=1;if(AntiAliasing_text)Zoom=3;
 			//nastavení fontu
 			Canv->Font=Cell.Font;
 			Canv->Font->Size*=Zoom;
 			//SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
-			Canv->Brush->Color=clWhite;Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
+			Canv->Brush->Color=Cell.Background->Color;Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 			//zarovnání
 			//samotný výpis
-			long L=R.Left,T=R.Top;
-			if(AntiAliasing_text){L=(L-Left)*Zoom+Left;T=(T-Top)*Zoom+Top;}//vrací zpìt vynásobí 3x a potom zase posune o posunutí tabulky, šlo by take rovnou øešit pøes COLUMNS[] a ROWS[]
-			int W=getWidthHeightText(Cell).X;
-			int H=getWidthHeightText(Cell).Y;
+			long L=Rt.Left,T=Rt.Top;              //zajimavý workaround - pøíèinì nerozumím
+			int W=getWidthHeightText(Cell).X*Zoom;if(AntiAliasing_text)W/=1.3;
+			int H=getWidthHeightText(Cell).Y*Zoom;
 			if(Cell.Font->Orientation==900){H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
 			if(Cell.Font->Orientation==2700){W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
+			short WA=0;if(AntiAliasing_text)WA=1;//zajimavý workaround - pøíèinì nerozumím (proè Left*2 tomu patøiènì pomùže)
 			switch(Cell.Align)
-			{
-				case aNO:   L+=Cell.TextPositon.X;
-				case LEFT:	L=L+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
-				case CENTER:L=(R.Left+R.Right)/2-W/2;break;
-				case RIGHT:	L=R.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2*Zoom;if(Cell.Font->Orientation==2700)L-=H;break;
+			{               //zajimavý workaround
+				case aNO:   L=WA*Left*1.3+Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
+				case LEFT:	L=WA*Left*1.3+Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
+				case CENTER:L=(Rt.Left+Rt.Right)/2-W/2;break;
+				case RIGHT:	L=Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2*Zoom;if(Cell.Font->Orientation==2700)L-=H;break;
 			}
 			switch(Cell.Valign)
 			{
-				case vNO:		T+=Cell.TextPositon.Y;
-				case TOP:		T=T+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
-				case MIDDLE:T=(R.Top+R.Bottom)/2-H/2;break;
-				case BOTTOM:T=R.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2*Zoom;break;
-			}
-			Cell.TextPositon.X=L;Cell.TextPositon.Y=T;
-			Canv->TextOut(L,T,Cell.Text);
+				case vNO:		T=Rt.Top+Cell.TextPositon.Y*Zoom+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
+				case TOP:		T=Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
+				case MIDDLE:T=(Rt.Top+Rt.Bottom)/2-H/2;break;
+				case BOTTOM:T=Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2*Zoom;break;
+			}                                    //*2 zajimavý workaround
+			if(AntiAliasing_text)Canv->TextOut(L-Left*2,T-Top,Cell.Text);
+			else Canv->TextOut(L,T,Cell.Text);
 		}break;
 		case readEDIT:
 		{
@@ -485,32 +490,25 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,unsigned long X,unsigned long Y
 		case CHECK:
 		{
 			//založení + tag + název
-			TscGPCheckBox *Ch = getCheck(X,Y);//pokud již existuje
-			if(Ch==NULL)
-			{
-				Ch = new TscGPCheckBox(Form);//pokud ne
-				Ch->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
-				Ch->Name="mGrid_CHECK_"+AnsiString(Ch->Tag);
-				//události
-				Ch->OnClick=&getTagOnClick;
-				Ch->OnEnter=&getTagOnEnter;
-			}
+			TscGPCheckBox *Ch = createCheck(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
 			switch(Cell.Align)
 			{
+				case aNO:break;
 				case LEFT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;break;
 				case CENTER:Ch->Width=Ch->OptionsChecked->ShapeSize;Ch->Left=R.Left+Columns[X].Width/2-Ch->Width/2;break;
 				case RIGHT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;Ch->BiDiMode=bdRightToLeft;break;
 			}
 			switch(Cell.Valign)
 			{
+				case aNO:break;
 				case TOP:		Ch->Top=R.Top+1;Ch->Height=Ch->OptionsChecked->ShapeSize;break;
 				case MIDDLE:Ch->Top=R.Top+1;Ch->Height=Rows[Y].Height-2;break;
 				case BOTTOM:Ch->Height=Ch->OptionsChecked->ShapeSize;Ch->Top=R.Top+Rows[Y].Height-Ch->Height;break;
 			}
 			Ch->Options->NormalColor=Cell.Background->Color;
 			Ch->Options->NormalColorAlpha=255;
-			Ch->Options->FrameNormalColor=clWhite;
+			Ch->Options->FrameNormalColor=(TColor)RGB(128,128,128);//Ch->Font->Color;
 			Ch->Options->FrameNormalColorAlpha=255;
 			Ch->Font=Cell.Font;
 			Ch->Caption=Cell.Text;
@@ -521,26 +519,18 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,unsigned long X,unsigned long Y
 		case RADIO:
 		{
 			//založení + tag + název
-			TscGPRadioButton *Ra = getRadio(X,Y);//pokud již existuje
-			if(Ra==NULL)//pokud ne
-			{
-				Ra = new TscGPRadioButton(Form);
-				Ra->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
-				Ra->Name="mGrid_RADIO_"+AnsiString(Ra->Tag);
-
-				//události
-				Ra->OnClick=&getTagOnClick;
-				Ra->OnEnter=&getTagOnEnter;
-			}
+			TscGPRadioButton *Ra = createRadio(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
 			switch(Cell.Align)
 			{
+				case aNO:break;
 				case LEFT:	Ra->Width=Columns[X].Width-2;Ra->Left=R.Left+1;break;
 				case CENTER:Ra->Width=Ra->OptionsChecked->ShapeSize;Ra->Left=R.Left+Columns[X].Width/2-Ra->Width/2;break;
 				case RIGHT:	Ra->Width=Columns[X].Width-2;Ra->Left=R.Left+1;Ra->BiDiMode=bdRightToLeft;break;
 			}
 			switch(Cell.Valign)
 			{
+				case aNO:break;
 				case TOP:		Ra->Top=R.Top+1;Ra->Height=Ra->OptionsChecked->ShapeSize;break;
 				case MIDDLE:Ra->Top=R.Top+1;Ra->Height=Rows[Y].Height-2;break;
 				case BOTTOM:Ra->Height=Ra->OptionsChecked->ShapeSize;Ra->Top=R.Top+Rows[Y].Height-Ra->Height;break;
@@ -655,6 +645,42 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Parent=Form;//musí být až na konci
 }
 //---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
+{
+	TscGPCheckBox *Ch=getCheck(Col,Row);//pokud již existuje
+	if(Ch==NULL)//pokud ne, tak založí
+	{
+		Ch = new TscGPCheckBox(Form);
+		Ch->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		//Cell.Text=Ch->Tag; ShowMessage(Ch->Tag);
+		Ch->Name="mGrid_CHECK_"+AnsiString(Ch->Tag);
+
+		//události
+		Ch->OnClick=&getTagOnClick;
+		Ch->OnEnter=&getTagOnEnter;
+	}
+	return Ch;
+}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+TscGPRadioButton *TmGrid::createRadio(unsigned long Col,unsigned long Row)
+{
+	TscGPRadioButton *Ra=getRadio(Col,Row);//pokud již existuje
+	if(Ra==NULL)//pokud ne, tak založí
+	{
+		Ra = new TscGPRadioButton(Form);
+		Ra->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		//Cell.Text=Ra->Tag; ShowMessage(Ra->Tag);
+		Ra->Name="mGrid_RADIO_"+AnsiString(Ra->Tag);
+
+		//události
+		Ra->OnClick=&getTagOnClick;
+		//Ra->OnEnter=&getTagOnEnter;//asi zbyteèná událost
+	}
+	return Ra;
+}
+//---------------------------------------------------------------------------
 //vratí ID tag komponenty,absolutní poøadí v pamìti
 unsigned long TmGrid::getTag(unsigned long Col,unsigned long Row)
 {
@@ -680,7 +706,7 @@ unsigned long TmGrid::getRowFromTag(unsigned long Tag)
 void TmGrid::SetColumnAutoFit(long ColIdx)
 {
 	SetColumnAutoFitColIdx=ColIdx;
-	SetColRow();//nastaví velikost sloupcù a øádkù
+	SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
 }
 //---------------------------------------------------------------------------
 //nastaví šíøku bunìk sloupcù dle šíøky textu dle zvoleného parametru
@@ -821,71 +847,89 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 //spojí dvì buòky do jedné
 void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)
 {
+	SetColRow();
+
 	////kopie referenèní buòky //TCells RefCell=Cells[ColCell_1][RowCell_1];// - nelze však použít takto na pøedávání borders, proto metoda níže, pøedávalo by i ukazatel
 	TCells RefCell;CreateCell(RefCell);
-	CopyCell(Cells[ColCell_1][RowCell_1],RefCell,false);
+	CopyCell(Cells[ColCell_1][RowCell_1],RefCell,true);
 
 	////nastavení referenèní buòky kvùli orámování všech bunìk oblasti na totožnou barvu
 	TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
 	*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
 
 	////projde nejdøíve všechny buòky nastaví jim prvnì dle pozadí první buòky stejné pozadí a dle barvy pozadí i barvu orámování
-	SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,true);
+	SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);
+
+	//typ první buòky
+	Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
 
 	////vytvoøí resp. pøedá orámování oblasti dle referenèní buòky, šlo by øešit v ve výše volaném prùchodu, bylo by sice systomovì ménì nároèné, ale více komplikované na realizaci
 	SetRegion(RefCell,ColCell_1,RowCell_1,ColCell_2,RowCell_2);
 
 	////text
+	unsigned int W=0;unsigned int H=0;
 	Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení ze zálohy do poslední buòky, protože ta se vykresluje jako poslední
-	unsigned int W=getWidthHeightText(RefCell).X;
-	unsigned int H=getWidthHeightText(RefCell).Y;
+	W=getWidthHeightText(RefCell).X;
+	H=getWidthHeightText(RefCell).Y;
 	if(RefCell.Font->Orientation==900){W=H;H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
 	if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
-	//if(Cell.Font->Orientation==2700)L-=H;
+		//if(Cell.Font->Orientation==2700)L-=H;
 
-	//if(RefCell.Type==DRAW)//jinak se neøeší
+	//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby - DÙLEŽITE!!!
+	Cells[ColCell_2][RowCell_2].Align=aNO;
+	Cells[ColCell_2][RowCell_2].Valign=vNO;
+	//zarovnání (zarovnává dle první buòky, ale pracuje s poslední, protože ta se vykresluje zcela poslední)
+	switch(Cells[ColCell_1][RowCell_1].Align)
 	{
-			Cells[ColCell_2][RowCell_2].Align=aNO;
-			Cells[ColCell_2][RowCell_2].Valign=vNO;
-			//zarovnání (zarovnává dle první buòky, ale pracuje s poslední, protože ta se vykresluje zcela poslední)
-			switch(Cells[ColCell_1][RowCell_1].Align)
-			{
-				 case LEFT:
-				 {
-					 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_1].Left-Columns[ColCell_2].Left+Cells[ColCell_2][RowCell_2].LeftMargin+Cells[ColCell_2][RowCell_2].LeftBorder->Width/2;
-				 }
-				 break;
-				 case CENTER:
-				 {
-					 TscGPRadioButton *Ra=getRadio(ColCell_1,RowCell_1);
-					 if(Ra==NULL)Cells[ColCell_2][RowCell_2].TextPositon.X=(Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-W/2;
-					 if(Ra!=NULL)
-					 {
-							Ra->Left=(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
-           }
-				 }break;
-				 case RIGHT:
-				 {
-					 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W-Cells[ColCell_2][RowCell_2].RightMargin-Cells[ColCell_2][RowCell_2].RightBorder->Width/2;
-				 }break;
-			}
-			switch(Cells[ColCell_1][RowCell_1].Valign)
-			{
-				 case TOP:
-				 {
-					 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top+Cells[ColCell_2][RowCell_2].TopMargin+Cells[ColCell_2][RowCell_2].TopBorder->Width/2;
-				 }break;
-				 case MIDDLE:
-				 {
-					 Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
-				 }
-				 break;
-				 case BOTTOM:
-				 {
-					 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H-Cells[ColCell_2][RowCell_2].BottomMargin-Cells[ColCell_2][RowCell_2].BottomBorder->Width/2;
-				 }
-				 break;
-			}
+		 case LEFT:
+		 {
+			 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_1].Left-Columns[ColCell_2].Left;//øeším v setcomponents +RefCell.LeftMargin+RefCell.LeftBorder->Width/2;
+		 }
+		 break;
+		 case CENTER:
+		 {
+			 switch(RefCell.Type)
+			 {
+					case CHECK:
+					{
+						Cells[ColCell_1][RowCell_1].Align=aNO;
+						TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
+						Ch->Width=Ch->OptionsChecked->ShapeSize;
+						Ch->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ch->Width/2;
+						Ch=NULL;delete Ch;
+					}break;
+					case RADIO:
+					{
+						Cells[ColCell_1][RowCell_1].Align=aNO;
+						TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
+						Ra->Width=Ra->OptionsChecked->ShapeSize;
+						Ra->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
+						Ra=NULL;delete Ra;
+					}break;
+					default: Cells[ColCell_2][RowCell_2].TextPositon.X=(Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-W/2;
+			 }
+		 }break;
+		 case RIGHT:
+		 {
+			 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W;//øeším v setcomponents -RefCell.RightMargin-RefCell.RightBorder->Width/2;
+		 }break;
+	}
+	switch(Cells[ColCell_1][RowCell_1].Valign)
+	{
+		 case TOP:
+		 {
+			 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top;//øeším v setcomponents +RefCell.TopMargin+RefCell.TopBorder->Width/2;
+		 }break;
+		 case MIDDLE:
+		 {
+			 Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
+		 }
+		 break;
+		 case BOTTOM:
+		 {
+			 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H;//øeším v setcomponents -RefCell.BottomMargin-RefCell.BottomBorder->Width/2;
+		 }
+		 break;
 	}
 }
 //---------------------------------------------------------------------------

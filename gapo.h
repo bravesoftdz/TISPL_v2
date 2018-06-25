@@ -19,10 +19,11 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Max_Min_Button;
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_OK;
+	TButton *Button1;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
-	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_gapo(TComponent* Owner);

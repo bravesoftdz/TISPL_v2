@@ -5068,6 +5068,8 @@ void __fastcall TForm1::Button14Click(TObject *Sender)
 	 Form_gapo->gapoTyp=Form_gapo->R;//nastaví typ GAPA resp. tabulky, která se zobrazí
 	 Form_gapo->Left=50;Form_gapo->Top=50;
 	 Form_gapo->ShowModal();
+	 //musí být za showmodal
+	 mGrid->Delete();//pokud chci odstranit a nechci použít na další použití,
 }
 //---------------------------------------------------------------------------
 
