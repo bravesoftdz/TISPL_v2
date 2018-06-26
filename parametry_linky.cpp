@@ -392,8 +392,8 @@ void TForm_parametry_linky::nacti_pohony ()
 
 						ukaz = ukaz->dalsi;
 				 }
-				 F_gapoR->pohony_zmena=new bool[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
-				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++)  F_gapoR->pohony_zmena[i]=false;
+				 F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
+				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
 
 
 
@@ -444,19 +444,18 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		bool volat_aktualizaci=false;
 		int aktualizace_id;
 
+		//zobrazení formu gapoR
 		bool zobrazGAPO_R=false;
 		for(int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
 		{
-		if(F_gapoR->pohony_zmena[i]) zobrazGAPO_R=true;
-		//	ShowMessage(AnsiString(i)+" "+AnsiString((short)(F_gapoR->pohony_zmena[i])));
-
+			if(F_gapoR->pohony_zmena[i].X) zobrazGAPO_R=true;
+			//	ShowMessage(AnsiString(i)+" "+AnsiString((short)(F_gapoR->pohony_zmena[i])));
 		}
-
-		if(zobrazGAPO_R)
+		if(zobrazGAPO_R)//pokud byl nìjaký používaný pohon zmìnìn
 		{
-		F_gapoR->Left=50;F_gapoR->Top=50;
-		F_gapoR->ShowModal();
-		mGrid->Delete();
+			F_gapoR->Left=50;F_gapoR->Top=50;
+			F_gapoR->ShowModal();
+			mGrid->Delete();
 		}
 
 		//NEW
@@ -566,39 +565,39 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 
 
-	 if(Changes_roztec)
-	 {
-
-	 ShowMessage("nejaka zmena roztece");
-
-	 }
-		if(Changes_prirazen)
-	 {
-
-	 ShowMessage("Odpøiøazení pohonu");
-
-	 }
-
-			if(Changes_aRD)
-	 {
-
-	 ShowMessage("Zmìna RD pohonu");
-
-	 }
-
-			if(Changes_Rz)
-	 {
-
-	 ShowMessage("Zmìna Rz pohonu");
-
-	 }
-
-				if(Changes_Rx)
-	 {
-
-	 ShowMessage("Zmìna Rx pohonu");
-
-	 }
+//	 if(Changes_roztec)
+//	 {
+//
+//	 ShowMessage("nejaka zmena roztece");
+//
+//	 }
+//		if(Changes_prirazen)
+//	 {
+//
+//	 ShowMessage("Odpøiøazení pohonu");
+//
+//	 }
+//
+//			if(Changes_aRD)
+//	 {
+//
+//	 ShowMessage("Zmìna RD pohonu");
+//
+//	 }
+//
+//			if(Changes_Rz)
+//	 {
+//
+//	 ShowMessage("Zmìna Rz pohonu");
+//
+//	 }
+//
+//				if(Changes_Rx)
+//	 {
+//
+//	 ShowMessage("Zmìna Rx pohonu");
+//
+//	 }
 
 	 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2297,7 +2296,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
 
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
 
 				input_state=NOTHING;
 				}
@@ -2326,7 +2325,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 					vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 					Memo2->Lines->Add("volam aktualiz R");
 					zobrazOramovani=true;
-					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
+					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
 			 } //vypoèítání nových dat do roletky na základì zmìny Rz
 			 else zobrazOramovani=false;
 
@@ -2354,7 +2353,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
 
 				input_state=NOTHING;
 				}
@@ -2384,7 +2383,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				zobrazOramovani=true;
 				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
 				}    else zobrazOramovani=false;
 				rStringGridEd_tab_dopravniky->Invalidate();
 				input_state=NOTHING;

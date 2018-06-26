@@ -24,6 +24,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 public:		// User declarations
@@ -32,7 +33,7 @@ public:		// User declarations
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
-	bool *pohony_zmena;
+	TPoint *pohony_zmena;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoR *F_gapoR;

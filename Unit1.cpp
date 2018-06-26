@@ -5062,13 +5062,4 @@ void TForm1::db_connection()
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::Button14Click(TObject *Sender)
-{
-	//Form2->ShowModal();
-	F_gapoR->Left=50;F_gapoR->Top=50;
-	F_gapoR->ShowModal();
-	//musí být za showmodal (nemůže být v samotném formu)
-	mGrid->Delete();//pokud chci odstranit a nechci použít na další použití,
-}
-//---------------------------------------------------------------------------
 

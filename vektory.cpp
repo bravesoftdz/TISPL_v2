@@ -911,6 +911,22 @@ unsigned long Cvektory::vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n)
 	while (O!=NULL)
 	{
 		if(O->pohon!=NULL && O->pohon->n==n)RET++;//pokud má pohon přiřazen a jedná se o stejný pohon
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
+	return RET;
+}
+////---------------------------------------------------------------------------
+//vratí formou ukazatelem na pole objekty přiřazené k danému pohonu
+Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	TObjekt *RET=new TObjekt[vrat_pocet_objektu_vyuzivajici_pohon(n)];
+	unsigned long i=0;
+	while (O!=NULL)
+	{
+		if(O->pohon!=NULL && O->pohon->n==n)RET[i++]=*O;//pokud má pohon přiřazen a jedná se o stejný pohon
+		O=O->dalsi;
 	}
 	O=NULL;delete O;
 	return RET;
