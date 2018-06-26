@@ -10,6 +10,7 @@
 #include "TT_kalkulator.h"
 #include "parametry_vozik.h"
 #include "Unit2.h"
+#include "gapoR.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -391,6 +392,12 @@ void TForm_parametry_linky::nacti_pohony ()
 
 						ukaz = ukaz->dalsi;
 				 }
+				 F_gapoR->pohony_zmena=new bool[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
+				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++)  F_gapoR->pohony_zmena[i]=false;
+
+
+
+
 
 	}
 	else {  //pokud je spoják prázdný, zobrazím tyto pøednastavené hodnoty
@@ -434,34 +441,22 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		double sirka_jig;
 		double delka_podvozek;
 		double Takt;
+		bool volat_aktualizaci=false;
+		int aktualizace_id;
 
-		if(Taktunit==MIN)  Takt=rEditNum_takt->Value*60.0; else Takt=rEditNum_takt->Value;
-	 //	ShowMessage(Takt); ShowMessage(Form1->d.v.PP.TT);
-		if(Form1->ms.MyToDouble(Takt) != Form1->d.v.PP.TT && Form1->d.v.OBJEKTY->dalsi!=NULL)
+		bool zobrazGAPO_R=false;
+		for(int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
 		{
-		 Changes=true;
-		 Changes_TT=true;
+		if(F_gapoR->pohony_zmena[i]) zobrazGAPO_R=true;
+		//	ShowMessage(AnsiString(i)+" "+AnsiString((short)(F_gapoR->pohony_zmena[i])));
+
 		}
-		//pri zmene delky voziku
-		if(Delkaunit==MM) delka_jig=scGPNumericEdit_delka_jig->Value/1000.0; else delka_jig=scGPNumericEdit_delka_jig->Value;
-		if(Form1->ms.MyToDouble(delka_jig) != Form1->d.v.PP.delka_jig && Form1->d.v.OBJEKTY->dalsi!=NULL)
+
+		if(zobrazGAPO_R)
 		{
-		 Changes=true;
-		 Changes_PP=true;
-		}
-		//pri zmene sirky voziku
-		if(Delkaunit==MM)  sirka_jig=scGPNumericEdit_sirka_jig->Value/1000.0; else sirka_jig=scGPNumericEdit_sirka_jig->Value;
-		if(Form1->ms.MyToDouble(sirka_jig) != Form1->d.v.PP.sirka_jig && Form1->d.v.OBJEKTY->dalsi!=NULL)
-		{
-		 Changes=true;
-		 Changes_PP=true;
-		}
-		//pri zmene delky podvozku
-		if(Delkaunit==MM)  delka_podvozek=scGPNumericEdit_delka_podvozek->Value/1000.0; else delka_podvozek=scGPNumericEdit_delka_podvozek->Value;
-		if(Form1->ms.MyToDouble(delka_podvozek) != Form1->d.v.PP.delka_podvozek && Form1->d.v.OBJEKTY->dalsi!=NULL)
-		{
-		 Changes=true;
-		 Changes_PP=true;
+		F_gapoR->Left=50;F_gapoR->Top=50;
+		F_gapoR->ShowModal();
+		mGrid->Delete();
 		}
 
 		//NEW
@@ -569,70 +564,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			p_prirazen=NULL;delete p_prirazen;
 
 
-		/////////////volba priority////////////////////////////////////////////////////
 
-		bool volat_aktualizaci=false;
-		int aktualizace_id;
-
-	
-
-			if(mrOk==Form_PL_priority->ShowModal())
-			{
-				// volani aktualizacni fce
-				if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=1;//Form1->d.v.aktualizace_objektu(1);
-				if(Form_PL_priority->scGPRadioButton2->Checked) aktualizace_id=2;//Form1->d.v.aktualizace_objektu(2);
-				if(Form_PL_priority->scGPRadioButton3->Checked) aktualizace_id=-1; //Form1->d.v.aktualizace_objektu(-1); //indi nastav
-
-				volat_aktualizaci=true;
-				Ulozit=true;
-			}
-			else
-			{
-				volat_aktualizaci=false;
-				Ulozit=false;
-				 Form_PL_priority->rStringGridEd_tab->RowCount=1;
-			}
-
-
-
-
-	 if(Changes_PP)//pri zmene PP + jiz existuje nejaky objekt
-	 {
-			Form_PL_priority->rStringGridEd_tab->RowCount=4;
-			//Form_PL_priority->rStringGridEd_tab->Height=3*Form_PL_priority->rStringGridEd_tab->DefaultRowHeight+2; //2px kosmetika
-
-			Form_PL_priority->scGPRadioButton4->Visible=false;
-			Form_PL_priority->scGPRadioButton3->Visible=true;
-						 //zustava
-			Form_PL_priority->rStringGridEd_tab->Cells[0][1]="Kapacita, Technologický èas";
-			Form_PL_priority->rStringGridEd_tab->Cells[0][2]="Kapacita, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[0][3]="Délka kabiny";
-		//	Form_PL_priority->rStringGridEd_tab->Cells[0][4]="Individuální nastavení";
-				 //meni se
-			Form_PL_priority->rStringGridEd_tab->Cells[1][1]="Délka kabiny, Rychlost pohonu";
-			Form_PL_priority->rStringGridEd_tab->Cells[1][2]="Délka kabiny, Technologický èas";
-			Form_PL_priority->rStringGridEd_tab->Cells[1][3]="Kapacita, Technologický èas, Rychlost pohonu";
-		//	Form_PL_priority->rStringGridEd_tab->Cells[1][4]="Individuální nastavení";
-
-			Form_PL_priority->rHTMLLabel_text->Caption="Ve formuláøi došlo ke zmìnám parametrù <font color=#2b579a>vozíku</font>, které ovlivòují parametry objektù.<br><br>Vyberte parametry, jejichž hodnota zùstane na objektech <font color=#2b579a>zachována</font>.";
-
-			if(mrOk==Form_PL_priority->ShowModal())
-			{
-					// volani aktualizacni fce
-				if(Form_PL_priority->scGPRadioButton1->Checked) aktualizace_id=3; //Form1->d.v.aktualizace_objektu(3);
-				if(Form_PL_priority->scGPRadioButton2->Checked) aktualizace_id=4; //Form1->d.v.aktualizace_objektu(4);
-				if(Form_PL_priority->scGPRadioButton3->Checked) aktualizace_id=5; //Form1->d.v.aktualizace_objektu(5);
-			//	if(Form_PL_priority->scGPRadioButton4->Checked) aktualizace_id=0; //Form1->d.v.aktualizace_objektu(0); //indi nastav
-
-				Ulozit=true;   // predat pro M vybrany parametr z radio
-				volat_aktualizaci=true;
-			}
-			else
-			{
-				volat_aktualizaci=false;
-				Ulozit=false;
-			}
-	 }
 
 	 if(Changes_roztec)
 	 {
@@ -1203,6 +1135,9 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
  //DrawBorder
 	show_min_Rz();
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
+
+	if(VID==-1) scGPGlyphButton_ADD->Enabled=true;
+	else        scGPGlyphButton_ADD->Enabled=false;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2362,6 +2297,8 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
 
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
+
 				input_state=NOTHING;
 				}
 
@@ -2389,6 +2326,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 					vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 					Memo2->Lines->Add("volam aktualiz R");
 					zobrazOramovani=true;
+					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
 			 } //vypoèítání nových dat do roletky na základì zmìny Rz
 			 else zobrazOramovani=false;
 
@@ -2416,6 +2354,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
 
 				input_state=NOTHING;
 				}
@@ -2445,6 +2384,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				zobrazOramovani=true;
 				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)]=true;
 				}    else zobrazOramovani=false;
 				rStringGridEd_tab_dopravniky->Invalidate();
 				input_state=NOTHING;
