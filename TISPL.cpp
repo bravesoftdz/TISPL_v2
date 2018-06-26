@@ -4,28 +4,26 @@
 #pragma hdrstop
 #include <tchar.h>
 //---------------------------------------------------------------------------
+USEFORM("poznamky.cpp", Form_poznamky);
 USEFORM("superform.cpp", Form_definice_zakazek);
 USEFORM("report.cpp", Form_report);
+USEFORM("parametry_vozik.cpp", Form_parametry_vozik);
 USEFORM("popUP_menu.cpp", PopUPmenu);
 USEFORM("pl_priority.cpp", Form_PL_priority);
-USEFORM("poznamky.cpp", Form_poznamky);
-USEFORM("popUP_menu.cpp", PopUPmenu);
 USEFORM("uvod.cpp", Form_uvod);
 USEFORM("Unit2.cpp", Form2);
 USEFORM("Unit1.cpp", Form1);
 USEFORM("TT_kalkulator.cpp", Form_TT_kalkulator);
-USEFORM("parametry_vozik.cpp", Form_parametry_vozik);
+USEFORM("gapoR.cpp", F_gapoR);
 USEFORM("eDesigner.cpp", Form_eDesigner);
-USEFORM("kabina_schema.cpp", Form_objekt_nahled);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("casovaOsa_info.cpp", Form_osa_info);
 USEFORM("cesty.cpp", Form_cesty);
+USEFORM("kabina_schema.cpp", Form_objekt_nahled);
 USEFORM("MyMessageBox.cpp", myMessageBox);
 USEFORM("parametry_linky.cpp", Form_parametry_linky);
 USEFORM("parametry.cpp", Form_parametry);
 USEFORM("kalendar.cpp", Form_kalendar);
-USEFORM("kabina_schema.cpp", Form_objekt_nahled);
-USEFORM("gapo.cpp", Form_gapo);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -52,7 +50,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_TT_kalkulator), &Form_TT_kalkulator);
 		Application->CreateForm(__classid(TForm_parametry_vozik), &Form_parametry_vozik);
 		Application->CreateForm(__classid(TForm2), &Form2);
-		Application->CreateForm(__classid(TForm_gapo), &Form_gapo);
+		Application->CreateForm(__classid(TF_gapoR), &F_gapoR);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}

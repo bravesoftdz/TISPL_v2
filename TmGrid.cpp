@@ -3,7 +3,7 @@
 #include "TmGrid.h"
 #include "antialiasing.h"
 #include "MyString.h"
-#include "gapo.h"
+#include "gapoR.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -36,7 +36,7 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.Type = DRAW;//defaultní komponenta
 	//text
 	DefaultCell.Font->Size=12;
-	DefaultCell.Font->Color=clBlack;(TColor)RGB(128,128,128);
+	DefaultCell.Font->Color=(TColor)RGB(43,87,154);//(TColor)RGB(128,128,128);
 	DefaultCell.Font->Orientation=0;
 	DefaultCell.Font->Style=TFontStyles();
 	DefaultCell.Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
@@ -824,7 +824,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 	TComponent *K;
-	Form_gapo->OnClick(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
@@ -832,7 +832,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 	//ShowMessage(AnsiString("OnEnter ")+IntToStr(((TComponent*)(Sender))->Tag));
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-	Form_gapo->OnEnter(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnChange(TObject *Sender)
@@ -840,7 +840,7 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	//ShowMessage(AnsiString("OnChange ")+IntToStr(((TComponent*)(Sender))->Tag));
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-	Form_gapo->OnChange(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -22,7 +22,7 @@
 #include "PO_math.h"
 #include "kabina_schema.h"
 #include "Unit2.h"
-#include "gapo.h"
+#include "gapoR.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -5064,12 +5064,12 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
-	 //Form2->ShowModal();
-	 Form_gapo->gapoTyp=Form_gapo->R;//nastaví typ GAPA resp. tabulky, která se zobrazí
-	 Form_gapo->Left=50;Form_gapo->Top=50;
-	 Form_gapo->ShowModal();
-	 //musí být za showmodal
-	 mGrid->Delete();//pokud chci odstranit a nechci použít na další použití,
+	//Form2->ShowModal();
+	F_gapoR->Tag=3;//1...-gapoTT, 2... - gapoV, 3... - gapoR
+	F_gapoR->Left=50;F_gapoR->Top=50;
+	F_gapoR->ShowModal();
+	//musí být za showmodal (nemůže být v samotném formu)
+	mGrid->Delete();//pokud chci odstranit a nechci použít na další použití,
 }
 //---------------------------------------------------------------------------
 

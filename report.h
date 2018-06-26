@@ -22,11 +22,11 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *MinButton;
 	TscGPGlyphButton *MaxButton;
 	TscGPGlyphButton *scGPGlyphButton_Info;
-	TscButton *scButton_csv;
-	TscButton *scButton_html;
 	TscLabel *scLabel1;
 	TscGPPanel *scGPPanel1;
 	TscStyledForm *scStyledForm1;
+	TscButton *scButton_html;
+	TscButton *scButton_csv;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scButton_csvClick(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
