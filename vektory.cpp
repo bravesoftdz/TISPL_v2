@@ -881,7 +881,7 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	{
 		if(O==F->pom && F->pom!=NULL)//pokud je voláno z editovaného PO
 		{
-       //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
+			 //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
 				if(Form_parametry->scComboBox_pohon->ItemIndex>0  && Form_parametry->scComboBox_pohon->ItemIndex==n)//pokud má pohon přiřazen a jedná se o stejný pohon
 				{
 					if(short_name)nalezen+=O->short_name+", ";
@@ -901,6 +901,19 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	O=NULL;delete O;
 	if(nalezen!="")nalezen=nalezen.SubString(1,nalezen.Length()-2);//ještě odebere poslední čárku a mezeru
 	return nalezen;
+}
+////---------------------------------------------------------------------------
+//vratí počet objektů přiřazených k danému pohonu
+unsigned long Cvektory::vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n)
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	unsigned long RET=0;
+	while (O!=NULL)
+	{
+		if(O->pohon!=NULL && O->pohon->n==n)RET++;//pokud má pohon přiřazen a jedná se o stejný pohon
+	}
+	O=NULL;delete O;
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)
@@ -1174,10 +1187,22 @@ long Cvektory::vymaz_seznam_POHONY()
 };
 ////---------------------------------------------------------------------------
 //zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr 0 (který je zároveň implicitní), vratí doporučené Rz, pokud 1, vrátí seznam objektů, kde je problém, pokud vrátí prázdné uvozovky, je vše v pořádku
-AnsiString Cvektory::validaceR(short VID,unsigned int PID,double aRD,double R,double Rz,double Rx,short getValueOrObject)
+AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short getValueOrObject)
 {
+	TPohon *p=vrat_pohon(PID);
+	if(p!=NULL)
+	{
 
-<u>"+AnsiString(doporuc_hodnota)+"</u>
+  }
+// switch(VID)
+// {
+//	 case 4:break;
+//	 case 5:break;
+//	 case 6:break;
+//	 case 7:break;
+// }
+
+//<u>"+AnsiString(doporuc_hodnota)+"</u>
 }
 ////---------------------------------------------------------------------------
 //double Cvektory::delka_dopravniku(Cvektory::TObjekt *ukaz)

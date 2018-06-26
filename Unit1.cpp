@@ -5065,7 +5065,6 @@ void TForm1::db_connection()
 void __fastcall TForm1::Button14Click(TObject *Sender)
 {
 	//Form2->ShowModal();
-	F_gapoR->Tag=3;//1...-gapoTT, 2... - gapoV, 3... - gapoR
 	F_gapoR->Left=50;F_gapoR->Top=50;
 	F_gapoR->ShowModal();
 	//musí být za showmodal (nemůže být v samotném formu)
