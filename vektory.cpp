@@ -1173,9 +1173,11 @@ long Cvektory::vymaz_seznam_POHONY()
 	return pocet_smazanych_pohonu;
 };
 ////---------------------------------------------------------------------------
-//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu, pokud je zadán parametr 0 (který je zároveň implicitní), vratí doporučené Rz, pokud 1, vrátí seznam objektů, kde je problém, pokud vrátí prázdné uvozovky, je vše v pořádku
-AnsiString Cvektory::validaceR(short VID,double aRD,double R,double Rz,double Rx,short getValueOrObject)
+//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr 0 (který je zároveň implicitní), vratí doporučené Rz, pokud 1, vrátí seznam objektů, kde je problém, pokud vrátí prázdné uvozovky, je vše v pořádku
+AnsiString Cvektory::validaceR(short VID,unsigned int PID,double aRD,double R,double Rz,double Rx,short getValueOrObject)
 {
+
+<u>"+AnsiString(doporuc_hodnota)+"</u>
 }
 ////---------------------------------------------------------------------------
 //double Cvektory::delka_dopravniku(Cvektory::TObjekt *ukaz)
