@@ -444,11 +444,19 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		bool volat_aktualizaci=false;
 		int aktualizace_id;
 
+		bool zobrazGAPO_R=false;
 		for(int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
 		{
-	 //	if(F_gapoR->pohony_zmena[i])
+		if(F_gapoR->pohony_zmena[i]) zobrazGAPO_R=true;
 		//	ShowMessage(AnsiString(i)+" "+AnsiString((short)(F_gapoR->pohony_zmena[i])));
 
+		}
+
+		if(zobrazGAPO_R)
+		{
+		F_gapoR->Left=50;F_gapoR->Top=50;
+		F_gapoR->ShowModal();
+		mGrid->Delete();
 		}
 
 		//NEW
