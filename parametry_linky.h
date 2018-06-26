@@ -57,7 +57,6 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Button_DEL;
 	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
 	TscGPNumericEdit *rEditNum_takt;
-	TscGPGlyphButton *scGPGlyphButton_hint_Rz;
 	TscGPNumericEdit *scGPNumericEdit_delka_jig;
 	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
 	TscGPPanel *PopUPmenu;
@@ -103,6 +102,7 @@ __published:	// IDE-managed Components
 	TMemo *Memo4;
 	TscGPGlyphButton *scGPGlyphButton_TT;
 	TscGPGlyphButton *scGPGlyphButton_vozik_edit;
+	TButton *Button2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -180,6 +180,11 @@ __published:	// IDE-managed Components
 	void __fastcall rMemoEx1_roztecClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_vozik_editClick(TObject *Sender);
+	void __fastcall Button2Click(TObject *Sender);
+	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
+
+
+
 
 
 
@@ -188,7 +193,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
 	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
-	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
+	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik,nazev_klik,od_klik,do_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto
 	enum Tinput_onchange {NOChange,aRDChange,RChange,RzChange,RxChange}; //zjisteni na kterou ikonku zámku bylo kliknuto
 
@@ -218,7 +223,12 @@ private:	// User declarations
 		double getTT();
 		void VALIDACE(int ACol, int ARow);
 		short VID;//validation ID
-	  double VID_value;
+		double VID_value;
+		short Row_validace;
+
+		UnicodeString NAZEV;
+		double OD;
+		double DO;
 
 
 
