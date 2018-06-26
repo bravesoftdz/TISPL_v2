@@ -56,7 +56,7 @@ void __fastcall TForm_gapo::FormActivate(TObject *Sender)
 
 			////plnìní daty - hlavièka
 			mGrid->Cells[0][0].Text="pouze zmìnìné pohony";
-			mGrid->Cells[0][0].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
+			mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
 			mGrid->Cells[0][0].Font->Orientation=900;
 			mGrid->Cells[0][0].Align=mGrid->CENTER;
 			mGrid->Cells[0][0].Valign=mGrid->BOTTOM;
