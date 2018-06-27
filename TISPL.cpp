@@ -24,6 +24,8 @@ USEFORM("MyMessageBox.cpp", myMessageBox);
 USEFORM("parametry_linky.cpp", Form_parametry_linky);
 USEFORM("parametry.cpp", Form_parametry);
 USEFORM("kalendar.cpp", Form_kalendar);
+USEFORM("gapoTT.cpp", F_gapoTT);
+USEFORM("gapoV.cpp", F_gapoV);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -51,6 +53,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TForm_parametry_vozik), &Form_parametry_vozik);
 		Application->CreateForm(__classid(TForm2), &Form2);
 		Application->CreateForm(__classid(TF_gapoR), &F_gapoR);
+		Application->CreateForm(__classid(TF_gapoTT), &F_gapoTT);
+		Application->CreateForm(__classid(TF_gapoV), &F_gapoV);
 		Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}

@@ -4,6 +4,7 @@
 #include "antialiasing.h"
 #include "MyString.h"
 #include "gapoR.h"
+#include "gapoTT.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;

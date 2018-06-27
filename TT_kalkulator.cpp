@@ -72,3 +72,4 @@ void __fastcall TForm_TT_kalkulator::FormKeyDown(TObject *Sender, WORD &Key, TSh
 }
 //---------------------------------------------------------------------------
 
+
