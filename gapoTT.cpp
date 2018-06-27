@@ -36,10 +36,11 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=23;//pevný poèet slopcù
-	unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
+	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 
 		RowCount+=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)+F->d.v.vrat_pocet_nepouzivanych_pohonu()+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(true);//PØIDAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//ShowMessage(RowCount);
 		mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 		objekty=new Cvektory::TObjekt[ColCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
@@ -165,87 +166,89 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 //	//nastavení velikosti nultého sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
 	mGrid->SetColumnAutoFit(0);
 
+
+
  ////////jednolivé øádky////////
-    unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
-    ////prùchod všemi objekty bez pøiøazených pohonu
-    Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
-    unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
-    for(unsigned long i=0;i<On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
-    {
-        //pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
-        objekty[j]=On[i];
-        //pohony
-        mGrid->Cells[0][j].Text="nepøiøazen";
-        //objekty
-        mGrid->Cells[1][j].Text=On[i].short_name;
-        //volby - checkboxy  - Rosta dodelá
+		unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
+		////prùchod všemi objekty bez pøiøazených pohonu
+		Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
+		unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
+		for(unsigned long i=0;i<On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
+		{
+				//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
+				objekty[j]=On[i];
+				//pohony
+				mGrid->Cells[0][j].Text="nepøiøazen";
+				//objekty
+				mGrid->Cells[1][j].Text=On[i].short_name;
+				//volby - checkboxy  - Rosta dodelá
 //      mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
 //      mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
-        //parametry objektù
-        mGrid->Cells[6][j].Text=On[i].CT;
-        mGrid->Cells[7][j].Text=On[i].RD;
-        mGrid->Cells[8][j].Text=On[i].delka_dopravniku;
-        mGrid->Cells[9][j].Text=On[i].kapacita;
-        mGrid->Cells[10][j].Text=On[i].pozice;
-        mGrid->Cells[11][j].Text=On[i].mezera_jig;
-        mGrid->Cells[12][j].Text=On[i].mezera_podvozek;
-        mGrid->Cells[13][j].Text=On[i].rotace;
-        //posun na další øádek výsledné tabulky
-        j++;
-    }
-    On=NULL;delete On;
-    if(On_pocet>0)mGrid->MergeCells(0,1,0,On_pocet);//slouèení bunìk objekty bez pohonu
+				//parametry objektù
+				mGrid->Cells[15][j].Text=On[i].CT;
+				mGrid->Cells[16][j].Text=On[i].RD;
+				mGrid->Cells[17][j].Text=On[i].delka_dopravniku;
+				mGrid->Cells[18][j].Text=On[i].kapacita;
+				mGrid->Cells[19][j].Text=On[i].pozice;
+				mGrid->Cells[20][j].Text=On[i].mezera_jig;
+				mGrid->Cells[21][j].Text=On[i].mezera_podvozek;
+				mGrid->Cells[22][j].Text=On[i].rotace;
+				//posun na další øádek výsledné tabulky
+				j++;
+		}
+		On=NULL;delete On;
+		if(On_pocet>0)mGrid->MergeCells(0,1,0,On_pocet);//slouèení bunìk objekty bez pohonu
 
-    ////prùchod všemi pohony
-    for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
+		////prùchod všemi pohony
+		for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
     {
-        unsigned long O_pocet=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i);
+				unsigned long O_pocet=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i);
         if(O_pocet==0)//tzn. není objektu pøiøazen žádný pohon
-        {
-            //pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
-            Cvektory::TObjekt *O_null=new Cvektory::TObjekt;O_null=NULL;
-            objekty[j]=*O_null;//pøiøadí ukazatel na null, nešlo napsat pøímo NULL
-            //pohony
+				{
+						//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
+						Cvektory::TObjekt *O_null=new Cvektory::TObjekt;O_null=NULL;
+					  objekty[j]=*O_null;//pøiøadí ukazatel na null, nešlo napsat pøímo NULL   // TODO Martin pls FIX
+						//pohony
             mGrid->Cells[0][j].Text=F->d.v.vrat_pohon(i)->name;
-            //objekty
+						//objekty
             mGrid->Cells[1][j].Text="nepøiøazen";
-            //volby - checkboxy - Rostì dodìlá
+						//volby - checkboxy - Rostì dodìlá
 //          mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
 //          mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
-            //posun na další øádek výsledné tabulky
-            j++;
-        }
-        else
-        {
-            //vratí formou ukazatele na pole objekty pøiøazené k danému pohonu
-            Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i);
-            unsigned long z=0;
-            for(;z<O_pocet;z++)
-            {
-                //pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
-                objekty[j]=O[z];
-                //pohony
-                mGrid->Cells[0][j].Text=O[z].pohon->name;
-                //objekty
-                mGrid->Cells[1][j].Text=O[z].short_name;
-                //volby - checkboxy - Rostì dodìlá
+						//posun na další øádek výsledné tabulky
+						j++;
+				}
+				else
+				{
+						//vratí formou ukazatele na pole objekty pøiøazené k danému pohonu
+						Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i);
+						unsigned long z=0;
+						for(;z<O_pocet;z++)
+						{
+								//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
+								objekty[j]=O[z];
+								//pohony
+								mGrid->Cells[0][j].Text=O[z].pohon->name;
+								//objekty
+								mGrid->Cells[1][j].Text=O[z].short_name;
+								//volby - checkboxy - Rostì dodìlá
 //              mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
 //              mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
-                //parametry objektù
-                mGrid->Cells[6][j].Text=O[z].CT;
-                mGrid->Cells[7][j].Text=O[z].RD;
-                mGrid->Cells[8][j].Text=O[z].delka_dopravniku;
-                mGrid->Cells[9][j].Text=O[z].kapacita;
-                mGrid->Cells[10][j].Text=O[z].pozice;
-                mGrid->Cells[11][j].Text=O[z].mezera_jig;
-                mGrid->Cells[12][j].Text=O[z].mezera_podvozek;
-                mGrid->Cells[13][j].Text=O[z].rotace;
+								//parametry objektù
+								mGrid->Cells[15][j].Text=O[z].CT;
+								mGrid->Cells[16][j].Text=O[z].RD;
+								mGrid->Cells[17][j].Text=O[z].delka_dopravniku;
+								mGrid->Cells[18][j].Text=O[z].kapacita;
+								mGrid->Cells[19][j].Text=O[z].pozice;
+								mGrid->Cells[20][j].Text=O[z].mezera_jig;
+								mGrid->Cells[21][j].Text=O[z].mezera_podvozek;
+								mGrid->Cells[22][j].Text=O[z].rotace;
                 //posun na další øádek výsledné tabulky
-                j++;
+								j++;
             }                    //Rosa ovìøit, že je OK
-            mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
-            O=NULL;delete O;
-        }
+						mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
+						O=NULL;delete O;
+				}
 		}
 
 	////////rozdìlení sekcí svislým orámováním////////
