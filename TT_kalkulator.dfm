@@ -61,8 +61,6 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
     Caption = 'scGPPanel2'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitLeft = -635
-    ExplicitWidth = 1270
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 601
@@ -142,7 +140,6 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1220
     end
     object scLabel_hlavicka: TscLabel
       Left = 0
@@ -175,7 +172,6 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Takt Time'
-      ExplicitWidth = 1183
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 564
@@ -255,7 +251,6 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 1183
     end
   end
   object scGPButton_takt: TscGPButton

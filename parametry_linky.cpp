@@ -11,6 +11,7 @@
 #include "parametry_vozik.h"
 #include "Unit2.h"
 #include "gapoR.h"
+#include "gapoTT.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -2740,34 +2741,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt nebo pohon
 		{
-			Form2->ShowModal();
-			//Cvektory::TPohon *pohon=Form1->d.v.POHONY->dalsi;
-			//Cvektory::TObjekt *obj=Form1->d.v.OBJEKTY->dalsi;
-
-//			while (obj!=NULL)
-//			{
-//
-//			// TStringGrid  *grid = new TrStringGridEd;
-//
-//				if(obj->pohon!=NULL)
-//				{
-//					if(rStringGridEd_tab_dopravniky->Cells[8][obj->pohon->n]!="nepoužíván")
-//						//objekt má pøiøazen pohon
-//						{
-//									Form_PL_priority->rHTMLLabel_hlavika_tabulky->Caption="Hlavièka pohonu ";
-//
-//									 Form_PL_priority->rStringGridEd_tab->Cells[0][obj->n]=obj->pohon->name;
-//									 Form_PL_priority->rStringGridEd_tab->Cells[1][obj->n]=obj->name;
-//						}
-//				}
-//					 else //objekt nemá pøiøazen pohon
-//					 {
-//									ShowMessage("nepøiøazen");
-//					 }
-//
-//					obj=obj->dalsi;
-//
-//			 }
+			F_gapoTT->ShowModal();
 		}
 }
 //---------------------------------------------------------------------------
