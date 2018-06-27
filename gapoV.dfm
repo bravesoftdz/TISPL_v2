@@ -3,21 +3,25 @@ object F_gapoV: TF_gapoV
   Top = 0
   BorderStyle = bsNone
   Caption = 'F_gapoV'
-  ClientHeight = 338
-  ClientWidth = 651
-  Color = clBtnFace
+  ClientHeight = 445
+  ClientWidth = 377
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnPaint = FormPaint
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
-    Width = 651
+    Width = 377
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -45,10 +49,10 @@ object F_gapoV: TF_gapoV
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 377
+    ExplicitWidth = 651
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 601
+      Left = 327
       Top = 0
       Width = 50
       Height = 33
@@ -124,13 +128,13 @@ object F_gapoV: TF_gapoV
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 327
+      ExplicitLeft = 601
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
       Left = 55
       Top = 0
-      Width = 509
+      Width = 235
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -159,10 +163,10 @@ object F_gapoV: TF_gapoV
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367
-      ExplicitWidth = 235
+      ExplicitWidth = 509
     end
     object scGPGlyphButton_info: TscGPGlyphButton
-      Left = 564
+      Left = 290
       Top = 0
       Width = 37
       Height = 34
@@ -239,7 +243,7 @@ object F_gapoV: TF_gapoV
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 290
+      ExplicitLeft = 564
     end
     object scButton_html: TscButton
       Left = 0
@@ -329,5 +333,93 @@ object F_gapoV: TF_gapoV
       GroupIndex = 0
       AllowAllUp = False
     end
+  end
+  object scGPButton_OK: TscGPButton
+    Left = 136
+    Top = 391
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    OnClick = scGPButton_OKClick
+    Animation = False
+    Caption = 'OK'
+    CanFocused = False
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clLime
+    Options.FocusedColor = 1871359
+    Options.DisabledColor = clBlack
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 200
+    Options.FrameNormalColor = 33023
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = clGray
+    Options.FrameFocusedColor = 1871359
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    ModalResult = 1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
   end
 end

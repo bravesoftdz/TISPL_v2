@@ -13,6 +13,7 @@ object F_gapoR: TF_gapoR
   Font.Style = []
   OldCreateOrder = False
   OnActivate = FormActivate
+  OnClose = FormClose
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96

@@ -45,8 +45,8 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 		{
 			if(pohony_zmena[i].X)
-			{
-				pohony_zmena[i].Y=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i);
+			{                                                                 //vrátí pouze KK objekty
+				pohony_zmena[i].Y=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1);
 				RowCount+=pohony_zmena[i].Y;
 			}
 		}
@@ -91,13 +91,13 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->SetColumnAutoFit(0);
 
 	////////jednolivé øádky////////
-	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku
+	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
-		if(pohony_zmena[i].X)//vypusuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom je bude totožné s i...
+		if(pohony_zmena[i].X)//vypisuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom je bude totožné s i...
 		{
 			//vratí formou ukazatelem na pole objekty pøiøazené k danému pohonu
-			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i);
+			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i,1);
 			unsigned int z=0;
 			for(;z<pohony_zmena[i].Y;z++)
 			{
@@ -119,7 +119,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				mGrid->Cells[11][j].Text=O[z].mezera_jig;
 				mGrid->Cells[12][j].Text=O[z].mezera_podvozek;
 				mGrid->Cells[13][j].Text=O[z].rotace;
-				//posun na další øádek
+				//posun na další øádek výsledné tabulky
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+pohony_zmena[i].Y-1);//slouèení bunìk pohony
@@ -174,21 +174,22 @@ void TF_gapoR::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::scGPButton_OKClick(TObject *Sender)
 {
+	Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TF_gapoR::FormClose(TObject *Sender, TCloseAction &Action)
+{
 	delete[] pohony_zmena;
 	delete[] objekty;
-	Close();
 }
 //---------------------------------------------------------------------------
 //provizorní, vy/zapínání AA
 void __fastcall TF_gapoR::Button1Click(TObject *Sender)
 {
-	ShowMessage(objekty[1].name);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
+	ShowMessage(objekty[1].pohon->n);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 	mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
 	FormPaint(this);
 }
 //---------------------------------------------------------------------------
-
-
-
 
 
