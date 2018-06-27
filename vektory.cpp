@@ -505,6 +505,19 @@ AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiSt
 	return T;
 }
 //---------------------------------------------------------------------------
+unsigned long Cvektory::vrat_pocet_objektu_bez_prirazenych_pohonu(unsigned long n)//vrátí počet objektů bez přiřazení k pohonům
+{
+	unsigned long RET=0;
+	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		if(O->pohon==NULL)RET++;//pohon nepřiřazen
+		O=O->dalsi;//posun na další prvek
+	}
+	O=NULL;delete O;
+	return RET;
+}
+//---------------------------------------------------------------------------
 //vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů, které mají přiřazený pohon bez uvedené rozteče jednotlivé názvy objektů oddělí  ", " tj. čárkou a mezerou, v případě že žádný objekt nenajde, vrátí prázdný řetězec, pozor pohony bez přiřazení k objektům nevypisuje
 AnsiString Cvektory::vypis_objekty_s_pohony_bez_roztece(bool shortname)
 {
@@ -929,6 +942,19 @@ Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n)
 		O=O->dalsi;
 	}
 	O=NULL;delete O;
+	return RET;
+}
+////---------------------------------------------------------------------------
+//vrátí počet nepoužívaných pohonů
+unsigned long Cvektory::vrat_pocet_nepouzivanych_pohonu()
+{
+	unsigned long RET=0;
+	TPohon *p=POHONY->dalsi;//přeskočí hlavičku
+	while (p!=NULL)//projde všechny pohony
+	{
+		if(pohon_je_pouzivan(p->n)==false)RET++;//pokud je nepoužíván, navýší počítadlo počtu nepoužívaných pohonů
+	}
+	p=NULL;delete p;
 	return RET;
 }
 ////---------------------------------------------------------------------------

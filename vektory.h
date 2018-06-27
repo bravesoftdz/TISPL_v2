@@ -289,6 +289,7 @@ class Cvektory
 		unsigned int pocet_objektu(short typ=-1);//vrátí počet objektů v požadovaném režimu, nebo v případě implicitního parametru -1 objekty ve všech režimech
 		unsigned int pocet_objektu_zakazky(TZakazka *Zakazka,short typ=-1);//vrátí počet objektů v požadovaném režimu pro danou zakázku, nebo v případě implicitního parametru -1 objekty ve všech režimech pro danou zakázku
 		AnsiString vypsat_objekty_bez_prirazenych_pohonu(bool shortname=true,AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle prvního parametru, který je implicitně na shortname=true) seznam objektů, které nemají přiřazený pohon, jednotlivé názvy objektů oddělí dle paramaterů seperátor, implicitně ", " tj. čárka a mezera,, v případě že žádný objekt nenajde, vrátí prázdný řetězec
+unsigned long vrat_pocet_objektu_bez_prirazenych_pohonu(unsigned long n);//vrátí počet objektů bez přiřazení k pohonům
 		AnsiString vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_name=true);//dle n pohonu vráti objekty, které pohon používají, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
 unsigned long vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n);//vratí počet objektů přiřazených k danému pohonu
 TObjekt *vrat_objekty_vyuzivajici_pohon(unsigned long n);//vratí formou ukazatelem na pole objekty přiřazené k danému pohonu
@@ -310,6 +311,7 @@ TObjekt *vrat_objekty_vyuzivajici_pohon(unsigned long n);//vratí formou ukazate
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
 		bool pohon_je_pouzivan(unsigned long n);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 		TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim=-1);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režim, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
+unsigned long vrat_pocet_nepouzivanych_pohonu();//vrátí počet nepoužívaných pohonů
 		double minRD(TPohon *pohon);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
 		AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD);//vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD
 		TPohon *najdi_pohon_dle_RD(double RD);//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
