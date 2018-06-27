@@ -505,7 +505,7 @@ AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiSt
 	return T;
 }
 //---------------------------------------------------------------------------
-unsigned long Cvektory::vrat_pocet_objektu_bezNEBOs_prirazenych_pohonu(bool s)//vrátí počet objektů bez či s přiřazenými pohony (dle vstupního parametru)
+unsigned long Cvektory::vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(bool s)//vrátí počet objektů bez či s přiřazenými pohony (dle vstupního parametru)
 {
 	unsigned long RET=0;
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
@@ -940,6 +940,21 @@ Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n)
 	while (O!=NULL)
 	{
 		if(O->pohon!=NULL && O->pohon->n==n)RET[i++]=*O;//pokud má pohon přiřazen a jedná se o stejný pohon
+		O=O->dalsi;
+	}
+	O=NULL;delete O;
+	return RET;
+}
+////---------------------------------------------------------------------------
+//vratí formou ukazatele na pole objekty bez pohonů
+Cvektory::TObjekt *Cvektory::vrat_objekty_bez_pohonu()
+{
+	TObjekt *O=OBJEKTY->dalsi;
+	TObjekt *RET=new TObjekt[vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)];
+	unsigned long i=0;
+	while (O!=NULL)
+	{
+		if(O->pohon==NULL)RET[i++]=*O;//pokud má objekt pohon nepřiřazen zařídí tento objekt do pole
 		O=O->dalsi;
 	}
 	O=NULL;delete O;
