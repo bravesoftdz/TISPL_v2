@@ -505,13 +505,14 @@ AnsiString Cvektory::vypsat_objekty_bez_prirazenych_pohonu(bool shortname,AnsiSt
 	return T;
 }
 //---------------------------------------------------------------------------
-unsigned long Cvektory::vrat_pocet_objektu_bez_prirazenych_pohonu(unsigned long n)//vrátí počet objektů bez přiřazení k pohonům
+unsigned long Cvektory::vrat_pocet_objektu_bezNEBOs_prirazenych_pohonu(bool s)//vrátí počet objektů bez či s přiřazenými pohony (dle vstupního parametru)
 {
 	unsigned long RET=0;
 	TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		if(O->pohon==NULL)RET++;//pohon nepřiřazen
+		if(s==true && O->pohon!=NULL)RET++;//pohon přiřazen
+		if(s!=false && O->pohon==NULL)RET++;//pohon nepřiřazen
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;

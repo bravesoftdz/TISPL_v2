@@ -289,7 +289,7 @@ class Cvektory
 		unsigned int pocet_objektu(short typ=-1);//vrátí počet objektů v požadovaném režimu, nebo v případě implicitního parametru -1 objekty ve všech režimech
 		unsigned int pocet_objektu_zakazky(TZakazka *Zakazka,short typ=-1);//vrátí počet objektů v požadovaném režimu pro danou zakázku, nebo v případě implicitního parametru -1 objekty ve všech režimech pro danou zakázku
 		AnsiString vypsat_objekty_bez_prirazenych_pohonu(bool shortname=true,AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle prvního parametru, který je implicitně na shortname=true) seznam objektů, které nemají přiřazený pohon, jednotlivé názvy objektů oddělí dle paramaterů seperátor, implicitně ", " tj. čárka a mezera,, v případě že žádný objekt nenajde, vrátí prázdný řetězec
-unsigned long vrat_pocet_objektu_bez_prirazenych_pohonu(unsigned long n);//vrátí počet objektů bez přiřazení k pohonům
+unsigned long vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(bool bez);//vrátí počet objektů bez či s přiřazenými pohony (dle vstupního parametru)
 		AnsiString vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_name=true);//dle n pohonu vráti objekty, které pohon používají, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
 unsigned long vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n);//vratí počet objektů přiřazených k danému pohonu
 TObjekt *vrat_objekty_vyuzivajici_pohon(unsigned long n);//vratí formou ukazatelem na pole objekty přiřazené k danému pohonu
