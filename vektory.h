@@ -291,8 +291,8 @@ class Cvektory
 		AnsiString vypsat_objekty_bez_prirazenych_pohonu(bool shortname=true,AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle prvního parametru, který je implicitně na shortname=true) seznam objektů, které nemají přiřazený pohon, jednotlivé názvy objektů oddělí dle paramaterů seperátor, implicitně ", " tj. čárka a mezera,, v případě že žádný objekt nenajde, vrátí prázdný řetězec
 unsigned long vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(bool s);//vrátí počet objektů bez či s přiřazenými pohony (dle vstupního parametru)
 		AnsiString vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_name=true);//dle n pohonu vráti objekty, které pohon používají, pokud je short_name na true, vrátí kratký název objektu jinak dlouhý
-unsigned long vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n);//vratí počet objektů přiřazených k danému pohonu
-TObjekt *vrat_objekty_vyuzivajici_pohon(unsigned long n);//vratí formou ukazatele na pole objekty přiřazené k danému pohonu
+unsigned long vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n, short rezim=-1);//vratí počet objektů přiřazených k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
+TObjekt *vrat_objekty_vyuzivajici_pohon(unsigned long n, short rezim=-1);//vratí formou ukazatele na pole objekty přiřazené k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
 TObjekt *vrat_objekty_bez_pohonu();//vratí formou ukazatele na pole objekty bez pohonů
 		AnsiString vypis_objekty_s_pohony_bez_roztece(bool shortname=true);//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů, které mají přiřazený pohon bez uvedené rozteče jednotlivé názvy objektů oddělí  ", " tj. čárkou a mezerou, v případě že žádný objekt nenajde, vrátí prázdný řetězec, pozor pohony bez přiřazení k objektům nevypisuje
 		AnsiString vypis_objekty_mimo_100vytizeni(bool shortname=true, bool vypsat_procetna=true, AnsiString separator=", ");//vrátí AnsiString řetezec shortname či name (dle parametru, který je implicitně na shortname=true) seznam objektů podle zakázek, které nemají 100% vytížení

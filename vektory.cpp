@@ -917,29 +917,31 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 	return nalezen;
 }
 ////---------------------------------------------------------------------------
-//vratí počet objektů přiřazených k danému pohonu
-unsigned long Cvektory::vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n)
+//vratí počet objektů přiřazených k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
+unsigned long Cvektory::vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n, short rezim)//vratí počet objektů přiřazených k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	unsigned long RET=0;
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL && O->pohon->n==n)RET++;//pokud má pohon přiřazen a jedná se o stejný pohon
+		if((short)O->rezim==rezim && O->pohon!=NULL && O->pohon->n==n)RET++;//pokud má pohon přiřazen a jedná se o stejný pohon a je v libovolném režimu
+		if(rezim==-1 && O->pohon!=NULL && O->pohon->n==n)RET++;//pokud má pohon přiřazen a jedná se o stejný pohon a je v daném režimu
 		O=O->dalsi;
 	}
 	O=NULL;delete O;
 	return RET;
 }
 ////---------------------------------------------------------------------------
-//vratí formou ukazatelem na pole objekty přiřazené k danému pohonu
-Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n)
+//vratí formou ukazatelem na pole objekty přiřazené k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
+Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n, short rezim)
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	TObjekt *RET=new TObjekt[vrat_pocet_objektu_vyuzivajici_pohon(n)];
 	unsigned long i=0;
 	while (O!=NULL)
 	{
-		if(O->pohon!=NULL && O->pohon->n==n)RET[i++]=*O;//pokud má pohon přiřazen a jedná se o stejný pohon
+		if(rezim==-1 && O->pohon!=NULL && O->pohon->n==n)RET[i++]=*O;//pokud má pohon přiřazen a jedná se o stejný pohon a je v libovolném režimu
+		if((short)O->rezim==rezim && O->pohon!=NULL && O->pohon->n==n)RET[i++]=*O;//pokud má pohon přiřazen a jedná se o stejný pohon a je v daném režimu
 		O=O->dalsi;
 	}
 	O=NULL;delete O;
@@ -969,6 +971,7 @@ unsigned long Cvektory::vrat_pocet_nepouzivanych_pohonu()
 	while (p!=NULL)//projde všechny pohony
 	{
 		if(pohon_je_pouzivan(p->n)==false)RET++;//pokud je nepoužíván, navýší počítadlo počtu nepoužívaných pohonů
+		p=p->dalsi;
 	}
 	p=NULL;delete p;
 	return RET;
