@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 
@@ -27,7 +26,7 @@ __fastcall TF_gapoR::TF_gapoR(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormActivate(TObject *Sender)
 {
-//zde nevolat
+//zde nevolat dìlá problémy
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormShow(TObject *Sender)
@@ -38,7 +37,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Left=Offset;mGrid->Top=scGPPanel_hlavicka->Height+Offset;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
 
-	////////samotné vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
+	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=14;//pevný poèet slopcù
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 	if(pohony_zmena!=NULL)
@@ -53,6 +52,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		}
 	}
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+	objekty=new Cvektory::TObjekt[ColCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
 	////////plnìní daty - hlavièka////////
 	mGrid->Cells[0][0].Text="pouze zmìnìné pohony";
@@ -94,13 +94,15 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku
 	for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
-		if(pohony_zmena[i].X)//vypusuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony
+		if(pohony_zmena[i].X)//vypusuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom je bude totožné s i...
 		{
 			//vratí formou ukazatelem na pole objekty pøiøazené k danému pohonu
 			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i);
 			unsigned int z=0;
 			for(;z<pohony_zmena[i].Y;z++)
 			{
+				//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
+				objekty[j]=O[z];
 				//pohony
 				mGrid->Cells[0][j].Text=O[z].pohon->name;
 				//objekty
@@ -121,6 +123,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+pohony_zmena[i].Y-1);//slouèení bunìk pohony
+			O=NULL;delete O;
 		}
 	}
 
@@ -171,13 +174,15 @@ void TF_gapoR::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::scGPButton_OKClick(TObject *Sender)
 {
-	pohony_zmena=NULL;delete pohony_zmena;
+	delete[] pohony_zmena;
+	delete[] objekty;
 	Close();
 }
 //---------------------------------------------------------------------------
 //provizorní, vy/zapínání AA
 void __fastcall TF_gapoR::Button1Click(TObject *Sender)
 {
+	ShowMessage(objekty[1].name);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 	mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
 	FormPaint(this);
 }

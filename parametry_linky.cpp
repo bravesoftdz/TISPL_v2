@@ -453,7 +453,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		}
 		if(zobrazGAPO_R)//pokud byl nìjaký používaný pohon zmìnìn
 		{
-			F_gapoR->Left=50;F_gapoR->Top=50;
+			F_gapoR->Left=Left;F_gapoR->Top=Top;
 			F_gapoR->ShowModal();
 			mGrid->Delete();
 		}
