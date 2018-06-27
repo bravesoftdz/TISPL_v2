@@ -49,7 +49,6 @@ object F_gapoV: TF_gapoV
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 651
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 327
@@ -128,7 +127,6 @@ object F_gapoV: TF_gapoV
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 601
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -163,7 +161,6 @@ object F_gapoV: TF_gapoV
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367
-      ExplicitWidth = 509
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 290
@@ -243,7 +240,6 @@ object F_gapoV: TF_gapoV
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 564
     end
     object scButton_html: TscButton
       Left = 0
