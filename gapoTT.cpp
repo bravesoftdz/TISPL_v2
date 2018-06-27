@@ -138,7 +138,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 
 
 	mGrid->Cells[15][0].Text="CT - Technologický èas [s]"; //mGrid->MergeCells(6,0,7,0);//slouèení zatím nefunguje dobøe
-	mGrid->Cells[16][0].Text="RD - Rychlost pohonu [m/s]";
+	mGrid->Cells[16][0].Text="RD - Rychlost pohonu [m/min]";
 	mGrid->Cells[17][0].Text="DD - Délka objekt [m]";
 	mGrid->Cells[18][0].Text="K - Kapacita [vozíkù+mezer]";
 	mGrid->Cells[19][0].Text="P - Pozice [vozíkù]";
@@ -154,30 +154,39 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 //	mGrid->SetCells(mGrid->Cells[ColCount-1][1],ColCount-1,2,ColCount-1,RowCount-1);
 //
 //	//manualfit výšky 0-tého øádku (zatím není pøipravena metoda)
-	Canvas->Font=mGrid->Cells[18][0].Font;	//nejdelší použitý text
-	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[18][0].Text)+mGrid->Cells[18][0].BottomMargin+mGrid->Cells[18][0].BottomBorder->Width/2+mGrid->Cells[18][0].TopMargin+mGrid->Cells[18][0].TopBorder->Width/2;
+	Canvas->Font=mGrid->Cells[16][0].Font;	//nejdelší použitý text
+	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[16][0].Text)+mGrid->Cells[16][0].BottomMargin+mGrid->Cells[16][0].BottomBorder->Width/2+mGrid->Cells[16][0].TopMargin+mGrid->Cells[16][0].TopBorder->Width/2;
 //	//manualfit šíøky sloupcù mimo prvního (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
-	mGrid->Columns[1].Width=40;mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=mGrid->Columns[12].Width=mGrid->Columns[13].Width=mGrid->Columns[14].Width=35;//ostatní následující sloupce zatím default šíøka
-//
+	mGrid->Columns[1].Width=100;mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=mGrid->Columns[12].Width=mGrid->Columns[13].Width=mGrid->Columns[14].Width=35;//ostatní následující sloupce zatím default šíøka
+	mGrid->Columns[2].Width=100;
+	//
 //	//nastavení velikosti nultého sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
 	mGrid->SetColumnAutoFit(0);
+
 
  ////////jednolivé øádky////////
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	////prùchod všemi objekty bez pøiøazených pohonu
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
 	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
-	for(unsigned long i=0;i<On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
+	for(unsigned long i=1;i<On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
 			//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 			objekty[j]=On[i];
 			//pohony
 			mGrid->Cells[0][j].Text="nepøiøazen";
 			//objekty
-			mGrid->Cells[1][j].Text=On[i].short_name;
+			mGrid->Cells[1][j].Text=On[i].short_name;//On[i].short_name;
 			//volby - checkboxy  - Rosta dodelá
-//    mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
-//    mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
+				mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
+
+				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
+
+				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
+
 			//parametry objektù
 			mGrid->Cells[15][j].Text=On[i].CT;
 			mGrid->Cells[16][j].Text=On[i].RD;
@@ -206,8 +215,16 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			//objekty
 			mGrid->Cells[1][j].Text="nepøiøazen";
 			//volby - checkboxy - Rostì dodìlá
-//    mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
-//    mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
+
+				mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
+
+				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
+
+				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
+
 			//posun na další øádek výsledné tabulky
 			j++;
 		}
@@ -215,6 +232,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		{
 			//vratí formou ukazatele na pole objekty pøiøazené k danému pohonu
 			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i);
+			AnsiString rezim;
 			unsigned long z=0;
 			for(;z<O_pocet;z++)
 			{
@@ -224,12 +242,33 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				 mGrid->Cells[0][j].Text=O[z].pohon->name;
 				 //objekty
 				 mGrid->Cells[1][j].Text=O[z].short_name;
-				 //volby - checkboxy - Rostì dodìlá
-//       mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
-//       mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
+				 if(O[z].rezim==0)
+				 {
+				 rezim="S&G";
+			//	 mGrid->getRadio(3,j)->Checked=true;
+//	TscGPCheckBox  *CH=mGrid->getRadio(3,j);
+//	CH->Checked;
+//	CH=mGrid->getRadio(3,j);
+//	CH=NULL;delete CH;
+				 }
+				 if(O[z].rezim==1) rezim="Kontinuální";
+				 if(O[z].rezim==3) rezim="Postprocesní";
+				 mGrid->Cells[2][j].Text=rezim;
+				 //volby - checkboxy
+				mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
+				 if(O[z].rezim=!1)
+				{
+				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
+
+				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
+				}
+
 				 //parametry objektù
 				 mGrid->Cells[15][j].Text=O[z].CT;
-				 mGrid->Cells[16][j].Text=O[z].RD;
+				 mGrid->Cells[16][j].Text=O[z].RD*60.0;
 				 mGrid->Cells[17][j].Text=O[z].delka_dopravniku;
 				 mGrid->Cells[18][j].Text=O[z].kapacita;
 				 mGrid->Cells[19][j].Text=O[z].pozice;
