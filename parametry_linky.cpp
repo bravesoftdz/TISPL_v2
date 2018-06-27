@@ -12,6 +12,7 @@
 #include "Unit2.h"
 #include "gapoR.h"
 #include "gapoTT.h"
+#include "gapoV.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -2749,22 +2750,27 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::scGPGlyphButton_vozik_editClick(TObject *Sender)
 
 {
+		bool Changes_vozik=false;
 		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
 		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
 	if(mrOk==Form_parametry_vozik->ShowModal())
 	{
 	// naplnìní nových dat do struktury
 
-	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) ShowMessage("zmena delka jigu - GAPO");
-	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) ShowMessage("zmena sirky jigu - GAPO");
-	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) ShowMessage("zmena vysky jigu - GAPO");
-	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  ShowMessage("zmena podvozku jigu - GAPO");
+	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) Changes_vozik=true;
+	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) Changes_vozik=true;
+	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) Changes_vozik=true;
+	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  Changes_vozik=true;
 
 	scGPNumericEdit_delka_jig->Value=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
 	scGPNumericEdit_sirka_jig->Value=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
 	scGPNumericEdit_vyska_jig->Value=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value;
 	scGPNumericEdit_delka_podvozek->Value=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
 	}
+		if(Changes_vozik)//pri zmene voziku
+		{
+			F_gapoV->ShowModal();
+		}
 }
 //---------------------------------------------------------------------------
 
