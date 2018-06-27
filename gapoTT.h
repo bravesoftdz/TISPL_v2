@@ -22,13 +22,17 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_OK;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
+	void __fastcall scGPButton_OKClick(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
-
 public:		// User declarations
 	__fastcall TF_gapoTT(TComponent* Owner);
-		TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
+	//metody volané z Tmgrid
+	void OnClick(long Tag,unsigned long Col,unsigned long Row);
+	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
+	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoTT *F_gapoTT;

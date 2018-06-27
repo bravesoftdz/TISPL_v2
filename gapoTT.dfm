@@ -3,15 +3,16 @@ object F_gapoTT: TF_gapoTT
   Top = 0
   BorderStyle = bsNone
   Caption = 'F_gapoTT'
-  ClientHeight = 338
-  ClientWidth = 651
-  Color = clBtnFace
+  ClientHeight = 445
+  ClientWidth = 377
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -19,7 +20,7 @@ object F_gapoTT: TF_gapoTT
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
-    Width = 651
+    Width = 377
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -47,9 +48,10 @@ object F_gapoTT: TF_gapoTT
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 651
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 601
+      Left = 327
       Top = 0
       Width = 50
       Height = 33
@@ -125,12 +127,13 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 601
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
       Left = 55
       Top = 0
-      Width = 509
+      Width = 235
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -159,9 +162,10 @@ object F_gapoTT: TF_gapoTT
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367
+      ExplicitWidth = 509
     end
     object scGPGlyphButton_info: TscGPGlyphButton
-      Left = 564
+      Left = 290
       Top = 0
       Width = 37
       Height = 34
@@ -238,6 +242,7 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 564
     end
     object scButton_html: TscButton
       Left = 0
@@ -329,8 +334,8 @@ object F_gapoTT: TF_gapoTT
     end
   end
   object scGPButton_OK: TscGPButton
-    Left = 272
-    Top = 295
+    Left = 136
+    Top = 391
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -340,6 +345,7 @@ object F_gapoTT: TF_gapoTT
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    OnClick = scGPButton_OKClick
     Animation = False
     Caption = 'OK'
     CanFocused = False
