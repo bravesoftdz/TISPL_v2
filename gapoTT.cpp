@@ -270,3 +270,18 @@ void __fastcall TF_gapoTT::FormPaint(TObject *Sender)
 	F->m.frameForm(this,clWebOrange,1);//vykreslí orámování okolo formu
 }
 //---------------------------------------------------------------------------
+
+void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
+{
+
+}
+//---------------------------------------------------------------------------
+void TF_gapoTT::OnEnter(long Tag,unsigned long Col,unsigned long Row)
+{
+
+}
+//---------------------------------------------------------------------------
+void TF_gapoTT::OnChange(long Tag,unsigned long Col,unsigned long Row)
+{
+
+}

@@ -28,7 +28,11 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TF_gapoTT(TComponent* Owner);
-		TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
+	 //metody volané z Tmgrid
+	void OnClick(long Tag,unsigned long Col,unsigned long Row);
+	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
+	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+	TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoTT *F_gapoTT;
