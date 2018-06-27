@@ -883,7 +883,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 	H=getWidthHeightText(RefCell).Y;
 	if(RefCell.Font->Orientation==900){W=H;H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
 	if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
-		//if(Cell.Font->Orientation==2700)L-=H;
+	//if(Cell.Font->Orientation==2700)L-=H;
 
 	//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby - DÙLEŽITE!!!
 	Cells[ColCell_2][RowCell_2].Align=aNO;
@@ -932,7 +932,23 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		 }break;
 		 case MIDDLE:
 		 {
-			 Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
+				case CHECK:
+				{
+						Cells[ColCell_1][RowCell_1].Valign=vNO;
+						TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
+						Ch->Height=Ch->OptionsChecked->ShapeSize;
+						Ch->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ch->Height/2;
+						Ch=NULL;delete Ch;
+				}break;
+				case RADIO:
+				{
+						Cells[ColCell_1][RowCell_1].Valign=vNO;
+						TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
+						Ra->Height=Ra->OptionsChecked->ShapeSize;
+						Ra->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ra->Height/2;
+						Ra=NULL;delete Ra;
+				}break;
+				default: Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
 		 }
 		 break;
 		 case BOTTOM:
