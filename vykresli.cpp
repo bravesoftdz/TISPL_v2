@@ -1247,22 +1247,17 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 			{
 				i=10;//pokud je u dalšího pohon přiřazen, ale není zadaná rozteč, není kompletní a kompetentní info
 				F->Z("<b>Problém</b> - pohon <b>"+D->pohon->name+"</b> přiřazen objektu <b>"+D->name+"</b> nemá přiřazenou rozteč!<br><b>Rešení</b> - nastavte pohonu patřičnou rozteč.<br><br>",true);
-				//F->Z("R "+O->short_name,true);
 			}
 			else//jsou k dispozici data
 			{                         //zvažit zda RD či aRD (kvůli PP)
 				if(O->mezera>=m.minM(O->pohon->aRD,D->pohon->aRD,D->pohon->roztec))
 				{
 					i=0;//je v pořádku
-					//ShowMessage("0 "+O->short_name);
-					//F->Z("0 "+O->short_name,true);
 				}
 				else
 				{
 					i=1;//není v pořádku nestíhá se čekání
 					F->Z("<b>Problém</b> - v objektu <b>"+O->name+"</b> je nedostatečná doba čekání na palec!<br><b>Rešení</b> - zvyšte rychlost pohonu nebo nastavte větší mezeru mezi vozíky!<br><br>",true);
-					//ShowMessage("N "+O->short_name);
-					//F->Z("N "+O->short_name,true);
 				}
 			}
 		}
@@ -1278,8 +1273,6 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 				if(D->pohon==NULL && D!=v.OBJEKTY->dalsi)F->Z("<b>Problém</b> - objekt <b>"+D->name+"</b> nemá přiřazen pohon!<br><b>Rešení</b> - přiřaďte patřičný pohon.<br><br>",true);
 			}
 			i=10;//červeně šrafování, není kompletní a kompetentní info
-			//ShowMessage("NP "+O->short_name);
-			//F->Z("NP "+O->short_name,true);
 		}
 
 
@@ -2397,6 +2390,41 @@ void Cvykresli::vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor
 	canv->LineTo(X1+OffsetX,Y1+OffsetY);
 	canv->LineTo(X1+OffsetX,Y2+OffsetY);
 	canv->LineTo(X2,Y2);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx)
+{
+	TColor Color=10114859;
+
+	short O=5;
+	short Top=326;
+	short aRD=635;
+	short R	 =770;
+	short Rz =884;
+	short Rx =1086;
+
+	switch(typ)
+	{
+		case 5:
+			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,5);
+			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,5);
+		break;
+		case 6:
+			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,5);
+			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,Rx,Top,R,Top,Color,1,0,5);
+		break;
+		case 7:
+			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,5);
+			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,5);
+		break;
+		case 8:
+			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,5);
+			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,5);vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,5);
+		break;
+		default:
+		vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,5);
+		break;
+  }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 
