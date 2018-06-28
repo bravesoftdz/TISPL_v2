@@ -1100,10 +1100,10 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 	else scHTMLLabel_log_vypis->Caption = Text;//text má být přidán samostatně
 
 	//zobrazení či skrývání
-	if(Text=="" && add==false)//má dojít ke skrytí
+	if(Text=="" && add==false)//vše OK
 	{
-		scExPanel_log_header->Visible=false; //expanel s obsahem zprávy
-		scGPGlyphButton_zpravy_ikona->Visible=false;//ikona
+		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=clWhite;
+		scHTMLLabel_log_vypis->Caption="<b>Linka v pořádku.</b>";
 		//Memo2->Lines->Clear();
 	}
 	else
