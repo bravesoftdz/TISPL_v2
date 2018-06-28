@@ -112,6 +112,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 		Form1->Layout->Enabled=false;
 		Form1->Analyza->Enabled=false;
 	}
+  if(F->scHTMLLabel_log_vypis->Caption=="")
+	F->Z("<b>Linka v pořádku.</b>",false);
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
@@ -1253,6 +1255,7 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 				if(O->mezera>=m.minM(O->pohon->aRD,D->pohon->aRD,D->pohon->roztec))
 				{
 					i=0;//je v pořádku
+					//nelze přepíše F->Z("<b>Linka v pořádku.</b>",false);
 				}
 				else
 				{
@@ -2406,23 +2409,23 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short 
 	switch(typ)
 	{
 		case 5:
-			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,5);
-			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,5);
+			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);
+			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,-5);
 		break;
 		case 6:
-			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,5);
-			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,Rx,Top,R,Top,Color,1,0,5);
+			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);
+			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,Rx,Top,R,Top,Color,1,0,-5);
 		break;
 		case 7:
-			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,5);
-			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,5);
+			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);
+			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,-5);
 		break;
 		case 8:
-			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,5);
-			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,5);vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,5);
+			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);
+			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);
 		break;
 		default:
-		vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,5);
+		vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);
 		break;
   }
 }
