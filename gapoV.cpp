@@ -71,7 +71,7 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 	mGrid->Cells[3][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[3][0].BottomMargin=4;mGrid->Cells[3][0].TopMargin=8;
 
- //	mGrid->CopyAreaCell(mGrid->Cells[3][0],mGrid->Cells[4][0]);//M - zkouška nahrazení následujícího
+	//mGrid->CopyAreaCell(mGrid->Cells[3][0],mGrid->Cells[4][0],false);//M - zkouška nahrazení následujícího
 	mGrid->Cells[4][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[4][0].Font->Orientation=900;
 	mGrid->Cells[4][0].Align=mGrid->CENTER;
@@ -221,7 +221,8 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 				mGrid->Cells[15][j].Text=O[z].kapacita;
 				mGrid->Cells[16][j].Text=O[z].pozice;
 				mGrid->Cells[17][j].Text=O[z].mezera_jig;
-				mGrid->Cells[18][j].Text=O[z].mezera_podvozek;
+				if(O[z].mezera_podvozek<-0.0000000000000004) mGrid->Cells[18][j].Text="0";
+				else mGrid->Cells[18][j].Text=O[z].mezera_podvozek;
 				mGrid->Cells[19][j].Text=O[z].rotace;
 				//posun na další øádek výsledné tabulky
 				j++;

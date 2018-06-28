@@ -1130,10 +1130,8 @@ void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftStat
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
-//ControlPaint.DrawBorder(e.Graphics, this.panel1.ClientRectangle, Color.DarkBlue, ButtonBorderStyle.Solid);
 
- 	//DrawBorder(Sender,Form_parametry_linky->ClientRect,clBlue,bsNone);
- //DrawBorder
+  F->d.vykresli_packy_PL(TCanvas *canv,short typ,short zakmek_aRD,short zakmek_R,short zakmek_Rz,short zakmek_Rx);
 	show_min_Rz();
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 
@@ -1973,7 +1971,6 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 				}
 
 			 }
-
 
 }
 void __fastcall TForm_parametry_linky::scGPButton_zamek_aRDClick(TObject *Sender)
