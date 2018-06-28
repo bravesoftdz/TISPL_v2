@@ -1131,7 +1131,7 @@ void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftStat
 void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
 
-  F->d.vykresli_packy_PL(TCanvas *canv,short typ,short zakmek_aRD,short zakmek_R,short zakmek_Rz,short zakmek_Rx);
+	F->d.vykresli_packy_PL(Canvas,input_state,scGPButton_zamek_aRD->ImageIndex,scGPButton_zamek_roztec->ImageIndex,scGPButton_zamek_Rz->ImageIndex,scGPButton_zamek_Rx->ImageIndex);
 	show_min_Rz();
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 
