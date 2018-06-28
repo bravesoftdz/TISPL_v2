@@ -221,7 +221,7 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 				mGrid->Cells[15][j].Text=O[z].kapacita;
 				mGrid->Cells[16][j].Text=O[z].pozice;
 				mGrid->Cells[17][j].Text=O[z].mezera_jig;
-				if(O[z].mezera_podvozek<-0.0000000000000004) mGrid->Cells[18][j].Text="0";
+				if(O[z].mezera_podvozek<0.00000004) mGrid->Cells[18][j].Text="0";
 				else mGrid->Cells[18][j].Text=O[z].mezera_podvozek;
 				mGrid->Cells[19][j].Text=O[z].rotace;
 				//posun na další øádek výsledné tabulky
