@@ -558,7 +558,8 @@ public:		// User declarations
 	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy kdy bude zapnutı antialising jde vdy do vìtve else
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, e zde má bıt hodnota 5
-	void S(UnicodeString Text="");//Usnadòuje pøístup k ShowMessage
+	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
+	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadòuje pøístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhı paremetry na false - co je implicitnì), vymae zpravu, parametr add rozhoduje, zda bude novı text pøeden k pøedešlému textu èi nikoliv, pokud zpráva obsahuje nìjakı text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
 	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true);
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišuje zápis do INI aplikace

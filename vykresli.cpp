@@ -26,131 +26,132 @@ Cvykresli::Cvykresli()
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_vektory(TCanvas *canv)
 {
-		//cesty ZAKAZeK - jsou li k dispozici
-		if(v.ZAKAZKY!=NULL && v.ZAKAZKY->predchozi->n>0)
-		{
-			 Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
-			 while(Z!=NULL)//prochází seznam ZAKÁZEK, který obsahuje jednotlivé cesty
-			 {
-					Cvektory::TCesta *C=Z->cesta->dalsi;
-					while(C!=NULL)//prochází jednotlivé prvky cesty
+	F->Z("",false);//smazání přechozích zpráv
+	//cesty ZAKAZeK - jsou li k dispozici
+	if(v.ZAKAZKY!=NULL && v.ZAKAZKY->predchozi->n>0)
+	{
+		 Cvektory::TZakazka *Z=v.ZAKAZKY->dalsi;
+		 while(Z!=NULL)//prochází seznam ZAKÁZEK, který obsahuje jednotlivé cesty
+		 {
+				Cvektory::TCesta *C=Z->cesta->dalsi;
+				while(C!=NULL)//prochází jednotlivé prvky cesty
+				{
+					canv->Pen->Color=Z->barva;
+					canv->Pen->Style=psSolid;
+					canv->Pen->Width=m.round(2*Form1->Zoom);
+					if(Z->barva==clGray)canv->Pen->Mode=pmCopy;else canv->Pen->Mode=pmNotXor;pmMask; //pokud se jedná o defaultní barvu vykopíruje se jina se vytvoří kombinace
+					if(C->objekt->n==1)//pro situaci: z posledního prvku na první
 					{
-						canv->Pen->Color=Z->barva;
-						canv->Pen->Style=psSolid;
-						canv->Pen->Width=m.round(2*Form1->Zoom);
-						if(Z->barva==clGray)canv->Pen->Mode=pmCopy;else canv->Pen->Mode=pmNotXor;pmMask; //pokud se jedná o defaultní barvu vykopíruje se jina se vytvoří kombinace
-						if(C->objekt->n==1)//pro situaci: z posledního prvku na první
+						//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
+						if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
 						{
-							//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
-							if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
-							{
-								canv->MoveTo(m.L2Px(C->predchozi->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
-								canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
-								sipka(canv,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
-								if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
-							}
-						}
-						else//pro běžné situace
-						{
-							canv->MoveTo(m.L2Px(C->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
+							canv->MoveTo(m.L2Px(C->predchozi->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
 							canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
-							sipka(canv,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
-							if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
+							sipka(canv,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
+							if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->predchozi->objekt->X,C->predchozi->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
 						}
-						C=C->dalsi;
 					}
-					Z=Z->dalsi;
-			 }
-		}
-		else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
-		{
-			Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
-			while (ukaz!=NULL)
-			{
-				canv->Pen->Style=psSolid;
-				canv->Pen->Mode=pmCopy;
-				canv->Pen->Width=m.round(1*Form1->Zoom);//musí být tady, jina to přebije nastavení metody sipka
-				canv->Pen->Color=clGray;
-				if(ukaz->n==1)//pro situaci z posledního prvku na první
-				{
-					//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
-					if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
+					else//pro běžné situace
 					{
-						canv->MoveTo(m.L2Px(ukaz->predchozi->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->predchozi->predchozi->Y)+O_height*Form1->Zoom/2);
-						canv->LineTo(m.L2Px(ukaz->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->Y)+O_height*Form1->Zoom/2);
-						sipka(canv,m.L2Px((ukaz->predchozi->predchozi->X+ukaz->X)/2)+O_width*Form1->Zoom/2,m.L2Py((ukaz->predchozi->predchozi->Y+ukaz->Y)/2)+O_height*Form1->Zoom/2,m.azimut(ukaz->predchozi->predchozi->X,ukaz->predchozi->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+						canv->MoveTo(m.L2Px(C->predchozi->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->predchozi->objekt->Y)+O_height*Form1->Zoom/2);
+						canv->LineTo(m.L2Px(C->objekt->X)+O_width*Form1->Zoom/2,m.L2Py(C->objekt->Y)+O_height*Form1->Zoom/2);
+						sipka(canv,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y));//zajistí vykreslení šipky - orientace spojovací linie
+						if(Z->barva!=clGray)prislusnost_cesty(canv,Z->barva,m.L2Px((C->predchozi->objekt->X+C->objekt->X)/2)+O_width*Form1->Zoom/2,m.L2Py((C->predchozi->objekt->Y+C->objekt->Y)/2)+O_height*Form1->Zoom/2,m.azimut(C->predchozi->objekt->X,C->predchozi->objekt->Y,C->objekt->X,C->objekt->Y),Z->n);
 					}
+					C=C->dalsi;
 				}
-				else
+				Z=Z->dalsi;
+		 }
+	}
+	else //pokud nejsou k dispozici nadefinované cesty vykreslí se přímo jen spojovací linie mezi objekty (tj. defaultní cesta)
+	{
+		Cvektory::TObjekt* ukaz=v.OBJEKTY->dalsi;//přeskočí hlavičku
+		while (ukaz!=NULL)
+		{
+			canv->Pen->Style=psSolid;
+			canv->Pen->Mode=pmCopy;
+			canv->Pen->Width=m.round(1*Form1->Zoom);//musí být tady, jina to přebije nastavení metody sipka
+			canv->Pen->Color=clGray;
+			if(ukaz->n==1)//pro situaci z posledního prvku na první
+			{
+				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
+				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
 				{
-					canv->MoveTo(m.L2Px(ukaz->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->predchozi->Y)+O_height*Form1->Zoom/2);
+					canv->MoveTo(m.L2Px(ukaz->predchozi->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->predchozi->predchozi->Y)+O_height*Form1->Zoom/2);
 					canv->LineTo(m.L2Px(ukaz->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->Y)+O_height*Form1->Zoom/2);
-					sipka(canv,m.L2Px((ukaz->predchozi->X+ukaz->X)/2)+O_width*Form1->Zoom/2,m.L2Py((ukaz->predchozi->Y+ukaz->Y)/2)+O_height*Form1->Zoom/2,m.azimut(ukaz->predchozi->X,ukaz->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+					sipka(canv,m.L2Px((ukaz->predchozi->predchozi->X+ukaz->X)/2)+O_width*Form1->Zoom/2,m.L2Py((ukaz->predchozi->predchozi->Y+ukaz->Y)/2)+O_height*Form1->Zoom/2,m.azimut(ukaz->predchozi->predchozi->X,ukaz->predchozi->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
 				}
-				ukaz=ukaz->dalsi;//posun na další prvek
 			}
-	 	}
+			else
+			{
+				canv->MoveTo(m.L2Px(ukaz->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->predchozi->Y)+O_height*Form1->Zoom/2);
+				canv->LineTo(m.L2Px(ukaz->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->Y)+O_height*Form1->Zoom/2);
+				sipka(canv,m.L2Px((ukaz->predchozi->X+ukaz->X)/2)+O_width*Form1->Zoom/2,m.L2Py((ukaz->predchozi->Y+ukaz->Y)/2)+O_height*Form1->Zoom/2,m.azimut(ukaz->predchozi->X,ukaz->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+			}
+			ukaz=ukaz->dalsi;//posun na další prvek
+		}
+	}
 
-		////OBJEKTY
-		//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
-		Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
-		while (O!=NULL)
-		{
-			vykresli_rectangle(canv,O);
-			O=O->dalsi;//posun na další prvek
-		}
-		//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
-		if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
-		{
-			if(v.OBJEKTY->predchozi->n>3)Form1->Layout->Enabled=true;else Form1->Layout->Enabled=false;///pokud je více jak 3 objekty
-			if(DEBUG)Form1->Layout->Enabled=true;
-			Form1->Analyza->Enabled=true;
-		}
-		else
-		{
-			Form1->Layout->Enabled=false;
-			Form1->Analyza->Enabled=false;
-    }
+	////OBJEKTY
+	//samotné objekty, kreslím až v samostatném následujícím cyklu, aby se nakreslilo do horní vrstvy
+	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		vykresli_rectangle(canv,O);
+		O=O->dalsi;//posun na další prvek
+	}
+	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
+	if(v.OBJEKTY->dalsi!=NULL && !Form1->TZF)
+	{
+		if(v.OBJEKTY->predchozi->n>3)Form1->Layout->Enabled=true;else Form1->Layout->Enabled=false;///pokud je více jak 3 objekty
+		if(DEBUG)Form1->Layout->Enabled=true;
+		Form1->Analyza->Enabled=true;
+	}
+	else
+	{
+		Form1->Layout->Enabled=false;
+		Form1->Analyza->Enabled=false;
+	}
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
 void Cvykresli::prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N)
 {
-			short S=m.round(4*Form1->Zoom);//šířka čtverečku od středu
-			short O=m.round(10*Form1->Zoom);//odsazení od šipky
-			canv->Pen->Width=1;
-			canv->Pen->Color=Color;
-			canv->Pen->Style=psSolid;
-			canv->Pen->Mode=pmCopy;//pmNotXor;//pmMask;
-			canv->Brush->Color=Color;
-			if(0<=A && A<15 || 135<=A && A<250 || 315<A && A<=360)canv->Rectangle(O+X-S+S*2*(N-1),Y-S,O+X+S+S*2*(N-1),Y+S);//vodorovně za
-			if(15<=A && A<135 || 250<=A && A<315 )canv->Rectangle(X-S,O+Y-S+S*2*(N-1),X+S,O+Y+S+S*2*(N-1));//svisle pod
+	short S=m.round(4*Form1->Zoom);//šířka čtverečku od středu
+	short O=m.round(10*Form1->Zoom);//odsazení od šipky
+	canv->Pen->Width=1;
+	canv->Pen->Color=Color;
+	canv->Pen->Style=psSolid;
+	canv->Pen->Mode=pmCopy;//pmNotXor;//pmMask;
+	canv->Brush->Color=Color;
+	if(0<=A && A<15 || 135<=A && A<250 || 315<A && A<=360)canv->Rectangle(O+X-S+S*2*(N-1),Y-S,O+X+S+S*2*(N-1),Y+S);//vodorovně za
+	if(15<=A && A<135 || 250<=A && A<315 )canv->Rectangle(X-S,O+Y-S+S*2*(N-1),X+S,O+Y+S+S*2*(N-1));//svisle pod
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení šipky - orientace spojovací linie
 void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne, unsigned short int size,COLORREF color,COLORREF color_brush,TPenMode PenMode)
 {
-			canv->Pen->Mode=PenMode;
-			canv->Pen->Width=1;
-			canv->Pen->Style=psSolid;
-			canv->Pen->Color=(TColor)color;
-			canv->Brush->Color=(TColor)color_brush;
-			size=m.round(size*2*Form1->Zoom);
-			short sklon=230;
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Width=1;
+	canv->Pen->Style=psSolid;
+	canv->Pen->Color=(TColor)color;
+	canv->Brush->Color=(TColor)color_brush;
+	size=m.round(size*2*Form1->Zoom);
+	short sklon=230;
 
-			//střed v těžišti
-			if(!bez_vyplne)//barevná výplň trojúhelníku
-			{
-				POINT body[3]={{X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size},{X+m.rotace(1,0,azimut).x*size,Y+m.rotace(1,0,azimut).y*size},{X+m.rotace(1,360-sklon,azimut).x*size,Y+m.rotace(1,360-sklon,azimut).y*size}};
-				canv->Polygon((TPoint*)body,2);
-			}
-			else//transparentní střed
-			{
-				canv->MoveTo(X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size);
-				canv->LineTo(X+m.rotace(1,0,azimut).x*size,Y+m.rotace(1,0,azimut).y*size);
-				canv->LineTo(X+m.rotace(1,360-sklon,azimut).x*size,Y+m.rotace(1,360-sklon,azimut).y*size);
-				canv->LineTo(X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size);
-			}
+	//střed v těžišti
+	if(!bez_vyplne)//barevná výplň trojúhelníku
+	{
+		POINT body[3]={{X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size},{X+m.rotace(1,0,azimut).x*size,Y+m.rotace(1,0,azimut).y*size},{X+m.rotace(1,360-sklon,azimut).x*size,Y+m.rotace(1,360-sklon,azimut).y*size}};
+		canv->Polygon((TPoint*)body,2);
+	}
+	else//transparentní střed
+	{
+		canv->MoveTo(X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size);
+		canv->LineTo(X+m.rotace(1,0,azimut).x*size,Y+m.rotace(1,0,azimut).y*size);
+		canv->LineTo(X+m.rotace(1,360-sklon,azimut).x*size,Y+m.rotace(1,360-sklon,azimut).y*size);
+		canv->LineTo(X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size);
+	}
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
@@ -1242,15 +1243,44 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 		if(O!=NULL && D==NULL)D=v.OBJEKTY->dalsi;//jedná se o poslední objekt a další bude první
 		if(O->pohon!=NULL && D->pohon!=NULL)//pro situaci kdy je pohon přiřazen
 		{
-			if(D->pohon->roztec==0)i=10;//pokud je u dalšího pohon přiřazen, ale není zadaná rozteč, není kompletní a kompetentní info
-			else//je k dispozici
+			if(D->pohon->roztec==0)
+			{
+				i=10;//pokud je u dalšího pohon přiřazen, ale není zadaná rozteč, není kompletní a kompetentní info
+				F->Z("<b>Problém</b> - pohon <b>"+D->pohon->name+"</b> přiřazen objektu <b>"+D->name+"</b> nemá přiřazenou rozteč!<br><b>Rešení</b> - nastavte pohonu patřičnou rozteč.<br><br>",true);
+				//F->Z("R "+O->short_name,true);
+			}
+			else//jsou k dispozici data
 			{                         //zvažit zda RD či aRD (kvůli PP)
-				if(O->mezera>=m.minM(O->pohon->aRD,D->pohon->aRD,D->pohon->roztec))i=0;//je v pořádku
-				else i=1;//není v pořádku nestíhá se čekání
-      }
+				if(O->mezera>=m.minM(O->pohon->aRD,D->pohon->aRD,D->pohon->roztec))
+				{
+					i=0;//je v pořádku
+					//ShowMessage("0 "+O->short_name);
+					//F->Z("0 "+O->short_name,true);
+				}
+				else
+				{
+					i=1;//není v pořádku nestíhá se čekání
+					F->Z("<b>Problém</b> - v objektu <b>"+O->name+"</b> je nedostatečná doba čekání na palec!<br><b>Rešení</b> - zvyšte rychlost pohonu nebo nastavte větší mezeru mezi vozíky!<br><br>",true);
+					//ShowMessage("N "+O->short_name);
+					//F->Z("N "+O->short_name,true);
+				}
+			}
 		}
 		else//situace kdy nejsou pohony přiřazeny
-		i=10;//červeně šrafování, není kompletní a kompetentní info
+		{
+			if(O->pohon==NULL && D->pohon==NULL)//ani jeden z nich
+			{
+				F->Z("<b>Problém</b> - objekty <b>"+O->name+" a "+D->name+"</b> nemají přiřazeny pohony!<br><b>Rešení</b> - přiřaďte patřičné pohony.<br><br>",true);
+			}
+			else//jenom jeden není přiřazen
+			{
+				if(O->pohon==NULL)F->Z("<b>Problém</b> - objekt <b>"+O->name+"</b> nemá přiřazen pohon!<br><b>Rešení</b> - přiřaďte patřičný pohon.<br><br>",true);
+				if(D->pohon==NULL && D!=v.OBJEKTY->dalsi)F->Z("<b>Problém</b> - objekt <b>"+D->name+"</b> nemá přiřazen pohon!<br><b>Rešení</b> - přiřaďte patřičný pohon.<br><br>",true);
+			}
+			i=10;//červeně šrafování, není kompletní a kompetentní info
+			//ShowMessage("NP "+O->short_name);
+			//F->Z("NP "+O->short_name,true);
+		}
 
 
 	 /*	rgb(255,140,0) - DarkOrange

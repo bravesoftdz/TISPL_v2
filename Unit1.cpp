@@ -1076,6 +1076,7 @@ void TForm1::SB(UnicodeString Text, unsigned short Pane)
 		default:RzStatusPane5->Caption=Text; break;
 	}
 }
+//---------------------------------------------------------------------------
 void TForm1::S(UnicodeString Text)
 {
 		ShowMessage(Text);
@@ -1089,6 +1090,35 @@ int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,
 int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption)
 {
 	return myMessageBox->Show(text,mbTYPE,centrovat_text,width,default_button_caption);
+}
+//---------------------------------------------------------------------------
+//usnadňuje přístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitně), vymaže zpravu, parametr add rozhoduje, zda bude nový text předen k předešlému textu či nikoliv, pokud zpráva obsahuje nějaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
+void TForm1::Z(UnicodeString Text,bool add,TColor color)
+{
+	//plnění zprávy textem
+	if(add)scHTMLLabel_log_vypis->Caption = scHTMLLabel_log_vypis->Caption+Text;//text má být přidán k předchozímu textu
+	else scHTMLLabel_log_vypis->Caption = Text;//text má být přidán samostatně
+
+	//zobrazení či skrývání
+	if(Text=="" && add==false)//má dojít ke skrytí
+	{
+		scExPanel_log_header->Visible=false; //expanel s obsahem zprávy
+		scGPGlyphButton_zpravy_ikona->Visible=false;//ikona
+		//Memo2->Lines->Clear();
+	}
+	else
+	{
+		//není možné: scExPanel_log_header->Visible=true; //expanel s obsahem zprávy
+		scGPGlyphButton_zpravy_ikona->Visible=true;//ikona
+		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=color;//barva ikony
+	}
+	//pozice
+	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
+	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
+	scExPanel_log_header->Height = 300;
+	scExPanel_log_header->Width	 = 715;
+  //Memo2->Visible=true;
+	//Memo2->Lines->Add(Text);
 }
 //---------------------------------------------------------------------------
 //metoda volá kurzory aplikace
@@ -4903,17 +4933,12 @@ void __fastcall TForm1::scExPanel_log_headerClose(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_zpravy_ikonaClick(TObject *Sender)
 {
-if(scExPanel_log_header->Visible==false){
-
-		 scExPanel_log_header->Visible=true;
+	if(scExPanel_log_header->Visible==false)
+	{
+		scExPanel_log_header->Visible=true;
 	}
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
 void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
 {
 	scSplitView_OPTIONS->Left=ClientWidth-scSplitView_OPTIONS->OpenedWidth;
@@ -4931,10 +4956,6 @@ void __fastcall TForm1::scSplitView_OPTIONSOpened(TObject *Sender)
 	ButtonPLAY->Options->FramePressedColor=scGPButton_generuj->Options->NormalColor;
 }
 //---------------------------------------------------------------------------
-
-
-
-
 
 void __fastcall TForm1::pohonobjektClick(TObject *Sender)
 {
