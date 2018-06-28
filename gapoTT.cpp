@@ -242,29 +242,21 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				 mGrid->Cells[0][j].Text=O[z].pohon->name;
 				 //objekty
 				 mGrid->Cells[1][j].Text=O[z].short_name;
-				 if(O[z].rezim==0)
-				 {
-				 rezim="S&G";
-			//	 mGrid->getRadio(3,j)->Checked=true;
-//	TscGPCheckBox  *CH=mGrid->getRadio(3,j);
-//	CH->Checked;
-//	CH=mGrid->getRadio(3,j);
-//	CH=NULL;delete CH;
-				 }
+				 if(O[z].rezim==0) rezim="S&G";
 				 if(O[z].rezim==1) rezim="Kontinuální";
-				 if(O[z].rezim==3) rezim="Postprocesní";
+				 if(O[z].rezim==2) rezim="Postprocesní";
 				 mGrid->Cells[2][j].Text=rezim;
 				 //volby - checkboxy
 				mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
-				 if(O[z].rezim=!1)
-				{
+			//	 if(O[z].rezim=!1)
+		 //		{
 				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
 
 				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
-				}
+			//	}
 
 				 //parametry objektù
 				 mGrid->Cells[15][j].Text=O[z].CT;
@@ -273,7 +265,8 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				 mGrid->Cells[18][j].Text=O[z].kapacita;
 				 mGrid->Cells[19][j].Text=O[z].pozice;
 				 mGrid->Cells[20][j].Text=O[z].mezera_jig;
-				 mGrid->Cells[21][j].Text=O[z].mezera_podvozek;
+				 if(O[z].mezera_podvozek<0.00000004) mGrid->Cells[21][j].Text="0";
+			  	else mGrid->Cells[21][j].Text=O[z].mezera_podvozek;
 				 mGrid->Cells[22][j].Text=O[z].rotace;
 				 //posun na další øádek výsledné tabulky
 				 j++;
