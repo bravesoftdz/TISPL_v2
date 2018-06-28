@@ -1103,7 +1103,7 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 	if(Text=="" && add==false)//vše OK
 	{
 		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=clWhite;
-		scHTMLLabel_log_vypis->Caption="<b>Linka v pořádku.</b>";
+		scHTMLLabel_log_vypis->Caption="";
 		//Memo2->Lines->Clear();
 	}
 	else
