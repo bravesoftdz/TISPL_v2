@@ -1250,18 +1250,18 @@ long Cvektory::vymaz_seznam_POHONY()
 //zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr 0 (který je zároveň implicitní), vratí doporučené Rz, pokud 1, vrátí seznam objektů, kde je problém, pokud vrátí prázdné uvozovky, je vše v pořádku
 AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short getValueOrObject)
 {
-	TPohon *p=vrat_pohon(PID);
-	if(p!=NULL)
-	{
-
-  }
-// switch(VID)
-// {
-//	 case 4:break;
-//	 case 5:break;
-//	 case 6:break;
-//	 case 7:break;
-// }
+//	TPohon *p=vrat_pohon(PID);
+//	if(p!=NULL)
+//	{
+//
+//  }
+ switch(VID)
+ {
+	 case 4:break;
+	 case 5:break;
+	 case 6:break;
+	 case 7:if(!m.cele_cislo(Rx))return AnsiString("Neceločíselná hodnota rozestupu, navržená hodnota: <u>"+AnsiString(m.round(Rx))+"</u>"); break;
+ }
 
 //<u>"+AnsiString(doporuc_hodnota)+"</u>
 }
