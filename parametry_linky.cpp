@@ -2650,7 +2650,7 @@ Row_validace=0;
 							VID_value           =	F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
 							AnsiString  retezec =	F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),1);
 							Row_validace=ARow;
-							if(VID_value=!"") 	vypis(retezec);
+							if(VID_value!="") 	vypis(retezec);
 						 }
 						 else
 						 {
@@ -2812,6 +2812,15 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 
 
 		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::Button3Click(TObject *Sender)
+{
+Memo4->Lines->Clear();
+Memo4->Lines->Add("input_state:"+AnsiString(input_state));
+Memo4->Lines->Add("input_clicked_edit:"+AnsiString(input_clicked_edit));
+Memo4->Lines->Add("input_clicked_icon:"+AnsiString(input_clicked_icon));
 }
 //---------------------------------------------------------------------------
 

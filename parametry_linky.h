@@ -103,6 +103,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_TT;
 	TscGPGlyphButton *scGPGlyphButton_vozik_edit;
 	TButton *Button2;
+	TButton *Button3;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -182,6 +183,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_vozik_editClick(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
+	void __fastcall Button3Click(TObject *Sender);
 
 
 
