@@ -52,7 +52,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		}
 	}
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-	objekty=new Cvektory::TObjekt[ColCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
+	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
 	////////plnìní daty - hlavièka////////
 	mGrid->Cells[0][0].Text="pouze zmìnìné pohony";
@@ -151,9 +151,9 @@ void __fastcall TF_gapoR::FormPaint(TObject *Sender)
 void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
 	//ShowMessage("Došlo ke kliku v tabulce: "+AnsiString(Tag)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
-//	TscGPCheckBox  *CH=mGrid->getRadio(Col,Row);
-//	CH->Checked;
-//	CH=mGrid->getRadio(i,Row);
+//	TscGPCheckBox *CH=mGrid->getRadio(Col,Row);
+//	if(CH->Checked)....
+//	CH=mGrid->getRadio(3,i);
 //	CH=NULL;delete CH;
 	//ShowMessage(mGrid->getRadio(Col,Row)->Name);
 	//mGrid->HighlightCell(Col,Row);

@@ -37,7 +37,7 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 	RowCount+=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(true);//PØIDAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-	objekty=new Cvektory::TObjekt[ColCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
+	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
 	////////plnìní daty - hlavièka////////
 	mGrid->Cells[0][0].Text="pohon";
@@ -57,7 +57,6 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 	mGrid->Cells[9][0].Text="K, CT, R";
 	mGrid->Cells[10][0].Text="aRD, RD, M, Rz, R, DD, P";
 	mGrid->Cells[11][0].Text="K, CT, Rx";
-
 
 	mGrid->Cells[2][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[2][0].Font->Orientation=900;
@@ -161,14 +160,14 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 		//objekty
 		mGrid->Cells[1][j].Text=On[i].short_name;
 		//volby - checkboxy
-			mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
+		mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
+		mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 
-			mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//slouèení sloupcù
+		mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
+		mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//slouèení sloupcù
 
-			mGrid->Cells[10][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(10,j,11,j);
+		mGrid->Cells[10][j].Type=mGrid->CHECK;
+		mGrid->MergeCells(10,j,11,j);
 		//parametry objektù
 		mGrid->Cells[12][j].Text=On[i].CT;
 		mGrid->Cells[13][j].Text=On[i].RD*60.0;
@@ -206,14 +205,14 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 				//objekty
 				mGrid->Cells[1][j].Text=O[z].short_name;
 				//volby - checkboxy
-			mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
+				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 
-			mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//slouèení sloupcù
+				mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//slouèení sloupcù
 
-			mGrid->Cells[10][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(10,j,11,j);
+				mGrid->Cells[10][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(10,j,11,j);
 				//parametry objektù
 				mGrid->Cells[12][j].Text=O[z].CT;
 				mGrid->Cells[13][j].Text=O[z].RD*60.0;
