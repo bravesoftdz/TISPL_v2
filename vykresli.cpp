@@ -2401,7 +2401,7 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButt
 {
 	TColor Color=10114859;
 
-	short O=5;
+	short O=-8;
 	short Top=326;
 	short aRD=636;
 	short R	 =776;
@@ -2409,11 +2409,11 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButt
 	short Rx =1059;
 
 	//korelace aRD,Rz,Rx
-	if(zamek_R->ImageIndex==37){vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);}
+	if(zamek_R->ImageIndex==37){vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,O);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,O);}
 	//korelace aRD,Rz,R
-	if(zamek_Rx->ImageIndex==37){vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,-5);}
+	if(zamek_Rx->ImageIndex==37){vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,O);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,O);}
 	//korelace R,Rx
-	if(zamek_aRD->ImageIndex==37 || zamek_Rz->ImageIndex==37){vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);}
+	if(zamek_aRD->ImageIndex==37 || zamek_Rz->ImageIndex==37){vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,O);}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 
