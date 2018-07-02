@@ -1130,7 +1130,7 @@ void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftStat
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
-
+ F->d.vykresli_packy_PL(Canvas,scGPButton_zamek_aRD,scGPButton_zamek_roztec,scGPButton_zamek_Rz,scGPButton_zamek_Rx);
 	//F->d.vykresli_packy_PL(Canvas,input_state,scGPButton_zamek_aRD->ImageIndex,scGPButton_zamek_roztec->ImageIndex,scGPButton_zamek_Rz->ImageIndex,scGPButton_zamek_Rx->ImageIndex);
 	show_min_Rz();
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
@@ -2650,7 +2650,7 @@ Row_validace=0;
 							VID_value           =	F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
 							AnsiString  retezec =	F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),1);
 							Row_validace=ARow;
-							if(VID_value!="") 	vypis(retezec);
+							if(VID_value=!"") 	vypis(retezec);
 						 }
 						 else
 						 {
