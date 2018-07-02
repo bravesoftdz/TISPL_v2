@@ -394,12 +394,12 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//zarovnání
 			//samotný výpis
 			long L=Rt.Left,T=Rt.Top;              //zajimavý workaround - pøíèinì nerozumím
-			int W=getWidthHeightText(Cell).X*Zoom;if(AntiAliasing_text)W/=1.3;
+			int W=getWidthHeightText(Cell).X*Zoom;//if(AntiAliasing_text)W/=1.3; - provizornì odstaveno - chová se to bez toho lépe
 			int H=getWidthHeightText(Cell).Y*Zoom;
 			if(Cell.Font->Orientation==900){H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
 			if(Cell.Font->Orientation==2700){W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
-			short WA=0;if(AntiAliasing_text)WA=1;//zajimavý workaround - pøíèinì nerozumím (proè Left*2 tomu patøiènì pomùže)
-			switch(Cell.Align)
+			short WA=0;if(AntiAliasing_text)WA=0;//zajimavý workaround - pøíèinì nerozumím (proè Left*2 tomu patøiènì pomùže)
+			switch(Cell.Align)            //WA=0 provizornì odstaveno - provizornì odstaveno - chová se to bez toho lépe
 			{               //zajimavý workaround
 				case aNO:   L=WA*Left*1.3+Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
 				case LEFT:	L=WA*Left*1.3+Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
@@ -857,108 +857,111 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 //spojí dvì buòky do jedné
 void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2)
 {
-	SetColRow();
-
-	////kopie referenèní buòky //TCells RefCell=Cells[ColCell_1][RowCell_1];// - nelze však použít takto na pøedávání borders, proto metoda níže, pøedávalo by i ukazatel
-	TCells RefCell;CreateCell(RefCell);
-	CopyCell(Cells[ColCell_1][RowCell_1],RefCell,true);
-
-	////nastavení referenèní buòky kvùli orámování všech bunìk oblasti na totožnou barvu
-	TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
-	*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
-
-	////projde nejdøíve všechny buòky nastaví jim prvnì dle pozadí první buòky stejné pozadí a dle barvy pozadí i barvu orámování
-	SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);
-
-	//typ první buòky
-	Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
-
-	////vytvoøí resp. pøedá orámování oblasti dle referenèní buòky, šlo by øešit v ve výše volaném prùchodu, bylo by sice systomovì ménì nároèné, ale více komplikované na realizaci
-	SetRegion(RefCell,ColCell_1,RowCell_1,ColCell_2,RowCell_2);
-
-	////text
-	unsigned int W=0;unsigned int H=0;
-	Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení ze zálohy do poslední buòky, protože ta se vykresluje jako poslední
-	W=getWidthHeightText(RefCell).X;
-	H=getWidthHeightText(RefCell).Y;
-	if(RefCell.Font->Orientation==900){W=H;H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
-	if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
-	//if(Cell.Font->Orientation==2700)L-=H;
-
-	//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby - DÙLEŽITE pro text!!!
-	Cells[ColCell_2][RowCell_2].Align=aNO;
-	Cells[ColCell_2][RowCell_2].Valign=vNO;
-	//zarovnání (zarovnává dle první buòky, ale pracuje s poslední, protože ta se vykresluje zcela poslední)
-	switch(Cells[ColCell_1][RowCell_1].Align)
+	if(ColCell_1!=ColCell_2 || RowCell_1!=RowCell_2)//pokud se jedná o slouèení jedné buòky - nelogické slouèení nic nevykoná
 	{
-		 case LEFT:
-		 {
-			 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_1].Left-Columns[ColCell_2].Left;//øeším v setcomponents +RefCell.LeftMargin+RefCell.LeftBorder->Width/2;
-		 }
-		 break;
-		 case CENTER:
-		 {
-			 switch(RefCell.Type)
+		SetColRow();
+
+		////kopie referenèní buòky //TCells RefCell=Cells[ColCell_1][RowCell_1];// - nelze však použít takto na pøedávání borders, proto metoda níže, pøedávalo by i ukazatel
+		TCells RefCell;CreateCell(RefCell);
+		CopyCell(Cells[ColCell_1][RowCell_1],RefCell,true);
+
+		////nastavení referenèní buòky kvùli orámování všech bunìk oblasti na totožnou barvu
+		TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
+		*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
+
+		////projde nejdøíve všechny buòky nastaví jim prvnì dle pozadí první buòky stejné pozadí a dle barvy pozadí i barvu orámování
+		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);
+
+		//typ první buòky
+		Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
+
+		////vytvoøí resp. pøedá orámování oblasti dle referenèní buòky, šlo by øešit v ve výše volaném prùchodu, bylo by sice systomovì ménì nároèné, ale více komplikované na realizaci
+		SetRegion(RefCell,ColCell_1,RowCell_1,ColCell_2,RowCell_2);
+
+		////text
+		unsigned int W=0;unsigned int H=0;
+		Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení ze zálohy do poslední buòky, protože ta se vykresluje jako poslední
+		W=getWidthHeightText(RefCell).X;
+		H=getWidthHeightText(RefCell).Y;
+		if(RefCell.Font->Orientation==900){W=H;H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
+		if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
+		//if(Cell.Font->Orientation==2700)L-=H;
+
+		//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby - DÙLEŽITE pro text!!!
+		Cells[ColCell_2][RowCell_2].Align=aNO;
+		Cells[ColCell_2][RowCell_2].Valign=vNO;
+		//zarovnání (zarovnává dle první buòky, ale pracuje s poslední, protože ta se vykresluje zcela poslední)
+		switch(Cells[ColCell_1][RowCell_1].Align)
+		{
+			 case LEFT:
 			 {
-					case CHECK:
-					{
-						Cells[ColCell_1][RowCell_1].Align=aNO;
-						TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
-						Ch->Width=Ch->OptionsChecked->ShapeSize;
-						Ch->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ch->Width/2;
-						Ch=NULL;delete Ch;
-					}break;
-					case RADIO:
-					{
-						Cells[ColCell_1][RowCell_1].Align=aNO;
-						TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
-						Ra->Width=Ra->OptionsChecked->ShapeSize;
-						Ra->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
-						Ra=NULL;delete Ra;
-					}break;
-					default: Cells[ColCell_2][RowCell_2].TextPositon.X=(Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-W/2;
+				 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_1].Left-Columns[ColCell_2].Left;//øeším v setcomponents +RefCell.LeftMargin+RefCell.LeftBorder->Width/2;
 			 }
-		 }break;
-		 case RIGHT:
-		 {
-			 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W;//øeším v setcomponents -RefCell.RightMargin-RefCell.RightBorder->Width/2;
-		 }break;
-	}
-	switch(Cells[ColCell_1][RowCell_1].Valign)
-	{
-		 case TOP:
-		 {
-			 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top;//øeším v setcomponents +RefCell.TopMargin+RefCell.TopBorder->Width/2;
-		 }break;
-		 case MIDDLE:
-		 {
-			 switch(RefCell.Type)
+			 break;
+			 case CENTER:
 			 {
-					case CHECK:
-					{
-						Cells[ColCell_1][RowCell_1].Valign=vNO;
-						TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
-						Ch->Height=Ch->OptionsChecked->ShapeSize;
-						Ch->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ch->Height/2;
-						Ch=NULL;delete Ch;
-					}break;
-					case RADIO:
-					{
-						Cells[ColCell_1][RowCell_1].Valign=vNO;
-						TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
-						Ra->Height=Ra->OptionsChecked->ShapeSize;
-						Ra->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ra->Height/2;
-						Ra=NULL;delete Ra;
-					}break;
-					default: Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
+				 switch(RefCell.Type)
+				 {
+						case CHECK:
+						{
+							Cells[ColCell_1][RowCell_1].Align=aNO;
+							TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
+							Ch->Width=Ch->OptionsChecked->ShapeSize;
+							Ch->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ch->Width/2;
+							Ch=NULL;delete Ch;
+						}break;
+						case RADIO:
+						{
+							Cells[ColCell_1][RowCell_1].Align=aNO;
+							TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
+							Ra->Width=Ra->OptionsChecked->ShapeSize;
+							Ra->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
+							Ra=NULL;delete Ra;
+						}break;
+						default: Cells[ColCell_2][RowCell_2].TextPositon.X=(Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-W/2;
+				 }
+			 }break;
+			 case RIGHT:
+			 {
+				 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W;//øeším v setcomponents -RefCell.RightMargin-RefCell.RightBorder->Width/2;
+			 }break;
+		}
+		switch(Cells[ColCell_1][RowCell_1].Valign)
+		{
+			 case TOP:
+			 {
+				 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_1].Top-Rows[RowCell_2].Top;//øeším v setcomponents +RefCell.TopMargin+RefCell.TopBorder->Width/2;
+			 }break;
+			 case MIDDLE:
+			 {
+				 switch(RefCell.Type)
+				 {
+						case CHECK:
+						{
+							Cells[ColCell_1][RowCell_1].Valign=vNO;
+							TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
+							Ch->Height=Ch->OptionsChecked->ShapeSize;
+							Ch->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ch->Height/2;
+							Ch=NULL;delete Ch;
+						}break;
+						case RADIO:
+						{
+							Cells[ColCell_1][RowCell_1].Valign=vNO;
+							TscGPRadioButton *Ra=createRadio(ColCell_1,RowCell_1);
+							Ra->Height=Ra->OptionsChecked->ShapeSize;
+							Ra->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ra->Height/2;
+							Ra=NULL;delete Ra;
+						}break;
+						default: Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
+				 }
 			 }
-		 }
-		 break;
-		 case BOTTOM:
-		 {
-			 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H;//øeším v setcomponents -RefCell.BottomMargin-RefCell.BottomBorder->Width/2;
-		 }
-		 break;
+			 break;
+			 case BOTTOM:
+			 {
+				 Cells[ColCell_2][RowCell_2].TextPositon.Y=Rows[RowCell_2].Height-H;//øeším v setcomponents -RefCell.BottomMargin-RefCell.BottomBorder->Width/2;
+			 }
+			 break;
+		}
 	}
 }
 //---------------------------------------------------------------------------
