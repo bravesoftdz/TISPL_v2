@@ -67,7 +67,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[4][0].Text="CT,RD,K,P,M";
 	mGrid->Cells[5][0].Text="DD";
 	mGrid->Cells[6][0].Text="CT - Technologický èas [s]"; //mGrid->MergeCells(6,0,7,0);//slouèení zatím nefunguje dobøe
-	mGrid->Cells[7][0].Text="RD - Rychlost pohonu [m/s]";
+	mGrid->Cells[7][0].Text="RD - Rychlost pohonu [m/min]";
 	mGrid->Cells[8][0].Text="DD - Délka objekt [m]";
 	mGrid->Cells[9][0].Text="K - Kapacita [vozíkù+mezer]";
 	mGrid->Cells[10][0].Text="P - Pozice [vozíkù]";
@@ -112,12 +112,14 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 				//parametry objektù
 				mGrid->Cells[6][j].Text=O[z].CT;
-				mGrid->Cells[7][j].Text=O[z].RD;
+				mGrid->Cells[7][j].Text=O[z].RD*60.0;
 				mGrid->Cells[8][j].Text=O[z].delka_dopravniku;
 				mGrid->Cells[9][j].Text=O[z].kapacita;
 				mGrid->Cells[10][j].Text=O[z].pozice;
 				mGrid->Cells[11][j].Text=O[z].mezera_jig;
-				mGrid->Cells[12][j].Text=O[z].mezera_podvozek;
+				if(O[z].mezera_podvozek<0.00000004) mGrid->Cells[12][j].Text="0";
+				else mGrid->Cells[12][j].Text=O[z].mezera_podvozek;
+			 //	mGrid->Cells[12][j].Text=O[z].mezera_podvozek;
 				mGrid->Cells[13][j].Text=O[z].rotace;
 				//posun na další øádek výsledné tabulky
 				j++;
