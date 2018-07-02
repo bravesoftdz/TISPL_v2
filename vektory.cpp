@@ -512,7 +512,7 @@ unsigned long Cvektory::vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(bool s)//
 	while (O!=NULL)
 	{
 		if(s==true && O->pohon!=NULL)RET++;//pohon přiřazen
-		if(s!=false && O->pohon==NULL)RET++;//pohon nepřiřazen
+		if(s==false && O->pohon==NULL)RET++;//pohon nepřiřazen
 		O=O->dalsi;//posun na další prvek
 	}
 	O=NULL;delete O;
@@ -953,7 +953,7 @@ Cvektory::TObjekt *Cvektory::vrat_objekty_bez_pohonu()
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	TObjekt *RET=new TObjekt[vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)];
-	unsigned long i=0;
+	unsigned long i=1;
 	while (O!=NULL)
 	{
 		if(O->pohon==NULL)RET[i++]=*O;//pokud má objekt pohon nepřiřazen zařídí tento objekt do pole

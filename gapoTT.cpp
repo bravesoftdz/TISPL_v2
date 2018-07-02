@@ -168,24 +168,23 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	////prùchod všemi objekty bez pøiøazených pohonu
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
 	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
-	for(unsigned long i=1;i<On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
+	for(unsigned long i=1;i<=On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
 		//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 		objekty[j]=On[i];
 		//pohony
 		mGrid->Cells[0][j].Text="nepøiøazen";
 		//objekty
-		mGrid->Cells[1][j].Text=On[i].short_name;//On[i].short_name;
-		//volby - checkboxy  - Rosta dodelá
-		mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
-		mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
-
-		mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
-		mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
-
-		mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
-		mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
-
+		mGrid->Cells[1][j].Text=On[i].short_name;
+		//režim
+		mGrid->Cells[2][j].Text=On[i].rezim;
+		//volby - checkboxy
+		mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->MergeCells(3,j,4,j);
+		mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
+		mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
+		mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
+		mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
+		mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
 		//parametry objektù
 		mGrid->Cells[15][j].Text=On[i].CT;
 		mGrid->Cells[16][j].Text=On[i].RD;
@@ -240,20 +239,27 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				//objekty
 				mGrid->Cells[1][j].Text=O[z].short_name;
 				if(O[z].rezim==0) rezim="S&G";
-				if(O[z].rezim==1) rezim="Kontinuální";
+				if(O[z].rezim==1) rezim="TEST";
 				if(O[z].rezim==2) rezim="Postprocesní";
 				mGrid->Cells[2][j].Text=rezim;
 				 //volby - checkboxy
 				mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
-			//	 if(O[z].rezim=!1)
-		 //		{
+
+				// if(O[z].rezim=!1)
+			 //	{
 				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
 
 				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
-			//	}
+			 //	}
+//
+//
+//					TscGPCheckBox *CH=mGrid->getCheck(3,j);
+//					CH->Checked=true;
+//					CH->Enabled=false;
+//					CH=NULL;delete CH;
 
 				//parametry objektù
 				mGrid->Cells[15][j].Text=O[z].CT;
