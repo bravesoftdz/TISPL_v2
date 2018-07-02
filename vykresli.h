@@ -78,7 +78,8 @@ class Cvykresli
 	void sound();
 	void meritko(TCanvas *canv,long X=-1,long Y=-1);
 	void vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor color=/*clBtnShadow*/(TColor)RGB(170,170,170),short Width=1,short OffsetX=-5,short OffsetY=0);//vykreslí packu jako spojnici mezi komponentami
-	void vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx);
+	//void vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx);
+	void vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx);
 
 	short O_width,O_height;//logické parametry, nezoomovat
 	unsigned long cas;//ms

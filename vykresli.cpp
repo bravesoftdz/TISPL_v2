@@ -2391,43 +2391,29 @@ void Cvykresli::vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor
 	//vykreslení spojnice
 	canv->MoveTo(X1,Y1);
 	canv->LineTo(X1+OffsetX,Y1+OffsetY);
-	canv->LineTo(X1+OffsetX,Y2+OffsetY);
+	if(OffsetX==0 && OffsetY!=0)canv->LineTo(X2,Y2+OffsetY);//horizontální packy
+	else canv->LineTo(X1+OffsetX,Y2+OffsetY);//vertikální packy
 	canv->LineTo(X2,Y2);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx)
+//void Cvykresli::vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx)
+void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx)
 {
 	TColor Color=10114859;
 
 	short O=5;
 	short Top=326;
-	short aRD=635;
-	short R	 =770;
-	short Rz =884;
-	short Rx =1086;
+	short aRD=636;
+	short R	 =776;
+	short Rz =917;
+	short Rx =1059;
 
-	switch(typ)
-	{
-		case 5:
-			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);
-			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,-5);
-		break;
-		case 6:
-			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);
-			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,Rx,Top,R,Top,Color,1,0,-5);
-		break;
-		case 7:
-			if(zamek_R==37)vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);
-			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,-5);
-		break;
-		case 8:
-			if(zamek_aRD==37 || zamek_Rz==37)vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);
-			if(zamek_Rx==37) vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);
-		break;
-		default:
-		vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);
-		break;
-  }
+	//korelace aRD,Rz,Rx
+	if(zamek_R->ImageIndex==37){vykresli_packu(canv,aRD,Top,Rz,Top,Color,1,0,-5);vykresli_packu(canv,Rz,Top,Rx,Top,Color,1,0,-5);}
+	//korelace aRD,Rz,R
+	if(zamek_Rx->ImageIndex==37){vykresli_packu(canv,aRD,Top,R,Top,Color,1,0,-5);vykresli_packu(canv,R,Top,Rz,Top,Color,1,0,-5);}
+	//korelace R,Rx
+	if(zamek_aRD->ImageIndex==37 || zamek_Rz->ImageIndex==37){vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,-5);}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 
