@@ -35,7 +35,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->AntiAliasing_text=true;
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
-	unsigned long ColCount=23;//pevný poèet slopcù
+	unsigned long ColCount=24;//pevný poèet slopcù
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 	RowCount+=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)+F->d.v.vrat_pocet_nepouzivanych_pohonu()+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(true);//PØIDAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
@@ -145,7 +145,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[20][0].Text="M - mezera jig [m]";
 	mGrid->Cells[21][0].Text="M - mezera vozík [m]";
 	mGrid->Cells[22][0].Text="Rotace";
-
+	mGrid->Cells[23][0].Text="ID_pohon";
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],15,0,ColCount-1,0);//pro první øádek
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,3,0);//pro první øádek
@@ -164,12 +164,13 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->SetColumnAutoFit(0);
 
 	////////jednolivé øádky////////
+	AnsiString rezimJ;
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	////prùchod všemi objekty bez pøiøazených pohonu
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
 	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
 	for(unsigned long i=1;i<=On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
-	{
+	{  //OBJEKTY BEZ PØIØAZENÉHO POHONU
 		//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 		objekty[j]=On[i];
 		//pohony
@@ -177,23 +178,61 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		//objekty
 		mGrid->Cells[1][j].Text=On[i].short_name;
 		//režim
-		mGrid->Cells[2][j].Text=On[i].rezim;
+		if(On[i].rezim==0) rezimJ="S&G";
+		if(On[i].rezim==1) rezimJ="Kontinuální";
+		if(On[i].rezim==2) rezimJ="Postprocesní";
+	 //	else rezimJ="-";
+		mGrid->Cells[2][j].Text=rezimJ;
+
 		//volby - checkboxy
-		mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->MergeCells(3,j,4,j);
-		mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
-		mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
-		mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
-		mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
-		mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
+				mGrid->Cells[3][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(3,j,4,j);
+
+			if(On[i].rezim!=0)   //povolení zobrazení checkboxù pro KK a PP režim
+				{
+				mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
+				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
+				mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
+				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
+				mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
+				}
+				else
+				{     // u SG slouèím pouze buòky, ale checkbox bude nabízen pouze u prvního "výbìrového" sloupce
+				mGrid->MergeCells(5,j,6,j);
+				mGrid->MergeCells(7,j,8,j);
+				mGrid->MergeCells(9,j,10,j);
+				mGrid->MergeCells(11,j,12,j);
+				mGrid->MergeCells(13,j,14,j);
+				}
+
+
 		//parametry objektù
 		mGrid->Cells[15][j].Text=On[i].CT;
-		mGrid->Cells[16][j].Text=On[i].RD;
+		mGrid->Cells[16][j].Text=On[i].RD*60.0;
 		mGrid->Cells[17][j].Text=On[i].delka_dopravniku;
 		mGrid->Cells[18][j].Text=On[i].kapacita;
 		mGrid->Cells[19][j].Text=On[i].pozice;
 		mGrid->Cells[20][j].Text=On[i].mezera_jig;
 		mGrid->Cells[21][j].Text=On[i].mezera_podvozek;
 		mGrid->Cells[22][j].Text=On[i].rotace;
+
+//
+		if(On[i].rezim==0) //fixní nastavení checkboxu u SG režimù
+		{
+		TscGPCheckBox *CH=mGrid->getCheck(3,j);
+		CH->Checked=true;
+		CH->Enabled=false;
+		CH=NULL;delete CH;
+		}
+
+		else
+		{
+		TscGPCheckBox *CH=mGrid->getCheck(3,j);
+		CH->Checked=true;
+		CH=NULL;delete CH;
+		}
+
+
 		//posun na další øádek výsledné tabulky
 		j++;
 	}
@@ -202,9 +241,9 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 
 	////prùchod všemi pohony
 	for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
-  {
+	{
 		unsigned long O_pocet=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i);
-    if(O_pocet==0)//tzn. není objektu pøiøazen žádný pohon
+		if(O_pocet==0)//tzn. není objektu pøiøazen žádný pohon
 		{
 			//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 			objekty[j].id=0;//pøiøadí id 0, nešlo napsat pøímo NULL, nutno poøešit pøi prùchodu cyklem následného vypisování objekty[x]
@@ -224,11 +263,11 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			//posun na další øádek výsledné tabulky
 			j++;
 		}
-		else
+		else    //OBJEKTY S PØIØAZENÝMI POHONY
 		{
 			//vratí formou ukazatele na pole objekty pøiøazené k danému pohonu
 			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i);
-			AnsiString rezim;
+			AnsiString rezimZ;
 			unsigned long z=0;
 			for(;z<O_pocet;z++)
 			{
@@ -238,28 +277,78 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[0][j].Text=O[z].pohon->name;
 				//objekty
 				mGrid->Cells[1][j].Text=O[z].short_name;
-				if(O[z].rezim==0) rezim="S&G";
-				if(O[z].rezim==1) rezim="TEST";
-				if(O[z].rezim==2) rezim="Postprocesní";
-				mGrid->Cells[2][j].Text=rezim;
+				if(O[z].rezim==0)  rezimZ="S&G";
+				if(O[z].rezim==1) {rezimZ="Kontinuální";}
+				if(O[z].rezim==2)  rezimZ="Postprocesní";
+			 //	else rezimZ="-";
+				mGrid->Cells[2][j].Text=rezimZ;
 				 //volby - checkboxy
-				mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
-				mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
+				mGrid->Cells[3][j].Type=mGrid->CHECK;
+				mGrid->MergeCells(3,j,4,j);
 
-				// if(O[z].rezim=!1)
-			 //	{
-				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
-				mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
+				 if(O[z].rezim!=0)   //povolení zobrazení checkboxù pro KK a PP režim
+				{
+				mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
+				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
+				mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
+				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
+				mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
+				}
+				else
 
-				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
-				mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
-			 //	}
+				{     // u SG slouèím pouze buòky, ale checkbox bude nabízen pouze u prvního "výbìrového" sloupce
+				mGrid->MergeCells(5,j,6,j);
+				mGrid->MergeCells(7,j,8,j);
+				mGrid->MergeCells(9,j,10,j);
+				mGrid->MergeCells(11,j,12,j);
+				mGrid->MergeCells(13,j,14,j);
+				}
+////
+////
+				 if(O[z].rezim==0) //fixní nastavení checkboxu u SG režimù
+				{
+					TscGPCheckBox *CH=mGrid->getCheck(3,j);
+					CH->Checked=true;
+					CH->Enabled=false;
+					CH=NULL;delete CH;
+				 }
 //
-//
-//					TscGPCheckBox *CH=mGrid->getCheck(3,j);
-//					CH->Checked=true;
-//					CH->Enabled=false;
-//					CH=NULL;delete CH;
+				 else   // pro ostatní režimy vždy defaultnì zobrazím checkbox zaškrnutý vlevo
+				 {
+					TscGPCheckBox *CH=mGrid->getCheck(3,j);
+					CH->Checked=true;
+					CH=NULL;delete CH;
+
+				 }
+
+				 // zobrazení po naètení - pokud je v KK více objektù
+				 TscGPCheckBox *CH=mGrid->getCheck(3,j);
+				 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 && CH->Checked && O[z].rezim==1)
+				 {
+					//ShowMessage(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1));
+					TscGPCheckBox *A=mGrid->getCheck(5,j);
+					TscGPCheckBox *B=mGrid->getCheck(7,j);
+					TscGPCheckBox *C=mGrid->getCheck(9,j);
+					TscGPCheckBox *D=mGrid->getCheck(11,j);
+					TscGPCheckBox *E=mGrid->getCheck(13,j);
+
+					/*A->Enabled=false*/;B->Enabled=false;C->Enabled=false;D->Enabled=false;E->Enabled=false;
+					A=NULL;delete A;B=NULL;delete B;B=NULL;delete B;C=NULL;delete C;D=NULL;delete D;E=NULL;delete E;
+				 }
+
+				 // zobrazení po naètení - pokud je v KK max 1 objekt, dovolím vstup do všech sloupcù okamžitì
+				 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) <= 1 && CH->Checked && O[z].rezim==1)
+				 {
+					TscGPCheckBox *A=mGrid->getCheck(5,j);
+					TscGPCheckBox *B=mGrid->getCheck(7,j);
+					TscGPCheckBox *C=mGrid->getCheck(9,j);
+					TscGPCheckBox *D=mGrid->getCheck(11,j);
+					TscGPCheckBox *E=mGrid->getCheck(13,j);
+
+					/*A->Enabled=false*/;B->Enabled=true;C->Enabled=true;D->Enabled=true;E->Enabled=true;
+					A=NULL;delete A;B=NULL;delete B;B=NULL;delete B;C=NULL;delete C;D=NULL;delete D;E=NULL;delete E;
+				 }
+				CH=NULL;delete CH;
 
 				//parametry objektù
 				mGrid->Cells[15][j].Text=O[z].CT;
@@ -271,6 +360,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				if(O[z].mezera_podvozek<0.00000004) mGrid->Cells[21][j].Text="0";
 				else mGrid->Cells[21][j].Text=O[z].mezera_podvozek;
 				mGrid->Cells[22][j].Text=O[z].rotace;
+				mGrid->Cells[23][j].Text=O[z].pohon->n;
 				//posun na další øádek výsledné tabulky
 				j++;
       }                    //Rosa ovìøit, že je OK
@@ -301,6 +391,201 @@ void __fastcall TF_gapoTT::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
+//PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
+//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU
+
+	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col+4,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+6,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+8,Row);
+		K->Checked=false;
+
+		TscGPCheckBox *L=mGrid->getCheck(Col+10,Row);
+		L->Checked=false;
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+	}
+
+	if(Col==5 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-2,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col+2,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+4,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+6,Row);
+		K->Checked=false;
+
+		TscGPCheckBox *L=mGrid->getCheck(Col+8,Row);
+		L->Checked=false;
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+	}
+
+		if(Col==7 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-4,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-2,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+2,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+4,Row);
+		K->Checked=false;
+
+		TscGPCheckBox *L=mGrid->getCheck(Col+6,Row);
+		L->Checked=false;
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+	}
+
+			if(Col==9 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-6,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-4,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col-2,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+2,Row);
+		K->Checked=false;
+
+		TscGPCheckBox *L=mGrid->getCheck(Col+4,Row);
+		L->Checked=false;
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+	}
+
+	if(Col==11 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-8,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-6,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col-4,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col-2,Row);
+		K->Checked=false;
+
+		TscGPCheckBox *L=mGrid->getCheck(Col+2,Row);
+		L->Checked=false;
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+	}
+
+		if(Col==13 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-10,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-8,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col-6,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col-4,Row);
+		K->Checked=false;
+
+		TscGPCheckBox *L=mGrid->getCheck(Col-2,Row);
+		L->Checked=false;
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////
+
+//			 // pokud je 3+5 sloupec CHECKED FALSE a je v KK max.sám
+//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked==false && mGrid->getCheck(Col+2,Row)->Checked==false &&	mGrid->Cells[2][Row].Text=="Kontinuální")
+//	{
+//	 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) <= 1){
+//		mGrid->getCheck(Col+4,Row)->Enabled=true;
+//		mGrid->getCheck(Col+6,Row)->Enabled=true;
+//		mGrid->getCheck(Col+8,Row)->Enabled=true;
+//		mGrid->getCheck(Col+10,Row)->Enabled=true;
+//		}
+//	 }
+//
+//		// pokud je 3 nebo 5 sloupec checked TRUE  a je v KK  max.sám
+//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked || mGrid->getCheck(Col+2,Row)->Checked)
+//	{
+//			if(mGrid->Cells[2][Row].Text=="Kontinuální" && F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) <= 1)
+//			{
+//			mGrid->getCheck(Col+4,Row)->Enabled=true;
+//			mGrid->getCheck(Col+6,Row)->Enabled=true;
+//			mGrid->getCheck(Col+8,Row)->Enabled=true;
+//			mGrid->getCheck(Col+10,Row)->Enabled=true;
+//			}
+//	}
+//
+// /////////////////////////////////////////////////////////////
+//				 // pokud je 3+5 sloupec CHECKED FALSE a je v KK více objektù
+//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked==false && mGrid->getCheck(Col+2,Row)->Checked==false &&	mGrid->Cells[2][Row].Text=="Kontinuální")
+//	{
+//	 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) > 1){
+//		mGrid->getCheck(Col+4,Row)->Enabled=true;
+//		mGrid->getCheck(Col+6,Row)->Enabled=true;
+//		mGrid->getCheck(Col+8,Row)->Enabled=true;
+//		mGrid->getCheck(Col+10,Row)->Enabled=true;
+//		}
+//	 }
+//
+//		// pokud je 3 nebo 5 sloupec checked TRUE  a je v KK  více objektù
+//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked || mGrid->getCheck(Col+2,Row)->Checked)
+//	{
+//			if(mGrid->Cells[2][Row].Text=="Kontinuální" /*&& F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) > 1*/)
+//			{
+//		 //	ShowMessage(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1));
+//			mGrid->getCheck(Col+4,Row)->Enabled=false;
+//			mGrid->getCheck(Col+6,Row)->Enabled=false;
+//			mGrid->getCheck(Col+8,Row)->Enabled=false;
+//			mGrid->getCheck(Col+10,Row)->Enabled=false;
+//			}
+//	}
+
+		 // povolení vstoupení do sloupcù 7 a víc, za pøedpokladu, že sloupce 3+5 nejsou checked
+
+
+		if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked==false &&  mGrid->getCheck(Col+2,Row)->Checked==false && mGrid->Cells[2][Row].Text=="Kontinuální")
+		{
+			 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[23][Row].Text),1) > 1)  //pokud má KK pohon více objektù  projdu cyklem
+			 {
+				 double pohon_id=F->ms.MyToDouble(mGrid->Cells[23][Row].Text);
+
+
+					 for(int i=1;i<=mGrid->RowCount-1;i++)
+					 {
+
+									 if (mGrid->getCheck(Col,i)->Checked==true   ||  mGrid->getCheck(Col+2,i)->Checked==true )
+									 {
+									 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
+										{
+
+											ShowMessage("nemohu povolit Row "+AnsiString(i));
+										}
+									 }
+
+						}
+
+				}
+
+		 }
+
 
 }
 //---------------------------------------------------------------------------
@@ -311,6 +596,7 @@ void TF_gapoTT::OnEnter(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void TF_gapoTT::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
+
 
 }
 //---------------------------------------------------------------------------
@@ -325,4 +611,5 @@ void __fastcall TF_gapoTT::FormClose(TObject *Sender, TCloseAction &Action)
 	delete[] objekty;
 }
 //---------------------------------------------------------------------------
+
 
