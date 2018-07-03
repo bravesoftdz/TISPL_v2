@@ -394,12 +394,13 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//zarovnání
 			//samotný výpis
 			long L=Rt.Left,T=Rt.Top;              //zajimavý workaround - pøíèinì nerozumím
-			int W=getWidthHeightText(Cell).X*Zoom;//if(AntiAliasing_text)W/=1.3; - provizornì odstaveno - chová se to bez toho lépe
+			int W=getWidthHeightText(Cell).X*Zoom;if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))W/=1.3;// - provizornì odstaveno - chová se to bez toho lépe
 			int H=getWidthHeightText(Cell).Y*Zoom;
-			if(Cell.Font->Orientation==900){H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
-			if(Cell.Font->Orientation==2700){W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
-			short WA=0;if(AntiAliasing_text)WA=0;//zajimavý workaround - pøíèinì nerozumím (proè Left*2 tomu patøiènì pomùže)
-			switch(Cell.Align)            //WA=0 provizornì odstaveno - provizornì odstaveno - chová se to bez toho lépe
+			short Rot=1;//slouží jako pomùcka rotace
+			if(Cell.Font->Orientation==900){Rot=-1;H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
+			if(Cell.Font->Orientation==2700){Rot=-1;W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
+			short WA=0;if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))WA=1;//zajimavý workaround - pøíèinì nerozumím (proè Left*2 tomu patøiènì pomùže)
+			switch(Cell.Align)
 			{               //zajimavý workaround
 				case aNO:   L=WA*Left*1.3+Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
 				case LEFT:	L=WA*Left*1.3+Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
@@ -408,7 +409,12 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			}
 			switch(Cell.Valign)
 			{
-				case vNO:		T=Rt.Top+Cell.TextPositon.Y*Zoom+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
+				case vNO:
+				{
+					T=Rt.Top+Cell.TextPositon.Y*Zoom;
+					if(Cell.Font->Orientation==0)T+=Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;
+					else T-=(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2*Zoom);
+				}break;
 				case TOP:		T=Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
 				case MIDDLE:T=(Rt.Top+Rt.Bottom)/2-H/2;break;
 				case BOTTOM:T=Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2*Zoom;break;
@@ -883,7 +889,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		Cells[ColCell_2][RowCell_2].Text=RefCell.Text;//navrácení ze zálohy do poslední buòky, protože ta se vykresluje jako poslední
 		W=getWidthHeightText(RefCell).X;
 		H=getWidthHeightText(RefCell).Y;
-		if(RefCell.Font->Orientation==900){W=H;H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
+		if(RefCell.Font->Orientation==900){H=0;if(RefCell.Valign==MIDDLE)H=-getWidthHeightText(RefCell).X;}
 		if(RefCell.Font->Orientation==2700){W=0;if(RefCell.Align==LEFT || RefCell.Align==CENTER)W=-H;H=0;if(RefCell.Valign==MIDDLE)H=getWidthHeightText(RefCell).X;}
 		//if(Cell.Font->Orientation==2700)L-=H;
 
@@ -891,7 +897,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		Cells[ColCell_2][RowCell_2].Align=aNO;
 		Cells[ColCell_2][RowCell_2].Valign=vNO;
 		//zarovnání (zarovnává dle první buòky, ale pracuje s poslední, protože ta se vykresluje zcela poslední)
-		switch(Cells[ColCell_1][RowCell_1].Align)
+		switch(Cells[ColCell_1][RowCell_1].Align)//HORIZONTÁLNÍ ZAROVNÁNÍ
 		{
 			 case LEFT:
 			 {
@@ -926,7 +932,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 				 Cells[ColCell_2][RowCell_2].TextPositon.X=Columns[ColCell_2].Width-W;//øeším v setcomponents -RefCell.RightMargin-RefCell.RightBorder->Width/2;
 			 }break;
 		}
-		switch(Cells[ColCell_1][RowCell_1].Valign)
+		switch(Cells[ColCell_1][RowCell_1].Valign)//VERTIKÁLNÍ ZAROVNÁNÍ
 		{
 			 case TOP:
 			 {
