@@ -160,7 +160,7 @@ object F_gapoR: TF_gapoR
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367
+      Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367' objekt'#367' v kontinu'#225'ln'#237'm re'#382'imu'
       ExplicitLeft = 55
       ExplicitWidth = 235
     end

@@ -55,6 +55,8 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.BottomMargin=1;
 	DefaultCell.LeftMargin=1;
 	DefaultCell.RightMargin=1;
+	//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouží jako pomùcka pøi vykreslování orámování slouèených bunìk
+	DefaultCell.MergeState=false;
 	//pozadí
 	DefaultCell.Background->Color=clWhite;
 	DefaultCell.Background->Style=bsSolid;
@@ -275,25 +277,25 @@ void TmGrid::Draw(TCanvas *C)
 			if(!(AntiAliasing_grid==false && AntiAliasing_text==true))
 			{
 				//top
-				//nefunguje správnì:if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+				if(Cells[X][Y].TopBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
 				{
 					SetBorder(C,Cells[X][Y].TopBorder);
 					C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
 				}
 				//bottom
-				if(Y==RowCount-1)//nefunguje správnì: && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+				if(Y==RowCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 				{
 					SetBorder(C,Cells[X][Y].BottomBorder);
 					C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 				}
 				//left
-				//nefunguje správnì:if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+				if(Cells[X][Y].LeftBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
 				{
 					SetBorder(C,Cells[X][Y].LeftBorder);
 					C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
 				}
-				//right                                 udìlat pøíznak na slouèenu buòku té nekreslit støe
-				if(X==ColCount-1)//nefunguje správnì: && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+				//right
+				if(X==ColCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 				{
 					SetBorder(C,Cells[X][Y].RightBorder);
 					C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
@@ -317,25 +319,25 @@ void TmGrid::DrawGrid(TCanvas *C)
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 			////orámování buòky
 			//top
-			//nefunguje správnì: if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+			if(Cells[X][Y].TopBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
 			{
 				SetBorder(C,Cells[X][Y].TopBorder);
 				C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
 			}
 			//bottom
-			if(Y==RowCount-1)//nefunguje správnì:  && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+			if(Y==RowCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 			{
 				SetBorder(C,Cells[X][Y].BottomBorder);
 				C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 			}
 			//left
-			//nefunguje správnì: if(Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//pokud se nejedná se o slouèenou buòku, slabá podmínka
+			if(Cells[X][Y].LeftBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
 			{
 				SetBorder(C,Cells[X][Y].LeftBorder);
 				C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
 			}
 			//right
-			if(X==ColCount-1) //nefunguje správnì: && Cells[X][Y].TextPositon.X>=0 && Cells[X][Y].TextPositon.Y>=0)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+			if(X==ColCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 			{
 				SetBorder(C,Cells[X][Y].RightBorder);
 				C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
@@ -875,11 +877,12 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		////nastavení referenèní buòky kvùli orámování všech bunìk oblasti na totožnou barvu
 		TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
 		*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
+		Cells[ColCell_1][RowCell_1].MergeState=true;//oznaèí buòku jako slouèenou, slouží pro pøeskoèení vykreslování orámování, uprostøed slouèených objektù
 
 		////projde nejdøíve všechny buòky nastaví jim prvnì dle pozadí první buòky stejné pozadí a dle barvy pozadí i barvu orámování
 		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);
 
-		//typ první buòky
+		////typ první buòky
 		Cells[ColCell_1][RowCell_1].Type=RefCell.Type;
 
 		////vytvoøí resp. pøedá orámování oblasti dle referenèní buòky, šlo by øešit v ve výše volaném prùchodu, bylo by sice systomovì ménì nároèné, ale více komplikované na realizaci
@@ -1074,6 +1077,8 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.BottomMargin=RefCell.BottomMargin;
 	CopyCell.LeftMargin=RefCell.LeftMargin;
 	CopyCell.RightMargin=RefCell.RightMargin;
+	//indikátor slouèení
+	CopyCell.MergeState=RefCell.MergeState;
 	////pozadí
 	//*CopyCell.Background=*RefCell.Background;
 	CopyCell.Background->Color=RefCell.Background->Color;

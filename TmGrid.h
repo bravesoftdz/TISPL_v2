@@ -45,6 +45,7 @@ class TmGrid
 		short BottomMargin;//dolní odsazení textu
 		short LeftMargin;//levé odsazení textu
 		short RightMargin;//pravé odsazení textu
+		bool MergeState;//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouží jako pomùcka pøi vykreslování orámování slouèených bunìk, zatím zùstává nevyužito
 		TFont *Font;//vlastnosti fontu v buòce
 		TPoint TextPositon;//pozice textu v buòce (levý horní roh buòky je 0,0)
 		UnicodeString Text;//samotný text buòky
