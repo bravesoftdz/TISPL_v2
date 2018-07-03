@@ -20,18 +20,22 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_OK;
 	TButton *Button1;
-	TscButton *scButton_html;
+	TscButton *scButton_csv;
+	TscGPButton *scGPButton_storno;
+	TscGPGlyphButton *scGPGlyphButton_copy;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
-	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall scGPButton_OKClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
+	void __fastcall scButton_csvClick(TObject *Sender);
 private:	// User declarations
 	//Cvektory v;//instance na tøídu vektorù - nepoužívát, padalo
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
-	void calculate(unsigned long Row);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku
+	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky
 public:		// User declarations
 	__fastcall TF_gapoR(TComponent* Owner);
   //metody volané z Tmgrid

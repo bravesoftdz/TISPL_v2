@@ -346,6 +346,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rMemoEx1_rozestup->Lines->Add("   Palce");
 	 rMemoEx1_rozestup_akt_unas->Lines->Add("rozestup aktivní unašeèe");
 	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
+
+	 Storno=false;
 }
 //---------------------------------------------------------------------------
 //
@@ -419,6 +421,7 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 	}
 	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
+	Storno=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
@@ -456,7 +459,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		if(zobrazGAPO_R)//pokud byl nìjaký používaný pohon zmìnìn
 		{
 			F_gapoR->Left=Left;F_gapoR->Top=Top;
-			F_gapoR->ShowModal();
+			if(F_gapoR->ShowModal()!=mrOk)Ulozit=false;//pokud bude stisknuto èi køížek na gapo_R storno, ukládání PL formu se pøeruší, resp. neprovede
 			mGrid->Delete();
 		}
 
@@ -1223,6 +1226,21 @@ unsigned int TForm_parametry_linky::getMaxPID()
 	for(unsigned i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 	if(ID<getPID(i))ID=getPID(i);
 	return ID;
+}
+//---------------------------------------------------------------------------
+//vrátí èíslo øádku dle pohon ID, pokud nenajde vrátí -1
+int TForm_parametry_linky::getROW(int PID)
+{
+	int RET=-1;
+	for(unsigned i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+	{
+		if(PID==rStringGridEd_tab_dopravniky->Cells[0][i].ToInt())
+		{
+			RET=i;
+			break;
+		}
+	}
+	return RET;
 }
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum()
@@ -2821,6 +2839,12 @@ Memo4->Lines->Clear();
 Memo4->Lines->Add("input_state:"+AnsiString(input_state));
 Memo4->Lines->Add("input_clicked_edit:"+AnsiString(input_clicked_edit));
 Memo4->Lines->Add("input_clicked_icon:"+AnsiString(input_clicked_icon));
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &CanClose)
+{
+	if(Ulozit || Storno)CanClose=true;
+	else CanClose=false;
 }
 //---------------------------------------------------------------------------
 

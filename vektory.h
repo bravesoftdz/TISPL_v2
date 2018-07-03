@@ -429,6 +429,12 @@ public:
 		void uloz_doporucene_kapacity_objetku();//ukládá vypočtené doporučené kapacity jednotlivým technologickým objektům do jejich atribitu dop_kapacita, která se nezadává uživatelsky, ale jedině v tomto algoritmu
 		TMinMedAvgMax_d vrat_statisticke_doby_cekani_na_palec(TCesta *segment_cesty);//vrátí minimální, střední, průměrnou a maximální dobu čekání na palec v sec pro daný objekt (segment cesty) tak, jak bylo vypočteno v analýze/na časových osách, musí být tedy zde zvolena nějaká (libovolná) volba čekání na palec, mimo "žádná", Struktura TMinMedAvgMax_d vrací 4 hodnoty, min, med, agv, max datového typu double, volání výsledků probíhá přes “tečkový selektor”
 
+//SQL
+		AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň
+
+//pomocné metody
+		void Text2CSV(AnsiString text,AnsiString FileName="",AnsiString Title="",AnsiString DefaultExt="",AnsiString Filter="",bool openDialog=true,bool open=true);//vytovoří a otevře CSV, je-li požadováno
+
 //pomocné struktury pro ukládání do bináru
 private:
 		struct C_pohon//pro konverzi do bináru

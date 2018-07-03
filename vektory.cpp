@@ -3113,6 +3113,69 @@ TMinMedAvgMax_d Cvektory::vrat_statisticke_doby_cekani_na_palec(TCesta *segment_
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+//provede dotaz dle zadaného parametru/dotazu metdody v syntaxi SQL, pokud dotazaz vrací data, metoda vratí data pomocí AnsiString, zatím umí jen základní úroveň
+AnsiString Cvektory::QUERY(AnsiString query)
+{
+	query=query.UpperCase();//vše na velká písmena
+	AnsiString command=query.SubString(1,query.Pos(" ")-1);
+	query=query.SubString(query.Pos(" ")+1,query.Length());
+	//SELECT
+	if(command=="SELECT")
+	{
+		AnsiString command=query.SubString(1,query.Pos(" ")-1);
+		query=query.SubString(query.Pos(" ")+1,query.Length());
+		AnsiString from=query.SubString(query.Pos("="),query.Pos(" ")-1);
+		query=query.SubString(query.Pos(" ")+1,query.Length());
+		if(command.Pos("COUNT"));
+		if(command.Pos("MAX"));
+		if(command.Pos("MIN"));
+		if(command.Pos("AVG"));
+		if(command==("*"));
+	}
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//vytovoří a otevře CSV, je-li požadováno
+void Cvektory::Text2CSV(AnsiString text,AnsiString FileName,AnsiString Title,AnsiString DefaultExt,AnsiString Filter,bool openDialog,bool open)
+{
+	//příprava SaveDialogu
+	F->SaveDialog->Title=Title;
+	F->SaveDialog->DefaultExt=DefaultExt;
+	F->SaveDialog->Filter=Filter;
+
+	//předvyplnění názvem stejnojmeným souboru
+	UnicodeString FN=FileName;
+	if(FN.Pos(".")==FN.Length()-5)FN=FN.SubString(1,FN.Length()-6);
+	F->SaveDialog->FileName=FN;
+
+	bool OPN=true;
+	if(openDialog){if(F->SaveDialog->Execute())OPN=true;else OPN=false;}
+
+	if(OPN)
+	{
+		Screen->Cursor=crHourGlass;//změní kurzor na přesýpací hodiny
+		//nastavení formátu
+		UnicodeString export_format="csv";
+
+		//samotné uložení
+
+		//zapis data do souboru
+		TMemoryStream* MemoryStream=new TMemoryStream();
+		MemoryStream->Clear();
+		MemoryStream->Write(text.c_str(),text.Length());//Win kodování
+		if(openDialog)MemoryStream->SaveToFile(F->SaveDialog->FileName);
+		else MemoryStream->SaveToFile(FileName);
+
+		//postprocesní záležitost
+		Screen->Cursor=crDefault;//změní kurzor na default
+		if(openDialog)FileName=Form1->SaveDialog->FileName;
+		if(open)ShellExecute(0,L"open",UnicodeString(FileName).c_str(),0,0,SW_SHOWNORMAL);;//otevře výstup
+	}
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 void Cvektory::vse_odstranit()
 {
 		//vozíky

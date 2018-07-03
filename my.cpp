@@ -22,6 +22,14 @@ double Cmy::round2double(double number,unsigned short precision)
 	return number=round(number*pow(10.0,precision))/pow(10.0,precision);
 }
 /////////////////////////////////////////////////////////////////////////////
+//zaokrouhlí na poèet desetinných míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø. dvì teèky .. jakože èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision
+AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString mark)
+{
+	double RET=round2double(number,precision);
+	if(RET*pow(10.0,precision)!=ceil(RET*pow(10.0,precision)))return AnsiString(RET)+mark;//pokud èíslo obsahuje reálnou èást vrátí i se znakem pokraèování
+	else return AnsiString(RET);
+}
+/////////////////////////////////////////////////////////////////////////////
 //ovìøí, zda dané èíslo je celé èíslo
 bool Cmy::cele_cislo(double number)
 {

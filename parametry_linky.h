@@ -184,13 +184,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
 	void __fastcall Button3Click(TObject *Sender);
-
-
-
-
-
-
-
+	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 
 private:	// User declarations
 	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
@@ -198,8 +192,6 @@ private:	// User declarations
 	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik,nazev_klik,od_klik,do_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto
 	enum Tinput_onchange {NOChange,aRDChange,RChange,RzChange,RxChange}; //zjisteni na kterou ikonku zámku bylo kliknuto
-
-
 
 	void pasiveColor();//nastaví všechny položky pop-up na pasivní resp. default barvu
 	void top_positon(int top);//hlídání horní pozice, je-li daná komponenta horní kvùli nastavení køížku
@@ -214,28 +206,26 @@ private:	// User declarations
 	void nacti_pohony();
 	void Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_edit E);
 
-	public:		// User declarations
+public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
-		void vypis(UnicodeString text,bool red=true,bool link=false);
-		void input_TT();
-		void INPUT(double Sloupec, double Radek);
-		void OUTPUT(double i,double Sloupec, double Radek);
-		void Roletka_roztec(double Row);
-		double getRz(double i);
-		double getTT();
-		void VALIDACE(int ACol, int ARow);
-		short VID;//validation ID
-		double VID_value;
-		short Row_validace;
-
-		UnicodeString NAZEV;
-		double OD;
-		double DO;
-
-
-
-	bool data_nalezena;
+	int getROW(int PID);//vrátí èíslo øádku dle pohon ID, pokud nenajde vrátí -1
+	void vypis(UnicodeString text,bool red=true,bool link=false);
+	void input_TT();
+	void INPUT(double Sloupec, double Radek);
+	void OUTPUT(double i,double Sloupec, double Radek);
+	void Roletka_roztec(double Row);
+	double getRz(double i);
 	void show_min_Rz();
+	double getTT();
+	void VALIDACE(int ACol, int ARow);
+
+	short VID;//validation ID
+	double VID_value;
+	short Row_validace;
+	UnicodeString NAZEV;
+	double OD;
+	double DO;
+	bool data_nalezena;
 	Tinput_state input_state;//stav vstupu DV,SV,TT...atd
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
 	Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
@@ -251,6 +241,7 @@ private:	// User declarations
 	bool Changes_Rz;
 	bool Changes_Rx;
 	bool Ulozit;
+	bool Storno;
 	bool zobrazitFrameForm;
 	bool zobrazOramovani;
 

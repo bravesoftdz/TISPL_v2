@@ -3,6 +3,7 @@
 #include "TmGrid.h"
 #include "antialiasing.h"
 #include "MyString.h"
+#include <Clipbrd.hpp>
 #include "gapoTT.h"
 #include "gapoV.h"
 #include "gapoR.h"
@@ -1029,6 +1030,23 @@ void TmGrid::CopyCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyAreaCell(RefCell,CopyCell,copyComponent);
 	//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
 	CopyBordesCell(RefCell,CopyCell);
+}
+//---------------------------------------------------------------------------
+//zkopíruje danou oblast do schránky, buòky oddìlí separátorem
+void TmGrid::CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator)
+{
+	TClipboard *c = new TClipboard;
+	UnicodeString T="";
+	for(unsigned long Y=RowCell_1;Y<=RowCell_2;Y++)
+	{
+    for(unsigned long X=ColCell_1;X<=ColCell_2;X++)
+		{
+			T+=mGrid->Cells[X][Y].Text+Separator;
+		}
+		T+="\n";//konec øádku
+	}
+	c->AsText = T;
+	c = NULL; delete c;
 }
 //---------------------------------------------------------------------------
 //zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)

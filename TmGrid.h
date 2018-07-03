@@ -66,6 +66,7 @@ class TmGrid
 	void SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,short setText=0,bool copyComponent=false);//nastaví oblast bunìk totožnými vlastnostmi dle referenèní buòky, text podle posledního parametru buï -1 -smaže, 0 - zanechá pùvodní (implicitnì), 1 zkopíruje všude stejný), zaèínat zadávat od nejvyšší a nejvíce vlevo
 	void SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//totožnì ohranièí danou oblast bunìk dle referenèní buòky (zohledòuje i rozdíly horní,dolní,levé pravé orámování), zaèínat zadávat od nejvyšší a nejvíce vlevo
 	void CopyCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát a orámování z buòky na buòku (bez ukazatelového propojení)
+	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buòky oddìlí separátorem
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
 	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=2);//zajistí zvýraznìní dané buòky

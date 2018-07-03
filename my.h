@@ -11,11 +11,12 @@ class Cmy
   private:
 
   public:
-  long round(double number);//fce pro zaokrouhlení realného èísla na nejblížší celé èíslo
-  double round2double(double number,unsigned short precision);//zaokrouhlí na poèet desetinných míst dle precison
-  double round2double(double number,unsigned short from_min,double ifcontent);//zaokrouhlí pokud reálná èást obsahuje hodnotu, zohledòuje požadavek na minimální desetinné místo dle from
-  double abs_d(double number);//fce vrátí absolutní hodnotu z double èísla, možno nahradit mocí fabs z maht
-  double ToRad(double number);
+	long round(double number);//fce pro zaokrouhlení realného èísla na nejblížší celé èíslo
+	double round2double(double number,unsigned short precision);//zaokrouhlí na poèet desetinných míst dle precison
+	AnsiString round2double(double number,unsigned short precision,AnsiString mark);//zaokrouhlí na poèet desetinných míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø dvì teèky .. jakože èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision
+	//double round2double(double number,unsigned short from_min,double ifcontent);//zaokrouhlí pokud reálná èást obsahuje hodnotu, zohledòuje požadavek na minimální desetinné místo dle from
+	double abs_d(double number);//fce vrátí absolutní hodnotu z double èísla, možno nahradit mocí fabs z maht
+	double ToRad(double number);
   double ToDeg(double number);
   //TPoint* P2L(TPoint *Physical, float Zoom, long PosunutiX, long PosunutiY);//Pøevede Fyzické souøadnice na logicke, vraci logicke souøadnice
 	//double P2Lx(long fyzicka, unsigned short int Zoom, double Posunuti, unsigned short int ClientWidth);//Pøevede fyzické souøadnice (displej zaøízení) na logicke, vraci logicke souøadnice
