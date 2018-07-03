@@ -31,6 +31,7 @@ private:	// User declarations
 	//Cvektory v;//instance na tøídu vektorù - nepoužívát, padalo
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
+	void calculate(unsigned long Row);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku
 public:		// User declarations
 	__fastcall TF_gapoR(TComponent* Owner);
   //metody volané z Tmgrid
