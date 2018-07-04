@@ -244,13 +244,16 @@ void TmGrid::Draw(TCanvas *C)
 	{
 		////oblast buòky
 		TRect R;//grid
-		TRect Rb;//pozadí buòky + text
+		TRect Rt;//text
+		TRect Rb;//text
 		TRect Rc;//componenty
 		R.Left	=	Left+Columns[X].Left*Zoom_g;
-		Rb.Left	=	Left+Columns[X].Left*Zoom_b;
+		Rt.Left	=	Left+Columns[X].Left*Zoom_b;
+		Rb.Left	=	Columns[X].Left*Zoom_b;
 		Rc.Left	=	Left+Columns[X].Left;
 		R.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom_g;
-		Rb.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom_b;
+		Rt.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom_b;
+		Rb.Right	=	(Columns[X].Left+Columns[X].Width)*Zoom_b;
 		Rc.Right	=	Left+(Columns[X].Left+Columns[X].Width);
 
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
@@ -258,10 +261,12 @@ void TmGrid::Draw(TCanvas *C)
 			////oblast buòky
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpoèet horního okraje buòky dle buòky pøedchozí
 			R.Top			=	Top+Rows[Y].Top*Zoom_g;
-			Rb.Top		=	Top+Rows[Y].Top*Zoom_b;
+			Rt.Top		=	Top+Rows[Y].Top*Zoom_b;
+			Rb.Top		=	Rows[Y].Top*Zoom_b;
 			Rc.Top		=	Top+Rows[Y].Top;
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_g;
-			Rb.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
+			Rt.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
+			Rb.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
 			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
 			////barva pozadí buòky
@@ -270,7 +275,7 @@ void TmGrid::Draw(TCanvas *C)
 			C->FillRect(Rb);
 
 			////komponenta v buòce
-			SetComponents(C,Rc,Rb,X,Y,Cells[X][Y]);
+			SetComponents(C,Rc,Rt,X,Y,Cells[X][Y]);
 
 			////orámování buòky
 			//používám duplicitnì (k DrawGrid) zde, kvùli akceleraci v pøípadì totálnì vypnutého AA nebo totálnì zapnutého AA, v takovém pøípadì potom nebìží DrawGrid, mohl bych ho sice volat zde, ale chci si ušetøit opakovaný prùchod cykly, DrawGrid bìží jenom v momentu AntiAliasing_text=false a AntiAliasing_grid=true
@@ -773,7 +778,8 @@ void TmGrid::executeColumnAutoFit(TCanvas *Canv,long ColIdx)
 	unsigned int ColWidth=getWidthHeightText(Cells[ColIdx][0]).X;//výchozí hodnota
 	for(unsigned long Y=1;Y<RowCount;Y++)
 	{
-		unsigned int W=getWidthHeightText(Cells[ColIdx][Y]).X+Cells[ColIdx][Y].LeftMargin+Cells[ColIdx][Y].LeftBorder->Width/2+Cells[ColIdx][Y].RightMargin+Cells[ColIdx][Y].RightBorder->Width/2;
+		short Zoom=1;if(AntiAliasing_text==true)Zoom=3;
+		unsigned int W=getWidthHeightText(Cells[ColIdx][Y]).X+Cells[ColIdx][Y].LeftMargin*Zoom+Cells[ColIdx][Y].LeftBorder->Width*Zoom/2+Cells[ColIdx][Y].RightMargin*Zoom+Cells[ColIdx][Y].RightBorder->Width*Zoom/2;
 		if(Cells[ColIdx][Y].Type==CHECK || Cells[ColIdx][Y].Type==RADIO)W+=20+4+4;
 		if(W>ColWidth)ColWidth=W;//najde nejšiøší
 	}
@@ -857,6 +863,15 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 
+	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
+}
+//---------------------------------------------------------------------------
+void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
+{
+	Col=getColFromTag(((TComponent*)(Sender))->Tag);
+	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);

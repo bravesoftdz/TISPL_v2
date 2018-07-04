@@ -353,8 +353,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 //
 void TForm_parametry_linky::nacti_pohony ()
 {
-
-   data_nalezena=false;
+	 data_nalezena=false;
 	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
 
 	 if (ukaz!=NULL)
@@ -398,18 +397,12 @@ void TForm_parametry_linky::nacti_pohony ()
 				 }
 				 F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
 				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
-
-
-
-
-
 	}
 	else {  //pokud je spoják prázdný, zobrazím tyto pøednastavené hodnoty
 
 	data_nalezena=false; // default se nepoužívá resp. po soubor nový se okamžitì vloží do spojáku def.pohon
 //nevytvari se zadny default pohon nikde
 	}
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
@@ -429,7 +422,6 @@ void __fastcall TForm_parametry_linky::KonecClick(TObject *Sender)
 	Button_stornoClick(Sender);//stejná funkcionalita jako u storna
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 {
 		Changes=false;  //obecna zmena = zmena PP ci TT
@@ -458,8 +450,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		}
 		if(zobrazGAPO_R)//pokud byl nìjaký používaný pohon zmìnìn
 		{
-			F_gapoR->Left=Left;F_gapoR->Top=Top;
+			//scGPPanel2->FillColor = (TColor)RGB(200,200,200);//F->m.clIntensive((TColor)RGB(43,87,154),40);
+			Button_save->Enabled=false;Button_storno->Enabled=false;
 			if(F_gapoR->ShowModal()!=mrOk)Ulozit=false;//pokud bude stisknuto èi køížek na gapo_R storno, ukládání PL formu se pøeruší, resp. neprovede
+			//scGPPanel2->FillColor = (TColor)RGB(43,87,154);
+			Button_save->Enabled=true;Button_storno->Enabled=true;
 			mGrid->Delete();
 		}
 
@@ -500,8 +495,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 		////////////////////////////////////////////////////////////////////////
 		//Pri zmene roztece  - volani zmìny rozteèe - pokud dojde ke zmìnì rozteèe u používaného pohonu - pøedám status pro zobrazení PL_priority
-
-
 			Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
 			while(P!=NULL)
 			{
@@ -1559,9 +1552,7 @@ void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &
 	Form1->writeINI("nastaveni_form_parametry_linky", "TT", Taktunit);
 }
 //---------------------------------------------------------------------------
-
 //---------------------------------------------------------------------------
-
 void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 {
 		Button_save->Enabled=true;
@@ -1593,11 +1584,8 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
 				rHTMLLabel_InfoText->Visible = false;
 		}
-
-
 }
-
-
+//---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 {
 //
