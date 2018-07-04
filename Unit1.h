@@ -553,6 +553,7 @@ public:		// User declarations
 	bool dblClick;
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
+	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
 	void ZOOM_IN();//pøiblížení
 	void ZOOM_OUT();//oddálení
 	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else

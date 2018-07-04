@@ -1,17 +1,21 @@
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
-
+//NEWR
 #include "gapoR.h"
 #include "unit1.h"
 #include "TmGrid.h"
 #include "PO_math.h"
 #include "parametry_linky.h"
+#include "parametry.h"
+#include "kabina_schema.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
 #pragma link "rHTMLLabel"
+#pragma link "scDrawUtils"
+#pragma link "scGPImages"
 #pragma resource "*.dfm"
 TF_gapoR *F_gapoR;
 //---------------------------------------------------------------------------
@@ -63,7 +67,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->DefaultColWidth/=2;//NEWR
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
-	unsigned long ColCount=21;//pevný poèet slopcù  //NEWR
+	unsigned long ColCount=22;//pevný poèet slopcù  //NEWR
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 	if(pohony_zmena!=NULL)
 	{
@@ -100,6 +104,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	if(Munit)mGrid->Cells[16][0].Text="M - mezera jig [mm]";else mGrid->Cells[16][0].Text="M - mezera jig [m]";
 	if(Munit)mGrid->Cells[18][0].Text="M - mezera vozík [mm]";else mGrid->Cells[18][0].Text="M - mezera vozík [m]";
 	mGrid->Cells[20][0].Text="Rotace [°]";
+	mGrid->Cells[21][0].Text="náhled";
 
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první øádek
@@ -152,6 +157,10 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				mGrid->Cells[16][j].Text=O[z].mezera_jig*(1+999*Munit);           mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[18][j].Text=O[z].mezera_podvozek*(1+999*Munit); 			mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[20][j].Text=AnsiString(O[z].rotace);             		mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;
+				mGrid->Cells[21][j].Type=mGrid->BUTTON;mGrid->Cells[21][j].Text="...";mGrid->Cells[21][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
+				TscGPButton *B=mGrid->createButton(21,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
+				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
+				//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
 				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
 				//posun na další øádek výsledné tabulky
 				j++;
@@ -179,21 +188,36 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	//pozice gapo formu
 	Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
 	Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
-
+	//zobrazení orámování
+	zobrazitFrameForm=true;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormPaint(TObject *Sender)
 {
 	mGrid->Show();//vykreslí tabulku
-	F->m.frameForm(this,clWebOrange,1);//vykreslí orámování okolo formu
+	if(zobrazitFrameForm)F->m.frameForm(this,clWebOrange,1);//vykreslí orámování okolo formu
 }
 //---------------------------------------------------------------------------
 //test volání pøi onclick
 void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
-{
-	calculate(Row);//zajistí pøepoèet daného øádku NEWR
-	FormPaint(this);//zajistí pøekreslení bez probliku
+{ //NEWR
+	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
+	{
+		calculate(Row,2);
+		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
+		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
+		Invalidate();FormPaint(this);//zajistí pøekreslení bez probliku
+		Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
+		Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
+		Form_objekt_nahled->ShowModal();
+		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+	}
+	else//pøekliknutí chechboxu pravdìpodobnì
+	{
+		calculate(Row);//zajistí pøepoèet daného øádku
+		FormPaint(this);//zajistí pøekreslení bez probliku
+	}
 }
 //---------------------------------------------------------------------------
 void TF_gapoR::OnEnter(long Tag,unsigned long Col,unsigned long Row)
@@ -210,12 +234,13 @@ void __fastcall TF_gapoR::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	if(ModalResult==mrOk)delete[] pohony_zmena;//pokud je stisknuto storno pøi ukonèování, tak se nemaže //NEWR
 	delete[] objekty;
+	Form_objekt_nahled->pom=NULL;delete Form_objekt_nahled->pom;
 }
 //---------------------------------------------------------------------------
 //provizorní, vy/zapínání AA
 void __fastcall TF_gapoR::Button1Click(TObject *Sender)
 {
-	ShowMessage(objekty[1].pohon->n);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
+	ShowMessage(objekty[2].pohon->n);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 	mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
 	FormPaint(this);
 }
@@ -248,58 +273,87 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	{
 		pm.CT_locked=false;pm.DD_locked=true;
 		pm.input_RD(true);
-		mGrid->Cells[11][Row].Font->Color=clLOCKED;//DD
-		mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
-		mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
+		if(SaveTo==0)
+		{
+			mGrid->Cells[11][Row].Font->Color=clLOCKED;//DD
+			mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
+			mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
+		}
 	}
 	else//mìní se RD,DD,P,M, zùstává CT,K
 	{
 		pm.CT_locked=true;pm.DD_locked=false;
 		pm.input_RD(true);
-		mGrid->Cells[11][Row].Font->Color=clUNLOCKED;//DD
-		mGrid->Cells[7][Row].Font->Color =clLOCKED;//CT
-		mGrid->Cells[13][Row].Font->Color=clLOCKED;//K
+		if(SaveTo==0)
+		{
+			mGrid->Cells[11][Row].Font->Color=clUNLOCKED;//DD
+			mGrid->Cells[7][Row].Font->Color =clLOCKED;//CT
+			mGrid->Cells[13][Row].Font->Color=clLOCKED;//K
+		}
 	}
 
 	//output sekce
-	mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
-	mGrid->Cells[9][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
-	mGrid->Cells[11][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
-	mGrid->Cells[13][Row].Text= F->m.round2double(pm.K,2,"..");
-	mGrid->Cells[15][Row].Text=	F->m.round2double(pm.P,2,"..");
-	mGrid->Cells[17][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
-	mGrid->Cells[19][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
-
-	//uložení do spojáku OBJEKTY - je-li požadováno
-	if(SaveTo==1)
-	{
-		Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
-		O->CT=pm.CT;
-		O->RD=pm.RD;
-		O->delka_dopravniku=pm.DD;
-		O->kapacita=pm.K;
-		O->pozice=pm.P;
-		O->mezera=pm.M;
-		O->mezera_jig=pm.MJ;
-		O->mezera_podvozek=pm.MP;
-		O=NULL;delete O;
-  }
-
-	//uložení do textu je-li požadováno
 	AnsiString T="";
-	if(SaveTo==-1)
+	switch(SaveTo)
 	{
-		T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
+		 case -1://uložení do textu je-li požadováno
+		 {
+				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
+		 }break;
+		 case 0://pouze vrátí text do bunìk
+		 {
+				mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
+				mGrid->Cells[9][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+				mGrid->Cells[11][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
+				mGrid->Cells[13][Row].Text= F->m.round2double(pm.K,2,"..");
+				mGrid->Cells[15][Row].Text=	F->m.round2double(pm.P,2,"..");
+				mGrid->Cells[17][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
+				mGrid->Cells[19][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
+		 }break;
+		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
+		 {
+				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
+				O->CT=pm.CT;
+				O->RD=pm.RD;
+				O->delka_dopravniku=pm.DD;
+				O->kapacita=pm.K;
+				O->pozice=pm.P;
+				O->mezera=pm.M;
+				O->mezera_jig=pm.MJ;
+				O->mezera_podvozek=pm.MP;
+				O=NULL;delete O;
+		 }break;
+		 case 2://uložení hodnot z ukazatele
+		 {
+				Form_objekt_nahled->pom=new Cvektory::TObjekt;
+				Form_objekt_nahled->pom->pohon=objekty[Row].pohon;
+				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
+				Form_objekt_nahled->pom->CT=pm.CT;
+				Form_objekt_nahled->pom->RD=pm.RD;
+				Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
+				Form_objekt_nahled->pom->kapacita=pm.K;
+				Form_objekt_nahled->pom->pozice=pm.P;
+				Form_objekt_nahled->pom->mezera=pm.M;
+				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
+				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
+		 }break;
 	}
 	return T;
 }
 //---------------------------------------------------------------------------
-//stiskne-li se OK, uloží do OBJEKTY a následnì ukonèí PL form (pøedáním modalresults)
+//stiskne-li se OK, uloží do OBJEKTY a následnì ukonèí PL form (pøedáním modalresults) - NEWR
 void __fastcall TF_gapoR::scGPButton_OKClick(TObject *Sender)
 {
 	for(unsigned long Row=1;Row<mGrid->RowCount;Row++)
 	{
 		calculate(Row,1);//sice se propoèítává opakovanì, ale kvùli možnému zobrazení dat ve zkrácené formì v tabulce. lepe z ostrých dat
+		//aktualizace PO, pokud je spuštìné
+		if(F->pom!=NULL)//nutno jako samostaný if
+		if(F->pom->n==objekty[Row].n)//je spuštìné PO a je tedy nutné zavolat aktualizaci PO
+		{
+			F->pom=F->d.v.vrat_objekt(objekty[Row].n);//vrátí ostrá data
+			F->NPin();
+		}
 	}
 }
 //---------------------------------------------------------------------------

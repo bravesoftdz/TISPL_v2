@@ -84,7 +84,7 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_objekt_nahled(TComponent* Owner);
 	void REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
-	Cvektory::TObjekt *pom;//pøebírá hodnoty z formuláøe parametry objektu, protože F->pom, není v tomto momentu volání knihonvy z dùvodu probíhajících zmìna zcela aktuální
+	Cvektory::TObjekt *pom;//pøebírá hodnoty z formuláøe parametry objektu,popø. z formu, z kterého je volán, protože F->pom, není v tomto momentu volání knihonvy z dùvodu probíhajících zmìna zcela aktuální
 	double Zoom_predchozi;//slouží na uchování hodnoty aktuálního zoom ve schématu, protože Zoom je sdílený i pro schéme a i pro náhled objektu (z dùvodu použítí totožných metod, kde je již promìnná Zoom zakomponovaná)
 	bool zobrazitFrameForm;//zda se má èi nemá zobrazit orámování formuláøe
 };

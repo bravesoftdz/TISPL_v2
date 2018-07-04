@@ -11,6 +11,10 @@
 #include "scGPControls.hpp"
 #include "vektory.h"
 #include "rHTMLLabel.hpp"
+#include <System.ImageList.hpp>
+#include <Vcl.ImgList.hpp>
+#include "scDrawUtils.hpp"
+#include "scGPImages.hpp"
 //---------------------------------------------------------------------------
 class TF_gapoR : public TForm
 {
@@ -41,7 +45,7 @@ private:	// User declarations
 	//Cvektory v;//instance na tøídu vektorù - nepoužívát, padalo
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
-	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky
+	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND;
 	short CTunit,RDunit,DDunit,Munit;
 public:		// User declarations
@@ -51,6 +55,7 @@ public:		// User declarations
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 	TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
+	bool zobrazitFrameForm;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoR *F_gapoR;

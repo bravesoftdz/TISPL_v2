@@ -6,7 +6,6 @@
 #include "unit1.h"
 #include "antialiasing.h"
 #include "parametry.h"
-
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
@@ -43,8 +42,8 @@ __fastcall TForm_objekt_nahled::TForm_objekt_nahled(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_objekt_nahled::FormShow(TObject *Sender)
 {
-	Zoom_predchozi=F->Zoom;
-	if(F->pom!=NULL)MODEL();//pokud je náhled volán z PO a jedná se o náhled konkrétního objektu, zde je F->pom OK
+	Zoom_predchozi=F->Zoom; //pro náhled z gapo
+	if(F->pom!=NULL || pom!=NULL)MODEL();//pokud je náhled volán z PO a jedná se o náhled konkrétního objektu, zde je F->pom OK
 	else PREVIEW();//pokud je náhled volán z PL a jedná se pouze o ilustrativní náhled a bude zobrazen pouze ilustrativní obrázek, mohlo by se zdát, že se jedná o zbyteènou vìtev, protože se to øeší v OUTPUTu, ale toto má speciální význam pro situaci odchodu z PO a pøíchodu na PL a volání tohoto formu
 }
 //---------------------------------------------------------------------------
@@ -194,35 +193,41 @@ void __fastcall TForm_objekt_nahled::FormPaint(TObject *Sender)
 //naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totoži není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
 void TForm_objekt_nahled::OUTPUT()
 {
-	 pom=new Cvektory::TObjekt;
 	 //pøevzetí hodnot z Form_Parametry
-	 double jednotky_cas=60.0;double jednotky_vzdalenost=1000.0;
-	 pom->name=Form_parametry->scGPEdit_name->Text;scLabel_titulek->Caption=pom->name.UpperCase()+" - náhled";
-	 pom->short_name=Form_parametry->scGPEdit_shortname->Text;
-	 pom->pohon=F->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);//indexuje se od nuly,ale pohony od 1 (nicménì novì je na prvním místì položka nepøiøazen), pokud pohon neexituje vráti null
-	 pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
-//	 pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
-	 pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
-	 pom->pozice=Form_parametry->scGPNumericEdit_pozice->Value;
-//	 pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
-//	 pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
-	 //DD
-	 if(Form_parametry->DDunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
-	 pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
-	 //RD
-	 if(Form_parametry->RDunitT==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
-	 if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
-	 pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
-	 //if(pom->pohon!=NULL && pom->rezim==1)pom->pohon->aRD=pom->RD;//uloží i aktulání rychlost pohonu
-	 //DM
-	 if(Form_parametry->DMunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
-	 pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
-	 //ostatni
-	 pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-	 //CT
-	 if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
-	 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
-
+	 if(F->pom!=NULL && Form_parametry->Visible)//pokud je voláno z PO
+	 {
+		 pom=new Cvektory::TObjekt;
+		 double jednotky_cas=60.0;double jednotky_vzdalenost=1000.0;
+		 pom->name=Form_parametry->scGPEdit_name->Text;scLabel_titulek->Caption=pom->name.UpperCase()+" - náhled";
+		 pom->short_name=Form_parametry->scGPEdit_shortname->Text;
+		 pom->pohon=F->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);//indexuje se od nuly,ale pohony od 1 (nicménì novì je na prvním místì položka nepøiøazen), pokud pohon neexituje vráti null
+		 pom->rezim=Form_parametry->scComboBox_rezim->ItemIndex;
+		// pom->cekat_na_palce=Form_parametry->scComboBox_cekani_palec->ItemIndex;
+		 pom->kapacita=Form_parametry->scGPNumericEdit_kapacita->Value;
+		 pom->pozice=Form_parametry->scGPNumericEdit_pozice->Value;
+		// pom->odchylka=Form_parametry->scGPNumericEdit_odchylka->Value;
+		// pom->stopka=Form_parametry->scComboBox_stopka->ItemIndex;
+		 //DD
+		 if(Form_parametry->DDunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+		 pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
+		 //RD
+		 if(Form_parametry->RDunitT==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
+		 if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+		 pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
+		 //if(pom->pohon!=NULL && pom->rezim==1)pom->pohon->aRD=pom->RD;//uloží i aktulání rychlost pohonu
+		 //DM
+		 if(Form_parametry->DMunit==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+		 pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
+		 //ostatni
+		 pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
+		 //CT
+		 if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
+		 pom->CT=Form_parametry->scGPNumericEdit_CT->Value*jednotky_cas;
+	 }
+	 else//pro gapo form
+	 {
+			 //pom=F->pom; netøeba probíhá pøímo v plnìní gapa formu
+	 }
 	 //nová výchozí pozice po rotaci vozíku
 	 START_POZICE();
 
@@ -260,7 +265,7 @@ void __fastcall TForm_objekt_nahled::KonecClick(TObject *Sender)
 	}
 	else
 	{
-    MODEL();
+		MODEL();
 		nahledZmodelu=false;
 	}
 }

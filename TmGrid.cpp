@@ -449,15 +449,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case BUTTON:
 		{
 			//zaloení + tag + název
-			TscGPButton *B=getButton(X,Y);//pokud ji existuje
-			if(B==NULL)
-			{
-				B=new TscGPButton(Form);//pokud ne
-				B->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
-				B->Name="mGrid_BUTTON_"+AnsiString(B->Tag);
-				//události
-				B->OnClick=&getTagOnClick;
-			}
+			TscGPButton *B=createButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
 			B->Top=R.Top+1;
 			B->Left=R.Left+1;
@@ -659,6 +651,23 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Value=ms.MyToDouble(Cell.Text);
 	//vlastník
 	N->Parent=Form;//musí bıt a na konci
+}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+TscGPButton *TmGrid::createButton(unsigned long Col,unsigned long Row)
+{
+	TscGPButton *B=getButton(Col,Row);//pokud ji existuje
+	if(B==NULL)//pokud ne, tak zaloí
+	{
+		B = new TscGPButton(Form);
+		B->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		B->Name="mGrid_BUTTON_"+AnsiString(B->Tag);
+
+		//události
+		B->OnClick=&getTagOnClick;
+		B->OnEnter=&getTagOnEnter;
+	}
+	return B;
 }
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí

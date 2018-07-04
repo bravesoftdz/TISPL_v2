@@ -452,9 +452,17 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		{
 			//scGPPanel2->FillColor = (TColor)RGB(200,200,200);//F->m.clIntensive((TColor)RGB(43,87,154),40);
 			Button_save->Enabled=false;Button_storno->Enabled=false;
-			if(F_gapoR->ShowModal()!=mrOk)Ulozit=false;//pokud bude stisknuto èi køížek na gapo_R storno, ukládání PL formu se pøeruší, resp. neprovede
-			//scGPPanel2->FillColor = (TColor)RGB(43,87,154);
-			Button_save->Enabled=true;Button_storno->Enabled=true;
+			if(F_gapoR->ShowModal()!=mrOk)
+			{
+				Ulozit=false;//pokud bude stisknuto èi køížek na gapo_R storno, ukládání PL formu se pøeruší, resp. neprovede
+				//scGPPanel2->FillColor = (TColor)RGB(43,87,154);
+				Button_save->Enabled=true;Button_storno->Enabled=true;
+				Storno=true;
+			}else
+			{
+				Storno=false;
+				Ulozit=true;
+			}
 			mGrid->Delete();
 		}
 
@@ -689,11 +697,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Form1->DuvodUlozit(true);
 			//M toto tu nesmí být:Form_parametry_linky->Close();
 		}
-		//M - následující vìtev nechápu
-//		else//stisknul storno - zustavam na PL a nic jsem neulozil
-//		{
-//			 Form1->DuvodUlozit(false);
-//		}
+		Close();//v testu, mùže padat
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
