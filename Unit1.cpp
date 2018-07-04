@@ -2905,9 +2905,13 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-//podpůrná metoda NP(), řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě
+//podpůrná metoda řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě
 void TForm1::NPin()
 {
+	short CTunit=0;if(Form1->readINI("nastaveni_form_parametry", "CT") == "1") CTunit=1;
+	short RDunit=0;if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")RDunit=1;
+	short DDunit=0;if(Form1->readINI("nastaveni_form_parametry", "DD") == "1") DDunit=1;
+	short Munit=0;if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")  Munit=1;
 	//////////////////////////plnění dat do formu z daného objektu
 	////plnění daty
 	aktualizace_combobox_pohony_v_PO();
@@ -2921,15 +2925,15 @@ void TForm1::NPin()
 	//režim
 	Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 	//CT
-	Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
+	Form_parametry->scGPNumericEdit_CT->Value=pom->CT/(1+59*CTunit);
 	//RD
-	Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
+	Form_parametry->scGPNumericEdit_RD->Value=pom->RD*(1+59*RDunit);
 	//DD
-	Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
+	Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku*(1+999*DDunit);
 	//MEZERY
-	Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
-	Form_parametry->scGPNumericEdit_mezera_JIG->Value=pom->mezera_jig;
-	Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value=pom->mezera_podvozek;
+	Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera*(1+999*Munit);
+	Form_parametry->scGPNumericEdit_mezera_JIG->Value=pom->mezera_jig*(1+999*Munit);
+	Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value=pom->mezera_podvozek*(1+999*Munit);
 	//ostatni
 	Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 	Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -2941,21 +2945,6 @@ void TForm1::NPin()
 	//nadesignování formu podle právě vypisováných hodnot
 	Form_parametry->vypis("");
 	Form_parametry->setForm4Rezim(pom->rezim);
-
-	//ošetření aby zůstal dialog na monitoru
-	if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->ClientWidth<Form1->ClientWidth)
-		Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
-	else
-		Form_parametry->Left=Form1->ClientWidth-Form_parametry->ClientWidth-10;
-	if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->ClientHeight<Form1->ClientHeight)
-		Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
-	else
-		Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-scGPPanel_statusbar->ClientHeight-10;
-
-	//nastevní titulku
-	Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
-
-	Form_parametry->setUnit();//nastaví jednotky
 }
 //---------------------------------------------------------------------------
 //volá form na nastevení parametrů, dřívější nastavparametry1click
@@ -2963,7 +2952,52 @@ void TForm1::NP()
 {
 	if(pom!=NULL)
 	{
-		NPin();//podpůrná metoda NP(), řeší VSTUPNÍ ČÁST DAT, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě
+		//////////////////////////plnění dat do formu z daného objektu
+		////plnění daty
+		aktualizace_combobox_pohony_v_PO();
+		if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
+		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
+		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
+		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
+		//název
+		Form_parametry->scGPEdit_name->Text=pom->name;
+		Form_parametry->scGPEdit_shortname->Text=pom->short_name;
+		//režim
+		Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
+		//CT
+		Form_parametry->scGPNumericEdit_CT->Value=pom->CT;
+		//RD
+		Form_parametry->scGPNumericEdit_RD->Value=pom->RD;
+		//DD
+		Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku;
+		//MEZERY
+		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
+		Form_parametry->scGPNumericEdit_mezera_JIG->Value=pom->mezera_jig;
+		Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value=pom->mezera_podvozek;
+		//ostatni
+		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
+		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
+		Form_parametry->scGPNumericEdit_pozice->Value=pom->pozice;
+		Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
+		Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
+		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
+
+		//nadesignování formu podle právě vypisováných hodnot
+		Form_parametry->vypis("");
+		Form_parametry->setForm4Rezim(pom->rezim);
+
+		//ošetření aby zůstal dialog na monitoru
+		if(akt_souradnice_kurzoru_PX.x+10+Form_parametry->ClientWidth<Form1->ClientWidth)
+			Form_parametry->Left=akt_souradnice_kurzoru_PX.x+10;
+		else
+			Form_parametry->Left=Form1->ClientWidth-Form_parametry->ClientWidth-10;
+		if(akt_souradnice_kurzoru_PX.y+10+Form_parametry->ClientHeight<Form1->ClientHeight)
+			Form_parametry->Top=akt_souradnice_kurzoru_PX.y+10;
+		else
+			Form_parametry->Top=Form1->ClientHeight-Form_parametry->ClientHeight-scGPPanel_statusbar->ClientHeight-10;
+
+		//nastevní titulku
+		Form_parametry->scLabel_titulek->Caption=pom->name.UpperCase()+" - parametry";
 
 		//////////////////////////navrácení dat + volání zobrazení formu
 		if(Form_parametry->ShowModal()==mrOk)

@@ -49,39 +49,6 @@ __fastcall TForm_parametry::TForm_parametry(TComponent* Owner) : TForm(Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::FormShow(TObject *Sender)
 {
-		//setUnit();//nastaví jednotky
-
-		//	input_clicked_edit=empty_klik; M: toto bylo i pøedtím zakomentované, prosím, pokud není zcela tøeba mazat, a není zavadìjící
-		kapacitaSG = 1; // není podnìt k rozkládání na více objektù
-		scGPEdit_name->SetFocus();
-		// nastaví vıchozí focus, kde se pøedpokládá vıchozí nastavování
-		scGPEdit_name->SelectAll(); // oznaèí cele pro editace
-		scGPButton_OK->Enabled = true;
-		scGPButton_OK->Caption = "Uloit";
-		form_zobrazen = true;
-		pohon_pouzivan = false;
-
-		if(Form_parametry_linky->scGPSwitch->State==0)rHTMLLabel_jig_podvozek->Caption="jig a podvozek";
-		else rHTMLLabel_jig_podvozek->Caption="jig a závìs";
-		// detekuje zda je form aktuálnì zobrazen, slouí proto aby pøi zmìnì combo reim pokud si nastavil uivatel formulaø jinam, aby zùstal nastaven dle uivatele
-
-		// pohon_je_pouzivan  - nastavení zámkù a editboxù dle nastaveného pohonu.
-		Pohon_pouzivan();
-		Nacti_rx(); // vypoèítání Rx a zobrazeni
-		INPUT();   // pøi prvním zobrazení formu "otisknu" data z formu do math struktury, bez ádnıch vıpoètù, primárnì pouito pro nastavení decimal checkboxu, kdy potøebuje mít data v output ji pøi formshow
-		OUTPUT();  // naètení dat ze struktury
-		if(scComboBox_rezim->ItemIndex==1) 	Check_rozmezi_RD();
-		if(scComboBox_rezim->ItemIndex!=1)  // pro jiné reimy vdy povolím zobrazení zámkù
-		{
-			scButton_zamek_CT->Enabled=true;
-			scButton_zamek_DD->Enabled=true;
-		}
-}
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//nastaví jednotky
-void  TForm_parametry::setUnit()
-{
 		input_state = NOTHING; // nutnost!!! - test pøesunuto nahoru
 		// formuláø bude pøi prvním zobrazení v sekundách a metrech nebo dle INI v odvozenıch jednotkách, jinak dle SI
 		if(form_zobrazen==false)
@@ -124,6 +91,32 @@ void  TForm_parametry::setUnit()
 			}
 		}
 		//M: byl zde ne jsem ho pøesunul zcela nahoru: input_state = NOTHING; // nutnost!!!
+
+		//	input_clicked_edit=empty_klik; M: toto bylo i pøedtím zakomentované, prosím, pokud není zcela tøeba mazat, a není zavadìjící
+		kapacitaSG = 1; // není podnìt k rozkládání na více objektù
+		scGPEdit_name->SetFocus();
+		// nastaví vıchozí focus, kde se pøedpokládá vıchozí nastavování
+		scGPEdit_name->SelectAll(); // oznaèí cele pro editace
+		scGPButton_OK->Enabled = true;
+		scGPButton_OK->Caption = "Uloit";
+		form_zobrazen = true;
+		pohon_pouzivan = false;
+
+		if(Form_parametry_linky->scGPSwitch->State==0)rHTMLLabel_jig_podvozek->Caption="jig a podvozek";
+		else rHTMLLabel_jig_podvozek->Caption="jig a závìs";
+		// detekuje zda je form aktuálnì zobrazen, slouí proto aby pøi zmìnì combo reim pokud si nastavil uivatel formulaø jinam, aby zùstal nastaven dle uivatele
+
+		// pohon_je_pouzivan  - nastavení zámkù a editboxù dle nastaveného pohonu.
+		Pohon_pouzivan();
+		Nacti_rx(); // vypoèítání Rx a zobrazeni
+		INPUT();   // pøi prvním zobrazení formu "otisknu" data z formu do math struktury, bez ádnıch vıpoètù, primárnì pouito pro nastavení decimal checkboxu, kdy potøebuje mít data v output ji pøi formshow
+		OUTPUT();  // naètení dat ze struktury
+		if(scComboBox_rezim->ItemIndex==1) 	Check_rozmezi_RD();
+		if(scComboBox_rezim->ItemIndex!=1)  // pro jiné reimy vdy povolím zobrazení zámkù
+		{
+			scButton_zamek_CT->Enabled=true;
+			scButton_zamek_DD->Enabled=true;
+		}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
