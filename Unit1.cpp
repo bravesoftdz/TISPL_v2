@@ -3155,6 +3155,7 @@ void TForm1::kopirovat_objekt()
 				}
 				ortogonalizace();
 				REFRESH();
+				DuvodUlozit(true);
 		}
 }
 //---------------------------------------------------------------------------
