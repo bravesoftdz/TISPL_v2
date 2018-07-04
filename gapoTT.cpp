@@ -392,7 +392,14 @@ void __fastcall TF_gapoTT::FormPaint(TObject *Sender)
 void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
 //PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
-//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU
+//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
+
+
+		if(Col>=3 && mGrid->getCheck(Col,Row)->Checked==false){
+			TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+			CH->Checked=true;
+			CH=NULL;delete CH;
+		}
 
 	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
@@ -510,81 +517,145 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	////////////////////////////////////////////////////////////////////////////////////
 
-//			 // pokud je 3+5 sloupec CHECKED FALSE a je v KK max.sám
-//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked==false && mGrid->getCheck(Col+2,Row)->Checked==false &&	mGrid->Cells[2][Row].Text=="Kontinuální")
-//	{
-//	 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) <= 1){
-//		mGrid->getCheck(Col+4,Row)->Enabled=true;
-//		mGrid->getCheck(Col+6,Row)->Enabled=true;
-//		mGrid->getCheck(Col+8,Row)->Enabled=true;
-//		mGrid->getCheck(Col+10,Row)->Enabled=true;
-//		}
-//	 }
-//
-//		// pokud je 3 nebo 5 sloupec checked TRUE  a je v KK  max.sám
-//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked || mGrid->getCheck(Col+2,Row)->Checked)
-//	{
-//			if(mGrid->Cells[2][Row].Text=="Kontinuální" && F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) <= 1)
-//			{
-//			mGrid->getCheck(Col+4,Row)->Enabled=true;
-//			mGrid->getCheck(Col+6,Row)->Enabled=true;
-//			mGrid->getCheck(Col+8,Row)->Enabled=true;
-//			mGrid->getCheck(Col+10,Row)->Enabled=true;
-//			}
-//	}
-//
-// /////////////////////////////////////////////////////////////
-//				 // pokud je 3+5 sloupec CHECKED FALSE a je v KK více objektù
-//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked==false && mGrid->getCheck(Col+2,Row)->Checked==false &&	mGrid->Cells[2][Row].Text=="Kontinuální")
-//	{
-//	 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) > 1){
-//		mGrid->getCheck(Col+4,Row)->Enabled=true;
-//		mGrid->getCheck(Col+6,Row)->Enabled=true;
-//		mGrid->getCheck(Col+8,Row)->Enabled=true;
-//		mGrid->getCheck(Col+10,Row)->Enabled=true;
-//		}
-//	 }
-//
-//		// pokud je 3 nebo 5 sloupec checked TRUE  a je v KK  více objektù
-//	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked || mGrid->getCheck(Col+2,Row)->Checked)
-//	{
-//			if(mGrid->Cells[2][Row].Text=="Kontinuální" /*&& F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1) > 1*/)
-//			{
-//		 //	ShowMessage(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(Row,1));
-//			mGrid->getCheck(Col+4,Row)->Enabled=false;
-//			mGrid->getCheck(Col+6,Row)->Enabled=false;
-//			mGrid->getCheck(Col+8,Row)->Enabled=false;
-//			mGrid->getCheck(Col+10,Row)->Enabled=false;
-//			}
-//	}
+		 // mechanismus na povolení vstupu do druhé oblasti tzn aktivace sloupcù 9 až 13 v pøípadì, že
+		 //objekty v KK režimu nemají žádný vybraný sloupec 3 nebo 5
 
-		 // povolení vstoupení do sloupcù 7 a víc, za pøedpokladu, že sloupce 3+5 nejsou checked
+	 //	 objekty[Row].pohon->n;
 
-
-		if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked==false &&  mGrid->getCheck(Col+2,Row)->Checked==false && mGrid->Cells[2][Row].Text=="Kontinuální")
+		 // pokud jsou obì buòky 3 + 5 nevybrané a souèasnì jsou v KK režimu
+		 // vstup z levého sloupce na pravý
+	if(Col<=5 &&  mGrid->getCheck(3,Row)->Checked==false &&  mGrid->getCheck(5,Row)->Checked==false && mGrid->Cells[2][Row].Text=="Kontinuální")
 		{
+
+		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
 			 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[23][Row].Text),1) > 1)  //pokud má KK pohon více objektù  projdu cyklem
 			 {
 				 double pohon_id=F->ms.MyToDouble(mGrid->Cells[23][Row].Text);
 
-
+					 //prùchod celé tabulky
+						pocitadlo=0;
 					 for(int i=1;i<=mGrid->RowCount-1;i++)
 					 {
-
-									 if (mGrid->getCheck(Col,i)->Checked==true   ||  mGrid->getCheck(Col+2,i)->Checked==true )
+									 //když je sloupec 3 nebo 5 checked
+									 if (mGrid->getCheck(3,i)->Checked==true   ||  mGrid->getCheck(5,i)->Checked==true )
 									 {
-									 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
-										{
-
-											ShowMessage("nemohu povolit Row "+AnsiString(i));
-										}
+									 // a když najdu stejné ID a má režim kontinuální tak nemohu povolit vstup do další oblasti
+											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
+												{
+													pocitadlo++;
+												}
 									 }
-
 						}
+
+					 if(pocitadlo==0)   //pokud jsem nenašel žádné zakliknuté buòky, mohu povolit vstup do druhé oblasti
+					 {                  //projdu opìt celé cyklem a aktivuji druhou oblast
+								for(int i=1;i<=mGrid->RowCount-1;i++)
+								{
+										 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
+											{
+											mGrid->getCheck(7,i)->Enabled=true;
+											mGrid->getCheck(9,i)->Enabled=true;
+											mGrid->getCheck(11,i)->Enabled=true;
+											mGrid->getCheck(13,i)->Enabled=true;
+											}
+								}
+					 }
 
 				}
 
-		 }
+	 }
+
+		if(Col>5  &&  mGrid->getCheck(7,Row)->Checked==false &&  mGrid->getCheck(9,Row)->Checked==false &&  mGrid->getCheck(11,Row)->Checked==false &&  mGrid->getCheck(13,Row)->Checked==false && mGrid->Cells[2][Row].Text=="Kontinuální")
+		{
+		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
+			 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[23][Row].Text),1) > 1)  //pokud má KK pohon více objektù  projdu cyklem
+			 {
+				 double pohon_id=F->ms.MyToDouble(mGrid->Cells[23][Row].Text);
+
+					 //prùchod celé tabulky
+						pocitadlo=0;
+					 for(int i=1;i<=mGrid->RowCount-1;i++)
+					 {
+									 //když je sloupec 3 nebo 5 checked
+									 if(mGrid->Cells[2][i].Text=="Kontinuální")
+									 {
+											 if (mGrid->getCheck(7,i)->Checked==true   ||  mGrid->getCheck(9,i)->Checked==true ||  mGrid->getCheck(11,i)->Checked==true  ||  mGrid->getCheck(13,i)->Checked==true)
+											 {
+								 //	  a když najdu stejné ID a má režim kontinuální tak nemohu povolit vstup do další oblasti
+											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
+												{
+													pocitadlo++;
+												}
+											}
+									 }
+						}
+
+					 if(pocitadlo==0)   //pokud jsem nenašel žádné zakliknuté buòky, mohu povolit vstup do druhé oblasti
+					 {                  //projdu opìt celé cyklem a aktivuji druhou oblast
+								for(int i=1;i<=mGrid->RowCount-1;i++)
+								{
+										 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
+											{
+											mGrid->getCheck(3,i)->Enabled=true;
+											mGrid->getCheck(5,i)->Enabled=true;
+											}
+								}
+					 }
+				}
+	 }
+
+	 // pokud kliknu do sloupcù 5 a víc tak na sloupcích 3 a 5 dám enabled false
+	 // platí pouze pokud je pohon a má KK pro více jak 1 objekt
+		if(Col>5 && mGrid->getCheck(3,Row)->Checked==false  && mGrid->getCheck(5,Row)->Checked==false &&  mGrid->Cells[2][Row].Text=="Kontinuální")
+		{
+		if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true || mGrid->getCheck(11,Row)->Checked==true || mGrid->getCheck(13,Row)->Checked==true)
+		{
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[23][Row].Text)) >1)
+					{
+					 double pohon_id=F->ms.MyToDouble(mGrid->Cells[23][Row].Text);
+
+							 for(int i=1;i<=mGrid->RowCount-1;i++)
+							 {
+									if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
+									{
+								 //	ShowMessage("ted");
+									mGrid->getCheck(3,i)->Enabled=false;
+									mGrid->getCheck(5,i)->Enabled=false;
+									}
+							 }
+					}
+			}
+		}
+
+	// aktivace levé èásti a zdisablování pravé èásti
+
+		if(Col<=5 && mGrid->Cells[2][Row].Text=="Kontinuální")
+		{
+				if(mGrid->getCheck(7,Row)->Checked==false  && mGrid->getCheck(9,Row)->Checked==false && mGrid->getCheck(11,Row)->Checked==false && mGrid->getCheck(13,Row)->Checked==false)
+				{
+					if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
+					{
+						if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[23][Row].Text)) >1)
+							{
+							 double pohon_id=F->ms.MyToDouble(mGrid->Cells[23][Row].Text);
+
+									 for(int i=1;i<=mGrid->RowCount-1;i++)
+									 {
+											if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
+											{
+											mGrid->getCheck(7,i)->Enabled=false;
+											mGrid->getCheck(9,i)->Enabled=false;
+											mGrid->getCheck(11,i)->Enabled=false;
+											mGrid->getCheck(13,i)->Enabled=false;
+											}
+									 }
+							}
+					}
+				}
+		}
+
+
+
 
 
 }
