@@ -46,8 +46,14 @@ void __fastcall TF_gapoR::FormActivate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormShow(TObject *Sender)
 {
-	//workaround odchytávání stisku kláves
+	//workaround odchytávání stisku kláves NEWR
 	Edit1->SetFocus();
+
+	////////jednotky////////  NEWR
+	CTunit=F->readINI("nastaveni_form_parametry", "CT").ToInt();
+	RDunit=F->readINI("nastaveni_form_parametry", "RDt").ToInt();
+	DDunit=F->readINI("nastaveni_form_parametry", "DD").ToInt();
+	Munit =F->readINI("nastaveni_form_parametry", "DM").ToInt();
 
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
@@ -86,13 +92,13 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[3][0].Text="DD";
 	mGrid->Cells[4][0].Text="RD,DD,P,M";
 	mGrid->Cells[5][0].Text="CT,K";
-	mGrid->Cells[6][0].Text="CT - Technologický èas [s]";
-	mGrid->Cells[8][0].Text="RD - Rychlost pohonu [m/min]";
-	mGrid->Cells[10][0].Text="DD - Délka objekt [m]";
-	mGrid->Cells[12][0].Text="K - Kapacita [vozíkù+mezer]";
+	if(CTunit)mGrid->Cells[6][0].Text="CT - Technologický èas [min]";else mGrid->Cells[6][0].Text="CT - Technologický èas [s]";
+	if(RDunit)mGrid->Cells[8][0].Text="RD - Rychlost pohonu [m/min]";else mGrid->Cells[8][0].Text="RD - Rychlost pohonu [m/s]";
+	if(DDunit)mGrid->Cells[10][0].Text="DD - Délka objekt [mm]";else mGrid->Cells[10][0].Text="DD - Délka objekt [m]";
+	mGrid->Cells[12][0].Text="K - Kapacita [vozíkù + mezer]";
 	mGrid->Cells[14][0].Text="P - Pozice [vozíkù]";
-	mGrid->Cells[16][0].Text="M - mezera jig [m]";
-	mGrid->Cells[18][0].Text="M - mezera vozík [m]";
+	if(Munit)mGrid->Cells[16][0].Text="M - mezera jig [mm]";else mGrid->Cells[16][0].Text="M - mezera jig [m]";
+	if(Munit)mGrid->Cells[18][0].Text="M - mezera vozík [mm]";else mGrid->Cells[18][0].Text="M - mezera vozík [m]";
 	mGrid->Cells[20][0].Text="Rotace [°]";
 
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
@@ -105,7 +111,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[5][0].Font->Color=clLOCKED;
 
 	//manualfit výšky 0-tého øádku (zatím není pøipravena metoda)
-	unsigned short n=8;//èíslo sloupce s nejdelším textem hlavièky
+	unsigned short n=12;if(RDunit)n=8;//èíslo sloupce s nejdelším textem hlavièky
 	Canvas->Font=mGrid->Cells[n][0].Font;	//nejdelší použitý text
 	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[n][0].Text)+mGrid->Cells[n][0].BottomMargin+mGrid->Cells[n][0].BottomBorder->Width/2+mGrid->Cells[n][0].TopMargin+mGrid->Cells[n][0].TopBorder->Width/2;
 	//manualfit šíøky sloupcù mimo nultého (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
@@ -137,15 +143,14 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				//volby - checkboxy
 				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;mGrid->Cells[2][j].Background->Color=clBACKGROUND;mGrid->Cells[4][j].Background->Color=clBACKGROUND;//NEWR
 				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
-				//parametry objektù                                               //NEWR
-				mGrid->Cells[6][j].Text=O[z].CT;																	mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=clOLD;	mGrid->Cells[7][j].Align=mGrid->LEFT; mGrid->Cells[7][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[8][j].Text=O[z].RD*60.0;                             mGrid->Cells[8][j].Align=mGrid->LEFT;	mGrid->Cells[8][j].Font->Color=clOLD;	mGrid->Cells[9][j].Align=mGrid->LEFT; mGrid->Cells[9][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[10][j].Text=O[z].delka_dopravniku;                   mGrid->Cells[10][j].Align=mGrid->LEFT;mGrid->Cells[10][j].Font->Color=clOLD;mGrid->Cells[11][j].Align=mGrid->LEFT;mGrid->Cells[11][j].Font->Color=clUNLOCKED;
+				//parametry objektù           /*NEWR*/                            //NEWR
+				mGrid->Cells[6][j].Text=O[z].CT/(1+59.0*CTunit);	 								mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=clOLD;	mGrid->Cells[7][j].Align=mGrid->LEFT; mGrid->Cells[7][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[8][j].Text=O[z].RD*(1+59.0*RDunit);                  mGrid->Cells[8][j].Align=mGrid->LEFT;	mGrid->Cells[8][j].Font->Color=clOLD;	mGrid->Cells[9][j].Align=mGrid->LEFT; mGrid->Cells[9][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[10][j].Text=O[z].delka_dopravniku*(1+999*DDunit);    mGrid->Cells[10][j].Align=mGrid->LEFT;mGrid->Cells[10][j].Font->Color=clOLD;mGrid->Cells[11][j].Align=mGrid->LEFT;mGrid->Cells[11][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[12][j].Text=O[z].kapacita;                           mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT;mGrid->Cells[13][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[14][j].Text=O[z].pozice;                             mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[16][j].Text=O[z].mezera_jig;                         mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
-				if(O[z].mezera_podvozek<0.00000004) mGrid->Cells[18][j].Text="0";
-				else mGrid->Cells[18][j].Text=O[z].mezera_podvozek;               mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[16][j].Text=O[z].mezera_jig*(1+999*Munit);           mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[18][j].Text=O[z].mezera_podvozek*(1+999*Munit); 			mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[20][j].Text=AnsiString(O[z].rotace);             		mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;
 				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
 				//posun na další øádek výsledné tabulky
@@ -257,13 +262,13 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	}
 
 	//output sekce
-	mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT,2,"..");
-	mGrid->Cells[9][Row].Text	=	F->m.round2double(pm.RD,2,"..");
-	mGrid->Cells[11][Row].Text=	F->m.round2double(pm.DD,2,"..");
+	mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
+	mGrid->Cells[9][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+	mGrid->Cells[11][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
 	mGrid->Cells[13][Row].Text= F->m.round2double(pm.K,2,"..");
 	mGrid->Cells[15][Row].Text=	F->m.round2double(pm.P,2,"..");
-	mGrid->Cells[17][Row].Text=	F->m.round2double(pm.MJ,2,"..");
-	mGrid->Cells[19][Row].Text=	F->m.round2double(pm.MP,2,"..");
+	mGrid->Cells[17][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
+	mGrid->Cells[19][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
 
 	//uložení do spojáku OBJEKTY - je-li požadováno
 	if(SaveTo==1)
