@@ -33,6 +33,7 @@ public:		// User declarations
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+	int pocitadlo;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoTT *F_gapoTT;
