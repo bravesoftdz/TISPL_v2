@@ -289,7 +289,7 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	AnsiString T="";
 	if(SaveTo==-1)
 	{
-		T=objekty[Row].short_name+";"+AnsiString(pm.CT)+";"+AnsiString(pm.RD)+";"+AnsiString(pm.DD)+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ)+";"+AnsiString(pm.MP);
+		T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
 	}
 	return T;
 }
