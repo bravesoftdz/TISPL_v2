@@ -11,6 +11,7 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "rHTMLLabel"
 #pragma resource "*.dfm"
 TF_gapoR *F_gapoR;
 //---------------------------------------------------------------------------
@@ -20,11 +21,22 @@ __fastcall TF_gapoR::TF_gapoR(TComponent* Owner)
 	//nastavení barvy formuláøe
 	F_gapoR->Color=(TColor)RGB(240,240,240);
 
-	//defaultní design a pozicování tlaèítek OK a STORNO
+	//defaultní design a pozicování tlaèítek OK a STORNO    NEWR
 	F->m.designButton(scGPButton_OK,F_gapoR,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoR,2,2);
+	rHTMLLabel_InfoText->Font->Color = (TColor)RGB(43,87,154);//(TColor)RGB(0,128,255);
 
-	Offset=10;//odsazení thoto formu po všech stránách od tabulky
+	Offset=10;//odsazení tohototo formu po všech stránách od tabulky
+
+	//definice barev NEWR
+	clOLD			 = (TColor)RGB(200,200,200);
+	clLOCKED	 = (TColor)RGB(128,128,128);
+	clUNLOCKED = (TColor)RGB(255,128,0);
+	clBACKGROUND=(TColor)RGB(250,250,250);
+
+	//legenda NEWR
+	rHTMLLabel_legenda_titulek->FontColor=(TColor)RGB(43,87,154);
+	rHTMLLabel_legenda->FontColor=clUNLOCKED;
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormActivate(TObject *Sender)
@@ -34,15 +46,18 @@ void __fastcall TF_gapoR::FormActivate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormShow(TObject *Sender)
 {
+	//workaround odchytávání stisku kláves
+	Edit1->SetFocus();
+
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
 	mGrid->Tag=3;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 	mGrid->Left=Offset;mGrid->Top=scGPPanel_hlavicka->Height+Offset;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
-	mGrid->DefaultColWidth/=2;//NEW_R
+	mGrid->DefaultColWidth/=2;//NEWR
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
-	unsigned long ColCount=22;//pevný poèet slopcù  //NEW_R
+	unsigned long ColCount=21;//pevný poèet slopcù  //NEWR
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 	if(pohony_zmena!=NULL)
 	{
@@ -58,13 +73,14 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
-	////////plnìní daty - hlavièka////////  //NEW_R
+	////////plnìní daty - hlavièka////////  //NEWR
 	mGrid->Cells[0][0].Text="pouze zmìnìné pohony";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
 	mGrid->Cells[0][0].Font->Orientation=900;
 	mGrid->Cells[0][0].Align=mGrid->CENTER;
 	mGrid->Cells[0][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[0][0].BottomMargin=4;mGrid->Cells[0][0].TopMargin=8;
+	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
 	mGrid->Cells[1][0].Text="ovlivnìné techn. objekty";
 	mGrid->Cells[2][0].Text="CT,RD,K,P,M";
 	mGrid->Cells[3][0].Text="DD";
@@ -77,31 +93,29 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[14][0].Text="P - Pozice [vozíkù]";
 	mGrid->Cells[16][0].Text="M - mezera jig [m]";
 	mGrid->Cells[18][0].Text="M - mezera vozík [m]";
-	mGrid->Cells[20][0].Text="Rotace";
+	mGrid->Cells[20][0].Text="Rotace [°]";
 
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první øádek
 
 	//pøiøazení jiného fontu, nemìným položkám - NEWR
-	mGrid->Cells[3][0].Font->Color=(TColor)RGB(128,128,128);
-	mGrid->Cells[5][0].Font->Color=(TColor)RGB(128,128,128);
-
-	//v tomto pøípadì šedý sloupec (stejný jako orámování) jako nemìné hodnoty - nedoøešený problém s posunem v AA
-//	mGrid->Cells[ColCount-1][1].Background->Color=(TColor)RGB(240,240,240);
-//	mGrid->SetCells(mGrid->Cells[ColCount-1][1],ColCount-1,2,ColCount-1,RowCount-1);
+	mGrid->Cells[2][0].Font->Color=clUNLOCKED;
+	mGrid->Cells[3][0].Font->Color=clLOCKED;
+	mGrid->Cells[4][0].Font->Color=clUNLOCKED;
+	mGrid->Cells[5][0].Font->Color=clLOCKED;
 
 	//manualfit výšky 0-tého øádku (zatím není pøipravena metoda)
 	unsigned short n=8;//èíslo sloupce s nejdelším textem hlavièky
 	Canvas->Font=mGrid->Cells[n][0].Font;	//nejdelší použitý text
 	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[n][0].Text)+mGrid->Cells[n][0].BottomMargin+mGrid->Cells[n][0].BottomBorder->Width/2+mGrid->Cells[n][0].TopMargin+mGrid->Cells[n][0].TopBorder->Width/2;
-	//manualfit šíøky sloupcù mimo prvního (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
+	//manualfit šíøky sloupcù mimo nultého (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
 	mGrid->Columns[1].Width=50;mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=23;//ostatní následující sloupce zatím default šíøka
 
 	//nastavení velikosti nultého sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
 	mGrid->SetColumnAutoFit(0);
 
-	//slouèení bunìk hlavièky PO  - vhodné za SetColumnAutoFit umístít - NEW_R
-	mGrid->MergeCells(6,0,7,0);mGrid->MergeCells(8,0,9,0);mGrid->MergeCells(10,0,11,0);mGrid->MergeCells(12,0,13,0);mGrid->MergeCells(14,0,15,0);mGrid->MergeCells(16,0,17,0);mGrid->MergeCells(18,0,19,0);mGrid->MergeCells(20,0,21,0);
+	//slouèení bunìk hlavièky PO  - vhodné za SetColumnAutoFit umístít - NEWR
+	mGrid->MergeCells(6,0,7,0);mGrid->MergeCells(8,0,9,0);mGrid->MergeCells(10,0,11,0);mGrid->MergeCells(12,0,13,0);mGrid->MergeCells(14,0,15,0);mGrid->MergeCells(16,0,17,0);mGrid->MergeCells(18,0,19,0);
 
 	////////jednolivé øádky////////
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
@@ -117,22 +131,22 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 				objekty[j]=O[z];
 				//pohony
-				mGrid->Cells[0][j].Text=O[z].pohon->name;
+				mGrid->Cells[0][j].Text=O[z].pohon->name;mGrid->Cells[0][j].Background->Color=clBACKGROUND;
 				//objekty
-				mGrid->Cells[1][j].Text=O[z].short_name;
+				mGrid->Cells[1][j].Text=O[z].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 				//volby - checkboxy
-				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
+				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;mGrid->Cells[2][j].Background->Color=clBACKGROUND;mGrid->Cells[4][j].Background->Color=clBACKGROUND;//NEWR
 				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 				//parametry objektù                                               //NEWR
-				mGrid->Cells[6][j].Text=O[z].CT;																	mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=(TColor)RGB(128,128,128);	mGrid->Cells[7][j].Align=mGrid->LEFT;
-				mGrid->Cells[8][j].Text=O[z].RD*60.0;                             mGrid->Cells[8][j].Align=mGrid->LEFT;	mGrid->Cells[8][j].Font->Color=(TColor)RGB(128,128,128);	mGrid->Cells[9][j].Align=mGrid->LEFT;
-				mGrid->Cells[10][j].Text=O[z].delka_dopravniku;                   mGrid->Cells[10][j].Align=mGrid->LEFT;mGrid->Cells[10][j].Font->Color=(TColor)RGB(128,128,128);mGrid->Cells[11][j].Align=mGrid->LEFT;
-				mGrid->Cells[12][j].Text=O[z].kapacita;                           mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=(TColor)RGB(128,128,128);mGrid->Cells[13][j].Align=mGrid->LEFT;
-				mGrid->Cells[14][j].Text=O[z].pozice;                             mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=(TColor)RGB(128,128,128);mGrid->Cells[15][j].Align=mGrid->LEFT;
-				mGrid->Cells[16][j].Text=O[z].mezera_jig;                         mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=(TColor)RGB(128,128,128);mGrid->Cells[17][j].Align=mGrid->LEFT;
+				mGrid->Cells[6][j].Text=O[z].CT;																	mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=clOLD;	mGrid->Cells[7][j].Align=mGrid->LEFT; mGrid->Cells[7][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[8][j].Text=O[z].RD*60.0;                             mGrid->Cells[8][j].Align=mGrid->LEFT;	mGrid->Cells[8][j].Font->Color=clOLD;	mGrid->Cells[9][j].Align=mGrid->LEFT; mGrid->Cells[9][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[10][j].Text=O[z].delka_dopravniku;                   mGrid->Cells[10][j].Align=mGrid->LEFT;mGrid->Cells[10][j].Font->Color=clOLD;mGrid->Cells[11][j].Align=mGrid->LEFT;mGrid->Cells[11][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[12][j].Text=O[z].kapacita;                           mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT;mGrid->Cells[13][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[14][j].Text=O[z].pozice;                             mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[16][j].Text=O[z].mezera_jig;                         mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
 				if(O[z].mezera_podvozek<0.00000004) mGrid->Cells[18][j].Text="0";
-				else mGrid->Cells[18][j].Text=O[z].mezera_podvozek;               mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Align=mGrid->LEFT;
-				mGrid->Cells[20][j].Text=AnsiString(O[z].rotace)+"°";             mGrid->MergeCells(20,j,21,j);//rotace se nemìní
+				else mGrid->Cells[18][j].Text=O[z].mezera_podvozek;               mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[20][j].Text=AnsiString(O[z].rotace);             		mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;
 				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
 				//posun na další øádek výsledné tabulky
 				j++;
@@ -147,12 +161,20 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->SetCells(mGrid->Cells[5][1],5,2,5,RowCount-2);
 	mGrid->Cells[5][RowCount-1].RightBorder->Width=mGrid->Cells[5][1].RightBorder->Width;
 
-	////////autoresize formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
-	Width=mGrid->Width+Offset*2;
-	Height=mGrid->Height+Offset*2+scGPPanel_hlavicka->Height+11+scGPButton_OK->Height+11;// + 11 offset okolo tlaèítka
+	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
+	//velikost gapo formu a umístìní komponent
+	Width=mGrid->Width+Offset*2+1;
+	Height=mGrid->Height+Offset*2+rHTMLLabel_InfoText->Height+scGPPanel_hlavicka->Height+11+scGPButton_OK->Height+11;// + 11 offset okolo tlaèítka
 	F->m.designButton(scGPButton_OK,F_gapoR,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoR,2,2);
-	Button1->Top=scGPButton_OK->Top;
+	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
+	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
+	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
+	Button1->Top=scGPButton_OK->Top;//prozatim - bude smazáno
+	//pozice gapo formu
+	Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
+	Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -167,18 +189,6 @@ void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
 	calculate(Row);//zajistí pøepoèet daného øádku NEWR
 	FormPaint(this);//zajistí pøekreslení bez probliku
-
-//pouze vzor:
-//	ShowMessage("Došlo ke kliku v tabulce: "+AnsiString(Tag)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
-//	TscGPCheckBox *CH=mGrid->getRadio(Col,Row);
-//	if(CH->Checked)....
-//	CH=mGrid->getRadio(3,i);
-//	CH=NULL;delete CH;
-	//ShowMessage(mGrid->getRadio(Col,Row)->Name);
-	//mGrid->HighlightCell(Col,Row);
-	//mGrid->HighlightCell(Col,Row,mGrid->DefaultCell.TopBorder->Color,1);//zrušení highlight
-	//FormPaint(this);//zajistí pøekreslení bez probliku
-	//toto problikává (a tedy nepoužívat): mGrid->Refresh();
 }
 //---------------------------------------------------------------------------
 void TF_gapoR::OnEnter(long Tag,unsigned long Col,unsigned long Row)
@@ -193,7 +203,7 @@ void TF_gapoR::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormClose(TObject *Sender, TCloseAction &Action)
 {
-	delete[] pohony_zmena;
+	if(ModalResult==mrOk)delete[] pohony_zmena;//pokud je stisknuto storno pøi ukonèování, tak se nemaže //NEWR
 	delete[] objekty;
 }
 //---------------------------------------------------------------------------
@@ -233,17 +243,17 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	{
 		pm.CT_locked=false;pm.DD_locked=true;
 		pm.input_RD(true);
-		mGrid->Cells[11][Row].Font->Color=(TColor)RGB(128,128,128);//DD
-		mGrid->Cells[7][Row].Font->Color=(TColor)RGB(43,87,154);//CT
-		mGrid->Cells[13][Row].Font->Color=(TColor)RGB(43,87,154);//K
+		mGrid->Cells[11][Row].Font->Color=clLOCKED;//DD
+		mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
+		mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
 	}
 	else//mìní se RD,DD,P,M, zùstává CT,K
 	{
 		pm.CT_locked=true;pm.DD_locked=false;
 		pm.input_RD(true);
-		mGrid->Cells[11][Row].Font->Color=(TColor)RGB(43,87,154);//DD
-		mGrid->Cells[7][Row].Font->Color =(TColor)RGB(128,128,128);//CT
-		mGrid->Cells[13][Row].Font->Color=(TColor)RGB(128,128,128);//K
+		mGrid->Cells[11][Row].Font->Color=clUNLOCKED;//DD
+		mGrid->Cells[7][Row].Font->Color =clLOCKED;//CT
+		mGrid->Cells[13][Row].Font->Color=clLOCKED;//K
 	}
 
 	//output sekce
@@ -303,6 +313,24 @@ void __fastcall TF_gapoR::scButton_csvClick(TObject *Sender)
 		T+=calculate(Row,-1)+"\n";//sice se propoèítává opakovanì, ale kvùli možnému zobrazení dat ve zkrácené formì v tabulce. lepe z ostrých dat
 	}
 	F->d.v.Text2CSV(T,Form1->FileName+"_tabulka_gapoR","Uložit hodnoty do CSV...","*.csv","Soubory formátu CSV (*.csv)|*.csv|Soubory formátu XLS (*.xls)|*.xls");
+}
+//---------------------------------------------------------------------------
+//pøi stisku klávesy (na tuto metodu vede pøesmìrování ze všech komponent) - NEWR
+void __fastcall TF_gapoR::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	 switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (scGPButton_OK->Enabled)scGPButton_OKClick(Sender);// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, že nelze
+		 }break;
+		 case 27:// ESC
+		 {
+			F_gapoR->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			F_gapoR->VisibleChanging();// skryje form, stejné jako visible=false
+		 }break;
+		}
 }
 //---------------------------------------------------------------------------
 

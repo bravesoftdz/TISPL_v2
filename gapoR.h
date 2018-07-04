@@ -10,6 +10,7 @@
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "vektory.h"
+#include "rHTMLLabel.hpp"
 //---------------------------------------------------------------------------
 class TF_gapoR : public TForm
 {
@@ -23,6 +24,10 @@ __published:	// IDE-managed Components
 	TscButton *scButton_csv;
 	TscGPButton *scGPButton_storno;
 	TscGPGlyphButton *scGPGlyphButton_copy;
+	TEdit *Edit1;
+	TrHTMLLabel *rHTMLLabel_InfoText;
+	TrHTMLLabel *rHTMLLabel_legenda;
+	TrHTMLLabel *rHTMLLabel_legenda_titulek;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
@@ -31,14 +36,16 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall scButton_csvClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
 	//Cvektory v;//instance na tøídu vektorù - nepoužívát, padalo
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky
+	TColor clOLD;	TColor clLOCKED; TColor clUNLOCKED; TColor clBACKGROUND;
 public:		// User declarations
 	__fastcall TF_gapoR(TComponent* Owner);
-  //metody volané z Tmgrid
+	//metody volané z Tmgrid
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);

@@ -14,10 +14,64 @@ object F_gapoR: TF_gapoR
   OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
+  OnKeyDown = FormKeyDown
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = 8
+    Top = 378
+    Width = 760
+    Height = 19
+    Caption = 
+      'Jsou zobrazeny pouze objekty v kontinu'#225'ln'#237'm re'#382'imu, kter'#233' maj'#237' p' +
+      #345'i'#345'azen'#233' pohony se zm'#283'n'#253'mi parametry. '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object rHTMLLabel_legenda: TrHTMLLabel
+    Left = 225
+    Top = 313
+    Width = 154
+    Height = 59
+    Caption = 
+      '- m'#283'n'#283'n'#225' hodnota'#13'<font color=gray>- nem'#283'n'#283'n'#225' hodnota</font>'#13'<fon' +
+      't color=silver>- p'#367'vodn'#237' hodnota</font>'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clYellow
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    FontColor = clRed
+  end
+  object rHTMLLabel_legenda_titulek: TrHTMLLabel
+    Left = 225
+    Top = 288
+    Width = 65
+    Height = 19
+    Caption = 'Legenda:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
@@ -161,8 +215,6 @@ object F_gapoR: TF_gapoR
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367' objekt'#367' v kontinu'#225'ln'#237'm re'#382'imu'
-      ExplicitLeft = 55
-      ExplicitWidth = 235
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 290
@@ -264,12 +316,12 @@ object F_gapoR: TF_gapoR
       ImageIndex = 41
       ImageMargin = 0
       TransparentBackground = True
-      ColorOptions.NormalColor = clWhite
+      ColorOptions.NormalColor = clHighlight
       ColorOptions.HotColor = clHighlight
       ColorOptions.PressedColor = clHighlight
       ColorOptions.FocusedColor = clHighlight
       ColorOptions.DisabledColor = clHighlight
-      ColorOptions.FrameNormalColor = clWhite
+      ColorOptions.FrameNormalColor = clHighlight
       ColorOptions.FrameHotColor = clHighlight
       ColorOptions.FramePressedColor = clHighlight
       ColorOptions.FrameFocusedColor = clHighlight
@@ -279,12 +331,12 @@ object F_gapoR: TF_gapoR
       ColorOptions.FontHotColor = clBtnText
       ColorOptions.FontPressedColor = clBtnText
       ColorOptions.FontFocusedColor = clBtnText
-      ColorOptions.FontDisabledColor = clBtnShadow
+      ColorOptions.FontDisabledColor = clHighlight
       ColorOptions.TitleFontNormalColor = clBtnText
       ColorOptions.TitleFontHotColor = clBtnText
       ColorOptions.TitleFontPressedColor = clBtnText
       ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
+      ColorOptions.TitleFontDisabledColor = clHighlight
       ColorOptions.StyleColors = True
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
@@ -315,13 +367,13 @@ object F_gapoR: TF_gapoR
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
       GlowEffect.StyleColors = False
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
+      GlowEffect.HotColor = clHighlight
+      GlowEffect.PressedColor = clHighlight
+      GlowEffect.FocusedColor = clHighlight
       GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.PressedAlphaValue = 155
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
+      ImageGlow = False
       ShowGalleryMenuFromTop = False
       ShowGalleryMenuFromRight = False
       ShowMenuArrow = True
@@ -411,12 +463,11 @@ object F_gapoR: TF_gapoR
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 8
     end
   end
   object scGPButton_OK: TscGPButton
     Left = 80
-    Top = 387
+    Top = 403
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -505,7 +556,7 @@ object F_gapoR: TF_gapoR
   end
   object Button1: TButton
     Left = 8
-    Top = 387
+    Top = 403
     Width = 75
     Height = 25
     Caption = 'test AA'
@@ -514,7 +565,7 @@ object F_gapoR: TF_gapoR
   end
   object scGPButton_storno: TscGPButton
     Left = 197
-    Top = 387
+    Top = 403
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -602,5 +653,14 @@ object F_gapoR: TF_gapoR
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Edit1: TEdit
+    Left = 92
+    Top = -30
+    Width = 121
+    Height = 21
+    TabOrder = 4
+    Text = 'Edit1'
+    OnKeyDown = FormKeyDown
   end
 end

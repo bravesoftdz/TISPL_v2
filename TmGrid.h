@@ -101,6 +101,7 @@ class TmGrid
 	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter
 	void __fastcall getTagOnChange(TObject *Sender);//vrací událost pøi OnChange
+	void __fastcall getTagOnKeyDown(TObject *Sender);//vrací událost pøi OnKeyDown - NEDOKONÈENO
 
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky vèetnì gridu
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
