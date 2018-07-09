@@ -103,6 +103,7 @@ void TmGrid::Create()
 		if(X>0){Columns[X].Left=Columns[X-1].Left+X*DefaultColWidth;}else Columns[0].Left=0;
 	}
 	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
+	preTop=Top;preLeft=Left;//zaloha úvodní pozice
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda - vytvoøí tabulku s pøedepsaným poètem sloupcù a øádkù
@@ -216,6 +217,8 @@ void TmGrid::Show()
 			delete (bmp_out);//velice nutné
 			delete (bmp_in);//velice nutné
 		}
+		//zaloha úvodní pozice
+		preTop=Top;preLeft=Left;
 	}
 }
 //---------------------------------------------------------------------------
@@ -466,10 +469,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case COMBO:
 		{
 			//založení + tag + název
-			TscGPComboBox *C=getCombo(X,Y);//pokud již existuje
-			if(C==NULL)
+			TscGPComboBox *C=getCombo(X,Y);//pokud již existuje,vrátí ukazatel
+			if(C==NULL)//pokud ne
 			{
-				C=new TscGPComboBox(Form);//pokud ne
+				C=new TscGPComboBox(Form);//založí
 				C->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
 				C->Name="mGrid_COMBO_"+AnsiString(C->Tag);
 				//události
@@ -502,14 +505,14 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//atributy
 			switch(Cell.Align)
 			{
-				case aNO:break;
+				case aNO:		Ch->Left+=Left-preLeft;break;
 				case LEFT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;break;
 				case CENTER:Ch->Width=Ch->OptionsChecked->ShapeSize;Ch->Left=R.Left+Columns[X].Width/2-Ch->Width/2;break;
 				case RIGHT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;Ch->BiDiMode=bdRightToLeft;break;
 			}
 			switch(Cell.Valign)
 			{
-				case aNO:break;
+				case aNO:		Ch->Top+=Top-preTop;break;
 				case TOP:		Ch->Top=R.Top+1;Ch->Height=Ch->OptionsChecked->ShapeSize;break;
 				case MIDDLE:Ch->Top=R.Top+1;Ch->Height=Rows[Y].Height-2;break;
 				case BOTTOM:Ch->Height=Ch->OptionsChecked->ShapeSize;Ch->Top=R.Top+Rows[Y].Height-Ch->Height;break;

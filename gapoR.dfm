@@ -15,6 +15,8 @@ object F_gapoR: TF_gapoR
   OnActivate = FormActivate
   OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnMouseWheelDown = FormMouseWheelDown
+  OnMouseWheelUp = FormMouseWheelUp
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -668,7 +670,9 @@ object F_gapoR: TF_gapoR
     Top = 356
     Width = 361
     Height = 16
+    LargeChange = 20
     PageSize = 0
+    SmallChange = 10
     TabOrder = 5
     TabStop = False
     Visible = False
@@ -680,7 +684,9 @@ object F_gapoR: TF_gapoR
     Width = 16
     Height = 313
     Kind = sbVertical
+    LargeChange = 20
     PageSize = 0
+    SmallChange = 10
     TabOrder = 6
     TabStop = False
     Visible = False
