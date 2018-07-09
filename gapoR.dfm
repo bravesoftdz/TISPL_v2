@@ -663,4 +663,27 @@ object F_gapoR: TF_gapoR
     Text = 'Edit1'
     OnKeyDown = FormKeyDown
   end
+  object scScrollBar_horizont: TscScrollBar
+    Left = 8
+    Top = 356
+    Width = 361
+    Height = 16
+    PageSize = 0
+    TabOrder = 5
+    TabStop = False
+    Visible = False
+    OnChange = scScrollBar_horizontChange
+  end
+  object scScrollBar_vertical: TscScrollBar
+    Left = 361
+    Top = 37
+    Width = 16
+    Height = 313
+    Kind = sbVertical
+    PageSize = 0
+    TabOrder = 6
+    TabStop = False
+    Visible = False
+    OnChange = scScrollBar_verticalChange
+  end
 end

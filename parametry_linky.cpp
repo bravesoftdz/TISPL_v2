@@ -754,9 +754,10 @@ void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 					}
 				 //	Form1->MB("Smazano");
 				}
-				else { //storno   - nic se nedìje
-
-						}
+				else
+				{
+				 //storno   - nic se nedìje
+				}
 	}
 	else// pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
 	{
@@ -767,8 +768,8 @@ void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 		}
 	}
 
-	 //	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
-	 //	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
+	//	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
+	//	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
 
 	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	pozice_scGPGlyphButton_hint();
@@ -779,15 +780,14 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 {
 	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
 
-				 while (ukaz!=NULL) {
+	 while (ukaz!=NULL)
+	 {
+	 		ShowMessage(ukaz->n);
+			ShowMessage(ukaz->name);
+			ShowMessage(ukaz->roztec);
 
-				 ShowMessage(ukaz->n);
-				 ShowMessage(ukaz->name);
-				 ShowMessage(ukaz->roztec);
-
-				 	ukaz = ukaz->dalsi;
-
-				 }
+			ukaz = ukaz->dalsi;
+	 }
 }
 //---------------------------------------------------------------------------
 //zobrazí panel se navrženými pohony

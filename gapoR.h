@@ -32,6 +32,8 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TrHTMLLabel *rHTMLLabel_legenda;
 	TrHTMLLabel *rHTMLLabel_legenda_titulek;
+	TscScrollBar *scScrollBar_horizont;
+	TscScrollBar *scScrollBar_vertical;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
@@ -41,6 +43,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall scButton_csvClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scScrollBar_horizontChange(TObject *Sender);
+	void __fastcall scScrollBar_verticalChange(TObject *Sender);
 private:	// User declarations
 	//Cvektory v;//instance na tøídu vektorù - nepoužívát, padalo
 	short Offset;//odsazení tabulky po všech stranách formu

@@ -176,19 +176,49 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[5][RowCount-1].RightBorder->Width=mGrid->Cells[5][1].RightBorder->Width;
 
 	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
-	//velikost gapo formu a umístìní komponent
+	////velikost gapo formu a umístìní komponent
+	//šíøka
 	Width=mGrid->Width+Offset*2+1;
+	if(Width<=F->Width)//pokud je užší nebo stejnì jako šíøka hlavního formu
+	{
+		scScrollBar_horizont->Visible=false;
+	}
+	else//je širší
+	{
+		Width=F->Width;
+		scScrollBar_horizont->Visible=true;
+		scScrollBar_horizont->Left=0;
+		scScrollBar_horizont->Top=mGrid->Top+mGrid->Height;
+		scScrollBar_horizont->Width=Width;
+		scScrollBar_horizont->Position=0;
+	}
+	//výška
 	Height=mGrid->Height+Offset*2+rHTMLLabel_InfoText->Height+scGPPanel_hlavicka->Height+11+scGPButton_OK->Height+11;// + 11 offset okolo tlaèítka
+	if(Height<=F->Height)//pokud je kratší než výška hlavní formu
+	{
+		scScrollBar_vertical->Visible=false;
+	}
+	else//je delší
+	{
+		Height=F->Height+scScrollBar_vertical->Width-Offset;
+		scScrollBar_vertical->Visible=true;
+		scScrollBar_vertical->Left=Width-scScrollBar_vertical->Width;
+		scScrollBar_vertical->Top=scGPPanel_hlavicka->Width;
+		if(scScrollBar_horizontal->Visible) scScrollBar_vertical->Height=Height-scScrollBar_horizontal->Width;
+		else scScrollBar_vertical->Height=Height;
+		scScrollBar_vertical->Position=0;
+	}
+	//pozice komponent
 	F->m.designButton(scGPButton_OK,F_gapoR,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoR,2,2);
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
 	Button1->Top=scGPButton_OK->Top;//prozatim - bude smazáno
-	//pozice gapo formu
+	////pozice gapo formu
 	Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
 	Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
-	//zobrazení orámování
+	////zobrazení orámování
 	zobrazitFrameForm=true;
 }
 //---------------------------------------------------------------------------
@@ -390,6 +420,22 @@ void __fastcall TF_gapoR::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 			F_gapoR->VisibleChanging();// skryje form, stejné jako visible=false
 		 }break;
 		}
+}
+//---------------------------------------------------------------------------
+//NEWR
+void __fastcall TF_gapoR::scScrollBar_horizontChange(TObject *Sender)
+{
+	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
+	//doladit posouvání komponent
+	FormPaint(this);
+}
+//---------------------------------------------------------------------------
+//NEWR
+void __fastcall TF_gapoR::scScrollBar_verticalChange(TObject *Sender)
+{
+	mGrid->Top=F->m.round((Height-mGrid->Height-Offset)*scScrollBar_vertical->Position/100.0);
+	//doladit posouvání komponent
+	FormPaint(this);
 }
 //---------------------------------------------------------------------------
 
