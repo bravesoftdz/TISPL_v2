@@ -10,6 +10,8 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "rHintWindow"
+#pragma link "rHTMLLabel"
 #pragma resource "*.dfm"
 TF_gapoTT *F_gapoTT;
 //---------------------------------------------------------------------------
@@ -332,7 +334,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 					TscGPCheckBox *D=mGrid->getCheck(11,j);
 					TscGPCheckBox *E=mGrid->getCheck(13,j);
 
-					/*A->Enabled=false*/;B->Enabled=false;C->Enabled=false;D->Enabled=false;E->Enabled=false;
+			//		/*A->Enabled=false*/;B->Enabled=false;C->Enabled=false;D->Enabled=false;E->Enabled=false;
 					A=NULL;delete A;B=NULL;delete B;B=NULL;delete B;C=NULL;delete C;D=NULL;delete D;E=NULL;delete E;
 				 }
 
@@ -543,6 +545,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
 												{
 													pocitadlo++;
+													vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
 												}
 									 }
 						}
@@ -557,6 +560,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 											mGrid->getCheck(9,i)->Enabled=true;
 											mGrid->getCheck(11,i)->Enabled=true;
 											mGrid->getCheck(13,i)->Enabled=true;
+											vypis("",false);
 											}
 								}
 					 }
@@ -585,6 +589,8 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
 												{
 													pocitadlo++;
+
+													vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
 												}
 											}
 									 }
@@ -598,6 +604,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 											{
 											mGrid->getCheck(3,i)->Enabled=true;
 											mGrid->getCheck(5,i)->Enabled=true;
+											vypis("",false);
 											}
 								}
 					 }
@@ -618,9 +625,10 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 							 {
 									if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
 									{
-								 //	ShowMessage("ted");
-									mGrid->getCheck(3,i)->Enabled=false;
-									mGrid->getCheck(5,i)->Enabled=false;
+
+							 //		mGrid->getCheck(3,i)->Enabled=false;
+							 //		mGrid->getCheck(5,i)->Enabled=false;
+
 									}
 							 }
 					}
@@ -643,10 +651,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 									 {
 											if(pohon_id==F->ms.MyToDouble(mGrid->Cells[23][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
 											{
-											mGrid->getCheck(7,i)->Enabled=false;
-											mGrid->getCheck(9,i)->Enabled=false;
-											mGrid->getCheck(11,i)->Enabled=false;
-											mGrid->getCheck(13,i)->Enabled=false;
+								 //			mGrid->getCheck(7,i)->Enabled=false;
+								 //			mGrid->getCheck(9,i)->Enabled=false;
+								 //			mGrid->getCheck(11,i)->Enabled=false;
+								 //			mGrid->getCheck(13,i)->Enabled=false;
+
+
 											}
 									 }
 							}
@@ -682,5 +692,38 @@ void __fastcall TF_gapoTT::FormClose(TObject *Sender, TCloseAction &Action)
 	delete[] objekty;
 }
 //---------------------------------------------------------------------------
+
+void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
+{
+		scGPButton_OK->Enabled=true;
+		scGPButton_OK->Caption = "Uložit";
+		if (text != "") // zobrazí a vypíše
+		{
+				rHTMLHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
+				//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
+
+				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+
+				if (red)
+				{
+					 	scGPButton_OK->Enabled=false;
+						rHTMLLabel_InfoText->Font->Color = clRed;
+				}
+				else
+				{
+						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+				}
+				rHTMLLabel_InfoText->Left = 8;
+				rHTMLLabel_InfoText->Top = scGPButton_OK->Top - 10;
+				rHTMLLabel_InfoText->Caption = text;
+				rHTMLLabel_InfoText->Visible = true;
+		}
+		else // skryje
+		{
+				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
+				rHTMLLabel_InfoText->Visible = false;
+		}
+}
 
 
