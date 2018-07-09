@@ -254,14 +254,25 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			//objekty
 			mGrid->Cells[1][j].Text="nepøiøazen";
 			//volby - checkboxy
-			mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->Cells[5][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(3,j,4,j);mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
+			mGrid->Cells[3][j].Type=mGrid->CHECK;
+			mGrid->Cells[5][j].Type=mGrid->CHECK;
+			mGrid->MergeCells(3,j,4,j);
+			mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
 
 			mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
 			mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
 
 			mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
 			mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
+
+
+				 if(O_pocet==0) //fixní nastavení checkboxu objektù, které nejsou pøiøazeny
+				{
+					TscGPCheckBox *CH=mGrid->getCheck(3,j);
+					CH->Checked=true;
+					CH=NULL;delete CH;
+				 }
+
 			//posun na další øádek výsledné tabulky
 			j++;
 		}
@@ -334,6 +345,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 					TscGPCheckBox *D=mGrid->getCheck(11,j);
 					TscGPCheckBox *E=mGrid->getCheck(13,j);
 
+
 			//		/*A->Enabled=false*/;B->Enabled=false;C->Enabled=false;D->Enabled=false;E->Enabled=false;
 					A=NULL;delete A;B=NULL;delete B;B=NULL;delete B;C=NULL;delete C;D=NULL;delete D;E=NULL;delete E;
 				 }
@@ -365,7 +377,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[23][j].Text=O[z].pohon->n;
 				//posun na další øádek výsledné tabulky
 				j++;
-      }                    //Rosa ovìøit, že je OK
+      }
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
 			O=NULL;delete O;
 		}
