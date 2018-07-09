@@ -10,6 +10,8 @@
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "vektory.h"
+#include "rHintWindow.hpp"
+#include "rHTMLLabel.hpp"
 //---------------------------------------------------------------------------
 class TF_gapoTT : public TForm
 {
@@ -20,6 +22,8 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscButton *scButton_html;
 	TscGPButton *scGPButton_OK;
+	TrHTMLHint *rHTMLHint1;
+	TrHTMLLabel *rHTMLLabel_InfoText;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -33,6 +37,7 @@ public:		// User declarations
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+	void vypis(UnicodeString text,bool red=true,bool link=false);
 	int pocitadlo;
 };
 //---------------------------------------------------------------------------
