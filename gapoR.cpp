@@ -132,7 +132,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
-		if(pohony_zmena[i].X)//vypisuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom je bude totožné s i...
+		if(pohony_zmena[i].X)//vypisuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom j bude totožné s i...
 		{
 			//vratí formou ukazatelem na pole objekty pøiøazené k danému pohonu
 			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i,1);
@@ -303,7 +303,7 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.sJ=F->d.v.PP.sirka_jig;
 	pm.dP=F->d.v.PP.delka_podvozek;
 	pm.Rotace=objekty[Row].rotace;
-	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(mGrid->getCheck(2,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
@@ -360,10 +360,12 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 				O->mezera_podvozek=pm.MP;
 				O=NULL;delete O;
 		 }break;
-		 case 2://uložení hodnot z ukazatele
+		 case 2://uložení hodnot z ukazatele pro náhled objektu
 		 {
 				Form_objekt_nahled->pom=new Cvektory::TObjekt;
-				Form_objekt_nahled->pom->pohon=objekty[Row].pohon;
+				//Form_objekt_nahled->pom->pohon=objekty[Row].pohon;//takto by pøevzal starou rozteè
+				Form_objekt_nahled->pom->pohon=new Cvektory::TPohon;
+				Form_objekt_nahled->pom->pohon->roztec=pm.R;//ale pøedávám jen do náhledu R, nic víc od pohonu
 				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
 				Form_objekt_nahled->pom->CT=pm.CT;
 				Form_objekt_nahled->pom->RD=pm.RD;
@@ -435,7 +437,7 @@ void __fastcall TF_gapoR::scScrollBar_horizontChange(TObject *Sender)
 	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
 	//doladit posouvání komponent
 	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
-	else Invalidate();//na konci musí pøekreslit celé
+	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
 }
 //---------------------------------------------------------------------------
 //NEWR
@@ -444,7 +446,7 @@ void __fastcall TF_gapoR::scScrollBar_verticalChange(TObject *Sender)
 	mGrid->Top=F->m.round((Height-mGrid->Height-Offset)*scScrollBar_vertical->Position/100.0);
 	//doladit posouvání komponent
 	if(scScrollBar_vertical->Position<scScrollBar_vertical->Max)FormPaint(this);
-	else Invalidate();//na konci musí pøekreslit celé
+	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
 
 }
 //---------------------------------------------------------------------------

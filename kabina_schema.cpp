@@ -260,6 +260,7 @@ void __fastcall TForm_objekt_nahled::KonecClick(TObject *Sender)
 		scGPLabel_info->Visible=false;
 		F->Zoom=Zoom_predchozi;//návrat do pùvodního stavu
 		F->nahled_objektu=false;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
+    pom->pohon=NULL; delete pom->pohon;//otestovat!!!
 		pom=NULL; delete pom;
 		Close();
 	}
