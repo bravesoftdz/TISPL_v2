@@ -5,6 +5,7 @@
 #include "gapoV.h"
 #include "unit1.h"
 #include "TmGrid.h"
+#include "parametry_linky.h"
 #include "parametry_vozik.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -257,9 +258,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.M=objekty[Row].mezera;
 	pm.MJ=objekty[Row].mezera_jig;
 	pm.MP=objekty[Row].mezera_podvozek;
-	pm.dJ=F->ms.MyToDouble(Form_parametry_vozik->scGPNumericEdit_delka_jig);
-	pm.sJ=F->ms.MyToDouble(Form_parametry_vozik->scGPNumericEdit_sirka_jig);
-	pm.dP=F->ms.MyToDouble(Form_parametry_vozik->scGPNumericEdit_delka_podvozek);
+	pm.dJ=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
+	pm.sJ=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
+	pm.dP=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
 	pm.Rotace=objekty[Row].rotace;
 	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 
