@@ -84,14 +84,14 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
 	////////plnìní daty - hlavièka////////  //NEWR
-	mGrid->Cells[0][0].Text="pouze zmìnìné pohony";
+	mGrid->Cells[0][0].Text="Pouze zmìnìné pohony";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
 	mGrid->Cells[0][0].Font->Orientation=900;
 	mGrid->Cells[0][0].Align=mGrid->CENTER;
 	mGrid->Cells[0][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[0][0].BottomMargin=4;mGrid->Cells[0][0].TopMargin=8;
 	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
-	mGrid->Cells[1][0].Text="ovlivnìné techn. objekty";
+	mGrid->Cells[1][0].Text="Ovlivnìné techn. objekty";
 	mGrid->Cells[2][0].Text="CT,RD,K,P,M";
 	mGrid->Cells[3][0].Text="DD";
 	mGrid->Cells[4][0].Text="RD,DD,P,M";
@@ -104,7 +104,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	if(Munit)mGrid->Cells[16][0].Text="M - mezera jig [mm]";else mGrid->Cells[16][0].Text="M - mezera jig [m]";
 	if(Munit)mGrid->Cells[18][0].Text="M - mezera vozík [mm]";else mGrid->Cells[18][0].Text="M - mezera vozík [m]";
 	mGrid->Cells[20][0].Text="Rotace [°]";
-	mGrid->Cells[21][0].Text="náhled";
+	mGrid->Cells[21][0].Text="Náhled";
 
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první øádek
@@ -171,8 +171,11 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	}
 
 	////////rozdìlení sekcí svislým orámováním//////// NEWR
+	mGrid->Cells[1][1].RightBorder->Width=mGrid->Cells[1][0].RightBorder->Width=2;
 	mGrid->Cells[5][1].RightBorder->Width=mGrid->Cells[5][0].RightBorder->Width=2;
+	mGrid->SetCells(mGrid->Cells[1][1],1,2,1,RowCount-2);
 	mGrid->SetCells(mGrid->Cells[5][1],5,2,5,RowCount-2);
+	mGrid->Cells[1][RowCount-1].RightBorder->Width=mGrid->Cells[1][1].RightBorder->Width;
 	mGrid->Cells[5][RowCount-1].RightBorder->Width=mGrid->Cells[5][1].RightBorder->Width;
 
 	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
