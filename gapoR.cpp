@@ -84,14 +84,14 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
 	////////plnìní daty - hlavièka////////  //NEWR
-	mGrid->Cells[0][0].Text="pouze zmìnìné pohony";
+	mGrid->Cells[0][0].Text="Pouze zmìnìné pohony";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
 	mGrid->Cells[0][0].Font->Orientation=900;
 	mGrid->Cells[0][0].Align=mGrid->CENTER;
 	mGrid->Cells[0][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[0][0].BottomMargin=4;mGrid->Cells[0][0].TopMargin=8;
 	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
-	mGrid->Cells[1][0].Text="ovlivnìné techn. objekty";
+	mGrid->Cells[1][0].Text="Ovlivnìné techn. objekty";
 	mGrid->Cells[2][0].Text="CT,RD,K,P,M";
 	mGrid->Cells[3][0].Text="DD";
 	mGrid->Cells[4][0].Text="RD,DD,P,M";
@@ -104,7 +104,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	if(Munit)mGrid->Cells[16][0].Text="M - mezera jig [mm]";else mGrid->Cells[16][0].Text="M - mezera jig [m]";
 	if(Munit)mGrid->Cells[18][0].Text="M - mezera vozík [mm]";else mGrid->Cells[18][0].Text="M - mezera vozík [m]";
 	mGrid->Cells[20][0].Text="Rotace [°]";
-	mGrid->Cells[21][0].Text="náhled";
+	mGrid->Cells[21][0].Text="Náhled";
 
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první øádek
@@ -128,11 +128,11 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	//slouèení bunìk hlavièky PO  - vhodné za SetColumnAutoFit umístít - NEWR
 	mGrid->MergeCells(6,0,7,0);mGrid->MergeCells(8,0,9,0);mGrid->MergeCells(10,0,11,0);mGrid->MergeCells(12,0,13,0);mGrid->MergeCells(14,0,15,0);mGrid->MergeCells(16,0,17,0);mGrid->MergeCells(18,0,19,0);
 
-	////////jednolivé øádky////////
+	////////jednolivé øádky////////    NEWR
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
-		if(pohony_zmena[i].X)//vypisuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom je bude totožné s i...
+		if(pohony_zmena[i].X)//vypisuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom j bude totožné s i...
 		{
 			//vratí formou ukazatelem na pole objekty pøiøazené k danému pohonu
 			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i,1);
@@ -170,9 +170,12 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		}
 	}
 
-	////////rozdìlení sekcí svislým orámováním////////
+	////////rozdìlení sekcí svislým orámováním//////// NEWR
+	mGrid->Cells[1][1].RightBorder->Width=mGrid->Cells[1][0].RightBorder->Width=2;
 	mGrid->Cells[5][1].RightBorder->Width=mGrid->Cells[5][0].RightBorder->Width=2;
+	mGrid->SetCells(mGrid->Cells[1][1],1,2,1,RowCount-2);
 	mGrid->SetCells(mGrid->Cells[5][1],5,2,5,RowCount-2);
+	mGrid->Cells[1][RowCount-1].RightBorder->Width=mGrid->Cells[1][1].RightBorder->Width;
 	mGrid->Cells[5][RowCount-1].RightBorder->Width=mGrid->Cells[5][1].RightBorder->Width;
 
 	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
@@ -188,7 +191,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		Width=F->Width;
 		scScrollBar_horizont->Visible=true;
 		scScrollBar_horizont->Left=0;
-		scScrollBar_horizont->Top=mGrid->Top+mGrid->Height;
+		scScrollBar_horizont->Top=0+scGPPanel_hlavicka->Height;
 		scScrollBar_horizont->Width=Width;
 		scScrollBar_horizont->Position=0;
 	}
@@ -200,12 +203,17 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	}
 	else//je delší
 	{
-		Height=F->Height+scScrollBar_vertical->Width-Offset;
+		Height=F->Height;
+		Width+=scScrollBar_vertical->Width-Offset;//musím ještì rozšíøit form, aby se vešel scrollbar
 		scScrollBar_vertical->Visible=true;
 		scScrollBar_vertical->Left=Width-scScrollBar_vertical->Width;
-		scScrollBar_vertical->Top=scGPPanel_hlavicka->Width;
-	 //	if(scScrollBar_horizontal->Visible) scScrollBar_vertical->Height=Height-scScrollBar_horizontal->Width;
- //		else scScrollBar_vertical->Height=Height;
+		scScrollBar_vertical->Top=scGPPanel_hlavicka->Height;
+		scScrollBar_vertical->Height=Height-scGPPanel_hlavicka->Height;
+		if(scScrollBar_horizont->Visible)//ošetøení pokud jsou zobrazeny oba
+		{
+			scScrollBar_vertical->Top+=scScrollBar_horizont->Height;
+			scScrollBar_vertical->Height=Height-scScrollBar_horizont->Width-scGPPanel_hlavicka->Height;
+		}
 		scScrollBar_vertical->Position=0;
 	}
 	//pozice komponent
@@ -215,11 +223,13 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
 	Button1->Top=scGPButton_OK->Top;//prozatim - bude smazáno
-	////pozice gapo formu
-	Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
-	Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
+	////pozice gapo formu, pokud je stejnì velký jako hlavní form, tak na 0 pozici, jinak na støed PL formu
+	if(Width==F->Width)Left=0;else Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
+	if(Height==F->Height)Top=0;else Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
 	////zobrazení orámování
 	zobrazitFrameForm=true;
+	////kvùli špatnì fungující funkci otáèení koleèka myši
+	liche_otoceni_koleckem_mysi=false; //NEWR
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -270,9 +280,9 @@ void __fastcall TF_gapoR::FormClose(TObject *Sender, TCloseAction &Action)
 //provizorní, vy/zapínání AA
 void __fastcall TF_gapoR::Button1Click(TObject *Sender)
 {
-	ShowMessage(objekty[2].pohon->n);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
-	mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
-	FormPaint(this);
+	//ShowMessage(objekty[2].pohon->n);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
+	//mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
+	//FormPaint(this);
 }
 //---------------------------------------------------------------------------
 //pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky
@@ -296,7 +306,7 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.sJ=F->d.v.PP.sirka_jig;
 	pm.dP=F->d.v.PP.delka_podvozek;
 	pm.Rotace=objekty[Row].rotace;
-	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(mGrid->getCheck(2,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
@@ -353,10 +363,12 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 				O->mezera_podvozek=pm.MP;
 				O=NULL;delete O;
 		 }break;
-		 case 2://uložení hodnot z ukazatele
+		 case 2://uložení hodnot z ukazatele pro náhled objektu
 		 {
 				Form_objekt_nahled->pom=new Cvektory::TObjekt;
-				Form_objekt_nahled->pom->pohon=objekty[Row].pohon;
+				//Form_objekt_nahled->pom->pohon=objekty[Row].pohon;//takto by pøevzal starou rozteè
+				Form_objekt_nahled->pom->pohon=new Cvektory::TPohon;
+				Form_objekt_nahled->pom->pohon->roztec=pm.R;//ale pøedávám jen do náhledu R, nic víc od pohonu
 				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
 				Form_objekt_nahled->pom->CT=pm.CT;
 				Form_objekt_nahled->pom->RD=pm.RD;
@@ -427,7 +439,8 @@ void __fastcall TF_gapoR::scScrollBar_horizontChange(TObject *Sender)
 {
 	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
 	//doladit posouvání komponent
-	FormPaint(this);
+	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
+	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
 }
 //---------------------------------------------------------------------------
 //NEWR
@@ -435,7 +448,33 @@ void __fastcall TF_gapoR::scScrollBar_verticalChange(TObject *Sender)
 {
 	mGrid->Top=F->m.round((Height-mGrid->Height-Offset)*scScrollBar_vertical->Position/100.0);
 	//doladit posouvání komponent
-	FormPaint(this);
+	if(scScrollBar_vertical->Position<scScrollBar_vertical->Max)FormPaint(this);
+	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
+
+}
+//---------------------------------------------------------------------------
+//NEWR
+void __fastcall TF_gapoR::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
+          bool &Handled)
+{
+	if(liche_otoceni_koleckem_mysi)//Velice nutná konstrukce kvùli špatnì fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
+	{
+		liche_otoceni_koleckem_mysi=false;
+		scScrollBar_vertical->Position-=scScrollBar_vertical->SmallChange;
+	}
+	else liche_otoceni_koleckem_mysi=true;
+}
+//---------------------------------------------------------------------------
+//NEWR
+void __fastcall TF_gapoR::FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
+          bool &Handled)
+{
+	if(liche_otoceni_koleckem_mysi)//Velice nutná konstrukce kvùli špatnì fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
+	{
+		liche_otoceni_koleckem_mysi=false;
+		scScrollBar_vertical->Position+=scScrollBar_vertical->SmallChange;
+	}
+	else liche_otoceni_koleckem_mysi=true;
 }
 //---------------------------------------------------------------------------
 

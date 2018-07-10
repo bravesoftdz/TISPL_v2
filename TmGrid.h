@@ -83,7 +83,7 @@ class TmGrid
 
 	//promìnné
 	long Tag;//ID komponenty (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
-	long Left,Top;//umístìní celé komponenty
+	long Left,Top,preLeft,preTop;//umístìní celé komponenty
 	unsigned long ColCount,RowCount;//poèet øádkù a sloupcù
 	unsigned short DefaultColWidth,DefaultRowHeight;//výchozí výška a šíøka øádku
 	TBorder Border;//orámování celé tabulky
