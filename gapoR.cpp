@@ -204,8 +204,8 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		scScrollBar_vertical->Visible=true;
 		scScrollBar_vertical->Left=Width-scScrollBar_vertical->Width;
 		scScrollBar_vertical->Top=scGPPanel_hlavicka->Width;
-		if(scScrollBar_horizontal->Visible) scScrollBar_vertical->Height=Height-scScrollBar_horizontal->Width;
-		else scScrollBar_vertical->Height=Height;
+	 //	if(scScrollBar_horizontal->Visible) scScrollBar_vertical->Height=Height-scScrollBar_horizontal->Width;
+ //		else scScrollBar_vertical->Height=Height;
 		scScrollBar_vertical->Position=0;
 	}
 	//pozice komponent
