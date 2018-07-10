@@ -3,7 +3,7 @@ object F_gapoTT: TF_gapoTT
   Top = 0
   BorderStyle = bsNone
   Caption = 'F_gapoTT'
-  ClientHeight = 445
+  ClientHeight = 446
   ClientWidth = 377
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
@@ -26,6 +26,41 @@ object F_gapoTT: TF_gapoTT
     Caption = 'Upozorn'#283'n'#237
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object rHTMLLabel_legenda: TrHTMLLabel
+    Left = -2
+    Top = 377
+    Width = 154
+    Height = 59
+    Caption = 
+      '- m'#283'n'#283'n'#225' hodnota'#13'<font color=gray>- nem'#283'n'#283'n'#225' hodnota</font>'#13'<fon' +
+      't color=silver>- p'#367'vodn'#237' hodnota</font>'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clYellow
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    FontColor = clRed
+  end
+  object rHTMLLabel_legenda_titulek: TrHTMLLabel
+    Left = 0
+    Top = 352
+    Width = 65
+    Height = 19
+    Caption = 'Legenda:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
     Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
@@ -347,7 +382,7 @@ object F_gapoTT: TF_gapoTT
     end
   end
   object scGPButton_OK: TscGPButton
-    Left = 136
+    Left = 104
     Top = 391
     Width = 100
     Height = 35
@@ -434,13 +469,104 @@ object F_gapoTT: TF_gapoTT
     GroupIndex = 0
     AllowAllUp = False
   end
+  object scGPButton_storno: TscGPButton
+    Left = 223
+    Top = 391
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 2
+    TabStop = True
+    Animation = False
+    Caption = 'Storno'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = 33023
+    Options.DisabledColor = clPurple
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = 1871359
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = 1871359
+    Options.FrameFocusedColor = 1871359
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.StyleColors = True
+    HotImageIndex = -1
+    ModalResult = 2
+    ModalSetting = True
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
     HintFont.Color = clWindowText
     HintFont.Height = -11
     HintFont.Name = 'Tahoma'
     HintFont.Style = []
-    Left = 256
-    Top = 392
+    Left = 56
+    Top = 400
   end
 end

@@ -24,6 +24,9 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_OK;
 	TrHTMLHint *rHTMLHint1;
 	TrHTMLLabel *rHTMLLabel_InfoText;
+	TrHTMLLabel *rHTMLLabel_legenda;
+	TrHTMLLabel *rHTMLLabel_legenda_titulek;
+	TscGPButton *scGPButton_storno;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -31,6 +34,11 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
+	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND;
+	short CTunit,RDunit,DDunit,Munit;
+	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
+
+
 public:		// User declarations
 	__fastcall TF_gapoTT(TComponent* Owner);
 	//metody volané z Tmgrid
@@ -39,6 +47,8 @@ public:		// User declarations
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 	void vypis(UnicodeString text,bool red=true,bool link=false);
 	int pocitadlo;
+	TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
+	bool zobrazitFrameForm;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoTT *F_gapoTT;
