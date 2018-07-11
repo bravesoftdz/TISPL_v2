@@ -104,7 +104,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Cells[11][0].Font->Color=clLOCKED;
 
 	//manualfit výšky 0-tého øádku (zatím není pøipravena metoda)
-	unsigned short n=18;if(RDunit)n=14;//èíslo sloupce s nejdelším textem hlavièky
+	unsigned short n=3;//èíslo sloupce s nejdelším textem hlavièky
 	Canvas->Font=mGrid->Cells[n][0].Font;	//nejdelší použitý text
 	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[n][0].Text)+mGrid->Cells[n][0].BottomMargin+mGrid->Cells[n][0].BottomBorder->Width/2+mGrid->Cells[n][0].TopMargin+mGrid->Cells[n][0].TopBorder->Width/2;
 	//manualfit šíøky sloupcù mimo nultého (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
@@ -149,6 +149,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		mGrid->Cells[26][j].Text=On[i].rotace;                            mGrid->Cells[26][j].Align=mGrid->LEFT;mGrid->Cells[26][j].Font->Color=clOLD;
 		mGrid->Cells[27][j].Type=mGrid->BUTTON;mGrid->Cells[27][j].Text="...";mGrid->Cells[27][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 		TscGPButton *B=mGrid->createButton(27,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
+		B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 		//posun na další øádek výsledné tabulky
 		j++;
 	}
@@ -193,7 +194,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				mGrid->Cells[24][j].Text=O[z].mezera_podvozek*(1+999*Munit);     mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[24][j].Font->Color=clOLD;mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[26][j].Text=O[z].rotace;                            mGrid->Cells[26][j].Align=mGrid->LEFT;mGrid->Cells[26][j].Font->Color=clOLD;
 				mGrid->Cells[27][j].Type=mGrid->BUTTON;mGrid->Cells[27][j].Text="...";mGrid->Cells[27][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
-				TscGPButton *B=mGrid->createButton(27,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
+				TscGPButton *B=mGrid->createButton(27,j);B->Options->FontNormalColor=(TColor)RGB(255,128,0);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot
 				//posun na další øádek výsledné tabulky
 				j++;
@@ -227,7 +228,7 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
-	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
+	if(Col==mGrid->ColCount-1)//je kliknuto na náhled objektu
 	{
 //		calculate(Row,2);
 //		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;

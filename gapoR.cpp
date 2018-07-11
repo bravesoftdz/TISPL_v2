@@ -146,7 +146,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				//objekty
 				mGrid->Cells[1][j].Text=O[z].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 				//volby - checkboxy
-				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;mGrid->Cells[2][j].Background->Color=clBACKGROUND;mGrid->Cells[4][j].Background->Color=clBACKGROUND;//NEWR
+				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;//NEWR
 				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 				//parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[6][j].Text=O[z].CT/(1+59.0*CTunit);	 								mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=clOLD;	mGrid->Cells[7][j].Align=mGrid->LEFT; mGrid->Cells[7][j].Font->Color=clUNLOCKED;
@@ -161,11 +161,10 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				TscGPButton *B=mGrid->createButton(21,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 				//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
-				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
-
+				//zajistí pøepoèet daného øádku - nových hodnot NEWR
+				calculate(j);
 				//výchozí nastavení v levém slouci - je vždy po zobrazení zaškrnuta tato volba
 				mGrid->getCheck(2,j)->Checked=true;
-
 				//posun na další øádek výsledné tabulky
 				j++;
 			}
@@ -246,13 +245,13 @@ void __fastcall TF_gapoR::FormPaint(TObject *Sender)
 //test volání pøi onclick
 void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
-
 	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
-		if(Col>=2 && mGrid->getCheck(Col,Row)->Checked==false){
-			TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
-			CH->Checked=true;
-			CH=NULL;delete CH;
-		}
+	if(Col>=2 && mGrid->getCheck(Col,Row)->Checked==false)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+		CH->Checked=true;
+		CH=NULL;delete CH;
+	}
 
 	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked)
 	{
@@ -267,10 +266,6 @@ void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		CH->Checked=false;
 		CH=NULL;delete CH;
 	}
-
-
-
-
 
 //NEWR
 	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
@@ -312,8 +307,8 @@ void __fastcall TF_gapoR::FormClose(TObject *Sender, TCloseAction &Action)
 void __fastcall TF_gapoR::Button1Click(TObject *Sender)
 {
 	//ShowMessage(objekty[2].pohon->n);//pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
-	//mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
-	//FormPaint(this);
+	mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
+	FormPaint(this);
 }
 //---------------------------------------------------------------------------
 //pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky

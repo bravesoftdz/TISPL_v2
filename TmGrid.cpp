@@ -519,8 +519,8 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			}
 			Ch->Options->NormalColor=Cell.Background->Color;
 			Ch->Options->NormalColorAlpha=255;
-			//nepooužívat Ch->Options->FrameNormalColor=(TColor)RGB(128,128,128);//Ch->Font->Color;
-			//nepooužívat Ch->Options->FrameNormalColorAlpha=255;
+			//nepoužívat Ch->Options->FrameNormalColor=(TColor)RGB(128,128,128);//Ch->Font->Color;
+			//nepoužívat Ch->Options->FrameNormalColorAlpha=255;
 			Ch->Font=Cell.Font;
 			Ch->Caption=Cell.Text;
 			//vlastník
@@ -944,7 +944,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							Cells[ColCell_1][RowCell_1].Align=aNO;
 							TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
 							Ch->Width=Ch->OptionsChecked->ShapeSize;
-							Ch->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ch->Width/2;
+							Ch->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-(Ch->Width-Ch->Options->FrameWidth)/2;
 							Ch=NULL;delete Ch;
 						}break;
 						case RADIO:
@@ -978,7 +978,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							Cells[ColCell_1][RowCell_1].Valign=vNO;
 							TscGPCheckBox *Ch=createCheck(ColCell_1,RowCell_1);
 							Ch->Height=Ch->OptionsChecked->ShapeSize;
-							Ch->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ch->Height/2;
+							Ch->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-(Ch->Height-Ch->Options->FrameWidth)/2;
 							Ch=NULL;delete Ch;
 						}break;
 						case RADIO:
