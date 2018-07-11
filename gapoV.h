@@ -20,6 +20,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscButton *scButton_html;
 	TscGPButton *scGPButton_OK;
+	TscGPCheckBox *scGPCheckBox1;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
