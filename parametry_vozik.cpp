@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 
@@ -25,28 +24,27 @@ __fastcall TForm_parametry_vozik::TForm_parametry_vozik(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_vozik::FormShow(TObject *Sender)
 {
-		 NastavDesign();
+	NastavDesign();
 
-		 scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
-		 scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
-		 scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
-		 scGPNumericEdit_delka_podvozek->Value=F->d.v.PP.delka_podvozek;
+	scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
+	scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
+	scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
+	scGPNumericEdit_delka_podvozek->Value=F->d.v.PP.delka_podvozek;
 }
 //---------------------------------------------------------------------------
 
 void  TForm_parametry_vozik::NastavDesign()
 {
-	 Form_parametry_vozik->Color=(TColor)RGB(240,240,240);
-	 scGPButton_vozik->Options->NormalColor=Form_parametry_vozik->Color;
-	 scGPButton_vozik->Options->FocusedColor=Form_parametry_vozik->Color;
-	 scGPButton_vozik->Options->HotColor=Form_parametry_vozik->Color;
-	 scGPButton_vozik->Options->PressedColor=Form_parametry_vozik->Color;
-	 scGPButton_vozik->Options->FrameNormalColor=Form_parametry_vozik->Color;
-	 scGPButton_vozik->Options->PressedColor=Form_parametry_vozik->Color;
-	 scGPButton_vozik->Options->FramePressedColor=Form_parametry_vozik->Color;
+	Form_parametry_vozik->Color=(TColor)RGB(240,240,240);
+	scGPButton_vozik->Options->NormalColor=Form_parametry_vozik->Color;
+	scGPButton_vozik->Options->FocusedColor=Form_parametry_vozik->Color;
+	scGPButton_vozik->Options->HotColor=Form_parametry_vozik->Color;
+	scGPButton_vozik->Options->PressedColor=Form_parametry_vozik->Color;
+	scGPButton_vozik->Options->FrameNormalColor=Form_parametry_vozik->Color;
+	scGPButton_vozik->Options->PressedColor=Form_parametry_vozik->Color;
+	scGPButton_vozik->Options->FramePressedColor=Form_parametry_vozik->Color;
 
-		if(Form_parametry_linky->scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
-		else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
-
-
+	if(Form_parametry_linky->scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
+	else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
 }
+

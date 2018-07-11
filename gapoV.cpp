@@ -5,6 +5,8 @@
 #include "gapoV.h"
 #include "unit1.h"
 #include "TmGrid.h"
+#include "parametry_linky.h"
+#include "parametry_vozik.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
@@ -67,7 +69,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
 	mGrid->Cells[1][0].Text="Objekt";
 	mGrid->Cells[2][0].Text="M,P";
-	mGrid->Cells[3][0].Text="aRD, RD, Rz, Rx, CT, DD, K";
+	mGrid->Cells[3][0].Text="aRD, RD, Rz, Rx, R, CT, DD, K";
 	mGrid->Cells[4][0].Text="aRD, RD, M, Rz, Rx, K, CT, P";
 	mGrid->Cells[5][0].Text="DD, R";
 	mGrid->Cells[6][0].Text="aRD, RD, M, Rz, R, K, CT, P";
@@ -242,29 +244,29 @@ void TF_gapoV::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky
 UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 {
-//	//instance na PO_math, využívá se stejných výpoètù
-//	TPO_math pm;
-//
-//	//input sekce
-//	pm.TT=F->d.v.PP.TT;
-//	pm.rezim=objekty[Row].rezim;
-//	pm.CT=objekty[Row].CT;
-//	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-//	pm.DD=objekty[Row].delka_dopravniku;
-//	pm.K=objekty[Row].kapacita;
-//	pm.P=objekty[Row].pozice;
-//	pm.M=objekty[Row].mezera;
-//	pm.MJ=objekty[Row].mezera_jig;
-//	pm.MP=objekty[Row].mezera_podvozek;
-//	pm.dJ=F->d.v.PP.delka_jig;
-//	pm.sJ=F->d.v.PP.sirka_jig;
-//	pm.dP=F->d.v.PP.delka_podvozek;
-//	pm.Rotace=objekty[Row].rotace;
-//	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-//
-//	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
-//	if(mGrid->getCheck(2,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
-//	{
+	//instance na PO_math, využívá se stejných výpoètù
+	TPO_math pm;
+
+	//input sekce
+	pm.TT=F->d.v.PP.TT;
+	pm.rezim=objekty[Row].rezim;
+	pm.CT=objekty[Row].CT;
+	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.DD=objekty[Row].delka_dopravniku;
+	pm.K=objekty[Row].kapacita;
+	pm.P=objekty[Row].pozice;
+	pm.M=objekty[Row].mezera;
+	pm.MJ=objekty[Row].mezera_jig;
+	pm.MP=objekty[Row].mezera_podvozek;
+	pm.dJ=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
+	pm.sJ=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
+	pm.dP=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
+	pm.Rotace=objekty[Row].rotace;
+	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+
+	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
+	//if(mGrid->getCheck(2,Row)->Checked)//mìní se M,P, zùstává aRD, RD, Rz, Rx, R, CT,DD,K
+	{
 //		pm.CT_locked=false;pm.DD_locked=true;
 //		pm.input_RD(true);
 //		if(SaveTo==0)
@@ -273,7 +275,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 //			mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
 //			mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
 //		}
-//	}
+	}
 //	else//mìní se RD,DD,P,M, zùstává CT,K
 //	{
 //		pm.CT_locked=true;pm.DD_locked=false;

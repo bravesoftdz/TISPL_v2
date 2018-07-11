@@ -5,7 +5,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
   Caption = 'Form_parametry_vozik'
   ClientHeight = 338
   ClientWidth = 651
-  Color = clBtnFace
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
