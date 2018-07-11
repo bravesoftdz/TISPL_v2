@@ -44,6 +44,10 @@ __fastcall TF_gapoTT::TF_gapoTT(TComponent* Owner)
 	rHTMLLabel_legenda_titulek->FontColor=(TColor)RGB(43,87,154);
 	rHTMLLabel_legenda->FontColor=clUNLOCKED;
 
+	// nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
+	 C1=Form1->m.clIntensive(RGB(128,64,0),20);
+	 C2=Form1->m.clIntensive(RGB(0,128,0),80);
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::FormShow(TObject *Sender)
@@ -54,12 +58,14 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Left=Offset;mGrid->Top=scGPPanel_hlavicka->Height+Offset;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
 	mGrid->DefaultColWidth/=2;//NEWR
+	input_state=LOADING;
 
 		////////jednotky////////  NEWR
 	CTunit=F->readINI("nastaveni_form_parametry", "CT").ToInt();
 	RDunit=F->readINI("nastaveni_form_parametry", "RDt").ToInt();
 	DDunit=F->readINI("nastaveni_form_parametry", "DD").ToInt();
 	Munit =F->readINI("nastaveni_form_parametry", "DM").ToInt();
+
 
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
@@ -255,8 +261,8 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->MergeCells(13,j,14,j);
 				}
 
-
-	//		parametry objektù           /*NEWR*/                            //NEWR
+//
+ //			parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[15][j].Text=On[i].CT/(1+59.0*CTunit);	 								mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clOLD;mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[17][j].Text=On[i].RD*(1+59.0*RDunit);                  mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clOLD;mGrid->Cells[18][j].Align=mGrid->LEFT; mGrid->Cells[18][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[19][j].Text=On[i].delka_dopravniku*(1+999*DDunit);    	mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clOLD;mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clUNLOCKED;
@@ -268,9 +274,9 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[30][j].Type=mGrid->BUTTON;mGrid->Cells[30][j].Text="...";mGrid->Cells[30][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 				TscGPButton *B=mGrid->createButton(30,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
-				//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
+		 //		B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
 
-				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
+		//		calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
 
 
 		if(On[i].rezim==0) //fixní nastavení checkboxu u SG režimù
@@ -394,27 +400,22 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 && CH->Checked && O[z].rezim==1)
 				 {
 
-					TscGPCheckBox *A=mGrid->getCheck(5,j);
-					TscGPCheckBox *B=mGrid->getCheck(7,j);
-					TscGPCheckBox *C=mGrid->getCheck(9,j);
-					TscGPCheckBox *D=mGrid->getCheck(11,j);
-					TscGPCheckBox *E=mGrid->getCheck(13,j);
+				 //normální barva + checked barva pro 3 -5 checkboxy
 
-					 mGrid->Cells[3][j].Background->Color=(TColor) RGB(43,87,154);
-					 mGrid->Cells[5][j].Background->Color=(TColor) RGB(43,87,154);
-					 mGrid->Cells[7][j].Background->Color=(TColor) RGB(255,128,0);
-					 mGrid->Cells[9][j].Background->Color=(TColor) RGB(255,128,0);
-					 mGrid->Cells[11][j].Background->Color=(TColor) RGB(255,128,0);
-					 mGrid->Cells[13][j].Background->Color=(TColor) RGB(255,128,0);
-//						mGrid->getCheck(3,j)->Options->FrameNormalColor=clBlue;
-//						mGrid->getCheck(5,j)->Options->FrameNormalColor=clBlue;
-//						mGrid->getCheck(3,j)->OptionsChecked->FrameNormalColor=clBlue;
-//						mGrid->getCheck(5,j)->OptionsChecked->FrameNormalColor=clBlue;
-							//A->OptionsChecked->FrameNormalColor=clBlue;
+					mGrid->getCheck(3,j)->Options->FrameNormalColor=C1;
+					mGrid->getCheck(5,j)->Options->FrameNormalColor=C1;
+					mGrid->getCheck(3,j)->OptionsChecked->FrameNormalColor=C1;
+					mGrid->getCheck(5,j)->OptionsChecked->FrameNormalColor=C1;
 
-
-			//		/*A->Enabled=false*/;B->Enabled=false;C->Enabled=false;D->Enabled=false;E->Enabled=false;
-					A=NULL;delete A;B=NULL;delete B;B=NULL;delete B;C=NULL;delete C;D=NULL;delete D;E=NULL;delete E;
+					// normální barva + checked barva pro 7-13 checkboxy
+					mGrid->getCheck(7,j)->Options->FrameNormalColor=C2;
+					mGrid->getCheck(9,j)->Options->FrameNormalColor=C2;
+					mGrid->getCheck(11,j)->Options->FrameNormalColor=C2;
+					mGrid->getCheck(13,j)->Options->FrameNormalColor=C2;
+					mGrid->getCheck(7,j)->OptionsChecked->FrameNormalColor=C2;
+					mGrid->getCheck(9,j)->OptionsChecked->FrameNormalColor=C2;
+					mGrid->getCheck(11,j)->OptionsChecked->FrameNormalColor=C2;
+					mGrid->getCheck(13,j)->OptionsChecked->FrameNormalColor=C2;
 				 }
 
 				 // zobrazení po naètení - pokud je v KK max 1 objekt, dovolím vstup do všech sloupcù okamžitì
@@ -432,7 +433,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				 }
 				CH=NULL;delete CH;
 
-				//parametry objektù           /*NEWR*/                            //NEWR
+	 //			parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[15][j].Text=O[z].CT/(1+59.0*CTunit);	 							 	mGrid->Cells[15][j].Align=mGrid->LEFT;	mGrid->Cells[15][j].Font->Color=clOLD;	mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[17][j].Text=O[z].RD*(1+59.0*RDunit);                 mGrid->Cells[17][j].Align=mGrid->LEFT;	mGrid->Cells[17][j].Font->Color=clOLD;	mGrid->Cells[18][j].Align=mGrid->LEFT; mGrid->Cells[18][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[19][j].Text=O[z].delka_dopravniku*(1+999*DDunit);    mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clOLD;mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clUNLOCKED;
@@ -444,10 +445,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[30][j].Type=mGrid->BUTTON;mGrid->Cells[30][j].Text="...";mGrid->Cells[30][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 				TscGPButton *B=mGrid->createButton(30,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
-				//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
+			//	B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
 				mGrid->Cells[31][j].Text=O[z].pohon->n;
 //
-				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
+		//		calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
 
 				j++;
 			}
@@ -457,9 +458,27 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	}
 
 	////////rozdìlení sekcí svislým orámováním////////
+
 	mGrid->Cells[2][1].RightBorder->Width=mGrid->Cells[2][0].RightBorder->Width=2;
 	mGrid->SetCells(mGrid->Cells[2][1],2,2,2,RowCount-2);
 	mGrid->Cells[2][RowCount-1].RightBorder->Width=mGrid->Cells[2][1].RightBorder->Width;
+
+	mGrid->Cells[2][0].RightBorder->Color=C1;
+	mGrid->Cells[3][0].BottomBorder->Color=mGrid->Cells[4][0].BottomBorder->Color=mGrid->Cells[5][0].BottomBorder->Color=mGrid->Cells[6][0].BottomBorder->Color=C1;
+	mGrid->Cells[3][0].BottomBorder->Width=mGrid->Cells[4][0].BottomBorder->Width= mGrid->Cells[5][0].BottomBorder->Width=mGrid->Cells[6][0].BottomBorder->Width=2;
+
+	mGrid->Cells[6][0].RightBorder->Color=C1;
+	mGrid->Cells[6][0].RightBorder->Width=2;
+
+	mGrid->Cells[7][0].BottomBorder->Width=	mGrid->Cells[8][0].BottomBorder->Width=mGrid->Cells[9][0].BottomBorder->Width= mGrid->Cells[10][0].BottomBorder->Width=mGrid->Cells[11][0].BottomBorder->Width=mGrid->Cells[12][0].BottomBorder->Width=mGrid->Cells[13][0].BottomBorder->Width=mGrid->Cells[14][0].BottomBorder->Width=2;
+	mGrid->Cells[7][0].BottomBorder->Color=	mGrid->Cells[8][0].BottomBorder->Color=mGrid->Cells[9][0].BottomBorder->Color= mGrid->Cells[10][0].BottomBorder->Color=mGrid->Cells[11][0].BottomBorder->Color=mGrid->Cells[12][0].BottomBorder->Color=mGrid->Cells[13][0].BottomBorder->Color=mGrid->Cells[14][0].BottomBorder->Color=C2;
+
+	mGrid->Cells[14][0].RightBorder->Width=2;
+	mGrid->Cells[14][0].RightBorder->Color=C2;
+
+	mGrid->Cells[3][0].TopBorder->Color=C1;
+	mGrid->Cells[3][0].TopBorder->Width=3;
+
 //
 //	////////autoresize formu_gapo, vhodné nakonec,tj. pøed Show////////
 	Width=mGrid->Width+Offset*2;
@@ -478,6 +497,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
 	////zobrazení orámování
 	zobrazitFrameForm=true;
+	input_state=FREE;
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::FormPaint(TObject *Sender)
@@ -490,7 +510,6 @@ void __fastcall TF_gapoTT::FormPaint(TObject *Sender)
 void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
 //PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
-//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
 
 
 //NEWR
@@ -507,11 +526,15 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	}
 	else//pøekliknutí chechboxu pravdìpodobnì
 	{
+	 if(input_state==FREE)
+	 {
 		calculate(Row);//zajistí pøepoèet daného øádku
 		FormPaint(this);//zajistí pøekreslení bez probliku
+	 }
 	}
 
 	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
+	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
 		if(Col>=3 && mGrid->getCheck(Col,Row)->Checked==false){
 			TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
 			CH->Checked=true;
@@ -704,7 +727,6 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
 												{
 													pocitadlo++;
-
 													vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
 												}
 											}
@@ -955,5 +977,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 
 
 }
+
 
 

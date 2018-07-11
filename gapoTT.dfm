@@ -211,7 +211,9 @@ object F_gapoTT: TF_gapoTT
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367
+      Caption = 
+        'Glob'#225'ln'#237' aktualizace parametr'#367' pohon'#367' a objekt'#367' z d'#367'vodu zm'#283'ny T' +
+        'T'
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 290
