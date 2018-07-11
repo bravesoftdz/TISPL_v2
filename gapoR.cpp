@@ -162,6 +162,10 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 				//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
 				calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
+
+				//výchozí nastavení v levém slouci - je vždy po zobrazení zaškrnuta tato volba
+				mGrid->getCheck(2,j)->Checked=true;
+
 				//posun na další øádek výsledné tabulky
 				j++;
 			}
@@ -241,7 +245,34 @@ void __fastcall TF_gapoR::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 //test volání pøi onclick
 void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
-{ //NEWR
+{
+
+	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
+		if(Col>=2 && mGrid->getCheck(Col,Row)->Checked==false){
+			TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+			CH->Checked=true;
+			CH=NULL;delete CH;
+		}
+
+	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
+		CH->Checked=false;
+		CH=NULL;delete CH;
+	}
+
+	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-2,Row);
+		CH->Checked=false;
+		CH=NULL;delete CH;
+	}
+
+
+
+
+
+//NEWR
 	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
 	{
 		calculate(Row,2);
