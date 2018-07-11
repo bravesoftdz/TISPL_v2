@@ -316,22 +316,35 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			//volby - checkboxy
 			mGrid->Cells[3][j].Type=mGrid->CHECK;
 			mGrid->Cells[5][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(3,j,4,j);
-			mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
 
-			mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->Cells[9][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(7,j,8,j);mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
-
-			mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->Cells[13][j].Type=mGrid->CHECK;
-			mGrid->MergeCells(11,j,12,j);mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
+			 //	mGrid->MergeCells(1,j,2,j);
 
 
-				 if(O_pocet==0) //fixní nastavení checkboxu objektù, které nejsou pøiøazeny
-				{
+				mGrid->MergeCells(3,j,4,j);
+				mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
+				mGrid->MergeCells(3,j,5,j);
+
+				//mGrid->Cells[3][j].Align=mGrid->RIGHT;
+
+			mGrid->Cells[7][j].Type=mGrid->CHECK;
+			mGrid->Cells[9][j].Type=mGrid->CHECK;
+			mGrid->MergeCells(7,j,8,j);
+			mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
+
+
+			mGrid->Cells[11][j].Type=mGrid->CHECK;
+			mGrid->Cells[13][j].Type=mGrid->CHECK;
+			mGrid->MergeCells(11,j,12,j);
+			mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
+
+
 					TscGPCheckBox *CH=mGrid->getCheck(3,j);
 					CH->Checked=true;
 					CH=NULL;delete CH;
-				 }
+
+					mGrid->getCheck(11,j)->Visible=false;
+					mGrid->getCheck(13,j)->Visible=false;
+
 
 			//posun na další øádek výsledné tabulky
 			j++;
@@ -463,6 +476,12 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->SetCells(mGrid->Cells[2][1],2,2,2,RowCount-2);
 	mGrid->Cells[2][RowCount-1].RightBorder->Width=mGrid->Cells[2][1].RightBorder->Width;
 
+	 for(int i=1;i<=RowCount-1;i++){
+			mGrid->Cells[14][i].RightBorder->Width=2;
+	 }
+
+
+
 	mGrid->Cells[2][0].RightBorder->Color=C1;
 	mGrid->Cells[3][0].BottomBorder->Color=mGrid->Cells[4][0].BottomBorder->Color=mGrid->Cells[5][0].BottomBorder->Color=mGrid->Cells[6][0].BottomBorder->Color=C1;
 	mGrid->Cells[3][0].BottomBorder->Width=mGrid->Cells[4][0].BottomBorder->Width= mGrid->Cells[5][0].BottomBorder->Width=mGrid->Cells[6][0].BottomBorder->Width=2;
@@ -512,26 +531,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
 
 
-//NEWR
-	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
-	{
-		calculate(Row,2);
-		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
-		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
-		Invalidate();FormPaint(this);//zajistí pøekreslení bez probliku
-		Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
-		Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
-		Form_objekt_nahled->ShowModal();
-		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
-	}
-	else//pøekliknutí chechboxu pravdìpodobnì
-	{
-	 if(input_state==FREE)
-	 {
-		calculate(Row);//zajistí pøepoèet daného øádku
-		FormPaint(this);//zajistí pøekreslení bez probliku
-	 }
-	}
+
 
 	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
 	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
@@ -750,59 +750,79 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	 // pokud kliknu do sloupcù 5 a víc tak na sloupcích 3 a 5 dám enabled false
 	 // platí pouze pokud je pohon a má KK pro více jak 1 objekt
-		if(Col>5 && mGrid->getCheck(3,Row)->Checked==false  && mGrid->getCheck(5,Row)->Checked==false &&  mGrid->Cells[2][Row].Text=="Kontinuální")
-		{
-		if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true || mGrid->getCheck(11,Row)->Checked==true || mGrid->getCheck(13,Row)->Checked==true)
-		{
-				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[31][Row].Text)) >1)
-					{
-					 double pohon_id=F->ms.MyToDouble(mGrid->Cells[31][Row].Text);
-
-							 for(int i=1;i<=mGrid->RowCount-1;i++)
-							 {
-									if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
-									{
-
-							 //		mGrid->getCheck(3,i)->Enabled=false;
-							 //		mGrid->getCheck(5,i)->Enabled=false;
-							 //aktuálnì nepoužívaná sekce - dovoluje nastavit zamknutí LEVÉ strany
-
-									}
-							 }
-					}
-			}
-		}
+//		if(Col>5 && mGrid->getCheck(3,Row)->Checked==false  && mGrid->getCheck(5,Row)->Checked==false &&  mGrid->Cells[2][Row].Text=="Kontinuální")
+//		{
+//		if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true || mGrid->getCheck(11,Row)->Checked==true || mGrid->getCheck(13,Row)->Checked==true)
+//		{
+//				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[31][Row].Text)) >1)
+//					{
+//					 double pohon_id=F->ms.MyToDouble(mGrid->Cells[31][Row].Text);
+//
+//							 for(int i=1;i<=mGrid->RowCount-1;i++)
+//							 {
+//									if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
+//									{
+//
+//							 //		mGrid->getCheck(3,i)->Enabled=false;
+//							 //		mGrid->getCheck(5,i)->Enabled=false;
+//							 //aktuálnì nepoužívaná sekce - dovoluje nastavit zamknutí LEVÉ strany
+//
+//									}
+//							 }
+//					}
+//			}
+//		}
 
 	// aktivace levé èásti a zdisablování pravé èásti
 
-		if(Col<=5 && mGrid->Cells[2][Row].Text=="Kontinuální")
-		{
-				if(mGrid->getCheck(7,Row)->Checked==false  && mGrid->getCheck(9,Row)->Checked==false && mGrid->getCheck(11,Row)->Checked==false && mGrid->getCheck(13,Row)->Checked==false)
-				{
-					if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
-					{
-						if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[31][Row].Text)) >1)
-							{
-							 double pohon_id=F->ms.MyToDouble(mGrid->Cells[31][Row].Text);
+//		if(Col<=5 && mGrid->Cells[2][Row].Text=="Kontinuální")
+//		{
+//				if(mGrid->getCheck(7,Row)->Checked==false  && mGrid->getCheck(9,Row)->Checked==false && mGrid->getCheck(11,Row)->Checked==false && mGrid->getCheck(13,Row)->Checked==false)
+//				{
+//					if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
+//					{
+//						if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[31][Row].Text)) >1)
+//							{
+//							 double pohon_id=F->ms.MyToDouble(mGrid->Cells[31][Row].Text);
+//
+//									 for(int i=1;i<=mGrid->RowCount-1;i++)
+//									 {
+//											if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
+//											{
+//								 //			mGrid->getCheck(7,i)->Enabled=false;
+//								 //			mGrid->getCheck(9,i)->Enabled=false;
+//								 //			mGrid->getCheck(11,i)->Enabled=false;
+//								 //			mGrid->getCheck(13,i)->Enabled=false;
+//									//aktuálnì nepoužívaná sekce - dovoluje nastavit zamknutí PRAVÉ strany
+//
+//											}
+//									 }
+//							}
+//					}
+//				}
+//		}
 
-									 for(int i=1;i<=mGrid->RowCount-1;i++)
-									 {
-											if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
-											{
-								 //			mGrid->getCheck(7,i)->Enabled=false;
-								 //			mGrid->getCheck(9,i)->Enabled=false;
-								 //			mGrid->getCheck(11,i)->Enabled=false;
-								 //			mGrid->getCheck(13,i)->Enabled=false;
-									//aktuálnì nepoužívaná sekce - dovoluje nastavit zamknutí PRAVÉ strany
-
-											}
-									 }
-							}
-					}
-				}
-		}
-
-
+  //NEWR
+	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
+	{
+		calculate(Row,2);
+		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
+		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
+		Invalidate();FormPaint(this);//zajistí pøekreslení bez probliku
+		Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
+		Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
+		Form_objekt_nahled->ShowModal();
+		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+	}
+	else//pøekliknutí chechboxu pravdìpodobnì
+	{
+	 if(input_state==FREE)
+	 {
+		calculate(Row);//zajistí pøepoèet daného øádku
+		FormPaint(this);//zajistí pøekreslení bez probliku
+		//Invalidate();
+	 }
+	}
 
 
 
@@ -882,97 +902,97 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 {
 //
 //	//instance na PO_math, využívá se stejných výpoètù
-	TPO_math pm;
+//	TPO_math pm;
+////
+////	//input sekce
+//	pm.TT=F->d.v.PP.TT;
+//	pm.rezim=objekty[Row].rezim;
+//	pm.CT=objekty[Row].CT;
+//	//pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+//	pm.DD=objekty[Row].delka_dopravniku;
+//	pm.K=objekty[Row].kapacita;
+//	pm.P=objekty[Row].pozice;
+//	pm.M=objekty[Row].mezera;
+//	pm.MJ=objekty[Row].mezera_jig;
+//	pm.MP=objekty[Row].mezera_podvozek;
+//	pm.dJ=F->d.v.PP.delka_jig;
+//	pm.sJ=F->d.v.PP.sirka_jig;
+//	pm.dP=F->d.v.PP.delka_podvozek;
+//	pm.Rotace=objekty[Row].rotace;
+// //	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 //
-//	//input sekce
-	pm.TT=F->d.v.PP.TT;
-	pm.rezim=objekty[Row].rezim;
-	pm.CT=objekty[Row].CT;
-	//pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-	pm.DD=objekty[Row].delka_dopravniku;
-	pm.K=objekty[Row].kapacita;
-	pm.P=objekty[Row].pozice;
-	pm.M=objekty[Row].mezera;
-	pm.MJ=objekty[Row].mezera_jig;
-	pm.MP=objekty[Row].mezera_podvozek;
-	pm.dJ=F->d.v.PP.delka_jig;
-	pm.sJ=F->d.v.PP.sirka_jig;
-	pm.dP=F->d.v.PP.delka_podvozek;
-	pm.Rotace=objekty[Row].rotace;
- //	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-
-	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
-	if(mGrid->getCheck(3,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
-	{
-		pm.CT_locked=false;pm.DD_locked=true;
-		pm.input_RD(true);
-		if(SaveTo==0)
-		{
-			mGrid->Cells[11][Row].Font->Color=clLOCKED;//DD
-			mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
-			mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
-		}
-	}
-	else//mìní se RD,DD,P,M, zùstává CT,K
-	{
-		pm.CT_locked=true;pm.DD_locked=false;
-		pm.input_RD(true);
-		if(SaveTo==0)
-		{
-			mGrid->Cells[11][Row].Font->Color=clUNLOCKED;//DD
-			mGrid->Cells[7][Row].Font->Color =clLOCKED;//CT
-			mGrid->Cells[13][Row].Font->Color=clLOCKED;//K
-		}
-	}
-
-	//output sekce
-	AnsiString T="";
-	switch(SaveTo)
-	{
-		 case -1://uložení do textu je-li požadováno
-		 {
-				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
-		 }break;
-		 case 0://pouze vrátí text do bunìk
-		 {
-				mGrid->Cells[15][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
-				mGrid->Cells[17][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
-				mGrid->Cells[19][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
-				mGrid->Cells[21][Row].Text= F->m.round2double(pm.K,2,"..");
-				mGrid->Cells[23][Row].Text=	F->m.round2double(pm.P,2,"..");
-				mGrid->Cells[25][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
-				mGrid->Cells[27][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
-		 }break;
-		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
-		 {
-				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
-				O->CT=pm.CT;
-				O->RD=pm.RD;
-				O->delka_dopravniku=pm.DD;
-				O->kapacita=pm.K;
-				O->pozice=pm.P;
-				O->mezera=pm.M;
-				O->mezera_jig=pm.MJ;
-				O->mezera_podvozek=pm.MP;
-				O=NULL;delete O;
-		 }break;
-		 case 2://uložení hodnot z ukazatele
-		 {
-				Form_objekt_nahled->pom=new Cvektory::TObjekt;
-				Form_objekt_nahled->pom->pohon=objekty[Row].pohon;
-				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
-				Form_objekt_nahled->pom->CT=pm.CT;
-				Form_objekt_nahled->pom->RD=pm.RD;
-				Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
-				Form_objekt_nahled->pom->kapacita=pm.K;
-				Form_objekt_nahled->pom->pozice=pm.P;
-				Form_objekt_nahled->pom->mezera=pm.M;
-				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
-				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
-		 }break;
-	}
-	return T;
-
+//	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
+//	if(mGrid->getCheck(3,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
+//	{
+//		pm.CT_locked=false;pm.DD_locked=true;
+//		pm.input_RD(true);
+//		if(SaveTo==0)
+//		{
+//			mGrid->Cells[11][Row].Font->Color=clLOCKED;//DD
+//			mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
+//			mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
+//		}
+//	}
+//	else//mìní se RD,DD,P,M, zùstává CT,K
+//	{
+//		pm.CT_locked=true;pm.DD_locked=false;
+//		pm.input_RD(true);
+//		if(SaveTo==0)
+//		{
+//			mGrid->Cells[11][Row].Font->Color=clUNLOCKED;//DD
+//			mGrid->Cells[7][Row].Font->Color =clLOCKED;//CT
+//			mGrid->Cells[13][Row].Font->Color=clLOCKED;//K
+//		}
+//	}
+//
+//	//output sekce
+//	AnsiString T="";
+//	switch(SaveTo)
+//	{
+//		 case -1://uložení do textu je-li požadováno
+//		 {
+//				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
+//		 }break;
+//		 case 0://pouze vrátí text do bunìk
+//		 {
+//				mGrid->Cells[15][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
+//				mGrid->Cells[17][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+//				mGrid->Cells[19][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
+//				mGrid->Cells[21][Row].Text= F->m.round2double(pm.K,2,"..");
+//				mGrid->Cells[23][Row].Text=	F->m.round2double(pm.P,2,"..");
+//				mGrid->Cells[25][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
+//				mGrid->Cells[27][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
+//		 }break;
+//		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
+//		 {
+//				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
+//				O->CT=pm.CT;
+//				O->RD=pm.RD;
+//				O->delka_dopravniku=pm.DD;
+//				O->kapacita=pm.K;
+//				O->pozice=pm.P;
+//				O->mezera=pm.M;
+//				O->mezera_jig=pm.MJ;
+//				O->mezera_podvozek=pm.MP;
+//				O=NULL;delete O;
+//		 }break;
+//		 case 2://uložení hodnot z ukazatele
+//		 {
+//				Form_objekt_nahled->pom=new Cvektory::TObjekt;
+//				Form_objekt_nahled->pom->pohon=objekty[Row].pohon;
+//				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
+//				Form_objekt_nahled->pom->CT=pm.CT;
+//				Form_objekt_nahled->pom->RD=pm.RD;
+//				Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
+//				Form_objekt_nahled->pom->kapacita=pm.K;
+//				Form_objekt_nahled->pom->pozice=pm.P;
+//				Form_objekt_nahled->pom->mezera=pm.M;
+//				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
+//				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
+//		 }break;
+//	}
+//	return T;
+//
 
 
 
