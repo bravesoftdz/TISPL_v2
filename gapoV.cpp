@@ -227,7 +227,22 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
-
+	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
+	{
+//		calculate(Row,2);
+//		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
+//		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
+//		Invalidate();FormPaint(this);//zajistí pøekreslení bez probliku
+//		Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
+//		Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
+//		Form_objekt_nahled->ShowModal();
+//		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+	}
+	else//pøekliknutí chechboxu pravdìpodobnì
+	{
+		calculate(Row);//zajistí pøepoèet daného øádku
+		FormPaint(this);//zajistí pøekreslení bez probliku
+	}
 }
 //---------------------------------------------------------------------------
 void TF_gapoV::OnEnter(long Tag,unsigned long Col,unsigned long Row)
@@ -265,16 +280,20 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
-	//if(mGrid->getCheck(2,Row)->Checked)//mìní se M,P, zùstává aRD, RD, Rz, Rx, R, CT,DD,K
+	if(mGrid->getCheck(2,Row)->Checked)//mìní se M,P, zùstává aRD, RD, Rz, Rx, R, CT,DD,K
 	{
-//		pm.CT_locked=false;pm.DD_locked=true;
-//		pm.input_RD(true);
-//		if(SaveTo==0)
-//		{
-//			mGrid->Cells[11][Row].Font->Color=clLOCKED;//DD
-//			mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
-//			mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
-//		}
+		pm.P=pm.K2P(pm.K);//pozice
+		pm.M=pm.Mezera();//mezera
+		if(SaveTo==0)
+		{
+			mGrid->Cells[13][Row].Font->Color=clLOCKED;//CT
+			mGrid->Cells[15][Row].Font->Color=clLOCKED;//RD
+			mGrid->Cells[17][Row].Font->Color=clLOCKED;//DD
+			mGrid->Cells[19][Row].Font->Color=clLOCKED;//K
+			mGrid->Cells[21][Row].Font->Color=clUNLOCKED;//P
+			mGrid->Cells[23][Row].Font->Color=clUNLOCKED;//MJ
+			mGrid->Cells[25][Row].Font->Color=clUNLOCKED;//MP
+		}
 	}
 //	else//mìní se RD,DD,P,M, zùstává CT,K
 //	{
@@ -288,24 +307,24 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 //		}
 //	}
 //
-//	//output sekce
-//	AnsiString T="";
-//	switch(SaveTo)
-//	{
+	//output sekce
+	AnsiString T="";
+	switch(SaveTo)
+	{
 //		 case -1://uložení do textu je-li požadováno
 //		 {
 //				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
 //		 }break;
-//		 case 0://pouze vrátí text do bunìk
-//		 {
-//				mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
-//				mGrid->Cells[9][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
-//				mGrid->Cells[11][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
-//				mGrid->Cells[13][Row].Text= F->m.round2double(pm.K,2,"..");
-//				mGrid->Cells[15][Row].Text=	F->m.round2double(pm.P,2,"..");
-//				mGrid->Cells[17][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
-//				mGrid->Cells[19][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
-//		 }break;
+		 case 0://pouze vrátí text do bunìk
+		 {
+				mGrid->Cells[13][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
+				mGrid->Cells[15][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+				mGrid->Cells[17][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
+				mGrid->Cells[19][Row].Text= F->m.round2double(pm.K,2,"..");
+				mGrid->Cells[21][Row].Text=	F->m.round2double(pm.P,2,"..");
+				mGrid->Cells[23][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
+				mGrid->Cells[25][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
+		 }break;
 //		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 //		 {
 //				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
@@ -335,8 +354,8 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 //				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
 //				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
 //		 }break;
-//	}
-//	return T;
+	}
+	return T;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -12,7 +12,7 @@ class TPO_math
 		double RD;//rychlost dopravníku
 		double DD;//délka kabiny
 		double K;//kapacita
-		double P;//kapacita
+		double P;//pozice
 		double M;//mezera mezi vozíky
 		double MJ;//mezera mezi jig
 		double MP;//mezera mezi podvozky
@@ -39,9 +39,9 @@ class TPO_math
 		void input_MP();//pøepoèet souvisejících hodnot vyplývajících ze zmìny mezery podvozku
 		double K2P(double K);//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double P2K(double P);//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
+		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování (to se nepoužívá, protože se používá nacti_rx pøímo v PO)
 	private:
 		Cmy m;
-		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování (to se nepoužívá, protože se používá nacti_rx pøímo v PO)
 		double P2K();//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double Pozice();//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double UDV();//vrátí užitnou délku vozíku dle hodnoty rotace

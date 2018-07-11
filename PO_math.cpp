@@ -106,19 +106,19 @@ void TPO_math::input_M()
 	{
 		case 0:break;//S&G
 		case 1://Kontinuál
-				RD=(UDV()+M)/TT;//dle mezery spoèítám novou rychlost
-				input_RD();//døíve se používalo input_RD(false) znovu nepøepoèítává mezeru
-				break;
+			RD=(UDV()+M)/TT;//dle mezery spoèítám novou rychlost
+			input_RD();//døíve se používalo input_RD(false) znovu nepøepoèítává mezeru
+			break;
 		case 2://PP
-				if(DD_locked)input_DD();
-				else input_K();
-		break;
+			if(DD_locked)input_DD();
+			else input_K();
+			break;
 	}
 	MJ=M+fabs(m.UDJ(dJ,sJ,Rotace)-m.UDV(dJ,sJ,Rotace));
 	MP=M+fabs(dP-m.UDV(dJ,sJ,Rotace));
 }
 //---------------------------------------------------------------------------
-//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování
+//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá. Rx,Rz-testování, nevyužito
 double TPO_math::Mezera()
 {
 	double mezera=RD*TT-m.UDV(dJ,sJ,Rotace);
