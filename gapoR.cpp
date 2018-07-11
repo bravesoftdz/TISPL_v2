@@ -246,13 +246,13 @@ void __fastcall TF_gapoR::FormPaint(TObject *Sender)
 //test volání pøi onclick
 void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
-
 	//NASTAVENÍ, E NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
-		if(Col>=2 && mGrid->getCheck(Col,Row)->Checked==false){
-			TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
-			CH->Checked=true;
-			CH=NULL;delete CH;
-		}
+	if(Col>=2 && mGrid->getCheck(Col,Row)->Checked==false)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+		CH->Checked=true;
+		CH=NULL;delete CH;
+	}
 
 	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked)
 	{
@@ -267,10 +267,6 @@ void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		CH->Checked=false;
 		CH=NULL;delete CH;
 	}
-
-
-
-
 
 //NEWR
 	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
