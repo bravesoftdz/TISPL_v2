@@ -519,8 +519,8 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			}
 			Ch->Options->NormalColor=Cell.Background->Color;
 			Ch->Options->NormalColorAlpha=255;
-			Ch->Options->FrameNormalColor=(TColor)RGB(128,128,128);//Ch->Font->Color;
-			Ch->Options->FrameNormalColorAlpha=255;
+			//nepooužívat Ch->Options->FrameNormalColor=(TColor)RGB(128,128,128);//Ch->Font->Color;
+			//nepooužívat Ch->Options->FrameNormalColorAlpha=255;
 			Ch->Font=Cell.Font;
 			Ch->Caption=Cell.Text;
 			//vlastník
