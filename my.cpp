@@ -318,10 +318,10 @@ double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopr
 }
 /////////////////////////////////////////////////////////////////////////////
 //metoda vratí minimální možnou mezeru mezi vozíky, pokud je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejbližší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, pokud nebude zadaná rozteè tj. bude 0, vrací hodnotu 0, lze parametrizovat vracený výsledek 0 (implicitnì) - kritická mezera, 1 èi 281 - mezera mezi JIG, 2 èi 282 mezera mezi PODVOZKY
-double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,double mezera,unsigned short typ)
+double Cmy::mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera,unsigned short typ)
 {
 	//požadovaná hodnota
-	double DV=UDV(dV,sV,rotace);//kritická mezera
+	double DV=UDV(dJ,sJ,rotace);//kritická mezera
 	double RET=0.0;
 
 	if(roztec!=0)
@@ -337,15 +337,15 @@ double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,d
 			else {RET=min_mezera+round((mezera-min_mezera)/roztec)*roztec;}//vratí nejbližší možnou mezeru mezi vozíky
 		}
 		//pokud je požadovaná mezi jigy èi vozíky
-		bool JMK=false; if(UDV(dV,sV,rotace)==UDJ(dV,sV,rotace))JMK=true;//mezera mezi JIGy je kritická
+		bool JMK=false; if(UDV(dJ,sJ,rotace)==UDJ(dJ,sJ,rotace))JMK=true;//mezera mezi JIGy je kritická
 		switch(typ)
 		{
 			//jig
 			case 1:
-			case 251: if(JMK)RET=min_mezera;else RET=min_mezera+F->d.v.PP.delka_podvozek-UDJ(dV,sV,rotace);break;
+			case 251: if(JMK)RET=min_mezera;else RET=min_mezera+F->d.v.PP.delka_podvozek-UDJ(dJ,sJ,rotace);break;
 			//podvozek
 			case 2:
-			case 252:	if(!JMK)RET=min_mezera;else RET=min_mezera+F->d.v.PP.delka_podvozek-UDJ(dV,sV,rotace);break;
+			case 252:	if(!JMK)RET=min_mezera;else RET=min_mezera+F->d.v.PP.delka_podvozek-UDJ(dJ,sJ,rotace);break;
 		}
 		return RET;
 	}
@@ -353,9 +353,9 @@ double Cmy::mezera_mezi_voziky(double dV,double sV,double rotace,double roztec,d
 }
 ////////////////////////
 //vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace
-double Cmy::mezera(double dV,double sV,double rotace,double Rx,double R)
+double Cmy::mezera(double dJ,double sJ,double rotace,double Rx,double R)
 {
-	return (Rx*R)-UDV(dV,sV,rotace);
+	return (Rx*R)-UDV(dJ,sJ,rotace);
 }
 ////////////////////////
 //vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace)
@@ -375,9 +375,9 @@ double Cmy::minM(double RD1,double RD2,double R2)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
-double Cmy::Rz(double dV,double sV,double rotace,double M)
+double Cmy::Rz(double dJ,double sJ,double rotace,double M)
 {
-	return M+UDV(dV,sV,rotace);
+	return M+UDV(dJ,sJ,rotace);
 }
 ////////////////////////
 //vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k RD (a resp. TT)
@@ -393,10 +393,10 @@ double Cmy::Rz(double Rx, double R)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí rozestup v poètech palcù mezi aktivními palci, byla-li zadáná správnì mezera
-double Cmy::Rx(double dV,double sV,double rotace,double M,double R)
+double Cmy::Rx(double dJ,double sJ,double rotace,double M,double R)
 {
 	if(R==0)return 0;//nebyla definováná rozteè palcù, tudíž se nepracuje s palci
-	else return (M+UDV(dV,sV,rotace))/R;
+	else return (M+UDV(dJ,sJ,rotace))/R;
 }
 ////////////////////////
 //vrátí rozestup v poètech palcù mezi aktivními palci z RD a R (a resp. TT)
@@ -425,13 +425,13 @@ double Cmy::RD(double Rz)
 }
 ////////////////////////
 //vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
-double Cmy::dopRD(double dV,double sV,double rotace,double R,double TT, double RD)
+double Cmy::dopRD(double dJ,double sJ,double rotace,double R,double TT, double RD)
 {
 	if(TT==0)return 0;
 	else
 	{
-		double DV=UDV(dV,sV,rotace);
-		return (DV+mezera_mezi_voziky(dV,sV,rotace,R,TT*RD-DV))/TT;
+		double DV=UDV(dJ,sJ,rotace);
+		return (DV+mezera_mezi_voziky(dJ,sJ,rotace,R,TT*RD-DV))/TT;
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -443,10 +443,10 @@ bool Cmy::kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí užitnou délku vozíku
-double Cmy::UDV(double dV,double sV,double rotace)
+double Cmy::UDV(double dJ,double sJ,double rotace)
 {
 	//postupnì rozšíøit o výpoèet dle zadaných stupòù nejenom 0 vs. 90
-	double DV=UDJ(dV,sV,rotace);
+	double DV=UDJ(dJ,sJ,rotace);
 	if(DV<F->d.v.PP.delka_podvozek)DV=F->d.v.PP.delka_podvozek;
 	return DV;
 }

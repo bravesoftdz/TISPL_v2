@@ -161,10 +161,10 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				TscGPButton *B=mGrid->createButton(21,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 				//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
-				//zajistí pøepoèet daného øádku - nových hodnot NEWR
-				calculate(j);
 				//výchozí nastavení v levém slouci - je vždy po zobrazení zaškrnuta tato volba
 				mGrid->getCheck(2,j)->Checked=true;
+				//zajistí pøepoèet daného øádku, musí být poslední pøed j++- nových hodnot NEWR
+				calculate(j);
 				//posun na další øádek výsledné tabulky
 				j++;
 			}
@@ -267,7 +267,7 @@ void TF_gapoR::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		CH=NULL;delete CH;
 	}
 
-//NEWR
+//NEWR - musí být nakonci
 	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
 	{
 		calculate(Row,2);
