@@ -5,6 +5,7 @@
 
 #include "TT_kalkulator.h"
 #include "unit1.h"
+#include "parametry_linky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
@@ -23,6 +24,8 @@ __fastcall TForm_TT_kalkulator::TForm_TT_kalkulator(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm_TT_kalkulator::KonecClick(TObject *Sender)
 {
+Form_parametry_linky->Button_save->Enabled=true;
+Form_parametry_linky->Button_storno->Enabled=true;
 Close();
 }
 //---------------------------------------------------------------------------
@@ -31,6 +34,8 @@ void __fastcall TForm_TT_kalkulator::FormShow(TObject *Sender)
 {
 
 rEditNum_takt->Value=F->d.v.PP.TT;
+Form_parametry_linky->Button_save->Enabled=false;
+Form_parametry_linky->Button_storno->Enabled=false;
 
 Nastav_design();
 
@@ -69,6 +74,42 @@ void __fastcall TForm_TT_kalkulator::FormKeyDown(TObject *Sender, WORD &Key, TSh
 		 Form_TT_kalkulator->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
 		 Form_TT_kalkulator->VisibleChanging();//skryje form, stejné jako visible=false
  }
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_TT_kalkulator::Button_stornoClick(TObject *Sender)
+{
+	Form_parametry_linky->Button_save->Enabled=true;
+	Form_parametry_linky->Button_storno->Enabled=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_TT_kalkulator::rEditNum_taktKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift)
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+		 //ShowMessage("ted");
+			if (Button_save->Enabled) Form_TT_kalkulator->ModalResult = mrOk;// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, že nelze
+		 }break;
+		 case 27:// ESC
+		 {
+			Form_TT_kalkulator->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			Form_TT_kalkulator->VisibleChanging();// skryje form, stejné jako visible=false
+		 }break;
+		}
+
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_TT_kalkulator::Button_saveClick(TObject *Sender)
+{
+//
 }
 //---------------------------------------------------------------------------
 

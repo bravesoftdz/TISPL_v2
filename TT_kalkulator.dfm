@@ -427,6 +427,7 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2
+    OnKeyDown = rEditNum_taktKeyDown
   end
   object Button_save: TscGPButton
     Left = 214
@@ -442,6 +443,7 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
     ParentFont = False
     TabOrder = 3
     TabStop = True
+    OnClick = Button_saveClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -533,6 +535,7 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
     ParentFont = False
     TabOrder = 4
     TabStop = True
+    OnClick = Button_stornoClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
