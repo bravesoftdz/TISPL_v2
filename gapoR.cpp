@@ -504,3 +504,4 @@ void __fastcall TF_gapoR::FormMouseWheelDown(TObject *Sender, TShiftState Shift,
 }
 //---------------------------------------------------------------------------
 
+

@@ -28,6 +28,10 @@ __published:	// IDE-managed Components
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall Button_stornoClick(TObject *Sender);
+	void __fastcall rEditNum_taktKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall Button_saveClick(TObject *Sender);
+
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_TT_kalkulator(TComponent* Owner);

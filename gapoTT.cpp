@@ -60,6 +60,9 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->DefaultColWidth/=2;//NEWR
 	input_state=LOADING;
 
+	//workaround odchytávání stisku kláves NEWR
+	Edit1->SetFocus();
+
 		////////jednotky////////  NEWR
 	CTunit=F->readINI("nastaveni_form_parametry", "CT").ToInt();
 	RDunit=F->readINI("nastaveni_form_parametry", "RDt").ToInt();
@@ -109,6 +112,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[4][0].Align=mGrid->CENTER;
 	mGrid->Cells[4][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[4][0].BottomMargin=4;mGrid->Cells[4][0].TopMargin=8;
+	mGrid->Cells[4][0].Background->Color=clBACKGROUND;
 
 
 	mGrid->Cells[5][0].Font->Color=(TColor)RGB(43,87,154);
@@ -116,60 +120,70 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[5][0].Align=mGrid->CENTER;
 	mGrid->Cells[5][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[5][0].BottomMargin=4;mGrid->Cells[5][0].TopMargin=8;
+	mGrid->Cells[5][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[6][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[6][0].Font->Orientation=900;
 	mGrid->Cells[6][0].Align=mGrid->CENTER;
 	mGrid->Cells[6][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[6][0].BottomMargin=4;mGrid->Cells[6][0].TopMargin=8;
+	mGrid->Cells[6][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[7][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[7][0].Font->Orientation=900;
 	mGrid->Cells[7][0].Align=mGrid->CENTER;
 	mGrid->Cells[7][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[7][0].BottomMargin=4;mGrid->Cells[7][0].TopMargin=8;
+	mGrid->Cells[7][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[8][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[8][0].Font->Orientation=900;
 	mGrid->Cells[8][0].Align=mGrid->CENTER;
 	mGrid->Cells[8][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[8][0].BottomMargin=4;mGrid->Cells[8][0].TopMargin=8;
+	mGrid->Cells[8][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[9][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[9][0].Font->Orientation=900;
 	mGrid->Cells[9][0].Align=mGrid->CENTER;
 	mGrid->Cells[9][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[9][0].BottomMargin=4;mGrid->Cells[9][0].TopMargin=8;
+	mGrid->Cells[9][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[10][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[10][0].Font->Orientation=900;
 	mGrid->Cells[10][0].Align=mGrid->CENTER;
 	mGrid->Cells[10][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[10][0].BottomMargin=4;mGrid->Cells[10][0].TopMargin=8;
+	mGrid->Cells[10][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[11][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[11][0].Font->Orientation=900;
 	mGrid->Cells[11][0].Align=mGrid->CENTER;
 	mGrid->Cells[11][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[11][0].BottomMargin=4;mGrid->Cells[11][0].TopMargin=8;
+	mGrid->Cells[11][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[12][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[12][0].Font->Orientation=900;
 	mGrid->Cells[12][0].Align=mGrid->CENTER;
 	mGrid->Cells[12][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[12][0].BottomMargin=4;mGrid->Cells[12][0].TopMargin=8;
+	mGrid->Cells[12][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[13][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[13][0].Font->Orientation=900;
 	mGrid->Cells[13][0].Align=mGrid->CENTER;
 	mGrid->Cells[13][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[13][0].BottomMargin=4;mGrid->Cells[13][0].TopMargin=8;
+	mGrid->Cells[13][0].Background->Color=clBACKGROUND;
 
 	mGrid->Cells[14][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[14][0].Font->Orientation=900;
 	mGrid->Cells[14][0].Align=mGrid->CENTER;
 	mGrid->Cells[14][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[14][0].BottomMargin=4;mGrid->Cells[14][0].TopMargin=8;
+	mGrid->Cells[14][0].Background->Color=clBACKGROUND;
 
 
 	if(CTunit)mGrid->Cells[15][0].Text="CT - Technologický èas [min]";else mGrid->Cells[15][0].Text="CT - Technologický èas [s]";
@@ -183,10 +197,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[30][0].Text="náhled";
 	mGrid->Cells[31][0].Text="ID_pohon";
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
-	mGrid->SetCells(mGrid->Cells[0][0],15,0,ColCount-1,0);//pro první øádek
-	mGrid->SetCells(mGrid->Cells[0][0],1,0,3,0);//pro první øádek
+	mGrid->SetCells(mGrid->Cells[0][0],15,0,ColCount-1,0);//pro první øádek   sloupce 15+
+	mGrid->SetCells(mGrid->Cells[0][0],1,0,3,0);//pro první øádek   sloupce 1-3
 	//v tomto pøípadì šedý sloupec (stejný jako orámování) jako nemìné hodnoty - nedoøešený problém s posunem v AA
-//	mGrid->Cells[ColCount-1][1].Background->Color=(TColor)RGB(240,240,240);
+	//mGrid->Cells[ColCount-1][1].Background->Color=(TColor)RGB(200,240,240);
 //	mGrid->SetCells(mGrid->Cells[ColCount-1][1],ColCount-1,2,ColCount-1,RowCount-1);
 
 	//pøiøazení jiného fontu, nemìným položkám - NEWR
@@ -208,8 +222,8 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	Canvas->Font=mGrid->Cells[n][0].Font;	//nejdelší použitý text
 	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[17][0].Text)+mGrid->Cells[17][0].BottomMargin+mGrid->Cells[17][0].BottomBorder->Width/2+mGrid->Cells[17][0].TopMargin+mGrid->Cells[17][0].TopBorder->Width/2;
 	//manualfit šíøky sloupcù mimo prvního (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
-	mGrid->Columns[1].Width=100;mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=mGrid->Columns[12].Width=mGrid->Columns[13].Width=mGrid->Columns[14].Width=23;//ostatní následující sloupce zatím default šíøka
-	mGrid->Columns[2].Width=100;
+	mGrid->Columns[1].Width=90;mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=mGrid->Columns[12].Width=mGrid->Columns[13].Width=mGrid->Columns[14].Width=23;//ostatní následující sloupce zatím default šíøka
+	mGrid->Columns[2].Width=120;
 
 	//nastavení velikosti nultého sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
 	mGrid->SetColumnAutoFit(0);
@@ -478,6 +492,11 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 
 	 for(int i=1;i<=RowCount-1;i++){
 			mGrid->Cells[14][i].RightBorder->Width=2;
+			mGrid->Cells[0][i].Background->Color=clBACKGROUND;
+			mGrid->Cells[0][i].BottomBorder->Color=clBACKGROUND;
+			mGrid->Cells[1][i].Background->Color=clBACKGROUND;
+			mGrid->Cells[2][i].Background->Color=clBACKGROUND;
+
 	 }
 
 
@@ -499,18 +518,56 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[3][0].TopBorder->Width=3;
 
 //
+
+	//šíøka
+	Width=mGrid->Width+Offset*2+1;
+	if(Width<=F->Width)//pokud je užší nebo stejnì jako šíøka hlavního formu
+	{
+		scScrollBar_horizont->Visible=false;
+	}
+	else//je širší
+	{
+		Width=F->Width;
+		scScrollBar_horizont->Visible=true;
+		scScrollBar_horizont->Left=0;
+		scScrollBar_horizont->Top=0+scGPPanel_hlavicka->Height;
+		scScrollBar_horizont->Width=Width;
+		scScrollBar_horizont->Position=0;
+	}
+	//výška
+	Height=mGrid->Height+Offset*2+rHTMLLabel_InfoText->Height+scGPPanel_hlavicka->Height+11+scGPButton_OK->Height+11;// + 11 offset okolo tlaèítka
+	if(Height<=F->Height)//pokud je kratší než výška hlavní formu
+	{
+		scScrollBar_vertical->Visible=false;
+	}
+	else//je delší
+	{
+		Height=F->Height;
+		Width+=scScrollBar_vertical->Width-Offset;//musím ještì rozšíøit form, aby se vešel scrollbar
+		scScrollBar_vertical->Visible=true;
+		scScrollBar_vertical->Left=Width-scScrollBar_vertical->Width;
+		scScrollBar_vertical->Top=scGPPanel_hlavicka->Height;
+		scScrollBar_vertical->Height=Height-scGPPanel_hlavicka->Height;
+		if(scScrollBar_horizont->Visible)//ošetøení pokud jsou zobrazeny oba
+		{
+			scScrollBar_vertical->Top+=scScrollBar_horizont->Height;
+			scScrollBar_vertical->Height=Height-scScrollBar_horizont->Width-scGPPanel_hlavicka->Height;
+		}
+		scScrollBar_vertical->Position=0;
+	}
+
+
 //	////////autoresize formu_gapo, vhodné nakonec,tj. pøed Show////////
 	Width=mGrid->Width+Offset*2;
 	Height=mGrid->Height+Offset*2+scGPPanel_hlavicka->Height+10+scGPButton_OK->Height+10;// + 10 offset okolo tlaèítka
   //NEWR
 	F->m.designButton(scGPButton_OK,F_gapoTT,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoTT,2,2);
-	//NEWR
+	//NEWR   legenda pozice
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
-	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;
-	rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
-	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;
-	rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
+	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
+	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
+
 		////pozice gapo formu
 	Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
 	Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
@@ -999,4 +1056,51 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 }
 
 
+
+void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)
+{
+	Form_parametry_linky->Button_save->Enabled=true;
+	Form_parametry_linky->Button_storno->Enabled=true;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TF_gapoTT::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (scGPButton_OK->Enabled)scGPButton_OKClick(Sender);// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, že nelze
+		 }break;
+		 case 27:// ESC
+		 {
+		 	Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
+			F_gapoTT->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			F_gapoTT->VisibleChanging();// skryje form, stejné jako visible=false
+		 }break;
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TF_gapoTT::scButton_csvClick(TObject *Sender)
+{
+	AnsiString T="";
+	for(unsigned long Row=1;Row<mGrid->RowCount;Row++)
+	{
+		T+=calculate(Row,-1)+"\n";//sice se propoèítává opakovanì, ale kvùli možnému zobrazení dat ve zkrácené formì v tabulce. lepe z ostrých dat
+	}
+	F->d.v.Text2CSV(T,Form1->FileName+"_tabulka_gapoTT","Uložit hodnoty do CSV...","*.csv","Soubory formátu CSV (*.csv)|*.csv|Soubory formátu XLS (*.xls)|*.xls");
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TF_gapoTT::scGPGlyphButton_copyClick(TObject *Sender)
+{
+	mGrid->CopyCells2Clipboard(0,0,mGrid->ColCount-1,mGrid->RowCount-1);
+}
+//---------------------------------------------------------------------------
 

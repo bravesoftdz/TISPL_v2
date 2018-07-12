@@ -20,17 +20,25 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel_titulek;
 	TscGPGlyphButton *scGPGlyphButton_info;
-	TscButton *scButton_html;
 	TscGPButton *scGPButton_OK;
 	TrHTMLHint *rHTMLHint1;
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TrHTMLLabel *rHTMLLabel_legenda;
 	TrHTMLLabel *rHTMLLabel_legenda_titulek;
 	TscGPButton *scGPButton_storno;
+	TEdit *Edit1;
+	TscGPGlyphButton *scGPGlyphButton_copy;
+	TscButton *scButton_csv;
+	TscScrollBar *scScrollBar_horizont;
+	TscScrollBar *scScrollBar_vertical;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall scGPButton_stornoClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scButton_csvClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù

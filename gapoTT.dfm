@@ -3,7 +3,7 @@ object F_gapoTT: TF_gapoTT
   Top = 0
   BorderStyle = bsNone
   Caption = 'F_gapoTT'
-  ClientHeight = 446
+  ClientHeight = 496
   ClientWidth = 377
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
@@ -13,6 +13,7 @@ object F_gapoTT: TF_gapoTT
   Font.Style = []
   OldCreateOrder = False
   OnClose = FormClose
+  OnKeyDown = FormKeyDown
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -38,10 +39,11 @@ object F_gapoTT: TF_gapoTT
     Left = -2
     Top = 377
     Width = 154
-    Height = 59
+    Height = 116
     Caption = 
       '- m'#283'n'#283'n'#225' hodnota'#13'<font color=gray>- nem'#283'n'#283'n'#225' hodnota</font>'#13'<fon' +
-      't color=silver>- p'#367'vodn'#237' hodnota</font>'
+      't color=silver>- p'#367'vodn'#237' hodnota</font>'#13#13'<font color=black>1. sk' +
+      'upina voleb</font>'#13'<font color=green>2. skupina voleb</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clYellow
     Font.Height = -16
@@ -181,9 +183,9 @@ object F_gapoTT: TF_gapoTT
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
-      Left = 55
+      Left = 92
       Top = 0
-      Width = 235
+      Width = 198
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -214,6 +216,8 @@ object F_gapoTT: TF_gapoTT
       Caption = 
         'Glob'#225'ln'#237' aktualizace parametr'#367' pohon'#367' a objekt'#367' z d'#367'vodu zm'#283'ny T' +
         'T'
+      ExplicitLeft = 55
+      ExplicitWidth = 235
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 290
@@ -294,17 +298,98 @@ object F_gapoTT: TF_gapoTT
       GroupIndex = 0
       AllowAllUp = False
     end
-    object scButton_html: TscButton
+    object scGPGlyphButton_copy: TscGPGlyphButton
+      Left = 45
+      Top = 0
+      Width = 37
+      Height = 34
+      Hint = 'Zkop'#237'rovat paremetry objektu'
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNone
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      OnClick = scGPGlyphButton_copyClick
+      Animation = True
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clGray
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clGray
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 0
+      Options.FrameNormalColor = clBtnText
+      Options.FrameHotColor = clBtnText
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = clHighlight
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 0
+      Options.FrameHotColorAlpha = 0
+      Options.FramePressedColorAlpha = 0
+      Options.FrameFocusedColorAlpha = 0
+      Options.FrameDisabledColorAlpha = 0
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 5
+      Options.ShapeStyle = scgpRoundedRect
+      Options.ArrowSize = 9
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = 33791
+      GlyphOptions.HotColor = 1871359
+      GlyphOptions.PressedColor = clBtnText
+      GlyphOptions.FocusedColor = 1871359
+      GlyphOptions.DisabledColor = clGray
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 150
+      GlyphOptions.Kind = scgpbgkCopy
+      GlyphOptions.Thickness = 2
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+    end
+    object scButton_csv: TscButton
       Left = 0
       Top = 0
       Width = 45
       Height = 34
       Align = alLeft
-      Enabled = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 4
       TabStop = True
+      OnClick = scButton_csvClick
       Animation = False
       CanFocused = True
       CustomDropDown = False
@@ -315,12 +400,12 @@ object F_gapoTT: TF_gapoTT
       ImageIndex = 41
       ImageMargin = 0
       TransparentBackground = True
-      ColorOptions.NormalColor = clWhite
+      ColorOptions.NormalColor = clHighlight
       ColorOptions.HotColor = clHighlight
       ColorOptions.PressedColor = clHighlight
       ColorOptions.FocusedColor = clHighlight
       ColorOptions.DisabledColor = clHighlight
-      ColorOptions.FrameNormalColor = clWhite
+      ColorOptions.FrameNormalColor = clHighlight
       ColorOptions.FrameHotColor = clHighlight
       ColorOptions.FramePressedColor = clHighlight
       ColorOptions.FrameFocusedColor = clHighlight
@@ -330,12 +415,12 @@ object F_gapoTT: TF_gapoTT
       ColorOptions.FontHotColor = clBtnText
       ColorOptions.FontPressedColor = clBtnText
       ColorOptions.FontFocusedColor = clBtnText
-      ColorOptions.FontDisabledColor = clBtnShadow
+      ColorOptions.FontDisabledColor = clHighlight
       ColorOptions.TitleFontNormalColor = clBtnText
       ColorOptions.TitleFontHotColor = clBtnText
       ColorOptions.TitleFontPressedColor = clBtnText
       ColorOptions.TitleFontFocusedColor = clBtnText
-      ColorOptions.TitleFontDisabledColor = clBtnShadow
+      ColorOptions.TitleFontDisabledColor = clHighlight
       ColorOptions.StyleColors = True
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
@@ -365,14 +450,14 @@ object F_gapoTT: TF_gapoTT
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
-      GlowEffect.StyleColors = True
-      GlowEffect.HotColor = clNone
-      GlowEffect.PressedColor = clNone
-      GlowEffect.FocusedColor = clNone
+      GlowEffect.StyleColors = False
+      GlowEffect.HotColor = clHighlight
+      GlowEffect.PressedColor = clHighlight
+      GlowEffect.FocusedColor = clHighlight
       GlowEffect.PressedGlowSize = 7
-      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.PressedAlphaValue = 155
       GlowEffect.States = [scsHot, scsPressed, scsFocused]
-      ImageGlow = True
+      ImageGlow = False
       ShowGalleryMenuFromTop = False
       ShowGalleryMenuFromRight = False
       ShowMenuArrow = True
@@ -381,6 +466,7 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 8
     end
   end
   object scGPButton_OK: TscGPButton
@@ -485,6 +571,7 @@ object F_gapoTT: TF_gapoTT
     ParentFont = False
     TabOrder = 2
     TabStop = True
+    OnClick = scGPButton_stornoClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
@@ -561,6 +648,40 @@ object F_gapoTT: TF_gapoTT
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Edit1: TEdit
+    Left = 92
+    Top = -30
+    Width = 121
+    Height = 21
+    TabOrder = 3
+    Text = 'Edit1'
+    OnKeyDown = FormKeyDown
+  end
+  object scScrollBar_horizont: TscScrollBar
+    Left = 8
+    Top = 356
+    Width = 361
+    Height = 16
+    LargeChange = 20
+    PageSize = 0
+    SmallChange = 10
+    TabOrder = 4
+    TabStop = False
+    Visible = False
+  end
+  object scScrollBar_vertical: TscScrollBar
+    Left = 361
+    Top = 37
+    Width = 16
+    Height = 313
+    Kind = sbVertical
+    LargeChange = 20
+    PageSize = 0
+    SmallChange = 10
+    TabOrder = 5
+    TabStop = False
+    Visible = False
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
