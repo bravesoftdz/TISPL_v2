@@ -39,11 +39,11 @@ object F_gapoTT: TF_gapoTT
     Left = -2
     Top = 377
     Width = 154
-    Height = 116
+    Height = 97
     Caption = 
       '- m'#283'n'#283'n'#225' hodnota'#13'<font color=gray>- nem'#283'n'#283'n'#225' hodnota</font>'#13'<fon' +
-      't color=silver>- p'#367'vodn'#237' hodnota</font>'#13#13'<font color=black>1. sk' +
-      'upina voleb</font>'#13'<font color=green>2. skupina voleb</font>'
+      't color=silver>- p'#367'vodn'#237' hodnota</font>'#13'<font color=#804000>1. o' +
+      'blast</font>'#13'<font color=#008000>2. oblast</font>'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clYellow
     Font.Height = -16
