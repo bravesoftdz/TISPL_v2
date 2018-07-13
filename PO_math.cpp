@@ -41,7 +41,7 @@ void TPO_math::input_RD(bool prepocet_M)
 			if(CT_locked)DD=RD*CT;//pro pøípad CT zamèeno, RD odemèeno (zajištìno v PO)
 			if(DD_locked)CT=DD/RD;//pro pøípad DD zamèeno, RD odemèeno (zajištìno v PO)
 			if(prepocet_M)M=Mezera();//výpoèet mezery musí být umístìn pøed výpoètem pozice
-			K=CT/TT;//výpoèet kapacity
+			K=CT/TT;//výpoèet kapacity, v pøípadì zamèeného CT se nic nemìní
 			P=Pozice();//výpoèet poètu pozic
 		break;
 		case 2:break;//PP
