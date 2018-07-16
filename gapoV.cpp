@@ -42,10 +42,14 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 void __fastcall TF_gapoV::FormShow(TObject *Sender)
 {
 	////////jednotky////////
-	CTunit=F->readINI("nastaveni_form_parametry", "CT").ToInt();
-	RDunit=F->readINI("nastaveni_form_parametry", "RDt").ToInt();
-	DDunit=F->readINI("nastaveni_form_parametry", "DD").ToInt();
-	Munit =F->readINI("nastaveni_form_parametry", "DM").ToInt();
+	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
+	if(T=="")CTunit=0;else CTunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","RDt");
+	if(T=="")RDunit=0;else RDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DD");
+	if(T=="")DDunit=0;else DDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DM").ToInt();
+	if(T=="")Munit=0; else Munit =T.ToInt();
 
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
@@ -57,7 +61,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=34;//pevný poèet slopcù
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
-	RowCount+=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(true);//PØIDAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	RowCount+=F->d.v.OBJEKTY->predchozi->n-F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1);
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
@@ -125,8 +129,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	////prùchod všemi objekty bez pøiøazených pohonu
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
-	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
-	for(unsigned long i=0;i<On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
+	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1);
+	for(unsigned long i=1;i<=On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
 		//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 		objekty[j]=On[i];
@@ -312,7 +316,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.Rotace=objekty[Row].rotace;                   //zajistit pøevod
 	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 
-	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znouv
+	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[5];
 	CHECK[0]=mGrid->getCheck(2,Row)->Checked;
 	CHECK[1]=mGrid->getCheck(4,Row)->Checked;
