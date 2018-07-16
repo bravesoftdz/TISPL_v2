@@ -59,6 +59,7 @@ public:		// User declarations
 	int pocitadlo;
 	TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
 	bool zobrazitFrameForm;
+	bool Rx_canEdit;
 	Tinput_state input_state;//stav vstupu
 };
 //---------------------------------------------------------------------------
