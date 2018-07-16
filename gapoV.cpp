@@ -160,11 +160,12 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 			mGrid->Cells[29][j].Text=On[i].pohon->Rz;                       mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clOLD;mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clUNLOCKED;
 			mGrid->Cells[31][j].Text=On[i].pohon->Rx;                       mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
 		}
+		//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy viz DV+M) - je vždy po zobrazení zaškrnuta tato volba
+		mGrid->getCheck(4,j)->Checked=true;
+		//tlaèítko náhledu
 		mGrid->Cells[33][j].Type=mGrid->BUTTON;mGrid->Cells[33][j].Text="...";mGrid->Cells[33][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 		TscGPButton *B=mGrid->createButton(33,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 		B->Options->FontNormalColor=(TColor)RGB(255,128,0);
-		//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy) - je vždy po zobrazení zaškrnuta tato volba
-		mGrid->getCheck(3,j)->Checked=true;
 		//zajistí pøepoèet daného øádku - nových hodnot
 		calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed defaultní zaškrtnutí checkboxù
 		//posun na další øádek výsledné tabulky
@@ -217,7 +218,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				}
 				mGrid->Cells[33][j].Type=mGrid->BUTTON;mGrid->Cells[33][j].Text="...";mGrid->Cells[33][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 				TscGPButton *B=mGrid->createButton(33,j);B->Options->FontNormalColor=(TColor)RGB(255,128,0);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
-				//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy) - je vždy po zobrazení zaškrnuta tato volba
+				//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy  viz DV+M) - je vždy po zobrazení zaškrnuta tato volba
 				mGrid->getCheck(4,j)->Checked=true;
 				//zajistí pøepoèet daného øádku - nových hodnot
 				calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed výchozí zaškrtnutí checkboxù
@@ -263,7 +264,7 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
-  //Rosto, musí být poslední!
+	//Rosto, musí být poslední za klikací/pøepínací logikou!
 	if(Col==mGrid->ColCount-1)//je kliknuto na náhled objektu
 	{
 		calculate(Row,2);
@@ -302,8 +303,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	//input sekce
 	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
-	pm.CT=objekty[Row].CT;                       //zajistit pøevod
-	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.CT=objekty[Row].CT;
 	pm.DD=objekty[Row].delka_dopravniku;
 	pm.K=objekty[Row].kapacita;
 	pm.P=objekty[Row].pozice;
@@ -313,9 +313,19 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.dJ=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;//zajistit pøevod
 	pm.sJ=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;//zajistit pøevod
 	pm.dP=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;//zajistit pøevod
-	pm.Rotace=objekty[Row].rotace;                   //zajistit pøevod
-	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-
+	pm.Rotace=objekty[Row].rotace;
+	if(objekty[Row].pohon!=NULL)
+	{
+																		//Rosta zajistit pøevod
+		pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+																		//Rosta zajistit pøevod
+		pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	}
+	else
+	{
+		pm.RD=objekty[Row].RD;
+		pm.R=0;
+  }
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[5];
 	CHECK[0]=mGrid->getCheck(2,Row)->Checked;
