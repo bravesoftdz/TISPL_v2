@@ -59,6 +59,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->AntiAliasing_text=true;
 	mGrid->DefaultColWidth/=2;//NEWR
 	input_state=LOADING;
+	Rx_canEdit=true;
 
 	//workaround odchytávání stisku kláves NEWR
 	Edit1->SetFocus();
@@ -88,18 +89,25 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
 	mGrid->Cells[1][0].Text="objekt";
 	mGrid->Cells[2][0].Text="režim";
+
+	//------------------------------------------------
 	mGrid->Cells[3][0].Text="aRD, RD, CT";
 	mGrid->Cells[4][0].Text="DD, K, P, Rz, Rx, R, M";
+	//------------------------------------------------
 	mGrid->Cells[5][0].Text="aRD, RD, DD, K, P";
 	mGrid->Cells[6][0].Text="CT, Rz, Rx, R, M";
-	mGrid->Cells[7][0].Text="Rz, Rx, (R), M, DD, P, CT";
-	mGrid->Cells[8][0].Text="Rz, Rx, (R), M, DD, P, CT";
-	mGrid->Cells[9][0].Text="Rz, Rx, (R), M, DD, P, CT";
-	mGrid->Cells[10][0].Text="aRD, RD, DD, CT";
-	mGrid->Cells[11][0].Text="Rz, Rx, M, DD, P, CT";
-	mGrid->Cells[12][0].Text="aRD, RD, R,  DD, CT";
-	mGrid->Cells[13][0].Text="Rz, R, M, DD, P, CT";
-	mGrid->Cells[14][0].Text="aRD, RD, Rz,  DD, CT";
+	//------------------------------------------------
+	mGrid->Cells[7][0].Text="Rz, Rx!, M, DD, P, CT";
+	mGrid->Cells[8][0].Text="aRD, RD, R, K";
+	//------------------------------------------------
+	mGrid->Cells[9][0].Text="Rz, Rx!, M, K, P";
+	mGrid->Cells[10][0].Text="aRD, RD, R, DD, CT";
+	//------------------------------------------------
+	mGrid->Cells[11][0].Text="Rz, R, M, DD, P, CT";
+	mGrid->Cells[12][0].Text="aRD, RD, Rx, K";
+	//------------------------------------------------
+	mGrid->Cells[13][0].Text="Rz, R, M, K, P";
+	mGrid->Cells[14][0].Text="aRD, RD, Rx, DD, CT";
 
 	mGrid->Cells[3][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[3][0].Font->Orientation=900;
@@ -275,7 +283,9 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->MergeCells(13,j,14,j);
 				}
 
-//
+
+
+
  //			parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[15][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");	 								mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clOLD;mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[17][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                 mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clOLD;mGrid->Cells[18][j].Align=mGrid->LEFT; mGrid->Cells[18][j].Font->Color=clUNLOCKED;
@@ -386,6 +396,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[3][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(3,j,4,j);
 
+
 				 if(O[z].rezim!=0)   //povolení zobrazení checkboxù pro KK a PP režim
 				{
 				mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
@@ -459,6 +470,31 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 					A=NULL;delete A;B=NULL;delete B;B=NULL;delete B;C=NULL;delete C;D=NULL;delete D;E=NULL;delete E;
 				 }
 				CH=NULL;delete CH;
+
+
+				if(O[z].pohon!=NULL && O[z].rezim!=0) //vynechání SG režimu (má pøednastavené volby)
+				{
+					 //	ShowMessage(O[z].pohon->Rx);
+					double value=F->ms.MyToDouble(O[z].pohon->Rx);
+					if(value!=floor(value))
+					{
+
+					double dop_Rx=Form1->m.round(F->ms.MyToDouble(O[z].pohon->Rx));
+
+					vypis("Rx: nedovolím editovat, doporuèené Rx: "+ AnsiString(dop_Rx));
+					mGrid->getCheck(7,j)->Enabled=false;
+					mGrid->getCheck(11,j)->Enabled=false;
+					Rx_canEdit=false;
+					}
+				}
+
+
+
+
+
+
+
+
 
 	 //			parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[15][j].Text=F->m.round2double(O[z].CT/(1+59.0*CTunit),2,"..");	 							 	mGrid->Cells[15][j].Align=mGrid->LEFT;	mGrid->Cells[15][j].Font->Color=clOLD;	mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
@@ -751,9 +787,9 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 								{
 										 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
 											{
-											mGrid->getCheck(7,i)->Enabled=true;
+											if(Rx_canEdit==true) { 	mGrid->getCheck(7,i)->Enabled=true;	mGrid->getCheck(11,i)->Enabled=true; }
+
 											mGrid->getCheck(9,i)->Enabled=true;
-											mGrid->getCheck(11,i)->Enabled=true;
 											mGrid->getCheck(13,i)->Enabled=true;
 											vypis("",false);
 											}
