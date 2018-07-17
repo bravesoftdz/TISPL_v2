@@ -32,6 +32,11 @@ __fastcall TF_gapoV::TF_gapoV(TComponent* Owner)
 	clLOCKED	 = (TColor)RGB(128,128,128);
 	clUNLOCKED = (TColor)RGB(255,128,0);
 	clBACKGROUND=(TColor)RGB(250,250,250);
+
+	// nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
+	C1=Form1->m.clIntensive(RGB(128,64,0),20);
+	C2=Form1->m.clIntensive(RGB(0,128,0),80);
+	C3=Form1->m.clIntensive(RGB(20,80,100),80);
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoV::FormActivate(TObject *Sender)
@@ -51,6 +56,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	T=F->readINI("nastaveni_form_parametry","DM").ToInt();
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
+	input_state=LOADING;
+
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
 	mGrid->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
@@ -61,7 +68,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=34;//pevný poèet slopcù
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
-	RowCount+=F->d.v.OBJEKTY->predchozi->n-F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1);
+	RowCount+=F->d.v.OBJEKTY->predchozi->n-F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1)  ; //ROSTA -1
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
@@ -140,7 +147,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		mGrid->Cells[1][j].Text=On[i].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 		//volby - checkboxy
 		mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
-		mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
+		mGrid->MergeCells(2,j,3,j);
+		mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 		mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
 		mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//slouèení sloupcù
 		mGrid->Cells[10][j].Type=mGrid->CHECK;
@@ -167,7 +175,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		TscGPButton *B=mGrid->createButton(33,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 		B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 		//zajistí pøepoèet daného øádku - nových hodnot
-		calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed defaultní zaškrtnutí checkboxù
+	//	calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed defaultní zaškrtnutí checkboxù
 		//posun na další øádek výsledné tabulky
 		j++;
 	}
@@ -196,12 +204,50 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				//objekty
 				mGrid->Cells[1][j].Text=O[z].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 				//volby - checkboxy
-				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
-				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
+
+			//	mGrid->Cells[2][j].Type=mGrid->CHECK;
+			//	mGrid->MergeCells(2,j,3,j);
+				mGrid->Cells[4][j].Type=mGrid->CHECK;
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) <= 1 )  //KK režim
+				{
+					 mGrid->Cells[2][j].Type=mGrid->CHECK;
+					 mGrid->MergeCells(2,j,3,j);
+				}
+
+
+
+				mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 				mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//slouèení sloupcù
 				mGrid->Cells[10][j].Type=mGrid->CHECK;mGrid->MergeCells(10,j,11,j);
+
+
+
+							if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 )  //KK režim
+						{   //pokud akt.název pohonu je odlišný od pøedchozího øádku, nastavím typ na CHECK.
+								if(O[z].pohon->name!=mGrid->Cells[0][j-1].Text)
+								{
+									mGrid->Cells[2][j].Type=mGrid->CHECK;
+									//barvu prvního sloupce nastvuji níže, nelze zde
+								}
+							mGrid->getCheck(4,j)->Options->FrameNormalColor=C2;
+							mGrid->getCheck(4,j)->OptionsChecked->FrameNormalColor=C2;
+
+							mGrid->getCheck(6,j)->Options->FrameNormalColor=C2;
+							mGrid->getCheck(6,j)->OptionsChecked->FrameNormalColor=C2;
+
+							mGrid->getCheck(8,j)->Options->FrameNormalColor=C3;
+							mGrid->getCheck(8,j)->OptionsChecked->FrameNormalColor=C3;
+
+							mGrid->getCheck(10,j)->Options->FrameNormalColor=C3;
+							mGrid->getCheck(10,j)->OptionsChecked->FrameNormalColor=C3;
+
+						}
+
+
+
 				//parametry objektù
+
 				mGrid->Cells[12][j].Text=O[z].CT/(1+59.0*CTunit);                mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[14][j].Text=O[z].RD*(1+59.0*RDunit);                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[16][j].Text=O[z].delka_dopravniku*(1+999*DDunit);   mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
@@ -221,11 +267,19 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy  viz DV+M) - je vždy po zobrazení zaškrnuta tato volba
 				mGrid->getCheck(4,j)->Checked=true;
 				//zajistí pøepoèet daného øádku - nových hodnot
-				calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed výchozí zaškrtnutí checkboxù
+			//	calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed výchozí zaškrtnutí checkboxù
 				//posun na další øádek výsledné tabulky
+
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
+			mGrid->MergeCells(2,j-z,3,j-z+O_pocet-1);//slouèení bunìk 2-3
+
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 )  //KK režim
+				{ //nelze nastavit hned, v horní èásti, spoleènì s typem Check, ale až zde
+					mGrid->getCheck(2,j-z)->Options->FrameNormalColor=C1;
+					mGrid->getCheck(2,j-z)->OptionsChecked->FrameNormalColor=C1;
+				}
 			O=NULL;delete O;
 		}
 	}
@@ -253,6 +307,9 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 
 	////zobrazení orámování
 	zobrazitFrameForm=true;
+
+	///uvolnìní stavu
+	input_state=FREE;
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoV::FormPaint(TObject *Sender)
@@ -264,10 +321,118 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 //---------------------------------------------------------------------------
 void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
+
+ 	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
+	if(Col>=2 && mGrid->getCheck(Col,Row)->Checked==false)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+		CH->Checked=true;
+		CH=NULL;delete CH;
+	}
+
+
+
+		if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked /*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col+4,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+6,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+8,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+	}
+
+	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked)
+	{
+
+		if(mGrid->getCheck(Col,Row)->OptionsChecked->FrameColor < 1) //default šedá barva je záporná, proto mohu nastavovat
+		{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-2,Row);
+		CH->Checked=false;
+		}
+		TscGPCheckBox *I=mGrid->getCheck(Col+2,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+4,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+6,Row);
+		K->Checked=false;
+
+		/*CH=NULL;delete CH;*/I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+	}
+
+	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked /*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-4,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-2,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+2,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+4,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+	}
+
+	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked	/*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-6,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-4,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col-2,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+2,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+	}
+
+	if(Col==10 &&  mGrid->getCheck(Col,Row)->Checked /*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col-8,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-6,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col-4,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col-2,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+	}
+
+       //konec default nastavení pøepínaèù
+	///////////////////////////////////////////////////////////
+
+
+
+
+
+
+
 	//Rosto, musí být poslední za klikací/pøepínací logikou!
 	if(Col==mGrid->ColCount-1)//je kliknuto na náhled objektu
 	{
-		calculate(Row,2);
+	//	calculate(Row,2);
 		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
 		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
 		Invalidate();FormPaint(this);//zajistí pøekreslení bez probliku
@@ -276,10 +441,14 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		Form_objekt_nahled->ShowModal();
 		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
 	}
-	else//pøekliknutí chechboxu pravdìpodobnì
+	else
 	{
-		calculate(Row);//zajistí pøepoèet daného øádku
+	if(input_state==FREE)
+	 //pøekliknutí chechboxu pravdìpodobnì
+	{
+	//	calculate(Row);//zajistí pøepoèet daného øádku
 		FormPaint(this);//zajistí pøekreslení bez probliku
+	}
 	}
 }
 //---------------------------------------------------------------------------
