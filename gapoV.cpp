@@ -161,7 +161,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 			mGrid->Cells[31][j].Text=On[i].pohon->Rx;                       mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
 		}
 		//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy viz DV+M) - je vždy po zobrazení zaškrnuta tato volba
-		mGrid->getCheck(4,j)->Checked=true;
+		mGrid->getCheck(4,j)->Checked=true;//pozor, pøi getCheck(3,j) mi zde házelo chybu, i pøes ošetøení R-záležitostí, pøi pøekliku na tuto položku po zobrazeném formu, ale OK
 		//tlaèítko náhledu
 		mGrid->Cells[33][j].Type=mGrid->BUTTON;mGrid->Cells[33][j].Text="...";mGrid->Cells[33][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 		TscGPButton *B=mGrid->createButton(33,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
@@ -338,7 +338,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	if(CHECK[0])//mìní se M,P, zùstává aRD, RD, Rz, Rx, R, CT, DD, K
 	{
 		pm.P=pm.K2P(pm.K);//pozice
-		pm.M=pm.Mezera();//mezera, vzhledem k tomu, že aRD,Rz,R zùstávají mezera se poèítá pouze k aktuálnímu aRD
+		pm.M=pm.Mezera();//mezera, vzhledem k tomu, že aRD,Rz,R zùstávají mezera se poèítá pouze k aktuálnímu aRD resp. RD
 		if(SaveTo==0)
 		{
 			mGrid->Cells[13][Row].Font->Color=clLOCKED;//CT

@@ -30,24 +30,20 @@ __fastcall TF_gapoTT::TF_gapoTT(TComponent* Owner)
 	F->m.designButton(scGPButton_storno,F_gapoTT,2,2);
 	rHTMLLabel_InfoText->Font->Color = (TColor)RGB(43,87,154);//(TColor)RGB(0,128,255);
 
-
 	Offset=10;//odsazení thoto formu po všech stránách od tabulky
 
-
-	//definice barev NEWR
+	////definice barev
+	//položky
 	clOLD			 = (TColor)RGB(200,200,200);
 	clLOCKED	 = (TColor)RGB(128,128,128);
 	clUNLOCKED = (TColor)RGB(255,128,0);
 	clBACKGROUND=(TColor)RGB(250,250,250);
-
+	// nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
+	C1=Form1->m.clIntensive(RGB(128,64,0),20);
+	C2=Form1->m.clIntensive(RGB(0,128,0),80);
 	//legenda NEWR
 	rHTMLLabel_legenda_titulek->FontColor=(TColor)RGB(43,87,154);
 	rHTMLLabel_legenda->FontColor=clUNLOCKED;
-
-	// nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
-	 C1=Form1->m.clIntensive(RGB(128,64,0),20);
-	 C2=Form1->m.clIntensive(RGB(0,128,0),80);
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::FormShow(TObject *Sender)
@@ -57,20 +53,18 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Tag=1;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 	mGrid->Left=Offset;mGrid->Top=scGPPanel_hlavicka->Height+Offset;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
-	mGrid->DefaultColWidth/=2;//NEWR
+	mGrid->DefaultColWidth/=2;
 	input_state=LOADING;
 	Rx_canEdit=true;
 
-	//workaround odchytávání stisku kláves NEWR
+	//workaround odchytávání stisku kláves
 	Edit1->SetFocus();
 
-		////////jednotky////////  NEWR
+	////////jednotky////////             ROSTA DODELAT
 	CTunit=F->readINI("nastaveni_form_parametry", "CT").ToInt();
 	RDunit=F->readINI("nastaveni_form_parametry", "RDt").ToInt();
 	DDunit=F->readINI("nastaveni_form_parametry", "DD").ToInt();
 	Munit =F->readINI("nastaveni_form_parametry", "DM").ToInt();
-
-
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=32;//pevný poèet slopcù      //NEWR
@@ -97,10 +91,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[5][0].Text="aRD, RD, DD, K, P";
 	mGrid->Cells[6][0].Text="CT, Rz, Rx, R, M";
 	//------------------------------------------------
-	mGrid->Cells[7][0].Text="Rz, Rx!, M, DD, P, CT";
+	mGrid->Cells[7][0].Text="Rz, Rx, M, DD, P, CT";
 	mGrid->Cells[8][0].Text="aRD, RD, R, K";
 	//------------------------------------------------
-	mGrid->Cells[9][0].Text="Rz, Rx!, M, K, P";
+	mGrid->Cells[9][0].Text="Rz, Rx, M, K, P";
 	mGrid->Cells[10][0].Text="aRD, RD, R, DD, CT";
 	//------------------------------------------------
 	mGrid->Cells[11][0].Text="Rz, R, M, DD, P, CT";
@@ -204,12 +198,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[29][0].Text="Rotace";
 	mGrid->Cells[30][0].Text="náhled";
 	mGrid->Cells[31][0].Text="ID_pohon";
+
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],15,0,ColCount-1,0);//pro první øádek   sloupce 15+
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,3,0);//pro první øádek   sloupce 1-3
-	//v tomto pøípadì šedý sloupec (stejný jako orámování) jako nemìné hodnoty - nedoøešený problém s posunem v AA
-	//mGrid->Cells[ColCount-1][1].Background->Color=(TColor)RGB(200,240,240);
-//	mGrid->SetCells(mGrid->Cells[ColCount-1][1],ColCount-1,2,ColCount-1,RowCount-1);
 
 	//pøiøazení jiného fontu, nemìným položkám - NEWR
 	mGrid->Cells[3][0].Font->Color=clUNLOCKED;
@@ -236,13 +228,11 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	//nastavení velikosti nultého sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
 	mGrid->SetColumnAutoFit(0);
 
-		//slouèení bunìk hlavièky PO  - vhodné za SetColumnAutoFit umístít - NEWR
+	//slouèení bunìk hlavièky PO  - vhodné za SetColumnAutoFit umístít - NEWR
 	mGrid->MergeCells(15,0,16,0);mGrid->MergeCells(17,0,18,0);mGrid->MergeCells(19,0,20,0);
 	mGrid->MergeCells(21,0,22,0);mGrid->MergeCells(23,0,24,0);mGrid->MergeCells(25,0,26,0);mGrid->MergeCells(27,0,28,0);
 
-
 	////////jednolivé øádky////////
-	AnsiString rezimJ;
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	////prùchod všemi objekty bez pøiøazených pohonu
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
@@ -256,69 +246,61 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		//objekty
 		mGrid->Cells[1][j].Text=On[i].short_name;
 		//režim
+		AnsiString rezimJ;
 		if(On[i].rezim==0) rezimJ="S&G";
 		if(On[i].rezim==1) rezimJ="Kontinuální";
 		if(On[i].rezim==2) rezimJ="Postprocesní";
-	 //	else rezimJ="-";
 		mGrid->Cells[2][j].Text=rezimJ;
 
 		//volby - checkboxy
-				mGrid->Cells[3][j].Type=mGrid->CHECK;
-				mGrid->MergeCells(3,j,4,j);
+		mGrid->Cells[3][j].Type=mGrid->CHECK;mGrid->MergeCells(3,j,4,j);
 
-			if(On[i].rezim!=0)   //povolení zobrazení checkboxù pro KK a PP režim
-				{
-				mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
-				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
-				mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
-				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
-				mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
-				}
-				else
-				{     // u SG slouèím pouze buòky, ale checkbox bude nabízen pouze u prvního "výbìrového" sloupce
-				mGrid->MergeCells(5,j,6,j);
-				mGrid->MergeCells(7,j,8,j);
-				mGrid->MergeCells(9,j,10,j);
-				mGrid->MergeCells(11,j,12,j);
-				mGrid->MergeCells(13,j,14,j);
-				}
+		if(On[i].rezim!=0)//povolení zobrazení checkboxù pro KK a PP režim
+		{
+			mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
+			mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
+			mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
+			mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
+			mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
+		}
+		else// u SG slouèím pouze buòky, ale checkbox bude nabízen pouze u prvního "výbìrového" sloupce
+		{
+			mGrid->MergeCells(5,j,6,j);
+			mGrid->MergeCells(7,j,8,j);
+			mGrid->MergeCells(9,j,10,j);
+			mGrid->MergeCells(11,j,12,j);
+			mGrid->MergeCells(13,j,14,j);
+		}
 
-
-
-
- //			parametry objektù           /*NEWR*/                            //NEWR
-				mGrid->Cells[15][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");	 								mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clOLD;mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[17][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                 mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clOLD;mGrid->Cells[18][j].Align=mGrid->LEFT; mGrid->Cells[18][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[19][j].Text=F->m.round2double(On[i].delka_dopravniku*(1+999*DDunit),2,"..");    	mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clOLD;mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[21][j].Text=F->m.round2double(On[i].kapacita,2,"..");                          	mGrid->Cells[21][j].Align=mGrid->LEFT;mGrid->Cells[21][j].Font->Color=clOLD;mGrid->Cells[22][j].Align=mGrid->LEFT;mGrid->Cells[22][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[23][j].Text=F->m.round2double(On[i].pozice,2,"..");                             	mGrid->Cells[23][j].Align=mGrid->LEFT;mGrid->Cells[23][j].Font->Color=clOLD;mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[24][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[25][j].Text=F->m.round2double(On[i].mezera_jig*(1+999*Munit),2,"..");           	mGrid->Cells[25][j].Align=mGrid->LEFT;mGrid->Cells[25][j].Font->Color=clOLD;mGrid->Cells[26][j].Align=mGrid->LEFT;mGrid->Cells[26][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[27][j].Text=F->m.round2double(On[i].mezera_podvozek*(1+999*Munit),2,"..");  			mGrid->Cells[27][j].Align=mGrid->LEFT;mGrid->Cells[27][j].Font->Color=clOLD;mGrid->Cells[28][j].Align=mGrid->LEFT;mGrid->Cells[28][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[29][j].Text=AnsiString(On[i].rotace);             			mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clOLD;
-				mGrid->Cells[30][j].Type=mGrid->BUTTON;mGrid->Cells[30][j].Text="...";mGrid->Cells[30][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
-				TscGPButton *B=mGrid->createButton(30,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
-				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
-		 //		B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
-
-		//		calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
-
-
+		//parametry objektù
+		mGrid->Cells[15][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");	 								mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clOLD;mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[17][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                 mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clOLD;mGrid->Cells[18][j].Align=mGrid->LEFT; mGrid->Cells[18][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[19][j].Text=F->m.round2double(On[i].delka_dopravniku*(1+999*DDunit),2,"..");    	mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clOLD;mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[21][j].Text=F->m.round2double(On[i].kapacita,2,"..");                          	mGrid->Cells[21][j].Align=mGrid->LEFT;mGrid->Cells[21][j].Font->Color=clOLD;mGrid->Cells[22][j].Align=mGrid->LEFT;mGrid->Cells[22][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[23][j].Text=F->m.round2double(On[i].pozice,2,"..");                             	mGrid->Cells[23][j].Align=mGrid->LEFT;mGrid->Cells[23][j].Font->Color=clOLD;mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[24][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[25][j].Text=F->m.round2double(On[i].mezera_jig*(1+999*Munit),2,"..");           	mGrid->Cells[25][j].Align=mGrid->LEFT;mGrid->Cells[25][j].Font->Color=clOLD;mGrid->Cells[26][j].Align=mGrid->LEFT;mGrid->Cells[26][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[27][j].Text=F->m.round2double(On[i].mezera_podvozek*(1+999*Munit),2,"..");  			mGrid->Cells[27][j].Align=mGrid->LEFT;mGrid->Cells[27][j].Font->Color=clOLD;mGrid->Cells[28][j].Align=mGrid->LEFT;mGrid->Cells[28][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[29][j].Text=AnsiString(On[i].rotace);             			mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clOLD;
+		mGrid->Cells[30][j].Type=mGrid->BUTTON;mGrid->Cells[30][j].Text="...";mGrid->Cells[30][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
+		TscGPButton *B=mGrid->createButton(30,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
+		/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
+		//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
+		//checkboxy
 		if(On[i].rezim==0) //fixní nastavení checkboxu u SG režimù
 		{
-		TscGPCheckBox *CH=mGrid->getCheck(3,j);
-		CH->Checked=true;
-		CH->Enabled=false;
-		CH=NULL;delete CH;
+			TscGPCheckBox *CH=mGrid->getCheck(3,j);
+			CH->Checked=true;
+			CH->Enabled=false;
+			CH=NULL;delete CH;
 		}
-
 		else
 		{
-		TscGPCheckBox *CH=mGrid->getCheck(3,j);
-		CH->Checked=true;
-		CH=NULL;delete CH;
+			TscGPCheckBox *CH=mGrid->getCheck(3,j);
+			CH->Checked=true;
+			CH=NULL;delete CH;
 		}
-
-
+		//zajistí pøepoèet daného øádku
+		calculate(j);
 		//posun na další øádek výsledné tabulky
 		j++;
 	}
@@ -340,44 +322,31 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			//volby - checkboxy
 			mGrid->Cells[3][j].Type=mGrid->CHECK;
 			mGrid->Cells[5][j].Type=mGrid->CHECK;
-
-			 //	mGrid->MergeCells(1,j,2,j);
-
-
-				mGrid->MergeCells(3,j,4,j);
-				mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
-				mGrid->MergeCells(3,j,5,j);
-
-				//mGrid->Cells[3][j].Align=mGrid->RIGHT;
-
+			//mGrid->MergeCells(1,j,2,j);
+			mGrid->MergeCells(3,j,4,j);
+			mGrid->MergeCells(5,j,6,j);//slouèení sloupcù
+			mGrid->MergeCells(3,j,5,j);
+			//mGrid->Cells[3][j].Align=mGrid->RIGHT;
 			mGrid->Cells[7][j].Type=mGrid->CHECK;
 			mGrid->Cells[9][j].Type=mGrid->CHECK;
 			mGrid->MergeCells(7,j,8,j);
 			mGrid->MergeCells(9,j,10,j);//slouèení sloupcù
-
-
 			mGrid->Cells[11][j].Type=mGrid->CHECK;
 			mGrid->Cells[13][j].Type=mGrid->CHECK;
 			mGrid->MergeCells(11,j,12,j);
 			mGrid->MergeCells(13,j,14,j);//slouèení sloupcù
-
-
-					TscGPCheckBox *CH=mGrid->getCheck(3,j);
-					CH->Checked=true;
-					CH=NULL;delete CH;
-
-					mGrid->getCheck(11,j)->Visible=false;
-					mGrid->getCheck(13,j)->Visible=false;
-
-
+			TscGPCheckBox *CH=mGrid->getCheck(3,j);
+			CH->Checked=true;
+			CH=NULL;delete CH;
+			mGrid->getCheck(11,j)->Visible=false;
+			mGrid->getCheck(13,j)->Visible=false;
 			//posun na další øádek výsledné tabulky
 			j++;
 		}
-		else    //OBJEKTY S PØIØAZENÝMI POHONY
+		else//OBJEKTY S PØIØAZENÝMI POHONY
 		{
 			//vratí formou ukazatele na pole objekty pøiøazené k danému pohonu
 			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i);
-			AnsiString rezimZ;
 			unsigned long z=0;
 			for(;z<O_pocet;z++)
 			{
@@ -387,59 +356,54 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[0][j].Text=O[z].pohon->name;
 				//objekty
 				mGrid->Cells[1][j].Text=O[z].short_name;
+				AnsiString rezimZ;
 				if(O[z].rezim==0)  rezimZ="S&G";
 				if(O[z].rezim==1) {rezimZ="Kontinuální";}
 				if(O[z].rezim==2)  rezimZ="Postprocesní";
-			 //	else rezimZ="-";
+				//	else rezimZ="-";
 				mGrid->Cells[2][j].Text=rezimZ;
-				 //volby - checkboxy
+				//volby - checkboxy
 				mGrid->Cells[3][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(3,j,4,j);
-
-
-				 if(O[z].rezim!=0)   //povolení zobrazení checkboxù pro KK a PP režim
+				//povolení zobrazení checkboxù pro KK a PP režim
+				if(O[z].rezim!=0)
 				{
-				mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
-				mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
-				mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
-				mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
-				mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
+					mGrid->Cells[5][j].Type=mGrid->CHECK;mGrid->MergeCells(5,j,6,j);
+					mGrid->Cells[7][j].Type=mGrid->CHECK;mGrid->MergeCells(7,j,8,j);
+					mGrid->Cells[9][j].Type=mGrid->CHECK;mGrid->MergeCells(9,j,10,j);
+					mGrid->Cells[11][j].Type=mGrid->CHECK;mGrid->MergeCells(11,j,12,j);
+					mGrid->Cells[13][j].Type=mGrid->CHECK;mGrid->MergeCells(13,j,14,j);
 				}
-				else
-
-				{     // u SG slouèím pouze buòky, ale checkbox bude nabízen pouze u prvního "výbìrového" sloupce
-				mGrid->MergeCells(5,j,6,j);
-				mGrid->MergeCells(7,j,8,j);
-				mGrid->MergeCells(9,j,10,j);
-				mGrid->MergeCells(11,j,12,j);
-				mGrid->MergeCells(13,j,14,j);
+				else// u SG slouèím pouze buòky, ale checkbox bude nabízen pouze u prvního "výbìrového" sloupce
+				{
+					mGrid->MergeCells(5,j,6,j);
+					mGrid->MergeCells(7,j,8,j);
+					mGrid->MergeCells(9,j,10,j);
+					mGrid->MergeCells(11,j,12,j);
+					mGrid->MergeCells(13,j,14,j);
 				}
 ////
 ////
-				 if(O[z].rezim==0) //fixní nastavení checkboxu u SG režimù
+				if(O[z].rezim==0) //fixní nastavení checkboxu u SG režimù
 				{
 					TscGPCheckBox *CH=mGrid->getCheck(3,j);
 					CH->Checked=true;
 					CH->Enabled=false;
 					CH=NULL;delete CH;
-				 }
-//
-				 else   // pro ostatní režimy vždy defaultnì zobrazím checkbox zaškrnutý vlevo
-				 {
+				}
+				else   // pro ostatní režimy vždy defaultnì zobrazím checkbox zaškrnutý vlevo
+				{
 					TscGPCheckBox *CH=mGrid->getCheck(3,j);
 					CH->Checked=true;
 					CH=NULL;delete CH;
+				}
 
-				 }
+				// zobrazení po naètení - pokud je v KK více objektù
+				TscGPCheckBox *CH=mGrid->getCheck(3,j);
 
-				 // zobrazení po naètení - pokud je v KK více objektù
-				 TscGPCheckBox *CH=mGrid->getCheck(3,j);
-
-				 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 && CH->Checked && O[z].rezim==1)
-				 {
-
-				 //normální barva + checked barva pro 3 -5 checkboxy
-
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 && CH->Checked && O[z].rezim==1)
+				{
+					//normální barva + checked barva pro 3 -5 checkboxy
 					mGrid->getCheck(3,j)->Options->FrameNormalColor=C1;
 					mGrid->getCheck(5,j)->Options->FrameNormalColor=C1;
 					mGrid->getCheck(3,j)->OptionsChecked->FrameNormalColor=C1;
@@ -454,49 +418,36 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 					mGrid->getCheck(9,j)->OptionsChecked->FrameNormalColor=C2;
 					mGrid->getCheck(11,j)->OptionsChecked->FrameNormalColor=C2;
 					mGrid->getCheck(13,j)->OptionsChecked->FrameNormalColor=C2;
-				 }
+				}
 
-				 // zobrazení po naètení - pokud je v KK max 1 objekt, dovolím vstup do všech sloupcù okamžitì
-				 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) <= 1 && CH->Checked && O[z].rezim==1)
-				 {
+				// zobrazení po naètení - pokud je v KK max 1 objekt, dovolím vstup do všech sloupcù okamžitì
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) <= 1 && CH->Checked && O[z].rezim==1)
+				{
 					TscGPCheckBox *A=mGrid->getCheck(5,j);
 					TscGPCheckBox *B=mGrid->getCheck(7,j);
 					TscGPCheckBox *C=mGrid->getCheck(9,j);
 					TscGPCheckBox *D=mGrid->getCheck(11,j);
 					TscGPCheckBox *E=mGrid->getCheck(13,j);
-
-
 					/*A->Enabled=false*/;B->Enabled=true;C->Enabled=true;D->Enabled=true;E->Enabled=true;
 					A=NULL;delete A;B=NULL;delete B;B=NULL;delete B;C=NULL;delete C;D=NULL;delete D;E=NULL;delete E;
-				 }
+				}
 				CH=NULL;delete CH;
-
 
 				if(O[z].pohon!=NULL && O[z].rezim!=0) //vynechání SG režimu (má pøednastavené volby)
 				{
-					 //	ShowMessage(O[z].pohon->Rx);
+					//	ShowMessage(O[z].pohon->Rx);
 					double value=F->ms.MyToDouble(O[z].pohon->Rx);
 					if(value!=floor(value))
 					{
-
-					double dop_Rx=Form1->m.round(F->ms.MyToDouble(O[z].pohon->Rx));
-
-					vypis("Rx: nedovolím editovat, doporuèené Rx: "+ AnsiString(dop_Rx));
-					mGrid->getCheck(7,j)->Enabled=false;
-					mGrid->getCheck(11,j)->Enabled=false;
-					Rx_canEdit=false;
+						double dop_Rx=Form1->m.round(F->ms.MyToDouble(O[z].pohon->Rx));
+						vypis("Rx: nedovolím editovat, doporuèené Rx: "+ AnsiString(dop_Rx));
+						mGrid->getCheck(7,j)->Enabled=false;
+						mGrid->getCheck(11,j)->Enabled=false;
+						Rx_canEdit=false;
 					}
 				}
 
-
-
-
-
-
-
-
-
-	 //			parametry objektù           /*NEWR*/                            //NEWR
+				//parametry objektù
 				mGrid->Cells[15][j].Text=F->m.round2double(O[z].CT/(1+59.0*CTunit),2,"..");	 							 	mGrid->Cells[15][j].Align=mGrid->LEFT;	mGrid->Cells[15][j].Font->Color=clOLD;	mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[17][j].Text=F->m.round2double(O[z].RD*(1+59.0*RDunit),2,"..");                mGrid->Cells[17][j].Align=mGrid->LEFT;	mGrid->Cells[17][j].Font->Color=clOLD;	mGrid->Cells[18][j].Align=mGrid->LEFT; mGrid->Cells[18][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[19][j].Text=F->m.round2double(O[z].delka_dopravniku*(1+999*DDunit),2,"..");    mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clOLD;mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clUNLOCKED;
@@ -508,11 +459,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[30][j].Type=mGrid->BUTTON;mGrid->Cells[30][j].Text="...";mGrid->Cells[30][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 				TscGPButton *B=mGrid->createButton(30,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
-			//	B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
+				//	B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
 				mGrid->Cells[31][j].Text=O[z].pohon->n;
-//
-		//		calculate(j);//zajistí pøepoèet daného øádku - nových hodnot NEWR
-
+				//zajistí pøepoèet daného øádku - nových hodnot
+				calculate(j);
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
@@ -521,21 +471,18 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	}
 
 	////////rozdìlení sekcí svislým orámováním////////
-
 	mGrid->Cells[2][1].RightBorder->Width=mGrid->Cells[2][0].RightBorder->Width=2;
 	mGrid->SetCells(mGrid->Cells[2][1],2,2,2,RowCount-2);
 	mGrid->Cells[2][RowCount-1].RightBorder->Width=mGrid->Cells[2][1].RightBorder->Width;
 
-	 for(int i=1;i<=RowCount-1;i++){
-			mGrid->Cells[14][i].RightBorder->Width=2;
-			mGrid->Cells[0][i].Background->Color=clBACKGROUND;
-			mGrid->Cells[0][i].BottomBorder->Color=clBACKGROUND;
-			mGrid->Cells[1][i].Background->Color=clBACKGROUND;
-			mGrid->Cells[2][i].Background->Color=clBACKGROUND;
-
-	 }
-
-
+	for(int i=1;i<=RowCount-1;i++)
+	{
+		mGrid->Cells[14][i].RightBorder->Width=2;
+		mGrid->Cells[0][i].Background->Color=clBACKGROUND;
+		mGrid->Cells[0][i].BottomBorder->Color=clBACKGROUND;
+		mGrid->Cells[1][i].Background->Color=clBACKGROUND;
+		mGrid->Cells[2][i].Background->Color=clBACKGROUND;
+	}
 
 	mGrid->Cells[2][0].RightBorder->Color=C1;
 	mGrid->Cells[3][0].BottomBorder->Color=mGrid->Cells[4][0].BottomBorder->Color=mGrid->Cells[5][0].BottomBorder->Color=mGrid->Cells[6][0].BottomBorder->Color=C1;
@@ -553,8 +500,8 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[3][0].TopBorder->Color=C1;
 	mGrid->Cells[3][0].TopBorder->Width=3;
 
-//
-
+	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
+	////velikost gapo formu a umístìní komponent
 	//šíøka
 	Width=mGrid->Width+Offset*2+1;
 	if(Width<=F->Width)//pokud je užší nebo stejnì jako šíøka hlavního formu
@@ -591,24 +538,22 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		}
 		scScrollBar_vertical->Position=0;
 	}
-
-
-//	////////autoresize formu_gapo, vhodné nakonec,tj. pøed Show////////
-	Width=mGrid->Width+Offset*2;
-	Height=mGrid->Height+Offset*2+scGPPanel_hlavicka->Height+10+scGPButton_OK->Height+10+rHTMLLabel_legenda->Height;// + 10 offset okolo tlaèítka
-  //NEWR
+	//pozice komponent
 	F->m.designButton(scGPButton_OK,F_gapoTT,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoTT,2,2);
-	//NEWR   legenda pozice
+	//legenda pozice
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
-
-		////pozice gapo formu
-	Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
-	Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
+	////pozice gapo formu, pokud je stejnì velký jako hlavní form, tak na 0 pozici, jinak na støed PL formu
+	if(Width==F->Width)Left=0;else Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
+	if(Height==F->Height)Top=0;else Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
 	////zobrazení orámování
 	zobrazitFrameForm=true;
+	////kvùli špatnì fungující funkci otáèení koleèka myši
+	liche_otoceni_koleckem_mysi=false; //NEWR
+
+	///uvolnìní stavu
 	input_state=FREE;
 }
 //---------------------------------------------------------------------------
@@ -622,17 +567,14 @@ void __fastcall TF_gapoTT::FormPaint(TObject *Sender)
 void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
 //PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
-
-
-
-
 	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
 	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
-		if(Col>=3 && mGrid->getCheck(Col,Row)->Checked==false){
-			TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
-			CH->Checked=true;
-			CH=NULL;delete CH;
-		}
+	if(Col>=3 && mGrid->getCheck(Col,Row)->Checked==false)
+	{
+		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+		CH->Checked=true;
+		CH=NULL;delete CH;
+	}
 
 	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
@@ -672,7 +614,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
 	}
 
-		if(Col==7 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	if(Col==7 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
 		TscGPCheckBox *CH=mGrid->getCheck(Col-4,Row);
 		CH->Checked=false;
@@ -691,7 +633,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
 	}
 
-			if(Col==9 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	if(Col==9 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
 		TscGPCheckBox *CH=mGrid->getCheck(Col-6,Row);
 		CH->Checked=false;
@@ -729,7 +671,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
 	}
 
-		if(Col==13 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	if(Col==13 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
 		TscGPCheckBox *CH=mGrid->getCheck(Col-10,Row);
 		CH->Checked=false;
@@ -916,9 +858,6 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		//Invalidate();
 	 }
 	}
-
-
-
 }
 //---------------------------------------------------------------------------
 void TF_gapoTT::OnEnter(long Tag,unsigned long Col,unsigned long Row)
@@ -955,7 +894,6 @@ void __fastcall TF_gapoTT::FormClose(TObject *Sender, TCloseAction &Action)
 	Form_objekt_nahled->pom=NULL;delete Form_objekt_nahled->pom;
 }
 //---------------------------------------------------------------------------
-
 void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
 {
 		scGPButton_OK->Enabled=true;
@@ -988,111 +926,12 @@ void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
 				rHTMLLabel_InfoText->Visible = false;
 		}
 }
-
-
-
+//---------------------------------------------------------------------------
 UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 {
-//
-//	//instance na PO_math, využívá se stejných výpoètù
-//	TPO_math pm;
-////
-////	//input sekce
-//	pm.TT=F->d.v.PP.TT;
-//	pm.rezim=objekty[Row].rezim;
-//	pm.CT=objekty[Row].CT;
-//	//pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-//	pm.DD=objekty[Row].delka_dopravniku;
-//	pm.K=objekty[Row].kapacita;
-//	pm.P=objekty[Row].pozice;
-//	pm.M=objekty[Row].mezera;
-//	pm.MJ=objekty[Row].mezera_jig;
-//	pm.MP=objekty[Row].mezera_podvozek;
-//	pm.dJ=F->d.v.PP.delka_jig;
-//	pm.sJ=F->d.v.PP.sirka_jig;
-//	pm.dP=F->d.v.PP.delka_podvozek;
-//	pm.Rotace=objekty[Row].rotace;
-// //	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-//
-//	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
-//	if(mGrid->getCheck(3,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
-//	{
-//		pm.CT_locked=false;pm.DD_locked=true;
-//		pm.input_RD(true);
-//		if(SaveTo==0)
-//		{
-//			mGrid->Cells[11][Row].Font->Color=clLOCKED;//DD
-//			mGrid->Cells[7][Row].Font->Color=clUNLOCKED;//CT
-//			mGrid->Cells[13][Row].Font->Color=clUNLOCKED;//K
-//		}
-//	}
-//	else//mìní se RD,DD,P,M, zùstává CT,K
-//	{
-//		pm.CT_locked=true;pm.DD_locked=false;
-//		pm.input_RD(true);
-//		if(SaveTo==0)
-//		{
-//			mGrid->Cells[11][Row].Font->Color=clUNLOCKED;//DD
-//			mGrid->Cells[7][Row].Font->Color =clLOCKED;//CT
-//			mGrid->Cells[13][Row].Font->Color=clLOCKED;//K
-//		}
-//	}
-//
-//	//output sekce
-//	AnsiString T="";
-//	switch(SaveTo)
-//	{
-//		 case -1://uložení do textu je-li požadováno
-//		 {
-//				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
-//		 }break;
-//		 case 0://pouze vrátí text do bunìk
-//		 {
-//				mGrid->Cells[15][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
-//				mGrid->Cells[17][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
-//				mGrid->Cells[19][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
-//				mGrid->Cells[21][Row].Text= F->m.round2double(pm.K,2,"..");
-//				mGrid->Cells[23][Row].Text=	F->m.round2double(pm.P,2,"..");
-//				mGrid->Cells[25][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
-//				mGrid->Cells[27][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
-//		 }break;
-//		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
-//		 {
-//				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
-//				O->CT=pm.CT;
-//				O->RD=pm.RD;
-//				O->delka_dopravniku=pm.DD;
-//				O->kapacita=pm.K;
-//				O->pozice=pm.P;
-//				O->mezera=pm.M;
-//				O->mezera_jig=pm.MJ;
-//				O->mezera_podvozek=pm.MP;
-//				O=NULL;delete O;
-//		 }break;
-//		 case 2://uložení hodnot z ukazatele
-//		 {
-//				Form_objekt_nahled->pom=new Cvektory::TObjekt;
-//				Form_objekt_nahled->pom->pohon=objekty[Row].pohon;
-//				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
-//				Form_objekt_nahled->pom->CT=pm.CT;
-//				Form_objekt_nahled->pom->RD=pm.RD;
-//				Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
-//				Form_objekt_nahled->pom->kapacita=pm.K;
-//				Form_objekt_nahled->pom->pozice=pm.P;
-//				Form_objekt_nahled->pom->mezera=pm.M;
-//				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
-//				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
-//		 }break;
-//	}
-//	return T;
-//
-
-
 
 }
-
-
-
+//---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)
 {
 	Form_parametry_linky->Button_save->Enabled=true;
