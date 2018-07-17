@@ -896,40 +896,245 @@ void __fastcall TF_gapoTT::FormClose(TObject *Sender, TCloseAction &Action)
 //---------------------------------------------------------------------------
 void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
 {
-		scGPButton_OK->Enabled=true;
-		scGPButton_OK->Caption = "Uložit";
-		if (text != "") // zobrazí a vypíše
-		{
-				rHTMLHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
-				//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
+	scGPButton_OK->Enabled=true;
+	scGPButton_OK->Caption = "Uložit";
+	if (text != "") // zobrazí a vypíše
+	{
+		rHTMLHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
+		//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
 
-				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
-				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+		if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+		else rHTMLLabel_InfoText->Font->Style = TFontStyles();
 
-				if (red)
-				{
-						scGPButton_OK->Enabled=false;
-						rHTMLLabel_InfoText->Font->Color = clRed;
-				}
-				else
-				{
-						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
-				}
-				rHTMLLabel_InfoText->Left = 8;
-				rHTMLLabel_InfoText->Top = scGPButton_OK->Top - 10;
-				rHTMLLabel_InfoText->Caption = text;
-				rHTMLLabel_InfoText->Visible = true;
-		}
-		else // skryje
+		if (red)
 		{
-				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
-				rHTMLLabel_InfoText->Visible = false;
+				scGPButton_OK->Enabled=false;
+				rHTMLLabel_InfoText->Font->Color = clRed;
 		}
+		else
+		{
+				rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+		}
+		rHTMLLabel_InfoText->Left = 8;
+		rHTMLLabel_InfoText->Top = scGPButton_OK->Top - 10;
+		rHTMLLabel_InfoText->Caption = text;
+		rHTMLLabel_InfoText->Visible = true;
+	}
+	else // skryje
+	{
+		//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
+		rHTMLLabel_InfoText->Visible = false;
+	}
 }
 //---------------------------------------------------------------------------
 UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 {
+	//instance na PO_math, využívá se stejných výpoètù
+	TPO_math pm;
 
+	//input sekce
+	pm.TT=F->d.v.PP.TT;
+	pm.rezim=objekty[Row].rezim;
+	pm.CT=objekty[Row].CT;
+	pm.DD=objekty[Row].delka_dopravniku;
+	pm.K=objekty[Row].kapacita;
+	pm.P=objekty[Row].pozice;
+	pm.M=objekty[Row].mezera;
+	pm.MJ=objekty[Row].mezera_jig;
+	pm.MP=objekty[Row].mezera_podvozek;
+	pm.dJ=Form_parametry_linky->scGPNumericEdit_delka_jig->Value;//zajistit pøevod
+	pm.sJ=Form_parametry_linky->scGPNumericEdit_sirka_jig->Value;//zajistit pøevod
+	pm.dP=Form_parametry_linky->scGPNumericEdit_delka_podvozek->Value;//zajistit pøevod
+	pm.Rotace=objekty[Row].rotace;
+	if(objekty[Row].pohon!=NULL)
+	{
+																		//zajistit pøevod u RD
+		pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	}
+	else
+	{
+		pm.RD=objekty[Row].RD;
+		pm.Rz=0;
+		pm.R=0;
+	}
+
+	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
+	bool CHECK[6];
+	CHECK[0]=mGrid->getCheck(3,Row)->Checked;
+	CHECK[1]=mGrid->getCheck(5,Row)->Checked;
+	CHECK[2]=mGrid->getCheck(7,Row)->Checked;
+	CHECK[3]=mGrid->getCheck(9,Row)->Checked;
+	CHECK[4]=mGrid->getCheck(11,Row)->Checked;
+	CHECK[5]=mGrid->getCheck(13,Row)->Checked;
+	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
+	if(CHECK[0])//mìní se aRD, RD, CT zùstává DD, K, P, Rz, Rx, R, M, jediná varianta, která pøipadá v úvahu pro S&G režim (jiná nejde zaškrtnout/vybrat)
+	{
+		if(pm.rezim==1)pm.RD=pm.Rz/pm.TT;//pouze pro KK režim
+		pm.CT=pm.TT*pm.K;
+	}
+	if(CHECK[1])//mìní se aRD, RD, DD, K, P zùstává CT, Rz, Rx, R, M
+	{
+		if(pm.rezim==1)//pouze pro KK režim
+		{
+			pm.RD=pm.Rz/pm.TT;
+			pm.CT_locked=true;
+			pm.DD_locked=false;
+			pm.input_RD(false);
+		}
+		if(pm.rezim==2)//pouze pro PP režim
+		{
+			pm.K=pm.CT/pm.TT;
+			pm.DD=pm.Rz/pm.TT*pm.CT; //toto je otázka, zda je to opravdu tøeba???
+			pm.P=pm.Pozice();
+		}
+	}
+	if(CHECK[2])//mìní se Rz, Rx, M, DD, P, CT zùstává aRD, RD, R, K
+	{
+		if(pm.rezim==1)//pouze pro KK režim
+		{
+			pm.Rz=pm.RD*pm.TT;
+			pm.Rx=F->m.Rx2(pm.Rz,pm.R);
+			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.DD=pm.RD*pm.TT*pm.K;
+			pm.CT=pm.DD/pm.RD;
+			pm.P=pm.Pozice();
+		}
+		if(pm.rezim==2)//pouze pro PP režim
+		{
+			pm.DD=pm.Rz/pm.TT*pm.CT; //toto je otázka, zda je to opravdu tøeba???
+			pm.CT=pm.TT*pm.K;
+			pm.M=pm.DD/pm.K-pm.UDV();
+			pm.P=pm.Pozice();
+		}
+	}
+	if(CHECK[3])//mìní se Rz, Rx, M, K, P zùstává aRD, RD, R, DD, CT
+	{
+		if(pm.rezim==1)//pouze pro KK režim
+		{
+			pm.Rz=pm.RD*pm.TT;
+			pm.Rx=F->m.Rx2(pm.Rz,pm.R);
+			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.K=pm.DD/pm.RD/pm.TT;
+			pm.P=pm.Pozice();
+		}
+		if(pm.rezim==2)//pouze pro PP režim
+		{
+			pm.K=pm.CT/pm.TT;
+			pm.P=pm.Pozice();
+			pm.M=pm.DD/pm.K-pm.UDV();
+		}
+	}
+	if(CHECK[4])//mìní se Rz, R, M, DD, P, CT zùstává aRD, RD, Rx, K
+	{
+		if(pm.rezim==1)//pouze pro KK režim
+		{
+			pm.Rz=pm.RD*pm.TT;
+			pm.R=F->m.R(pm.Rz,pm.Rx);
+			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.DD=pm.RD*pm.TT*pm.K;
+			pm.CT=pm.DD/pm.RD;
+			pm.P=pm.Pozice();
+		}
+		if(pm.rezim==2)//pouze pro PP režim
+		{
+			pm.CT=pm.TT*pm.K;
+			pm.DD=pm.Rz/pm.TT*pm.CT; //toto je otázka, zda je to opravdu tøeba???
+			pm.P=pm.Pozice();
+			pm.M=pm.DD/pm.K-pm.UDV();
+		}
+	}
+	if(CHECK[5])//mìní se Rz, R, M, K, P zùstává aRD, RD, Rx, DD, CT
+	{
+		if(pm.rezim==1)//pouze pro KK režim
+		{
+			pm.Rz=pm.RD*pm.TT;
+			pm.R=F->m.R(pm.Rz,pm.Rx);
+			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.K=pm.DD/pm.RD/pm.TT;
+			pm.P=pm.Pozice();
+		}
+		if(pm.rezim==2)//pouze pro PP režim
+		{
+			pm.K=pm.CT/pm.TT;
+			pm.P=pm.Pozice();
+			pm.M=pm.DD/pm.K-pm.UDV();
+    }
+	}
+
+	//output sekce
+	AnsiString T="";
+	switch(SaveTo)
+	{
+			case -1://uložení do textu je-li požadováno
+		 {
+				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
+		 }break;
+		 tady rosta zajistí patøièné pøeindexování sloupcù
+		 case 0://pouze vrátí text do bunìk
+		 {
+				mGrid->Cells[13][Row].Text = F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
+				mGrid->Cells[15][Row].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+				mGrid->Cells[17][Row].Text = F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
+				mGrid->Cells[19][Row].Text = F->m.round2double(pm.K,2,"..");
+				mGrid->Cells[21][Row].Text = F->m.round2double(pm.P,2,"..");
+				mGrid->Cells[23][Row].Text = F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
+				mGrid->Cells[25][Row].Text = F->m.round2double(pm.MP*(1+999*Munit),2,"..");
+				if(objekty[Row].pohon!=NULL)
+				{
+					mGrid->Cells[30][Row].Text = F->m.Rz(pm.RD);
+					objekty[Row].pohon->Rz=F->m.Rz(pm.RD);
+					if(CHECK[1] || CHECK[3])//zùstává R, mìní se Rx
+					{
+						mGrid->Cells[28][Row].Text = pm.R;
+						mGrid->Cells[32][Row].Text = F->m.Rx2(objekty[Row].pohon->Rz,pm.R);
+					}
+					if(CHECK[2] || CHECK[4])//zùstává Rx, mìní se R
+					{
+						mGrid->Cells[32][Row].Text = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);
+						mGrid->Cells[28][Row].Text = F->m.R(objekty[Row].pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]));
+					}
+				}
+		 }break;
+		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
+		 {
+				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
+				if(O->pohon!=NULL)
+				{
+					O->pohon->aRD=pm.RD;
+					O->pohon->Rz=F->m.Rz(pm.RD);
+					if(CHECK[1] || CHECK[3])O->pohon->Rx     = F->m.Rx2(O->pohon->Rz,pm.R);//zùstává R, mìní se Rx
+					if(CHECK[2] || CHECK[4])O->pohon->roztec = F->m.R(O->pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]));//zùstává Rx, mìní se R
+				}
+				O->CT=pm.CT;
+				O->RD=pm.RD;
+				O->delka_dopravniku=pm.DD;
+				O->kapacita=pm.K;
+				O->pozice=pm.P;
+				O->mezera=pm.M;
+				O->mezera_jig=pm.MJ;
+				O->mezera_podvozek=pm.MP;
+				O=NULL;delete O;
+		 }break;
+		 case 2://uložení hodnot z ukazatele pro náhled objektu
+		 {
+				Form_objekt_nahled->pom=new Cvektory::TObjekt;
+				//Form_objekt_nahled->pom->pohon=objekty[Row].pohon;//takto by pøevzal starou rozteè
+				Form_objekt_nahled->pom->pohon=new Cvektory::TPohon;
+				Form_objekt_nahled->pom->pohon->roztec=pm.R;//ale pøedávám jen do náhledu R, nic víc od pohonu
+				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
+				Form_objekt_nahled->pom->CT=pm.CT;
+				Form_objekt_nahled->pom->RD=pm.RD;
+				Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
+				Form_objekt_nahled->pom->kapacita=pm.K;
+				Form_objekt_nahled->pom->pozice=pm.P;
+				Form_objekt_nahled->pom->mezera=pm.M;
+				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
+				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
+		 }break;
+	}
+	return T;
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)

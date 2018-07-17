@@ -1058,7 +1058,6 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender
 
 		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
 		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value/1000.0;
-
 	}
 	else//metrech tak se pøepne na MM
 	{
@@ -2839,4 +2838,7 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 	else CanClose=false;
 }
 //---------------------------------------------------------------------------
+
+
+
 

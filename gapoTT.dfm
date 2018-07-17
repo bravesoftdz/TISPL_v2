@@ -216,8 +216,6 @@ object F_gapoTT: TF_gapoTT
       Caption = 
         'Glob'#225'ln'#237' aktualizace parametr'#367' pohon'#367' a objekt'#367' z d'#367'vodu zm'#283'ny T' +
         'T'
-      ExplicitLeft = 55
-      ExplicitWidth = 235
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 290
@@ -466,7 +464,6 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 8
     end
   end
   object scGPButton_OK: TscGPButton
