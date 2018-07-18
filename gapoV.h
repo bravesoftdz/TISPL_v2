@@ -31,7 +31,7 @@ private:	// User declarations
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3;
-	enum Tinput_state{FREE,LOADING};//uchovává výbìr input hodnoty
+	enum Tinput_state{FREE,LOADING,PROGRAMOVE};//uchovává výbìr input hodnoty
 	short CTunit,RDunit,DDunit,Munit;
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
 public:		// User declarations
@@ -41,6 +41,8 @@ public:		// User declarations
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 	bool zobrazitFrameForm;
+	int pruchod;
+	bool leva_oblast;
 	Tinput_state input_state;//stav vstupu
 };
 //---------------------------------------------------------------------------

@@ -36,7 +36,7 @@ __fastcall TF_gapoV::TF_gapoV(TComponent* Owner)
 	// nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
 	C1=Form1->m.clIntensive(RGB(128,64,0),20);
 	C2=Form1->m.clIntensive(RGB(0,128,0),80);
-	C3=Form1->m.clIntensive(RGB(20,80,100),80);
+	C3=Form1->m.clIntensive(RGB(0,0,0),80);
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoV::FormActivate(TObject *Sender)
@@ -57,7 +57,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
 	input_state=LOADING;
-
+	pruchod=0;
+	leva_oblast=false;
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
 	mGrid->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
@@ -154,13 +155,13 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		mGrid->Cells[10][j].Type=mGrid->CHECK;
 		mGrid->MergeCells(10,j,11,j);
 		//parametry objektù
-		mGrid->Cells[12][j].Text=On[i].CT/(1+59.0*CTunit);                mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
-		mGrid->Cells[14][j].Text=On[i].RD*(1+59.0*RDunit);                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
-		mGrid->Cells[16][j].Text=On[i].delka_dopravniku*(1+999*DDunit);   mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
-		mGrid->Cells[18][j].Text=On[i].kapacita;                          mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
-		mGrid->Cells[20][j].Text=On[i].pozice;                            mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;mGrid->Cells[21][j].Align=mGrid->LEFT;mGrid->Cells[21][j].Font->Color=clUNLOCKED;
-		mGrid->Cells[22][j].Text=On[i].mezera_jig*(1+999*Munit);          mGrid->Cells[22][j].Align=mGrid->LEFT;mGrid->Cells[22][j].Font->Color=clOLD;mGrid->Cells[23][j].Align=mGrid->LEFT;mGrid->Cells[23][j].Font->Color=clUNLOCKED;
-		mGrid->Cells[24][j].Text=On[i].mezera_podvozek*(1+999*Munit);     mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[24][j].Font->Color=clOLD;mGrid->Cells[25][j].Align=mGrid->LEFT;mGrid->Cells[25][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[12][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");               mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[14][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[16][j].Text=F->m.round2double(On[i].delka_dopravniku*(1+999*DDunit),2,"..");  mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[18][j].Text=F->m.round2double(On[i].kapacita,2,"..");                           mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[20][j].Text=F->m.round2double(On[i].pozice,2,"..");                            mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;mGrid->Cells[21][j].Align=mGrid->LEFT;mGrid->Cells[21][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[22][j].Text=F->m.round2double(On[i].mezera_jig*(1+999*Munit),2,"..");           mGrid->Cells[22][j].Align=mGrid->LEFT;mGrid->Cells[22][j].Font->Color=clOLD;mGrid->Cells[23][j].Align=mGrid->LEFT;mGrid->Cells[23][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[24][j].Text=F->m.round2double(On[i].mezera_podvozek*(1+999*Munit),2,"..");     mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[24][j].Font->Color=clOLD;mGrid->Cells[25][j].Align=mGrid->LEFT;mGrid->Cells[25][j].Font->Color=clUNLOCKED;
 		mGrid->Cells[26][j].Text=On[i].rotace;                            mGrid->Cells[26][j].Align=mGrid->LEFT;mGrid->Cells[26][j].Font->Color=clOLD;
 		if(On[i].pohon!=NULL)
 		{
@@ -248,13 +249,13 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 
 				//parametry objektù
 
-				mGrid->Cells[12][j].Text=O[z].CT/(1+59.0*CTunit);                mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[14][j].Text=O[z].RD*(1+59.0*RDunit);                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[16][j].Text=O[z].delka_dopravniku*(1+999*DDunit);   mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[18][j].Text=O[z].kapacita;                          mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[20][j].Text=O[z].pozice;                            mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;mGrid->Cells[21][j].Align=mGrid->LEFT;mGrid->Cells[21][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[22][j].Text=O[z].mezera_jig*(1+999*Munit);          mGrid->Cells[22][j].Align=mGrid->LEFT;mGrid->Cells[22][j].Font->Color=clOLD;mGrid->Cells[23][j].Align=mGrid->LEFT;mGrid->Cells[23][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[24][j].Text=O[z].mezera_podvozek*(1+999*Munit);     mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[24][j].Font->Color=clOLD;mGrid->Cells[25][j].Align=mGrid->LEFT;mGrid->Cells[25][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[12][j].Text=F->m.round2double(O[z].CT/(1+59.0*CTunit),2,"..");	               mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[14][j].Text=F->m.round2double(O[z].RD*(1+59.0*RDunit),2,"..");              mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[16][j].Text=F->m.round2double(O[z].delka_dopravniku*(1+999*DDunit),2,"..");    mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[18][j].Text=F->m.round2double(O[z].kapacita,2,"..");                           mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[20][j].Text=F->m.round2double(O[z].pozice,2,"..");                           mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;mGrid->Cells[21][j].Align=mGrid->LEFT;mGrid->Cells[21][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[22][j].Text=F->m.round2double(O[z].mezera_jig*(1+999*Munit),2,"..");          mGrid->Cells[22][j].Align=mGrid->LEFT;mGrid->Cells[22][j].Font->Color=clOLD;mGrid->Cells[23][j].Align=mGrid->LEFT;mGrid->Cells[23][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[24][j].Text=F->m.round2double(O[z].mezera_podvozek*(1+999*Munit),2,"..");    mGrid->Cells[24][j].Align=mGrid->LEFT;mGrid->Cells[24][j].Font->Color=clOLD;mGrid->Cells[25][j].Align=mGrid->LEFT;mGrid->Cells[25][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[26][j].Text=O[z].rotace;                            mGrid->Cells[26][j].Align=mGrid->LEFT;mGrid->Cells[26][j].Font->Color=clOLD;
 				if(O[z].pohon!=NULL)
 				{
@@ -322,111 +323,333 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
 
- 	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
-	if(Col>=2 && mGrid->getCheck(Col,Row)->Checked==false)
+	//ZAJISTÍ, ŽE NELZE UDELAT UNCHECK
+//	if(Col>=4 && mGrid->getCheck(Col,Row)->Checked==false)
+//	{
+//		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+//		CH->Checked=true;
+//		CH=NULL;delete CH;
+//	}
+
+//	ShowMessage(Col);
+	//ShowMessage(Row);
+//
+//		if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked)
+//	{
+//		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
+//		CH->Checked=false;
+//
+//		TscGPCheckBox *I=mGrid->getCheck(Col+4,Row);
+//		I->Checked=false;
+//
+//		TscGPCheckBox *J=mGrid->getCheck(Col+6,Row);
+//		J->Checked=false;
+//
+//		TscGPCheckBox *K=mGrid->getCheck(Col+8,Row);
+//		K->Checked=false;
+//
+//		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+//	}
+//
+//	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked)
+//	{
+//
+//		if(mGrid->getCheck(Col,Row)->OptionsChecked->FrameColor < 1) //default šedá barva je záporná, proto mohu nastavovat
+//		{
+//		mGrid->getCheck(Col-2,Row)->Checked=false;
+//		}
+//		TscGPCheckBox *I=mGrid->getCheck(Col+2,Row);
+//		I->Checked=false;
+//
+//		TscGPCheckBox *J=mGrid->getCheck(Col+4,Row);
+//		J->Checked=false;
+//
+//		TscGPCheckBox *K=mGrid->getCheck(Col+6,Row);
+//		K->Checked=false;
+//
+//		/*CH=NULL;delete CH;*/I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+//	}
+//
+
+		if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
-		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
-		CH->Checked=true;
-		CH=NULL;delete CH;
-	}
 
+	 if(objekty[Row].pohon!=NULL)
+	 {
+		int pohon_n=objekty[Row].pohon->n;
 
-
-		if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked /*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
-	{
-		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
-		CH->Checked=false;
-
-		TscGPCheckBox *I=mGrid->getCheck(Col+4,Row);
-		I->Checked=false;
-
-		TscGPCheckBox *J=mGrid->getCheck(Col+6,Row);
-		J->Checked=false;
-
-		TscGPCheckBox *K=mGrid->getCheck(Col+8,Row);
-		K->Checked=false;
-
-		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
-	}
-
-	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked)
-	{
-
-		if(mGrid->getCheck(Col,Row)->OptionsChecked->FrameColor < 1) //default šedá barva je záporná, proto mohu nastavovat
+		for(int i=1;i<=mGrid->RowCount-1;i++)
 		{
-		TscGPCheckBox *CH=mGrid->getCheck(Col-2,Row);
-		CH->Checked=false;
+			if(objekty[i].pohon!=NULL)   //pokud v oblasti vstoupím do levého slouèeného sloupce, zruším všechny ostatní checked hodnoty
+			{
+			 if(pohon_n == objekty[i].pohon->n)
+			 {
+				mGrid->getCheck(Col+2,i)->Checked=false;
+				mGrid->getCheck(Col+4,i)->Checked=false;
+				mGrid->getCheck(Col+6,i)->Checked=false;
+				mGrid->getCheck(Col+8,i)->Checked=false;
+				leva_oblast=true;
+			 }
+			}
 		}
-		TscGPCheckBox *I=mGrid->getCheck(Col+2,Row);
-		I->Checked=false;
 
-		TscGPCheckBox *J=mGrid->getCheck(Col+4,Row);
-		J->Checked=false;
+		}  //std chování, mimo oblasti
 
-		TscGPCheckBox *K=mGrid->getCheck(Col+6,Row);
-		K->Checked=false;
+		else
+		{
+		mGrid->getCheck(Col+2,Row)->Checked=false;
+		mGrid->getCheck(Col+4,Row)->Checked=false;
+		mGrid->getCheck(Col+6,Row)->Checked=false;
+		mGrid->getCheck(Col+8,Row)->Checked=false;
+		leva_oblast=false;
 
-		/*CH=NULL;delete CH;*/I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+	 }
+
+	input_state=FREE;
 	}
 
-	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked /*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
+ ////////////////////////////////////////////////////////////////////////////////
+	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
-		TscGPCheckBox *CH=mGrid->getCheck(Col-4,Row);
-		CH->Checked=false;
 
-		TscGPCheckBox *I=mGrid->getCheck(Col-2,Row);
-		I->Checked=false;
+	 if(objekty[Row].pohon!=NULL)
+	 {
+		int pohon_n=objekty[Row].pohon->n;
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
+				{
+				//má pohon, ale má jen jeden øádek, tzn mohu nastavit klasicky první sloupec
+				//ShowMessage("jsem sam KK, mohu");
+				mGrid->getCheck(Col-2,Row)->Checked=false;
+				mGrid->getCheck(Col+2,Row)->Checked=false;
+				mGrid->getCheck(Col+4,Row)->Checked=false;
+				mGrid->getCheck(Col+6,Row)->Checked=false;
+				}
+				else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
+					{
 
-		TscGPCheckBox *J=mGrid->getCheck(Col+2,Row);
-		J->Checked=false;
+								for(int i=1;i<=mGrid->RowCount-1;i++)
+								{
+											if(objekty[i].pohon!=NULL)
+											{
+													 if(pohon_n == objekty[i].pohon->n)
+													 {
+														 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+														if(pruchod==1 && input_state==FREE) 	mGrid->getCheck(Col-2,i)->Checked=false;
 
-		TscGPCheckBox *K=mGrid->getCheck(Col+4,Row);
-		K->Checked=false;
+														mGrid->getCheck(Col+2,Row)->Checked=false;
+														mGrid->getCheck(Col+4,Row)->Checked=false;
+														mGrid->getCheck(Col+6,Row)->Checked=false;
 
-		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+																if(leva_oblast)
+																{
+																input_state=PROGRAMOVE;
+																mGrid->getCheck(4,i)->Checked=true;
+
+																}
+													 }
+
+											}
+								}
+
+					 }
+	 }
+			 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+			 {
+			 //ShowMessage("jsem bez pohonu, mohu");
+				mGrid->getCheck(Col-2,Row)->Checked=false;
+				mGrid->getCheck(Col+2,Row)->Checked=false;
+				mGrid->getCheck(Col+4,Row)->Checked=false;
+				mGrid->getCheck(Col+6,Row)->Checked=false;
+			 }
+
+			 pruchod=0;
+			 leva_oblast=false;
+			 input_state=FREE;
+
 	}
+  
 
-	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked	/*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
+ ////////////////////////////////////////////////////////////
+
+
+
+	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
-		TscGPCheckBox *CH=mGrid->getCheck(Col-6,Row);
-		CH->Checked=false;
 
-		TscGPCheckBox *I=mGrid->getCheck(Col-4,Row);
-		I->Checked=false;
+	 if(objekty[Row].pohon!=NULL)
+	 {
+		int pohon_n=objekty[Row].pohon->n;
+		if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1)
+		{
+		//má pohon, ale má jen jeden øádek, tzn mohu nastavit klasicky první sloupec
+		//ShowMessage("jsem sam KK, mohu");
 
-		TscGPCheckBox *J=mGrid->getCheck(Col-2,Row);
-		J->Checked=false;
+			 mGrid->getCheck(Col-4,Row)->Checked=false;
+			 mGrid->getCheck(Col-2,Row)->Checked=false;
+			 mGrid->getCheck(Col+2,Row)->Checked=false;
+			 mGrid->getCheck(Col+4,Row)->Checked=false;
 
-		TscGPCheckBox *K=mGrid->getCheck(Col+2,Row);
-		K->Checked=false;
-
-		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
-	}
-
-	if(Col==10 &&  mGrid->getCheck(Col,Row)->Checked /*&& mGrid->getCheck(Col,Row)->Options->FrameColor!=C1*/)
+		}
+		else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
 	{
-		TscGPCheckBox *CH=mGrid->getCheck(Col-8,Row);
-		CH->Checked=false;
 
-		TscGPCheckBox *I=mGrid->getCheck(Col-6,Row);
-		I->Checked=false;
+		for(int i=1;i<=mGrid->RowCount-1;i++)
+		{
+			if(objekty[i].pohon!=NULL)
+			{
+			 if(pohon_n == objekty[i].pohon->n)
+			 {
+				 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+				if(pruchod==1)   	mGrid->getCheck(Col-4,i)->Checked=false;
 
-		TscGPCheckBox *J=mGrid->getCheck(Col-4,Row);
-		J->Checked=false;
+					 mGrid->getCheck(Col-2,Row)->Checked=false;
+					 mGrid->getCheck(Col+2,Row)->Checked=false;
+					 mGrid->getCheck(Col+4,Row)->Checked=false;
 
-		TscGPCheckBox *K=mGrid->getCheck(Col-2,Row);
-		K->Checked=false;
+																	if(leva_oblast)
+																{
+																input_state=PROGRAMOVE;
+																mGrid->getCheck(6,i)->Checked=true;
+															//	Memo1->Lines->Add(i);
+																}
+			 }
 
-		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
-	}
+			}
+		}
 
-       //konec default nastavení pøepínaèù
+	 }
+	 }
+	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+	 {
+	 //ShowMessage("jsem bez pohonu, mohu");
+	 mGrid->getCheck(Col-4,Row)->Checked=false;
+	 mGrid->getCheck(Col-2,Row)->Checked=false;
+	 mGrid->getCheck(Col+2,Row)->Checked=false;
+	 mGrid->getCheck(Col+4,Row)->Checked=false;
+	 }
+	 pruchod=0;
+	 leva_oblast=false;
+	 input_state=FREE;
+}
+
+
+	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+	{
+
+	 if(objekty[Row].pohon!=NULL)
+	 {
+		int pohon_n=objekty[Row].pohon->n;
+		if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
+		{
+		//má pohon, ale má jen jeden øádek, tzn mohu nastavit klasicky první sloupec
+
+		mGrid->getCheck(Col-6,Row)->Checked=false;
+		mGrid->getCheck(Col-4,Row)->Checked=false;
+		mGrid->getCheck(Col-2,Row)->Checked=false;
+		mGrid->getCheck(Col+2,Row)->Checked=false;
+		}
+		else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
+	{
+
+		for(int i=1;i<=mGrid->RowCount-1;i++)
+		{
+			if(objekty[i].pohon!=NULL)
+			{
+			 if(pohon_n == objekty[i].pohon->n)
+			 {
+				 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+				if(pruchod==1)   	mGrid->getCheck(Col-6,i)->Checked=false;
+
+				mGrid->getCheck(Col-4,Row)->Checked=false;
+				mGrid->getCheck(Col-2,Row)->Checked=false;
+				mGrid->getCheck(Col+2,Row)->Checked=false;
+
+						if(leva_oblast)
+																{
+																input_state=PROGRAMOVE;
+																mGrid->getCheck(8,i)->Checked=true;
+															 //	Memo1->Lines->Add(i);
+																}
+
+			 }
+
+			}
+		}
+
+	 }
+	 }
+	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+	 {
+	 //ShowMessage("jsem bez pohonu, mohu");
+		mGrid->getCheck(Col-6,Row)->Checked=false;
+		mGrid->getCheck(Col-4,Row)->Checked=false;
+		mGrid->getCheck(Col-2,Row)->Checked=false;
+		mGrid->getCheck(Col+2,Row)->Checked=false;
+	 }
+	 pruchod=0;
+	 leva_oblast=false;
+	 input_state=FREE;
+
+}
+
+	if(Col==10 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+	{
+
+	 if(objekty[Row].pohon!=NULL)
+	 {
+		int pohon_n=objekty[Row].pohon->n;
+		if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
+		{
+		//má pohon, ale má jen jeden øádek, tzn mohu nastavit klasicky první sloupec
+
+		mGrid->getCheck(Col-8,Row)->Checked=false;
+		mGrid->getCheck(Col-6,Row)->Checked=false;
+		mGrid->getCheck(Col-4,Row)->Checked=false;
+		mGrid->getCheck(Col-2,Row)->Checked=false;
+		}
+		else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
+	{
+
+		for(int i=1;i<=mGrid->RowCount-1;i++)
+		{
+			if(objekty[i].pohon!=NULL)
+			{
+			 if(pohon_n == objekty[i].pohon->n)
+			 {
+				 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+				if(pruchod==1)   	mGrid->getCheck(Col-8,i)->Checked=false;
+
+			mGrid->getCheck(Col-6,Row)->Checked=false;
+			mGrid->getCheck(Col-4,Row)->Checked=false;
+			mGrid->getCheck(Col-2,Row)->Checked=false;
+					if(leva_oblast)
+																{
+																input_state=PROGRAMOVE;
+																mGrid->getCheck(10,i)->Checked=true;
+															 //	Memo1->Lines->Add(i);
+																}
+
+			 }
+
+			}
+		}
+
+	 }
+	 }
+	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+	 {
+	 //ShowMessage("jsem bez pohonu, mohu");
+		mGrid->getCheck(Col-8,Row)->Checked=false;
+		mGrid->getCheck(Col-6,Row)->Checked=false;
+		mGrid->getCheck(Col-4,Row)->Checked=false;
+		mGrid->getCheck(Col-2,Row)->Checked=false;
+	 }
+	 pruchod=0;
+	 leva_oblast=false;
+	 input_state=FREE;
+
+}
 	///////////////////////////////////////////////////////////
-
-
-
-
-
 
 
 	//Rosto, musí být poslední za klikací/pøepínací logikou!

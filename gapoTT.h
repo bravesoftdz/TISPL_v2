@@ -42,7 +42,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
-	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2;
+	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3;
 	enum Tinput_state{FREE,LOADING};//uchovává výbìr input hodnoty
 	short CTunit,RDunit,DDunit,Munit;
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
