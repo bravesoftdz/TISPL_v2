@@ -10,6 +10,8 @@
 #include "scControls.hpp"
 #include "scGPControls.hpp"
 #include "vektory.h"
+#include "rHTMLLabel.hpp"
+#include "rHintWindow.hpp"
 //---------------------------------------------------------------------------
 class TF_gapoV : public TForm
 {
@@ -21,6 +23,9 @@ __published:	// IDE-managed Components
 	TscButton *scButton_html;
 	TscGPButton *scGPButton_OK;
 	TscGPButton *scGPButton_storno;
+	TrHTMLLabel *rHTMLLabel_InfoText;
+	TrHTMLHint *rHTMLHint1;
+	TMemo *Memo1;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -40,8 +45,11 @@ public:		// User declarations
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+	void vypis(UnicodeString text,bool red=true,bool link=false);
 	bool zobrazitFrameForm;
 	int pruchod;
+	int calc_pruchod;
+	int pocitadlo_validace;
 	bool leva_oblast;
 	Tinput_state input_state;//stav vstupu
 };

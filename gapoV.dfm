@@ -18,6 +18,23 @@ object F_gapoV: TF_gapoV
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = -141
+    Top = -20
+    Width = 518
+    Height = 19
+    AutoSize = False
+    Caption = 'Upozorn'#283'n'#237
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
@@ -510,5 +527,23 @@ object F_gapoV: TF_gapoV
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Memo1: TMemo
+    Left = 160
+    Top = 128
+    Width = 185
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 3
+  end
+  object rHTMLHint1: TrHTMLHint
+    HintFont.Charset = DEFAULT_CHARSET
+    HintFont.Color = clWindowText
+    HintFont.Height = -11
+    HintFont.Name = 'Tahoma'
+    HintFont.Style = []
+    Left = 56
+    Top = 400
   end
 end

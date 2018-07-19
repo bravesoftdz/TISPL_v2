@@ -12,6 +12,8 @@
 #pragma package(smart_init)
 #pragma link "scControls"
 #pragma link "scGPControls"
+#pragma link "rHTMLLabel"
+#pragma link "rHintWindow"
 #pragma resource "*.dfm"
 TF_gapoV *F_gapoV;
 //---------------------------------------------------------------------------
@@ -69,7 +71,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=34;//pevný poèet slopcù
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
-	RowCount+=F->d.v.OBJEKTY->predchozi->n-F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1)  ; //ROSTA -1
+	RowCount+=F->d.v.OBJEKTY->predchozi->n-F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1)  ;
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
@@ -138,6 +140,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	////prùchod všemi objekty bez pøiøazených pohonu
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
 	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1);
+	//ShowMessage(On_pocet);//ROSTA - nekorespoduje s vybraným režimem tj KK
 	for(unsigned long i=1;i<=On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
 		//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
@@ -176,7 +179,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		TscGPButton *B=mGrid->createButton(33,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 		B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 		//zajistí pøepoèet daného øádku - nových hodnot
-	//	calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed defaultní zaškrtnutí checkboxù
+		calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed defaultní zaškrtnutí checkboxù
 		//posun na další øádek výsledné tabulky
 		j++;
 	}
@@ -206,8 +209,6 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				mGrid->Cells[1][j].Text=O[z].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 				//volby - checkboxy
 
-			//	mGrid->Cells[2][j].Type=mGrid->CHECK;
-			//	mGrid->MergeCells(2,j,3,j);
 				mGrid->Cells[4][j].Type=mGrid->CHECK;
 				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) <= 1 )  //KK režim
 				{
@@ -268,7 +269,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy  viz DV+M) - je vždy po zobrazení zaškrnuta tato volba
 				mGrid->getCheck(4,j)->Checked=true;
 				//zajistí pøepoèet daného øádku - nových hodnot
-			//	calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed výchozí zaškrtnutí checkboxù
+				calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed výchozí zaškrtnutí checkboxù
 				//posun na další øádek výsledné tabulky
 
 				j++;
@@ -318,6 +319,43 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
  	mGrid->Show();//vykreslí tabulku
 	F->m.frameForm(this,clWebOrange,1);//vykreslí orámování okolo formu
 }
+
+//---------------------------------------------------------------------------
+
+ void TF_gapoV::vypis(UnicodeString text,bool red,bool link)
+{
+		scGPButton_OK->Enabled=true;
+		scGPButton_OK->Caption = "Uložit";
+		if (text != "") // zobrazí a vypíše
+		{
+				rHTMLHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
+				//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
+
+				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+				else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+
+				if (red)
+				{
+					 	scGPButton_OK->Enabled=false;
+						rHTMLLabel_InfoText->Font->Color = clRed;
+				}
+				else
+				{
+						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+				}
+				rHTMLLabel_InfoText->Left = 8;
+				rHTMLLabel_InfoText->Top = scGPButton_OK->Top - 10;
+				rHTMLLabel_InfoText->Caption = text;
+				rHTMLLabel_InfoText->Visible = true;
+		}
+		else // skryje
+		{
+				//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
+				rHTMLLabel_InfoText->Visible = false;
+		}
+}
+
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
@@ -331,45 +369,6 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //		CH=NULL;delete CH;
 //	}
 
-//	ShowMessage(Col);
-	//ShowMessage(Row);
-//
-//		if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked)
-//	{
-//		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
-//		CH->Checked=false;
-//
-//		TscGPCheckBox *I=mGrid->getCheck(Col+4,Row);
-//		I->Checked=false;
-//
-//		TscGPCheckBox *J=mGrid->getCheck(Col+6,Row);
-//		J->Checked=false;
-//
-//		TscGPCheckBox *K=mGrid->getCheck(Col+8,Row);
-//		K->Checked=false;
-//
-//		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
-//	}
-//
-//	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked)
-//	{
-//
-//		if(mGrid->getCheck(Col,Row)->OptionsChecked->FrameColor < 1) //default šedá barva je záporná, proto mohu nastavovat
-//		{
-//		mGrid->getCheck(Col-2,Row)->Checked=false;
-//		}
-//		TscGPCheckBox *I=mGrid->getCheck(Col+2,Row);
-//		I->Checked=false;
-//
-//		TscGPCheckBox *J=mGrid->getCheck(Col+4,Row);
-//		J->Checked=false;
-//
-//		TscGPCheckBox *K=mGrid->getCheck(Col+6,Row);
-//		K->Checked=false;
-//
-//		/*CH=NULL;delete CH;*/I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
-//	}
-//
 
 		if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
@@ -412,9 +411,9 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
 
-	 if(objekty[Row].pohon!=NULL)
-	 {
-		int pohon_n=objekty[Row].pohon->n;
+		if(objekty[Row].pohon!=NULL)
+		{
+				int pohon_n=objekty[Row].pohon->n;
 				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
 				{
 				//má pohon, ale má jen jeden øádek, tzn mohu nastavit klasicky první sloupec
@@ -453,18 +452,18 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 					 }
 	 }
-			 else //nemám pohon, mohu nastavit hned klasicky první sloupec
-			 {
+	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+	 {
 			 //ShowMessage("jsem bez pohonu, mohu");
-				mGrid->getCheck(Col-2,Row)->Checked=false;
-				mGrid->getCheck(Col+2,Row)->Checked=false;
-				mGrid->getCheck(Col+4,Row)->Checked=false;
-				mGrid->getCheck(Col+6,Row)->Checked=false;
-			 }
+	 mGrid->getCheck(Col-2,Row)->Checked=false;
+	 mGrid->getCheck(Col+2,Row)->Checked=false;
+	 mGrid->getCheck(Col+4,Row)->Checked=false;
+	 mGrid->getCheck(Col+6,Row)->Checked=false;
+	 }
 
-			 pruchod=0;
-			 leva_oblast=false;
-			 input_state=FREE;
+	 pruchod=0;
+	 leva_oblast=false;
+	 input_state=FREE;
 
 	}
   
@@ -491,33 +490,32 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 		}
 		else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
-	{
-
-		for(int i=1;i<=mGrid->RowCount-1;i++)
 		{
-			if(objekty[i].pohon!=NULL)
+
+			for(int i=1;i<=mGrid->RowCount-1;i++)
 			{
-			 if(pohon_n == objekty[i].pohon->n)
-			 {
-				 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
-				if(pruchod==1)   	mGrid->getCheck(Col-4,i)->Checked=false;
+				if(objekty[i].pohon!=NULL)
+				{
+					 if(pohon_n == objekty[i].pohon->n)
+					 {
+						 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+						if(pruchod==1)   	mGrid->getCheck(Col-4,i)->Checked=false;
 
-					 mGrid->getCheck(Col-2,Row)->Checked=false;
-					 mGrid->getCheck(Col+2,Row)->Checked=false;
-					 mGrid->getCheck(Col+4,Row)->Checked=false;
+							 mGrid->getCheck(Col-2,Row)->Checked=false;
+							 mGrid->getCheck(Col+2,Row)->Checked=false;
+							 mGrid->getCheck(Col+4,Row)->Checked=false;
 
-																	if(leva_oblast)
-																{
-																input_state=PROGRAMOVE;
-																mGrid->getCheck(6,i)->Checked=true;
-															//	Memo1->Lines->Add(i);
-																}
-			 }
+							 if(leva_oblast)
+							 {
+							 input_state=PROGRAMOVE;
+							 mGrid->getCheck(6,i)->Checked=true;
+							 }
+					 }
 
+				}
 			}
-		}
 
-	 }
+		}
 	 }
 	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
 	 {
@@ -532,6 +530,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 input_state=FREE;
 }
 
+ /////////////////////////////////////////////////////////////////////////////////
 
 	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
@@ -549,34 +548,31 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		mGrid->getCheck(Col+2,Row)->Checked=false;
 		}
 		else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
-	{
-
-		for(int i=1;i<=mGrid->RowCount-1;i++)
 		{
-			if(objekty[i].pohon!=NULL)
+
+			for(int i=1;i<=mGrid->RowCount-1;i++)
 			{
-			 if(pohon_n == objekty[i].pohon->n)
-			 {
-				 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
-				if(pruchod==1)   	mGrid->getCheck(Col-6,i)->Checked=false;
+				if(objekty[i].pohon!=NULL)
+				{
+					 if(pohon_n == objekty[i].pohon->n)
+					 {
+					  pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+						if(pruchod==1)   	mGrid->getCheck(Col-6,i)->Checked=false;
 
-				mGrid->getCheck(Col-4,Row)->Checked=false;
-				mGrid->getCheck(Col-2,Row)->Checked=false;
-				mGrid->getCheck(Col+2,Row)->Checked=false;
+						mGrid->getCheck(Col-4,Row)->Checked=false;
+						mGrid->getCheck(Col-2,Row)->Checked=false;
+						mGrid->getCheck(Col+2,Row)->Checked=false;
 
-						if(leva_oblast)
-																{
-																input_state=PROGRAMOVE;
-																mGrid->getCheck(8,i)->Checked=true;
-															 //	Memo1->Lines->Add(i);
-																}
+						 if(leva_oblast)
+						 {
+						 input_state=PROGRAMOVE;
+						 mGrid->getCheck(8,i)->Checked=true;
+						 }
+					 }
 
-			 }
-
+				}
 			}
 		}
-
-	 }
 	 }
 	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
 	 {
@@ -617,20 +613,18 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 			 if(pohon_n == objekty[i].pohon->n)
 			 {
 				 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
-				if(pruchod==1)   	mGrid->getCheck(Col-8,i)->Checked=false;
+				 if(pruchod==1)   	mGrid->getCheck(Col-8,i)->Checked=false;
 
-			mGrid->getCheck(Col-6,Row)->Checked=false;
-			mGrid->getCheck(Col-4,Row)->Checked=false;
-			mGrid->getCheck(Col-2,Row)->Checked=false;
-					if(leva_oblast)
-																{
-																input_state=PROGRAMOVE;
-																mGrid->getCheck(10,i)->Checked=true;
-															 //	Memo1->Lines->Add(i);
-																}
+					mGrid->getCheck(Col-6,Row)->Checked=false;
+					mGrid->getCheck(Col-4,Row)->Checked=false;
+					mGrid->getCheck(Col-2,Row)->Checked=false;
 
+				  if(leva_oblast)
+					{
+					input_state=PROGRAMOVE;
+					mGrid->getCheck(10,i)->Checked=true;
+					}
 			 }
-
 			}
 		}
 
@@ -647,12 +641,109 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 pruchod=0;
 	 leva_oblast=false;
 	 input_state=FREE;
-
-}
+}	 //KONEC PØEPÍNAÈÙ
 	///////////////////////////////////////////////////////////
 
 
-	//Rosto, musí být poslední za klikací/pøepínací logikou!
+	//VALIDAÈNÍ ÈÁST - HLÍDÁNÍ OBLASTÍ
+
+	if(Col>=4 && Col<=6 && input_state==FREE )  /*&&  mGrid->getCheck(6,Row)->Checked==false*/
+		{
+	 if(mGrid->getCheck(4,Row)->Checked==true ||  mGrid->getCheck(6,Row)->Checked==true)
+	 {
+		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
+		if(objekty[Row].pohon!=NULL)
+		{
+			int pohon_n=objekty[Row].pohon->n;
+			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+			{
+			 //prùchod celé tabulky
+						pocitadlo_validace=0;
+					 for(int i=1;i<=mGrid->RowCount-1;i++)
+					 {
+							if(objekty[i].pohon!=NULL)
+							{
+												if(pohon_n==objekty[i].pohon->n)
+												{
+													 if (mGrid->getCheck(8,i)->Checked==true   ||  mGrid->getCheck(10,i)->Checked==true )
+														{
+															//ShowMessage(i);
+															pocitadlo_validace++;
+															vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
+														}
+												}
+						}
+							}
+
+					 if(pocitadlo_validace==0)   //pokud jsem nenašel žádné zakliknuté buòky, mohu povolit vstup do druhé oblasti
+					 {                  //projdu opìt celé cyklem a aktivuji druhou oblast
+
+							// if(pohon_n==objekty[i].pohon->n)
+								vypis("",false);
+
+					 }
+
+				}
+
+	 }
+	 }
+
+	 }
+
+
+		if(Col>=8 && Col<=10 && input_state==FREE )  /*&&  mGrid->getCheck(6,Row)->Checked==false*/
+		{
+	 if(mGrid->getCheck(8,Row)->Checked==true ||  mGrid->getCheck(10,Row)->Checked==true)
+	 {
+		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
+		if(objekty[Row].pohon!=NULL)
+		{
+			int pohon_n=objekty[Row].pohon->n;
+			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+			{
+			 //prùchod celé tabulky
+						pocitadlo_validace=0;
+					 for(int i=1;i<=mGrid->RowCount-1;i++)
+					 {
+							if(objekty[i].pohon!=NULL)
+							{
+												if(pohon_n==objekty[i].pohon->n)
+												{
+													 if (mGrid->getCheck(4,i)->Checked==true   ||  mGrid->getCheck(6,i)->Checked==true )
+														{
+															//ShowMessage(i);
+															pocitadlo_validace++;
+															vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
+														}
+												}
+						}
+							}
+
+					 if(pocitadlo_validace==0) 	vypis("",false);  //povolím uložení
+
+			 }
+		 }
+	 }
+
+	 }
+
+	/////////////////////KONEC VALIDAÈNÍ ÈÁSTI - HLÍDÁNÍ OBLASTÍ//////////////
+
+    //loadnutí default nastavení pøepínaèù
+		 if(input_state==LOADING && Col>2)
+	{
+
+			//tøetí resp. první výbìrový sloupec je vždy pøedvybrán na true
+			mGrid->getCheck(4,Row)->Checked=true;
+			mGrid->getCheck(6,Row)->Checked=false;
+			mGrid->getCheck(8,Row)->Checked=false;
+			mGrid->getCheck(10,Row)->Checked=false;
+
+
+	 }
+
+//
+
 	if(Col==mGrid->ColCount-1)//je kliknuto na náhled objektu
 	{
 	//	calculate(Row,2);
@@ -669,7 +760,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	if(input_state==FREE)
 	 //pøekliknutí chechboxu pravdìpodobnì
 	{
-	//	calculate(Row);//zajistí pøepoèet daného øádku
+		calculate(Row);//zajistí pøepoèet daného øádku
 		FormPaint(this);//zajistí pøekreslení bez probliku
 	}
 	}
@@ -720,7 +811,23 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
   }
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[5];
-	CHECK[0]=mGrid->getCheck(2,Row)->Checked;
+
+
+//	if(objekty[Row].pohon!=NULL && F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1) //default šedá barva je záporná, proto mohu nastavovat
+//		{
+//			int pohon_n=objekty[Row].pohon->n;
+//			for(int i=1;i<=mGrid->RowCount-1;i++)
+//			{
+//				if(objekty[i].pohon!=NULL  && pohon_n == objekty[i].pohon->n)
+//				{
+//				pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+//				if(pruchod==1 && input_state==FREE) CHECK[0]=mGrid->getCheck(2,i)->Checked;
+//				}
+//			}
+//		 } else 	CHECK[0]=mGrid->getCheck(2,Row)->Checked;
+//	 pruchod=0;
+
+	//CHECK[0]=mGrid->getCheck(2,Row)->Checked;
 	CHECK[1]=mGrid->getCheck(4,Row)->Checked;
 	CHECK[2]=mGrid->getCheck(6,Row)->Checked;
 	CHECK[3]=mGrid->getCheck(8,Row)->Checked;
