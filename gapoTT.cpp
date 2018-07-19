@@ -62,10 +62,14 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	Edit1->SetFocus();
 
 	////////jednotky////////             ROSTA DODELAT
-	CTunit=F->readINI("nastaveni_form_parametry", "CT").ToInt();
-	RDunit=F->readINI("nastaveni_form_parametry", "RDt").ToInt();
-	DDunit=F->readINI("nastaveni_form_parametry", "DD").ToInt();
-	Munit =F->readINI("nastaveni_form_parametry", "DM").ToInt();
+	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
+	if(T=="")CTunit=0;else CTunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","RDt");
+	if(T=="")RDunit=0;else RDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DD");
+	if(T=="")DDunit=0;else DDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DM").ToInt();
+	if(T=="")Munit=0; else Munit =T.ToInt();
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=38;//pevný poèet slopcù      //NEWR
@@ -305,7 +309,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			CH=NULL;delete CH;
 		}
 		//zajistí pøepoèet daného øádku
-		calculate(j);
+	 	calculate(j);
 		//posun na další øádek výsledné tabulky
 		j++;
 	}
@@ -838,61 +842,23 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 }
 
 
+	 if(input_state==LOADING && Col>2)
+	{
+			if(mGrid->Cells[2][Row].Text!="S&G")
+			{
+
+			//tøetí resp. první výbìrový sloupec je vždy pøedvybrán na true
+			mGrid->getCheck(3,Row)->Checked=true;
+			mGrid->getCheck(5,Row)->Checked=false;
+			mGrid->getCheck(7,Row)->Checked=false;
+			mGrid->getCheck(9,Row)->Checked=false;
+			mGrid->getCheck(11,Row)->Checked=false;
+			mGrid->getCheck(13,Row)->Checked=false;
+			 }
+	 }
 
 
-	 // pokud kliknu do sloupcù 5 a víc tak na sloupcích 3 a 5 dám enabled false
-	 // platí pouze pokud je pohon a má KK pro více jak 1 objekt
-//		if(Col>5 && mGrid->getCheck(3,Row)->Checked==false  && mGrid->getCheck(5,Row)->Checked==false &&  mGrid->Cells[2][Row].Text=="Kontinuální")
-//		{
-//		if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true || mGrid->getCheck(11,Row)->Checked==true || mGrid->getCheck(13,Row)->Checked==true)
-//		{
-//				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[31][Row].Text)) >1)
-//					{
-//					 double pohon_id=F->ms.MyToDouble(mGrid->Cells[31][Row].Text);
-//
-//							 for(int i=1;i<=mGrid->RowCount-1;i++)
-//							 {
-//									if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
-//									{
-//
-//							 //		mGrid->getCheck(3,i)->Enabled=false;
-//							 //		mGrid->getCheck(5,i)->Enabled=false;
-//							 //aktuálnì nepoužívaná sekce - dovoluje nastavit zamknutí LEVÉ strany
-//
-//									}
-//							 }
-//					}
-//			}
-//		}
 
-	// aktivace levé èásti a zdisablování pravé èásti
-
-//		if(Col<=5 && mGrid->Cells[2][Row].Text=="Kontinuální")
-//		{
-//				if(mGrid->getCheck(7,Row)->Checked==false  && mGrid->getCheck(9,Row)->Checked==false && mGrid->getCheck(11,Row)->Checked==false && mGrid->getCheck(13,Row)->Checked==false)
-//				{
-//					if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
-//					{
-//						if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[31][Row].Text)) >1)
-//							{
-//							 double pohon_id=F->ms.MyToDouble(mGrid->Cells[31][Row].Text);
-//
-//									 for(int i=1;i<=mGrid->RowCount-1;i++)
-//									 {
-//											if(pohon_id==F->ms.MyToDouble(mGrid->Cells[31][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
-//											{
-//								 //			mGrid->getCheck(7,i)->Enabled=false;
-//								 //			mGrid->getCheck(9,i)->Enabled=false;
-//								 //			mGrid->getCheck(11,i)->Enabled=false;
-//								 //			mGrid->getCheck(13,i)->Enabled=false;
-//									//aktuálnì nepoužívaná sekce - dovoluje nastavit zamknutí PRAVÉ strany
-//
-//											}
-//									 }
-//							}
-//					}
-//				}
-//		}
 
   //NEWR
 	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu
@@ -910,7 +876,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	{
 	 if(input_state==FREE)
 	 {
-		calculate(Row);//zajistí pøepoèet daného øádku
+	 	calculate(Row);//zajistí pøepoèet daného øádku
 		FormPaint(this);//zajistí pøekreslení bez probliku
 		//Invalidate();
 	 }
@@ -1018,13 +984,29 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 	}
 
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
-	bool CHECK[6];
+	bool CHECK[6];  //U SG objektu neexistují sloupce 5,7....Checked, zde je asi chyba
+
+
+	if(mGrid->Cells[2][Row].Text=="S&G")
+	{
+	 CHECK[0]=mGrid->getCheck(3,Row)->Checked;    //ta je dostupná vždy
+	 CHECK[1]=false;
+	 CHECK[2]=false;
+	 CHECK[3]=false;
+	 CHECK[4]=false;
+	 CHECK[5]=false;
+
+	}
+	else
+	{
 	CHECK[0]=mGrid->getCheck(3,Row)->Checked;
 	CHECK[1]=mGrid->getCheck(5,Row)->Checked;
 	CHECK[2]=mGrid->getCheck(7,Row)->Checked;
 	CHECK[3]=mGrid->getCheck(9,Row)->Checked;
 	CHECK[4]=mGrid->getCheck(11,Row)->Checked;
 	CHECK[5]=mGrid->getCheck(13,Row)->Checked;
+	}
+
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(CHECK[0])//mìní se aRD, RD, CT zùstává DD, K, P, Rz, Rx, R, M, jediná varianta, která pøipadá v úvahu pro S&G režim (jiná nejde zaškrtnout/vybrat)
 	{
@@ -1146,17 +1128,17 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 				mGrid->Cells[28][Row].Text = F->m.round2double(pm.MP*(1+999*Munit),2,"..");
 				if(objekty[Row].pohon!=NULL)
 				{
-					mGrid->Cells[32][Row].Text = F->m.Rz(pm.RD);
+					mGrid->Cells[32][Row].Text =F->m.round2double(F->m.Rz(pm.RD),2,"..");
 					objekty[Row].pohon->Rz=F->m.Rz(pm.RD);
 					if(CHECK[1] || CHECK[3])//zùstává R, mìní se Rx
 					{
-						mGrid->Cells[30][Row].Text = pm.R;
-						mGrid->Cells[34][Row].Text = F->m.Rx2(objekty[Row].pohon->Rz,pm.R);
+						mGrid->Cells[30][Row].Text =F->m.round2double(pm.R,2,"..");
+						mGrid->Cells[34][Row].Text =F->m.round2double(F->m.Rx2(objekty[Row].pohon->Rz,pm.R),2,"..");
 					}
 					if(CHECK[2] || CHECK[4])//zùstává Rx, mìní se R
 					{
-						mGrid->Cells[34][Row].Text = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);
-						mGrid->Cells[30][Row].Text = F->m.R(objekty[Row].pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]));
+						mGrid->Cells[34][Row].Text =F->m.round2double( F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]),2,"..");
+						mGrid->Cells[30][Row].Text =F->m.round2double( F->m.R(objekty[Row].pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)])),2,"..");
 					}
 				}
 		 }break;
@@ -1204,6 +1186,8 @@ void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)
 {
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+
+
 }
 //---------------------------------------------------------------------------
 
@@ -1246,4 +1230,5 @@ void __fastcall TF_gapoTT::scGPGlyphButton_copyClick(TObject *Sender)
 	mGrid->CopyCells2Clipboard(0,0,mGrid->ColCount-1,mGrid->RowCount-1);
 }
 //---------------------------------------------------------------------------
+
 
