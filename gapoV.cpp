@@ -272,12 +272,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed výchozí zaškrtnutí checkboxù
 				//posun na další øádek výsledné tabulky
 
-//					if(F->m.UDV(On[z].rotace)+On[i].mezera==F->m.UDV(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,On[z].rotace)+F->m.mezera_mezi_voziky(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,On[z].rotace,On[z].pohon->roztec,On[i].mezera,0))
-//					{
-//						ShowMessage("povol");
-//					}  else  	ShowMessage("nepovol");
-
 				j++;
+
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
 			mGrid->MergeCells(2,j-z,3,j-z+O_pocet-1);//slouèení bunìk 2-3
@@ -286,7 +282,11 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				{ //nelze nastavit hned, v horní èásti, spoleènì s typem Check, ale až zde
 					mGrid->getCheck(2,j-z)->Options->FrameNormalColor=C1;
 					mGrid->getCheck(2,j-z)->OptionsChecked->FrameNormalColor=C1;
-
+					 //DVM
+//					if(F->m.UDV(On[j-z].rotace)+On[i].mezera==F->m.UDV(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,On[j-z].rotace)+F->m.mezera_mezi_voziky(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,On[j-z].rotace,On[j-z].pohon->roztec,On[i].mezera,0))
+//					{
+//						ShowMessage("povol"); mGrid->getCheck(2,j-z)->Enabled=true;
+//					}  else  	ShowMessage("nepovol");  mGrid->getCheck(2,j-z)->Enabled=false;
 
 				}
 			O=NULL;delete O;
@@ -542,7 +542,6 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
-
 	 if(objekty[Row].pohon!=NULL)
 	 {
 		int pohon_n=objekty[Row].pohon->n;
@@ -797,7 +796,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	/////////////////////KONEC VALIDAÈNÍ ÈÁSTI - HLÍDÁNÍ OBLASTÍ//////////////
 
-    //loadnutí default nastavení pøepínaèù
+		//loadnutí default nastavení pøepínaèù
 		 if(input_state==LOADING && Col>2)
 	{
 

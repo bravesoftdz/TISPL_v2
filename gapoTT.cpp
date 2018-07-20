@@ -957,7 +957,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 	 CHECK[3]=false;
 	 CHECK[4]=false;
 	 CHECK[5]=false;
-
 	}
 	else
 	{
@@ -1078,7 +1077,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 		 {
 				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
 		 }break;
-	//	 tady rosta zajistí patøièné pøeindexování sloupcù
+
 		 case 0://pouze vrátí text do bunìk
 		 {
 				mGrid->Cells[16][Row].Text = F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");

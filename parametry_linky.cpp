@@ -109,11 +109,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 Nastav_zamky(empty_klik_ico,empty_klik);
 	 vypis(""); VID=-1;
 
-
+	 //povolení vstupù do zmìny TT a vozíku + Uložit + Storno button
+		scGPGlyphButton_vozik_edit->Enabled=true;
+		scGPGlyphButton_TT->Enabled=true;
+		Button_storno->Enabled=true;
+		Button_save->Enabled=true;
 
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
-		//Button_save->SetFocus();
 		rMemoEx_Nazev->SetFocus();
 		zobrazOramovani=false;
 
@@ -1130,55 +1133,18 @@ void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftStat
 void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
  F->d.vykresli_packy_PL(Canvas,scGPButton_zamek_aRD,scGPButton_zamek_roztec,scGPButton_zamek_Rz,scGPButton_zamek_Rx);
-	//F->d.vykresli_packy_PL(Canvas,input_state,scGPButton_zamek_aRD->ImageIndex,scGPButton_zamek_roztec->ImageIndex,scGPButton_zamek_Rz->ImageIndex,scGPButton_zamek_Rx->ImageIndex);
-	show_min_Rz();
+
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 
 	if(VID==-1) scGPGlyphButton_ADD->Enabled=true;
 	else        scGPGlyphButton_ADD->Enabled=false;
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::show_min_Rz()
 {
-// double min_mezera_voziky;
-// double rotace;
-// scGPGlyphButton_hint_Rz->Enabled=true;
-//// if(Delkaunit=M) jednotky*1000.0; else jednotky*1.0;
-//
-// for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
-// {
-//	 if(!rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty())
-//	 {
-//	 min_mezera_voziky= Form1->m.mezera_mezi_voziky(rEditNum_delka_jigu->Value*1000,rEditNum_sirka_jigu->Value*1000,0,Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]),0);
-//
-//	// ShowMessage(min_mezera_voziky);
-//
-//		if(rEditNum_delka_jigu->Value<rEditNum_sirka_jigu->Value)
-//		{
-//		rotace=0;
-//		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a šíøky vozíku.";
-//		}
-//		else
-//		{
-//		rotace=90;
-//		scGPGlyphButton_hint_Rz->Hint="Min. Rz = minimální rozteèová vzdálenost,poèítaná na základì zadané rozteèe a délky vozíku.";
-//		}
-//
-//	// rStringGridEd_tab_dopravniky->Cells[6][i]= Form1->m.Rz(rEditNum_delka_jigu->Value,rEditNum_sirka_jigu->Value,rotace,min_mezera_voziky/1000);
-//
-//	 }
-// }
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scGPNumericEdit_sirka_jigChange(TObject *Sender)
-{
-	show_min_Rz();
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scGPNumericEdit_delka_jigChange(TObject *Sender)
-{
-	show_min_Rz();
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2234,10 +2200,6 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RxClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-
-
-
-
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(TObject *Sender,
 					int ACol, int ARow, const UnicodeString Value)
 {
@@ -2307,8 +2269,10 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
 
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
+					{
+					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+					}
 				input_state=NOTHING;
 				}
 
@@ -2336,7 +2300,10 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 					vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 					Memo2->Lines->Add("volam aktualiz R");
 					zobrazOramovani=true;
-					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
+					{
+					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+					}
 			 } //vypoèítání nových dat do roletky na základì zmìny Rz
 			 else zobrazOramovani=false;
 
@@ -2364,7 +2331,10 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
+				{
+					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+				}
 
 				input_state=NOTHING;
 				}
@@ -2394,7 +2364,10 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				zobrazOramovani=true;
 				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")  F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
+				{
+				F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+				}
 				}    else zobrazOramovani=false;
 				rStringGridEd_tab_dopravniky->Invalidate();
 				input_state=NOTHING;
@@ -2426,65 +2399,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 //				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
 //				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
 //				S->DelimitedText=data;
-//
-//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
-//			////////////////////////////////////////////////////////////////////////////////////////////////////////
-//				Memo2->Lines->Clear();
-//				Memo2->Lines->Add("vypis - menim obsah roletky R"+AnsiString (ARow));
-//			//rStringGridEd_tab_dopravniky->Columns->Items[5]->Font->Color=(TColor)RGB(211,211,211);   //=Background=(TColor)RGB(211,211,211);
-//
-//				//Doporuèení Rx
-//				rStringGridEd_tab_dopravniky->Cells[7][ARow]=F->m.Rx(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]));
-//
-//				roletka_data=ARow;
-//			 }
-//		}
-//
-//		if (ACol==5)  // rozteè R
-//
-//		{      //v pøípadì, že v roletce vyberu rozteè, dojde k pøepoètu Rx
-//				if(!rStringGridEd_tab_dopravniky->Cells[5][ARow].IsEmpty() /*&& rStringGridEd_tab_dopravniky->Cells[8][ARow]=="nepoužíván"*/)
-//			{
-//
-//				//Doporuèení Rx
-//				rStringGridEd_tab_dopravniky->Cells[7][ARow]=F->m.Rx(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]));
-//			 }
-//
-//		}
-//
-//			if (ACol==6)  // Rz  - zmìna Rz dopoèítá nové RD a obsah roletky Rozteèe
-//
-//		{
-//
-//		 rStringGridEd_tab_dopravniky->Cells[4][ARow]=F->m.RD(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]))*60.0;
-//
-//		 // + roletka rozteèe
-//
-//		 	//Doporuèení rozteèí
-//				double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); //pøedám Rz
-//					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
-//
-//			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
-//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
-//				TStringList *S=new TStringList;
-//				S->Add(data);
-//				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
-//				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
-//				S->DelimitedText=data;
-//					Memo3->Lines->Clear();
-//        	Memo3->Lines->Add("vypis - menim obsah roletky R"+AnsiString(ARow));
-//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
-//      /////////////////////////////////////////////////////////////
-//			 //  nastavi pro celý sloupec :-/
-//			 // rStringGridEd_tab_dopravniky->Columns->Items[5]->Font->Size=5;
-//			 roletka_data=ARow;
-//		}
-//
-//				if (ACol==7)  // Rx  - zmìna Rx vypoèítá novou rozteè - pøesnou hodnotu
-//
-//		{
-//		 rStringGridEd_tab_dopravniky->Cells[5][ARow] = (F->d.v.PP.TT * F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0) / F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
-//		}
+
 }
 //---------------------------------------------------------------------------
 
@@ -2838,6 +2753,7 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 	else CanClose=false;
 }
 //---------------------------------------------------------------------------
+
 
 
 
