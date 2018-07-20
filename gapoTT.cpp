@@ -513,9 +513,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[14][0].RightBorder->Width=2;
 	mGrid->Cells[14][0].RightBorder->Color=C3;
 
-	mGrid->Cells[3][0].TopBorder->Color=C1;
-	mGrid->Cells[3][0].TopBorder->Width=3;
-
 	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
 	////velikost gapo formu a umístìní komponent
 	//šíøka
@@ -534,7 +531,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		scScrollBar_horizont->Position=0;
 	}
 	//vıška
-	Height=mGrid->Height+Offset*2+rHTMLLabel_InfoText->Height+scGPPanel_hlavicka->Height+11+scGPButton_OK->Height+11;// + 11 offset okolo tlaèítka
+	Height=mGrid->Height+Offset*2+rHTMLLabel_InfoText->Height+scGPPanel_hlavicka->Height+11+scGPButton_OK->Height+11+rHTMLLabel_legenda->Height;// + 11 offset okolo tlaèítka
 	if(Height<=F->Height)//pokud je kratší ne vıška hlavní formu
 	{
 		scScrollBar_vertical->Visible=false;
@@ -814,7 +811,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 									 //kdy je sloupec 7 nebo 9  checked
 									 if(mGrid->Cells[2][i].Text=="Kontinuální")
 									 {
-											 if (/*mGrid->getCheck(7,i)->Checked==true   ||  mGrid->getCheck(9,i)->Checked==true ||*/  mGrid->getCheck(11,i)->Checked==true  ||  mGrid->getCheck(13,i)->Checked==true)
+											 if (mGrid->getCheck(11,i)->Checked==true  ||  mGrid->getCheck(13,i)->Checked==true)
 											 {
 								 //	  a kdy najdu stejné ID a má reim kontinuální tak nemohu povolit vstup do další oblasti
 											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[37][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
@@ -856,9 +853,6 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 			mGrid->getCheck(13,Row)->Checked=false;
 			 }
 	 }
-
-
-
 
   //NEWR
 	if(Col==mGrid->ColCount-1)//je kliknutu na náhled objektu

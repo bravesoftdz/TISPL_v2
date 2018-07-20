@@ -30,6 +30,11 @@ void __fastcall TForm_parametry_vozik::FormShow(TObject *Sender)
 	scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
 	scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
 	scGPNumericEdit_delka_podvozek->Value=F->d.v.PP.delka_podvozek;
+
+	Form_parametry_linky->Button_save->Enabled=false;
+	Form_parametry_linky->Button_storno->Enabled=false;
+	scGPNumericEdit_delka_jig->SetFocus();
+
 }
 //---------------------------------------------------------------------------
 
@@ -47,4 +52,127 @@ void  TForm_parametry_vozik::NastavDesign()
 	if(Form_parametry_linky->scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
 	else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
 }
+
+void __fastcall TForm_parametry_vozik::scGPNumericEdit_delka_jigKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (Button_save->Enabled) Form_parametry_vozik->ModalResult = mrOk;// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, e nelze
+		 }break;
+		 case 27:// ESC
+		 {
+			Form_parametry_vozik->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_vozik->VisibleChanging();// skryje form, stejné jako visible=false
+			Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
+
+		 }break;
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::scGPNumericEdit_sirka_jigKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (Button_save->Enabled) Form_parametry_vozik->ModalResult = mrOk;// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, e nelze
+		 }break;
+		 case 27:// ESC
+		 {
+			Form_parametry_vozik->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_vozik->VisibleChanging();// skryje form, stejné jako visible=false
+			Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
+		 }break;
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::scGPNumericEdit_vyska_jigKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (Button_save->Enabled) Form_parametry_vozik->ModalResult = mrOk;// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, e nelze
+		 }break;
+		 case 27:// ESC
+		 {
+			Form_parametry_vozik->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_vozik->VisibleChanging();// skryje form, stejné jako visible=false
+			Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
+		 }break;
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::scGPNumericEdit_delka_podvozekKeyDown(TObject *Sender,
+          WORD &Key, TShiftState Shift)
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (Button_save->Enabled) Form_parametry_vozik->ModalResult = mrOk;// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, e nelze
+		 }break;
+
+		 case 27:// ESC
+		 {
+			Form_parametry_vozik->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_vozik->VisibleChanging();// skryje form, stejné jako visible=false
+			Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
+		 }break;
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (Button_save->Enabled) Form_parametry_vozik->ModalResult = mrOk;// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, e nelze
+		 }break;
+
+		 case 27:// ESC
+		 {
+			Form_parametry_vozik->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			Form_parametry_vozik->VisibleChanging();// skryje form, stejné jako visible=false
+			Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
+		 }break;
+		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::KonecClick(TObject *Sender)
+{
+Form_parametry_linky->Button_save->Enabled=true;
+Form_parametry_linky->Button_storno->Enabled=true;
+Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::Button_stornoClick(TObject *Sender)
+{
+	Form_parametry_linky->Button_save->Enabled=true;
+	Form_parametry_linky->Button_storno->Enabled=true;
+}
+//---------------------------------------------------------------------------
 

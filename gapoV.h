@@ -26,11 +26,18 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TrHTMLHint *rHTMLHint1;
 	TMemo *Memo1;
+	TrHTMLLabel *rHTMLLabel_legenda;
+	TscScrollBar *scScrollBar_horizont;
+	TscScrollBar *scScrollBar_vertical;
+	TrHTMLLabel *rHTMLLabel_legenda_titulek;
+	TEdit *Edit1;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormShow(TObject *Sender);
+	void __fastcall scGPButton_stornoClick(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù

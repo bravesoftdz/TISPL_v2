@@ -12,6 +12,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -205,6 +206,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     ParentFont = False
     TabOrder = 1
     TabStop = True
+    OnClick = Button_stornoClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
@@ -455,6 +457,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
+    OnKeyDown = scGPNumericEdit_delka_jigKeyDown
   end
   object scGPNumericEdit_sirka_jig: TscGPNumericEdit
     Left = 217
@@ -541,6 +544,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
+    OnKeyDown = scGPNumericEdit_sirka_jigKeyDown
   end
   object scGPNumericEdit_vyska_jig: TscGPNumericEdit
     Left = 323
@@ -628,6 +632,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     ShowHint = True
     TabOrder = 5
     Visible = False
+    OnKeyDown = scGPNumericEdit_vyska_jigKeyDown
   end
   object scGPNumericEdit_delka_podvozek: TscGPNumericEdit
     Left = 110
@@ -714,6 +719,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
+    OnKeyDown = scGPNumericEdit_delka_podvozekKeyDown
   end
   object scGPPanel2: TscGPPanel
     Left = 0
@@ -758,6 +764,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False

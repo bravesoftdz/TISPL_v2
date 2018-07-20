@@ -35,6 +35,17 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel1;
 	TscGPGlyphButton *scGPGlyphButton_info;
 	void __fastcall FormShow(TObject *Sender);
+	void __fastcall scGPNumericEdit_delka_jigKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scGPNumericEdit_sirka_jigKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scGPNumericEdit_vyska_jigKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall scGPNumericEdit_delka_podvozekKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall KonecClick(TObject *Sender);
+	void __fastcall Button_stornoClick(TObject *Sender);
+
+
+
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry_vozik(TComponent* Owner);

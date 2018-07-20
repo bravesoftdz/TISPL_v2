@@ -61,6 +61,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	input_state=LOADING;
 	pruchod=0;
 	leva_oblast=false;
+	//workaround odchytávání stisku kláves
+	Edit1->SetFocus();
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
 	mGrid->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
@@ -246,8 +248,6 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 
 						}
 
-
-
 				//parametry objektù
 
 				mGrid->Cells[12][j].Text=F->m.round2double(O[z].CT/(1+59.0*CTunit),2,"..");	               mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
@@ -272,6 +272,11 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				calculate(j);//Rosto: musí být poslední pøed j++, nelze ho dát pøed výchozí zaškrtnutí checkboxù
 				//posun na další øádek výsledné tabulky
 
+//					if(F->m.UDV(On[z].rotace)+On[i].mezera==F->m.UDV(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,On[z].rotace)+F->m.mezera_mezi_voziky(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,On[z].rotace,On[z].pohon->roztec,On[i].mezera,0))
+//					{
+//						ShowMessage("povol");
+//					}  else  	ShowMessage("nepovol");
+
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
@@ -281,6 +286,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				{ //nelze nastavit hned, v horní èásti, spoleènì s typem Check, ale až zde
 					mGrid->getCheck(2,j-z)->Options->FrameNormalColor=C1;
 					mGrid->getCheck(2,j-z)->OptionsChecked->FrameNormalColor=C1;
+
+
 				}
 			O=NULL;delete O;
 		}
@@ -300,15 +307,79 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Cells[26][RowCount-1].RightBorder->Width=mGrid->Cells[26][1].RightBorder->Width;
 	mGrid->Cells[32][RowCount-1].RightBorder->Width=mGrid->Cells[32][1].RightBorder->Width;
 
-	////////autoresize formu_gapo, vhodné nakonec,tj. pøed Show////////
-	Width=mGrid->Width+Offset*2;
-	Height=mGrid->Height+Offset*2+scGPPanel_hlavicka->Height+10+scGPButton_OK->Height+10;// + 10 offset okolo tlaèítka
-	//pozice komponent
-	F->m.designButton(scGPButton_OK,F_gapoV,1,2);
-	F->m.designButton(scGPButton_storno,F_gapoV,2,2);
 
+	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
+	////velikost gapo formu a umístìní komponent
+	//šíøka
+	Width=mGrid->Width+Offset*2+1;
+	if(Width<=F->Width)//pokud je užší nebo stejnì jako šíøka hlavního formu
+	{
+		scScrollBar_horizont->Visible=false;
+	}
+	else//je širší
+	{
+		Width=F->Width;
+		scScrollBar_horizont->Visible=true;
+		scScrollBar_horizont->Left=0;
+		scScrollBar_horizont->Top=0+scGPPanel_hlavicka->Height;
+		scScrollBar_horizont->Width=Width;
+		scScrollBar_horizont->Position=0;
+	}
+	//výška
+	Height=mGrid->Height+Offset*2+rHTMLLabel_InfoText->Height+scGPPanel_hlavicka->Height+11+scGPButton_OK->Height+11+rHTMLLabel_legenda->Height;// + 11 offset okolo tlaèítka
+	if(Height<=F->Height)//pokud je kratší než výška hlavní formu
+	{
+		scScrollBar_vertical->Visible=false;
+	}
+	else//je delší
+	{
+		Height=F->Height;
+		Width+=scScrollBar_vertical->Width-Offset;//musím ještì rozšíøit form, aby se vešel scrollbar
+		scScrollBar_vertical->Visible=true;
+		scScrollBar_vertical->Left=Width-scScrollBar_vertical->Width;
+		scScrollBar_vertical->Top=scGPPanel_hlavicka->Height;
+		scScrollBar_vertical->Height=Height-scGPPanel_hlavicka->Height;
+		if(scScrollBar_horizont->Visible)//ošetøení pokud jsou zobrazeny oba
+		{
+			scScrollBar_vertical->Top+=scScrollBar_horizont->Height;
+			scScrollBar_vertical->Height=Height-scScrollBar_horizont->Width-scGPPanel_hlavicka->Height;
+		}
+		scScrollBar_vertical->Position=0;
+	}
 	////zobrazení orámování
 	zobrazitFrameForm=true;
+
+
+	//barevné orámování hlavièky
+	mGrid->Cells[1][0].RightBorder->Color=C1;
+	mGrid->Cells[2][0].BottomBorder->Color=mGrid->Cells[3][0].BottomBorder->Color=C1;
+	mGrid->Cells[2][0].BottomBorder->Width=mGrid->Cells[3][0].BottomBorder->Width=2;
+
+	mGrid->Cells[3][0].RightBorder->Color=C1;
+	mGrid->Cells[3][0].RightBorder->Width=2;
+
+	mGrid->Cells[4][0].BottomBorder->Color=	mGrid->Cells[5][0].BottomBorder->Color=mGrid->Cells[6][0].BottomBorder->Color= mGrid->Cells[7][0].BottomBorder->Color=C2;
+	mGrid->Cells[4][0].BottomBorder->Width=	mGrid->Cells[5][0].BottomBorder->Width=mGrid->Cells[6][0].BottomBorder->Width= mGrid->Cells[7][0].BottomBorder->Width=2;
+
+	mGrid->Cells[7][0].RightBorder->Width=2;
+	mGrid->Cells[7][0].RightBorder->Color=C2;
+
+	mGrid->Cells[8][0].BottomBorder->Color=mGrid->Cells[9][0].BottomBorder->Color=mGrid->Cells[10][0].BottomBorder->Color=mGrid->Cells[11][0].BottomBorder->Color=C3;
+	mGrid->Cells[8][0].BottomBorder->Width=	mGrid->Cells[9][0].BottomBorder->Width=mGrid->Cells[10][0].BottomBorder->Width= mGrid->Cells[11][0].BottomBorder->Width=2;
+
+	mGrid->Cells[11][0].RightBorder->Width=2;
+	mGrid->Cells[11][0].RightBorder->Color=C3;
+
+	F->m.designButton(scGPButton_OK,F_gapoV,1,2);
+	F->m.designButton(scGPButton_storno,F_gapoV,2,2);
+	//legenda pozice
+	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
+	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
+	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
+	////pozice gapo formu, pokud je stejnì velký jako hlavní form, tak na 0 pozici, jinak na støed PL formu
+	if(Width==F->Width)Left=0;else Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
+	if(Height==F->Height)Top=0;else Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
+
 
 	///uvolnìní stavu
 	input_state=FREE;
@@ -467,10 +538,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	}
   
-
  ////////////////////////////////////////////////////////////
-
-
 
 	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
@@ -828,6 +896,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 //	 pruchod=0;
 
 	//CHECK[0]=mGrid->getCheck(2,Row)->Checked;
+	CHECK[0]=false;
 	CHECK[1]=mGrid->getCheck(4,Row)->Checked;
 	CHECK[2]=mGrid->getCheck(6,Row)->Checked;
 	CHECK[3]=mGrid->getCheck(8,Row)->Checked;
@@ -1003,4 +1072,32 @@ void __fastcall TF_gapoV::FormClose(TObject *Sender, TCloseAction &Action)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TF_gapoV::scGPButton_stornoClick(TObject *Sender)
+{
+	Form_parametry_linky->Button_save->Enabled=true;
+	Form_parametry_linky->Button_storno->Enabled=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TF_gapoV::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+ switch(Key)
+	 {
+		 case 13: // ENTER
+		 {
+			if (scGPButton_OK->Enabled)scGPButton_OKClick(Sender);// pokud jsou zároveò splnìny podmínky pro stisk OK
+			else 	MessageBeep(0); // pípnutím upozorní, že nelze
+		 }break;
+		 case 27:// ESC
+		 {
+		 	Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
+			F_gapoV->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
+			F_gapoV->VisibleChanging();// skryje form, stejné jako visible=false
+		 }break;
+		}
+}
+//---------------------------------------------------------------------------
 
