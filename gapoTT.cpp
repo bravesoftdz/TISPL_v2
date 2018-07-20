@@ -72,7 +72,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
-	unsigned long ColCount=38;//pevný poèet slopcù      //NEWR
+	unsigned long ColCount=37;//pevný poèet slopcù      //NEWR
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 	RowCount+=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)+F->d.v.vrat_pocet_nepouzivanych_pohonu()+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(true);//PØIDAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
@@ -206,7 +206,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[34][0].Text="Rx - každy n-tý palec";
 
 	mGrid->Cells[36][0].Text="náhled";
-	mGrid->Cells[37][0].Text="ID_pohon";
 
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],15,0,ColCount-1,0);//pro první øádek   sloupce 15+
@@ -469,7 +468,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				TscGPButton *B=mGrid->createButton(30,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 				//	B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
-				mGrid->Cells[37][j].Text=O[z].pohon->n;
 				//zajistí pøepoèet daného øádku - nových hodnot
 				calculate(j);
 				j++;
@@ -703,148 +701,118 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////
+//-------------------------------------------------------------------------------------
+//ÈÁST VALIDACE OBLASTÍ - povolení/zakázání uložení GAPO
 
-		 // mechanismus na povolení vstupu do druhé oblasti tzn aktivace sloupcù 9 až 13 v pøípadì, že
-		 //objekty v KK režimu nemají žádný vybraný sloupec 3 nebo 5
-
-	 //	 objekty[Row].pohon->n;
-
-		 // pokud jsou obì buòky 3 + 5 nevybrané a souèasnì jsou v KK režimu
-		 // vstup z levého sloupce na pravý
-	if(Col<=5 &&  mGrid->getCheck(3,Row)->Checked==false &&  mGrid->getCheck(5,Row)->Checked==false && mGrid->Cells[2][Row].Text=="Kontinuální")
-		{
-
-		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
-			 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[37][Row].Text),1) > 1)  //pokud má KK pohon více objektù  projdu cyklem
-			 {
-				 double pohon_id=F->ms.MyToDouble(mGrid->Cells[37][Row].Text);
-
+// první oblast   - levá
+	if(Col>=3 && Col<=5 && input_state==FREE )
+	{
+			if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
+			{
+			// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
+				if(objekty[Row].pohon!=NULL)
+				{
+					int pohon_n=objekty[Row].pohon->n;
+					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+					{
 					 //prùchod celé tabulky
-						pocitadlo=0;
-					 for(int i=1;i<=mGrid->RowCount-1;i++)
-					 {
-									 //když je sloupec 3 nebo 5 checked
-									 if (mGrid->getCheck(3,i)->Checked==true   ||  mGrid->getCheck(5,i)->Checked==true )
-									 {
-									 // a když najdu stejné ID a má režim kontinuální tak nemohu povolit vstup do další oblasti
-											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[37][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
+								pocitadlo=0;
+							 for(int i=1;i<=mGrid->RowCount-1;i++)
+							 {
+									if(objekty[i].pohon!=NULL)
+									{
+										if(pohon_n==objekty[i].pohon->n)
+										{
+												if (mGrid->getCheck(7,i)->Checked==true   ||  mGrid->getCheck(9,i)->Checked==true ||  mGrid->getCheck(11,i)->Checked==true ||  mGrid->getCheck(13,i)->Checked==true)
 												{
-													pocitadlo++;
-													vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
+												 pocitadlo++;
+												 vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
 												}
-									 }
-						}
-
-					 if(pocitadlo==0)   //pokud jsem nenašel žádné zakliknuté buòky, mohu povolit vstup do druhé oblasti
-					 {                  //projdu opìt celé cyklem a aktivuji druhou oblast
-								for(int i=1;i<=mGrid->RowCount-1;i++)
-								{
-										 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[37][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
-											{
-											if(Rx_canEdit==true) { 	mGrid->getCheck(7,i)->Enabled=true;	mGrid->getCheck(11,i)->Enabled=true; }
-
-											mGrid->getCheck(9,i)->Enabled=true;
-											mGrid->getCheck(13,i)->Enabled=true;
-											vypis("",false);
-											}
-								}
+										}
+									}
+							 }
+							 if(pocitadlo==0) vypis("",false);
 					 }
+			 }
+		}
 
-				}
+	 }
+     // druhá oblast - prostøední
+		if(Col>=6 && Col<=10 && input_state==FREE )
+		{
+			if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true)
+			{
+		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
+				if(objekty[Row].pohon!=NULL)
+				{
+					int pohon_n=objekty[Row].pohon->n;
+					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+					{
+					 //prùchod celé tabulky
+								pocitadlo=0;
+							 for(int i=1;i<=mGrid->RowCount-1;i++)
+							 {
+										if(objekty[i].pohon!=NULL)
+										{
+											if(pohon_n==objekty[i].pohon->n)
+											{
+												if (mGrid->getCheck(3,i)->Checked==true   ||  mGrid->getCheck(5,i)->Checked==true ||  mGrid->getCheck(11,i)->Checked==true ||  mGrid->getCheck(13,i)->Checked==true )
+												{
+												pocitadlo++;
+												vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
+												}
+											}
+										}
+							 }
+							 if(pocitadlo==0) 	vypis("",false);  //povolím uložení
+					 }
+				 }
+			}
 
 	 }
 
-		if(Col>6  && Col<=9 &&  mGrid->getCheck(7,Row)->Checked==false &&  mGrid->getCheck(9,Row)->Checked==false /*&&  mGrid->getCheck(11,Row)->Checked==false &&  mGrid->getCheck(13,Row)->Checked==false*/ && mGrid->Cells[2][Row].Text=="Kontinuální")
+	 // tøetí oblast - vpravo
+
+	if(Col>=11 && Col<=13 && input_state==FREE )
+	{
+		if(mGrid->getCheck(11,Row)->Checked==true ||  mGrid->getCheck(13,Row)->Checked==true)
 		{
 		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
-			 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[37][Row].Text),1) > 1)  //pokud má KK pohon více objektù  projdu cyklem
-			 {
-				 double pohon_id=F->ms.MyToDouble(mGrid->Cells[37][Row].Text);
-
-					 //prùchod celé tabulky
-						pocitadlo=0;
+			if(objekty[Row].pohon!=NULL)
+			{
+				int pohon_n=objekty[Row].pohon->n;
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+				{
+					pocitadlo=0;
 					 for(int i=1;i<=mGrid->RowCount-1;i++)
 					 {
-									 //když je sloupec 7 nebo 9  checked
-									 if(mGrid->Cells[2][i].Text=="Kontinuální")
+							if(objekty[i].pohon!=NULL)
+							{
+								if(pohon_n==objekty[i].pohon->n)
+								 {
+									 if (mGrid->getCheck(3,i)->Checked==true   ||  mGrid->getCheck(5,i)->Checked==true ||  mGrid->getCheck(7,i)->Checked==true ||  mGrid->getCheck(9,i)->Checked==true )
 									 {
-											 if (mGrid->getCheck(7,i)->Checked==true   ||  mGrid->getCheck(9,i)->Checked==true /*||  mGrid->getCheck(11,i)->Checked==true  ||  mGrid->getCheck(13,i)->Checked==true*/)
-											 {
-								 //	  a když najdu stejné ID a má režim kontinuální tak nemohu povolit vstup do další oblasti
-											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[37][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
-												{
-													pocitadlo++;
-													vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
-												}
-											}
+									 pocitadlo++;
+									 vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
 									 }
-						}
-
-					 if(pocitadlo==0)   //pokud jsem nenašel žádné zakliknuté buòky, mohu povolit vstup do druhé oblasti
-					 {                  //projdu opìt celé cyklem a aktivuji druhou oblast
-								for(int i=1;i<=mGrid->RowCount-1;i++)
-								{
-										 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[37][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
-											{
-											mGrid->getCheck(3,i)->Enabled=true;
-											mGrid->getCheck(5,i)->Enabled=true;
-											vypis("",false);
-											}
-								}
+								 }
+							}
 					 }
+					 if(pocitadlo==0) 	vypis("",false);  //povolím uložení
 				}
+			}
+		}
+
 	 }
 
-
-		if(Col>10  && Col<=14 /*&&  mGrid->getCheck(7,Row)->Checked==false &&  mGrid->getCheck(9,Row)->Checked==false*/ &&  mGrid->getCheck(11,Row)->Checked==false &&  mGrid->getCheck(13,Row)->Checked==false && mGrid->Cells[2][Row].Text=="Kontinuální")
-		{
-		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
-			 if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(F->ms.MyToDouble(mGrid->Cells[37][Row].Text),1) > 1)  //pokud má KK pohon více objektù  projdu cyklem
-			 {
-				 double pohon_id=F->ms.MyToDouble(mGrid->Cells[37][Row].Text);
-
-					 //prùchod celé tabulky
-						pocitadlo=0;
-					 for(int i=1;i<=mGrid->RowCount-1;i++)
-					 {
-									 //když je sloupec 7 nebo 9  checked
-									 if(mGrid->Cells[2][i].Text=="Kontinuální")
-									 {
-											 if (mGrid->getCheck(11,i)->Checked==true  ||  mGrid->getCheck(13,i)->Checked==true)
-											 {
-								 //	  a když najdu stejné ID a má režim kontinuální tak nemohu povolit vstup do další oblasti
-											 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[37][i].Text) && mGrid->Cells[2][i].Text=="Kontinuální")
-												{
-													pocitadlo++;
-													vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!");
-												}
-											}
-									 }
-						}
-
-					 if(pocitadlo==0)   //pokud jsem nenašel žádné zakliknuté buòky, mohu povolit vstup do druhé oblasti
-					 {                  //projdu opìt celé cyklem a aktivuji druhou oblast
-								for(int i=1;i<=mGrid->RowCount-1;i++)
-								{
-										 if(pohon_id==F->ms.MyToDouble(mGrid->Cells[37][i].Text)  && mGrid->Cells[2][i].Text=="Kontinuální")
-											{
-											mGrid->getCheck(3,i)->Enabled=true;
-											mGrid->getCheck(5,i)->Enabled=true;
-											vypis("",false);
-											}
-								}
-					 }
-				}
-	 }
-
-
+//-----------------------------------------------------------------------------------------
+// znovunaètení formuláøe - nastavení Checkboxù
 	 if(input_state==LOADING && Col>2)
 	{
 			if(mGrid->Cells[2][Row].Text!="S&G")
 			{
 
-			//tøetí resp. první výbìrový sloupec je vždy pøedvybrán na true
+			//tøetí resp. první výbìrový sloupec je vždy pøedvybrán na true, zbytek jsou po zobrazení false
 			mGrid->getCheck(3,Row)->Checked=true;
 			mGrid->getCheck(5,Row)->Checked=false;
 			mGrid->getCheck(7,Row)->Checked=false;

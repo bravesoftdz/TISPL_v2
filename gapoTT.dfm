@@ -54,7 +54,7 @@ object F_gapoTT: TF_gapoTT
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    FontColor = clRed
+    FontColor = 33023
   end
   object rHTMLLabel_legenda_titulek: TrHTMLLabel
     Left = 0
