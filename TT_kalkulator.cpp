@@ -73,6 +73,8 @@ void __fastcall TForm_TT_kalkulator::FormKeyDown(TObject *Sender, WORD &Key, TSh
  {
 		 Form_TT_kalkulator->ModalResult=mrCancel;//vrátí stejnou hodnotu jako tlaèítko
 		 Form_TT_kalkulator->VisibleChanging();//skryje form, stejné jako visible=false
+		 Form_parametry_linky->Button_save->Enabled=true;
+		 Form_parametry_linky->Button_storno->Enabled=true;
  }
 }
 //---------------------------------------------------------------------------
@@ -92,7 +94,6 @@ void __fastcall TForm_TT_kalkulator::rEditNum_taktKeyDown(TObject *Sender, WORD 
 	 {
 		 case 13: // ENTER
 		 {
-		 //ShowMessage("ted");
 			if (Button_save->Enabled) Form_TT_kalkulator->ModalResult = mrOk;// pokud jsou zároveò splnìny podmínky pro stisk OK
 			else 	MessageBeep(0); // pípnutím upozorní, e nelze
 		 }break;
@@ -100,6 +101,8 @@ void __fastcall TForm_TT_kalkulator::rEditNum_taktKeyDown(TObject *Sender, WORD 
 		 {
 			Form_TT_kalkulator->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
 			Form_TT_kalkulator->VisibleChanging();// skryje form, stejné jako visible=false
+			Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
 		 }break;
 		}
 

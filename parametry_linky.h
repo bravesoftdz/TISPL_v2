@@ -136,8 +136,6 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyEnter(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
-	void __fastcall scGPNumericEdit_sirka_jigChange(TObject *Sender);
-	void __fastcall scGPNumericEdit_delka_jigChange(TObject *Sender);
 	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
 	void __fastcall rStringGridEd_tab_dopravnikyMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
@@ -185,6 +183,7 @@ __published:	// IDE-managed Components
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
 	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
+
 
 private:	// User declarations
 	TPL_math pm;//INSTANCE NA V›PO»ETNÕ »¡ST PL tj. PL_math

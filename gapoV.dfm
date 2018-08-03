@@ -14,10 +14,65 @@ object F_gapoV: TF_gapoV
   OldCreateOrder = False
   OnActivate = FormActivate
   OnClose = FormClose
+  OnKeyDown = FormKeyDown
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = -141
+    Top = -20
+    Width = 518
+    Height = 19
+    AutoSize = False
+    Caption = 'Upozorn'#283'n'#237
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object rHTMLLabel_legenda: TrHTMLLabel
+    Left = -2
+    Top = 329
+    Width = 154
+    Height = 116
+    Caption = 
+      '- m'#283'n'#283'n'#225' hodnota'#13'<font color=gray>- nem'#283'n'#283'n'#225' hodnota</font>'#13'<fon' +
+      't color=silver>- p'#367'vodn'#237' hodnota</font>'#13'<font color=#804000>1. o' +
+      'blast</font>'#13'<font color=#008000>2. oblast</font>'#13'<font color=bl' +
+      'ack>3. oblast</font>'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clYellow
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    FontColor = 33023
+  end
+  object rHTMLLabel_legenda_titulek: TrHTMLLabel
+    Left = 0
+    Top = 352
+    Width = 65
+    Height = 19
+    Caption = 'Legenda:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
@@ -434,6 +489,7 @@ object F_gapoV: TF_gapoV
     ParentFont = False
     TabOrder = 2
     TabStop = True
+    OnClick = scGPButton_stornoClick
     Animation = False
     Caption = 'Storno'
     CanFocused = True
@@ -510,5 +566,57 @@ object F_gapoV: TF_gapoV
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object Memo1: TMemo
+    Left = 160
+    Top = 128
+    Width = 185
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 3
+    Visible = False
+  end
+  object scScrollBar_horizont: TscScrollBar
+    Left = 8
+    Top = 356
+    Width = 361
+    Height = 16
+    LargeChange = 20
+    PageSize = 0
+    SmallChange = 10
+    TabOrder = 4
+    TabStop = False
+    Visible = False
+  end
+  object scScrollBar_vertical: TscScrollBar
+    Left = 361
+    Top = 37
+    Width = 16
+    Height = 313
+    Kind = sbVertical
+    LargeChange = 20
+    PageSize = 0
+    SmallChange = 10
+    TabOrder = 5
+    TabStop = False
+    Visible = False
+  end
+  object Edit1: TEdit
+    Left = 92
+    Top = -30
+    Width = 121
+    Height = 21
+    TabOrder = 6
+    Text = 'Edit1'
+  end
+  object rHTMLHint1: TrHTMLHint
+    HintFont.Charset = DEFAULT_CHARSET
+    HintFont.Color = clWindowText
+    HintFont.Height = -11
+    HintFont.Name = 'Tahoma'
+    HintFont.Style = []
+    Left = 56
+    Top = 400
   end
 end
