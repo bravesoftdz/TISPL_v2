@@ -1238,7 +1238,7 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 }
 //---------------------------------------------------------------------------
 //dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
-long TmGrid::GetIndRow(int X,int Y)
+long TmGrid::GetIdxRow(int X,int Y)
 {
 	long RET=-1;
 	if(X>=Left && X<Left+Width && Y>=Top && Y<Top+Height)//ošetøení mimo tabulku + akcelerátor
@@ -1253,7 +1253,7 @@ long TmGrid::GetIndRow(int X,int Y)
 }
 //---------------------------------------------------------------------------
 //dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
-long TmGrid::GetIndColum(int X,int Y)
+long TmGrid::GetIdxColum(int X,int Y)
 {
 	long RET=-1;
 	if(X>=Left && X<Left+Width && Y>=Top && Y<Top+Height)//ošetøení mimo tabulku + akcelerátor
@@ -1270,11 +1270,17 @@ long TmGrid::GetIndColum(int X,int Y)
 //zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
 void TmGrid::HighlightRowOnMouse(int X,int Y,TColor Color,bool SelFirstRow)
 {
-		long Row=GetIndRow(X,Y);
+		long Row=GetIdxRow(X,Y);
 		//pokud se pohybuje myší v tabulce
 		int FirstRow=0;if(!SelFirstRow)FirstRow=1;
 		if(Row>=FirstRow && preRowInd!=Row)
 		{
+				//Graphics::TBitmap *bmp=new Graphics::TBitmap;
+				//bmp->Width=Width;bmp->Height=Height;
+				//Form->Canvas->CopyRect(TRect(Left,Top,Left+Width,Top+Height),bmp->Canvas,TRect(Left,Top,Left+Width,Top+Height));
+				//bmp->SaveToFile("test.bmp");//test
+				//Form->Canvas->Draw(Left,Top,bmp);
+
 				Show();//Refresh s minimem probliku
 
 				Form->Canvas->Pen->Mode=pmMask;//if((TColor)jakou->color==clBlack)canv->Pen->Mode=pmNotXor;}

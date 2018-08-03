@@ -81,8 +81,8 @@ class TmGrid
 	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	long GetIndRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
-	long GetIndColum(int X,int Y);//dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+	long GetIdxRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
+	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
 	//promìnné
 	long Tag;//ID komponenty (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
 	long Left,Top,preLeft,preTop;//umístìní celé komponenty
