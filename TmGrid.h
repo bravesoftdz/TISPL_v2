@@ -71,6 +71,7 @@ class TmGrid
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
 	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=2);//zajistí zvýraznìní dané buòky
+	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPComboBox *getCombo(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
@@ -80,7 +81,8 @@ class TmGrid
 	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-
+	long GetIndRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
+	long GetIndColum(int X,int Y);//dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
 	//promìnné
 	long Tag;//ID komponenty (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
 	long Left,Top,preLeft,preTop;//umístìní celé komponenty
@@ -134,6 +136,7 @@ class TmGrid
 
 	unsigned long bufColCount,bufRowCount;//pøedchozí poèet øádkù a sloupcù
 	short SetColumnAutoFitColIdx;//typ autofit column
+	long preRowInd;//pøedchozí øádek na kterém byla myš
 
 };
 //---------------------------------------------------------------------------

@@ -24,6 +24,7 @@ TmGrid::TmGrid(TForm *Owner)
 	AntiAliasing_grid=false;
 	AntiAliasing_text=false;
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
+	preRowInd=-1;
 	//orámování - default
 	TBorder defBorder;
 	defBorder.Color=(TColor)RGB(200,200,200);
@@ -1236,4 +1237,58 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 	}
 }
 //---------------------------------------------------------------------------
+//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
+long TmGrid::GetIndRow(int X,int Y)
+{
+	long RET=-1;
+	if(X>=Left && X<Left+Width && Y>=Top && Y<Top+Height)//ošetøení mimo tabulku + akcelerátor
+	{
+		for (unsigned long i=0;i<RowCount;i++)
+		{
+			if(Rows[i].Top<=Y-Top && Y-Top<Rows[i].Top+Rows[i].Height)
+			RET=i;
+		}
+	}
+	return RET;
+}
+//---------------------------------------------------------------------------
+//dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+long TmGrid::GetIndColum(int X,int Y)
+{
+	long RET=-1;
+	if(X>=Left && X<Left+Width && Y>=Top && Y<Top+Height)//ošetøení mimo tabulku + akcelerátor
+	{
+		for (unsigned long i=0;i<ColCount;i++)
+		{
+			if(Columns[i].Left<=X-Left && X-Left<Columns[i].Left+Columns[i].Width)
+			RET=i;
+		}
+	}
+	return RET;
+}
+//---------------------------------------------------------------------------
+//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
+void TmGrid::HighlightRowOnMouse(int X,int Y,TColor Color,bool SelFirstRow)
+{
+		long Row=GetIndRow(X,Y);
+		//pokud se pohybuje myší v tabulce
+		int FirstRow=0;if(!SelFirstRow)FirstRow=1;
+		if(Row>=FirstRow && preRowInd!=Row)
+		{
+				Show();//Refresh s minimem probliku
 
+				Form->Canvas->Pen->Mode=pmMask;//if((TColor)jakou->color==clBlack)canv->Pen->Mode=pmNotXor;}
+				Form->Canvas->Brush->Style=bsSolid;
+				Form->Canvas->Brush->Color=Color;
+				Form->Canvas->Pen->Width=0;
+				Form->Canvas->Pen->Color=Color;
+
+				TPoint body[4]={TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height),TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height)};
+				Form->Canvas->Polygon(body,3);
+				Form->Canvas->Pen->Mode=pmCopy;
+		}
+		//pøi odchodu z tabulky, aby nezùstal "viset" oznaèený øádek
+		if(Row<=FirstRow-1 && preRowInd>=FirstRow)Show();//Refresh s minimem probliku
+		preRowInd=Row;//uložení aktivního øádku pro další použítí
+}
+//---------------------------------------------------------------------------
