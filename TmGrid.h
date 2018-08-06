@@ -71,6 +71,7 @@ class TmGrid
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
 	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=2);//zajistí zvýraznìní dané buòky
+	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false);//zajistí zvýraznìní øádkù dle èísla øádku Row
 	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu

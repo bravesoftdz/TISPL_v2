@@ -1267,33 +1267,40 @@ long TmGrid::GetIdxColum(int X,int Y)
 	return RET;
 }
 //---------------------------------------------------------------------------
+//zajistí zvýraznìní øádkù dle èísla øádku Row
+void TmGrid::HighlightRow(long Row,TColor Color,bool SelFirstRow)
+{
+	//pokud se pohybuje v tabulce
+	int FirstRow=0;if(!SelFirstRow)FirstRow=1;
+	if(Row>=FirstRow && preRowInd!=Row)
+	{
+		if(!(Row==1 && preRowInd==0))selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
+		selRow(Row,Color,true);//nové oznaèení
+	}
+	//pøi odchodu z tabulky, aby nezùstal "viset" oznaèený øádek
+	if(Row<=FirstRow-1 && preRowInd>=FirstRow)selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
+	preRowInd=Row;//uložení aktivního øádku pro další použítí
+}
+//---------------------------------------------------------------------------
 //zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
 void TmGrid::HighlightRowOnMouse(int X,int Y,TColor Color,bool SelFirstRow)
 {
-		long Row=GetIdxRow(X,Y);
-		//pokud se pohybuje myší v tabulce
-		int FirstRow=0;if(!SelFirstRow)FirstRow=1;
-		if(Row>=FirstRow && preRowInd!=Row)
-		{
-				selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
-				selRow(Row,Color,true);//nové oznaèení oznaèení
-		}
-		//pøi odchodu z tabulky, aby nezùstal "viset" oznaèený øádek
-		if(Row<=FirstRow-1 && preRowInd>=FirstRow)selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
-		preRowInd=Row;//uložení aktivního øádku pro další použítí
+	long Row=GetIdxRow(X,Y);
+	HighlightRow(Row,Color,SelFirstRow);
 }
 //---------------------------------------------------------------------------
 //oznaèí øádek, nebo zruší oznaèení øádku dle vstupního parametru
 void TmGrid::selRow(long Row,TColor Color,bool newSel)
 {
-		if(newSel)Form->Canvas->Pen->Mode=pmMask;else Form->Canvas->Pen->Mode=pmNotXor;
-		Form->Canvas->Brush->Style=bsSolid;
-		Form->Canvas->Brush->Color=Color;
-		Form->Canvas->Pen->Width=0;
-		Form->Canvas->Pen->Color=Color;
+	if(newSel)Form->Canvas->Pen->Mode=pmMask;else Form->Canvas->Pen->Mode=pmNotXor;
+	Form->Canvas->Brush->Style=bsSolid;
+	Form->Canvas->Brush->Color=Color;
+	Form->Canvas->Pen->Width=0;
+	Form->Canvas->Pen->Color=Color;
+	short C=1-(short)newSel;
 
-		TPoint body[4]={TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height),TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height)};
-		Form->Canvas->Polygon(body,3);
-		Form->Canvas->Pen->Mode=pmCopy;
+	TPoint body[4]={TPoint(mGrid->Left-C,mGrid->Top+mGrid->Rows[Row].Top-C),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top-C),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height),TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height)};
+	Form->Canvas->Polygon(body,3);
+	Form->Canvas->Pen->Mode=pmCopy;
 }
 //---------------------------------------------------------------------------
