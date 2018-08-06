@@ -1275,26 +1275,25 @@ void TmGrid::HighlightRowOnMouse(int X,int Y,TColor Color,bool SelFirstRow)
 		int FirstRow=0;if(!SelFirstRow)FirstRow=1;
 		if(Row>=FirstRow && preRowInd!=Row)
 		{
-				//Graphics::TBitmap *bmp=new Graphics::TBitmap;
-				//bmp->Width=Width;bmp->Height=Height;
-				//Form->Canvas->CopyRect(TRect(Left,Top,Left+Width,Top+Height),bmp->Canvas,TRect(Left,Top,Left+Width,Top+Height));
-				//bmp->SaveToFile("test.bmp");//test
-				//Form->Canvas->Draw(Left,Top,bmp);
-
-				Show();//Refresh s minimem probliku
-
-				Form->Canvas->Pen->Mode=pmMask;//if((TColor)jakou->color==clBlack)canv->Pen->Mode=pmNotXor;}
-				Form->Canvas->Brush->Style=bsSolid;
-				Form->Canvas->Brush->Color=Color;
-				Form->Canvas->Pen->Width=0;
-				Form->Canvas->Pen->Color=Color;
-
-				TPoint body[4]={TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height),TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height)};
-				Form->Canvas->Polygon(body,3);
-				Form->Canvas->Pen->Mode=pmCopy;
+				selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
+				selRow(Row,Color,true);//nové oznaèení oznaèení
 		}
 		//pøi odchodu z tabulky, aby nezùstal "viset" oznaèený øádek
-		if(Row<=FirstRow-1 && preRowInd>=FirstRow)Show();//Refresh s minimem probliku
+		if(Row<=FirstRow-1 && preRowInd>=FirstRow)selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
 		preRowInd=Row;//uložení aktivního øádku pro další použítí
+}
+//---------------------------------------------------------------------------
+//oznaèí øádek, nebo zruší oznaèení øádku dle vstupního parametru
+void TmGrid::selRow(long Row,TColor Color,bool newSel)
+{
+		if(newSel)Form->Canvas->Pen->Mode=pmMask;else Form->Canvas->Pen->Mode=pmNotXor;
+		Form->Canvas->Brush->Style=bsSolid;
+		Form->Canvas->Brush->Color=Color;
+		Form->Canvas->Pen->Width=0;
+		Form->Canvas->Pen->Color=Color;
+
+		TPoint body[4]={TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height),TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height)};
+		Form->Canvas->Polygon(body,3);
+		Form->Canvas->Pen->Mode=pmCopy;
 }
 //---------------------------------------------------------------------------

@@ -126,6 +126,7 @@ class TmGrid
 	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
 	void realock();//zajistí realokaci pole Cells dle nové velikosti
 	void rotace_textu(long rotace);//zajistí rotaci textu
+	void selRow(long Row,TColor Color,bool newSel);//oznaèí øádek, nebo zruší oznaèení øádku dle vstupního parametru
 
 	unsigned long getWidth();//vrátí celkovou šíøku tabulky
 	unsigned long getHeight();//vrátí celkovou výšku tabulky
