@@ -531,8 +531,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 leva_oblast=false;
 	 input_state=FREE;
 
-	}
-  
+	} 
 
 	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
