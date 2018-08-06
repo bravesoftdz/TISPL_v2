@@ -1089,3 +1089,10 @@ void __fastcall TF_gapoV::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TF_gapoV::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
+          int Y)
+{
+mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
+}
+//---------------------------------------------------------------------------
+

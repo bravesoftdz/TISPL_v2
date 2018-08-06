@@ -15,6 +15,7 @@ object F_gapoV: TF_gapoV
   OnActivate = FormActivate
   OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96

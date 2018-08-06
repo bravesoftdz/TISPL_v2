@@ -14,6 +14,7 @@ object F_gapoTT: TF_gapoTT
   OldCreateOrder = False
   OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
