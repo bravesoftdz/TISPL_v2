@@ -597,6 +597,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 input_state=FREE;
 }
 
+
  /////////////////////////////////////////////////////////////////////////////////
 
 	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
