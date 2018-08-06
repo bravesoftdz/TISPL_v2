@@ -441,7 +441,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //	}
 
 
-		if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+  if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
 
 	 if(objekty[Row].pohon!=NULL)
@@ -462,23 +462,19 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 			 }
 			}
 		}
-
-		}  //std chování, mimo oblasti
-
-		else
-		{
+	 }  //std chování, mimo oblasti
+	 else
+	 {
 		mGrid->getCheck(Col+2,Row)->Checked=false;
 		mGrid->getCheck(Col+4,Row)->Checked=false;
 		mGrid->getCheck(Col+6,Row)->Checked=false;
 		mGrid->getCheck(Col+8,Row)->Checked=false;
 		leva_oblast=false;
-
 	 }
-
 	input_state=FREE;
 	}
 
- ////////////////////////////////////////////////////////////////////////////////
+
 	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
 
@@ -525,11 +521,10 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 }
 	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
 	 {
-			 //ShowMessage("jsem bez pohonu, mohu");
-	 mGrid->getCheck(Col-2,Row)->Checked=false;
-	 mGrid->getCheck(Col+2,Row)->Checked=false;
-	 mGrid->getCheck(Col+4,Row)->Checked=false;
-	 mGrid->getCheck(Col+6,Row)->Checked=false;
+			 mGrid->getCheck(Col-2,Row)->Checked=false;
+			 mGrid->getCheck(Col+2,Row)->Checked=false;
+			 mGrid->getCheck(Col+4,Row)->Checked=false;
+			 mGrid->getCheck(Col+6,Row)->Checked=false;
 	 }
 
 	 pruchod=0;
@@ -538,7 +533,6 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	}
   
- ////////////////////////////////////////////////////////////
 
 	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
@@ -597,9 +591,6 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 input_state=FREE;
 }
 
-
- /////////////////////////////////////////////////////////////////////////////////
-
 	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
 
@@ -653,8 +644,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 pruchod=0;
 	 leva_oblast=false;
 	 input_state=FREE;
-
-}
+	}
 
 	if(Col==10 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
@@ -672,31 +662,31 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		mGrid->getCheck(Col-2,Row)->Checked=false;
 		}
 		else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
-	{
-
-		for(int i=1;i<=mGrid->RowCount-1;i++)
 		{
-			if(objekty[i].pohon!=NULL)
+
+			for(int i=1;i<=mGrid->RowCount-1;i++)
 			{
-			 if(pohon_n == objekty[i].pohon->n)
-			 {
-				 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
-				 if(pruchod==1)   	mGrid->getCheck(Col-8,i)->Checked=false;
-
-					mGrid->getCheck(Col-6,Row)->Checked=false;
-					mGrid->getCheck(Col-4,Row)->Checked=false;
-					mGrid->getCheck(Col-2,Row)->Checked=false;
-
-				  if(leva_oblast)
+				if(objekty[i].pohon!=NULL)
+				{
+					if(pohon_n == objekty[i].pohon->n)
 					{
-					input_state=PROGRAMOVE;
-					mGrid->getCheck(10,i)->Checked=true;
-					}
-			 }
-			}
-		}
+						 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+						 if(pruchod==1)   	mGrid->getCheck(Col-8,i)->Checked=false;
 
-	 }
+							mGrid->getCheck(Col-6,Row)->Checked=false;
+							mGrid->getCheck(Col-4,Row)->Checked=false;
+							mGrid->getCheck(Col-2,Row)->Checked=false;
+
+							if(leva_oblast)
+							{
+							input_state=PROGRAMOVE;
+							mGrid->getCheck(10,i)->Checked=true;
+							}
+					}
+				}
+			}
+
+		}
 	 }
 	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
 	 {
@@ -709,9 +699,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 pruchod=0;
 	 leva_oblast=false;
 	 input_state=FREE;
-}	 //KONEC PØEPÍNAÈÙ
-	///////////////////////////////////////////////////////////
-
+	}	 //KONEC PØEPÍNAÈÙ
 
 	//VALIDAÈNÍ ÈÁST - HLÍDÁNÍ OBLASTÍ
 
@@ -795,7 +783,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	 }
 
-	/////////////////////KONEC VALIDAÈNÍ ÈÁSTI - HLÍDÁNÍ OBLASTÍ//////////////
+	//KONEC VALIDAÈNÍ ÈÁSTI - HLÍDÁNÍ OBLASTÍ//
 
 		//loadnutí default nastavení pøepínaèù
 		 if(input_state==LOADING && Col>2)
