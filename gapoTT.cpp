@@ -1193,3 +1193,10 @@ void __fastcall TF_gapoTT::scGPGlyphButton_copyClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+void __fastcall TF_gapoTT::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
+          int Y)
+{
+mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
+}
+//---------------------------------------------------------------------------
+

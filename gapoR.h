@@ -49,6 +49,8 @@ __published:	// IDE-managed Components
           bool &Handled);
 	void __fastcall FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
           bool &Handled);
+	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+
 private:	// User declarations
 	//Cvektory v;//instance na tøídu vektorù - nepoužívát, padalo
 	short Offset;//odsazení tabulky po všech stranách formu

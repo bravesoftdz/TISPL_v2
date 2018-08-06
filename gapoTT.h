@@ -39,6 +39,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scButton_csvClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
+	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù

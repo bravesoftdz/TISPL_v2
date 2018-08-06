@@ -15,6 +15,7 @@ object F_gapoR: TF_gapoR
   OnActivate = FormActivate
   OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
   OnPaint = FormPaint

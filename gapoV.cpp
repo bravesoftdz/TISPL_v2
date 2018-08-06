@@ -531,8 +531,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 leva_oblast=false;
 	 input_state=FREE;
 
-	}
-  
+	} 
 
 	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
@@ -1086,6 +1085,13 @@ void __fastcall TF_gapoV::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 			F_gapoV->VisibleChanging();// skryje form, stejné jako visible=false
 		 }break;
 		}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TF_gapoV::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
+          int Y)
+{
+mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 }
 //---------------------------------------------------------------------------
 

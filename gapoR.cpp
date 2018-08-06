@@ -505,3 +505,10 @@ void __fastcall TF_gapoR::FormMouseWheelDown(TObject *Sender, TShiftState Shift,
 //---------------------------------------------------------------------------
 
 
+void __fastcall TF_gapoR::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
+          int Y)
+{
+mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
+}
+//---------------------------------------------------------------------------
+
