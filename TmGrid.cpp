@@ -1268,25 +1268,28 @@ long TmGrid::GetIdxColum(int X,int Y)
 }
 //---------------------------------------------------------------------------
 //zajistí zvýraznìní øádkù dle èísla øádku Row
-void TmGrid::HighlightRow(long Row,TColor Color,bool SelFirstRow)
+void TmGrid::HighlightRow(long Row,TColor Color,bool SelFirstRow,bool unHighlightPrevRow)
 {
 	//pokud se pohybuje v tabulce
 	int FirstRow=0;if(!SelFirstRow)FirstRow=1;
 	if(Row>=FirstRow && preRowInd!=Row)
 	{
-		if(!(Row==1 && preRowInd==0))selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
+		if(unHighlightPrevRow)if(!(Row==1 && preRowInd==0))selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
 		selRow(Row,Color,true);//nové oznaèení
 	}
 	//pøi odchodu z tabulky, aby nezùstal "viset" oznaèený øádek
-	if(Row<=FirstRow-1 && preRowInd>=FirstRow)selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
-	preRowInd=Row;//uložení aktivního øádku pro další použítí
+	if(unHighlightPrevRow)
+	{
+		if(Row<=FirstRow-1 && preRowInd>=FirstRow)selRow(preRowInd,Color,false);//odstranìní pøedchozího oznaèení misto: Show();//Refresh s minimem probliku
+		preRowInd=Row;//uložení aktivního øádku pro další použítí
+  }
 }
 //---------------------------------------------------------------------------
 //zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
-void TmGrid::HighlightRowOnMouse(int X,int Y,TColor Color,bool SelFirstRow)
+void TmGrid::HighlightRowOnMouse(int X,int Y,TColor Color,bool SelFirstRow,bool unHighlightPrevRow)
 {
 	long Row=GetIdxRow(X,Y);
-	HighlightRow(Row,Color,SelFirstRow);
+	HighlightRow(Row,Color,SelFirstRow,unHighlightPrevRow);
 }
 //---------------------------------------------------------------------------
 //oznaèí øádek, nebo zruší oznaèení øádku dle vstupního parametru
