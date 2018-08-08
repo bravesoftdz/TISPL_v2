@@ -73,7 +73,7 @@ class Cvykresli
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
-void odznac_oznac_vetev(TCanvas *canv, int X, int Y);//vykreslí èi odznaèí potenciální umístìní vìtve
+void odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);//vykreslí èi odznaèí potenciální umístìní vìtve
 	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p, bool odecti_region=true);
 	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region=true);
 	void sound();

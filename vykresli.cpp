@@ -1478,17 +1478,19 @@ void Cvykresli::odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::T
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí či odznačí potenciální umístění větve
-void Cvykresli::odznac_oznac_vetev(TCanvas *canv, int X, int Y)
+void Cvykresli::odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p)
 {
 		//nastavení pera
 		canv->Pen->Color=clBlack;
 		canv->Pen->Width=1;
 		canv->Pen->Style=psDot;//nastevení čarkované čáry
 		canv->Pen->Mode=pmNotXor;
+		canv->Brush->Style=bsClear;
 
 		//vykreslení spojovací linie
-		canv->MoveTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
-		canv->LineTo(m.L2Px(v.OBJEKTY->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->predchozi->Y)+O_height*Form1->Zoom/2);
+		canv->MoveTo(m.L2Px(p->X)+O_width*Form1->Zoom/2,m.L2Py(p->Y)+O_height*Form1->Zoom/2);
+		canv->LineTo(X,Y);
+		canv->Ellipse(X-10,Y-10,X+10,Y+10);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p,bool odecti_region)

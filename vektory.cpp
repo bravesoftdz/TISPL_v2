@@ -58,7 +58,7 @@ void Cvektory::hlavicka_OBJEKTY()
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////uloží objekt a jeho parametry do seznamu
-void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
+Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 {
 	TObjekt *novy=new TObjekt;
 
@@ -98,10 +98,11 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->dalsi=NULL;
 	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	return novy;
 }
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu za objekt p        //p předchozí
-void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
+Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 {
 	TObjekt *novy=new TObjekt;
 	novy->id=id;
@@ -142,6 +143,7 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	p->dalsi2=NULL;
 	novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	//indexy zvýšit separátně
+	return novy;
 }
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu - přetížená fce
@@ -241,7 +243,7 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 	Cvektory::TObjekt *p=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (p!=NULL)
 	{
-		if(p->X<=X && X<=p->X+offsetX*Form1->m2px &&  p->Y>=Y && Y>=p->Y-offsetY*Form1->m2px)ret=p;//nalezeno !
+		if(p->X<=X && X<=p->X+offsetX*Form1->m2px && p->Y>=Y && Y>=p->Y-offsetY*Form1->m2px)ret=p;//nalezeno !
 		p=p->dalsi;//posun na další prvek
 	}
 	return ret;

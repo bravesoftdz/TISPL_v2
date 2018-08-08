@@ -1403,7 +1403,6 @@ void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 		funkcni_klavesa=0;
 		//vrat_puvodni_akci();
 	}
-
 }
 //---------------------------------------------------------------------------
 //explicitní klávesové zkratky
@@ -1720,13 +1719,24 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 			break;
 		}
+		case VYH://přidávání vyhýbky
+		{
+			//if(X!=m.L2Px(pom_vyhybka->X)+d.O_width*Zoom/2 || Y!=m.L2Py(pom_vyhybka->Y)+d.O_height*Zoom/2)
+			if(X>0 && Y>0)
+			{
+				d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
+			}
+			break;
+		}
 		case NIC:
 		{
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt
 			break;
-    }
+		}
 		default: break;
 	}
 }
@@ -2232,13 +2242,23 @@ void TForm1::ESC()
 {
 	zneplatnit_minulesouradnice();
 	//vymaže, překreslí, odznačí provizorní lini
-	if(Akce==MOVE)d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);
-	if(Akce==ADD)
+	switch(Akce)
 	{
-		if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-		else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+		case MOVE:d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);break;
+		case ADD:
+		{
+			if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+			else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+		}break;
+		case VYH:
+		{
+			d.odznac_oznac_vetev(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom_vyhybka);
+			d.v.smaz_objekt(pom_vyhybka);
+			REFRESH();
+		}break;
 	}
 	pom=NULL;
+	pom_vyhybka=NULL;
 	proces_pom=NULL;
 	kurzor(standard);
 	Akce=NIC;
@@ -2277,26 +2297,27 @@ void TForm1::add_objekt(int X, int Y)
 
 		//uložení do paměti
 		if(add_posledni)//vloží poslední prvek
-		{
-			d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
+		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky
+			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
 		else//vkládá prvek mezi prvky
-		{
-			d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom);
+		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky
+			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom);
 			d.v.zvys_indexy(pom);//zvýší indexy nasledujicích bodů
 		}
+		pom=NULL;//odsranění pomocného ukazatele
 		//ihned vykreslení
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
 		ortogonalizace();
-		Akce=NIC;kurzor(standard);
+		Akce=NIC;kurzor(standard);//musí být nad REFRESH
 		REFRESH();
 		DuvodUlozit(true);
 		if(vybrany_objekt==10)//vyhybka
 		{
-			d.odznac_oznac_vetev(Canvas,X,Y);
+			Akce=VYH;//kurzor(doplnit)
 		}
-		pom=NULL;//odsranění pomocného ukazatele
+		else pom_vyhybka=NULL;//odsranění pomocného ukazatele
 		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
 	}
 }
