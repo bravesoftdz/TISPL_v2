@@ -40,6 +40,7 @@ __published:	// IDE-managed Components
 	void __fastcall scButton_csvClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+  void __fastcall scScrollBar_horizontChange(TObject *Sender);
 
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu

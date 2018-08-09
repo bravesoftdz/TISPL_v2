@@ -576,7 +576,6 @@ object F_gapoV: TF_gapoV
     Lines.Strings = (
       'Memo1')
     TabOrder = 3
-    Visible = False
   end
   object scScrollBar_horizont: TscScrollBar
     Left = 8
