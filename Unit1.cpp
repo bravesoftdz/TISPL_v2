@@ -1403,7 +1403,6 @@ void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 		funkcni_klavesa=0;
 		//vrat_puvodni_akci();
 	}
-
 }
 //---------------------------------------------------------------------------
 //explicitní klávesové zkratky
@@ -1642,15 +1641,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
 
 	if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
-	{   //nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (if zde nebyl)
-			if(Label_zamerovac->Visible)d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
-			SB(UnicodeString((X+d.PosunT.x)/d.PX2MIN)+" min",6);//výpis času na ose procesů dle kurzoru
-			//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
-			Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;//deaktivace_zamerovace();nelze
-			Timer_neaktivity->Enabled=false;
-			if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false && Form_osa_info->Showing==false)Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
+	{ //nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (if zde nebyl)
+		if(Label_zamerovac->Visible)d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
+		minule_souradnice_kurzoru=TPoint(X,Y);
+		//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
+		SB(UnicodeString((X+d.PosunT.x)/d.PX2MIN)+" min",6);//výpis času na ose procesů dle kurzoru
+		//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
+		Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;//deaktivace_zamerovace();nelze
+		Timer_neaktivity->Enabled=false;
+		if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false && Form_osa_info->Showing==false)Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
 	}
 	else //výpis metrických souřadnic
 	{
@@ -1720,13 +1719,24 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 			break;
 		}
+		case VYH://přidávání vyhýbky
+		{
+			//if(X!=m.L2Px(pom_vyhybka->X)+d.O_width*Zoom/2 || Y!=m.L2Py(pom_vyhybka->Y)+d.O_height*Zoom/2)
+			if(X>0 && Y>0)
+			{
+				d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
+			}
+			break;
+		}
 		case NIC:
 		{
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt
 			break;
-    }
+		}
 		default: break;
 	}
 }
@@ -2232,13 +2242,23 @@ void TForm1::ESC()
 {
 	zneplatnit_minulesouradnice();
 	//vymaže, překreslí, odznačí provizorní lini
-	if(Akce==MOVE)d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);
-	if(Akce==ADD)
+	switch(Akce)
 	{
-		if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-		else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+		case MOVE:d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);break;
+		case ADD:
+		{
+			if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+			else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+		}break;
+		case VYH:
+		{
+			d.odznac_oznac_vetev(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom_vyhybka);
+			d.v.smaz_objekt(pom_vyhybka);
+			REFRESH();
+		}break;
 	}
 	pom=NULL;
+	pom_vyhybka=NULL;
 	proces_pom=NULL;
 	kurzor(standard);
 	Akce=NIC;
@@ -2277,24 +2297,28 @@ void TForm1::add_objekt(int X, int Y)
 
 		//uložení do paměti
 		if(add_posledni)//vloží poslední prvek
-		{
-			d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
-			pom=NULL;
+		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky
+			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
 		else//vkládá prvek mezi prvky
-		{
-			d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom);
+		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky
+			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom);
 			d.v.zvys_indexy(pom);//zvýší indexy nasledujicích bodů
-			pom=NULL;
 		}
+		pom=NULL;//odsranění pomocného ukazatele
 		//ihned vykreslení
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
-		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
 		ortogonalizace();
-		Akce=NIC;kurzor(standard);
+		Akce=NIC;kurzor(standard);//musí být nad REFRESH
 		REFRESH();
 		DuvodUlozit(true);
+		if(vybrany_objekt==10)//vyhybka
+		{
+			Akce=VYH;//kurzor(doplnit)
+		}
+		else pom_vyhybka=NULL;//odsranění pomocného ukazatele
+		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
 	}
 }
 //---------------------------------------------------------------------------

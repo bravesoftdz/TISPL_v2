@@ -52,12 +52,13 @@ void Cvektory::hlavicka_OBJEKTY()
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
+	novy->dalsi2=NULL;
 	OBJEKTY=novy;//OBJEKTY
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////uloží objekt a jeho parametry do seznamu
-void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
+Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 {
 	TObjekt *novy=new TObjekt;
 
@@ -95,11 +96,13 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;
+	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	return novy;
 }
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu za objekt p        //p předchozí
-void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
+Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 {
 	TObjekt *novy=new TObjekt;
 	novy->id=id;
@@ -137,8 +140,10 @@ void Cvektory::vloz_objekt(unsigned int id, double X, double Y,TObjekt *p)
 	novy->dalsi=p->dalsi;
 	p->dalsi->predchozi=novy;
 	p->dalsi=novy;
+	p->dalsi2=NULL;
 	novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 	//indexy zvýšit separátně
+	return novy;
 }
 //---------------------------------------------------------------------------
 //uloží objekt a jeho parametry do seznamu - přetížená fce
@@ -151,6 +156,7 @@ void Cvektory::vloz_objekt(TObjekt *Objekt)
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;//poslední prvek se na zadny dalsí prvek neodkazuje (neexistuje
+	novy->dalsi2=NULL;
 	OBJEKTY->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 }
 //---------------------------------------------------------------------------
@@ -223,6 +229,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->dalsi=p->dalsi;
 		p->dalsi->predchozi=novy;
 		p->dalsi=novy;
+		p->dalsi2=NULL;
 		novy->n=p->n;//přiřadím počítadlo prvku ze současného prvku, v dalším kroku se totiž navýší
 		zvys_indexy(p);//indexy zvýšit separátně se tady psalo
 		return novy;//vrátí ukazatel na posledně kopírovaný objekt
@@ -230,13 +237,13 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
-Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY)
+Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY)//hledá bod v dané oblasti
 {
 	Cvektory::TObjekt *ret=NULL;
 	Cvektory::TObjekt *p=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (p!=NULL)
 	{
-		if(p->X<=X && X<=p->X+offsetX*Form1->m2px &&  p->Y>=Y && Y>=p->Y-offsetY*Form1->m2px)ret=p;//nalezeno !
+		if(p->X<=X && X<=p->X+offsetX*Form1->m2px && p->Y>=Y && Y>=p->Y-offsetY*Form1->m2px)ret=p;//nalezeno !
 		p=p->dalsi;//posun na další prvek
 	}
 	return ret;
@@ -936,7 +943,7 @@ unsigned long Cvektory::vrat_pocet_objektu_vyuzivajici_pohon(unsigned long n, sh
 	return RET;
 }
 ////---------------------------------------------------------------------------
-//vratí formou ukazatelem na pole objekty přiřazené k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
+//vratí formou ukazatele na pole objekty přiřazené k danému pohonu, parametr režim, ve všech režimech -1, 0 - S&G, 1-KK, 2 - PP
 Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n, short rezim)
 {
 	TObjekt *O=OBJEKTY->dalsi;
@@ -1002,16 +1009,19 @@ double Cvektory::minRD(TPohon *pohon)
 }
 ////---------------------------------------------------------------------------
 //vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD
-AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD)
+AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim)
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	AnsiString objekty="";
 	while (O!=NULL)
-	{                                    //mohl bych ještě odfiltrovávat, zda se nejedná o KK, ale je to víceméně zbytečné
+	{
 		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
 		{
-			if(testRD<O->delka_dopravniku/O->CT)
-			objekty=O->short_name+", ";
+			if(rezim==-1 || rezim==20 || O->rezim==rezim)//filtr režimu
+			{
+				if(testRD<O->delka_dopravniku/O->CT)
+				objekty=O->short_name+", ";
+			}
 		}
 		O=O->dalsi;
 	}
@@ -1254,20 +1264,48 @@ long Cvektory::vymaz_seznam_POHONY()
 //zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr 0 (který je zároveň implicitní), vratí doporučené Rz, pokud 1, vrátí seznam objektů, kde je problém, pokud vrátí prázdné uvozovky, je vše v pořádku
 AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short getValueOrObject)
 {
-//	TPohon *p=vrat_pohon(PID);
-//	if(p!=NULL)
-//	{
-//
-//  }
- switch(VID)
- {
-	 case 4:break;
-	 case 5:break;
-	 case 6:break;
-	 case 7:if(!m.cele_cislo(Rx))return AnsiString("Neceločíselná hodnota rozestupu, navržená hodnota: <u>"+AnsiString(m.round(Rx))+"</u>"); break;
- }
-
-//<u>"+AnsiString(doporuc_hodnota)+"</u>
+	AnsiString RET="";
+	TPohon *p=vrat_pohon(PID);
+	if(p!=NULL)
+	{
+	 switch(VID)
+	 {
+		//aRD
+		case 4:
+		{
+			double mRD=minRD(p);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
+			if(mRD<aRD)
+			{
+				RET=AnsiString("Nedostatečná rychlost! Objekt(y): "+vypis_objekty_nestihajici_prejezd(p,aRD,20)+" nestíhají přejezd. Navržená hodnota: <u>"+AnsiString(mRD)+"</u> [m/s].");
+			}
+		}break;
+		//R
+		case 5://to samé jako Rz problém
+		//Rz
+		case 6:
+		{
+			TObjekt *O=vrat_objekty_vyuzivajici_pohon(PID);
+			double minRz=0.0;
+			for (unsigned long i=0;i<vrat_pocet_objektu_vyuzivajici_pohon(PID);i++)
+			{
+				if(m.UDV(O[i].rotace)>minRz)minRz=m.UDV(O[i].rotace);//najde minimální nutný rozestup
+				if(Rz<m.UDV(O[i].rotace))//pokud platí, nastal problém, vozíky se nevejdeou
+				{
+					RET=AnsiString("Nedostatečný rozestup! Navržená hodnota: <u>"+AnsiString(minRz)+"</u> [m].");
+					break;//není třeba dalšího vyhledávání
+				}
+			}
+		}break;
+		//Rx
+		case 7:
+		{
+			if(!m.cele_cislo(Rx))
+			RET=AnsiString("Neceločíselná hodnota počtu palců rozestupu! Navržená hodnota: <u>"+AnsiString(m.round(Rx))+"</u> [počet palců].");
+		}break;
+	 }
+	}
+	p=NULL;delete p;
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //double Cvektory::delka_dopravniku(Cvektory::TObjekt *ukaz)

@@ -422,9 +422,8 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE};Takce Akce;
-	Cvektory::TObjekt *pom;
-	Cvektory::TObjekt *copyObjekt;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH};Takce Akce;
+	Cvektory::TObjekt *pom,*pom_vyhybka,*copyObjekt;
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA V›PO»ETNÕ »¡ST PO tj. PO_math
 	UnicodeString get_user_name();
