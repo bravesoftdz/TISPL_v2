@@ -116,6 +116,7 @@ object F_gapoTT: TF_gapoTT
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False

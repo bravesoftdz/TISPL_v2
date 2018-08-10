@@ -450,7 +450,6 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
     vypis("",false);
  if(Col==2  && mGrid->getCheck(Col,Row)->ShowHint==false && input_state==FREE)
  {
-  //ShowMessage((short)DVMmozno);
    vypis("Tato varianta není možná, nebo dochází ke zmìnì mezery.",false);
    mGrid->getCheck(Col,Row)->Checked=false;
  // mGrid->getCheck(tempCHECK[Row],Row)->Checked=true;//zaškrtne pøedchozí volbu pøesunout do onclick urèitì pøed calculate
@@ -1096,4 +1095,24 @@ mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 }
 //---------------------------------------------------------------------------
 
+
+
+
+void __fastcall TF_gapoV::scButton_csvClick(TObject *Sender)
+{
+	AnsiString T="";
+	for(unsigned long Row=1;Row<mGrid->RowCount;Row++)
+	{
+		T+=calculate(Row,-1)+"\n";//sice se propoèítává opakovanì, ale kvùli možnému zobrazení dat ve zkrácené formì v tabulce. lepe z ostrých dat
+	}
+	F->d.v.Text2CSV(T,Form1->FileName+"_tabulka_gapoV","Uložit hodnoty do CSV...","*.csv","Soubory formátu CSV (*.csv)|*.csv|Soubory formátu XLS (*.xls)|*.xls");
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TF_gapoV::scGPGlyphButton_copyClick(TObject *Sender)
+{
+	mGrid->CopyCells2Clipboard(0,0,mGrid->ColCount-1,mGrid->RowCount-1);
+}
+//---------------------------------------------------------------------------
 

@@ -20,7 +20,6 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel_titulek;
 	TscGPGlyphButton *scGPGlyphButton_info;
-	TscButton *scButton_html;
 	TscGPButton *scGPButton_OK;
 	TscGPButton *scGPButton_storno;
 	TrHTMLLabel *rHTMLLabel_InfoText;
@@ -31,6 +30,8 @@ __published:	// IDE-managed Components
 	TscScrollBar *scScrollBar_vertical;
 	TrHTMLLabel *rHTMLLabel_legenda_titulek;
 	TEdit *Edit1;
+  TscGPGlyphButton *scGPGlyphButton_copy;
+  TscButton *scButton_csv;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -39,6 +40,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+  void __fastcall scButton_csvClick(TObject *Sender);
+  void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
