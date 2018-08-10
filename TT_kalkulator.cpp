@@ -112,7 +112,8 @@ void __fastcall TForm_TT_kalkulator::rEditNum_taktKeyDown(TObject *Sender, WORD 
 
 void __fastcall TForm_TT_kalkulator::Button_saveClick(TObject *Sender)
 {
-//
+			Form_parametry_linky->Button_save->Enabled=true;
+			Form_parametry_linky->Button_storno->Enabled=true;
 }
 //---------------------------------------------------------------------------
 

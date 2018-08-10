@@ -344,8 +344,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rMemoEx_ID->Lines->Add("    ID");
 	 rMemoEx_Nazev->Lines->Add("    Název");
 	 rMemoEx1_rychlost->Lines->Add("   Rychlost [m/min]");
-	 if(Runit==M)  rMemoEx1_roztec->Lines->Add("    Rozteè [m]");
-	 else rMemoEx1_roztec->Lines->Add("    Rozteè [mm]");
+	 if(Runit==M)  rMemoEx1_roztec->Lines->Add("    rozteè [m]");
+	 else rMemoEx1_roztec->Lines->Add("    rozteè [mm]");
 	 rMemoEx1_rozestup->Lines->Add("   Palce");
 	 rMemoEx1_rozestup_akt_unas->Lines->Add("rozestup aktivní unašeèe");
 	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
@@ -1485,14 +1485,14 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 			 //pokud se nejedná o øádek, kde právì dochází k validaci a zároveò vynechám nultý øádek (hlavièka)
 			 //tak do všech sloupcù dám šedou barvu
 
-			 if(Row!=Row_validace && Row!=0 && Col==1)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==2)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==3)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==4)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==5)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==6)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==7)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==8)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==1)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==2)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==3)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==4)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==5)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==6)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==7)  			 Background=(TColor)RGB(212,212,212);
+//			 if(Row!=Row_validace && Row!=0 && Col==8)  			 Background=(TColor)RGB(212,212,212);
 
 
        }
@@ -2527,13 +2527,13 @@ void __fastcall TForm_parametry_linky::rMemoEx1_roztecClick(TObject *Sender)
 		if (Runit == MM) // pokud je v milimetrech, tak pøepne na metry
 		{
 
-			  rMemoEx1_roztec->Text="    Rozteè [m]";
+			  rMemoEx1_roztec->Text="    rozteè [m]";
 				INPUT(0,0);   //tento input volá zároveò i output
 				Runit = M;
 		}
 		else // pokud je metrech, tak pøepne na milimetry
 		{
-			rMemoEx1_roztec->Text="    Rozteè [mm]";
+			rMemoEx1_roztec->Text="    rozteè [mm]";
 			INPUT(0,0);    //tento input volá zároveò i output
 			Runit = MM;
 		}
@@ -2570,15 +2570,17 @@ Row_validace=0;
 				 {
 						 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 						 {
+
 							VID=ACol;
-							VID_value           =	F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
+							VID_value           =	Form1->m.round(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));//F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
 							AnsiString  retezec =	F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),1);
 							Row_validace=ARow;
-							if(VID_value=!"") 	vypis(retezec);
+             // ShowMessage(retezec);
+						// 	if(VID_value=!"")
+            vypis(retezec);
 						 }
 						 else
 						 {
-
 									double value=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
 									if(value!=floor(value))
 									{
@@ -2664,6 +2666,25 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 				}
 		}
 
+       // stav pøi nastavení TT a nemám pøitom pohon ani objekty
+    	 if(Form1->d.v.OBJEKTY->dalsi==NULL && Form1->d.v.POHONY->dalsi==NULL)
+	 {
+
+				if(mrOk==Form_TT_kalkulator->ShowModal())
+				{
+				 //
+					 if(Form_TT_kalkulator->rEditNum_takt->Value!=F->d.v.PP.TT)
+					 {
+
+					// ShowMessage("Došlo ke zmìne TT - volání GAPO");
+					 Changes_TT=false;
+					 rEditNum_takt->Value=Form_TT_kalkulator->rEditNum_takt->Value;
+           Form_parametry_linky->Button_save->Enabled=true;
+           Form_parametry_linky->Button_storno->Enabled=true;
+					 }
+				}
+		}
+
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt nebo pohon
 		{
 			F_gapoTT->ShowModal();
@@ -2677,10 +2698,9 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_vozik_editClick(TObject *
 		bool Changes_vozik=false;
 		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
 		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
+
 	if(mrOk==Form_parametry_vozik->ShowModal())
 	{
-	// naplnìní nových dat do struktury
-
 	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) Changes_vozik=true;
 	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) Changes_vozik=true;
 	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) Changes_vozik=true;
@@ -2690,8 +2710,12 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_vozik_editClick(TObject *
 	scGPNumericEdit_sirka_jig->Value=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
 	scGPNumericEdit_vyska_jig->Value=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value;
 	scGPNumericEdit_delka_podvozek->Value=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
+
+  Form_parametry_linky->Button_save->Enabled=true;
+  Form_parametry_linky->Button_storno->Enabled=true;
 	}
-		if(Changes_vozik)//pri zmene voziku
+
+		if(Changes_vozik && Form1->d.v.OBJEKTY->dalsi!=NULL && Form1->d.v.POHONY->dalsi!=NULL)//pri zmene voziku
 		{
 			F_gapoV->ShowModal();
 		}

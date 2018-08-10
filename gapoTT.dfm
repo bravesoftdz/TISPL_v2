@@ -116,6 +116,7 @@ object F_gapoTT: TF_gapoTT
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
+      OnClick = KonecClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -668,6 +669,7 @@ object F_gapoTT: TF_gapoTT
     TabOrder = 4
     TabStop = False
     Visible = False
+    OnChange = scScrollBar_horizontChange
   end
   object scScrollBar_vertical: TscScrollBar
     Left = 361
