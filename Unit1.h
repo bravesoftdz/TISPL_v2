@@ -488,7 +488,7 @@ private:
 	UnicodeString LICENCE;
 	short n_prihlaseni;
 	bool ortogonalizace_stav;
-	int vybrany_objekt;
+
 
 public:	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
 private:
@@ -550,6 +550,8 @@ public:		// User declarations
 	bool nahled_objektu;//uchovává stav, zda se jedná o náhled objekt èi regulerní zobrazení ve form1
 	bool TZF;//TRIAL_zakazat_funkcionality
 	bool dblClick;
+	int vybrany_objekt;
+	short VyID;//objekt-symbol vyhýbky - ID typu
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì

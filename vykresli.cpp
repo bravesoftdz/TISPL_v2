@@ -13,6 +13,7 @@ Cvykresli::Cvykresli()
 	//parametry vykreslovaného obdelníku technologického objektu
 	O_width=50;
 	O_height=40;
+	V_width=10;//parametry vykreslované spojky či vyhýbky
 	//měřítko PX na MIN, globální proměná i pro využítí výpisu ve SB v Unit1
 	PX2MIN=30.0;
 	KrokY=30;//vizuální rozteč na ose Y mezi jednotlivými vozíky
@@ -22,6 +23,24 @@ Cvykresli::Cvykresli()
 	grafickeDilema=true;
 	Pom_proces=new Cvektory::TProces;
 	precision=2;//počet desetinných míst čísel na časové ose
+}
+//---------------------------------------------------------------------------
+//vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
+int Cvykresli::CorEx(Cvektory::TObjekt *O)
+{
+	if(O->id!=F->VyID)//nejde o výhybku
+	return m.L2Px(O->X)+O_width*Form1->Zoom/2;
+	else//jde o výhybku
+	return m.L2Px(O->X);
+}
+//---------------------------------------------------------------------------
+//vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
+int Cvykresli::CorEy(Cvektory::TObjekt *O)
+{
+	if(O->id!=F->VyID)//nejde o výhybku
+	return m.L2Py(O->Y)+O_height*Form1->Zoom/2;
+	else//jde o výhybku
+	return m.L2Py(O->Y);
 }
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_vektory(TCanvas *canv)
@@ -77,16 +96,16 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 				//if(ukaz->n!=ukaz->predchozi->predchozi->n)//pokud jsou minimálně dva prky, ale šipka bude obousměrnná - možná žádoucí
 				if(v.OBJEKTY->predchozi->n>=3)//až budou alespoň tři prvky,tj. poslední prvek bude mít index n větší než 3
 				{
-					canv->MoveTo(m.L2Px(ukaz->predchozi->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->predchozi->predchozi->Y)+O_height*Form1->Zoom/2);
-					canv->LineTo(m.L2Px(ukaz->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->Y)+O_height*Form1->Zoom/2);
-					sipka(canv,m.L2Px((ukaz->predchozi->predchozi->X+ukaz->X)/2)+O_width*Form1->Zoom/2,m.L2Py((ukaz->predchozi->predchozi->Y+ukaz->Y)/2)+O_height*Form1->Zoom/2,m.azimut(ukaz->predchozi->predchozi->X,ukaz->predchozi->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+					canv->MoveTo(CorEx(ukaz->predchozi->predchozi),CorEy(ukaz->predchozi->predchozi));
+					canv->LineTo(CorEx(ukaz),CorEy(ukaz));
+					sipka(canv,(CorEx(ukaz->predchozi->predchozi)+CorEx(ukaz))/2,(CorEy(ukaz->predchozi->predchozi)+CorEy(ukaz))/2,m.azimut(ukaz->predchozi->predchozi->X,ukaz->predchozi->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
 				}
 			}
 			else
 			{
-				canv->MoveTo(m.L2Px(ukaz->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->predchozi->Y)+O_height*Form1->Zoom/2);
-				canv->LineTo(m.L2Px(ukaz->X)+O_width*Form1->Zoom/2,m.L2Py(ukaz->Y)+O_height*Form1->Zoom/2);
-				sipka(canv,m.L2Px((ukaz->predchozi->X+ukaz->X)/2)+O_width*Form1->Zoom/2,m.L2Py((ukaz->predchozi->Y+ukaz->Y)/2)+O_height*Form1->Zoom/2,m.azimut(ukaz->predchozi->X,ukaz->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
+				canv->MoveTo(CorEx(ukaz->predchozi),CorEy(ukaz->predchozi));
+				canv->LineTo(CorEx(ukaz),CorEy(ukaz));
+				sipka(canv,(CorEx(ukaz->predchozi)+CorEx(ukaz))/2,(CorEy(ukaz->predchozi)+CorEy(ukaz))/2,m.azimut(ukaz->predchozi->X,ukaz->predchozi->Y,ukaz->X,ukaz->Y));//zajistí vykreslení šipky - orientace spojovací linie
 			}
 			ukaz=ukaz->dalsi;//posun na další prvek
 		}
@@ -97,7 +116,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv)
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
-		vykresli_rectangle(canv,O);
+		vykresli_rectangle(canv,O);//if(O->id!=F->VyID) se řeší až ve vykresli rectangle
 		O=O->dalsi;//posun na další prvek
 	}
 	//povolení zobrazování LAYOUTU a ČASOVÝCH OS, pokud existují objekty, jinak ne
@@ -158,7 +177,9 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
-    //INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
+	if(ukaz->id!=F->VyID)
+	{
+		//INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
 
 		////referenčni bod jsem nakonce stanovil pravý konec levé packy
 		TPoint S=m.L2P(ukaz->X,ukaz->Y);//Převede logické souřadnice na fyzické (displej zařízení), vrací fyzické souřadnice
@@ -265,7 +286,30 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 				drawRectText(canv,TRect(S.x-1,S.y,S.x+W,S.y+H),ukaz->short_name.UpperCase());//zajistí vykreslení textu vycentrovaného vevnitř objektu/obdelníku
 			}
 		}
+	}
+	else
+	vykresli_kruh(canv,ukaz);
 }
+////---------------------------------------------------------------------------
+void Cvykresli::vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O)
+{
+		//INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
+
+		////referenčni bod jsem nakonce stanovil pravý konec levé packy
+		TPoint S=m.L2P(O->X,O->Y);//Převede logické souřadnice na fyzické (displej zařízení), vrací fyzické souřadnice
+
+		unsigned short W=V_width*Form1->Zoom;
+
+		////obdelník objektu
+		canv->Pen->Style=psSolid;
+		canv->Brush->Style=bsSolid;
+		canv->Brush->Color=(TColor)RGB(19,115,169);//(TColor)RGB(254,254,254);//nemuže být čiště bílá pokud je zapnut antialising, tak aby se nezobrazoval skrz objekt grid
+		canv->Pen->Color=(TColor)RGB(19,115,169);//clBlack;
+		canv->Pen->Mode=pmCopy;
+		canv->Pen->Width=m.round(2*Form1->Zoom);
+		canv->Ellipse(S.x-W,S.y-W,S.x+W,S.y+W);
+}
+////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 void Cvykresli::drawRectText(TCanvas *canv,TRect Rect,UnicodeString Text)
 {
@@ -1328,169 +1372,230 @@ void Cvykresli::editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned shor
 //označí nebo odznačí objekt používá se při posouvání objektů
 void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int posunX, int posunY,COLORREF color)
 {
-		//ShowMessage(UnicodeString(p->X)+" "+UnicodeString(p->Y));
-		//nastavení pera
-		canv->Pen->Color=(TColor)color;
-		canv->Pen->Width=1;
-		canv->Pen->Style=psDot;//nastevení čarkované čáry
-		canv->Pen->Mode=pmNotXor;
-		canv->Brush->Style=bsClear;
-
-		//provizorní spojovací linie + znovupřekreslení zůčastněných objektů pro lepší vzhled
-		if(v.OBJEKTY->predchozi->n>=3)//pokud budou alespoň 3 prky
+		if(p->id!=F->VyID)
 		{
+			//ShowMessage(UnicodeString(p->X)+" "+UnicodeString(p->Y));
+			//nastavení pera
+			canv->Pen->Color=(TColor)color;
+			canv->Pen->Width=1;
+			canv->Pen->Style=psDot;//nastevení čarkované čáry
+			canv->Pen->Mode=pmNotXor;
+			canv->Brush->Style=bsClear;
 
-			if(p->n==1)//pokud se jedná o první prvek
+			//provizorní spojovací linie + znovupřekreslení zůčastněných objektů pro lepší vzhled
+			if(v.OBJEKTY->predchozi->n>=3)//pokud budou alespoň 3 prky
 			{
-				canv->MoveTo(m.L2Px(p->predchozi->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(p->predchozi->predchozi->Y)+O_height*Form1->Zoom/2);
-				canv->LineTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
-				canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
-				sipka(canv,(m.L2Px(p->predchozi->predchozi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->predchozi->predchozi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->predchozi->predchozi->X,p->predchozi->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->predchozi->X,p->predchozi->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				sipka(canv,(m.L2Px(p->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				if(p->n==1)//pokud se jedná o první prvek
 				{
-					vykresli_rectangle(canv,v.OBJEKTY->predchozi);
-					vykresli_rectangle(canv,p);
-					vykresli_rectangle(canv,p->dalsi);
+					canv->MoveTo(CorEx(p->predchozi->predchozi),CorEy(p->predchozi->predchozi));
+					canv->LineTo(CorEx(p)+posunX,CorEy(p)+posunY);
+					canv->LineTo(CorEx(p->dalsi),CorEy(p->dalsi));
+					sipka(canv,(CorEx(p->predchozi->predchozi)+CorEx(p)+posunX)/2,(CorEy(p->predchozi->predchozi)+CorEy(p)+posunY)/2,m.azimut(p->predchozi->predchozi->X,p->predchozi->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->predchozi->X,p->predchozi->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					sipka(canv,(CorEx(p->dalsi)+CorEx(p)+posunX)/2,(CorEy(p->dalsi)+CorEy(p)+posunY)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					{
+						vykresli_rectangle(canv,v.OBJEKTY->predchozi);
+						vykresli_rectangle(canv,p);
+						vykresli_rectangle(canv,p->dalsi);
+					}
+				}
+				if(p->n==v.OBJEKTY->predchozi->n)//pokud se jedná o poslední prvek
+				{
+					canv->MoveTo(CorEx(p->predchozi),CorEy(p->predchozi));
+					canv->LineTo(CorEx(p)+posunX,CorEy(p)+posunY);
+					canv->LineTo(CorEx(v.OBJEKTY->dalsi),CorEy(v.OBJEKTY->dalsi));
+					sipka(canv,(CorEx(p->predchozi)+CorEx(p)+posunX)/2,(CorEy(p->predchozi)+CorEy(p)+posunY)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					sipka(canv,(CorEx(v.OBJEKTY->dalsi)+CorEx(p)+posunX)/2,(CorEy(v.OBJEKTY->dalsi)+CorEy(p)+posunY)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((v.OBJEKTY->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((v.OBJEKTY->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					{
+						vykresli_rectangle(canv,p->predchozi);
+						vykresli_rectangle(canv,p);
+						vykresli_rectangle(canv,v.OBJEKTY->dalsi);
+					}
+				}
+				if(p->n!=1 && p->n!=v.OBJEKTY->predchozi->n)//pokud se nejedná o první ani poslední prvek
+				{
+					canv->MoveTo(CorEx(p->predchozi),CorEy(p->predchozi));
+					canv->LineTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
+					canv->LineTo(CorEx(p->dalsi),CorEy(p->dalsi));
+					sipka(canv,(CorEx(p->dalsi)+CorEx(p)+posunX)/2,(CorEy(p->dalsi)+CorEy(p)+posunY)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie následující za prvkem
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					sipka(canv,(CorEx(p->predchozi)+CorEx(p)+posunX)/2,(CorEy(p->predchozi)+CorEy(p)+posunY)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					{
+						vykresli_rectangle(canv,p->predchozi);
+						vykresli_rectangle(canv,p);
+						vykresli_rectangle(canv,p->dalsi);
+					}
 				}
 			}
-			if(p->n==v.OBJEKTY->predchozi->n)//pokud se jedná o poslední prvek
+
+			if(v.OBJEKTY->predchozi->n==2)//pokud budou pouze 2 prky - zde netřeba řešit výhybku, posun, neměla by být
 			{
-				canv->MoveTo(m.L2Px(p->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(p->predchozi->Y)+O_height*Form1->Zoom/2);
-				canv->LineTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
-				canv->LineTo(m.L2Px(v.OBJEKTY->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->dalsi->Y)+O_height*Form1->Zoom/2);
-				sipka(canv,(m.L2Px(p->predchozi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->predchozi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				sipka(canv,(m.L2Px(v.OBJEKTY->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(v.OBJEKTY->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((v.OBJEKTY->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((v.OBJEKTY->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				if(p->n==1)//pokud se jedná o první prvek
 				{
-					vykresli_rectangle(canv,p->predchozi);
-					vykresli_rectangle(canv,p);
-					vykresli_rectangle(canv,v.OBJEKTY->dalsi);
+					canv->MoveTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
+					canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
+					sipka(canv,(m.L2Px(p->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					{
+						vykresli_rectangle(canv,p);
+						vykresli_rectangle(canv,p->dalsi);
+					}
+				}
+				else//pokud se jedná o druhý prvek
+				{
+					canv->MoveTo(m.L2Px(p->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(p->predchozi->Y)+O_height*Form1->Zoom/2);
+					canv->LineTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
+					sipka(canv,(m.L2Px(p->predchozi->X)+m.L2Px(p->X)+O_width*Form1->Zoom+posunX)/2,(m.L2Py(p->predchozi->Y)+m.L2Py(p->Y)+O_height*Form1->Zoom+posunY)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					{
+						vykresli_rectangle(canv,p->predchozi);
+						vykresli_rectangle(canv,p);
+					}
 				}
 			}
-			if(p->n!=1 && p->n!=v.OBJEKTY->predchozi->n)//pokud se nejedná o první ani poslední prvek
-			{
-				canv->MoveTo(m.L2Px(p->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(p->predchozi->Y)+O_height*Form1->Zoom/2);
-				canv->LineTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
-				canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
-				sipka(canv,(m.L2Px(p->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie následující za prvkem
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				sipka(canv,(m.L2Px(p->predchozi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->predchozi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-				{
-					vykresli_rectangle(canv,p->predchozi);
-					vykresli_rectangle(canv,p);
-					vykresli_rectangle(canv,p->dalsi);
-				}
-			}
+			//samotná imitace posovaného objektu
+			editacni_okno(canv, m.L2Px(p->X)+posunX,m.L2Py(p->Y)+posunY,m.L2Px(p->X)+O_width*Form1->Zoom+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom+posunY,1);
 		}
-
-		if(v.OBJEKTY->predchozi->n==2)//pokud budou pouze 2 prky
-		{
-			if(p->n==1)//pokud se jedná o první prvek
-			{
-				canv->MoveTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
-				canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
-				sipka(canv,(m.L2Px(p->dalsi->X)+m.L2Px(p->X)+posunX+O_width*Form1->Zoom)/2,(m.L2Py(p->dalsi->Y)+m.L2Py(p->Y)+posunY+O_height*Form1->Zoom)/2,m.azimut(p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom,p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->dalsi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->dalsi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,p->dalsi->X,p->dalsi->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-				{
-					vykresli_rectangle(canv,p);
-					vykresli_rectangle(canv,p->dalsi);
-				}
-			}
-			else//pokud se jedná o druhý prvek
-			{
-				canv->MoveTo(m.L2Px(p->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(p->predchozi->Y)+O_height*Form1->Zoom/2);
-				canv->LineTo(m.L2Px(p->X)+O_width*Form1->Zoom/2+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom/2+posunY);
-				sipka(canv,(m.L2Px(p->predchozi->X)+m.L2Px(p->X)+O_width*Form1->Zoom+posunX)/2,(m.L2Py(p->predchozi->Y)+m.L2Py(p->Y)+O_height*Form1->Zoom+posunY)/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X+posunX*Form1->m2px/Form1->Zoom,p->Y-posunY*Form1->m2px/Form1->Zoom),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				//nevím k čemu to tady bylo také: sipka(canv,m.L2Px((p->predchozi->X+p->X)/2)+O_width*Form1->Zoom/2,m.L2Py((p->predchozi->Y+p->Y)/2)+O_height*Form1->Zoom/2,m.azimut(p->predchozi->X,p->predchozi->Y,p->X,p->Y),false,3,clBlack);//zajistí vykreslení šipky - orientace spojovací linie
-				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-				{
-					vykresli_rectangle(canv,p->predchozi);
-					vykresli_rectangle(canv,p);
-				}
-			}
-		}
-
-		//samotná imitace posovaného objektu
-		editacni_okno(canv, m.L2Px(p->X)+posunX,m.L2Py(p->Y)+posunY,m.L2Px(p->X)+O_width*Form1->Zoom+posunX,m.L2Py(p->Y)+O_height*Form1->Zoom+posunY,1);
+		else
+		odznac_oznac_vyhybku(canv,m.L2Px(p->X)+posunX,m.L2Py(p->Y)+posunY,p,true);//mohlo by být zakomponováno výše
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //používá se pro přidávání objektu mezi poslední a první prvek
 void Cvykresli::odznac_oznac_objekt_novy_posledni(TCanvas *canv,int X, int Y)
 {
-		if(v.OBJEKTY->predchozi->n>0)//pokud už existuje nějaký prvek
+		if(F->vybrany_objekt!=F->VyID)
 		{
-			if(X!=-200 && Y!=-200)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
+			if(v.OBJEKTY->predchozi->n>0)//pokud už existuje nějaký prvek
 			{
-				canv->Pen->Color=clBlack;
-				canv->Pen->Width=1;
-				canv->Pen->Style=psDot;//nastevení čarkované čáry
-				canv->Pen->Mode=pmNotXor;
-
-				canv->MoveTo(m.L2Px(v.OBJEKTY->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->predchozi->Y)+O_height*Form1->Zoom/2);
-				canv->LineTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
-				if(v.OBJEKTY->predchozi->n>1)//pokud je více než jenom jeden prvek
+				if(X!=-200 && Y!=-200)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
 				{
-					canv->LineTo(m.L2Px(v.OBJEKTY->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->dalsi->Y)+O_height*Form1->Zoom/2);
-					sipka(canv,(m.L2Px(v.OBJEKTY->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					canv->Pen->Color=clBlack;
+					canv->Pen->Width=1;
+					canv->Pen->Style=psDot;//nastevení čarkované čáry
+					canv->Pen->Mode=pmNotXor;
+
+					canv->MoveTo(m.L2Px(v.OBJEKTY->predchozi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->predchozi->Y)+O_height*Form1->Zoom/2);
+					canv->LineTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
+					if(v.OBJEKTY->predchozi->n>1)//pokud je více než jenom jeden prvek
+					{
+						canv->LineTo(m.L2Px(v.OBJEKTY->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(v.OBJEKTY->dalsi->Y)+O_height*Form1->Zoom/2);
+						sipka(canv,(m.L2Px(v.OBJEKTY->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),v.OBJEKTY->dalsi->X,v.OBJEKTY->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+						if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+						vykresli_rectangle(canv,v.OBJEKTY->dalsi); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+					}
+					sipka(canv,(m.L2Px(v.OBJEKTY->predchozi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->predchozi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(v.OBJEKTY->predchozi->X,v.OBJEKTY->predchozi->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-					vykresli_rectangle(canv,v.OBJEKTY->dalsi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+					vykresli_rectangle(canv,v.OBJEKTY->predchozi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 				}
-				sipka(canv,(m.L2Px(v.OBJEKTY->predchozi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(v.OBJEKTY->predchozi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(v.OBJEKTY->predchozi->X,v.OBJEKTY->predchozi->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-				vykresli_rectangle(canv,v.OBJEKTY->predchozi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
 			}
+			editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);
 		}
-		editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);
+		else
+		odznac_oznac_vyhybku(canv,X,Y,NULL);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 //používá se pro přidvání objektu mimo poslední a první prvek
 void Cvykresli::odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p)
 {
-		if(p->n>0)//pokud už existuje nějaký prvek
+		if(F->vybrany_objekt!=F->VyID)
+		{
+			if(p->n>0)//pokud už existuje nějaký prvek
+			{
+				if(X!=-200 && Y!=-200)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
+				{
+					canv->Pen->Color=clBlack;
+					canv->Pen->Width=1;
+					canv->Pen->Style=psDot;//nastevení čarkované čáry
+					canv->Pen->Mode=pmNotXor;
+					//spojovací linie
+					canv->MoveTo(m.L2Px(p->X)+O_width*Form1->Zoom/2,m.L2Py(p->Y)+O_height*Form1->Zoom/2);
+					canv->LineTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
+					canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
+					sipka(canv,(m.L2Px(p->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					vykresli_rectangle(canv,p->dalsi); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+					sipka(canv,(m.L2Px(p->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+					if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+					vykresli_rectangle(canv,p);//znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+				}
+			}
+			editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);
+		}
+		else
+		odznac_oznac_vyhybku(canv,X,Y,p);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+//pří umistivání či posouvání vyhýbky
+void Cvykresli::odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p,bool posun)
+{
+		//definice souřadnic
+		Cvektory::TObjekt *p1=NULL; if(p==NULL)p1=v.OBJEKTY->predchozi;else p1=p;
+		Cvektory::TObjekt *p2=NULL;	if(p==NULL)p2=v.OBJEKTY->dalsi;		 else p2=p->dalsi;
+		if(posun)p1=p->predchozi;//pokud se jedná o posun objektu
+		if(posun && p->dalsi==NULL)p2=v.OBJEKTY->dalsi;//pokud se jedná o posun objektu a jedná se o poslední prvek
+
+    //samotný algoritmus
+		if(p1->n>0)//pokud už existuje nějaký prvek
 		{
 			if(X!=-200 && Y!=-200)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
 			{
+				//nastavení pera
 				canv->Pen->Color=clBlack;
 				canv->Pen->Width=1;
 				canv->Pen->Style=psDot;//nastevení čarkované čáry
 				canv->Pen->Mode=pmNotXor;
-
-				canv->MoveTo(m.L2Px(p->X)+O_width*Form1->Zoom/2,m.L2Py(p->Y)+O_height*Form1->Zoom/2);
-				canv->LineTo(X+O_width*Form1->Zoom/2,Y+O_height*Form1->Zoom/2);
-				canv->LineTo(m.L2Px(p->dalsi->X)+O_width*Form1->Zoom/2,m.L2Py(p->dalsi->Y)+O_height*Form1->Zoom/2);
-				sipka(canv,(m.L2Px(p->dalsi->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->dalsi->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p->dalsi->X,p->dalsi->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+				canv->Brush->Style=bsClear;
+				//spojovací linie
+				canv->MoveTo(m.L2Px(p1->X)+O_width*Form1->Zoom/2,m.L2Py(p1->Y)+O_height*Form1->Zoom/2);
+				canv->LineTo(X,Y);
+				canv->LineTo(m.L2Px(p2->X)+O_width*Form1->Zoom/2,m.L2Py(p2->Y)+O_height*Form1->Zoom/2);
+				sipka(canv,(m.L2Px(p2->X)+O_width*Form1->Zoom/2+X)/2,(m.L2Py(p2->Y)+O_height*Form1->Zoom/2+Y)/2,m.azimut(m.P2Lx(X),m.P2Ly(Y),p2->X,p2->Y),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
 				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-				vykresli_rectangle(canv,p->dalsi); //znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
-				sipka(canv,(m.L2Px(p->X)+X)/2+O_width*Form1->Zoom/2,(m.L2Py(p->Y)+Y)/2+O_height*Form1->Zoom/2,m.azimut(p->X,p->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
-        if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
-				vykresli_rectangle(canv,p);//znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+				vykresli_rectangle(canv,p2); //znovupřekreslení zúčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+				sipka(canv,(m.L2Px(p1->X)+O_width*Form1->Zoom/2+X)/2,(m.L2Py(p1->Y)+O_height*Form1->Zoom/2+Y)/2,m.azimut(p1->X,p1->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+				if(grafickeDilema)//provizorní proměnná na přepínání stavu, zda se při přidávání objektu a přesouvání objektu bude zmenšovat písmo nebo nepřekreslovat objekt
+				vykresli_rectangle(canv,p1);//znovupřekreslení zůčastněných objektů pro lepší vzhled, nyní řešeno v formmousedown viz  d.odznac_oznac_objekt, nevýhodou pouze zůstavá překreslování linie v místě objektu
+				//nutné znovu nastavení pera
+				canv->Pen->Color=clBlack;
+				canv->Pen->Width=1;
+				canv->Pen->Style=psDot;//nastevení čarkované čáry
+				canv->Pen->Mode=pmNotXor;
+				canv->Brush->Style=bsClear;
+				//kruh
+				canv->Ellipse(X-V_width*F->Zoom,Y-V_width*F->Zoom,X+V_width*F->Zoom,Y+V_width*F->Zoom);
 			}
 		}
-		editacni_okno(canv,X,Y,X+O_width*Form1->Zoom,Y+O_height*Form1->Zoom,1);
+		p1=NULL;delete p1;
+		p2=NULL;delete p2;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-//vykreslí či odznačí potenciální umístění větve
+//vykreslí či odznačí potenciální umístění větve, další fáze po umístění výhybky
 void Cvykresli::odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p)
 {
-		//nastavení pera
-		canv->Pen->Color=clBlack;
-		canv->Pen->Width=1;
-		canv->Pen->Style=psDot;//nastevení čarkované čáry
-		canv->Pen->Mode=pmNotXor;
-		canv->Brush->Style=bsClear;
+		if(X!=-200 && Y!=-200)//spojovací linie  //pokud je mimo obraz -200 jen nahodilá hodnota
+		{
+			//nastavení pera
+			canv->Pen->Color=clBlack;
+			canv->Pen->Width=1;
+			canv->Pen->Style=psDot;//nastevení čarkované čáry
+			canv->Pen->Mode=pmNotXor;
+			canv->Brush->Style=bsClear;
 
-		//vykreslení spojovací linie
-		canv->MoveTo(m.L2Px(p->X)+O_width*Form1->Zoom/2,m.L2Py(p->Y)+O_height*Form1->Zoom/2);
-		canv->LineTo(X,Y);
-		canv->Ellipse(X-10,Y-10,X+10,Y+10);
+			//vykreslení spojovací linie
+			canv->MoveTo(m.L2Px(p->X),m.L2Py(p->Y));
+			canv->LineTo(X,Y);
+			sipka(canv,(m.L2Px(p->X)+X)/2,(m.L2Py(p->Y)+Y)/2,m.azimut(p->X,p->Y,m.P2Lx(X),m.P2Ly(Y)),true,3,clBlack,clWhite,pmNotXor);//zajistí vykreslení šipky - orientace spojovací linie
+			canv->Ellipse(X-V_width*F->Zoom,Y-V_width*F->Zoom,X+V_width*F->Zoom,Y+V_width*F->Zoom);
+		}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
 bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p,bool odecti_region)

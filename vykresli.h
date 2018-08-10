@@ -19,10 +19,13 @@ class Cvykresli
 	void vypis_mezivozikovy_takt(TCanvas *canv,Cvektory::TVozik *vozik, double X,long Y,bool index=false);//pouze pro zpøehlednìní zapisu, textový výpis a kóta mezivozíkového taktu
 	void vytizenost_procesu(TCanvas *canv, Cvektory::TProces *P,double X,int Y);
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
+	int CorEx(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
+	int CorEy(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
 
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
-
 	Cvektory::TProces *Pom_proces;//pomocný ukazatel na proces, využívá se v pøi naèítání pùvodnì vytvoøených náhodných hodnot èekání na palec
+
+
 
 	public:
 	Cvykresli();//konstruktor
@@ -43,6 +46,7 @@ class Cvykresli
 
 	void vykresli_vektory(TCanvas *canv);
 	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
+	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
 	void vykresli_grid(TCanvas *canv, int size_grid=10);
 //	void vykresli_graf_rezervy(TCanvas *canv);//mód graf rezerv
@@ -73,7 +77,8 @@ class Cvykresli
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
-void odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);//vykreslí èi odznaèí potenciální umístìní vìtve
+void odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p, bool posun=false);//pøí umistivání èi posouvání vyhýbky
+void odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);//vykreslí èi odznaèí potenciální umístìní vìtve, další fáze po umístìní výhybky
 	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p, bool odecti_region=true);
 	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region=true);
 	void sound();
@@ -82,7 +87,7 @@ void odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);//vykr
 	//void vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx);
 	void vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx);
 
-	short O_width,O_height;//logické parametry, nezoomovat
+	short O_width,O_height,V_width;//logické parametry, nezoomovat
 	unsigned long cas;//ms
 	double PX2MIN;//mìøítko PX na MIN
 	short KrokY;//rozteè na èasových osách

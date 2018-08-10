@@ -79,6 +79,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	DrawGrid_knihovna->RowCount=pocet_objektu_knihovny/2;//velikosti buněk
 	if(pocet_objektu_knihovny>0)vybrany_objekt=0;else//-použival jsem v době kdy jsem chtěl mít implicitní prvek pokud existuje nějaký prvek v knihovně, tak nastaví vybraný prvek jako první
 	vybrany_objekt=-1;
+	VyID=10;//objekt-symbol vyhýbky - ID typu
 
 	//mřížka
 	grid=true; size_grid=10;//velikost je v logických jednotkách (metrech)
@@ -1549,6 +1550,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						if(MOD==SCHEMA)
 						{
+							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width,d.V_width,VyID);//šlo by nahradit, kruhovým regionem, což by bylo exaktnější
+							if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
 							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
 							if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
 							else {Akce=PAN;pan_non_locked=true;}//test - přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
@@ -1578,7 +1581,6 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							predchozi_souradnice_kurzoru=vychozi_souradnice_kurzoru;
 							break;
 						}
-						//case MOVE: testovací mod 23.listopadu 2017 při přesování se měnila velikost písma sice deteail...
 						case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
 						default: break;
 					}
@@ -1721,14 +1723,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case VYH://přidávání vyhýbky
 		{
-			//if(X!=m.L2Px(pom_vyhybka->X)+d.O_width*Zoom/2 || Y!=m.L2Py(pom_vyhybka->Y)+d.O_height*Zoom/2)
-			if(X>0 && Y>0)
-			{
 				d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
 				minule_souradnice_kurzoru=TPoint(X,Y);
 				d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
-			}
-			break;
+				break;
 		}
 		case NIC:
 		{
@@ -1757,6 +1755,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				}
 				case ZOOM_W:ZOOM_WINDOW();break;//ZOOM_WINDOW
 				case ADD:add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
+				case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 				case MOVE:move_objekt(X,Y);break;//posun objektu
 				default: break;
 			}
@@ -2254,14 +2253,14 @@ void TForm1::ESC()
 		{
 			d.odznac_oznac_vetev(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom_vyhybka);
 			d.v.smaz_objekt(pom_vyhybka);
-			REFRESH();
 		}break;
 	}
 	pom=NULL;
 	pom_vyhybka=NULL;
 	proces_pom=NULL;
 	kurzor(standard);
-	Akce=NIC;
+	Akce=NIC;//musí být nad refresh
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2309,16 +2308,21 @@ void TForm1::add_objekt(int X, int Y)
 		//ihned vykreslení
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
-		ortogonalizace();
-		Akce=NIC;kurzor(standard);//musí být nad REFRESH
-		REFRESH();
-		DuvodUlozit(true);
-		if(vybrany_objekt==10)//vyhybka
+
+		if(vybrany_objekt==VyID)//vyhybka
 		{
 			Akce=VYH;//kurzor(doplnit)
 		}
-		else pom_vyhybka=NULL;//odsranění pomocného ukazatele
-		vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
+		else
+		{
+			pom_vyhybka=NULL;//odsranění pomocného ukazatele
+			Akce=NIC;//musí být nad REFRESH
+			kurzor(standard);
+			ortogonalizace();
+			vybrany_objekt=-1;//odznačí objekt logicky, musí se nový vybrat znovu
+		}
+		REFRESH();
+		DuvodUlozit(true);
 	}
 }
 //---------------------------------------------------------------------------
@@ -2410,7 +2414,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		{
 			if(ukaz==d.v.OBJEKTY->predchozi)//první prvek versus poslední
 			{
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí mezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(d.v.OBJEKTY->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
 				{
 					d.v.zmen_poradi_objektu(pom,d.v.OBJEKTY->predchozi);//volání realizace samotné záměny
 				}
@@ -2418,7 +2422,7 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 			else//ostatní situace
 			{
 
-				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí\nmezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(ukaz->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete objekt \""+AnsiString(pom->name.UpperCase())+"\" umístit v pořadí mezi objekty \""+AnsiString(ukaz->name.UpperCase())+"\" a \""+AnsiString(ukaz->dalsi->name.UpperCase())+"\"?","",MB_YESNO,true,false))
 				{
 					if(pom->n<ukaz->n)//vkládání dozadu
 						d.v.zmen_poradi_objektu(pom,ukaz);//volání realizace samotné záměny
@@ -2493,18 +2497,25 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	{
 		UnicodeString text=knihovna_objektu[n-1].short_name;
 		//symbol objektu
-		if(10!=n-1)//obdélník
-			C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
-		else//trojúhelník
+		if(VyID!=n-1)//obdélník
 		{
-			POINT body[3]={{((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P},{((n+1)%2+1)*W-obdelnik_okrajX,(((ceil(n/2.0)-1)*H+obdelnik_okrajY+P)+(ceil(n/2.0)*H-obdelnik_okrajY+P))/2},{((n+1)%2)*W+obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P}};
-			C->Polygon((TPoint*)body,2);
+			C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
+			//packy
+			C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
+			C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
+			//písmo
+			C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
 		}
-		//packy
-		C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
-		C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
-		//písmo
-		C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
+		else//trojúhelník, kruh či bmp
+		{
+			Graphics::TBitmap *bmp=new Graphics::TBitmap();
+			ImageList48->GetBitmap(51,bmp);
+			C->Draw(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+P,bmp);
+			bmp=NULL;delete bmp;
+//			//POINT body[3]={{((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P},{((n+1)%2+1)*W-obdelnik_okrajX,(((ceil(n/2.0)-1)*H+obdelnik_okrajY+P)+(ceil(n/2.0)*H-obdelnik_okrajY+P))/2},{((n+1)%2)*W+obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P}};
+//			//C->Polygon((TPoint*)body,2);
+//			C->Ellipse(((n+1)%2)*H+obdelnik_okrajX+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajX+P,((n+1)%2+1)*H-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajX+P);
+		}
 	}
 //	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 //	DrawGrid_knihovna->Canvas->Draw(0,0,bmp_out);
@@ -2528,8 +2539,12 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 		Akce=ADD;kurzor(add_o);//Screen->Cursor=crCross;
 		add_posledni=true;pom=NULL;
 		//ShowMessage(vybrany_objekt);
+		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
+		{
+			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
+			Akce=NIC;kurzor(standard);
+		}
 	}
-
 	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
 }
 //---------------------------------------------------------------------------
@@ -5150,4 +5165,5 @@ void TForm1::db_connection()
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
 //---------------------------------------------------------------------------
+
 

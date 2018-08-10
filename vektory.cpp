@@ -237,15 +237,23 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
-Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY)//hledá bod v dané oblasti
+Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ)//hledá bod v dané oblasti
 {
 	Cvektory::TObjekt *ret=NULL;
 	Cvektory::TObjekt *p=OBJEKTY->dalsi;//přeskočí hlavičku
 	while (p!=NULL)
 	{
-		if(p->X<=X && X<=p->X+offsetX*Form1->m2px && p->Y>=Y && Y>=p->Y-offsetY*Form1->m2px)ret=p;//nalezeno !
+		if((typ==-1 || typ==p->id) && p->id!=F->VyID)
+		{
+			if(p->X<=X && X<=p->X+offsetX*Form1->m2px && p->Y>=Y && Y>=p->Y-offsetY*Form1->m2px){ret=p;break;}//nalezeno!
+		}
+		if(typ==F->VyID)//výhybka
+		{
+			if(p->X-offsetX*F->m2px<=X && X<=p->X+offsetX*F->m2px && p->Y+offsetY*F->m2px>=Y && Y>=p->Y-offsetY*F->m2px){ret=p;break;}//nalezeno !
+    }
 		p=p->dalsi;//posun na další prvek
 	}
+	p=NULL;delete p;
 	return ret;
 }
 //---------------------------------------------------------------------------
@@ -759,22 +767,22 @@ void Cvektory::ortogonalizovat()
 			//ošetření pokud se jedná o tři prvky a jsou všechny v jedné linii a zároveň poslední prvek by byl mezi
 			if(OBJEKTY->predchozi->n==3)
 			{                                                                                                  //je mezi
-					if(OBJEKTY->dalsi->X==OBJEKTY->dalsi->dalsi->X && OBJEKTY->predchozi->X==OBJEKTY->dalsi->X && (OBJEKTY->dalsi->Y<=OBJEKTY->predchozi->Y && OBJEKTY->predchozi->Y<=OBJEKTY->dalsi->dalsi->Y || OBJEKTY->dalsi->Y>=OBJEKTY->predchozi->Y && OBJEKTY->predchozi->Y>=OBJEKTY->dalsi->dalsi->Y))
-					{
-						short smer=+1;//v pravo
-						if(m.P2Lx(Form1->akt_souradnice_kurzoru_PX.x)<OBJEKTY->dalsi->X)//pokud je náznak vkládání doleva
-						smer=1;//v levo
-						OBJEKTY->predchozi->X+=fabs(OBJEKTY->dalsi->dalsi->Y-OBJEKTY->predchozi->Y)*smer;
-						OBJEKTY->predchozi->Y=OBJEKTY->dalsi->dalsi->Y;
-					}                                                                                              //je mezi
-					if(OBJEKTY->dalsi->Y==OBJEKTY->dalsi->dalsi->Y && OBJEKTY->predchozi->Y==OBJEKTY->dalsi->Y && (OBJEKTY->dalsi->X<=OBJEKTY->predchozi->X && OBJEKTY->predchozi->X<=OBJEKTY->dalsi->dalsi->X || OBJEKTY->dalsi->X>=OBJEKTY->predchozi->X && OBJEKTY->predchozi->X>=OBJEKTY->dalsi->dalsi->X))
-					{
-						short smer=-1;//pod
-						if(m.P2Ly(Form1->akt_souradnice_kurzoru_PX.y)>OBJEKTY->dalsi->Y)//pokud je náznak vkládání nad
-						smer=1;//nad
-						OBJEKTY->predchozi->Y+=fabs(OBJEKTY->dalsi->dalsi->X-OBJEKTY->predchozi->X)*smer;
-						OBJEKTY->predchozi->X=OBJEKTY->dalsi->dalsi->X;
-					}
+				if(OBJEKTY->dalsi->X==OBJEKTY->dalsi->dalsi->X && OBJEKTY->predchozi->X==OBJEKTY->dalsi->X && (OBJEKTY->dalsi->Y<=OBJEKTY->predchozi->Y && OBJEKTY->predchozi->Y<=OBJEKTY->dalsi->dalsi->Y || OBJEKTY->dalsi->Y>=OBJEKTY->predchozi->Y && OBJEKTY->predchozi->Y>=OBJEKTY->dalsi->dalsi->Y))
+				{
+					short smer=+1;//v pravo
+					if(m.P2Lx(Form1->akt_souradnice_kurzoru_PX.x)<OBJEKTY->dalsi->X)//pokud je náznak vkládání doleva
+					smer=1;//v levo
+					OBJEKTY->predchozi->X+=fabs(OBJEKTY->dalsi->dalsi->Y-OBJEKTY->predchozi->Y)*smer;
+					OBJEKTY->predchozi->Y=OBJEKTY->dalsi->dalsi->Y;
+				}                                                                                              //je mezi
+				if(OBJEKTY->dalsi->Y==OBJEKTY->dalsi->dalsi->Y && OBJEKTY->predchozi->Y==OBJEKTY->dalsi->Y && (OBJEKTY->dalsi->X<=OBJEKTY->predchozi->X && OBJEKTY->predchozi->X<=OBJEKTY->dalsi->dalsi->X || OBJEKTY->dalsi->X>=OBJEKTY->predchozi->X && OBJEKTY->predchozi->X>=OBJEKTY->dalsi->dalsi->X))
+				{
+					short smer=-1;//pod
+					if(m.P2Ly(Form1->akt_souradnice_kurzoru_PX.y)>OBJEKTY->dalsi->Y)//pokud je náznak vkládání nad
+					smer=1;//nad
+					OBJEKTY->predchozi->Y+=fabs(OBJEKTY->dalsi->dalsi->X-OBJEKTY->predchozi->X)*smer;
+					OBJEKTY->predchozi->X=OBJEKTY->dalsi->dalsi->X;
+				}
 			}
 	}
 }
