@@ -180,11 +180,11 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 					UnicodeString name=P->name;
 					UnicodeString rychlost_od=P->rychlost_od*60.0;
 					UnicodeString rychlost_do=P->rychlost_do*60.0;
-					UnicodeString RD=P->aRD;
+					UnicodeString RD=P->aRD*60.0;
 					UnicodeString R=P->roztec*1000.0;
 					UnicodeString Rz=P->Rz;
 					UnicodeString Rx=P->Rx;
-					UnicodeString Pouzit=Form1->d.v.vypis_objekty_vyuzivajici_pohon(P->n);if(Pouzit=="")Pouzit="nepoužíván";/*if(Form1->d.v.pohon_je_pouzivan(P->n))Pouzit="Ano";*/
+				 	UnicodeString Pouzit=Form1->d.v.vypis_objekty_vyuzivajici_pohon(P->n);if(Pouzit=="")Pouzit="nepoužíván";/*if(Form1->d.v.pohon_je_pouzivan(P->n))Pouzit="Ano";*/
 					data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+rychlost_od+"</td><td>"+rychlost_do+"</td><td>"+RD+"</td><td>"+R+"</td><td>"+Rz+"</td><td>"+Rx+"</td><td>"+Pouzit+"</td></tr>";
 					P=P->dalsi;
 				}
@@ -231,82 +231,83 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			data+="</tbody></table></br>";
 			data+="</form></div></br>";
 
-      //VÝPIS NEVYTÍŽENÝCH OBJEKTÙ
-			UnicodeString Nevytizene_objekty=Form1->d.v.vypis_objekty_mimo_100vytizeni(false);
-			if(Nevytizene_objekty!="")
-			{
-				data+="<h4>Pøehled objektù s menší než 100% vytížeností</h4></br>";
-				data+=Nevytizene_objekty+"</br>";
-      }
+      //VÝPIS NEVYTÍŽENÝCH OBJEKTÙ  //ROSTA zakomentoval - pamìová chyba
+//			UnicodeString Nevytizene_objekty=Form1->d.v.vypis_objekty_mimo_100vytizeni(false);
+//			if(Nevytizene_objekty!="")
+//			{
+//				data+="<h4>Pøehled objektù s menší než 100% vytížeností</h4></br>";
+//				data+=Nevytizene_objekty+"</br>";
+//      }
 		}
 		//////////////HTML EXPORT - ZAKÁZKY////////////////////////////////////////////////
 	 // zobrazení dat ze zakázek ///////////////////////////////
 
- 		if(Form1->STATUS==Form1->OVEROVANI)  {
-
-	if(Form1->d.v.ZAKAZKY->predchozi!=NULL  && Form1->d.v.OBJEKTY->predchozi!=NULL)//pokud existuje alespoò jedna zakázka a nìjaký objekt
-{
-	Cvektory::TZakazka *Z=Form1->d.v.ZAKAZKY->dalsi;//pøeskoèí hlavièku
-	while(Z!=NULL)//prochází jednotlivé zakázky
-	{
-		UnicodeString zakazka_name=Z->name;
-		data+="<h4>Pøehled objektù a jejich nastavených parametrù u zakázky: <b>"+zakazka_name+"</b></h4></br>";
-		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název pohonu</th><th scope=\"col\">Rychlost pohonu [m/min]</th><th scope=\"col\">Rozsah pohonu [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka kabiny [m]</th><th scope=\"col\">Mezera mezi vozíky [m]</th></tr></thead>";
-
-		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
-
-		while (O!=NULL)//prochází potenciální segmenty cesty po objektech
-		{
-							//pokud je objekt platným segmentem cesty zakázky, vrátí ukazatel na tento segment
-							Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,Z);
-						if(C!=NULL){
-								UnicodeString ID=C->objekt->n;
-								UnicodeString name=C->objekt->name;
-								UnicodeString short_name=C->objekt->short_name;
-								UnicodeString rezim;
-								UnicodeString CT=C->CT;
-								UnicodeString kapacita=C->objekt->kapacita;
-								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
-								UnicodeString mezera=C->objekt->mezera;
-								UnicodeString nazev_pohonu;
-								UnicodeString roztec_palcu;
-								UnicodeString rychlost_dopravniku=C->RD*60;
-								UnicodeString rozsah_pohonu_od;
-								UnicodeString rozsah_pohonu_do;
-
-							if(C->objekt->pohon!=NULL)  {
-								nazev_pohonu=C->objekt->pohon->name;
-								roztec_palcu=C->objekt->pohon->roztec;
-								rozsah_pohonu_od=C->objekt->pohon->rychlost_od;
-								rozsah_pohonu_do=C->objekt->pohon->rychlost_do;
-
-								rozsah_pohonu_od=Form1->ms.MyToDouble(rozsah_pohonu_od)*60.0;
-								rozsah_pohonu_do=Form1->ms.MyToDouble(rozsah_pohonu_do)*60.0;
-								}
-								else {nazev_pohonu="nepøiøazen";roztec_palcu="";rychlost_dopravniku="žádná";}
-
-								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
-								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
-								UnicodeString delka_dopravniku=C->objekt->delka_dopravniku;
-									switch(C->objekt->rezim)
-								{
-									case 0:rezim="STOP & GO";rychlost_dopravniku="nerelevantní";delka_dopravniku="nerelevantní"; break;
-									case 1:rezim="KONTINUÁLNÍ";break;
-									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
-								}
-//          //html
-								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+rozsah_pohonu_od+"-"+rozsah_pohonu_do+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td><td>"+mezera+"</td></tr>";
-								}
-					O=O->dalsi;
-		}
-		Z=Z->dalsi;
-
-		data+="</tbody></table></br>";
-			}
-		}
-
-		data+="</form></div>";
-		}
+//if(Form1->STATUS==Form1->OVEROVANI)
+//{
+//
+//	if(Form1->d.v.ZAKAZKY->predchozi!=NULL  && Form1->d.v.OBJEKTY->predchozi!=NULL)//pokud existuje alespoò jedna zakázka a nìjaký objekt
+//  {
+//	Cvektory::TZakazka *Z=Form1->d.v.ZAKAZKY->dalsi;//pøeskoèí hlavièku
+//	while(Z!=NULL)//prochází jednotlivé zakázky
+//	{
+//		UnicodeString zakazka_name=Z->name;
+//		data+="<h4>Pøehled objektù a jejich nastavených parametrù u zakázky: <b>"+zakazka_name+"</b></h4></br>";
+//		data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">CT [s]</th><th scope=\"col\">Kapacita doporuèená</th><th scope=\"col\">Kapacita nastavená</th><th scope=\"col\">Název pohonu</th><th scope=\"col\">Rychlost pohonu [m/min]</th><th scope=\"col\">Rozsah pohonu [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Délka kabiny [m]</th><th scope=\"col\">Mezera mezi vozíky [m]</th></tr></thead>";
+//
+//		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+//
+//		while (O!=NULL)//prochází potenciální segmenty cesty po objektech
+//		{
+//							//pokud je objekt platným segmentem cesty zakázky, vrátí ukazatel na tento segment
+//							Cvektory::TCesta *C=Form1->d.v.obsahuje_segment_cesty_objekt(O,Z);
+//						if(C!=NULL){
+//								UnicodeString ID=C->objekt->n;
+//								UnicodeString name=C->objekt->name;
+//								UnicodeString short_name=C->objekt->short_name;
+//								UnicodeString rezim;
+//								UnicodeString CT=C->CT;
+//								UnicodeString kapacita=C->objekt->kapacita;
+//								UnicodeString kapacita_dop=C->objekt->kapacita_dop;
+//								UnicodeString mezera=C->objekt->mezera;
+//								UnicodeString nazev_pohonu;
+//								UnicodeString roztec_palcu;
+//								UnicodeString rychlost_dopravniku=C->RD*60;
+//								UnicodeString rozsah_pohonu_od;
+//								UnicodeString rozsah_pohonu_do;
+//
+//							if(C->objekt->pohon!=NULL)  {
+//								nazev_pohonu=C->objekt->pohon->name;
+//								roztec_palcu=C->objekt->pohon->roztec;
+//								rozsah_pohonu_od=C->objekt->pohon->rychlost_od;
+//								rozsah_pohonu_do=C->objekt->pohon->rychlost_do;
+//
+//								rozsah_pohonu_od=Form1->ms.MyToDouble(rozsah_pohonu_od)*60.0;
+//								rozsah_pohonu_do=Form1->ms.MyToDouble(rozsah_pohonu_do)*60.0;
+//								}
+//								else {nazev_pohonu="nepøiøazen";roztec_palcu="";rychlost_dopravniku="žádná";}
+//
+//								//UnicodeString rychlost_od=C->objekt->pohon->rychlost_od;
+//								//UnicodeString rychlost_do=C->objekt->pohon->rychlost_do;
+//								UnicodeString delka_dopravniku=C->objekt->delka_dopravniku;
+//									switch(C->objekt->rezim)
+//								{
+//									case 0:rezim="STOP & GO";rychlost_dopravniku="nerelevantní";delka_dopravniku="nerelevantní"; break;
+//									case 1:rezim="KONTINUÁLNÍ";break;
+//									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
+//								}
+////          //html
+//								data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+CT+"</td><td>"+kapacita_dop+"</td><td>"+kapacita+"</td><td>"+nazev_pohonu+"</td><td>"+rychlost_dopravniku+"</td><td>"+rozsah_pohonu_od+"-"+rozsah_pohonu_do+"</td><td>"+roztec_palcu+"</td><td>"+delka_dopravniku+"</td><td>"+mezera+"</td></tr>";
+//								}
+//					O=O->dalsi;
+//		}
+//		Z=Z->dalsi;
+//
+//		data+="</tbody></table></br>";
+//			}
+//		}
+//
+//		data+="</form></div>";
+//		}
 
 
 	}
@@ -382,7 +383,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								double rozsah_pohonu_od;
 								double rozsah_pohonu_do;
 
-								if(O->pohon!=NULL)  {
+								if(O->pohon!=NULL)
+                {
 								nazev_pohonu=O->pohon->name;
 								roztec_palcu=O->pohon->roztec*1000.0;
 								rozsah_pohonu_od=O->pohon->rychlost_od*60.0;
@@ -444,7 +446,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								double rozsah_pohonu_od;
 								double rozsah_pohonu_do;
 								UnicodeString rychlost_dopravniku=C->RD;
-									if(C->objekt->pohon!=NULL)  {
+                if(C->objekt->pohon!=NULL)
+                {
 								nazev_pohonu=C->objekt->pohon->name;
 								roztec_palcu=C->objekt->pohon->roztec*1000.0;
 								rozsah_pohonu_od=O->pohon->rychlost_od*60.0;

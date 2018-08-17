@@ -60,6 +60,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	 Rzunit=M;
 	//roletka_data=0;
 
+
 }
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pasivní resp. default barvu
@@ -707,6 +708,15 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
 	//navýší poèet øádkù
 	rStringGridEd_tab_dopravniky->RowCount++;
+  if(rStringGridEd_tab_dopravniky->RowCount>4)
+  {
+  rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
+  Form_parametry_linky->Height= Form_parametry_linky->Height+30;
+  scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
+  Button_save->Top=Button_save->Top + 30;
+  Button_storno->Top=Button_storno->Top + 30;
+  scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
+  }
 	//zobrazOramovani=false;
 
 	//zaène plnit jednotlivé øádky
@@ -1411,6 +1421,20 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Se
 			//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
 			rStringGridEd_tab_dopravniky->DeleteRowEx(j);
 			j--;//musí po smazání nutnì snížit index
+
+      rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
+      Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
+      scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
+      Button_save->Top=Form_parametry_linky->Height - 40;
+      Button_storno->Top=Form_parametry_linky->Height - 40;
+      scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
+      rHTMLLabel_InfoText->Top= scGPGlyphButton_ADD->Top + 8;
+      vypis("",false);
+     // VID=-1;
+     // scGPGlyphButton_ADD->Enabled=true;
+     //ShowMessage(VID);
+
+
 		}
 	}
 	//skrytí pop-up menu
@@ -2050,7 +2074,7 @@ void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
 void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 {
 
-		Memo3->Lines->Add("OUTPUT"+ AnsiString(input_state));
+		//Memo3->Lines->Add("OUTPUT"+ AnsiString(input_state));
 
 	 if(i>0) // plnìní celé tabulky, pouze v pøípadì zmìny TT nebo pøevodu jednotek
 
@@ -2610,6 +2634,7 @@ Row_validace=0;
 				break;
 				case 2:     //RD OD
 				{
+
 						if(rStringGridEd_tab_dopravniky->Cells[2][ARow]<=0)
 						{
 						vypis("Neplatná hodnota rychlosti pohonu od!");
@@ -2618,8 +2643,10 @@ Row_validace=0;
 						}
 
 					//od je vìtší než do
-						if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow]) > F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow]))
+						if(rStringGridEd_tab_dopravniky->Cells[2][ARow] > rStringGridEd_tab_dopravniky->Cells[3][ARow])
 							{
+              Memo3->Lines->Add(rStringGridEd_tab_dopravniky->Cells[2][ARow]);
+              Memo4->Lines->Add(rStringGridEd_tab_dopravniky->Cells[3][ARow]);
 							vypis("Neplatný rozsah rychlosti pohonu od-do!");
 							VID=23;
 							Row_validace=ARow;
@@ -2664,6 +2691,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 					 rEditNum_takt->Value=Form_TT_kalkulator->rEditNum_takt->Value;
 					 }
 				}
+
 		}
 
        // stav pøi nastavení TT a nemám pøitom pohon ani objekty
@@ -2687,7 +2715,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt nebo pohon
 		{
-			F_gapoTT->ShowModal();
+	 		F_gapoTT->ShowModal();
 		}
 }
 //---------------------------------------------------------------------------

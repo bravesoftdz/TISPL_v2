@@ -55,7 +55,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	if(T=="")RDunit=0;else RDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DD");
 	if(T=="")DDunit=0;else DDunit=T.ToInt();
-	T=F->readINI("nastaveni_form_parametry","DM").ToInt();
+	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
 	input_state=LOADING;
@@ -1064,6 +1064,9 @@ void __fastcall TF_gapoV::scGPButton_stornoClick(TObject *Sender)
 {
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+  Form_parametry_linky->scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
+  Form_parametry_linky->scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
+  Form_parametry_linky->scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
 }
 //---------------------------------------------------------------------------
 
@@ -1083,6 +1086,9 @@ void __fastcall TF_gapoV::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 			Form_parametry_linky->Button_storno->Enabled=true;
 			F_gapoV->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
 			F_gapoV->VisibleChanging();// skryje form, stejné jako visible=false
+      Form_parametry_linky->scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
+      Form_parametry_linky->scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
+      Form_parametry_linky->scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
 		 }break;
 		}
 }

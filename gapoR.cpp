@@ -54,10 +54,15 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	Edit1->SetFocus();
 
 	////////jednotky////////  NEWR
-	CTunit=F->readINI("nastaveni_form_parametry", "CT").ToInt();
-	RDunit=F->readINI("nastaveni_form_parametry", "RDt").ToInt();
-	DDunit=F->readINI("nastaveni_form_parametry", "DD").ToInt();
-	Munit =F->readINI("nastaveni_form_parametry", "DM").ToInt();
+
+	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
+	if(T=="")CTunit=0;else CTunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","RDt");
+	if(T=="")RDunit=0;else RDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DD");
+	if(T=="")DDunit=0;else DDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DM");
+	if(T=="")Munit=0; else Munit =T.ToInt();
 
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
