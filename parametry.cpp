@@ -290,7 +290,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(MEZERA_PODVOZEK, HIDE);
 						set(ROZESTUP, HIDE);
 						scGPNumericEdit_kapacita->Value = 1;
-						offset+=40;//workaround kvùli skryté mezeøe
+					 	offset+=40;//workaround kvùli skryté mezeøe
 				} break;
 				case 1: // KONTINUÁLNÍ
 				{
@@ -894,6 +894,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 			 scGPNumericEdit_mezera_PODVOZEK->Options->FrameWidth 			= scGPNumericEdit_mezera->Options->FrameWidth;
 			 scGPNumericEdit_mezera_PODVOZEK->Visible=scGPNumericEdit_mezera->Visible;
 			 scGPNumericEdit_mezera_PODVOZEK->Enabled=scGPNumericEdit_mezera->Enabled;
+
 			 //PROVIZORNÍ WORKAROUND - PROTOŽE MEZERU NYNÍ NEZOBRAZUJI, TAK ABYCH NEMUSEL SLOŽITÌ MÌNIT KOD
 			 scGPNumericEdit_mezera->Visible = false;
 		} break;
@@ -2558,7 +2559,7 @@ void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 					pm.M=F->m.mezera_mezi_voziky(pm.dJ,pm.sJ,pm.Rotace,pm.R,0);//po rotaci je nová nejmenší možná mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
 				else
 				{
-					if(mrYes==F->MB("Chcete zachovat co nejbližší možný rozestup? Pokud ne, bude nalezen nejmenší možný rozestup.",MB_YESNO))
+					if(mrYes==F->MB("Chcete zachovat co nejbližší možný rozestup vùèi aktuálnímu nastavení? Pokud ne, bude nalezen nejmenší možný rozestup.",MB_YESNO))
 						pm.M=F->m.mezera_mezi_voziky(pm.dJ,pm.sJ,pm.Rotace,pm.R,F->m.mezera(pm.Rotace,pm.Rz));//bude nalezena nejbližší možná dle pùvodního Rz
 					else
 						pm.M=F->m.mezera_mezi_voziky(pm.dJ,pm.sJ,pm.Rotace,pm.R,0);//po rotaci je nová nejmenší možná mezera ta se musí aplikovat do nového výpoètu ostatních parametrù
@@ -3155,6 +3156,7 @@ void TForm_parametry::Pohon_pouzivan()
 								{
 							 //	scComboBox_rotace->Items->Items[0]->Enabled = false;
 							 //	scComboBox_rotace->Items->Items[1]->Enabled = false;
+
 									set(ROTACE,DISABLED, false);
 								}
 						}
@@ -3215,42 +3217,6 @@ void __fastcall TForm_parametry::scComboBox_rotaceEnter(TObject *Sender)
 				scButton_zamek_DD->Visible = false;
 				scButton_K_zamek->Visible = false;
 		}
-
-		 //	ShowMessage(input_clicked_edit);
- //			if (input_state==NOTHING && scComboBox_rezim->ItemIndex == 1 /*&& scButton_zamek_RD->ImageIndex == 37*/)
- //			{
-//			double mezera =0;
-//
-//			if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000;
-//			else mezera = scGPNumericEdit_mezera->Value;
-//
-//			if(!Form1->m.lze_rotovat_jig_bez_zmeny_RzRxRD(mezera))
-//			{
-//			 Form1->MB("Zmìna rotace by mìla vliv na rychlost pohonu. Pokud si pøejete zmìnit rotaci, povolte nejdøíve zmìnu rychlosti pohonu.");
-//			}
-//			else
-//			{
-//       Form1->MB("RD nebude ovlivnìn, pøepoèítám");
-
- //			}
-//					 if(scButton_zamek_RD->Enabled)
-//					 {
-//
-//						if(scButton_zamek_RD->ImageIndex == 37)
-//								{
-//								 RD_zamek=UNLOCKED;
-//								 scButton_zamek_RD->ImageIndex = 38;
-//
-//								 scButton_zamek_DD->ImageIndex = 37;
-//								 DD_zamek = LOCKED;
-//
-//								 CT_zamek=UNLOCKED;
-//								 scButton_zamek_CT->ImageIndex = 38;
-//
-//								 vypis("Byl odemèen zámek rychlosti pohonu",false);
-//								}
-//					 }
- //			}
 
 }
 //---------------------------------------------------------------------------
@@ -3391,16 +3357,19 @@ void TForm_parametry::Check_rozmezi_RD()
 				}
 				if(scComboBox_pohon->ItemIndex!=0 && roztec>0 && Form1->ms.MyToDouble(dopRD)!= Form1->ms.MyToDouble(RD) && mimo_rozmezi==false)
 				{
-					double doporuc_hodnota = dopRD;
-					vypis("Zadejte doporuèenou rychlost pohonu:<u>"+AnsiString(doporuc_hodnota)+"</u>");
-					VID=27;
-					VID_value=doporuc_hodnota;
-				 //	AnsiString relation_id=GetCurrentProcessId();
-				 //	AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
-				//	Form1->FDConnection1->ExecSQL(strSQL);
-				//	Form1->IBQuery1->SQL->Add(strSQL);
-				//	Form1->IBQuery1->Open();
-				}
+         if(scButton_zamek_RD->Enabled) //doporuèuji rychlost, pouze tehdy pokud lze RD mìnit (pohon není jinde používán)
+            {
+              double doporuc_hodnota = dopRD;
+              vypis("Zadejte doporuèenou rychlost pohonu:<u>"+AnsiString(doporuc_hodnota)+"</u>");
+              VID=27;
+              VID_value=doporuc_hodnota;
+             //	AnsiString relation_id=GetCurrentProcessId();
+             //	AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+            //	Form1->FDConnection1->ExecSQL(strSQL);
+            //	Form1->IBQuery1->SQL->Add(strSQL);
+            //	Form1->IBQuery1->Open();
+            }
+        }
 				if (Form1->ms.MyToDouble(dopRD)== Form1->ms.MyToDouble(RD) && mimo_rozmezi)
 				{
 						vypis("Rychlost neodpovídá rozmezí!");
@@ -3887,7 +3856,7 @@ void	TForm_parametry::Nastav_M_R_Rx()
 			 }
 			 else
 			 {
-				 set(ROTACE,DISABLED,false);
+				// set(ROTACE,DISABLED,false);  15.8 ROSTA - v nìkterých pøípadech toto nedovolí udìlat zpìtnì rotaci v roletce
 				 set(RYCHLOST, DISABLED,false);
 			 }
 		}
@@ -3918,7 +3887,7 @@ void __fastcall TForm_parametry::FormPaint(TObject *Sender)
 {
 	packa_RDzamek(Canvas);
 	frameCorrelation();//zajišuje stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do výchozího stavu, zároveò kreslí pravé packy
-	frameKritickaMezer(Canvas);//obkreslí obrysem kritickou mezeru
+  if(scComboBox_rezim->ItemIndex!=0)	frameKritickaMezer(Canvas);//obkreslí obrysem kritickou mezeru
 }
 //---------------------------------------------------------------------------
 //vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám

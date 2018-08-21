@@ -467,7 +467,6 @@ object F_gapoV: TF_gapoV
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 8
     end
   end
   object scGPButton_OK: TscGPButton

@@ -68,7 +68,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	if(T=="")RDunit=0;else RDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DD");
 	if(T=="")DDunit=0;else DDunit=T.ToInt();
-	T=F->readINI("nastaveni_form_parametry","DM").ToInt();
+	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
@@ -249,6 +249,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	{  //OBJEKTY BEZ PØIØAZENÉHO POHONU
 		//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za úèelem dalšího použití, pouze duplikát objektù, proto se nepropíše do spojáku OBJEKTY
 		objekty[j]=On[i];
+
 		//pohony
 		mGrid->Cells[0][j].Text="nepøiøazen";
 		//objekty
@@ -489,6 +490,12 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
+
+      for(int sl=0;sl<=ColCount-1;sl++)
+      {
+      // mGrid->Cells[sl][j-z+O_pocet-1].BottomBorder->Width=2;
+      //z nìjakého dùvodu nefunguje pro 2 sloupec
+      }
 			O=NULL;delete O;
 		}
 	}
@@ -1227,6 +1234,8 @@ void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)
 {
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+  //navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
+  Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
 
 
 }
@@ -1249,6 +1258,8 @@ void __fastcall TF_gapoTT::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
 			Form_parametry_linky->Button_storno->Enabled=true;
 			F_gapoTT->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
 			F_gapoTT->VisibleChanging();// skryje form, stejné jako visible=false
+        //navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
+      Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
 		 }break;
 		}
 }
