@@ -2239,6 +2239,8 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::ESC()
 {
+	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
+	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 	zneplatnit_minulesouradnice();
 	//vymaže, překreslí, odznačí provizorní lini
 	switch(Akce)
