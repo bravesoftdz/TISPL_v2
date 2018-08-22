@@ -16,6 +16,7 @@
 #pragma link "scGPControls"
 #pragma link "rHintWindow"
 #pragma link "rHTMLLabel"
+#pragma link "scExtControls"
 #pragma resource "*.dfm"
 TF_gapoTT *F_gapoTT;
 //---------------------------------------------------------------------------
@@ -55,6 +56,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Left=Offset;mGrid->Top=scGPPanel_hlavicka->Height+Offset;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
 	mGrid->DefaultColWidth/=2;
+  mGrid->Border.Width=2;
 	input_state=LOADING;
 	Rx_canEdit=true;
 
@@ -78,6 +80,28 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
+   scGPButton_zamek_unlocked->Options->NormalColor=clBACKGROUND;
+	 scGPButton_zamek_unlocked->Options->FrameNormalColor=clBACKGROUND;
+   scGPButton_zamek_unlocked->Options->FocusedColor=clBACKGROUND;
+	 scGPButton_zamek_unlocked->Options->HotColor=clBACKGROUND;
+	 scGPButton_zamek_unlocked->Options->PressedColor=clBACKGROUND;
+	 scGPButton_zamek_unlocked->Options->FrameNormalColor=clBACKGROUND;
+   scGPButton_zamek_unlocked->Options->FrameHotColor=clBACKGROUND;
+	 scGPButton_zamek_unlocked->Options->PressedColor=clBACKGROUND;
+	 scGPButton_zamek_unlocked->Options->FramePressedColor=clBACKGROUND;
+
+
+   scGPButton_zamek_locked->Options->NormalColor=clBACKGROUND;
+	 scGPButton_zamek_locked->Options->FrameNormalColor=clBACKGROUND;
+   scGPButton_zamek_locked->Options->FocusedColor=clBACKGROUND;
+	 scGPButton_zamek_locked->Options->HotColor=clBACKGROUND;
+	 scGPButton_zamek_locked->Options->PressedColor=clBACKGROUND;
+	 scGPButton_zamek_locked->Options->FrameNormalColor=clBACKGROUND;
+   scGPButton_zamek_locked->Options->FrameHotColor=clBACKGROUND;
+	 scGPButton_zamek_locked->Options->PressedColor=clBACKGROUND;
+	 scGPButton_zamek_locked->Options->FramePressedColor=clBACKGROUND;
+
+
 	////////plnìní daty - hlavièka////////   NEWR
 	mGrid->Cells[0][0].Text="pohon";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
@@ -86,11 +110,19 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[0][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[0][0].BottomMargin=4;mGrid->Cells[0][0].TopMargin=8;
 	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
-	mGrid->Cells[1][0].Text="objekt";
-	mGrid->Cells[2][0].Text="režim";
+  mGrid->Cells[0][0].BottomBorder->Width=2;
 
+	mGrid->Cells[1][0].Text="objekt";
+  mGrid->Cells[1][0].BottomBorder->Width=2;
+	mGrid->Cells[2][0].Text="režim";
+  mGrid->Cells[2][0].BottomBorder->Width=2;
+  scGPButton_zamek_unlocked->Top=45;
+  scGPButton_zamek_locked->Top= 45;
 	//------------------------------------------------
 	mGrid->Cells[3][0].Text="aRD, RD, CT";
+
+  scGPButton_zamek_unlocked->Left=318;
+  scGPButton_zamek_locked->Left=scGPButton_zamek_unlocked->Left+scGPButton_zamek_unlocked->Width+3;
 	mGrid->Cells[4][0].Text="DD, K, P, Rz, Rx, R, M";
 	//------------------------------------------------
 	mGrid->Cells[5][0].Text="aRD, RD, DD, K, P";
@@ -113,6 +145,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[3][0].Align=mGrid->CENTER;
 	mGrid->Cells[3][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[3][0].BottomMargin=4;mGrid->Cells[3][0].TopMargin=8;
+  mGrid->Cells[3][0].BottomBorder->Width=2;
 
 	mGrid->Cells[4][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[4][0].Font->Orientation=900;
@@ -120,6 +153,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[4][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[4][0].BottomMargin=4;mGrid->Cells[4][0].TopMargin=8;
 	mGrid->Cells[4][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[4][0].BottomBorder->Width=2;
 
 
 	mGrid->Cells[5][0].Font->Color=(TColor)RGB(43,87,154);
@@ -128,6 +162,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[5][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[5][0].BottomMargin=4;mGrid->Cells[5][0].TopMargin=8;
 	mGrid->Cells[5][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[5][0].BottomBorder->Width=2;
 
 	mGrid->Cells[6][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[6][0].Font->Orientation=900;
@@ -135,6 +170,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[6][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[6][0].BottomMargin=4;mGrid->Cells[6][0].TopMargin=8;
 	mGrid->Cells[6][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[6][0].BottomBorder->Width=2;
 
 	mGrid->Cells[7][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[7][0].Font->Orientation=900;
@@ -142,6 +178,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[7][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[7][0].BottomMargin=4;mGrid->Cells[7][0].TopMargin=8;
 	mGrid->Cells[7][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[7][0].BottomBorder->Width=2;
 
 	mGrid->Cells[8][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[8][0].Font->Orientation=900;
@@ -149,6 +186,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[8][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[8][0].BottomMargin=4;mGrid->Cells[8][0].TopMargin=8;
 	mGrid->Cells[8][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[8][0].BottomBorder->Width=2;
 
 	mGrid->Cells[9][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[9][0].Font->Orientation=900;
@@ -156,6 +194,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[9][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[9][0].BottomMargin=4;mGrid->Cells[9][0].TopMargin=8;
 	mGrid->Cells[9][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[9][0].BottomBorder->Width=2;
 
 	mGrid->Cells[10][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[10][0].Font->Orientation=900;
@@ -163,6 +202,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[10][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[10][0].BottomMargin=4;mGrid->Cells[10][0].TopMargin=8;
 	mGrid->Cells[10][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[10][0].BottomBorder->Width=2;
 
 	mGrid->Cells[11][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[11][0].Font->Orientation=900;
@@ -170,6 +210,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[11][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[11][0].BottomMargin=4;mGrid->Cells[11][0].TopMargin=8;
 	mGrid->Cells[11][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[11][0].BottomBorder->Width=2;
 
 	mGrid->Cells[12][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[12][0].Font->Orientation=900;
@@ -177,6 +218,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[12][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[12][0].BottomMargin=4;mGrid->Cells[12][0].TopMargin=8;
 	mGrid->Cells[12][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[12][0].BottomBorder->Width=2;
 
 	mGrid->Cells[13][0].Font->Color=(TColor)RGB(43,87,154);
 	mGrid->Cells[13][0].Font->Orientation=900;
@@ -184,6 +226,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[13][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[13][0].BottomMargin=4;mGrid->Cells[13][0].TopMargin=8;
 	mGrid->Cells[13][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[14][0].BottomBorder->Width=2;
 
 	mGrid->Cells[14][0].Font->Color=(TColor)RGB(128,128,128);
 	mGrid->Cells[14][0].Font->Orientation=900;
@@ -191,6 +234,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[14][0].Valign=mGrid->BOTTOM;
 	mGrid->Cells[14][0].BottomMargin=4;mGrid->Cells[14][0].TopMargin=8;
 	mGrid->Cells[14][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[14][0].BottomBorder->Width=2;
 
 
 	if(CTunit)mGrid->Cells[15][0].Text="CT - Technologický èas [min]";else mGrid->Cells[15][0].Text="CT - Technologický èas [s]";
@@ -316,6 +360,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		}
 		//zajistí pøepoèet daného øádku
 	 	calculate(j);
+    for(int sl=0;sl<=ColCount-1;sl++) //oddìlení pohonù silnìjší èarou
+    {
+    mGrid->Cells[sl][j].BottomBorder->Width=2;
+    }
 		//posun na další øádek výsledné tabulky
 		j++;
 	}
@@ -356,6 +404,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			mGrid->getCheck(11,j)->Visible=false;
 			mGrid->getCheck(13,j)->Visible=false;
 			//posun na další øádek výsledné tabulky
+        for(int sl=0;sl<=ColCount-1;sl++)
+      {
+       mGrid->Cells[sl][j].BottomBorder->Width=2;
+      }
 			j++;
 		}
 		else//OBJEKTY S PØIØAZENÝMI POHONY
@@ -493,7 +545,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 
       for(int sl=0;sl<=ColCount-1;sl++)
       {
-      // mGrid->Cells[sl][j-z+O_pocet-1].BottomBorder->Width=2;
+       mGrid->Cells[sl][j-z+O_pocet-1].BottomBorder->Width=2;
       //z nìjakého dùvodu nefunguje pro 2 sloupec
       }
 			O=NULL;delete O;
@@ -501,19 +553,16 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	}
 
 	////////rozdìlení sekcí svislým orámováním////////
-	mGrid->Cells[2][1].RightBorder->Width=mGrid->Cells[2][0].RightBorder->Width=2;
-	mGrid->SetCells(mGrid->Cells[2][1],2,2,2,RowCount-2);
-	mGrid->Cells[2][RowCount-1].RightBorder->Width=mGrid->Cells[2][1].RightBorder->Width;
-
-	for(int i=1;i<=RowCount-1;i++)
+	for(int i=0;i<=RowCount-1;i++)
 	{
 		mGrid->Cells[14][i].RightBorder->Width=2;
-		mGrid->Cells[0][i].Background->Color=clBACKGROUND;
-	//	mGrid->Cells[0][i].BottomBorder->Color=clBACKGROUND;
-		mGrid->Cells[1][i].Background->Color=clBACKGROUND;
-		mGrid->Cells[2][i].Background->Color=clBACKGROUND;
-   }
+  	mGrid->Cells[2][i].RightBorder->Width=2;
+  }
 
+  for(int r=0;r<=RowCount-1;r++)
+  {
+    mGrid->Cells[16][r].RightBorder->Width=mGrid->Cells[18][r].RightBorder->Width=mGrid->Cells[20][r].RightBorder->Width=mGrid->Cells[22][r].RightBorder->Width=mGrid->Cells[24][r].RightBorder->Width=mGrid->Cells[26][r].RightBorder->Width=mGrid->Cells[28][r].RightBorder->Width=mGrid->Cells[31][r].RightBorder->Width=mGrid->Cells[33][r].RightBorder->Width=mGrid->Cells[35][r].RightBorder->Width=mGrid->Cells[29][r].RightBorder->Width=2;
+  }
 
 	mGrid->Cells[2][0].RightBorder->Color=C1;
 	mGrid->Cells[3][0].BottomBorder->Color=mGrid->Cells[4][0].BottomBorder->Color=mGrid->Cells[5][0].BottomBorder->Color=mGrid->Cells[6][0].BottomBorder->Color=C1;
@@ -524,8 +573,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 
 	mGrid->Cells[7][0].BottomBorder->Width=	mGrid->Cells[8][0].BottomBorder->Width=mGrid->Cells[9][0].BottomBorder->Width= mGrid->Cells[10][0].BottomBorder->Width=mGrid->Cells[11][0].BottomBorder->Width=mGrid->Cells[12][0].BottomBorder->Width=mGrid->Cells[13][0].BottomBorder->Width=mGrid->Cells[14][0].BottomBorder->Width=2;
 	mGrid->Cells[7][0].BottomBorder->Color=	mGrid->Cells[8][0].BottomBorder->Color=mGrid->Cells[9][0].BottomBorder->Color= mGrid->Cells[10][0].BottomBorder->Color=C2;
-
-
 
 	mGrid->Cells[10][0].RightBorder->Width=2;
 	mGrid->Cells[10][0].RightBorder->Color=C2;
@@ -573,11 +620,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		}
 		scScrollBar_vertical->Position=0;
 	}
-
-     for(int r=0;r<=RowCount-1;r++)
-   {
-    mGrid->Cells[16][r].RightBorder->Width=mGrid->Cells[18][r].RightBorder->Width=mGrid->Cells[20][r].RightBorder->Width=2;
-   }
 
 	//pozice komponent
 	F->m.designButton(scGPButton_OK,F_gapoTT,1,2);
@@ -1310,4 +1352,9 @@ void __fastcall TF_gapoTT::KonecClick(TObject *Sender)
 	Form_parametry_linky->Button_storno->Enabled=true;
 }
 //---------------------------------------------------------------------------
+
+
+
+
+
 
