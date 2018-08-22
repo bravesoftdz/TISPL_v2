@@ -3074,7 +3074,7 @@ void TForm1::NP()
 				if(Form_parametry->scComboBox_pohon->ItemIndex!=0 && pom->rezim==1)//pouze pokud je prirazen pohon a jedná se o KK režim, tak ulozim do nej hodnoty Rx,Rz
 				{
 					pom->pohon->Rx=Form_parametry->scGPNumericEdit_rx->Value;
-					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value*(1+999*Form_parametry->DMunit); //pořešit převody a zdroj a správnost dat
+					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value*(1+999*Form_parametry->DMunit);
 				}
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
