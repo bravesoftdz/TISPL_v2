@@ -455,10 +455,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPButton *B=createButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
-			B->Top=R.Top+Cell.TopBorder->Width;
-			B->Left=R.Left+Cell.LeftBorder->Width;
-			B->Width=Columns[X].Width-Cell.RightBorder->Width;
-			B->Height=Rows[Y].Height-Cell.BottomBorder->Width;
+			B->Top=R.Top+floor(Cell.TopBorder->Width/2.0);
+			B->Left=R.Left+floor(Cell.LeftBorder->Width/2.0);
+			B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
+			B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
 //			B->Options->NormalColor=Cell.Background->Color;
 			B->Options->FrameNormalColor=B->Options->NormalColor;
 			B->Font=Cell.Font;
@@ -482,10 +482,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 				C->OnChange=&getTagOnChange;
 			}
 			//atributy
-			C->Top=R.Top+Cell.TopBorder->Width;
-			C->Left=R.Left+Cell.LeftBorder->Width;
-			C->Width=Columns[X].Width-Cell.RightBorder->Width;
-			C->Height=Rows[Y].Height-Cell.BottomBorder->Width;
+			C->Top=R.Top+floor(Cell.TopBorder->Width/2.0);
+			C->Left=R.Left+floor(Cell.LeftBorder->Width/2.0);
+			C->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
+			C->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
 			C->Options->NormalColor=Cell.Background->Color;
 			C->Options->NormalColorAlpha=255;
 //			C->Options->FrameNormalColor=clWhite;
