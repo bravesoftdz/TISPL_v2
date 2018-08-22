@@ -3071,10 +3071,10 @@ void TForm1::NP()
 				pom->mezera_podvozek=Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value/jednotky_vzdalenost;
 				//ostatni
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
-				if(Form_parametry->scComboBox_pohon->ItemIndex!=0)//pouze pokud je prirazen pohon, tak ulozim do nej hodnoty Rx,Rz
-				{                                //pořešit převody a zdroj a správnost dat
+				if(Form_parametry->scComboBox_pohon->ItemIndex!=0 && pom->rezim==1)//pouze pokud je prirazen pohon a jedná se o KK režim, tak ulozim do nej hodnoty Rx,Rz
+				{
 					pom->pohon->Rx=Form_parametry->scGPNumericEdit_rx->Value;
-					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value;
+					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value*(1+999*Form_parametry->DMunit); //pořešit převody a zdroj a správnost dat
 				}
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
