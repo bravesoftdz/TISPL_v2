@@ -12,6 +12,8 @@
 #include "vektory.h"
 #include "rHintWindow.hpp"
 #include "rHTMLLabel.hpp"
+#include "scExtControls.hpp"
+#include <Vcl.Imaging.pngimage.hpp>
 //---------------------------------------------------------------------------
 class TF_gapoTT : public TForm
 {
@@ -31,6 +33,8 @@ __published:	// IDE-managed Components
 	TscButton *scButton_csv;
 	TscScrollBar *scScrollBar_horizont;
 	TscScrollBar *scScrollBar_vertical;
+  TscGPButton *scGPButton_zamek_unlocked;
+  TscGPButton *scGPButton_zamek_locked;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
