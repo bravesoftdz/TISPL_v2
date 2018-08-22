@@ -386,6 +386,7 @@ void TForm_parametry_linky::nacti_pohony ()
 
 						if(ukaz->aRD==0)  	rStringGridEd_tab_dopravniky->Cells[4][i] = "";
 						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*60.0;
+            //ShowMessage(ukaz->aRD*60.0);
 
 						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
 						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*1000.0;
@@ -461,7 +462,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				Ulozit=false;//pokud bude stisknuto èi køížek na gapo_R storno, ukládání PL formu se pøeruší, resp. neprovede
 				//scGPPanel2->FillColor = (TColor)RGB(43,87,154);
 				Button_save->Enabled=true;Button_storno->Enabled=true;
-				Storno=true;
+				Storno=false; //nejedna se o storno PL formu, ale gapoR formu, proto storno false, jinak by doslo k ukonèení PL formu
 			}else
 			{
 				Storno=false;
@@ -2635,20 +2636,20 @@ Row_validace=0;
 				case 2:     //RD OD
 				{
 
-						if(rStringGridEd_tab_dopravniky->Cells[2][ARow]<=0)
+						if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])<=0)
 						{
-						vypis("Neplatná hodnota rychlosti pohonu od!");
-						VID=2;
+						//vypis("Neplatná hodnota rychlosti pohonu od!");
+					 //	VID=2;
 						Row_validace=ARow;
 						}
 
 					//od je vìtší než do
-						if(rStringGridEd_tab_dopravniky->Cells[2][ARow] > rStringGridEd_tab_dopravniky->Cells[3][ARow])
+						if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow]) > F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow]))
 							{
               Memo3->Lines->Add(rStringGridEd_tab_dopravniky->Cells[2][ARow]);
               Memo4->Lines->Add(rStringGridEd_tab_dopravniky->Cells[3][ARow]);
-							vypis("Neplatný rozsah rychlosti pohonu od-do!");
-							VID=23;
+						 //	vypis("Neplatný rozsah rychlosti pohonu od-do!");
+						 //	VID=23;
 							Row_validace=ARow;
 							}
 
@@ -2656,10 +2657,10 @@ Row_validace=0;
 				break;
 				case 3:     //RD OD
 				{
-				if(rStringGridEd_tab_dopravniky->Cells[3][ARow]<=0)
+				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])<=0)
 						{
-						vypis("Neplatná hodnota rychlosti pohonu do!");
-						VID=3;
+					 //	vypis("Neplatná hodnota rychlosti pohonu do!");
+					 //	VID=3;
 						Row_validace=ARow;
 						}
 
@@ -2805,6 +2806,7 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 	else CanClose=false;
 }
 //---------------------------------------------------------------------------
+
 
 
 
