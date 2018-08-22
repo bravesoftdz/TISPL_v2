@@ -230,7 +230,7 @@ public:		// User declarations
 	Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
 	Tinput_onchange   onchange;
 	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;//pøepínaè jednotek vzdálenost
-	enum Tminsec{S=0,MIN};Tminsec Taktunit;//pøepínaè jednotek èasu
+	enum Tminsec{S=0,MIN};Tminsec Taktunit;Tminsec RDunit;//pøepínaè jednotek èasu
 	bool Changes;  //obecna zmena = zmena PP ci TT
 	bool Changes_TT;    // konkretni zmena TT
 	bool Changes_PP;   // konkretni zmena PP
