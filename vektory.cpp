@@ -1016,7 +1016,7 @@ double Cvektory::minRD(TPohon *pohon)
 	return min;
 }
 ////---------------------------------------------------------------------------
-//vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD
+//vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD      //0 - S&G, 1-KK, 2-PP, 20-S&G+PP
 AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim)
 {
 	TObjekt *O=OBJEKTY->dalsi;
@@ -1024,11 +1024,13 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 	while (O!=NULL)
 	{
 		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
-		{
-			if(rezim==-1 || rezim==20 || O->rezim==rezim)//filtr režimu
+		{                         //pro PP a S&G                         //pro konkrétní režim
+			if(rezim==-1 || (rezim==20 && (O->rezim==0 || O->rezim==2)) || O->rezim==rezim)//filtr režimu
 			{
 				if(testRD<O->delka_dopravniku/O->CT)
-				objekty=O->short_name+", ";
+				{
+					objekty=O->short_name+", ";
+				}
 			}
 		}
 		O=O->dalsi;
@@ -1269,8 +1271,8 @@ long Cvektory::vymaz_seznam_POHONY()
 	return pocet_smazanych_pohonu;
 };
 ////---------------------------------------------------------------------------
-//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr 0 (který je zároveň implicitní), vratí doporučené Rz, pokud 1, vrátí seznam objektů, kde je problém, pokud vrátí prázdné uvozovky, je vše v pořádku
-AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short getValueOrObject)
+//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr getValueOrMessage 0 (který je zároveň implicitní), vratí doporučenou hodnotu dle VID, pokud je zvoleno 1, vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku
+AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short getValueOrMessage)
 {
 	AnsiString RET="";
 	TPohon *p=vrat_pohon(PID);
@@ -1284,7 +1286,8 @@ AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,d
 			double mRD=minRD(p);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
 			if(mRD<aRD)
 			{
-				RET=AnsiString("Nedostatečná rychlost! Objekt(y): "+vypis_objekty_nestihajici_prejezd(p,aRD,20)+" nestíhají přejezd. Navržená hodnota: <u>"+AnsiString(mRD)+"</u> [m/s].");
+				if(getValueOrMessage)RET=AnsiString("Nedostatečná rychlost! Objekt(y): "+vypis_objekty_nestihajici_prejezd(p,aRD,20)+" nestíhají přejezd. Navržená hodnota: <u>"+AnsiString(mRD)+"</u> [m/s].");
+				else RET=mRD;
 			}
 		}break;
 		//R
@@ -1299,7 +1302,8 @@ AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,d
 				if(m.UDV(O[i].rotace)>minRz)minRz=m.UDV(O[i].rotace);//najde minimální nutný rozestup
 				if(Rz<m.UDV(O[i].rotace))//pokud platí, nastal problém, vozíky se nevejdeou
 				{
-					RET=AnsiString("Nedostatečný rozestup! Navržená hodnota: <u>"+AnsiString(minRz)+"</u> [m].");
+					if(getValueOrMessage)RET=AnsiString("Nedostatečný rozestup! Navržená hodnota: <u>"+AnsiString(minRz)+"</u> [m].");
+					else RET=minRz;
 					break;//není třeba dalšího vyhledávání
 				}
 			}
@@ -1308,7 +1312,10 @@ AnsiString Cvektory::validaceR(short VID,unsigned long PID,double aRD,double R,d
 		case 7:
 		{
 			if(!m.cele_cislo(Rx))
-			RET=AnsiString("Neceločíselná hodnota počtu palců rozestupu! Navržená hodnota: <u>"+AnsiString(m.round(Rx))+"</u> [počet palců].");
+			{
+				if(getValueOrMessage)RET=AnsiString("Neceločíselná hodnota počtu palců rozestupu! Navržená hodnota: <u>"+AnsiString(m.round(Rx))+"</u> [počet palců].");
+				else RET=m.round(Rx);
+			}
 		}break;
 	 }
 	}
