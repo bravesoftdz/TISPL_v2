@@ -35,6 +35,7 @@ __fastcall TF_gapoV::TF_gapoV(TComponent* Owner)
 	clLOCKED	 = (TColor)RGB(128,128,128);
 	clUNLOCKED = (TColor)RGB(255,128,0);
 	clBACKGROUND=(TColor)RGB(250,250,250);
+  clHiddenValues = (TColor)RGB(212,212,212);
 
 	// nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
 	C1=Form1->m.clIntensive(RGB(128,64,0),20);
@@ -58,6 +59,9 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	if(T=="")DDunit=0;else DDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
+
+  Form_parametry_linky->Button_save->Enabled=false;
+  Form_parametry_linky->Button_storno->Enabled=false;
 
 	input_state=LOADING;
 	pruchod=0;
@@ -178,6 +182,12 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 			mGrid->Cells[29][j].Text=On[i].pohon->Rz;                       mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clOLD;mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clUNLOCKED;
 			mGrid->Cells[31][j].Text=On[i].pohon->Rx;                       mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
 		}
+    else
+    {
+     mGrid->Cells[27][j].Background->Color=clHiddenValues;  mGrid->Cells[28][j].Background->Color=clHiddenValues;
+     mGrid->Cells[29][j].Background->Color=clHiddenValues;  mGrid->Cells[30][j].Background->Color=clHiddenValues;
+     mGrid->Cells[31][j].Background->Color=clHiddenValues;  mGrid->Cells[32][j].Background->Color=clHiddenValues;
+    }
 		//výchozí nastavení v druhém levém slouci (popø. upravit, ale je problém s prvním - nelze vždy viz DV+M) - je vždy po zobrazení zaškrnuta tato volba
 		mGrid->getCheck(4,j)->Checked=true;//pozor, pøi getCheck(3,j) mi zde házelo chybu, i pøes ošetøení R-záležitostí, pøi pøekliku na tuto položku po zobrazeném formu, ale OK
 		//tlaèítko náhledu

@@ -10,6 +10,7 @@
 #include "parametry_linky.h"
 #include "parametry.h"
 #include "kabina_schema.h"
+#include "TT_kalkulator.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
@@ -40,6 +41,7 @@ __fastcall TF_gapoTT::TF_gapoTT(TComponent* Owner)
 	clLOCKED	 = (TColor)RGB(128,128,128);
 	clUNLOCKED = (TColor)RGB(255,128,0);
 	clBACKGROUND=(TColor)RGB(250,250,250);
+  clHiddenValues = (TColor)RGB(212,212,212);
 	// nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
 	C1=Form1->m.clIntensive(RGB(128,64,0),20);
 	C2=Form1->m.clIntensive(RGB(0,128,0),80);
@@ -60,6 +62,9 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
   mGrid->Border.Width=2;
 	input_state=LOADING;
 	Rx_canEdit=true;
+   AnsiString jednotky;
+  if(CTunit) jednotky=" [min]"; else  jednotky=" [s]";
+  scLabel_titulek->Caption="Globální aktualizace parametrù pohonù a objektù z dùvodu zmìny TT z "+AnsiString(F->d.v.PP.TT)+" na " +AnsiString(Form_TT_kalkulator->rEditNum_takt->Value) + AnsiString(jednotky);
 
 	//workaround odchytávání stisku kláves
 	Edit1->SetFocus();
@@ -312,10 +317,16 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		mGrid->Cells[29][j].Text=AnsiString(On[i].rotace);             			mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clOLD;
      	if(On[i].pohon!=NULL)
 		{
-			mGrid->Cells[30][j].Text=On[i].pohon->roztec;                   mGrid->Cells[30][j].Align=mGrid->LEFT;mGrid->Cells[30][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
-			mGrid->Cells[32][j].Text=On[i].pohon->Rz;                       mGrid->Cells[32][j].Align=mGrid->LEFT;mGrid->Cells[32][j].Font->Color=clOLD;mGrid->Cells[33][j].Align=mGrid->LEFT;mGrid->Cells[33][j].Font->Color=clUNLOCKED;
-			mGrid->Cells[34][j].Text=On[i].pohon->Rx;                       mGrid->Cells[34][j].Align=mGrid->LEFT;mGrid->Cells[34][j].Font->Color=clOLD;mGrid->Cells[35][j].Align=mGrid->LEFT;mGrid->Cells[35][j].Font->Color=clUNLOCKED;
+    mGrid->Cells[30][j].Text=On[i].pohon->roztec;                   mGrid->Cells[30][j].Align=mGrid->LEFT;mGrid->Cells[30][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[32][j].Text=On[i].pohon->Rz;                       mGrid->Cells[32][j].Align=mGrid->LEFT;mGrid->Cells[32][j].Font->Color=clOLD;mGrid->Cells[33][j].Align=mGrid->LEFT;mGrid->Cells[33][j].Font->Color=clUNLOCKED;
+		mGrid->Cells[34][j].Text=On[i].pohon->Rx;                       mGrid->Cells[34][j].Align=mGrid->LEFT;mGrid->Cells[34][j].Font->Color=clOLD;mGrid->Cells[35][j].Align=mGrid->LEFT;mGrid->Cells[35][j].Font->Color=clUNLOCKED;
 		}
+    else
+    {
+     mGrid->Cells[30][j].Background->Color=clHiddenValues;    mGrid->Cells[31][j].Background->Color=clHiddenValues;
+     mGrid->Cells[32][j].Background->Color=clHiddenValues;    mGrid->Cells[33][j].Background->Color=clHiddenValues;
+     mGrid->Cells[34][j].Background->Color=clHiddenValues;    mGrid->Cells[35][j].Background->Color=clHiddenValues;
+    }
 		mGrid->Cells[36][j].Type=mGrid->BUTTON;mGrid->Cells[36][j].Text="...";mGrid->Cells[36][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 		TscGPButton *B=mGrid->createButton(36,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
 		/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
