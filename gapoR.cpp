@@ -111,6 +111,9 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[20][0].Text="Rotace [°]";
 	mGrid->Cells[21][0].Text="Náhled";
 
+  scGPImage_zamky->Top=45;
+  scGPImage_zamky->Left=96;
+
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první øádek
 
@@ -190,6 +193,11 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
    {
     mGrid->Cells[7][r].RightBorder->Width=mGrid->Cells[9][r].RightBorder->Width=mGrid->Cells[11][r].RightBorder->Width=mGrid->Cells[13][r].RightBorder->Width=mGrid->Cells[15][r].RightBorder->Width=mGrid->Cells[17][r].RightBorder->Width=mGrid->Cells[19][r].RightBorder->Width=mGrid->Cells[20][r].RightBorder->Width=2;
    }
+
+   for(int j=0;j<=ColCount-1;j++)
+    {
+     mGrid->Cells[j][0].BottomBorder->Width=2;
+    }
 
 	////////autoresize a pozice formu_gapo, vhodné nakonec,tj. pøed Show//////// NEWR
 	////velikost gapo formu a umístìní komponent

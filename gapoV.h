@@ -12,6 +12,8 @@
 #include "vektory.h"
 #include "rHTMLLabel.hpp"
 #include "rHintWindow.hpp"
+#include "scGPImages.hpp"
+#include <Vcl.Imaging.pngimage.hpp>
 //---------------------------------------------------------------------------
 class TF_gapoV : public TForm
 {
@@ -32,6 +34,7 @@ __published:	// IDE-managed Components
 	TEdit *Edit1;
   TscGPGlyphButton *scGPGlyphButton_copy;
   TscButton *scButton_csv;
+  TscGPImage *scGPImage_zamky;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);

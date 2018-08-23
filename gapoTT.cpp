@@ -17,6 +17,7 @@
 #pragma link "rHintWindow"
 #pragma link "rHTMLLabel"
 #pragma link "scExtControls"
+#pragma link "scGPImages"
 #pragma resource "*.dfm"
 TF_gapoTT *F_gapoTT;
 //---------------------------------------------------------------------------
@@ -80,28 +81,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
-   scGPButton_zamek_unlocked->Options->NormalColor=clBACKGROUND;
-	 scGPButton_zamek_unlocked->Options->FrameNormalColor=clBACKGROUND;
-   scGPButton_zamek_unlocked->Options->FocusedColor=clBACKGROUND;
-	 scGPButton_zamek_unlocked->Options->HotColor=clBACKGROUND;
-	 scGPButton_zamek_unlocked->Options->PressedColor=clBACKGROUND;
-	 scGPButton_zamek_unlocked->Options->FrameNormalColor=clBACKGROUND;
-   scGPButton_zamek_unlocked->Options->FrameHotColor=clBACKGROUND;
-	 scGPButton_zamek_unlocked->Options->PressedColor=clBACKGROUND;
-	 scGPButton_zamek_unlocked->Options->FramePressedColor=clBACKGROUND;
-
-
-   scGPButton_zamek_locked->Options->NormalColor=clBACKGROUND;
-	 scGPButton_zamek_locked->Options->FrameNormalColor=clBACKGROUND;
-   scGPButton_zamek_locked->Options->FocusedColor=clBACKGROUND;
-	 scGPButton_zamek_locked->Options->HotColor=clBACKGROUND;
-	 scGPButton_zamek_locked->Options->PressedColor=clBACKGROUND;
-	 scGPButton_zamek_locked->Options->FrameNormalColor=clBACKGROUND;
-   scGPButton_zamek_locked->Options->FrameHotColor=clBACKGROUND;
-	 scGPButton_zamek_locked->Options->PressedColor=clBACKGROUND;
-	 scGPButton_zamek_locked->Options->FramePressedColor=clBACKGROUND;
-
-
 	////////plnìní daty - hlavièka////////   NEWR
 	mGrid->Cells[0][0].Text="pohon";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
@@ -116,13 +95,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
   mGrid->Cells[1][0].BottomBorder->Width=2;
 	mGrid->Cells[2][0].Text="režim";
   mGrid->Cells[2][0].BottomBorder->Width=2;
-  scGPButton_zamek_unlocked->Top=45;
-  scGPButton_zamek_locked->Top= 45;
+  scImage_zamky->Top=45;
+  scImage_zamky->Left=319;
 	//------------------------------------------------
 	mGrid->Cells[3][0].Text="aRD, RD, CT";
-
-  scGPButton_zamek_unlocked->Left=318;
-  scGPButton_zamek_locked->Left=scGPButton_zamek_unlocked->Left+scGPButton_zamek_unlocked->Width+3;
 	mGrid->Cells[4][0].Text="DD, K, P, Rz, Rx, R, M";
 	//------------------------------------------------
 	mGrid->Cells[5][0].Text="aRD, RD, DD, K, P";
@@ -543,10 +519,9 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
 
-      for(int sl=0;sl<=ColCount-1;sl++)
+      for(int sl=0;sl<=ColCount-1;sl++) //silnìjší oddìlení dalšího pohonu
       {
        mGrid->Cells[sl][j-z+O_pocet-1].BottomBorder->Width=2;
-      //z nìjakého dùvodu nefunguje pro 2 sloupec
       }
 			O=NULL;delete O;
 		}
@@ -652,6 +627,8 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
 	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
 	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
+  if(Col>=5) scImage_zamky->Left=319 + 2; //workaround ošetøení posunu tabulky
+
 	if(Col>=3 && mGrid->getCheck(Col,Row)->Checked==false)
 	{
 		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
