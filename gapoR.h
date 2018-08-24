@@ -15,6 +15,7 @@
 #include <Vcl.ImgList.hpp>
 #include "scDrawUtils.hpp"
 #include "scGPImages.hpp"
+#include <Vcl.Imaging.pngimage.hpp>
 //---------------------------------------------------------------------------
 class TF_gapoR : public TForm
 {
@@ -34,6 +35,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_legenda_titulek;
 	TscScrollBar *scScrollBar_horizont;
 	TscScrollBar *scScrollBar_vertical;
+  TscGPImage *scGPImage_zamky;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);

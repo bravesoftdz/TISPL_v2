@@ -12,6 +12,8 @@
 #include "vektory.h"
 #include "rHTMLLabel.hpp"
 #include "rHintWindow.hpp"
+#include "scGPImages.hpp"
+#include <Vcl.Imaging.pngimage.hpp>
 //---------------------------------------------------------------------------
 class TF_gapoV : public TForm
 {
@@ -32,6 +34,7 @@ __published:	// IDE-managed Components
 	TEdit *Edit1;
   TscGPGlyphButton *scGPGlyphButton_copy;
   TscButton *scButton_csv;
+  TscGPImage *scGPImage_zamky;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -48,7 +51,7 @@ private:	// User declarations
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
   short *tempCHECK;//dynamické pole uchovávající pøedchozí volby checkboxù
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
-	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3;
+	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3,clHiddenValues;
 	enum Tinput_state{FREE,LOADING,PROGRAMOVE};//uchovává výbìr input hodnoty
 	short CTunit,RDunit,DDunit,Munit;
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši

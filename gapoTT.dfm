@@ -684,93 +684,6 @@ object F_gapoTT: TF_gapoTT
     TabStop = False
     Visible = False
   end
-  object scGPButton_zamek_unlocked: TscGPButton
-    Left = 182
-    Top = 459
-    Width = 20
-    Height = 29
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clHighlight
-    Font.Height = -19
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Font.Quality = fqClearType
-    ParentFont = False
-    TabOrder = 6
-    Animation = False
-    CanFocused = False
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    Images = Form1.scGPVirtualImageList1
-    ImageIndex = 38
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = clSilver
-    Options.HotColor = clPurple
-    Options.PressedColor = 15790320
-    Options.FocusedColor = clRed
-    Options.DisabledColor = clPurple
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.FrameNormalColor = clSilver
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clSilver
-    Options.FrameFocusedColor = clSilver
-    Options.FrameDisabledColor = clWhite
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 0
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBlack
-    Options.FontHotColor = clWhite
-    Options.FontPressedColor = clBlack
-    Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clAqua
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.StyleColors = True
-    HotImageIndex = -1
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clMaroon
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 1
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clRed
-    GlowEffect.FocusedColor = clRed
-    GlowEffect.PressedGlowSize = 1
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
   object scGPButton_zamek_locked: TscGPButton
     Left = 223
     Top = 459
@@ -783,7 +696,8 @@ object F_gapoTT: TF_gapoTT
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
-    TabOrder = 7
+    TabOrder = 6
+    Visible = False
     Animation = False
     CanFocused = False
     CustomDropDown = False
@@ -857,6 +771,87 @@ object F_gapoTT: TF_gapoTT
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scImage_zamky: TscGPImage
+    Left = 8
+    Top = 40
+    Width = 271
+    Height = 25
+    TabOrder = 7
+    CustomImageIndex = -1
+    StyleKind = scpsPanel
+    ShowCaption = False
+    BorderStyle = scpbsNone
+    WallpaperIndex = -1
+    LightBorderColor = clBtnHighlight
+    ShadowBorderColor = clBtnShadow
+    CaptionGlowEffect.Enabled = False
+    CaptionGlowEffect.Color = clBtnShadow
+    CaptionGlowEffect.AlphaValue = 255
+    CaptionGlowEffect.GlowSize = 7
+    CaptionGlowEffect.Offset = 0
+    CaptionGlowEffect.Intensive = True
+    CaptionGlowEffect.StyleColors = True
+    Color = clBtnFace
+    Caption = 'scImage_zamky'
+    StorePaintBuffer = False
+    ImageIndex = -1
+    ClipFrame = scgpcfNone
+    ClipFrameRadius = 10
+    ClipFrameFillColor = clWindow
+    ClipFrameFillColorAlpha = 255
+    ClipFrameColor = clBtnFace
+    ClipFrameWidth = 2
+    RotationAngle = 0
+    AnimationAcceleration = False
+    RotateAnimation = False
+    Picture.Data = {
+      0954506E67496D61676589504E470D0A1A0A0000000D49484452000001100000
+      001908020000007610E63E000000097048597300000EC300000EC301C76FA864
+      000005614944415478DAED9C5B4823571C8733B96A1113ACE4B289488AA642AD
+      BED8BB502D2E82602C1814A3952E65B77D68FBB617D87D28CBB294F6A194B6CB
+      2294B6D60BDA08351677A542DC657BA155C4D607BB424592D4984DC558316A12
+      A77F9BB28CCEC599C9994BE9390F613CCC39F9E6C31F736E84D8DFDFD7882A73
+      737335353570613018C4F5A09E4EBE38E3864F7FDF7DC549D4D3C9D9E859F8BC
+      61BDA138897A3A8186040E8C060786A9C81698783C3E3B3BBBBDBD5D54545457
+      5767B55A95727222097360B2D9ECC6FCD7DA1F3F30EDC5F60AECC4E9774B3CF5
+      F28BE0898184843B307292A8C7097760909040275353538B8B8BC04092244110
+      C0535D5DDDDCDCACD3E9E474C293842130D072E7C3274A767FA756C6CC4F5BDE
+      B823E819F214C11F03090947606426518F138EC0202149A7D3E3E3E3B1586C6B
+      6BABBCBCBCACAC2C1C0EAFAEAE161717DBEDF6B6B636EAFD923AE14F723C30D0
+      72F7A327735FBFA5B726ADCF9BE3DF1767E2F0E746C163056FFDCAE719F21721
+      080309095B60E427518F13B6C0A022595858989999C964325EAFB7B2B23257B9
+      BCBC1C0C06F57A7D4343436D6DAD3C4EF8931C0FCC1F5FBD5DBE7C132EC22F7C
+      6C7FF15CAE3276A7AFECBB37E162B5FAD229EF55194408C24042C21618F949D4
+      E3842D30A848FAFBFB1389445555554B4B0BB57E7272726969A9B4B4B4B7B757
+      1E27FC498E07E6C1CDA692CDF978D5EB8E97AF535BFEF949BD3DF9D38ECE62B8
+      18974184200C24246C81919F443D4ED802838A64606000E6511D1D1D2E978B5A
+      1F8944464747614ED5D3D3238F13FE240C731878CDD17B7C301F3C75CBB7AD7F
+      D474614D06118230909070CC616426518F138E390C1292C1C1C1F5F5F5F6F676
+      181952EB617C38363666B3D9BABBBBE571C29F84EFB272FCE780F35B3F0C130B
+      2F44E411C11F030989D06565E948D4E344E8B2B25092A1A121984A7576763A9D
+      4E6A7D341A1D1919810995DFEF97C7097F12BE8149FC72DBF18DF72F83ADE07C
+      5841118C1848488406463A12F538111A189E24F07E0B8542D96C1630E0FD0083
+      C0C2C242EAFDA9540A068D7033C0E874BAC6C64678EF49E1440409483B0CCCC6
+      FD7BC6E0AB7A728F8DC098D9329129B800880C61DAF77E5EE2A9472E421C0612
+      11B72E3EA3A104464112F538B99CBE4C0D0C2A92959595898909202149F2E0E0
+      C068346AB55A6A3F5009FF935049100490B4B6B6BADD6E299C8820F1783C8781
+      59FF61D0153AA3E15D228D9FD99EEB462E421C06121177AFBE440D8C8224EA71
+      72DD7838937E1818542430F60B040266B3B9A9A989BB87E9E9E96432E9F3F960
+      F428851311241515158781C98DF9328471BDB18FBBA52D744E4FEE474F0F599F
+      F22117210E03898899771A3494C02848A21E27D7F4D73494C0202481C992C3E1
+      E8EAEAE2EE677878786D6D2D37DD92C88950922381491A9C8F9C5FE16EB9F3BE
+      DB9C8EB205068908A11848443006461112F538610C0C2A9263EB1C8C85BA3E21
+      9D1341244702435F55A097D47BAEE24C9C2330F98B108A81440463601421518F
+      13C6C0FCCF9DE0C0E0C0B092E0C0D0497060706058497060E82438303830AC24
+      383074121C181C185612490393FF4288222478950CAF92B19248B74A1608042C
+      160B9F05EECDCD4DB6A57645488E04668F284C347DCADDB274FA351399E2D887
+      C95F84500C24221803A308897A9C3006267F92875BA8271E7249A7D38C9BB90A
+      9248B2D32F5A04F25D6DFE2452EFF4FF179D48B4D30FE3BDDC211D3E9DE40EE9
+      C048520A2722485C2ED73F67C97EBB5730F10A7190E6D392D41A765BBF2C79BC
+      1EB90871184844DCBEF4AC867A964C3912F538B992B9A2A19E25434422AE48E1
+      4444E17B5AF9C467402242C14EF0AFC6D00BFE99257AC181F9B7E0C0D00B0E0C
+      BD40C3BF01DBD52BB0FD03910E0000000049454E44AE426082}
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
