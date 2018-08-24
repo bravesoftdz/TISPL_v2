@@ -1044,14 +1044,14 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 			 //pokud se nejedná o øádek, kde právì dochází k validaci a zároveò vynechám nultý øádek (hlavièka)
 			 //tak do všech sloupcù dám šedou barvu
 
-			 if(Row!=Row_validace && Row!=0 && Col==1)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==2)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==3)  	  CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==4)  	  CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==5)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==6)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==7)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==8)  		CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==1)  		CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==2)  		CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==3)  	  CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==4)  	  CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==5)  		CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==6)  		CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==7)  		CanEdit=false;
+//			 if(Row!=Row_validace && Row!=0 && Col==8)  		CanEdit=false;
 
 
 			 }
@@ -1597,15 +1597,12 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 		 input_clicked_icon=empty_klik_ico;
 		 Nastav_zamky(empty_klik_ico,TT_klik);
 
-		Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
-		Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
+		 Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
+		 Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
 
 		 //pøekreslení podbarvení sloupcù
 		 rStringGridEd_tab_dopravniky->Visible=false;
 		 rStringGridEd_tab_dopravniky->Visible=true;
-
-	
-
 
 		 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
 }
@@ -1810,41 +1807,6 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 
 			 }
 
-//				 if(I==Rz_klik_ico && E==Rz_klik) //asi k nicemu kdyby byl zamek po kliku pryc
-//			 {
-//
-//				if(scGPButton_zamek_Rz->ImageIndex==37)
-//				{
-//						scGPButton_zamek_Rz->ImageIndex=38;
-//
-//						if(scGPButton_zamek_roztec->ImageIndex==37){
-//							 scGPButton_zamek_Rx->ImageIndex=38;
-//						 }
-//						 else
-//						 {
-//							scGPButton_zamek_roztec->ImageIndex=38;
-//							scGPButton_zamek_Rx->ImageIndex=37;
-//						 }
-//
-//
-//				}
-//				else
-//
-//				{
-//					scGPButton_zamek_Rz->ImageIndex=37;
-//
-//          	if(scGPButton_zamek_roztec->ImageIndex==37){
-//							 scGPButton_zamek_Rx->ImageIndex=38;
-//						 }
-//						 else
-//						 {
-//							scGPButton_zamek_roztec->ImageIndex=38;
-//							scGPButton_zamek_Rx->ImageIndex=37;
-//						 }
-//
-//				}
-//
-//			 }
 
        if(I==R_klik_ico && E==Rx_klik)
 			 {
@@ -2107,17 +2069,7 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 		if(input_state!=RZ)  rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz;
 		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=pm.Rx;
 
-
-
 		VALIDACE(Sloupec,Radek);
-
-//		Memo3->Lines->Add(pm.aRD);
-//		Memo3->Lines->Add(pm.R);
-//		Memo3->Lines->Add(pm.Rz);
-//		Memo3->Lines->Add(pm.Rx);
-//
-//		Memo3->Lines->Add("radek"+AnsiString(Radek));
-//		Memo3->Lines->Add("sloupec"+AnsiString(Sloupec));
 
 	 }
 
@@ -2155,7 +2107,6 @@ if(ACol==3) {
  scGPButton_zamek_Rz->Visible=true;
  scGPButton_zamek_Rx->Visible=true;
 
-
 }
 
 
@@ -2173,8 +2124,6 @@ if(ACol==4) {    //zmìna aRD
 	scGPButton_zamek_roztec->Visible=true;
 
  rStringGridEd_tab_dopravniky->Invalidate();
-
-
 
 }
 if(ACol==5) {    //zmìna R
@@ -2213,8 +2162,6 @@ if(ACol==7) {    //zmìna Rx
 	scGPButton_zamek_aRD->Visible=true;
 	scGPButton_zamek_roztec->Visible=true;
 	scGPButton_zamek_Rz->Visible=true;
-
-
 
 }
 }
@@ -2778,6 +2725,10 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 		{
 		 rStringGridEd_tab_dopravniky->Cells[VID][Row_validace]=VID_value;
 		 INPUT(VID,Row_validace);
+     if(VID==7) pm.input_Rx();
+     if(VID==6) pm.input_Rz();
+     if(VID==5) pm.input_R();
+     if(VID==4) pm.input_aRD();
 		 OUTPUT(0,VID,Row_validace);
 		 rStringGridEd_tab_dopravniky->Invalidate();
 		}
