@@ -2247,7 +2247,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				pm.input_aRD();
 				OUTPUT(0,ACol,ARow);
 				rStringGridEd_tab_dopravniky->Invalidate();
-				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
+			 if(rHTMLLabel_InfoText->Caption=="")	vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
 
@@ -2277,7 +2277,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				pm.input_R();
 				OUTPUT(0,ACol,ARow);
 				rStringGridEd_tab_dopravniky->Invalidate();
-			 if(scGPButton_zamek_aRD->ImageIndex==38)  //pokud je aRD odemèeno volám akt.data do roletky
+			 if(scGPButton_zamek_aRD->ImageIndex==38 && rHTMLLabel_InfoText->Caption=="" )  //pokud je aRD odemèeno volám akt.data do roletky
 			 {	Roletka_roztec(ARow);
 					vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 					Memo2->Lines->Add("volam aktualiz R");
@@ -2310,7 +2310,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				pm.input_Rz();
 				OUTPUT(0,ACol,ARow);
 				rStringGridEd_tab_dopravniky->Invalidate();
-				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
+			  if(rHTMLLabel_InfoText->Caption=="")		vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
@@ -2341,7 +2341,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				pm.input_Rx();
 				OUTPUT(0,ACol,ARow);
 				rStringGridEd_tab_dopravniky->Invalidate();
-				if(scGPButton_zamek_roztec->ImageIndex==37)
+				if(scGPButton_zamek_roztec->ImageIndex==37 && rHTMLLabel_InfoText->Caption=="")
 				{
 				zobrazOramovani=true;
 				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
@@ -2550,30 +2550,40 @@ Row_validace=0;
 
 				 if(ACol==4 || ACol==5 || ACol==6 || ACol==7)
 				 {
-						 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
-						 {
-
-							VID=ACol;
-            // double VID_value_M           =	F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
-						  VID_value           =	Form1->m.round(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));//F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
-							AnsiString  retezec =	F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),1);
-							Row_validace=ARow;
-						// 	if(VID_value=!"")
-            vypis(retezec);
-						 }
-						 else
-						 {
-									double value=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
-									if(value!=floor(value))
-									{
-										 double dop_Rx=	Form1->m.round(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
-										 vypis("Hodnota musí být celoèíselná, doporuèená hodnota Rx: "+ AnsiString(dop_Rx));
-										 Row_validace=ARow;
-										 VID=7;
-										 VID_value=dop_Rx;
-								}
-
-						}
+            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
+            if(TNValue.text!="")
+            {
+               VID=ACol;
+               VID_value=TNValue.number1;
+               ShowMessage(VID_value);
+               Row_validace=ARow;
+               vypis(TNValue.text);
+            }
+//	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
+//						 {
+//
+//							VID=ACol;
+//              TTextNumber TNValue=F->d.v.rVALIDACE(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
+//            // double VID_value_M           =	F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
+//						  VID_value           =	Form1->m.round(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));//F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
+//							AnsiString  retezec =	F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),1);
+//							Row_validace=ARow;
+//						// 	if(VID_value=!"")
+//            vypis(retezec);
+//						 }
+//						 else
+//						 {
+//									double value=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
+//									if(value!=floor(value))
+//									{
+//										 double dop_Rx=	Form1->m.round(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
+//										 vypis("Hodnota musí být celoèíselná, doporuèená hodnota Rx: "+ AnsiString(dop_Rx));
+//										 Row_validace=ARow;
+//										 VID=7;
+//										 VID_value=dop_Rx;
+//								}
+//
+//						}
 				 }
 
  switch(ACol)
@@ -2767,6 +2777,7 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 	else CanClose=false;
 }
 //---------------------------------------------------------------------------
+
 
 
 
