@@ -1024,7 +1024,7 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 	while (O!=NULL)
 	{
 		if(O->pohon!=NULL && O->pohon==pohon)//pokud má pohon přiřazen a jedná se o stejný pohon
-		{                         //pro PP a S&G                         //pro konkrétní režim
+		{                         //pro S&G a PP                         //pro konkrétní režim
 			if(rezim==-1 || (rezim==20 && (O->rezim==0 || O->rezim==2)) || O->rezim==rezim)//filtr režimu
 			{
 				if(testRD<O->delka_dopravniku/O->CT)
@@ -1285,7 +1285,7 @@ TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,
 	 TTextNumber VRx=validace_Rx(Rx);
 
 	 //výstupní text o chybách, oddělený entry, pokud se daný text vyskytuje
-	 if(VRz.text!="")VaRD.text+"</br>";if(VRx.text!="")VRz.text+"</br>";
+	 if(VaRD.text!="" && (VRz.text!="" || VRx.text!=""))VaRD.text+="<br>";if(VRz.text!="" && VRx.text!="")VRz.text+="<br>";
 	 RET.text=VaRD.text+VRz.text+VRx.text;
 
 	 //chybový kód dané kombinace problémů
@@ -1298,25 +1298,25 @@ TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,
 		case 4:
 		{
 			RET.number1=ceil(validace_Rz(VaRD.number1*PP.TT,PID).number1/R)*R/PP.TT;
-			if(RET.number2)RET.text+="</br><b>Navržená hodnota: <u>"+AnsiString(RET.number1)+"</u> [m/s].</b>";
+			if(RET.number2)RET.text+="<br><b>Navržená hodnota rychlosti: <u>"+AnsiString(RET.number1)+"</u> [m/s].</b>";
 		}break;
 		//R
 		case 5:
 		{
 			RET.number1=VaRD.number1*PP.TT/(validace_Rx(validace_Rz(validace_aRD(Rx*R/PP.TT,p).number1*PP.TT,PID).number1/R).number1);
-			if(RET.number2)RET.text+="</br><b>Navržená hodnota: <u>"+AnsiString(RET.number1)+"</u> [m].</b>";
+			if(RET.number2)RET.text+="<br><b>Navržená hodnota rozteče: <u>"+AnsiString(RET.number1)+"</u> [m].</b>";
 		}break;
 		//Rz
 		case 6:
 		{
 			RET.number1=validace_Rx(validace_Rz(validace_aRD(Rz/PP.TT,p).number1*PP.TT,PID).number1/R).number1*R;
-			if(RET.number2)RET.text+="</br><b>Navržená hodnota: <u>"+AnsiString(RET.number1)+"</u> [m].</b>";
+			if(RET.number2)RET.text+="<br><b>Navržená hodnota rozestupu: <u>"+AnsiString(RET.number1)+"</u> [m].</b>";
 		}break;
 		//Rx
 		case 7:
 		{
 			RET.number1=validace_Rx(validace_Rz(validace_aRD(Rx*R/PP.TT,p).number1*PP.TT,PID).number1/R).number1;
-			if(RET.number2)RET.text+="</br><b>Navržená hodnota: <u>"+AnsiString(RET.number1)+"</u> [počet palců].</b>";
+			if(RET.number2)RET.text+="<br><b>Navržená hodnota počtu palců rozestupu: <u>"+AnsiString(RET.number1)+"</u> [počet palců].</b>";
 		}break;
 	 }
 	}
@@ -1327,11 +1327,12 @@ TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,
 TTextNumber Cvektory::validace_aRD(double aRD,TPohon *p)
 {
 	TTextNumber RET;
-	RET.text="";RET.number1=0.0;RET.number2=0;
+	RET.text="";RET.number1=aRD;RET.number2=0;
 	double mRD=minRD(p);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
-	if(mRD>aRD)
+	//if(mRD>aRD)
+  if(vypis_objekty_nestihajici_prejezd(p,aRD,20)!="")
 	{          //musí být rozšířeno o hlídání dostatečného mezerového fondu!!! minM(aRD,RD2,R2)
-		RET.text=AnsiString("Nedostatečná rychlost! Objekt(y): "+vypis_objekty_nestihajici_prejezd(p,aRD,20)+" nestíhají přejezd.");
+		RET.text=AnsiString("Nedostatečná rychlost! Objekt(y) nestíhající přejezd: "+vypis_objekty_nestihajici_prejezd(p,aRD,20));
 		RET.number1=mRD;
 		RET.number2=4000;//číslo chyby
 	}
@@ -1341,7 +1342,7 @@ TTextNumber Cvektory::validace_aRD(double aRD,TPohon *p)
 TTextNumber Cvektory::validace_Rz(double Rz,unsigned long PID)
 {
 	TTextNumber RET;
-	RET.text="";RET.number1=0.0;RET.number2=0;
+	RET.text="";RET.number1=Rz;RET.number2=0;
 	TObjekt *O=vrat_objekty_vyuzivajici_pohon(PID);
 	double minRz=0.0;
 	for (unsigned long i=0;i<vrat_pocet_objektu_vyuzivajici_pohon(PID);i++)
@@ -1361,7 +1362,7 @@ TTextNumber Cvektory::validace_Rz(double Rz,unsigned long PID)
 TTextNumber Cvektory::validace_Rx(double Rx)
 {
 	TTextNumber RET;
-	RET.text="";RET.number1=0.0;RET.number2=0;
+	RET.text="";RET.number1=Rx;RET.number2=0;
 	if(!m.cele_cislo(Rx))
 	{
 		RET.text=AnsiString("Neceločíselná hodnota počtu palců rozestupu!");

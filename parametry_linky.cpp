@@ -2555,7 +2555,6 @@ Row_validace=0;
             {
                VID=ACol;
                VID_value=TNValue.number1;
-               ShowMessage(VID_value);
                Row_validace=ARow;
                vypis(TNValue.text);
             }
