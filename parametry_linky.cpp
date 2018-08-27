@@ -335,6 +335,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_hlavicka_tabulky->Cells[7][0]="";
 	 rStringGridEd_hlavicka_tabulky->Cells[8][0]="";
 
+
 	//	rStringGridEd_tab_dopravniky->Columns->
 
 	 if(rStringGridEd_tab_dopravniky->RowCount>1 && rStringGridEd_tab_dopravniky->ColCount>=5){rStringGridEd_tab_dopravniky->Row=1;rStringGridEd_tab_dopravniky->Col=5;}//rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemnı vizuální efekt
