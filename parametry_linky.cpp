@@ -1055,6 +1055,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 			 if(Row!=Row_validace && Row!=0 && Col==6)  		CanEdit=false;
 			 if(Row!=Row_validace && Row!=0 && Col==7)  		CanEdit=false;
 			 if(Row!=Row_validace && Row!=0 && Col==8)  		CanEdit=false;
+       if(Row==Row_validace && Row!=0 && Col!=Col_validace) 	CanEdit=false;
 
 
 			 }
@@ -1531,6 +1532,8 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 			 if(Row!=Row_validace && Row!=0 && Col==6)  			 Background=(TColor)RGB(212,212,212);
 			 if(Row!=Row_validace && Row!=0 && Col==7)  			 Background=(TColor)RGB(212,212,212);
 			 if(Row!=Row_validace && Row!=0 && Col==8)  			 Background=(TColor)RGB(212,212,212);
+
+       if(Row==Row_validace && Row!=0 && Col!=Col_validace)  Background=(TColor)RGB(212,212,212);
 
 
        }
@@ -2596,15 +2599,20 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 vypis("");VID=-1;
 Row_validace=0;
+Col_validace=0;
 
 				 if(ACol==4 || ACol==5 || ACol==6 || ACol==7)
 				 {
-            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
+         double R=0;   //R==0 - M,
+         if(Runit==M) R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]; else R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]*1000.0)
+
+            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]/60.0),R,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
             if(TNValue.text!="")
             {
                VID=ACol;
                VID_value=TNValue.number1;
                Row_validace=ARow;
+               Col_validace=ACol;
                vypis(TNValue.text);
             }
 //	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
@@ -2644,6 +2652,7 @@ Row_validace=0;
 						vypis("Název pohonu nesmí být prázdný!");
 						VID=1;
 						Row_validace=ARow;
+            Col_validace=ACol;
 						}
 
 				}
@@ -2656,6 +2665,7 @@ Row_validace=0;
 						//vypis("Neplatná hodnota rychlosti pohonu od!");
 					 //	VID=2;
 						Row_validace=ARow;
+            Col_validace=ACol;
 						}
 
 					//od je vìtší než do
@@ -2666,6 +2676,7 @@ Row_validace=0;
 						 //	vypis("Neplatný rozsah rychlosti pohonu od-do!");
 						 //	VID=23;
 							Row_validace=ARow;
+              Col_validace=ACol;
 							}
 
 				}
@@ -2677,6 +2688,7 @@ Row_validace=0;
 					 //	vypis("Neplatná hodnota rychlosti pohonu do!");
 					 //	VID=3;
 						Row_validace=ARow;
+            Col_validace=ACol;
 						}
 
 				}
@@ -2825,6 +2837,7 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 	else CanClose=false;
 }
 //---------------------------------------------------------------------------
+
 
 
 

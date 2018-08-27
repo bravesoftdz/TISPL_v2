@@ -221,6 +221,7 @@ public:		// User declarations
 	short VID;//validation ID
 	double VID_value;
 	short Row_validace;
+  short Col_validace;
 	UnicodeString NAZEV;
 	double OD;
 	double DO;
