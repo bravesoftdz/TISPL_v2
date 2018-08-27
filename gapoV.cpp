@@ -60,6 +60,15 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
+  AnsiString titulek;
+  if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) titulek+="délky jigu z "+F->d.v.PP.delka_jig+" na "+Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
+	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) titulek+="šíøky jigu z "+F->d.v.PP.sirka_jig+" na "+Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
+	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) Changes_vozik=true;
+	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  Changes_vozik=true;
+
+
+
+
   Form_parametry_linky->Button_save->Enabled=false;
   Form_parametry_linky->Button_storno->Enabled=false;
 

@@ -26,7 +26,7 @@ void __fastcall TForm_parametry_vozik::FormShow(TObject *Sender)
 {
 	NastavDesign();
 
-  if(Form_parametry_linky->Delkaunit==0)//pokud je v MM, tak pøepne na metry
+  if(Form_parametry_linky->Delkaunit==0)
 	{
 	scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
 	scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;

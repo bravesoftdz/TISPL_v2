@@ -1044,14 +1044,14 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 			 //pokud se nejedná o øádek, kde právì dochází k validaci a zároveò vynechám nultý øádek (hlavièka)
 			 //tak do všech sloupcù dám šedou barvu
 
-//			 if(Row!=Row_validace && Row!=0 && Col==1)  		CanEdit=false;
-//			 if(Row!=Row_validace && Row!=0 && Col==2)  		CanEdit=false;
-//			 if(Row!=Row_validace && Row!=0 && Col==3)  	  CanEdit=false;
-//			 if(Row!=Row_validace && Row!=0 && Col==4)  	  CanEdit=false;
-//			 if(Row!=Row_validace && Row!=0 && Col==5)  		CanEdit=false;
-//			 if(Row!=Row_validace && Row!=0 && Col==6)  		CanEdit=false;
-//			 if(Row!=Row_validace && Row!=0 && Col==7)  		CanEdit=false;
-//			 if(Row!=Row_validace && Row!=0 && Col==8)  		CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==1)  		CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==2)  		CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==3)  	  CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==4)  	  CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==5)  		CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==6)  		CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==7)  		CanEdit=false;
+			 if(Row!=Row_validace && Row!=0 && Col==8)  		CanEdit=false;
 
 
 			 }
@@ -1520,14 +1520,14 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 			 //pokud se nejedná o øádek, kde právì dochází k validaci a zároveò vynechám nultý øádek (hlavièka)
 			 //tak do všech sloupcù dám šedou barvu
 
-//			 if(Row!=Row_validace && Row!=0 && Col==1)  			 Background=(TColor)RGB(212,212,212);
-//			 if(Row!=Row_validace && Row!=0 && Col==2)  			 Background=(TColor)RGB(212,212,212);
-//			 if(Row!=Row_validace && Row!=0 && Col==3)  			 Background=(TColor)RGB(212,212,212);
-//			 if(Row!=Row_validace && Row!=0 && Col==4)  			 Background=(TColor)RGB(212,212,212);
-//			 if(Row!=Row_validace && Row!=0 && Col==5)  			 Background=(TColor)RGB(212,212,212);
-//			 if(Row!=Row_validace && Row!=0 && Col==6)  			 Background=(TColor)RGB(212,212,212);
-//			 if(Row!=Row_validace && Row!=0 && Col==7)  			 Background=(TColor)RGB(212,212,212);
-//			 if(Row!=Row_validace && Row!=0 && Col==8)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==1)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==2)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==3)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==4)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==5)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==6)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==7)  			 Background=(TColor)RGB(212,212,212);
+			 if(Row!=Row_validace && Row!=0 && Col==8)  			 Background=(TColor)RGB(212,212,212);
 
 
        }
@@ -1872,6 +1872,32 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 
 			 }
 
+      if(I==Rx_klik_ico && E==R_klik)
+      {
+
+      	if(scGPButton_zamek_Rx->ImageIndex==37)
+				{
+						scGPButton_zamek_Rx->ImageIndex=38;
+
+            scGPButton_zamek_Rz->ImageIndex=37;
+						scGPButton_zamek_aRD->ImageIndex=37;
+
+
+
+
+				}   else
+
+				{
+						scGPButton_zamek_Rx->ImageIndex=37;
+
+            scGPButton_zamek_Rz->ImageIndex=38;
+						scGPButton_zamek_aRD->ImageIndex=38;
+
+				}
+
+
+      }
+
 
 
 //-----------------------------------------------------
@@ -1939,6 +1965,25 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 						scGPButton_zamek_Rz->ImageIndex=37;
 
 						scGPButton_zamek_roztec->ImageIndex=38;
+
+				}
+
+			 }
+       ////////////////////////////////////
+
+       		 if(I==Rz_klik_ico && E==empty_klik)    //vstup z Rz zamku bez predchoziho kliku do editu
+			 {
+				if(scGPButton_zamek_Rz->ImageIndex==38)  //odemceno
+				{
+					scGPButton_zamek_Rz->ImageIndex=37;
+
+
+
+				}   else   //Rz zamèeno
+
+				{
+
+						scGPButton_zamek_Rz->ImageIndex=38;
 
 				}
 
@@ -2172,6 +2217,7 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RxClick(TObject *Sender)
 
 	if(input_clicked_edit==aRD_klik) Nastav_zamky(Rx_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
 	if(input_clicked_edit==Rz_klik) Nastav_zamky(Rx_klik_ico,Rz_klik);
+  if(input_clicked_edit==R_klik)  Nastav_zamky(Rx_klik_ico,R_klik);
 
 	else   Nastav_zamky(Rx_klik_ico,empty_klik);
 
@@ -2432,7 +2478,7 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RzClick(TObject *Sender)
 	 if(input_clicked_edit==R_klik)	 Nastav_zamky(Rz_klik_ico,R_klik);
 	 if(input_clicked_edit==Rx_klik)	 Nastav_zamky(Rz_klik_ico,Rx_klik);
 
-	 if(input_clicked_edit==empty_klik) Nastav_zamky(Rz_klik_ico,empty_klik);  //samostatný klik do zámku, bez pøedchozího vstupu do bunky
+	 if(input_clicked_edit==empty_klik){ Nastav_zamky(aRD_klik_ico,empty_klik);} //shodne chování jako klik do aRD
 
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
