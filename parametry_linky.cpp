@@ -97,7 +97,6 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
-
 		//Delkaunit=MM;
 		// GLOBAL naètení délka, šíøka, podvozek
 //	if (Form1->readINI("nastaveni_form_parametry_linky", "rozmery") == "1")
@@ -2605,7 +2604,7 @@ Col_validace=0;
 				 if(ACol==4 || ACol==5 || ACol==6 || ACol==7)
 				 {
          double R=0;   //R==0 - M,
-         if(Runit==M) R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]; else R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]*1000.0)
+         if(Runit==M) R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]*1000.0);
 
             TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]/60.0),R,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
             if(TNValue.text!="")
