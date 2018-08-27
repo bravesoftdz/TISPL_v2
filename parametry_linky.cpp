@@ -1863,16 +1863,18 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 				 if(I==aRD_klik_ico && E==Rx_klik)
 			 {
 
-				if(scGPButton_zamek_Rx->ImageIndex==37)
+				if(scGPButton_zamek_aRD->ImageIndex==37)
 				{
+            scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_Rz->ImageIndex=38;
 						scGPButton_zamek_roztec->ImageIndex=37;
-						scGPButton_zamek_Rx->ImageIndex=38;
 
 				}   else
 
 				{
+            scGPButton_zamek_aRD->ImageIndex=37;
+            scGPButton_zamek_Rz->ImageIndex=37;
 						scGPButton_zamek_roztec->ImageIndex=38;
-						scGPButton_zamek_Rx->ImageIndex=37;
 
 				}
 
