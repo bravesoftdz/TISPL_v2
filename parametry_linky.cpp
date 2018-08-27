@@ -2606,7 +2606,7 @@ Col_validace=0;
          double R=0;   //R==0 - M,
          if(Runit==M) R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]*1000.0);
 
-            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]/60.0),R,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
+            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,R,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
             if(TNValue.text!="")
             {
                VID=ACol;
