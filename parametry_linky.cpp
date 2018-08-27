@@ -936,7 +936,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 		 if(PopUPmenu->Visible)//pokud je zobrazeno pop-up, tak skryje to
 		 PopUPmenu->Visible=false;
 		 else //jinak ukonèení formuláøe
-		 Button_stornoClick(Sender);
+		 {
+			Button_stornoClick(Sender);
+			Close();//musí tu být, protože Button_storno ukonèuje form pouze pøes modalresults a bez tohoto by se neukonèilo
+		 }
 	}
 	if(Key==123)//F12
 	{
