@@ -87,7 +87,6 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	}
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
-
 	////////plnìní daty - hlavièka////////  //NEWR
 	mGrid->Cells[0][0].Text="Pouze zmìnìné pohony";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma

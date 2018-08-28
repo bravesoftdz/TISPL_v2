@@ -104,6 +104,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_vozik_edit;
 	TButton *Button2;
 	TButton *Button3;
+  TscGPGlyphButton *scGPGlyphButton_refresh;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -183,6 +184,7 @@ __published:	// IDE-managed Components
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
 	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
+  void __fastcall GlyphButton_refreshClick(TObject *Sender);
 
 
 private:	// User declarations
@@ -212,7 +214,7 @@ public:		// User declarations
 	void input_TT();
 	void INPUT(double Sloupec, double Radek);
 	void OUTPUT(double i,double Sloupec, double Radek);
-	void Roletka_roztec(double Row);
+	void Roletka_roztec(int Row);
 	double getRz(double i);
 	void show_min_Rz();
 	double getTT();

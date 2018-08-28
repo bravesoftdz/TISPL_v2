@@ -894,7 +894,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	TPO_math pm;
 
 	//input sekce
-	pm.TT=F->d.v.PP.TT;
+	pm.TT=//F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
 	pm.CT=objekty[Row].CT;
 	pm.DD=objekty[Row].delka_dopravniku;
@@ -1083,13 +1083,18 @@ void __fastcall TF_gapoV::scGPButton_OKClick(TObject *Sender)
 	{
 		calculate(Row,1);//sice se propoèítává opakovanì, ale kvùli možnému zobrazení dat ve zkrácené formì v tabulce. lepe z ostrých dat
 		//aktualizace PO, pokud je spuštìné
-		if(F->pom!=NULL)//nutno jako samostaný if
+		if(F->pom!=NULL)
+    {//nutno jako samostaný if
 		if(F->pom->n==objekty[Row].n)//je spuštìné PO a je tedy nutné zavolat aktualizaci PO
 		{
 			F->pom=F->d.v.vrat_objekt(objekty[Row].n);//vrátí ostrá data
 			F->NPin();
 		}
+    }
 	}
+  Close();
+  Form_parametry_linky->Button_save->Enabled=true;
+	Form_parametry_linky->Button_storno->Enabled=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoV::FormClose(TObject *Sender, TCloseAction &Action)

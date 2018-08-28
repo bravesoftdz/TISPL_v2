@@ -28,8 +28,8 @@ void __fastcall TForm_parametry_vozik::FormShow(TObject *Sender)
 
   if(Form_parametry_linky->Delkaunit==0)
 	{
-	scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
-	scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
+	scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;//F->d.v.PP.delka_jig;
+	scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;//F->d.v.PP.sirka_jig;
 	scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
 	scGPNumericEdit_delka_podvozek->Value=F->d.v.PP.delka_podvozek;
 
@@ -37,6 +37,7 @@ void __fastcall TForm_parametry_vozik::FormShow(TObject *Sender)
   rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[m]</font>";
   rHTMLLabel_vyska_jig->Caption="výška <font color=#2b579a>[m]</font>";
   rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
+  //ShowMessage(F->d.v.PP.delka_jig);
 
   } else
   {
@@ -194,5 +195,6 @@ void __fastcall TForm_parametry_vozik::Button_stornoClick(TObject *Sender)
 	Form_parametry_linky->Button_storno->Enabled=true;
 }
 //---------------------------------------------------------------------------
+
 
 

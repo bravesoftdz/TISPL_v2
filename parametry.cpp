@@ -250,8 +250,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		if (Form1->STATUS == Form1->NAVRH)rezim += 10; // posunutí o 10 vytváøí režim+navrháø
 		//pozice hlavièkových komponent (+použito následnì v kodu)
 		scGPGlyphButton_view->Visible=false;
-		scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width;
-		scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width;
+	 	scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width- scGPGlyphButton_view->Width;
+	 	scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width - scGPGlyphButton_view->Width;
 		switch (rezim)
 		{
 				case 0: // STOP & GO
@@ -331,8 +331,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(ROZESTUP, READONLY);
 						//hlavièkové komponenty
 						scGPGlyphButton_view->Visible=true;
-						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_view->Width;
-						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_view->Width;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_refresh->Width - scGPGlyphButton_view->Width;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_refresh->Width - scGPGlyphButton_view->Width;
 				} break;
 				case 2: // POSTPROCESNÍ
 				{
@@ -373,8 +373,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(ROZESTUP, HIDE);
 						//hlavièkové komponenty
 						scGPGlyphButton_view->Visible=true;
-						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_view->Width;
-						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width-scGPGlyphButton_view->Width;
+						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_refresh->Width - scGPGlyphButton_view->Width;;
+						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_refresh->Width - scGPGlyphButton_view->Width;;
 				} break;
 				case 13: // SG - NÁVRHÁØ  - ROZŠÍØENÉ
 				{
@@ -1839,27 +1839,7 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 		 }break;
 		 case 116://F5
 		 {
-		 	if(mrYes==F->MB("Chcete nastavit výchozí hodnoty parametrù? Nastavením výchozích hodnot boudou souèasné hodnoty parametrù ztraceny!",MB_YESNO))
-		 	{
-		 			//nastavení hodnot parametrù do default
-		 		 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60.0;
-				 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
-		 		 if(RDunitT==MIN)    scGPNumericEdit_RD->Value=  Form1->pom->RD*60.0;
-		 		 else scGPNumericEdit_RD->Value =  Form1->pom->RD;
-		 		 if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku* 1000.0;
-		 		 else scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku;
-
-				 scGPNumericEdit_kapacita->Value = Form1->pom->kapacita;
-				 scGPNumericEdit_pozice->Value   = Form1->pom->pozice;
-				 scGPNumericEdit_mezera->Value   = Form1->pom->mezera;
-				 scGPNumericEdit_mezera_JIG->Value   = Form1->pom->mezera_jig;
-				 scGPNumericEdit_mezera_PODVOZEK->Value   = Form1->pom->mezera_podvozek;
-				 if(scComboBox_pohon->ItemIndex!=0)//data z pohonu naèítám pouze když je nìjaký pohon vybrán
-				 {
-					 scGPNumericEdit_rx->Value      = Form1->pom->pohon->Rx;
-					 scGPNumericEdit_rozestup->Value = Form1->pom->pohon->Rz;
-				 }
-			}
+	   refresh_data();
 		 }break;
 		 case 123:// F12
 		 {
@@ -4311,4 +4291,40 @@ void __fastcall TForm_parametry::scGPNumericEdit_rozestupClick(TObject *Sender)
 	 input_clicked_edit=Rz_klik;
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry::scGPGlyphButton_refreshClick(TObject *Sender)
+{
+  refresh_data();
+}
+//---------------------------------------------------------------------------
+
+void TForm_parametry::refresh_data()
+{
+
+     if(mrYes==F->MB("Chcete nastavit výchozí hodnoty parametrù? Nastavením výchozích hodnot boudou souèasné hodnoty parametrù ztraceny!",MB_YESNO))
+		 	{
+		 			//nastavení hodnot parametrù do default
+		 		 if (CTunit==MIN) scGPNumericEdit_CT->Value= Form1->pom->CT/60.0;
+				 else  scGPNumericEdit_CT->Value= Form1->pom->CT;
+		 		 if(RDunitT==MIN)    scGPNumericEdit_RD->Value=  Form1->pom->RD*60.0;
+		 		 else scGPNumericEdit_RD->Value =  Form1->pom->RD;
+		 		 if (DDunit == MM)scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku* 1000.0;
+		 		 else scGPNumericEdit_delka_dopravniku->Value = Form1->pom->delka_dopravniku;
+
+				 scGPNumericEdit_kapacita->Value = Form1->pom->kapacita;
+				 scGPNumericEdit_pozice->Value   = Form1->pom->pozice;
+				 scGPNumericEdit_mezera->Value   = Form1->pom->mezera;
+				 scGPNumericEdit_mezera_JIG->Value   = Form1->pom->mezera_jig;
+				 scGPNumericEdit_mezera_PODVOZEK->Value   = Form1->pom->mezera_podvozek;
+				 if(scComboBox_pohon->ItemIndex!=0)//data z pohonu naèítám pouze když je nìjaký pohon vybrán
+				 {
+					 scGPNumericEdit_rx->Value      = Form1->pom->pohon->Rx;
+					 scGPNumericEdit_rozestup->Value = Form1->pom->pohon->Rz;
+				 }
+			}
+
+
+}
+
+
 
