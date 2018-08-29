@@ -932,9 +932,10 @@ void __fastcall TF_gapoTT::scGPButton_OKClick(TObject *Sender)
 		}
     }
 	}
-  Close();
+  myModalResult=mrOk;
   Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+  Close();
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::FormClose(TObject *Sender, TCloseAction &Action)
@@ -982,7 +983,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 	//instance na PO_math, vyuívá se stejnıch vıpoètù
 	TPO_math pm;
 
-	//input sekce
+	//input sekce     //pøevod jednotek u TT
 	pm.TT=Form_TT_kalkulator->rEditNum_takt->Value; //F->d.v.PP.TT; R - podle mì bug - poèítalo dle starého TT
 	pm.rezim=objekty[Row].rezim;
 	pm.CT=objekty[Row].CT;
@@ -1038,6 +1039,8 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 		if(pm.rezim==1)pm.RD=pm.Rz/pm.TT;//pouze pro KK reim
 		pm.CT=pm.TT*pm.K;
 
+  Memo1->Lines->Add(pm.RD);
+  Memo2->Lines->Add(pm.CT);
 		mGrid->Cells[20][Row].Font->Color=clLOCKED;//DD
 		mGrid->Cells[22][Row].Font->Color=clLOCKED;//K
 		mGrid->Cells[24][Row].Font->Color=clLOCKED;//P
@@ -1053,7 +1056,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 	}
 	if(CHECK[1])//mìní se aRD, RD, DD, K, P zùstává CT, Rz, Rx, R, M
 	{
-
   	  mGrid->Cells[16][Row].Font->Color=clLOCKED;//CT
       mGrid->Cells[31][Row].Font->Color=clLOCKED;//R
 			mGrid->Cells[33][Row].Font->Color=clLOCKED;//Rz
@@ -1234,7 +1236,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
 				if(O->pohon!=NULL)
 				{
-					O->pohon->aRD=pm.RD;
+					O->pohon->aRD=pm.RD; F->d.v.vrat_pohon(O->pohon->n)->aRD=pm.RD;
 					O->pohon->Rz=F->m.Rz(pm.RD);
 					if(CHECK[2] || CHECK[4])O->pohon->Rx     = F->m.Rx2(O->pohon->Rz,pm.R);//zùstává R, mìní se Rx
 					if(CHECK[4] || CHECK[6])O->pohon->roztec = F->m.R(O->pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]));//zùstává Rx, mìní se R
@@ -1275,8 +1277,7 @@ void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)
 	Form_parametry_linky->Button_storno->Enabled=true;
   //navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
   Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
-
-
+  myModalResult=mrCancel;
 }
 //---------------------------------------------------------------------------
 
@@ -1297,6 +1298,7 @@ void __fastcall TF_gapoTT::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
 			Form_parametry_linky->Button_storno->Enabled=true;
 			F_gapoTT->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
 			F_gapoTT->VisibleChanging();// skryje form, stejné jako visible=false
+      myModalResult=mrCancel;
         //navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
       Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
 		 }break;
@@ -1341,6 +1343,7 @@ void __fastcall TF_gapoTT::scScrollBar_horizontChange(TObject *Sender)
 
 void __fastcall TF_gapoTT::KonecClick(TObject *Sender)
 {
+  scGPButton_stornoClick(Sender);
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
 }

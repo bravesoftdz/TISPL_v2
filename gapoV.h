@@ -45,6 +45,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
   void __fastcall scButton_csvClick(TObject *Sender);
   void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
+  void __fastcall KonecClick(TObject *Sender);
 
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
@@ -68,6 +69,7 @@ public:		// User declarations
 	int pocitadlo_validace;
 	bool leva_oblast;
 	Tinput_state input_state;//stav vstupu
+  int myModalResult;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoV *F_gapoV;

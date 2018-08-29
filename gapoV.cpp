@@ -67,11 +67,9 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) titulek+="vıšky jigu z "+AnsiString(F->d.v.PP.vyska_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value);
 	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  titulek+="délky podvozku z "+AnsiString(F->d.v.PP.delka_podvozek)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value);
 
-
-
-
   Form_parametry_linky->Button_save->Enabled=false;
   Form_parametry_linky->Button_storno->Enabled=false;
+  myModalResult=mrNone;
 
 	input_state=LOADING;
 	pruchod=0;
@@ -894,7 +892,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	TPO_math pm;
 
 	//input sekce
-	pm.TT=//F->d.v.PP.TT;
+	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
 	pm.CT=objekty[Row].CT;
 	pm.DD=objekty[Row].delka_dopravniku;
@@ -1092,9 +1090,10 @@ void __fastcall TF_gapoV::scGPButton_OKClick(TObject *Sender)
 		}
     }
 	}
-  Close();
+  myModalResult=mrOk;
   Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+  Close();
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoV::FormClose(TObject *Sender, TCloseAction &Action)
@@ -1112,6 +1111,7 @@ void __fastcall TF_gapoV::scGPButton_stornoClick(TObject *Sender)
   Form_parametry_linky->scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
   Form_parametry_linky->scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
   Form_parametry_linky->scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
+  myModalResult=mrCancel;
 }
 //---------------------------------------------------------------------------
 
@@ -1131,6 +1131,7 @@ void __fastcall TF_gapoV::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 			Form_parametry_linky->Button_storno->Enabled=true;
 			F_gapoV->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
 			F_gapoV->VisibleChanging();// skryje form, stejné jako visible=false
+      myModalResult=mrCancel;
       Form_parametry_linky->scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
       Form_parametry_linky->scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
       Form_parametry_linky->scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
@@ -1166,5 +1167,11 @@ void __fastcall TF_gapoV::scGPGlyphButton_copyClick(TObject *Sender)
 	mGrid->CopyCells2Clipboard(0,0,mGrid->ColCount-1,mGrid->RowCount-1);
 }
 //---------------------------------------------------------------------------
-
+void __fastcall TF_gapoV::KonecClick(TObject *Sender)
+{
+  scGPButton_stornoClick(Sender);
+  Form_parametry_linky->Button_save->Enabled=true;
+	Form_parametry_linky->Button_storno->Enabled=true;
+}
+//---------------------------------------------------------------------------
 

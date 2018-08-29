@@ -36,6 +36,8 @@ __published:	// IDE-managed Components
 	TscScrollBar *scScrollBar_vertical;
   TscGPButton *scGPButton_zamek_locked;
   TscGPImage *scImage_zamky;
+  TMemo *Memo1;
+  TMemo *Memo2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -68,6 +70,7 @@ public:		// User declarations
 	bool zobrazitFrameForm;
 	bool Rx_canEdit;
 	Tinput_state input_state;//stav vstupu
+  int myModalResult;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoTT *F_gapoTT;

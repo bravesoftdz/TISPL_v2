@@ -456,7 +456,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		bool volat_aktualizaci=false;
 		int aktualizace_id;
 
-		//zobrazení formu gapoR
+		//zobrazení formu gapoR - jediné GAPO, které je voláno zde, protože se volá až pøi stisku OK PL formu
 		bool zobrazGAPO_R=false;
 		for(int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
 		{
@@ -583,42 +583,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 			p_prirazen=NULL;delete p_prirazen;
 
-
-
-
-//	 if(Changes_roztec)
-//	 {
-//
-//	 ShowMessage("nejaka zmena roztece");
-//
-//	 }
-//		if(Changes_prirazen)
-//	 {
-//
-//	 ShowMessage("Odpøiøazení pohonu");
-//
-//	 }
-//
-//			if(Changes_aRD)
-//	 {
-//
-//	 ShowMessage("Zmìna RD pohonu");
-//
-//	 }
-//
-//			if(Changes_Rz)
-//	 {
-//
-//	 ShowMessage("Zmìna Rz pohonu");
-//
-//	 }
-//
-//				if(Changes_Rx)
-//	 {
-//
-//	 ShowMessage("Zmìna Rx pohonu");
-//
-//	 }
 
 	 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2748,6 +2712,11 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 		if(Changes_TT)//pri zmene TT + jiz existuje nejaky objekt nebo pohon
 		{
 	 		F_gapoTT->ShowModal();
+      if(F_gapoTT->myModalResult==mrOk)
+      {
+       Ulozit=true;
+       Close();
+      }
 		}
 }
 //---------------------------------------------------------------------------
@@ -2759,25 +2728,30 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_vozik_editClick(TObject *
 		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
 		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
 
-	if(mrOk==Form_parametry_vozik->ShowModal())
-	{
-	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) Changes_vozik=true;
-	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) Changes_vozik=true;
-	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) Changes_vozik=true;
-	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  Changes_vozik=true;
+	  if(mrOk==Form_parametry_vozik->ShowModal())
+	  {
+      if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) Changes_vozik=true;
+	    if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) Changes_vozik=true;
+	    if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) Changes_vozik=true;
+	    if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  Changes_vozik=true;
 
-	scGPNumericEdit_delka_jig->Value=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
-	scGPNumericEdit_sirka_jig->Value=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
-	scGPNumericEdit_vyska_jig->Value=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value;
-	scGPNumericEdit_delka_podvozek->Value=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
+	    scGPNumericEdit_delka_jig->Value=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value;
+	    scGPNumericEdit_sirka_jig->Value=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value;
+	    scGPNumericEdit_vyska_jig->Value=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value;
+	    scGPNumericEdit_delka_podvozek->Value=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value;
 
-  Form_parametry_linky->Button_save->Enabled=true;
-  Form_parametry_linky->Button_storno->Enabled=true;
-	}
+      Form_parametry_linky->Button_save->Enabled=true;
+      Form_parametry_linky->Button_storno->Enabled=true;
+	  }
 
 		if(Changes_vozik && Form1->d.v.OBJEKTY->dalsi!=NULL && Form1->d.v.POHONY->dalsi!=NULL)//pri zmene voziku
 		{
 			F_gapoV->ShowModal();
+      if(F_gapoV->myModalResult==mrOk)
+      {
+       Ulozit=true;
+       Close();
+      }
 		}
 }
 //---------------------------------------------------------------------------
@@ -2842,15 +2816,6 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 }
 //---------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
 void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
 
 {
@@ -2861,4 +2826,6 @@ void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
+
 
