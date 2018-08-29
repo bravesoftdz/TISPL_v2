@@ -88,6 +88,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_mezera;
 	TrHTMLLabel *rHTMLLabel_jig_podvozek;
 	TrHTMLLabel *rHTMLLabel_kriticka;
+  TscGPGlyphButton *scGPGlyphButton_refresh;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -140,6 +141,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_mezera_PODVOZEKChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_rozestupChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_rozestupClick(TObject *Sender);
+  void __fastcall scGPGlyphButton_refreshClick(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,MEZERA_JIG,MEZERA_PODVOZEK,ROZESTUP};//název souvisejících komponent
@@ -184,6 +186,7 @@ private:	// User declarations
 	void frameKritickaMezer(TCanvas *C);//obkreslí obrysem kritickou mezeru
 	bool JKM();//vratí true, pokude je mezera_JIG kritická mezera, false pokud je mezera_PODVOZEK kritická mezera
 	bool pohon_pouzivan;
+  void refresh_data();
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 

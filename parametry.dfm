@@ -498,7 +498,7 @@ object Form_parametry: TForm_parametry
       AlignWithMargins = True
       Left = 10
       Top = 0
-      Width = 303
+      Width = 266
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -526,12 +526,14 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
+      ExplicitWidth = 180
     end
     object scGPButton_metry_milimetry: TscGPButton
       Left = 190
-      Top = 19
+      Top = 17
       Width = 72
       Height = 15
+      Align = alCustom
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clMenuBar
       Font.Height = -13
@@ -617,9 +619,10 @@ object Form_parametry: TForm_parametry
     end
     object scGPButton_min_sec: TscGPButton
       Left = 190
-      Top = 0
+      Top = 1
       Width = 72
       Height = 15
+      Align = alCustom
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clMenuBar
       Font.Height = -13
@@ -781,6 +784,91 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+    end
+    object scGPGlyphButton_refresh: TscGPGlyphButton
+      Left = 276
+      Top = 0
+      Width = 37
+      Height = 34
+      Hint = 'Na'#269#237'st p'#367'vodn'#237' ulo'#382'en'#225' data'
+      Align = alRight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNone
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+      OnClick = scGPGlyphButton_refreshClick
+      Animation = True
+      Caption = 'Info'
+      CanFocused = False
+      CustomDropDown = False
+      Layout = blGlyphLeft
+      TransparentBackground = True
+      ColorValue = clRed
+      Options.NormalColor = clBtnText
+      Options.HotColor = clBtnText
+      Options.PressedColor = clBtnText
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = clBtnText
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 20
+      Options.PressedColorAlpha = 30
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 5
+      Options.FrameNormalColor = clBtnText
+      Options.FrameHotColor = clBtnText
+      Options.FramePressedColor = clBtnText
+      Options.FrameFocusedColor = clHighlight
+      Options.FrameDisabledColor = clBtnText
+      Options.FrameWidth = 2
+      Options.FrameNormalColorAlpha = 0
+      Options.FrameHotColorAlpha = 0
+      Options.FramePressedColorAlpha = 0
+      Options.FrameFocusedColorAlpha = 0
+      Options.FrameDisabledColorAlpha = 0
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = clBtnShadow
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 5
+      Options.ShapeStyle = scgpRoundedRect
+      Options.ArrowSize = 9
+      Options.StyleColors = True
+      GlyphOptions.NormalColor = clWhite
+      GlyphOptions.HotColor = 16744448
+      GlyphOptions.PressedColor = clBtnText
+      GlyphOptions.FocusedColor = 16744448
+      GlyphOptions.DisabledColor = 16744448
+      GlyphOptions.NormalColorAlpha = 200
+      GlyphOptions.HotColorAlpha = 255
+      GlyphOptions.PressedColorAlpha = 255
+      GlyphOptions.FocusedColorAlpha = 255
+      GlyphOptions.DisabledColorAlpha = 150
+      GlyphOptions.Kind = scgpbgkRefresh
+      GlyphOptions.Thickness = 2
+      GlyphOptions.StyleColors = True
+      TextMargin = -1
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      RepeatClick = False
+      RepeatClickInterval = 100
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
+      ExplicitLeft = 150
+      ExplicitTop = 1
     end
   end
   object scGPButton_OK: TscGPButton

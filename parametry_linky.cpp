@@ -962,7 +962,7 @@ void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender,
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
 {
-	if(Col==5) Roletka_roztec(Row);
+	if(Col==5)// Roletka_roztec(Row);
 
 	 // pokud je pohon ve stavu používán, vygeneruji roletku která umožní provést zmìnu na nepoužíván
 
@@ -1445,16 +1445,11 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Se
       scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
       rHTMLLabel_InfoText->Top= scGPGlyphButton_ADD->Top + 8;
       vypis("",false);
-     // VID=-1;
-     // scGPGlyphButton_ADD->Enabled=true;
-     //ShowMessage(VID);
-
-
 		}
 	}
 	//skrytí pop-up menu
 	PopUPmenu->Visible=false;
-	rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
+ 	rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
 	pozice_scGPGlyphButton_hint();//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	//neexistuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých nezobrazovat
 	scGPGlyphButton_DEL_nepouzite->Visible=false;
@@ -2004,7 +1999,6 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 void __fastcall TForm_parametry_linky::scGPButton_zamek_aRDClick(TObject *Sender)
 
 {
-
 		 //pokud pøed klikem do aRD bylo kliknuto do TT, volá se jiné chování zámkù - aRD a Rz nemusí být provázány
 	 input_clicked_icon=aRD_klik_ico;
 
@@ -2025,6 +2019,8 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_aRDClick(TObject *Sender
 		// pokud by to zde nebylo, tak se šedé pozadí vykreslí až pøi pøejetí myší pøes zamèený sloupec, což je pozdì
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
+    rStringGridEd_tab_dopravniky->SetFocus();
+
 }
 //---------------------------------------------------------------------------
 
@@ -2231,6 +2227,7 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RxClick(TObject *Sender)
 
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
+    rStringGridEd_tab_dopravniky->SetFocus();
 
 }
 //---------------------------------------------------------------------------
@@ -2476,6 +2473,7 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_roztecClick(TObject *Sen
 
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
+    rStringGridEd_tab_dopravniky->SetFocus();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scGPButton_zamek_RzClick(TObject *Sender)
@@ -2490,14 +2488,15 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RzClick(TObject *Sender)
 
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
+    rStringGridEd_tab_dopravniky->SetFocus();
 }
 
 //---------------------------------------------------------------------------
 
-void TForm_parametry_linky::Roletka_roztec(double Row)
+void TForm_parametry_linky::Roletka_roztec(int Row)
 
 {
-					double Rz;
+					double Rz=0.0;
 											 //pokud Rz není prázdné, uložím si jeho hodnotu a použiju k pøedání.
 											 //jinak nastavím Rz na -1 tzn., že do roletky zobrazím všechny rozteèe z katalogu
 					if(!rStringGridEd_tab_dopravniky->Cells[6][Row].IsEmpty())
@@ -2508,7 +2507,10 @@ void TForm_parametry_linky::Roletka_roztec(double Row)
 					AnsiString	data;
 				 if(Runit==MM) data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",true);
 				 else          data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",false);
-
+         // Memo3->Lines->Clear();
+         // Memo4->Lines->Clear();
+          Memo3->Lines->Add(data);
+          Memo4->Lines->Add(Rz);
 				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
 				TStringList *S=new TStringList;
 				S->Add(data);
@@ -2552,7 +2554,7 @@ if (ACol==5) {
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender,
           int Col, int Row, TStringList *&PickList)
 {
-if(Col==5)  vypis("",false);
+if(Col==5) { vypis("",false);  }
 }
 //---------------------------------------------------------------------------
 
@@ -2847,4 +2849,16 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 
 
 
+
+
+void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
+
+{
+    nacti_pohony();
+		if(!data_nalezena)
+		{
+			rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
+		}
+}
+//---------------------------------------------------------------------------
 
