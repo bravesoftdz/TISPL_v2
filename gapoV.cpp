@@ -60,9 +60,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
-
-  AnsiString titulek;
-  if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) titulek+="délky jigu z "+AnsiString(F->d.v.PP.delka_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value);
+	AnsiString titulek;
+	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) titulek+="délky jigu z "+AnsiString(F->d.v.PP.delka_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value);
 	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) titulek+="šíøky jigu z "+AnsiString(F->d.v.PP.sirka_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value);
 	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) titulek+="výšky jigu z "+AnsiString(F->d.v.PP.vyska_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value);
 	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  titulek+="délky podvozku z "+AnsiString(F->d.v.PP.delka_podvozek)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value);
@@ -245,39 +244,33 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 					 mGrid->MergeCells(2,j,3,j);
 				}
 
-
-
 				mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 				mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
 				mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//slouèení sloupcù
 				mGrid->Cells[10][j].Type=mGrid->CHECK;mGrid->MergeCells(10,j,11,j);
 
+				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 )  //KK režim
+				{   //pokud akt.název pohonu je odlišný od pøedchozího øádku, nastavím typ na CHECK.
+					if(O[z].pohon->name!=mGrid->Cells[0][j-1].Text)
+					{
+						mGrid->Cells[2][j].Type=mGrid->CHECK;
+						//barvu prvního sloupce nastvuji níže, nelze zde
+					}
+					mGrid->getCheck(4,j)->Options->FrameNormalColor=C2;
+					mGrid->getCheck(4,j)->OptionsChecked->FrameNormalColor=C2;
 
+					mGrid->getCheck(6,j)->Options->FrameNormalColor=C2;
+					mGrid->getCheck(6,j)->OptionsChecked->FrameNormalColor=C2;
 
-							if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 )  //KK režim
-						{   //pokud akt.název pohonu je odlišný od pøedchozího øádku, nastavím typ na CHECK.
-								if(O[z].pohon->name!=mGrid->Cells[0][j-1].Text)
-								{
-									mGrid->Cells[2][j].Type=mGrid->CHECK;
-									//barvu prvního sloupce nastvuji níže, nelze zde
-								}
-							mGrid->getCheck(4,j)->Options->FrameNormalColor=C2;
-							mGrid->getCheck(4,j)->OptionsChecked->FrameNormalColor=C2;
+					mGrid->getCheck(8,j)->Options->FrameNormalColor=C3;
+					mGrid->getCheck(8,j)->OptionsChecked->FrameNormalColor=C3;
 
-							mGrid->getCheck(6,j)->Options->FrameNormalColor=C2;
-							mGrid->getCheck(6,j)->OptionsChecked->FrameNormalColor=C2;
+					mGrid->getCheck(10,j)->Options->FrameNormalColor=C3;
+					mGrid->getCheck(10,j)->OptionsChecked->FrameNormalColor=C3;
 
-							mGrid->getCheck(8,j)->Options->FrameNormalColor=C3;
-							mGrid->getCheck(8,j)->OptionsChecked->FrameNormalColor=C3;
-
-							mGrid->getCheck(10,j)->Options->FrameNormalColor=C3;
-							mGrid->getCheck(10,j)->OptionsChecked->FrameNormalColor=C3;
-
-						}
+				}
 
 				//parametry objektù
-
-
 				mGrid->Cells[12][j].Text=F->m.round2double(O[z].CT/(1+59.0*CTunit),2,"..");	             mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[14][j].Text=F->m.round2double(O[z].RD*(1+59.0*1),2,"..");              mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[16][j].Text=F->m.round2double(O[z].delka_dopravniku*(1+999*DDunit),2,".."); mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
@@ -435,7 +428,6 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 }
 
 //---------------------------------------------------------------------------
-
  void TF_gapoV::vypis(UnicodeString text,bool red,bool link)
 {
 		scGPButton_OK->Enabled=true;
@@ -468,34 +460,30 @@ void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 				rHTMLLabel_InfoText->Visible = false;
 		}
 }
-
-
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 {
-
-	//ZAJISTÍ, ŽE NELZE UDELAT UNCHECK
+//ZAJISTÍ, ŽE NELZE UDELAT UNCHECK
 //	if(Col>=4 && mGrid->getCheck(Col,Row)->Checked==false)
 //	{
 //		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
 //		CH->Checked=true;
 //		CH=NULL;delete CH;
 //	}
-    vypis("",false);
+		vypis("",false);
 
- if(Col==2) scGPImage_zamky->Left=150;
- if(Col>=6) scGPImage_zamky->Left=150;
+	if(Col==2) scGPImage_zamky->Left=150;
+	if(Col>=6) scGPImage_zamky->Left=150;
 
- if(Col==2  && mGrid->getCheck(Col,Row)->ShowHint==false && input_state==FREE)
- {
-   vypis("Tato varianta není možná, nebo dochází ke zmìnì mezery.",false);
-   mGrid->getCheck(Col,Row)->Checked=false;
- // mGrid->getCheck(tempCHECK[Row],Row)->Checked=true;//zaškrtne pøedchozí volbu pøesunout do onclick urèitì pøed calculate
+	if(Col==2  && mGrid->getCheck(Col,Row)->ShowHint==false && input_state==FREE)
+	{
+	 vypis("Tato varianta není možná, nebo dochází ke zmìnì mezery.",false);
+	 mGrid->getCheck(Col,Row)->Checked=false;
+	 //mGrid->getCheck(tempCHECK[Row],Row)->Checked=true;//zaškrtne pøedchozí volbu pøesunout do onclick urèitì pøed calculate
+	}
 
-  }
-
-  if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
 
 	 if(objekty[Row].pohon!=NULL)
@@ -531,56 +519,50 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
-
 		if(objekty[Row].pohon!=NULL)
 		{
-				int pohon_n=objekty[Row].pohon->n;
-				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
+			int pohon_n=objekty[Row].pohon->n;
+			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
+			{
+			//má pohon, ale má jen jeden øádek, tzn mohu nastavit klasicky první sloupec
+			//ShowMessage("jsem sam KK, mohu");
+			mGrid->getCheck(Col-2,Row)->Checked=false;
+			mGrid->getCheck(Col+2,Row)->Checked=false;
+			mGrid->getCheck(Col+4,Row)->Checked=false;
+			mGrid->getCheck(Col+6,Row)->Checked=false;
+			}
+			else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
+			{
+				for(int i=1;i<=mGrid->RowCount-1;i++)
 				{
-				//má pohon, ale má jen jeden øádek, tzn mohu nastavit klasicky první sloupec
-				//ShowMessage("jsem sam KK, mohu");
-				mGrid->getCheck(Col-2,Row)->Checked=false;
-				mGrid->getCheck(Col+2,Row)->Checked=false;
-				mGrid->getCheck(Col+4,Row)->Checked=false;
-				mGrid->getCheck(Col+6,Row)->Checked=false;
-				}
-				else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
-					{
+					 if(objekty[i].pohon!=NULL)
+					 {
+							if(pohon_n == objekty[i].pohon->n)
+							{
+								 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
+								 if(pruchod==1 && input_state==FREE) 	mGrid->getCheck(Col-2,i)->Checked=false;
 
-								for(int i=1;i<=mGrid->RowCount-1;i++)
-								{
-											if(objekty[i].pohon!=NULL)
-											{
-													 if(pohon_n == objekty[i].pohon->n)
-													 {
-														 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neøeším (pamìtová chyba, kvùli slouèeným buòkám)
-														if(pruchod==1 && input_state==FREE) 	mGrid->getCheck(Col-2,i)->Checked=false;
+								 mGrid->getCheck(Col+2,Row)->Checked=false;
+								 mGrid->getCheck(Col+4,Row)->Checked=false;
+								 mGrid->getCheck(Col+6,Row)->Checked=false;
 
-														mGrid->getCheck(Col+2,Row)->Checked=false;
-														mGrid->getCheck(Col+4,Row)->Checked=false;
-														mGrid->getCheck(Col+6,Row)->Checked=false;
-
-																if(leva_oblast)
-																{
-																input_state=PROGRAMOVE;
-																mGrid->getCheck(4,i)->Checked=true;
-
-																}
-													 }
-
-											}
-								}
-
+								 if(leva_oblast)
+								 {
+									input_state=PROGRAMOVE;
+									mGrid->getCheck(4,i)->Checked=true;
+								 }
+							}
 					 }
+				}
+			}
 	 }
 	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
 	 {
-			 mGrid->getCheck(Col-2,Row)->Checked=false;
-			 mGrid->getCheck(Col+2,Row)->Checked=false;
-			 mGrid->getCheck(Col+4,Row)->Checked=false;
-			 mGrid->getCheck(Col+6,Row)->Checked=false;
+		 mGrid->getCheck(Col-2,Row)->Checked=false;
+		 mGrid->getCheck(Col+2,Row)->Checked=false;
+		 mGrid->getCheck(Col+4,Row)->Checked=false;
+		 mGrid->getCheck(Col+6,Row)->Checked=false;
 	 }
-
 	 pruchod=0;
 	 leva_oblast=false;
 	 input_state=FREE;
@@ -600,11 +582,9 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 			 mGrid->getCheck(Col-2,Row)->Checked=false;
 			 mGrid->getCheck(Col+2,Row)->Checked=false;
 			 mGrid->getCheck(Col+4,Row)->Checked=false;
-
 		}
 		else // musím najít a vybrat správný øádek v prvním sloupci, který dám Checked=false
 		{
-
 			for(int i=1;i<=mGrid->RowCount-1;i++)
 			{
 				if(objekty[i].pohon!=NULL)
