@@ -34,6 +34,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel1;
 	TscGPGlyphButton *scGPGlyphButton_info;
+  TrHTMLLabel *rHTMLLabel_InfoText;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall scGPNumericEdit_delka_jigKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scGPNumericEdit_sirka_jigKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);

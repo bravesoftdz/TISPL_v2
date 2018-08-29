@@ -39,6 +39,14 @@ Form_parametry_linky->Button_storno->Enabled=false;
 
 Nastav_design();
 
+ if(F->d.v.POHONY->predchozi->n!= Form_parametry_linky->rStringGridEd_tab_dopravniky->RowCount - 1)
+ {
+ rHTMLLabel_InfoText->Visible=true;
+ rHTMLLabel_InfoText->Caption="Pøed zmìnou taktu linky je nutné nejdøíve uloit novì pøidanı pohon.";
+ Button_save->Enabled=false;
+
+ } else { rHTMLLabel_InfoText->Visible=false;  Button_save->Enabled=true; }
+
 }
 //---------------------------------------------------------------------------
 

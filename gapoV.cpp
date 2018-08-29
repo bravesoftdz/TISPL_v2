@@ -60,6 +60,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
+  temp_pocitadlo=0;
 	AnsiString titulek;
 	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) titulek+="délky jigu z "+AnsiString(F->d.v.PP.delka_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value);
 	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) titulek+="šíøky jigu z "+AnsiString(F->d.v.PP.sirka_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value);
@@ -123,7 +124,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Cells[33][0].Text="Náhled";
 
   scGPImage_zamky->Top=45;
-  scGPImage_zamky->Left=148;
+  scGPImage_zamky->Left=mGrid->Columns[2].Left-42;
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první øádek
 
@@ -472,9 +473,19 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //		CH=NULL;delete CH;
 //	}
 		vypis("",false);
-
-	if(Col==2) scGPImage_zamky->Left=150;
-	if(Col>=6) scGPImage_zamky->Left=150;
+  temp_pocitadlo++;
+	if(Col==2)
+  {
+  if(temp_pocitadlo==1)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
+  if(temp_pocitadlo==2)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
+  else scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 3;
+  }
+	if(Col>=6)
+  {
+  if(temp_pocitadlo==1)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
+  if(temp_pocitadlo==2)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
+  else scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 3;
+  }
 
 	if(Col==2  && mGrid->getCheck(Col,Row)->ShowHint==false && input_state==FREE)
 	{

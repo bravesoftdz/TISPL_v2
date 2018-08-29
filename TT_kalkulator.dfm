@@ -30,6 +30,25 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = 8
+    Top = 123
+    Width = 153
+    Height = 19
+    Caption = 'rHTMLLabel_InfoText'
+    Color = clRed
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    Visible = False
+  end
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0

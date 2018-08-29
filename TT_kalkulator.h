@@ -25,6 +25,7 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *rEditNum_takt;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
+  TrHTMLLabel *rHTMLLabel_InfoText;
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);

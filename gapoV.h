@@ -70,6 +70,7 @@ public:		// User declarations
 	bool leva_oblast;
 	Tinput_state input_state;//stav vstupu
   int myModalResult;
+  int temp_pocitadlo; // docasne reseni - kvuli posunu gridu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoV *F_gapoV;
