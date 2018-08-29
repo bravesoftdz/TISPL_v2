@@ -101,6 +101,25 @@ object Form_parametry_vozik: TForm_parametry_vozik
     Font.Quality = fqClearType
     ParentFont = False
   end
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = 8
+    Top = 247
+    Width = 153
+    Height = 19
+    Caption = 'rHTMLLabel_InfoText'
+    Color = clRed
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentColor = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    Visible = False
+  end
   object Button_save: TscGPButton
     Left = 206
     Top = 279

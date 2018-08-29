@@ -55,6 +55,15 @@ void __fastcall TForm_parametry_vozik::FormShow(TObject *Sender)
 	Form_parametry_linky->Button_storno->Enabled=false;
 	scGPNumericEdit_delka_jig->SetFocus();
 
+ if(F->d.v.POHONY->predchozi->n!= Form_parametry_linky->rStringGridEd_tab_dopravniky->RowCount - 1)
+ {
+ rHTMLLabel_InfoText->Visible=true;
+ rHTMLLabel_InfoText->Caption="Pøed zmìnou rozmìrù vozíku je nutné nejdøíve uloit zmìny pohonù.";
+ Button_save->Enabled=false;
+
+ } else { rHTMLLabel_InfoText->Visible=false;  Button_save->Enabled=true; }
+
+
 }
 //---------------------------------------------------------------------------
 

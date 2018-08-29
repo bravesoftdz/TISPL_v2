@@ -926,19 +926,15 @@ void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender,
 					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
 {
-	if(Col==5)// Roletka_roztec(Row);
-
+  	//if(Col==5)  // Roletka_roztec(Row);
 	 // pokud je pohon ve stavu používán, vygeneruji roletku která umožní provést zmìnu na nepoužíván
 
-		if(Col==8 && rStringGridEd_tab_dopravniky->Cells[8][Row]!="nepoužíván") {
-
+		if(Col==8 && rStringGridEd_tab_dopravniky->Cells[8][Row]!="nepoužíván")
+    {
 			 EditStyle=sgbDropDown;
 			 rStringGridEd_tab_dopravniky->Columns->Items[8]->PickList->Clear();
 			 rStringGridEd_tab_dopravniky->Columns->Items[8]->PickList->Add("nepoužíván");
 		}
-
-
-
 }
 //---------------------------------------------------------------------------
 
@@ -2826,6 +2822,9 @@ void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
+
+
+
 
 
 

@@ -65,7 +65,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
    AnsiString jednotky;
   if(CTunit) jednotky=" [min]"; else  jednotky=" [s]";
   scLabel_titulek->Caption="Globální aktualizace parametrù pohonù a objektù z dùvodu zmìny TT z "+AnsiString(F->d.v.PP.TT)+" na " +AnsiString(Form_TT_kalkulator->rEditNum_takt->Value) + AnsiString(jednotky);
-
+  temp_pocitadlo=0;
 	//workaround odchytávání stisku kláves
 	Edit1->SetFocus();
 
@@ -101,7 +101,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[2][0].Text="režim";
   mGrid->Cells[2][0].BottomBorder->Width=2;
   scImage_zamky->Top=45;
-  scImage_zamky->Left=319;
+  scImage_zamky->Left=mGrid->Columns[3].Left-6;
 	//------------------------------------------------
 	mGrid->Cells[3][0].Text="aRD, RD, CT";
 	mGrid->Cells[4][0].Text="DD, K, P, Rz, Rx, R, M";
@@ -395,6 +395,11 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
       {
        mGrid->Cells[sl][j].BottomBorder->Width=2;
       }
+
+			mGrid->Cells[30][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->roztec,2,".."); mGrid->Cells[30][j].Align=mGrid->LEFT;mGrid->Cells[30][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
+			mGrid->Cells[32][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->Rz,2,"..");     mGrid->Cells[32][j].Align=mGrid->LEFT;mGrid->Cells[32][j].Font->Color=clOLD;mGrid->Cells[33][j].Align=mGrid->LEFT;mGrid->Cells[33][j].Font->Color=clUNLOCKED;
+			mGrid->Cells[34][j].Text=F->d.v.vrat_pohon(i)->Rx;                               mGrid->Cells[34][j].Align=mGrid->LEFT;mGrid->Cells[34][j].Font->Color=clOLD;mGrid->Cells[35][j].Align=mGrid->LEFT;mGrid->Cells[35][j].Font->Color=clUNLOCKED;
+
 			j++;
 		}
 		else//OBJEKTY S PØIØAZENÝMI POHONY
@@ -638,7 +643,14 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
 	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
 	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
-  if(Col>=5) scImage_zamky->Left=319 + 2; //workaround ošetøení posunu tabulky
+  if(Col>=5)
+  {
+  temp_pocitadlo++;
+  //ShowMessage(temp_pocitadlo);
+  if(temp_pocitadlo==1)scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 6;
+  if(temp_pocitadlo==2)scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 6;
+  else scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 4;
+  } //workaround ošetøení posunu tabulky
 
 	if(Col>=3 && mGrid->getCheck(Col,Row)->Checked==false)
 	{
@@ -1039,8 +1051,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)//NEWR
 		if(pm.rezim==1)pm.RD=pm.Rz/pm.TT;//pouze pro KK režim
 		pm.CT=pm.TT*pm.K;
 
-  Memo1->Lines->Add(pm.RD);
-  Memo2->Lines->Add(pm.CT);
 		mGrid->Cells[20][Row].Font->Color=clLOCKED;//DD
 		mGrid->Cells[22][Row].Font->Color=clLOCKED;//K
 		mGrid->Cells[24][Row].Font->Color=clLOCKED;//P
