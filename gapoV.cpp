@@ -600,8 +600,8 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 							 if(leva_oblast)
 							 {
-							 input_state=PROGRAMOVE;
-							 mGrid->getCheck(6,i)->Checked=true;
+								input_state=PROGRAMOVE;
+							 	mGrid->getCheck(6,i)->Checked=true;
 							 }
 					 }
 
@@ -621,7 +621,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 pruchod=0;
 	 leva_oblast=false;
 	 input_state=FREE;
-}
+	}
 
 	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
@@ -656,11 +656,10 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 						 if(leva_oblast)
 						 {
-						 input_state=PROGRAMOVE;
-						 mGrid->getCheck(8,i)->Checked=true;
+							input_state=PROGRAMOVE;
+							mGrid->getCheck(8,i)->Checked=true;
 						 }
 					 }
-
 				}
 			}
 		}
@@ -711,13 +710,12 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 							if(leva_oblast)
 							{
-							input_state=PROGRAMOVE;
-							mGrid->getCheck(10,i)->Checked=true;
+								input_state=PROGRAMOVE;
+								mGrid->getCheck(10,i)->Checked=true;
 							}
 					}
 				}
 			}
-
 		}
 	 }
 	 else //nemám pohon, mohu nastavit hned klasicky první sloupec

@@ -2,8 +2,8 @@
 #ifndef TmGridH
 #define TmGridH
 //#include <vcl.h>
-#include "scGPControls.hpp"//knihovna kvùli buttonum atp.
-#include "scGPExtControls.hpp"//knihovna kvùli editbox;m
+#include "scGPControls.hpp"//knihovna kvùli buttonumatp.
+#include "scGPExtControls.hpp"//knihovna kvùli editbox
 //---------------------------------------------------------------------------
 class TmGrid
 {
