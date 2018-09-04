@@ -4221,7 +4221,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezera_JIGChange(TObject *Sende
 		INPUT();
 		pm.input_MJ();//zavolání výpoèetního modelu
 		OUTPUT();
-		Kontrola_mezery();
+		if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery();
 		input_state = NOTHING;
 	}
 }
@@ -4234,7 +4234,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezera_PODVOZEKChange(TObject *
 		INPUT();
 		pm.input_MP();//zavolání výpoèetního modelu
 		OUTPUT();
-		Kontrola_mezery();
+		if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery();
 		input_state = NOTHING;
 	}
 }
@@ -4325,6 +4325,8 @@ void TForm_parametry::refresh_data()
 
 
 }
+
+
 
 
 

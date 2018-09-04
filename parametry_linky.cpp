@@ -33,6 +33,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 {
 	////designové záležitosti
 	Form_parametry_linky->Color=(TColor)RGB(240,240,240); //nastavení barvy formuláøe
+  rMemoEx1_rychlost->Color=(TColor)RGB(128,128,128);
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 	zobrazitFrameForm=false;
@@ -55,9 +56,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	////jednotky
 	//Delkaunit=MM;
 	//Sirkaunit=Delkaunit;
-	 Taktunit=S;
-	 Runit=M;
-	 Rzunit=M;
+
 	//roletka_data=0;
 
 
@@ -97,14 +96,25 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
-		//Delkaunit=MM;
-		// GLOBAL naètení délka, šíøka, podvozek
-//	if (Form1->readINI("nastaveni_form_parametry_linky", "rozmery") == "1")
-//		{
-//				rHTMLLabel_delka_jiguClick(this);
-//				rHTMLLabel_sirkaClick(this);
-//				rEditNum_delkavozikuClick(this);
-//		}
+   Taktunit=S;
+	 Runit=MM;
+	 Rzunit=MM;
+   aRDunit=S;
+   Dmunit=M;
+
+   scHTMLLabel_rozestup->Height=27;
+
+  	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
+    {  //budu pøevádìt na m/min
+    aRDunit=MIN;
+    }
+    if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")
+    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+    Dmunit=MM;
+    }
+
+
+   rHTMLLabel_info_zmenaR->Caption="";
 	 input_state = NOTHING;   //výchozí nastavení stavu
 	 Nastav_zamky(empty_klik_ico,empty_klik);
 	 vypis(""); VID=-1;
@@ -122,22 +132,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
 		else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
-
-		//provizorní ošetøení, pøijde celé smazat, až nahodíme aktualizaci
-//		if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
-//		{
-//			rEditNum_takt->Enabled=false;
-//			rEditNum_delka_jigu->Enabled=false;
-//			rEditNum_sirka_jigu->Enabled=false;
-//			scGPNumericEdit_delka_podvozku->Enabled=false;
-//		}
-//		else
-//		{
-//			rEditNum_takt->Enabled=true;
-//			rEditNum_delka_jigu->Enabled=true;
-//			rEditNum_sirka_jigu->Enabled=true;
-//			scGPNumericEdit_delka_podvozku->Enabled=true;
-//		}
 
 
 		if(Form1->d.v.navrhni_POHONY()=="")
@@ -290,18 +284,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
 
 	 //nahrání hodnot
-	 if(Delkaunit == MM)
-	 {
-			scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig*1000;
-			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig*1000;
-			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek*1000;
-	 }
-	 else // jsem v Metrech, naètu uložená data (vždy v metrech)
-	 {
-			scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig;
-			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig;
-			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek;
-	 }
+
+			scGPNumericEdit_delka_jig->Value=Form1->d.v.PP.delka_jig*(1+999*Delkaunit);
+			scGPNumericEdit_sirka_jig->Value=Form1->d.v.PP.sirka_jig*(1+999*Delkaunit);
+			scGPNumericEdit_delka_podvozek->Value=Form1->d.v.PP.delka_podvozek*(1+999*Delkaunit);
 
 
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
@@ -320,7 +306,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rStringGridEd_tab_dopravniky->Cells[3][0]="do";
 	 rStringGridEd_tab_dopravniky->Cells[4][0]="aktuální";
 	 rStringGridEd_tab_dopravniky->Cells[5][0]="";
-	 rStringGridEd_tab_dopravniky->Cells[6][0]="vzdálenost [m]";
+	 rStringGridEd_tab_dopravniky->Cells[6][0]="";
 	 rStringGridEd_tab_dopravniky->Cells[7][0]="každý n-tý palec";
 	 //rStringGridEd_tab_dopravniky->Cells[8][0]="pøiøazen";
 
@@ -346,19 +332,27 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 if(existuji_nepouzivane_pohony())scGPGlyphButton_DEL_nepouzite->Visible=true;
 	 else scGPGlyphButton_DEL_nepouzite->Visible=false;
 
-	 rMemoEx_ID->Text="";rMemoEx_Nazev->Text="";rMemoEx1_rychlost->Text="";
-	 rMemoEx2_prirazen->Text="";rMemoEx1_rozestup->Text="";rMemoEx1_roztec->Text="";
-	 rMemoEx1_rozestup_akt_unas->Text="";
+	 rMemoEx_ID->Text="";
+   rMemoEx_Nazev->Text="";
+     // rMemoEx1_rychlost->Caption="";
+	 rMemoEx2_prirazen->Text="";
+
 
 
 
 	 rMemoEx_ID->Lines->Add("    ID");
 	 rMemoEx_Nazev->Lines->Add("    Název");
-	 rMemoEx1_rychlost->Lines->Add("   Rychlost [m/min]");
-	 if(Runit==M)  rMemoEx1_roztec->Lines->Add("    rozteè [m]");
-	 else rMemoEx1_roztec->Lines->Add("    rozteè [mm]");
-	 rMemoEx1_rozestup->Lines->Add("   Palce");
-	 rMemoEx1_rozestup_akt_unas->Lines->Add("rozestup aktivní unašeèe");
+   if(aRDunit==S)   rMemoEx1_rychlost->Caption="Rychlost <u>[m/s]</u></br>";//("   Rychlost [m/min]");
+   else    rMemoEx1_rychlost->Caption="Rychlost <u>[m/min]</u></br>";
+   rMemoEx1_rychlost->Height=28;
+
+
+	 if(Runit==M)  scHTMLLabel_roztec->Caption="rozteè <u>[m]</u>";
+	 else scHTMLLabel_roztec->Caption="rozteè <u>[mm]</u></br>";
+
+ 	 if(Dmunit==M)  scHTMLLabel_rozestup->Caption="rozestup <u>[m]</u>";
+	 else scHTMLLabel_rozestup->Caption="rozestup <u>[mm]</u></br>";
+
 	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
 
 	 Storno=false;
@@ -389,21 +383,21 @@ void TForm_parametry_linky::nacti_pohony ()
 
 					 //	if(ukaz->rychlost_od==0)  	rStringGridEd_tab_dopravniky->Cells[2][i] = "";
 					//	else
-						 rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*60.0;
+						 rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*(1+59.0*aRDunit);
 
 						if(ukaz->rychlost_do==0)   rStringGridEd_tab_dopravniky->Cells[3][i] ="";
-						else rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*60.0;
+						else rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*(1+59.0*aRDunit);
 
 						if(ukaz->aRD==0)  	rStringGridEd_tab_dopravniky->Cells[4][i] = "";
-						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*60.0;
+						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*(1+59.0*aRDunit);
             //ShowMessage(ukaz->aRD*60.0);
 
 						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
-						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*1000.0;
+						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*(1+999*Runit);
 						else    rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec;
 
 						if(ukaz->Rz==0) rStringGridEd_tab_dopravniky->Cells[6][i]="";
-						else rStringGridEd_tab_dopravniky->Cells[6][i] = ukaz->Rz;
+						else rStringGridEd_tab_dopravniky->Cells[6][i] = ukaz->Rz*(1+999*Dmunit);
 
 						if(ukaz->Rx==0) rStringGridEd_tab_dopravniky->Cells[7][i]="";
 						else rStringGridEd_tab_dopravniky->Cells[7][i] = ukaz->Rx;
@@ -491,17 +485,23 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 			while(O!=NULL)
 			{
+      double grid_od = 0;
+      double grid_do = 0;   //zde není nutný nic pøevádìt, pøevádí se levá èást v podmínce IF dle akt. jednotek
+       grid_od =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]);
+       grid_do =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]);
 
 				if(
 					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
 					O->rezim==1 && //je v režimu kontinuál a zároveò
 					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
-					(Form1->ms.MyToDouble(O->RD)*60.0<Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]) ||//je mimo rozsah (pod) nebo
-					 Form1->ms.MyToDouble(O->RD)*60.0>Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]))//je mimo rozsah (nad)
+					(Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) < grid_od ||//je mimo rozsah (pod) nebo
+					 Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) > grid_do)//je mimo rozsah (nad)
 				)
 				{
-
-					T+="Objekt: "+O->name+" Rychlost:"+O->RD*60.0+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
+          Memo3->Lines->Add(grid_od);
+          Memo3->Lines->Add(grid_do);
+          Memo3->Lines->Add(aRDunit);
+					T+="Objekt: "+O->name+" Rychlost:"+O->RD*(1+59.0*aRDunit)+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
 					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
 				}
 				O=O->dalsi;
@@ -609,13 +609,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
 
 				if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty()) rychlost_od=0;
-				else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i])/60.0;
+				else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i])/(1+59.0*aRDunit);
 
 				if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty()) rychlost_do=0;
-				else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i])/60.0;
+				else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i])/(1+59.0*aRDunit);
 
 				if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()) aRD=0;
-				else aRD=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/60.0;
+				else aRD=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/(1+59.0*aRDunit);
 
 				if(rStringGridEd_tab_dopravniky->Cells[5][i].IsEmpty()) roztec=0;
 				if(Runit==MM) roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000.0;
@@ -623,7 +623,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 
 				if(rStringGridEd_tab_dopravniky->Cells[6][i].IsEmpty()) Rz=0;
-				else Rz=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
+				else Rz=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])/(1+999.0*Dmunit);
 
 				if(rStringGridEd_tab_dopravniky->Cells[7][i].IsEmpty()) Rx=0;
 				else Rx=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
@@ -1515,6 +1515,10 @@ void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &
 	//ShowMessage(Delkaunit);
 	Form1->writeINI("nastaveni_form_parametry_linky", "rozmery", Delkaunit);
 	Form1->writeINI("nastaveni_form_parametry_linky", "TT", Taktunit);
+  Form1->writeINI("nastaveni_form_parametry_linky", "R", Runit);
+  //zapis do PO ini
+ 	Form1->writeINI("nastaveni_form_parametry", "RDt", aRDunit);
+  Form1->writeINI("nastaveni_form_parametry", "DM", Dmunit);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2015,29 +2019,28 @@ void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
 
 
 
- if(input_state==TT || input_state==jednotky_prevod)  //vìtev TT - aktuálnì není využívána, POUZE PRO PØEVOD
+ if(input_state==TT || input_state==aRD_prevod || input_state==R_prevod || input_state==Rz_prevod)  //vìtev TT - aktuálnì není využívána, POUZE PRO PØEVOD
  {
 
  for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
 	 {
-		
-		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/60.0;
-		if(Runit==MM)	pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000;
-		else       	  pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]);
-		pm.Rz =  getRz(i);
-		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
+
+  if(aRDunit==S)  pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]); else pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]) /60.0;
+  if(Runit==M)		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]); else pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000.0;
+  if(Dmunit==M) 	pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]); else pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])/1000.0;
+		              pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
 
 		OUTPUT(i,0,0);  // po projití øádku, okamžité volání output - naplnìní obsahem konkrétního øádku
-		//VALIDACE(0,0);
-	 }
+
+    }
 
 	} else    // aktuálnì využívána pouze tato konstukce níže
 
 	{
 		 // uložení do struktury konkrétního øádku
-		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][Radek])/60.0;
-		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][Radek]);
-		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Radek]);
+		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][Radek])/(1+60*aRDunit);
+		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][Radek])/(1+999*Runit);
+		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Radek])/(1+999*Dmunit);
 		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][Radek]);
 
 		Memo2->Lines->Add(pm.aRD);
@@ -2057,15 +2060,44 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 {
 
 		//Memo3->Lines->Add("OUTPUT"+ AnsiString(input_state));
+    rHTMLLabel_info_zmenaR->Caption="";
 
 	 if(i>0) // plnìní celé tabulky, pouze v pøípadì zmìny TT nebo pøevodu jednotek
+	 { //obraceny "logicky" postup - pokud mám nastavené s, chci zobrazit v m/min, èili dle toho pøevedu
 
-	 {
-	   rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD*60.0;
-		 if(Runit==M)		rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R*1000.0;
-		 else       	  rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R;
+   if(input_state==aRD_prevod)
+   {
+    if(aRDunit==S)
+    {
+     rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD*60.0;
+     rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[3][i]*60.0;
+     rStringGridEd_tab_dopravniky->Cells[2][i]=rStringGridEd_tab_dopravniky->Cells[2][i]*60.0;
 
-		rStringGridEd_tab_dopravniky->Cells[6][i]=pm.Rz;
+    } else
+    {
+      rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD;
+      rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[3][i]/60.0;
+      rStringGridEd_tab_dopravniky->Cells[2][i]=rStringGridEd_tab_dopravniky->Cells[2][i]/60.0;
+
+    }
+   }
+
+   if(input_state==R_prevod)
+   {
+    if(Runit==M)
+    {
+    rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R*1000.0;
+    } else   rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R;
+   }
+
+   if(input_state==Rz_prevod)
+   {
+     if(Dmunit==M)
+    {
+    rStringGridEd_tab_dopravniky->Cells[6][i]=pm.Rz*1000.0;
+    } else  rStringGridEd_tab_dopravniky->Cells[6][i]=pm.Rz;
+   }
+
 		rStringGridEd_tab_dopravniky->Cells[7][i]=pm.Rx;
 	 }
 
@@ -2073,9 +2105,9 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 	 {
 			// naplnìní konkrétního øádku na kterém došlo ke zmìnì
 
-		if(input_state!=aRD) rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*60.0;
-		if(input_state!=R)   rStringGridEd_tab_dopravniky->Cells[5][Radek]=pm.R;
-		if(input_state!=RZ)  rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz;
+		if(input_state!=aRD)  rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*(1+60*aRDunit);
+		if(input_state!=R)    rStringGridEd_tab_dopravniky->Cells[5][Radek]=pm.R*(1+999*Runit);
+		if(input_state!=RZ)   rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz*(1+999*Dmunit);
 		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=pm.Rx;
 
 		VALIDACE(Sloupec,Radek);
@@ -2200,6 +2232,12 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				 //tato událost je volána vždy, nikoliv pouze pøi zmìnì obsahu - stringgrid nemá nativnì onchange událost
 				 // z tohoto dùvodu je pøi splnìní podmínky ihned uložen obsah buòky, a následnì porovnán.
 				 // pokud je rozdílný, došlo ke zmìnì a volám výpoèetní model
+    if(ACol==1 || ACol==2 || ACol==3 || ACol==4 || ACol==5 || ACol==6 || ACol==7)
+    {
+    rHTMLLabel_info_zmenaR->Caption="";
+
+
+    }
 		if(ACol==1)
 		{
 				if(input_state==NOTHING && input_clicked_edit==nazev_klik)
@@ -2249,7 +2287,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(input_state==NOTHING && input_clicked_edit==aRD_klik)
 				{
 
-				if(rStringGridEd_tab_dopravniky->Cells[4][ARow]!=pm.aRD*60.0)
+				if(rStringGridEd_tab_dopravniky->Cells[4][ARow]!=pm.aRD*(1+59.0*aRDunit))
 				{
 				Memo2->Lines->Clear();
 				Memo2->Lines->Add("volam model pm.input_aRD");
@@ -2265,6 +2303,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 					{
 					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
 					}
 				input_state=NOTHING;
 				}
@@ -2279,7 +2318,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(input_state==NOTHING && input_clicked_edit==R_klik)
 				{
 
-				if(rStringGridEd_tab_dopravniky->Cells[5][ARow]!=pm.R)
+				if(rStringGridEd_tab_dopravniky->Cells[5][ARow]!=pm.R*(1+999.0*Runit))
 				{
 				Memo2->Lines->Clear();
 				Memo2->Lines->Add("volam model pm.input_R");
@@ -2296,6 +2335,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 					{
 					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+         rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
 					}
 			 } //vypoèítání nových dat do roletky na základì zmìny Rz
 			 else zobrazOramovani=false;
@@ -2312,7 +2352,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(input_state==NOTHING && input_clicked_edit==Rz_klik)
 				{
 
-				if(rStringGridEd_tab_dopravniky->Cells[6][ARow]!=pm.Rz)
+				if(rStringGridEd_tab_dopravniky->Cells[6][ARow]!=pm.Rz*(1+999.0*Dmunit))
 				{
 				Memo2->Lines->Clear();
 				Memo2->Lines->Add("volam model pm.input_Rz");
@@ -2327,6 +2367,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 				{
 					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
 				}
 
 				input_state=NOTHING;
@@ -2360,6 +2401,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 				{
 				F_gapoR->pohony_zmena[getPID(ARow)].X=true;
+        rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
 				}
 				}    else zobrazOramovani=false;
 				rStringGridEd_tab_dopravniky->Invalidate();
@@ -2396,9 +2438,6 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 }
 //---------------------------------------------------------------------------
 
-
-
-
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditText(TObject *Sender,
 					int ACol, int ARow, UnicodeString &Value)
 {
@@ -2410,7 +2449,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditText(T
 
 		 if(ACol==3)   DO = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow]);
 
-		 if(ACol==4)	pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0;
+		 if(ACol==4)	pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]);
 
 		 if(ACol==5)  pm.R = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]);
 
@@ -2518,32 +2557,11 @@ if(Col==5) { vypis("",false);  }
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rMemoEx1_roztecClick(TObject *Sender)
-{
-
-		input_state = jednotky_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
-		if (Runit == MM) // pokud je v milimetrech, tak pøepne na metry
-		{
-
-			  rMemoEx1_roztec->Text="    rozteè [m]";
-				INPUT(0,0);   //tento input volá zároveò i output
-				Runit = M;
-		}
-		else // pokud je metrech, tak pøepne na milimetry
-		{
-			rMemoEx1_roztec->Text="    rozteè [mm]";
-			INPUT(0,0);    //tento input volá zároveò i output
-			Runit = MM;
-		}
-	
-		input_state = NOTHING; // už se mohou pøepoèítávat
-}
-//---------------------------------------------------------------------------
 
 double  TForm_parametry_linky::getRz(double i)
 {
 	double Rz=0;
-	if(Rzunit==M) Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
+	if(Dmunit==M) Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
 	else          Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])*1000.0;
 	return Rz;
 }
@@ -2561,16 +2579,16 @@ double  TForm_parametry_linky::getTT()
 void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 {
 
-vypis("");VID=-1;
-Row_validace=0;
-Col_validace=0;
+    vypis("");VID=-1;
+    Row_validace=0;
+    Col_validace=0;
 
 				 if(ACol==4 || ACol==5 || ACol==6 || ACol==7)
 				 {
-         double R=0;   //R==0 - M,
-         if(Runit==M) R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]*1000.0);
+         double R=0;
+         if(Runit==M) R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
 
-            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0,R,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
+            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit),R,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Runit),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),aRDunit,Runit,Dmunit);
             if(TNValue.text!="")
             {
                VID=ACol;
@@ -2758,11 +2776,6 @@ rStringGridEd_tab_dopravniky->Visible=true;
 }
 //---------------------------------------------------------------------------
 
-
-
-
-
-
 void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 {
 		if(VID==4 || VID==5 || VID==6 || VID==7)
@@ -2823,8 +2836,69 @@ void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_parametry_linky::scHTMLLabel_roztecClick(TObject *Sender)
+{
+		input_state = R_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
+		if (Runit == MM) // pokud je v milimetrech, tak pøepne na metry
+		{
 
+			  scHTMLLabel_roztec->Caption="rozteè <u>[m]</u>";
+				INPUT(0,0);   //tento input volá zároveò i output
+				Runit = M;
+		}
+		else // pokud je metrech, tak pøepne na milimetry
+		{
+			scHTMLLabel_roztec->Caption="rozteè <u>[mm]</u>";
+			INPUT(0,0);    //tento input volá zároveò i output
+			Runit = MM;
+		}
 
+		input_state = NOTHING; // už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
 
+void __fastcall TForm_parametry_linky::scHTMLLabel_rozestupClick(TObject *Sender)
+
+{
+	input_state = Rz_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
+		if (Dmunit == MM) // pokud je v milimetrech, tak pøepne na metry
+		{
+
+			  scHTMLLabel_rozestup->Caption="rozestup <u>[m]</u>";
+				INPUT(0,0);   //tento input volá zároveò i output
+				Dmunit = M;
+		}
+		else // pokud je metrech, tak pøepne na milimetry
+		{
+			scHTMLLabel_rozestup->Caption="rozestup <u>[mm]</u>";
+		 	INPUT(0,0);    //tento input volá zároveò i output
+			Dmunit = MM;
+		}
+
+		input_state = NOTHING; // už se mohou pøepoèítávat
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_linky::rMemoEx1_rychlostClick(TObject *Sender)
+{
+		input_state = aRD_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
+		if (aRDunit == S)
+		{
+
+			  rMemoEx1_rychlost->Caption="Rychlost <u>[m/min]</u></br> ";
+				INPUT(0,0);   //tento input volá zároveò i output
+				aRDunit = MIN;
+		}
+		else // pokud je metrech, tak pøepne na milimetry
+		{
+			rMemoEx1_rychlost->Caption="Rychlost <u>[m/s]</u></br> ";
+			INPUT(0,0);    //tento input volá zároveò i output
+			aRDunit = S;
+		}
+
+		input_state = NOTHING; // už se mohou pøepoèítávat
+}
+//---------------------------------------------------------------------------
 
 

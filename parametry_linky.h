@@ -86,13 +86,10 @@ __published:	// IDE-managed Components
 	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
 	TrMemoEx *rMemoEx_ID;
 	TrMemoEx *rMemoEx_Nazev;
-	TrMemoEx *rMemoEx1_rychlost;
-	TrMemoEx *rMemoEx1_roztec;
 	TrMemoEx *rMemoEx1_rozestup;
 	TrMemoEx *rMemoEx2_prirazen;
 	TMemo *Memo2;
 	TMemo *Memo3;
-	TrMemoEx *rMemoEx1_rozestup_akt_unas;
 	TscGPButton *scGPButton_zamek_aRD;
 	TscGPButton *scGPButton_zamek_roztec;
 	TscGPButton *scGPButton_zamek_Rz;
@@ -105,6 +102,11 @@ __published:	// IDE-managed Components
 	TButton *Button2;
 	TButton *Button3;
   TscGPGlyphButton *scGPGlyphButton_refresh;
+  TscHTMLLabel *rMemoEx1_rychlost;
+  TrHTMLLabel *rHTMLLabel_info_zmenaR;
+  TscHTMLLabel *scHTMLLabel_roztec;
+  TscHTMLLabel *scHTMLLabel_rozestup_aktunas;
+  TscHTMLLabel *scHTMLLabel_rozestup;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -177,7 +179,6 @@ __published:	// IDE-managed Components
           int ARow, TRect &Rect, TGridDrawState State);
 	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
           int Row, TStringList *&PickList);
-	void __fastcall rMemoEx1_roztecClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_vozik_editClick(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
@@ -185,11 +186,14 @@ __published:	// IDE-managed Components
 	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
   void __fastcall GlyphButton_refreshClick(TObject *Sender);
+  void __fastcall scHTMLLabel_roztecClick(TObject *Sender);
+  void __fastcall scHTMLLabel_rozestupClick(TObject *Sender);
+  void __fastcall rMemoEx1_rychlostClick(TObject *Sender);
 
 
 private:	// User declarations
 	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
-	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod,R_prevod,Rz_prevod,aRD_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik,nazev_klik,od_klik,do_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto
 	enum Tinput_onchange {NOChange,aRDChange,RChange,RzChange,RxChange}; //zjisteni na kterou ikonku zámku bylo kliknuto
@@ -232,8 +236,8 @@ public:		// User declarations
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
 	Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
 	Tinput_onchange   onchange;
-	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;//pøepínaè jednotek vzdálenost
-	enum Tminsec{S=0,MIN};Tminsec Taktunit;Tminsec RDunit;//pøepínaè jednotek èasu
+	enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;Tm_mm Dmunit;//pøepínaè jednotek vzdálenost
+	enum Tminsec{S=0,MIN};Tminsec Taktunit;Tminsec RDunit;Tminsec minsec;Tminsec aRDunit;//pøepínaè jednotek èasu
 	bool Changes;  //obecna zmena = zmena PP ci TT
 	bool Changes_TT;    // konkretni zmena TT
 	bool Changes_PP;   // konkretni zmena PP
