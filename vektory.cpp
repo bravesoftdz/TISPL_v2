@@ -1272,6 +1272,7 @@ long Cvektory::vymaz_seznam_POHONY()
 };
 ////---------------------------------------------------------------------------
 //zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7) na všech objektech, přiřazených k danému pohonu označeným parametrem PID, vratí doporučenou hodnotu dle VID a vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku
+//vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
 TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short aRDunit,short Runit,short Rzunit)
 {
 	TTextNumber RET;
@@ -1298,19 +1299,31 @@ TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,
 		case 4:
 		{
 			RET.number1=ceil(validace_Rz(VaRD.number1*PP.TT,PID).number1/R)*R/PP.TT;
-			if(RET.number2)RET.text+="<br><b>Navržená hodnota rychlosti: <u>"+AnsiString(RET.number1)+"</u> [m/s].</b>";
+			if(RET.number2)
+			{
+				RET.text+="<br><b>Navržená hodnota rychlosti: <u>"+AnsiString(RET.number1*(1+59.0*aRDunit))+"</u> [m/";
+				if(aRDunit)RET.text+="min";else RET.text+="s";
+				RET.text+="].</b>";
+			}
 		}break;
 		//R
 		case 5:
 		{
 			RET.number1=VaRD.number1*PP.TT/(validace_Rx(validace_Rz(validace_aRD(Rx*R/PP.TT,p).number1*PP.TT,PID).number1/R).number1);
-			if(RET.number2)RET.text+="<br><b>Navržená hodnota rozteče: <u>"+AnsiString(RET.number1)+"</u> [m].</b>";
+			if(RET.number2)
+			{
+				RET.text+="<br><b>Navržená hodnota rozteče: <u>"+AnsiString(RET.number1*(1+999*Runit))+"</u> [";
+				if(Runit)RET.text+="m";else RET.text+="mm";
+				RET.text+="].</b>";
+			}
 		}break;
 		//Rz
 		case 6:
 		{
 			RET.number1=validace_Rx(validace_Rz(validace_aRD(Rz/PP.TT,p).number1*PP.TT,PID).number1/R).number1*R;
-			if(RET.number2)RET.text+="<br><b>Navržená hodnota rozestupu: <u>"+AnsiString(RET.number1)+"</u> [m].</b>";
+			if(RET.number2)RET.text+="<br><b>Navržená hodnota rozestupu: <u>"+AnsiString(RET.number1*(1+999*Rzunit))+"</u> [";
+			if(Rzunit)RET.text+="m";else RET.text+="mm";
+			RET.text+="].</b>";
 		}break;
 		//Rx
 		case 7:
