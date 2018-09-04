@@ -526,7 +526,6 @@ object Form_parametry: TForm_parametry
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Parametry objektu'
-      ExplicitWidth = 180
     end
     object scGPButton_metry_milimetry: TscGPButton
       Left = 190
@@ -867,8 +866,6 @@ object Form_parametry: TForm_parametry
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 150
-      ExplicitTop = 1
     end
   end
   object scGPButton_OK: TscGPButton

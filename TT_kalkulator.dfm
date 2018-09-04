@@ -36,7 +36,7 @@ object Form_TT_kalkulator: TForm_TT_kalkulator
     Width = 153
     Height = 19
     Caption = 'rHTMLLabel_InfoText'
-    Color = clRed
+    Color = clBackground
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -16

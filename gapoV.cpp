@@ -416,7 +416,10 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	////pozice gapo formu, pokud je stejnì velký jako hlavní form, tak na 0 pozici, jinak na støed PL formu
 	if(Width==F->Width)Left=0;else Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
 	if(Height==F->Height)Top=0;else Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
-
+	////zobrazení orámování
+	zobrazitFrameForm=true;
+	////kvùli špatnì fungující funkci otáèení koleèka myši
+	liche_otoceni_koleckem_mysi=false; //NEWR
 
 	///uvolnìní stavu
 	input_state=FREE;
@@ -425,7 +428,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 void __fastcall TF_gapoV::FormPaint(TObject *Sender)
 {
  	mGrid->Show();//vykreslí tabulku
-	F->m.frameForm(this,clWebOrange,1);//vykreslí orámování okolo formu
+ 	if(zobrazitFrameForm)F->m.frameForm(this,clWebOrange,1);//vykreslí orámování okolo formu
 }
 
 //---------------------------------------------------------------------------
@@ -857,8 +860,9 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	if(input_state==FREE)
 	 //pøekliknutí chechboxu pravdìpodobnì
 	{
-		calculate(Row);//zajistí pøepoèet daného øádku
-		FormPaint(this);//zajistí pøekreslení bez probliku
+	 	calculate(Row);//zajistí pøepoèet daného øádku
+	 	FormPaint(this);//zajistí pøekreslení bez probliku
+   //mGrid->Refresh();
 	}
 	}
 }

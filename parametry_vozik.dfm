@@ -107,7 +107,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     Width = 153
     Height = 19
     Caption = 'rHTMLLabel_InfoText'
-    Color = clRed
+    Color = clBackground
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -16
