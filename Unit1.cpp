@@ -2297,12 +2297,14 @@ void TForm1::add_objekt(int X, int Y)
 		else souradnice=m.P2L(TPoint(X,Y));
 
 		//uložení do paměti
+		bool spojka=false;
+		if(pom==NULL && pom_vyhybka!=NULL){pom=pom_vyhybka;spojka=true;}//druhokolové přidávání tzn. spojka
 		if(add_posledni)//vloží poslední prvek
-		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky
+		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky, pro ostatní objekty má význam metoda bez návratové hodnoty
 			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}
 		else//vkládá prvek mezi prvky
-		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky
+		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky,, pro ostatní objekty má význam metoda bez návratové hodnoty
 			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y,pom);
 			d.v.zvys_indexy(pom);//zvýší indexy nasledujicích bodů
 		}
@@ -2311,11 +2313,11 @@ void TForm1::add_objekt(int X, int Y)
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
 
-		if(vybrany_objekt==VyID)//vyhybka
+		if(vybrany_objekt==VyID && spojka==false)//vyhybka
 		{
 			Akce=VYH;//kurzor(doplnit)
 		}
-		else
+		else//vše ostatní či spojka
 		{
 			pom_vyhybka=NULL;//odsranění pomocného ukazatele
 			Akce=NIC;//musí být nad REFRESH
