@@ -1313,7 +1313,7 @@ TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,
 			if(RET.number2)
 			{
 				RET.text+="<br><b>Navržená hodnota rozteče: <u>"+AnsiString(RET.number1*(1+999*Runit))+"</u> [";
-				if(Runit)RET.text+="m";else RET.text+="mm";
+				if(Runit)RET.text+="mm";else RET.text+="m";
 				RET.text+="].</b>";
 			}
 		}break;
@@ -1322,7 +1322,7 @@ TTextNumber Cvektory::rVALIDACE(short VID,unsigned long PID,double aRD,double R,
 		{
 			RET.number1=validace_Rx(validace_Rz(validace_aRD(Rz/PP.TT,p).number1*PP.TT,PID).number1/R).number1*R;
 			if(RET.number2)RET.text+="<br><b>Navržená hodnota rozestupu: <u>"+AnsiString(RET.number1*(1+999*Rzunit))+"</u> [";
-			if(Rzunit)RET.text+="m";else RET.text+="mm";
+			if(Rzunit)RET.text+="mm";else RET.text+="m";
 			RET.text+="].</b>";
 		}break;
 		//Rx
