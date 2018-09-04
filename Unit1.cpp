@@ -2312,7 +2312,7 @@ void TForm1::add_objekt(int X, int Y)
 		//ihned vykreslení
 		//pokud zruším nutnost invalidate kvůli spojovacím liniim, možno odkomentovat
 		//d.vykresli_rectangle(Canvas,souradnice,knihovna_objektu[vybrany_objekt].name,knihovna_objektu[vybrany_objekt].short_name);
-
+                               //pokud se jedná o spojku bude již ukončeno
 		if(vybrany_objekt==VyID && spojka==false)//vyhybka
 		{
 			Akce=VYH;//kurzor(doplnit)
