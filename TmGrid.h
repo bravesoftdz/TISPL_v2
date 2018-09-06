@@ -63,6 +63,9 @@ class TmGrid
 	void ClearColumn(unsigned long ColIdx);//smaže text v celém sloupec
 	void ClearRow(unsigned long RowIdx);//smaže text v celém øádku
 	void Clear();//smaže text celé tabulky
+	void AddRow();//pøidá øádek za poslední øádek
+	void InsertRow(long Row);//pøídá øádek za øádek uvedený dle parametru Row
+	void DeleteRow(long Row);//smaže celý øádek
 	void MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//spojí oblast bunìk do jedné buòky,text a vlastnosti pøevezmé od levé horní, zaèínat zadávat od nejvyšší a nejvíce vlevo
 	void SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,short setText=0,bool copyComponent=false);//nastaví oblast bunìk totožnými vlastnostmi dle referenèní buòky, text podle posledního parametru buï -1 -smaže, 0 - zanechá pùvodní (implicitnì), 1 zkopíruje všude stejný), zaèínat zadávat od nejvyšší a nejvíce vlevo
 	void SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//totožnì ohranièí danou oblast bunìk dle referenèní buòky (zohledòuje i rozdíly horní,dolní,levé pravé orámování), zaèínat zadávat od nejvyšší a nejvíce vlevo

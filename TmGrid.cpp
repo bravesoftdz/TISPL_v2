@@ -1150,6 +1150,50 @@ void TmGrid::Clear()
 	}
 }
 //---------------------------------------------------------------------------
+//pøidá øádek za poslední øádek
+void TmGrid::AddRow()
+{  //padá asi v realock
+	RowCount++;
+	Show();
+}
+//---------------------------------------------------------------------------
+//pøídá øádek za øádek uvedený dle parametru Row
+void TmGrid::InsertRow(long Row)
+{          //dodìlat
+	RowCount++;
+//	if(Row<RowCount)
+//	{ //pøekopíruje øádek resp. buòky na øádku následující a ubere poslední øádek
+//		for(unsigned long Y=Row;Y<RowCount-1;Y++)
+//		{
+//			for(unsigned long X=0;X<ColCount;X++)
+//			{
+//				CopyCell(Cells[X][Y+1],Cells[X][Y],true);
+//			}
+//			Rows[Y]=Rows[Y-1];
+//		}
+//	}
+	Show();
+}
+//---------------------------------------------------------------------------
+//smaže celý øádek
+void TmGrid::DeleteRow(long Row)
+{
+	if(Row<RowCount)
+	{ //pøekopíruje øádek resp. buòky na øádku následující a ubere poslední øádek
+		for(unsigned long Y=Row;Y<RowCount-1;Y++)
+		{
+			for(unsigned long X=0;X<ColCount;X++)
+			{
+				CopyCell(Cells[X][Y+1],Cells[X][Y],true);
+			}
+			Rows[Y]=Rows[Y+1];
+		}
+		RowCount--;
+	}
+	Show();//pøekreslení s problikem, jinak použít pøímo ve formu formpaint a toto zakomentovat
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //zajistí realokaci pole Cells dle nové velikosti
 void TmGrid::realock()
