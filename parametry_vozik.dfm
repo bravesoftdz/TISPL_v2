@@ -18,7 +18,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
   TextHeight = 13
   object rHTMLLabel_delka_jig: TrHTMLLabel
     Left = 110
-    Top = 83
+    Top = 88
     Width = 75
     Height = 21
     Caption = 'd'#233'lka <font color=#2b579a>[m]</font>'

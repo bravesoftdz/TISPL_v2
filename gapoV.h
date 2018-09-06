@@ -54,7 +54,7 @@ private:	// User declarations
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3,clHiddenValues;
 	enum Tinput_state{FREE,LOADING,PROGRAMOVE};//uchovává výbìr input hodnoty
-	short CTunit,RDunit,DDunit,Munit;
+ 	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
 public:		// User declarations
 	__fastcall TF_gapoV(TComponent* Owner);
@@ -71,6 +71,8 @@ public:		// User declarations
 	Tinput_state input_state;//stav vstupu
   int myModalResult;
   int temp_pocitadlo; // docasne reseni - kvuli posunu gridu
+ // enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;Tm_mm Dmunit;//pøepínaè jednotek vzdálenost
+	//enum Tminsec{S=0,MIN};Tminsec Taktunit;Tminsec RDunit;Tminsec minsec;Tminsec aRDunit;//pøepínaè jednotek èasu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoV *F_gapoV;

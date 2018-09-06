@@ -57,12 +57,33 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 
 	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
 	if(T=="")CTunit=0;else CTunit=T.ToInt();
-	T=F->readINI("nastaveni_form_parametry","RDt");
-	if(T=="")RDunit=0;else RDunit=T.ToInt();
+	//T=F->readINI("nastaveni_form_parametry","RDt");
+	//if(T=="")RDunit=0;else RDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DD");
 	if(T=="")DDunit=0;else DDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
+
+  RDunit=1;
+  aRDunit=1;
+  Runit=1;
+  Rzunit=1;
+
+  if(Form_parametry_linky->aRDunit==0)  //aRD = S
+  {
+  RDunit=0;
+  aRDunit=0;
+  }
+
+  if(Form_parametry_linky->Runit==0)  //Runit = M
+  {
+  Runit=0;
+  }
+
+  if(Form_parametry_linky->Dmunit==0)  //Dmunit = M
+  {
+  Rzunit=0;
+  }
 
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
@@ -338,7 +359,7 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
 	pm.CT=objekty[Row].CT;
-	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/60.0);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/1+60.0*Form_parametry_linky->aRDunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 	pm.DD=objekty[Row].delka_dopravniku;
 	pm.K=objekty[Row].kapacita;
 	pm.P=objekty[Row].pozice;
