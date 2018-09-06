@@ -63,9 +63,9 @@ class TmGrid
 	void ClearColumn(unsigned long ColIdx);//smae text v celém sloupec
 	void ClearRow(unsigned long RowIdx);//smae text v celém øádku
 	void Clear();//smae text celé tabulky
-	void AddRow();//pøidá øádek za poslední øádek
-	void InsertRow(long Row);//pøídá øádek za øádek uvedenı dle parametru Row
-	void DeleteRow(long Row);//smae celı øádek
+	void AddRow(bool copyComponentFromPreviousRow=true,bool invalidate=true);//pøidá øádek za poslední øádek, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pøedchozího øádku, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody AddRow pøimo v uitém formuláøi
+	void InsertRow(long Row,bool copyComponentFromPreviousRow=true,bool invalidate=true);//pøídá øádek za øádek uvedenı dle parametru Row,, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pøedchozího øádku, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v uitém formuláøi
+	void DeleteRow(long Row,bool invalidate=true);//smae celı øádek, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v uitém formuláøi
 	void MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//spojí oblast bunìk do jedné buòky,text a vlastnosti pøevezmé od levé horní, zaèínat zadávat od nejvyšší a nejvíce vlevo
 	void SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,short setText=0,bool copyComponent=false);//nastaví oblast bunìk totonımi vlastnostmi dle referenèní buòky, text podle posledního parametru buï -1 -smae, 0 - zanechá pùvodní (implicitnì), 1 zkopíruje všude stejnı), zaèínat zadávat od nejvyšší a nejvíce vlevo
 	void SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//totonì ohranièí danou oblast bunìk dle referenèní buòky (zohledòuje i rozdíly horní,dolní,levé pravé orámování), zaèínat zadávat od nejvyšší a nejvíce vlevo
@@ -82,6 +82,8 @@ class TmGrid
 	TscGPCheckBox *getCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPRadioButton *getRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPNumericEdit *getNumeric(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+	void createComponent(Ttype Type, unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vytvoøenou komponentu dle Type, pokud existuje, tak se nic nedìje
+	TscGPEdit *createEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
@@ -121,6 +123,7 @@ class TmGrid
 	void SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na numericedit, pomocná metoda objednu vıše uvedené
 	void rcc(unsigned long cc,unsigned long rc);//pouze obejití lokální promìnné, v c++ je na to nìjaké klíèové slovo, ale nevzpomenu si
 	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
+	void CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
 	void CreateCell(TCells &NewCell);//vytvoøí novou buòku (alokuje ji pamì)
 	void DeleteCell(TCells &DelCell);//smae buòku z pamìti
 	void DeleteTable();//odstraní pouze tabulku z pamìti
