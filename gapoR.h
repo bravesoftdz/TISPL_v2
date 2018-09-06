@@ -59,7 +59,7 @@ private:	// User declarations
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND;
-	short CTunit,RDunit,DDunit,Munit;
+	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
 public:		// User declarations
 	__fastcall TF_gapoR(TComponent* Owner);

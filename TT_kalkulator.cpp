@@ -32,8 +32,17 @@ Close();
 
 void __fastcall TForm_TT_kalkulator::FormShow(TObject *Sender)
 {
+    if(Form_parametry_linky->Taktunit==Form_parametry_linky->S)
+    {
+    rEditNum_takt->Value=F->d.v.PP.TT;
+    rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[s]</font>";
+    }
+    else
+    {
+     rEditNum_takt->Value=F->d.v.PP.TT/60.0;
+     rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[m]</font>";
+     }
 
-rEditNum_takt->Value=F->d.v.PP.TT;
 Form_parametry_linky->Button_save->Enabled=false;
 Form_parametry_linky->Button_storno->Enabled=false;
 

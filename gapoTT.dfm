@@ -853,6 +853,17 @@ object F_gapoTT: TF_gapoTT
       4444E17B5AF9C467402242C14EF0AFC6D00BFE99257AC181F9B7E0C0D00B0E0C
       BD40C3BF01DBD52BB0FD03910E0000000049454E44AE426082}
   end
+  object Memo1: TMemo
+    Left = 152
+    Top = 112
+    Width = 41
+    Height = 49
+    Lines.Strings = (
+      'Memo'
+      '1')
+    TabOrder = 8
+    Visible = False
+  end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
     HintFont.Color = clWindowText

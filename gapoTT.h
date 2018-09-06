@@ -36,6 +36,7 @@ __published:	// IDE-managed Components
 	TscScrollBar *scScrollBar_vertical;
   TscGPButton *scGPButton_zamek_locked;
   TscGPImage *scImage_zamky;
+  TMemo *Memo1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -53,7 +54,7 @@ private:	// User declarations
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3,clHiddenValues;
 	enum Tinput_state{FREE,LOADING};//uchovává výbìr input hodnoty
-	short CTunit,RDunit,DDunit,Munit;
+	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
 public:		// User declarations

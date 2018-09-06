@@ -97,11 +97,13 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
    Taktunit=S;
-	 Runit=MM;
+	 Runit=M;
 	 Rzunit=MM;
    aRDunit=S;
    Dmunit=M;
+   Delkaunit=M;
 
+   rHTMLLabel_InfoText->Caption="";
    scHTMLLabel_rozestup->Height=27;
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
@@ -111,6 +113,23 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")
     {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
     Dmunit=MM;
+    }
+    if(Form1->readINI("nastaveni_form_parametry_linky", "R") == "1")
+    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+    Runit=MM;
+    }
+    if(Form1->readINI("nastaveni_form_parametry_linky", "TT") == "1")
+    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+    Taktunit=MIN;
+    rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[m] </font>";
+    }
+    if(Form1->readINI("nastaveni_form_parametry_linky", "rozmery") == "1")
+    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+    Delkaunit=MM;
+    rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[mm]</font>";
+    rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[mm]</font>";
+    rHTMLLabel_vyska_jig->Caption="výška <font color=#2b579a>[mm]</font>";
+    rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
     }
 
 
@@ -683,7 +702,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
 	//navýší poèet øádkù
 	rStringGridEd_tab_dopravniky->RowCount++;
-  if(rStringGridEd_tab_dopravniky->RowCount>4)
+  if(rStringGridEd_tab_dopravniky->RowCount>=1)
   {
   rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
   Form_parametry_linky->Height= Form_parametry_linky->Height+30;
@@ -2592,7 +2611,10 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
             if(TNValue.text!="")
             {
                VID=ACol;
-               VID_value=TNValue.number1;
+               if(VID==4)  VID_value=TNValue.number1*(1+59.0*aRDunit);
+               if(VID==5)  VID_value=TNValue.number1*(1+999.0*Runit);
+               if(VID==6)  VID_value=TNValue.number1*(1+999.0*Dmunit);
+
                Row_validace=ARow;
                Col_validace=ACol;
                vypis(TNValue.text);
@@ -2853,6 +2875,11 @@ void __fastcall TForm_parametry_linky::scHTMLLabel_roztecClick(TObject *Sender)
 			Runit = MM;
 		}
 
+    if(rHTMLLabel_InfoText->Visible) // kvùli tomu když je zobrazen doporuè hodnota a kliknu do zmìny zobraz. jednotek - info text, ze zobrazí v akt. nastav. jednotkách
+    {
+    VALIDACE(Col_validace,Row_validace);
+    }
+
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
@@ -2875,6 +2902,11 @@ void __fastcall TForm_parametry_linky::scHTMLLabel_rozestupClick(TObject *Sender
 			Dmunit = MM;
 		}
 
+    if(rHTMLLabel_InfoText->Visible) // kvùli tomu když je zobrazen doporuè hodnota a kliknu do zmìny zobraz. jednotek - info text, ze zobrazí v akt. nastav. jednotkách
+    {
+    VALIDACE(Col_validace,Row_validace);
+    }
+
 		input_state = NOTHING; // už se mohou pøepoèítávat
 
 }
@@ -2896,6 +2928,11 @@ void __fastcall TForm_parametry_linky::rMemoEx1_rychlostClick(TObject *Sender)
 			INPUT(0,0);    //tento input volá zároveò i output
 			aRDunit = S;
 		}
+
+    if(rHTMLLabel_InfoText->Visible) // kvùli tomu když je zobrazen doporuè hodnota a kliknu do zmìny zobraz. jednotek - info text, ze zobrazí v akt. nastav. jednotkách
+    {
+    VALIDACE(Col_validace,Row_validace);
+    }
 
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
