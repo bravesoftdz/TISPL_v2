@@ -12,10 +12,28 @@ object Form_poznamky: TForm_poznamky
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnPaint = FormPaint
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = 10
+    Top = 29
+    Width = 298
+    Height = 19
+    Caption = 'Pozn'#225'mka ke vzniku technologick'#233'ho '#269'asu'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
@@ -215,11 +233,12 @@ object Form_poznamky: TForm_poznamky
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    ScrollBars = ssVertical
     TabOrder = 1
     Transparent = True
   end
   object scGPButton_OK: TscGPButton
-    Left = 168
+    Left = 184
     Top = 295
     Width = 100
     Height = 35
@@ -308,7 +327,7 @@ object Form_poznamky: TForm_poznamky
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 307
+    Left = 323
     Top = 295
     Width = 100
     Height = 35

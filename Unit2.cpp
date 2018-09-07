@@ -22,6 +22,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 	mGrid=new TmGrid(this);//vždy nutno jako první
 	mGrid->Tag=4;//ID tabulky
 	mGrid->Left=0;mGrid->Top=0;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
+	mGrid->AntiAliasing_text=true;
 	mGrid->Create(3,3);//vhodné jako tøetí
 
 	//mGrid->Border.Width=1;

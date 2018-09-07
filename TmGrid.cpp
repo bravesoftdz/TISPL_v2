@@ -8,6 +8,7 @@
 #include "gapoV.h"
 #include "gapoR.h"
 #include "unit2.h"
+#include "poznamky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -898,6 +899,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
@@ -910,6 +912,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnEnter(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnChange(TObject *Sender)
@@ -922,16 +925,18 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
 {
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
-	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+	Row=getRowFromTag(((TComponent*)(Sender))->Tag);  //asi zámìrnì OnChange?
 	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
-	//if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyDown(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
