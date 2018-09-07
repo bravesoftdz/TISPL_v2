@@ -125,4 +125,31 @@ object Form2: TForm2
     GroupIndex = 0
     AllowAllUp = False
   end
+  object Button3: TButton
+    Left = 362
+    Top = 0
+    Width = 75
+    Height = 25
+    Caption = 'delete Row'
+    TabOrder = 3
+    OnClick = Button3Click
+  end
+  object Button4: TButton
+    Left = 281
+    Top = 0
+    Width = 75
+    Height = 25
+    Caption = 'insert Row'
+    TabOrder = 4
+    OnClick = Button4Click
+  end
+  object Button5: TButton
+    Left = 200
+    Top = 0
+    Width = 75
+    Height = 25
+    Caption = 'add Row'
+    TabOrder = 5
+    OnClick = Button5Click
+  end
 end

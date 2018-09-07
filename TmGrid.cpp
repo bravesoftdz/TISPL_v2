@@ -7,6 +7,7 @@
 #include "gapoTT.h"
 #include "gapoV.h"
 #include "gapoR.h"
+#include "unit2.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -133,6 +134,26 @@ void TmGrid::CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell)
 	else Cells[X][Y].LeftBorder=Cells[X-1][Y].RightBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
 	//right
 	Cells[X][Y].RightBorder=new TBorder;*Cells[X][Y].RightBorder=*refCell.RightBorder;
+}
+//patøiènì prolinkuje orámování, že sousední orámování má ukazatel na totožný objekt, vzor orámvání získá dle refCell
+void TmGrid::CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell)
+{
+	//top (pøebírá, propojuje se s horním, nejedná-li se o první)
+	try{
+	//if(refCell.TopBorder==NULL)ShowMessage("null");
+	if(Y==0){Cells[X][Y].TopBorder=new TBorder;/**Cells[X][Y].TopBorder=*refCell.TopBorder;*/}
+	else Cells[X][Y].TopBorder=Cells[X][Y-1].BottomBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
+	//botom
+	Cells[X][Y].BottomBorder=new TBorder;*Cells[X][Y].BottomBorder=*refCell.BottomBorder;
+	//left (pøebírá, propojuje se s levým, nejedná-li se o první)
+	if(X==0){Cells[X][Y].LeftBorder=new TBorder;*Cells[X][Y].LeftBorder=*refCell.LeftBorder;}
+	else Cells[X][Y].LeftBorder=Cells[X-1][Y].RightBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
+	//right
+	Cells[X][Y].RightBorder=new TBorder;*Cells[X][Y].RightBorder=*refCell.RightBorder;
+	}catch(...)
+	{
+			ShowMessage(Y);
+	}
 }
 //---------------------------------------------------------------------------
 //vytvoøí novou buòku (alokuje ji pamì)
@@ -564,17 +585,18 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
 	//založení + tag + název
-	TscGPEdit *E=getEdit(X,Y);//pokud již existuje
-	if(E==NULL)//pokud ne
-	{
-		E=new TscGPEdit(Form);
-		E->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
-		E->Name="mGrid_EDIT_"+AnsiString(E->Tag);
-		//události
-		E->OnClick=&getTagOnClick;
-		E->OnEnter=&getTagOnEnter;
-		E->OnChange=&getTagOnChange;
-	}
+//	TscGPEdit *E=getEdit(X,Y);//pokud již existuje
+//	if(E==NULL)//pokud ne
+//	{
+//		E=new TscGPEdit(Form);
+//		E->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
+//		E->Name="mGrid_EDIT_"+AnsiString(E->Tag);
+//		//události
+//		E->OnClick=&getTagOnClick;
+//		E->OnEnter=&getTagOnEnter;
+//		E->OnChange=&getTagOnChange;
+//	}
+	TscGPEdit *E=createEdit(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==EDIT)E->Enabled=true;else E->Enabled=false;
 	E->AutoSize=false;
@@ -655,6 +677,24 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Value=ms.MyToDouble(Cell.Text);
 	//vlastník
 	N->Parent=Form;//musí být až na konci
+}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
+{
+	TscGPEdit *E=getEdit(Col,Row);//pokud již existuje
+	if(E==NULL)//pokud ne, tak založí
+	{
+		E = new TscGPEdit(Form);
+		E->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		E->Name="mGrid_EDIT_"+AnsiString(E->Tag);
+
+		//události
+		E->OnClick=&getTagOnClick;
+		E->OnEnter=&getTagOnEnter;
+		E->OnChange=&getTagOnChange;
+	}
+	return E;
 }
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
@@ -857,6 +897,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
@@ -868,6 +909,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnEnter(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnEnter(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnChange(TObject *Sender)
@@ -879,6 +921,7 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
+	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
@@ -888,6 +931,7 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
 	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
+	//if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyDown(Tag,Col,Row);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1084,7 +1128,7 @@ void TmGrid::CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1
 void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 {
 	////typ
-	if(copyComponent)CopyCell.Type=RefCell.Type;
+	if(copyComponent){CopyCell.Type=RefCell.Type;/*createComponent(RefCell.Type,)*/}
 	else CopyCell.Type=DRAW;
 	////text + font
 	//*CopyCell.Font=*RefCell.Font;
@@ -1141,7 +1185,7 @@ void TmGrid::ClearRow(unsigned long RowIdx)
 	}
 }
 //---------------------------------------------------------------------------
-//smaže text celé tabulku
+//smaže text celé tabulky
 void TmGrid::Clear()
 {
 	for(unsigned long X=0;X<=ColCount;X++)
@@ -1150,36 +1194,60 @@ void TmGrid::Clear()
 	}
 }
 //---------------------------------------------------------------------------
-//pøidá øádek za poslední øádek
-void TmGrid::AddRow()
-{  //padá asi v realock
+//pøidá øádek za poslední øádek, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pøedchozího øádku, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody AddRow pøimo v užitém formuláøi
+void TmGrid::AddRow(bool copyComponentFromPreviousRow,bool invalidate)
+{  //padá asi v realock pøí pøidávání øádkù, ale spíše na mgrid2
+	//pøi realock asi neudrží výšku øádkù
+
+  //zvýšení celkového poètu øádkù
 	RowCount++;
-	Show();
+
+	//kopie komponent z nadøízeného øádku, jeli-požadováno
+	if(copyComponentFromPreviousRow)
+	{
+		realock();//musí probìhnout pøed následujícím kodem, jinak øeší Show
+		for(unsigned long X=0;X<ColCount;X++)
+		{
+			Cells[X][RowCount-1].Type=Cells[X][RowCount-2].Type;
+			//následující není tøeba, poøeší jen výše uvedené + následné show: createComponent(Cells[X][RowCount-1].Type,X,RowCount-1);//dle zadaného èísla sloupce a èísla øádku vytvoøenou komponentu dle Type, pokud existuje, tak se nic nedìje
+		}
+	}
+
+	//pokud je požadováno pøekreslení
+	if(invalidate)Show();//pøekreslení s problikem, jinak použít pøímo ve formu formpaint a toto zakomentovat
 }
 //---------------------------------------------------------------------------
-//pøídá øádek za øádek uvedený dle parametru Row
-void TmGrid::InsertRow(long Row)
-{          //dodìlat
-	RowCount++;
-//	if(Row<RowCount)
-//	{ //pøekopíruje øádek resp. buòky na øádku následující a ubere poslední øádek
-//		for(unsigned long Y=Row;Y<RowCount-1;Y++)
-//		{
-//			for(unsigned long X=0;X<ColCount;X++)
-//			{
-//				CopyCell(Cells[X][Y+1],Cells[X][Y],true);
-//			}
-//			Rows[Y]=Rows[Y-1];
-//		}
-//	}
-	Show();
-}
-//---------------------------------------------------------------------------
-//smaže celý øádek
-void TmGrid::DeleteRow(long Row)
+//pøídá øádek za øádek uvedený dle parametru Row,, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pøedchozího øádku, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v užitém formuláøi
+void TmGrid::InsertRow(long Row,bool copyComponentFromPreviousRow, bool invalidate)
 {
-	if(Row<RowCount)
-	{ //pøekopíruje øádek resp. buòky na øádku následující a ubere poslední øádek
+	if(Row<RowCount-1)//pokud se nejedná o poslední øádek, tam je to zbyteèné a øeší else vìtev AddRow
+	{
+		RowCount++;realock();//pøidá poslední øádek
+		//pøekopíruje øádek resp. buòky z øádku následujícího a pøedtím pøidá poslední øádek
+		for(unsigned long Y=RowCount-1;Y>Row;Y--)
+		{
+			for(unsigned long X=0;X<ColCount;X++)
+			{
+				CopyCell(Cells[X][Y-1],Cells[X][Y],true);
+			}
+			Rows[Y]=Rows[Y-1];
+		}
+		ClearRow(Row);//vyprázní vkládaný øádek
+
+		if(invalidate)//pokud je požadováno pøekreslení, zde je nutné celou oblast pøekreslit
+		{
+			//Show();netøeba
+			Form->Invalidate();//tøeba
+		}
+	}
+	else AddRow(copyComponentFromPreviousRow,invalidate);
+}
+//---------------------------------------------------------------------------
+//smaže celý øádek, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v užitém formuláøi
+void TmGrid::DeleteRow(long Row,bool invalidate)
+{
+	if(Row<=RowCount-1 && RowCount-1>0)//nelze smazat pouze jenom jeden øádek
+	{ //pøekopíruje øádek resp. buòky na øádku následující a ubere poslední øádek,pokud se nejedná o jediný øádek
 		for(unsigned long Y=Row;Y<RowCount-1;Y++)
 		{
 			for(unsigned long X=0;X<ColCount;X++)
@@ -1188,9 +1256,10 @@ void TmGrid::DeleteRow(long Row)
 			}
 			Rows[Y]=Rows[Y+1];
 		}
+		DeleteComponents(0,RowCount-1,ColCount-1,RowCount-1);
 		RowCount--;
 	}
-	Show();//pøekreslení s problikem, jinak použít pøímo ve formu formpaint a toto zakomentovat
+	if(invalidate)Show();//pokud je požadováno pøekreslení //pøekreslení s problikem, jinak použít pøímo ve formu formpaint a toto zakomentovat
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1203,21 +1272,18 @@ void TmGrid::realock()
 	for(unsigned long X=0;X<bufColCount;X++)
 	{
 		bufCells[X] = new TCells[bufRowCount];//pruchod po sloupcich, slupcùm dynamamického pole alokuje pamìt pro jednotlivé øádky- cyklus musí být samostatnì
-		//*bufCells[X] = *Cells[X];//zkopírování pùvodních hodnot do zálohy //takto asi nevhodné kopírovat (zùstane ukazatel), s hvìzdickou sice hodnoty ale je potøeba pøidìlit pamìt pomocí new pro TBrush TFont a TBorders
-		for(unsigned long Y=0;Y<bufRowCount;Y++)
-		{
-			CreateCell(bufCells[X][Y]);
-			CopyCell(Cells[X][Y],bufCells[X][Y],true);
-		}
+		bufCells[X] = Cells[X];//zkopírování pùvodních hodnot do zálohy //takto asi nevhodné kopírovat (zùstane ukazatel), s hvìzdickou sice hodnoty ale je potøeba pøidìlit pamìt pomocí new pro TBrush TFont a TBorders
 	}
 
-	//smazání pùvodních hodnot
+	//poèty øádkù a sloupcù
 	unsigned long bufColCount2=ColCount;unsigned long bufRowCount2=RowCount;
 	ColCount=bufColCount;RowCount=bufRowCount;
-	DeleteComponents();
-	//pokud bych pùvodní chtìl komponenty zachovat, ale nefunguje zcela správnì DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);
+
+	//smazání pùvodních hodnot
+	//pùvodní komponenty zachovám,  smažu jen ty, které nejsou již potøeba (pøi zmenšování tabulky), ale údajnì nefunguje zcela správnì
+	DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//nová oblast až stará oblast, není potøeba ošetøovat IFem pro pøípad pøidávání (pohlídají si cykly ve vnitø algoritmu)
 	ColCount=bufColCount2;RowCount=bufRowCount2;
-	DeleteTable();
+	//toto proè ne DeleteTable(); asi nahrazuje Create, otázka však zùstává zda nìco nezùstává v pamìti
 
 	//vytvoøení nového realokovaného pole
 	bufColCount2=bufColCount;bufRowCount2=bufRowCount;//urèeno pøi další realokaci pole, create totiž pøepisuje buf hodnoty
@@ -1226,17 +1292,12 @@ void TmGrid::realock()
 	//zkopírování pùvodních hodnot zpìt
 	if(bufColCount2>ColCount)bufColCount=ColCount;else bufColCount=bufColCount2;//podle toho, co je menší
 	if(bufRowCount2>RowCount)bufRowCount=RowCount;else bufRowCount=bufRowCount2;//podle toho, co je menší
-	for(unsigned long X=0;X<bufColCount;X++)
+	for(unsigned long Y=0;Y<bufRowCount;Y++)
 	{
-		for(unsigned long Y=0;Y<bufRowCount;Y++)
+		for(unsigned long X=0;X<bufColCount;X++)
 		{
-			//nelze celý ukazatel Cells[X][Y] = bufCells[X][Y];
-			////typ
-			Cells[X][Y].Font=new TFont();
-			Cells[X][Y].Background=new TBrush();//alokace pamìti
-			CopyAreaCell(bufCells[X][Y],Cells[X][Y]);//kopie vlastností, bez orámování
-			////orámování
-			CreateLinkBorder(X,Y,bufCells[X][Y]);
+			//nelze celý ukazatel
+			Cells[X][Y] = bufCells[X][Y];
 		}
 	}
 
@@ -1251,6 +1312,96 @@ void TmGrid::realock()
 	}
 	bufCells=NULL; delete bufCells;
 	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
+}
+//---------------------------------------------------------------------------
+////zajistí realokaci pole Cells dle nové velikosti
+//void TmGrid::realock()
+//{              //ShowMessage("0");
+//	//kopie do záložního pole a smazání
+//	TCells **bufCells = new TCells*[bufColCount];//vytvoøí dynamické pole ukazatelu typu TCells dle poètu požadovaných sloupcù
+//	for(unsigned long X=0;X<bufColCount;X++)
+//	{
+//		bufCells[X] = new TCells[bufRowCount];//pruchod po sloupcich, slupcùm dynamamického pole alokuje pamìt pro jednotlivé øádky- cyklus musí být samostatnì
+//		//bufCells[X] = Cells[X];//zkopírování pùvodních hodnot do zálohy //takto asi nevhodné kopírovat (zùstane ukazatel), s hvìzdickou sice hodnoty ale je potøeba pøidìlit pamìt pomocí new pro TBrush TFont a TBorders
+//		for(unsigned long Y=0;Y<bufRowCount;Y++)
+//		{
+//			//toto tu bylo:CreateCell(bufCells[X][Y]);
+//			//toto tu bylo:CopyCell(Cells[X][Y],bufCells[X][Y],true);
+////			//totu tu nebylo:
+////			CopyAreaCell(Cells[X][Y],bufCells[X][Y],true);
+////			////orámování
+////			if(Y==0){bufCells[X][Y].TopBorder=new TBorder;*bufCells[X][Y].TopBorder=*Cells[X][Y].TopBorder;}
+////			else bufCells[X][Y].TopBorder=Cells[X][Y-1].BottomBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
+////			//botom
+////			bufCells[X][Y].BottomBorder=new TBorder;*bufCells[X][Y].BottomBorder=*Cells[X][Y].BottomBorder;
+////			//left (pøebírá, propojuje se s levým, nejedná-li se o první)
+////			if(X==0){bufCells[X][Y].LeftBorder=new TBorder;*bufCells[X][Y].LeftBorder=*Cells[X][Y].LeftBorder;}
+////			else bufCells[X][Y].LeftBorder=Cells[X-1][Y].RightBorder;//pokud ne, odkazuje na spoleèné ohranièení, jedná se o jeden objekt
+////			//right
+////			bufCells[X][Y].RightBorder=new TBorder;*bufCells[X][Y].RightBorder=*Cells[X][Y].RightBorder;
+//		}
+//	}
+//	 //ShowMessage("1");
+//	//smazání pùvodních hodnot
+//	unsigned long bufColCount2=ColCount;unsigned long bufRowCount2=RowCount;
+//	ColCount=bufColCount;RowCount=bufRowCount;
+//	//DeleteComponents();//toto bylo odkomentováno a níže zakomentováno DeleteComponents
+//	//pokud bych pùvodní chtìl komponenty zachovat, ale nefunguje zcela správnì
+//	DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//nová oblast až stará oblast, není potøeba ošetøovat IFem pro pøípad pøidávání (pohlídají si cykly ve vnitø algoritmu)
+//	ColCount=bufColCount2;RowCount=bufRowCount2;
+//	//DeleteTable();
+//								//ShowMessage("2");
+//	//vytvoøení nového realokovaného pole
+//	bufColCount2=bufColCount;bufRowCount2=bufRowCount;//urèeno pøi další realokaci pole, create totiž pøepisuje buf hodnoty
+//	Create(ColCount,RowCount);
+//
+//	//zkopírování pùvodních hodnot zpìt
+//	if(bufColCount2>ColCount)bufColCount=ColCount;else bufColCount=bufColCount2;//podle toho, co je menší
+//	if(bufRowCount2>RowCount)bufRowCount=RowCount;else bufRowCount=bufRowCount2;//podle toho, co je menší
+//
+//	for(unsigned long Y=0;Y<bufRowCount;Y++)
+//	{        ShowMessage(bufCells[0][Y].TopBorder->Width);
+//		for(unsigned long X=0;X<bufColCount;X++)
+//		{
+//			//nelze celý ukazatel
+//			Cells[X][Y] = bufCells[X][Y];
+//			////typ
+//			Cells[X][Y].Font=new TFont();
+//			Cells[X][Y].Background=new TBrush();//alokace pamìti
+//			CopyAreaCell(bufCells[X][Y],Cells[X][Y],true);//kopie vlastností, bez orámování
+//			////orámování
+//			CreateLinkBorder2(X,Y,bufCells[X][Y]);
+//		}
+//	}
+//												//	ShowMessage("4");
+//	//smazání pùvodního bufCells
+//	for(unsigned long X=0;X<bufColCount2;X++)
+//	{
+//		for(unsigned long Y=0;Y<bufRowCount2;Y++)//po øádcích
+//		{
+//			DeleteCell(bufCells[X][Y]);
+//		}
+//		bufCells[X]=NULL; delete bufCells[X];
+//	}
+//	bufCells=NULL; delete bufCells;
+//	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
+//}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vytvoøenou komponentu dle Type, pokud existuje, tak se nic nedìje
+void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
+{
+	switch(Type)
+	{
+		case readEDIT:break;
+		case EDIT:				createEdit(Col,Row);break;
+		case NUMERIC:break;
+		case readNUMERIC:break;
+		case BUTTON:		 	createButton(Col,Row);break;
+		case COMBO:break;
+		case CHECK:				createCheck(Col,Row);break;
+		case RADIO:				createRadio(Col,Row);break;
+		case DRAW:break;
+  }
 }
 //---------------------------------------------------------------------------
 //odstraní dynamicky vytoøené komponenty, nutno volat pøed Delete()
