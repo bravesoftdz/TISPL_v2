@@ -2604,20 +2604,34 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 				 if(ACol==4 || ACol==5 || ACol==6 || ACol==7)
 				 {
+         double aRD=0;
          double R=0;
-         if(Runit==M) R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
+         double Rz=0;
+         double Rx= F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
+         if(aRDunit==S)  aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]); else aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+         if(Runit==M)  R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else   R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
+         if(Dmunit==M)Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); else  Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit);
 
-            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit),R,F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Runit),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),aRDunit,Runit,Dmunit);
+         Memo3->Lines->Clear();
+         Memo3->Lines->Add(aRD);
+         Memo3->Lines->Add(R);
+         Memo3->Lines->Add(Rz);
+         Memo3->Lines->Add(Rx);
+
+            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),aRD,R,Rz,Rx,aRDunit,Runit,Dmunit);
             if(TNValue.text!="")
             {
                VID=ACol;
                if(VID==4)  VID_value=TNValue.number1*(1+59.0*aRDunit);
                if(VID==5)  VID_value=TNValue.number1*(1+999.0*Runit);
                if(VID==6)  VID_value=TNValue.number1*(1+999.0*Dmunit);
+               if(VID==7)  VID_value= TNValue.number1; //Rx bez pøevodù
 
                Row_validace=ARow;
                Col_validace=ACol;
                vypis(TNValue.text);
+               Memo3->Lines->Add(VID_value);
+
             }
 //	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 //						 {
