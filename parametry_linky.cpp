@@ -2545,9 +2545,6 @@ void TForm_parametry_linky::Roletka_roztec(int Row)
 
 
 
-
-
-
 void __fastcall TForm_parametry_linky::FormClick(TObject *Sender)
 {
 //zobrazení všech zámkù pøi kliku do formu
@@ -2558,16 +2555,6 @@ void __fastcall TForm_parametry_linky::FormClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyDrawCell(TObject *Sender,
-					int ACol, int ARow, TRect &Rect, TGridDrawState State)
-{
-if (ACol==5) {
-
-	//F->m.frameRect(Rect,clBlue,2);
- //   Rect=
-}
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender,
           int Col, int Row, TStringList *&PickList)
@@ -2612,11 +2599,11 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
          if(Runit==M)  R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else   R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
          if(Dmunit==M)Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); else  Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit);
 
-         Memo3->Lines->Clear();
-         Memo3->Lines->Add(aRD);
-         Memo3->Lines->Add(R);
-         Memo3->Lines->Add(Rz);
-         Memo3->Lines->Add(Rx);
+//         Memo3->Lines->Clear();
+//         Memo3->Lines->Add(aRD);
+//         Memo3->Lines->Add(R);
+//         Memo3->Lines->Add(Rz);
+//         Memo3->Lines->Add(Rx);
 
             TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),aRD,R,Rz,Rx,aRDunit,Runit,Dmunit);
             if(TNValue.text!="")

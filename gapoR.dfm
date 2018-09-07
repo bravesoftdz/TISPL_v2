@@ -4,7 +4,7 @@ object F_gapoR: TF_gapoR
   BorderStyle = bsNone
   Caption = 'F_gapoR'
   ClientHeight = 445
-  ClientWidth = 377
+  ClientWidth = 363
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -78,7 +78,7 @@ object F_gapoR: TF_gapoR
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
-    Width = 377
+    Width = 363
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -106,9 +106,10 @@ object F_gapoR: TF_gapoR
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 377
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 327
+      Left = 313
       Top = 0
       Width = 50
       Height = 33
@@ -184,12 +185,13 @@ object F_gapoR: TF_gapoR
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 327
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
       Left = 92
       Top = 0
-      Width = 198
+      Width = 184
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -218,9 +220,10 @@ object F_gapoR: TF_gapoR
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367' objekt'#367' v kontinu'#225'ln'#237'm re'#382'imu'
+      ExplicitWidth = 198
     end
     object scGPGlyphButton_info: TscGPGlyphButton
-      Left = 290
+      Left = 276
       Top = 0
       Width = 37
       Height = 34
@@ -297,6 +300,7 @@ object F_gapoR: TF_gapoR
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 290
     end
     object scButton_csv: TscButton
       Left = 0
@@ -762,5 +766,25 @@ object F_gapoR: TF_gapoR
       98ED2C099F1AA0EDFD379D254992FDCE72FDEB34CF7C1ED90993898FB2389B9A
       67A263D8670D986CB10E9F4C11886F6C6CC488A087112F822A093C6BC0737AEA
       2D765A5AEA753E5AC46F74331E1838ED8B1A0000000049454E44AE426082}
+  end
+  object Memo1: TMemo
+    Left = 8
+    Top = 80
+    Width = 50
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 8
+    Visible = False
+  end
+  object Memo2: TMemo
+    Left = 80
+    Top = 80
+    Width = 50
+    Height = 89
+    Lines.Strings = (
+      'Memo2')
+    TabOrder = 9
+    Visible = False
   end
 end

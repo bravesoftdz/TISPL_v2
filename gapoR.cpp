@@ -126,8 +126,8 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	if(DDunit)mGrid->Cells[10][0].Text="DD - Délka objekt [mm]";else mGrid->Cells[10][0].Text="DD - Délka objekt [m]";
 	mGrid->Cells[12][0].Text="K - Kapacita [vozíkù + mezer]";
 	mGrid->Cells[14][0].Text="P - Pozice [vozíkù]";
-	if(Munit)mGrid->Cells[16][0].Text="M - mezera jig [mm]";else mGrid->Cells[16][0].Text="M - mezera jig [m]";
-	if(Munit)mGrid->Cells[18][0].Text="M - mezera vozík [mm]";else mGrid->Cells[18][0].Text="M - mezera vozík [m]";
+	if(Munit==0)mGrid->Cells[16][0].Text="M - mezera jig [m]";else mGrid->Cells[16][0].Text="M - mezera jig [mm]";
+	if(Munit==0)mGrid->Cells[18][0].Text="M - mezera vozík [m]";else mGrid->Cells[18][0].Text="M - mezera vozík [mm]";
 	mGrid->Cells[20][0].Text="Rotace [°]";
 	mGrid->Cells[21][0].Text="Náhled";
 
@@ -179,11 +179,11 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				//parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[6][j].Text=O[z].CT/(1+59.0*CTunit);	 								mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=clOLD;	mGrid->Cells[7][j].Align=mGrid->LEFT; mGrid->Cells[7][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[8][j].Text=O[z].RD*(1+59.0*RDunit);                  mGrid->Cells[8][j].Align=mGrid->LEFT;	mGrid->Cells[8][j].Font->Color=clOLD;	mGrid->Cells[9][j].Align=mGrid->LEFT; mGrid->Cells[9][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[10][j].Text=O[z].delka_dopravniku*(1+999*DDunit);    mGrid->Cells[10][j].Align=mGrid->LEFT;mGrid->Cells[10][j].Font->Color=clOLD;mGrid->Cells[11][j].Align=mGrid->LEFT;mGrid->Cells[11][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[10][j].Text=O[z].delka_dopravniku*(1+999.0*DDunit);    mGrid->Cells[10][j].Align=mGrid->LEFT;mGrid->Cells[10][j].Font->Color=clOLD;mGrid->Cells[11][j].Align=mGrid->LEFT;mGrid->Cells[11][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[12][j].Text=O[z].kapacita;                           mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT;mGrid->Cells[13][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[14][j].Text=O[z].pozice;                             mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[16][j].Text=O[z].mezera_jig*(1+999*Munit);           mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
-				mGrid->Cells[18][j].Text=O[z].mezera_podvozek*(1+999*Munit); 			mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[16][j].Text=O[z].mezera_jig*(1+999.0*Munit);           mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
+				mGrid->Cells[18][j].Text=O[z].mezera_podvozek*(1+999.0*Munit); 			mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[20][j].Text=AnsiString(O[z].rotace);             		mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;
 				mGrid->Cells[21][j].Type=mGrid->BUTTON;mGrid->Cells[21][j].Text="...";mGrid->Cells[21][j].Font->Style=TFontStyles()<< fsBold;//zapnutí tuèného písma
 				TscGPButton *B=mGrid->createButton(21,j);//vytvoøení buttnu, lépì pøed následujícím cyklem, aby se pozdìji mohl parametrizovat
@@ -359,7 +359,7 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
 	pm.CT=objekty[Row].CT;
-	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]/1+60.0*Form_parametry_linky->aRDunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+ if(aRDunit==0)	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]); else 	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/60.0;
 	pm.DD=objekty[Row].delka_dopravniku;
 	pm.K=objekty[Row].kapacita;
 	pm.P=objekty[Row].pozice;
@@ -370,7 +370,29 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.sJ=F->d.v.PP.sirka_jig;
 	pm.dP=F->d.v.PP.delka_podvozek;
 	pm.Rotace=objekty[Row].rotace;
-	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+
+
+//    Memo1->Lines->Clear();
+//    Memo1->Lines->Add("TT: "+AnsiString(pm.TT));
+//    Memo1->Lines->Add("CT: "+AnsiString(pm.CT));
+//    Memo1->Lines->Add("DD: "+AnsiString(pm.DD));
+//    Memo1->Lines->Add("RD: "+AnsiString(pm.RD));
+//    Memo1->Lines->Add("K: "+AnsiString(pm.K));
+//    Memo1->Lines->Add("P: "+AnsiString(pm.P));
+//    Memo1->Lines->Add("M: "+AnsiString(pm.M));
+//    Memo1->Lines->Add("MJ: "+AnsiString(pm.MJ));
+//    Memo1->Lines->Add("MP: "+AnsiString(pm.MP));
+//    Memo1->Lines->Add("dJ: "+AnsiString(pm.dJ));
+//    Memo1->Lines->Add("sJ: "+AnsiString(pm.dJ));
+//    Memo1->Lines->Add("dP: "+AnsiString(pm.dP));
+//    Memo1->Lines->Add("R: "+AnsiString(pm.R));
+//    Memo1->Lines->Add("aRDunit: "+AnsiString(aRDunit));
+
+
+
+
+
 
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(mGrid->getCheck(2,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
@@ -402,17 +424,20 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	{
 		 case -1://uložení do textu je-li požadováno
 		 {
-				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
+				T=objekty[Row].short_name+";"+AnsiString(pm.CT*(1+59.0*CTunit))+";"+AnsiString(pm.RD/(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999.0*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999.0*Munit))+";"+AnsiString(pm.MP*(1+999.0*Munit));
 		 }break;
 		 case 0://pouze vrátí text do bunìk
 		 {
-				mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
-				mGrid->Cells[9][Row].Text	=	F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
-				mGrid->Cells[11][Row].Text=	F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
+		 //		mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT,2,"..");
+     if(CTunit==0) mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT,2,".."); else    mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT*60.0,2,"..");
+     if(RDunit==0) mGrid->Cells[9][Row].Text	= F->m.round2double(pm.RD,2,".."); else    mGrid->Cells[9][Row].Text	= F->m.round2double(pm.RD*60.0,2,"..");
+     if(DDunit==0) mGrid->Cells[11][Row].Text	= F->m.round2double(pm.DD,2,".."); else    mGrid->Cells[11][Row].Text	= F->m.round2double(pm.DD*1000.0,2,"..");
+     if(Munit==0) mGrid->Cells[17][Row].Text	= F->m.round2double(pm.MJ,2,".."); else    mGrid->Cells[17][Row].Text	= F->m.round2double(pm.MJ*60.0,2,"..");
+     if(Munit==0) mGrid->Cells[19][Row].Text	= F->m.round2double(pm.MP,2,".."); else    mGrid->Cells[19][Row].Text	= F->m.round2double(pm.MP*60.0,2,"..");
+
 				mGrid->Cells[13][Row].Text= F->m.round2double(pm.K,2,"..");
 				mGrid->Cells[15][Row].Text=	F->m.round2double(pm.P,2,"..");
-				mGrid->Cells[17][Row].Text=	F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
-				mGrid->Cells[19][Row].Text=	F->m.round2double(pm.MP*(1+999*Munit),2,"..");
+
 		 }break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
