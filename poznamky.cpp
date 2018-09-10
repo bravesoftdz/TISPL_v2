@@ -107,9 +107,11 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		//MT1
 		mGrid->Cells[0][1].Type=mGrid->EDIT; mGrid->Cells[0][1].Text=F->m.round2double(MT1,2,"..");
 		//PT
-		mGrid->Cells[1][1].Text=F->m.round2double(Form_parametry->scGPNumericEdit_CT->Value-MT1-WT2,2,"..");
+		double PT=Form_parametry->scGPNumericEdit_CT->Value-MT1-WT2;
+		mGrid->Cells[1][1].Text=F->m.round2double(PT,2,"..");
 		mGrid->Cells[1][1].Background->Color=clBACKGROUND;
-		if(F->ms.MyToDouble(mGrid->Cells[1][1].Text)>0)mGrid->Cells[1][1].Font->Color=clLOCKED;else mGrid->Cells[1][1].Font->Color=clRed;
+		ShowMessage(F->ms.MyToDouble(mGrid->Cells[1][1].Text));
+		if(PT>0)mGrid->Cells[1][1].Font->Color=clLOCKED;else mGrid->Cells[1][1].Font->Color=clRed;
 		//WT1
 		mGrid->Cells[2][1].Background->Color=clBACKGROUND; mGrid->Cells[2][1].Font->Color=clLOCKED;mGrid->Cells[2][1].Text="0";
 		//MT2
