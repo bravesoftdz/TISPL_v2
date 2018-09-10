@@ -36,6 +36,8 @@ __published:	// IDE-managed Components
 	TscScrollBar *scScrollBar_horizont;
 	TscScrollBar *scScrollBar_vertical;
   TscGPImage *scGPImage_zamky;
+  TMemo *Memo1;
+  TMemo *Memo2;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);

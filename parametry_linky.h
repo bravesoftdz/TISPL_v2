@@ -175,8 +175,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_zamek_roztecClick(TObject *Sender);
 	void __fastcall scGPButton_zamek_RzClick(TObject *Sender);
 	void __fastcall FormClick(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikyDrawCell(TObject *Sender, int ACol,
-          int ARow, TRect &Rect, TGridDrawState State);
 	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
           int Row, TStringList *&PickList);
 	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);

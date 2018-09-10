@@ -971,6 +971,7 @@ void __fastcall TF_gapoTT::scGPButton_OKClick(TObject *Sender)
   myModalResult=mrOk;
   Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+  Form_parametry_linky->Button_saveClick(Sender);
   Close();
 }
 //---------------------------------------------------------------------------
