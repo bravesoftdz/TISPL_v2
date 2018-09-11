@@ -89,21 +89,24 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		mGrid->AntiAliasing_text=true;//bez toho dělá bílý blok, pozadí - posunuto, jedna se o bug v mGridu
 		mGrid->DefaultColWidth*=1.3;
 		mGrid->Create(7,5);//vhodné jako třetí
-
+		mGrid->Columns[5].Width=250;//pohon následující
 		mGrid->SetColumnAutoFit(0);
-
-		short R=0;//číslo řádku
+		short R=0;//číslo aktuálně zpracovávaného řádku
 
 		////převody jednotek
 		AnsiString CTunitT="s";if(Form_parametry->CTunit)CTunitT="min";
 		AnsiString DDunitT="m";if(Form_parametry->DDunit)DDunitT="mm";
+		AnsiString RDunitT="m/s";if(Form_parametry->RDunitT)RDunitT="m/min";
+		AnsiString RunitT="m";if(Form_parametry->DMunit)RunitT="mm";
 
 		////definice buněk - hlavička total
 		//pohon vlastní
-		mGrid->Cells[1][R].Text="Pohon1";
+		Cvektory::TPohon *P=F->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
+		if(P!=NULL)mGrid->Cells[1][R].Text=AnsiString(P->name)+" "+AnsiString(P->aRD*(1+Form_parametry->RDunitT*59))+" ["+RDunitT+"], "+AnsiString(P->roztec*(1+Form_parametry->DMunit*999))+" ["+RunitT+"]"; else mGrid->Cells[1][R].Text="nepřiřazen";
 		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKED;mGrid->Cells[1][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
 		//pohon následující
-		if(F->pom->dalsi->pohon!=NULL)mGrid->Cells[5][R].Text=F->pom->dalsi->pohon->name;else mGrid->Cells[5][R].Text="nepřiřazen";
+		if(F->pom->dalsi->pohon!=NULL)
+		mGrid->Cells[5][R].Text=AnsiString(F->pom->dalsi->pohon->name)+" "+AnsiString(F->pom->dalsi->pohon->aRD*(1+Form_parametry->RDunitT*59))+" ["+RDunitT+"], "+AnsiString(F->pom->dalsi->pohon->roztec*(1+Form_parametry->DMunit*999))+" ["+RunitT+"]";else mGrid->Cells[5][R].Text="nepřiřazen";
 		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED;mGrid->Cells[5][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
 		//celkem
 		mGrid->Cells[6][R].Text="CELKEM";mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
@@ -128,7 +131,7 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 
 		////výpočetní část - ČAS
 		double MT1=0;
-		if(F->pom->dalsi->pohon!=NULL)MT1=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/(1.0+Form_parametry->DDunit*999.0)/F->pom->dalsi->pohon->aRD;
+		if(P!=NULL)MT1=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/(1.0+Form_parametry->DDunit*999.0)/P->aRD;
 		MT1*=(1.0+Form_parametry->CTunit*59.0);
 		double WT2=0;
 		if(F->pom->dalsi->pohon!=NULL)WT2=F->m.cekani_na_palec(0,F->pom->dalsi->pohon->roztec,F->pom->dalsi->pohon->aRD,3);
@@ -154,11 +157,11 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		////definice buněk - hlavička - DÉLKA
 		mGrid->Cells[0][++R].Text="DÉLKA";mGrid->Cells[0][R].LeftMargin=4;
 		mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		mGrid->Cells[1][R].Text="Přejezd 1 ["+DDunitT+"]";
+		mGrid->Cells[1][R].Text="přejezd 1 ["+DDunitT+"]";
 		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[3][R].Text="Přejezd 2 ["+DDunitT+"]";
+		mGrid->Cells[3][R].Text="přejezd 2 ["+DDunitT+"]";
 		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[6][R].Text="Délka ["+DDunitT+"]";
+		mGrid->Cells[6][R].Text="délka ["+DDunitT+"]";
 		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKEDhead;
 		mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
 		mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
