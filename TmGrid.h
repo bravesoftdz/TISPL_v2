@@ -116,7 +116,7 @@ class TmGrid
 
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky vèetnì gridu
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
-	void SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøebe
+	void SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
 	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na požadované parametry
 	void SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku dle typu
 	void SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na edit, pomocná metoda výše uvedené

@@ -29,8 +29,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 private:	// User declarations
-	TColor clBACKGROUND;
-	TColor clLOCKED;
+	TColor clBACKGROUND,clLOCKED,clLOCKEDhead;
 public:		// User declarations
 	__fastcall TForm_poznamky(TComponent* Owner);
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);

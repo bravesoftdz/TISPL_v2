@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+Ôªø//---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 
@@ -18,16 +18,17 @@ TForm_poznamky *Form_poznamky;
 __fastcall TForm_poznamky::TForm_poznamky(TComponent* Owner)
 	: TForm(Owner)
 {
-	//nastavenÌ barvy formul·¯e
+	//nastaven√≠ barvy formul√°≈ôe
 	Form_poznamky->Color=(TColor)RGB(240,240,240);
 
-	//defaultnÌ design a pozicov·nÌ tlaËÌtek OK a Storno
+	//defaultn√≠ design a pozicov√°n√≠ tlaƒç√≠tek OK a Storno
 	Form1->m.designButton(scGPButton_OK,Form_poznamky,1,2);
 	Form1->m.designButton(scGPButton_storno,Form_poznamky,2,2);
 
 	//definice barev
 	clBACKGROUND=(TColor)RGB(250,250,250);
 	clLOCKED	  =(TColor)RGB(128,128,128);
+	clLOCKEDhead=(TColor)RGB(43,87,154);
 	rHTMLLabel_InfoText->Font->Color=(TColor)RGB(43,87,154);
 }
 //---------------------------------------------------------------------------
@@ -45,70 +46,87 @@ void __fastcall TForm_poznamky::FormKeyDown(TObject *Sender, WORD &Key, TShiftSt
 {
 	if (Key == 13) // ENTER
 	{
-			Form_poznamky->ModalResult = mrOk; // vr·tÌ stejnou hodnotu jako tlaËÌtko
-			Form_poznamky->VisibleChanging();// skryje form, stejnÈ jako visible=false
+			Form_poznamky->ModalResult = mrOk; // vr√°t√≠ stejnou hodnotu jako tlaƒç√≠tko
+			Form_poznamky->VisibleChanging();// skryje form, stejn√© jako visible=false
 	}
 	if (Key == 27) // ESC
 	{
-			Form_poznamky->ModalResult = mrCancel;// vr·tÌ stejnou hodnotu jako tlaËÌtko
-			Form_poznamky->VisibleChanging();// skryje form, stejnÈ jako visible=false
+			Form_poznamky->ModalResult = mrCancel;// vr√°t√≠ stejnou hodnotu jako tlaƒç√≠tko
+			Form_poznamky->VisibleChanging();// skryje form, stejn√© jako visible=false
 	}
 }
 //---------------------------------------------------------------------------
-//vykreslÌ or·mov·nÌ
+//vykresl√≠ or√°mov√°n√≠
 void __fastcall TForm_poznamky::FormPaint(TObject *Sender)
 {
 	Form1->m.frameForm(Form_poznamky,clWebOrange,1);
-	if(Form_parametry->scComboBox_rezim->ItemIndex==0)mGrid->Show();//vykreslÌ tabulku
+	if(Form_parametry->scComboBox_rezim->ItemIndex==0)
+	{
+		mGrid->Show();//vykresl√≠ tabulku
+
+		//workaround - zru≈°en√≠ or√°mov√°n√≠ okolo nepou≈æit√Ωch vnƒõj≈°√≠ch bunƒõk
+		Canvas->Pen->Width=2;
+		Canvas->Pen->Color=(TColor)RGB(240,240,240);
+
+		Canvas->MoveTo(mGrid->Left,mGrid->Top+mGrid->Rows[0].Height-2);
+		Canvas->LineTo(mGrid->Left,mGrid->Top);
+		Canvas->LineTo(mGrid->Left+mGrid->Columns[0].Width-2,mGrid->Top);
+
+		Canvas->MoveTo(mGrid->Left+mGrid->Columns[5].Left,mGrid->Top+mGrid->Height);
+		Canvas->LineTo(mGrid->Left+mGrid->Columns[5].Left+mGrid->Columns[5].Width-2,mGrid->Top+mGrid->Height);
+	}
 }
 //---------------------------------------------------------------------------
-//p¯i zobrazenÌ formul·¯e
+//p≈ôi zobrazen√≠ formul√°≈ôe
 void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 {
 	if(Form_parametry->scComboBox_rezim->ItemIndex==0)//pro S&G
 	{
 		////////tabulka
-		mGrid=new TmGrid(this);//vûdy nutno jako prvnÌ
+		mGrid=new TmGrid(this);//v≈ædy nutno jako prvn√≠
 		mGrid->Tag=5;//ID tabulky
-		mGrid->Left=10;mGrid->Top=scGPPanel_hlavicka->Height+10;//vhodnÈ jako druhÈ (pop¯. by bylo nutnÈ p¯ekreslovat)
-		mGrid->AntiAliasing_text=true;//bez toho dÏl· bÌl˝ blok, pozadÌ - posunuto, jedna se o bug v mGridu
-		mGrid->Create(7,5);//vhodnÈ jako t¯etÌ
-		mGrid->Columns[0].Width=10;
-		short R=0;//ËÌslo ¯·dku
+		mGrid->Left=10;mGrid->Top=scGPPanel_hlavicka->Height+10;//vhodn√© jako druh√© (pop≈ô. by bylo nutn√© p≈ôekreslovat)
+		mGrid->AntiAliasing_text=true;//bez toho dƒõl√° b√≠l√Ω blok, pozad√≠ - posunuto, jedna se o bug v mGridu
+		mGrid->DefaultColWidth*=1.3;
+		mGrid->Create(7,5);//vhodn√© jako t≈ôet√≠
 
-		////p¯evody jednotek
+		mGrid->SetColumnAutoFit(0);
+
+		short R=0;//ƒç√≠slo ≈ô√°dku
+
+		////p≈ôevody jednotek
 		AnsiString CTunitT="s";if(Form_parametry->CTunit)CTunitT="min";
 		AnsiString DDunitT="m";if(Form_parametry->DDunit)DDunitT="mm";
 
-		////definice bunÏk - hlaviËka total
-		//pohon vlastnÌ
+		////definice bunƒõk - hlaviƒçka total
+		//pohon vlastn√≠
 		mGrid->Cells[1][R].Text="Pohon1";
-		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKED;mGrid->Cells[1][R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
-		//pohon n·sledujÌcÌ
-		if(F->pom->dalsi->pohon!=NULL)mGrid->Cells[5][R].Text=F->pom->dalsi->pohon->name;else mGrid->Cells[5][R].Text="nep¯i¯azen";
-		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED;mGrid->Cells[5][R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
+		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKED;mGrid->Cells[1][R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
+		//pohon n√°sleduj√≠c√≠
+		if(F->pom->dalsi->pohon!=NULL)mGrid->Cells[5][R].Text=F->pom->dalsi->pohon->name;else mGrid->Cells[5][R].Text="nep≈ôi≈ôazen";
+		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED;mGrid->Cells[5][R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
 		//celkem
-		mGrid->Cells[6][R].Text="CELKEM";mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
+		mGrid->Cells[6][R].Text="CELKEM";mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
 
-		////definice bunÏk - hlaviËka »AS
-		mGrid->Cells[0][++R].Text="»AS";
-		mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
-		mGrid->Cells[1][R].Text="MT1 ["+CTunitT+"]";// - Ëas p¯esunu 1";
+		////definice bunƒõk - hlaviƒçka ƒåAS
+		mGrid->Cells[0][++R].Text="ƒåAS";mGrid->Cells[0][R].LeftMargin=4;
+		mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
+		mGrid->Cells[1][R].Text="MT1 ["+CTunitT+"]";// - ƒças p≈ôesunu 1";
 		mGrid->Cells[1][R].Background->Color=clBACKGROUND;
-		mGrid->Cells[2][R].Text="PT ["+CTunitT+"]";// - procesnÌ Ëas";
-		mGrid->Cells[2][R].Background->Color=clBACKGROUND;mGrid->Cells[2][R].Font->Color=clLOCKED;
-		mGrid->Cells[3][R].Text="max. WT1 ["+CTunitT+"]";// - Ëas Ëek·nÌ na nejbliûöÌ palec 2";
-		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKED;
-		mGrid->Cells[4][R].Text="MT2 ["+CTunitT+"]";// - Ëas p¯esunu 2";
+		mGrid->Cells[2][R].Text="PT ["+CTunitT+"]";// - procesn√≠ ƒças";
+		mGrid->Cells[2][R].Background->Color=clBACKGROUND;mGrid->Cells[2][R].Font->Color=clLOCKEDhead;
+		mGrid->Cells[3][R].Text="max.WT1 ["+CTunitT+"]";// - ƒças ƒçek√°n√≠ na nejbli≈æ≈°√≠ palec 2";
+		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKEDhead;
+		mGrid->Cells[4][R].Text="MT2 ["+CTunitT+"]";// - ƒças p≈ôesunu 2";
 		mGrid->Cells[4][R].Background->Color=clBACKGROUND;
-		mGrid->Cells[5][R].Text="max. WT2 ["+CTunitT+"]";// - Ëas Ëek·nÌ na nejbliûöÌ palec 2";
-		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED;
-		mGrid->Cells[6][R].Text="CT ["+CTunitT+"]";// - Celkov˝ technologick˝ Ëas";
-		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;
-		mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
-		mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
+		mGrid->Cells[5][R].Text="max.WT2 ["+CTunitT+"]";// - ƒças ƒçek√°n√≠ na nejbli≈æ≈°√≠ palec 2";
+		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKEDhead;
+		mGrid->Cells[6][R].Text="CT ["+CTunitT+"]";// - Celkov√Ω technologick√Ω ƒças";
+		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKEDhead;
+		mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
+		mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
 
-		////v˝poËetnÌ Ë·st - »AS
+		////v√Ωpoƒçetn√≠ ƒç√°st - ƒåAS
 		double MT1=0;
 		if(F->pom->dalsi->pohon!=NULL)MT1=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/(1.0+Form_parametry->DDunit*999.0)/F->pom->dalsi->pohon->aRD;
 		MT1*=(1.0+Form_parametry->CTunit*59.0);
@@ -116,50 +134,62 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		if(F->pom->dalsi->pohon!=NULL)WT2=F->m.cekani_na_palec(0,F->pom->dalsi->pohon->roztec,F->pom->dalsi->pohon->aRD,3);
 		WT2*=(1.0+Form_parametry->CTunit*59.0);
 
-		////definice bunÏk - parametry - »AS
+		////definice bunƒõk - parametry - ƒåAS
 		//MT1
-		mGrid->Cells[1][R].Type=mGrid->EDIT; mGrid->Cells[1][R].Text=F->m.round2double(MT1,2,"..");
+		mGrid->Cells[1][R].Type=mGrid->EDIT; mGrid->Cells[1][R].Text=F->m.round2double(MT1,3,"..");
 		//PT
 		double PT=Form_parametry->scGPNumericEdit_CT->Value-MT1-WT2;
-		mGrid->Cells[2][R].Text=F->m.round2double(PT,2,"..");
+		mGrid->Cells[2][R].Text=F->m.round2double(PT,3,"..");
 		mGrid->Cells[2][R].Background->Color=clBACKGROUND;
-		if(PT>0)mGrid->Cells[2][R].Font->Color=clLOCKED;else mGrid->Cells[2][R].Font->Color=clRed;//pokud vyjde PT z·pornÈ, je to problÈm (nestÌh· se samotn˝ technologick˝ v˝kon, vÏtöinou z d˘vodu nestÌh·nÌ p¯ejezdu) a zobrazÌ se ËervenÏ
+		if(PT>0)mGrid->Cells[2][R].Font->Color=clLOCKED;else mGrid->Cells[2][R].Font->Color=clRed;//pokud vyjde PT z√°porn√©, je to probl√©m (nest√≠h√° se samotn√Ω technologick√Ω v√Ωkon, vƒõt≈°inou z d≈Øvodu nest√≠h√°n√≠ p≈ôejezdu) a zobraz√≠ se ƒçervenƒõ
 		//WT1
 		mGrid->Cells[3][R].Background->Color=clBACKGROUND; mGrid->Cells[3][R].Font->Color=clLOCKED;mGrid->Cells[3][R].Text="0";
 		//MT2
 		mGrid->Cells[4][R].Type=mGrid->EDIT; mGrid->Cells[4][R].Text="0";
 		//WT2
-		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED; mGrid->Cells[5][R].Text=F->m.round2double(WT2,2,"..");
+		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED; mGrid->Cells[5][R].Text=F->m.round2double(WT2,3,"..");
 		//CT
-		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_CT->Value,2,"..");
+		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_CT->Value,3,"..");
 
-		////definice bunÏk - hlaviËka - D…LKA
-		mGrid->Cells[0][++R].Text="D…LKA";
-		mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
-		mGrid->Cells[1][R].Text="P¯ejezd 1 ["+DDunitT+"]";
-		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKED;
-		mGrid->Cells[3][R].Text="P¯ejezd 2 ["+DDunitT+"]";
-		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKED;
-		mGrid->Cells[6][R].Text="Objekt ["+DDunitT+"]";
-		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;
-		mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
-		mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnutÌ tuËnÈho pÌsma
+		////definice bunƒõk - hlaviƒçka - D√âLKA
+		mGrid->Cells[0][++R].Text="D√âLKA";mGrid->Cells[0][R].LeftMargin=4;
+		mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
+		mGrid->Cells[1][R].Text="P≈ôejezd 1 ["+DDunitT+"]";
+		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKEDhead;
+		mGrid->Cells[3][R].Text="P≈ôejezd 2 ["+DDunitT+"]";
+		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKEDhead;
+		mGrid->Cells[6][R].Text="D√©lka ["+DDunitT+"]";
+		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKEDhead;
+		mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
+		mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnut√≠ tuƒçn√©ho p√≠sma
 
-		////definice bunÏk - parametry - D…LKA
-		//P¯ejezd 1
-		mGrid->Cells[1][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_delka_dopravniku->Value,2,"..");
+		////definice bunƒõk - parametry - D√âLKA
+		//P≈ôejezd 1
+		mGrid->Cells[1][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_delka_dopravniku->Value,3,"..");
 		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKED;
-		//P¯ejezd 2
+		//P≈ôejezd 2
 		mGrid->Cells[3][R].Text="0";
 		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKED;
 		//Celkem
-		mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_delka_dopravniku->Value,2,"..");
+		mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_delka_dopravniku->Value,3,"..");
 		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;
 
-		//vymaz·nÌ nepouûÌvan˝ch bunÏk
+		//vymaz√°n√≠ nepou≈æ√≠van√Ωch bunƒõk
 		mGrid->Cells[0][0].Background->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].TopBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].LeftBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].BottomBorder->Width=2;mGrid->Cells[0][0].RightBorder->Width=2;
 
-		//SlouËenÌ bunÏk
+		mGrid->Cells[5][R-1].Background->Color=(TColor)RGB(240,240,240);
+		mGrid->Cells[5][R-1].TopBorder->Width=2;
+		mGrid->Cells[5-1][R-1].LeftBorder->Width=2;
+		mGrid->Cells[5][R-1].RightBorder->Width=2;
+
+		mGrid->Cells[5][R].Background->Color=(TColor)RGB(240,240,240);
+		mGrid->Cells[5-1][R].LeftBorder->Width=2;
+		mGrid->Cells[5][R].RightBorder->Width=2;
+
+		//rozdƒõlen√≠ ƒças a d√©lka
+		//for(short i=0;i<=6;i++)mGrid->Cells[i][0].BottomBorder->Width=2;//mGrid->Cells[i][2].BottomBorder->Width=2;
+
+		//Slouƒçen√≠ bunƒõk
 		mGrid->MergeCells(1,0,4,0);
 		mGrid->MergeCells(0,1,0,2);
 		mGrid->MergeCells(0,3,0,4);
@@ -167,14 +197,19 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		mGrid->MergeCells(3,R-1,4,R-1);mGrid->MergeCells(3,R,4,R);
 		mGrid->MergeCells(5,R-1,5,R);
 
-		////////design - musÌ b˝t aû za tabulkou kv˘li pozici
+		////////design - mus√≠ b√Ωt a≈æ za tabulkou kv≈Øli pozici
 		scLabel_titulek->Caption="Rozbor objektu";
-		mGrid->Show();//kv˘li p¯epoËÌt·nÌ a zÌsk·nÌ v˝öky v˝slednÈ tabulky
+		mGrid->Show();//kv≈Øli p≈ôepoƒç√≠t√°n√≠ a z√≠sk√°n√≠ v√Ω≈°ky a ≈°√≠≈ôky v√Ωsledn√© tabulky
+		Width=mGrid->Width+2*10+2;
+		Left=Form_parametry->Left+Form_parametry->Width/2-Width/2;
+
+
+		scGPMemo->Width=mGrid->Width+2;
 		scGPMemo->Top=mGrid->Top+mGrid->Height+10+rHTMLLabel_InfoText->Height;
 		scGPMemo->Height=scGPButton_OK->Top-10-scGPMemo->Top;
 		rHTMLLabel_InfoText->Top=scGPMemo->Top-rHTMLLabel_InfoText->Height;
 	}
-	else//pro ostatnÌ reûimy
+	else//pro ostatn√≠ re≈æimy
 	{
 		scLabel_titulek->Caption=rHTMLLabel_InfoText->Caption;
 		rHTMLLabel_InfoText->Visible=false;
@@ -198,7 +233,7 @@ void TForm_poznamky::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void __fastcall TForm_poznamky::FormClose(TObject *Sender, TCloseAction &Action)
 {
-	mGrid->Delete();//pokud chci odstranit a nechci pouûÌt na dalöÌ pouûitÌ
+	mGrid->Delete();//pokud chci odstranit a nechci pou≈æ√≠t na dal≈°√≠ pou≈æit√≠
 }
 //---------------------------------------------------------------------------
 
