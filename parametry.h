@@ -89,6 +89,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_jig_podvozek;
 	TrHTMLLabel *rHTMLLabel_kriticka;
   TscGPGlyphButton *scGPGlyphButton_refresh;
+	TscGPGlyphButton *scGPGlyphButton_PO_text_memo2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -203,20 +204,25 @@ public:		// User declarations
 	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
 	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm RDunitD;//pøepínaè jednotek vzdálenost
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
-	void setForm4Rezim(unsigned short rezim);
-	void vypis(UnicodeString text,bool red=true,bool link=false);
+
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto
-  Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
+	Tinput_clicked_icon input_clicked_icon;//zjisteni na ktery icon bylo kliknuto
+
+	void setForm4Rezim(unsigned short rezim);
+	void vypis(UnicodeString text,bool red=true,bool link=false);
+	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math, input_state slouží pro rozlišení volání ze vstupu - pøedevším P a K
+	//void vykresli_vozik(bool na_delku=true);
+
 	unsigned int kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
 	bool existuje_pohon;
 	bool MIMO_ROZMEZI;
-	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
-	void VALIDACE(Tinput_state input_state=NOTHING);//validace všech hodnot po pøepoètu z PO_math, input_state slouží pro rozlišení volání ze vstupu - pøedevším P a K
 	short VID;//validation ID
 	double VID_value;
-	void vykresli_vozik(bool na_delku=true);
 	bool input_state_Rz;
+	bool form_zobrazen;//detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
+	UnicodeString poznamka;
+	double MT;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_parametry *Form_parametry;

@@ -11,6 +11,7 @@
 #include "scGPControls.hpp"
 #include "scGPExtControls.hpp"
 #include "rHTMLLabel.hpp"
+#include "unit1.h"
 //---------------------------------------------------------------------------
 class TForm_poznamky : public TForm
 {
@@ -28,9 +29,14 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall scGPMemoKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 private:	// User declarations
-	TColor clBACKGROUND;
-	TColor clLOCKED;
+	TColor clBACKGROUND,clLOCKED,clUNLOCKED,clLOCKEDhead;
+	void calculate(short INPUT_state=0);//vypoèítává ve S&G subparametry
+	Cvektory::TPohon *P,*PD;
+	short Decimal;//poèet desetinných míst
+	AnsiString pz;//zástupný znak pokraèování
 public:		// User declarations
 	__fastcall TForm_poznamky(TComponent* Owner);
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);

@@ -113,10 +113,11 @@ class TmGrid
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter
 	void __fastcall getTagOnChange(TObject *Sender);//vrací událost pøi OnChange
 	void __fastcall getTagOnKeyDown(TObject *Sender);//vrací událost pøi OnKeyDown - NEDOKONÈENO
+	void getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouí napø. pøi události onchange popø. dálších
 
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky vèetnì gridu
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
-	void SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøebe
+	void SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
 	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na poadované parametry
 	void SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku dle typu
 	void SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na edit, pomocná metoda vıše uvedené

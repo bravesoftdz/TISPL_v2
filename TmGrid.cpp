@@ -428,7 +428,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//zarovnání
 			//samotný výpis
 			long L=Rt.Left,T=Rt.Top;              //zajimavý workaround - pøíèinì nerozumím
-			int W=getWidthHeightText(Cell).X*Zoom;if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))W/=1.3;// - provizornì odstaveno - chová se to bez toho lépe
+			int W=getWidthHeightText(Cell).X*Zoom;//if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))W/=1.3;// - provizornì odstaveno - chová se to bez toho lépe u neslouèených bunìk na støed, ale zase mùže chybìt nìkdì jinde
 			int H=getWidthHeightText(Cell).Y*Zoom;
 			short Rot=1;//slouží jako pomùcka rotace
 			if(Cell.Font->Orientation==900){Rot=-1;H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
@@ -649,11 +649,15 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//atributy
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
 	N->AutoSize=false;
-	N->Decimal=2;
 	N->Top=R.Top+1;
 	N->Left=R.Left+1;
 	N->Width=Columns[X].Width-1;
 	N->Height=Rows[Y].Height-1;
+	N->Decimal=3;
+	//N->DisplayType=scedtNumeric;//nevím, k èemu to slouží
+	N->ValueType=scvtFloat;
+	N->ShowHint=true;
+	N->Hint=Cell.Text;
 	N->Options->NormalColor=Cell.Background->Color;
 	N->Options->NormalColorAlpha=255;
 	N->Options->FrameNormalColor=Cell.Background->Color;
@@ -889,6 +893,16 @@ TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (Tsc
 TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 //---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
+void TmGrid::getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row)
+{
+	switch(Cells[Col][Row].Type)
+	{
+		case EDIT:Cells[Col][Row].Text=getEdit(Col,Row)->Text;break;
+		case NUMERIC:Cells[Col][Row].Text=getNumeric(Col,Row)->Value;break;
+	}
+}
+//---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 {
 	//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
@@ -920,6 +934,8 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	//ShowMessage(AnsiString("OnChange ")+IntToStr(((TComponent*)(Sender))->Tag));
 	Col=getColFromTag(((TComponent*)(Sender))->Tag);
 	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+
+	getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
 
 	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
 	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);

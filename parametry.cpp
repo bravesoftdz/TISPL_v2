@@ -561,7 +561,13 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 			 {
 			 		rHTMLLabel_delka_dopravniku->Top = L + 4 * O + offset;
 					scGPNumericEdit_delka_dopravniku->Top = P + 4 * O + offset;
-			 		scButton_zamek_DD->Top = scGPNumericEdit_delka_dopravniku->Top;
+					scButton_zamek_DD->Top = scGPNumericEdit_delka_dopravniku->Top;
+					if (scComboBox_rezim->ItemIndex == 0)
+					{
+						scGPGlyphButton_PO_text_memo2->Visible=true;
+						scGPGlyphButton_PO_text_memo2->Top = scGPNumericEdit_delka_dopravniku->Top + 1;//pouze u S&G
+					}
+					else scGPGlyphButton_PO_text_memo2->Visible=false;
 			 }
 			 scGPNumericEdit_delka_dopravniku->Left=Le;
 			 scGPNumericEdit_delka_dopravniku->Width=W;
@@ -1438,7 +1444,8 @@ void TForm_parametry::null_input_value() {
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void TForm_parametry::vykresli_vozik(bool na_delku) { /* ZDM
+//void TForm_parametry::vykresli_vozik(bool na_delku)
+/*{  ZDM
 		 Image_vozik->Canvas->Pen->Color=clBtnFace;
 		 Image_vozik->Canvas->Pen->Width=1;
 		 Image_vozik->Canvas->Brush->Color=clBtnFace;
@@ -1477,8 +1484,8 @@ void TForm_parametry::vykresli_vozik(bool na_delku) { /* ZDM
 		 Image_vozik->Canvas->Font->Size=7;
 		 Image_vozik->Canvas->TextOutW(stred.x-Image_vozik->Canvas->TextWidth(D)/2,stred.y+S/2*meritko-Image_vozik->Canvas->TextHeight(D)-2,D);
 		 Image_vozik->Canvas->TextOutW(stred.x-D/2*meritko+2,stred.y-Image_vozik->Canvas->TextHeight(S)/2,S);
-		 */
-}
+
+}*/
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::RadioButton_na_delkuClick(TObject *Sender)
 {
@@ -2516,7 +2523,13 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 		Form_poznamky->Left = Form1->ClientWidth / 2 - Form_poznamky->Width / 2;
 		Form_poznamky->Top = Form1->ClientHeight / 2 - Form_poznamky->Height / 2;
 		// zobrazeni formuláøe
-		Form_poznamky->ShowModal();
+		Form_poznamky->scGPMemo->Text=poznamka;
+		MT=0;//prozatim
+		if(Form_poznamky->ShowModal()==mrOk)
+		{
+			poznamka=Form_poznamky->scGPMemo->Text;
+			MT;
+		}
 }
 //---------------------------------------------------------------------------
 //událost zajišující rotaci jigu, pøi kliknutí do roletky rotace
