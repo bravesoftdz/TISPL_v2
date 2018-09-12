@@ -28,6 +28,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall scGPMemoKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 private:	// User declarations
 	TColor clBACKGROUND,clLOCKED,clLOCKEDhead;
 	void calculate();//vypoèítává ve S&G subparametry

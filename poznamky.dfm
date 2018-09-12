@@ -236,6 +236,7 @@ object Form_poznamky: TForm_poznamky
     ScrollBars = ssVertical
     TabOrder = 1
     Transparent = True
+    OnKeyDown = scGPMemoKeyDown
   end
   object scGPButton_OK: TscGPButton
     Left = 184

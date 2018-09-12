@@ -246,9 +246,16 @@ void TForm_poznamky::calculate()
 
 }
 //---------------------------------------------------------------------------
+//Ctrl + A u Mema
+void __fastcall TForm_poznamky::scGPMemoKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	if(Shift.Contains(ssCtrl) && Key==65)scGPMemo->SelectAll();
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm_poznamky::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	mGrid->Delete();//pokud chci odstranit a nechci použít na další použití
 }
 //---------------------------------------------------------------------------
+
 
