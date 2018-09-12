@@ -30,6 +30,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 private:	// User declarations
 	TColor clBACKGROUND,clLOCKED,clLOCKEDhead;
+	void calculate();//vypoèítává ve S&G subparametry
 public:		// User declarations
 	__fastcall TForm_poznamky(TComponent* Owner);
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);
