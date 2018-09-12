@@ -1034,7 +1034,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObje
 			 if(Row!=Row_validace && Row!=0 && Col==6)  		CanEdit=false;
 			 if(Row!=Row_validace && Row!=0 && Col==7)  		CanEdit=false;
 			 if(Row!=Row_validace && Row!=0 && Col==8)  		CanEdit=false;
-       if(Row==Row_validace && Row!=0 && Col!=Col_validace) 	CanEdit=false;
+      // if(Row==Row_validace && Row!=0 && Col!=Col_validace) 	CanEdit=false;
 
 
 			 }
@@ -1507,7 +1507,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams
 			 if(Row!=Row_validace && Row!=0 && Col==7)  			 Background=(TColor)RGB(212,212,212);
 			 if(Row!=Row_validace && Row!=0 && Col==8)  			 Background=(TColor)RGB(212,212,212);
 
-       if(Row==Row_validace && Row!=0 && Col!=Col_validace)  Background=(TColor)RGB(212,212,212);
+      // if(Row==Row_validace && Row!=0 && Col!=Col_validace)  Background=(TColor)RGB(212,212,212);
 
 
        }
@@ -1627,6 +1627,7 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 		if(scGPButton_zamek_aRD->ImageIndex==37)
 		{
 				scGPButton_zamek_aRD->ImageIndex=38;
+        scGPButton_zamek_Rz->ImageIndex=38;
 				scGPButton_zamek_Rx->ImageIndex=38;
 				scGPButton_zamek_roztec->ImageIndex=37;
 
@@ -1636,8 +1637,9 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 		{
 
 				scGPButton_zamek_aRD->ImageIndex=37;
+        scGPButton_zamek_Rz->ImageIndex=37;
 				scGPButton_zamek_Rx->ImageIndex=38;
-				scGPButton_zamek_roztec->ImageIndex=37;
+				scGPButton_zamek_roztec->ImageIndex=38;
 
 		}
  }
@@ -1798,9 +1800,9 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 				if(scGPButton_zamek_roztec->ImageIndex==37)
 				{
 						scGPButton_zamek_roztec->ImageIndex=38;
-
 						scGPButton_zamek_aRD->ImageIndex=37;
 						scGPButton_zamek_Rz->ImageIndex=37;
+            scGPButton_zamek_Rx->ImageIndex=38;
 
 				}   else
 
@@ -1809,27 +1811,66 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 
 						scGPButton_zamek_Rz->ImageIndex=38;
 						scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_Rx->ImageIndex=38;
+
 				}
 
 			 }
 
 			//  Nastav_zamky(Rx_klik_ico,Rz_klik);
-			//Nastav_zamky(R_klik_ico,Rz_klik);
+			if(I==R_klik_ico && E==R_klik)
+      {
+
+         if(scGPButton_zamek_roztec->ImageIndex==37)
+				{
+						scGPButton_zamek_roztec->ImageIndex=38;
+
+						scGPButton_zamek_aRD->ImageIndex=37;
+						scGPButton_zamek_Rz->ImageIndex=37;
+
+            scGPButton_zamek_Rx->ImageIndex=38;
+
+				}   else
+
+				{
+						scGPButton_zamek_roztec->ImageIndex=37;
+
+						scGPButton_zamek_Rz->ImageIndex=38;
+						scGPButton_zamek_aRD->ImageIndex=38;
+
+            scGPButton_zamek_Rx->ImageIndex=38;
+				}
+
+
+
+
+
+
+
+      }
 
 			 if(I==Rx_klik_ico && E==Rz_klik)
 			 {
 
-				if(scGPButton_zamek_roztec->ImageIndex==37)
+				if(scGPButton_zamek_Rx->ImageIndex==37)
 				{
-						scGPButton_zamek_roztec->ImageIndex=38;
-						scGPButton_zamek_Rx->ImageIndex=37;
+						scGPButton_zamek_Rx->ImageIndex=38;
+
+            scGPButton_zamek_roztec->ImageIndex=37;
+
+            scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_Rz->ImageIndex=38;
+
 
 
 				}   else
 
 				{
-						scGPButton_zamek_Rx->ImageIndex=38;
-						scGPButton_zamek_roztec->ImageIndex=37;
+						scGPButton_zamek_Rx->ImageIndex=37;
+						scGPButton_zamek_roztec->ImageIndex=38;
+            scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_Rz->ImageIndex=38;
+
 
 				}
 
@@ -1846,6 +1887,7 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
             scGPButton_zamek_aRD->ImageIndex=38;
             scGPButton_zamek_Rz->ImageIndex=38;
 						scGPButton_zamek_roztec->ImageIndex=37;
+            scGPButton_zamek_Rx->ImageIndex=38;
 
 				}   else
 
@@ -1853,6 +1895,7 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
             scGPButton_zamek_aRD->ImageIndex=37;
             scGPButton_zamek_Rz->ImageIndex=37;
 						scGPButton_zamek_roztec->ImageIndex=38;
+            scGPButton_zamek_Rx->ImageIndex=38;
 
 				}
 
@@ -1861,12 +1904,41 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
       if(I==Rx_klik_ico && E==R_klik)
       {
 
+      	if(scGPButton_zamek_Rx->ImageIndex==38)
+				{
+						scGPButton_zamek_Rx->ImageIndex=37;
+
+            scGPButton_zamek_Rz->ImageIndex=38;
+						scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_roztec->ImageIndex=38;
+
+
+
+
+				}   else
+
+				{
+						scGPButton_zamek_Rx->ImageIndex=38;
+
+            scGPButton_zamek_Rz->ImageIndex=38;
+						scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_roztec->ImageIndex=37;
+
+				}
+
+
+      }
+
+        if(I==Rx_klik_ico && E==Rx_klik)
+      {
+
       	if(scGPButton_zamek_Rx->ImageIndex==37)
 				{
 						scGPButton_zamek_Rx->ImageIndex=38;
 
             scGPButton_zamek_Rz->ImageIndex=37;
 						scGPButton_zamek_aRD->ImageIndex=37;
+            scGPButton_zamek_roztec->ImageIndex=38;
 
 
 
@@ -1878,11 +1950,15 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 
             scGPButton_zamek_Rz->ImageIndex=38;
 						scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_roztec->ImageIndex=38;
 
 				}
 
 
       }
+
+
+
 
 
 
@@ -1893,14 +1969,19 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 				if(scGPButton_zamek_roztec->ImageIndex==37)
 				{
 						scGPButton_zamek_roztec->ImageIndex=38;
-						scGPButton_zamek_Rx->ImageIndex=37;
+						scGPButton_zamek_Rx->ImageIndex=38;
+            scGPButton_zamek_aRD->ImageIndex=37;
+            scGPButton_zamek_Rz->ImageIndex=37;
+
 
 
 				}   else
 
 				{
+            scGPButton_zamek_roztec->ImageIndex=37;
 						scGPButton_zamek_Rx->ImageIndex=38;
-						scGPButton_zamek_roztec->ImageIndex=37;
+            scGPButton_zamek_aRD->ImageIndex=38;
+            scGPButton_zamek_Rz->ImageIndex=38;
 
 				}
 
@@ -1911,12 +1992,13 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 		 if(I==Rz_klik_ico && E==R_klik)
 			 {
 
-				if(scGPButton_zamek_aRD->ImageIndex==37)
+				if(scGPButton_zamek_Rz->ImageIndex==37)
 				{
 						scGPButton_zamek_aRD->ImageIndex=38;
 						scGPButton_zamek_Rz->ImageIndex=38;
 
-						scGPButton_zamek_Rx->ImageIndex=37;
+						scGPButton_zamek_Rx->ImageIndex=38;
+            scGPButton_zamek_roztec->ImageIndex=37;
 
 
 
@@ -1927,7 +2009,7 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 						scGPButton_zamek_Rz->ImageIndex=37;
 
 						scGPButton_zamek_Rx->ImageIndex=38;
-
+            scGPButton_zamek_roztec->ImageIndex=38;
 				}
 
 			 }
@@ -1935,26 +2017,55 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 				 if(I==Rz_klik_ico && E==Rx_klik)    //vstup z Rx editace do zamku Rz
 			 {
 
-				if(scGPButton_zamek_roztec->ImageIndex==38)
-				{
-						scGPButton_zamek_aRD->ImageIndex=38;
-						scGPButton_zamek_Rz->ImageIndex=38;
-
-						scGPButton_zamek_roztec->ImageIndex=37;
-
-
-
-				}   else
-
+				if(scGPButton_zamek_Rz->ImageIndex==38)
 				{
 						scGPButton_zamek_aRD->ImageIndex=37;
 						scGPButton_zamek_Rz->ImageIndex=37;
 
 						scGPButton_zamek_roztec->ImageIndex=38;
+            scGPButton_zamek_Rx->ImageIndex=38;
+
+				}   else
+
+				{
+						scGPButton_zamek_aRD->ImageIndex=38;
+						scGPButton_zamek_Rz->ImageIndex=38;
+
+						scGPButton_zamek_roztec->ImageIndex=38;
+            scGPButton_zamek_Rx->ImageIndex=37;
+				}
+
+			 }
+
+        if(I==Rz_klik_ico && E==Rz_klik)    //vstup z Rz editace do zamku Rz
+			 {
+
+				if(scGPButton_zamek_Rz->ImageIndex==38)
+				{
+
+						scGPButton_zamek_Rz->ImageIndex=37;
+            scGPButton_zamek_aRD->ImageIndex=37;
+
+						scGPButton_zamek_roztec->ImageIndex=38;
+            scGPButton_zamek_Rx->ImageIndex=38;
+
+				}   else
+
+				{
+				    scGPButton_zamek_Rz->ImageIndex=38;
+            scGPButton_zamek_aRD->ImageIndex=38;
+
+					 	scGPButton_zamek_roztec->ImageIndex=38;
+            scGPButton_zamek_Rx->ImageIndex=37;
 
 				}
 
 			 }
+
+
+			//Nastav_zamky(aRD_klik_ico,aRD_klik);
+          if(I==Rz_klik_ico && E==aRD_klik) 	Nastav_zamky(aRD_klik_ico,aRD_klik);   //vstup z Rz editace do zamku Rz
+
        ////////////////////////////////////
 
        		 if(I==Rz_klik_ico && E==empty_klik)    //vstup z Rz zamku bez predchoziho kliku do editu
@@ -1989,8 +2100,8 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_aRDClick(TObject *Sender
 	 if(input_clicked_edit==R_klik)  Nastav_zamky(aRD_klik_ico, R_klik);
 	 if(input_clicked_edit==Rx_klik)  Nastav_zamky(aRD_klik_ico, Rx_klik);
 	 if(input_clicked_edit==aRD_klik) Nastav_zamky(aRD_klik_ico,aRD_klik);
-
-	 if(input_clicked_edit==empty_klik) Nastav_zamky(aRD_klik_ico, empty_klik);
+   if(input_clicked_edit==Rz_klik)  Nastav_zamky(aRD_klik_ico,aRD_klik); //totoné chování
+	 if(input_clicked_edit==empty_klik) Nastav_zamky(aRD_klik_ico, aRD_klik);
 
 
 		//	ShowMessage(input_clicked_edit);  //6
@@ -2174,15 +2285,6 @@ if(ACol==4) {    //zmìna aRD
 
  input_clicked_edit=aRD_klik;
  Nastav_zamky(empty_klik_ico,aRD_klik);
-// if(ReadOnly) scGPButton_zamek_aRD->Visible=true;
- scGPButton_zamek_Rz->Visible=false; //tato promìnná je vdy ovlivnìna, schovám její zámek
-
- if(scGPButton_zamek_aRD->ImageIndex==38) scGPButton_zamek_aRD->Visible=false;
- else  scGPButton_zamek_aRD->Visible=true;
-
-	scGPButton_zamek_Rx->Visible=true;
-	scGPButton_zamek_roztec->Visible=true;
-
  rStringGridEd_tab_dopravniky->Invalidate();
 
 }
@@ -2192,36 +2294,23 @@ if(ACol==5) {    //zmìna R
  Nastav_zamky(empty_klik_ico,R_klik);
 
  Roletka_roztec(ARow);
- if(scGPButton_zamek_roztec->ImageIndex==38)  scGPButton_zamek_roztec->Visible=false;
- else   scGPButton_zamek_roztec->Visible=true;
-	scGPButton_zamek_Rz->Visible=true;
-	scGPButton_zamek_Rx->Visible=true;
-	scGPButton_zamek_aRD->Visible=true;
+ rStringGridEd_tab_dopravniky->Invalidate();
 
 }
 if(ACol==6) {    //zmìna Rz
 
   input_clicked_edit=Rz_klik;
 	Nastav_zamky(empty_klik_ico,Rz_klik);
-	scGPButton_zamek_aRD->Visible=false;   //tato promìnná je vdy ovlivnìna, schovám její zámek
-
-	if(scGPButton_zamek_Rz->ImageIndex==38)  scGPButton_zamek_Rz->Visible=false;
- else scGPButton_zamek_Rz->Visible=true;
-
-	scGPButton_zamek_Rx->Visible=true;
-	scGPButton_zamek_roztec->Visible=true;
+  scGPButton_zamek_aRD->ImageIndex=38;
+ // scGPButton_zamek_Rx->ImageIndex=38;
+  rStringGridEd_tab_dopravniky->Invalidate();
 
 }
 if(ACol==7) {    //zmìna Rx
 
  input_clicked_edit=Rx_klik;
  Nastav_zamky(empty_klik_ico,Rx_klik);
-	if(scGPButton_zamek_Rx->ImageIndex==38)  scGPButton_zamek_Rx->Visible=false;
-  else scGPButton_zamek_Rx->Visible=true;
-
-	scGPButton_zamek_aRD->Visible=true;
-	scGPButton_zamek_roztec->Visible=true;
-	scGPButton_zamek_Rz->Visible=true;
+ rStringGridEd_tab_dopravniky->Invalidate();
 
 }
 }
@@ -2233,8 +2322,9 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RxClick(TObject *Sender)
 	if(input_clicked_edit==aRD_klik) Nastav_zamky(Rx_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
 	if(input_clicked_edit==Rz_klik) Nastav_zamky(Rx_klik_ico,Rz_klik);
   if(input_clicked_edit==R_klik)  Nastav_zamky(Rx_klik_ico,R_klik);
+  if(input_clicked_edit==Rx_klik)  Nastav_zamky(Rx_klik_ico,Rx_klik);
 
-	else   Nastav_zamky(Rx_klik_ico,empty_klik);
+	else  Nastav_zamky(Rx_klik_ico,Rx_klik);// Nastav_zamky(Rx_klik_ico,empty_klik);
 
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
@@ -2481,12 +2571,12 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditText(T
 void __fastcall TForm_parametry_linky::scGPButton_zamek_roztecClick(TObject *Sender)
 
 {
-		if(input_clicked_edit==aRD_klik) Nastav_zamky(R_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
-	//	if(input_clicked_edit==R_klik) Nastav_zamky(R_klik_ico,R_klik);  - není potøeba, je schován zámek
+		if(input_clicked_edit==aRD_klik) Nastav_zamky(aRD_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
+		if(input_clicked_edit==R_klik) Nastav_zamky(R_klik_ico,R_klik);
 		if(input_clicked_edit==Rz_klik) Nastav_zamky(R_klik_ico,Rz_klik);
 		if(input_clicked_edit==Rx_klik) Nastav_zamky(R_klik_ico,Rx_klik);
 
-		if(input_clicked_edit==empty_klik) Nastav_zamky(R_klik_ico,empty_klik);   // std.chování
+		if(input_clicked_edit==empty_klik) Nastav_zamky(R_klik_ico,R_klik); //Nastav_zamky(R_klik_ico,empty_klik)  } // std.chování
 
 
 		rStringGridEd_tab_dopravniky->Visible=false;
@@ -2498,11 +2588,12 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RzClick(TObject *Sender)
 {
 
 	 input_clicked_icon=Rz_klik_ico;
-	// if(input_clicked_edit==Rz_klik) Nastav_zamky(Rz_klik_ico,Rz_klik);   - není potøeba, je schován zámek
+	 if(input_clicked_edit==Rz_klik) Nastav_zamky(Rz_klik_ico,Rz_klik);
 	 if(input_clicked_edit==R_klik)	 Nastav_zamky(Rz_klik_ico,R_klik);
 	 if(input_clicked_edit==Rx_klik)	 Nastav_zamky(Rz_klik_ico,Rx_klik);
+   if(input_clicked_edit==aRD_klik)	 Nastav_zamky(Rz_klik_ico,aRD_klik);
 
-	 if(input_clicked_edit==empty_klik){ Nastav_zamky(aRD_klik_ico,empty_klik);} //shodne chování jako klik do aRD
+	 if(input_clicked_edit==empty_klik){ Nastav_zamky(Rz_klik_ico,Rz_klik);} //shodne chování jako klik do aRD
 
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
@@ -2617,7 +2708,9 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
                Row_validace=ARow;
                Col_validace=ACol;
                vypis(TNValue.text);
+               Memo3->Lines->Clear();
                Memo3->Lines->Add(VID_value);
+               Memo3->Lines->Add(TNValue.text);
 
             }
 //	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepouíván")
@@ -2813,23 +2906,6 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 		 rStringGridEd_tab_dopravniky->Invalidate();
 		}
 
-		switch(VID)
-		{
-
-    	case -1:break;
-			case 0:break;
-			case 7:
-			{
-//			 rStringGridEd_tab_dopravniky->Cells[7][Row_validace]=VID_value;
-//			 INPUT(7,Row_validace);
-//			 OUTPUT(0,7,Row_validace);
-//			 rStringGridEd_tab_dopravniky->Invalidate();
-			}
-			break;
-
-
-
-		}
 }
 //---------------------------------------------------------------------------
 
