@@ -57,6 +57,7 @@ private:	// User declarations
 	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
+  bool nahled;
 public:		// User declarations
 	__fastcall TF_gapoTT(TComponent* Owner);
 	//metody volané z Tmgrid

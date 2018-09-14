@@ -355,7 +355,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
    rMemoEx_Nazev->Text="";
      // rMemoEx1_rychlost->Caption="";
 	 rMemoEx2_prirazen->Text="";
-
+   rMemoEx1_rozestup->Text="";
 
 
 
@@ -373,6 +373,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 else scHTMLLabel_rozestup->Caption="rozestup <u>[mm]</u></br>";
 
 	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
+   rMemoEx1_rozestup->Lines->Add("   Palce");
 
 	 Storno=false;
 }
@@ -2405,14 +2406,14 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				pm.input_aRD();
 				OUTPUT(0,ACol,ARow);
 				rStringGridEd_tab_dopravniky->Invalidate();
-			 if(rHTMLLabel_InfoText->Caption=="")	vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
+			// if(rHTMLLabel_InfoText->Caption=="")	vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
 
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 					{
 					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
+          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
 					}
 				input_state=NOTHING;
 				}
@@ -2438,13 +2439,13 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				rStringGridEd_tab_dopravniky->Invalidate();
 			 if(scGPButton_zamek_aRD->ImageIndex==38 && rHTMLLabel_InfoText->Caption=="" )  //pokud je aRD odemèeno volám akt.data do roletky
 			 {	Roletka_roztec(ARow);
-					vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
+					//vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
 					Memo2->Lines->Add("volam aktualiz R");
 					zobrazOramovani=true;
 					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 					{
 					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-         rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
+         rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
 					}
 			 } //vypoèítání nových dat do roletky na základì zmìny Rz
 			 else zobrazOramovani=false;
@@ -2470,22 +2471,19 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				pm.input_Rz();
 				OUTPUT(0,ACol,ARow);
 				rStringGridEd_tab_dopravniky->Invalidate();
-			  if(rHTMLLabel_InfoText->Caption=="")		vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
+			  //if(rHTMLLabel_InfoText->Caption=="")		vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				zobrazOramovani=true;
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 				{
 					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
+          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
 				}
 
 				input_state=NOTHING;
 				}
 
 				}
-
-
-
 		}
 
 	if(ACol==7)
@@ -2505,12 +2503,12 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(scGPButton_zamek_roztec->ImageIndex==37 && rHTMLLabel_InfoText->Caption=="")
 				{
 				zobrazOramovani=true;
-				vypis("Došlo ke zmìnì obsahu roletky rozteèe, vyberte hodnotu.",false);
+				//vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 				{
 				F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-        rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù (GAPO R).";
+        rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
 				}
 				}    else zobrazOramovani=false;
 				rStringGridEd_tab_dopravniky->Invalidate();
