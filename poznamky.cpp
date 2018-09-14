@@ -34,6 +34,8 @@ __fastcall TForm_poznamky::TForm_poznamky(TComponent* Owner)
 	//nastavení výstupů
 	Decimal=3;//počet desetinných míst
 	pz="";//zástupný znak pokračování
+
+	start=true;//start formu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_poznamky::scGPButton_stornoClick(TObject *Sender)
@@ -84,6 +86,7 @@ void __fastcall TForm_poznamky::FormPaint(TObject *Sender)
 //při zobrazení formuláře
 void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 {
+	start=true;//start formu
 	if(Form_parametry->scComboBox_rezim->ItemIndex==0)//pro S&G
 	{
 		////////tabulka
@@ -94,128 +97,16 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		mGrid->DefaultColWidth*=1.2;
 		mGrid->Create(7,5);//vhodné jako třetí
 		mGrid->Columns[5].Width=250;//pohon následující
+		mGrid->Decimal=Decimal;//počet desetinných míst u numericeditů
 		mGrid->SetColumnAutoFit(0);
-		short R=0;//číslo aktuálně zpracovávaného řádku
 
-		////převody jednotek
-		AnsiString CTunitT="s";if(Form_parametry->CTunit)CTunitT="min";
-		AnsiString DDunitT="m";if(Form_parametry->DDunit)DDunitT="mm";
-		AnsiString RDunitT="m/s";if(Form_parametry->RDunitT)RDunitT="m/min";
-		AnsiString RunitT="m";if(Form_parametry->DMunit)RunitT="mm";
-
-		////definice buněk - hlavička total
-		//pohon vlastní
-		P=F->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
-		if(P!=NULL)
-		{
-			mGrid->Cells[1][R].Text=AnsiString(P->name)+" "+AnsiString(F->m.round2double(P->aRD*(1+Form_parametry->RDunitT*59),Decimal,pz))+" ["+RDunitT+"], "+AnsiString(F->m.round2double(P->roztec*(1+Form_parametry->DMunit*999),Decimal,pz))+" ["+RunitT+"]";
-			mGrid->Cells[1][R].Font->Color=clLOCKED;
-		}
-		else
-		{
-			mGrid->Cells[1][R].Text="nepřiřazen";
-			mGrid->Cells[1][R].Font->Color=clRed;
-		}
-		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		//pohon následující
-		PD=F->pom->dalsi->pohon;
-		if(PD!=NULL)
-		{
-			mGrid->Cells[5][R].Text=AnsiString(PD->name)+" "+AnsiString(F->m.round2double(PD->aRD*(1+Form_parametry->RDunitT*59),Decimal,pz))+" ["+RDunitT+"], "+AnsiString(F->m.round2double(PD->roztec*(1+Form_parametry->DMunit*999),Decimal,pz))+" ["+RunitT+"]";
-			mGrid->Cells[5][R].Font->Color=clLOCKED;
-		}
-		else
-		{
-			mGrid->Cells[5][R].Text="nepřiřazen";
-			mGrid->Cells[5][R].Font->Color=clRed;
-		}
-		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		//celkem
-		mGrid->Cells[6][R].Text="CELKEM";mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-
-		////definice buněk - hlavička ČAS
-		mGrid->Cells[0][++R].Text="ČAS";mGrid->Cells[0][R].LeftMargin=4;
-		mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		mGrid->Cells[1][R].Text="MT1 ["+CTunitT+"]";// - čas přesunu 1";
-		mGrid->Cells[1][R].Background->Color=clBACKGROUND;
-		mGrid->Cells[2][R].Text="PT ["+CTunitT+"]";// - procesní čas";
-		mGrid->Cells[2][R].Background->Color=clBACKGROUND;mGrid->Cells[2][R].Font->Color=clLOCKEDhead;mGrid->Cells[2][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		mGrid->Cells[3][R].Text="max.WT1 ["+CTunitT+"]";// - čas čekání na nejbližší palec 2";
-		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[4][R].Text="MT2 ["+CTunitT+"]";// - čas přesunu 2";
-		mGrid->Cells[4][R].Background->Color=clBACKGROUND;
-		mGrid->Cells[5][R].Text="max.WT výstup ["+CTunitT+"]";// - čas čekání na nejbližší palec 2";
-		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[6][R].Text="CT ["+CTunitT+"]";// - Celkový technologický čas";
-		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-
-		////definice buněk - parametry - ČAS
-		//MT1
-		mGrid->Cells[1][R].Type=mGrid->NUMERIC;
-		//PT
-		mGrid->Cells[2][R].Background->Color=clBACKGROUND;mGrid->Cells[2][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		//WT1
-		mGrid->Cells[3][R].Background->Color=clBACKGROUND; mGrid->Cells[3][R].Font->Color=clLOCKED;
-		//MT2
-		mGrid->Cells[4][R].Type=mGrid->NUMERIC;
-		//WT2
-		mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED;
-		//CT
-		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_CT->Value,Decimal,pz);
-
-		////definice buněk - hlavička - DÉLKA
-		mGrid->Cells[0][++R].Text="DÉLKA";mGrid->Cells[0][R].LeftMargin=4;
-		mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		mGrid->Cells[1][R].Text="přejezd 1 ["+DDunitT+"]";
-		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[3][R].Text="přejezd 2 ["+DDunitT+"]";
-		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[6][R].Text="délka ["+DDunitT+"]";
-		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKEDhead;
-		mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-		mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
-
-		////definice buněk - parametry - DÉLKA
-		//Přejezd 1
-		mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKED;
-		//Přejezd 2
-		mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKED;
-		//Celkem
-		mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_delka_dopravniku->Value,Decimal,pz);
-		mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;
-
-		////Výpočet hodnot
-		calculate();
-
-		//vymazání nepoužívaných buněk
-		mGrid->Cells[0][0].Background->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].TopBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].LeftBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].BottomBorder->Width=2;mGrid->Cells[0][0].RightBorder->Width=2;
-
-		mGrid->Cells[5][R-1].Background->Color=(TColor)RGB(240,240,240);
-		mGrid->Cells[5][R-1].TopBorder->Width=2;
-		mGrid->Cells[5-1][R-1].LeftBorder->Width=2;
-		mGrid->Cells[5][R-1].RightBorder->Width=2;
-
-		mGrid->Cells[5][R].Background->Color=(TColor)RGB(240,240,240);
-		mGrid->Cells[5-1][R].LeftBorder->Width=2;
-		mGrid->Cells[5][R].RightBorder->Width=2;
-
-		//rozdělení čas a délka
-		//for(short i=0;i<=6;i++)mGrid->Cells[i][0].BottomBorder->Width=2;//mGrid->Cells[i][2].BottomBorder->Width=2;
-
-		//Sloučení buněk
-		mGrid->MergeCells(1,0,4,0);
-		mGrid->MergeCells(0,1,0,2);
-		mGrid->MergeCells(0,3,0,4);
-		mGrid->MergeCells(1,R-1,2,R-1);mGrid->MergeCells(1,R,2,R);
-		mGrid->MergeCells(3,R-1,4,R-1);mGrid->MergeCells(3,R,4,R);
-		mGrid->MergeCells(5,R-1,5,R);
+		////vytvoření hlavičky a názvů sloupců a všech popisků tabulky
+		table_head();
 
 		////////design - musí být až za tabulkou kvůli pozici
 		scLabel_titulek->Caption=Form_parametry->scGPEdit_name->Text.UpperCase()+" - rozbor objektu ";
 		mGrid->Show();//kvůli přepočítání a získání výšky a šířky výsledné tabulky
-    //form
+		//form
 		Width=mGrid->Width+2*10+2;
 		Left=Form_parametry->Left+Form_parametry->Width/2-Width/2;
 		//defaultní design a pozicování tlačítek OK a Storno
@@ -227,6 +118,7 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		scGPMemo->Top=mGrid->Top+mGrid->Height+10+rHTMLLabel_InfoText->Height;
 		scGPMemo->Height=scGPButton_OK->Top-10-scGPMemo->Top;
 		rHTMLLabel_InfoText->Top=scGPMemo->Top-rHTMLLabel_InfoText->Height;
+		//scGPCheckBox_zaokrouhlit->Visible=true; nefunguje správně následná funkcionalita
 	}
 	else//pro ostatní režimy
 	{
@@ -234,7 +126,131 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		rHTMLLabel_InfoText->Visible=false;
 		scGPMemo->Top=48;
 		scGPMemo->Height=233;
+		scGPCheckBox_zaokrouhlit->Visible=false;
+		scGPCheckBox_STOPKA->Visible=false;
 	}
+	start=false;//start formu
+}
+//---------------------------------------------------------------------------
+//definuje hlavičku tabulky
+void TForm_poznamky::table_head()
+{
+	short R=0;//číslo aktuálně zpracovávaného řádku
+
+	////převody jednotek
+	AnsiString CTunitT="s";if(Form_parametry->CTunit)CTunitT="min";
+	AnsiString DDunitT="m";if(Form_parametry->DDunit)DDunitT="mm";
+	AnsiString RDunitT="m/s";if(Form_parametry->RDunitT)RDunitT="m/min";
+	AnsiString RunitT="m";if(Form_parametry->DMunit)RunitT="mm";
+
+	////definice buněk - hlavička total
+	//pohon vlastní
+	P=F->d.v.vrat_pohon(Form_parametry->scComboBox_pohon->ItemIndex);
+	if(P!=NULL)
+	{
+		mGrid->Cells[1][R].Text=AnsiString(P->name)+" "+AnsiString(F->m.round2double(P->aRD*(1+Form_parametry->RDunitT*59),Decimal,pz))+" ["+RDunitT+"], "+AnsiString(F->m.round2double(P->roztec*(1+Form_parametry->DMunit*999),Decimal,pz))+" ["+RunitT+"]";
+		mGrid->Cells[1][R].Font->Color=clLOCKED;
+	}
+	else
+	{
+		mGrid->Cells[1][R].Text="nepřiřazen";
+		mGrid->Cells[1][R].Font->Color=clRed;
+	}
+	mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	//pohon následující
+	PD=F->pom->dalsi->pohon;
+	if(PD!=NULL)
+	{
+		mGrid->Cells[5][R].Text=AnsiString(PD->name)+" "+AnsiString(F->m.round2double(PD->aRD*(1+Form_parametry->RDunitT*59),Decimal,pz))+" ["+RDunitT+"], "+AnsiString(F->m.round2double(PD->roztec*(1+Form_parametry->DMunit*999),Decimal,pz))+" ["+RunitT+"]";
+		mGrid->Cells[5][R].Font->Color=clLOCKED;
+	}
+	else
+	{
+		mGrid->Cells[5][R].Text="nepřiřazen";
+		mGrid->Cells[5][R].Font->Color=clRed;
+	}
+	mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	//celkem
+	mGrid->Cells[6][R].Text="CELKEM";mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+
+	////definice buněk - hlavička ČAS
+	mGrid->Cells[0][++R].Text="ČAS";mGrid->Cells[0][R].LeftMargin=4;
+	mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	mGrid->Cells[1][R].Text="MT1 ["+CTunitT+"]";// - čas přesunu 1";
+	mGrid->Cells[1][R].Background->Color=clBACKGROUND;
+	mGrid->Cells[2][R].Text="PT ["+CTunitT+"]";// - procesní čas";
+	mGrid->Cells[2][R].Background->Color=clBACKGROUND;mGrid->Cells[2][R].Font->Color=clLOCKEDhead;mGrid->Cells[2][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	mGrid->Cells[3][R].Text="max.WT1 ["+CTunitT+"]";// - čas čekání na nejbližší palec 2";
+	mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKEDhead;
+	mGrid->Cells[4][R].Text="MT2 ["+CTunitT+"]";// - čas přesunu 2";
+	mGrid->Cells[4][R].Background->Color=clBACKGROUND;
+	mGrid->Cells[5][R].Text="max.WT výstup ["+CTunitT+"]";// - čas čekání na nejbližší palec 2";
+	mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKEDhead;
+	mGrid->Cells[6][R].Text="CT ["+CTunitT+"]";// - Celkový technologický čas";
+	mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKEDhead;
+	mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+
+	////definice buněk - parametry - ČAS
+	//MT1
+	mGrid->Cells[1][R].Type=mGrid->NUMERIC;
+	//PT
+	mGrid->Cells[2][R].Background->Color=clBACKGROUND;mGrid->Cells[2][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	//WT1
+	mGrid->Cells[3][R].Background->Color=clBACKGROUND; mGrid->Cells[3][R].Font->Color=clLOCKED;
+	//MT2
+	mGrid->Cells[4][R].Type=mGrid->NUMERIC;
+	//WT2
+	mGrid->Cells[5][R].Background->Color=clBACKGROUND;mGrid->Cells[5][R].Font->Color=clLOCKED;
+	//CT
+	mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_CT->Value,Decimal,pz);
+
+	////definice buněk - hlavička - DÉLKA
+	mGrid->Cells[0][++R].Text="DÉLKA";mGrid->Cells[0][R].LeftMargin=4;
+	mGrid->Cells[0][R].Background->Color=clBACKGROUND;mGrid->Cells[0][R].Font->Color=clLOCKED;mGrid->Cells[0][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	mGrid->Cells[1][R].Text="přejezd 1 ["+DDunitT+"]";
+	mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Color=clLOCKEDhead;
+	mGrid->Cells[3][R].Text="přejezd 2 ["+DDunitT+"]";
+	mGrid->Cells[3][R].Background->Color=clBACKGROUND;mGrid->Cells[3][R].Font->Color=clLOCKEDhead;
+	mGrid->Cells[6][R].Text="délka ["+DDunitT+"]";
+	mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKEDhead;
+	mGrid->Cells[6][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+	mGrid->Cells[6][++R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
+
+	////definice buněk - parametry - DÉLKA
+	//Přejezd 1
+	mGrid->Cells[1][R].Type=mGrid->NUMERIC;
+	//Přejezd 2
+	mGrid->Cells[3][R].Type=mGrid->NUMERIC;
+	//Celkem
+	mGrid->Cells[6][R].Text=F->m.round2double(Form_parametry->scGPNumericEdit_delka_dopravniku->Value,Decimal,pz);
+	mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;
+
+	////Výpočet hodnot
+	calculate();
+
+	//vymazání nepoužívaných buněk
+	mGrid->Cells[0][0].Background->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].TopBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].LeftBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].BottomBorder->Width=2;mGrid->Cells[0][0].RightBorder->Width=2;
+
+	mGrid->Cells[5][R-1].Background->Color=(TColor)RGB(240,240,240);
+	mGrid->Cells[5][R-1].TopBorder->Width=2;
+	mGrid->Cells[5-1][R-1].LeftBorder->Width=2;
+	mGrid->Cells[5][R-1].RightBorder->Width=2;
+
+	mGrid->Cells[5][R].Background->Color=(TColor)RGB(240,240,240);
+	mGrid->Cells[5-1][R].LeftBorder->Width=2;
+	mGrid->Cells[5][R].RightBorder->Width=2;
+
+	//rozdělení čas a délka
+	//for(short i=0;i<=6;i++)mGrid->Cells[i][0].BottomBorder->Width=2;//mGrid->Cells[i][2].BottomBorder->Width=2;
+
+	//Sloučení buněk
+	mGrid->MergeCells(1,0,4,0);//P
+	mGrid->MergeCells(0,1,0,2);//ČAS
+	mGrid->MergeCells(0,3,0,4);//DÉLKA
+	mGrid->MergeCells(1,R-1,2,R-1);mGrid->MergeCells(1,R,2,R);//přejezd 1
+	mGrid->MergeCells(3,R-1,4,R-1);mGrid->MergeCells(3,R,4,R);//přejezd 2
+	mGrid->MergeCells(5,R-1,5,R);//výsek tabulky
 }
 //---------------------------------------------------------------------------
 void TForm_poznamky::OnClick(long Tag,unsigned long Col,unsigned long Row)
@@ -247,8 +263,18 @@ void TForm_poznamky::OnEnter(long Tag,unsigned long Col,unsigned long Row)
 }
 void TForm_poznamky::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
-	scLabel_titulek->Caption=mGrid->Cells[Col][Row].Text;//pouze test
-	//calculate
+	//if(Col==1 && Row==2)scLabel_titulek->Caption=mGrid->Cells[Col][Row].Text;//pouze test
+	if(Col==1 && Row==2 && !start)
+	{
+		calculate(1);
+		FormPaint(this);
+	}
+	if(Col==4 && Row==2 && !start)
+	{
+		calculate(2);
+		//mGrid->Cells[Col][Row].Text=mGrid->getNumeric(Col,Row)->Value;
+		FormPaint(this);
+	}
 }
 //---------------------------------------------------------------------------
 //vypočítává ve S&G subparametry
@@ -270,9 +296,10 @@ void TForm_poznamky::calculate(short INPUT_state)
 	 ////VÝPOČETNÍ SEKCE
 	 switch(INPUT_state)
 	 {
-		 case 0://při otevření formu
+		 //při otevření formu
+		 case 0:
 		 {
-			 //MT1
+			 //MT1+MT2
 			 if(Form_parametry->MT==0)//pokud nebylo MT uloženo
 			 {
 				 if(P!=NULL)MT1=DD/P->aRD;//pokud existuje pohon
@@ -282,31 +309,72 @@ void TForm_poznamky::calculate(short INPUT_state)
 			 else //pokud bylo MT uloženo
 			 {
 				 MT1=Form_parametry->MT;
-				 if(P!=NULL)MT2=MT1-DD/P->aRD;//pokud existuje pohon
+				 if(P!=NULL)MT2=DD/P->aRD-MT1;//pokud existuje pohon
 				 else MT1=0;//pokud ne
-       }
+			 }
 			 //WT2 - výstupní
 			 if(PD!=NULL)//pokud existuje pohon další
 			 {
 				 WT2=F->m.cekani_na_palec(0,PD->roztec,PD->aRD,3);
 			 }
 			 else WT2=0;//pokud ne
-			 //výpočet PT
-			 PT=CT-MT1-PT-WT1-MT2-WT2;
 			 //výpočet délek přejezdů
 			 P1=DD;if(MT2!=0 && P!=NULL)P1=MT1*P->aRD;
 			 P2=0;if(MT2!=0 && P!=NULL)P2=MT2*P->aRD;
-			 if(MT2!=0 && P==PD)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká, protože se jede na stejném pohonu
+			 if(MT2!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
 			 //dopočítaní WT1
-			 if(P!=NULL)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);
+			 if(P!=NULL && MT2!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);
+			 //závěrečný výpočet PT - musí být na konci
+			 PT=CT-MT1-WT1-MT2-WT2;
 		 }
 		 break;
+		 //při změně MT1
+		 case 1:
+		 {
+			 //MT2
+			 if(P!=NULL)MT2=DD/P->aRD-MT1;//pokud existuje pohon
+			 //WT2 - výstupní
+			 if(PD!=NULL)//pokud existuje pohon další
+			 {
+				 WT2=F->m.cekani_na_palec(0,PD->roztec,PD->aRD,3);
+			 }
+			 else WT2=0;//pokud ne
+			 //výpočet délek přejezdů
+			 P1=DD;if(MT2!=0 && P!=NULL)P1=MT1*P->aRD;
+			 P2=0;if(MT2!=0 && P!=NULL)P2=MT2*P->aRD;
+			 if(MT2!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
+			 //dopočítaní WT1
+			 if(P!=NULL && MT2!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);
+			 //závěrečný výpočet PT - musí být na konci
+			 PT=CT-MT1-WT1-MT2-WT2;
+		 }
+		 break;
+		 //při změně MT2
+		 case 2:
+		 {
+			 //MT1
+			 if(P!=NULL)MT1=DD/P->aRD-MT2;//pokud existuje pohon
+			 //WT2 - výstupní
+			 if(PD!=NULL)//pokud existuje pohon další
+			 {
+				 WT2=F->m.cekani_na_palec(0,PD->roztec,PD->aRD,3);
+			 }
+			 else WT2=0;//pokud ne
+			 //výpočet délek přejezdů
+			 P1=DD;if(MT2!=0 && P!=NULL)P1=MT1*P->aRD;
+			 P2=0;if(MT2!=0 && P!=NULL)P2=MT2*P->aRD;
+			 if(MT2!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
+			 //dopočítaní WT1
+			 if(P!=NULL && MT2!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);
+			 //závěrečný výpočet PT - musí být na konci
+			 PT=CT-MT1-WT1-MT2-WT2;
+		 }
 	 }
-
 
 	 ////OUTPUT SEKCE včetně zaokrohlení a převodů do požadovaných jednotek a kontroly hodnot
 	 //časy
-	 mGrid->Cells[1][2].Text=F->m.round2double(MT1/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
+	 //mGrid->Cells[1][2].Text=F->m.round2double(MT1/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
+	 mGrid->Cells[1][2].Text=MT1/(1.0+Form_parametry->CTunit*59.0);
 	 if(MT1>0)mGrid->Cells[1][2].Font->Color=clUNLOCKED;else mGrid->Cells[1][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 mGrid->Cells[2][2].Text=F->m.round2double(PT/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
@@ -315,24 +383,50 @@ void TForm_poznamky::calculate(short INPUT_state)
 	 mGrid->Cells[3][2].Text=F->m.round2double(WT1/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
 	 if(WT1>=0)mGrid->Cells[3][2].Font->Color=clLOCKED;else mGrid->Cells[3][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
-	 mGrid->Cells[4][2].Text=F->m.round2double(MT2/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
+	 mGrid->Cells[4][2].Text=MT2/(1.0+Form_parametry->CTunit*59.0);
 	 if(MT2>=0)mGrid->Cells[4][2].Font->Color=clUNLOCKED;else mGrid->Cells[4][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 mGrid->Cells[5][2].Text=F->m.round2double(WT2/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
 	 if(WT2>=0)mGrid->Cells[5][2].Font->Color=clLOCKED;else mGrid->Cells[5][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 //přejezdy
-	 mGrid->Cells[1][4].Text=F->m.round2double(P1*(1+Form_parametry->DDunit*999),Decimal,pz);
-	 if(P1>0)mGrid->Cells[1][4].Font->Color=clLOCKED;else mGrid->Cells[1][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 //mGrid->Cells[1][4].Text=F->m.round2double(P1*(1+Form_parametry->DDunit*999),Decimal,pz);
+	 mGrid->Cells[1][4].Text=P1*(1+Form_parametry->DDunit*999);
+	 if(P1>0)mGrid->Cells[1][4].Font->Color=clUNLOCKED;else mGrid->Cells[1][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
-	 mGrid->Cells[3][4].Text=F->m.round2double(P2*(1+Form_parametry->DDunit*999),Decimal,pz);
-	 if(P2>=0)mGrid->Cells[3][4].Font->Color=clLOCKED;else mGrid->Cells[3][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 //mGrid->Cells[3][4].Text=F->m.round2double(P2*(1+Form_parametry->DDunit*999),Decimal,pz);
+	 mGrid->Cells[3][4].Text=P2*(1+Form_parametry->DDunit*999);
+	 if(P2>=0)mGrid->Cells[3][4].Font->Color=clUNLOCKED;else mGrid->Cells[3][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+
+	 //volba stopka se zobrazí pokud, je to nutné pro rozhodnutí, zda se bude čekat či nikoliv (to je potřeba rozhodnout u přechodu na stejný pohon za předpokladu, že se předpokládá přejezd 2, jinak je jisté, že je stopka automaticky)
+	 if(P==PD && MT2!=0)
+	 {   //výchozí stav stopky vhodno nastavit dle PO stopky (až bude zobrazena)
+		scGPCheckBox_STOPKA->Visible=true;
+	 	scGPCheckBox_STOPKA->Top=mGrid->Top+mGrid->Height+2;
+	 	scGPCheckBox_STOPKA->Left=mGrid->Left+mGrid->Columns[5].Left-scGPCheckBox_STOPKA->OptionsChecked->ShapeSize/2;
+	 }
+	 else scGPCheckBox_STOPKA->Visible=false;
 }
 //---------------------------------------------------------------------------
 //Ctrl + A u Mema
 void __fastcall TForm_poznamky::scGPMemoKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if(Shift.Contains(ssCtrl) && Key==65)scGPMemo->SelectAll();
+}
+//---------------------------------------------------------------------------
+//přepíná zobrazení mezi počtem 3 a 10 desetinných míst - nefunguje správně nedokončeno
+void __fastcall TForm_poznamky::scGPCheckBox_zaokrouhlitClick(TObject *Sender)
+{
+	if(scGPCheckBox_zaokrouhlit)Decimal=3;else Decimal=10;
+	mGrid->Decimal=Decimal;
+	table_head();
+	FormPaint(this);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm_poznamky::scGPCheckBox_STOPKAClick(TObject *Sender)
+{
+	calculate(1);
+	FormPaint(this);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_poznamky::FormClose(TObject *Sender, TCloseAction &Action)
@@ -342,5 +436,4 @@ void __fastcall TForm_poznamky::FormClose(TObject *Sender, TCloseAction &Action)
 	PD=NULL;delete PD;
 }
 //---------------------------------------------------------------------------
-
 

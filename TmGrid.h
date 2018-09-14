@@ -84,6 +84,7 @@ class TmGrid
 	TscGPNumericEdit *getNumeric(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	void createComponent(Ttype Type, unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vytvoøenou komponentu dle Type, pokud existuje, tak se nic nedìje
 	TscGPEdit *createEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+	TscGPNumericEdit *createNumeric(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
@@ -101,6 +102,7 @@ class TmGrid
 	TColumns *Columns;//alokace jednorozmìrneho dynamickeho pole sloupcù
 	TRows *Rows;//alokace jednorozmìrneho dynamickeho pole øádkù
 	TCells DefaultCell;//deafultní vzorová VIRTUÁLNÍ buòka, podle ní se nastaví všechny pøi prvním naètení tabulky, pokud není pøed Show() ještì nastaveno jinak
+	short Decimal;//implicitní poèet desetinnıch míst u numericeditù
 
  //protected: - nefugovalo, jak jsme si pøedstavoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
