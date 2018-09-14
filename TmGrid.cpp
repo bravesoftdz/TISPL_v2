@@ -473,6 +473,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		{
 			SetNumeric(R,X,Y,Cell);
 		}break;
+		case LABEL:
+		{
+			SetLabel(R,X,Y,Cell);
+		}break;
 		case BUTTON:
 		{
 			//založení + tag + název
@@ -593,8 +597,8 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->AutoSize=false;
 	E->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	E->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	E->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	E->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
+	if(Cell.MergeState==false)E->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
+	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	E->ShowHint=false;//implicitnì u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
 	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
 	E->Options->NormalColor=Cell.Background->Color;
@@ -634,7 +638,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	N->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)N->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	N->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
+	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	N->Decimal=Decimal;
 	N->DisplayType=scedtNumeric;
 	N->ValueType=scvtFloat;
@@ -667,6 +671,41 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	}
 	//vlastník
 	N->Parent=Form;//musí být až na konci
+}
+//---------------------------------------------------------------------------
+//nastaví danou buòku na numericedit, pomocná metoda objednu výše uvedené
+void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
+{
+	//založení + tag + název
+	TscHTMLLabel *L=createLabel(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+	//atributy
+	L->AutoSizeHeight=false;L->AutoSizeWidth=false;
+	L->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
+	L->Left=R.Left+Cell.LeftBorder->Width-1;//ubere velikost komponenty podle šíøky orámování
+	if(Cell.MergeState==false)L->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
+	/*if(Cell.MergeState==false)*/L->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
+	L->ShowHint=false;//implicitnì u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
+	L->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
+	L->Color=Cell.Background->Color;
+	L->Margins->Left=0;L->Margins->Right=0;L->Margins->Top=0;L->Margins->Bottom=0;
+	switch(Cell.Align)
+	{
+		case LEFT:	L->TextAlignment=taLeftJustify;break;
+		case CENTER:L->TextAlignment=taCenter;break;
+		case RIGHT:	L->TextAlignment=taRightJustify;break;
+	}
+//	L->ContentMarginBottom=0;
+//	switch(Cell.Valign)
+//	{
+//		case TOP:		L->ContentMarginTop=0;break;
+//		case MIDDLE:L->ContentMarginTop=E->Height/2-getWidthHeightText(Cell).Y/2;break;
+//		case BOTTOM:L->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
+//	}
+	L->Font=Cell.Font;
+	L->Caption=Cell.Text;
+	//vlastník
+	L->Parent=Form;//musí být až na konci
+	L=NULL;delete L;
 }
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
@@ -702,6 +741,23 @@ TscGPNumericEdit *TmGrid::createNumeric(unsigned long Col,unsigned long Row)
 		N->OnChange=&getTagOnChange;
 	}
 	return N;
+}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscHTMLLabel *TmGrid::createLabel(unsigned long Col,unsigned long Row)
+{
+	TscHTMLLabel *L=getLabel(Col,Row);//pokud již existuje
+	if(L==NULL)//pokud ne, tak založí
+	{
+		L = new TscHTMLLabel(Form);
+		L->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		L->Name="mGrid_LABEL_"+AnsiString(L->Tag);
+
+		//události
+		L->OnClick=&getTagOnClick;
+		L->OnEnter=&getTagOnEnter;
+	}
+	return L;
 }
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
@@ -894,6 +950,7 @@ TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row){return (Tsc
 TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscHTMLLabel *TmGrid::getLabel(unsigned long Col,unsigned long Row){return (TscHTMLLabel *)Form->FindComponent("mGrid_LABEL_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
 void TmGrid::getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row)
@@ -1039,6 +1096,14 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							N->Value=F->ms.MyToDouble(RefCell.Text);//bere až z poslední buòky sluèované oblasti
 							N=NULL;delete N;
 						}break;
+						case LABEL:
+						{
+							Cells[ColCell_1][RowCell_1].Align=CENTER;
+							TscHTMLLabel *L=createLabel(ColCell_1,RowCell_1);
+							L->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left-Cells[ColCell_2][RowCell_2].RightBorder->Width-1;
+							L->Caption=RefCell.Text;//bere až z poslední buòky sluèované oblasti
+							L=NULL;delete L;
+						}break;
 						default: Cells[ColCell_2][RowCell_2].TextPositon.X=(Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-W/2;
 				 }
 			 }break;
@@ -1075,17 +1140,24 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 						}break;
 						case EDIT:
 						{
-							Cells[ColCell_1][RowCell_1].Align=MIDDLE;
+							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
 							TscGPEdit *E=createEdit(ColCell_1,RowCell_1);
 							E->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
 							E=NULL;delete E;
 						}break;
 						case NUMERIC:
 						{
-							Cells[ColCell_1][RowCell_1].Align=MIDDLE;
+							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
 							TscGPNumericEdit *N=createNumeric(ColCell_1,RowCell_1);
 							N->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
 							N=NULL;delete N;
+						}break;
+						case LABEL:
+						{
+							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
+							TscHTMLLabel *L=createLabel(ColCell_1,RowCell_1);
+							L->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+							L=NULL;delete L;
 						}break;
 
 						default: Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
@@ -1455,6 +1527,7 @@ void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
 		case CHECK:				createCheck(Col,Row);break;
 		case RADIO:				createRadio(Col,Row);break;
 		case DRAW:break;
+		case LABEL:				createLabel(Col,Row);break;
   }
 }
 //---------------------------------------------------------------------------
