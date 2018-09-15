@@ -35,7 +35,7 @@ __fastcall TForm_poznamky::TForm_poznamky(TComponent* Owner)
 	Decimal=3;//počet desetinných míst
 	pz="";//zástupný znak pokračování
 
-	start=true;//start formu
+	input_state=NO;//start formu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_poznamky::scGPButton_stornoClick(TObject *Sender)
@@ -86,7 +86,7 @@ void __fastcall TForm_poznamky::FormPaint(TObject *Sender)
 //při zobrazení formuláře
 void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 {
-	start=true;//start formu
+	input_state=NO;//start formu
 	if(Form_parametry->scComboBox_rezim->ItemIndex==0)//pro S&G
 	{
 		////////tabulka
@@ -129,7 +129,7 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		scGPCheckBox_zaokrouhlit->Visible=false;
 		scGPCheckBox_STOPKA->Visible=false;
 	}
-	start=false;//start formu
+	//input_state=NOTHING;//start formu
 }
 //---------------------------------------------------------------------------
 //definuje hlavičku tabulky
@@ -259,18 +259,20 @@ void TForm_poznamky::OnClick(long Tag,unsigned long Col,unsigned long Row)
 }
 void TForm_poznamky::OnEnter(long Tag,unsigned long Col,unsigned long Row)
 {
-
+	//input_state=NOTHING;
+	if(Col==1 && Row==2)input_state=MT1state;
+	if(Col==4 && Row==2)input_state=MT2state;
 }
 void TForm_poznamky::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
 	//if(Col==1 && Row==2)scLabel_titulek->Caption=mGrid->Cells[Col][Row].Text;//pouze test
-	if(Col==1 && Row==2 && !start)
-	{
+	if(Col==1 && Row==2 && input_state==MT1state)
+	{        scLabel_titulek->Caption=scLabel_titulek->Caption+"a"; //toto by nemělo nastat
 		calculate(1);
 		FormPaint(this);
 	}
-	if(Col==4 && Row==2 && !start)
-	{
+	if(Col==4 && Row==2 && input_state==MT2state)
+	{              scLabel_titulek->Caption=scLabel_titulek->Caption+"b";
 		calculate(2);
 		//mGrid->Cells[Col][Row].Text=mGrid->getNumeric(Col,Row)->Value;
 		FormPaint(this);

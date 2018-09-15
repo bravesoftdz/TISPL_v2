@@ -260,6 +260,10 @@ AnsiString TMyString::UTF2Win(AnsiString Text)
   return DATA;
 }
 //---------------------------------------------------------------------------
+    //kod pro remove_abc
+		//AnsiString PZ=mGrid->Cells[4][2].Text.SubString(mGrid->Cells[4][2].Text.Length(),1);//vrátí poslední znak
+		//if((int)*PZ.c_str()<48 || (int)*PZ.c_str()>57)mGrid->Cells[4][2].Text.Delete(mGrid->Cells[4][2].Text.Length(),1);//ubere poslední znak
+
 //odstraní českou diakritiku a vrátí stejný (zadaný) řetěze bez diakritiky)
 AnsiString TMyString::remove_diacritics(AnsiString text)
 {

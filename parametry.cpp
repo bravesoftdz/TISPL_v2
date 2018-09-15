@@ -1113,7 +1113,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_mezeraChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_RD_Change(TObject *Sender)
 {
-			if (input_state == NOTHING && scButton_zamek_RD->Enabled)
+		if (input_state == NOTHING && scButton_zamek_RD->Enabled)
 		{
 				if(input_clicked_edit == RD_klik || input_state_Rz)
 				{
@@ -2486,32 +2486,32 @@ void TForm_parametry::OUTPUT()
 		////ZOBRAZENÍ HINTÙ + odfiltrování velmi malého èísla, které nìkdy naplnilo hint
 		// pokud je èíslo velmi malé do hintu se zobrazí 0
 
-			if(scGPNumericEdit_CT->Value < 0.0000000000000004)	scGPNumericEdit_CT->Hint=0;
-			else 		scGPNumericEdit_CT->Hint=	scGPNumericEdit_CT->Value;
+		if(scGPNumericEdit_CT->Value < 0.0000000000000004)	scGPNumericEdit_CT->Hint=0;
+		else 		scGPNumericEdit_CT->Hint=	scGPNumericEdit_CT->Value;
 
-			if(scGPNumericEdit_RD->Value < 0.0000000000000004)	scGPNumericEdit_RD->Hint=0;
-			else 	scGPNumericEdit_RD->Hint=scGPNumericEdit_RD->Value;
+		if(scGPNumericEdit_RD->Value < 0.0000000000000004)	scGPNumericEdit_RD->Hint=0;
+		else 	scGPNumericEdit_RD->Hint=scGPNumericEdit_RD->Value;
 
-			if(scGPNumericEdit_delka_dopravniku->Value < 0.0000000000000004)	scGPNumericEdit_delka_dopravniku->Hint=0;
-			else 	scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
+		if(scGPNumericEdit_delka_dopravniku->Value < 0.0000000000000004)	scGPNumericEdit_delka_dopravniku->Hint=0;
+		else 	scGPNumericEdit_delka_dopravniku->Hint=scGPNumericEdit_delka_dopravniku->Value;
 
-			if(scGPNumericEdit_kapacita->Value < 0.0000000000000004)	scGPNumericEdit_kapacita->Hint=0;
-			else 	scGPNumericEdit_kapacita->Hint=scGPNumericEdit_kapacita->Value;
+		if(scGPNumericEdit_kapacita->Value < 0.0000000000000004)	scGPNumericEdit_kapacita->Hint=0;
+		else 	scGPNumericEdit_kapacita->Hint=scGPNumericEdit_kapacita->Value;
 
-			if(scGPNumericEdit_odchylka->Value < 0.0000000000000004)	scGPNumericEdit_odchylka->Hint=0;
-			else 	scGPNumericEdit_odchylka->Hint=scGPNumericEdit_odchylka->Value;
+		if(scGPNumericEdit_odchylka->Value < 0.0000000000000004)	scGPNumericEdit_odchylka->Hint=0;
+		else 	scGPNumericEdit_odchylka->Hint=scGPNumericEdit_odchylka->Value;
 
-			if(scGPNumericEdit_mezera->Value < 0.0000000000000004)	scGPNumericEdit_mezera->Hint=0;
-			else 	scGPNumericEdit_mezera->Hint=scGPNumericEdit_mezera->Value;
+		if(scGPNumericEdit_mezera->Value < 0.0000000000000004)	scGPNumericEdit_mezera->Hint=0;
+		else 	scGPNumericEdit_mezera->Hint=scGPNumericEdit_mezera->Value;
 
-			if(scGPNumericEdit_mezera_JIG->Value < 0.0000000000000004)	scGPNumericEdit_mezera_JIG->Hint=0;
-			else 	scGPNumericEdit_mezera_JIG->Hint=scGPNumericEdit_mezera_JIG->Value;
+		if(scGPNumericEdit_mezera_JIG->Value < 0.0000000000000004)	scGPNumericEdit_mezera_JIG->Hint=0;
+		else 	scGPNumericEdit_mezera_JIG->Hint=scGPNumericEdit_mezera_JIG->Value;
 
-			if(scGPNumericEdit_mezera_PODVOZEK->Value < 0.0000000000000004)	scGPNumericEdit_mezera_PODVOZEK->Hint=0;
-			else 	scGPNumericEdit_mezera_PODVOZEK->Hint=scGPNumericEdit_mezera_PODVOZEK->Value;
+		if(scGPNumericEdit_mezera_PODVOZEK->Value < 0.0000000000000004)	scGPNumericEdit_mezera_PODVOZEK->Hint=0;
+		else 	scGPNumericEdit_mezera_PODVOZEK->Hint=scGPNumericEdit_mezera_PODVOZEK->Value;
 
-			if(scGPNumericEdit_pozice->Value < 0.0000000000000004)	scGPNumericEdit_pozice->Hint=0;
-			else 	scGPNumericEdit_pozice->Hint=scGPNumericEdit_pozice->Value;
+		if(scGPNumericEdit_pozice->Value < 0.0000000000000004)	scGPNumericEdit_pozice->Hint=0;
+		else 	scGPNumericEdit_pozice->Hint=scGPNumericEdit_pozice->Value;
 
 		VALIDACE();
 }
@@ -2524,7 +2524,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 		Form_poznamky->Top = Form1->ClientHeight / 2 - Form_poznamky->Height / 2;
 		// zobrazeni formuláøe
 		Form_poznamky->scGPMemo->Text=poznamka;
-		MT=0;//prozatim
+		MT=10.5;//prozatim
 		if(Form_poznamky->ShowModal()==mrOk)
 		{
 			poznamka=Form_poznamky->scGPMemo->Text;

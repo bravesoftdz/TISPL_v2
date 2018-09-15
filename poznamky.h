@@ -38,12 +38,13 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
 	TColor clBACKGROUND,clLOCKED,clUNLOCKED,clLOCKEDhead;
+	enum Tinput_state{NO,MT1state,MT2state};//uchovává výbìr input hodnoty (aby se data v buòkách necyklyly)
+	Tinput_state input_state;
 	void table_head();//definuje hlavièku tabulky
 	void calculate(short INPUT_state=0);//vypoèítává ve S&G subparametry
 	Cvektory::TPohon *P,*PD;
 	short Decimal;//poèet desetinných míst
 	AnsiString pz;//zástupný znak pokraèování
-	bool start;
 public:		// User declarations
 	__fastcall TForm_poznamky(TComponent* Owner);
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);

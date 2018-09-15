@@ -152,6 +152,7 @@ class TmGrid
 	unsigned long bufColCount,bufRowCount;//pøedchozí poèet øádkù a sloupcù
 	short SetColumnAutoFitColIdx;//typ autofit column
 	long preRowInd;//pøedchozí øádek na kterém byla myš
+	short start;//detekuje start mGridu, využívám pro start
 
 };
 //---------------------------------------------------------------------------
