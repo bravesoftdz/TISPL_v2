@@ -11,7 +11,6 @@ class TMyString
 private:
 
 public:
-
   AnsiString EP(AnsiString Text,AnsiString StartElement, AnsiString StopElement, unsigned short int startoffset=0, unsigned short int stopoffset=0);//parsování textu mezi zadanými texty, popø. možno využít offsetu  - ELEMENT PARSER
   UnicodeString TMyString::EP(UnicodeString Text,UnicodeString StartElement, UnicodeString StopElement, unsigned short int startoffset, unsigned short int stopoffset);
   AnsiString EP2(AnsiString Text,AnsiString StartElement, AnsiString StopElement, unsigned short int startoffset=0, unsigned short int stopoffset=0);//parsování textu mezi zadanými texty, popø. možno využít offsetu  - ELEMENT PARSER
@@ -45,7 +44,6 @@ public:
 	unsigned short get_count_decimal(double number);//vrátí poèet desetinných míst
 	//TPointD HexGes2Dec(UnicodeString Loc);//pøevede èíslo z hexagesimálního tvaru na dekadický
 protected:
-
 };
 //---------------------------------------------------------------------------
 #endif

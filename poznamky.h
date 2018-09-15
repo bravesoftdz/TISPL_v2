@@ -38,7 +38,7 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
 	TColor clBACKGROUND,clLOCKED,clUNLOCKED,clLOCKEDhead;
-	enum Tinput_state{NO,MT1state,MT2state};//uchovává výbìr input hodnoty (aby se data v buòkách necyklyly)
+	enum Tinput_state{NO,MT1state,MT2state,P1state,P2state};//uchovává výbìr input hodnoty (aby se data v buòkách necyklyly)
 	Tinput_state input_state;
 	void table_head();//definuje hlavièku tabulky
 	void calculate(short INPUT_state=0);//vypoèítává ve S&G subparametry

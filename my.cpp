@@ -595,4 +595,10 @@ bool Cmy::between(double value,double from, double to, bool left_closed, bool ri
 	return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+//zkatroluje èíslo, zda se nejadná o hodnout okolo nuly dle možné odchylky dle toleration, pøedchází zvláštnímu chování výpoètù okolo nuly
+double Cmy::null(double number,double tolerance)
+{
+	if(between(number,(-1)*tolerance,tolerance))return 0.0;
+	else return number;
+}
 

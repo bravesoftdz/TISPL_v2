@@ -108,7 +108,6 @@ void TmGrid::Create()
 	}
 	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
 	preTop=Top;preLeft=Left;//zaloha úvodní pozice
-	start=0;//detekuje start mGridu, využívám pro start
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda - vytvoøí tabulku s pøedepsaným poètem sloupcù a øádkù
@@ -191,7 +190,6 @@ void TmGrid::Delete()
 		DeleteTable();
 		DeleteCell(DefaultCell);
 		mGrid=NULL; delete mGrid;
-		start=0;
 	}
 	catch(...)
 	{MessageBeep(0);}
@@ -246,7 +244,6 @@ void TmGrid::Show()
 		//zaloha úvodní pozice
 		preTop=Top;preLeft=Left;
 	}
-	start=1;
 }
 //---------------------------------------------------------------------------
 //zajistí vyvolání pøekreslení celé tabulky s pøeblikem, ale lépe používat pøímo ve v daném formuláøi FormPaint(this), což zajistí pøekreslení bez probliku
@@ -624,7 +621,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		case BOTTOM:E->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
 	}
 	E->Font=Cell.Font;
-	if(!E->Focused() || start==0)//pokud je na buòce focus resp. je aktivní
+	if(!E->Focused())//pokud je na buòce focus resp. je aktivní
 	E->Text=Cell.Text;
 	//vlastník
 	E->Parent=Form;//musí být až na konci
@@ -668,7 +665,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		case BOTTOM:N->ContentMarginTop=N->Height-getWidthHeightText(Cell).Y;break;
 	}
 	N->Font=Cell.Font;
-	if(!N->Focused()/* || start==0*/)//pokud je na buòce focus resp. je aktivní, neplatí pøi startu
+	if(!N->Focused())//pokud je na buòce focus resp. je aktivní
 	{
 		TMyString ms;
 		N->Value=ms.MyToDouble(Cell.Text);

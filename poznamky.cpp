@@ -241,9 +241,6 @@ void TForm_poznamky::table_head()
 	mGrid->Cells[5-1][R].LeftBorder->Width=2;
 	mGrid->Cells[5][R].RightBorder->Width=2;
 
-	//rozdělení čas a délka
-	//for(short i=0;i<=6;i++)mGrid->Cells[i][0].BottomBorder->Width=2;//mGrid->Cells[i][2].BottomBorder->Width=2;
-
 	//Sloučení buněk
 	mGrid->MergeCells(1,0,4,0);//P
 	mGrid->MergeCells(0,1,0,2);//ČAS
@@ -251,6 +248,9 @@ void TForm_poznamky::table_head()
 	mGrid->MergeCells(1,R-1,2,R-1);mGrid->MergeCells(1,R,2,R);//přejezd 1
 	mGrid->MergeCells(3,R-1,4,R-1);mGrid->MergeCells(3,R,4,R);//přejezd 2
 	mGrid->MergeCells(5,R-1,5,R);//výsek tabulky
+
+	//rozdělení sekcí pohony, čas a délka - šířka 2px orámování
+	for(short i=0;i<=6;i++){mGrid->Cells[i][0].BottomBorder->Width=2;mGrid->Cells[i][2].BottomBorder->Width=2;}
 }
 //---------------------------------------------------------------------------
 void TForm_poznamky::OnClick(long Tag,unsigned long Col,unsigned long Row)
@@ -259,22 +259,33 @@ void TForm_poznamky::OnClick(long Tag,unsigned long Col,unsigned long Row)
 }
 void TForm_poznamky::OnEnter(long Tag,unsigned long Col,unsigned long Row)
 {
-	//input_state=NOTHING;
-	if(Col==1 && Row==2)input_state=MT1state;
-	if(Col==4 && Row==2)input_state=MT2state;
+	if(Col==1 && Row==2)input_state=MT1state;//funguje i bez toho, ale je toto je lepší
+	if(Col==4 && Row==2)input_state=MT2state;//funguje i bez toho, ale je toto je lepší
+	if(Col==1 && Row==4)input_state=P1state;//funguje i bez toho, ale je toto je lepší
+	if(Col==3 && Row==4)input_state=P2state;//funguje i bez toho, ale je toto je lepší
 }
 void TForm_poznamky::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
-	//if(Col==1 && Row==2)scLabel_titulek->Caption=mGrid->Cells[Col][Row].Text;//pouze test
+	//if(Col==1 && Row==2)scLabel_titulek->Caption=mGrid->Cells[Col][Row].Text;//pouze test //scLabel_titulek->Caption=scLabel_titulek->Caption+"a"; //toto by nemělo nastat
+	//funguje i bez toho, ale je toto je lepší
 	if(Col==1 && Row==2 && input_state==MT1state)
-	{        scLabel_titulek->Caption=scLabel_titulek->Caption+"a"; //toto by nemělo nastat
+	{
 		calculate(1);
 		FormPaint(this);
 	}
 	if(Col==4 && Row==2 && input_state==MT2state)
-	{              scLabel_titulek->Caption=scLabel_titulek->Caption+"b";
+	{
 		calculate(2);
-		//mGrid->Cells[Col][Row].Text=mGrid->getNumeric(Col,Row)->Value;
+		FormPaint(this);
+	}
+	if(Col==1 && Row==4 && input_state==P1state)
+	{
+		calculate(3);
+		FormPaint(this);
+	}
+	if(Col==3 && Row==4 && input_state==P2state)
+	{
+		calculate(4);
 		FormPaint(this);
 	}
 }
@@ -302,7 +313,7 @@ void TForm_poznamky::calculate(short INPUT_state)
 		 case 0:
 		 {
 			 //MT1+MT2
-			 if(Form_parametry->MT==0)//pokud nebylo MT uloženo
+			 if(F->m.null(Form_parametry->MT)==0)//pokud nebylo MT uloženo
 			 {
 				 if(P!=NULL)MT1=DD/P->aRD;//pokud existuje pohon
 				 else MT1=0;//pokud ne
@@ -312,7 +323,7 @@ void TForm_poznamky::calculate(short INPUT_state)
 			 {
 				 MT1=Form_parametry->MT;
 				 if(P!=NULL)MT2=DD/P->aRD-MT1;//pokud existuje pohon
-				 else MT1=0;//pokud ne
+				 else MT2=0;//pokud ne , bylo zde MT1
 			 }
 			 //WT2 - výstupní
 			 if(PD!=NULL)//pokud existuje pohon další
@@ -321,11 +332,11 @@ void TForm_poznamky::calculate(short INPUT_state)
 			 }
 			 else WT2=0;//pokud ne
 			 //výpočet délek přejezdů
-			 P1=DD;if(MT2!=0 && P!=NULL)P1=MT1*P->aRD;
-			 P2=0;if(MT2!=0 && P!=NULL)P2=MT2*P->aRD;
-			 if(MT2!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
+			 P1=DD;if(F->m.null(MT2)!=0 && P!=NULL)P1=MT1*P->aRD;
+			 P2=0;if(F->m.null(MT2)!=0 && P!=NULL)P2=MT2*P->aRD;
+			 if(F->m.null(MT2)!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
 			 //dopočítaní WT1
-			 if(P!=NULL && MT2!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);
+			 if(P!=NULL && F->m.null(MT2)!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);else WT1=0;
 			 //závěrečný výpočet PT - musí být na konci
 			 PT=CT-MT1-WT1-MT2-WT2;
 		 }
@@ -334,7 +345,7 @@ void TForm_poznamky::calculate(short INPUT_state)
 		 case 1:
 		 {
 			 //MT2
-			 if(P!=NULL)MT2=DD/P->aRD-MT1;//pokud existuje pohon
+			 if(P!=NULL)MT2=DD/P->aRD-MT1;else MT2=0;//pokud existuje pohon
 			 //WT2 - výstupní
 			 if(PD!=NULL)//pokud existuje pohon další
 			 {
@@ -342,11 +353,11 @@ void TForm_poznamky::calculate(short INPUT_state)
 			 }
 			 else WT2=0;//pokud ne
 			 //výpočet délek přejezdů
-			 P1=DD;if(MT2!=0 && P!=NULL)P1=MT1*P->aRD;
-			 P2=0;if(MT2!=0 && P!=NULL)P2=MT2*P->aRD;
+			 P1=DD;if(F->m.null(MT2)!=0 && P!=NULL)P1=MT1*P->aRD;
+			 P2=0;if(F->m.null(MT2)!=0 && P!=NULL)P2=MT2*P->aRD;
 			 if(MT2!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
 			 //dopočítaní WT1
-			 if(P!=NULL && MT2!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);
+			 if(P!=NULL && F->m.null(MT2)!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);else WT1=0;
 			 //závěrečný výpočet PT - musí být na konci
 			 PT=CT-MT1-WT1-MT2-WT2;
 		 }
@@ -363,11 +374,54 @@ void TForm_poznamky::calculate(short INPUT_state)
 			 }
 			 else WT2=0;//pokud ne
 			 //výpočet délek přejezdů
-			 P1=DD;if(MT2!=0 && P!=NULL)P1=MT1*P->aRD;
-			 P2=0;if(MT2!=0 && P!=NULL)P2=MT2*P->aRD;
+			 P1=DD;if(F->m.null(MT2)!=0 && P!=NULL)P1=MT1*P->aRD;
+			 P2=0;if(F->m.null(MT2)!=0 && P!=NULL)P2=MT2*P->aRD;
 			 if(MT2!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
 			 //dopočítaní WT1
-			 if(P!=NULL && MT2!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);
+			 if(P!=NULL && F->m.null(MT2)!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);else WT1=0;
+			 //závěrečný výpočet PT - musí být na konci
+			 PT=CT-MT1-WT1-MT2-WT2;
+		 }
+		 //při změně P1
+		 case 3:
+		 {
+			 //MT1
+			 if(P!=NULL)MT1=P1/P->aRD;else MT1=0;
+			 //MT2
+			 if(P!=NULL)MT2=DD/P->aRD-MT1;else MT2=0;//pokud existuje pohon
+			 //WT2 - výstupní
+			 if(PD!=NULL)//pokud existuje pohon další
+			 {
+				 WT2=F->m.cekani_na_palec(0,PD->roztec,PD->aRD,3);
+			 }
+			 else WT2=0;//pokud ne
+			 //výpočet délek přejezdů
+			 P2=0;if(F->m.null(MT2)!=0 && P!=NULL)P2=MT2*P->aRD;
+			 if(MT2!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
+			 //dopočítaní WT1
+			 if(P!=NULL && F->m.null(MT2)!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);else WT1=0;
+			 //závěrečný výpočet PT - musí být na konci
+			 PT=CT-MT1-WT1-MT2-WT2;
+		 }
+		 //při změně P2
+		 case 4:
+		 {
+			 //MT2
+			 if(P!=NULL)MT2=P2/P->aRD;else MT2=0;
+			 //MT1
+			 if(P!=NULL)MT1=DD/P->aRD-MT2;//pokud existuje pohon
+			 //WT2 - výstupní
+			 if(PD!=NULL)//pokud existuje pohon další
+			 {
+				 WT2=F->m.cekani_na_palec(0,PD->roztec,PD->aRD,3);
+			 }
+			 else WT2=0;//pokud ne
+			 //výpočet délek přejezdů
+			 P1=DD;if(F->m.null(MT2)!=0 && P!=NULL)P1=MT1*P->aRD;
+			 P2=0;if(F->m.null(MT2)!=0 && P!=NULL)P2=MT2*P->aRD;
+			 if(F->m.null(MT2)!=0 && P==PD && !scGPCheckBox_STOPKA->Checked)WT2=0;//pokud bude MT2>0 a pokud P==PD bude WT2=0, protože se nečeká na palec, protože se jede na stejném pohonu, pokud tedy není za objektem stopka
+			 //dopočítaní WT1
+			 if(P!=NULL && F->m.null(MT2)!=0)WT1=F->m.cekani_na_palec(0,P->roztec,P->aRD,3);else WT1=0;
 			 //závěrečný výpočet PT - musí být na konci
 			 PT=CT-MT1-WT1-MT2-WT2;
 		 }
@@ -377,28 +431,28 @@ void TForm_poznamky::calculate(short INPUT_state)
 	 //časy
 	 //mGrid->Cells[1][2].Text=F->m.round2double(MT1/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
 	 mGrid->Cells[1][2].Text=MT1/(1.0+Form_parametry->CTunit*59.0);
-	 if(MT1>0)mGrid->Cells[1][2].Font->Color=clUNLOCKED;else mGrid->Cells[1][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 if(F->m.null(MT1)>0)mGrid->Cells[1][2].Font->Color=clUNLOCKED;else mGrid->Cells[1][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 mGrid->Cells[2][2].Text=F->m.round2double(PT/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
-	 if(PT>0)mGrid->Cells[2][2].Font->Color=clLOCKED;else mGrid->Cells[2][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 if(F->m.null(PT)>0)mGrid->Cells[2][2].Font->Color=clLOCKED;else mGrid->Cells[2][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 mGrid->Cells[3][2].Text=F->m.round2double(WT1/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
-	 if(WT1>=0)mGrid->Cells[3][2].Font->Color=clLOCKED;else mGrid->Cells[3][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 if(F->m.null(WT1)>=0)mGrid->Cells[3][2].Font->Color=clLOCKED;else mGrid->Cells[3][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 mGrid->Cells[4][2].Text=MT2/(1.0+Form_parametry->CTunit*59.0);
-	 if(MT2>=0)mGrid->Cells[4][2].Font->Color=clUNLOCKED;else mGrid->Cells[4][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 if(F->m.null(MT2)>=0)mGrid->Cells[4][2].Font->Color=clUNLOCKED;else mGrid->Cells[4][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 mGrid->Cells[5][2].Text=F->m.round2double(WT2/(1.0+Form_parametry->CTunit*59.0),Decimal,pz);
-	 if(WT2>=0)mGrid->Cells[5][2].Font->Color=clLOCKED;else mGrid->Cells[5][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 if(F->m.null(WT2)>=0)mGrid->Cells[5][2].Font->Color=clLOCKED;else mGrid->Cells[5][2].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 //přejezdy
 	 //mGrid->Cells[1][4].Text=F->m.round2double(P1*(1+Form_parametry->DDunit*999),Decimal,pz);
 	 mGrid->Cells[1][4].Text=P1*(1+Form_parametry->DDunit*999);
-	 if(P1>0)mGrid->Cells[1][4].Font->Color=clUNLOCKED;else mGrid->Cells[1][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 if(F->m.null(P1)>0)mGrid->Cells[1][4].Font->Color=clUNLOCKED;else mGrid->Cells[1][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 //mGrid->Cells[3][4].Text=F->m.round2double(P2*(1+Form_parametry->DDunit*999),Decimal,pz);
 	 mGrid->Cells[3][4].Text=P2*(1+Form_parametry->DDunit*999);
-	 if(P2>=0)mGrid->Cells[3][4].Font->Color=clUNLOCKED;else mGrid->Cells[3][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
+	 if(F->m.null(P2)>=0)mGrid->Cells[3][4].Font->Color=clUNLOCKED;else mGrid->Cells[3][4].Font->Color=clRed;//pokud vyjde PT záporné, je to problém (nestíhá se samotný technologický výkon, většinou z důvodu nestíhání přejezdu) a zobrazí se červeně
 
 	 //volba stopka se zobrazí pokud, je to nutné pro rozhodnutí, zda se bude čekat či nikoliv (to je potřeba rozhodnout u přechodu na stejný pohon za předpokladu, že se předpokládá přejezd 2, jinak je jisté, že je stopka automaticky)
 	 if(P==PD && MT2!=0)

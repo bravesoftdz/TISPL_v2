@@ -2524,7 +2524,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 		Form_poznamky->Top = Form1->ClientHeight / 2 - Form_poznamky->Height / 2;
 		// zobrazeni formuláøe
 		Form_poznamky->scGPMemo->Text=poznamka;
-		MT=10.5;//prozatim
+		MT=0;//prozatim
 		if(Form_poznamky->ShowModal()==mrOk)
 		{
 			poznamka=Form_poznamky->scGPMemo->Text;
