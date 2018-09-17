@@ -158,7 +158,7 @@ void TForm_poznamky::table_head()
 	}
 	mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
 	//pohon následující
-	PD=F->pom->dalsi->pohon;
+	if(F->pom->dalsi!=NULL)PD=F->pom->dalsi->pohon;else PD=F->d.v.OBJEKTY->dalsi->pohon; //ošetření pokud se nejedná o poslední prvek
 	if(PD!=NULL)
 	{
 		mGrid->Cells[5][R].Text=AnsiString(PD->name)+" "+AnsiString(F->m.round2double(PD->aRD*(1+Form_parametry->RDunitT*59),Decimal,pz))+" ["+RDunitT+"], "+AnsiString(F->m.round2double(PD->roztec*(1+Form_parametry->DMunit*999),Decimal,pz))+" ["+RunitT+"]";
@@ -227,7 +227,7 @@ void TForm_poznamky::table_head()
 	mGrid->Cells[6][R].Background->Color=clBACKGROUND;mGrid->Cells[6][R].Font->Color=clLOCKED;
 
 	////Výpočet hodnot
-	calculate();
+	calculate(0);
 
 	//vymazání nepoužívaných buněk
 	mGrid->Cells[0][0].Background->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].TopBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].LeftBorder->Color=(TColor)RGB(240,240,240);mGrid->Cells[0][0].BottomBorder->Width=2;mGrid->Cells[0][0].RightBorder->Width=2;
