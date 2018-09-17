@@ -4343,3 +4343,13 @@ void TForm_parametry::refresh_data()
 
 
 
+void __fastcall TForm_parametry::scGPGlyphButton1Click(TObject *Sender)
+{
+scGPNumericEdit_odchylka->Value=F->m.cekani_na_palec(0,F->pom->dalsi->pohon->roztec,F->pom->dalsi->pohon->aRD,3);
+//MB - text, šipka download, napozicování skrývání, pøevody jednotek/ odchylka pøepínatelnost jednotek dle CT
+//když pohon NULL - MB s textem, že není co doporuèovat
+//tato podmínka bude první
+//if F->pom->dalsi == NULL - jedná se když jde o poslední objekt tak potom pohon získat F->d.v.OBJEKTY->dalsi->pohon
+}
+//---------------------------------------------------------------------------
+

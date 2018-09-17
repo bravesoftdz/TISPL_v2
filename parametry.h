@@ -90,6 +90,7 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_kriticka;
   TscGPGlyphButton *scGPGlyphButton_refresh;
 	TscGPGlyphButton *scGPGlyphButton_PO_text_memo2;
+  TscGPGlyphButton *scGPGlyphButton1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
@@ -143,6 +144,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_rozestupChange(TObject *Sender);
 	void __fastcall scGPNumericEdit_rozestupClick(TObject *Sender);
   void __fastcall scGPGlyphButton_refreshClick(TObject *Sender);
+  void __fastcall scGPGlyphButton1Click(TObject *Sender);
 
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,MEZERA_JIG,MEZERA_PODVOZEK,ROZESTUP};//název souvisejících komponent

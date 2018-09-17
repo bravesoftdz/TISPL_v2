@@ -123,7 +123,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[5][0].Text="CT,K";
 	if(CTunit)mGrid->Cells[6][0].Text="CT - Technologický èas [min]";else mGrid->Cells[6][0].Text="CT - Technologický èas [s]";
 	if(RDunit)mGrid->Cells[8][0].Text="RD - Rychlost pohonu [m/min]";else mGrid->Cells[8][0].Text="RD - Rychlost pohonu [m/s]";
-	if(DDunit)mGrid->Cells[10][0].Text="DD - Délka objekt [mm]";else mGrid->Cells[10][0].Text="DD - Délka objekt [m]";
+	if(DDunit)mGrid->Cells[10][0].Text="DD - Délka objektu [mm]";else mGrid->Cells[10][0].Text="DD - Délka objektu [m]";
 	mGrid->Cells[12][0].Text="K - Kapacita [vozíkù + mezer]";
 	mGrid->Cells[14][0].Text="P - Pozice [vozíkù]";
 	if(Munit==0)mGrid->Cells[16][0].Text="M - mezera jig [m]";else mGrid->Cells[16][0].Text="M - mezera jig [mm]";
@@ -179,6 +179,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				//parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[6][j].Text=O[z].CT/(1+59.0*CTunit);	 								mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=clOLD;	mGrid->Cells[7][j].Align=mGrid->LEFT; mGrid->Cells[7][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[8][j].Text=O[z].RD*(1+59.0*RDunit);                  mGrid->Cells[8][j].Align=mGrid->LEFT;	mGrid->Cells[8][j].Font->Color=clOLD;	mGrid->Cells[9][j].Align=mGrid->LEFT; mGrid->Cells[9][j].Font->Color=clUNLOCKED;
+       //  ShowMessage("ted");
 				mGrid->Cells[10][j].Text=O[z].delka_dopravniku*(1+999.0*DDunit);    mGrid->Cells[10][j].Align=mGrid->LEFT;mGrid->Cells[10][j].Font->Color=clOLD;mGrid->Cells[11][j].Align=mGrid->LEFT;mGrid->Cells[11][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[12][j].Text=O[z].kapacita;                           mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT;mGrid->Cells[13][j].Font->Color=clUNLOCKED;
 				mGrid->Cells[14][j].Text=O[z].pozice;                             mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
@@ -192,6 +193,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				//výchozí nastavení v levém slouci - je vždy po zobrazení zaškrnuta tato volba
 				mGrid->getCheck(2,j)->Checked=true;
 				//zajistí pøepoèet daného øádku, musí být poslední pøed j++- nových hodnot NEWR
+
 				calculate(j);
 				//posun na další øádek výsledné tabulky
 				j++;
