@@ -34,8 +34,6 @@ __fastcall TForm_poznamky::TForm_poznamky(TComponent* Owner)
 	//nastavení výstupů
 	Decimal=3;//počet desetinných míst
 	pz="";//zástupný znak pokračování
-
-	input_state=NO;//start formu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_poznamky::scGPButton_stornoClick(TObject *Sender)
@@ -86,7 +84,6 @@ void __fastcall TForm_poznamky::FormPaint(TObject *Sender)
 //při zobrazení formuláře
 void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 {
-	input_state=NO;//start formu
 	if(Form_parametry->scComboBox_rezim->ItemIndex==0)//pro S&G
 	{
 		////////tabulka
@@ -118,7 +115,16 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		scGPMemo->Top=mGrid->Top+mGrid->Height+10+rHTMLLabel_InfoText->Height;
 		scGPMemo->Height=scGPButton_OK->Top-10-scGPMemo->Top;
 		rHTMLLabel_InfoText->Top=scGPMemo->Top-rHTMLLabel_InfoText->Height;
-		//scGPCheckBox_zaokrouhlit->Visible=true; nefunguje správně následná funkcionalita
+		//ovládací prvky
+		//PT
+		scButton_zamek_PT->Visible=true;
+		scButton_zamek_PT->ImageIndex=38;//odemčeno
+		scButton_zamek_PT->Top=mGrid->Top+mGrid->Rows[1].Top;
+		//DD
+		scButton_zamek_DD->Visible=true;
+		scButton_zamek_PT->ImageIndex=37;//zamčeno
+		scButton_zamek_DD->Top=mGrid->Top+mGrid->Rows[3].Top;
+		//scGPCheckBox_zaokrouhlit->Visible=true; //zatím nefunguje správně následná funkcionalita
 	}
 	else//pro ostatní režimy
 	{
@@ -128,8 +134,9 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		scGPMemo->Height=233;
 		scGPCheckBox_zaokrouhlit->Visible=false;
 		scGPCheckBox_STOPKA->Visible=false;
+		scButton_zamek_PT->Visible=false;
+		scButton_zamek_DD->Visible=false;
 	}
-	//input_state=NOTHING;//start formu
 }
 //---------------------------------------------------------------------------
 //definuje hlavičku tabulky
@@ -158,7 +165,7 @@ void TForm_poznamky::table_head()
 	}
 	mGrid->Cells[1][R].Background->Color=clBACKGROUND;mGrid->Cells[1][R].Font->Style=TFontStyles()<< fsBold;//zapnutí tučného písma
 	//pohon následující
-	if(F->pom->dalsi!=NULL)PD=F->pom->dalsi->pohon;else PD=F->d.v.OBJEKTY->dalsi->pohon; //ošetření pokud se nejedná o poslední prvek
+	if(F->pom->dalsi!=NULL)PD=F->pom->dalsi->pohon;else PD=F->d.v.OBJEKTY->dalsi->pohon;//ošetření pokud se nejedná o poslední prvek
 	if(PD!=NULL)
 	{
 		mGrid->Cells[5][R].Text=AnsiString(PD->name)+" "+AnsiString(F->m.round2double(PD->aRD*(1+Form_parametry->RDunitT*59),Decimal,pz))+" ["+RDunitT+"], "+AnsiString(F->m.round2double(PD->roztec*(1+Form_parametry->DMunit*999),Decimal,pz))+" ["+RunitT+"]";
@@ -485,6 +492,21 @@ void __fastcall TForm_poznamky::scGPCheckBox_STOPKAClick(TObject *Sender)
 	FormPaint(this);
 }
 //---------------------------------------------------------------------------
+//přepínání zámku PT a DD
+void __fastcall TForm_poznamky::scButton_zamek_PTaDDClick(TObject *Sender)
+{
+	if(scButton_zamek_PT->ImageIndex==38)//když PT odemčeno, tak
+	{
+		scButton_zamek_PT->ImageIndex=37;//zamkni
+		scButton_zamek_DD->ImageIndex=38;//odemkni
+	}
+	else//když zamčeno, tak
+	{
+		scButton_zamek_PT->ImageIndex=38;//odemkni
+		scButton_zamek_DD->ImageIndex=37;//zamkni
+	}
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm_poznamky::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	mGrid->Delete();//pokud chci odstranit a nechci použít na další použití
@@ -492,4 +514,5 @@ void __fastcall TForm_poznamky::FormClose(TObject *Sender, TCloseAction &Action)
 	PD=NULL;delete PD;
 }
 //---------------------------------------------------------------------------
+
 

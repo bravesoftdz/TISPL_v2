@@ -26,6 +26,8 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TscGPCheckBox *scGPCheckBox_zaokrouhlit;
 	TscGPCheckBox *scGPCheckBox_STOPKA;
+	TscButton *scButton_zamek_DD;
+	TscButton *scButton_zamek_PT;
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
@@ -35,10 +37,11 @@ __published:	// IDE-managed Components
 	void __fastcall scGPMemoKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
 	void __fastcall scGPCheckBox_STOPKAClick(TObject *Sender);
+	void __fastcall scButton_zamek_PTaDDClick(TObject *Sender);
 
 private:	// User declarations
 	TColor clBACKGROUND,clLOCKED,clUNLOCKED,clLOCKEDhead;
-	enum Tinput_state{NO,MT1state,MT2state,P1state,P2state};//uchovává výbìr input hodnoty (aby se data v buòkách necyklyly)
+	enum Tinput_state{MT1state,MT2state,P1state,P2state};//uchovává výbìr input hodnoty (aby se data v buòkách necyklyly)
 	Tinput_state input_state;
 	void table_head();//definuje hlavièku tabulky
 	void calculate(short INPUT_state=0);//vypoèítává ve S&G subparametry
