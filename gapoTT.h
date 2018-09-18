@@ -37,6 +37,7 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_zamek_locked;
   TscGPImage *scImage_zamky;
   TMemo *Memo1;
+  TButton *Button1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -48,10 +49,12 @@ __published:	// IDE-managed Components
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
   void __fastcall scScrollBar_horizontChange(TObject *Sender);
   void __fastcall KonecClick(TObject *Sender);
+  void __fastcall Button1Click(TObject *Sender);
 
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
+  unsigned int *indikator_skupin;//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3,clHiddenValues;
 	enum Tinput_state{FREE,LOADING};//uchovává výbìr input hodnoty
 	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
@@ -66,6 +69,7 @@ public:		// User declarations
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 	void vypis(UnicodeString text,bool red=true,bool link=false);
 	int pocitadlo;
+  int slouceny_radek;
 	TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
 	bool zobrazitFrameForm;
 	bool Rx_canEdit;

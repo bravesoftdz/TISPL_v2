@@ -123,18 +123,18 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
 	mGrid->Cells[1][0].Text="Objekt";
 	mGrid->Cells[2][0].Text="M,P";
-	mGrid->Cells[3][0].Text="aRD, RD, Rz, Rx, R, CT, DD, K";
-	mGrid->Cells[4][0].Text="aRD, RD, M, Rz, Rx, K, CT, P";
+	mGrid->Cells[3][0].Text="RP, Rz, Rx, R, CT, DD, K";
+	mGrid->Cells[4][0].Text="RP, M, Rz, Rx, K, CT, P";
 	mGrid->Cells[5][0].Text="DD, R";
-	mGrid->Cells[6][0].Text="aRD, RD, M, Rz, R, K, CT, P";
+	mGrid->Cells[6][0].Text="RP, M, Rz, R, K, CT, P";
 	mGrid->Cells[7][0].Text="DD, Rx";
-	mGrid->Cells[8][0].Text="aRD, RD, M, Rz, Rx, DD, P";
+	mGrid->Cells[8][0].Text="RP, M, Rz, Rx, DD, P";
 	mGrid->Cells[9][0].Text="K, CT, R";
-	mGrid->Cells[10][0].Text="aRD, RD, M, Rz, R, DD, P";
+	mGrid->Cells[10][0].Text="RP, M, Rz, R, DD, P";
 	mGrid->Cells[11][0].Text="K, CT, Rx";
 	if(CTunit)mGrid->Cells[12][0].Text="CT - Technologický čas [min]";else mGrid->Cells[12][0].Text="CT - Technologický čas [s]";//mGrid->MergeCells(6,0,7,0);//sloučení zatím nefunguje dobře
-	if(RDunit)mGrid->Cells[14][0].Text="RD - Rychlost pohonu [m/min]";else mGrid->Cells[14][0].Text="RD - Rychlost pohonu [m/s]";
-	if(DDunit)mGrid->Cells[16][0].Text="DD - Délka objekt [mm]";else mGrid->Cells[16][0].Text="DD - Délka objekt [m]";
+	if(RDunit)mGrid->Cells[14][0].Text="RP - Rychlost pohonu [m/min]";else mGrid->Cells[14][0].Text="RP - Rychlost pohonu [m/s]";
+	if(DDunit)mGrid->Cells[16][0].Text="DD - Délka objektu [mm]";else mGrid->Cells[16][0].Text="DD - Délka objektu [m]";
 	mGrid->Cells[18][0].Text="K - Kapacita [vozíků + mezer]";
 	mGrid->Cells[20][0].Text="P - Pozice [vozíků]";
 	if(Munit==0)mGrid->Cells[22][0].Text="M - mezera jig [m]"; else mGrid->Cells[22][0].Text="M - mezera jig [mm]";
@@ -199,7 +199,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		mGrid->MergeCells(10,j,11,j);
 		//parametry objektů
 		mGrid->Cells[12][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");               mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
-		mGrid->Cells[14][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
+	//	mGrid->Cells[14][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
 		mGrid->Cells[16][j].Text=F->m.round2double(On[i].delka_dopravniku*(1+999*DDunit),2,"..");  mGrid->Cells[16][j].Align=mGrid->LEFT;mGrid->Cells[16][j].Font->Color=clOLD;mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clUNLOCKED;
 		mGrid->Cells[18][j].Text=F->m.round2double(On[i].kapacita,2,"..");                           mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clOLD;mGrid->Cells[19][j].Align=mGrid->LEFT;mGrid->Cells[19][j].Font->Color=clUNLOCKED;
 		mGrid->Cells[20][j].Text=F->m.round2double(On[i].pozice,2,"..");                            mGrid->Cells[20][j].Align=mGrid->LEFT;mGrid->Cells[20][j].Font->Color=clOLD;mGrid->Cells[21][j].Align=mGrid->LEFT;mGrid->Cells[21][j].Font->Color=clUNLOCKED;
@@ -208,6 +208,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		mGrid->Cells[26][j].Text=On[i].rotace;                            mGrid->Cells[26][j].Align=mGrid->LEFT;mGrid->Cells[26][j].Font->Color=clOLD;
 		if(On[i].pohon!=NULL)
 		{
+     	mGrid->Cells[14][j].Text=F->m.round2double(On[i].pohon->aRD*(1+59.0*RDunit),2,"..");                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
 			mGrid->Cells[27][j].Text=F->m.round2double(On[i].pohon->roztec*(1+999.0)*Runit,2,"..");                     mGrid->Cells[27][j].Align=mGrid->LEFT;mGrid->Cells[27][j].Font->Color=clOLD;mGrid->Cells[28][j].Align=mGrid->LEFT;mGrid->Cells[28][j].Font->Color=clUNLOCKED;
 			mGrid->Cells[29][j].Text=F->m.round2double(On[i].pohon->Rz*(1+999.0*Rzunit),2,"..");                       mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clOLD;mGrid->Cells[29][j].Align=mGrid->LEFT;mGrid->Cells[29][j].Font->Color=clUNLOCKED;
 			mGrid->Cells[31][j].Text=On[i].pohon->Rx;                       mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
@@ -798,9 +799,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 							}
 
 					 if(pocitadlo_validace==0)   //pokud jsem nenašel žádné zakliknuté buňky, mohu povolit vstup do druhé oblasti
-					 {                  //projdu opět celé cyklem a aktivuji druhou oblast
-
-							// if(pohon_n==objekty[i].pohon->n)
+					 {
 								vypis("",false);
 
 					 }

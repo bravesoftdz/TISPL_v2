@@ -856,13 +856,23 @@ object F_gapoTT: TF_gapoTT
   object Memo1: TMemo
     Left = 152
     Top = 112
-    Width = 41
-    Height = 49
+    Width = 153
+    Height = 89
     Lines.Strings = (
       'Memo'
       '1')
     TabOrder = 8
     Visible = False
+  end
+  object Button1: TButton
+    Left = 152
+    Top = 207
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 9
+    Visible = False
+    OnClick = Button1Click
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
