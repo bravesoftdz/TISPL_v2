@@ -42,6 +42,7 @@ public:
 	UnicodeString get_locale_double(double number);//vrátí reálné èíslo s oddìlovaè desetinného místa na daném systému
 	double get_decimal(double number);//vrátí reálnou èást èísla
 	unsigned short get_count_decimal(double number);//vrátí poèet desetinných míst
+	AnsiString addDecimal(double number,unsigned short precision);//pøídá nuly na urovní decimální èásti do poètu dle precision napø. 3,23 -> 3,230, 5 -> 5,000
 	//TPointD HexGes2Dec(UnicodeString Loc);//pøevede èíslo z hexagesimálního tvaru na dekadický
 protected:
 };

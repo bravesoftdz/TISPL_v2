@@ -22,12 +22,18 @@ double Cmy::round2double(double number,unsigned short precision)
 	return number=round(number*pow(10.0,precision))/pow(10.0,precision);
 }
 /////////////////////////////////////////////////////////////////////////////
-//zaokrouhlí na poèet desetinných míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø. dvì teèky .. jakože èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision
-AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString mark)
+//zaokrouhlí na poèet desetinných míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø. dvì teèky .. jakože èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision, pokud je nastaven poslední parametr add_decimal na true a je-li reálná èást kratší než poèet reaálných míst decimál, jsou do tohototo poètu doplnìny nuly
+AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal)
 {
 	double RET=round2double(number,precision);
-	if(RET*pow(10.0,precision)!=ceil(RET*pow(10.0,precision)))return AnsiString(RET)+mark;//pokud èíslo obsahuje reálnou èást vrátí i se znakem pokraèování
-	else return AnsiString(RET);
+	AnsiString RETT="0";
+	if(RET*pow(10.0,precision)!=ceil(RET*pow(10.0,precision)))RETT=AnsiString(RET)+mark;//pokud èíslo obsahuje reálnou èást vrátí i se znakem pokraèování
+	else
+	{
+		if(add_decimal)RETT=F->ms.addDecimal(RET,precision);//pokud je požadavek na doplnìní reálných míst do stanoveného poètu
+		else RETT=AnsiString(RET);
+	}
+	return RETT;
 }
 /////////////////////////////////////////////////////////////////////////////
 //ovìøí, zda dané èíslo je celé èíslo
@@ -39,8 +45,8 @@ bool Cmy::cele_cislo(double number)
 //modulo pro double hodnoty
 double Cmy::mod_d(double number1,double number2)
 {
-	 //nedotažené: return number1-floor(number1/number2)*number2;
-	 return fmod(number1,number2);//toto ale také nefunguje pro druhou reálnou hodnotu dobøe
+	//nedotažené: return number1-floor(number1/number2)*number2;
+	return fmod(number1,number2);//toto ale také nefunguje pro druhou reálnou hodnotu dobøe
 }
 /////////////////////////////////////////////////////////////////////////////
 //Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
@@ -66,95 +72,99 @@ long Cmy::L2Py(double logicka)
 //Pøevede  fyzické na logické souøadnice (displej zaøízení) , vraci logické souøadnice
 TPointD Cmy::P2L(TPoint fyzicke)
 {
-		TPointD logicke;logicke.x=P2Lx(fyzicke.X);logicke.y=P2Ly(fyzicke.Y);
-		return logicke;
+	TPointD logicke;logicke.x=P2Lx(fyzicke.X);logicke.y=P2Ly(fyzicke.Y);
+	return logicke;
 }
 TPointD Cmy::P2L(long fyzickaX,long fyzickaY)
 {
-		TPointD logicke;logicke.x=P2Lx(fyzickaX);logicke.y=P2Ly(fyzickaY);
-		return logicke;
+	TPointD logicke;logicke.x=P2Lx(fyzickaX);logicke.y=P2Ly(fyzickaY);
+	return logicke;
 }
 double Cmy::P2Lx(long fyzicka)
 {
-		try{
-			return (fyzicka/Form1->Zoom+Form1->Posun.x)*Form1->m2px;
-		}
-		catch(...)
-		{return 0;}
+	try
+	{
+		return (fyzicka/Form1->Zoom+Form1->Posun.x)*Form1->m2px;
+	}
+	catch(...)
+	{return 0;}
 }
 double Cmy::P2Ly(long fyzicka)
 {
-		try{
+	try
+	{
 		return -1.0*(fyzicka/Form1->Zoom+Form1->Posun.y)*Form1->m2px;
-    }
-		catch(...)
-		{return 0;}
+	}
+	catch(...)
+	{return 0;}
 }
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::delka(double X1,double Y1,double X2,double Y2)
 {
-		return sqrt(pow(X2-X1,2)+ pow(Y2-Y1,2));
+	return sqrt(pow(X2-X1,2)+ pow(Y2-Y1,2));
 }
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::azimut(double X1,double Y1,double X2,double Y2)
 {
-		try{
-			if(delka(X1,Y1,X2,Y2)!=0)
-			{
-				double A=acos((Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0))*180/M_PI;
-				if(X2<X1)A=360-A;
-				return A;
-			}
-			else return 0;
+	try
+	{
+		if(delka(X1,Y1,X2,Y2)!=0)
+		{
+			double A=acos((Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0))*180/M_PI;
+			if(X2<X1)A=360-A;
+			return A;
 		}
-		catch(...)
-		{return 0;}
+		else return 0;
+	}
+	catch(...)
+	{return 0;}
 }
 double Cmy::uhel(double X1,double Y1,double X2,double Y2)
 {
-		try{
-			if(delka(X1,Y1,X2,Y2)!=0)
-			{
-				return acos((Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0))*180/M_PI;
-			}
-			else return 0;
+	try
+	{
+		if(delka(X1,Y1,X2,Y2)!=0)
+		{
+			return acos((Y2-Y1)/(delka(X1,Y1,X2,Y2)*1.0))*180/M_PI;
 		}
-		catch(...)
-		{return 0;}
+		else return 0;
+	}
+	catch(...)
+	{return 0;}
 }
 /////////////////////////////////////////////////////////////////////////////
 //rotace
 TPointD Cmy::rotace(double delka, double akt_uhel, double rotace)
 {
-		double Uhel=fmod(akt_uhel+rotace,360.0);// vèetnì ošetøení pøeteèení pøes 360 stupòù
-		if(Uhel<0){Uhel+=360;}//pro záporné hodnoty
+	double Uhel=fmod(akt_uhel+rotace,360.0);// vèetnì ošetøení pøeteèení pøes 360 stupòù
+	if(Uhel<0){Uhel+=360;}//pro záporné hodnoty
 
-		short ZnamenkoX,ZnamenkoY;
+	short ZnamenkoX,ZnamenkoY;
 
-		if (Uhel>=0 && Uhel< 90)
-    {
-			ZnamenkoX=1;ZnamenkoY=-1;
-    }
-		if (Uhel>=90 && Uhel<= 180)
-		{
-			Uhel=180-Uhel;
-    	ZnamenkoX=1;ZnamenkoY=1;
-    }
-		if (Uhel>180 && Uhel<= 270)
-    {
-			Uhel=Uhel-180;
-    	ZnamenkoX=-1;ZnamenkoY=1;
-    }
-		if (Uhel>270 && Uhel<= 360)
-    {
-			Uhel=360-Uhel;
-    	ZnamenkoX=-1;ZnamenkoY=-1;
-    }
+	if (Uhel>=0 && Uhel< 90)
+	{
+		ZnamenkoX=1;ZnamenkoY=-1;
+	}
+	if (Uhel>=90 && Uhel<= 180)
+	{
+		Uhel=180-Uhel;
+		ZnamenkoX=1;ZnamenkoY=1;
+	}
+	if (Uhel>180 && Uhel<= 270)
+	{
+		Uhel=Uhel-180;
+		ZnamenkoX=-1;ZnamenkoY=1;
+	}
+	if (Uhel>270 && Uhel<= 360)
+	{
+		Uhel=360-Uhel;
+		ZnamenkoX=-1;ZnamenkoY=-1;
+	}
 
-    Uhel=Uhel*(M_PI/180);//pro prevod ze stupnu na radiany
-		TPointD ret;
-		ret.x=sin(Uhel)*delka*ZnamenkoX;//posun na Xove ose
-		ret.y=cos(Uhel)*delka*ZnamenkoY;//posun na Yove ose
+	Uhel=Uhel*(M_PI/180);//pro prevod ze stupnu na radiany
+	TPointD ret;
+	ret.x=sin(Uhel)*delka*ZnamenkoX;//posun na Xove ose
+	ret.y=cos(Uhel)*delka*ZnamenkoY;//posun na Yove ose
 
 	return ret;
 }
