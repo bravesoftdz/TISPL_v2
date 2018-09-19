@@ -1019,9 +1019,10 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 							{
 //								if(pohon_n==objekty[i].pohon->n)
 //								 {
-                   ShowMessage(i);
+
                    slouceny_radek=8;
-               //  } //slouží k odlišení v calculate pro výpoèet, abych vìdìl na který slouèený øádek mám vrátit data
+
+                // } //slouží k odlišení v calculate pro výpoèet, abych vìdìl na který slouèený øádek mám vrátit data
               }
             }
 
