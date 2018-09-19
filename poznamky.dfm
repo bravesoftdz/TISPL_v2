@@ -621,8 +621,8 @@ object Form_poznamky: TForm_poznamky
   object scGPButton_zamek_PT: TscGPButton
     Left = 10
     Top = 284
-    Width = 30
-    Height = 29
+    Width = 15
+    Height = 21
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
@@ -643,7 +643,7 @@ object Form_poznamky: TForm_poznamky
     Spacing = 1
     Layout = blGlyphLeft
     Images = Form1.scGPVirtualImageList1
-    ImageIndex = 37
+    ImageIndex = 38
     ImageMargin = 0
     TransparentBackground = True
     Options.NormalColor = 16448250
@@ -713,8 +713,8 @@ object Form_poznamky: TForm_poznamky
   object scGPButton_zamek_DD: TscGPButton
     Left = 40
     Top = 284
-    Width = 30
-    Height = 29
+    Width = 15
+    Height = 21
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
