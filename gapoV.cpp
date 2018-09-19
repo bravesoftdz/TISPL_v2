@@ -613,8 +613,6 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1)
 		{
 		//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
-		//ShowMessage("jsem sam KK, mohu");
-
 			 mGrid->getCheck(Col-4,Row)->Checked=false;
 			 mGrid->getCheck(Col-2,Row)->Checked=false;
 			 mGrid->getCheck(Col+2,Row)->Checked=false;
