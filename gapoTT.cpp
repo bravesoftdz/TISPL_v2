@@ -65,11 +65,11 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
   AnsiString jednotky;
   temp_pocitadlo=0;
   unsigned int n_skupin=F->d.v.POHONY->predchozi->n+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
-  indikator_skupin=new unsigned int[n_skupin];//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
-  for(unsigned int i=0;i<n_skupin;i++)//i je index skupiny resp. id(n) pohonu
-  {
-    indikator_skupin[i]=1;//ID oblasti 1-3
-  }
+	indikator_skupin=new unsigned int[n_skupin];//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
+	for(unsigned int i=0;i<n_skupin;i++)//i je index skupiny resp. id(n) pohonu
+	{
+		indikator_skupin[i]=1;//ID oblasti 1-3
+	}
 
 
 	//workaround odchytávání stisku kláves
@@ -1450,8 +1450,8 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				{ //ShowMessage(pouze_radek);
 
         if(slouceny_radek>1)
-          {
-          mGrid->Cells[31][slouceny_radek].Text =F->m.round2double(pm.R*(1+999.0*Runit),2,"..");
+					{
+					mGrid->Cells[31][slouceny_radek].Text =F->m.round2double(pm.R*(1+999.0*Runit),2,"..");
 			    mGrid->Cells[33][slouceny_radek].Text =F->m.round2double(pm.Rz*(1+999.0*Rzunit),2,"..");
           mGrid->Cells[35][slouceny_radek].Text =F->m.round2double(pm.Rx,2,"..");
           mGrid->Cells[18][slouceny_radek].Text =F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..");
@@ -1491,10 +1491,10 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				else//pokud se jedná o pohon bez pøiøazených objektù
 				{
 					Cvektory::TPohon *pohon=F->d.v.vrat_pohon(objekty[Row].id-100);
-          pohon->aRD=F->ms.MyToDouble(pm.RD*(1+59.0*aRDunit));
-					pohon->roztec=F->ms.MyToDouble(pm.R*(1+999.0*Runit));
-				  pohon->Rz=F->ms.MyToDouble(pm.Rz*(1+999.0*Rzunit));//if(Rzunit==0)	pohon->Rz=F->ms.MyToDouble(pm.Rz); else 	pohon->Rz =F->ms.MyToDouble(pm.Rz);
-					pohon->Rx=F->ms.MyToDouble(pm.Rx);
+					pohon->aRD=pm.RD*(1+59.0*aRDunit);
+					pohon->roztec=pm.R*(1+999.0*Runit);
+					pohon->Rz=pm.Rz*(1+999.0*Rzunit);//if(Rzunit==0)	pohon->Rz=F->ms.MyToDouble(pm.Rz); else 	pohon->Rz =F->ms.MyToDouble(pm.Rz);
+					pohon->Rx=pm.Rx;
 					pohon=NULL;delete pohon;
 				}
 		 }break;
@@ -1519,8 +1519,31 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				else
 				Form_objekt_nahled->pom=NULL;//pro pohony bez pøiøazených objektù
 		 }break;
+		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému
+		 {
+			 AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
+			 AnsiString error_text="";
+			 //situace 1 - pøípad testování zda daný objekt, který se mìní je OK
+			 //situace 2 - testování, zda zmìna u daného objektu nezpùsobí u PP a KK, projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
+			 if(objekty[Row].pohon!=NULL)
+			 {
+				 for(unsigned long i=1;i<mGrid->RowCount;i++)
+				 {      //odfiltrování situace 1
+					 if(/*objekty[Row]!=objekty[i] && */objekty[Row].pohon==objekty[i].pohon)//nalezen objekt ze stejné skupiny, nutno tedy testovat možnost pøejezdu
+					 {
+						 error_text+="\n";//pokud existuje již chybový záznam je nutné odøádkovat
+						 switch(pm.rezim)
+						 {
+							 case 0: /*dodìlat MT....*/if(pm.DD/pm.CT>pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
+							 case 1:break;
+							 case 2: if(pm.DD/pm.CT>pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
+						 }
+					 }
+				 }
+			 }
+			 if(error_text!="")T="<b>Daná volba není možná. Následující objekt(y) nestíha(jí) pøejezd:</b><br>";//pokud je chybový text, tak pøidá popis problému
+		 }break;
 	}
-//
 	return T;
 }
 //---------------------------------------------------------------------------
