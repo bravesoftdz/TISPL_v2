@@ -3712,8 +3712,8 @@ object Form_parametry: TForm_parametry
     GlyphOptions.PressedColorAlpha = 255
     GlyphOptions.FocusedColorAlpha = 255
     GlyphOptions.DisabledColorAlpha = 100
-    GlyphOptions.Kind = scgpbgkDownload
-    GlyphOptions.Thickness = 2
+    GlyphOptions.Kind = scgpbgkLeftArrow
+    GlyphOptions.Thickness = 1
     GlyphOptions.StyleColors = True
     TextMargin = -1
     WidthWithCaption = 0
@@ -3727,58 +3727,6 @@ object Form_parametry: TForm_parametry
     Down = False
     GroupIndex = 0
     AllowAllUp = False
-  end
-  object scGPMemo1: TscGPMemo
-    Left = 88
-    Top = 200
-    Width = 185
-    Height = 89
-    Options.NormalColor = clWindow
-    Options.HotColor = clWindow
-    Options.FocusedColor = clWindow
-    Options.DisabledColor = clWindow
-    Options.NormalColorAlpha = 200
-    Options.HotColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 150
-    Options.FrameNormalColor = clBtnText
-    Options.FrameHotColor = clHighlight
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 100
-    Options.FrameHotColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 50
-    Options.FontNormalColor = clWindowText
-    Options.FontHotColor = clWindowText
-    Options.FontFocusedColor = clWindowText
-    Options.FontDisabledColor = clGrayText
-    Options.ShapeFillGradientAngle = -90
-    Options.ShapeFillGradientBeginColorOffset = 25
-    Options.ShapeFillGradientEndColorOffset = 25
-    Options.ShapeCornerRadius = 0
-    Options.ScaleFrameWidth = False
-    Options.StyleColors = True
-    ScrollBarOptions.BorderWidth = 0
-    ScrollBarOptions.FillColor = clBtnFace
-    ScrollBarOptions.FillColorAlpha = 100
-    ScrollBarOptions.ThumbColor = clWindowText
-    ScrollBarOptions.ThumbColorAlpha = 50
-    ScrollBarOptions.ThumbColorHotAlpha = 100
-    ScrollBarOptions.ThumbColorPressedAlpha = 150
-    ScrollBarOptions.ThumbRounded = False
-    ScrollBarOptions.Position = scgpsbDefault
-    ScrollBarOptions.Size = 11
-    Color = clBtnFace
-    ContentMarginLeft = 5
-    ContentMarginRight = 5
-    ContentMarginTop = 5
-    ContentMarginBottom = 5
-    Lines.Strings = (
-      'scGPMemo1')
-    TabOrder = 36
-    Transparent = True
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET

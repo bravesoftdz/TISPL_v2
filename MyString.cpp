@@ -520,6 +520,21 @@ unsigned short TMyString::get_count_decimal(double number)
 	return AnsiString(N).Length();
 }
 //---------------------------------------------------------------------------
+//přídá nuly na urovní decimální části do počtu dle precision např. 3,23 -> 3,230, 5 -> 5,000
+AnsiString TMyString::addDecimal(double number,unsigned short precision)
+{
+	AnsiString RET=number;
+	unsigned short count_decimal=get_count_decimal(number);
+	for(unsigned i=0;count_decimal+i<precision;i++)
+	{
+		if(count_decimal==0 && i==0)RET+=get_locale_decimal();//pokud je reálná část nulová, přida ještě oddělovač desetinného místa (čárku či tečku), dle zvoleného systomvého nastavení
+		RET+="0";
+	}
+
+	return RET;
+}
+//---------------------------------------------------------------------------
+
 
 
 

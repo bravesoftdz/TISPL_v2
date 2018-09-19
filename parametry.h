@@ -91,7 +91,6 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_refresh;
 	TscGPGlyphButton *scGPGlyphButton_PO_text_memo2;
   TscGPGlyphButton *scGPGlyphButton_odchylka;
-  TscGPMemo *scGPMemo1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall RadioButton_na_delkuClick(TObject *Sender);
 	void __fastcall RadioButton_na_sirkuClick(TObject *Sender);
