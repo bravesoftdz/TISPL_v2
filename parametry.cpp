@@ -250,6 +250,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		if (Form1->STATUS == Form1->NAVRH)rezim += 10; // posunutí o 10 vytváøí režim+navrháø
 		//pozice hlavièkových komponent (+použito následnì v kodu)
 		scGPGlyphButton_view->Visible=false;
+    scGPGlyphButton_odchylka->Visible=false;
 	 	scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width- scGPGlyphButton_view->Width;
 	 	scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_metry_milimetry->Width - scGPGlyphButton_view->Width;
 		switch (rezim)
@@ -373,6 +374,7 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 						set(ROZESTUP, HIDE);
 						//hlavièkové komponenty
 						scGPGlyphButton_view->Visible=true;
+            scGPGlyphButton_odchylka->Visible=true;
 						scGPButton_min_sec->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_refresh->Width - scGPGlyphButton_view->Width;;
 						scGPButton_metry_milimetry->Left=Konec->Left-scGPButton_min_sec->Width-scGPGlyphButton_refresh->Width - scGPGlyphButton_view->Width;;
 				} break;
@@ -438,6 +440,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 			 scComboBox_pohon->Options->FrameNormalColor = clGray;
 			 scComboBox_pohon->Options->FrameWidth = 1;
 			 scComboBox_pohon->Left = 56;
+       scGPGlyphButton_odchylka->Top=331;
 			 // ty co jsou rozdílné
 			 switch (S)
 			 {
@@ -1565,12 +1568,15 @@ void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 {
 		input_state = NO; // zámìr, aby se nepøepoèítavaly hodnoty
 		double CT = 0.0;
+    double odchylka=0.0;
 		if (CTunit == MIN) // pokud je v minutách, tak pøepne na sekundy
 		{
 				CTunit = S;
 				// CT - pøepoèítání
 				CT = scGPNumericEdit_CT->Value * 60.0;
+        odchylka=scGPNumericEdit_odchylka->Value * 60.0;
 				rHTMLLabel_CT->Caption = "Technologický èas <font color=#2b579a>[s]</font>";
+        rHTMLLabel_odchylka->Caption="Odchylka z techn. èasu [s]";
 				Form_objekt_nahled->ButtonPLAY->Caption = "0 [s]";
 		}
 		else // pokud je v sekundách pøepne na minuty
@@ -1578,11 +1584,14 @@ void __fastcall TForm_parametry::rHTMLLabel_CTClick(TObject *Sender)
 				CTunit = MIN;
 				// CT - pøepoèítání
 				CT = scGPNumericEdit_CT->Value / 60.0;
+        odchylka = scGPNumericEdit_odchylka->Value / 60.0;
 				rHTMLLabel_CT->Caption = "Technologický èas <font color=#2b579a>[min]</font>";
+        rHTMLLabel_odchylka->Caption="Odchylka z techn. èasu [m]";
 				Form_objekt_nahled->ButtonPLAY->Caption = "0 [min]";
 		}
 		// plnìní + poèet desetinných míst
 		// ROSTA//scGPNumericEdit_CT->Decimal=Form1->ms.get_count_decimal(CT);//nastaví zobrazení poètu desetinných míst
+    scGPNumericEdit_odchylka->Value=odchylka;
 		scGPNumericEdit_CT->Value = CT;
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
@@ -4342,4 +4351,24 @@ void TForm_parametry::refresh_data()
 
 
 
+
+void __fastcall TForm_parametry::scGPGlyphButton_odchylkaClick(TObject *Sender)
+{
+
+    if(F->pom->dalsi!=NULL)
+    {
+    if(F->pom->dalsi->pohon==NULL) F->MB("Následující objekt, nemá pøiøazený žádný pohon, proto není navrhována žádná hodnota odchylky.");
+    else { scGPNumericEdit_odchylka->Value=F->m.cekani_na_palec(0,F->pom->dalsi->pohon->roztec,F->pom->dalsi->pohon->aRD,3)/(1+59.0*CTunit); /* scGPMemo1->Lines->Clear(); scGPMemo1->Lines->Add(F->pom->dalsi->pohon->roztec); scGPMemo1->Lines->Add(F->pom->dalsi->pohon->aRD); scGPMemo1->Lines->Add(F->m.cekani_na_palec(0,F->pom->dalsi->pohon->roztec,F->pom->dalsi->pohon->aRD,3)); */}
+    }
+    else
+    {
+    if(F->d.v.OBJEKTY->dalsi->pohon==NULL) F->MB("Následující objekt, nemá pøiøazený žádný pohon, proto není navrhována žádná hodnota odchylky.");
+    else scGPNumericEdit_odchylka->Value=F->m.cekani_na_palec(0,F->d.v.OBJEKTY->dalsi->pohon->roztec,F->d.v.OBJEKTY->dalsi->pohon->aRD,3)/(1+59.0*CTunit);
+    }
+    //MB - text, šipka download, napozicování skrývání, pøevody jednotek/ odchylka pøepínatelnost jednotek dle CT
+    //když pohon NULL - MB s textem, že není co doporuèovat
+    //tato podmínka bude první
+    //if F->pom->dalsi == NULL - jedná se když jde o poslední objekt tak potom pohon získat F->d.v.OBJEKTY->dalsi->pohon
+}
+//---------------------------------------------------------------------------
 
