@@ -382,7 +382,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			CH=NULL;delete CH;
 		}
 		//zajistí pøepoèet daného øádku
-		calculate(j);
+	 	calculate(j);
     for(int sl=0;sl<=ColCount-1;sl++) //oddìlení pohonù silnìjší èarou
     {
     mGrid->Cells[sl][j].BottomBorder->Width=2;
@@ -449,7 +449,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
      mGrid->Cells[25][j].Background->Color=clHiddenValues;    mGrid->Cells[26][j].Background->Color=clHiddenValues;
      mGrid->Cells[27][j].Background->Color=clHiddenValues;    mGrid->Cells[28][j].Background->Color=clHiddenValues;
      mGrid->Cells[29][j].Background->Color=clHiddenValues;
-		 	calculate(j);
+     calculate(j);
 
 			j++;
 		}
@@ -583,7 +583,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 				//	B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
 				//zajistí pøepoèet daného øádku - nových hodnot
-				calculate(j);
+			 	calculate(j);
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//slouèení bunìk pohony
@@ -713,13 +713,13 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
   if(temp_pocitadlo==2)scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 6;
   else scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 4;
   } //workaround ošetøení posunu tabulky
-
-	if(Col>=3  &&  Col<=13  && mGrid->getCheck(Col,Row)->Checked==false)
-	{
-		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
-		CH->Checked=true;
-		CH=NULL;delete CH;
-	}
+//
+//	if(Col>=3  &&  Col<=13  && mGrid->getCheck(Col,Row)->Checked==false)
+//	{
+//		TscGPCheckBox *CH=mGrid->getCheck(Col,Row);
+//		CH->Checked=true;
+//		CH=NULL;delete CH;
+//	}
 
 	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
@@ -864,13 +864,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
                     if(input_state==PROGRAMOVE)
                     {
-                     	ShowMessage("1");
+                      Memo1->Lines->Add("Sloupec: "+AnsiString(Col)+"i: "+AnsiString(i));
 										// vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!1");
                      mGrid->getCheck(7,i)->Checked=false;
                      mGrid->getCheck(9,i)->Checked=false;
                      mGrid->getCheck(11,i)->Checked=false;
                      mGrid->getCheck(13,i)->Checked=false;
-
 
                      mGrid->getCheck(Col,i)->Checked=true;
                      }
@@ -885,7 +884,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
     input_state=FREE;
 	 }
      // druhá oblast - prostøední
-		if(Col>=7 && Col<=10 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" )
+		if(Col>=7 && Col<=9 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" )
 		{
 			if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true)
 			{
@@ -906,7 +905,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 								{
 									if(mGrid->getCheck(3,i)->Checked==true   ||  mGrid->getCheck(5,i)->Checked==true ||  mGrid->getCheck(11,i)->Checked==true ||  mGrid->getCheck(13,i)->Checked==true)
 									{
-										ShowMessage("2");
+
 										pocitadlo++;
                     input_state=PROGRAMOVE;
 									 //	vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!2");
@@ -951,48 +950,26 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 								 {
 									 if (mGrid->getCheck(3,i)->Checked==true   ||  mGrid->getCheck(5,i)->Checked==true ||  mGrid->getCheck(7,i)->Checked==true ||  mGrid->getCheck(9,i)->Checked==true )
                    pocitadlo++;
-                     input_state=PROGRAMOVE;
+                   input_state=PROGRAMOVE;
                     if(input_state==PROGRAMOVE)
                     {
-                        ShowMessage("3");
+                    //Memo1->Lines->Add("Sloupec: "+AnsiString(Col)+"i: "+AnsiString(i));
                       // vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!3");
-
                      mGrid->getCheck(3,i)->Checked=false;
                      mGrid->getCheck(5,i)->Checked=false;
                      mGrid->getCheck(7,i)->Checked=false;
                      mGrid->getCheck(9,i)->Checked=false;
-
                      mGrid->getCheck(Col,i)->Checked=true;
                    }
 
 								 }
 							}
-					 }
-					 if(pocitadlo==0) ; //	vypis("",false);  //povolím uložení
+					 }   input_state=FREE;
 				}
 			}
 		}
-     input_state=FREE;
+
 	 }
-
-
-//// první oblast   - levá
-//	if(Col>=3 && Col<=5 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" )
-//	{
-//		if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
-//		{
-//
-//    	// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
-//			if(objekty[Row].pohon!=NULL)
-//			{
-//       	int pohon_n=objekty[Row].pohon->n;
-//
-//      }
-//
-//
-//    }
-//
-//  }
 
 
 	//-------------------
@@ -1025,12 +1002,13 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	}
 	else//pøekliknutí chechboxu pravdìpodobnì
 	{
-	 if(input_state==FREE)
+	 if(input_state==FREE && Col>=3 && Col<=14)
 	 {
    		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
 			if(objekty[Row].pohon!=NULL)
 			{
 				int pohon_n=objekty[Row].pohon->n;
+
 				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n) > 1)
 				{
 
@@ -1039,10 +1017,11 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					 {
 							if(objekty[i].pohon!=NULL)
 							{
-								if(pohon_n==objekty[i].pohon->n)
-								 {
-                   slouceny_radek=i;
-                 }
+//								if(pohon_n==objekty[i].pohon->n)
+//								 {
+                   ShowMessage(i);
+                   slouceny_radek=8;
+               //  } //slouží k odlišení v calculate pro výpoèet, abych vìdìl na který slouèený øádek mám vrátit data
               }
             }
 
@@ -1195,11 +1174,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			pm.R=0;
 		}
 	}
-
-//
-//    Memo1->Lines->Add("RD: "+AnsiString(pm.RD));
-//    Memo1->Lines->Add("R: "+AnsiString(pm.R));
-//    Memo1->Lines->Add("Rz: "+AnsiString(pm.Rz));
 
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[6];
@@ -1416,10 +1390,10 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
     }
 	}
 
-  if(objekty[Row].pohon!=NULL)
-    {
-     if(indikator_skupin[objekty[Row].pohon->n]==1) pm.RD=pm.Rz/pm.TT; //výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
-    }
+//  if(objekty[Row].pohon!=NULL)
+//    {
+//     if(indikator_skupin[objekty[Row].pohon->n]==1) pm.RD=pm.Rz/pm.TT; //výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
+//    }
 
 	//output sekce
 	AnsiString T="";
@@ -1436,7 +1410,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				{
 					mGrid->Cells[16][Row].Text = F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
            if(slouceny_radek>1)
-          {  //ShowMessage(pouze_radek);
+          {  //ShowMessage(slouceny_radek);
            	mGrid->Cells[18][slouceny_radek].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
           } else mGrid->Cells[18][Row].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
 					mGrid->Cells[20][Row].Text = F->m.round2double(pm.DD*(1+999.0*DDunit),2,"..");
@@ -1447,10 +1421,10 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				}
 
 				if(objekty[Row].pohon!=NULL || objekty[Row].id>100)//objekty s pohonem nebo pohon bez pøiøazených objektù
-				{ //ShowMessage(pouze_radek);
+				{
 
         if(slouceny_radek>1)
-          {
+          {  //ShowMessage(slouceny_radek);
           mGrid->Cells[31][slouceny_radek].Text =F->m.round2double(pm.R*(1+999.0*Runit),2,"..");
 			    mGrid->Cells[33][slouceny_radek].Text =F->m.round2double(pm.Rz*(1+999.0*Rzunit),2,"..");
           mGrid->Cells[35][slouceny_radek].Text =F->m.round2double(pm.Rx,2,"..");
