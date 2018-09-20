@@ -862,6 +862,7 @@ object F_gapoTT: TF_gapoTT
       'Memo'
       '1')
     TabOrder = 8
+    Visible = False
   end
   object Button1: TButton
     Left = 152
