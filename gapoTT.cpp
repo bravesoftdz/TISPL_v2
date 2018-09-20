@@ -864,7 +864,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
                     if(input_state==PROGRAMOVE)
                     {
-                      Memo1->Lines->Add("Sloupec: "+AnsiString(Col)+"i: "+AnsiString(i));
+                    //  Memo1->Lines->Add("Sloupec: "+AnsiString(Col)+"i: "+AnsiString(i));
 										// vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výbìru!1");
                      mGrid->getCheck(7,i)->Checked=false;
                      mGrid->getCheck(9,i)->Checked=false;
@@ -1005,6 +1005,8 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 if(input_state==FREE && Col>=3 && Col<=14)
 	 {
    		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
+     if(mGrid->Cells[1][Row].Text!="nepøiøazen")
+     {
 			if(objekty[Row].pohon!=NULL)
 			{
 				int pohon_n=objekty[Row].pohon->n;
@@ -1015,19 +1017,21 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
            slouceny_radek=0;
 					 for(int i=1;i<=mGrid->RowCount-1;i++)
 					 {
+             if(mGrid->Cells[1][i].Text!="nepøiøazen")
+             {
 							if(objekty[i].pohon!=NULL)
-							{
-//								if(pohon_n==objekty[i].pohon->n)
-//								 {
-
-                   slouceny_radek=8;
-
-                // } //slouží k odlišení v calculate pro výpoèet, abych vìdìl na který slouèený øádek mám vrátit data
+							{  //ShowMessage(objekty[i].pohon->n);
+              //ShowMessage("po");
+								if(pohon_n==objekty[i].pohon->n)
+								 {
+                   slouceny_radek=i;
+                 } //slouží k odlišení v calculate pro výpoèet, abych vìdìl na který slouèený øádek mám vrátit data
               }
+             }
             }
 
          } else slouceny_radek=0;
-
+        }
       }
     calculate(Row);//zajistí pøepoèet daného øádku
 
@@ -1391,10 +1395,14 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
     }
 	}
 
-//  if(objekty[Row].pohon!=NULL)
-//    {
-//     if(indikator_skupin[objekty[Row].pohon->n]==1) pm.RD=pm.Rz/pm.TT; //výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
-//    }
+  if(mGrid->Cells[1][Row].Text!="nepøiøazen")
+  {
+      if(objekty[Row].pohon!=NULL)
+        {
+         Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
+         if(indikator_skupin[objekty[Row].pohon->n]==1) pm.RD=pm.Rz/pm.TT; //výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
+        }
+  }
 
 	//output sekce
 	AnsiString T="";
