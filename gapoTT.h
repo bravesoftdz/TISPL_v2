@@ -24,7 +24,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_titulek;
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_OK;
-	TrHTMLHint *rHTMLHint1;
+  TrHTMLHint *rHTMLHint_vypis;
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TrHTMLLabel *rHTMLLabel_legenda;
 	TrHTMLLabel *rHTMLLabel_legenda_titulek;

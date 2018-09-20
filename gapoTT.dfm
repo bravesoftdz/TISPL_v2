@@ -874,7 +874,7 @@ object F_gapoTT: TF_gapoTT
     Visible = False
     OnClick = Button1Click
   end
-  object rHTMLHint1: TrHTMLHint
+  object rHTMLHint_vypis: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
     HintFont.Color = clWindowText
     HintFont.Height = -11
