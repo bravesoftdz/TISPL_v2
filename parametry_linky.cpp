@@ -1722,25 +1722,21 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 			 {
 
 				 scGPButton_zamek_Rx->ImageIndex=38;
-				 scGPButton_zamek_roztec->ImageIndex=37;  //zamknu R
+				 scGPButton_zamek_roztec->ImageIndex=38;  //zamknu R
 
-				 //Rz není vidìt a lze jej mìnit
-				 scGPButton_zamek_Rz->ImageIndex=38;
+				 scGPButton_zamek_Rz->ImageIndex=37;
+         scGPButton_zamek_aRD->ImageIndex=37;
 				// scGPButton_zamek_Rz->Visible=false;
 
 			 } else
 
 			 {
-
 				 scGPButton_zamek_Rx->ImageIndex=37;
 				 scGPButton_zamek_roztec->ImageIndex=38;  //odemknu R
 
-				 //Rz není vidìt a lze jej mìnit
 				 scGPButton_zamek_Rz->ImageIndex=38;
-			 //	 scGPButton_zamek_Rz->Visible=false;
+         scGPButton_zamek_aRD->ImageIndex=38;
 			 }
-
-
 	}
 
 
@@ -1818,7 +1814,6 @@ void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_ed
 
 			 }
 
-			//  Nastav_zamky(Rx_klik_ico,Rz_klik);
 			if(I==R_klik_ico && E==R_klik)
       {
 
@@ -2324,8 +2319,7 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_RxClick(TObject *Sender)
 	if(input_clicked_edit==Rz_klik) Nastav_zamky(Rx_klik_ico,Rz_klik);
   if(input_clicked_edit==R_klik)  Nastav_zamky(Rx_klik_ico,R_klik);
   if(input_clicked_edit==Rx_klik)  Nastav_zamky(Rx_klik_ico,Rx_klik);
-
-	else  Nastav_zamky(Rx_klik_ico,Rx_klik);// Nastav_zamky(Rx_klik_ico,empty_klik);
+	if(input_clicked_edit==empty_klik)  Nastav_zamky(Rx_klik_ico,Rx_klik);// Nastav_zamky(Rx_klik_ico,empty_klik);
 
 		rStringGridEd_tab_dopravniky->Visible=false;
 		rStringGridEd_tab_dopravniky->Visible=true;
@@ -2573,7 +2567,6 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_roztecClick(TObject *Sen
 		if(input_clicked_edit==R_klik) Nastav_zamky(R_klik_ico,R_klik);
 		if(input_clicked_edit==Rz_klik) Nastav_zamky(R_klik_ico,Rz_klik);
 		if(input_clicked_edit==Rx_klik) Nastav_zamky(R_klik_ico,Rx_klik);
-
 		if(input_clicked_edit==empty_klik) Nastav_zamky(R_klik_ico,R_klik); //Nastav_zamky(R_klik_ico,empty_klik)  } // std.chování
 
 
@@ -2585,12 +2578,10 @@ void __fastcall TForm_parametry_linky::scGPButton_zamek_roztecClick(TObject *Sen
 void __fastcall TForm_parametry_linky::scGPButton_zamek_RzClick(TObject *Sender)
 {
 
-	 input_clicked_icon=Rz_klik_ico;
 	 if(input_clicked_edit==Rz_klik) Nastav_zamky(Rz_klik_ico,Rz_klik);
 	 if(input_clicked_edit==R_klik)	 Nastav_zamky(Rz_klik_ico,R_klik);
 	 if(input_clicked_edit==Rx_klik)	 Nastav_zamky(Rz_klik_ico,Rx_klik);
    if(input_clicked_edit==aRD_klik)	 Nastav_zamky(Rz_klik_ico,aRD_klik);
-
 	 if(input_clicked_edit==empty_klik){ Nastav_zamky(Rz_klik_ico,Rz_klik);} //shodne chování jako klik do aRD
 
 		rStringGridEd_tab_dopravniky->Visible=false;
