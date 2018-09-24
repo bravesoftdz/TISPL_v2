@@ -344,6 +344,7 @@ void __fastcall TF_gapoR::FormClose(TObject *Sender, TCloseAction &Action)
 	if(ModalResult==mrOk)delete[] pohony_zmena;//pokud je stisknuto storno pøi ukonèování, tak se nemaže //NEWR
 	delete[] objekty;
 	Form_objekt_nahled->pom=NULL;delete Form_objekt_nahled->pom;
+  mGrid->Delete();
 }
 //---------------------------------------------------------------------------
 //provizorní, vy/zapínání AA
@@ -579,5 +580,6 @@ void __fastcall TF_gapoR::FormMouseMove(TObject *Sender, TShiftState Shift, int 
 mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 }
 //---------------------------------------------------------------------------
+
 
 
