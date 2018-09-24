@@ -1385,7 +1385,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			pm.P=pm.Pozice();
 			pm.M=pm.DD/pm.K-pm.UDV();
 		}
-    if(pm.rezim==100)
+		if(pm.rezim==100)
 		{
 			pm.Rz=pm.RD*pm.TT;
 			pm.R=F->m.R(pm.Rz,pm.Rx);
@@ -1533,19 +1533,19 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			 AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
 			 AnsiString error_text="";
 			 //situace 1 - pøípad testování zda daný objekt, který se mìní je OK
-			 //situace 2 - testování, zda zmìna u daného objektu nezpùsobí u PP a KK, projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
-			 if(objekty[Row].pohon!=NULL)
+			 //situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu, projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
+			 if(objekty[Row].pohon!=NULL && objekt[Row].rezim<100)//testovaný objekt má pøiøazen pohon a zároveò se nejedná o pohon bez pøiøazení k objektùm
 			 {
 				 for(unsigned long i=1;i<mGrid->RowCount;i++)
-				 {      //odfiltrování situace 1
-					 if(/*objekty[Row]!=objekty[i] && */objekty[Row].pohon==objekty[i].pohon)//nalezen objekt ze stejné skupiny, nutno tedy testovat možnost pøejezdu
+				 {      //odfiltrování situace 1 - pokud to odkomentuji /*objekty[Row]!=objekty[i] && */ //situace 2
+					 if(objekty[Row].pohon==objekty[i].pohon)//nalezen objekt ze stejné skupiny, nutno tedy testovat možnost pøejezdu
 					 {
-						 error_text+="\n";//pokud existuje již chybový záznam je nutné odøádkovat
+						 error_text+="<br>";//pokud existuje již chybový záznam je nutné odøádkovat
 						 switch(pm.rezim)
 						 {
-							 case 0: /*dodìlat MT....*/if(pm.DD/pm.CT>pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
+							 case 0: /*dodìlat MT....*/if(pm.DD/pm.CT<=pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
 							 case 1:break;
-							 case 2: if(pm.DD/pm.CT>pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
+							 case 2: if(pm.DD/pm.CT<=pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
 						 }
 					 }
 				 }
