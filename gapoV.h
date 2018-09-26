@@ -71,6 +71,8 @@ public:		// User declarations
 	Tinput_state input_state;//stav vstupu
   int myModalResult;
   int temp_pocitadlo; // docasne reseni - kvuli posunu gridu
+  int slouceny_radek;
+  bool Rx_canEdit;
  // enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;Tm_mm Dmunit;//pøepínaè jednotek vzdálenost
 	//enum Tminsec{S=0,MIN};Tminsec Taktunit;Tminsec RDunit;Tminsec minsec;Tminsec aRDunit;//pøepínaè jednotek èasu
 };

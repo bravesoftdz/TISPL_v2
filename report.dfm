@@ -404,7 +404,6 @@ object Form_report: TForm_report
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Report'
-      ExplicitLeft = 0
     end
     object scGPPanel1: TscGPPanel
       Left = 912
@@ -525,7 +524,6 @@ object Form_report: TForm_report
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 3
     end
     object scButton_csv: TscButton
       Left = 30
@@ -616,7 +614,6 @@ object Form_report: TForm_report
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 70
     end
   end
   object scStyledForm1: TscStyledForm

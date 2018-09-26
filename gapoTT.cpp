@@ -343,18 +343,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			mGrid->MergeCells(13,j,14,j);
 		}
 
-     	if(On[i].pohon!=NULL && On[i].rezim!=0) //vynechání SG režimu (má pøednastavené volby)
-				{
-					double value=On[i].pohon->Rx;
-					if(value!=floor(value))
-					{
-						double dop_Rx=On[i].pohon->Rx;
-						vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
-						mGrid->getCheck(7,j)->Enabled=false;
-						mGrid->getCheck(11,j)->Enabled=false;
-						Rx_canEdit=false;
-					}
-				}
+  
 
 		//parametry objektù  // cell 17 - pùvodnì používána pro RD, nyní je v ní zobrazováno aRD
 		mGrid->Cells[15][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");	 								mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clOLD;mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
@@ -448,6 +437,24 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
       {
 				mGrid->Cells[sl][j].BottomBorder->Width=2;
 			}
+
+         if(F->d.v.vrat_pohon(i)!=NULL) //vynechání SG režimu (má pøednastavené volby)
+				{
+					double value=F->d.v.vrat_pohon(i)->Rx;
+					if(value!=floor(value))
+					{
+						double dop_Rx=Form1->m.round(value);
+						vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
+						mGrid->getCheck(7,j)->Enabled=false;
+						mGrid->getCheck(9,j)->Enabled=false;
+						Rx_canEdit=false;
+					}
+          else
+          {
+          	mGrid->getCheck(7,j)->Enabled=true;
+						mGrid->getCheck(9,j)->Enabled=true;
+          }
+				}
 
 			//staré parametry
       mGrid->Cells[17][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->aRD*(1+59.0*aRDunit),2,"..");                      mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clOLD;mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clUNLOCKED;
@@ -568,7 +575,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 						double dop_Rx=Form1->m.round(F->ms.MyToDouble(O[z].pohon->Rx));
 						vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
 						mGrid->getCheck(7,j)->Enabled=false;
-						mGrid->getCheck(11,j)->Enabled=false;
+						mGrid->getCheck(9,j)->Enabled=false;
 						Rx_canEdit=false;
 					}
 				}
@@ -887,6 +894,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
                      mGrid->getCheck(11,i)->Checked=false;
                      mGrid->getCheck(13,i)->Checked=false;
                      mGrid->getCheck(Col,i)->Checked=true;
+                     calculate(i);
                      }
 									}
 								}
@@ -930,6 +938,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
                      mGrid->getCheck(11,i)->Checked=false;
                      mGrid->getCheck(13,i)->Checked=false;
                      mGrid->getCheck(Col,i)->Checked=true;
+                     calculate(i);
                        }
                    }
 								}
@@ -974,6 +983,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
                      mGrid->getCheck(7,i)->Checked=false;
                      mGrid->getCheck(9,i)->Checked=false;
                      mGrid->getCheck(Col,i)->Checked=true;
+                     calculate(i);
                        }
                    }
 								}

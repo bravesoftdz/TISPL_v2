@@ -163,9 +163,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			if(dopP!="")
 			{
 				data+="<h4>Pøehled doporuèených pohonù</h4>";
-				data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">Název</th><th scope=\"col\">Rychlost[m/min]</th><th scope=\"col\">Rozestup aktivní palce [m]</th></tr></thead>";
-				data+="<tr>"+dopP+"</tr>";
-				data+="</table></br>";
+				data+="<table class=\"table table-striped table-responsive\"><tbody><tr><td>"+dopP+"</td></tr>";
+				data+="</tbody></table></br>";
 			}
 
 			//Pøehled nadefinovaných pohonù - doplnil M
@@ -229,7 +228,12 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 					O=O->dalsi;
 			}
 			data+="</tbody></table></br>";
-			data+="</form></div></br>";
+
+       data+="<h4>Zprávy o lince</h4>";
+       data+="<table class=\"table table-striped table-responsive\"><thead></thead>";
+       data+="<tbody><tr><td>"+F->scHTMLLabel_log_vypis->Caption;
+			 data+="</form></div></br>";  //celkové ukonèení celého divu
+
 
       //VÝPIS NEVYTÍŽENÝCH OBJEKTÙ  //ROSTA zakomentoval - pamìová chyba
 //			UnicodeString Nevytizene_objekty=Form1->d.v.vypis_objekty_mimo_100vytizeni(false);
