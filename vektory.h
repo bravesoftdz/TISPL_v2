@@ -36,9 +36,14 @@ class Cvektory
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
 			double X, Y;//umístění objektu
-			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
+			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP),3-stopka
 			double CT;//pro status návrh
-			double RD;//pro status návrh v m/s, je to otázka zda tu zůstane
+			double MT1;//pro status návrh, převážně pro S&G a PP
+			double PT;//pro status návrh, převážně pro S&G a PP
+			double WT1;//pro status návrh, převážně pro S&G a PP
+			double MT2;//pro status návrh, převážně pro S&G a PP
+			double WT2;//pro status návrh, převážně pro S&G a PP
+			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná

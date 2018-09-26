@@ -692,8 +692,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	//pozice komponent
 	F->m.designButton(scGPButton_OK,F_gapoTT,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoTT,2,2);
+	scGPCheckBox_prepocitatPT->Left=mGrid->Left;
+	scGPCheckBox_prepocitatPT->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
 	//legenda pozice
-	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
+	rHTMLLabel_InfoText->Top=scGPCheckBox_prepocitatPT->Top+scGPCheckBox_prepocitatPT->Height;
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
 	////pozice gapo formu, pokud je stejnì velký jako hlavní form, tak na 0 pozici, jinak na støed PL formu
@@ -1137,7 +1139,7 @@ void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
 //---------------------------------------------------------------------------
 UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 {
-	//instance na PO_math, využívá se stejných výpoètù
+	//instance na PO_math, využívá se z èásti stejných výpoètù
 	TPO_math pm;
 
 	//input sekce
@@ -1469,9 +1471,9 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		 {
 				if(objekty[Row].id<100)//pokud se nejedná o pohon bez pøiøazených objektù
 				{
-					Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
+					Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);//nutno aby se ukládalo do skutuèného originálu objektu
 					if(O->pohon!=NULL)
-					{ //POZOR: pm.RD je vždy aRD, až v sekci case 1 je vypoèítáno skuteèné RD=DD/CT
+					{ //POZOR: pm.RD je vždy aRD, až níže je vypoèítáno skuteèné RD=DD/CT
 						O->pohon->aRD=pm.RD; F->d.v.vrat_pohon(O->pohon->n)->aRD=pm.RD;
 						O->pohon->Rz=F->m.Rz(pm.RD);
 						if(CHECK[2] || CHECK[4])O->pohon->Rx     = F->m.Rx2(O->pohon->Rz,pm.R);//zùstává R, mìní se Rx
@@ -1507,7 +1509,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 					Form_objekt_nahled->pom->pohon->roztec=pm.R;//ale pøedávám jen do náhledu R, nic víc od pohonu
 					Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
 					Form_objekt_nahled->pom->CT=pm.CT;
-					Form_objekt_nahled->pom->RD=pm.RD;//pozor øešeno pouze kontinuál
+					Form_objekt_nahled->pom->RD=pm.RD;//pozor øešen pouze kontinuál
 					Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
 					Form_objekt_nahled->pom->kapacita=pm.K;
 					Form_objekt_nahled->pom->pozice=pm.P;
@@ -1524,23 +1526,30 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			 AnsiString error_text="";
 			 //situace 1 - pøípad testování zda daný objekt, který se mìní je OK
 			 //situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu, projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
-			 if(objekty[Row].pohon!=NULL && objekt[Row].rezim<100)//testovaný objekt má pøiøazen pohon a zároveò se nejedná o pohon bez pøiøazení k objektùm
+			 if(objekty[Row].pohon!=NULL && objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon a zároveò se nejedná o pohon bez pøiøazení k objektùm
 			 {
 				 for(unsigned long i=1;i<mGrid->RowCount;i++)
-				 {      //odfiltrování situace 1 - pokud to odkomentuji /*objekty[Row]!=objekty[i] && */ //situace 2
+				 {      //odfiltrování situace 1 - pokud toto zapojím /*objekty[Row]!=objekty[i] && */ //situace 2
 					 if(objekty[Row].pohon==objekty[i].pohon)//nalezen objekt ze stejné skupiny, nutno tedy testovat možnost pøejezdu
 					 {
-						 error_text+="<br>";//pokud existuje již chybový záznam je nutné odøádkovat
-						 switch(pm.rezim)
-						 {
-							 case 0: /*dodìlat MT....*/if(pm.DD/pm.CT<=pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
-							 case 1:break;
-							 case 2: if(pm.DD/pm.CT<=pm.RD)error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";break;
+						 if(pm.rezim==0 || pm.rezim==2)//øeší se pouze pro S&G èi PP
+						 {          //MT by mìlo být zaktualizované dle gapo zmìny
+							 double MT=objekty[Row].MT1+objekty[Row].MT2;
+							 if(MT==0)//pokud není MT dodáno je nutné jej spoèítat, pokud nebude vyèísleno PT a WT, bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
+							 {
+								 MT=pm.CT-objekty[Row].PT-objekty[Row].WT1-objekty[Row].WT2;
+								 //otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+							 }
+							 if(pm.DD/MT>pm.RD )//problém nastane pokud DD/MT>aRD, tzn. nestíhá se pøejezd pozn. aRD je pm.RD
+							 {
+						 		 if(error_text!="")error_text+="<br>";//pokud existuje již pøedchozí chybový záznam je nutné odøádkovat
+								 error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";
+               }
 						 }
 					 }
 				 }
 			 }
-			 if(error_text!="")T="<b>Daná volba není možná. Následující objekt(y) nestíha(jí) pøejezd:</b><br>";//pokud je chybový text, tak pøidá popis problému
+			 if(error_text!="")T="<b>Daná volba není možná. Následující objekt(y) nestíha(jí) pøejezd:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
 		 }break;
 	}
 	return T;
@@ -1550,7 +1559,7 @@ void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)
 {
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
-  //navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
+	//navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
   Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
   myModalResult=mrCancel;
 }

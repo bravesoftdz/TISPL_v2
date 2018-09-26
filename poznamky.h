@@ -38,14 +38,17 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
 	void __fastcall scGPCheckBox_STOPKAClick(TObject *Sender);
 	void __fastcall scButton_zamek_PTaDDClick(TObject *Sender);
+	void __fastcall scGPButton_OKClick(TObject *Sender);
 
 private:	// User declarations
 	TColor clBACKGROUND,clLOCKED,clUNLOCKED,clTITLE;
-	enum Tinput_state{NO,NOTHING,MT1state,MT2state,P1state,P2state};//uchovává výbìr input hodnoty (aby se data v buòkách necyklyly)
+	enum Tinput_state{NO,NOTHING,MT1state,PTstate,MT2state,P1state,P2state};//uchovává výbìr input hodnoty (aby se data v buòkách necyklyly)
 	Tinput_state input_state;
 	void table_head();//definuje hlavièku tabulky
-	void calculate(short INPUT=0);//vypoèítává ve S&G subparametry
+	void calculate(Tinput_state input_state);//vypoèítává ve S&G subparametry
+	void setDD(bool locked);void setPT(bool locked);
 	Cvektory::TPohon *P,*PD;
+	double DD;//délka dopravníku, kvùli navrácení do PO
 	short Decimal;//poèet desetinných míst
 	AnsiString pz;//zástupný znak pokraèování
 public:		// User declarations

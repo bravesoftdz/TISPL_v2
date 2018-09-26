@@ -38,6 +38,7 @@ __published:	// IDE-managed Components
   TscGPImage *scImage_zamky;
   TMemo *Memo1;
   TButton *Button1;
+	TscGPCheckBox *scGPCheckBox_prepocitatPT;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);

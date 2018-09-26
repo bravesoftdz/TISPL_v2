@@ -29,6 +29,11 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->name="";//celý název objektu
 	novy->rezim=0;
 	novy->CT=0;//pro status návrh
+	novy->MT1=0;//pro status návrh, převážně pro S&G a PP
+	novy->PT=0;//pro status návrh, převážně pro S&G a PP
+	novy->WT1=0;//pro status návrh, převážně pro S&G a PP
+	novy->MT2=0;//pro status návrh, převážně pro S&G a PP
+	novy->WT2=0;//pro status návrh, převážně pro S&G a PP
 	novy->RD=0;//pro status návrh
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->kapacita=0;
@@ -70,6 +75,11 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->CT=PP.TT;//pro status návrh
+	novy->MT1=0;//pro status návrh, převážně pro S&G a PP
+	novy->PT=0;//pro status návrh, převážně pro S&G a PP
+	novy->WT1=0;//pro status návrh, převážně pro S&G a PP
+	novy->MT2=0;//pro status návrh, převážně pro S&G a PP
+	novy->WT2=0;//pro status návrh, převážně pro S&G a PP
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
 	novy->kapacita=1;
@@ -113,6 +123,11 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
 	novy->CT=PP.TT;//pro status návrh
+	novy->MT1=0;//pro status návrh, převážně pro S&G a PP
+	novy->PT=0;//pro status návrh, převážně pro S&G a PP
+	novy->WT1=0;//pro status návrh, převážně pro S&G a PP
+	novy->MT2=0;//pro status návrh, převážně pro S&G a PP
+	novy->WT2=0;//pro status návrh, převážně pro S&G a PP
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
 	novy->kapacita=1;
@@ -202,6 +217,11 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 	{
 		novy->rezim=Objekt->rezim;
 		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
+		novy->MT1=Objekt->MT1;//pro status návrh, převážně pro S&G a PP
+		novy->PT=Objekt->PT;//pro status návrh, převážně pro S&G a PP
+		novy->WT1=Objekt->WT1;//pro status návrh, převážně pro S&G a PP
+		novy->MT2=Objekt->MT2;//pro status návrh, převážně pro S&G a PP
+		novy->WT2=Objekt->WT2;//pro status návrh, převážně pro S&G a PP
 		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
 		novy->delka_dopravniku=Objekt->delka_dopravniku;
 		novy->kapacita=Objekt->kapacita;
@@ -1027,6 +1047,7 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 		{                         //pro S&G a PP                         //pro konkrétní režim
 			if(rezim==-1 || (rezim==20 && (O->rezim==0 || O->rezim==2)) || O->rezim==rezim)//filtr režimu
 			{
+        //tady dodělat MT místo CT
 				if(testRD<O->delka_dopravniku/O->CT)
 				{
 					objekty=O->short_name+", ";

@@ -4,7 +4,7 @@ object F_gapoTT: TF_gapoTT
   BorderStyle = bsNone
   Caption = 'F_gapoTT'
   ClientHeight = 496
-  ClientWidth = 377
+  ClientWidth = 378
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -76,7 +76,7 @@ object F_gapoTT: TF_gapoTT
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
-    Width = 377
+    Width = 378
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -104,9 +104,10 @@ object F_gapoTT: TF_gapoTT
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 377
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 327
+      Left = 328
       Top = 0
       Width = 50
       Height = 33
@@ -183,12 +184,13 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 327
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
       Left = 92
       Top = 0
-      Width = 198
+      Width = 199
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -219,9 +221,10 @@ object F_gapoTT: TF_gapoTT
       Caption = 
         'Glob'#225'ln'#237' aktualizace parametr'#367' pohon'#367' a objekt'#367' z d'#367'vodu zm'#283'ny T' +
         'T'
+      ExplicitWidth = 198
     end
     object scGPGlyphButton_info: TscGPGlyphButton
-      Left = 290
+      Left = 291
       Top = 0
       Width = 37
       Height = 34
@@ -298,6 +301,7 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 290
     end
     object scGPGlyphButton_copy: TscGPGlyphButton
       Left = 45
@@ -873,6 +877,107 @@ object F_gapoTT: TF_gapoTT
     TabOrder = 9
     Visible = False
     OnClick = Button1Click
+  end
+  object scGPCheckBox_prepocitatPT: TscGPCheckBox
+    Left = 0
+    Top = 377
+    Width = 673
+    Height = 25
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
+    TabOrder = 10
+    TabStop = True
+    Animation = False
+    Caption = 
+      'P'#345'i zm'#283'n'#283' technologick'#233'ho '#269'asu CT v'#382'dy m'#283'nit  procesn'#237' '#269'as PT, a' +
+      ' to i pokud to nen'#237' nutn'#233'. '
+    CanFocused = True
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 95
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    Options.NormalColor = clWindow
+    Options.HotColor = clWindow
+    Options.PressedColor = clWindow
+    Options.DisabledColor = clWindow
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 200
+    Options.DisabledColorAlpha = 125
+    Options.FrameNormalColor = clBtnShadow
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.CheckMarkNormalColor = clWindowText
+    Options.CheckMarkHotColor = clWindowText
+    Options.CheckMarkPressedColor = clWindowText
+    Options.CheckMarkDisabledColor = clWindowText
+    Options.CheckMarkNormalColorAlpha = 255
+    Options.CheckMarkHotColorAlpha = 255
+    Options.CheckMarkPressedColorAlpha = 255
+    Options.CheckMarkDisabledColorAlpha = 125
+    Options.ShapeSize = 20
+    Options.CheckMarkThickness = 2
+    Options.StyleColors = True
+    OptionsChecked.NormalColor = clWindow
+    OptionsChecked.HotColor = clWindow
+    OptionsChecked.PressedColor = clWindow
+    OptionsChecked.DisabledColor = clWindow
+    OptionsChecked.NormalColorAlpha = 255
+    OptionsChecked.HotColorAlpha = 255
+    OptionsChecked.PressedColorAlpha = 200
+    OptionsChecked.DisabledColorAlpha = 125
+    OptionsChecked.FrameNormalColor = clBtnShadow
+    OptionsChecked.FrameHotColor = clHighlight
+    OptionsChecked.FramePressedColor = clHighlight
+    OptionsChecked.FrameDisabledColor = clBtnShadow
+    OptionsChecked.FrameWidth = 2
+    OptionsChecked.FrameNormalColorAlpha = 255
+    OptionsChecked.FrameHotColorAlpha = 255
+    OptionsChecked.FramePressedColorAlpha = 255
+    OptionsChecked.FrameDisabledColorAlpha = 255
+    OptionsChecked.CheckMarkNormalColor = clWindowText
+    OptionsChecked.CheckMarkHotColor = clWindowText
+    OptionsChecked.CheckMarkPressedColor = clWindowText
+    OptionsChecked.CheckMarkDisabledColor = clWindowText
+    OptionsChecked.CheckMarkNormalColorAlpha = 255
+    OptionsChecked.CheckMarkHotColorAlpha = 255
+    OptionsChecked.CheckMarkPressedColorAlpha = 255
+    OptionsChecked.CheckMarkDisabledColorAlpha = 125
+    OptionsChecked.ShapeSize = 20
+    OptionsChecked.CheckMarkThickness = 2
+    OptionsChecked.StyleColors = True
+    Checked = True
+    State = cbChecked
+    ScaleFrameWidth = True
+    ScaleCheckMarkThickness = True
+    ShowFocusRect = True
+    WordWrap = False
+    UseFontColorToStyleColor = False
   end
   object rHTMLHint_vypis: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET

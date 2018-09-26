@@ -251,6 +251,7 @@ object Form_poznamky: TForm_poznamky
     ParentFont = False
     TabOrder = 2
     TabStop = True
+    OnClick = scGPButton_OKClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -727,6 +728,7 @@ object Form_poznamky: TForm_poznamky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 7
+    Visible = False
     OnClick = scButton_zamek_PTaDDClick
     Animation = False
     CanFocused = False
