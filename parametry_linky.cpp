@@ -477,6 +477,28 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			if(F_gapoR->pohony_zmena[i].X) zobrazGAPO_R=true;
 			//	ShowMessage(AnsiString(i)+" "+AnsiString((short)(F_gapoR->pohony_zmena[i])));
 		}
+
+
+     int nezobrazuj=0;
+                      // pokud chci budu zobrazovat gapo R, ještì si zkontroluji celý obsah tabulky, zda nejsou náhodou vráceny všude výchozí hodnoty
+      if(zobrazGAPO_R)//pokud se hodnoty shodují, ruším zobrazení gapoR
+     {
+     for(int j=1;j<=rStringGridEd_tab_dopravniky->RowCount-1;j++)
+      {
+      Memo3->Lines->Add(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][j]));
+      Memo3->Lines->Add(F->d.v.vrat_pohon(j)->aRD*60.0);
+      if((rStringGridEd_tab_dopravniky->Cells[4][j]/60.0)==F->d.v.vrat_pohon(j)->aRD &&
+      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][j])/*/1+999.0*Runit*/==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->roztec) &&
+      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][j])/*/1+999.0*Rzunit*/==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->Rz) &&
+      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][j])==F->d.v.vrat_pohon(j)->Rx)
+      {
+       nezobrazuj++;
+       }
+       else nezobrazuj=0;
+      } //pokud poèet øádkù beze zmìny sedí s celkovým poètem øádkù = žádná zmìna, nebudu nakonec gapo R zobrazovat, jinak zobrazím gapoR
+      if(nezobrazuj==rStringGridEd_tab_dopravniky->RowCount-1)    zobrazGAPO_R=false;  else zobrazGAPO_R=true;
+      }
+
 		if(zobrazGAPO_R)//pokud byl nìjaký používaný pohon zmìnìn
 		{
 			//scGPPanel2->FillColor = (TColor)RGB(200,200,200);//F->m.clIntensive((TColor)RGB(43,87,154),40);
@@ -2494,9 +2516,10 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				pm.input_Rx();
 				OUTPUT(0,ACol,ARow);
 				rStringGridEd_tab_dopravniky->Invalidate();
-				if(scGPButton_zamek_roztec->ImageIndex==37 && rHTMLLabel_InfoText->Caption=="")
+				if(scGPButton_zamek_roztec->ImageIndex==37)
 				{
 				zobrazOramovani=true;
+       // ShowMessage("ted");
 				//vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
 				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
 				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
@@ -2744,40 +2767,26 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 				}
 				break;
-				case 2:     //RD OD
+				case 2:     //RD
 				{
+        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/1+59.0*aRDunit;
+		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/1+59.0*aRDunit;
+		    double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/1+59.0*aRDunit;
 
-						if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])<=0)
+					if(Form1->m.between(RD,P_od,P_do))
 						{
-						//vypis("Neplatná hodnota rychlosti pohonu od!");
-					 //	VID=2;
-						Row_validace=ARow;
-            Col_validace=ACol;
+						 //	Memo1->Lines->Add("OK rozmezi");
+						;
 						}
-
-					//od je vìtší než do
-						if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow]) > F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow]))
-							{
-              Memo3->Lines->Add(rStringGridEd_tab_dopravniky->Cells[2][ARow]);
-              Memo4->Lines->Add(rStringGridEd_tab_dopravniky->Cells[3][ARow]);
-						 //	vypis("Neplatný rozsah rychlosti pohonu od-do!");
-						 //	VID=23;
-							Row_validace=ARow;
+						else
+						{
+              vypis("Neplatný rozsah rychlosti pohonu od-do!");
+              VID=23;
+              Row_validace=ARow;
               Col_validace=ACol;
-							}
-
-				}
-				break;
-				case 3:     //RD OD
-				{
-				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])<=0)
-						{
-					 //	vypis("Neplatná hodnota rychlosti pohonu do!");
-					 //	VID=3;
-						Row_validace=ARow;
-            Col_validace=ACol;
+						//	if(scGPNumericEdit_RD->Value>P->rychlost_do)  VID=25;
+						//	if(scGPNumericEdit_RD->Value<P->rychlost_od)  VID=26;
 						}
-
 				}
 				break;
 	 }
