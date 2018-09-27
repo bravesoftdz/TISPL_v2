@@ -127,6 +127,7 @@ void TForm_parametry::vypis(UnicodeString text,bool red,bool link)
 		if (text != "") // zobrazí a vypíše
 		{
 				rHTMLHint1->ToString()=text;//nateení do hintu zajišuje zobrazení celého textu, nepouívá se klasickı hint
+        rHTMLLabel_InfoText->Hint=text;//doplnil M, vıše uvedené mi nefungovalo
 				//prodlluení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytı + kontrola pozice formu
 
 				if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtreného písma
@@ -2075,7 +2076,7 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 			case 12:break;   //ádná hodnota k vyplnìní
 			case 13:break;   //ádná hodnota k vyplnìní
 			case 14:break;   //ádná hodnota k vyplnìní
-			case 15:break;   //ádná hodnota k vyplnìní
+			case 15:scGPNumericEdit_CT->Value=VID_value; break;//doporuèene CT
 			case 16:break;   //ádná hodnota k vyplnìní
 			case 21:    //doporuc kapacitu
 			{
@@ -2083,7 +2084,7 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 //				Form1->FDQuery1->Open("SELECT doporuc_hodnota FROM vid_validace WHERE VID=\"21\" AND username= \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\" ORDER BY id DESC LIMIT 1 ");
 //				Form1->FDQuery1->Active = True;
 //				scGPNumericEdit_kapacita->Value=Form1->FDQuery1->Fields->Fields[0]->AsFloat;
-				scGPNumericEdit_kapacita->Value=VID_value;
+					scGPNumericEdit_kapacita->Value=VID_value;
 			}
 			break;
 			case 22:    //doporuc pozice
@@ -2528,17 +2529,24 @@ void TForm_parametry::OUTPUT()
 void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 		(TObject *Sender)
 {
-		// formuláø na støed
-		Form_poznamky->Left = Form1->ClientWidth / 2 - Form_poznamky->Width / 2;
-		Form_poznamky->Top = Form1->ClientHeight / 2 - Form_poznamky->Height / 2;
-		// zobrazeni formuláøe
+		//formuláø na støed
+		Form_poznamky->Left = F->ClientWidth / 2 - Form_poznamky->Width / 2;
+		Form_poznamky->Top = F->ClientHeight / 2 - Form_poznamky->Height / 2;
+		//zobrazeni formuláøe
 		Form_poznamky->scGPMemo->Text=poznamka;
 		MT=0;//prozatim
+		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;Konec->Enabled=false;//zdisablovní spodních buttonu
+		this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
+		//Visible=false;
 		if(Form_poznamky->ShowModal()==mrOk)
 		{
 			poznamka=Form_poznamky->scGPMemo->Text;
 			MT;
 		}
+		scGPButton_storno->Enabled=true;Konec->Enabled=true;//povolení storna a køíku
+		this->Color=F->m.clIntensive(this->Color,-8);//navrácení do pùvodní hodnoty
+		//Visible=true;
+		VALIDACE();//kontrola, e je vše OK + navrácení tlaèítka OK do pøedchozího stavu
 }
 //---------------------------------------------------------------------------
 //událost zajišující rotaci jigu, pøi kliknutí do roletky rotace
@@ -3480,7 +3488,7 @@ void __fastcall TForm_parametry::scGPNumericEdit_rxChange(TObject *Sender)
 void TForm_parametry::VALIDACE(Tinput_state input_state)
 {
 	 vypis("");VID=-1;
-	 AnsiString relation_id=GetCurrentProcessId();
+	 //AnsiString relation_id=GetCurrentProcessId();
 	 //////////////////////////////Neplatná hodnota////////////////////////
 	 if(pm.RD<=0 || pm.CT<=0 || pm.DD<=0 || pm.K<=0 || pm.P<=0 || pm.M<-0.0000000000000004){VID=0;vypis("Neplatná hodnota!");}
 	 if(pm.RD<=0)scGPNumericEdit_RD->Font->Color=clRed;else scGPNumericEdit_RD->Font->Color=clBlack;
@@ -3491,21 +3499,19 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 	 if(pm.M<-0.0000000000000004)scGPNumericEdit_mezera->Font->Color=clRed;else scGPNumericEdit_mezera->Font->Color=clBlack;
 
 	 if(VID==-1)
-					{
+	 {
 //					AnsiString dop_hodnota=0;
 //				//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(dop_hodnota)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID > \""+VID+"\"";
 //						AnsiString strSQL = "DELETE FROM vid_validace  WHERE username = \""+F->get_user_name()+"\" AND relation_id= \""+relation_id+"\"";
 //
 //					Form1->FDConnection1->ExecSQL(strSQL);
-					}
+	 }
 
 	 switch(scComboBox_rezim->ItemIndex)
 	 {
 		///////////////////////////////////S&G////////////////////////////////////
 		case 0:
 		{
-
-
 				double CT = scGPNumericEdit_CT->Value; // CT od uivatele
 				if (CTunit == MIN)CT = CT * 60.0; // pokud bylo zadání v minutách pøevede na sekundy
 				int pocet_obj_vSG = Form1->d.v.pocet_objektu(0);
@@ -3521,10 +3527,9 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				{
 					if(pm.DD/pm.CT>O->RD*60.0 && CT<Form1->d.v.PP.TT && Form1->pom->n>1)
 					{
-					Memo1->Lines->Add(pm.DD);
-					Memo1->Lines->Add(pm.CT);
-					Memo1->Lines->Add(O->RD);
-
+//						Memo1->Lines->Add(pm.DD);
+//						Memo1->Lines->Add(pm.CT);
+//						Memo1->Lines->Add(O->RD);
 						vypis("Vozík nestíhá pøejezd! Zvolte jinı pohon, nebo upravte délku kabiny èi technolog.èas.");
 						VID=11;
 					}
@@ -3536,9 +3541,10 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				}
 				O=NULL;delete O;
 				/////////////////pokud je CT > neli TT////////////////////////////////////
-				if (CT > Form1->ms.MyToDouble(Form1->d.v.PP.TT)
-						&& scComboBox_rezim->ItemIndex == 0) {
-						if (fmod(CT, Form1->d.v.PP.TT) == 0) {
+				if (CT > Form1->ms.MyToDouble(Form1->d.v.PP.TT)	&& scComboBox_rezim->ItemIndex == 0)
+				{
+						if (fmod(CT, Form1->d.v.PP.TT) == 0)
+						{
 								kapacitaSG = CT / Form1->d.v.PP.TT; // pro další pouití
 								vypis(" Rozloit na " + AnsiString(kapacitaSG) + "x " + scGPEdit_name->Text.UpperCase() + "?",false);
 								scGPButton_OK->Caption = "Ano a uloit";
@@ -3551,7 +3557,7 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						}
 				}
 				else
-						kapacitaSG = 1;
+				kapacitaSG = 1;
 
 				/////////////////pokud je CT < neli TT////////////////////////////////////
 				if (CT < Form1->ms.MyToDouble(Form1->d.v.PP.TT)	&& scComboBox_rezim->ItemIndex == 0)
@@ -3566,8 +3572,11 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 								if (pocet_obj_vSG > 1)
 								{
-										vypis("Nastavte technologickı èas shodnı s TT!");
+										double doporuc_hodnota=F->d.v.PP.TT/(1+CTunit*59);
+										vypis("Nastavte technologickı èas shodnı s TT! Tj. <u>"+AnsiString(doporuc_hodnota)+"</u>.");
+										scGPNumericEdit_CT->Font->Color=clRed;
 										VID=15;
+										VID_value=doporuc_hodnota;
 								}
 						}
 						else // na lince je více objektù, pokud mají niší CT dovolím je uloit
@@ -3591,8 +3600,9 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					{
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
-							 double doporuc_hodnota = CT/Form1->d.v.PP.TT;
+								double doporuc_hodnota = CT/Form1->d.v.PP.TT;
 								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u> nebo odemknìte technologickı èas a zaktulizujte hodnoty!",true);
+								scGPNumericEdit_kapacita->Font->Color=clRed;
 								VID=21;
 								VID_value=doporuc_hodnota;
 //								 AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
@@ -3612,7 +3622,6 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 						vypis("Byl zadán neplatnı poèet pozic! Zvolte poèet pozic vyšší nebo rovno <u>"+AnsiString(pm.K2P(CT/Form1->d.v.PP.TT))+"</u> , nebo odemknìte technologickı èas a zaktulizujte hodnoty!",true);
 						VID=22;
-
 					}
 				}
 				//----------------------------------------------------------------------------------------------------------------------//
@@ -3623,13 +3632,13 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_jig,Form1->d.v.PP.delka_jig,scComboBox_rotace->ItemIndex);
 					if(scGPNumericEdit_mezera->Value+DV-RDV>=0)
 					{
-						vypis("Mezera je záporná, zkuste rotaci jigu"); VID=23;
+						vypis("Mezera je záporná, zkuste rotaci jigu");
+						VID=23;
 					}
-
-
 					else
 					{
-						vypis("Mezera je záporná, zkuste následující palec, nebo zvate zmìnu rozmìrù jigu"); VID=24;
+						vypis("Mezera je záporná, zkuste následující palec, nebo zvate zmìnu rozmìrù jigu");
+						VID=24;
 					}
 				}
                                                                                                     // pokud je pohon nepøiøazen nekontroluji rozestup
@@ -3666,12 +3675,11 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 				}
 //----------------------------------------------------------------------------------------------------------------
 				if(scComboBox_rezim->ItemIndex==1)
-		{
-
-			  MIMO_ROZMEZI = false;
-				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-				if (P != NULL)
 				{
+					MIMO_ROZMEZI = false;
+					Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+				 if (P != NULL)
+				 {
 						double jednotky_cas_pohon = 60.0;
 						if (Form_parametry->RDunitT == Form_parametry->MIN) jednotky_cas_pohon = 60.0;
 						else jednotky_cas_pohon = 1.0;
@@ -3679,31 +3687,24 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						double P_od = P->rychlost_od*jednotky_cas_pohon;
 						double P_do = P->rychlost_do*jednotky_cas_pohon;
 					//if ((unsigned)(RD - Form1->ms.MyToDouble(P_od)) <= (Form1->ms.MyToDouble(P_do) - Form1->ms.MyToDouble(P_od)))
-					if(RD >= P_od && RD <= P_do)
+						if(RD >= P_od && RD <= P_do)
 						{
-						scGPNumericEdit_RD->Options->FrameNormalColor = clGray;
-						scGPNumericEdit_RD->Options->FrameWidth = 1;
+							scGPNumericEdit_RD->Options->FrameNormalColor = clGray;
+							scGPNumericEdit_RD->Options->FrameWidth = 1;
 						}
 						else
 						{
-								MIMO_ROZMEZI=true;
-								//scGPNumericEdit_RD->Font->Color=clRed;
-								scGPNumericEdit_RD->Options->FrameNormalColor = hl_color;
-								scGPNumericEdit_RD->Options->FrameWidth = hlFrameWidth;
-								scGPButton_OK->Enabled=false;
-								scGPNumericEdit_RD->Hint="Rychlost je mimo nastavenı rozsah pohonu";
-								vypis("Rychlost pohonu je mimo nastavenı rozsah");
-								VID=25;
+							MIMO_ROZMEZI=true;
+							//scGPNumericEdit_RD->Font->Color=clRed;
+							scGPNumericEdit_RD->Options->FrameNormalColor = hl_color;
+							scGPNumericEdit_RD->Options->FrameWidth = hlFrameWidth;
+							scGPButton_OK->Enabled=false;
+							scGPNumericEdit_RD->Hint="Rychlost je mimo nastavenı rozsah pohonu";
+							vypis("Rychlost pohonu je mimo nastavenı rozsah");
+							VID=25;
 						}
-
-
-
-				}
-
+				 }
 		}
-
-
-
 		//-----------------------------------------------------------------------------------------------------------------------------//
 		}
 		break;
@@ -3736,24 +3737,23 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 					 //	Memo1->Lines->Add("DD_CT > RD");
 						VID=40;
 						vypis("Vozík nestíhá pøejezd! Zvolte jinou mezeru, nebo vyberte jinı pohon.");
-
 					}
 				}
 			 	O=NULL;delete O;
 			 //------------------------------------------------------------------------------------------------//
 				if(input_clicked_edit==C_klik)
 				{ //  pokud je nastaveno, e bylo kliknuto do P
-
 						if (CT / Form1->d.v.PP.TT <= K && scButton_zamek_CT->Visible==true  && CT_zamek == LOCKED  && Form1->pom->n>1 && CT<Form1->d.v.PP.TT)
 						{;}
 						else
 						{
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
-
 								double doporuc_hodnota =	(CT/Form1->d.v.PP.TT);
 								vypis("Byla zadána neplatná kapacita! Zvolte kapacitu vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u>, nebo odemknìte technologickı èas a dojde k jeho pøepoètu ve vztahu k zadané kapacitì! kód chyby: "+AnsiString(VID)+"");
-									VID=44; VID_value=doporuc_hodnota;
+								scGPNumericEdit_kapacita->Font->Color=clRed;
+								VID=44;
+								VID_value=doporuc_hodnota;
 								//									AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
 //							//	AnsiString strSQL = "UPDATE vid_validace set doporuc_hodnota = \""+AnsiString(CT/Form1->d.v.PP.TT)+"\",username = \""+F->get_user_name()+"\" ,relation_id= \""+relation_id+"\"    WHERE VID = \""+VID+"\"";
 //								Form1->FDConnection1->ExecSQL(strSQL);
@@ -3770,9 +3770,10 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 						{
 							if(scButton_zamek_CT->Visible==true && CT_zamek == LOCKED && CT / Form1->d.v.PP.TT > K)
 							{
-							double doporuc_hodnota = pm.K2P(CT/Form1->d.v.PP.TT);
-							vypis("Byl zadán neplatnı poèet pozic! Zvolte poèet pozic vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u> , nebo odemknìte technologickı èas a dojde k jeho pøepoètu ve vztahu k poètu pozic!");
-							VID=45;  VID_value=doporuc_hodnota;
+								double doporuc_hodnota = pm.K2P(CT/Form1->d.v.PP.TT);
+								vypis("Byl zadán neplatnı poèet pozic! Zvolte poèet pozic vyšší nebo rovno <u>"+AnsiString(doporuc_hodnota)+"</u> , nebo odemknìte technologickı èas a dojde k jeho pøepoètu ve vztahu k poètu pozic!");
+								VID=45;
+								VID_value=doporuc_hodnota;
 //							AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
 //							Form1->FDConnection1->ExecSQL(strSQL);
 							}
@@ -3781,16 +3782,16 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 			 //---------------------------------------------------------------------------------------------------//
 			 if(scGPNumericEdit_mezera->Value<-0.0000000000000004)
 				{
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
-				double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_jig,Form1->d.v.PP.delka_jig,scComboBox_rotace->ItemIndex);
-				if(scGPNumericEdit_mezera->Value+DV-RDV>=0)
-				{
-				vypis("Mezera je záporná, zkuste rotaci jigu"); VID=41;
-				}
-						else
-						{
+					double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
+					double RDV=Form1->m.UDV(Form1->d.v.PP.sirka_jig,Form1->d.v.PP.delka_jig,scComboBox_rotace->ItemIndex);
+					if(scGPNumericEdit_mezera->Value+DV-RDV>=0)
+					{
+						vypis("Mezera je záporná, zkuste rotaci jigu"); VID=41;
+					}
+					else
+					{
 						vypis("Mezera je záporná, zvate zmìnu rozmìrù jigu"); VID=42;
-						}
+					}
 				}
 				//------------------------------------------------------------------------------------------------------//
 		}

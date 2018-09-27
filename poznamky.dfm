@@ -4,7 +4,7 @@ object Form_poznamky: TForm_poznamky
   BorderStyle = bsNone
   Caption = 'Pozn'#225'mka'
   ClientHeight = 338
-  ClientWidth = 612
+  ClientWidth = 934
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -37,7 +37,7 @@ object Form_poznamky: TForm_poznamky
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
     Top = 0
-    Width = 612
+    Width = 934
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -65,9 +65,10 @@ object Form_poznamky: TForm_poznamky
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
+    ExplicitWidth = 612
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 562
+      Left = 884
       Top = 0
       Width = 50
       Height = 33
@@ -144,12 +145,13 @@ object Form_poznamky: TForm_poznamky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 562
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
       Left = 10
       Top = 0
-      Width = 552
+      Width = 874
       Height = 34
       Margins.Left = 10
       Margins.Top = 0
@@ -178,12 +180,13 @@ object Form_poznamky: TForm_poznamky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Pozn'#225'mka'
+      ExplicitWidth = 552
     end
   end
   object scGPMemo: TscGPMemo
     Left = 10
     Top = 48
-    Width = 591
+    Width = 911
     Height = 233
     Options.NormalColor = clWindow
     Options.HotColor = clWindow
@@ -239,7 +242,7 @@ object Form_poznamky: TForm_poznamky
     OnKeyDown = scGPMemoKeyDown
   end
   object scGPButton_OK: TscGPButton
-    Left = 184
+    Left = 336
     Top = 295
     Width = 100
     Height = 35
@@ -329,7 +332,7 @@ object Form_poznamky: TForm_poznamky
     AllowAllUp = False
   end
   object scGPButton_storno: TscGPButton
-    Left = 323
+    Left = 475
     Top = 295
     Width = 100
     Height = 35
@@ -419,7 +422,7 @@ object Form_poznamky: TForm_poznamky
     AllowAllUp = False
   end
   object scGPCheckBox_zaokrouhlit: TscGPCheckBox
-    Left = 552
+    Left = 704
     Top = 313
     Width = 52
     Height = 25
@@ -520,7 +523,7 @@ object Form_poznamky: TForm_poznamky
     UseFontColorToStyleColor = False
   end
   object scGPCheckBox_STOPKA: TscGPCheckBox
-    Left = 440
+    Left = 592
     Top = 287
     Width = 172
     Height = 25
@@ -728,7 +731,6 @@ object Form_poznamky: TForm_poznamky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 7
-    Visible = False
     OnClick = scButton_zamek_PTaDDClick
     Animation = False
     CanFocused = False

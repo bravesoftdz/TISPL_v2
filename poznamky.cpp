@@ -110,7 +110,8 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		mGrid->Show();//kvůli přepočítání a získání výšky a šířky výsledné tabulky
 		//form
 		Width=mGrid->Width+2*10+2;
-		Left=Form_parametry->Left+Form_parametry->Width/2-Width/2;
+		ShowMessage(Width);
+		//centrování na PO form, zrušeno Left=Form_parametry->Left+Form_parametry->Width/2-Width/2;
 		//defaultní design a pozicování tlačítek OK a Storno
 		Form1->m.designButton(scGPButton_OK,Form_poznamky,1,2);
 		Form1->m.designButton(scGPButton_storno,Form_poznamky,2,2);
