@@ -9,6 +9,11 @@ class TPO_math
 		double TT;//takt linky
 		unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní,3-stopka
 		double CT;//celkový technologický èás objektu
+		double PT;//procesní èas - prozatím využito jen v GAPO
+		double MT1;//èas pøesunu objektu 1  - prozatím využito jen v GAPO
+		double MT2;//èas pøesunu objektu 1 - prozatím využito jen v GAPO
+		double WT1;//èas èekání 1 - prozatím využito jen v GAPO
+		double WT2;//èas èekání 2  - prozatím využito jen v GAPO
 		double RD;//rychlost dopravníku
 		double DD;//délka kabiny
 		double K;//kapacita
