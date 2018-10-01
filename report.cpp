@@ -359,6 +359,15 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		}
 		data+="\n";
 
+      //Pøehled doporuèených pohonù
+			UnicodeString dopP=Form1->d.v.navrhni_POHONY(S);
+			if(dopP!="")
+			{
+				data+="Pøehled doporuèených pohonù"+S+"\n";
+				data+=dopP;
+				data+="\n";
+			}
+      	data+="\n";
 				//KONEC OBECNÉ HLAVIÈKY CSV//
  /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -367,8 +376,8 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			if(Form1->STATUS==Form1->NAVRH) {
 
 
-		data+="Architekt: Pøehled objektù a jejich parametrù\n";
-		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Kapacita doporuèená"+S+"Kapacita nastavená"+S+"Název pohonu"+S+"Rychlost pohonu [m/min]"+S+"Rozsah pohonu [m/min]"+S+"Rozteè palcù [mm]"+S+"Délka kabiny [m]"+S+"Mezera mezi vozíky [m]\n";
+		data+="Pøehled objektù a jejich parametrù\n";
+		data+="ID"+S+"Název"+S+"Zkratka"+S+"Režim"+S+"CT [s]"+S+"Délka objektu"+S+"Poèet pozic"+S+"Kapacita [vozíkù a mezer]"+S+"Mezera jig [m]"+S+"Mezera podvozek [m]"+S+"Rozestup [m]"+S+"Každý n-tý palec"+S+"Název pohonu"+S+"Rychlost pohonu [m/min]"+S+"Rozsah pohonu [m/min]"+S+"Rozteè palcù [mm]\n";
 
 		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 
@@ -380,12 +389,18 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								UnicodeString mezera=O->mezera;
 								UnicodeString rezim;
 								UnicodeString CT=O->CT;
+                UnicodeString delka_objektu=O->delka_dopravniku;
+                UnicodeString pocet_pozic=O->pozice;
+                UnicodeString mezera_jig=O->mezera_jig;
+                UnicodeString mezera_podvozek=O->mezera_podvozek;
 								UnicodeString kapacita=O->kapacita;
 								UnicodeString kapacita_dop=O->kapacita_dop;
 								UnicodeString nazev_pohonu;
 								UnicodeString roztec_palcu;
-								double rozsah_pohonu_od;
-								double rozsah_pohonu_do;
+								double rozsah_pohonu_od=0;
+								double rozsah_pohonu_do=0;
+                double Rz=0; double Rx=0;
+
 
 								if(O->pohon!=NULL)
                 {
@@ -393,11 +408,13 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 								roztec_palcu=O->pohon->roztec*1000.0;
 								rozsah_pohonu_od=O->pohon->rychlost_od*60.0;
 								rozsah_pohonu_do=O->pohon->rychlost_do*60.0;
+                Rz=O->pohon->Rz;
+                Rx=O->pohon->Rx;
 							 //ShowMessage(rozsah_pohonu_do);
 							 //	rozsah_pohonu_od=Form1->ms.MyToDouble(rozsah_pohonu_od)*60.0;
 							 //	rozsah_pohonu_do=Form1->ms.MyToDouble(rozsah_pohonu_do)*60.0;
 								}
-								else {nazev_pohonu="Nepøiøazen";roztec_palcu="";}
+								else {nazev_pohonu="nepøiøazen";roztec_palcu="";}
 
 								UnicodeString rychlost_dopravniku=Form1->ms.MyToDouble(O->RD)*60.0;    //vždy budu zobrazovat v m/min
 								UnicodeString delka_dopravniku=O->delka_dopravniku;
@@ -408,7 +425,7 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 									case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 								}
 ////         	//	 ShowMessage(ID+name+short_name+rezim+CT+kapacita+kapacita_dop+nazev_pohonu+rychlost_dopravniku+delka_dopravniku+roztec_palcu+rozsah_pohonu_od+rozsah_pohonu_do);
-							data+=""+ID+S+name+S+short_name+S+rezim+S+CT+S+kapacita+S+kapacita_dop+S+nazev_pohonu+S+rychlost_dopravniku+S+rozsah_pohonu_od+"-"+rozsah_pohonu_do+S+roztec_palcu+S+delka_dopravniku+S+mezera+"\n";
+							data+=""+ID+S+name+S+short_name+S+rezim+S+CT+S+delka_objektu+S+pocet_pozic+S+kapacita+S+mezera_jig+S+mezera_podvozek+S+Rz+S+Rx+S+nazev_pohonu+S+rychlost_dopravniku+S+rozsah_pohonu_od+"-"+rozsah_pohonu_do+S+roztec_palcu+"\n";
               //  martin
 									O=O->dalsi;
 		}

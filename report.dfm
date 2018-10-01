@@ -531,7 +531,6 @@ object Form_report: TForm_report
       Width = 34
       Height = 34
       Align = alLeft
-      Enabled = False
       ParentShowHint = False
       ShowHint = True
       TabOrder = 7

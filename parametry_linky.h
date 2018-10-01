@@ -76,7 +76,7 @@ __published:	// IDE-managed Components
 	TscLabel *scLabel_nastavit_parametry;
 	TscGPGlyphButton *GlyphButton_nastavit_parametry;
 	TscGPGlyphButton *GlyphButton_close;
-	TscGPGlyphButton *scGPGlyphButton_ADD;
+  TscGPGlyphButton *scGPGlyphButton_ADD_old;
 	TscGPGlyphButton *scGPGlyphButton_DEL_nepouzite;
 	TrHTMLLabel *rHTMLLabel_vyska_jig;
 	TrHTMLLabel *rHTMLLabel_podvozek_zaves;
@@ -107,6 +107,7 @@ __published:	// IDE-managed Components
   TscHTMLLabel *scHTMLLabel_roztec;
   TscHTMLLabel *scHTMLLabel_rozestup_aktunas;
   TscHTMLLabel *scHTMLLabel_rozestup;
+  TscGPGlyphButton *scGPGlyphButton_ADD;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -178,7 +179,7 @@ __published:	// IDE-managed Components
 	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
           int Row, TStringList *&PickList);
 	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_vozik_editClick(TObject *Sender);
+	void __fastcall sc(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
 	void __fastcall Button3Click(TObject *Sender);
