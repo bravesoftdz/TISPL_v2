@@ -976,7 +976,7 @@ Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n, sho
 {
 	TObjekt *O=OBJEKTY->dalsi;
 	TObjekt *RET=new TObjekt[vrat_pocet_objektu_vyuzivajici_pohon(n)];
-	unsigned long i=0;
+	unsigned long i=0;//zde oproti další metodě alokujeme od 0
 	while (O!=NULL)
 	{
 		if(rezim==-1 && O->pohon!=NULL && O->pohon->n==n)RET[i++]=*O;//pokud má pohon přiřazen a jedná se o stejný pohon a je v libovolném režimu
@@ -991,8 +991,8 @@ Cvektory::TObjekt *Cvektory::vrat_objekty_vyuzivajici_pohon(unsigned long n, sho
 Cvektory::TObjekt *Cvektory::vrat_objekty_bez_pohonu()
 {
 	TObjekt *O=OBJEKTY->dalsi;
-	TObjekt *RET=new TObjekt[vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)];
-	unsigned long i=0;
+	TObjekt *RET=new TObjekt[vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)+1];//nutno alokovat o jeden prvek více
+	unsigned long i=1;
 	while (O!=NULL)
 	{
 		if(O->pohon==NULL)RET[i++]=*O;//pokud má objekt pohon nepřiřazen zařídí tento objekt do pole
