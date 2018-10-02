@@ -28,6 +28,7 @@ __published:	// IDE-managed Components
 	TscGPCheckBox *scGPCheckBox_STOPKA;
 	TscGPButton *scGPButton_zamek_PT;
 	TscGPButton *scGPButton_zamek_DD;
+	TscGPCheckBox *scGPCheckBox_WTlock;
 	void __fastcall scGPButton_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
@@ -39,6 +40,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_STOPKAClick(TObject *Sender);
 	void __fastcall scButton_zamek_PTaDDClick(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
+	void __fastcall scGPCheckBox_WTlockClick(TObject *Sender);
 
 private:	// User declarations
 	TColor clBACKGROUND,clLOCKED,clUNLOCKED,clTITLE;

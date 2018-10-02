@@ -3,7 +3,7 @@ object Form_poznamky: TForm_poznamky
   Top = 0
   BorderStyle = bsNone
   Caption = 'Pozn'#225'mka'
-  ClientHeight = 338
+  ClientHeight = 357
   ClientWidth = 934
   Color = 15790320
   Font.Charset = DEFAULT_CHARSET
@@ -243,7 +243,7 @@ object Form_poznamky: TForm_poznamky
   end
   object scGPButton_OK: TscGPButton
     Left = 336
-    Top = 295
+    Top = 314
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -333,7 +333,7 @@ object Form_poznamky: TForm_poznamky
   end
   object scGPButton_storno: TscGPButton
     Left = 475
-    Top = 295
+    Top = 314
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -423,7 +423,7 @@ object Form_poznamky: TForm_poznamky
   end
   object scGPCheckBox_zaokrouhlit: TscGPCheckBox
     Left = 704
-    Top = 313
+    Top = 332
     Width = 52
     Height = 25
     Hint = 'zobrazit na t'#345'i desetinn'#225' m'#237'sta'
@@ -524,10 +524,10 @@ object Form_poznamky: TForm_poznamky
   end
   object scGPCheckBox_STOPKA: TscGPCheckBox
     Left = 592
-    Top = 287
+    Top = 283
     Width = 172
     Height = 25
-    Hint = 'zobrazit na t'#345'i desetinn'#225' m'#237'sta'
+    Hint = 'Potvzen'#237' volby zaji'#353#357'uje zohledn'#283'n'#237' '#269'ek'#225'n'#237' na palec'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = -11
@@ -624,7 +624,7 @@ object Form_poznamky: TForm_poznamky
   end
   object scGPButton_zamek_PT: TscGPButton
     Left = 10
-    Top = 284
+    Top = 311
     Width = 15
     Height = 21
     Margins.Left = 0
@@ -715,8 +715,8 @@ object Form_poznamky: TForm_poznamky
     AllowAllUp = False
   end
   object scGPButton_zamek_DD: TscGPButton
-    Left = 40
-    Top = 284
+    Left = 33
+    Top = 311
     Width = 15
     Height = 21
     Margins.Left = 0
@@ -805,5 +805,103 @@ object Form_poznamky: TForm_poznamky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+  end
+  object scGPCheckBox_WTlock: TscGPCheckBox
+    Left = 10
+    Top = 283
+    Width = 351
+    Height = 25
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+    TabStop = True
+    OnClick = scGPCheckBox_WTlockClick
+    Animation = False
+    Caption = 'Povolit zm'#283'nu '#269'ek'#225'n'#237' (WT) a zachovat d'#233'lku a dobu p'#345'ejezd'#367' (MT)'
+    CanFocused = True
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 95
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    Options.NormalColor = clWindow
+    Options.HotColor = clWindow
+    Options.PressedColor = clWindow
+    Options.DisabledColor = clWindow
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 200
+    Options.DisabledColorAlpha = 125
+    Options.FrameNormalColor = 13158600
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameDisabledColor = 13158600
+    Options.FrameWidth = 2
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.CheckMarkNormalColor = clWindowText
+    Options.CheckMarkHotColor = clWindowText
+    Options.CheckMarkPressedColor = clWindowText
+    Options.CheckMarkDisabledColor = clWindowText
+    Options.CheckMarkNormalColorAlpha = 255
+    Options.CheckMarkHotColorAlpha = 255
+    Options.CheckMarkPressedColorAlpha = 255
+    Options.CheckMarkDisabledColorAlpha = 125
+    Options.ShapeSize = 18
+    Options.CheckMarkThickness = 2
+    Options.StyleColors = True
+    OptionsChecked.NormalColor = clWindow
+    OptionsChecked.HotColor = clWindow
+    OptionsChecked.PressedColor = clWindow
+    OptionsChecked.DisabledColor = clWindow
+    OptionsChecked.NormalColorAlpha = 255
+    OptionsChecked.HotColorAlpha = 255
+    OptionsChecked.PressedColorAlpha = 200
+    OptionsChecked.DisabledColorAlpha = 125
+    OptionsChecked.FrameNormalColor = 13158600
+    OptionsChecked.FrameHotColor = clHighlight
+    OptionsChecked.FramePressedColor = clHighlight
+    OptionsChecked.FrameDisabledColor = 13158600
+    OptionsChecked.FrameWidth = 2
+    OptionsChecked.FrameNormalColorAlpha = 255
+    OptionsChecked.FrameHotColorAlpha = 255
+    OptionsChecked.FramePressedColorAlpha = 255
+    OptionsChecked.FrameDisabledColorAlpha = 255
+    OptionsChecked.CheckMarkNormalColor = clWindowText
+    OptionsChecked.CheckMarkHotColor = clWindowText
+    OptionsChecked.CheckMarkPressedColor = clWindowText
+    OptionsChecked.CheckMarkDisabledColor = clWindowText
+    OptionsChecked.CheckMarkNormalColorAlpha = 255
+    OptionsChecked.CheckMarkHotColorAlpha = 255
+    OptionsChecked.CheckMarkPressedColorAlpha = 255
+    OptionsChecked.CheckMarkDisabledColorAlpha = 125
+    OptionsChecked.ShapeSize = 18
+    OptionsChecked.CheckMarkThickness = 2
+    OptionsChecked.StyleColors = True
+    Checked = False
+    ScaleFrameWidth = True
+    ScaleCheckMarkThickness = True
+    ShowFocusRect = True
+    UseFontColorToStyleColor = False
   end
 end
