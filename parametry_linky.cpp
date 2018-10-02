@@ -2885,7 +2885,7 @@ void __fastcall TForm_parametry_linky::sc(TObject *Sender)
       Form_parametry_linky->Button_storno->Enabled=true;
 	  }
 
-		if(Changes_vozik && Form1->d.v.OBJEKTY->dalsi!=NULL && Form1->d.v.POHONY->dalsi!=NULL)//pri zmene voziku
+		if(Changes_vozik && Form1->d.v.OBJEKTY->dalsi!=NULL /*&& Form1->d.v.POHONY->dalsi!=NULL*/)//pri zmene voziku
 		{
 			F_gapoV->ShowModal();
       if(F_gapoV->myModalResult==mrOk)
