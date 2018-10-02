@@ -130,9 +130,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[mm]</font>";
     rHTMLLabel_vyska_jig->Caption="výška <font color=#2b579a>[mm]</font>";
     rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
+
     }
-
-
+   rHTMLLabel_InfoText->Top =  Button_storno->Top - 12;
+   rHTMLLabel_info_zmenaR->Top=rHTMLLabel_InfoText->Top;
+   rHTMLLabel_info_zmenaR->Left=Button_storno->Left;
    rHTMLLabel_info_zmenaR->Caption="";
 	 input_state = NOTHING;   //výchozí nastavení stavu
 	 Nastav_zamky(empty_klik_ico,empty_klik);
@@ -214,7 +216,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
       rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
       Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
-      scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
+     // scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
       Button_save->Top=Form_parametry_linky->Height - 40;
       Button_storno->Top=Form_parametry_linky->Height - 40;
       scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
@@ -729,7 +731,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
   {
   rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
   Form_parametry_linky->Height= Form_parametry_linky->Height+30;
-  scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
+  //scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
   Button_save->Top=Button_save->Top + 30;
   Button_storno->Top=Button_storno->Top + 30;
   scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
@@ -907,6 +909,17 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObj
 	 {
 	 	//zvýšení poètu øádkù
    	rStringGridEd_tab_dopravniky->RowCount++;
+    //dynamické zvìtšení tabulky - aby se nemusel zobrazovat postranní scrollbar
+       if(rStringGridEd_tab_dopravniky->RowCount>=1)
+      {
+      rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
+      Form_parametry_linky->Height= Form_parametry_linky->Height+30;
+      //scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
+      Button_save->Top=Button_save->Top + 30;
+      Button_storno->Top=Button_storno->Top + 30;
+      scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
+      }
+
    	unsigned int i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
 	 	//plnìní øádku a parsování daty
 		rStringGridEd_tab_dopravniky->Cells[0][i]=++ID;//ID
@@ -1441,11 +1454,11 @@ void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Se
 
       rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
       Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
-      scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
+      //scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
       Button_save->Top=Form_parametry_linky->Height - 40;
       Button_storno->Top=Form_parametry_linky->Height - 40;
       scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
-      rHTMLLabel_InfoText->Top= scGPGlyphButton_ADD->Top + 8;
+      rHTMLLabel_InfoText->Top=  rStringGridEd_tab_dopravniky->Height + 8;
       vypis("",false);
 		}
 	}
@@ -1585,8 +1598,8 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 				{
 						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 				}
-				rHTMLLabel_InfoText->Left = scGPGlyphButton_ADD->Left+ scGPGlyphButton_ADD->Width + 2;
-				rHTMLLabel_InfoText->Top = Form_parametry_linky->Height - 74;
+				rHTMLLabel_InfoText->Left = 10;
+				rHTMLLabel_InfoText->Top = rHTMLLabel_info_zmenaR->Top;
 				rHTMLLabel_InfoText->Caption = text;
 				rHTMLLabel_InfoText->Visible = true;
 		}
@@ -2849,7 +2862,7 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::scGPGlyphButton_vozik_editClick(TObject *Sender)
+void __fastcall TForm_parametry_linky::sc(TObject *Sender)
 
 {
 		bool Changes_vozik=false;
@@ -3012,5 +3025,6 @@ void __fastcall TForm_parametry_linky::rMemoEx1_rychlostClick(TObject *Sender)
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
+
 
 
