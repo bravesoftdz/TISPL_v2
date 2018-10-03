@@ -1036,7 +1036,7 @@ double Cvektory::minRD(TPohon *pohon)
 	return min;
 }
 ////---------------------------------------------------------------------------
-//vypíše objekt přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD      //0 - S&G, 1-KK, 2-PP, 20-S&G+PP
+//vypíše objekt přiřazené k danému pohonu, kterým neodpovídá rachlost přejezdu při navrhovaném testRD      //0 - S&G, 1-KK, 2-PP, 20-S&G+PP
 AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim)
 {
 	TObjekt *O=OBJEKTY->dalsi;
@@ -1047,8 +1047,8 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 		{                         //pro S&G a PP                         //pro konkrétní režim
 			if(rezim==-1 || (rezim==20 && (O->rezim==0 || O->rezim==2)) || O->rezim==rezim)//filtr režimu
 			{
-        //tady dodělat MT místo CT
-				if(testRD<O->delka_dopravniku/O->CT)
+				double rRD=m.kontrola_rychlosti_prejezdu(O->CT,O->MT1+O->MT2,O->PT,O->WT1+O->WT2,O->delka_dopravniku,testRD);
+				if(rRD!=0)
 				{
 					objekty=O->short_name+", ";
 				}

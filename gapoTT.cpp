@@ -73,10 +73,8 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		indikator_skupin[i]=1;//ID oblasti 1-3
 	}
 
-
 	//workaround odchytávání stisku kláves
 	Edit1->SetFocus();
-
 
 	////////jednotky////////
 	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
@@ -1530,36 +1528,39 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				else
 				Form_objekt_nahled->pom=NULL;//pro pohony bez pøiøazených objektù
 		 }break;
-		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému
+		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI gapoTT
 		 {
 			 AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
 			 AnsiString error_text="";
-			 //situace 1 - pøípad testování zda daný objekt, který se mìní je OK
-			 //situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu, projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
-			 if(objekty[Row].pohon!=NULL && objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon a zároveò se nejedná o pohon bez pøiøazení k objektùm
+			 if(objekty[Row].pohon!=NULL)//testovaný zda objekt má pøiøazen pohon
 			 {
-				 for(unsigned long i=1;i<mGrid->RowCount;i++)
-				 {      //odfiltrování situace 1 - pokud toto zapojím /*objekty[Row]!=objekty[i] && */ //situace 2
-					 if(objekty[Row].pohon==objekty[i].pohon)//nalezen objekt ze stejné skupiny, nutno tedy testovat možnost pøejezdu
-					 {
-						 if(pm.rezim==0 || pm.rezim==2)//øeší se pouze pro S&G èi PP
-						 {          //MT by mìlo být zaktualizované dle gapo zmìny
-							 double MT=objekty[Row].MT1+objekty[Row].MT2;
-							 if(MT==0)//pokud není MT dodáno je nutné jej spoèítat, pokud nebude vyèísleno PT a WT, bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
+         //situace neceloèíselné Rx
+				 if(!F->m.cele_cislo(pm.Rx))T="Daná volba není možná. Hodnota rozestupu (Rx) není celoèíselná!";
+
+				 //situace 1 - pøípad testování zda daný objekt, který se mìní (objekty[Row]) je co se týèe pøejezdu OK
+				 //situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
+				 if(objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon (úvodní podmínka) a zároveò se nejedná o pohon bez pøiøazení k objektùm (tato podmínka)
+				 {
+					 for(unsigned long i=1;i<mGrid->RowCount;i++)//projde všechny zobrazené objekty
+					 {      //odfiltrování situace 1 - pokud toto zapojím objekty[Row]!=objekty[i] tj. stejný objekt
+						 if(objekty[Row].pohon->n==objekty[i].pohon->n && (pm.rezim==0 || pm.rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
+						 {                            //teï je potøeba øešit situaci 1 a objekty[Row] a potom situaci 2 objekty[i]
+							 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
+							 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+							 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+							 double rRD=F->m.kontrola_rychlosti_prejezdu(pm.CT,MT,objekty[Row].PT,WT,pm.DD,pm.RD);//pokud není MT dodáno bude spoèítáno, pokud nebude vyèísleno PT a WT, bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
+							 if(rRD!=0)//problém nastane pokud rRD tzn. rozdíl od aRD (pm.RD)
 							 {
-								 MT=pm.CT-objekty[Row].PT-objekty[Row].WT1-objekty[Row].WT2;
-								 //otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+								 if(error_text!="")error_text+="<br>";//pokud existuje již pøedchozí chybový záznam je nutné odøádkovat
+								 error_text=objekty[Row].short_name+" o "+F->m.round2double((rRD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";
 							 }
-							 if(pm.DD/MT>pm.RD )//problém nastane pokud DD/MT>aRD, tzn. nestíhá se pøejezd pozn. aRD je pm.RD
-							 {
-						 		 if(error_text!="")error_text+="<br>";//pokud existuje již pøedchozí chybový záznam je nutné odøádkovat
-								 error_text=objekty[Row].short_name+" o "+F->m.round2double((pm.DD/pm.CT-pm.RD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";
-               }
 						 }
 					 }
+					 error_text="<b>Daná volba není možná. Následující objekt(y) nemají odpovídající rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
 				 }
 			 }
-			 if(error_text!="")T="<b>Daná volba není možná. Následující objekt(y) nestíha(jí) pøejezd:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
+			 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) je nutné odøádkovat
+			 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
 		 }break;
 	}
 	return T;
@@ -1570,7 +1571,7 @@ void __fastcall TF_gapoTT::scGPButton_stornoClick(TObject *Sender)
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
 	//navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
-  Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
+	Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
   myModalResult=mrCancel;
 }
 //---------------------------------------------------------------------------
@@ -1645,4 +1646,5 @@ Memo1->Lines->Add("Row 12 " + mGrid->Cells[17][12].Text);
 Memo1->Lines->Add("Row 13 " + mGrid->Cells[17][13].Text);
 }
 //---------------------------------------------------------------------------
+
 

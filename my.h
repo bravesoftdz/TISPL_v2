@@ -60,13 +60,14 @@ class Cmy
 	double RD(double Rz);//vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstažnosti s TT
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteè (R) ovlivní Rz resp RD
-	bool kontrolaRx(double Rx);//vratí true, pokud je Rx celoèíselné, jinak false
 	double UDV(double dJ,double sJ,double rotace);//vratí užitnou délku vozíku
 	double UDV(double rotace);//vratí užitnou délku vozíku, parametry bere z PP
 	double UDJ(double dJ,double sJ,double rotace);//vrátí užitnou délku jigu
 	double UDJ(double rotace);//vrátí užitnou délku jigu, parametry bere z PP
 	bool lze_rotovat_jig_bez_zmeny_RzRxRD(double mezera,double akt_rotace);//vrátí, zda je možné orotovat jig tak, aby nemìlo vliv na zmìnu Rz, Rx, RD
-	double prejezd_voziku(double delka, double rychlost_dopravniku);
+	double prejezd_voziku(double delka, double rychlost_dopravniku);//vrátí èas pøejezdu vozíku
+	double prejzd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD);//vrátí požadovanou rychlost pøejezdu, umí si dopoèítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
+	double kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD);//vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 	long LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double X2, double Y2);
 	void designButton(TscGPButton *button,TForm *form, short rank,short sum,short horizontal_space=22,short vertikal_space=11);//nastaví horizontální a vertikální pozici tlaèítka a také designové vlasnosti podle tlaèítkek Ano, Uložit, OK, Storno dle MyMessageBox
 	void frameForm(TForm *form,TColor color,short width=1);//vykreslí danému oknu transparentní (kvùli možnému smazání - pøemaskování) dle zadané barvy a šíøky, nutno volat pøi formactive (lépe však pøi formpaint), pøi šíøce 1px (ta je zároveò implicitní) staèí volat, jenom pøi formactive, jinak i pøi formsize, formresize,formclose, pøíklad použití: frameForm(Form_parametry,clWebOrange,1);
