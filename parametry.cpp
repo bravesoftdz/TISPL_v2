@@ -2313,10 +2313,10 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 		Form_parametry->Visible=false;//nutnost
-		if(mrOk!=Form_parametry_linky->ShowModal())//pøípadná návratová hodnota se øeši v knihovnì
-			priradit_posledni=false;//pokud bude stisknuto storno tak se urèitì nepøiøazuje
-		else
-			aktualizace_combo_pohony=true;
+
+		Form_parametry_linky->ShowModal();//nelze použít if(mrOk==Form_parametry_linky->ShowModal())protože se používá v PL formclosequery (a ta pøebíjí mrOK) kvùli GAPO stornu, musí se tedy používat Form_parametry_linky->Ulozit
+		if(Form_parametry_linky->Ulozit)aktualizace_combo_pohony=true;
+		else priradit_posledni=false;//pokud bude stisknuto storno tak se urèitì nepøiøazuje
 		Form_parametry->Visible=true;//nutnost
 		Form_parametry_linky->zobrazitFrameForm=false;
 
@@ -2336,7 +2336,6 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 		//pokud je náhled z PO zobrazen, zajišuje zároveò okamžitou aktualizaci hodnot v náhledu z PO
 		if(Form_objekt_nahled->Visible)Form_objekt_nahled->REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
 }
-
 //---------------------------------------------------------------------------
 void TForm_parametry::INPUT()
 {

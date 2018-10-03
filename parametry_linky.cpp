@@ -1563,9 +1563,7 @@ if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";rHTMLLab
 else  {rHTMLLabel_podvozek_zaves->Caption="Závìs"; rHTMLLabel_podvozek_zaves->Left=56; }
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
-
 {
 	//ShowMessage(Delkaunit);
 	Form1->writeINI("nastaveni_form_parametry_linky", "rozmery", Delkaunit);
@@ -2896,13 +2894,11 @@ void __fastcall TForm_parametry_linky::sc(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::Button2Click(TObject *Sender)
 {
 rStringGridEd_tab_dopravniky->Visible=true;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 {
 		if(VID==4 || VID==5 || VID==6 || VID==7)
@@ -2916,10 +2912,8 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 		 OUTPUT(0,VID,Row_validace);
 		 rStringGridEd_tab_dopravniky->Invalidate();
 		}
-
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::Button3Click(TObject *Sender)
 {
 Memo4->Lines->Clear();
@@ -2934,9 +2928,7 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 	else CanClose=false;
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
-
 {
     nacti_pohony();
 		if(!data_nalezena)
@@ -2945,7 +2937,6 @@ void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
 		}
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_parametry_linky::scHTMLLabel_roztecClick(TObject *Sender)
 {
 		input_state = R_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
