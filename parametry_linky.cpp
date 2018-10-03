@@ -99,7 +99,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
    Taktunit=S;
 	 Runit=M;
 	 Rzunit=MM;
-   aRDunit=S;
+	 aRDunit=S;
    Dmunit=M;
    Delkaunit=M;
 
@@ -412,7 +412,7 @@ void TForm_parametry_linky::nacti_pohony ()
 
 						if(ukaz->aRD==0)  	rStringGridEd_tab_dopravniky->Cells[4][i] = "";
 						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*(1+59.0*aRDunit);
-            //ShowMessage(ukaz->aRD*60.0);
+						//ShowMessage(ukaz->aRD*59.0);
 
 						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
 						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*(1+999*Runit);
@@ -2199,9 +2199,9 @@ void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
 
 	{
 		 // uložení do struktury konkrétního øádku
-		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][Radek])/(1+60*aRDunit);
-		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][Radek])/(1+999*Runit);
-		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Radek])/(1+999*Dmunit);
+		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][Radek])/(1+59.0*aRDunit);
+		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][Radek])/(1+999.0*Runit);
+		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Radek])/(1+999.0*Dmunit);
 		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][Radek]);
 
 		Memo2->Lines->Add(pm.aRD);
@@ -2266,7 +2266,7 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 	 {
 			// naplnìní konkrétního øádku na kterém došlo ke zmìnì
 
-		if(input_state!=aRD)  rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*(1+60*aRDunit);
+		if(input_state!=aRD)  rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*(1+59*aRDunit);
 		if(input_state!=R)    rStringGridEd_tab_dopravniky->Cells[5][Radek]=pm.R*(1+999*Runit);
 		if(input_state!=RZ)   rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz*(1+999*Dmunit);
 		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=pm.Rx;
@@ -2784,7 +2784,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 				{
         double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/1+59.0*aRDunit;
 		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/1+59.0*aRDunit;
-		    double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/1+59.0*aRDunit;
+				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/1+59.0*aRDunit;
 
 					if(Form1->m.between(RD,P_od,P_do))
 						{
