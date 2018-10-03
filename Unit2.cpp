@@ -54,7 +54,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 //	mGrid->Cells[7][3].Align=mGrid->CENTER;
 //	mGrid->Cells[7][3].Valign=mGrid->BOTTOM;
 //	mGrid->Cells[7][3].TopMargin=0;
-
+																						mGrid->Cells[0][1].Text="abcdef";
 	 mGrid->Cells[1][0].Type=mGrid->EDIT; mGrid->Cells[1][0].Text="0";
 	 mGrid->Cells[1][1].Type=mGrid->EDIT; mGrid->Cells[1][1].Text="1";
 	 mGrid->Cells[1][2].Type=mGrid->EDIT; mGrid->Cells[1][2].Text="2";
@@ -168,10 +168,14 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 	//else ShowMessage("nezaškrtnuto");
 
 	//zmìna velikosti tabulky
-	mGrid->RowCount=20;mGrid->ColCount=3;//zajistí realokaci tabulky (pokud je následnì voláno invalidate)
+	//mGrid->RowCount=20;mGrid->ColCount=3;//zajistí realokaci tabulky (pokud je následnì voláno invalidate)
 
 
 	//mGrid->AntiAliasing_grid=!mGrid->AntiAliasing_grid;
+	 mGrid->Left+=10;
+	//zmìna posunu tabulky
+
+
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
 //---------------------------------------------------------------------------

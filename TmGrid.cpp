@@ -234,6 +234,8 @@ void TmGrid::Show()
 			Cantialising a;
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 			bmp_in->Width=Width*3;bmp_in->Height=Height*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+			//bmp_in->Canvas->Brush->Color=clRed;
+			//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
 			Draw(bmp_in->Canvas);
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
 			Form->Canvas->Draw(Left,Top,bmp_out);
@@ -275,12 +277,12 @@ void TmGrid::Draw(TCanvas *C)
 		TRect Rb;//text
 		TRect Rc;//componenty
 		R.Left	=	Left+Columns[X].Left*Zoom_g;
-		Rt.Left	=	Left+Columns[X].Left*Zoom_b;
-		Rb.Left	=	Columns[X].Left*Zoom_b;
+		Rt.Left	=	Columns[X].Left*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
+		Rb.Left	=	Columns[X].Left*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
 		Rc.Left	=	Left+Columns[X].Left;
 		R.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom_g;
-		Rt.Right	=	Left+(Columns[X].Left+Columns[X].Width)*Zoom_b;
-		Rb.Right	=	(Columns[X].Left+Columns[X].Width)*Zoom_b;
+		Rt.Right	=	(Columns[X].Left+Columns[X].Width)*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
+		Rb.Right	=	(Columns[X].Left+Columns[X].Width)*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
 		Rc.Right	=	Left+(Columns[X].Left+Columns[X].Width);
 
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
@@ -288,11 +290,11 @@ void TmGrid::Draw(TCanvas *C)
 			////oblast buòky
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpoèet horního okraje buòky dle buòky pøedchozí
 			R.Top			=	Top+Rows[Y].Top*Zoom_g;
-			Rt.Top		=	Top+Rows[Y].Top*Zoom_b;
+			Rt.Top		=	Rows[Y].Top*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
 			Rb.Top		=	Rows[Y].Top*Zoom_b;
 			Rc.Top		=	Top+Rows[Y].Top;
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_g;
-			Rt.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
+			Rt.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
 			Rb.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
 			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
@@ -428,7 +430,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			Canv->Brush->Color=Cell.Background->Color;Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 			//zarovnání
 			//samotný výpis
-			long L=Rt.Left,T=Rt.Top;              //zajimavý workaround - pøíèinì nerozumím
+			long L=Rt.Left,T=Rt.Top;              //zajimavý workaround - pøíèinì nerozumím  - pravdìpodobnì chyba  s pozicováním bmp v rámci celé tabulky
 			int W=getWidthHeightText(Cell).X*Zoom;//if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))W/=1.3;// - provizornì odstaveno - chová se to bez toho lépe u neslouèených bunìk na støed, ale zase mùže chybìt nìkdì jinde
 			int H=getWidthHeightText(Cell).Y*Zoom;
 			short Rot=1;//slouží jako pomùcka rotace
@@ -436,9 +438,9 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			if(Cell.Font->Orientation==2700){Rot=-1;W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
 			short WA=0;if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))WA=1;//zajimavý workaround - pøíèinì nerozumím (proè Left*2 tomu patøiènì pomùže)
 			switch(Cell.Align)
-			{               //zajimavý workaround
-				case aNO:   L=WA*Left*1.3+Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
-				case LEFT:	L=WA*Left*1.3+Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
+			{               //zajimavý workaround - pravdìpodobnì chyba s pozicováním bmp v rámci celé tabulky proto tam byl
+				case aNO:   L=/*WA*Left*1.3+*/Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
+				case LEFT:	L=/*WA*Left*1.3+*/Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
 				case CENTER:L=(Rt.Left+Rt.Right)/2-W/2;break;
 				case RIGHT:	L=Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2*Zoom;if(Cell.Font->Orientation==2700)L-=H;break;
 			}
@@ -453,9 +455,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 				case TOP:		T=Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
 				case MIDDLE:T=(Rt.Top+Rt.Bottom)/2-H/2;break;
 				case BOTTOM:T=Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2*Zoom;break;
-			}                                    //*2 zajimavý workaround
-			if(AntiAliasing_text)Canv->TextOut(L-Left*2,T-Top,Cell.Text);
-			else Canv->TextOut(L,T,Cell.Text);
+			}                                    //*2 zajimavý workaround   - pravdìpodobnì chyba s pozicováním bmp v rámci celé tabulky proto tam byl
+			//if(AntiAliasing_text)Canv->TextOut(L-Left*2,T-Top,Cell.Text);  jednalo se chybu hýbalo se s celou tabulkou chybnì Left a Top, ale pøi AA je souèástí BMP která se až výslednì pozicuje  //zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
+			//else
+			Canv->TextOut(L,T,Cell.Text);
 		}break;
 		case readEDIT:
 		{
