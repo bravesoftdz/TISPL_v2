@@ -256,6 +256,13 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 		if(Form1->Zoom_predchozi_AA>1.5)
 		{
 		 UnicodeString T=""; unsigned short R=18;//řádkování
+		 bool CTunit=0;AnsiString CTunitT="[s]";
+		 bool aRDunit=0;AnsiString aRDunitT="[m/s]";
+		 bool DDunit=0;AnsiString DDunitT="[m]";
+		 if(Form1->readINI("nastaveni_form_parametry", "CT") == "1"){CTunit=1;CTunitT="[min]";}
+		 if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1"){aRDunit=1;aRDunitT="[m/min]";}
+		 if(Form1->readINI("nastaveni_form_parametry", "DD") == "1") {DDunit=1;DDunitT="[mm]";}
+
 		 switch(ukaz->rezim)
 		 {
 			case 0:T="STOP & GO";break;
@@ -264,12 +271,12 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 		 }
 		 canv->TextOutW(S.x+4*zAA,S.y+R*zAA,T);//výpis režimu
 		 if(ukaz->pohon==NULL)canv->TextOutW(S.x+4*zAA,S.y+33*zAA,"pohon nepřiřazen");//pohon name
-		 else canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,UnicodeString(ukaz->pohon->name));//pohon name
-		 if(Form1->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"RD: "+UnicodeString(ukaz->RD)+" [m/s]");
-		 if(Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"DD: "+UnicodeString(ukaz->delka_dopravniku)+" [m]");
-		 if(Form1->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"CT: "+UnicodeString(ukaz->CT)+" [s]");
-		 if(Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Kap.: "+UnicodeString(ukaz->kapacita)+" [v+m]");
-		 if(Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Poz.: "+UnicodeString(ukaz->pozice)+" [v]");
+		 else canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,ukaz->pohon->name);//pohon name
+		 if(F->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2 && ukaz->pohon!=NULL)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"RD: "+F->m.round2double(ukaz->pohon->aRD*(1+aRDunit*59.0),3,"..")+" "+aRDunitT);
+		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"DD: "+F->m.round2double(ukaz->delka_dopravniku*(1+DDunit*999.0),3,"..")+" "+DDunitT);
+		 if(F->STATUS!=Form1->OVEROVANI && Form1->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"CT: "+F->m.round2double(ukaz->CT/(1+CTunit+59.0),3,"..")+" "+CTunitT);
+		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Kap.: "+F->m.round2double(ukaz->kapacita,3,"..")+" [v+mz]");
+		 if(F->Zoom_predchozi_AA>2)canv->TextOutW(S.x+4*zAA,S.y+(R+=15)*zAA,"Poz.: "+F->m.round2double(ukaz->pozice,3,"..")+" [v]");
 		}
 
     //pro největší oddálení zobrazí jenom zkratku objektu
