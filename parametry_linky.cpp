@@ -602,14 +602,14 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 					}
 				 //zmìna aRD
-						if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n]!=p_prirazen->aRD*60.0)
+						if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n]/1+59.0*aRDunit!=p_prirazen->aRD)
 					{
 							Changes_aRD=true;
 
 					}
 
 					//zmìna Rz
-							if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n]!=p_prirazen->Rz)
+							if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n]/1+999.0*Rzunit!=p_prirazen->Rz)
 					{
 							Changes_Rz=true;
 
@@ -1589,7 +1589,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 
 				if (red)
 				{
-						Button_save->Enabled=false;
+						Button_save->Enabled=true;  //R - doèasné povolení ukládání pøi validaci
 						rHTMLLabel_InfoText->Font->Color = clRed;
 				}
 				else
@@ -2713,13 +2713,17 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
          if(Runit==M)  R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else   R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
          if(Dmunit==M)Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); else  Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit);
 
-//         Memo3->Lines->Clear();
-//         Memo3->Lines->Add(aRD);
-//         Memo3->Lines->Add(R);
-//         Memo3->Lines->Add(Rz);
-//         Memo3->Lines->Add(Rx);
+         Memo3->Lines->Clear();
+         Memo3->Lines->Add(aRD);
+         Memo3->Lines->Add(R);
+         Memo3->Lines->Add(Rz);
+         Memo3->Lines->Add(Rx);
+
+
+
 
             TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),aRD,R,Rz,Rx,aRDunit,Runit,Dmunit);
+
             if(TNValue.text!="")
             {
                VID=ACol;
@@ -2735,7 +2739,21 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
                Memo3->Lines->Add(VID_value);
                Memo3->Lines->Add(TNValue.text);
 
-            }
+            } else
+                   {
+                                //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
+
+									if(Rx!=floor(Rx))
+									{
+										 double dop_Rx=	Form1->m.round(Rx);
+										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
+										 Row_validace=ARow;
+
+										 VID=7;
+										 VID_value=dop_Rx;
+                       }
+                  }
+
 //	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 //						 {
 //
