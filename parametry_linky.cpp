@@ -1444,30 +1444,33 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sen
 //prochází všechny pohany a pokud je pohon nepoužíván, smaže ho
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
 {
-	for(int j=1;j<rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
-	{
-		if(Form1->d.v.pohon_je_pouzivan(getPID(j))==false)//pohon není používaný
-		{
-			//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
-			rStringGridEd_tab_dopravniky->DeleteRowEx(j);
-			j--;//musí po smazání nutnì snížit index
-
-      rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
-      Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
-      //scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
-      Button_save->Top=Form_parametry_linky->Height - 40;
-      Button_storno->Top=Form_parametry_linky->Height - 40;
-      scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
-      rHTMLLabel_InfoText->Top=  rStringGridEd_tab_dopravniky->Height + 8;
-      vypis("",false);
-		}
-	}
 	//skrytí pop-up menu
 	PopUPmenu->Visible=false;
- 	rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
+	rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
 	pozice_scGPGlyphButton_hint();//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-	//neexistuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých nezobrazovat
-	scGPGlyphButton_DEL_nepouzite->Visible=false;
+	if(mrYes==F->MB("Opravdu chcete smazat nepoužité pohony?",MB_YESNO))
+	{
+		for(int j=1;j<rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+		{
+			if(Form1->d.v.pohon_je_pouzivan(getPID(j))==false)//pohon není používaný
+			{
+				//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
+				rStringGridEd_tab_dopravniky->DeleteRowEx(j);
+				j--;//musí po smazání nutnì snížit index
+
+				rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
+				Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
+				//scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
+				Button_save->Top=Form_parametry_linky->Height - 40;
+				Button_storno->Top=Form_parametry_linky->Height - 40;
+				scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
+				rHTMLLabel_InfoText->Top=  rStringGridEd_tab_dopravniky->Height + 8;
+				vypis("",false);
+			}
+		}
+		//neexistuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých nezobrazovat
+		scGPGlyphButton_DEL_nepouzite->Visible=false;
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseEnter(TObject *Sender)

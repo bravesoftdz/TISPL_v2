@@ -406,6 +406,11 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		scGPGlyphButton_paste->Top = Form_parametry->Height -	scGPGlyphButton_paste->Height;
 		scGPGlyphButton_paste->Left=scGPGlyphButton_copy->Width+scGPGlyphButton_copy->Left;
 		scGPCheckBox_zaokrouhlit->Top = Form_parametry->Height -scGPCheckBox_zaokrouhlit->Height;
+
+		//grafické upozornìní (upozornìní) na nepøiøazený pohon
+		if(scComboBox_pohon->ItemIndex==0)
+		{scComboBox_pohon->Options->FrameWidth=2;scComboBox_pohon->Options->FrameFocusedColor=clRed;scComboBox_pohon->Options->FrameNormalColor=clRed;scComboBox_pohon->Options->FrameDisabledColor=clRed;scComboBox_pohon->Options->FrameDisabledColorAlpha=128;}
+		else {scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameFocusedColor=clHighlight;scComboBox_pohon->Options->FrameWidth=1;scComboBox_pohon->Options->FrameDisabledColor=clBtnShadow;scComboBox_pohon->Options->FrameDisabledColorAlpha=255;}
 }
 //---------------------------------------------------------------------------
 //zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udržování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
@@ -2237,8 +2242,9 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 		}
-
 		input_clicked_edit=empty_klik; // výbìrem pohonu dochází k volání onchange rotace a to zpùsobí zobrazení pacek, což je nežádoucí, proto pøi zmìnì pohonu vždy nastavím, že jde o prázdný klik
+		//upozornìní na nepøiøazený pohon
+		if(scComboBox_pohon->ItemIndex==0){scComboBox_pohon->Options->FrameWidth=2;scComboBox_pohon->Options->FrameFocusedColor=clRed;scComboBox_pohon->Options->FrameNormalColor=clRed;}else {scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameFocusedColor=clHighlight;scComboBox_pohon->Options->FrameWidth=1;}
 }
 //---------------------------------------------------------------------------
 // doplnit komentáø

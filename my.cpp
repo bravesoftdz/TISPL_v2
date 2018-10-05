@@ -4,7 +4,6 @@
 #include "Unit1.h"
 #include "MyMessageBox.h"//kvùli referenci na tlaèítka v MyMessageBox
 //---------------------------------------------------------------------------
-
 #pragma package(smart_init)
 /////////////////////////////////////////////////////////////////////////////
 //fce pro zaokrouhlení realného èísla na nejblížší celé èíslo
