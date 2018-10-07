@@ -3638,7 +3638,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Lines.Strings = (
       'Memo2')
     TabOrder = 31
-    Visible = False
   end
   object Memo3: TMemo
     Left = 562

@@ -412,7 +412,7 @@ void TForm_parametry_linky::nacti_pohony ()
 
 						if(ukaz->aRD==0)  	rStringGridEd_tab_dopravniky->Cells[4][i] = "";
 						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*(1+59.0*aRDunit);
-						//ShowMessage(ukaz->aRD*59.0);
+					 //	ShowMessage(ukaz->roztec);
 
 						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
 						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*(1+999*Runit);
@@ -2205,14 +2205,6 @@ void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
 		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Radek])/(1+999.0*Dmunit);
 		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][Radek]);
 
-		Memo2->Lines->Add(pm.aRD);
-		Memo2->Lines->Add(pm.R);
-		Memo2->Lines->Add(pm.Rz);
-		Memo2->Lines->Add(pm.Rx);
-
-		Memo2->Lines->Add("radek"+AnsiString(Radek));
-		Memo2->Lines->Add("sloupec"+AnsiString(Sloupec));
-
 		}
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2427,7 +2419,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(input_state==NOTHING && input_clicked_edit==aRD_klik)
 				{
 
-				if(rStringGridEd_tab_dopravniky->Cells[4][ARow]!=pm.aRD*(1+59.0*aRDunit))
+				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit)!=pm.aRD)
 				{
 				Memo2->Lines->Clear();
 				Memo2->Lines->Add("volam model pm.input_aRD");
@@ -2458,10 +2450,15 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(input_state==NOTHING && input_clicked_edit==R_klik)
 				{
 
-				if(rStringGridEd_tab_dopravniky->Cells[5][ARow]!=pm.R*(1+999.0*Runit))
+        double R_string=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
+
+				if(R_string!=pm.R)
 				{
 				Memo2->Lines->Clear();
 				Memo2->Lines->Add("volam model pm.input_R");
+        Memo2->Lines->Add(R_string);
+        Memo2->Lines->Add(pm.R);
+
 				input_state=R;
 				INPUT(ACol,ARow);
 				pm.input_R();
@@ -2492,7 +2489,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 				if(input_state==NOTHING && input_clicked_edit==Rz_klik)
 				{
 
-				if(rStringGridEd_tab_dopravniky->Cells[6][ARow]!=pm.Rz*(1+999.0*Dmunit))
+				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit)!=pm.Rz)
 				{
 				Memo2->Lines->Clear();
 				Memo2->Lines->Add("volam model pm.input_Rz");
@@ -2520,8 +2517,7 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(T
 		{
 		if(input_state==NOTHING && input_clicked_edit==Rx_klik)
 				{
-
-				if(rStringGridEd_tab_dopravniky->Cells[7][ARow]!=pm.Rx)
+				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow])!=pm.Rx)
 				{
 				Memo2->Lines->Clear();
 				Memo2->Lines->Add("volam model pm.input_Rx");
@@ -2583,15 +2579,15 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditText(T
 		//tato událost je volána okamžitì po vstupu do buòky a uloží do struktury akt.zobrazená data
 		 if(ACol==1)   NAZEV=rStringGridEd_tab_dopravniky->Cells[1][ARow];
 
-		 if(ACol==2)   OD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow]);
+		 if(ACol==2)   OD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
 
-		 if(ACol==3)   DO = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow]);
+		 if(ACol==3)   DO = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
 
-		 if(ACol==4)	pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]);
+		 if(ACol==4)	pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
 
-		 if(ACol==5)  pm.R = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]);
-
-		 if(ACol==6)  pm.Rz = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]);
+		 if(ACol==5)  pm.R = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
+     // ShowMessage(pm.R);
+		 if(ACol==6)  pm.Rz = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Rzunit);
 
 		 if(ACol==7)  pm.Rx = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
 }
@@ -2743,19 +2739,19 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
                Memo3->Lines->Add(TNValue.text);
 
             } else
-                   {
-                                //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
-
-									if(Rx!=floor(Rx))
-									{
-										 double dop_Rx=	Form1->m.round(Rx);
-										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
-										 Row_validace=ARow;
-
-										 VID=7;
-										 VID_value=dop_Rx;
-                       }
-                  }
+                   { ; }
+//                                //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
+//
+//									if(Rx!=floor(Rx))
+//									{
+//										 double dop_Rx=	Form1->m.round(Rx);
+//										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
+//										 Row_validace=ARow;
+//
+//										 VID=7;
+//										 VID_value=dop_Rx;
+//                       }
+//                  }
 
 //	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 //						 {
