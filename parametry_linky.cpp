@@ -464,6 +464,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		Changes_Rz=false;
 		Changes_Rx=false;
 
+
 		Ulozit=true;
 		double delka_jig;
 		double sirka_jig;
@@ -519,6 +520,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			mGrid->Delete();
 		}
 
+
 		//NEW
 		//kontrola rozmezí jednotlivých pohonù   - je to spravne, cekovat vzdy vuci RD?
 		AnsiString T="";
@@ -560,6 +562,36 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		}
 
 
+     if(F_gapoV->UlozitGAPOV)
+     {
+    	if(Delkaunit==MM)
+			{
+				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value)/1000.0;
+				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value)/1000.0;
+				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value/1000.0;
+			}
+			else  //Metry
+			{
+				F->d.v.PP.delka_jig=F->ms.MyToDouble(scGPNumericEdit_delka_jig->Value);
+				F->d.v.PP.sirka_jig=F->ms.MyToDouble(scGPNumericEdit_sirka_jig->Value);
+				F->d.v.PP.delka_podvozek=scGPNumericEdit_delka_podvozek->Value;
+			}
+    }
+
+      if(F_gapoTT->UlozitGAPOTT)
+      {
+			double Takt=0;
+			if(Taktunit==MIN)  Takt=rEditNum_takt->Value*60.0; else Takt=rEditNum_takt->Value;
+			Form1->d.v.PP.TT=Takt;
+      }
+
+
+
+
+
+
+   if(F_gapoTT->UlozitGAPOTT==false && F_gapoV->UlozitGAPOV==false)  //pokud nedojde k volání GAPOTT nebo GAPOV, uložím data na PL normálním prùchodem
+  {
 		////////////////////////////////////////////////////////////////////////
 		//Pri zmene roztece  - volani zmìny rozteèe - pokud dojde ke zmìnì rozteèe u používaného pohonu - pøedám status pro zobrazení PL_priority
 			Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
@@ -720,6 +752,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Form1->DuvodUlozit(true);
 			//M toto tu nesmí být:Form_parametry_linky->Close();
 		}
+
+   } 	Form1->DuvodUlozit(true);
 		Close();//v testu, mùže padat
 }
 //---------------------------------------------------------------------------
@@ -1600,7 +1634,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 				}
 				rHTMLLabel_InfoText->Left = 10;
-				rHTMLLabel_InfoText->Top = rHTMLLabel_info_zmenaR->Top;
+				rHTMLLabel_InfoText->Top = Button_save->Top - 15;
 				rHTMLLabel_InfoText->Caption = text;
 				rHTMLLabel_InfoText->Visible = true;
 		}
@@ -2698,7 +2732,8 @@ double  TForm_parametry_linky::getTT()
 void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 {
 
-    vypis("");VID=-1;
+    vypis("");
+    VID=-1;
     Row_validace=0;
     Col_validace=0;
 
@@ -2718,10 +2753,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
          Memo3->Lines->Add(Rz);
          Memo3->Lines->Add(Rx);
 
-
-
-
-            TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),aRD,R,Rz,Rx,aRDunit,Runit,Dmunit);
+         TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),aRD,R,Rz,Rx,aRDunit,Runit,Dmunit);
 
             if(TNValue.text!="")
             {
@@ -2734,24 +2766,26 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
                Row_validace=ARow;
                Col_validace=ACol;
                vypis(TNValue.text);
-               Memo3->Lines->Clear();
+               Memo3->Lines->Clear(
+               );
                Memo3->Lines->Add(VID_value);
                Memo3->Lines->Add(TNValue.text);
 
-            } else
-                   { ; }
-//                                //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
-//
-//									if(Rx!=floor(Rx))
-//									{
-//										 double dop_Rx=	Form1->m.round(Rx);
-//										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
-//										 Row_validace=ARow;
-//
-//										 VID=7;
-//										 VID_value=dop_Rx;
-//                       }
-//                  }
+            } else   //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
+                   {
+									    if(Rx!=floor(Rx))
+                     {
+										 double dop_Rx=	Form1->m.round(Rx);
+										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
+										 Row_validace=ARow;
+                     Col_validace=ACol;
+                     Memo2->Lines->Add(dop_Rx);
+
+										 VID=7;
+										 VID_value=dop_Rx;
+                     }
+                    }
+            }
 
 //	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
 //						 {
@@ -2778,7 +2812,8 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 //								}
 //
 //						}
-				 }
+//				 }
+
 
  switch(ACol)
 	 {
@@ -3033,6 +3068,7 @@ void __fastcall TForm_parametry_linky::rMemoEx1_rychlostClick(TObject *Sender)
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
+
 
 
 
