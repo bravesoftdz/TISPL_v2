@@ -49,7 +49,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
   void __fastcall scScrollBar_horizontChange(TObject *Sender);
-  void __fastcall KonecClick(TObject *Sender);
   void __fastcall Button1Click(TObject *Sender);
 
 private:	// User declarations
@@ -75,6 +74,7 @@ public:		// User declarations
 	bool zobrazitFrameForm;
 	bool Rx_canEdit;
   bool UlozitGAPOTT;
+  bool canCalculate;
 	Tinput_state input_state;//stav vstupu
   int myModalResult;
   int temp_pocitadlo; // docasne reseni - kvuli posunu gridu

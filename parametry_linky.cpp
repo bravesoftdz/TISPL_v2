@@ -415,11 +415,11 @@ void TForm_parametry_linky::nacti_pohony ()
 					 //	ShowMessage(ukaz->roztec);
 
 						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
-						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*(1+999*Runit);
+						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*(1+999.0*Runit);
 						else    rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec;
 
 						if(ukaz->Rz==0) rStringGridEd_tab_dopravniky->Cells[6][i]="";
-						else rStringGridEd_tab_dopravniky->Cells[6][i] = ukaz->Rz*(1+999*Dmunit);
+						else rStringGridEd_tab_dopravniky->Cells[6][i] = ukaz->Rz*(1+999.0*Dmunit);
 
 						if(ukaz->Rx==0) rStringGridEd_tab_dopravniky->Cells[7][i]="";
 						else rStringGridEd_tab_dopravniky->Cells[7][i] = ukaz->Rx;
@@ -490,9 +490,9 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
       {
       Memo3->Lines->Add(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][j]));
       Memo3->Lines->Add(F->d.v.vrat_pohon(j)->aRD*60.0);
-      if((rStringGridEd_tab_dopravniky->Cells[4][j]/60.0)==F->d.v.vrat_pohon(j)->aRD &&
-      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][j])/*/1+999.0*Runit*/==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->roztec) &&
-      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][j])/*/1+999.0*Rzunit*/==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->Rz) &&
+      if((rStringGridEd_tab_dopravniky->Cells[4][j]*(1+59.0*aRDunit))==F->d.v.vrat_pohon(j)->aRD &&
+      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][j])*(1+999.0*Runit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->roztec) &&
+      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][j])*(1+999.0*Rzunit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->Rz) &&
       F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][j])==F->d.v.vrat_pohon(j)->Rx)
       {
        nezobrazuj++;
@@ -634,14 +634,14 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 					}
 				 //zmìna aRD
-						if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n]/1+59.0*aRDunit!=p_prirazen->aRD)
+						if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n]/(1+59.0*aRDunit)!=p_prirazen->aRD)
 					{
 							Changes_aRD=true;
 
 					}
 
 					//zmìna Rz
-							if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n]/1+999.0*Rzunit!=p_prirazen->Rz)
+							if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n]/(1+999.0*Rzunit)!=p_prirazen->Rz)
 					{
 							Changes_Rz=true;
 
@@ -2832,9 +2832,9 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 				break;
 				case 2:     //RD
 				{
-        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/1+59.0*aRDunit;
-		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/1+59.0*aRDunit;
-				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/1+59.0*aRDunit;
+        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
+				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
 
 					if(Form1->m.between(RD,P_od,P_do))
 						{
