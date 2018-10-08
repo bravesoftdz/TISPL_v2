@@ -2984,6 +2984,7 @@ void TForm1::NPin()
 	Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 	Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 	Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
+	Form_parametry->poznamka=pom->poznamka;
 
 	//nadesignování formu podle právě vypisováných hodnot
 	Form_parametry->vypis("");
@@ -3024,6 +3025,7 @@ void TForm1::NP()
 		Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 		Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
 		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
+		Form_parametry->poznamka=pom->poznamka;
 
 		//nadesignování formu podle právě vypisováných hodnot
 		Form_parametry->vypis("");
@@ -3071,13 +3073,15 @@ void TForm1::NP()
 				pom->mezera=Form_parametry->scGPNumericEdit_mezera->Value/jednotky_vzdalenost;
 				pom->mezera_jig=Form_parametry->scGPNumericEdit_mezera_JIG->Value/jednotky_vzdalenost;
 				pom->mezera_podvozek=Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value/jednotky_vzdalenost;
-				//ostatni
+				//Rz,Rx
 				pom->rotace=Form_parametry->scComboBox_rotace->ItemIndex;
 				if(Form_parametry->scComboBox_pohon->ItemIndex!=0 && pom->rezim==1)//pouze pokud je prirazen pohon a jedná se o KK režim, tak ulozim do nej hodnoty Rx,Rz
 				{
 					pom->pohon->Rx=Form_parametry->scGPNumericEdit_rx->Value;
 					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value*(1+999*Form_parametry->DMunit);
 				}
+				//Poznámka
+				pom->poznamka=Form_parametry->poznamka;
 				//CT
 				if(Form_parametry->CTunit==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
 				if(Form_parametry->kapacitaSG>1 && pom->rezim==0)//pokud je požadovaný rozklad objektu na více objektů, pouze u S&G
@@ -4411,7 +4415,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 		Memo1->Lines->Add(AnsiString(C->n)+";"+AnsiString(C->objekt->n)+";"+AnsiString(C->objekt->short_name)+";"+AnsiString(C->objekt->rezim));
 		C=C->dalsi;
 	}
-     */
+		 */
+		 Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
 
@@ -5169,5 +5174,7 @@ void TForm1::db_connection()
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
 //---------------------------------------------------------------------------
+
+
 
 

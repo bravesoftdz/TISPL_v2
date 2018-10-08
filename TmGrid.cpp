@@ -108,6 +108,7 @@ void TmGrid::Create()
 	}
 	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
 	preTop=Top;preLeft=Left;//zaloha úvodní pozice
+	deleteMark=false;//detekce že dochází k odstraòování mGridu
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda - vytvoøí tabulku s pøedepsaným poètem sloupcù a øádkù
@@ -184,6 +185,7 @@ void TmGrid::Delete()
 {
 	try
 	{
+		deleteMark=true;//detekce že dochází k odstraòování mGridu
 		//odstranìní v tabulce použitých komponent
 		DeleteComponents();
 		//uvolnìní pamìti
@@ -192,7 +194,7 @@ void TmGrid::Delete()
 		mGrid=NULL; delete mGrid;
 	}
 	catch(...)
-	{MessageBeep(0);}
+	{/*MessageBeep(0);*/}
 }
 //---------------------------------------------------------------------------
 //odstraní pouze tabulku, pomocná metoda výše uvedené a destruktoru
@@ -430,17 +432,16 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			Canv->Brush->Color=Cell.Background->Color;Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 			//zarovnání
 			//samotný výpis
-			long L=Rt.Left,T=Rt.Top;              //zajimavý workaround - pøíèinì nerozumím  - pravdìpodobnì chyba  s pozicováním bmp v rámci celé tabulky
-			int W=getWidthHeightText(Cell).X*Zoom;//if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))W/=1.3;// - provizornì odstaveno - chová se to bez toho lépe u neslouèených bunìk na støed, ale zase mùže chybìt nìkdì jinde
+			long L=Rt.Left,T=Rt.Top;
+			int W=getWidthHeightText(Cell).X*Zoom;
 			int H=getWidthHeightText(Cell).Y*Zoom;
 			short Rot=1;//slouží jako pomùcka rotace
 			if(Cell.Font->Orientation==900){Rot=-1;H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
 			if(Cell.Font->Orientation==2700){Rot=-1;W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
-			short WA=0;if(AntiAliasing_text && (Cell.Font->Orientation!=0 || Cell.Align!=aNO))WA=1;//zajimavý workaround - pøíèinì nerozumím (proè Left*2 tomu patøiènì pomùže)
 			switch(Cell.Align)
-			{               //zajimavý workaround - pravdìpodobnì chyba s pozicováním bmp v rámci celé tabulky proto tam byl
-				case aNO:   L=/*WA*Left*1.3+*/Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
-				case LEFT:	L=/*WA*Left*1.3+*/Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
+			{
+				case aNO:   L=Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
+				case LEFT:	L=Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
 				case CENTER:L=(Rt.Left+Rt.Right)/2-W/2;break;
 				case RIGHT:	L=Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2*Zoom;if(Cell.Font->Orientation==2700)L-=H;break;
 			}
@@ -455,9 +456,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 				case TOP:		T=Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
 				case MIDDLE:T=(Rt.Top+Rt.Bottom)/2-H/2;break;
 				case BOTTOM:T=Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2*Zoom;break;
-			}                                    //*2 zajimavý workaround   - pravdìpodobnì chyba s pozicováním bmp v rámci celé tabulky proto tam byl
-			//if(AntiAliasing_text)Canv->TextOut(L-Left*2,T-Top,Cell.Text);  jednalo se chybu hýbalo se s celou tabulkou chybnì Left a Top, ale pøi AA je souèástí BMP která se až výslednì pozicuje  //zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
-			//else
+			}
 			Canv->TextOut(L,T,Cell.Text);
 		}break;
 		case readEDIT:
@@ -968,54 +967,63 @@ void TmGrid::getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Ro
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 {
-	//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
-	Col=getColFromTag(((TComponent*)(Sender))->Tag);
-	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
+	{
+		//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
+		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 
-	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 {
-	//ShowMessage(AnsiString("OnEnter ")+IntToStr(((TComponent*)(Sender))->Tag));
-	Col=getColFromTag(((TComponent*)(Sender))->Tag);
-	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-
-	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnEnter(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnEnter(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row);
+	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
+	{
+		//ShowMessage(AnsiString("OnEnter ")+IntToStr(((TComponent*)(Sender))->Tag));
+		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnEnter(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnEnter(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 {
-	//ShowMessage(AnsiString("OnChange ")+IntToStr(((TComponent*)(Sender))->Tag));
-	Col=getColFromTag(((TComponent*)(Sender))->Tag);
-	Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-
-	getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
-
-	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
+	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
+	{
+		//ShowMessage(AnsiString("OnChange ")+IntToStr(((TComponent*)(Sender))->Tag));
+		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
+		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
 {
-	Col=getColFromTag(((TComponent*)(Sender))->Tag);
-	Row=getRowFromTag(((TComponent*)(Sender))->Tag);  //asi zámìrnì OnChange?
-	if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
-	if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
+	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
+	{
+		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		Row=getRowFromTag(((TComponent*)(Sender))->Tag);  //asi zámìrnì OnChange?
+		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
+	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1556,7 +1564,10 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 				case readNUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y);N->Free();N=NULL;delete N;}break;
 				case BUTTON: {TscGPButton *B=getButton(X,Y);B->Free();B=NULL;delete B;}break;
 				case COMBO: {TscGPComboBox *C=getCombo(X,Y);C->Free();C=NULL;delete C;}break;
-				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y);CH->Free();CH=NULL;delete CH;}break;
+				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y);
+				//CH->Destroying();
+				Form->RemoveFreeNotification(CH);
+				CH->Free();CH=NULL;delete CH;break;} ///*CH->DisposeOf();*/ ani toto ani free pøi kliku nefungují správnì
 				case RADIO:{TscGPRadioButton *R=getRadio(X,Y);R->Free();R=NULL;delete R;}break;
 			}
 		}

@@ -1130,9 +1130,9 @@ void __fastcall TF_gapoTT::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	if(ModalResult==mrOk)delete[] pohony_zmena;//pokud je stisknuto storno pøi ukonèování, tak se nemaže //NEWR
 	delete[] objekty;
-  delete[] indikator_skupin;
+	delete[] indikator_skupin;
 	Form_objekt_nahled->pom=NULL;delete Form_objekt_nahled->pom;
-  mGrid->Delete();
+	mGrid->Delete();
 }
 //---------------------------------------------------------------------------
 void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
@@ -1215,10 +1215,10 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 	//R-záležitosti
 	if(objekty[Row].pohon!=NULL && pm.rezim!=100)
 	{                                                                                                                                         //pøevod
-	 	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*aRDunit);///musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-	 	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
- 	  pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
- 		pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*aRDunit);///musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 	}
 	else//pro objekty bez pøiøazeného pohonu
 	{
@@ -1552,24 +1552,29 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		 }break;
 		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
-			 //jednotky a definice výstupního textu
+			 //jednotky
 			 AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
-			 AnsiString error_text="";
 
-			 ////testování pouze objektu s pohonem
+			 ////VALIDACE aRD rozsahu od-do
+			 long 	plRow  = 0;//n øádku pohonu na PL
+			 if(objekty[Row].pohon!=NULL && pm.rezim!=100)plRow =	Form_parametry_linky->getROW(objekty[Row].pohon->n);//pro všechny objekt s pohony
+			 ShowMessage(plRow);
+			 if(objekty[Row].rezim==100) plRow = objekty[Row].id-100;//pro nepoužívané pohony (bez pøiøazení)
+			 double P_od = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
+			 double P_do = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow])/(1+59.0*aRDunit);
+			 if(!Form1->m.between(pm.RD,P_od,P_do))
+			 {
+				 T="Neplatný rozsah rychlosti (od "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow]+" do "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow]+" "+aRDunitT+") pohonu "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+" o rychlosti "+AnsiString(pm.RD*(1+59.0*aRDunit))+" "+aRDunitT+"!";
+			 }
+
+			 ////testování pouze pro objekty s pohonem
 			 if(objekty[Row].pohon!=NULL)//testování, zda objekt má pøiøazen pohon, pokud by byl jen pohon bez pøiøazení, jedná se o "objekt 100 v režimu 100"
 			 {
 				 ////VALIDACE neceloèíselné Rx
-				 if(!F->m.cele_cislo(pm.Rx))T="Daná volba není možná. Hodnota rozestupu (Rx) není celoèíselná!";
-
-				 ////VALIDACE aRD od do
-				 double RD   = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Row])/1+59.0*aRDunit;
-				 double P_od = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][Row])/1+59.0*aRDunit;
-				 double P_do = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][Row])/1+59.0*aRDunit;
-				 if(!Form1->m.between(RD,P_od,P_do))
+				 if(!F->m.cele_cislo(pm.Rx))
 				 {
-					 if(T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
-					 T+="Neplatný rozsah rychlosti pohonu od-do!";
+					if(T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam a bude následovat další chybový je nutné odøádkovat
+					T+="Daná volba není možná. Hodnota rozestupu (Rx) není celoèíselná!";
 				 }
 
 				 ////VALIDACE hlídání pøejezdu
@@ -1579,11 +1584,13 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 					 {
 						 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
 						 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+						 if(T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam a bude následovat další chybový je nutné odøádkovat
 						 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
-						 error_text=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[Row].n),pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
+						 T+=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[Row].n),pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
 					 }
 					 else//situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
 					 {
+						 AnsiString error_text="";
 						 for(unsigned long i=1;i<mGrid->RowCount;i++)//projde všechny zobrazené objekty
 						 {
 							 if(objekty[i].pohon!=NULL)//testovaný objekt musí mít pohon
@@ -1593,17 +1600,18 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 									 double MT=objekty[i].MT1+objekty[i].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
 									 double WT=objekty[i].WT1+objekty[i].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
 									 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
-									 error_text=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[i].n),pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
+									 AnsiString error_text2=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[i].n),pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
+									 if(error_text!="")error_text+="<br>"+error_text2;//pokud existuje již pøedchozí chybový záznam a bude následovat chybový je nutné odøádkovat
 								 }
 							 }
 						 }
 						 //výpis problém s rychlostí pøejezdu
 						 if(error_text!="")error_text="<b>Daná volba není možná. Následující objekt(y) nemají odpovídající rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
+						 //vrácení celkového výpisu
+						 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
+						 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
 					 }
 				 }
-				 ////vrácení celkového výpisu
-				 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
-				 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
 			 }
 		 }break;
 	}
@@ -1671,7 +1679,7 @@ void __fastcall TF_gapoTT::scScrollBar_horizontChange(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::KonecClick(TObject *Sender)
 {
-  scGPButton_stornoClick(Sender);
+	scGPButton_stornoClick(Sender);
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
 }
