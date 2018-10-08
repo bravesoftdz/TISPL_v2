@@ -116,7 +116,7 @@ object F_gapoTT: TF_gapoTT
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
-      OnClick = KonecClick
+      OnClick = scGPButton_stornoClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -169,7 +169,7 @@ object F_gapoTT: TF_gapoTT
       GlyphOptions.Kind = scgpbgkClose
       GlyphOptions.Thickness = 1
       GlyphOptions.StyleColors = True
-      ModalResult = 8
+      ModalResult = 2
       ModalSetting = True
       TextMargin = -1
       WidthWithCaption = 0

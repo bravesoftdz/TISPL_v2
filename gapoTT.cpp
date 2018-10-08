@@ -1102,26 +1102,26 @@ void TF_gapoTT::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::scGPButton_OKClick(TObject *Sender)
 {
-	for(unsigned long Row=1;Row<mGrid->RowCount;Row++)
-	{
-		calculate(Row,1);//sice se propoèítává opakovanì, ale kvùli možnému zobrazení dat ve zkrácené formì v tabulce. lepe z ostrých dat
-
-		//aktualizace PO, pokud je spuštìné
-		if(F->pom!=NULL && objekty[Row].n<100)//pokud se nejedná o pohon bez pøiøazených objektù
-		{//nutno jako samostaný if
-			if(F->pom->n==objekty[Row].n)//je spuštìné PO a je tedy nutné zavolat aktualizaci PO
-			{
-				F->pom=F->d.v.vrat_objekt(objekty[Row].n);//vrátí ostrá data
-				F->NPin();
-			}
-		}
-	}
+//	for(unsigned long Row=1;Row<mGrid->RowCount;Row++)
+//	{
+//	 	calculate(Row,1);//sice se propoèítává opakovanì, ale kvùli možnému zobrazení dat ve zkrácené formì v tabulce. lepe z ostrých dat
+//
+//		//aktualizace PO, pokud je spuštìné
+//		if(F->pom!=NULL && objekty[Row].n<100)//pokud se nejedná o pohon bez pøiøazených objektù
+//		{//nutno jako samostaný if
+//			if(F->pom->n==objekty[Row].n)//je spuštìné PO a je tedy nutné zavolat aktualizaci PO
+//			{
+//				F->pom=F->d.v.vrat_objekt(objekty[Row].n);//vrátí ostrá data
+//				F->NPin();
+//			}
+//		}
+//	}
  // F->d.v.PP.TT=Form_parametry_linky->rEditNum_takt->Value*(1+59.0*Form_parametry_linky->Taktunit);
-  UlozitGAPOTT=true;
-  myModalResult=mrOk;
-  Form_parametry_linky->Button_save->Enabled=true;
-	Form_parametry_linky->Button_storno->Enabled=true;
-  Form_parametry_linky->Button_saveClick(Sender);
+//  UlozitGAPOTT=true;
+//  myModalResult=mrOk;
+//  Form_parametry_linky->Button_save->Enabled=true;
+//	Form_parametry_linky->Button_storno->Enabled=true;
+//  Form_parametry_linky->Button_saveClick(Sender);
 
   Close();
 }
@@ -1667,13 +1667,6 @@ void __fastcall TF_gapoTT::scScrollBar_horizontChange(TObject *Sender)
 	//doladit posouvání komponent
 	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
 	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
-}
-//---------------------------------------------------------------------------
-void __fastcall TF_gapoTT::KonecClick(TObject *Sender)
-{
-  scGPButton_stornoClick(Sender);
-	Form_parametry_linky->Button_save->Enabled=true;
-	Form_parametry_linky->Button_storno->Enabled=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::Button1Click(TObject *Sender)

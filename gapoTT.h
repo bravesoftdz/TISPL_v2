@@ -49,7 +49,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
   void __fastcall scScrollBar_horizontChange(TObject *Sender);
-  void __fastcall KonecClick(TObject *Sender);
   void __fastcall Button1Click(TObject *Sender);
 
 private:	// User declarations
