@@ -101,7 +101,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		{
 			if(pohony_zmena[i].X)
 			{                                                                 //vrátí pouze KK objekty
-				pohony_zmena[i].Y=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1);
+				pohony_zmena[i].Y=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,-1);
 				RowCount+=pohony_zmena[i].Y;
 			}
 		}
@@ -148,7 +148,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	Canvas->Font=mGrid->Cells[n][0].Font;	//nejdelší použitý text
 	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[n][0].Text)+mGrid->Cells[n][0].BottomMargin+mGrid->Cells[n][0].BottomBorder->Width/2+mGrid->Cells[n][0].TopMargin+mGrid->Cells[n][0].TopBorder->Width/2;
 	//manualfit šíøky sloupcù mimo nultého (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
-	mGrid->Columns[1].Width=50;mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=23;//ostatní následující sloupce zatím default šíøka
+	mGrid->Columns[1].Width=100;mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=23;//ostatní následující sloupce zatím default šíøka
 
 	//nastavení velikosti nultého sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
 	mGrid->SetColumnAutoFit(0);
@@ -163,7 +163,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 		if(pohony_zmena[i].X)//vypisuje pouze použité pohony, toto vyhodit,pokud budu chtít vypsat všechny pohony a potom j bude totožné s i...
 		{
 			//vratí formou ukazatelem na pole objekty pøiøazené k danému pohonu
-			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i,1);
+			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i,-1);
 			unsigned int z=0;
 			for(;z<pohony_zmena[i].Y;z++)
 			{
@@ -172,7 +172,11 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				//pohony
 				mGrid->Cells[0][j].Text=O[z].pohon->name;mGrid->Cells[0][j].Background->Color=clBACKGROUND;
 				//objekty
-				mGrid->Cells[1][j].Text=O[z].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
+        AnsiString rezim;
+				if(O[z].rezim==0)  rezim="S&G";
+				if(O[z].rezim==1) {rezim="Kont.";}
+				if(O[z].rezim==2)  rezim="Post.";
+				mGrid->Cells[1][j].Text=O[z].short_name+"-"+rezim;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 				//volby - checkboxy
 				mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;//NEWR
 				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
@@ -378,7 +382,6 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.Rotace=objekty[Row].rotace;
 	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 
-
 //    Memo1->Lines->Clear();
 //    Memo1->Lines->Add("TT: "+AnsiString(pm.TT));
 //    Memo1->Lines->Add("CT: "+AnsiString(pm.CT));
@@ -394,11 +397,6 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 //    Memo1->Lines->Add("dP: "+AnsiString(pm.dP));
 //    Memo1->Lines->Add("R: "+AnsiString(pm.R));
 //    Memo1->Lines->Add("aRDunit: "+AnsiString(aRDunit));
-
-
-
-
-
 
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(mGrid->getCheck(2,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
@@ -434,8 +432,7 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 		 }break;
 		 case 0://pouze vrátí text do bunìk
 		 {
-		 //		mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT,2,"..");
-     if(CTunit==0) mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT,2,".."); else    mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT*60.0,2,"..");
+     if(CTunit==0) mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT,2,".."); else    mGrid->Cells[7][Row].Text	= F->m.round2double(pm.CT/60.0,2,"..");
      if(RDunit==0) mGrid->Cells[9][Row].Text	= F->m.round2double(pm.RD,2,".."); else    mGrid->Cells[9][Row].Text	= F->m.round2double(pm.RD*60.0,2,"..");
      if(DDunit==0) mGrid->Cells[11][Row].Text	= F->m.round2double(pm.DD,2,".."); else    mGrid->Cells[11][Row].Text	= F->m.round2double(pm.DD*1000.0,2,"..");
      if(Munit==0) mGrid->Cells[17][Row].Text	= F->m.round2double(pm.MJ,2,".."); else    mGrid->Cells[17][Row].Text	= F->m.round2double(pm.MJ*60.0,2,"..");

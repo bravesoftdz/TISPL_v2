@@ -46,11 +46,11 @@ __published:	// IDE-managed Components
   void __fastcall scButton_csvClick(TObject *Sender);
   void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
   void __fastcall KonecClick(TObject *Sender);
+  void __fastcall scScrollBar_horizontChange(TObject *Sender);
 
 private:	// User declarations
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
-  short *tempCHECK;//dynamické pole uchovávající pøedchozí volby checkboxù
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND,C1,C2,C3,clHiddenValues;
 	enum Tinput_state{FREE,LOADING,PROGRAMOVE};//uchovává výbìr input hodnoty
@@ -73,6 +73,7 @@ public:		// User declarations
   int temp_pocitadlo; // docasne reseni - kvuli posunu gridu
   int slouceny_radek;
   bool Rx_canEdit;
+  bool UlozitGAPOV;
  // enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;Tm_mm Dmunit;//pøepínaè jednotek vzdálenost
 	//enum Tminsec{S=0,MIN};Tminsec Taktunit;Tminsec RDunit;Tminsec minsec;Tminsec aRDunit;//pøepínaè jednotek èasu
 };

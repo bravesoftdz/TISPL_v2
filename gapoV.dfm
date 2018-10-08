@@ -671,6 +671,7 @@ object F_gapoV: TF_gapoV
     TabOrder = 4
     TabStop = False
     Visible = False
+    OnChange = scScrollBar_horizontChange
   end
   object scScrollBar_vertical: TscScrollBar
     Left = 361
