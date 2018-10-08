@@ -1036,7 +1036,7 @@ double Cvektory::minRD(TPohon *pohon)
 	return min;
 }
 ////---------------------------------------------------------------------------
-//vypíše objekt přiřazené k danému pohonu, kterým neodpovídá rachlost přejezdu při navrhovaném testRD      //0 - S&G, 1-KK, 2-PP, 20-S&G+PP
+//vypíše objekty přiřazené k danému pohonu, kterým neodpovídá rachlost přejezdu při navrhovaném testRD      //0 - S&G, 1-KK, 2-PP, 20-S&G+PP
 AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim)
 {
 	TObjekt *O=OBJEKTY->dalsi;
@@ -1059,6 +1059,45 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 	O=NULL;delete O;
 	if(objekty!="")objekty=objekty.SubString(1,objekty.Length()-2);//ještě odebere poslední čárku a mezeru
 	return objekty;
+}
+////---------------------------------------------------------------------------
+//zvážit integraci metody do výše uvedené!!!!
+//zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
+AnsiString Cvektory::kontrola_rychlosti_prejezdu(TObjekt *O,double CT,double MT,double WT,double aRD,double DD,short aRDunit,unsigned short precision,AnsiString mark,bool add_decimal,AnsiString separator_aRD)
+{
+	//jednotky a definice výstupního textu
+	AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
+	AnsiString error_text="";
+
+	//pokud jsou dodané parametry objektu dodané v nulových hodnotách,tzn. použíjí se hodnoty přímo daného objektu ze spojového seznamu, nikoliv externě dodané parametry funkce (ty slouží např. v případě testování na GAPO, kde se počítají parametry potenciálně nové)
+	if(CT==0 || aRD==0 || DD==0)
+	{
+		CT=O->CT;
+		DD=O->delka_dopravniku;
+		if(O->pohon!=NULL)
+		{
+			aRD=O->pohon->aRD;
+			MT=DD/aRD;
+		}
+		else
+		{
+			aRD=0;
+			MT=0;
+		}
+		if(WT==0)WT=O->WT1+O->WT2;//wokud není dodáno WT, tak zkusí vzít z uložení
+	}
+
+	//vrátí rozdíl aktuální rychlosti pohonu a potřebné k uskuteční přejezdu, pokud je hodnota 0 je v pořádku, je-li záporná, přejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+	double rRD=m.kontrola_rychlosti_prejezdu(CT,MT,O->PT,WT,DD,aRD);//pokud není MT dodáno bude spočítáno, pokud nebude vyčísleno PT a WT, bude MT totožné s CT, bude tedy splněna alespoň minumální nutná (nikoliv dostatčující) podmínka, kdy DD/CT>=aRD
+	if(rRD!=0)//problém nastane pokud rRD tzn. rozdíl od aRD
+	{
+		error_text=O->short_name;
+		if(aRDunit>=0)//pokud jsou dodány jednotky aRD, tzn. bude požadován výpis o rozídílu o kolik se nestíhá
+		error_text+=separator_aRD+F->m.round2double((rRD)*(1+59.0*aRDunit),precision,mark,add_decimal)+"["+aRDunitT+"]";
+	}
+
+	//návratová hodnota
+	return error_text;
 }
 ////---------------------------------------------------------------------------
 //ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon

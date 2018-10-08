@@ -442,7 +442,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 					if(value!=floor(value))
 					{
 						double dop_Rx=Form1->m.round(value);
-						vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
+						//používáme v calculate(3) vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
 						mGrid->getCheck(7,j)->Enabled=false;
 						mGrid->getCheck(9,j)->Enabled=false;
 						Rx_canEdit=false;
@@ -571,7 +571,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 					if(value!=floor(value))
 					{
 						double dop_Rx=Form1->m.round(F->ms.MyToDouble(O[z].pohon->Rx));
-						vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
+						//používáme v calculate(3) vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
 						mGrid->getCheck(7,j)->Enabled=false;
 						mGrid->getCheck(9,j)->Enabled=false;
 						Rx_canEdit=false;
@@ -1027,8 +1027,8 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	{
 	 if(input_state==FREE && Col>=3 && Col<=14)
 	 {
-     AnsiString T=calculate(Row,3);
-     if(T!="")F->MB(T);//pokud obsahuje chybový text
+		 //AnsiString T=calculate(Row,3);
+     //if(T!="")F->MB(T);//pokud obsahuje chybový text
 
    		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
      if(mGrid->Cells[1][Row].Text!="nepøiøazen")
@@ -1441,39 +1441,37 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 
 		 case 0://pouze vrátí text do bunìk
 		 {
-        if(objekty[Row].id<100)//pokud se nejedná o pohon bez pøiøazených objektù
+				if(objekty[Row].id<100)//pokud se nejedná o pohon bez pøiøazených objektù, mùže se však jednat o objekt bez pohonu
 				{
 					mGrid->Cells[16][Row].Text = F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
-           if(slouceny_radek>1)
-          {
-           	mGrid->Cells[18][slouceny_radek].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
-          } else mGrid->Cells[18][Row].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+					if(objekty[Row].pohon!=NULL)//u objektu bez pohonu se aRD nevypisuje
+					{
+						if(slouceny_radek>1)mGrid->Cells[18][slouceny_radek].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+						else mGrid->Cells[18][Row].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+					}
 					mGrid->Cells[20][Row].Text = F->m.round2double(pm.DD*(1+999.0*DDunit),2,"..");
 					mGrid->Cells[22][Row].Text = F->m.round2double(pm.K,2,"..");
 					mGrid->Cells[24][Row].Text = F->m.round2double(pm.P,2,"..");
 					mGrid->Cells[26][Row].Text = F->m.round2double(pm.MJ*(1+999.0*Munit),2,"..");
 					mGrid->Cells[28][Row].Text = F->m.round2double(pm.MP*(1+999.0*Munit),2,"..");
 				}
-
 				if(objekty[Row].pohon!=NULL || objekty[Row].id>100)//objekty s pohonem nebo pohon bez pøiøazených objektù
 				{
-
-        if(slouceny_radek>1)
-          {  //ShowMessage(slouceny_radek);
-					mGrid->Cells[31][slouceny_radek].Text =F->m.round2double(pm.R*(1+999.0*Runit),2,"..");
-			    mGrid->Cells[33][slouceny_radek].Text =F->m.round2double(pm.Rz*(1+999.0*Rzunit),2,"..");
-          mGrid->Cells[35][slouceny_radek].Text =F->m.round2double(pm.Rx,2,"..");
-          mGrid->Cells[18][slouceny_radek].Text =F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..");
-          }
-          else
-          {
-          mGrid->Cells[31][Row].Text =F->m.round2double(pm.R*(1+999.0*Runit),2,"..");
-			    mGrid->Cells[33][Row].Text =F->m.round2double(pm.Rz*(1+999.0*Rzunit),2,"..");
-          mGrid->Cells[35][Row].Text =F->m.round2double(pm.Rx,2,"..");
-          mGrid->Cells[18][Row].Text =F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..");
+					if(slouceny_radek>1)
+					{  //ShowMessage(slouceny_radek);
+						mGrid->Cells[31][slouceny_radek].Text =F->m.round2double(pm.R*(1+999.0*Runit),2,"..");
+						mGrid->Cells[33][slouceny_radek].Text =F->m.round2double(pm.Rz*(1+999.0*Rzunit),2,"..");
+						mGrid->Cells[35][slouceny_radek].Text =F->m.round2double(pm.Rx,2,"..");
+						mGrid->Cells[18][slouceny_radek].Text =F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..");
+					}
+					else
+					{
+						mGrid->Cells[31][Row].Text =F->m.round2double(pm.R*(1+999.0*Runit),2,"..");
+						mGrid->Cells[33][Row].Text =F->m.round2double(pm.Rz*(1+999.0*Rzunit),2,"..");
+						mGrid->Cells[35][Row].Text =F->m.round2double(pm.Rx,2,"..");
+						mGrid->Cells[18][Row].Text =F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..");
           }
 				}
-
 		 }break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
@@ -1482,7 +1480,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 					Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);//nutno aby se ukládalo do skutuèného originálu objektu
 					if(O->pohon!=NULL)
 					{ //POZOR: pm.RD je vždy aRD, až níže je vypoèítáno skuteèné RD=DD/CT
-						O->pohon->aRD=pm.RD; F->d.v.vrat_pohon(O->pohon->n)->aRD=pm.RD;
+						O->pohon->aRD=pm.RD;
 						O->pohon->Rz=F->m.Rz(pm.RD);
 						if(CHECK[2] || CHECK[4])O->pohon->Rx     = F->m.Rx2(O->pohon->Rz,pm.R);//zùstává R, mìní se Rx
 						if(CHECK[4] || CHECK[6])O->pohon->roztec = F->m.R(O->pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]));//zùstává Rx, mìní se R
@@ -1528,39 +1526,59 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				else
 				Form_objekt_nahled->pom=NULL;//pro pohony bez pøiøazených objektù
 		 }break;
-		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI gapoTT
+		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
+			 //jednotky a definice výstupního textu
 			 AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
 			 AnsiString error_text="";
-			 if(objekty[Row].pohon!=NULL)//testovaný zda objekt má pøiøazen pohon
+
+			 ////testování pouze objektu s pohonem
+			 if(objekty[Row].pohon!=NULL)//testování, zda objekt má pøiøazen pohon, pokud by byl jen pohon bez pøiøazení, jedná se o "objekt 100 v režimu 100"
 			 {
-         //situace neceloèíselné Rx
+				 ////VALIDACE neceloèíselné Rx
 				 if(!F->m.cele_cislo(pm.Rx))T="Daná volba není možná. Hodnota rozestupu (Rx) není celoèíselná!";
 
-				 //situace 1 - pøípad testování zda daný objekt, který se mìní (objekty[Row]) je co se týèe pøejezdu OK
-				 //situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
-				 if(objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon (úvodní podmínka) a zároveò se nejedná o pohon bez pøiøazení k objektùm (tato podmínka)
+				 ////VALIDACE aRD od do
+				 double RD   = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Row])/1+59.0*aRDunit;
+				 double P_od = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][Row])/1+59.0*aRDunit;
+				 double P_do = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][Row])/1+59.0*aRDunit;
+				 if(!Form1->m.between(RD,P_od,P_do))
 				 {
-					 for(unsigned long i=1;i<mGrid->RowCount;i++)//projde všechny zobrazené objekty
-					 {      //odfiltrování situace 1 - pokud toto zapojím objekty[Row]!=objekty[i] tj. stejný objekt
-						 if(objekty[Row].pohon->n==objekty[i].pohon->n && (pm.rezim==0 || pm.rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
-						 {                            //teï je potøeba øešit situaci 1 a objekty[Row] a potom situaci 2 objekty[i]
-							 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
-							 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
-							 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
-							 double rRD=F->m.kontrola_rychlosti_prejezdu(pm.CT,MT,objekty[Row].PT,WT,pm.DD,pm.RD);//pokud není MT dodáno bude spoèítáno, pokud nebude vyèísleno PT a WT, bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
-							 if(rRD!=0)//problém nastane pokud rRD tzn. rozdíl od aRD (pm.RD)
+					 if(T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
+					 T+="Neplatný rozsah rychlosti pohonu od-do!";
+				 }
+
+				 ////VALIDACE hlídání pøejezdu
+				 if(objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon (úvodní podmínka výšše) a zároveò se nejedná o pohon bez pøiøazení (nepoužívaný) k objektùm (tato podmínka)
+				 {
+					 if(objekty[Row].rezim==0 || objekty[Row].rezim==2)//situace 1 - pøípad testování zda daný objekt (v S&G èi PP), který se mìní (objekty[Row]) je co se týèe pøejezdu OK
+					 {
+						 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
+						 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+						 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+						 error_text=F->d.v.kontrola_rychlosti_prejezdu(&objekty[Row],pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
+					 }
+					 else//situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
+					 {
+						 for(unsigned long i=1;i<mGrid->RowCount;i++)//projde všechny zobrazené objekty
+						 {      																						 //odfiltrování situace 1 tzn. objekty[Row]!=objekty[i] tj. stejný objekt - to nyní probíhá automaticky, protože se porovnávají režimy KK a proti tomu S&G èi PP, tj. nemùže se porovnávat totožný objekt
+							 if(objekty[Row].pohon->n==objekty[i].pohon->n && (pm.rezim==0 || pm.rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
 							 {
-								 if(error_text!="")error_text+="<br>";//pokud existuje již pøedchozí chybový záznam je nutné odøádkovat
-								 error_text=objekty[Row].short_name+" o "+F->m.round2double((rRD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";
+								 double MT=objekty[i].MT1+objekty[i].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
+								 double WT=objekty[i].WT1+objekty[i].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+								 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+								 error_text=F->d.v.kontrola_rychlosti_prejezdu(&objekty[i],pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
 							 }
 						 }
+						 //výpis problém s rychlostí pøejezdu
+						 if(error_text!="")error_text="<b>Daná volba není možná. Následující objekt(y) nemají odpovídající rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
 					 }
-					 error_text="<b>Daná volba není možná. Následující objekt(y) nemají odpovídající rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
 				 }
+
+				 ////vrácení celkového výpisu
+				 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
+				 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
 			 }
-			 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) je nutné odøádkovat
-			 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
 		 }break;
 	}
 	return T;
