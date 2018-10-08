@@ -74,6 +74,7 @@ public:		// User declarations
 	bool zobrazitFrameForm;
 	bool Rx_canEdit;
   bool UlozitGAPOTT;
+  bool canCalculate;
 	Tinput_state input_state;//stav vstupu
   int myModalResult;
   int temp_pocitadlo; // docasne reseni - kvuli posunu gridu

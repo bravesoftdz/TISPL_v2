@@ -754,9 +754,11 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //     // Rx_msg=true;
 //     } // else Rx_msg=false;
 //    }
+  canCalculate=false;
 
 	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
+    canCalculate=false;
 		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
 		CH->Checked=false;
 
@@ -772,10 +774,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		TscGPCheckBox *L=mGrid->getCheck(Col+10,Row);
 		L->Checked=false;
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+    canCalculate=true;
 	}
 
 	if(Col==5 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
+    canCalculate=false;
 		TscGPCheckBox *CH=mGrid->getCheck(Col-2,Row);
 		CH->Checked=false;
 
@@ -791,10 +795,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		TscGPCheckBox *L=mGrid->getCheck(Col+8,Row);
 		L->Checked=false;
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+    canCalculate=true;
 	}
 
 	if(Col==7 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
+    canCalculate=false;
 		TscGPCheckBox *CH=mGrid->getCheck(Col-4,Row);
 		CH->Checked=false;
 
@@ -810,10 +816,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		TscGPCheckBox *L=mGrid->getCheck(Col+6,Row);
 		L->Checked=false;
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+    canCalculate=true;
 	}
 
 	if(Col==9 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
+   canCalculate=false;
 		TscGPCheckBox *CH=mGrid->getCheck(Col-6,Row);
 		CH->Checked=false;
 
@@ -829,10 +837,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		TscGPCheckBox *L=mGrid->getCheck(Col+4,Row);
 		L->Checked=false;
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+    canCalculate=true;
 	}
 
 	if(Col==11 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
+    canCalculate=false;
 		TscGPCheckBox *CH=mGrid->getCheck(Col-8,Row);
 		CH->Checked=false;
 
@@ -848,10 +858,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		TscGPCheckBox *L=mGrid->getCheck(Col+2,Row);
 		L->Checked=false;
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+    canCalculate=true;
 	}
 
 	if(Col==13 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
+    canCalculate=false;
 		TscGPCheckBox *CH=mGrid->getCheck(Col-10,Row);
 		CH->Checked=false;
 
@@ -867,7 +879,9 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		TscGPCheckBox *L=mGrid->getCheck(Col-2,Row);
 		L->Checked=false;
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
+    canCalculate=true;
 	}
+
  //ShowMessage((short)Rx_msg);
 //-------------------------------------------------------------------------------------
 //ÈÁST VALIDACE OBLASTÍ - povolení/zakázání uložení GAPO
@@ -1048,7 +1062,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	}
 	else//pøekliknutí chechboxu pravdìpodobnì
 	{
-	 if(input_state==FREE && Col>=3 && Col<=14)
+	 if(input_state==FREE && Col>=3 && Col<=14  && canCalculate)
 	 {
 		 AnsiString T=calculate(Row,3);
      if(T!="")F->MB(T);//pokud obsahuje chybový text
@@ -1445,14 +1459,28 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
     }
 	}
 
-  if(mGrid->Cells[1][Row].Text!="nepøiøazen")
-  {
-      if(objekty[Row].pohon!=NULL)
-        {  //detekce skupin - pokud je v oblasti objekt v KK režimu a další napø. v PP- tak PP obj. neovlivní výpoèet RD, KK má pøednost. Pole se plní v onclick událostech
-         Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
-         if(indikator_skupin[objekty[Row].pohon->n]==1) pm.RD=pm.Rz/pm.TT; //výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
+     // detekce skupin - pokud je v oblasti objekt v KK režimu a další napø. v PP- tak PP obj. neovlivní výpoèet RD, KK má pøednost. Pole se plní v onclick událostech
+    if (mGrid->Cells[1][Row].Text != "nepøiøazen") {
+        if (objekty[Row].pohon != NULL) {
+            // Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
+            switch (indikator_skupin[objekty[Row].pohon->n]) {
+            case 1: // výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
+                {
+                    pm.RD = pm.Rz / pm.TT;
+                } break;
+            case 2: // Rz,Rx
+                {
+                    pm.Rz = pm.RD * pm.TT;
+                    pm.Rx = pm.Rz / pm.R;
+                } break;
+            case 3: // Rz,R
+                {
+                    pm.Rz = pm.RD * pm.TT;
+                    pm.R = pm.Rz / pm.Rx;
+                } break;
+            }
         }
-  }
+    }
 
 	//output sekce
 	AnsiString T="";
