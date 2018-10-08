@@ -1084,16 +1084,16 @@ AnsiString Cvektory::kontrola_rychlosti_prejezdu(TObjekt *O,double CT,double MT,
 			aRD=0;
 			MT=0;
 		}
-		if(WT==0)WT=O->WT1+O->WT2;//wokud není dodáno WT, tak zkusí vzít z uložení
+		if(WT==0)WT=O->WT1+O->WT2;//pokud není dodáno WT, tak zkusí vzít z uložení
 	}
 
 	//vrátí rozdíl aktuální rychlosti pohonu a potřebné k uskuteční přejezdu, pokud je hodnota 0 je v pořádku, je-li záporná, přejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 	double rRD=m.kontrola_rychlosti_prejezdu(CT,MT,O->PT,WT,DD,aRD);//pokud není MT dodáno bude spočítáno, pokud nebude vyčísleno PT a WT, bude MT totožné s CT, bude tedy splněna alespoň minumální nutná (nikoliv dostatčující) podmínka, kdy DD/CT>=aRD
-	if(rRD!=0)//problém nastane pokud rRD tzn. rozdíl od aRD
+	if(m.null(rRD)!=0)//problém nastane pokud rRD tzn. rozdíl od aRD
 	{
 		error_text=O->short_name;
 		if(aRDunit>=0)//pokud jsou dodány jednotky aRD, tzn. bude požadován výpis o rozídílu o kolik se nestíhá
-		error_text+=separator_aRD+F->m.round2double((rRD)*(1+59.0*aRDunit),precision,mark,add_decimal)+"["+aRDunitT+"]";
+		error_text+=separator_aRD+F->m.round2double((rRD)*(1+59.0*aRDunit),precision,mark,add_decimal)+" ["+aRDunitT+"]";
 	}
 
 	//návratová hodnota

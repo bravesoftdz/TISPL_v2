@@ -526,6 +526,7 @@ object F_gapoTT: TF_gapoTT
     Options.StyleColors = True
     HotImageIndex = -1
     ModalResult = 1
+    ModalSetting = True
     FocusedImageIndex = -1
     PressedImageIndex = -1
     UseGalleryMenuImage = False
@@ -889,6 +890,7 @@ object F_gapoTT: TF_gapoTT
     ShowHint = False
     TabOrder = 10
     TabStop = True
+    Visible = False
     Animation = False
     Caption = 
       'P'#345'i zm'#283'n'#283' technologick'#233'ho '#269'asu CT v'#382'dy m'#283'nit  procesn'#237' '#269'as PT, a' +
