@@ -505,7 +505,7 @@ double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 //vrátí požadovanou rychlost pøejezdu, umí si dopoèítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
 double Cmy::prejzd_voziku_rychlost(double CT,double MT,double PT,double WT, double DD)
 {
-	if(MT==0)//pokud není MT dodáno je nutné jej spoèítat, pokud nebude vyèísleno PT a WT, bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
+	if(MT==0)//pokud není MT dodáno je nutné jej spoèítat, pokud nebude vyèísleno PT a WT (což mùže být vhodné na objekty v režimu PP), bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
 	{
 		MT=CT-PT-WT;
 	}

@@ -1050,8 +1050,8 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	{
 	 if(input_state==FREE && Col>=3 && Col<=14)
 	 {
-		 //AnsiString T=calculate(Row,3);
-     //if(T!="")F->MB(T);//pokud obsahuje chybový text
+		 AnsiString T=calculate(Row,3);
+     if(T!="")F->MB(T);//pokud obsahuje chybový text
    		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
      if(mGrid->Cells[1][Row].Text!="nepøiøazen")
      {
@@ -1580,25 +1580,27 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 						 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
 						 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
 						 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
-						 error_text=F->d.v.kontrola_rychlosti_prejezdu(&objekty[Row],pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
+						 error_text=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[Row].n),pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
 					 }
 					 else//situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
 					 {
 						 for(unsigned long i=1;i<mGrid->RowCount;i++)//projde všechny zobrazené objekty
-						 {      																						 //odfiltrování situace 1 tzn. objekty[Row]!=objekty[i] tj. stejný objekt - to nyní probíhá automaticky, protože se porovnávají režimy KK a proti tomu S&G èi PP, tj. nemùže se porovnávat totožný objekt
-							 if(objekty[Row].pohon->n==objekty[i].pohon->n && (pm.rezim==0 || pm.rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
-							 {
-								 double MT=objekty[i].MT1+objekty[i].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
-								 double WT=objekty[i].WT1+objekty[i].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
-								 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
-								 error_text=F->d.v.kontrola_rychlosti_prejezdu(&objekty[i],pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
+						 {
+							 if(objekty[i].pohon!=NULL)//testovaný objekt musí mít pohon
+							 {                           //odfiltrování situace 1 tzn. objekty[Row]!=objekty[i] tj. stejný objekt - to nyní probíhá automaticky, protože se porovnávají režimy KK a proti tomu S&G èi PP, tj. nemùže se porovnávat totožný objekt
+								 if(objekty[Row].pohon->n==objekty[i].pohon->n && (pm.rezim==0 || pm.rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
+								 {
+									 double MT=objekty[i].MT1+objekty[i].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
+									 double WT=objekty[i].WT1+objekty[i].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+									 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+									 error_text=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[i].n),pm.CT,MT,WT,pm.RD,pm.DD,aRDunit);
+								 }
 							 }
 						 }
 						 //výpis problém s rychlostí pøejezdu
 						 if(error_text!="")error_text="<b>Daná volba není možná. Následující objekt(y) nemají odpovídající rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
 					 }
 				 }
-
 				 ////vrácení celkového výpisu
 				 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
 				 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
