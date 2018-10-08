@@ -74,6 +74,7 @@ public:		// User declarations
 	TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
 	bool zobrazitFrameForm;
 	bool Rx_canEdit;
+  bool UlozitGAPOTT;
 	Tinput_state input_state;//stav vstupu
   int myModalResult;
   int temp_pocitadlo; // docasne reseni - kvuli posunu gridu

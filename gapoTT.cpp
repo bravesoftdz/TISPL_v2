@@ -64,6 +64,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
   mGrid->Border.Width=2;
 	input_state=LOADING;
 	Rx_canEdit=true;
+  UlozitGAPOTT=false;
   AnsiString jednotky;
   temp_pocitadlo=0;
   unsigned int n_skupin=F->d.v.POHONY->predchozi->n+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
@@ -109,7 +110,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
   {
     Rzunit=0;
   }
-
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=37;//pevný poèet slopcù      //NEWR
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
@@ -280,11 +280,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[12][0].Font->Color=clLOCKED;
 	mGrid->Cells[13][0].Font->Color=clUNLOCKED;
 	mGrid->Cells[14][0].Font->Color=clLOCKED;
-
 	//manualfit výšky 0-tého øádku (zatím není pøipravena metoda)
-	unsigned short n=37;if(RDunit)n=17;//èíslo sloupce s nejdelším textem hlavièky
+	unsigned short n=32;if(RDunit)n=17;//èíslo sloupce s nejdelším textem hlavièky
 	Canvas->Font=mGrid->Cells[n][0].Font;	//nejdelší použitý text
-	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[17][0].Text)+mGrid->Cells[17][0].BottomMargin+mGrid->Cells[17][0].BottomBorder->Width/2+mGrid->Cells[17][0].TopMargin+mGrid->Cells[17][0].TopBorder->Width/2;
+	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[n][0].Text)+mGrid->Cells[n][0].BottomMargin+mGrid->Cells[n][0].BottomBorder->Width/2+mGrid->Cells[n][0].TopMargin+mGrid->Cells[n][0].TopBorder->Width/2;
 	//manualfit šíøky sloupcù mimo prvního (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
 	mGrid->Columns[1].Width=100;mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=mGrid->Columns[12].Width=mGrid->Columns[13].Width=mGrid->Columns[14].Width=23;//ostatní následující sloupce zatím default šíøka
 	mGrid->Columns[2].Width=120;
@@ -294,7 +293,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	//workaround výše uvedeného, protože nefunguje zcela správnì - taky nejede
 //	mGrid->Columns[0].Width=100;
 	//mGrid->SetColumnAutoFit();
-
 	//slouèení bunìk hlavièky PO  - vhodné za SetColumnAutoFit umístít - NEWR
 	mGrid->MergeCells(15,0,16,0);mGrid->MergeCells(17,0,18,0);mGrid->MergeCells(19,0,20,0);
 	mGrid->MergeCells(21,0,22,0);mGrid->MergeCells(23,0,24,0);mGrid->MergeCells(25,0,26,0);mGrid->MergeCells(27,0,28,0);
@@ -302,8 +300,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	////////jednolivé øádky////////
 	unsigned long j=1;//èíslo aktuálnì zpracovávaného øádku, musí zaèínat 1, 0 - je hlavièka
 	////prùchod všemi objekty bez pøiøazených pohonu
+
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
 	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
+
 	for(unsigned long i=1;i<=On_pocet;i++)//0-nultou buòku nevyužíváme necháváme prázdnou (z dùvodu totožné indexace)
 	{
 		////OBJEKTY BEZ PØIØAZENÉHO POHONU
@@ -341,7 +341,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			mGrid->MergeCells(13,j,14,j);
 		}
 
-  
+
 
 		//parametry objektù  // cell 17 - pùvodnì používána pro RD, nyní je v ní zobrazováno aRD
 		mGrid->Cells[15][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");	 								mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clOLD;mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
@@ -370,6 +370,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		/*B->Options->NormalColor=clWhite;*/B->Options->FontNormalColor=(TColor)RGB(255,128,0);
 		//B->Images->AddImage(F->scGPVirtualImageList1,6);//B->ImageIndex=6;//padá
 		//checkboxy
+
 		if(On[i].rezim==0) //fixní nastavení checkboxu u SG režimù
 		{
 			TscGPCheckBox *CH=mGrid->getCheck(3,j);
@@ -743,6 +744,17 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //		CH=NULL;delete CH;
 //	}
 
+//  	if(Col==7  ||  Col<=9  && input_state==FREE)
+//    {
+//     AnsiString T=calculate(Row,3);
+//     if(T!="")
+//     {
+//      vypis(T);
+//      mGrid->getCheck(Col,Row)->Checked=false;
+//     // Rx_msg=true;
+//     } // else Rx_msg=false;
+//    }
+
 	if(Col==3 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
 		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
@@ -856,11 +868,12 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		L->Checked=false;
 		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;L=NULL;delete L;
 	}
-
+ //ShowMessage((short)Rx_msg);
 //-------------------------------------------------------------------------------------
 //ÈÁST VALIDACE OBLASTÍ - povolení/zakázání uložení GAPO
 // první oblast   - levá
-	if(Col>=3 && Col<=5 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" )
+
+	if(Col>=3 && Col<=5 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální")
 	{
 		if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
 		{
@@ -899,13 +912,13 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 							}
 						}
 						if(pocitadlo==0) vypis("",false);
-					 }
+					 } else vypis("",false);
 			 }
 		}
     input_state=FREE;
 	 }
      // druhá oblast - prostøední
-		if(Col>=7 && Col<=9 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" )
+		if(Col>=7 && Col<=9 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální")
 		{
 			if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true)
 			{
@@ -931,6 +944,8 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
                     if(input_state==PROGRAMOVE)
                     {
                     vypis("Došlo k automatickému pøesunutí výbìru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+                     AnsiString T=calculate(Row,3);
+                     if(T!="") vypis(T);
                      mGrid->getCheck(3,i)->Checked=false;
                      mGrid->getCheck(5,i)->Checked=false;
                      mGrid->getCheck(11,i)->Checked=false;
@@ -942,15 +957,23 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 								}
 							}
 						}
-						if(pocitadlo==0) vypis("",false);
-					 }
-				 }
+						if(pocitadlo==0)
+            {
+            vypis("",false);
+
+            }
+				 }  else
+         {
+           AnsiString T=calculate(Row,3);// ShowMessage("tady");
+           if(T!="") vypis(T); else  vypis("",false);
+         }
+        }
 			}
      input_state=FREE;
 	 }
 
 //	// tøetí oblast - vpravo
-		if(Col>=11 && Col<=13 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" )
+		if(Col>=11 && Col<=13 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální")
 		{
 			if(mGrid->getCheck(11,Row)->Checked==true ||  mGrid->getCheck(13,Row)->Checked==true)
 			{
@@ -988,7 +1011,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 							}
 						}
 						if(pocitadlo==0) vypis("",false);
-					 }
+					 } else  vypis("",false);
 				 }
 			}
      input_state=FREE;
@@ -1027,9 +1050,6 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	{
 	 if(input_state==FREE && Col>=3 && Col<=14)
 	 {
-     AnsiString T=calculate(Row,3);
-     if(T!="")F->MB(T);//pokud obsahuje chybový text
-
    		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
      if(mGrid->Cells[1][Row].Text!="nepøiøazen")
      {
@@ -1095,10 +1115,12 @@ void __fastcall TF_gapoTT::scGPButton_OKClick(TObject *Sender)
 		}
 	}
  // F->d.v.PP.TT=Form_parametry_linky->rEditNum_takt->Value*(1+59.0*Form_parametry_linky->Taktunit);
+  UlozitGAPOTT=true;
   myModalResult=mrOk;
   Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
   Form_parametry_linky->Button_saveClick(Sender);
+
   Close();
 }
 //---------------------------------------------------------------------------
@@ -1424,7 +1446,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
   if(mGrid->Cells[1][Row].Text!="nepøiøazen")
   {
       if(objekty[Row].pohon!=NULL)
-        {
+        {  //detekce skupin - pokud je v oblasti objekt v KK režimu a další napø. v PP- tak PP obj. neovlivní výpoèet RD, KK má pøednost. Pole se plní v onclick událostech
          Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
          if(indikator_skupin[objekty[Row].pohon->n]==1) pm.RD=pm.Rz/pm.TT; //výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
         }
@@ -1539,25 +1561,25 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 
 				 //situace 1 - pøípad testování zda daný objekt, který se mìní (objekty[Row]) je co se týèe pøejezdu OK
 				 //situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
-				 if(objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon (úvodní podmínka) a zároveò se nejedná o pohon bez pøiøazení k objektùm (tato podmínka)
-				 {
-					 for(unsigned long i=1;i<mGrid->RowCount;i++)//projde všechny zobrazené objekty
-					 {      //odfiltrování situace 1 - pokud toto zapojím objekty[Row]!=objekty[i] tj. stejný objekt
-						 if(objekty[Row].pohon->n==objekty[i].pohon->n && (pm.rezim==0 || pm.rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
-						 {                            //teï je potøeba øešit situaci 1 a objekty[Row] a potom situaci 2 objekty[i]
-							 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
-							 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
-							 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
-							 double rRD=F->m.kontrola_rychlosti_prejezdu(pm.CT,MT,objekty[Row].PT,WT,pm.DD,pm.RD);//pokud není MT dodáno bude spoèítáno, pokud nebude vyèísleno PT a WT, bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
-							 if(rRD!=0)//problém nastane pokud rRD tzn. rozdíl od aRD (pm.RD)
-							 {
-								 if(error_text!="")error_text+="<br>";//pokud existuje již pøedchozí chybový záznam je nutné odøádkovat
-								 error_text=objekty[Row].short_name+" o "+F->m.round2double((rRD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";
-							 }
-						 }
-					 }
-					 error_text="<b>Daná volba není možná. Následující objekt(y) nemají odpovídající rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
-				 }
+//				 if(objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon (úvodní podmínka) a zároveò se nejedná o pohon bez pøiøazení k objektùm (tato podmínka)
+//				 {
+//					 for(unsigned long i=1;i<mGrid->RowCount;i++)//projde všechny zobrazené objekty
+//					 {      //odfiltrování situace 1 - pokud toto zapojím objekty[Row]!=objekty[i] tj. stejný objekt
+//						 if(objekty[Row].pohon->n==objekty[i].pohon->n && (pm.rezim==0 || pm.rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
+//						 {                            //teï je potøeba øešit situaci 1 a objekty[Row] a potom situaci 2 objekty[i]
+//							 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
+//							 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+//							 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+//							 double rRD=F->m.kontrola_rychlosti_prejezdu(pm.CT,MT,objekty[Row].PT,WT,pm.DD,pm.RD);//pokud není MT dodáno bude spoèítáno, pokud nebude vyèísleno PT a WT, bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
+//							 if(rRD!=0)//problém nastane pokud rRD tzn. rozdíl od aRD (pm.RD)
+//							 {
+//								 if(error_text!="")error_text+="<br>";//pokud existuje již pøedchozí chybový záznam je nutné odøádkovat
+//								 error_text=objekty[Row].short_name+" o "+F->m.round2double((rRD)*(1+59.0*aRDunit),3,"..")+"["+aRDunitT+"]";
+//							 }
+//						 }
+//					 }
+//					 error_text="<b>Daná volba není možná. Následující objekt(y) nemají odpovídající rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
+//				 }
 			 }
 			 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) je nutné odøádkovat
 			 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému

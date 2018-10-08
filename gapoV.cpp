@@ -50,6 +50,7 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoV::FormShow(TObject *Sender)
 {
+  UlozitGAPOV=false;
 	////////jednotky////////
 	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
 	if(T=="")CTunit=0;else CTunit=T.ToInt();
@@ -109,10 +110,9 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
 	unsigned long ColCount=34;//pevný počet slopců
 	unsigned long RowCount=1;//dynamický počet řádků, default 1 je pro 0-tý indexový řádek
-	RowCount+=F->d.v.pocet_objektu(1);
+	RowCount+=F->d.v.pocet_objektu(-1);
 	mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
-  tempCHECK=new short[5];//dynamické pole uchovávající předchozí volby checkboxů
 
 	////////plnění daty - hlavička////////
 	mGrid->Cells[0][0].Text="Pohon";
@@ -172,11 +172,11 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[n][0].Text)+mGrid->Cells[n][0].BottomMargin+mGrid->Cells[n][0].BottomBorder->Width/2+mGrid->Cells[n][0].TopMargin+mGrid->Cells[n][0].TopBorder->Width/2;
   mGrid->Rows[0].Height= 	mGrid->Rows[0].Height + 30; //30 px je výška zamečku
 	//manualfit šířky sloupců mimo nultého (ten je řešen automaticky níže pomocí SetColumnAutoFit(0);)
-	mGrid->Columns[1].Width=50;mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=23;//ostatní následující sloupce zatím default šířka
+	mGrid->Columns[1].Width=80;mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=23;//ostatní následující sloupce zatím default šířka
 
 	//nastavení velikosti nultého sloupce dle obsahu, může být umístěno kdekoliv před Show(), ale lépe před merge metodami
-	mGrid->SetColumnAutoFit(0);
-
+ 	mGrid->SetColumnAutoFit(0);  //  - odstavení chyba - odskakování
+ // mGrid->Columns[0].Width=100;
 	//sloučení buněk hlavičky PO  - vhodné za SetColumnAutoFit umístít
 	mGrid->MergeCells(12,0,13,0);mGrid->MergeCells(14,0,15,0);mGrid->MergeCells(16,0,17,0);mGrid->MergeCells(18,0,19,0);mGrid->MergeCells(20,0,21,0);mGrid->MergeCells(22,0,23,0);mGrid->MergeCells(24,0,25,0);mGrid->MergeCells(27,0,28,0);mGrid->MergeCells(29,0,30,0);mGrid->MergeCells(31,0,32,0);
 
@@ -184,16 +184,21 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	unsigned long j=1;//číslo aktuálně zpracovávaného řádku, musí začínat 1, 0 - je hlavička
 	////průchod všemi objekty bez přiřazených pohonu
 	Cvektory::TObjekt *On=F->d.v.vrat_objekty_bez_pohonu();
-	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,1);
+	unsigned long On_pocet=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false,-1);
 
 	for(unsigned long i=1;i<=On_pocet;i++)//0-nultou buňku nevyužíváme necháváme prázdnou (z důvodu totožné indexace)
 	{
 		//pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, za účelem dalšího použití, pouze duplikát objektů, proto se nepropíše do spojáku OBJEKTY
 		objekty[j]=On[i];
 		//pohony
+
 		mGrid->Cells[0][j].Text="nepřiřazen";mGrid->Cells[0][j].Background->Color=clBACKGROUND;
 		//objekty
-		mGrid->Cells[1][j].Text=On[i].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
+    AnsiString rezim;
+    if (On[i].rezim==0) rezim="S&G";
+    if (On[i].rezim==1) rezim="KK";
+    if (On[i].rezim==2) rezim="PP";
+		mGrid->Cells[1][j].Text=On[i].short_name+"-"+rezim;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 		//volby - checkboxy
 		mGrid->Cells[2][j].Type=mGrid->CHECK;mGrid->Cells[4][j].Type=mGrid->CHECK;
 		mGrid->MergeCells(2,j,3,j);
@@ -202,6 +207,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//sloučení sloupců
 		mGrid->Cells[10][j].Type=mGrid->CHECK;
 		mGrid->MergeCells(10,j,11,j);
+     if(On[i].rezim==0) {mGrid->getCheck(2,j)->Enabled=false;mGrid->getCheck(4,j)->Enabled=false;mGrid->getCheck(6,j)->Enabled=false;mGrid->getCheck(8,j)->Enabled=false;mGrid->getCheck(10,j)->Enabled=false;}
 		//parametry objektů
 		mGrid->Cells[12][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");               mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
 	//	mGrid->Cells[14][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
@@ -246,7 +252,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buňku nevyužíváme necháváme prázdnou (z důvodu totožné indexace)
 	{
    bool DVMmozno=true;
-		unsigned long O_pocet=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1);
+		unsigned long O_pocet=F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,-1);
     if(O_pocet==0)//tzn. není objektu přiřazen žádný pohon
 		{
 			//pohony bez přiřazení k objektům v gapoV nezobrazujeme a neřešíme
@@ -254,7 +260,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		else
 		{
 			//vratí formou ukazatele na pole objekty přiřazené k danému pohonu
-			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i,1);
+			Cvektory::TObjekt *O=F->d.v.vrat_objekty_vyuzivajici_pohon(i,-1);
 			unsigned long z=0;
       for(;z<O_pocet;z++)
 			{
@@ -263,7 +269,11 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				//pohony
 				mGrid->Cells[0][j].Text=O[z].pohon->name;mGrid->Cells[0][j].Background->Color=clBACKGROUND;
 				//objekty
-				mGrid->Cells[1][j].Text=O[z].short_name;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
+        AnsiString rezim;
+        if (O[z].rezim==0) rezim="S&G";
+        if (O[z].rezim==1) rezim="Kont.";
+        if (O[z].rezim==2) rezim="Post.";
+				mGrid->Cells[1][j].Text=O[z].short_name+"-"+rezim;mGrid->Cells[1][j].Background->Color=clBACKGROUND;
 				//volby - checkboxy
 
 				mGrid->Cells[4][j].Type=mGrid->CHECK;
@@ -302,12 +312,12 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				{
 					double value=O[z].pohon->Rx;
 					if(value!=floor(value))
-					{
-						double dop_Rx=Form1->m.round(value);
-						vypis("Změna rozestupu palců (Rx) není možná, jelikož rozestup není celočíselný. Doporučený rozestup : "+ AnsiString(dop_Rx));
-						mGrid->getCheck(4,j)->Enabled=false;
-						mGrid->getCheck(6,j)->Enabled=false;
-						Rx_canEdit=false;
+					{    //samostatná metoda na kontrolu Rx
+//						double dop_Rx=Form1->m.round(value);
+//						vypis("Změna rozestupu palců (Rx) není možná, jelikož rozestup není celočíselný. Doporučený rozestup : "+ AnsiString(dop_Rx));
+//						mGrid->getCheck(4,j)->Enabled=false;
+//						mGrid->getCheck(6,j)->Enabled=false;
+//						Rx_canEdit=false;
 					}
 				}
 
@@ -525,6 +535,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //		CH=NULL;delete CH;
 //	}
  	 //	vypis("",false);
+
   temp_pocitadlo++;
 	if(Col==2)
   {
@@ -542,13 +553,11 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	if(Col==2  && mGrid->getCheck(Col,Row)->ShowHint==false && input_state==FREE)
 	{
 	 vypis("Tato varianta není možná, neboť dochází ke změně mezery.",false);
-	 mGrid->getCheck(Col,Row)->Checked=false;
-	 //mGrid->getCheck(tempCHECK[Row],Row)->Checked=true;//zaškrtne předchozí volbu přesunout do onclick určitě před calculate
+	 mGrid->getCheck(Col,Row)->Checked=false; // zruší nově zaškrnutý checkbox a zachová stav předchozího (std chování checkboxu)
 	}
 
 	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
 	{
-
 	 if(objekty[Row].pohon!=NULL)
 	 {
 		int pohon_n=objekty[Row].pohon->n;
@@ -886,7 +895,15 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	{
 
 			//třetí resp. první výběrový sloupec je vždy předvybrán na true
-			mGrid->getCheck(4,Row)->Checked=true;
+	    if(objekty[Row].rezim!=0)
+      {
+      mGrid->getCheck(4,Row)->Checked=true;
+
+      }
+      else{ // SG režim - bez možnosti výběru checkboxu
+      	mGrid->getCheck(4,Row)->Checked=false;
+        {/*mGrid->getCheck(2,Row)->Enabled=false*/;mGrid->getCheck(4,Row)->Enabled=false;mGrid->getCheck(6,Row)->Enabled=false;mGrid->getCheck(8,Row)->Enabled=false;mGrid->getCheck(10,Row)->Enabled=false;}
+        }
 			mGrid->getCheck(6,Row)->Checked=false;
 			mGrid->getCheck(8,Row)->Checked=false;
 			mGrid->getCheck(10,Row)->Checked=false;
@@ -997,11 +1014,11 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[5];
 	if(mGrid->getCheck(2,Row)== NULL) 	CHECK[0]=false;
-	else CHECK[0]=mGrid->getCheck(2,Row)->Checked; if(CHECK[0])tempCHECK[Row]=2;
-	CHECK[1]=mGrid->getCheck(4,Row)->Checked; if(CHECK[1])tempCHECK[Row]=4;
-	CHECK[2]=mGrid->getCheck(6,Row)->Checked; if(CHECK[2])tempCHECK[Row]=6;
-	CHECK[3]=mGrid->getCheck(8,Row)->Checked; if(CHECK[3])tempCHECK[Row]=8;
-	CHECK[4]=mGrid->getCheck(10,Row)->Checked; if(CHECK[4])tempCHECK[Row]=10;
+	else CHECK[0]=mGrid->getCheck(2,Row)->Checked;
+	CHECK[1]=mGrid->getCheck(4,Row)->Checked;
+	CHECK[2]=mGrid->getCheck(6,Row)->Checked;
+	CHECK[3]=mGrid->getCheck(8,Row)->Checked;
+	CHECK[4]=mGrid->getCheck(10,Row)->Checked;
 //
 	//volání samotného výpočtu dle volby stanovéné pomoci checkboxu
 	if(CHECK[0])//mění se M,P, zůstává aRD, RD, Rz, Rx, R, CT, DD, K
@@ -1208,6 +1225,7 @@ void __fastcall TF_gapoV::scGPButton_OKClick(TObject *Sender)
 		}
     }
 	}
+  UlozitGAPOV=true;
   myModalResult=mrOk;
   Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
@@ -1218,7 +1236,6 @@ void __fastcall TF_gapoV::scGPButton_OKClick(TObject *Sender)
 void __fastcall TF_gapoV::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	delete[] objekty;
-  delete[] tempCHECK;
   mGrid->Delete();
 }
 //---------------------------------------------------------------------------
@@ -1302,6 +1319,15 @@ void __fastcall TF_gapoV::KonecClick(TObject *Sender)
   scGPButton_stornoClick(Sender);
   Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TF_gapoV::scScrollBar_horizontChange(TObject *Sender)
+{
+	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
+	//doladit posouvání komponent
+	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
+	else {FormPaint(this);Invalidate();}//na konci musí překreslit celé
 }
 //---------------------------------------------------------------------------
 

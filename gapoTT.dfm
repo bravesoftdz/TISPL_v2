@@ -104,7 +104,6 @@ object F_gapoTT: TF_gapoTT
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 377
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 328
@@ -184,7 +183,6 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 327
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -221,7 +219,6 @@ object F_gapoTT: TF_gapoTT
       Caption = 
         'Glob'#225'ln'#237' aktualizace parametr'#367' pohon'#367' a objekt'#367' z d'#367'vodu zm'#283'ny T' +
         'T'
-      ExplicitWidth = 198
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 291
@@ -301,7 +298,6 @@ object F_gapoTT: TF_gapoTT
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 290
     end
     object scGPGlyphButton_copy: TscGPGlyphButton
       Left = 45
