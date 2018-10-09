@@ -1531,7 +1531,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	}
     	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech
 	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech
-	if(mGrid->Cells[0][Row].Text != "nepřiřazen")
+	if(mGrid->Cells[0][Row].Text != "nepřiřazen")  //MAKR
 	{
 		if (objekty[Row].pohon != NULL)
 		{
