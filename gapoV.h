@@ -56,6 +56,7 @@ private:	// User declarations
 	enum Tinput_state{FREE,LOADING,PROGRAMOVE};//uchovává výbìr input hodnoty
  	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
+  unsigned int *indikator_skupin;//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
 public:		// User declarations
 	__fastcall TF_gapoV(TComponent* Owner);
 	//metody volané z Tmgrid
@@ -74,6 +75,7 @@ public:		// User declarations
   int slouceny_radek;
   bool Rx_canEdit;
   bool UlozitGAPOV;
+  bool canCalculate;
  // enum Tm_mm{M=0,MM};Tm_mm Delkaunit;Tm_mm Sirkaunit;Tm_mm Runit;Tm_mm Rzunit;Tm_mm Dmunit;//pøepínaè jednotek vzdálenost
 	//enum Tminsec{S=0,MIN};Tminsec Taktunit;Tminsec RDunit;Tminsec minsec;Tminsec aRDunit;//pøepínaè jednotek èasu
 };
