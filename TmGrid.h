@@ -134,8 +134,8 @@ class TmGrid
 	void CreateCell(TCells &NewCell);//vytvoøí novou buòku (alokuje ji pamì)
 	void DeleteCell(TCells &DelCell);//smae buòku z pamìti
 	void DeleteTable();//odstraní pouze tabulku z pamìti
-	void DeleteComponents();//odstraní dynamicky vytoøené komponenty, nutno volat pøed Delete()
-	void DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow);//odstraní dynamicky vytoøené komponenty do poètu sloupcù a øádkù, nutno volat pøed Delete()
+	void DeleteComponents();//odstraní dynamicky vytoøené komponenty, nutno volat pøed Delete() // pozor odstraòovaná komponenta nesmí mít focus (jinak pamìová chyba), focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
+	void DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow);//odstraní dynamicky vytoøené komponenty do poètu sloupcù a øádkù, nutno volat pøed Delete() // pozor odstraòovaná komponenta nesmí mít focus (jinak pamìová chyba), focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
 	void executeColumnsAutoFit(TCanvas *Canv);//nastaví šíøku bunìk sloupcù dle šíøky textu dle zvoleného parametru
 	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
 	void realock();//zajistí realokaci pole Cells dle nové velikosti

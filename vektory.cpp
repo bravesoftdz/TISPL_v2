@@ -1063,6 +1063,7 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 ////---------------------------------------------------------------------------
 //zvážit integraci metody do výše uvedené!!!!
 //zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
+//řeší buď dotazy přímo nad ostrými daty nebo zadáním externích parametrů napr. pro účely prediktivního testování
 AnsiString Cvektory::kontrola_rychlosti_prejezdu(TObjekt *O,double CT,double MT,double WT,double aRD,double DD,short aRDunit,unsigned short precision,AnsiString mark,bool add_decimal,AnsiString separator_aRD)
 {
 	//jednotky a definice výstupního textu

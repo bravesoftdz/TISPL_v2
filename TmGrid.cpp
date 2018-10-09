@@ -1550,6 +1550,7 @@ void TmGrid::DeleteComponents()
 }
 //---------------------------------------------------------------------------
 //odstraní dynamicky vytoøené komponenty od - do poètu sloupcù a øádkù, nutno volat pøed Delete()
+// pozor odstraòovaná komponenta nesmí mít focus (jinak pamìová chyba), focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
 void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow)
 {
 	for(unsigned long X=sCol;X<=fCol;X++)//po øádcích
@@ -1564,10 +1565,7 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 				case readNUMERIC: {TscGPNumericEdit *N=getNumeric(X,Y);N->Free();N=NULL;delete N;}break;
 				case BUTTON: {TscGPButton *B=getButton(X,Y);B->Free();B=NULL;delete B;}break;
 				case COMBO: {TscGPComboBox *C=getCombo(X,Y);C->Free();C=NULL;delete C;}break;
-				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y);
-				//CH->Destroying();
-				Form->RemoveFreeNotification(CH);
-				CH->Free();CH=NULL;delete CH;break;} ///*CH->DisposeOf();*/ ani toto ani free pøi kliku nefungují správnì
+				case CHECK:{TscGPCheckBox *CH=getCheck(X,Y);CH->Free();CH=NULL;delete CH;break;} ///*CH->DisposeOf();*/ ani toto ani free pøi kliku nefungují správnì, chyba byla, e daná komponenta mìla focus, focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
 				case RADIO:{TscGPRadioButton *R=getRadio(X,Y);R->Free();R=NULL;delete R;}break;
 			}
 		}
