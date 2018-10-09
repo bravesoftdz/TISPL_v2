@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #ifndef gapoTTH
 #define gapoTTH
 //---------------------------------------------------------------------------
@@ -15,6 +14,7 @@
 #include "scExtControls.hpp"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "scGPImages.hpp"
+#include "PO_math.h"
 //---------------------------------------------------------------------------
 class TF_gapoTT : public TForm
 {
@@ -25,7 +25,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_OK;
   TrHTMLHint *rHTMLHint_vypis;
-	TrHTMLLabel *rHTMLLabel_InfoText;
+	TrHTMLLabel *rHTMLLabel_InfoText2;
 	TrHTMLLabel *rHTMLLabel_legenda;
 	TrHTMLLabel *rHTMLLabel_legenda_titulek;
 	TscGPButton *scGPButton_storno;
@@ -39,6 +39,7 @@ __published:	// IDE-managed Components
   TMemo *Memo1;
   TButton *Button1;
 	TscGPCheckBox *scGPCheckBox_prepocitatPT;
+	TrHTMLLabel *rHTMLLabel_InfoText;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -50,8 +51,10 @@ __published:	// IDE-managed Components
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
   void __fastcall scScrollBar_horizontChange(TObject *Sender);
   void __fastcall Button1Click(TObject *Sender);
+	void __fastcall scScrollBar_verticalChange(TObject *Sender);
 
 private:	// User declarations
+	TPO_math pm;//instance na PO_math, využívá se z èásti stejných výpoètù
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
   unsigned int *indikator_skupin;//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
@@ -76,8 +79,7 @@ public:		// User declarations
   bool UlozitGAPOTT;
   bool canCalculate;
 	Tinput_state input_state;//stav vstupu
-  int myModalResult;
-  int temp_pocitadlo; // docasne reseni - kvuli posunu gridu
+	int myModalResult;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoTT *F_gapoTT;

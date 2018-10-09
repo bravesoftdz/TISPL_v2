@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef PO_mathH
 #define PO_mathH
-#include "my.h"
+#include "vektory.h" //již obsažena: //#include "my.h"
 //---------------------------------------------------------------------------
 class TPO_math
 {
@@ -47,6 +47,11 @@ class TPO_math
 		double P2K(double P);//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování (to se nepoužívá, protože se používá nacti_rx pøímo v PO)
 		double UDV();//vrátí užitnou délku vozíku dle hodnoty rotace
+		AnsiString *ErrorList;
+		void createErrorList(long RowCount);//alokuje ErrorList o velikosti RowCount (typicky mGrid->RowCount)
+		AnsiString getErrorText(long RowCount, AnsiString seperator="<br>");//vrátí slouèený ErrorText z ErrorListu (resp. jednotlivých øádkù)
+		void deleteErrorList();//odstraní ErrorList z pamìti
+		void gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,short aRDunit);
 	private:
 		Cmy m;
 		double P2K();//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P

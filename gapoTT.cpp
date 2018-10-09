@@ -1,12 +1,10 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 
 #include "gapoTT.h"
 #include "unit1.h"
 #include "TmGrid.h"
-#include "PO_math.h"
 #include "parametry_linky.h"
 #include "parametry.h"
 #include "kabina_schema.h"
@@ -66,8 +64,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	Rx_canEdit=true;
   UlozitGAPOTT=false;
   AnsiString jednotky;
-  temp_pocitadlo=0;
-  unsigned int n_skupin=F->d.v.POHONY->predchozi->n+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
+	unsigned int n_skupin=F->d.v.POHONY->predchozi->n+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
 	indikator_skupin=new unsigned int[n_skupin];//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
 	for(unsigned int i=0;i<n_skupin;i++)//i je index skupiny resp. id(n) pohonu
 	{
@@ -131,8 +128,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
   mGrid->Cells[1][0].BottomBorder->Width=2;
 	mGrid->Cells[2][0].Text="režim";
   mGrid->Cells[2][0].BottomBorder->Width=2;
-  scImage_zamky->Top=45;
-  scImage_zamky->Left=mGrid->Columns[3].Left-6;
 	//------------------------------------------------
 	mGrid->Cells[3][0].Text="RP*, CT";
 	mGrid->Cells[4][0].Text="DD, K, P, Rz, Rx, R, M";
@@ -259,7 +254,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	if(Runit==0)mGrid->Cells[30][0].Text="R - rozteè [m]"; else mGrid->Cells[30][0].Text="R - rozteè [mm]";
 	if(Rzunit==0)mGrid->Cells[32][0].Text="Rz - akt. palce - rozestup [m]"; else mGrid->Cells[32][0].Text="Rz - akt. palce - rozestup [mm]"; //pøepínání jednotek dodìlat
 	mGrid->Cells[34][0].Text="Rx - každy n-tý palec";
-
 	mGrid->Cells[36][0].Text="náhled";
  // if(aRDunit)mGrid->Cells[37][0].Text="aRD - akt. rychlost pohonu [m/min]";else mGrid->Cells[17][0].Text="aRD -  akt. rychlost pohonu [m/s]";
 
@@ -391,7 +385,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			CH=NULL;delete CH;
 		}
 		//zajistí pøepoèet daného øádku
-	 	calculate(j);
+		calculate(j);
     for(int sl=0;sl<=ColCount-1;sl++) //oddìlení pohonù silnìjší èarou
     {
     mGrid->Cells[sl][j].BottomBorder->Width=2;
@@ -702,23 +696,31 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		}
 		scScrollBar_vertical->Position=0;
 	}
-
 	//pozice komponent
 	F->m.designButton(scGPButton_OK,F_gapoTT,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoTT,2,2);
+	scImage_zamky->Left=mGrid->Left+mGrid->Columns[3].Left+3;
+	scImage_zamky->Top=mGrid->Top+2;
 	//zatím nepoužíto scGPCheckBox_prepocitatPT->Left=mGrid->Left;
 	//zatím nepoužíto scGPCheckBox_prepocitatPT->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
-	//legenda pozice
+	//legenda a popisek velikost a pozice
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky//zatím nepoužíto scGPCheckBox_prepocitatPT->Top+scGPCheckBox_prepocitatPT->Height;
+	rHTMLLabel_InfoText->Left=mGrid->Left;
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
+	rHTMLLabel_InfoText->Width=rHTMLLabel_legenda_titulek->Left-rHTMLLabel_InfoText->Left;
 	////pozice gapo formu, pokud je stejnì velký jako hlavní form, tak na 0 pozici, jinak na støed PL formu
 	if(Width==F->Width)Left=0;else Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
 	if(Height==F->Height)Top=0;else Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláøe
+
 	////zobrazení orámování
 	zobrazitFrameForm=true;
+
 	////kvùli špatnì fungující funkci otáèení koleèka myši
 	liche_otoceni_koleckem_mysi=false; //NEWR
+
+	////error list - založení
+	pm.createErrorList(mGrid->RowCount);
 
 	///uvolnìní stavu
 	input_state=FREE;
@@ -736,14 +738,6 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //PØEPÍNAÈE CHECKBOXÙ - nastaveno pro všechny sloupce, vyjma režimu SG, který má vždy jen jednu pøedem danou volbu
 	//NASTAVENÍ, ŽE NELZE ZRUŠIT CHECKED NA AKTUÁLNÌ CHECKED CHECKBOXU
 	//ZAJISTÍ, ŽE MÙŽE BÝT ZAKLIKNUT MAX. 1 CHECKBOX NA ØÁDKU  a NELZE UDELAT UNCHECK
-  if(Col>=5 &&  Col<=13)
-  {
-  temp_pocitadlo++;
-  //ShowMessage(temp_pocitadlo);
-  if(temp_pocitadlo==1)scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 6;
-  if(temp_pocitadlo==2)scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 6;
-  else scImage_zamky->Left=mGrid->Left + mGrid->Columns[3].Left + 4;
-  } //workaround ošetøení posunu tabulky
 //  DEAKTIVOVÁNO, NEFUNGUJE PROTOŽE DOCHÁZÍ K PROGRAMOVÉMU NASTAVOVÁNÍ VIDITELNOSTI CHECKBOXÙ
 //	if(Col>=3  &&  Col<=13  && mGrid->getCheck(Col,Row)->Checked==false && input_state==FREE)
 //	{
@@ -965,28 +959,28 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
                     input_state=PROGRAMOVE;
                     if(input_state==PROGRAMOVE)
                     {
-                    vypis("Došlo k automatickému pøesunutí výbìru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
-                     AnsiString T=calculate(Row,3);
-                     if(T!="") vypis(T);
-                     mGrid->getCheck(3,i)->Checked=false;
-                     mGrid->getCheck(5,i)->Checked=false;
-                     mGrid->getCheck(11,i)->Checked=false;
-                     mGrid->getCheck(13,i)->Checked=false;
-                     mGrid->getCheck(Col,i)->Checked=true;
-                     calculate(i);
-                       }
-                   }
+											vypis("Došlo k automatickému pøesunutí výbìru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+											AnsiString T=calculate(Row,3);
+											if(T!="") vypis(T);
+											mGrid->getCheck(3,i)->Checked=false;
+											mGrid->getCheck(5,i)->Checked=false;
+											mGrid->getCheck(11,i)->Checked=false;
+											mGrid->getCheck(13,i)->Checked=false;
+											mGrid->getCheck(Col,i)->Checked=true;
+											calculate(i);
+										}
+									}
 								}
 							}
 						}
 						if(pocitadlo==0)
             {
-            vypis("",false);
-
-            }
-				 }  else
+              vypis("",false);
+						}
+				 }
+				 else
          {
-           AnsiString T=calculate(Row,3);// ShowMessage("tady");
+					 AnsiString T=calculate(Row,3);// ShowMessage("tady");
            if(T!="") vypis(T); else  vypis("",false);
          }
         }
@@ -1073,7 +1067,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 if(input_state==FREE && Col>=3 && Col<=14  && canCalculate)
 	 {
 		 AnsiString T=calculate(Row,3);
-     if(T!="")F->MB(T);//pokud obsahuje chybový text
+		 if(T!="")F->MB(T);//pokud obsahuje chybový text
    		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
      if(mGrid->Cells[1][Row].Text!="nepøiøazen")
      {
@@ -1152,6 +1146,7 @@ void __fastcall TF_gapoTT::FormClose(TObject *Sender, TCloseAction &Action)
 	delete[] objekty;
 	delete[] indikator_skupin;
 	Form_objekt_nahled->pom=NULL;delete Form_objekt_nahled->pom;
+	pm.deleteErrorList();
 	scGPButton_storno->SetFocus();//workaround proti padání mGridu (padalo pøi odstraòování komponent), Focus se pøesune z mazané komponenty na mGridu, na komponentu nemazanou
 	mGrid->Delete();
 }
@@ -1191,9 +1186,6 @@ void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
 //---------------------------------------------------------------------------
 UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 {
-	//instance na PO_math, využívá se z èásti stejných výpoètù
-	TPO_math pm;
-
 	//input sekce
   //POZOR: pm.RD je vždy aRD, až v sekci case 1 je vypoèítáno skuteèné RD=DD/CT
 	pm.TT=Form_TT_kalkulator->rEditNum_takt->Value/(1+59.0*Form_parametry_linky->Taktunit);
@@ -1585,6 +1577,12 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		 }break;
 		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
+				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
+				//ShowMessage(pm.getErrorText(mGrid->RowCount));
+				rHTMLLabel_InfoText->FontColor=clRed;
+				rHTMLLabel_InfoText->Caption=pm.getErrorText(mGrid->RowCount);
+				if(rHTMLLabel_InfoText->Caption!="")scGPButton_OK->Enabled=false; else scGPButton_OK->Enabled=true;
+			 /*
 			 //jednotky
 			 AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
 
@@ -1646,8 +1644,9 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			 }
 			 //nadpis a finalizace textu
 			 AnsiString p="nepøiøazen";if(objekty[Row].pohon!=NULL)p=objekty[Row].pohon->name;if(objekty[Row].id>=100)p=F->d.v.vrat_pohon(objekty[Row].id-100)->name;
-			 AnsiString o="nepøiøazen";if(objekty[Row].id<100)objekty[Row].name;
+			 AnsiString o="nepøiøazen";if(objekty[Row].id<100)o=objekty[Row].name;
 			 if(T!="")T="Volba pro pohon <b>"+p+"</b> objekt <b>"+o+"</b> není možná z dùvodu:<br>"+T;//pokud existuje chybový záznam
+			 */
 		 }break;
 	}
 	return T;
@@ -1707,23 +1706,34 @@ void __fastcall TF_gapoTT::FormMouseMove(TObject *Sender, TShiftState Shift, int
 void __fastcall TF_gapoTT::scScrollBar_horizontChange(TObject *Sender)
 {
 	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
-	//doladit posouvání komponent
+	scImage_zamky->Left=mGrid->Left+mGrid->Columns[3].Left+3;
 	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
 	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
 }
 //---------------------------------------------------------------------------
+void __fastcall TF_gapoTT::scScrollBar_verticalChange(TObject *Sender)
+{
+	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
+	scImage_zamky->Top=mGrid->Top+2;
+	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
+	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 void __fastcall TF_gapoTT::Button1Click(TObject *Sender)
 {
-Memo1->Lines->Add("Row 4 " + mGrid->Cells[17][4].Text);
-Memo1->Lines->Add("Row 5 " + mGrid->Cells[17][5].Text);
-Memo1->Lines->Add("Row 6 " + mGrid->Cells[17][6].Text);
-Memo1->Lines->Add("Row 7 " + mGrid->Cells[17][7].Text);
-Memo1->Lines->Add("Row 8 " + mGrid->Cells[17][8].Text);
-Memo1->Lines->Add("Row 9 " + mGrid->Cells[17][9].Text);
-Memo1->Lines->Add("Row 10 " + mGrid->Cells[17][10].Text);
-Memo1->Lines->Add("Row 11 " + mGrid->Cells[17][11].Text);
-Memo1->Lines->Add("Row 12 " + mGrid->Cells[17][12].Text);
-Memo1->Lines->Add("Row 13 " + mGrid->Cells[17][13].Text);
+//	Memo1->Lines->Add("Row 4 " + mGrid->Cells[17][4].Text);
+//	Memo1->Lines->Add("Row 5 " + mGrid->Cells[17][5].Text);
+//	Memo1->Lines->Add("Row 6 " + mGrid->Cells[17][6].Text);
+//	Memo1->Lines->Add("Row 7 " + mGrid->Cells[17][7].Text);
+//	Memo1->Lines->Add("Row 8 " + mGrid->Cells[17][8].Text);
+//	Memo1->Lines->Add("Row 9 " + mGrid->Cells[17][9].Text);
+//	Memo1->Lines->Add("Row 10 " + mGrid->Cells[17][10].Text);
+//	Memo1->Lines->Add("Row 11 " + mGrid->Cells[17][11].Text);
+//	Memo1->Lines->Add("Row 12 " + mGrid->Cells[17][12].Text);
+//	Memo1->Lines->Add("Row 13 " + mGrid->Cells[17][13].Text);
+//tt+="ahojsdfasd fdsfaasdlfadsfadsf asdlfadsflasd ffdasfads f<br>"+AnsiString(++u)+"ahoj dasfdasfadsfas dasfadsfdasfas fdd11111 <br>"+AnsiString(++u);
+rHTMLLabel_InfoText->Caption=pm.getErrorText(mGrid->RowCount);
 }
 //---------------------------------------------------------------------------
 

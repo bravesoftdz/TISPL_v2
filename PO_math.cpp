@@ -1,6 +1,8 @@
 //---------------------------------------------------------------------------
 #pragma hdrstop
 #include "PO_math.h"
+#include "parametry_linky.h"
+#include "MyString.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
@@ -183,4 +185,107 @@ double TPO_math::UDV()
 {
 	return m.UDV(dJ,sJ,Rotace);
 }
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//alokuje ErrorList o velikosti RowCount (typicky mGrid->RowCount)
+void TPO_math::createErrorList(long RowCount)
+{
+	ErrorList=new AnsiString[RowCount+1];//+1 protože první øádek zùstane nevyužit
+}
+//---------------------------------------------------------------------------
+//vrátí slouèený ErrorText z ErrorListu (resp. jednotlivých øádkù)
+AnsiString TPO_math::getErrorText(long RowCount,AnsiString seperator)
+{
+	AnsiString RET="";
+	bool jiz_byl_zaznam=false;
+	for(long i=1;i<=RowCount;i++)
+	{
+		if(ErrorList[i]!="")
+		{ //mimo prvního øádku
+			if(jiz_byl_zaznam)RET+=seperator;//pokud následuje chybový text, tak odøádkuje
+			RET+=ErrorList[i];
+			jiz_byl_zaznam=true;
+		}
+	}
+	return RET;
+}
+//---------------------------------------------------------------------------
+//odstraní ErrorList z pamìti
+void TPO_math::deleteErrorList()
+{
+	delete[]ErrorList;
+}
+//---------------------------------------------------------------------------
+void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,short aRDunit)
+{
+	//instance
+	TMyString ms;
+
+	//jednotky
+	AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
+	AnsiString T="";
+
+	////VALIDACE aRD rozsahu od-do, pro objekty s pohony a pro všechny pohony
+	long 	plRow  = 0;//n øádku pohonu na PL      Form_parametry_linky->getROW(objekty[Row].pohon->n)
+	if(objekty[Row].pohon!=NULL && rezim!=100) plRow =	Form_parametry_linky->getROW(objekty[Row].pohon->n);//pro všechny objekty s pohony
+	if(objekty[Row].id>=100) plRow = Form_parametry_linky->getROW(objekty[Row].id-100);//pro nepoužívané pohony (bez pøiøazení)
+	double aRD_od=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
+	double aRD_do=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow])/(1+59.0*aRDunit);
+	if(!Form1->m.between(RD,aRD_od,aRD_do))
+	{
+		 T="Rozsah rychlosti "+m.round2double(aRD_od*(1+59.0*aRDunit),2,"..")+" až "+m.round2double(aRD_do*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+" pohonu "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+" neopovídá nastavované rychlosti "+F->m.round2double(RD*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+"!";
+	}
+
+	////testování pouze pro objekty s pohonem
+	if(objekty[Row].pohon!=NULL)//testování, zda objekt má pøiøazen pohon, pokud by byl jen pohon bez pøiøazení, jedná se o "objekt 100 v režimu 100"
+	{
+		 ////VALIDACE neceloèíselné Rx
+		 if(!m.cele_cislo(Rx))
+		 {
+			if(T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam a bude následovat další chybový je nutné odøádkovat
+			T+="Hodnota rozestupu (Rx) není celoèíselná!";
+		 }
+
+		 ////VALIDACE hlídání pøejezdu
+		 if(objekty[Row].rezim<100)//testovaný objekt má pøiøazen pohon (úvodní podmínka výšše) a zároveò se nejedná o pohon bez pøiøazení (nepoužívaný) k objektùm (tato podmínka)
+		 {
+			 AnsiString error_text="";
+			 if(objekty[Row].rezim==0 || objekty[Row].rezim==2)//situace 1 - pøípad testování zda daný objekt (v S&G èi PP), který se mìní (objekty[Row]) je co se týèe pøejezdu OK
+			 {
+				 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
+				 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+				 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+				 error_text=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[Row].n),CT,MT,WT,RD,DD,aRDunit);
+			 }
+			 else//situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
+			 {
+				 for(unsigned long i=1;i<RowCount;i++)//projde všechny zobrazené objekty
+				 {
+					 if(objekty[i].pohon!=NULL)//testovaný objekt musí mít pohon
+					 {                           //odfiltrování situace 1 tzn. objekty[Row]!=objekty[i] tj. stejný objekt - to nyní probíhá automaticky, protože se porovnávají režimy KK a proti tomu S&G èi PP, tj. nemùže se porovnávat totožný objekt
+						 if(objekty[Row].pohon->n==objekty[i].pohon->n && (rezim==0 || rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
+						 {
+							 double MT=objekty[i].MT1+objekty[i].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
+							 double WT=objekty[i].WT1+objekty[i].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
+							 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
+							 AnsiString error_text2=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[i].n),CT,MT,WT,RD,DD,aRDunit);
+							 if(error_text!="")error_text+="<br>"+error_text2;else error_text+=error_text2;//pokud existuje již pøedchozí chybový záznam a bude následovat chybový je nutné odøádkovat
+						 }
+					 }
+				 }
+			 }
+			 //výpis problém s rychlostí pøejezdu
+			 if(error_text!="")error_text="Následujícím objektùm neodpovídá rychlost pøejezdu:<br>"+error_text;//pokud je chybový text, tak pøidá popis problému
+			 //vrácení celkového výpisu
+			 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o rozmezí èi Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
+			 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
+		 }
+	}
+	//nadpis a finalizace textu
+	AnsiString p="nepøiøazen";if(objekty[Row].pohon!=NULL)p=objekty[Row].pohon->name;if(objekty[Row].id>=100)p=F->d.v.vrat_pohon(objekty[Row].id-100)->name;
+	AnsiString o="nepøiøazen";if(objekty[Row].id<100)o=objekty[Row].name;
+	if(T!="")T="<b>Volba pro pohon "+p+" objekt "+o+" není možná z dùvodu:</b><br>"+T;//pokud existuje chybový záznam
+	ErrorList[Row]=T;//uloží do celkového ErrorListu na pozici daného øádku, pøepíše starý text
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

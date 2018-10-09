@@ -503,7 +503,7 @@ double Cmy::prejezd_voziku(double delka, double rychlost_dopravniku)
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí požadovanou rychlost pøejezdu, umí si dopoèítat MT, není-li dodáno, pokud vyjde záporná rychlost tzn. nestíhá
-double Cmy::prejzd_voziku_rychlost(double CT,double MT,double PT,double WT, double DD)
+double Cmy::prejezd_voziku_rychlost(double CT,double MT,double PT,double WT,double DD)
 {
 	if(MT==0)//pokud není MT dodáno je nutné jej spoèítat, pokud nebude vyèísleno PT a WT (což mùže být vhodné na objekty v režimu PP), bude MT totožné s CT, bude tedy splnìna alespoò minumální nutná (nikoliv dostatèující) podmínka, kdy DD/CT>=aRD
 	{
@@ -516,7 +516,7 @@ double Cmy::prejzd_voziku_rychlost(double CT,double MT,double PT,double WT, doub
 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 double Cmy::kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,double DD,double aRD)
 {
-	return aRD-prejzd_voziku_rychlost(CT,MT,PT,WT,DD);
+	return aRD-prejezd_voziku_rychlost(CT,MT,PT,WT,DD);
 }
 /////////////////////////////////////////////////////////////////////////////
 //zesvìtlí nebo ztmaví barvu
