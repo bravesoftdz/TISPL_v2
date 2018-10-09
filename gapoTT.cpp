@@ -88,7 +88,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	if(T=="")Munit=0; else Munit =T.ToInt();
 
    if(Form_parametry_linky->Taktunit) jednotky=" [min]"; else  jednotky=" [s]";
-  scLabel_titulek->Caption="Globální aktualizace parametrù pohonù a objektù z dùvodu zmìny TT z "+AnsiString(F->d.v.PP.TT)+" na " +AnsiString(Form_TT_kalkulator->rEditNum_takt->Value) + AnsiString(jednotky);
+	scLabel_titulek->Caption="Globální aktualizace parametrù pohonù a objektù z dùvodu zmìny TT z "+AnsiString(F->d.v.PP.TT)+" na " +AnsiString(Form_TT_kalkulator->rEditNum_takt->Value) + AnsiString(jednotky);
 
   RDunit=1;
   aRDunit=1;
@@ -437,40 +437,42 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				mGrid->Cells[sl][j].BottomBorder->Width=2;
 			}
 
-         if(F->d.v.vrat_pohon(i)!=NULL) //vynechání SG režimu (má pøednastavené volby)
+			if(F->d.v.vrat_pohon(i)!=NULL) //vynechání SG režimu (má pøednastavené volby)
+			{
+				double value=F->d.v.vrat_pohon(i)->Rx;
+				if(value!=floor(value))
 				{
-					double value=F->d.v.vrat_pohon(i)->Rx;
-					if(value!=floor(value))
-					{
-						double dop_Rx=Form1->m.round(value);
-						//používáme v calculate(3) vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
-						mGrid->getCheck(7,j)->Enabled=false;
-						mGrid->getCheck(9,j)->Enabled=false;
-						Rx_canEdit=false;
-					}
-          else
-          {
-          	mGrid->getCheck(7,j)->Enabled=true;
-						mGrid->getCheck(9,j)->Enabled=true;
-          }
+					double dop_Rx=Form1->m.round(value);
+					//používáme v calculate(3) vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
+					mGrid->getCheck(7,j)->Enabled=false;
+					mGrid->getCheck(9,j)->Enabled=false;
+					Rx_canEdit=false;
 				}
+				else
+				{
+					mGrid->getCheck(7,j)->Enabled=true;
+					mGrid->getCheck(9,j)->Enabled=true;
+				}
+			}
 
 			//staré parametry
       mGrid->Cells[17][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->aRD*(1+59.0*aRDunit),2,"..");                      mGrid->Cells[17][j].Align=mGrid->LEFT;mGrid->Cells[17][j].Font->Color=clOLD;mGrid->Cells[18][j].Align=mGrid->LEFT;mGrid->Cells[18][j].Font->Color=clUNLOCKED;
 			mGrid->Cells[30][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->roztec*(1+999.0*Runit),2,".."); mGrid->Cells[30][j].Align=mGrid->LEFT;mGrid->Cells[30][j].Font->Color=clOLD;mGrid->Cells[31][j].Align=mGrid->LEFT;mGrid->Cells[31][j].Font->Color=clUNLOCKED;
 	 		mGrid->Cells[32][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->Rz*(1+999.0*Rzunit),2,"..");     mGrid->Cells[32][j].Align=mGrid->LEFT;mGrid->Cells[32][j].Font->Color=clOLD;mGrid->Cells[33][j].Align=mGrid->LEFT;mGrid->Cells[33][j].Font->Color=clUNLOCKED;
 			mGrid->Cells[34][j].Text=F->d.v.vrat_pohon(i)->Rx;                               mGrid->Cells[34][j].Align=mGrid->LEFT;mGrid->Cells[34][j].Font->Color=clOLD;mGrid->Cells[35][j].Align=mGrid->LEFT;mGrid->Cells[35][j].Font->Color=clUNLOCKED;
-    // 	mGrid->Cells[37][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->aRD*(1+59.0*aRDunit),2,"..");                      mGrid->Cells[37][j].Align=mGrid->LEFT;mGrid->Cells[37][j].Font->Color=clOLD;mGrid->Cells[38][j].Align=mGrid->LEFT;mGrid->Cells[38][j].Font->Color=clUNLOCKED;
+			//mGrid->Cells[37][j].Text=F->m.round2double(F->d.v.vrat_pohon(i)->aRD*(1+59.0*aRDunit),2,"..");                      mGrid->Cells[37][j].Align=mGrid->LEFT;mGrid->Cells[37][j].Font->Color=clOLD;mGrid->Cells[38][j].Align=mGrid->LEFT;mGrid->Cells[38][j].Font->Color=clUNLOCKED;
 
-    //šedivé pozadí pro nepoèítané hodnoty
-     mGrid->Cells[15][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[16][j].Background->Color=clEMPTYVALUE;
-     mGrid->Cells[19][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[20][j].Background->Color=clEMPTYVALUE;
-     mGrid->Cells[21][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[22][j].Background->Color=clEMPTYVALUE;
-     mGrid->Cells[23][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[24][j].Background->Color=clEMPTYVALUE;
-     mGrid->Cells[25][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[26][j].Background->Color=clEMPTYVALUE;
-     mGrid->Cells[27][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[28][j].Background->Color=clEMPTYVALUE;
-     mGrid->Cells[29][j].Background->Color=clEMPTYVALUE;
-     calculate(j);
+		 //šedivé pozadí pro nepoèítané hodnoty
+			mGrid->Cells[15][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[16][j].Background->Color=clEMPTYVALUE;
+			mGrid->Cells[19][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[20][j].Background->Color=clEMPTYVALUE;
+			mGrid->Cells[21][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[22][j].Background->Color=clEMPTYVALUE;
+			mGrid->Cells[23][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[24][j].Background->Color=clEMPTYVALUE;
+			mGrid->Cells[25][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[26][j].Background->Color=clEMPTYVALUE;
+			mGrid->Cells[27][j].Background->Color=clEMPTYVALUE;    mGrid->Cells[28][j].Background->Color=clEMPTYVALUE;
+			mGrid->Cells[29][j].Background->Color=clEMPTYVALUE;
+
+			//volání výpoètu nových
+			calculate(j);
 
 			j++;
 		}
@@ -698,10 +700,10 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	//pozice komponent
 	F->m.designButton(scGPButton_OK,F_gapoTT,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoTT,2,2);
-	scGPCheckBox_prepocitatPT->Left=mGrid->Left;
-	scGPCheckBox_prepocitatPT->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
+	//zatím nepoužíto scGPCheckBox_prepocitatPT->Left=mGrid->Left;
+	//zatím nepoužíto scGPCheckBox_prepocitatPT->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
 	//legenda pozice
-	rHTMLLabel_InfoText->Top=scGPCheckBox_prepocitatPT->Top+scGPCheckBox_prepocitatPT->Height;
+	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky//zatím nepoužíto scGPCheckBox_prepocitatPT->Top+scGPCheckBox_prepocitatPT->Height;
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
 	////pozice gapo formu, pokud je stejnì velký jako hlavní form, tak na 0 pozici, jinak na støed PL formu
@@ -1072,7 +1074,6 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 			if(objekty[Row].pohon!=NULL)
 			{
 				int pohon_n=objekty[Row].pohon->n;
-
 				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n) > 1)
 				{
 
@@ -1081,17 +1082,16 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					 {
              if(mGrid->Cells[1][i].Text!="nepøiøazen")
              {
-							if(objekty[i].pohon!=NULL)
-							{
-								if(pohon_n==objekty[i].pohon->n)
+							 if(objekty[i].pohon!=NULL)
+							 {
+								 if(pohon_n==objekty[i].pohon->n)
 								 {
-                   slouceny_radek=i;
-                 } //slouží k odlišení v calculate pro výpoèet, abych vìdìl na který slouèený øádek mám vrátit data
-              }
-             }
-            }
-
-         } else slouceny_radek=0;
+									 slouceny_radek=i;
+								 } //slouží k odlišení v calculate pro výpoèet, abych vìdìl na který slouèený øádek mám vrátit data
+							 }
+						 }
+					 }
+				 } else slouceny_radek=0;
         }
       }
     calculate(Row);//zajistí pøepoèet daného øádku
@@ -1157,7 +1157,6 @@ void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
 	scGPButton_OK->Caption = "Uložit";
 	if (text != "") // zobrazí a vypíše
 	{
-
 		rHTMLHint_vypis->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
 		//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
 
@@ -1166,12 +1165,12 @@ void TF_gapoTT::vypis(UnicodeString text,bool red,bool link)
 
 		if (red)
 		{
-				scGPButton_OK->Enabled=false;
-				rHTMLLabel_InfoText->Font->Color = clRed;
+			scGPButton_OK->Enabled=false;
+			rHTMLLabel_InfoText->Font->Color = clRed;
 		}
 		else
 		{
-				rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+			rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 		}
 		rHTMLLabel_InfoText->Left = 8;
 		rHTMLLabel_InfoText->Caption = text;
@@ -1274,7 +1273,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		CHECK[4]=mGrid->getCheck(11,Row)->Checked;
 		CHECK[5]=false;
 	}
-//
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(CHECK[0])//mìní se aRD, RD, CT zùstává DD, K, P, Rz, Rx, R, M, jediná varianta, která pøipadá v úvahu pro S&G režim (jiná nejde zaškrtnout/vybrat)
 	{
@@ -1325,7 +1323,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 
 		}
 	}
-
 	if(CHECK[2])//mìní se Rz, Rx, M, DD, P, CT zùstává aRD, RD, R, K
 	{
 		mGrid->Cells[18][Row].Font->Color=clLOCKED;//RD
@@ -1392,7 +1389,6 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		}
 
 	}
-
 	if(CHECK[4])//mìní se Rz, R, M, DD, P, CT zùstává aRD, RD, Rx, K
 	{
 		mGrid->Cells[16][Row].Font->Color=clLOCKED;//CT
@@ -1459,29 +1455,31 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			pm.M=pm.DD/pm.K-pm.UDV();
     }
 	}
-
-     // detekce skupin - pokud je v oblasti objekt v KK režimu a další napø. v PP- tak PP obj. neovlivní výpoèet RD, KK má pøednost. Pole se plní v onclick událostech
-    if (mGrid->Cells[1][Row].Text != "nepøiøazen") {
-        if (objekty[Row].pohon != NULL) {
-            // Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
-            switch (indikator_skupin[objekty[Row].pohon->n]) {
-            case 1: // výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
-                {
-                    pm.RD = pm.Rz / pm.TT;
-                } break;
-            case 2: // Rz,Rx
-                {
-                    pm.Rz = pm.RD * pm.TT;
-                    pm.Rx = pm.Rz / pm.R;
-                } break;
-            case 3: // Rz,R
-                {
-                    pm.Rz = pm.RD * pm.TT;
-                    pm.R = pm.Rz / pm.Rx;
-                } break;
-            }
-        }
-    }
+	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další napø. v PP- tak PP obj. neovlivní výpoèet RD, KK má pøednost. pole se plní v onclick událostech
+	if(mGrid->Cells[1][Row].Text != "nepøiøazen")
+	{
+		if (objekty[Row].pohon != NULL)
+		{
+			// Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
+			switch (indikator_skupin[objekty[Row].pohon->n])
+			{
+				case 1://výpoèet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
+				{
+					pm.RD = pm.Rz / pm.TT;
+				} break;
+				case 2://Rz,Rx
+				{
+					pm.Rz = pm.RD * pm.TT;
+					pm.Rx = pm.Rz / pm.R;
+				} break;
+				case 3://Rz,R
+				{
+					pm.Rz = pm.RD * pm.TT;
+					pm.R = pm.Rz / pm.Rx;
+				}break;
+			}
+		}
+	}
 
 	//output sekce
 	AnsiString T="";
@@ -1592,7 +1590,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			 double P_do = F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow])/(1+59.0*aRDunit);
 			 if(!Form1->m.between(pm.RD,P_od,P_do))
 			 {
-				 T="Daná volba není možná. Rozsah rychlosti <b>"+F->m.round2double(P_od,2,"..")+" až "+F->m.round2double(P_do,2,"..")+" "+aRDunitT+"</b> pohonu <b>"+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+"</b> neopovídá nastavované rychlosti <b>"+F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+"</b>!";
+				 T="Rozsah rychlosti "+F->m.round2double(P_od*(1+59.0*aRDunit),2,"..")+" až "+F->m.round2double(P_do*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+" pohonu "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+" neopovídá nastavované rychlosti "+F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+"!";
 			 }
 
 			 ////testování pouze pro objekty s pohonem
@@ -1602,7 +1600,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				 if(!F->m.cele_cislo(pm.Rx))
 				 {
 					if(T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam a bude následovat další chybový je nutné odøádkovat
-					T+="Daná volba není možná. <b>Hodnota rozestupu (Rx) není celoèíselná!</b>";
+					T+="Hodnota rozestupu (Rx) není celoèíselná!";
 				 }
 
 				 ////VALIDACE hlídání pøejezdu
@@ -1634,12 +1632,16 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 						 }
 					 }
 					 //výpis problém s rychlostí pøejezdu
-					 if(error_text!="")error_text="Daná volba není možná. <b>Následujícím objektùm neodpovídá rychlost pøejezdu:</b><br>"+error_text;//pokud je chybový text, tak pøidá popis problému
+					 if(error_text!="")error_text="Následujícím objektùm neodpovídá rychlost pøejezdu:<br>"+error_text;//pokud je chybový text, tak pøidá popis problému
 					 //vrácení celkového výpisu
-					 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
+					 if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o rozmezí èi Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
 					 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
 				 }
 			 }
+			 //nadpis a finalizace textu
+			 AnsiString p="nepøiøazen";if(objekty[Row].pohon!=NULL)p=objekty[Row].pohon->name;if(objekty[Row].id>=100)p=F->d.v.vrat_pohon(objekty[Row].id-100)->name;
+			 AnsiString o="nepøiøazen";if(objekty[Row].id<100)objekty[Row].name;
+			 if(T!="")T="Volba pro pohon <b>"+p+"</b> objekt <b>"+o+"</b> není možná z dùvodu:<br>"+T;//pokud existuje chybový záznam
 		 }break;
 	}
 	return T;
@@ -1718,5 +1720,6 @@ Memo1->Lines->Add("Row 12 " + mGrid->Cells[17][12].Text);
 Memo1->Lines->Add("Row 13 " + mGrid->Cells[17][13].Text);
 }
 //---------------------------------------------------------------------------
+
 
 

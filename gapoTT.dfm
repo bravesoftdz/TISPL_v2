@@ -24,8 +24,6 @@ object F_gapoTT: TF_gapoTT
     Top = -20
     Width = 518
     Height = 19
-    AutoSize = False
-    Caption = 'Upozorn'#283'n'#237
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -16
