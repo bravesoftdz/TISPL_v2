@@ -107,6 +107,13 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->AntiAliasing_text=true;
 	mGrid->DefaultColWidth/=2;
 
+  unsigned int n_skupin=F->d.v.POHONY->predchozi->n+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false);
+  indikator_skupin=new unsigned int[n_skupin];//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
+	for(unsigned int i=0;i<n_skupin;i++)//i je index skupiny resp. id(n) pohonu
+	{
+		indikator_skupin[i]=1;//ID oblasti 1-3
+	}
+
 	////////vytvoření tabulky s požadovaným počtem sloupců a řádků////////
 	unsigned long ColCount=34;//pevný počet slopců
 	unsigned long RowCount=1;//dynamický počet řádků, default 1 je pro 0-tý indexový řádek
@@ -207,7 +214,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		mGrid->MergeCells(6,j,7,j);mGrid->MergeCells(8,j,9,j);//sloučení sloupců
 		mGrid->Cells[10][j].Type=mGrid->CHECK;
 		mGrid->MergeCells(10,j,11,j);
-     if(On[i].rezim==0) {mGrid->getCheck(2,j)->Enabled=false;mGrid->getCheck(4,j)->Enabled=false;mGrid->getCheck(6,j)->Enabled=false;mGrid->getCheck(8,j)->Enabled=false;mGrid->getCheck(10,j)->Enabled=false;}
+     if(On[i].rezim==0) {mGrid->getCheck(2,j)->Visible=false;mGrid->getCheck(4,j)->Visible=false;mGrid->getCheck(6,j)->Visible=false;mGrid->getCheck(8,j)->Visible=false;mGrid->getCheck(10,j)->Visible=false;}
+     else  { mGrid->getCheck(2,j)->Visible=true;mGrid->getCheck(4,j)->Visible=true;mGrid->getCheck(6,j)->Visible=true;mGrid->getCheck(8,j)->Visible=true;mGrid->getCheck(10,j)->Visible=true;}
 		//parametry objektů
 		mGrid->Cells[12][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");               mGrid->Cells[12][j].Align=mGrid->LEFT;mGrid->Cells[12][j].Font->Color=clOLD;mGrid->Cells[13][j].Align=mGrid->LEFT; mGrid->Cells[13][j].Font->Color=clUNLOCKED;
 	//	mGrid->Cells[14][j].Text=F->m.round2double(On[i].RD*(1+59.0*RDunit),2,"..");                mGrid->Cells[14][j].Align=mGrid->LEFT;mGrid->Cells[14][j].Font->Color=clOLD;mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clUNLOCKED;
@@ -246,7 +254,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		j++;
 	}
 	On=NULL;delete On;
-	if(On_pocet>0)mGrid->MergeCells(0,1,0,On_pocet);//sloučení buněk objekty bez pohonu
+ //	if(On_pocet>0)mGrid->MergeCells(0,1,0,On_pocet);//sloučení buněk objekty bez pohonu
 
 	////průchod všemi pohony, které jsou přiřazeny k objektům
 	for(unsigned long i=1;i<=F->d.v.POHONY->predchozi->n;i++)//0-nultou buňku nevyužíváme necháváme prázdnou (z důvodu totožné indexace)
@@ -277,11 +285,14 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				//volby - checkboxy
 
 				mGrid->Cells[4][j].Type=mGrid->CHECK;
-				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) <= 1 )  //KK režim
-				{
-					 mGrid->Cells[2][j].Type=mGrid->CHECK;
-					 mGrid->MergeCells(2,j,3,j);
-				}
+//				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) <= 1 )  //KK režim
+//				{
+//					 mGrid->Cells[2][j].Type=mGrid->CHECK;
+//					 mGrid->MergeCells(2,j,3,j);
+//				}
+
+        mGrid->Cells[2][j].Type=mGrid->CHECK;
+        mGrid->MergeCells(2,j,3,j);
 
 				mGrid->MergeCells(4,j,5,j);//sloučení sloupců
 				mGrid->Cells[6][j].Type=mGrid->CHECK;mGrid->Cells[8][j].Type=mGrid->CHECK;
@@ -292,9 +303,12 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 				{   //pokud akt.název pohonu je odlišný od předchozího řádku, nastavím typ na CHECK.
 					if(O[z].pohon->name!=mGrid->Cells[0][j-1].Text)
 					{
-						mGrid->Cells[2][j].Type=mGrid->CHECK;
+					 //	mGrid->Cells[2][j].Type=mGrid->CHECK;
 						//barvu prvního sloupce nastvuji níže, nelze zde
 					}
+          mGrid->getCheck(2,j)->Options->FrameNormalColor=C1;
+					mGrid->getCheck(2,j)->OptionsChecked->FrameNormalColor=C1;
+
 					mGrid->getCheck(4,j)->Options->FrameNormalColor=C2;
 					mGrid->getCheck(4,j)->OptionsChecked->FrameNormalColor=C2;
 
@@ -351,13 +365,13 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
         if(DVMmozno==true)
         {
          if(F->m.UDV(O[z].rotace)+O[z].mezera==F->m.UDV(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,O[z].rotace)+F->m.mezera_mezi_voziky(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value,Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value,O[z].rotace,O[z].pohon->roztec,0))DVMmozno=true;
-         else DVMmozno=false;
+         else DVMmozno=true;//DVMmozno=false;
         }
 				//posun na další řádek výsledné tabulky
 				j++;
 			}
 			mGrid->MergeCells(0,j-z,0,j-z+O_pocet-1);//sloučení buněk pohony
-			mGrid->MergeCells(2,j-z,3,j-z+O_pocet-1);//sloučení buněk 2-3 - první checkbox
+		//	mGrid->MergeCells(2,j-z,3,j-z+O_pocet-1);//sloučení buněk 2-3 - první checkbox
      	mGrid->MergeCells(14,j-z,14,j-z+O_pocet-1);//sloučení RP
       mGrid->MergeCells(15,j-z,15,j-z+O_pocet-1);//sloučení RP - výpočet
       mGrid->MergeCells(27,j-z,27,j-z+O_pocet-1);//sloučení R
@@ -374,8 +388,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 
       if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(i,1) > 1 )  //KK režim
       { //nelze nastavit hned, v horní části, společně s typem Check, ale až zde
-        mGrid->getCheck(2,j-z)->Options->FrameNormalColor=C1;
-        mGrid->getCheck(2,j-z)->OptionsChecked->FrameNormalColor=C1;
+      //  mGrid->getCheck(2,j-z)->Options->FrameNormalColor=C1;
+      //  mGrid->getCheck(2,j-z)->OptionsChecked->FrameNormalColor=C1;
       }
        // ShowMessage((short)DVMmozno);
       if(DVMmozno) {mGrid->getCheck(2,j-z)->Enabled=true;  mGrid->getCheck(2,j-z)->ShowHint=true; mGrid->getCheck(2,j-z)->Hint="mohu";  }
@@ -550,343 +564,736 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
   else scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 3;
   }
 
-	if(Col==2  && mGrid->getCheck(Col,Row)->ShowHint==false && input_state==FREE)
+
+
+
+  	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
-	 vypis("Tato varianta není možná, neboť dochází ke změně mezery.",false);
-	 mGrid->getCheck(Col,Row)->Checked=false; // zruší nově zaškrnutý checkbox a zachová stav předchozího (std chování checkboxu)
+    canCalculate=false;
+		TscGPCheckBox *CH=mGrid->getCheck(Col+2,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col+4,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+6,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+8,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+    canCalculate=true;
 	}
 
-	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
 	{
-	 if(objekty[Row].pohon!=NULL)
-	 {
-		int pohon_n=objekty[Row].pohon->n;
+    canCalculate=false;
+		TscGPCheckBox *CH=mGrid->getCheck(Col-2,Row);
+		CH->Checked=false;
 
-		for(int i=1;i<=mGrid->RowCount-1;i++)
+		TscGPCheckBox *I=mGrid->getCheck(Col+2,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+4,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+6,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+    canCalculate=true;
+	}
+
+	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+    canCalculate=false;
+		TscGPCheckBox *CH=mGrid->getCheck(Col-4,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-2,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col+2,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+4,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+    canCalculate=true;
+	}
+
+	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+   canCalculate=false;
+		TscGPCheckBox *CH=mGrid->getCheck(Col-6,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-4,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col-2,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col+2,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+    canCalculate=true;
+	}
+
+	if(Col==10 &&  mGrid->getCheck(Col,Row)->Checked && 	mGrid->Cells[2][Row].Text!="S&G")
+	{
+    canCalculate=false;
+		TscGPCheckBox *CH=mGrid->getCheck(Col-8,Row);
+		CH->Checked=false;
+
+		TscGPCheckBox *I=mGrid->getCheck(Col-6,Row);
+		I->Checked=false;
+
+		TscGPCheckBox *J=mGrid->getCheck(Col-4,Row);
+		J->Checked=false;
+
+		TscGPCheckBox *K=mGrid->getCheck(Col-2,Row);
+		K->Checked=false;
+
+		CH=NULL;delete CH;I=NULL;delete I;J=NULL;delete J;K=NULL;delete K;
+    canCalculate=true;
+	}
+
+
+
+
+   	if(Col>=2 && Col<=3 && input_state==FREE && objekty[Row].rezim==1)
+	{
+		if(mGrid->getCheck(2,Row)->Checked==true)
 		{
-			if(objekty[i].pohon!=NULL)   //pokud v oblasti vstoupím do levého sloučeného sloupce, zruším všechny ostatní checked hodnoty
-			{
-			 if(pohon_n == objekty[i].pohon->n)
+			// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
+			 if(objekty[Row].pohon!=NULL)
 			 {
-				mGrid->getCheck(Col+2,i)->Checked=false;
-				mGrid->getCheck(Col+4,i)->Checked=false;
-				mGrid->getCheck(Col+6,i)->Checked=false;
-				mGrid->getCheck(Col+8,i)->Checked=false;
-				leva_oblast=true;
-			 }
-			}
-		}
-	 }  //std chování, mimo oblasti
-	 else
-	 {
-		mGrid->getCheck(Col+2,Row)->Checked=false;
-		mGrid->getCheck(Col+4,Row)->Checked=false;
-		mGrid->getCheck(Col+6,Row)->Checked=false;
-		mGrid->getCheck(Col+8,Row)->Checked=false;
-		leva_oblast=false;
-	 }
-	input_state=FREE;
-	}
-
-
-	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
-	{
-		if(objekty[Row].pohon!=NULL)
-		{
-			int pohon_n=objekty[Row].pohon->n;
-			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
-			{
-			//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
-			//ShowMessage("jsem sam KK, mohu");
-			mGrid->getCheck(Col-2,Row)->Checked=false;
-			mGrid->getCheck(Col+2,Row)->Checked=false;
-			mGrid->getCheck(Col+4,Row)->Checked=false;
-			mGrid->getCheck(Col+6,Row)->Checked=false;
-			}
-			else // musím najít a vybrat správný řádek v prvním sloupci, který dám Checked=false
-			{
-				for(int i=1;i<=mGrid->RowCount-1;i++)
-				{
-					 if(objekty[i].pohon!=NULL)
-					 {
-							if(pohon_n == objekty[i].pohon->n)
-							{
-								 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neřeším (pamětová chyba, kvůli sloučeným buňkám)
-								 if(pruchod==1 && input_state==FREE &&  mGrid->getCheck(2,i)->Checked==true) 	mGrid->getCheck(2,i)->Checked=false;
-
-                 if(mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
-                 {
-
-                 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
-								 mGrid->getCheck(8,i)->Checked=false;
-								 mGrid->getCheck(10,i)->Checked=false;
-                 input_state=PROGRAMOVE;
-                 mGrid->getCheck(4,i)->Checked=true;
-                 calculate(i);
-                  } else { mGrid->getCheck(6,Row)->Checked=false;  vypis("",false);  }
-
-							}
-					 }
-				}
-			}
-	 }
-	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
-	 {
-		 mGrid->getCheck(Col-2,Row)->Checked=false;
-		 mGrid->getCheck(Col+2,Row)->Checked=false;
-		 mGrid->getCheck(Col+4,Row)->Checked=false;
-		 mGrid->getCheck(Col+6,Row)->Checked=false;
-
-	 }
-	 pruchod=0;
-	 leva_oblast=false;
-	 input_state=FREE;
-	}
-
-	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
-	{
-	 if(objekty[Row].pohon!=NULL)
-	 {
-		int pohon_n=objekty[Row].pohon->n;
-		if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1)
-		{
-		//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
-			 mGrid->getCheck(Col-4,Row)->Checked=false;
-			 mGrid->getCheck(Col-2,Row)->Checked=false;
-			 mGrid->getCheck(Col+2,Row)->Checked=false;
-			 mGrid->getCheck(Col+4,Row)->Checked=false;
-		}
-		else // musím najít a vybrat správný řádek v prvním sloupci, který dám Checked=false
-		{
-			for(int i=1;i<=mGrid->RowCount-1;i++)
-			{
-				if(objekty[i].pohon!=NULL)
-				{
-					 if(pohon_n == objekty[i].pohon->n)
-					 {
-						 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neřeším (pamětová chyba, kvůli sloučeným buňkám)
-					 if(pruchod==1 && input_state==FREE &&  mGrid->getCheck(2,i)->Checked==true) 	mGrid->getCheck(2,i)->Checked=false;
-
-                 if(mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
-                 {
-                 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
-								 mGrid->getCheck(8,i)->Checked=false;
-								 mGrid->getCheck(10,i)->Checked=false;
-                 input_state=PROGRAMOVE;
-                 mGrid->getCheck(6,i)->Checked=true;
-                 calculate(i);
-                  } else
-                  {
-                  	 mGrid->getCheck(4,Row)->Checked=false;
-                     vypis("",false);
-                  }
-					 }
-
-				}
-			}
-
-		}
-	 }
-	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
-	 {
-	 //ShowMessage("jsem bez pohonu, mohu");
-	 mGrid->getCheck(Col-4,Row)->Checked=false;
-	 mGrid->getCheck(Col-2,Row)->Checked=false;
-	 mGrid->getCheck(Col+2,Row)->Checked=false;
-	 mGrid->getCheck(Col+4,Row)->Checked=false;
-	 }
-	 pruchod=0;
-	 leva_oblast=false;
-	 input_state=FREE;
-	}
-
-	if(Col==8 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
-	{
-
-	 if(objekty[Row].pohon!=NULL)
-	 {
-		int pohon_n=objekty[Row].pohon->n;
-		if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
-		{
-		//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
-
-		mGrid->getCheck(Col-6,Row)->Checked=false;
-		mGrid->getCheck(Col-4,Row)->Checked=false;
-		mGrid->getCheck(Col-2,Row)->Checked=false;
-		mGrid->getCheck(Col+2,Row)->Checked=false;
-		}
-		else // musím najít a vybrat správný řádek v prvním sloupci, který dám Checked=false
-		{
-
-			for(int i=1;i<=mGrid->RowCount-1;i++)
-			{
-				if(objekty[i].pohon!=NULL)
-				{
-					 if(pohon_n == objekty[i].pohon->n)
-					 {
-					  pruchod++;  //workaround -  ve foru najdu první výskyt a další už neřeším (pamětová chyba, kvůli sloučeným buňkám)
-				   if(pruchod==1 && input_state==FREE &&  mGrid->getCheck(2,i)->Checked==true) 	mGrid->getCheck(2,i)->Checked=false;
-
-                 if(mGrid->getCheck(4,i)->Checked==true || mGrid->getCheck(6,i)->Checked==true)
-                 {
-                 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
-								 mGrid->getCheck(4,i)->Checked=false;
-								 mGrid->getCheck(6,i)->Checked=false;
-                 input_state=PROGRAMOVE;
-                 mGrid->getCheck(8,i)->Checked=true;
-                 calculate(i);
-                  } else {   mGrid->getCheck(10,Row)->Checked=false;    vypis("",false);    }
-					 }
-				}
-			}
-		}
-	 }
-	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
-	 {
-	 //ShowMessage("jsem bez pohonu, mohu");
-		mGrid->getCheck(Col-6,Row)->Checked=false;
-		mGrid->getCheck(Col-4,Row)->Checked=false;
-		mGrid->getCheck(Col-2,Row)->Checked=false;
-		mGrid->getCheck(Col+2,Row)->Checked=false;
-	 }
-	 pruchod=0;
-	 leva_oblast=false;
-	 input_state=FREE;
-	}
-
-	if(Col==10 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
-	{
-
-	 if(objekty[Row].pohon!=NULL)
-	 {
-		int pohon_n=objekty[Row].pohon->n;
-		if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) <= 1) //default šedá barva je záporná, proto mohu nastavovat
-		{
-		//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
-
-		mGrid->getCheck(Col-8,Row)->Checked=false;
-		mGrid->getCheck(Col-6,Row)->Checked=false;
-		mGrid->getCheck(Col-4,Row)->Checked=false;
-		mGrid->getCheck(Col-2,Row)->Checked=false;
-		}
-		else // musím najít a vybrat správný řádek v prvním sloupci, který dám Checked=false
-		{
-
-			for(int i=1;i<=mGrid->RowCount-1;i++)
-			{
-				if(objekty[i].pohon!=NULL)
-				{
-					if(pohon_n == objekty[i].pohon->n)
+					int pohon_n=objekty[Row].pohon->n;
+          indikator_skupin[pohon_n]=1;
+					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
 					{
-						 pruchod++;  //workaround -  ve foru najdu první výskyt a další už neřeším (pamětová chyba, kvůli sloučeným buňkám)
-						 if(pruchod==1 && input_state==FREE &&  mGrid->getCheck(2,i)->Checked==true) 	mGrid->getCheck(2,i)->Checked=false;
+					 //průchod celé tabulky
 
-                 if(mGrid->getCheck(4,i)->Checked==true || mGrid->getCheck(6,i)->Checked==true)
-                 {
-                 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
-								 mGrid->getCheck(4,i)->Checked=false;
-								 mGrid->getCheck(6,i)->Checked=false;
-                 input_state=PROGRAMOVE;
-                 mGrid->getCheck(10,i)->Checked=true;
-                 calculate(i);
-                  }    else   { mGrid->getCheck(8,Row)->Checked=false;  vypis("",false); }
-					}
-				}
-			}
+						for(int i=1;i<=mGrid->RowCount-1;i++)
+						{
+							if(objekty[i].pohon!=NULL &&  objekty[i].rezim==1)
+							{
+								if(pohon_n==objekty[i].pohon->n)
+								{
+									if (mGrid->getCheck(4,i)->Checked==true   ||  mGrid->getCheck(6,i)->Checked==true ||  mGrid->getCheck(8,i)->Checked==true ||  mGrid->getCheck(10,i)->Checked==true)
+									{
+                   input_state=PROGRAMOVE;
+                //   pocitadlo++;
+
+                    if(input_state==PROGRAMOVE)
+                    {
+										 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+                     mGrid->getCheck(4,i)->Checked=false;
+                     mGrid->getCheck(6,i)->Checked=false;
+                     mGrid->getCheck(8,i)->Checked=false;
+                     mGrid->getCheck(10,i)->Checked=false;
+                     mGrid->getCheck(Col,i)->Checked=true;
+                     calculate(i);
+                     }
+									}
+								}
+							}
+						}
+					 //	if(pocitadlo==0) vypis("",false);
+					 } else vypis("",false);
+			 }
 		}
+    input_state=FREE;
 	 }
-	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
-	 {
-	 //ShowMessage("jsem bez pohonu, mohu");
-		mGrid->getCheck(Col-8,Row)->Checked=false;
-		mGrid->getCheck(Col-6,Row)->Checked=false;
-		mGrid->getCheck(Col-4,Row)->Checked=false;
-		mGrid->getCheck(Col-2,Row)->Checked=false;
+     // druhá oblast - prostřední
+		if(Col>=4 && Col<=6 && input_state==FREE && objekty[Row].rezim==1)
+		{
+			if(mGrid->getCheck(4,Row)->Checked==true ||  mGrid->getCheck(6,Row)->Checked==true)
+			{
+		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
+				if(objekty[Row].pohon!=NULL)
+				{
+					int pohon_n=objekty[Row].pohon->n;
+          indikator_skupin[pohon_n]=2;
+					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+					{
+						//průchod celé tabulky
+					 //	pocitadlo=0;
+						for(int i=1;i<=mGrid->RowCount-1;i++)
+						{
+							if(objekty[i].pohon!=NULL &&  objekty[i].rezim==1)
+							{
+								if(pohon_n==objekty[i].pohon->n)
+								{
+									if(mGrid->getCheck(2,i)->Checked==true   ||  mGrid->getCheck(8,i)->Checked==true ||  mGrid->getCheck(10,i)->Checked==true)
+									{
+							   	//   pocitadlo++;
+                    input_state=PROGRAMOVE;
+                    if(input_state==PROGRAMOVE)
+                    {
+                    vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+                    // AnsiString T=calculate(Row,3);
+                    // if(T!="") vypis(T);
+                     mGrid->getCheck(2,i)->Checked=false;
+                     mGrid->getCheck(8,i)->Checked=false;
+                     mGrid->getCheck(10,i)->Checked=false;
+                     mGrid->getCheck(Col,i)->Checked=true;
+                     calculate(i);
+                       }
+                   }
+								}
+							}
+						}
+					//	if(pocitadlo==0)
+            {
+            vypis("",false);
+
+            }
+				 }  else
+         {
+           AnsiString T=calculate(Row,3);// ShowMessage("tady");
+           if(T!="") vypis(T); else  vypis("",false);
+         }
+        }
+			}
+     input_state=FREE;
 	 }
-	 pruchod=0;
-	 leva_oblast=false;
-	 input_state=FREE;
-	}	 //KONEC PŘEPÍNAČŮ
+
+//	// třetí oblast - vpravo
+		if(Col>=8 && Col<=10 && input_state==FREE && objekty[Row].rezim==1)
+		{
+			if(mGrid->getCheck(8,Row)->Checked==true ||  mGrid->getCheck(10,Row)->Checked==true)
+			{
+		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
+				if(objekty[Row].pohon!=NULL)
+				{
+					int pohon_n=objekty[Row].pohon->n;
+          indikator_skupin[pohon_n]=3;
+					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+					{
+						//průchod celé tabulky
+					 //	pocitadlo=0;
+						for(int i=1;i<=mGrid->RowCount-1;i++)
+						{
+							if(objekty[i].pohon!=NULL &&   objekty[i].rezim==1)
+							{
+								if(pohon_n==objekty[i].pohon->n)
+								{
+									if(mGrid->getCheck(2,i)->Checked==true   ||  mGrid->getCheck(4,i)->Checked==true ||  mGrid->getCheck(6,i)->Checked==true)
+									{
+							   //	   pocitadlo++;
+                    input_state=PROGRAMOVE;
+                    if(input_state==PROGRAMOVE)
+                    {
+                    vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+                     mGrid->getCheck(2,i)->Checked=false;
+                     mGrid->getCheck(4,i)->Checked=false;
+                     mGrid->getCheck(6,i)->Checked=false;
+                     mGrid->getCheck(Col,i)->Checked=true;
+                     calculate(i);
+                       }
+                   }
+								}
+							}
+						}
+					 //	if(pocitadlo==0) vypis("",false);
+					 } else  vypis("",false);
+				 }
+			}
+     input_state=FREE;
+	 }
+
+
+
+
+
+
+//	if(Col==2  && mGrid->getCheck(Col,Row)->ShowHint==false && input_state==FREE)
+//	{
+//	 vypis("Tato varianta není možná, neboť dochází ke změně mezery.",false);
+//	 mGrid->getCheck(Col,Row)->Checked=false; // zruší nově zaškrnutý checkbox a zachová stav předchozího (std chování checkboxu)
+//	}
+
+//	if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE && objekty[Row].rezim==1)  //KK režim
+//	{
+//	 if(objekty[Row].pohon!=NULL)
+//	 {
+//		int pohon_n=objekty[Row].pohon->n;
+//
+//		for(int i=1;i<=mGrid->RowCount-1;i++)
+//		{
+//			if(objekty[i].pohon!=NULL &&  objekty[i].rezim==1)   //pokud v oblasti vstoupím do levého sloupce, který je v KK režimu, přesunu k němu i ostatní KK objekty
+//			{
+//			 if(pohon_n == objekty[i].pohon->n)
+//			 {
+//				mGrid->getCheck(Col+2,i)->Checked=false;
+//				mGrid->getCheck(Col+4,i)->Checked=false;
+//				mGrid->getCheck(Col+6,i)->Checked=false;
+//				mGrid->getCheck(Col+8,i)->Checked=false;
+//        input_state=PROGRAMOVE;
+//        mGrid->getCheck(2,i)->Checked=true;
+//				leva_oblast=true;
+//			 }
+//			}
+//		}
+//	 }  //std chování, mimo oblasti
+//	 else
+//	 {
+//		mGrid->getCheck(Col+2,Row)->Checked=false;
+//		mGrid->getCheck(Col+4,Row)->Checked=false;
+//		mGrid->getCheck(Col+6,Row)->Checked=false;
+//		mGrid->getCheck(Col+8,Row)->Checked=false;
+//		leva_oblast=false;
+//	 }
+//	input_state=FREE;
+//	}
+//
+//
+//  if(Col==2 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE && objekty[Row].rezim==2)   //PP režim
+//	{
+//	 if(objekty[Row].pohon!=NULL)
+//	 {
+//		int pohon_n=objekty[Row].pohon->n;
+//
+//			if(objekty[Row].pohon!=NULL &&  objekty[Row].rezim==2)   //pokud v oblasti vstoupím do levého sloupce, který je v PP režimu, přesunu k němu i ostatní KK objekty
+//			{
+//			 if(pohon_n == objekty[Row].pohon->n)
+//			 {
+//        input_state=PROGRAMOVE;
+//        mGrid->getCheck(Col+2,Row)->Checked=false;
+//		    mGrid->getCheck(Col+4,Row)->Checked=false;
+//		    mGrid->getCheck(Col+6,Row)->Checked=false;
+//		    mGrid->getCheck(Col+8,Row)->Checked=false;
+//        mGrid->getCheck(2,Row)->Checked=true;
+//				leva_oblast=true;
+//			 }
+//			}
+//	 //	}
+//	 }  //std chování, mimo oblasti
+//	 else
+//	 {
+//		mGrid->getCheck(Col+2,Row)->Checked=false;
+//		mGrid->getCheck(Col+4,Row)->Checked=false;
+//		mGrid->getCheck(Col+6,Row)->Checked=false;
+//		mGrid->getCheck(Col+8,Row)->Checked=false;
+//		leva_oblast=false;
+//	 }
+//	input_state=FREE;
+//	}
+//
+//
+//	if(Col==4 && input_state==FREE)
+//	{
+//		if(mGrid->getCheck(4,Row)->Checked==true)
+//		{
+//			// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
+//			 if(objekty[Row].pohon!=NULL)
+//			 {
+//					int pohon_n=objekty[Row].pohon->n;
+//       //   indikator_skupin[pohon_n]=1;
+//					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,-1) > 1)
+//					{
+//					 //průchod celé tabulky
+//					//	pocitadlo=0;
+//						for(int i=1;i<=mGrid->RowCount-1;i++)
+//						{
+//							if(objekty[i].pohon!=NULL)
+//							{
+//								if(pohon_n==objekty[i].pohon->n)
+//								{
+//									if (mGrid->getCheck(2,i)->Checked==true   || mGrid->getCheck(6,i)->Checked==true  ||  mGrid->getCheck(8,i)->Checked==true ||  mGrid->getCheck(10,i)->Checked==true)
+//									{
+//                   input_state=PROGRAMOVE;
+//
+//                    if(input_state==PROGRAMOVE)
+//                    {
+//                   // ShowMessage("4-6");
+//										 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+//                   if(objekty[i].rezim!=2 && objekty[Row].rezim!=2)  mGrid->getCheck(2,i)->Checked=false;
+//                   if(objekty[Row].rezim==2 && mGrid->getCheck(2,Row)->Checked==true)
+//                   {
+//                     ShowMessage("PP1");
+//                    mGrid->getCheck(2,Row)->Checked=false;
+//
+//                   }
+//                   if(objekty[Row].rezim==1 && mGrid->getCheck(6,Row)->Checked==true ) {
+//                      ShowMessage("KK1");
+//                   //  mGrid->getCheck(6,i)->Checked=false;
+//                     mGrid->getCheck(8,i)->Checked=false;
+//                     mGrid->getCheck(10,i)->Checked=false;
+//                     if(objekty[i].rezim==1) mGrid->getCheck(Col,i)->Checked=true;
+//
+//                     }
+//                     calculate(i);
+//                     }
+//									}
+//								}
+//							}
+//						}
+//						//if(pocitadlo==0) vypis("",false);
+//					 } else
+//           {
+//      mGrid->getCheck(Col,Row)->Checked=true;
+//      mGrid->getCheck(2,Row)->Checked=false;
+//			mGrid->getCheck(6,Row)->Checked=false;
+//			mGrid->getCheck(8,Row)->Checked=false;
+//			mGrid->getCheck(10,Row)->Checked=false;
+//
+//           vypis("",false);
+//         //  ShowMessage("X");
+//           }
+//			 }
+//		}
+//    input_state=FREE;
+//	 }
+//
+//
+//   	if(Col==6 && input_state==FREE)
+//	{
+//		if(mGrid->getCheck(6,Row)->Checked==true)
+//		{
+//			// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
+//			 if(objekty[Row].pohon!=NULL)
+//			 {
+//					int pohon_n=objekty[Row].pohon->n;
+//       //   indikator_skupin[pohon_n]=1;
+//					if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,-1) > 1)
+//					{
+//					 //průchod celé tabulky
+//					//	pocitadlo=0;
+//						for(int i=1;i<=mGrid->RowCount-1;i++)
+//						{
+//							if(objekty[i].pohon!=NULL)
+//							{
+//								if(pohon_n==objekty[i].pohon->n)
+//								{
+//									if (mGrid->getCheck(2,i)->Checked==true   || mGrid->getCheck(4,i)->Checked==true  ||  mGrid->getCheck(8,i)->Checked==true ||  mGrid->getCheck(10,i)->Checked==true)
+//									{
+//                   input_state=PROGRAMOVE;
+//
+//                    if(input_state==PROGRAMOVE)
+//                    {
+//                   // ShowMessage("4-6");
+//										 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+//                   if(objekty[i].rezim!=2 && objekty[Row].rezim!=2)  mGrid->getCheck(2,i)->Checked=false;
+//                   if(objekty[Row].rezim==2 && mGrid->getCheck(2,Row)->Checked==true)
+//                   {
+//                     ShowMessage("PP2");
+//                    mGrid->getCheck(2,Row)->Checked=false;
+//
+//                   }
+//                   if(objekty[Row].rezim==1) {
+//                      ShowMessage("KK2");
+//                   //  mGrid->getCheck(4,i)->Checked=false;
+//                     mGrid->getCheck(8,i)->Checked=false;
+//                     mGrid->getCheck(10,i)->Checked=false;
+//                     if(objekty[i].rezim==1) mGrid->getCheck(Col,i)->Checked=true;
+//
+//                     }
+//                     calculate(i);
+//                     }
+//									}
+//								}
+//							}
+//						}
+//						//if(pocitadlo==0) vypis("",false);
+//					 } else
+//           {
+//      mGrid->getCheck(Col,Row)->Checked=true;
+//      mGrid->getCheck(2,Row)->Checked=false;
+//			mGrid->getCheck(6,Row)->Checked=false;
+//			mGrid->getCheck(8,Row)->Checked=false;
+//			mGrid->getCheck(10,Row)->Checked=false;
+//
+//           vypis("",false);
+//         //  ShowMessage("X");
+//           }
+//			 }
+//		}
+//    input_state=FREE;
+//	 }
+
+//
+//	if(Col==6 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+//	{
+//		if(objekty[Row].pohon!=NULL &&  objekty[Row].rezim==1)
+//		{
+//			int pohon_n=objekty[Row].pohon->n;
+//			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,-1) <= 1)
+//			{
+//			//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
+//			mGrid->getCheck(Col-4,Row)->Checked=false;
+//			mGrid->getCheck(Col-2,Row)->Checked=false;
+//			mGrid->getCheck(Col+2,Row)->Checked=false;
+//			mGrid->getCheck(Col+4,Row)->Checked=false;
+//			}
+//			else // musím najít a vybrat správný řádek v prvním sloupci, který dám Checked=false
+//			{
+//				for(int i=1;i<=mGrid->RowCount-1;i++)
+//				{
+//					 if(objekty[i].pohon!=NULL)
+//					 {
+//							if(pohon_n == objekty[i].pohon->n  &&  objekty[i].rezim==1)
+//							{
+//                 if(mGrid->getCheck(2,i)->Checked==true || mGrid->getCheck(4,i)->Checked==true || mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
+//                 {
+//                 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+//                 input_state=PROGRAMOVE;
+//                 mGrid->getCheck(2,i)->Checked=false;
+//                 mGrid->getCheck(4,i)->Checked=false;
+//								 mGrid->getCheck(8,i)->Checked=false;
+//								 mGrid->getCheck(10,i)->Checked=false;
+//                 //ShowMessage(i);
+//                 mGrid->getCheck(6,i)->Checked=true;
+//                 calculate(i);
+//                  }// else { mGrid->getCheck(6,Row)->Checked=false;  vypis("",false);  }
+//
+//							}
+//              if(pohon_n == objekty[i].pohon->n  &&  objekty[i].rezim==2) //PP rezim   - 2 checkbox nechávám
+//							{
+//               if(mGrid->getCheck(4,i)->Checked==true || mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
+//               {
+//                 input_state=PROGRAMOVE;
+//                 mGrid->getCheck(4,i)->Checked=false;
+//								 mGrid->getCheck(8,i)->Checked=false;
+//								 mGrid->getCheck(10,i)->Checked=false;
+//                 mGrid->getCheck(6,i)->Checked=true;
+//                 calculate(i);
+//					       }
+//              }
+//				}
+//			}
+//    }
+//	 }
+//	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+//	 {
+//		 mGrid->getCheck(Col-4,Row)->Checked=false;
+//		 mGrid->getCheck(Col-2,Row)->Checked=false;
+//		 mGrid->getCheck(Col+2,Row)->Checked=false;
+//		 mGrid->getCheck(Col+4,Row)->Checked=false;
+//
+//	 }
+//	 pruchod=0;
+//	 leva_oblast=false;
+//	 input_state=FREE;
+//	}
+//
+//
+//	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+//	{
+//		if(objekty[Row].pohon!=NULL &&  objekty[Row].rezim==1)
+//		{
+//			int pohon_n=objekty[Row].pohon->n;
+//			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,0) <= 1)
+//			{
+//			//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
+//			mGrid->getCheck(Col-2,Row)->Checked=false;
+//			mGrid->getCheck(Col+2,Row)->Checked=false;
+//			mGrid->getCheck(Col+4,Row)->Checked=false;
+//			mGrid->getCheck(Col+6,Row)->Checked=false;
+//			}
+//			else // musím najít a vybrat správný řádek v prvním sloupci, který dám Checked=false
+//			{
+//				for(int i=1;i<=mGrid->RowCount-1;i++)
+//				{
+//					 if(objekty[i].pohon!=NULL)
+//					 {
+//							if(pohon_n == objekty[i].pohon->n  &&  objekty[i].rezim==1)
+//							{
+//                 if(mGrid->getCheck(2,i)->Checked==true || mGrid->getCheck(6,i)->Checked==true || mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
+//                 {
+//                 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+//                 input_state=PROGRAMOVE;
+//                 mGrid->getCheck(2,i)->Checked=false;
+//                 mGrid->getCheck(6,i)->Checked=false;
+//								 mGrid->getCheck(8,i)->Checked=false;
+//								 mGrid->getCheck(10,i)->Checked=false;
+//                 //ShowMessage(i);
+//                 mGrid->getCheck(4,i)->Checked=true;
+//                 calculate(i);
+//                  }// else { mGrid->getCheck(6,Row)->Checked=false;  vypis("",false);  }
+//
+//							}
+//              if(pohon_n == objekty[i].pohon->n  &&  objekty[i].rezim==2) //PP rezim   - 2 checkbox nechávám
+//							{
+//               if(mGrid->getCheck(6,i)->Checked==true || mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
+//               {
+//                 input_state=PROGRAMOVE;
+//                 mGrid->getCheck(6,i)->Checked=false;
+//								 mGrid->getCheck(8,i)->Checked=false;
+//								 mGrid->getCheck(10,i)->Checked=false;
+//                 mGrid->getCheck(4,i)->Checked=true;
+//                 calculate(i);
+//					       }
+//              }
+//				}
+//			}
+//    }
+//	 }
+//	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+//	 {
+//		 mGrid->getCheck(Col-2,Row)->Checked=false;
+//		 mGrid->getCheck(Col+2,Row)->Checked=false;
+//		 mGrid->getCheck(Col+4,Row)->Checked=false;
+//		 mGrid->getCheck(Col+6,Row)->Checked=false;
+//
+//	 }
+//	 pruchod=0;
+//	 leva_oblast=false;
+//	 input_state=FREE;
+//	}
+//
+//
+//	if(Col==4 &&  mGrid->getCheck(Col,Row)->Checked && input_state==FREE)
+//	{
+//		if(objekty[Row].pohon!=NULL &&  objekty[Row].rezim==1)
+//		{
+//			int pohon_n=objekty[Row].pohon->n;
+//			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,0) <= 1)
+//			{
+//			//má pohon, ale má jen jeden řádek, tzn mohu nastavit klasicky první sloupec
+//			mGrid->getCheck(Col-2,Row)->Checked=false;
+//			mGrid->getCheck(Col+2,Row)->Checked=false;
+//			mGrid->getCheck(Col+4,Row)->Checked=false;
+//			mGrid->getCheck(Col+6,Row)->Checked=false;
+//			}
+//			else // musím najít a vybrat správný řádek v prvním sloupci, který dám Checked=false
+//			{
+//				for(int i=1;i<=mGrid->RowCount-1;i++)
+//				{
+//					 if(objekty[i].pohon!=NULL)
+//					 {
+//							if(pohon_n == objekty[i].pohon->n  &&  objekty[i].rezim==1)
+//							{
+//                 if(mGrid->getCheck(2,i)->Checked==true || mGrid->getCheck(6,i)->Checked==true || mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
+//                 {
+//                 vypis("Došlo k automatickému přesunutí výběru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+//                 input_state=PROGRAMOVE;
+//                 mGrid->getCheck(2,i)->Checked=false;
+//                 mGrid->getCheck(6,i)->Checked=false;
+//								 mGrid->getCheck(8,i)->Checked=false;
+//								 mGrid->getCheck(10,i)->Checked=false;
+//                 //ShowMessage(i);
+//                 mGrid->getCheck(4,i)->Checked=true;
+//                 calculate(i);
+//                  }// else { mGrid->getCheck(6,Row)->Checked=false;  vypis("",false);  }
+//
+//							}
+//              if(pohon_n == objekty[i].pohon->n  &&  objekty[i].rezim==2) //PP rezim   - 2 checkbox nechávám
+//							{
+//               if(mGrid->getCheck(6,i)->Checked==true || mGrid->getCheck(8,i)->Checked==true || mGrid->getCheck(10,i)->Checked==true)
+//               {
+//                 input_state=PROGRAMOVE;
+//                 mGrid->getCheck(6,i)->Checked=false;
+//								 mGrid->getCheck(8,i)->Checked=false;
+//								 mGrid->getCheck(10,i)->Checked=false;
+//                 mGrid->getCheck(4,i)->Checked=true;
+//                 calculate(i);
+//					       }
+//              }
+//				}
+//			}
+//    }
+//	 }
+//	 else //nemám pohon, mohu nastavit hned klasicky první sloupec
+//	 {
+//		 mGrid->getCheck(Col-2,Row)->Checked=false;
+//		 mGrid->getCheck(Col+2,Row)->Checked=false;
+//		 mGrid->getCheck(Col+4,Row)->Checked=false;
+//		 mGrid->getCheck(Col+6,Row)->Checked=false;
+//
+//	 }
+//	 pruchod=0;
+//	 leva_oblast=false;
+//	 input_state=FREE;
+//	}
+
+
+	 //KONEC PŘEPÍNAČŮ
 
 	//VALIDAČNÍ ČÁST - HLÍDÁNÍ OBLASTÍ
 
-	if(Col>=4 && Col<=6 && input_state==FREE )  /*&&  mGrid->getCheck(6,Row)->Checked==false*/
-		{
-	 if(mGrid->getCheck(4,Row)->Checked==true ||  mGrid->getCheck(6,Row)->Checked==true)
-	 {
-		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
-		if(objekty[Row].pohon!=NULL)
-		{
-			int pohon_n=objekty[Row].pohon->n;
-			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
-			{
-			 //průchod celé tabulky
-						pocitadlo_validace=0;
-					 for(int i=1;i<=mGrid->RowCount-1;i++)
-					 {
-							if(objekty[i].pohon!=NULL)
-							{
-												if(pohon_n==objekty[i].pohon->n)
-												{
-													 if (mGrid->getCheck(8,i)->Checked==true   ||  mGrid->getCheck(10,i)->Checked==true )
-														{
-															//ShowMessage(i);
-															pocitadlo_validace++;
-															vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výběru!");
-														}
-												}
-						}
-							}
-
-					 if(pocitadlo_validace==0)   //pokud jsem nenašel žádné zakliknuté buňky, mohu povolit vstup do druhé oblasti
-					 {
-						 	; //	vypis("",false);
-
-					 }
-
-				}
-
-	 }
-	 }
-
-	 }
-
-
-		if(Col>=8 && Col<=10 && input_state==FREE )  /*&&  mGrid->getCheck(6,Row)->Checked==false*/
-		{
-	 if(mGrid->getCheck(8,Row)->Checked==true ||  mGrid->getCheck(10,Row)->Checked==true)
-	 {
-		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
-		if(objekty[Row].pohon!=NULL)
-		{
-			int pohon_n=objekty[Row].pohon->n;
-			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
-			{
-			 //průchod celé tabulky
-						pocitadlo_validace=0;
-					 for(int i=1;i<=mGrid->RowCount-1;i++)
-					 {
-							if(objekty[i].pohon!=NULL)
-							{
-												if(pohon_n==objekty[i].pohon->n)
-												{
-													 if (mGrid->getCheck(4,i)->Checked==true   ||  mGrid->getCheck(6,i)->Checked==true )
-														{
-															//ShowMessage(i);
-															pocitadlo_validace++;
-															vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výběru!");
-														}
-												}
-						}
-							}
-
-					 if(pocitadlo_validace==0) ;//	vypis("",false);  //povolím uložení
-
-			 }
-		 }
-	 }
-
-	 }
+//	if(Col>=4 && Col<=6 && input_state==FREE )  /*&&  mGrid->getCheck(6,Row)->Checked==false*/
+//		{
+//	 if(mGrid->getCheck(4,Row)->Checked==true ||  mGrid->getCheck(6,Row)->Checked==true)
+//	 {
+//		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
+//		if(objekty[Row].pohon!=NULL)
+//		{
+//			int pohon_n=objekty[Row].pohon->n;
+//			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+//			{
+//			 //průchod celé tabulky
+//						pocitadlo_validace=0;
+//					 for(int i=1;i<=mGrid->RowCount-1;i++)
+//					 {
+//							if(objekty[i].pohon!=NULL)
+//							{
+//												if(pohon_n==objekty[i].pohon->n)
+//												{
+//													 if (mGrid->getCheck(8,i)->Checked==true   ||  mGrid->getCheck(10,i)->Checked==true )
+//														{
+//															//ShowMessage(i);
+//															pocitadlo_validace++;
+//															vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výběru!");
+//														}
+//												}
+//						}
+//							}
+//
+//					 if(pocitadlo_validace==0)   //pokud jsem nenašel žádné zakliknuté buňky, mohu povolit vstup do druhé oblasti
+//					 {
+//						 	; //	vypis("",false);
+//
+//					 }
+//
+//				}
+//
+//	 }
+//	 }
+//
+//	 }
+//
+//
+//		if(Col>=8 && Col<=10 && input_state==FREE )  /*&&  mGrid->getCheck(6,Row)->Checked==false*/
+//		{
+//	 if(mGrid->getCheck(8,Row)->Checked==true ||  mGrid->getCheck(10,Row)->Checked==true)
+//	 {
+//		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
+//		if(objekty[Row].pohon!=NULL)
+//		{
+//			int pohon_n=objekty[Row].pohon->n;
+//			if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) > 1)
+//			{
+//			 //průchod celé tabulky
+//						pocitadlo_validace=0;
+//					 for(int i=1;i<=mGrid->RowCount-1;i++)
+//					 {
+//							if(objekty[i].pohon!=NULL)
+//							{
+//												if(pohon_n==objekty[i].pohon->n)
+//												{
+//													 if (mGrid->getCheck(4,i)->Checked==true   ||  mGrid->getCheck(6,i)->Checked==true )
+//														{
+//															//ShowMessage(i);
+//															pocitadlo_validace++;
+//															vypis("Tato varianta nelze uložit, musíte se nacházet ve stejné oblasti výběru!");
+//														}
+//												}
+//						}
+//							}
+//
+//					 if(pocitadlo_validace==0) ;//	vypis("",false);  //povolím uložení
+//
+//			 }
+//		 }
+//	 }
+//
+//	 }
 
 	//KONEC VALIDAČNÍ ČÁSTI - HLÍDÁNÍ OBLASTÍ//
 
@@ -898,11 +1305,18 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	    if(objekty[Row].rezim!=0)
       {
       mGrid->getCheck(4,Row)->Checked=true;
+      mGrid->getCheck(2,Row)->Visible=true;mGrid->getCheck(4,Row)->Visible=true;mGrid->getCheck(6,Row)->Visible=true;mGrid->getCheck(8,Row)->Visible=true;mGrid->getCheck(10,Row)->Visible=true;
 
       }
       else{ // SG režim - bez možnosti výběru checkboxu
       	mGrid->getCheck(4,Row)->Checked=false;
-        {/*mGrid->getCheck(2,Row)->Enabled=false*/;mGrid->getCheck(4,Row)->Enabled=false;mGrid->getCheck(6,Row)->Enabled=false;mGrid->getCheck(8,Row)->Enabled=false;mGrid->getCheck(10,Row)->Enabled=false;}
+        {mGrid->getCheck(2,Row)->Visible=false;mGrid->getCheck(4,Row)->Visible=false;mGrid->getCheck(4,Row)->Visible=false;mGrid->getCheck(6,Row)->Visible=false;mGrid->getCheck(8,Row)->Visible=false;mGrid->getCheck(10,Row)->Visible=false;}
+
+//        if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,0) == 1)
+//         {
+//         mGrid->getCheck(2,Row)->Visible=false;
+//        }
+
         }
 			mGrid->getCheck(6,Row)->Checked=false;
 			mGrid->getCheck(8,Row)->Checked=false;
@@ -932,7 +1346,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
      if(T!="")F->MB(T);//pokud obsahuje chybový text
 
    		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
-     if(mGrid->Cells[1][Row].Text!="nepřiřazen")
+     if(mGrid->Cells[0][Row].Text!="nepřiřazen")
      {
 			if(objekty[Row].pohon!=NULL)
 			{
@@ -944,7 +1358,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
            slouceny_radek=0;
 					 for(int i=1;i<=mGrid->RowCount-1;i++)
 					 {
-             if(mGrid->Cells[1][i].Text!="nepřiřazen")
+             if(mGrid->Cells[0][i].Text!="nepřiřazen")
              {
 							if(objekty[i].pohon!=NULL)
 							{
@@ -1115,6 +1529,37 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			}
 		}
 	}
+    	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech
+	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech
+	if(mGrid->Cells[0][Row].Text != "nepřiřazen")
+	{
+		if (objekty[Row].pohon != NULL)
+		{
+			// Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
+			switch (indikator_skupin[objekty[Row].pohon->n])
+			{
+				case 1://výpočet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
+				{
+					pm.RD = pm.Rz / pm.TT;
+				} break;
+				case 2://Rz,Rx
+				{
+					pm.Rz = pm.RD * pm.TT;
+					pm.Rx = pm.Rz / pm.R;
+				} break;
+				case 3://Rz,R
+				{
+					pm.Rz = pm.RD * pm.TT;
+					pm.R = pm.Rz / pm.Rx;
+				}break;
+			}
+		}
+	}
+
+
+
+
+
 	//output sekce
 	AnsiString T="";
 	switch(SaveTo)
@@ -1236,6 +1681,7 @@ void __fastcall TF_gapoV::scGPButton_OKClick(TObject *Sender)
 void __fastcall TF_gapoV::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	delete[] objekty;
+  delete[] indikator_skupin;
   mGrid->Delete();
 }
 //---------------------------------------------------------------------------
