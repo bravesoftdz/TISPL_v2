@@ -280,19 +280,27 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	mGrid->Cells[12][0].Font->Color=clLOCKED;
 	mGrid->Cells[13][0].Font->Color=clUNLOCKED;
 	mGrid->Cells[14][0].Font->Color=clLOCKED;
+
 	//manualfit výšky 0-tého øádku (zatím není pøipravena metoda)
 	unsigned short n=32;if(RDunit)n=17;//èíslo sloupce s nejdelším textem hlavièky
 	Canvas->Font=mGrid->Cells[n][0].Font;	//nejdelší použitý text
 	mGrid->Rows[0].Height=Canvas->TextWidth(mGrid->Cells[n][0].Text)+mGrid->Cells[n][0].BottomMargin+mGrid->Cells[n][0].BottomBorder->Width/2+mGrid->Cells[n][0].TopMargin+mGrid->Cells[n][0].TopBorder->Width/2;
-	//manualfit šíøky sloupcù mimo prvního (ten je øešen automaticky níže pomocí SetColumnAutoFit(0);)
-	mGrid->Columns[1].Width=100;mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=mGrid->Columns[12].Width=mGrid->Columns[13].Width=mGrid->Columns[14].Width=23;//ostatní následující sloupce zatím default šíøka
-	mGrid->Columns[2].Width=120;
 
-	//nastavení velikosti nultého sloupce dle obsahu, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
- 	mGrid->SetColumnAutoFit(0);
-	//workaround výše uvedeného, protože nefunguje zcela správnì - taky nejede
-//	mGrid->Columns[0].Width=100;
-	//mGrid->SetColumnAutoFit();
+	//manualfit šíøky sloupcù mimo prvního ten je polomanuální, víceménì provizorní øešení, mìl by správnì fungovat autofit na daný sloupec v mGridu
+	//sloupec název pohony
+	unsigned short tMax=0;if(F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false))tMax=mGrid->GetRecommendedColumnWidth("nepøiøazen");Cvektory::TPohon *p=F->d.v.POHONY->dalsi;while(p!=NULL){unsigned short tMaxLoc=mGrid->GetRecommendedColumnWidth(p->name);if(tMax<tMaxLoc)tMax=tMaxLoc;p=p->dalsi;}//najde nejdelší rozmìr sloupce dle šíøky øetìzu
+	mGrid->Columns[0].Width=tMax+6;//+6 pouze za orámování
+	//sloupec shortname objekty
+	if(F->d.v.vrat_pocet_nepouzivanych_pohonu())tMax=mGrid->GetRecommendedColumnWidth("nepøiøazen");else mGrid->GetRecommendedColumnWidth("CO2X");
+	mGrid->Columns[1].Width=tMax+6;//+6 pouze za orámování
+	//sloupec režim
+	tMax=mGrid->GetRecommendedColumnWidth("S&G");if(F->d.v.pocet_objektu(1))tMax=mGrid->GetRecommendedColumnWidth("Kontinuální");if(F->d.v.pocet_objektu(2))tMax=mGrid->GetRecommendedColumnWidth("Postprocesní");
+	mGrid->Columns[2].Width=tMax+6;//+6 pouze za orámování
+	//ostatní sloupce, další zde neuvedené, jsou s defaultwidth
+	mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=mGrid->Columns[12].Width=mGrid->Columns[13].Width=mGrid->Columns[14].Width=23;//ostatní následující sloupce zatím default šíøka
+	//nastavení velikosti sloupce dle ruèní nastavení šíøky daného sloupce, mùže být umístìno kdekoliv pøed Show(), ale lépe pøed merge metodami
+	mGrid->SetColumnAutoFit(-4);
+
 	//slouèení bunìk hlavièky PO  - vhodné za SetColumnAutoFit umístít - NEWR
 	mGrid->MergeCells(15,0,16,0);mGrid->MergeCells(17,0,18,0);mGrid->MergeCells(19,0,20,0);
 	mGrid->MergeCells(21,0,22,0);mGrid->MergeCells(23,0,24,0);mGrid->MergeCells(25,0,26,0);mGrid->MergeCells(27,0,28,0);
@@ -340,8 +348,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			mGrid->MergeCells(11,j,12,j);
 			mGrid->MergeCells(13,j,14,j);
 		}
-
-
 
 		//parametry objektù  // cell 17 - pùvodnì používána pro RD, nyní je v ní zobrazováno aRD
 		mGrid->Cells[15][j].Text=F->m.round2double(On[i].CT/(1+59.0*CTunit),2,"..");	 								mGrid->Cells[15][j].Align=mGrid->LEFT;mGrid->Cells[15][j].Font->Color=clOLD;mGrid->Cells[16][j].Align=mGrid->LEFT; mGrid->Cells[16][j].Font->Color=clUNLOCKED;
