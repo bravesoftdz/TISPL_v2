@@ -411,7 +411,8 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		if(scComboBox_pohon->ItemIndex==0)
 		{scComboBox_pohon->Options->FrameWidth=2;scComboBox_pohon->Options->FrameFocusedColor=clRed;scComboBox_pohon->Options->FrameNormalColor=clRed;scComboBox_pohon->Options->FrameDisabledColor=clRed;scComboBox_pohon->Options->FrameDisabledColorAlpha=128;}
 		else {scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameFocusedColor=clHighlight;scComboBox_pohon->Options->FrameWidth=1;scComboBox_pohon->Options->FrameDisabledColor=clBtnShadow;scComboBox_pohon->Options->FrameDisabledColorAlpha=255;}
-}
+    if(rHTMLLabel_InfoText->Caption=="") vypis(""); //workaround na povolení uloení, pokud je prázdnı vıpis
+    }
 //---------------------------------------------------------------------------
 //zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
 void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
