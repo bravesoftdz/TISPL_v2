@@ -849,14 +849,19 @@ void TmGrid::executeColumnsAutoFit(TCanvas *Canv)
 {
 	switch(SetColumnAutoFitColIdx)
 	{
-		////defualt
+		////nastavení velikosti sloupce dle ruèní nastavení šíøky daného sloupce, tj. nedìlat autofit
+		case -4:
+		{
+		}
+		break;
+		////defualtní šíøka
 		case -3:
 		{
 			for(unsigned long X=0;X<ColCount;X++)
 			Columns[X].Width=DefaultColWidth;
 		}
 		break;
-		////všechny sloupce stejnì podle nejširšího
+		////všechny sloupce stejnì podle nejširšího sloupce
 		case -2:
 		{
 			unsigned int MaxColWidth=4;//minimální rozmìr buòky pokud je nastavena na autofit a neobsahuje text
@@ -870,19 +875,19 @@ void TmGrid::executeColumnsAutoFit(TCanvas *Canv)
 					if(W>MaxColWidth)MaxColWidth=W;//najde nejšiøší
 				}
 			}
-			//zapis do pole šíøky sloupcù
+			//zápis do pole šíøky sloupcù
 			for(unsigned long X=0;X<ColCount;X++)
 			Columns[X].Width=MaxColWidth;
 		}
 		break;
-		////všechny sloupce individuálnì
+		////všechny sloupce zarovnat individuálnì dle každého sloupce
 		case -1:
 		{
 			for(unsigned long X=0;X<ColCount;X++)//po sloupcích
 			executeColumnAutoFit(Canv,X);
 		}
 		break;
-		////dle konkrétního
+		////pouze konkrétní 0++
 		default:
 		{
 			executeColumnAutoFit(Canv,SetColumnAutoFitColIdx);
@@ -894,6 +899,12 @@ void TmGrid::executeColumnsAutoFit(TCanvas *Canv)
 //nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
 void TmGrid::executeColumnAutoFit(TCanvas *Canv,long ColIdx)
 {
+	Columns[ColIdx].Width=GetRecommendedColumnWidth(ColIdx);//nalezne nejširší položku a podle toho celý sloupec i zarovná
+}
+//---------------------------------------------------------------------------
+//vratí doporuèenou šíøku sloupce dle jeho obsahu
+int TmGrid::GetRecommendedColumnWidth(long ColIdx)
+{
 	unsigned int ColWidth=getWidthHeightText(Cells[ColIdx][0]).X;//výchozí hodnota
 	for(unsigned long Y=1;Y<RowCount;Y++)
 	{
@@ -902,7 +913,13 @@ void TmGrid::executeColumnAutoFit(TCanvas *Canv,long ColIdx)
 		if(Cells[ColIdx][Y].Type==CHECK || Cells[ColIdx][Y].Type==RADIO)W+=20+4+4;
 		if(W>ColWidth)ColWidth=W;//najde nejšiøší
 	}
-	Columns[ColIdx].Width=ColWidth+4;//+4 pouze offset
+	return ColWidth+4;//+4 pouze okrajový offset
+}
+//---------------------------------------------------------------------------
+//vratí doporuèenou šíøku sloupce dle dodaného textu a aktuálního nastavení canvasu
+int TmGrid::GetRecommendedColumnWidth(AnsiString Text)
+{
+	return Form->Canvas->TextWidth(Text)+4;//+4 pouze okrajový offset;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
