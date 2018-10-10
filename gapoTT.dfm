@@ -935,6 +935,7 @@ object F_gapoTT: TF_gapoTT
     Height = 25
     Caption = 'Button1'
     TabOrder = 9
+    Visible = False
     OnClick = Button1Click
   end
   object scGPCheckBox_prepocitatPT: TscGPCheckBox
