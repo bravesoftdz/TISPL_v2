@@ -108,13 +108,16 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
     Rzunit=0;
   }
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
-	unsigned long ColCount=37;//pevný poèet slopcù      //NEWR
+	unsigned long ColCount=37;//pevný poèet slopcù
 	unsigned long RowCount=1;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 	RowCount+=F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false)+F->d.v.vrat_pocet_nepouzivanych_pohonu()+F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(true);//PØIDAT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
-	////////plnìní daty - hlavièka////////   NEWR
+	////////error list - založení////////
+	pm.createErrorList(mGrid->RowCount);
+
+	////////plnìní daty - hlavièka////////
 	mGrid->Cells[0][0].Text="pohon";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
 	mGrid->Cells[0][0].Font->Orientation=900;
@@ -719,9 +722,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	////kvùli špatnì fungující funkci otáèení koleèka myši
 	liche_otoceni_koleckem_mysi=false; //NEWR
 
-	////error list - založení
-	pm.createErrorList(mGrid->RowCount);
-
 	///uvolnìní stavu
 	input_state=FREE;
 }
@@ -958,10 +958,10 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 							   	   pocitadlo++;
                     input_state=PROGRAMOVE;
                     if(input_state==PROGRAMOVE)
-                    {
-											vypis("Došlo k automatickému pøesunutí výbìru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
-											AnsiString T=calculate(Row,3);
-											if(T!="") vypis(T);
+										{
+//											vypis("Došlo k automatickému pøesunutí výbìru do nové oblasti, jelikož rozdílné oblasti nelze nastavit",false);
+//											AnsiString T=calculate(Row,3);
+//											if(T!="") vypis(T);
 											mGrid->getCheck(3,i)->Checked=false;
 											mGrid->getCheck(5,i)->Checked=false;
 											mGrid->getCheck(11,i)->Checked=false;
@@ -979,9 +979,9 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 						}
 				 }
 				 else
-         {
-					 AnsiString T=calculate(Row,3);// ShowMessage("tady");
-           if(T!="") vypis(T); else  vypis("",false);
+				 {
+//					 AnsiString T=calculate(Row,3);// ShowMessage("tady");
+//					 if(T!="") vypis(T); else  vypis("",false);
          }
         }
 			}
@@ -1066,8 +1066,8 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	{
 	 if(input_state==FREE && Col>=3 && Col<=14  && canCalculate)
 	 {
-		 AnsiString T=calculate(Row,3);
-		 if(T!="")F->MB(T);//pokud obsahuje chybový text
+//		 AnsiString T=calculate(Row,3);
+//		 if(T!="")F->MB(T);//pokud obsahuje chybový text
    		// podívám se, zda pohon, který je na øádku, kde došlo ke kliku má více objektù v KK režimu, pokud ano, musím projít všechny
      if(mGrid->Cells[1][Row].Text!="nepøiøazen")
      {
@@ -1521,6 +1521,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 						mGrid->Cells[18][Row].Text =F->m.round2double(pm.RD*(1+59.0*aRDunit),2,"..");
           }
 				}
+				calculate(Row,3);//provede se validace
 		 }break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
@@ -1579,9 +1580,15 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		 {
 				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
 				//ShowMessage(pm.getErrorText(mGrid->RowCount));
-				rHTMLLabel_InfoText->FontColor=clRed;
-				rHTMLLabel_InfoText->Caption=pm.getErrorText(mGrid->RowCount);
-				if(rHTMLLabel_InfoText->Caption!="")scGPButton_OK->Enabled=false; else scGPButton_OK->Enabled=true;
+				AnsiString ErrorText=pm.getErrorText(mGrid->RowCount);
+				if(ErrorText!="")
+				{
+					rHTMLLabel_InfoText->FontColor=clRed;
+					rHTMLLabel_InfoText->Caption=pm.getErrorText(mGrid->RowCount);
+					scGPButton_OK->Enabled=false;
+				}
+				else scGPButton_OK->Enabled=true;
+				//rHTMLLabel_InfoText->FontColor=cl...;
 			 /*
 			 //jednotky
 			 AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";

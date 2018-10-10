@@ -1239,7 +1239,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
 	}
-		if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")
+	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")
 	{
 		Graphics::TBitmap *bmp=new Graphics::TBitmap;
 		bmp->LoadFromFile("conf");
