@@ -108,6 +108,10 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	}
 	mGrid->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
+
+  	////////error list - založení////////
+	pm.createErrorList(mGrid->RowCount);
+
 	////////plnìní daty - hlavièka////////  //NEWR
 	mGrid->Cells[0][0].Text="Pouze zmìnìné pohony";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tuèného písma
@@ -348,6 +352,8 @@ void __fastcall TF_gapoR::FormClose(TObject *Sender, TCloseAction &Action)
 	if(ModalResult==mrOk)delete[] pohony_zmena;//pokud je stisknuto storno pøi ukonèování, tak se nemaže //NEWR
 	delete[] objekty;
 	Form_objekt_nahled->pom=NULL;delete Form_objekt_nahled->pom;
+  pm.deleteErrorList();
+	scGPButton_storno->SetFocus();//workaround proti padání mGridu (padalo pøi odstraòování komponent), Focus se pøesune z mazané komponenty na mGridu, na komponentu nemazanou
   mGrid->Delete();
 }
 //---------------------------------------------------------------------------
@@ -362,9 +368,6 @@ void __fastcall TF_gapoR::Button1Click(TObject *Sender)
 //pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky
 UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 {
-	//instance na PO_math, využívá se stejných výpoètù
-	TPO_math pm;
-
 	//input sekce
 	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
@@ -381,23 +384,6 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.dP=F->d.v.PP.delka_podvozek;
 	pm.Rotace=objekty[Row].rotace;
 	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-
-//    Memo1->Lines->Clear();
-//    Memo1->Lines->Add("TT: "+AnsiString(pm.TT));
-//    Memo1->Lines->Add("CT: "+AnsiString(pm.CT));
-//    Memo1->Lines->Add("DD: "+AnsiString(pm.DD));
-//    Memo1->Lines->Add("RD: "+AnsiString(pm.RD));
-//    Memo1->Lines->Add("K: "+AnsiString(pm.K));
-//    Memo1->Lines->Add("P: "+AnsiString(pm.P));
-//    Memo1->Lines->Add("M: "+AnsiString(pm.M));
-//    Memo1->Lines->Add("MJ: "+AnsiString(pm.MJ));
-//    Memo1->Lines->Add("MP: "+AnsiString(pm.MP));
-//    Memo1->Lines->Add("dJ: "+AnsiString(pm.dJ));
-//    Memo1->Lines->Add("sJ: "+AnsiString(pm.dJ));
-//    Memo1->Lines->Add("dP: "+AnsiString(pm.dP));
-//    Memo1->Lines->Add("R: "+AnsiString(pm.R));
-//    Memo1->Lines->Add("aRDunit: "+AnsiString(aRDunit));
-
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(mGrid->getCheck(2,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
 	{
@@ -421,7 +407,6 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 			mGrid->Cells[13][Row].Font->Color=clLOCKED;//K
 		}
 	}
-
 	//output sekce
 	AnsiString T="";
 	switch(SaveTo)
@@ -440,7 +425,7 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 
 				mGrid->Cells[13][Row].Text= F->m.round2double(pm.K,2,"..");
 				mGrid->Cells[15][Row].Text=	F->m.round2double(pm.P,2,"..");
-
+     	calculate(Row,3);//provede se validace
 		 }break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
@@ -470,6 +455,20 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 				Form_objekt_nahled->pom->mezera=pm.M;
 				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
 				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
+		 }break;
+     case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
+		 {
+				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
+				//ShowMessage(pm.getErrorText(mGrid->RowCount));
+				AnsiString ErrorText=pm.getErrorText(mGrid->RowCount);
+				if(ErrorText!="")
+				{
+					rHTMLLabel_InfoText->FontColor=clRed;
+					rHTMLLabel_InfoText->Caption=ErrorText;
+					scGPButton_OK->Enabled=false;
+				}
+				else scGPButton_OK->Enabled=true;
+				//rHTMLLabel_InfoText->FontColor=cl...;
 		 }break;
 	}
 	return T;

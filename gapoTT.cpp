@@ -1522,7 +1522,8 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
           }
 				}
 				calculate(Row,3);//provede se validace
-		 }break;
+		 }
+     break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
 				if(objekty[Row].id<100)//pokud se nejedná o pohon bez pøiøazených objektù
@@ -1584,7 +1585,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 				if(ErrorText!="")
 				{
 					rHTMLLabel_InfoText->FontColor=clRed;
-					rHTMLLabel_InfoText->Caption=pm.getErrorText(mGrid->RowCount);
+					rHTMLLabel_InfoText->Caption=ErrorText;
 					scGPButton_OK->Enabled=false;
 				}
 				else scGPButton_OK->Enabled=true;

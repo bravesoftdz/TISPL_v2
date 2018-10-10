@@ -909,9 +909,6 @@ void TF_gapoV::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //pro daný řádek dle nastaveného checkboxu, dopočítá a dosadí nové hodnoty parametrů daného objektu z daného řádku, v případě SaveTo -1, vrátí formou textu, oddělené středníky, 0 - nevrací nic, 1 uloží do binárky
 UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 {
-	//instance na PO_math, využívá se stejných výpočtů
-	TPO_math pm;
-
 	//input sekce
 	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
@@ -1123,7 +1120,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 					}
         }
       }
-	 	 if(input_state!=LOADING) {calculate(Row,3);}//provede se validace //docasny input_state kvuli chybe
+	 	/* if(input_state!=LOADING)*/  ShowMessage("calculate(3)"); calculate(Row,3); //provede se validace //docasny input_state kvuli chybe
      }
      break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno

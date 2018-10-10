@@ -16,6 +16,7 @@
 #include "scDrawUtils.hpp"
 #include "scGPImages.hpp"
 #include <Vcl.Imaging.pngimage.hpp>
+#include "PO_math.h"
 //---------------------------------------------------------------------------
 class TF_gapoR : public TForm
 {
@@ -58,6 +59,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	//Cvektory v;//instance na tøídu vektorù - nepoužívát, padalo
 	short Offset;//odsazení tabulky po všech stranách formu
+  TPO_math pm;//instance na PO_math, využívá se z èásti stejných výpoètù
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND;
