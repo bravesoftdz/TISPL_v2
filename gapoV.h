@@ -14,6 +14,7 @@
 #include "rHintWindow.hpp"
 #include "scGPImages.hpp"
 #include <Vcl.Imaging.pngimage.hpp>
+#include "PO_math.h"
 //---------------------------------------------------------------------------
 class TF_gapoV : public TForm
 {
@@ -49,6 +50,7 @@ __published:	// IDE-managed Components
   void __fastcall scScrollBar_horizontChange(TObject *Sender);
 
 private:	// User declarations
+	TPO_math pm;//instance na PO_math, využívá se z èásti stejných výpoètù
 	short Offset;//odsazení tabulky po všech stranách formu
 	Cvektory::TObjekt *objekty;//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty, pouze duplikát objektù
 	UnicodeString calculate(unsigned long Row,short SaveTo=0);//pro daný øádek dle nastaveného checkboxu, dopoèítá a dosadí nové hodnoty parametrù daného objektu z daného øádku, v pøípadì SaveTo -1, vrátí formou textu, oddìlené støedníky, 0 - nevrací nic, 1 uloží do binárky, 2 do ukazatele na náhled
