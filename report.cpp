@@ -5,6 +5,7 @@
 
 #include "report.h"
 #include "Unit1.h"
+#include "parametry_linky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
@@ -45,6 +46,22 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		//generuj_POHONY(); už nepoužíváme, ale možná èasem budeme
 
 		AnsiString data="";//celková textová data k exportu
+
+    	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
+	if(T=="")CTunit=0;else CTunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","RDt");
+	if(T=="")aRDunit=0;else aRDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DD");
+	if(T=="")DDunit=0;else DDunit=T.ToInt();
+	T=F->readINI("nastaveni_form_parametry","DM");
+	if(T=="")Munit=0; else Munit =T.ToInt();
+  T=F->readINI("nastaveni_form_parametry_linky","R");
+	if(T=="")Runit=0; else Runit =T.ToInt();
+  T=F->readINI("nastaveni_form_parametry_linky","rozmery");
+	if(T=="")Sirkaunit=0; else Sirkaunit =T.ToInt();
+  T=F->readINI("nastaveni_form_parametry_linky","TT");
+	if(T=="")TTunit=0; else TTunit =T.ToInt();
+
 
 		//zjištìní exportovaného formátu
 		unsigned short export_format=3;
@@ -90,14 +107,31 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 //			}
 
 		 UnicodeString titulek_projektu;
-		 UnicodeString PP_TT=Form1->d.v.PP.TT;
+		 UnicodeString PP_TT=Form1->d.v.PP.TT/(1+59.0*TTunit);
 		 UnicodeString PP_mnozstvi=Form1->d.v.PP.mnozstvi;
 		 UnicodeString dni_rok=Form1->d.v.PP.dni_rok;
 		 UnicodeString hod_den=Form1->d.v.PP.hod_den;
 		 UnicodeString efektivita=Form1->d.v.PP.efektivita;
 		 UnicodeString cas_start=Form1->d.v.PP.cas_start;
-		 UnicodeString delka_voziku=Form1->d.v.PP.delka_jig;
-		 UnicodeString sirka_voziku=Form1->d.v.PP.sirka_jig;
+		 UnicodeString delka_voziku=Form1->d.v.PP.delka_jig*(1+999.0*Sirkaunit);
+		 UnicodeString sirka_voziku=Form1->d.v.PP.sirka_jig*(1+999.0*Sirkaunit);
+
+
+     UnicodeString jednotky_casove;
+     UnicodeString jednotky_rozmery;
+     UnicodeString jednotky_RD;
+     UnicodeString jednotky_vzdalenost;
+     UnicodeString jednotky_CT;
+     UnicodeString jednotky_kabiny;
+
+     if(aRDunit) jednotky_RD="[m/min]"; else  jednotky_RD="[m/s]";
+     if(Runit) jednotky_vzdalenost="[mm]"; else  jednotky_vzdalenost="[m]";
+     if(CTunit)  jednotky_CT="[min]"; else  jednotky_CT="[s]";
+     if(DDunit) jednotky_kabiny=="[mm]"; else  jednotky_kabiny="[m]";
+
+     if(TTunit) jednotky_casove="[min]"; else  jednotky_casove="[s]";
+     if(Sirkaunit) jednotky_rozmery="[mm]"; else  jednotky_rozmery="[m]";
+
 
 		 try{
 
@@ -140,9 +174,9 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 
 			data+="<form></br>";
 			data+="<h4>Parametry linky <b>"+UnicodeString(Form1->scLabel_titulek->Caption)+"</b></h4></br>";
-			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">TaktTime [s]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_TT+"\"></div></div>";
-			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
-			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Šíøka Jigu [m]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+sirka_voziku+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">TaktTime"+UnicodeString(jednotky_casove)+"</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+PP_TT+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Délka Jigu "+UnicodeString(jednotky_rozmery)+"</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+delka_voziku+"\"></div></div>";
+			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Šíøka Jigu "+UnicodeString(jednotky_rozmery)+"</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+sirka_voziku+"\"></div></div>";
 
 			//LT
 			data+="<div class=\"form-group row\"><label for=\"colFormLabel\" class=\"col-sm-2 col-form-label col-form-label\">Lead Time [min]</label><div class=\"col-sm-2\"><input type=\"text\" class=\"form-control form-control\" id=\"colFormLabel\" placeholder=\""+UnicodeString(Form1->d.v.vrat_LT()/60.0)+"\"></div></div>";
@@ -167,21 +201,23 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 				data+="</tbody></table></br>";
 			}
 
+
+
 			//Pøehled nadefinovaných pohonù - doplnil M
 			Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
 			if(P!=NULL)
 			{
 				data+="<h4>Pøehled nadefinovaných pohonù</h4></br>";
-				data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Rychlost od [m/min]</th><th scope=\"col\">Rychlost do [m/min]</th><th scope=\"col\">Akt. rychlost [m/min]</th><th scope=\"col\">Rozteè palcù [mm]</th><th scope=\"col\">Rozestup vzdálenost aktivní palce [m]</th><th scope=\"col\">Rozestup poèet palcù</th><th scope=\"col\">Používán</th></tr></thead>";
+				data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Rychlost od "+jednotky_RD+"</th><th scope=\"col\">Rychlost do "+jednotky_RD+"</th><th scope=\"col\">Akt. rychlost "+jednotky_RD+"</th><th scope=\"col\">Rozteè palcù "+jednotky_vzdalenost+"</th><th scope=\"col\">Rozestup vzdálenost aktivní palce "+jednotky_vzdalenost+"</th><th scope=\"col\">Rozestup poèet palcù</th><th scope=\"col\">Používán</th></tr></thead>";
 				while(P!=NULL)
 				{
 					UnicodeString ID=P->n;
 					UnicodeString name=P->name;
-					UnicodeString rychlost_od=P->rychlost_od*60.0;
-					UnicodeString rychlost_do=P->rychlost_do*60.0;
-					UnicodeString RD=P->aRD*60.0;
-					UnicodeString R=P->roztec*1000.0;
-					UnicodeString Rz=P->Rz;
+					UnicodeString rychlost_od=P->rychlost_od*(1+59.0*aRDunit);
+					UnicodeString rychlost_do=P->rychlost_do*(1+59.0*aRDunit);
+					UnicodeString RD=P->aRD*(1+59.0*aRDunit);
+					UnicodeString R=P->roztec*(1+999.0*Runit);
+					UnicodeString Rz=P->Rz*(1+999.0*Runit);
 					UnicodeString Rx=P->Rx;
 				 	UnicodeString Pouzit=Form1->d.v.vypis_objekty_vyuzivajici_pohon(P->n);if(Pouzit=="")Pouzit="nepoužíván";/*if(Form1->d.v.pohon_je_pouzivan(P->n))Pouzit="Ano";*/
 					data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+rychlost_od+"</td><td>"+rychlost_do+"</td><td>"+RD+"</td><td>"+R+"</td><td>"+Rz+"</td><td>"+Rx+"</td><td>"+Pouzit+"</td></tr>";
@@ -192,39 +228,47 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 			P=NULL;delete P;
 
 
+
 		//////////////////HTML EXPORT V NÁVRHU///////////////////////////////////
 
 		if(Form1->STATUS==Form1->NAVRH)
 		{
 			//data+="<h4>Architekt: Pøehled objektù a jejich parametrù</h4></br>";
 			data+="<h4>Pøehled objektù a jejich parametrù</h4>";
-			data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">Název pohonu</th><th scope=\"col\">Technolog. èas [s]</th><th scope=\"col\">Rychlost pohonu</th><th scope=\"col\">Délka kabiny</th><th scope=\"col\">Kapacita [vozíku a mezer]</th><th scope=\"col\">Pozice [vozíkù]</th><th scope=\"col\">Orientace[°]</th><th scope=\"col\">Mezera mezi vozíky [m]</th></tr></thead>";
+			data+="<table class=\"table table-striped table-responsive\"><thead><tr><th scope=\"col\">ID</th><th scope=\"col\">Název</th><th scope=\"col\">Zkratka</th><th scope=\"col\">Režim</th><th scope=\"col\">Název pohonu</th><th scope=\"col\">Technolog. èas "+jednotky_CT+"</th><th scope=\"col\">Rychlost pohonu "+jednotky_RD+"</th><th scope=\"col\">Délka kabiny "+jednotky_kabiny+"</th><th scope=\"col\">Kapacita [vozíku a mezer]</th><th scope=\"col\">Pozice [vozíkù]</th><th scope=\"col\">Orientace[°]</th><th scope=\"col\">Mezera mezi jigy "+jednotky_kabiny+"</th><th scope=\"col\">Mezera mezi podvozky "+jednotky_kabiny+"</th></tr></thead>";
 			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
 			while (O!=NULL)//prochází potenciální segmenty cesty po objektech
 			{
 					UnicodeString ID=O->id;
 					UnicodeString name=O->name;
 					UnicodeString short_name=O->short_name;
-					UnicodeString mezera=O->mezera;
+					UnicodeString mezera_jig=O->mezera_jig*(1+999.0*DDunit);
+          UnicodeString mezera_podvozek=O->mezera_podvozek*(1+999.0*DDunit);
 					UnicodeString rezim;
-					UnicodeString CT=O->CT;
+					UnicodeString CT=O->CT/(1+59.0*CTunit);
 					UnicodeString kapacita=O->kapacita;
 					UnicodeString kapacita_dop=O->kapacita_dop;
 					UnicodeString pozice=O->pozice;
 					UnicodeString nazev_pohonu;
 
-					if(O->pohon!=NULL)nazev_pohonu=O->pohon->name;
-					else nazev_pohonu="Nepøiøazen";
+          UnicodeString rychlost_dopravniku=O->RD*(1+59.0*aRDunit);
 
-					UnicodeString rychlost_dopravniku=Form1->ms.MyToDouble(O->RD)*60.0;    //vždy budu zobrazovat v m/min
+					if(O->pohon!=NULL)
+          {
+          nazev_pohonu=O->pohon->name;
+          rychlost_dopravniku=O->pohon->aRD*(1+59.0*aRDunit);
+
+          } else nazev_pohonu="Nepøiøazen";
+
+
 					UnicodeString delka_dopravniku=O->delka_dopravniku;
 					switch(O->rezim)
 					{
-						case 0:rezim="STOP & GO";rychlost_dopravniku="nerelevantní";delka_dopravniku="nerelevantní"; break;
-						case 1:rezim="KONTINUÁLNÍ";break;
-						case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
+					//	case 0:rezim="STOP & GO";rychlost_dopravniku="nerelevantní";delka_dopravniku="nerelevantní"; break;
+					//	case 1:rezim="KONTINUÁLNÍ";break;
+					//	case 2:rezim="POSTPROCESNÍ";rychlost_dopravniku="nerelevantní";break;
 					}
-					data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+nazev_pohonu+"</td><td>"+CT+"</td><td>"+rychlost_dopravniku+"</td><td>"+delka_dopravniku+"</td><td>"+kapacita+"</td>"+/*<td>"+kapacita_dop+"</td>*/"<td>"+pozice+"</td><td>"+O->rotace+"</td><td>"+mezera+"</td></tr>";
+					data+="<tr><th scope=\"row\">"+ID+"</th><td>"+name+"</td><td>"+short_name+"</td><td>"+rezim+"</td><td>"+nazev_pohonu+"</td><td>"+CT+"</td><td>"+rychlost_dopravniku+"</td><td>"+delka_dopravniku+"</td><td>"+kapacita+"</td>"+/*<td>"+kapacita_dop+"</td>*/"<td>"+pozice+"</td><td>"+O->rotace+"</td><td>"+mezera_jig+"</td><td>"+mezera_podvozek+"</td></tr>";
 					O=O->dalsi;
 			}
 			data+="</tbody></table></br>";

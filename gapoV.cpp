@@ -159,8 +159,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Cells[31][0].Text="Rx - každy n-tý palec";
 	mGrid->Cells[33][0].Text="Náhled";
 
-  scGPImage_zamky->Top=45;
-  scGPImage_zamky->Left=mGrid->Columns[2].Left-42;
+ 
 	////////přiřadí celé oblasti buněk totožné vlastnosti jako u referenční buňky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první řádek
 
@@ -185,9 +184,26 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Columns[1].Width=80;mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=23;//ostatní následující sloupce zatím default šířka
 
 	//nastavení velikosti nultého sloupce dle obsahu, může být umístěno kdekoliv před Show(), ale lépe před merge metodami
- 	mGrid->SetColumnAutoFit(0);  //  - odstavení chyba - odskakování
+ //	mGrid->SetColumnAutoFit(0);  //  - odstavení chyba - odskakování
  // mGrid->Columns[0].Width=100;
 	//sloučení buněk hlavičky PO  - vhodné za SetColumnAutoFit umístít
+
+  	//manualfit šířky sloupců mimo prvního ten je polomanuální, víceméně provizorní řešení, měl by správně fungovat autofit na daný sloupec v mGridu
+	//sloupec název pohony
+	unsigned short tMax=0;if(F->d.v.vrat_pocet_objektu_bezNEBOs_prirazenymi_pohonu(false))tMax=mGrid->GetRecommendedColumnWidth("nepřiřazen");Cvektory::TPohon *p=F->d.v.POHONY->dalsi;while(p!=NULL){unsigned short tMaxLoc=mGrid->GetRecommendedColumnWidth(p->name);if(tMax<tMaxLoc)tMax=tMaxLoc;p=p->dalsi;}//najde nejdelší rozměr sloupce dle šířky řetězu
+	mGrid->Columns[0].Width=tMax+6;//+6 pouze za orámování
+	//sloupec shortname objekty
+	if(F->d.v.vrat_pocet_nepouzivanych_pohonu())tMax=mGrid->GetRecommendedColumnWidth("nepřiřazen");else mGrid->GetRecommendedColumnWidth("CO2X");
+	mGrid->Columns[1].Width=tMax+6;//+6 pouze za orámování
+	//sloupec režim  - u gapoV není
+ //	tMax=mGrid->GetRecommendedColumnWidth("S&G");if(F->d.v.pocet_objektu(1))tMax=mGrid->GetRecommendedColumnWidth("Kontinuální");if(F->d.v.pocet_objektu(2))tMax=mGrid->GetRecommendedColumnWidth("Postprocesní");
+ //	mGrid->Columns[2].Width=tMax+6;//+6 pouze za orámování
+	//ostatní sloupce, další zde neuvedené, jsou s defaultwidth
+	mGrid->Columns[2].Width=mGrid->Columns[3].Width=mGrid->Columns[4].Width=mGrid->Columns[5].Width=mGrid->Columns[6].Width=mGrid->Columns[7].Width=mGrid->Columns[8].Width=mGrid->Columns[9].Width=mGrid->Columns[10].Width=mGrid->Columns[11].Width=23;//ostatní následující sloupce zatím default šířka
+	//nastavení velikosti sloupce dle ruční nastavení šířky daného sloupce, může být umístěno kdekoliv před Show(), ale lépe před merge metodami
+	mGrid->SetColumnAutoFit(-4);
+
+
 	mGrid->MergeCells(12,0,13,0);mGrid->MergeCells(14,0,15,0);mGrid->MergeCells(16,0,17,0);mGrid->MergeCells(18,0,19,0);mGrid->MergeCells(20,0,21,0);mGrid->MergeCells(22,0,23,0);mGrid->MergeCells(24,0,25,0);mGrid->MergeCells(27,0,28,0);mGrid->MergeCells(29,0,30,0);mGrid->MergeCells(31,0,32,0);
 
 	////////jednolivé řádky////////
@@ -485,6 +501,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 
 	F->m.designButton(scGPButton_OK,F_gapoV,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoV,2,2);
+  scGPImage_zamky->Left=mGrid->Left+mGrid->Columns[2].Left+3;
+	scGPImage_zamky->Top=mGrid->Top+2;
 	//legenda pozice
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvůli orámování tabulky
 	rHTMLLabel_InfoText->Left=mGrid->Left;
@@ -553,20 +571,6 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //		CH=NULL;delete CH;
 //	}
  	 //	vypis("",false);
-
-  temp_pocitadlo++;
-	if(Col==2)
-  {
-  if(temp_pocitadlo==1)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
-  if(temp_pocitadlo==2)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
-  else scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 3;
-  }
-	if(Col>=6)
-  {
-  if(temp_pocitadlo==1)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
-  if(temp_pocitadlo==2)scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 5;
-  else scGPImage_zamky->Left=mGrid->Left + mGrid->Columns[2].Left + 3;
-  }
 
 
   canCalculate=false;
@@ -1288,7 +1292,7 @@ void __fastcall TF_gapoV::KonecClick(TObject *Sender)
 void __fastcall TF_gapoV::scScrollBar_horizontChange(TObject *Sender)
 {
 	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
-	//doladit posouvání komponent
+	scGPImage_zamky->Left=mGrid->Left+mGrid->Columns[2].Left+3;
 	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
 	else {FormPaint(this);Invalidate();}//na konci musí překreslit celé
 }

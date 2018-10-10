@@ -36,6 +36,9 @@ private:	// User declarations
 	bool FMaximized;
 public:		// User declarations
 
+	enum Tm_mm{M=0,MM};Tm_mm DDunit;Tm_mm Munit;Tm_mm Rzunit;Tm_mm Runit;Tm_mm Delkaunit;Tm_mm Sirkaunit;//pøepínaè jednotek vzdálenost
+	enum Tminsec{S=0,MIN};Tminsec CTunit;Tminsec TTunit;Tminsec RDunit;Tminsec aRDunit;Tminsec minsec;//pøepínaè jednotek èasu
+
 	short int ulozit_report(UnicodeString FileName);
 
 	__fastcall TForm_report(TComponent* Owner);
