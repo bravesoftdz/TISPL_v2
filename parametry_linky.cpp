@@ -2830,7 +2830,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 				}
 				break;
-				case 2:     //RD
+				case 2:     //OD - RD
 				{
         double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
 		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
@@ -2838,8 +2838,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 					if(Form1->m.between(RD,P_od,P_do))
 						{
-						 //	Memo1->Lines->Add("OK rozmezi");
-						;
+             ;
 						}
 						else
 						{
@@ -2847,8 +2846,46 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
-						//	if(scGPNumericEdit_RD->Value>P->rychlost_do)  VID=25;
-						//	if(scGPNumericEdit_RD->Value<P->rychlost_od)  VID=26;
+						}
+				}
+				break;
+
+        case 3:     //DO - RD
+				{
+        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
+				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
+
+					if(Form1->m.between(RD,P_od,P_do))
+						{
+             ;
+						}
+						else
+						{
+              vypis("Neplatný rozsah rychlosti pohonu od-do!");
+              VID=23;
+              Row_validace=ARow;
+              Col_validace=ACol;
+						}
+				}
+				break;
+
+        case 4:     //aRD - RD
+				{
+        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
+				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
+
+					if(Form1->m.between(RD,P_od,P_do))
+						{
+            ;
+						}
+						else
+						{
+              vypis("Neplatný rozsah rychlosti pohonu od-do!");
+              VID=23;
+              Row_validace=ARow;
+              Col_validace=ACol;
 						}
 				}
 				break;
