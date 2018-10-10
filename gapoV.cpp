@@ -488,7 +488,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	//legenda pozice
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvůli orámování tabulky
 	rHTMLLabel_InfoText->Left=mGrid->Left;
-  //rHTMLLabel_InfoText->Width=4000;
+	rHTMLLabel_InfoText->Width=rHTMLLabel_legenda_titulek->Left-rHTMLLabel_InfoText->Left;
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
 	////pozice gapo formu, pokud je stejně velký jako hlavní form, tak na 0 pozici, jinak na střed PL formu
@@ -1165,15 +1165,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
       case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
 				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
-				AnsiString ErrorText=pm.getErrorText(mGrid->RowCount);
-				if(ErrorText!="")
-				{
-					rHTMLLabel_InfoText->FontColor=clRed;
-					rHTMLLabel_InfoText->Caption=ErrorText;
-					scGPButton_OK->Enabled=false;
-				}
-				else scGPButton_OK->Enabled=true;
-			//	rHTMLLabel_InfoText->FontColor=cl...;
+				vypis(pm.getErrorText(mGrid->RowCount));
 		 }break;
 
 	}
