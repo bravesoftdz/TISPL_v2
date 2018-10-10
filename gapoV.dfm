@@ -20,12 +20,11 @@ object F_gapoV: TF_gapoV
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object rHTMLLabel_InfoText: TrHTMLLabel
+  object rHTMLLabel_InfoText_nefunguje: TrHTMLLabel
     Left = -141
     Top = -20
-    Width = 518
+    Width = 81
     Height = 19
-    AutoSize = False
     Caption = 'Upozorn'#283'n'#237
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
@@ -36,6 +35,7 @@ object F_gapoV: TF_gapoV
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
+    WordWrap = True
   end
   object rHTMLLabel_legenda: TrHTMLLabel
     Left = -2
@@ -73,6 +73,20 @@ object F_gapoV: TF_gapoV
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
+  end
+  object rHTMLLabel_InfoText: TrHTMLLabel
+    Left = 8
+    Top = 304
+    Width = 297
+    Height = 19
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    WordWrap = True
   end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
@@ -773,6 +787,15 @@ object F_gapoV: TF_gapoV
       30B0E4021AB83367DCF923197C302840CFFD3997933406FFDBD43383FF6D6AC1
       E68437F5CC2890AAF0A6260F98F81F5E2C4392386619B70000000049454E44AE
       426082}
+  end
+  object Button1: TButton
+    Left = 136
+    Top = 264
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 8
+    OnClick = Button1Click
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET

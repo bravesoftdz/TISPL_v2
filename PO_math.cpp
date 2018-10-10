@@ -190,7 +190,7 @@ double TPO_math::UDV()
 //alokuje ErrorList o velikosti RowCount (typicky mGrid->RowCount)
 void TPO_math::createErrorList(long RowCount)
 {
-	ErrorList=new AnsiString[RowCount+1];//+1 protože první øádek zùstane nevyužit
+	ErrorList=new AnsiString[RowCount];//0 øádek zùstane nevyužit
 }
 //---------------------------------------------------------------------------
 //vrátí slouèený ErrorText z ErrorListu (resp. jednotlivých øádkù)
@@ -198,9 +198,10 @@ AnsiString TPO_math::getErrorText(long RowCount,AnsiString seperator)
 {
 	AnsiString RET="";
 	bool jiz_byl_zaznam=false;
-	for(long i=1;i<=RowCount;i++)
+
+	for(long i=1;i<RowCount;i++)
 	{
-		if(ErrorList[i]!="")
+		if(!ErrorList[i].IsEmpty())
 		{ //mimo prvního øádku
 			if(jiz_byl_zaznam)RET+=seperator;//pokud následuje chybový text, tak odøádkuje
 			RET+=ErrorList[i];
@@ -213,7 +214,7 @@ AnsiString TPO_math::getErrorText(long RowCount,AnsiString seperator)
 //odstraní ErrorList z pamìti
 void TPO_math::deleteErrorList()
 {
-	delete[]ErrorList;
+	//delete[]ErrorList;
 }
 //---------------------------------------------------------------------------
 void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,short aRDunit)

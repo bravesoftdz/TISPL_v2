@@ -122,7 +122,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
  	////////error list - založení////////
-	pm.createErrorList(mGrid->RowCount);
+	pm.createErrorList(RowCount);
 
 	////////plnění daty - hlavička////////
 	mGrid->Cells[0][0].Text="Pohon";
@@ -487,7 +487,8 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	F->m.designButton(scGPButton_storno,F_gapoV,2,2);
 	//legenda pozice
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvůli orámování tabulky
-  rHTMLLabel_InfoText->Width=4000;
+	rHTMLLabel_InfoText->Left=mGrid->Left;
+  //rHTMLLabel_InfoText->Width=4000;
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
 	////pozice gapo formu, pokud je stejně velký jako hlavní form, tak na 0 pozici, jinak na střed PL formu
@@ -909,9 +910,6 @@ void TF_gapoV::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //pro daný řádek dle nastaveného checkboxu, dopočítá a dosadí nové hodnoty parametrů daného objektu z daného řádku, v případě SaveTo -1, vrátí formou textu, oddělené středníky, 0 - nevrací nic, 1 uloží do binárky
 UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 {
-	//instance na PO_math, využívá se stejných výpočtů
-	TPO_math pm;
-
 	//input sekce
 	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
@@ -971,9 +969,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	{
     //pm.RD=pm.Rz/pm.TT;
   //vrátí doporučenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteč mezi palci i takt
-    pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
-    pm.CT_locked=false;
-    pm.DD_locked=true;
+		pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
+		pm.CT_locked=false;
+		pm.DD_locked=true;
 
    //
 		if(SaveTo==0)
@@ -998,7 +996,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
       {
       	pm.CT_locked=true;
         pm.DD_locked=false;
-        pm.input_CT(false);
+				pm.input_CT(false);
         mGrid->Cells[17][Row].Font->Color=clUNLOCKED;//DD
         mGrid->Cells[19][Row].Font->Color=clLOCKED;//K
         mGrid->Cells[13][Row].Font->Color=clLOCKED;//CT
@@ -1027,7 +1025,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
       mGrid->Cells[32][Row].Font->Color=clLOCKED;//Rx
 			if(CHECK[3])//vždy zůstává Rx
 			{
-      	pm.input_RD(true);
+				pm.input_RD(true);
 				mGrid->Cells[13][Row].Font->Color=clUNLOCKED; //CT
 				mGrid->Cells[19][Row].Font->Color=clUNLOCKED;//K
         mGrid->Cells[17][Row].Font->Color=clLOCKED;//DD
@@ -1052,17 +1050,19 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			// Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
 			switch (indikator_skupin[objekty[Row].pohon->n])
 			{
-				case 1://výpočet pm.RD= pro to jak když je kontinuály v prnví v první oblasti
+				case 1:
 				{
-					pm.RD = pm.Rz / pm.TT;
+					//zde se pro danou oblast společně nic nepočítá
 				} break;
 				case 2://Rz,Rx
 				{
+					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
 					pm.Rz = pm.RD * pm.TT;
 					pm.Rx = pm.Rz / pm.R;
 				} break;
 				case 3://Rz,R
 				{
+					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
 					pm.Rz = pm.RD * pm.TT;
 					pm.R = pm.Rz / pm.Rx;
 				}break;
@@ -1164,8 +1164,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 		 }break;
       case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
-			 	pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
-				//ShowMessage(pm.getErrorText(mGrid->RowCount));
+				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
 				AnsiString ErrorText=pm.getErrorText(mGrid->RowCount);
 				if(ErrorText!="")
 				{
@@ -1209,7 +1208,7 @@ void __fastcall TF_gapoV::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	delete[] objekty;
   delete[] indikator_skupin;
-  pm.deleteErrorList();
+	pm.deleteErrorList();
 	scGPButton_storno->SetFocus();//workaround proti padání mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na mGridu, na komponentu nemazanou
   mGrid->Delete();
 }
@@ -1303,6 +1302,16 @@ void __fastcall TF_gapoV::scScrollBar_horizontChange(TObject *Sender)
 	//doladit posouvání komponent
 	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
 	else {FormPaint(this);Invalidate();}//na konci musí překreslit celé
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TF_gapoV::Button1Click(TObject *Sender)
+{
+ShowMessage(rHTMLLabel_InfoText->Caption);
+ShowMessage(rHTMLLabel_InfoText->Top);
+ShowMessage(rHTMLLabel_InfoText->Left);
+rHTMLLabel_InfoText->Caption="adfasdfdasfdasfdasf";
 }
 //---------------------------------------------------------------------------
 

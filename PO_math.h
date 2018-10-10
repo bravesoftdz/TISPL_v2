@@ -48,6 +48,7 @@ class TPO_math
 		double Mezera();//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá Rx,Rz-testování (to se nepoužívá, protože se používá nacti_rx pøímo v PO)
 		double UDV();//vrátí užitnou délku vozíku dle hodnoty rotace
 		AnsiString *ErrorList;
+		int ui;
 		void createErrorList(long RowCount);//alokuje ErrorList o velikosti RowCount (typicky mGrid->RowCount)
 		AnsiString getErrorText(long RowCount, AnsiString seperator="<br>");//vrátí slouèený ErrorText z ErrorListu (resp. jednotlivých øádkù)
 		void deleteErrorList();//odstraní ErrorList z pamìti

@@ -19,7 +19,7 @@ object F_gapoTT: TF_gapoTT
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object rHTMLLabel_InfoText2: TrHTMLLabel
+  object rHTMLLabel_InfoText_nefunguje: TrHTMLLabel
     Left = 8
     Top = -20
     Width = 518

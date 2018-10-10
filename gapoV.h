@@ -25,7 +25,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_info;
 	TscGPButton *scGPButton_OK;
 	TscGPButton *scGPButton_storno;
-	TrHTMLLabel *rHTMLLabel_InfoText;
+	TrHTMLLabel *rHTMLLabel_InfoText_nefunguje;
 	TrHTMLHint *rHTMLHint1;
 	TMemo *Memo1;
 	TrHTMLLabel *rHTMLLabel_legenda;
@@ -36,6 +36,8 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_copy;
   TscButton *scButton_csv;
   TscGPImage *scGPImage_zamky;
+	TrHTMLLabel *rHTMLLabel_InfoText;
+	TButton *Button1;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
@@ -48,6 +50,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPGlyphButton_copyClick(TObject *Sender);
   void __fastcall KonecClick(TObject *Sender);
   void __fastcall scScrollBar_horizontChange(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
 
 private:	// User declarations
 	TPO_math pm;//instance na PO_math, využívá se z èásti stejných výpoètù
