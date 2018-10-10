@@ -488,9 +488,9 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	//legenda pozice
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvůli orámování tabulky
 	rHTMLLabel_InfoText->Left=mGrid->Left;
-	rHTMLLabel_InfoText->Width=rHTMLLabel_legenda_titulek->Left-rHTMLLabel_InfoText->Left;
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
+	rHTMLLabel_InfoText->Width=rHTMLLabel_legenda_titulek->Left-rHTMLLabel_InfoText->Left;
 	////pozice gapo formu, pokud je stejně velký jako hlavní form, tak na 0 pozici, jinak na střed PL formu
 	if(Width==F->Width)Left=0;else Left=Form_parametry_linky->Left+Form_parametry_linky->Width/2-Width/2;
 	if(Height==F->Height)Top=0;else Top=Form_parametry_linky->Top+Form_parametry_linky->Height/2-Form_parametry_linky->scGPPanel2->Height/2-Height/2;//umístí na polovinu PL formuláře
@@ -1301,8 +1301,9 @@ void __fastcall TF_gapoV::scScrollBar_horizontChange(TObject *Sender)
 void __fastcall TF_gapoV::Button1Click(TObject *Sender)
 {
 ShowMessage(rHTMLLabel_InfoText->Caption);
-ShowMessage(rHTMLLabel_InfoText->Top);
-ShowMessage(rHTMLLabel_InfoText->Left);
+ShowMessage(rHTMLLabel_InfoText->Height);
+ShowMessage(rHTMLLabel_InfoText->Width);
+rHTMLLabel_InfoText->Visible=true;
 rHTMLLabel_InfoText->Caption="adfasdfdasfdasfdasf";
 }
 //---------------------------------------------------------------------------
