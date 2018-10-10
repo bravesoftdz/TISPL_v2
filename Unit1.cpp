@@ -1238,7 +1238,16 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
-  }
+	}
+		if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")
+	{
+		Graphics::TBitmap *bmp=new Graphics::TBitmap;
+		bmp->LoadFromFile("conf");
+		bmp->Transparent=true;
+		bmp->TransparentColor=clWhite;
+		Canvas->Draw(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,bmp);
+		delete(bmp);
+	}
 }
 //---------------------------------------------------------------------------
 //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing)

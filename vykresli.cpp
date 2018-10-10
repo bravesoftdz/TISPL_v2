@@ -219,14 +219,14 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 			canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké
 			//asi nepřináší zcela přínos
 			canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;
-			canv->Font->Size=10*3+3;//+3 grafická korekce protože při AA dochází ke zmenšení písma
+			canv->Font->Size=11*3+3;//+3 grafická korekce protože při AA dochází ke zmenšení písma
 		}
 		else
 		{
 			//asi nepřináší zcela přínos
 			canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
 			canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
-			canv->Font->Size=11;//tady zajist rozšíření písma
+			canv->Font->Size=12;//tady zajist rozšíření písma
 		}
 		rotace_textu(canv,0);
 
@@ -255,7 +255,7 @@ void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 		//vypis další datových položek
 		if(Form1->Zoom_predchozi_AA>1.5)
 		{
-		 UnicodeString T=""; unsigned short R=18;//řádkování
+		 UnicodeString T=""; unsigned short R=20;//řádkování
 
 		 bool CTunit=0;AnsiString CTunitT="[s]";
 		 bool aRDunit=0;AnsiString aRDunitT="[m/s]";
