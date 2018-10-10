@@ -121,6 +121,9 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	mGrid->Create(ColCount,RowCount);//samotné vytvoření matice-tabulky
 	objekty=new Cvektory::TObjekt[RowCount];//dynamické pole, uchovávající ukazatele na objekty v tabulce sloupci objekty
 
+ 	////////error list - založení////////
+	pm.createErrorList(mGrid->RowCount);
+
 	////////plnění daty - hlavička////////
 	mGrid->Cells[0][0].Text="Pohon";
 	mGrid->Cells[0][0].Font->Style=TFontStyles();//<< fsBold;//zapnutí tučného písma
@@ -755,8 +758,8 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
             }
 				 }  else
          {
-           AnsiString T=calculate(Row,3);// ShowMessage("tady");
-           if(T!="") vypis(T); else  vypis("",false);
+//           AnsiString T=calculate(Row,3);// ShowMessage("tady");
+//           if(T!="") vypis(T); else  vypis("",false);
          }
         }
 			}
@@ -1342,8 +1345,8 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	{
 	 if(input_state==FREE && Col>=3 && Col<=14)
 	 {
-     AnsiString T=calculate(Row,3);
-     if(T!="")F->MB(T);//pokud obsahuje chybový text
+//     AnsiString T=calculate(Row,3);
+//     if(T!="")F->MB(T);//pokud obsahuje chybový text
 
    		// podívám se, zda pohon, který je na řádku, kde došlo ke kliku má více objektů v KK režimu, pokud ano, musím projít všechny
      if(mGrid->Cells[0][Row].Text!="nepřiřazen")
@@ -1556,10 +1559,6 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 		}
 	}
 
-
-
-
-
 	//output sekce
 	AnsiString T="";
 	switch(SaveTo)
@@ -1612,8 +1611,10 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 						mGrid->Cells[28][Row].Text = F->m.R(objekty[Row].pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]))*(1+999.0*Runit);
 					}
         }
-				}
-		 }break;
+      }
+	 	 if(input_state!=LOADING) {calculate(Row,3);}//provede se validace //docasny input_state kvuli chybe
+     }
+     break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
 				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
@@ -1650,6 +1651,21 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
 				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
 		 }break;
+      case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
+		 {
+			 	pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
+				//ShowMessage(pm.getErrorText(mGrid->RowCount));
+				AnsiString ErrorText=pm.getErrorText(mGrid->RowCount);
+				if(ErrorText!="")
+				{
+					rHTMLLabel_InfoText->FontColor=clRed;
+					rHTMLLabel_InfoText->Caption=ErrorText;
+					scGPButton_OK->Enabled=false;
+				}
+				else scGPButton_OK->Enabled=true;
+			//	rHTMLLabel_InfoText->FontColor=cl...;
+		 }break;
+
 	}
 	return T;
 }
@@ -1682,6 +1698,8 @@ void __fastcall TF_gapoV::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	delete[] objekty;
   delete[] indikator_skupin;
+  pm.deleteErrorList();
+	scGPButton_storno->SetFocus();//workaround proti padání mGridu (padalo při odstraňování komponent), Focus se přesune z mazané komponenty na mGridu, na komponentu nemazanou
   mGrid->Delete();
 }
 //---------------------------------------------------------------------------
