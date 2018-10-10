@@ -1001,8 +1001,6 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
         mGrid->Cells[19][Row].Font->Color=clLOCKED;//K
         mGrid->Cells[13][Row].Font->Color=clLOCKED;//CT
       }
-
-
 		}
 	}
 	if(CHECK[3] || CHECK[4])//mění se aRD, RD, M, Rz, R, DD, P zůstává K, CT,DD,  Rx,
@@ -1041,33 +1039,32 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			}
 		}
 	}
-    	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech
 	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech
 	if(mGrid->Cells[0][Row].Text != "nepřiřazen")  //MAKR
 	{
-		if (objekty[Row].pohon != NULL)
-		{
-			// Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
-			switch (indikator_skupin[objekty[Row].pohon->n])
-			{
-				case 1:
-				{
-					//zde se pro danou oblast společně nic nepočítá
-				} break;
-				case 2://Rz,Rx
-				{
-					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
-					pm.Rz = pm.RD * pm.TT;
-					pm.Rx = pm.Rz / pm.R;
-				} break;
-				case 3://Rz,R
-				{
-					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
-					pm.Rz = pm.RD * pm.TT;
-					pm.R = pm.Rz / pm.Rx;
-				}break;
-			}
-		}
+//		if (objekty[Row].pohon != NULL)
+//		{
+//			// Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
+//			switch (indikator_skupin[objekty[Row].pohon->n])
+//			{
+//				case 1:
+//				{
+//					//zde se pro danou oblast společně nic nepočítá
+//				} break;
+//				case 2://Rz,Rx
+//				{
+//					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
+//					pm.Rz = pm.RD * pm.TT;
+//					pm.Rx = pm.Rz / pm.R;
+//				} break;
+//				case 3://Rz,R
+//				{
+//					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
+//					pm.Rz = pm.RD * pm.TT;
+//					pm.R = pm.Rz / pm.Rx;
+//				}break;
+//			}
+//		}
 	}
 
 	//output sekce
@@ -1122,9 +1119,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 						mGrid->Cells[28][Row].Text = F->m.R(objekty[Row].pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]))*(1+999.0*Runit);
 					}
         }
-      }
-	 	/* if(input_state!=LOADING)*/  ShowMessage("calculate(3)"); calculate(Row,3); //provede se validace //docasny input_state kvuli chybe
-     }
+			}
+			calculate(Row,3); //provede se validace
+		 }
      break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
