@@ -1123,7 +1123,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 					}
         }
       }
-	 	 if(input_state!=LOADING) {calculate(Row,3);}//provede se validace //docasny input_state kvuli chybe
+	 	/* if(input_state!=LOADING)*/  ShowMessage("calculate(3)"); calculate(Row,3); //provede se validace //docasny input_state kvuli chybe
      }
      break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
