@@ -1114,8 +1114,8 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=color;//barva ikony
 	}
 	//pozice
-//	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
-//	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
+	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
+	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
 	scExPanel_log_header->Height = 300;
 	scExPanel_log_header->Width	 = 715;
   //Memo2->Visible=true;
@@ -3220,14 +3220,14 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 			{
 				AnsiString dopRD="";
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-				if(Form_parametry->scComboBox_pohon->ItemIndex==P->n && !Form_parametry->pohon_pouzivan)//pokud se jedná o aktuální pohon a pohon lze editovat
-				{
-					if(m.round2double(Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT),8)==m.round2double(m.dopRD(d.v.PP.delka_jig,d.v.PP.sirka_jig,Form_parametry->scComboBox_rotace->ItemIndex,P->roztec,d.v.PP.TT,Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT)),8))dopRD="  dopor.";
+				if(Form_parametry->scComboBox_pohon->ItemIndex==P->n && !Form_parametry->pohon_pouzivan && !Form_parametry->ComboBoxPohonyProbihaZmena)//pokud se jedná o aktuální pohon a pohon lze editovat a neprobíhá změna comboboxu
+				{     //pouze pro KK
+					if(Form_parametry->scComboBox_rezim->ItemIndex==1 && m.round2double(Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT),8)==m.round2double(m.dopRD(d.v.PP.delka_jig,d.v.PP.sirka_jig,Form_parametry->scComboBox_rotace->ItemIndex,P->roztec,d.v.PP.TT,Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT)),8))dopRD="  dopor.";
 					t->Caption=P->name+" - "+m.round2double(Form_parametry->scGPNumericEdit_RD->Value,3,"..")+" ("+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+") "+caption_jednotky+dopRD;//vypíše aktuální editovanou hodnotu
 				}
-				else//pro ostatní pohony, či aktální používaný (přiřazen více objektům) pohon
-				{
-					if(m.round2double(P->aRD,8)==m.round2double(m.dopRD(d.v.PP.delka_jig,d.v.PP.sirka_jig,Form_parametry->scComboBox_rotace->ItemIndex,P->roztec,d.v.PP.TT,P->aRD),8))dopRD="  dopor.";
+				else//pro ostatní pohony, či aktální používaný (přiřazen více objektům) pohon - většinová situace
+				{   //pouze pro KK
+					if(Form_parametry->scComboBox_rezim->ItemIndex==1 && m.round2double(P->aRD,8)==m.round2double(m.dopRD(d.v.PP.delka_jig,d.v.PP.sirka_jig,Form_parametry->scComboBox_rotace->ItemIndex,P->roztec,d.v.PP.TT,P->aRD),8))dopRD="  dopor.";
 					t->Caption=P->name+" - "+m.round2double(P->aRD*(1+59.0*RDunitT),3,"..")+" ("+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+") "+caption_jednotky+dopRD;
 				}
 				P=P->dalsi;//přesun na další pohon

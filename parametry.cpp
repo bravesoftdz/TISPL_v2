@@ -2194,7 +2194,8 @@ void __fastcall TForm_parametry::rHTMLLabel_InfoTextClick(TObject *Sender)
 // kontrola vybraného pohonu vùèi zadané rychlosti dopravníku
 void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
-    INPUT();
+		ComboBoxPohonyProbihaZmena=true;//používá se kvùli aktualizaci náplnì comba
+		INPUT();
 		OUTPUT();
  		Pohon_pouzivan();
  		Nacti_rx(); //buï vypoèítá rx nebo v pøípadì používaného pohonu rx a rz naète z dat
@@ -2247,8 +2248,8 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 		input_clicked_edit=empty_klik; // výbìrem pohonu dochází k volání onchange rotace a to zpùsobí zobrazení pacek, což je nežádoucí, proto pøi zmìnì pohonu vždy nastavím, že jde o prázdný klik
 		//upozornìní na nepøiøazený pohon
 		if(scComboBox_pohon->ItemIndex==0){scComboBox_pohon->Options->FrameWidth=2;scComboBox_pohon->Options->FrameFocusedColor=clRed;scComboBox_pohon->Options->FrameNormalColor=clRed;}else {scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameFocusedColor=clHighlight;scComboBox_pohon->Options->FrameWidth=1;}
-
-    }
+		ComboBoxPohonyProbihaZmena=false;//používá se kvùli aktualizaci náplnì comba
+}
 //---------------------------------------------------------------------------
 // doplnit komentáø
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaClick(TObject *Sender)
