@@ -1868,13 +1868,14 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 		 }break;
 		 case 123:// F12
 		 {
+     scGPButton_OK->Enabled=true;
 		 	if (DEBUG) // pouze v DEBUGU
 		 	{
-		 		Memo1->Visible = true;
-		 		Memo1->Lines->Clear();
-		 		//	Memo1->Lines->Add(pm.T);
-		 		Memo1->Top = 0;
-				Memo1->Left = 0;
+//		 		Memo1->Visible = true;
+//		 		Memo1->Lines->Clear();
+//		 		//	Memo1->Lines->Add(pm.T);
+//		 		Memo1->Top = 0;
+//				Memo1->Left = 0;
 				//test
 				/*
 				frameCorrelation();
@@ -1888,10 +1889,10 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
 				C->LineTo(Form_objekt_nahled->Left+50,Top+rHTMLLabel_rozestup->Top+rHTMLLabel_rozestup->Height/2);
 				C->LineTo(Left+rHTMLLabel_rozestup->Left,Top+rHTMLLabel_rozestup->Top+rHTMLLabel_rozestup->Height/2);
 				*/
-				TPoint S=getRMComponent(MEZERA);TPoint E=getRMComponent(ROZESTUP);
-				ShowMessage(AnsiString(S.x)+";"+AnsiString(E.x));
-				ShowMessage(rHTMLLabel_mezera_jednotky->Width);
-				ShowMessage(rHTMLLabel_jednotky_vzdalenostpalcu->Width);
+//				TPoint S=getRMComponent(MEZERA);TPoint E=getRMComponent(ROZESTUP);
+//				ShowMessage(AnsiString(S.x)+";"+AnsiString(E.x));
+//				ShowMessage(rHTMLLabel_mezera_jednotky->Width);
+//				ShowMessage(rHTMLLabel_jednotky_vzdalenostpalcu->Width);
 			}
 		 }break;
 	 }

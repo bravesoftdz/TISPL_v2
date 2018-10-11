@@ -132,8 +132,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
 
     }
-   rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height -5  ;
-   rHTMLLabel_info_zmenaR->Top=rHTMLLabel_InfoText->Top;
+   rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height + 5;
+   rHTMLLabel_info_zmenaR->Top= Button_storno->Top - Button_storno->Height + 5;
    rHTMLLabel_info_zmenaR->Left=Button_storno->Left;
    rHTMLLabel_info_zmenaR->Caption="";
 	 input_state = NOTHING;   //výchozí nastavení stavu
@@ -995,7 +995,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	}
 	if(Key==123)//F12
 	{
-
+   Button_save->Enabled=true;
 	}
 }
 //---------------------------------------------------------------------------
@@ -1625,7 +1625,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 
 				if (red)
 				{
-						Button_save->Enabled=true;  //R - doèasné povolení ukládání pøi validaci
+						Button_save->Enabled=false;  //R - doèasné povolení ukládání pøi validaci
 						rHTMLLabel_InfoText->Font->Color = clRed;
 				}
 				else
