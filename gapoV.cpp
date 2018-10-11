@@ -139,7 +139,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	if(Munit==0)mGrid->Cells[24][0].Text="M - mezera vozík [m]"; else mGrid->Cells[24][0].Text="M - mezera vozík [mm]";
 	mGrid->Cells[26][0].Text="Rotace";
   if(Runit==0)mGrid->Cells[27][0].Text="R - rozteč [m]"; else mGrid->Cells[27][0].Text="R - rozteč [mm]";
-	if(Rzunit==0)mGrid->Cells[29][0].Text="Rz - akt. palce - rozestup [m]"; else mGrid->Cells[29][0].Text="Rz - akt. palce - rozestup [mm]"; //přepínání jednotek dodělat
+	if(Rzunit==0)mGrid->Cells[29][0].Text="Rz - akt. palce - rozestup [m]"; else mGrid->Cells[29][0].Text="Rz - akt. palce - rozestup [mm]"; //přepínání jednotek
 	mGrid->Cells[31][0].Text="Rx - každy n-tý palec";
 	mGrid->Cells[33][0].Text="Náhled";
 
@@ -1137,12 +1137,10 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			 Form_objekt_nahled->pom->mezera_jig=pm.MJ;
 			 Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
 			 //nutno provizorně přepsat v PP parametry vozíku potenciálně ukládanými, aby se náhled vykreslil správně, poté je v případě storna formu nutné vrátit původní hodnoty (proto se zároveň ukládají do zalohovací proměnné)
-			 double dJtemp,sJtemp,dPtemp;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
-			 F->d.v.PP.delka_jig = pm.dJ;
-			 F->d.v.PP.sirka_jig = pm.sJ;
-			 F->d.v.PP.delka_podvozek = pm.dP;
-			 //dodělat
-
+			 //proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
+			 dJtemp=F->d.v.PP.delka_jig;		 F->d.v.PP.delka_jig		  = pm.dJ;
+			 sJtemp=F->d.v.PP.sirka_jig;		 F->d.v.PP.sirka_jig			= pm.sJ;
+			 dPtemp=F->d.v.PP.delka_podvozek;F->d.v.PP.delka_podvozek	= pm.dP;
 		 }break;
       case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
@@ -1190,6 +1188,11 @@ void __fastcall TF_gapoV::scGPButton_stornoClick(TObject *Sender)
 {
 	Form_parametry_linky->Button_save->Enabled=true;
 	Form_parametry_linky->Button_storno->Enabled=true;
+	//pokud byl zobrazen náhled, je v případě storna potřeba vrátíti původní rozměry vozíků i do PP
+	F->d.v.PP.delka_jig=dJtemp;
+	F->d.v.PP.sirka_jig=sJtemp;
+	F->d.v.PP.delka_podvozek=dPtemp;
+	//navrácení hodnot do miniformu
   if(Form_parametry_linky->Delkaunit==0)
   {
 		Form_parametry_linky->scGPNumericEdit_delka_jig->Value=F->d.v.PP.delka_jig;
