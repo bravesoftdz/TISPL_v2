@@ -120,7 +120,7 @@ void TPO_math::input_M()
 	MP=M+fabs(dP-m.UDV(dJ,sJ,Rotace));
 }
 //---------------------------------------------------------------------------
-//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá. Rx,Rz-testování, nevyužito
+//vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá.
 double TPO_math::Mezera(bool prepocet_Rzalezitosti)
 {
 	double mezera=RD*TT-m.UDV(dJ,sJ,Rotace);

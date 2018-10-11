@@ -1343,17 +1343,21 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		{
 			pm.Rz=pm.RD*pm.TT;
 			pm.Rx=F->m.Rx2(pm.Rz,pm.R);
-			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.M=F->m.mezera(pm.Rotace,pm.Rz);//nepoužívat mezera() z pm
+			pm.MJ=pm.RD*pm.TT-F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace);
+			pm.MP=pm.RD*pm.TT-pm.dP;
 			pm.DD=pm.RD*pm.TT*pm.K;
 			pm.CT=pm.DD/pm.RD;
-			pm.P=pm.Pozice();//radìji nechat až za pm.CT
+			pm.P=pm.Pozice();//musí být až za kapacitou a  mezerou
 		}
 		if(pm.rezim==2)//pouze pro PP režim
 		{
 			pm.DD=pm.Rz/pm.TT*pm.CT; //toto je otázka, zda je to opravdu tøeba???
 			pm.CT=pm.TT*pm.K;
 			pm.M=pm.DD/pm.K-pm.UDV();
-			pm.P=pm.Pozice();
+			pm.MJ=pm.M+fabs(F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace)-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
+			pm.MP=pm.M+fabs(pm.dP-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
+			pm.P=pm.Pozice();//musí být až za kapacitou a  mezerou
 		}
 		if(pm.rezim==100)//pouze pro pohon bez pøiøazených objektù
 		{
@@ -1380,14 +1384,18 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			pm.Rz=pm.RD*pm.TT;
 			pm.Rx=F->m.Rx2(pm.Rz,pm.R);
 			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.MJ=pm.RD*pm.TT-F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace);
+			pm.MP=pm.RD*pm.TT-pm.dP;
 			pm.K=pm.DD/pm.RD/pm.TT;
-			pm.P=pm.Pozice();
+			pm.P=pm.Pozice();//musí být až za kapacitou a  mezerou
 		}
 		if(pm.rezim==2)//pouze pro PP režim
 		{
 			pm.K=pm.CT/pm.TT;
-			pm.P=pm.Pozice();
 			pm.M=pm.DD/pm.K-pm.UDV();
+			pm.MJ=pm.M+fabs(F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace)-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
+			pm.MP=pm.M+fabs(pm.dP-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
+			pm.P=pm.Pozice();//musí být až za kapacitou a  mezerou
 		}
 
 	}
@@ -1411,16 +1419,20 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			pm.Rz=pm.RD*pm.TT;
 			pm.R=F->m.R(pm.Rz,pm.Rx);
 			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.MJ=pm.RD*pm.TT-F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace);
+			pm.MP=pm.RD*pm.TT-pm.dP;
 			pm.DD=pm.RD*pm.TT*pm.K;
 			pm.CT=pm.DD/pm.RD;
-			pm.P=pm.Pozice();
+			pm.P=pm.Pozice();//musí být až za kapacitou a  mezerou
 		}
 		if(pm.rezim==2)//pouze pro PP režim
 		{
 			pm.CT=pm.TT*pm.K;
 			pm.DD=pm.Rz/pm.TT*pm.CT; //toto je otázka, zda je to opravdu tøeba???
-			pm.P=pm.Pozice();
 			pm.M=pm.DD/pm.K-pm.UDV();
+			pm.MJ=pm.M+fabs(F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace)-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
+			pm.MP=pm.M+fabs(pm.dP-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
+			pm.P=pm.Pozice();//musí být až za kapacitou a mezerou
 		}
 		if(pm.rezim==100)
 		{
@@ -1447,14 +1459,18 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 			pm.Rz=pm.RD*pm.TT;
 			pm.R=F->m.R(pm.Rz,pm.Rx);
 			pm.M=F->m.mezera(pm.Rotace,pm.Rz);
+			pm.MJ=pm.RD*pm.TT-F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace);
+			pm.MP=pm.RD*pm.TT-pm.dP;
 			pm.K=pm.DD/pm.RD/pm.TT;
-			pm.P=pm.Pozice();
+			pm.P=pm.Pozice();//musí být až za kapacitou a  mezerou
 		}
 		if(pm.rezim==2)//pouze pro PP režim
 		{
 			pm.K=pm.CT/pm.TT;
-			pm.P=pm.Pozice();
 			pm.M=pm.DD/pm.K-pm.UDV();
+			pm.P=pm.Pozice();//musí být až za kapacitou a  mezerou
+			pm.MJ=pm.M+fabs(F->m.UDJ(pm.dJ,pm.sJ,pm.Rotace)-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
+			pm.MP=pm.M+fabs(pm.dP-F->m.UDV(pm.dJ,pm.sJ,pm.Rotace));
     }
 	}
 	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další napø. v PP- tak PP obj. neovlivní výpoèet RD, KK má pøednost. pole se plní v onclick událostech
