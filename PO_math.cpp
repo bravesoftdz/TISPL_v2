@@ -299,9 +299,8 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 	if(R<=0 && objekty[Row].pohon!=NULL) error_text+="R "; //neøeší se pro objekty bez pohonù
 	if(Rz<=0 && objekty[Row].pohon!=NULL)error_text+="Rz ";//neøeší se pro objekty bez pohonù
 	if(Rx<=0 && objekty[Row].pohon!=NULL)error_text+="Rx ";//neøeší se pro objekty bez pohonù
-	if(error_text!="")error_text="Neplatná hodnota: "+error_tex;//pokud existuje již pøedchozí chybový záznam dodá ještì pøed nìj popisek
 	if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o rozmezí èi Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
-	T+=error_text;
+	if(error_text!="")T+="Neplatná hodnota: "+error_text;//pokud existuje již pøedchozí chybový záznam dodá ještì pøed nìj popisek
 
 	//nadpis a finalizace textu
 	AnsiString p="nepøiøazen";if(objekty[Row].pohon!=NULL)p=objekty[Row].pohon->name;if(objekty[Row].id>=100)p=F->d.v.vrat_pohon(objekty[Row].id-100)->name;
