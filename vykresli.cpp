@@ -1936,7 +1936,7 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 	double KR=0;//kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
 	TPointD S;S.x=X;S.y=Y;//Start
 	TPointD K;K.x=X+DD;K.y=Y;//Konec
-
+																 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(M+DV)+"Rx="+AnsiString(F->m.round((M+DV)/R)));
 	////obrys objektu
 	//pero+výplň
 	canv->Brush->Color=clWhite;
@@ -1959,7 +1959,7 @@ unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,doubl
 		//palce, pokud je zadaná rozteč tak se vykreslí
 		if(R>0)
 		{
-			//palce řetězu
+			//palce řetězu   //pozn. M+DV je Rz
 			int Rx=F->m.round((M+DV)/R);//může být zaokrouhleno, protože musí vycházet celé číslo
 													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
 			double startR=-(M+DV)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
@@ -2062,7 +2062,16 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP
 	canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));
 
 	////text - ID vozíku
-	canv->Brush->Style=bsSolid;//netransparentní pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
+	//framing
+	if(Form1->Zoom>10)//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost
+	{
+		canv->Font->Color=clWhite;
+		canv->Font->Style = TFontStyles()<<fsBold;//vypnutí tučného písma
+		canv->Font->Size=Form1->Zoom*(4+1); if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*(5+1);
+		canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
+	}
+	//samotný text
+	if(Form1->Zoom<=10)canv->Brush->Style=bsSolid;//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost//bez bílého pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
 	canv->Font->Color=clJig;
 	canv->Font->Style = TFontStyles();//vypnutí tučného písma
 	canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
