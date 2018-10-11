@@ -51,6 +51,7 @@ void __fastcall TF_gapoV::FormActivate(TObject *Sender)
 void __fastcall TF_gapoV::FormShow(TObject *Sender)
 {
   UlozitGAPOV=false;
+  vypis(""); // prozmanuti vypisu - pro sicher
 	////////jednotky////////
 	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
 	if(T=="")CTunit=0;else CTunit=T.ToInt();

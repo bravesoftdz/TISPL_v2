@@ -17,6 +17,7 @@
 #include "scGPImages.hpp"
 #include <Vcl.Imaging.pngimage.hpp>
 #include "PO_math.h"
+#include "rHintWindow.hpp"
 //---------------------------------------------------------------------------
 class TF_gapoR : public TForm
 {
@@ -39,6 +40,7 @@ __published:	// IDE-managed Components
   TscGPImage *scGPImage_zamky;
   TMemo *Memo1;
   TMemo *Memo2;
+  TrHTMLHint *rHTMLHint_vypis;
 	void __fastcall FormActivate(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
@@ -65,6 +67,7 @@ private:	// User declarations
 	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND;
 	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
+
 public:		// User declarations
 	__fastcall TF_gapoR(TComponent* Owner);
 	//metody volané z Tmgrid
@@ -73,6 +76,7 @@ public:		// User declarations
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 	TPoint *pohony_zmena;//dynamické pole evidující zmìny na PL u pohonù
 	bool zobrazitFrameForm;
+  void vypis(UnicodeString text,bool red=true,bool link=false);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TF_gapoR *F_gapoR;

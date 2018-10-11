@@ -132,7 +132,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
 
     }
-   rHTMLLabel_InfoText->Top =  Button_storno->Top - 12;
+   rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height -5  ;
    rHTMLLabel_info_zmenaR->Top=rHTMLLabel_InfoText->Top;
    rHTMLLabel_info_zmenaR->Left=Button_storno->Left;
    rHTMLLabel_info_zmenaR->Caption="";
@@ -1633,7 +1633,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 						rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
 				}
 				rHTMLLabel_InfoText->Left = 10;
-				rHTMLLabel_InfoText->Top = Button_save->Top - 15;
+				rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height  + 5;
 				rHTMLLabel_InfoText->Caption = text;
 				rHTMLLabel_InfoText->Visible = true;
 		}
