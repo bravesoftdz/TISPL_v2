@@ -831,14 +831,18 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	if(Col==mGrid->ColCount-1)//je kliknuto na náhled objektu
 	{
-		calculate(Row,2);//zajistí patřičné naplnění data náhledu objektu
-		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
-		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
-		Invalidate();FormPaint(this);//zajistí překreslení bez probliku
-		Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
-		Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
-		Form_objekt_nahled->ShowModal();
-		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+		if(pm.ErrorList[Row]=="")//pouze pokud je daný objekt k zobrazení validní
+		{
+			calculate(Row,2);//zajistí patřičné naplnění data náhledu objektu
+			scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
+			Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
+			Invalidate();FormPaint(this);//zajistí překreslení bez probliku
+			Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
+			Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
+			Form_objekt_nahled->ShowModal();
+			scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+		}
+		else F->MB("Nelze zobrazit náhled objektu. Nastavte nejdříve platnou volbu!<br>Přičina: "+pm.ErrorList[Row]);
 	}
 	else//překliknutí chechboxu pravděpodobně
 	{
@@ -1124,9 +1128,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 		 {
 			 Form_objekt_nahled->pom=new Cvektory::TObjekt;
 			 Form_objekt_nahled->pom->pohon=new Cvektory::TPohon;
-			 Form_objekt_nahled->pom->pohon->roztec=pm.R;
-			 Form_objekt_nahled->pom->pohon->roztec=pm.Rz;
-			 Form_objekt_nahled->pom->pohon->roztec=pm.Rx;
+			 Form_objekt_nahled->pom->pohon->roztec=pm.R;       //ShowMessage(pm.R);
+			 //Form_objekt_nahled->pom->pohon->roztec=pm.Rz;netřeba vypočítáva se v náhledu pomocí DV+M
+			 //Form_objekt_nahled->pom->pohon->roztec=pm.Rx;netřeba vypočítáva se v náhledu  pomocí (DV+M)/R
 			 Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
 			 Form_objekt_nahled->pom->CT=pm.CT;
 			 Form_objekt_nahled->pom->RD=pm.RD;
