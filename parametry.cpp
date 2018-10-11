@@ -57,7 +57,7 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 			m_mm = M;
 			CTunit = S;
 			RDunitT = S;
-			RDunitD = M;
+			//RDunitD = M;
 			DDunit = M;
 			DMunit = M;
 
@@ -99,18 +99,18 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 		scGPEdit_name->SelectAll(); // oznaèí cele pro editace
 		scGPButton_OK->Enabled = true;
 		scGPButton_OK->Caption = "Uložit";
-		form_zobrazen = true;
+		//form_zobrazen = true;
 		pohon_pouzivan = false;
 
 		if(Form_parametry_linky->scGPSwitch->State==0)rHTMLLabel_jig_podvozek->Caption="jig a podvozek";
 		else rHTMLLabel_jig_podvozek->Caption="jig a závìs";
 		// detekuje zda je form aktuálnì zobrazen, slouží proto aby pøi zmìnì combo režim pokud si nastavil uživatel formulaø jinam, aby zùstal nastaven dle uživatele
-
 		// pohon_je_pouzivan  - nastavení zámkù a editboxù dle nastaveného pohonu.
 		Pohon_pouzivan();
 		Nacti_rx(); // vypoèítání Rx a zobrazeni
 		INPUT();   // pøi prvním zobrazení formu "otisknu" data z formu do math struktury, bez žádných výpoètù, primárnì použito pro nastavení decimal checkboxu, kdy potøebuje mít data v output již pøi formshow
 		OUTPUT();  // naètení dat ze struktury
+		form_zobrazen = true;//pozor byl výše, ale asi by nemìlo dìlat problémy, využívá se také mimojiné k tomu, aby se nevolalo opakovanì output (nìkde patrnì není ošetøen input_statem a mìlo za následeko opakované pøevody jednotek)
 		if(scComboBox_rezim->ItemIndex==1) 	Check_rozmezi_RD();
 		if(scComboBox_rezim->ItemIndex!=1)  // pro jiné režimy vždy povolím zobrazení zámkù
 		{
@@ -1537,8 +1537,9 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 				if(RDunitT != S)
 				{
 					RDunitT = S;
-					if (RDunitD == MM) rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v milimetrech
-					else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v metrech
+					//if (RDunitD == MM) rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v milimetrech
+					//else
+					rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v metrech
 					RD = scGPNumericEdit_RD->Value / 60.0;
 				}
 		}
@@ -1558,15 +1559,16 @@ void __fastcall TForm_parametry::Button_min_secClick(TObject *Sender)
 				if(RDunitT != MIN)
 				{
 					RDunitT = MIN;
-					if (RDunitD == MM) rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";// pokud je v milimetrech
-					else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v metrech
+					//if (RDunitD == MM) rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";// pokud je v milimetrech
+					//else
+					rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v metrech
 					RD = scGPNumericEdit_RD->Value * 60.0;
 				}
 		}
 		// plnìní + poèet desetinných míst
 		scGPNumericEdit_CT->Value = CT;
 		scGPNumericEdit_RD->Value = RD;
-		Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
+		Form1->aktualizace_combobox_pohony_v_PO(0,RDunitT);//zaktualizovat výpis + o jednotky
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
@@ -1612,17 +1614,19 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 		if(RDunitT == MIN)// pokud je v minutách, tak pøepne na sekundy
 		{
 				RDunitT = S;
-				if(RDunitD == MM)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v milimetrech
-				else rHTMLLabel_RD->Caption =	"Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v metrech
+				//if(RDunitD == MM)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v milimetrech
+				//else
+				rHTMLLabel_RD->Caption =	"Rychlost pohonu <font color=#2b579a>[m/s]</font>";// pokud je v metrech
 				RD = scGPNumericEdit_RD->Value / 60.0;
 				// RD=RDunitD_funkce(RD); tady opravdu nesmí být
 		}
 		else // pokud je v sekundách pøepne na minuty
 		{
 				RDunitT = MIN;
-				if(RDunitD == MM)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";
+				//if(RDunitD == MM)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";
 				// pokud je v milimetrech
-				else rHTMLLabel_RD->Caption ="Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v metrech
+				//else
+				rHTMLLabel_RD->Caption ="Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v metrech
 				RD = scGPNumericEdit_RD->Value * 60.0;
 				//zrušeno užití RD = RDunitD_funkce(RD);//tady ano
 		}
@@ -1630,7 +1634,7 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 
 		// plnìní + poèet desetinných míst
 		scGPNumericEdit_RD->Value = RD;
-		F->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
+		F->aktualizace_combobox_pohony_v_PO(0,RDunitT);//zaktualizovat výpis + o jednotky
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
@@ -1736,7 +1740,7 @@ void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
 		scGPNumericEdit_mezera_PODVOZEK->Value = MP;
 		scGPNumericEdit_rozestup->Value=Rz;
 		scGPNumericEdit_RD->Value = RD;
-		Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
+		Form1->aktualizace_combobox_pohony_v_PO(0,RDunitT);//zaktualizovat výpis + o jednotky
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
 //---------------------------------------------------------------------------
@@ -1915,7 +1919,7 @@ void __fastcall TForm_parametry::FormClose(TObject *Sender,TCloseAction &Action)
 		Form1->writeINI("nastaveni_form_parametry", "vzdalenost", m_mm);
 		Form1->writeINI("nastaveni_form_parametry", "CT", CTunit);
 	 	Form1->writeINI("nastaveni_form_parametry", "RDt", RDunitT);
-		Form1->writeINI("nastaveni_form_parametry", "RDd", RDunitD);
+		Form1->writeINI("nastaveni_form_parametry", "RDd", 0);
 		Form1->writeINI("nastaveni_form_parametry", "DD", DDunit);
 		Form1->writeINI("nastaveni_form_parametry", "DM", DMunit);
 }
@@ -2332,7 +2336,7 @@ void __fastcall TForm_parametry::Button_dopravnik_parametryClick(TObject *Sender
 			scComboBox_pohon->Enabled=true;//povolení vybírání pohonu - musí být samostatnì
 			if(aktualizace_combo_pohony)//nebylo na PL stisknuto storno
 			{
-				Form1->aktualizace_combobox_pohony_v_PO(RDunitD,RDunitT);//zaktualizovat výpis + o jednotky
+				Form1->aktualizace_combobox_pohony_v_PO(0,RDunitT);//zaktualizovat výpis + o jednotky
 				//POKUD NEBYL PÙVODNÌ PØIØAZEN POHON, NEBYLO STISKNUTO STORNO, PØIBYL NOVÝ POHON A UŽIVATEL S TÍM SOUHLASÍ
 				if(priradit_posledni && n_pohonu<F->d.v.POHONY->predchozi->n && mrYes==F->MB("Chcete pøiøadit poslední vytvoøený pohon?",MB_YESNO))
 				scComboBox_pohon->ItemIndex=Form1->d.v.POHONY->predchozi->n;//pøíøadíme poslení vytvoøený pohon - to je trochu na zvážení, zda mu ho takto podsouvat ale s MB asi OK
@@ -2387,7 +2391,7 @@ void TForm_parametry::INPUT()
 		//////////////////////// prevody jednotek///////////////////////////////
 		if (CTunit == MIN) CT *= 60.0;// pokud bylo zadání v minutách pøevede na sekundy - jinak je CT v Si a mohu ho hned uložit k výpoètu
 		if (RDunitT == MIN)RD /= 60.0;//opravdu dìleno
-		if (RDunitD == MM) RD /= 1000.0;//již využítí zrušeno, nicménì nevadí zanechání
+		//if (RDunitD == MM) RD /= 1000.0;//již využítí zrušeno, nicménì nevadí zanechání
 		if (DDunit == MM)	 DD /= 1000.0; // vždy ukládám do metrù
 		if (DMunit)
 		{
@@ -2447,7 +2451,7 @@ void TForm_parametry::OUTPUT()
 					//		 RDunitT=S;
 						scGPNumericEdit_RD->Value = pm.RD;
 						if (RDunitT == MIN) scGPNumericEdit_RD->Value *= 60.0;
-						if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
+						//if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
 						if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=3;
 				}
 		}
@@ -2473,13 +2477,13 @@ void TForm_parametry::OUTPUT()
 		}
 		/////MEZERY
 		//mezera mezi vozíky, kritická mezera
-		if(!pohon_pouzivan) // v pøípadì, že v roletce pohonu vyberu pohon, který je již používán  natáhnu data pøi onchange nikoliv tady
+		if(!pohon_pouzivan && form_zobrazen) // v pøípadì, že v roletce pohonu vyberu pohon, který je již používán  natáhnu data pøi onchange nikoliv tady
 		{
 				if(input_state != mezera)
 				{
-						scGPNumericEdit_mezera->Value = pm.M;
-						if (DMunit == MM)scGPNumericEdit_mezera->Value *= 1000.0;
-						if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera->Decimal=3;
+					scGPNumericEdit_mezera->Value = pm.M;
+					if (DMunit == MM)scGPNumericEdit_mezera->Value *= 1000.0;
+					if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera->Decimal=3;
 				}
 				//mezera mezi jigy
 				if(input_state != mezera_jig)
@@ -2491,10 +2495,11 @@ void TForm_parametry::OUTPUT()
 				//mezera mezi podvozky
 				if(input_state != mezera_podvozek)
 				{
-				//ShowMessage("zobraz");
+					//ShowMessage("zobraz");
 					scGPNumericEdit_mezera_PODVOZEK->Value = pm.MP;
 					if (DMunit == MM)scGPNumericEdit_mezera_PODVOZEK->Value *= 1000.0;
 					if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_PODVOZEK->Decimal=3;
+					//ShowMessage(scGPNumericEdit_mezera_PODVOZEK->Value);
 				}
 	 }
 
@@ -3343,7 +3348,7 @@ void TForm_parametry::Check_rozmezi_RD()
 				}
 			double RD=scGPNumericEdit_RD->Value;
 				if (RDunitT == MIN)RD /= 60.0;
-				if (RDunitD == MM) RD *= 1000.0;
+				//if (RDunitD == MM) RD *= 1000.0;
 
 	 if(scComboBox_rezim->ItemIndex==1) //hlídání pouze u KK režimu
 	 {
@@ -3359,7 +3364,7 @@ void TForm_parametry::Check_rozmezi_RD()
 				double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,roztec,Form1->d.v.PP.TT,RD);
 
 				if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0;}
-				if (RDunitD == MM) dopRD /= 1000.0;
+				//if (RDunitD == MM) dopRD /= 1000.0;
 
 				if(mimo_rozmezi==true)
 				{
@@ -3375,8 +3380,8 @@ void TForm_parametry::Check_rozmezi_RD()
 				{
          if(scButton_zamek_RD->Enabled) //doporuèuji rychlost, pouze tehdy pokud lze RD mìnit (pohon není jinde používán)
             {
-              double doporuc_hodnota = dopRD;
-              vypis("Zadejte doporuèenou rychlost pohonu:<u>"+AnsiString(doporuc_hodnota)+"</u>");
+							double doporuc_hodnota = dopRD;
+							vypis("Zadejte doporuèenou rychlost pohonu: <u>"+AnsiString(doporuc_hodnota)+"</u>");
               VID=27;
               VID_value=doporuc_hodnota;
              //	AnsiString relation_id=GetCurrentProcessId();
@@ -3806,6 +3811,8 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 
 	//pokud je náhled z PO zobrazen, zajišuje zároveò okamžitou aktualizaci hodnot v náhledu z PO
 	if(Form_objekt_nahled->Visible)Form_objekt_nahled->REFRESH_DATA();//obnoví dat ve formu Form_objekt_nahled vèetnì pøekreslení
+
+	Form1->aktualizace_combobox_pohony_v_PO(0,RDunitT);//zaktualizovat výpis o doporuèený pohon -- TEST 11.10.2018!!!
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPCheckBox_zaokrouhlitClick(TObject *Sender)

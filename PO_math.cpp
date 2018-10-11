@@ -121,11 +121,11 @@ void TPO_math::input_M()
 }
 //---------------------------------------------------------------------------
 //vrátí velikost mezery dle aktuální rychlosti RD, nehledí na rozteè, ale rovnou poèítá. Rx,Rz-testování, nevyužito
-double TPO_math::Mezera()
+double TPO_math::Mezera(bool prepocet_Rzalezitosti)
 {
 	double mezera=RD*TT-m.UDV(dJ,sJ,Rotace);
-	Rx=m.Rx(dJ,sJ,Rotace,mezera,R);
-	Rz=m.Rz(dJ,sJ,Rotace,mezera);
+	if(prepocet_Rzalezitosti)Rx=m.Rx(dJ,sJ,Rotace,mezera,R);
+	if(prepocet_Rzalezitosti)Rz=m.Rz(dJ,sJ,Rotace,mezera);
 	MJ=RD*TT-m.UDJ(dJ,sJ,Rotace);
 	MP=RD*TT-dP;
 	return mezera;
@@ -219,10 +219,10 @@ void TPO_math::deleteErrorList()
 //---------------------------------------------------------------------------
 void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,short aRDunit)
 {
-	//instance
+	////instance
 	TMyString ms;
 
-	//jednotky
+	////jednotky
 	AnsiString aRDunitT="m/s";if(aRDunit)aRDunitT="m/min";
 	AnsiString T="";
 
@@ -282,10 +282,28 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 			 T+=error_text;//pokud je chybový text i ohlednì pøejezdu, tak pøidá/vrátí popis problému
 		 }
 	}
+
+	////nesprávné hodnoty
+	AnsiString error_text="";
+	if(CT<=0 || RD<=0 || DD<=0 || K<=0 || P<=0 || M<0 || MJ<0 || MP<0 || R<=0 || Rz <=0 || Rx<=0)error_text="Neplatná hodnota: ";
+	if(CT<=0)error_text+="CT ";
+	if(RD<=0)error_text+="RP ";
+	if(DD<=0)error_text+="DD ";
+	if(K<=0) error_text+="K ";
+	if(P<=0) error_text+="P ";
+	if(M<0)  error_text+="M ";
+	if(MJ<0) error_text+="mezera jig ";
+	if(MP<0) error_text+="mezera podvozek ";
+	if(R<=0) error_text+="R ";
+	if(Rz<=0)error_text+="Rz ";
+	if(Rx<=0)error_text+="Rx ";
+	if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o rozmezí èi Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
+	T+=error_text;
+
 	//nadpis a finalizace textu
 	AnsiString p="nepøiøazen";if(objekty[Row].pohon!=NULL)p=objekty[Row].pohon->name;if(objekty[Row].id>=100)p=F->d.v.vrat_pohon(objekty[Row].id-100)->name;
 	AnsiString o="nepøiøazen";if(objekty[Row].id<100)o=objekty[Row].name;
-	if(T!="")T="<b>Volba pro pohon "+p+" objekt "+o+" není možná z dùvodu:</b><br>"+T;//pokud existuje chybový záznam
+	if(T!="")T="<b>Volba pro pohon "+p.UpperCase()+" objekt "+o.UpperCase()+" není možná z dùvodu:</b><br>"+T;//pokud existuje chybový záznam
 	ErrorList[Row]=T;//uloží do celkového ErrorListu na pozici daného øádku, pøepíše starý text
 }
 //---------------------------------------------------------------------------

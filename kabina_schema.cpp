@@ -212,7 +212,8 @@ void TForm_objekt_nahled::OUTPUT()
 		 pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
 		 //RD
 		 if(Form_parametry->RDunitT==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
-		 if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+		 //if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else
+		 jednotky_vzdalenost=1.0;
 		 pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
 		 //if(pom->pohon!=NULL && pom->rezim==1)pom->pohon->aRD=pom->RD;//uloží i aktulání rychlost pohonu
 		 //DM

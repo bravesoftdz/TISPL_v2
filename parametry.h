@@ -188,8 +188,7 @@ private:	// User declarations
 	TPoint getRMComponent(Tcomponents C);//vrátí souøadnice pravého okraje a horního okraje+poloviny výšky komponenty
 	void frameKritickaMezer(TCanvas *C);//obkreslí obrysem kritickou mezeru
 	bool JKM();//vratí true, pokude je mezera_JIG kritická mezera, false pokud je mezera_PODVOZEK kritická mezera
-	bool pohon_pouzivan;
-  void refresh_data();
+	void refresh_data();
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
@@ -204,7 +203,7 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
 	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
-	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm RDunitD;//pøepínaè jednotek vzdálenost
+	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;//pøepínaè jednotek vzdálenost
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
@@ -219,6 +218,7 @@ public:		// User declarations
 	unsigned int kapacitaSG;//požadavek na rozpad na více stejných S&G objektù
 	bool existuje_pohon;
 	bool MIMO_ROZMEZI;
+	bool pohon_pouzivan;
 	short VID;//validation ID
 	double VID_value;
 	bool input_state_Rz;

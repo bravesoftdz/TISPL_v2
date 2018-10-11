@@ -1239,9 +1239,10 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
 	}
-	if(FileExists("conf") && FileExists("conf2") && FileExists("conf3"))
+	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
 	{
-		if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
+		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+		if(FileExists("conf") && FileExists("conf2") && FileExists("conf3"))
 		{
 			Graphics::TBitmap *bmp=new Graphics::TBitmap;
 			if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")bmp->LoadFromFile("conf");
@@ -1250,8 +1251,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			bmp->Transparent=true;
 			bmp->TransparentColor=clWhite;
 			Canvas->Draw(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,bmp);
-		 delete(bmp);
-	 }
+			delete(bmp);
+	  }
 	}
 }
 //---------------------------------------------------------------------------
@@ -2962,7 +2963,7 @@ void __fastcall TForm1::Zobrazitparametry1Click(TObject *Sender)
 
 }
 //---------------------------------------------------------------------------
-//podpůrná metoda řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě
+//podpůrná metoda řeší vstupní část dat, vyseparováno, z důvodu toho, že z GAPO aktulizauji případně spuštěné PO a nemohu volat NP, protože to v sobě obsahu ShowModal - vedlo k chybě, nutno řešit převody jednotek
 void TForm1::NPin()
 {
 	short CTunit=0;if(Form1->readINI("nastaveni_form_parametry", "CT") == "1") CTunit=1;
@@ -2971,6 +2972,7 @@ void TForm1::NPin()
 	short Munit=0;if(Form1->readINI("nastaveni_form_parametry", "DM") == "1")  Munit=1;
 	//////////////////////////plnění dat do formu z daného objektu
 	////plnění daty
+	Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;//musí být nad aktualizací
 	aktualizace_combobox_pohony_v_PO();
 	if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 	//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
@@ -2982,22 +2984,27 @@ void TForm1::NPin()
 	//režim
 	Form_parametry->scComboBox_rezim->ItemIndex=pom->rezim;
 	//CT
-	Form_parametry->scGPNumericEdit_CT->Value=pom->CT/(1+59*CTunit);
+	Form_parametry->scGPNumericEdit_CT->Value=pom->CT/(1+59.0*CTunit);
 	//RD
-	Form_parametry->scGPNumericEdit_RD->Value=pom->RD*(1+59*RDunit);
+	Form_parametry->scGPNumericEdit_RD->Value=pom->RD*(1+59.0*RDunit);
 	//DD
 	Form_parametry->scGPNumericEdit_delka_dopravniku->Value=pom->delka_dopravniku*(1+999*DDunit);
 	//MEZERY
 	Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera*(1+999*Munit);
 	Form_parametry->scGPNumericEdit_mezera_JIG->Value=pom->mezera_jig*(1+999*Munit);
 	Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value=pom->mezera_podvozek*(1+999*Munit);
+	//R-záležitosti
+	if(pom->pohon!=NULL)
+	{
+		Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;//toto by se nemuselo předávat
+		Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz*(1+999*Munit);
+	}
 	//ostatni
 	Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 	Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
 	Form_parametry->scGPNumericEdit_pozice->Value=pom->pozice;
 	Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 	Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
-	Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
 	Form_parametry->poznamka=pom->poznamka;
 
 	//nadesignování formu podle právě vypisováných hodnot
@@ -3005,13 +3012,14 @@ void TForm1::NPin()
 	Form_parametry->setForm4Rezim(pom->rezim);
 }
 //---------------------------------------------------------------------------
-//volá form na nastevení parametrů, dřívější nastavparametry1click
+//volá form na nastevení parametrů, dřívější nastavparametry1click, převody jednotek se řeší při formshow formu
 void TForm1::NP()
 {
 	if(pom!=NULL)
 	{
 		//////////////////////////plnění dat do formu z daného objektu
 		////plnění daty
+		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;//musí být nad aktualizací
 		aktualizace_combobox_pohony_v_PO();
 		if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
@@ -3032,13 +3040,18 @@ void TForm1::NP()
 		Form_parametry->scGPNumericEdit_mezera->Value=pom->mezera;
 		Form_parametry->scGPNumericEdit_mezera_JIG->Value=pom->mezera_jig;
 		Form_parametry->scGPNumericEdit_mezera_PODVOZEK->Value=pom->mezera_podvozek;
+		//R-záležitosti
+		if(pom->pohon!=NULL)
+		{
+			Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;//toto by se nemuselo předávat
+			Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz;
+		}
 		//ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
 		Form_parametry->scGPNumericEdit_pozice->Value=pom->pozice;
 		Form_parametry->scGPNumericEdit_odchylka->Value=pom->odchylka;
 		Form_parametry->scComboBox_stopka->ItemIndex=pom->stopka;
-		Form_parametry->scComboBox_rotace->ItemIndex=pom->rotace;
 		Form_parametry->poznamka=pom->poznamka;
 
 		//nadesignování formu podle právě vypisováných hodnot
@@ -3079,7 +3092,7 @@ void TForm1::NP()
 				pom->delka_dopravniku=Form_parametry->scGPNumericEdit_delka_dopravniku->Value/jednotky_vzdalenost;
 				//RD
 				if(Form_parametry->RDunitT==Form_parametry->MIN)jednotky_cas=60.0;else jednotky_cas=1.0;
-				if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
+				//if(Form_parametry->RDunitD==Form_parametry->MM)jednotky_vzdalenost=1000.0;else jednotky_vzdalenost=1.0;
 				pom->RD=Form_parametry->scGPNumericEdit_RD->Value/jednotky_cas/jednotky_vzdalenost;
 				if(pom->pohon!=NULL && (pom->rezim==1 || pom->pohon->aRD==0))pom->pohon->aRD=pom->RD;//uloží aktulání rychlost pohonu, pokud se jedná o kontinuální režim nebo nebyla ješt rychlost nastavena
 				//MEZERY
@@ -3092,7 +3105,7 @@ void TForm1::NP()
 				if(Form_parametry->scComboBox_pohon->ItemIndex!=0 && pom->rezim==1)//pouze pokud je prirazen pohon a jedná se o KK režim, tak ulozim do nej hodnoty Rx,Rz
 				{
 					pom->pohon->Rx=Form_parametry->scGPNumericEdit_rx->Value;
-					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value*(1+999*Form_parametry->DMunit);
+					pom->pohon->Rz=Form_parametry->scGPNumericEdit_rozestup->Value/(1+999*Form_parametry->DMunit);
 				}
 				//Poznámka
 				pom->poznamka=Form_parametry->poznamka;
@@ -3164,7 +3177,7 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
 		TscGPListBoxItem *t=NULL;
 		if(P==NULL)//pokud neexitustuje žádný pohon
-		{
+		{      //Form_parametry->scComboBox_pohon->Items->
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nebyl nadefinován";
 			Form_parametry->existuje_pohon=false;
@@ -3205,11 +3218,21 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 			//plnění existujícím pohony
 			while (P!=NULL)
 			{
+				AnsiString dopRD="";
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-				t->Caption=P->name+" - "+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+" "+caption_jednotky;
-				P=P->dalsi;
+				if(Form_parametry->scComboBox_pohon->ItemIndex==P->n && !Form_parametry->pohon_pouzivan)//pokud se jedná o aktální pohon a pohon lze editovat
+				{
+					if(m.round2double(Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT),8)==m.round2double(m.dopRD(d.v.PP.delka_jig,d.v.PP.sirka_jig,Form_parametry->scComboBox_rotace->ItemIndex,P->roztec,d.v.PP.TT,Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT)),8))dopRD="  dopor.";
+					t->Caption=P->name+" - "+m.round2double(Form_parametry->scGPNumericEdit_RD->Value,3,"..")+" ("+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+") "+caption_jednotky+dopRD;//vypíše aktuální editovanou hodnotu
+				}
+				else//pro ostatní pohony, či aktální používaný (přiřazen více objektům) pohon
+				{
+					if(m.round2double(P->aRD,8)==m.round2double(m.dopRD(d.v.PP.delka_jig,d.v.PP.sirka_jig,Form_parametry->scComboBox_rotace->ItemIndex,P->roztec,d.v.PP.TT,P->aRD),8))dopRD="  dopor.";
+					t->Caption=P->name+" - "+m.round2double(P->aRD*(1+59.0*RDunitT),3,"..")+" ("+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+") "+caption_jednotky+dopRD;
+				}
+				P=P->dalsi;//přesun na další pohon
 			}
-			//nastavení comba, aby ukazoval na dříve vybraný pohon
+			//nastavení comba, pokud neexistuje pohon
 			if(d.v.POHONY->dalsi==NULL)Form_parametry->scComboBox_pohon->ItemIndex=0;//nepřiřazen
 		}
 		Form_parametry->scComboBox_pohon->Refresh();
