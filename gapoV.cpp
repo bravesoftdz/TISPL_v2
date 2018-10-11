@@ -923,14 +923,16 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	}
 	else
 	{
-		pm.RD=objekty[Row].RD;//je to správně?neměla by tu být 0?
+		pm.RD=objekty[Row].RD;//je to správně? neměla by tu být 0?
 		pm.R=0;
 	}
 	double oldRD=pm.RD;//záloha původní hodnoty
 	double oldR=pm.R;//záloha původní hodnoty
 	double oldRz=pm.Rz;//záloha původní hodnoty
 	double oldRx=pm.Rx;//záloha původní hodnoty
-
+	dJtemp=F->d.v.PP.delka_jig;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
+	sJtemp=F->d.v.PP.sirka_jig;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
+  dPtemp=F->d.v.PP.delka_podvozek;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
 
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[5];
@@ -1141,10 +1143,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			 Form_objekt_nahled->pom->mezera_jig=pm.MJ;
 			 Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
 			 //nutno provizorně přepsat v PP parametry vozíku potenciálně ukládanými, aby se náhled vykreslil správně, poté je v případě storna formu nutné vrátit původní hodnoty (proto se zároveň ukládají do zalohovací proměnné)
-			 //proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
-			 dJtemp=F->d.v.PP.delka_jig;		 F->d.v.PP.delka_jig		  = pm.dJ;
-			 sJtemp=F->d.v.PP.sirka_jig;		 F->d.v.PP.sirka_jig			= pm.sJ;
-			 dPtemp=F->d.v.PP.delka_podvozek;F->d.v.PP.delka_podvozek	= pm.dP;
+			 F->d.v.PP.delka_jig		  = pm.dJ;
+			 F->d.v.PP.sirka_jig			= pm.sJ;
+			 F->d.v.PP.delka_podvozek	= pm.dP;
 		 }break;
       case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
