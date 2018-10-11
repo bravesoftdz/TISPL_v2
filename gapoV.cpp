@@ -930,16 +930,20 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.Rotace=objekty[Row].rotace;
 	if(objekty[Row].pohon!=NULL)
 	{
-
- 	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*Form_parametry_linky->aRDunit);//mus�m br�t ze stringgridu, kv�li stornu, nikoliv p��mo z dat
-  pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//mus�m br�t ze stringgridu, kv�li stornu, nikoliv p��mo z dat  if(Rzunit==0)	pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)]); else pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/1000.0;//musím brát ze stringgridu, kvůli stornu, nikoliv přímo z dat
-  pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musím brát ze stringgridu, kvůli stornu, nikoliv přímo z dat
+		pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*Form_parametry_linky->aRDunit);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat
+		pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat		if(Rzunit==0)	pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)]); else pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/1000.0;//musím brát ze stringgridu, kvůli stornu, nikoliv přímo z dat
+		pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat
 	}
 	else
 	{
-		pm.RD=objekty[Row].RD;
+		pm.RD=objekty[Row].RD;//je to správně?neměla by tu být 0?
 		pm.R=0;
-  }
+	}
+	double oldRD=pm.RD;//záloha původní hodnoty
+	double oldR=pm.R;//záloha původní hodnoty
+	double oldRz=pm.Rz;//záloha původní hodnoty
+	double oldRx=pm.Rx;//záloha původní hodnoty
+
 
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[5];
@@ -1010,9 +1014,8 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	}
 	if(CHECK[3] || CHECK[4])//mění se
 	{
-		double oldRx=pm.Rx;//původní hodnota
 		pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);//vrátí doporučenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteč mezi palci i takt
-    pm.CT_locked=false;
+		pm.CT_locked=false;
 		pm.DD_locked=true;
 
 		if(CHECK[3])//vždy zůstává DD, Rx
@@ -1048,37 +1051,42 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			mGrid->Cells[21][Row].Font->Color=clUNLOCKED;//P
 			mGrid->Cells[23][Row].Font->Color=clUNLOCKED;//MJ
 			mGrid->Cells[25][Row].Font->Color=clUNLOCKED;//MP
-      mGrid->Cells[28][Row].Font->Color=clUNLOCKED;//R
+			mGrid->Cells[28][Row].Font->Color=clUNLOCKED;//R
 			mGrid->Cells[30][Row].Font->Color=clUNLOCKED;//Rz
       mGrid->Cells[32][Row].Font->Color=clLOCKED;//Rx
 		}
 	}
-	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech
+	//jednotné pro výše uvedené CHECK[] - detekce skupin - pokud je v oblasti objekt v KK režimu a další např. v PP- tak PP obj. neovlivní výpočet RD, KK má přednost. pole se plní v onclick událostech, jinými slovy volba dle objektů v KK režimu "přebíjí" volby PP objektu v dané skupině (od daného pohonu)
 	if(mGrid->Cells[0][Row].Text != "nepřiřazen")  //MAKR
 	{
-//		if (objekty[Row].pohon != NULL)
-//		{
-//			// Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
-//			switch (indikator_skupin[objekty[Row].pohon->n])
-//			{
-//				case 1:
-//				{
-//					//zde se pro danou oblast společně nic nepočítá
-//				} break;
-//				case 2://Rz,Rx
-//				{
-//					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
-//					pm.Rz = pm.RD * pm.TT;
-//					pm.Rx = pm.Rz / pm.R;
-//				} break;
-//				case 3://Rz,R
-//				{
-//					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
-//					pm.Rz = pm.RD * pm.TT;
-//					pm.R = pm.Rz / pm.Rx;
-//				}break;
-//			}
-//		}
+		if (objekty[Row].pohon != NULL)
+		{
+			// Memo1->Lines->Add("R: "+AnsiString(Row)+ ", Ind.skupin" + AnsiString(indikator_skupin[objekty[Row].pohon->n]));
+			switch (indikator_skupin[objekty[Row].pohon->n])
+			{
+				case 1://v této oblasti zůstávají původní hodnoty
+				{
+					pm.RD = oldRD;
+					pm.Rz = oldRz;
+					pm.Rx = oldRx;
+					pm.R  = oldR;
+				}break;
+				case 2://v této oblasti zůstává R a mění se aRD,Rz,Rx
+				{
+					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
+					pm.Rz = pm.RD*pm.TT;
+					pm.Rx = pm.Rz/pm.R;
+					pm.R  = oldR;
+				}break;
+				case 3://v této oblastí zůstává Rx a mění se aRD,Rz,Rx
+				{
+					pm.RD=F->m.dopRD(pm.dJ,pm.sJ,pm.Rotace,pm.R,pm.TT,pm.RD);
+					pm.Rz = pm.RD*pm.TT;
+					pm.Rx = oldRx;
+					pm.R = pm.Rz/pm.Rx;
+				}break;
+			}
+		}
 	}
 
 	////output sekce
