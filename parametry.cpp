@@ -1424,7 +1424,6 @@ void TForm_parametry::input_M()
 {
 		input_state = mezera;
 		INPUT();
-		// 	ShowMessage("volano");
 		pm.input_M();
 		///////////naètení dat zpìt do formuláøe po výpoètu/////////////////////////////////
 		OUTPUT();
@@ -2222,7 +2221,6 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 					{
 						scGPNumericEdit_mezera->Value=obj->mezera;
 						scGPNumericEdit_mezera_JIG->Value=obj->mezera_jig;
-				 //		ShowMessage(obj->mezera_jig);
 						scGPNumericEdit_mezera_PODVOZEK->Value=obj->mezera_podvozek;
 						//scGPNumericEdit1_rx->Value=obj->pohon->Rx; patrnì se dopoèítává formou nacti_rx
 					}
@@ -2495,11 +2493,9 @@ void TForm_parametry::OUTPUT()
 				//mezera mezi podvozky
 				if(input_state != mezera_podvozek)
 				{
-					//ShowMessage("zobraz");
 					scGPNumericEdit_mezera_PODVOZEK->Value = pm.MP;
 					if (DMunit == MM)scGPNumericEdit_mezera_PODVOZEK->Value *= 1000.0;
 					if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_PODVOZEK->Decimal=3;
-					//ShowMessage(scGPNumericEdit_mezera_PODVOZEK->Value);
 				}
 	 }
 
@@ -3072,7 +3068,6 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 						scGPNumericEdit_delka_dopravniku->Enabled=true;
 						scGPNumericEdit_kapacita->Enabled=true;
 						scGPNumericEdit_CT->Enabled=true;
-					//	ShowMessage("DD klik");
 				}
 				if (E == P_klik)
 				{
@@ -3082,7 +3077,6 @@ void TForm_parametry::Nastav_zamky(double rezim, Tinput_clicked_icon I,Tinput_cl
 				}
 				if (E == C_klik ||E == P_klik)
 				{
-				 //	ShowMessage("kapacita a P klik");
 						scButton_zamek_DD->Visible = false;
 						scButton_K_zamek->Visible = false;
 
@@ -3119,7 +3113,6 @@ void TForm_parametry::Pohon_pouzivan()
 		if (scComboBox_rezim->ItemIndex == 1)
 		{ // pro KK režim - nastavení
 				Cvektory::TPohon *pohon = Form1->d.v.POHONY->dalsi;
-				// ShowMessage(scComboBox_pohon->ItemIndex);
 				if(scComboBox_pohon->ItemIndex==0)
 				{
 					 // pokud je pohon nedefinován nebo nepøiøazen, vždy povolím rotaci a nastavit délku nebo šíøku
@@ -3189,7 +3182,6 @@ void TForm_parametry::Pohon_pouzivan()
 				}
 				else
 				{
-					// ShowMessage(input_state);
 					if (input_state == NOTHING || input_state==NO)
 							// pokud jde o první zobrazení formu - vždy zobrazím takto zámky
 					{
@@ -3249,7 +3241,6 @@ double TForm_parametry::Kontrola_mezery()
 		double mezera=0.0;
 		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
 		else  						mezera=scGPNumericEdit_mezera->Value;
-		// 	ShowMessage("volam kontrolu");
 		Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 		if (P != NULL)
 		{
@@ -3260,7 +3251,6 @@ double TForm_parametry::Kontrola_mezery()
 						if(input_state == mezera_jig     && 	input_clicked_edit == mezera_klik) typ=1;
 						if(input_state == mezera_podvozek && 	input_clicked_edit == mezera_klik) typ=2;
 
-					 //	ShowMessage(typ);
 						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera,typ);
 
 						if(DMunit == MM)
@@ -3452,7 +3442,6 @@ void TForm_parametry::Check_rozmezi_RD()
 		{
 			scGPNumericEdit_rx->Value=obj->pohon->Rx;
 			scGPNumericEdit_rozestup->Value=obj->pohon->Rz;
-      ShowMessage(obj->pohon->Rz);
 			Memo1->Lines->Add(scGPNumericEdit_rx->Value);
 			Memo1->Lines->Add(scGPNumericEdit_rozestup->Value);
 		}    //pohon není používán
@@ -3460,7 +3449,6 @@ void TForm_parametry::Check_rozmezi_RD()
 		{
 			scGPNumericEdit_rx->Value =rx;//M 5. kvìtna 2018 pøesunuto sem - dìlalo níže problémy pokud bylo za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
 			rz = Form1->m.Rz(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,mezera);
-			//ShowMessage(rz);
 			if(!input_state_Rz)   {  // Rz v tomto pøípadì nebudu plnit daty
 			if(DMunit == MM) scGPNumericEdit_rozestup->Value=rz*1000;
 			else        		 scGPNumericEdit_rozestup->Value=rz;
@@ -3524,8 +3512,6 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 	 if(pm.K<=0)scGPNumericEdit_kapacita->Font->Color=clRed;else scGPNumericEdit_kapacita->Font->Color=clBlack;
 	 if(pm.P<=0)scGPNumericEdit_pozice->Font->Color=clRed;else scGPNumericEdit_pozice->Font->Color=clBlack;
 	 if(pm.M<-0.0000000000000004)scGPNumericEdit_mezera->Font->Color=clRed;else scGPNumericEdit_mezera->Font->Color=clBlack;
-
-  // ShowMessage(pm.M);
 
 	 if(VID==-1)
 	 {

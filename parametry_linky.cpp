@@ -1209,8 +1209,8 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 
-	if(VID==-1) scGPGlyphButton_ADD->Enabled=true;
-	else        scGPGlyphButton_ADD->Enabled=false;
+	if(VID==-1) { scGPGlyphButton_ADD->Enabled=true; scGPGlyphButton_vozik_edit->Enabled=true; scGPGlyphButton_TT->Enabled=true;  }
+	else {       scGPGlyphButton_ADD->Enabled=false;  scGPGlyphButton_vozik_edit->Enabled=false; scGPGlyphButton_TT->Enabled=false; }
 
 }
 //---------------------------------------------------------------------------
