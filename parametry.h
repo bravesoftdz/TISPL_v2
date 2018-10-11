@@ -172,6 +172,7 @@ private:	// User declarations
 	void OUTPUT();
 	void packa_RDzamek(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
 	void packa(Tcomponents start,Tcomponents end);//vykreslí packu mezi edity a comby
+	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek RD
 	double getM();//vrátí hodnotu mezery z editboxu dle nastavených jednotek mezery mezera pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
 	double getM(double M);//vrátí hodnotu parametru dle nastavených jednotek mezery pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
 	void frameCorrelation(bool default_value=false);//stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do výchozího stavu
@@ -192,7 +193,6 @@ private:	// User declarations
 
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
-	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek délky
 	short offset;
 	short defaultForm_parametryHeight;
 	short ComboRotace_predchozi_stav;//uloží pøedchozí stav pro další použití
@@ -219,6 +219,7 @@ public:		// User declarations
 	bool existuje_pohon;
 	bool MIMO_ROZMEZI;
 	bool pohon_pouzivan;
+	bool ComboBoxPohonyProbihaZmena;//používá se kvùli aktualizaci náplnì comba
 	short VID;//validation ID
 	double VID_value;
 	bool input_state_Rz;
