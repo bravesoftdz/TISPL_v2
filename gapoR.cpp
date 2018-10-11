@@ -135,9 +135,6 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[20][0].Text="Rotace [°]";
 	mGrid->Cells[21][0].Text="Náhled";
 
-  scGPImage_zamky->Top=45;
-  scGPImage_zamky->Left=96;
-
 	////////pøiøadí celé oblasti bunìk totožné vlastnosti jako u referenèní buòky////////
 	mGrid->SetCells(mGrid->Cells[0][0],1,0,ColCount-1,0);//pro první øádek
 
@@ -186,6 +183,16 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 				mGrid->MergeCells(2,j,3,j);mGrid->MergeCells(4,j,5,j);//slouèení sloupcù
 				//parametry objektù           /*NEWR*/                            //NEWR
 				mGrid->Cells[6][j].Text=O[z].CT/(1+59.0*CTunit);	 								mGrid->Cells[6][j].Align=mGrid->LEFT;	mGrid->Cells[6][j].Font->Color=clOLD;	mGrid->Cells[7][j].Align=mGrid->LEFT; mGrid->Cells[7][j].Font->Color=clUNLOCKED;
+        if(O[z].rezim==0)
+        {   //u SG režimu nelze volit žádnou volbu z checkboxù
+        	mGrid->getCheck(2,j)->Visible=false;
+          mGrid->getCheck(4,j)->Visible=false;
+        }  else
+        {
+         	mGrid->getCheck(2,j)->Visible=true;
+          mGrid->getCheck(4,j)->Visible=true;
+
+          }
 
         if(O[z].pohon!=NULL)
         {
@@ -273,6 +280,8 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	//pozice komponent
 	F->m.designButton(scGPButton_OK,F_gapoR,1,2);
 	F->m.designButton(scGPButton_storno,F_gapoR,2,2);
+  scGPImage_zamky->Left=mGrid->Left+mGrid->Columns[2].Left+4;
+	scGPImage_zamky->Top=mGrid->Top+2;
 	rHTMLLabel_InfoText->Top=mGrid->Top+mGrid->Height+1;//+1 kvùli orámování tabulky
 	rHTMLLabel_legenda_titulek->Top=rHTMLLabel_InfoText->Top;rHTMLLabel_legenda_titulek->Left=Width-rHTMLLabel_legenda->Width-Offset/2;
 	rHTMLLabel_legenda->Top=rHTMLLabel_legenda_titulek->Top+rHTMLLabel_legenda_titulek->Height;rHTMLLabel_legenda->Left=rHTMLLabel_legenda_titulek->Left;
@@ -529,7 +538,7 @@ void __fastcall TF_gapoR::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 void __fastcall TF_gapoR::scScrollBar_horizontChange(TObject *Sender)
 {
 	mGrid->Left=F->m.round((Width-mGrid->Width-Offset)*scScrollBar_horizont->Position/100.0);
-	//doladit posouvání komponent
+	scGPImage_zamky->Left=mGrid->Left+mGrid->Columns[2].Left+4;
 	if(scScrollBar_horizont->Position<scScrollBar_horizont->Max)FormPaint(this);
 	else {FormPaint(this);Invalidate();}//na konci musí pøekreslit celé
 }

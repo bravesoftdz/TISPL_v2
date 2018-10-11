@@ -232,8 +232,8 @@ object F_gapoV: TF_gapoV
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 
-        'Glob'#225'ln'#237' aktualizace parametr'#367' pohon'#367' a objekt'#367' v kontinu'#225'ln'#237'm r' +
-        'e'#382'imu  z d'#367'vodu zm'#283'ny parametr'#367' voz'#237'ku'
+        'Glob'#225'ln'#237' aktualizace parametr'#367' objekt'#367' a k nim p'#345'i'#345'azen'#253'ch pohon' +
+        #367' z d'#367'vodu zm'#283'ny parametr'#367' voz'#237'ku'
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 290
@@ -795,6 +795,7 @@ object F_gapoV: TF_gapoV
     Height = 25
     Caption = 'Button1'
     TabOrder = 8
+    Visible = False
     OnClick = Button1Click
   end
   object rHTMLHint1: TrHTMLHint

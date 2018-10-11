@@ -217,7 +217,9 @@ object F_gapoR: TF_gapoR
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Glob'#225'ln'#237' aktualizace parametr'#367' objekt'#367' v kontinu'#225'ln'#237'm re'#382'imu'
+      Caption = 
+        'Aktualizace parametr'#367' objekt'#367' a pohon'#367' z d'#367'vodu zm'#283'ny aktu'#225'ln'#237' r' +
+        'ychlosti pohon'#367' '#269'i rozestupu'
     end
     object scGPGlyphButton_info: TscGPGlyphButton
       Left = 276

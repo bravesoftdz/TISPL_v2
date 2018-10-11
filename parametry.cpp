@@ -411,7 +411,6 @@ void TForm_parametry::setForm4Rezim(unsigned short rezim)
 		if(scComboBox_pohon->ItemIndex==0)
 		{scComboBox_pohon->Options->FrameWidth=2;scComboBox_pohon->Options->FrameFocusedColor=clRed;scComboBox_pohon->Options->FrameNormalColor=clRed;scComboBox_pohon->Options->FrameDisabledColor=clRed;scComboBox_pohon->Options->FrameDisabledColorAlpha=128;}
 		else {scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameFocusedColor=clHighlight;scComboBox_pohon->Options->FrameWidth=1;scComboBox_pohon->Options->FrameDisabledColor=clBtnShadow;scComboBox_pohon->Options->FrameDisabledColorAlpha=255;}
-    if(rHTMLLabel_InfoText->Caption=="") vypis(""); //workaround na povolení uložení, pokud je prázdný výpis
     }
 //---------------------------------------------------------------------------
 //zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udržování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
@@ -2198,9 +2197,9 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 {
     INPUT();
 		OUTPUT();
-		Pohon_pouzivan();
-		Nacti_rx(); //buï vypoèítá rx nebo v pøípadì používaného pohonu rx a rz naète z dat
-	 	Nastav_M_R_Rx();
+ 		Pohon_pouzivan();
+ 		Nacti_rx(); //buï vypoèítá rx nebo v pøípadì používaného pohonu rx a rz naète z dat
+ 	 	Nastav_M_R_Rx();
 		if(scComboBox_rezim->ItemIndex!=1)
 		{
 			scButton_zamek_CT->Enabled=true;
@@ -2244,13 +2243,14 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				{
 				  pohon_pouzivan=false;
 					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
-					if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
+			 		if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 		}
 		input_clicked_edit=empty_klik; // výbìrem pohonu dochází k volání onchange rotace a to zpùsobí zobrazení pacek, což je nežádoucí, proto pøi zmìnì pohonu vždy nastavím, že jde o prázdný klik
 		//upozornìní na nepøiøazený pohon
 		if(scComboBox_pohon->ItemIndex==0){scComboBox_pohon->Options->FrameWidth=2;scComboBox_pohon->Options->FrameFocusedColor=clRed;scComboBox_pohon->Options->FrameNormalColor=clRed;}else {scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameFocusedColor=clHighlight;scComboBox_pohon->Options->FrameWidth=1;}
-}
+
+    }
 //---------------------------------------------------------------------------
 // doplnit komentáø
 void __fastcall TForm_parametry::scGPNumericEdit_kapacitaClick(TObject *Sender)
@@ -3301,9 +3301,24 @@ double TForm_parametry::Kontrola_mezery()
 							scGPButton_OK->Enabled = true;
 							VID=-1;
 						}
-						else
+						else if (doporuc_mezera>0)
+
 						{
-							scGPButton_OK->Enabled = false;
+             // mezera mezi jigy je mensi nebo rovno
+              if(scGPNumericEdit_mezera_JIG<=scGPNumericEdit_mezera_PODVOZEK)
+              {
+              vypis("Doporuèená mezera mezi jigy: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+							VID=281;
+							VID_value=doporuc_mezera;
+
+              }else //mezera mezi podvozky je mensi
+              {
+              vypis("Doporuèená mezera mezi podvozky: <u>"+AnsiString(doporuc_mezera) + jednotky +"</u>");
+							VID=282;
+							VID_value=doporuc_mezera;
+              }
+              	scGPButton_OK->Enabled = false;
+
 						}
 				}
 				else
@@ -3437,6 +3452,7 @@ void TForm_parametry::Check_rozmezi_RD()
 		{
 			scGPNumericEdit_rx->Value=obj->pohon->Rx;
 			scGPNumericEdit_rozestup->Value=obj->pohon->Rz;
+      ShowMessage(obj->pohon->Rz);
 			Memo1->Lines->Add(scGPNumericEdit_rx->Value);
 			Memo1->Lines->Add(scGPNumericEdit_rozestup->Value);
 		}    //pohon není používán
@@ -3508,6 +3524,8 @@ void TForm_parametry::VALIDACE(Tinput_state input_state)
 	 if(pm.K<=0)scGPNumericEdit_kapacita->Font->Color=clRed;else scGPNumericEdit_kapacita->Font->Color=clBlack;
 	 if(pm.P<=0)scGPNumericEdit_pozice->Font->Color=clRed;else scGPNumericEdit_pozice->Font->Color=clBlack;
 	 if(pm.M<-0.0000000000000004)scGPNumericEdit_mezera->Font->Color=clRed;else scGPNumericEdit_mezera->Font->Color=clBlack;
+
+  // ShowMessage(pm.M);
 
 	 if(VID==-1)
 	 {
