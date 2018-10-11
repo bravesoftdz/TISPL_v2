@@ -1114,8 +1114,8 @@ void TForm1::Z(UnicodeString Text,bool add,TColor color)
 		scGPGlyphButton_zpravy_ikona->GlyphOptions->NormalColor=color;//barva ikony
 	}
 	//pozice
-	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
-	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
+//	scExPanel_log_header->Left	 = Form1->Width/2-scExPanel_log_header->Width/2;
+//	scExPanel_log_header->Top 	 = Form1->Height/2-scExPanel_log_header->Height/2;
 	scExPanel_log_header->Height = 300;
 	scExPanel_log_header->Width	 = 715;
   //Memo2->Visible=true;
