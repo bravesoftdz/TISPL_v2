@@ -229,7 +229,7 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 	////VALIDACE aRD rozsahu od-do, pro objekty s pohony a pro všechny pohony
 	if(objekty[Row].pohon!=NULL)//tato validace se neøeší pro objekty bez pøiøazených pohonù
 	{
-		long 	plRow  = 0;//n øádku pohonu na PL      Form_parametry_linky->getROW(objekty[Row].pohon->n)
+		long 	plRow  = 0;//n øádku pohonu na PL
 		if(objekty[Row].pohon!=NULL && rezim!=100) plRow =	Form_parametry_linky->getROW(objekty[Row].pohon->n);//pro všechny objekty s pohony
 		if(objekty[Row].id>=100) plRow = Form_parametry_linky->getROW(objekty[Row].id-100);//pro nepoužívané pohony (bez pøiøazení)
 		double aRD_od=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
@@ -288,18 +288,18 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 
 	////nesprávné hodnoty
 	AnsiString error_text="";
-	if(CT<=0 || RD<=0 || DD<=0 || K<=0 || P<=0 || M<0 || MJ<0 || MP<0 || R<=0 || Rz <=0 || Rx<=0)error_text="Neplatná hodnota: ";
-	if(CT<=0)error_text+="CT ";
-	if(RD<=0)error_text+="RP ";
-	if(DD<=0)error_text+="DD ";
-	if(K<=0) error_text+="K ";
-	if(P<=0) error_text+="P ";
-	if(M<0)  error_text+="M ";
-	if(MJ<0) error_text+="mezera jig ";
-	if(MP<0) error_text+="mezera podvozek ";
+	if(CT<=0 && rezim!=100)error_text+="CT ";//neøeší se pro nepoužité pohony
+	if(RD<=0 && rezim!=100)error_text+="RP ";//neøeší se pro nepoužité pohony
+	if(DD<=0 && rezim!=100)error_text+="DD ";//neøeší se pro nepoužité pohony
+	if(K<=0 && rezim!=100) error_text+="K ";//neøeší se pro nepoužité pohony
+	if(P<=0 && rezim!=100) error_text+="P ";//neøeší se pro nepoužité pohony
+	if(M<0 && rezim!=100)  error_text+="M ";//neøeší se pro nepoužité pohony
+	if(MJ<0 && rezim!=100) error_text+="mezera jig ";//neøeší se pro nepoužité pohony
+	if(MP<0 && rezim!=100) error_text+="mezera podvozek ";//neøeší se pro nepoužité pohony
 	if(R<=0 && objekty[Row].pohon!=NULL) error_text+="R "; //neøeší se pro objekty bez pohonù
 	if(Rz<=0 && objekty[Row].pohon!=NULL)error_text+="Rz ";//neøeší se pro objekty bez pohonù
 	if(Rx<=0 && objekty[Row].pohon!=NULL)error_text+="Rx ";//neøeší se pro objekty bez pohonù
+	if(error_text!="")error_text="Neplatná hodnota: "+error_tex;//pokud existuje již pøedchozí chybový záznam dodá ještì pøed nìj popisek
 	if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o rozmezí èi Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
 	T+=error_text;
 

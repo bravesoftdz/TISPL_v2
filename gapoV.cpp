@@ -1140,7 +1140,7 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			 F->d.v.PP.delka_jig = pm.dJ;
 			 F->d.v.PP.sirka_jig = pm.sJ;
 			 F->d.v.PP.delka_podvozek = pm.dP;
-			 dodělat
+			 //dodělat
 
 		 }break;
       case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
