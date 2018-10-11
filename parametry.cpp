@@ -2565,7 +2565,7 @@ void __fastcall TForm_parametry::scGPGlyphButton_PO_text_memoClick
 //tzn. nesledující metoda už øeší jen rotaci rotovatelného (tzn. pokud je zamèen RD, tak zda nemá rotace vliv na RD, èi RD odemèen),  a výpoèet souvesejích paramaterù
 void __fastcall TForm_parametry::scComboBox_rotaceChange(TObject *Sender)
 {
-		if (input_state == NOTHING)//ošetøení pouze kvùli formshow
+		if (input_state == NOTHING && form_zobrazen)//ošetøení pouze kvùli formshow
 		{
 			INPUT();//nahrání hodnot z PO pro výpoèetní model, vèetnì stavu ROTACE do pm.Rotace
 			//dodateèné dosazení (suplování INPUT() pomocí pm.M) aktuální nové èi popø. staronové mezery, musí být až za samotným INPUT

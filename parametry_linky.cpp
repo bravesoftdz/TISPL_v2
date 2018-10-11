@@ -634,20 +634,20 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 					}
 				 //zmìna aRD
-						if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n]/(1+59.0*aRDunit)!=p_prirazen->aRD)
+						if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n])/(1+59.0*aRDunit)!=p_prirazen->aRD)
 					{
 							Changes_aRD=true;
 
 					}
 
 					//zmìna Rz
-							if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n]/(1+999.0*Rzunit)!=p_prirazen->Rz)
+							if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n])/(1+999.0*Rzunit)!=p_prirazen->Rz)
 					{
 							Changes_Rz=true;
 
 					}
 					 //zmìna Rx
-								if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && rStringGridEd_tab_dopravniky->Cells[7][p_prirazen->n]!=p_prirazen->Rx)
+								if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][p_prirazen->n])!=p_prirazen->Rx)
 					{
 							Changes_Rx=true;
 
@@ -655,7 +655,6 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 					p_prirazen=p_prirazen->dalsi;
 				 }
-
 
 			p_prirazen=NULL;delete p_prirazen;
 
