@@ -1229,6 +1229,10 @@ void __fastcall TF_gapoV::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 			Form_parametry_linky->scGPNumericEdit_sirka_jig->Value=F->d.v.PP.sirka_jig;
 			Form_parametry_linky->scGPNumericEdit_vyska_jig->Value=F->d.v.PP.vyska_jig;
 		}break;
+    case 123://F12
+   {
+   scGPButton_OK->Enabled=true;
+   } break;
 	}
 }
 //---------------------------------------------------------------------------

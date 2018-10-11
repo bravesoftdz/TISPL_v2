@@ -509,6 +509,11 @@ void __fastcall TF_gapoR::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Sh
 			F_gapoR->ModalResult = mrCancel;// vrátí stejnou hodnotu jako tlaèítko
 			F_gapoR->VisibleChanging();// skryje form, stejné jako visible=false
 		 }break;
+
+     case 123://F12
+      {
+       scGPButton_OK->Enabled=true;
+      } break;
 		}
 }
 //---------------------------------------------------------------------------

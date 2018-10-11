@@ -1681,6 +1681,10 @@ void __fastcall TF_gapoTT::FormKeyDown(TObject *Sender, WORD &Key, TShiftState S
 		 //navrácení pùvodní hodnoty TT, pøi stisku storno na GAPO
 		 Form_parametry_linky->rEditNum_takt->Value=F->d.v.PP.TT;
 	 }break;
+   case 123://F12
+   {
+   scGPButton_OK->Enabled=true;
+   } break;
  }
 }
 //---------------------------------------------------------------------------
