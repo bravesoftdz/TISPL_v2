@@ -54,52 +54,35 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 	////////jednotky////////
 	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
 	if(T=="")CTunit=0;else CTunit=T.ToInt();
-//	T=F->readINI("nastaveni_form_parametry","RDt");
-//	if(T=="")RDunit=0;else RDunit=T.ToInt();
+	//T=F->readINI("nastaveni_form_parametry","RDt");
+	//if(T=="")RDunit=0;else RDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DD");
 	if(T=="")DDunit=0;else DDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
+	RDunit=1;aRDunit=1;	if(Form_parametry_linky->aRDunit==0){RDunit=0;aRDunit=0;}  //aRD = S
+	Runit=1;						if(Form_parametry_linky->Runit==0)Runit=0;//Runit = M
+	Rzunit=1;						if(Form_parametry_linky->Dmunit==0)Rzunit=0;//Dmunit = M, DMunit jsou totožné pro Rzunit
 
-  RDunit=1;
-  aRDunit=1;
-  Runit=1;
-  Rzunit=1;
-
-  if(Form_parametry_linky->aRDunit==0)  //aRD = S
-  {
-  RDunit=0;
-  aRDunit=0;
-  }
-
-  if(Form_parametry_linky->Runit==0)  //Runit = M
-  {
-  Runit=0;
-  }
-
-  if(Form_parametry_linky->Dmunit==0)  //Dmunit = M
-  {
-  Rzunit=0;
-  }
-
-
-  temp_pocitadlo=0;
-  Rx_canEdit=true;
+	////////plnění titulku////////
 	AnsiString titulek;
 	if(F->d.v.PP.delka_jig!=Form_parametry_vozik->scGPNumericEdit_delka_jig->Value) titulek+="délky jigu z "+AnsiString(F->d.v.PP.delka_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_delka_jig->Value);
 	if(F->d.v.PP.sirka_jig!=Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value) titulek+="šířky jigu z "+AnsiString(F->d.v.PP.sirka_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_sirka_jig->Value);
 	if(F->d.v.PP.vyska_jig!=Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value) titulek+="výšky jigu z "+AnsiString(F->d.v.PP.vyska_jig)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_vyska_jig->Value);
 	if(F->d.v.PP.delka_podvozek!=Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value)  titulek+="délky podvozku z "+AnsiString(F->d.v.PP.delka_podvozek)+" na "+AnsiString(Form_parametry_vozik->scGPNumericEdit_delka_podvozek->Value);
+	Form_parametry_linky->Button_save->Enabled=false;
+	Form_parametry_linky->Button_storno->Enabled=false;
+	myModalResult=mrNone;
 
-  Form_parametry_linky->Button_save->Enabled=false;
-  Form_parametry_linky->Button_storno->Enabled=false;
-  myModalResult=mrNone;
-
+	////////výchozí proměnné////////
+	temp_pocitadlo=0;
+	Rx_canEdit=true;
 	input_state=LOADING;
 	pruchod=0;
 	leva_oblast=false;
 	//workaround odchytávání stisku kláves
 	Edit1->SetFocus();
+
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
 	mGrid->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
@@ -843,12 +826,11 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 
 	 }
-
 //
 
 	if(Col==mGrid->ColCount-1)//je kliknuto na náhled objektu
 	{
-	//	calculate(Row,2);
+		calculate(Row,2);//zajistí patřičné naplnění data náhledu objektu
 		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
 		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
 		Invalidate();FormPaint(this);//zajistí překreslení bez probliku
@@ -857,7 +839,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 		Form_objekt_nahled->ShowModal();
 		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
 	}
-		else//překliknutí chechboxu pravděpodobně
+	else//překliknutí chechboxu pravděpodobně
 	{
 	 if(input_state==FREE && Col>=2 && Col<=11 && canCalculate)
 	 {
@@ -924,9 +906,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.M=objekty[Row].mezera;
 	pm.MJ=objekty[Row].mezera_jig;
 	pm.MP=objekty[Row].mezera_podvozek;
-  pm.dJ=Form_parametry_linky->scGPNumericEdit_delka_jig->Value/(1+999.0*Form_parametry_linky->Delkaunit);
-  pm.sJ=Form_parametry_linky->scGPNumericEdit_sirka_jig->Value/(1+999.0*Form_parametry_linky->Delkaunit);
-  pm.dP=Form_parametry_linky->scGPNumericEdit_delka_podvozek->Value/(1+999.0*Form_parametry_linky->Delkaunit);
+	pm.dJ=Form_parametry_linky->scGPNumericEdit_delka_jig->Value/(1+999.0*Form_parametry_linky->Delkaunit);
+	pm.sJ=Form_parametry_linky->scGPNumericEdit_sirka_jig->Value/(1+999.0*Form_parametry_linky->Delkaunit);
+	pm.dP=Form_parametry_linky->scGPNumericEdit_delka_podvozek->Value/(1+999.0*Form_parametry_linky->Delkaunit);
 	pm.Rotace=objekty[Row].rotace;
 	if(objekty[Row].pohon!=NULL)
 	{
@@ -1095,70 +1077,77 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	{
 		 case -1://uložení do textu je-li požadováno
 		 {
-				T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
+			 T=objekty[Row].short_name+";"+AnsiString(pm.CT/(1+59.0*CTunit))+";"+AnsiString(pm.RD*(1+59.0*RDunit))+";"+AnsiString(pm.DD*(1+999*DDunit))+";"+AnsiString(pm.K)+";"+AnsiString(pm.P)+";"+AnsiString(pm.MJ*(1+999*Munit))+";"+AnsiString(pm.MP*(1+999*Munit));
 		 }break;
 		 case 0://pouze vrátí text do buněk
 		 {
-				mGrid->Cells[13][Row].Text = F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
-				mGrid->Cells[17][Row].Text = F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
-				mGrid->Cells[19][Row].Text = F->m.round2double(pm.K,2,"..");
-				mGrid->Cells[21][Row].Text = F->m.round2double(pm.P,2,"..");
-				mGrid->Cells[23][Row].Text = F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
-				mGrid->Cells[25][Row].Text = F->m.round2double(pm.MP*(1+999*Munit),2,"..");
-				if(objekty[Row].pohon!=NULL)
-				{
-					long chRow=Row;//měněný řádek
-					if(slouceny_radek>1)chRow=slouceny_radek;//umístění do sloučených buněk na správnou pozici
-					mGrid->Cells[15][chRow].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
-					mGrid->Cells[30][chRow].Text = F->m.round2double(pm.Rz*(1+999*Rzunit),2,"..");
-					mGrid->Cells[28][chRow].Text = F->m.round2double(pm.R*(1+999.0*Form_parametry_linky->Runit),2,"..");
-					mGrid->Cells[32][chRow].Text = pm.Rx;
-				}
-				calculate(Row,3); //provede se validace
+			 mGrid->Cells[13][Row].Text = F->m.round2double(pm.CT/(1+59.0*CTunit),2,"..");
+			 mGrid->Cells[17][Row].Text = F->m.round2double(pm.DD*(1+999*DDunit),2,"..");
+			 mGrid->Cells[19][Row].Text = F->m.round2double(pm.K,2,"..");
+			 mGrid->Cells[21][Row].Text = F->m.round2double(pm.P,2,"..");
+			 mGrid->Cells[23][Row].Text = F->m.round2double(pm.MJ*(1+999*Munit),2,"..");
+			 mGrid->Cells[25][Row].Text = F->m.round2double(pm.MP*(1+999*Munit),2,"..");
+			 if(objekty[Row].pohon!=NULL)
+			 {
+				 long chRow=Row;//měněný řádek
+				 if(slouceny_radek>1)chRow=slouceny_radek;//umístění do sloučených buněk na správnou pozici
+				 mGrid->Cells[15][chRow].Text = F->m.round2double(pm.RD*(1+59.0*RDunit),2,"..");
+				 mGrid->Cells[30][chRow].Text = F->m.round2double(pm.Rz*(1+999*Rzunit),2,"..");
+				 mGrid->Cells[28][chRow].Text = F->m.round2double(pm.R*(1+999.0*Form_parametry_linky->Runit),2,"..");
+				 mGrid->Cells[32][chRow].Text = pm.Rx;
+			 }
+			 calculate(Row,3); //provede se validace
 		 }
 		 break;
 		 case 1://uložení do spojáku OBJEKTY - je-li požadováno
 		 {
-				Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
-				if(O->pohon!=NULL)
-				{
-					O->pohon->aRD = pm.RD;  //F->d.v.vrat_pohon(O->pohon->n)->aRD=pm.RD;
-					O->pohon->Rz  = pm.Rz;
-					O->pohon->Rx     = pm.Rx;
-					O->pohon->roztec = pm.R;
-				}
-				O->CT=pm.CT;
-				O->RD=pm.DD/pm.CT;//nelze použít pm.RD přímo, protože u S&G a PP by se RD!=aRD //POZOR: pm.RD je vždy aRD, až v sekci case 1 je vypočítáno skutečné RD=DD/CT
-				O->delka_dopravniku=pm.DD;
-				O->kapacita=pm.K;
-				O->pozice=pm.P;
-				O->mezera=pm.M;
-				O->mezera_jig=pm.MJ;
-				O->mezera_podvozek=pm.MP;
-				O=NULL;delete O;
+			 Cvektory::TObjekt *O=F->d.v.vrat_objekt(objekty[Row].n);
+			 if(O->pohon!=NULL)
+			 {
+			 	O->pohon->aRD = pm.RD;  //F->d.v.vrat_pohon(O->pohon->n)->aRD=pm.RD;
+			 	O->pohon->Rz  = pm.Rz;
+			 	O->pohon->Rx     = pm.Rx;
+			 	O->pohon->roztec = pm.R;
+			 }
+			 O->CT=pm.CT;
+			 O->RD=pm.DD/pm.CT;//nelze použít pm.RD přímo, protože u S&G a PP by se RD!=aRD //POZOR: pm.RD je vždy aRD, až v sekci case 1 je vypočítáno skutečné RD=DD/CT
+			 O->delka_dopravniku=pm.DD;
+			 O->kapacita=pm.K;
+			 O->pozice=pm.P;
+			 O->mezera=pm.M;
+			 O->mezera_jig=pm.MJ;
+			 O->mezera_podvozek=pm.MP;
+			 O=NULL;delete O;
 		 }break;
-		 case 2://uložení hodnot z ukazatele pro náhled objektu
+		 case 2://uložení hodnot do ukazatele pro náhled objektu, musí se ukládat testované, potenciální parametry objekty
 		 {
-				Form_objekt_nahled->pom=new Cvektory::TObjekt;
-				//Form_objekt_nahled->pom->pohon=objekty[Row].pohon;//takto by převzal starou rozteč
-				Form_objekt_nahled->pom->pohon=new Cvektory::TPohon;
-				Form_objekt_nahled->pom->pohon->roztec=pm.R;//ale předávám jen do náhledu R, nic víc od pohonu
-				Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
-				Form_objekt_nahled->pom->CT=pm.CT;
-				Form_objekt_nahled->pom->RD=pm.RD;
-				Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
-				Form_objekt_nahled->pom->kapacita=pm.K;
-				Form_objekt_nahled->pom->pozice=pm.P;
-				Form_objekt_nahled->pom->mezera=pm.M;
-				Form_objekt_nahled->pom->mezera_jig=pm.MJ;
-				Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
+			 Form_objekt_nahled->pom=new Cvektory::TObjekt;
+			 Form_objekt_nahled->pom->pohon=new Cvektory::TPohon;
+			 Form_objekt_nahled->pom->pohon->roztec=pm.R;
+			 Form_objekt_nahled->pom->pohon->roztec=pm.Rz;
+			 Form_objekt_nahled->pom->pohon->roztec=pm.Rx;
+			 Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
+			 Form_objekt_nahled->pom->CT=pm.CT;
+			 Form_objekt_nahled->pom->RD=pm.RD;
+			 Form_objekt_nahled->pom->delka_dopravniku=pm.DD;
+			 Form_objekt_nahled->pom->kapacita=pm.K;
+			 Form_objekt_nahled->pom->pozice=pm.P;
+			 Form_objekt_nahled->pom->mezera=pm.M;
+			 Form_objekt_nahled->pom->mezera_jig=pm.MJ;
+			 Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
+			 //nutno provizorně přepsat v PP parametry vozíku potenciálně ukládanými, aby se náhled vykreslil správně, poté je v případě storna formu nutné vrátit původní hodnoty (proto se zároveň ukládají do zalohovací proměnné)
+			 double dJtemp,sJtemp,dPtemp;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
+			 F->d.v.PP.delka_jig = pm.dJ;
+			 F->d.v.PP.sirka_jig = pm.sJ;
+			 F->d.v.PP.delka_podvozek = pm.dP;
+			 dodělat
+
 		 }break;
       case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
-				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
-				vypis(pm.getErrorText(mGrid->RowCount));
+			 pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
+			 vypis(pm.getErrorText(mGrid->RowCount));
 		 }break;
-
 	}
 	return T;
 }

@@ -65,7 +65,6 @@ object Form_poznamky: TForm_poznamky
     Caption = 'scGPPanel_hlavicka'
     TransparentBackground = True
     StorePaintBuffer = True
-    ExplicitWidth = 612
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 884
@@ -145,7 +144,6 @@ object Form_poznamky: TForm_poznamky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 562
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -180,7 +178,6 @@ object Form_poznamky: TForm_poznamky
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Pozn'#225'mka'
-      ExplicitWidth = 552
     end
   end
   object scGPMemo: TscGPMemo

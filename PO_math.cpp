@@ -227,14 +227,17 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 	AnsiString T="";
 
 	////VALIDACE aRD rozsahu od-do, pro objekty s pohony a pro všechny pohony
-	long 	plRow  = 0;//n øádku pohonu na PL      Form_parametry_linky->getROW(objekty[Row].pohon->n)
-	if(objekty[Row].pohon!=NULL && rezim!=100) plRow =	Form_parametry_linky->getROW(objekty[Row].pohon->n);//pro všechny objekty s pohony
-	if(objekty[Row].id>=100) plRow = Form_parametry_linky->getROW(objekty[Row].id-100);//pro nepoužívané pohony (bez pøiøazení)
-	double aRD_od=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
-	double aRD_do=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow])/(1+59.0*aRDunit);
-	if(!Form1->m.between(RD,aRD_od,aRD_do))
+	if(objekty[Row].pohon!=NULL)//tato validace se neøeší pro objekty bez pøiøazených pohonù
 	{
-		 T="Rozsah rychlosti "+m.round2double(aRD_od*(1+59.0*aRDunit),2,"..")+" až "+m.round2double(aRD_do*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+" pohonu "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+" neopovídá nastavované rychlosti "+F->m.round2double(RD*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+"!";
+		long 	plRow  = 0;//n øádku pohonu na PL      Form_parametry_linky->getROW(objekty[Row].pohon->n)
+		if(objekty[Row].pohon!=NULL && rezim!=100) plRow =	Form_parametry_linky->getROW(objekty[Row].pohon->n);//pro všechny objekty s pohony
+		if(objekty[Row].id>=100) plRow = Form_parametry_linky->getROW(objekty[Row].id-100);//pro nepoužívané pohony (bez pøiøazení)
+		double aRD_od=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
+		double aRD_do=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow])/(1+59.0*aRDunit);
+		if(!Form1->m.between(RD,aRD_od,aRD_do))
+		{
+			T="Rozsah rychlosti "+m.round2double(aRD_od*(1+59.0*aRDunit),2,"..")+" až "+m.round2double(aRD_do*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+" pohonu "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+" neopovídá nastavované rychlosti "+F->m.round2double(RD*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+"!";
+		}
 	}
 
 	////testování pouze pro objekty s pohonem
@@ -294,9 +297,9 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 	if(M<0)  error_text+="M ";
 	if(MJ<0) error_text+="mezera jig ";
 	if(MP<0) error_text+="mezera podvozek ";
-	if(R<=0) error_text+="R ";
-	if(Rz<=0)error_text+="Rz ";
-	if(Rx<=0)error_text+="Rx ";
+	if(R<=0 && objekty[Row].pohon!=NULL) error_text+="R "; //neøeší se pro objekty bez pohonù
+	if(Rz<=0 && objekty[Row].pohon!=NULL)error_text+="Rz ";//neøeší se pro objekty bez pohonù
+	if(Rx<=0 && objekty[Row].pohon!=NULL)error_text+="Rx ";//neøeší se pro objekty bez pohonù
 	if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o rozmezí èi Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
 	T+=error_text;
 

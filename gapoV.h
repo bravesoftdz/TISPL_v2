@@ -61,7 +61,8 @@ private:	// User declarations
 	enum Tinput_state{FREE,LOADING,PROGRAMOVE};//uchovává výbìr input hodnoty
  	short CTunit,RDunit,DDunit,Munit,aRDunit,Rzunit,Runit;
 	bool liche_otoceni_koleckem_mysi;//kvùli špatnì fungující funkci otáèení koleèka myši
-  unsigned int *indikator_skupin;//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
+	unsigned int *indikator_skupin;//dynamické pole, uchovávající indikaci, která oblast dané skupiny byla vybrána
+	double dJtemp,sJtemp,dPtemp;//promìnné sloužící na zálohu povodních hodnot parametrù vozíkù, pro pøípad storna
 public:		// User declarations
 	__fastcall TF_gapoV(TComponent* Owner);
 	//metody volané z Tmgrid

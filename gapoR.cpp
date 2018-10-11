@@ -50,11 +50,10 @@ void __fastcall TF_gapoR::FormActivate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoR::FormShow(TObject *Sender)
 {
-	//workaround odchytávání stisku kláves NEWR
+	//workaround odchytávání stisku kláves
 	Edit1->SetFocus();
 
-	////////jednotky////////  NEWR
-
+	////////jednotky////////
 	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
 	if(T=="")CTunit=0;else CTunit=T.ToInt();
 	//T=F->readINI("nastaveni_form_parametry","RDt");
@@ -63,34 +62,16 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	if(T=="")DDunit=0;else DDunit=T.ToInt();
 	T=F->readINI("nastaveni_form_parametry","DM");
 	if(T=="")Munit=0; else Munit =T.ToInt();
-
-  RDunit=1;
-  aRDunit=1;
-  Runit=1;
-  Rzunit=1;
-
-  if(Form_parametry_linky->aRDunit==0)  //aRD = S
-  {
-  RDunit=0;
-  aRDunit=0;
-  }
-
-  if(Form_parametry_linky->Runit==0)  //Runit = M
-  {
-  Runit=0;
-  }
-
-  if(Form_parametry_linky->Dmunit==0)  //Dmunit = M
-  {
-  Rzunit=0;
-  }
+	RDunit=1;aRDunit=1;	if(Form_parametry_linky->aRDunit==0){RDunit=0;aRDunit=0;}  //aRD = S
+	Runit=1;						if(Form_parametry_linky->Runit==0)Runit=0;//Runit = M
+	Rzunit=1;						if(Form_parametry_linky->Dmunit==0)Rzunit=0;//Dmunit = M, DMunit jsou totožné pro Rzunit
 
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
 	mGrid->Tag=3;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 	mGrid->Left=Offset;mGrid->Top=scGPPanel_hlavicka->Height+Offset;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
-	mGrid->DefaultColWidth/=2;//NEWR
+	mGrid->DefaultColWidth/=2;
 
 	////////vytvoøení tabulky s požadovaným poètem sloupcù a øádkù////////
 	unsigned long ColCount=22;//pevný poèet slopcù  //NEWR
@@ -381,7 +362,6 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.TT=F->d.v.PP.TT;
 	pm.rezim=objekty[Row].rezim;
 	pm.CT=objekty[Row].CT;
- if(aRDunit==0)	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)]); else 	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/60.0;
 	pm.DD=objekty[Row].delka_dopravniku;
 	pm.K=objekty[Row].kapacita;
 	pm.P=objekty[Row].pozice;
@@ -391,8 +371,12 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.dJ=F->d.v.PP.delka_jig;
 	pm.sJ=F->d.v.PP.sirka_jig;
 	pm.dP=F->d.v.PP.delka_podvozek;
-	pm.Rotace=objekty[Row].rotace;
+	pm.Rotace=objekty[Row].rotace;     //R,Rz,Rx aè pro výpoèty gapoR nejsou tøeba, je nutné dodat pro validaci
+	pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*Form_parametry_linky->aRDunit);//musí se brát ze stringgridu, kvùli pøípapdnému stornu, nikoliv pøímo z dat
 	pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+	pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musí se brát ze stringgridu, kvùli pøípapdnému stornu, nikoliv pøímo z dat
+
 	//volání samotného výpoètu dle volby stanovéné pomoci checkboxu
 	if(mGrid->getCheck(2,Row)->Checked)//mìní se CT,RD,K,P,M, zùstává DD
 	{

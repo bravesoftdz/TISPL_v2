@@ -120,7 +120,7 @@ void __fastcall TForm_poznamky::FormShow(TObject *Sender)
 		scGPCheckBox_WTlock->Top=mGrid->Top+mGrid->Height+1;
 		scGPCheckBox_WTlock->Left=mGrid->Left-1;
 		//memo
-		scGPMemo->Left-=1;
+		scGPMemo->Left=mGrid->Left-1;
 		scGPMemo->Width=mGrid->Width+4;
 		scGPMemo->Top=mGrid->Top+mGrid->Height/*+10*/+rHTMLLabel_InfoText->Height+scGPCheckBox_WTlock->Height;
 		scGPMemo->Height=scGPButton_OK->Top-10-scGPMemo->Top;

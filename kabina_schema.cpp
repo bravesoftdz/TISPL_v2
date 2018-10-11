@@ -190,7 +190,7 @@ void __fastcall TForm_objekt_nahled::FormPaint(TObject *Sender)
 	if(zobrazitFrameForm && !Timer_animace->Enabled)F->m.frameForm(Form_objekt_nahled,clWebOrange,1);
 }
 //---------------------------------------------------------------------------
-//naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totoži není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
+//naplní data do lokální (globální v tomto formuláøi) promìnné pom,nejedná se o F->pom, ta totiž není v tomto momentu z dùvodu probíhajících zmìna zcela aktuální
 void TForm_objekt_nahled::OUTPUT()
 {
 	 //pøevzetí hodnot z Form_Parametry
