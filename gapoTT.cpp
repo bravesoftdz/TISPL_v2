@@ -890,7 +890,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 //ÈÁST VALIDACE OBLASTÍ - povolení/zakázání uložení GAPO
 // první oblast   - levá
 
-	if(Col>=3 && Col<=5 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální")
+	if(Col>=3 && Col<=5 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" && F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) >= 1)
 	{
 		if(mGrid->getCheck(3,Row)->Checked==true ||  mGrid->getCheck(5,Row)->Checked==true)
 		{
@@ -935,7 +935,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
     input_state=FREE;
 	 }
      // druhá oblast - prostøední
-		if(Col>=7 && Col<=9 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální")
+		if(Col>=7 && Col<=9 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" && F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) >= 1)
 		{
 			if(mGrid->getCheck(7,Row)->Checked==true ||  mGrid->getCheck(9,Row)->Checked==true)
 			{
@@ -990,7 +990,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	 }
 
 //	// tøetí oblast - vpravo
-		if(Col>=11 && Col<=13 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální")
+		if(Col>=11 && Col<=13 && input_state==FREE && mGrid->Cells[2][Row].Text=="Kontinuální" && F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n,1) >= 1)
 		{
 			if(mGrid->getCheck(11,Row)->Checked==true ||  mGrid->getCheck(13,Row)->Checked==true)
 			{
