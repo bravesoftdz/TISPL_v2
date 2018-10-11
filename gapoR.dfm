@@ -25,11 +25,8 @@ object F_gapoR: TF_gapoR
   object rHTMLLabel_InfoText: TrHTMLLabel
     Left = 8
     Top = 378
-    Width = 760
+    Width = 6
     Height = 19
-    Caption = 
-      'Jsou zobrazeny pouze objekty v kontinu'#225'ln'#237'm re'#382'imu, kter'#233' maj'#237' p' +
-      #345'i'#345'azen'#233' pohony se zm'#283'n'#253'mi parametry. '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clActiveCaption
     Font.Height = -16
@@ -566,6 +563,7 @@ object F_gapoR: TF_gapoR
     Height = 25
     Caption = 'test AA'
     TabOrder = 2
+    Visible = False
     OnClick = Button1Click
   end
   object scGPButton_storno: TscGPButton
@@ -784,5 +782,14 @@ object F_gapoR: TF_gapoR
       'Memo2')
     TabOrder = 9
     Visible = False
+  end
+  object rHTMLHint_vypis: TrHTMLHint
+    HintFont.Charset = DEFAULT_CHARSET
+    HintFont.Color = clWindowText
+    HintFont.Height = -11
+    HintFont.Name = 'Tahoma'
+    HintFont.Style = []
+    Left = 56
+    Top = 400
   end
 end

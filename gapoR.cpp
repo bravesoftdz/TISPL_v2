@@ -16,6 +16,7 @@
 #pragma link "rHTMLLabel"
 #pragma link "scDrawUtils"
 #pragma link "scGPImages"
+#pragma link "rHintWindow"
 #pragma resource "*.dfm"
 TF_gapoR *F_gapoR;
 //---------------------------------------------------------------------------
@@ -52,7 +53,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 {
 	//workaround odchytávání stisku kláves
 	Edit1->SetFocus();
-
+  vypis(""); // prozmanuti vypisu - pro sicher
 	////////jednotky////////
 	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
 	if(T=="")CTunit=0;else CTunit=T.ToInt();
@@ -274,6 +275,7 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	zobrazitFrameForm=true;
 	////kvùli špatnì fungující funkci otáèení koleèka myši
 	liche_otoceni_koleckem_mysi=false; //NEWR
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -451,16 +453,8 @@ UnicodeString TF_gapoR::calculate(unsigned long Row,short SaveTo)//NEWR
 		 }break;
      case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
-				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
-				//ShowMessage(pm.getErrorText(mGrid->RowCount));
-				AnsiString ErrorText=pm.getErrorText(mGrid->RowCount);
-				if(ErrorText!="")
-				{
-					rHTMLLabel_InfoText->FontColor=clRed;
-					rHTMLLabel_InfoText->Caption=ErrorText;
-					scGPButton_OK->Enabled=false;
-				}
-				else scGPButton_OK->Enabled=true;
+			 pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
+			 vypis(pm.getErrorText(mGrid->RowCount));
 				//rHTMLLabel_InfoText->FontColor=cl...;
 		 }break;
 	}
@@ -566,9 +560,41 @@ void __fastcall TF_gapoR::FormMouseWheelDown(TObject *Sender, TShiftState Shift,
 void __fastcall TF_gapoR::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y)
 {
-mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
+//mGrid->HighlightRowOnMouse(X,Y,(TColor)RGB(240,240,240));
 }
 //---------------------------------------------------------------------------
+void TF_gapoR::vypis(UnicodeString text,bool red,bool link)
+{
+	scGPButton_OK->Enabled=true;
+  rHTMLLabel_InfoText->Width=4000;
+	scGPButton_OK->Caption = "Uložit";
+	if (text != "") // zobrazí a vypíše
+	{
+		rHTMLHint_vypis->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
+		//prodllužení formu if(!rHTMLLabel_InfoText->Visible){Height+=(40+19);position();}pouze pokud byl pøedtím popisek skrytý + kontrola pozice formu
+
+		if(link)rHTMLLabel_InfoText->Font->Style = TFontStyles()<< fsUnderline;//zapnutí podtrženého písma
+		else rHTMLLabel_InfoText->Font->Style = TFontStyles();
+
+		if (red)
+		{
+			scGPButton_OK->Enabled=false;
+			rHTMLLabel_InfoText->Font->Color = clRed;
+		}
+		else
+		{
+			rHTMLLabel_InfoText->Font->Color = (TColor)RGB(0,128,255);
+		}
+		rHTMLLabel_InfoText->Left = 8;
+		rHTMLLabel_InfoText->Caption = text;
+		rHTMLLabel_InfoText->Visible = true;
+	}
+	else // skryje
+	{
+		//zkrácení formu if(rHTMLLabel_InfoText->Visible)Height-=(40+19);
+		rHTMLLabel_InfoText->Visible = false;
+	}
+}
 
 
 

@@ -55,6 +55,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 {
 	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
+  vypis(""); // prozmanuti vypisu - pro sicher
 	mGrid->Tag=1;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 	mGrid->Left=Offset;mGrid->Top=scGPPanel_hlavicka->Height+Offset;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
@@ -1579,16 +1580,8 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		 }break;
 		 case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
-				pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
-				//ShowMessage(pm.getErrorText(mGrid->RowCount));
-				AnsiString ErrorText=pm.getErrorText(mGrid->RowCount);
-				if(ErrorText!="")
-				{
-					rHTMLLabel_InfoText->FontColor=clRed;
-					rHTMLLabel_InfoText->Caption=ErrorText;
-					scGPButton_OK->Enabled=false;
-				}
-				else scGPButton_OK->Enabled=true;
+			 pm.gapoVALIDACE(objekty,Row,mGrid->RowCount,aRDunit);
+			 vypis(pm.getErrorText(mGrid->RowCount));
 				//rHTMLLabel_InfoText->FontColor=cl...;
 			 /*
 			 //jednotky
