@@ -1054,14 +1054,18 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 	//NEWR
 	if(Col==36)//je kliknutu na náhled objektu
 	{
-		calculate(Row,2);
-		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
-		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
-		Invalidate();FormPaint(this);//zajistí pøekreslení bez probliku
-		Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
-		Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
-		Form_objekt_nahled->ShowModal();
-		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+		if(pm.ErrorList[Row]=="")//pouze pokud je daný objekt k zobrazení validní
+		{
+			calculate(Row,2);
+			scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
+			Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
+			Invalidate();FormPaint(this);//zajistí pøekreslení bez probliku
+			Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
+			Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
+			Form_objekt_nahled->ShowModal();
+			scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+		}
+		else F->MB("Nelze zobrazit náhled objektu. Nastavte nejdøíve platnou volbu!<br>Pøièina: "+pm.ErrorList[Row]);
 	}
 	else//pøekliknutí chechboxu pravdìpodobnì
 	{
@@ -1077,7 +1081,6 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 				int pohon_n=objekty[Row].pohon->n;
 				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n) > 1)
 				{
-
            slouceny_radek=0;
 					 for(int i=1;i<=mGrid->RowCount-1;i++)
 					 {

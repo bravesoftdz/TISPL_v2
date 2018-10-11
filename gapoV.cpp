@@ -831,14 +831,18 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 
 	if(Col==mGrid->ColCount-1)//je kliknuto na náhled objektu
 	{
-		calculate(Row,2);//zajistí patřičné naplnění data náhledu objektu
-		scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
-		Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
-		Invalidate();FormPaint(this);//zajistí překreslení bez probliku
-		Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
-		Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
-		Form_objekt_nahled->ShowModal();
-		scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+		if(pm.ErrorList[Row]=="")//pouze pokud je daný objekt k zobrazení validní
+		{
+			calculate(Row,2);//zajistí patřičné naplnění data náhledu objektu
+			scGPButton_OK->Enabled=false;scGPButton_storno->Enabled=false;
+			Form_objekt_nahled->zobrazitFrameForm=true;zobrazitFrameForm=false;
+			Invalidate();FormPaint(this);//zajistí překreslení bez probliku
+			Form_objekt_nahled->Left=Left+Width/2-Form_objekt_nahled->Width/2;
+			Form_objekt_nahled->Top=Top+Height/2-Form_objekt_nahled->Height/2;
+			Form_objekt_nahled->ShowModal();
+			scGPButton_OK->Enabled=true;scGPButton_storno->Enabled=true;zobrazitFrameForm=true;
+		}
+		else F->MB("Nelze zobrazit náhled objektu. Nastavte nejdříve platnou volbu!<br>Přičina: "+pm.ErrorList[Row]);
 	}
 	else//překliknutí chechboxu pravděpodobně
 	{
@@ -919,14 +923,16 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	}
 	else
 	{
-		pm.RD=objekty[Row].RD;//je to správně?neměla by tu být 0?
+		pm.RD=objekty[Row].RD;//je to správně? neměla by tu být 0?
 		pm.R=0;
 	}
 	double oldRD=pm.RD;//záloha původní hodnoty
 	double oldR=pm.R;//záloha původní hodnoty
 	double oldRz=pm.Rz;//záloha původní hodnoty
 	double oldRx=pm.Rx;//záloha původní hodnoty
-
+	dJtemp=F->d.v.PP.delka_jig;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
+	sJtemp=F->d.v.PP.sirka_jig;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
+  dPtemp=F->d.v.PP.delka_podvozek;//proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
 
 	//optimalizace detekce a uchování volby zaškrtnutého checkboxu, aby se nemuselo vyvolávat znovu
 	bool CHECK[5];
@@ -1124,9 +1130,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 		 {
 			 Form_objekt_nahled->pom=new Cvektory::TObjekt;
 			 Form_objekt_nahled->pom->pohon=new Cvektory::TPohon;
-			 Form_objekt_nahled->pom->pohon->roztec=pm.R;
-			 Form_objekt_nahled->pom->pohon->roztec=pm.Rz;
-			 Form_objekt_nahled->pom->pohon->roztec=pm.Rx;
+			 Form_objekt_nahled->pom->pohon->roztec=pm.R;       //ShowMessage(pm.R);
+			 //Form_objekt_nahled->pom->pohon->roztec=pm.Rz;netřeba vypočítáva se v náhledu pomocí DV+M
+			 //Form_objekt_nahled->pom->pohon->roztec=pm.Rx;netřeba vypočítáva se v náhledu  pomocí (DV+M)/R
 			 Form_objekt_nahled->pom->rezim=objekty[Row].rezim;
 			 Form_objekt_nahled->pom->CT=pm.CT;
 			 Form_objekt_nahled->pom->RD=pm.RD;
@@ -1137,10 +1143,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 			 Form_objekt_nahled->pom->mezera_jig=pm.MJ;
 			 Form_objekt_nahled->pom->mezera_podvozek=pm.MP;
 			 //nutno provizorně přepsat v PP parametry vozíku potenciálně ukládanými, aby se náhled vykreslil správně, poté je v případě storna formu nutné vrátit původní hodnoty (proto se zároveň ukládají do zalohovací proměnné)
-			 //proměnné sloužící na zálohu povodních hodnot parametrů vozíků, pro případ storna
-			 dJtemp=F->d.v.PP.delka_jig;		 F->d.v.PP.delka_jig		  = pm.dJ;
-			 sJtemp=F->d.v.PP.sirka_jig;		 F->d.v.PP.sirka_jig			= pm.sJ;
-			 dPtemp=F->d.v.PP.delka_podvozek;F->d.v.PP.delka_podvozek	= pm.dP;
+			 F->d.v.PP.delka_jig		  = pm.dJ;
+			 F->d.v.PP.sirka_jig			= pm.sJ;
+			 F->d.v.PP.delka_podvozek	= pm.dP;
 		 }break;
       case 3://testování dané volby, pokud není možno, vrácí text s popisem daného problému, jedná se o VALIDACI daného GAPO
 		 {
