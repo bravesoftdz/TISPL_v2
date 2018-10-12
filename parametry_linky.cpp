@@ -1615,7 +1615,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 {
 		Button_save->Enabled=true;
 		Button_save->Caption = "Uložit";
- if(text=="m].</b>")text="";//provizorní WA, pøi zmìnì Rz a byla-li v poøádku to vrací toto
+ //if(text=="m].</b>")text="";//provizorní WA, pøi zmìnì Rz a byla-li v poøádku to vrací toto  - již není tøeba, ale zatím nechávám
 		if (text != "") // zobrazí a vypíše
 		{
 				rHTMLHint1->ToString()=text;//natežení do hintu zajišuje zobrazení celého textu, nepoužívá se klasický hint
@@ -2295,7 +2295,7 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 		if(input_state!=aRD)  rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*(1+59*aRDunit);
 		if(input_state!=R)    rStringGridEd_tab_dopravniky->Cells[5][Radek]=pm.R*(1+999*Runit);
 		if(input_state!=RZ)   rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz*(1+999*Dmunit);
-		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=F->m.round2double(pm.Rx,12);
+		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=F->m.round2double(pm.Rx,6);
                                                                                    //WA periodického èísla
 		VALIDACE(Sloupec,Radek);
 
