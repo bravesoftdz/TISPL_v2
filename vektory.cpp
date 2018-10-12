@@ -1405,14 +1405,14 @@ TTextNumber Cvektory::validace_aRD(double aRD,TPohon *p)
 {
 	TTextNumber RET;
 	RET.text="";RET.number1=aRD;RET.number2=0;
-	double mRD=minRD(p);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
-	//if(mRD>aRD)
-  if(vypis_objekty_nestihajici_prejezd(p,aRD,20)!="")
-	{          //musí být rozšířeno o hlídání dostatečného mezerového fondu!!! minM(aRD,RD2,R2)
-		RET.text=AnsiString("Nedostatečná rychlost! Objekt(y) nestíhající přejezd: "+vypis_objekty_nestihajici_prejezd(p,aRD,20));
-		RET.number1=mRD;
-		RET.number2=4000;//číslo chyby
-	}
+//	double mRD=minRD(p);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
+//	//if(mRD>aRD)
+//  if(vypis_objekty_nestihajici_prejezd(p,aRD,20)!="")
+//	{          //musí být rozšířeno o hlídání dostatečného mezerového fondu!!! minM(aRD,RD2,R2)
+//		RET.text=AnsiString("Nedostatečná rychlost! Objekt(y) nestíhající přejezd: "+vypis_objekty_nestihajici_prejezd(p,aRD,20));
+//		RET.number1=mRD;
+//		RET.number2=4000;//číslo chyby
+//	}
 	return RET;
 }
 ////---------------------------------------------------------------------------
