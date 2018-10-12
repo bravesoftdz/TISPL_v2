@@ -1615,6 +1615,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 {
 		Button_save->Enabled=true;
 		Button_save->Caption = "Uloit";
+ if(text=="m].</b>")text="";//provizorní WA, pøi zmìnì Rz a byla-li v poøádku to vrací toto
 		if (text != "") // zobrazí a vypíše
 		{
 				rHTMLHint1->ToString()=text;//nateení do hintu zajišuje zobrazení celého textu, nepouívá se klasickı hint
