@@ -2265,8 +2265,7 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
       rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD;
       rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[3][i]/60.0;
       rStringGridEd_tab_dopravniky->Cells[2][i]=rStringGridEd_tab_dopravniky->Cells[2][i]/60.0;
-
-    }
+		}
    }
 
    if(input_state==R_prevod)
@@ -2295,8 +2294,8 @@ void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 		if(input_state!=aRD)  rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*(1+59*aRDunit);
 		if(input_state!=R)    rStringGridEd_tab_dopravniky->Cells[5][Radek]=pm.R*(1+999*Runit);
 		if(input_state!=RZ)   rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz*(1+999*Dmunit);
-		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=pm.Rx;
-
+		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=F->m.round2double(pm.Rx,12);
+                                                                                   //WA periodického èísla
 		VALIDACE(Sloupec,Radek);
 
 	 }
