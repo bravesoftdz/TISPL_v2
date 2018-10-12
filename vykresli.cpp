@@ -1307,7 +1307,7 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 			if(D->pohon->roztec==0)
 			{
 				i=10;//pokud je u dalšího pohon přiřazen, ale není zadaná rozteč, není kompletní a kompetentní info
-				F->Z("<b>Problém</b> - pohon <b>"+D->pohon->name+"</b> přiřazen objektu <b>"+D->name+"</b> nemá přiřazenou rozteč!<br><b>Rešení</b> - nastavte pohonu patřičnou rozteč.<br><br>",true);
+				F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - pohon <b>"+D->pohon->name+"</b> přiřazen objektu <b>"+D->name+"</b> nemá přiřazenou rozteč!<br><b>řešení</b> - nastavte pohonu patřičnou rozteč.<br><br>",true);
 			}
 			else//jsou k dispozici data
 			{                         //zvažit zda RD či aRD (kvůli PP)
@@ -1319,7 +1319,7 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 				else
 				{
 					i=1;//není v pořádku nestíhá se čekání
-					F->Z("<b>Problém</b> - v objektu <b>"+O->name+"</b> je nedostatečná doba čekání na palec!<br><b>Rešení</b> - zvyšte rychlost pohonu nebo nastavte větší mezeru mezi vozíky!<br><br>",true);
+					F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - nedostatečná doba čekání na palec, resp. rozestup!<br><b>řešení</b> - upravte rychlost pohonu nebo pohonu objektu následujícího či nastavte větší mezeru resp. rozestup mezi vozíky!<br><br>",true);
 				}
 			}
 		}
@@ -1327,16 +1327,15 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 		{
 			if(O->pohon==NULL && D->pohon==NULL)//ani jeden z nich
 			{
-				F->Z("<b>Problém</b> - objekty <b>"+O->name+" a "+D->name+"</b> nemají přiřazeny pohony!<br><b>Rešení</b> - přiřaďte patřičné pohony.<br><br>",true);
+				F->Z("<b>"+O->name.UpperCase()+" a "+D->name.UpperCase()+"<br>problém</b> - objekty nemají přiřazeny pohony!<br><b>řešení</b> - přiřaďte patřičné pohony.<br><br>",true);
 			}
 			else//jenom jeden není přiřazen
 			{
-				if(O->pohon==NULL)F->Z("<b>Problém</b> - objekt <b>"+O->name+"</b> nemá přiřazen pohon!<br><b>Rešení</b> - přiřaďte patřičný pohon.<br><br>",true);
-				if(D->pohon==NULL && D!=v.OBJEKTY->dalsi)F->Z("<b>Problém</b> - objekt <b>"+D->name+"</b> nemá přiřazen pohon!<br><b>Rešení</b> - přiřaďte patřičný pohon.<br><br>",true);
+				if(O->pohon==NULL)F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - není přiřazen pohon!<br><b>řešení</b> - přiřaďte patřičný pohon.<br><br>",true);
+				if(D->pohon==NULL && D!=v.OBJEKTY->dalsi)F->Z("<b>"+O->name.UpperCase()+"<br>problém</b> - následující objekt <b>"+D->name.UpperCase()+"</b> nemá přiřazen pohon!<br><b>řešení</b> - přiřaďte patřičný pohon objektu "+D->name.UpperCase()+".<br><br>",true);
 			}
 			i=10;//červeně šrafování, není kompletní a kompetentní info
 		}
-
 
 	 /*	rgb(255,140,0) - DarkOrange
 		rgb(255,215,0) - Gold (žlutá)
