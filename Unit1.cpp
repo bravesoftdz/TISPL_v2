@@ -3181,7 +3181,7 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 			t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nebyl nadefinován";
 			Form_parametry->existuje_pohon=false;
-			Form_parametry->scComboBox_pohon->ItemIndex=0;//nedefinován
+			//nesmí tu být, způsobuje cyklení z důvodu vytoření onchange pohonu Form_parametry->scComboBox_pohon->ItemIndex=0;//pohon nedefinován
 		}
 		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 		{
@@ -3220,7 +3220,7 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 			{
 				AnsiString dopRD="";
 				t=Form_parametry->scComboBox_pohon->Items->Add(/*tady nelze parametr*/);
-				if(Form_parametry->scComboBox_pohon->ItemIndex==P->n && !Form_parametry->pohon_pouzivan && !Form_parametry->ComboBoxPohonyProbihaZmena)//pokud se jedná o aktuální pohon a pohon lze editovat a neprobíhá změna comboboxu
+				if(Form_parametry->scComboBox_pohon->ItemIndex==P->n && !Form_parametry->pohon_pouzivan && !Form_parametry->ComboBoxPohonyProbihaZmena)//pokud se jedná o aktuální pohon a pohon lze editovat a neprobíhá změna comboboxu a již existuje nějaký pohon
 				{     //pouze pro KK
 					if(Form_parametry->scComboBox_rezim->ItemIndex==1 && m.round2double(Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT),8)==m.round2double(m.dopRD(d.v.PP.delka_jig,d.v.PP.sirka_jig,Form_parametry->scComboBox_rotace->ItemIndex,P->roztec,d.v.PP.TT,Form_parametry->scGPNumericEdit_RD->Value/(1+59.0*RDunitT)),8))dopRD="  dopor.";
 					t->Caption=P->name+" - "+m.round2double(Form_parametry->scGPNumericEdit_RD->Value,3,"..")+" ("+AnsiString(m.round2double(P->rychlost_od*jednotky_cas_pohon*jednotky_delka_pohon,2))+"-"+AnsiString(m.round2double(P->rychlost_do*jednotky_cas_pohon*jednotky_delka_pohon,2))+") "+caption_jednotky+dopRD;//vypíše aktuální editovanou hodnotu

@@ -326,9 +326,9 @@ object Form_parametry: TForm_parametry
   object rHTMLLabel_jig_podvozek: TrHTMLLabel
     Left = 62
     Top = 537
-    Width = 103
+    Width = 130
     Height = 19
-    Caption = 'jig a podvozek'
+    Caption = 'jig nebo podvozek'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
