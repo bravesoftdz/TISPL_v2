@@ -146,10 +146,10 @@ void TPO_math::input_MP()
 }
 //---------------------------------------------------------------------------
 //pøepoèet souvisejících hodnot vyplývajících ze zmìny rozestupu v metrech
-void TPO_math::input_Rz()
+void TPO_math::input_Rz(bool prepocet_Rx)
 {
 	RD=Rz/TT;
-	Rx=Rz/R;
+	if(prepocet_Rx)Rx=Rz/R;//prepocet_Rx - pro pøepoèet z input_Rx
 	input_RD(false);//vypoèítá CT,DD,K,P dle nastavených zámkù
 	M=Mezera(false);//vypoèítá mezery
 }
@@ -158,7 +158,7 @@ void TPO_math::input_Rz()
 void TPO_math::input_Rx()
 {
 	Rz=Rx*R;
-  input_Rz();//sice znovu pøepoèítá Rx, ale nemìlo by vadit
+	input_Rz(false);//false aby se znovu nepøepoèítavlo Rx zpìtnì z Rz
 }
 //---------------------------------------------------------------------------
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
