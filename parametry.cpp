@@ -2224,14 +2224,16 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 						scGPNumericEdit_mezera->Value=obj->mezera;
 						scGPNumericEdit_mezera_JIG->Value=obj->mezera_jig;
 						scGPNumericEdit_mezera_PODVOZEK->Value=obj->mezera_podvozek;
-						//scGPNumericEdit1_rx->Value=obj->pohon->Rx; patrnì se dopoèítává formou nacti_rx
+						scGPNumericEdit_rx->Value=obj->pohon->Rx;
+            scGPNumericEdit_rozestup->Value=obj->pohon->Rz;
 					}
 					else
 					{
 						scGPNumericEdit_mezera->Value=obj->mezera*1000;
 						scGPNumericEdit_mezera_JIG->Value=obj->mezera_jig*1000;
 						scGPNumericEdit_mezera_PODVOZEK->Value=obj->mezera_podvozek*1000;
-						//scGPNumericEdit1_rx->Value=obj->pohon->Rx*1000; patrnì se dopoèítává formou nacti_rx
+						scGPNumericEdit_rx->Value=obj->pohon->Rx;
+            scGPNumericEdit_rozestup->Value=obj->pohon->Rz*1000;
 					}
 
 					if(obj->rotace==0) scComboBox_rotace->ItemIndex=0;
@@ -2454,6 +2456,20 @@ void TForm_parametry::OUTPUT()
 						//if (RDunitD == MM) scGPNumericEdit_RD->Value *= 1000.0;
 						if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_RD->Decimal=3;
 				}
+
+        if(input_state!= Rz)
+        {
+        		//Rz
+				scGPNumericEdit_rozestup->Value = pm.Rz;
+				if (Rzunit == MM)scGPNumericEdit_rozestup->Value *= 1000.0;
+				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_rozestup->Decimal=3;
+		    }
+
+        if(input_state!= Rx) {
+        		//Rx
+				scGPNumericEdit_rx->Value = pm.Rx;
+
+        }
 		}
 		/////DÉLKA OBJEKTU
 		if (input_state != DD)
@@ -3415,91 +3431,120 @@ void TForm_parametry::Check_rozmezi_RD()
 //-------------------------------------------------------------------------------------------------------------------------------
  void TForm_parametry::Nacti_rx()
  {
-		double roztec=0;
-		double rx=0;
-		double mezera=0;
-		double rz=0;
-		double rotace=scComboBox_rotace->ItemIndex;
-
-		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
-		else  mezera=scGPNumericEdit_mezera->Value;
-				 //vždy pøedám do metody v metrech
-
-		Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-		if (P != NULL) roztec=P->roztec;  else  roztec=0;
-
-		if (P != NULL)
-		{
-			scGPNumericEdit_rx->ReadOnly=false;
-			rx=Form1->m.Rx(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,mezera,roztec);
-		}
-		else
-		{
-			scGPNumericEdit_rx->ReadOnly=true;
-			scGPNumericEdit_rx->Enabled=false;
-		}
-
-  	Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
-		if (obj!=NULL)
-		{
-			scGPNumericEdit_rx->Value=obj->pohon->Rx;
-			scGPNumericEdit_rozestup->Value=obj->pohon->Rz;
-			Memo1->Lines->Add(scGPNumericEdit_rx->Value);
-			Memo1->Lines->Add(scGPNumericEdit_rozestup->Value);
-		}    //pohon není používán
-		else
-		{
-			scGPNumericEdit_rx->Value =rx;//M 5. kvìtna 2018 pøesunuto sem - dìlalo níže problémy pokud bylo za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
-			rz = Form1->m.Rz(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,mezera);
-			if(!input_state_Rz)   {  // Rz v tomto pøípadì nebudu plnit daty
-			if(DMunit == MM) scGPNumericEdit_rozestup->Value=rz*1000;
-			else        		 scGPNumericEdit_rozestup->Value=rz;
-			}
-			//scGPNumericEdit1_rx->Value =rx; M 5. kvìtna 2018 pøesunuto výše - dìlalo problémy za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
-		}
-		scGPNumericEdit_rx->Hint="tj. každý " +AnsiString(rx)+ " palec zachytává.";
+//		double roztec=0;
+//		double rx=0;
+//		double mezera=0;
+//		double rz=0;
+//		double rotace=scComboBox_rotace->ItemIndex;
+//
+//		if (DMunit == MM) mezera=scGPNumericEdit_mezera->Value/1000.0;
+//		else  mezera=scGPNumericEdit_mezera->Value;
+//				 //vždy pøedám do metody v metrech
+//
+//		Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+//		if (P != NULL) roztec=P->roztec;  else  roztec=0;
+//
+//		if (P != NULL)
+//		{
+//			scGPNumericEdit_rx->ReadOnly=false;
+//			rx=Form1->m.Rx(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,mezera,roztec);
+//		}
+//		else
+//		{
+//			scGPNumericEdit_rx->ReadOnly=true;
+//			scGPNumericEdit_rx->Enabled=false;
+//		}
+//
+//  	Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
+//		if (obj!=NULL)
+//		{
+//			scGPNumericEdit_rx->Value=obj->pohon->Rx;
+//			scGPNumericEdit_rozestup->Value=obj->pohon->Rz;
+//			Memo1->Lines->Add(scGPNumericEdit_rx->Value);
+//			Memo1->Lines->Add(scGPNumericEdit_rozestup->Value);
+//		}    //pohon není používán
+//		else
+//		{
+//			scGPNumericEdit_rx->Value =rx;//M 5. kvìtna 2018 pøesunuto sem - dìlalo níže problémy pokud bylo za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
+//			rz = Form1->m.Rz(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,mezera);
+//			if(!input_state_Rz)   {  // Rz v tomto pøípadì nebudu plnit daty
+//			if(DMunit == MM) scGPNumericEdit_rozestup->Value=rz*1000;
+//			else        		 scGPNumericEdit_rozestup->Value=rz;
+//			}
+//			//scGPNumericEdit1_rx->Value =rx; M 5. kvìtna 2018 pøesunuto výše - dìlalo problémy za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
+//		}
+//		scGPNumericEdit_rx->Hint="tj. každý " +AnsiString(rx)+ " palec zachytává.";
  }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_rxChange(TObject *Sender)
 {
-	double  mezer=0;
-	if (DMunit == MM) // pokud je v milimetrech, tak pøepne na metry
-	{
-						mezer=scGPNumericEdit_mezera->Value/1000;
-	} else	  mezer=scGPNumericEdit_mezera->Value;
+//	double  mezer=0;
+//	if (DMunit == MM) // pokud je v milimetrech, tak pøepne na metry
+//	{
+//						mezer=scGPNumericEdit_mezera->Value/1000;
+//	} else	  mezer=scGPNumericEdit_mezera->Value;
+//
+//	double roztec=0;
+//	double delka=0;
+//	double rotace=0;
+//	double rx=0;
+//	Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
+//	if (P != NULL) roztec=P->roztec;  else  roztec=0;    // pokud existuje pohon, vrátím si jeho rozteè
+//
+//	if(scComboBox_rotace->ItemIndex==0)rotace=0;
+//	else rotace=1;
+//
+//	if (P != NULL)rx=Form1->m.Rx(pm.dJ,pm.sJ,rotace,mezer,roztec);  // vypoèítám si Rx
+//	else rx=0;
+//			//Memo1->Lines->Add(rx);
+//	double mezera=Form1->m.mezera(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,scGPNumericEdit_rx->Value,roztec);
+//	double rz= Form1->m.Rz(Form1->d.v.PP.delka_jig,Form1->d.v.PP.delka_jig,rotace,mezera);
+//
+//	if(input_state == NOTHING || scButton_zamek_RD->Enabled==false)
+//	{
+//	 	//spocitani mezery pri prvnim zobrazeni formu
+//	 	if(scButton_zamek_RD->Enabled==true
+//	 	&& RD_zamek==UNLOCKED
+//	 	&& input_state==NOTHING
+//	 	&& scComboBox_rezim->ItemIndex==1)
+//
+//		if(input_clicked_edit==Rx_klik) scGPNumericEdit_mezera->Value=mezera; // pøi zmìnì Rx vrátím dopoèítanou mezeru
+//
+//		scGPNumericEdit_rozestup->Value=rz;
+//		if(scButton_zamek_RD->Enabled)	input_M();
+//	}
 
-	double roztec=0;
-	double delka=0;
-	double rotace=0;
-	double rx=0;
-	Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
-	if (P != NULL) roztec=P->roztec;  else  roztec=0;    // pokud existuje pohon, vrátím si jeho rozteè
+   if (input_state == NOTHING && input_clicked_edit == Rx_klik)
+	 {
+   input_state = Rz;
+  // pm.input_Rx();
+   OUTPUT();
+	 }
+   input_state=NOTHING;
 
-	if(scComboBox_rotace->ItemIndex==0)rotace=0;
-	else rotace=1;
-
-	if (P != NULL)rx=Form1->m.Rx(pm.dJ,pm.sJ,rotace,mezer,roztec);  // vypoèítám si Rx
-	else rx=0;
-			//Memo1->Lines->Add(rx);
-	double mezera=Form1->m.mezera(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,scGPNumericEdit_rx->Value,roztec);
-	double rz= Form1->m.Rz(Form1->d.v.PP.delka_jig,Form1->d.v.PP.delka_jig,rotace,mezera);
-
-	if(input_state == NOTHING || scButton_zamek_RD->Enabled==false)
-	{
-	 	//spocitani mezery pri prvnim zobrazeni formu
-	 	if(scButton_zamek_RD->Enabled==true
-	 	&& RD_zamek==UNLOCKED
-	 	&& input_state==NOTHING
-	 	&& scComboBox_rezim->ItemIndex==1)
-
-		if(input_clicked_edit==Rx_klik) scGPNumericEdit_mezera->Value=mezera; // pøi zmìnì Rx vrátím dopoèítanou mezeru
-
-		scGPNumericEdit_rozestup->Value=rz;
-		if(scButton_zamek_RD->Enabled)	input_M();
-	}
 }
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
+void __fastcall TForm_parametry::scGPNumericEdit_rozestupChange(TObject *Sender)
+{
+
+	if (input_state == NOTHING && input_clicked_edit == Rz_klik)
+  {
+
+  	input_state = Rz;
+    INPUT();
+   // pm.input_Rz(); // pøepoèet hodnot vyplývajících ze zmìny Rz
+    OUTPUT();
+
+//    double Rz=0;  //zanechana cast pro ilustraci - dole se vola m.RD
+//    if (DMunit == M) Rz=scGPNumericEdit_rozestup->Value;
+//    else Rz=scGPNumericEdit_rozestup->Value/1000.0;
+//
+//    if(RDunitT == MIN) scGPNumericEdit_RD->Value = Form1->m.RD(Rz)*60;
+//    else 	scGPNumericEdit_RD->Value = Form1->m.RD(Rz);
+		}
+     input_state=NOTHING;
+
+}
 //---------------------------------------------------------------------------
 //validace všech hodnot po pøepoètu z PO_math
 void TForm_parametry::VALIDACE(Tinput_state input_state)
@@ -4312,21 +4357,6 @@ bool TForm_parametry::JKM()
 	 else return false;
 }
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry::scGPNumericEdit_rozestupChange(TObject *Sender)
-{
-	 input_state_Rz=true;
-
-	 if(input_clicked_edit==Rz_klik)
-	 {
-			double Rz=0;
-			if (DMunit == M) Rz=scGPNumericEdit_rozestup->Value;
-			else Rz=scGPNumericEdit_rozestup->Value/1000.0;
-
-			if(RDunitT == MIN) scGPNumericEdit_RD->Value = Form1->m.RD(Rz)*60;
-			else 	scGPNumericEdit_RD->Value = Form1->m.RD(Rz);
-	 }
-}
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_rozestupClick(TObject *Sender)
 {

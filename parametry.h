@@ -149,7 +149,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,MEZERA_JIG,MEZERA_PODVOZEK,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,P,mezera,mezera_jig,mezera_podvozek,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,P,mezera,mezera_jig,mezera_podvozek,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik,Rz_klik}; //zjisteni na ktery edit bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
 
@@ -203,7 +203,7 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_parametry(TComponent* Owner);
 	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
-	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;//pøepínaè jednotek vzdálenost
+	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm Rzunit;//pøepínaè jednotek vzdálenost
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
 
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
