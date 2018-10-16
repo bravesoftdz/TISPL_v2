@@ -42,6 +42,8 @@ class TPO_math
 		void input_M(); //pøepoèet souvisejících hodnot vyplývajících ze zmìny kritické vozíkové mezery
 		void input_MJ();//pøepoèet souvisejících hodnot vyplývajících ze zmìny mezery jigu
 		void input_MP();//pøepoèet souvisejících hodnot vyplývajících ze zmìny mezery podvozku
+		void input_Rz();//pøepoèet souvisejících hodnot vyplývajících ze zmìny rozestupu v metrech
+		void input_Rx();//pøepoèet souvisejících hodnot vyplývajících ze zmìny rozestupu v poètu palcù
 		double Pozice();//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double K2P(double K);//vrátí poèet pozic z kapacity, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 		double P2K(double P);//vrátí kapacitu z poètu pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P

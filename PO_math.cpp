@@ -145,6 +145,22 @@ void TPO_math::input_MP()
 	input_M();
 }
 //---------------------------------------------------------------------------
+//pøepoèet souvisejících hodnot vyplývajících ze zmìny rozestupu v metrech
+void TPO_math::input_Rz()
+{
+	RD=Rz/TT;
+	Rx=Rz/R;
+	input_RD(false);//vypoèítá CT,DD,K,P dle nastavených zámkù
+	M=Mezera(false);//vypoèítá mezery
+}
+//---------------------------------------------------------------------------
+//pøepoèet souvisejících hodnot vyplývajících ze zmìny rozestupu v poètu palcù
+void TPO_math::input_Rx()
+{
+	Rz=Rx*R;
+  input_Rz();//sice znovu pøepoèítá Rx, ale nemìlo by vadit
+}
+//---------------------------------------------------------------------------
 //vrátí poèet pozic, øeší i situaci, kdy je M (mezera) nulová, tj. K==P
 double TPO_math::Pozice()
 {
