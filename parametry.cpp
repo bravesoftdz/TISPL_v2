@@ -1871,8 +1871,8 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
      scGPButton_OK->Enabled=true;
 		 	if (DEBUG) // pouze v DEBUGU
 		 	{
-//		 		Memo1->Visible = true;
-//		 		Memo1->Lines->Clear();
+	 		Memo1->Visible = true;
+		 		Memo1->Lines->Clear();
 //		 		//	Memo1->Lines->Add(pm.T);
 //		 		Memo1->Top = 0;
 //				Memo1->Left = 0;
@@ -2434,7 +2434,7 @@ void TForm_parametry::OUTPUT()
 		// zpùsobuje to totiž pøepisování hodnot pøi zadávání hodnoty do editboxu
 		// takto jsou ošetøeny všechny vstupy
 		//!!!!Rz a Rx jsou nacitany pri volani metody Nacti_rx a nejsou soucasti OUTPUT resp. v PO_math jsou pøipraveny, ale nevyužity a neotestovány!!!
-
+      Memo1->Lines->Add(input_state);
 		//TECHNOLOGICKÝ ÈAS
 		if (input_state != CT)
 		{
@@ -2465,7 +2465,8 @@ void TForm_parametry::OUTPUT()
 				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_rozestup->Decimal=3;
 		    }
 
-        if(input_state!= Rx) {
+        if(input_state!= Rx)
+        {
         		//Rx
 				scGPNumericEdit_rx->Value = pm.Rx;
 
@@ -2503,7 +2504,7 @@ void TForm_parametry::OUTPUT()
 				}
 				//mezera mezi jigy
 				if(input_state != mezera_jig)
-				{
+				{   //ShowMessage("ted_M_jig");
 					scGPNumericEdit_mezera_JIG->Value = pm.MJ;
 					if (DMunit == MM)scGPNumericEdit_mezera_JIG->Value *= 1000.0;
 					if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_mezera_JIG->Decimal=3;
@@ -3516,11 +3517,13 @@ void __fastcall TForm_parametry::scGPNumericEdit_rxChange(TObject *Sender)
 
    if (input_state == NOTHING && input_clicked_edit == Rx_klik)
 	 {
-   input_state = Rz;
-  // pm.input_Rx();
+   input_state = Rx;
+   INPUT();
+   pm.input_Rx();
    OUTPUT();
-	 }
    input_state=NOTHING;
+	 }
+
 
 }
 //---------------------------------------------------------------------------
@@ -3532,17 +3535,11 @@ void __fastcall TForm_parametry::scGPNumericEdit_rozestupChange(TObject *Sender)
 
   	input_state = Rz;
     INPUT();
-   // pm.input_Rz(); // pøepoèet hodnot vyplývajících ze zmìny Rz
+    pm.input_Rz(); // pøepoèet hodnot vyplývajících ze zmìny Rz
     OUTPUT();
-
-//    double Rz=0;  //zanechana cast pro ilustraci - dole se vola m.RD
-//    if (DMunit == M) Rz=scGPNumericEdit_rozestup->Value;
-//    else Rz=scGPNumericEdit_rozestup->Value/1000.0;
-//
-//    if(RDunitT == MIN) scGPNumericEdit_RD->Value = Form1->m.RD(Rz)*60;
-//    else 	scGPNumericEdit_RD->Value = Form1->m.RD(Rz);
+    input_state=NOTHING;
 		}
-     input_state=NOTHING;
+
 
 }
 //---------------------------------------------------------------------------
@@ -4421,4 +4418,5 @@ void __fastcall TForm_parametry::scGPGlyphButton_odchylkaClick(TObject *Sender)
     //if F->pom->dalsi == NULL - jedná se když jde o poslední objekt tak potom pohon získat F->d.v.OBJEKTY->dalsi->pohon
 }
 //---------------------------------------------------------------------------
+
 

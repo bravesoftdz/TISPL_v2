@@ -2996,7 +2996,7 @@ void TForm1::NPin()
 	//R-záležitosti
 	if(pom->pohon!=NULL)
 	{
-		Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;//toto by se nemuselo předávat
+		Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;
 		Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz*(1+999*Munit);
 	}
 	//ostatni
@@ -3043,7 +3043,7 @@ void TForm1::NP()
 		//R-záležitosti
 		if(pom->pohon!=NULL)
 		{
-			Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;//toto by se nemuselo předávat
+			Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;
 			Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz;
 		}
 		//ostatni
