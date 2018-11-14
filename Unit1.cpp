@@ -1132,22 +1132,6 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
-	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
-	{
-		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
-		if(FileExists("conf") && FileExists("conf2") && FileExists("conf3"))
-		{
-			Graphics::TBitmap *bmp=new Graphics::TBitmap;
-			if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")bmp->LoadFromFile("conf");
-			if(FileName_short(FileName)=="VÝHYBKY_TESTm.tispl")bmp->LoadFromFile("conf2");
-			if(FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")bmp->LoadFromFile("conf3");
-			bmp->Transparent=true;
-			bmp->TransparentColor=clWhite;
-			Canvas->Draw(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,bmp);
-			delete(bmp);
-		}
-	}
-
 	if(!nahled_objektu)
 	{
 	//vykreslení gridu
@@ -1254,6 +1238,21 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
+	}
+  	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
+	{
+		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+		if(FileExists("conf") && FileExists("conf2") && FileExists("conf3"))
+		{
+			Graphics::TBitmap *bmp=new Graphics::TBitmap;
+			if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")bmp->LoadFromFile("conf");
+			if(FileName_short(FileName)=="VÝHYBKY_TESTm.tispl")bmp->LoadFromFile("conf2");
+			if(FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")bmp->LoadFromFile("conf3");
+			bmp->Transparent=true;
+			bmp->TransparentColor=clWhite;
+			Canvas->Draw(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,bmp);
+			delete(bmp);
+		}
 	}
 }
 //---------------------------------------------------------------------------
