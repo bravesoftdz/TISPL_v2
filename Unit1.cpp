@@ -2996,9 +2996,15 @@ void TForm1::NPin()
 	//R-záležitosti
 	if(pom->pohon!=NULL)
 	{
+
 		Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;
 		Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz*(1+999*Munit);
 	}
+  else
+  {
+   	Form_parametry->scGPNumericEdit_rx->Value=0;
+		Form_parametry->scGPNumericEdit_rozestup->Value=0;
+  }
 	//ostatni
 	Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 	Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
@@ -3046,7 +3052,12 @@ void TForm1::NP()
 			Form_parametry->scGPNumericEdit_rx->Value=pom->pohon->Rx;
 			Form_parametry->scGPNumericEdit_rozestup->Value=pom->pohon->Rz;
 		}
-		//ostatni
+    else
+    {
+      Form_parametry->scGPNumericEdit_rx->Value=0;
+      Form_parametry->scGPNumericEdit_rozestup->Value=0;
+    }
+        //ostatni
 		Form_parametry->scComboBox_cekani_palec->ItemIndex=pom->cekat_na_palce;
 		Form_parametry->scGPNumericEdit_kapacita->Value=pom->kapacita;
 		Form_parametry->scGPNumericEdit_pozice->Value=pom->pozice;
