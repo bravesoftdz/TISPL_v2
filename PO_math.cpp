@@ -310,17 +310,17 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 
 	////nesprávné hodnoty
 	AnsiString error_text="";
-	if(CT<=0 && rezim!=100)error_text+="CT ("+AnsiString(CT)+") ";//neøeší se pro nepoužité pohony
-	if(RD<=0 && rezim!=100)error_text+="RP ("+AnsiString(RD)+") ";//neøeší se pro nepoužité pohony
-	if(DD<=0 && rezim!=100)error_text+="DD ("+AnsiString(DD)+") ";//neøeší se pro nepoužité pohony
-	if(K<=0 && rezim!=100) error_text+="K ("+AnsiString(K)+") ";//neøeší se pro nepoužité pohony
-	if(P<=0 && rezim!=100) error_text+="P ("+AnsiString(P)+") ";//neøeší se pro nepoužité pohony
-	if(M<0 && rezim!=100)  error_text+="kritická mezera ("+AnsiString(M)+") ";//neøeší se pro nepoužité pohony
-	if(MJ<0 && rezim!=100) error_text+="mezera jig ("+AnsiString(MJ)+") ";//neøeší se pro nepoužité pohony
-	if(MP<0 && rezim!=100) error_text+="mezera podvozek ("+AnsiString(MP)+") ";//neøeší se pro nepoužité pohony
-	if(R<=0 && objekty[Row].pohon!=NULL) error_text+="R ("+AnsiString(R)+") "; //neøeší se pro objekty bez pohonù
-	if(Rz<=0 && objekty[Row].pohon!=NULL)error_text+="Rz ("+AnsiString(Rz)+") ";//neøeší se pro objekty bez pohonù
-	if(Rx<=0 && objekty[Row].pohon!=NULL)error_text+="Rx ("+AnsiString(Rx)+") ";//neøeší se pro objekty bez pohonù
+	if(F->m.null(CT)<=0 && rezim!=100)error_text+="CT ("+AnsiString(CT)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(RD)<=0 && rezim!=100)error_text+="RP ("+AnsiString(RD)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(DD)<=0 && rezim!=100)error_text+="DD ("+AnsiString(DD)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(K)<=0 && rezim!=100) error_text+="K ("+AnsiString(K)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(P)<=0 && rezim!=100) error_text+="P ("+AnsiString(P)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(M)<0 && rezim!=100)  error_text+="kritická mezera ("+AnsiString(M)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(MJ)<0 && rezim!=100) error_text+="mezera jig ("+AnsiString(MJ)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(MP)<0 && rezim!=100) error_text+="mezera podvozek ("+AnsiString(MP)+") ";//neøeší se pro nepoužité pohony
+	if(F->m.null(R)<=0 && objekty[Row].pohon!=NULL) error_text+="R ("+AnsiString(R)+") "; //neøeší se pro objekty bez pohonù
+	if(F->m.null(Rz)<=0 && objekty[Row].pohon!=NULL)error_text+="Rz ("+AnsiString(Rz)+") ";//neøeší se pro objekty bez pohonù
+	if(F->m.null(Rx)<=0 && objekty[Row].pohon!=NULL)error_text+="Rx ("+AnsiString(Rx)+") ";//neøeší se pro objekty bez pohonù
 	if(error_text!="" && T!="")T+="<br>";//pokud existuje již pøedchozí chybový záznam (o rozmezí èi Rx) a bude následovat chybový o pøejezdu je nutné odøádkovat
 	if(error_text!="")T+="Neplatná hodnota: "+error_text;//pokud existuje již pøedchozí chybový záznam dodá ještì pøed nìj popisek
 

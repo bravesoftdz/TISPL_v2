@@ -534,7 +534,13 @@ AnsiString TMyString::addDecimal(double number,unsigned short precision)
 	return RET;
 }
 //---------------------------------------------------------------------------
-
+//ověří, že se jedná o číslo
+bool TMyString::IsNumber(UnicodeString Text)
+{
+	if(UnicodeString(MyToDouble(Text))==Text)return true;//po převodu do čísla se jedná stále o stejnou hodnotu
+	else return false;
+}
+//---------------------------------------------------------------------------
 
 
 

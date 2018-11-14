@@ -43,6 +43,7 @@ public:
 	double get_decimal(double number);//vrátí reálnou èást èísla
 	unsigned short get_count_decimal(double number);//vrátí poèet desetinnıch míst
 	AnsiString addDecimal(double number,unsigned short precision);//pøídá nuly na urovní decimální èásti do poètu dle precision napø. 3,23 -> 3,230, 5 -> 5,000
+	bool IsNumber(UnicodeString Text);//ovìøí, e se jedná o èíslo
 	//TPointD HexGes2Dec(UnicodeString Loc);//pøevede èíslo z hexagesimálního tvaru na dekadickı
 protected:
 };
