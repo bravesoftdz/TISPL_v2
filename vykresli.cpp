@@ -2364,6 +2364,150 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,short stav,double rotace)
+{
+	double Z=F->Zoom;
+
+	//vstupní parametry
+	double rotace_ramene=0;
+	double delka_ramena=120;
+
+	//konstanty
+	short sirka_zakladny=80;
+	short delka_zakladny=100;
+	short zaobleni=30;
+	TColor barva=clBlack;
+	short tloustka_linie=2;
+	short rameno3Defekt=0;//0 ano, 1 ne!
+
+	//přidružené elementy
+	if(typ==1)vykresli_stopku(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-8*2*Z,"","",stav,rotace);//robot se stopkou
+	if(typ==2)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-8*Z,"","",0,0,rotace);//s pasivní otočí
+	if(typ==3)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-8*Z,"","",1,1,rotace);//s aktivní otočí (tj. s otočí a se stopkou)
+
+	//nastavení pera
+	if(!stav)barva=m.clIntensive(barva,200);//pokud je aktivní nebo pasivní, musí být tady kvůli písmu
+	if(stav==10)//stav kurzor
+	{
+		canv->Pen->Mode=pmNotXor;
+		canv->Pen->Style=psDot;
+		canv->Pen->Color=barva;
+		canv->Pen->Width=1;
+		canv->Brush->Style=bsClear;
+	}
+	else
+	{
+		canv->Pen->Mode=pmCopy;
+		canv->Pen->Style=psSolid;
+		canv->Pen->Width=tloustka_linie*Z;
+		canv->Brush->Style=bsSolid;
+	}
+	canv->Pen->Color=barva;
+	canv->Brush->Color=clWhite;
+
+	//základna
+	TRect zakladna=TRect(X-delka_zakladny/2*Z,Y-sirka_zakladny/2*Z,X+delka_zakladny/2*Z,Y+sirka_zakladny/2*Z);
+	canv->RoundRect(zakladna,zaobleni*Z,zaobleni*Z);
+
+	//rameno
+	canv->Rectangle(X-15*Z,Y-sirka_zakladny/2*Z+rameno3Defekt*Z,X+15*Z,Y-sirka_zakladny/2*Z-delka_ramena/2*Z);//první část
+	canv->Rectangle(X-10*Z,Y-sirka_zakladny/2*Z-delka_ramena/2*Z+rameno3Defekt*Z,X+10*Z,Y-sirka_zakladny/2*Z-delka_ramena*Z);//druhá část
+  canv->Brush->Style=bsClear;
+	canv->Ellipse(X-8*Z,Y-sirka_zakladny/2*Z-delka_ramena*Z,X+8*Z,Y-sirka_zakladny/2*Z-delka_ramena*Z-8*2*Z);//tryska
+
+	//text
+	if(stav!=10)//v módu kurzor se název nezobrazuje
+	{
+		canv->Font->Color=barva;
+		canv->Font->Size=35*Z;
+		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+		AnsiString T=short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
+		//rotace_textu(canv,900);
+		drawRectText(canv,zakladna,T);
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short stav,double rotace)
+{
+	double Z=F->Zoom;
+
+	TColor barva=clRed;
+
+	//barva výplně
+	canv->Pen->Color=clWhite;//bílý framing okolo stopky
+	canv->Pen->Width=1*Z;
+	canv->Brush->Color=barva;
+
+	short size=45*Form1->Zoom;
+	short sklon=45;
+
+	//referenční bode ve špičce, špička je směrem dolu
+	POINT body[3]={{X+m.rotace(1,sklon,rotace).x*size/2,Y+m.rotace(1,sklon,rotace).y*size},{X,Y},{X+m.rotace(1,360-sklon,rotace).x/2*size,Y+m.rotace(1,360-sklon,rotace).y*size}};
+	canv->Polygon((TPoint*)body,2);
+
+//
+//	canv->Pen->Mode=pmCopy;
+//	canv->Pen->Width=1;
+//	canv->Pen->Style=psSolid;
+//	canv->Pen->Color=clWhite;
+//	canv->MoveTo(X+m.rotace(1,sklon,rotace).x*size/2,Y+m.rotace(1,sklon,rotace).y*size);
+//	canv->LineTo(X,Y);
+//	canv->LineTo(X+m.rotace(1,360-sklon,rotace).x*size/2,Y+m.rotace(1,360-sklon,rotace).y*size);
+//	canv->LineTo(X+m.rotace(1,sklon,rotace).x*size,Y+m.rotace(1,sklon,rotace).y*size);
+
+	//text
+	if(stav!=10)//v módu kurzor se název nezobrazuje
+	{
+		canv->Font->Color=barva;
+		canv->Font->Size=20*Z;
+		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+		canv->Brush->Color=clWhite;
+		canv->Brush->Style=bsClear;
+		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
+		rotace_textu(canv,rotace*10+900);
+		canv->TextOutW(X-canv->TextHeight(T)/2,Y-size+1.5*Z,T);
+		rotace_textu(canv,0);
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,short stav,double rotace)
+{
+	double Z=F->Zoom;
+	short size=24*Z;
+	short width=5*Z;
+
+	TColor barva=clBlack; if(typ==1)barva=clRed;
+
+	canv->Pen->Mode=pmCopy;
+	canv->Pen->Style=psSolid;
+	canv->Pen->Width=width;
+	canv->Pen->Color=barva;
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsClear;
+
+	canv->Ellipse(X-size,Y-size,X+size,Y+size);
+	canv->Pen->Color=clWhite;
+	canv->Brush->Style=bsSolid;
+	canv->Rectangle(X-size,Y-width,X-size+2*Z,Y);//přežíznutí, možná lépe řešit obloukem
+	canv->Rectangle(X+size-2*Z,Y,X+size,Y+width);//přežíznutí, možná lépe řešit obloukem
+	sipka(canv,X-size,Y+width,rotace-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+	sipka(canv,X+size,Y-width,rotace-180-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+
+	//pokud je otoč aktivní tj. se stopkou
+	if(typ==1)vykresli_stopku(canv,X,Y,"","",stav,rotace);
+
+	//text
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsClear;
+	canv->Font->Color=barva;
+	canv->Font->Size=20*Z;
+	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+	AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
+	rotace_textu(canv,rotace*10);
+	canv->TextOutW(X+size+width+width,Y-canv->TextHeight(T)/2,T);
+	rotace_textu(canv,0);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

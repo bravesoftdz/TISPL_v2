@@ -30,8 +30,25 @@ __published:	// IDE-managed Components
 	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall Button4Click(TObject *Sender);
 	void __fastcall Button5Click(TObject *Sender);
+	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 private:	// User declarations
-TmGrid *mGrid2;
+//TmGrid *mGrid2;
+
+struct TElement
+	{
+		TmGrid *mG;
+		struct TElement *predchozi;//ukazatel na pøedchozí objekt ve spojovém seznamu
+		struct TElement *dalsi;//ukazatel na další objekt ve spojovém seznamu
+	};
+	TElement *ELEMENTY;//spojový seznam vozíkù
+
+	bool AA;
+	long puvX,puvY;
+	long aktX,aktY;
 public:		// User declarations
 	__fastcall TForm2(TComponent* Owner);
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);
