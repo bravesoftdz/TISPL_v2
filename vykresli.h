@@ -67,16 +67,16 @@ class Cvykresli
 //	void priprav_palce();//p¯id· nov˝ palec do seznamu PALCE s umÌstÏnÌm p¯Ìmo na linku dle stanovenÈ rozteËe
 //	void umisti_palec(TCanvas *canv,Cvektory::TPalec *ukaz);//zajiöùuje aktu·lnÌ umÌstÏnÌ vozÌku na lince v˘Ëi animaci
 	void vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE);//zajiöùuje samotnÈ vykreslenÌ palce, parametr NEW rozliöuje nov˝ palec a palace star˝ jiû ke smaz·nÌ (to slouûÌ pro simulaci), poslednÌ parametr znaËÌ, zda palec oznaËit jako aktivnÌ
-	void vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0,short stav=1,double rotace=0);
-	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short stav=1,double rotace=0);
-	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0,short stav=1,double rotace=0);
+	void vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0,short stav=1,double rotace=0,bool kurzor=false);
+	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short stav=1,double rotace=0,bool kurzor=false);
+	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0,short stav=1,double rotace=0,bool kurzor=false);
 	void rotace_textu(TCanvas *canv, long rotace);//˙hel rotace je desetin·ch stupnÏ
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vr·tÌ HANDLE na nastavenÌ pera,//pop¯.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matouöek III str. 179 Ëi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
 	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);
 	void drawRectText(TCanvas *canv,TRect Rect, UnicodeString Text);
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslÌ editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslÌ editacni_okno
-	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, unsigned short int size=3,COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode=pmCopy);//zajistÌ vykreslenÌ öipky - orientace spojovacÌ linie
+	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, unsigned short int size=3,COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid);//zajistÌ vykreslenÌ öipky - orientace spojovacÌ linie
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);

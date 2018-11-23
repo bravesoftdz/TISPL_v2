@@ -394,8 +394,16 @@ void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 	if(aktX==-100 && aktY==-100)
 	{
 		Cvykresli d;
-		d.vykresli_robota(Canvas,puvX,puvY,"","",0,10);
-		d.vykresli_robota(Canvas,X,Y,"","",0,10);
+		//d.vykresli_robota(Canvas,puvX,puvY,"","",3,1,0,true);
+		//d.vykresli_robota(Canvas,X,Y,"","",3,1,0,true);
+
+		//d.vykresli_stopku(Canvas,puvX,puvY,"","",0,0,true);
+		//d.vykresli_stopku(Canvas,X,Y,"","",0,0,true);
+
+		d.vykresli_otoc(Canvas,puvX,puvY,"","",1,1,0,true);
+		d.vykresli_otoc(Canvas,X,Y,"","",1,1,0,true);
+
+
 		puvX=X,puvY=Y;
 	}
 }
