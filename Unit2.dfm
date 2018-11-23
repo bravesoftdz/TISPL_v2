@@ -11,7 +11,11 @@ object Form2: TForm2
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  WindowState = wsMaximized
   OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnMouseMove = FormMouseMove
+  OnMouseUp = FormMouseUp
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -35,8 +39,8 @@ object Form2: TForm2
     OnClick = Button2Click
   end
   object scGPButton_zamek_roztec: TscGPButton
-    Left = 245
-    Top = 106
+    Left = 86
+    Top = 0
     Width = 30
     Height = 29
     Margins.Left = 0
@@ -66,11 +70,21 @@ object Form2: TForm2
     Options.PressedColor = clWhite
     Options.FocusedColor = clWhite
     Options.DisabledColor = clWhite
+    Options.NormalColor2 = clNone
+    Options.HotColor2 = clNone
+    Options.PressedColor2 = clNone
+    Options.FocusedColor2 = clNone
+    Options.DisabledColor2 = clNone
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 255
+    Options.NormalColor2Alpha = 255
+    Options.HotColor2Alpha = 255
+    Options.PressedColor2Alpha = 255
+    Options.FocusedColor2Alpha = 255
+    Options.DisabledColor2Alpha = 255
     Options.FrameNormalColor = clWhite
     Options.FrameHotColor = clWhite
     Options.FramePressedColor = clWhite
@@ -89,9 +103,14 @@ object Form2: TForm2
     Options.FontDisabledColor = clAqua
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeFillGradientColorOffset = 25
     Options.ShapeCornerRadius = 10
     Options.ShapeStyle = scgpRect
     Options.ArrowSize = 9
+    Options.ArrowAreaSize = 0
+    Options.ArrowType = scgpatDefault
+    Options.ArrowThickness = 2
+    Options.ArrowThicknessScaled = False
     Options.StyleColors = True
     HotImageIndex = -1
     FocusedImageIndex = -1
@@ -101,6 +120,7 @@ object Form2: TForm2
     ScaleMarginAndSpacing = False
     WidthWithCaption = 0
     WidthWithoutCaption = 0
+    SplitButton = False
     RepeatClick = False
     RepeatClickInterval = 100
     GlowEffect.Enabled = False

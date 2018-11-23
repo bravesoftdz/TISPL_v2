@@ -3,6 +3,7 @@
 #pragma hdrstop
 
 #include "Unit2.h"
+#include "vykresli.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "scControls"
@@ -10,20 +11,75 @@
 #pragma link "scGPExtControls"
 #pragma resource "*.dfm"
 TForm2 *Form2;
-
+#include "antialiasing.h"
+#include "unit1.h"
 //---------------------------------------------------------------------------
 __fastcall TForm2::TForm2(TComponent* Owner)
 	: TForm(Owner)
 {
+	AA=true;
+	puvX=-100,puvY=-100;
+	aktX=-100,aktY=-100;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormShow(TObject *Sender)
 {
-	mGrid=new TmGrid(this);//vždy nutno jako první
-	mGrid->Tag=4;//ID tabulky
-	mGrid->Left=0;mGrid->Top=0;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
-	mGrid->AntiAliasing_text=true;
-	mGrid->Create(3,3);//vhodné jako tøetí
+
+
+
+		TElement *E=new TElement;
+
+		E->mG=new TmGrid(this);//vždy nutno jako první
+		E->mG->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+		E->mG->Left=50;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
+		E->mG->AntiAliasing_text=true;
+		E->mG->Border.Width=2;
+
+		unsigned long ColCount=3;//pevný poèet slopcù
+		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
+
+		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+		E->mG->Cells[1][1].Type=E->mG->EDIT;
+
+		E->predchozi=NULL;
+		E->dalsi=NULL;
+
+		ELEMENTY=E;
+
+		TElement *E1=new TElement;
+
+		E1->mG=new TmGrid(this);//vždy nutno jako první
+		E1->mG->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+		E1->mG->Left=200;E1->mG->Top=200;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
+		E1->mG->AntiAliasing_text=true;
+		E1->mG->Border.Width=2;
+
+		ColCount=2;//pevný poèet slopcù
+		RowCount=5;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
+
+		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+		E1->mG->Cells[0][1].Type=E1->mG->EDIT;
+
+		E1->predchozi=NULL;
+		E1->dalsi=NULL;
+
+		ELEMENTY->dalsi=E1;
+
+
+
+//	mGrid=new TmGrid(this);//vždy nutno jako první
+//	mGrid->Tag=4;//ID tabulky
+//	mGrid->Left=0;mGrid->Top=0;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
+//	mGrid->AntiAliasing_text=true;
+
+	//mGrid->DefaultCell.isEmpty->Color=clBlue; //musí být pøed create, jinak nutno nastavovat konkrétní buòku
+	//mGrid->DefaultCell.isZero->Color=clLime;  //musí být pøed create, jinak nutno nastavovat konkrétní buòku
+	//mGrid->DefaultCell.isNegativeNumber->Color=clRed; //musí být pøed create, jinak nutno nastavovat konkrétní buòku
+
+//	mGrid->Create(3,3);//vhodné jako tøetí
+
+
+
 
 	//mGrid->Border.Width=1;
 
@@ -54,10 +110,13 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 //	mGrid->Cells[7][3].Align=mGrid->CENTER;
 //	mGrid->Cells[7][3].Valign=mGrid->BOTTOM;
 //	mGrid->Cells[7][3].TopMargin=0;
-																						mGrid->Cells[0][1].Text="abcdef";
-	 mGrid->Cells[1][0].Type=mGrid->EDIT; mGrid->Cells[1][0].Text="0";
-	 mGrid->Cells[1][1].Type=mGrid->EDIT; mGrid->Cells[1][1].Text="1";
-	 mGrid->Cells[1][2].Type=mGrid->EDIT; mGrid->Cells[1][2].Text="2";
+//																						mGrid->Cells[0][1].Text="abcdef";
+//	 mGrid->Cells[1][0].Type=mGrid->DRAW; mGrid->Cells[1][0].Text="0";
+//	 mGrid->Cells[1][1].Type=mGrid->DRAW; mGrid->Cells[1][1].Text="-1";
+//	 mGrid->Cells[1][2].Type=mGrid->DRAW; mGrid->Cells[1][2].Text="";
+//	 mGrid->Cells[1][2].isNegativeNumber->Color=clRed;
+//	 mGrid->Cells[1][2].isEmpty->Color=clBlue;
+//	 mGrid->Cells[1][2].isZero->Color=clYellow;
 //	 mGrid->Cells[1][3].Type=mGrid->EDIT; mGrid->Cells[1][3].Text="3";
 //	 mGrid->Cells[1][4].Type=mGrid->EDIT; mGrid->Cells[1][4].Text="4";
 //	 mGrid->Cells[1][5].Type=mGrid->EDIT; mGrid->Cells[1][5].Text="5";
@@ -133,29 +192,67 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormPaint(TObject *Sender)
 {
-	mGrid->Show();
-	//mGrid2->Show();
+	//ELEMENTY->mG->Show();
+	//ELEMENTY->dalsi->mG->Show();
 
+	//mGrid2->Show();
 	//nastaví formuláø dle velikosti tabulky, musí být až po Show
 	//Form2->Width=mGrid->Width+50+50;
 	//Form2->Height=mGrid->Height+50+50;
+
+
+//	Canvas->Pen->Width=1;
+//	Canvas->Pen->Style=psDashDotDot;
+//	Canvas->MoveTo(200,200);
+//	Canvas->LineTo(400,400);
+
+	Cvykresli d;
+	if(AA)
+	{
+		Cantialising a;
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+		d.vykresli_robota(bmp_in->Canvas,aktX*F->Zoom,aktY*F->Zoom,"Robot 1","R1",0,1);
+		d.vykresli_robota(bmp_in->Canvas,(aktX+100+10)*F->Zoom,aktY*F->Zoom,"Robot 2","R2",1,1);
+		d.vykresli_robota(bmp_in->Canvas,(aktX+200+20)*F->Zoom,aktY*F->Zoom,"Robot 3","R3",2,1);
+		d.vykresli_robota(bmp_in->Canvas,(aktX+300+30)*F->Zoom,aktY*F->Zoom,"Robot 4","R4",3,1);
+		d.vykresli_robota(bmp_in->Canvas,(aktX+400+40)*F->Zoom,aktY*F->Zoom,"Robot 5","R5",0,0);
+		d.vykresli_stopku(bmp_in->Canvas,(aktX-600)*F->Zoom,aktY*F->Zoom,"Stop 1","S1",1,0);
+		d.vykresli_otoc(bmp_in->Canvas,(aktX-300)*F->Zoom,aktY*F->Zoom,"Otoè pasiv","O1",0,0);
+		d.vykresli_otoc(bmp_in->Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
+		F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
+		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
+		Canvas->Draw(0,0,bmp_out);
+		delete (bmp_out);//velice nutné
+		delete (bmp_in);//velice nutné
+	}
+	else
+	{
+		d.vykresli_robota(Canvas,aktX,aktY,"Robot 1","R1",0,1);
+		d.vykresli_stopku(Canvas,(aktX-600)*F->Zoom,aktY*F->Zoom,"Stop 1","S1",1,0);
+		d.vykresli_otoc(Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button1Click(TObject *Sender)
 {
-	//plnìní comba
-	TscGPComboBox *C=mGrid->getCombo(6,5);
-	//C->Options->další možnosti
-	//C->Items->Clear();//smazání pøípadného pùvodního obsahu  - nepouživat pokud je prázdný
-	TscGPListBoxItem *t=C->Items->Add();t->Caption="test1";
-	t=NULL;t=C->Items->Add();t->Caption="test2";
-	C->ItemIndex=1;
-	t=NULL;delete t;
-	C=NULL;delete C;//nejsem si jistý zda používat nebo ne, pokud bude padat, tak vyzkoušet tady zakomentovat
-	//aktualizace comba èi obecnì komponent nepotøebuje refresh
+//	//plnìní comba
+//	TscGPComboBox *C=mGrid->getCombo(6,5);
+//	//C->Options->další možnosti
+//	//C->Items->Clear();//smazání pøípadného pùvodního obsahu  - nepouživat pokud je prázdný
+//	TscGPListBoxItem *t=C->Items->Add();t->Caption="test1";
+//	t=NULL;t=C->Items->Add();t->Caption="test2";
+//	C->ItemIndex=1;
+//	t=NULL;delete t;
+//	C=NULL;delete C;//nejsem si jistý zda používat nebo ne, pokud bude padat, tak vyzkoušet tady zakomentovat
+//	//aktualizace comba èi obecnì komponent nepotøebuje refresh
+//
+//	mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
+//	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 
-	mGrid->AntiAliasing_text=!mGrid->AntiAliasing_text;
-	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
+		AA=!AA;
+		Invalidate();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button2Click(TObject *Sender)
@@ -292,7 +389,37 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 	//mGrid->DeleteRow(mGrid->RowCount-1);//s problikem zpùsobuje show() v DeleteRow
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
+{
+	if(aktX==-100 && aktY==-100)
+	{
+		Cvykresli d;
+		//d.vykresli_robota(Canvas,puvX,puvY,"","",3,1,0,true);
+		//d.vykresli_robota(Canvas,X,Y,"","",3,1,0,true);
+
+		//d.vykresli_stopku(Canvas,puvX,puvY,"","",0,0,true);
+		//d.vykresli_stopku(Canvas,X,Y,"","",0,0,true);
+
+		d.vykresli_otoc(Canvas,puvX,puvY,"","",1,1,0,true);
+		d.vykresli_otoc(Canvas,X,Y,"","",1,1,0,true);
 
 
+		puvX=X,puvY=Y;
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm2::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+					int X, int Y)
+{
+	aktX=X;aktY=Y;
+	FormPaint(this);
+}
+//---------------------------------------------------------------------------
 
+void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+
+{
+	 aktX=5000;aktY=5000;Invalidate();
+}
+//---------------------------------------------------------------------------
 
