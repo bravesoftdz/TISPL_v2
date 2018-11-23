@@ -117,6 +117,8 @@ void __fastcall TForm_parametry::FormShow(TObject *Sender)
 			scButton_zamek_CT->Enabled=true;
 			scButton_zamek_DD->Enabled=true;
 		}
+
+    
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -2206,7 +2208,7 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 			scButton_zamek_CT->Enabled=true;
 			scButton_zamek_DD->Enabled=true;
 		}
-		if(scComboBox_pohon->ItemIndex != 0 && scComboBox_rezim->ItemIndex==1)
+		if(scComboBox_pohon->ItemIndex != 0 && scComboBox_rezim->ItemIndex==1) // KK režim - níže PP režim - pouze naètu mezeru
 		{   // POKUD je pohon již používán, natáhnu si jeho data
 				Cvektory::TObjekt *obj=Form1->d.v.pohon_je_pouzivan(scComboBox_pohon->ItemIndex,Form1->pom,1);
 				if (obj!=NULL)
@@ -2243,11 +2245,45 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
 				}
 				else
 				{
+          if(F->d.v.POHONY->dalsi!=NULL)
+          {
+           scGPNumericEdit_rozestup->Value=F->d.v.POHONY->dalsi->Rz*(1+999.0*Rzunit);
+           scGPNumericEdit_rx->Value=F->d.v.POHONY->dalsi->Rx;
+           scGPNumericEdit_RD->Value=F->d.v.POHONY->dalsi->aRD*(1+59.0*RDunitT);
+           CT_zamek=false;
+           DD_zamek=true;
+           INPUT();
+           input_state=RD;
+           pm.input_RD(); //zavolani inpput RD, aby byla dopocitana mezera mezi jigy a podvozky
+           OUTPUT();
+           input_state=NOTHING;
+
+           }
 				  pohon_pouzivan=false;
 					scButton_zamek_RD->Enabled=true;  // pokud pohon není používán povolím zobrazení zámku RD
 			 		if(scComboBox_rezim->ItemIndex==1) Kontrola_mezery(); // pøi pøechodu mezi pohony, zkontroluje zdali je mezera v poøádku, pouze u KK režimu
 				}
 		}
+    	if(scComboBox_pohon->ItemIndex != 0 && scComboBox_rezim->ItemIndex==2) //PP režim - pouze naètu mezeru
+		{
+           if(F->d.v.POHONY->dalsi!=NULL)
+          {
+           scGPNumericEdit_RD->Value=F->d.v.POHONY->dalsi->aRD*(1+59.0*RDunitT);
+           CT_zamek=false;
+           DD_zamek=true;
+           INPUT();
+           input_state=RD;
+           pm.input_RD(); //zavolani inpput RD, aby byla dopocitana mezera mezi jigy a podvozky
+           OUTPUT();
+           input_state=NOTHING;
+           }
+
+    }
+
+
+
+
+
 		input_clicked_edit=empty_klik; // výbìrem pohonu dochází k volání onchange rotace a to zpùsobí zobrazení pacek, což je nežádoucí, proto pøi zmìnì pohonu vždy nastavím, že jde o prázdný klik
 		//upozornìní na nepøiøazený pohon
 		if(scComboBox_pohon->ItemIndex==0){scComboBox_pohon->Options->FrameWidth=2;scComboBox_pohon->Options->FrameFocusedColor=clRed;scComboBox_pohon->Options->FrameNormalColor=clRed;}else {scComboBox_pohon->Options->FrameNormalColor=clGray;scComboBox_pohon->Options->FrameFocusedColor=clHighlight;scComboBox_pohon->Options->FrameWidth=1;}
@@ -2460,6 +2496,7 @@ void TForm_parametry::OUTPUT()
         if(input_state!= Rz)
         {
         		//Rz
+         //   ShowMessage(pm.Rz);
 				scGPNumericEdit_rozestup->Value = pm.Rz;
 				if (Rzunit == MM)scGPNumericEdit_rozestup->Value *= 1000.0;
 				if(scGPCheckBox_zaokrouhlit->Checked)scGPNumericEdit_rozestup->Decimal=3;
@@ -3270,8 +3307,18 @@ double TForm_parametry::Kontrola_mezery()
 						if(input_state == mezera_jig     && 	input_clicked_edit == mezera_klik) typ=1;
 						if(input_state == mezera_podvozek && 	input_clicked_edit == mezera_klik) typ=2;
 
+            Memo1->Lines->Add("d_jig"+AnsiString(Form1->d.v.PP.delka_jig));
+            Memo1->Lines->Add("s_jig"+AnsiString(Form1->d.v.PP.sirka_jig));
+            Memo1->Lines->Add("rotace"+AnsiString(scComboBox_rotace->ItemIndex));
+            Memo1->Lines->Add("roztec"+AnsiString(P->roztec));
+            Memo1->Lines->Add("mezera"+AnsiString(mezera));
+            Memo1->Lines->Add("typ"+AnsiString(typ));
+            Memo1->Lines->Add("Rx"+AnsiString(scGPNumericEdit_rx->Value));
+            Memo1->Lines->Add("Rz"+AnsiString(scGPNumericEdit_rozestup->Value));
+
 						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera,typ);
 
+            Memo1->Lines->Add("dopo.mezera"+AnsiString(doporuc_mezera));
 						if(DMunit == MM)
 						{
 							 doporuc_mezera=doporuc_mezera*1000.0;
@@ -3475,6 +3522,9 @@ void TForm_parametry::Check_rozmezi_RD()
 //			//scGPNumericEdit1_rx->Value =rx; M 5. kvìtna 2018 pøesunuto výše - dìlalo problémy za Rz, protože se volá ještì duplicitní výpoèet Rz pøi onclick do Rx
 //		}
 //		scGPNumericEdit_rx->Hint="tj. každý " +AnsiString(rx)+ " palec zachytává.";
+
+
+
  }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry::scGPNumericEdit_rxChange(TObject *Sender)
