@@ -2492,14 +2492,18 @@ void TForm1::zneplatnit_minulesouradnice()
 void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
 			TGridDrawState State)
 {
+if(MOD==NAHLED)
+{
+  scListGroupKnihovObjektu->Caption="Knihovna robotů";
+
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	int W=DrawGrid_knihovna->DefaultColWidth*Z;
-	int H=DrawGrid_knihovna->DefaultRowHeight*Z;
+	int W=DrawGrid_knihovna->DefaultColWidth  *Z;
+	int H=DrawGrid_knihovna->DefaultRowHeight  *Z;
 	int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
 
 	Cantialising a;
 	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Width=DrawGrid_knihovna->Width*Z;bmp_in->Height=DrawGrid_knihovna->Height*Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+	bmp_in->Width=DrawGrid_knihovna->Width*Z;bmp_in->Height=DrawGrid_knihovna->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
 
 	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
@@ -2508,67 +2512,55 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	short pocet_elementu=4;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-		switch(n)
-		{
-//			case 1://otoč
-//			{
-//				d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","",0);
-//			}break;
-//			case 2://stopka
-//			{
-//				d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","");
-//			}break;
-//			case 3://robot
-//			{
-//				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","",3);
-//			}break;
-			d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","",n-1,);
-		}
+  d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 80 ,"","",n-1);
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	DrawGrid_knihovna->Canvas->Draw(0,0,bmp_out);
 	delete (bmp_out);//velice nutné
 	delete (bmp_in);//velice nutné
+  }
+  if(MOD==SCHEMA)
+  {
+	////////////////////neAA verze
+  scListGroupKnihovObjektu->Caption="Knihovna objektů";
+	TCanvas* C=DrawGrid_knihovna->Canvas;
+	int W=DrawGrid_knihovna->DefaultColWidth;
+	int H=DrawGrid_knihovna->DefaultRowHeight;
+	int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
 
-//--------------------------------------------
-//	////////////////////neAA verze
-//	TCanvas* C=DrawGrid_knihovna->Canvas;
-//	int W=DrawGrid_knihovna->DefaultColWidth;
-//	int H=DrawGrid_knihovna->DefaultRowHeight;
-//	int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
-//
-//
-//	unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
-//	C->Font->Style = TFontStyles()<< fsBold;
-//	C->Font->Size=12;
-//	C->Font->Name="Arial";
-//	C->Pen->Width=1;
-//	C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
-//	C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
-//	C->Font->Color=clWhite;
-//	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
-//	{
-//		UnicodeString text=knihovna_objektu[n-1].short_name;
-//		//symbol objektu
-//		if(VyID!=n-1)
-//		{
-//			//obdélník
-//			C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
-//			//packy
-//			C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
-//			C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
-//			//písmo
-//			C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
-//		}
-//		else//výhybka v bmp
-//		{
-//			Graphics::TBitmap *bmp=new Graphics::TBitmap();
-//			ImageList48->GetBitmap(51,bmp);
-//			C->Draw(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+P,bmp);
-//			bmp=NULL;delete bmp;
-//		}
-//	}
+
+	unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
+	C->Font->Style = TFontStyles()<< fsBold;
+	C->Font->Size=12;
+	C->Font->Name="Arial";
+	C->Pen->Width=1;
+	C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+	C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+	C->Font->Color=clWhite;
+	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
+	{
+		UnicodeString text=knihovna_objektu[n-1].short_name;
+		//symbol objektu
+		if(VyID!=n-1)
+		{
+			//obdélník
+			C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
+			//packy
+			C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
+			C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
+			//písmo
+			C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
+		}
+		else//výhybka v bmp
+		{
+			Graphics::TBitmap *bmp=new Graphics::TBitmap();
+			ImageList48->GetBitmap(51,bmp);
+			C->Draw(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+P,bmp);
+			bmp=NULL;delete bmp;
+		}
+	}
+ }
 //--------------------------------------------
 
 ////	////////////////////AA verze
@@ -5035,41 +5027,32 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-		Memo2->Visible=true;
-		Memo2->Lines->Add(m.cekani_na_palec(0,0.5,0.5/60.0,2));
-//		Cvektory::TZakazka *zakazka=d.v.ZAKAZKY->dalsi;
-//		//načítání dat
-//		if(zakazka!=NULL)
-//		if(zakazka->cesta!=NULL)//pokud již byla cesta definovaná
-//		{
-//			ShowMessage(zakazka->name);
-//			Cvektory::TCesta *ukaz=zakazka->cesta->dalsi;//přeskočí hlavičku, jde rovnou na první segment cesty
-//			while(ukaz!=NULL)
-//			{
-//				Memo2->Lines->Add
-//				(
-//						AnsiString(ukaz->n)+","+
-//						AnsiString(ukaz->objekt->short_name)+","+
-//						AnsiString(ukaz->CT)+","+
-//						AnsiString(ukaz->RD)+","+
-//						AnsiString(ukaz->Tc)+","
-//						//+(AnsiString((int)ukaz->Stav))
-//				);
-//				ukaz=ukaz->dalsi;
-//			}
-//		}
-//		else S("Není zakazka");
 
-//		Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
-//
-//		while (O!=NULL) {
-//
-//		Memo2->Lines->Add(O->pohon->name);
-//
-//		O=O->dalsi;
-//
-//		}
+   if(MOD==NAHLED)
+   {
+   DrawGrid_knihovna->DefaultRowHeight=50;
+   scListGroupPanel_hlavickaOtoce->Visible=false;
+   scListGroupPanel_hlavickaOstatni->Visible=false;
+   DrawGrid_knihovna->Height=400;
+   scListGroupKnihovObjektu->Align=alLeft;
+   DrawGrid_knihovna->Invalidate();
+   MOD=SCHEMA;
+   }
+   else
+   {
 
+   MOD=NAHLED;
+   DrawGrid_knihovna->DefaultRowHeight=100;
+   DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
+   DrawGrid_knihovna->Invalidate();
+   scListGroupPanel_hlavickaOtoce->Visible=true;
+   scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
+   DrawGrid_otoce->Visible=true;
+   scListGroupPanel_hlavickaOstatni->Visible=true;
+   scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
+   DrawGrid_ostatni->Visible=true;
+
+   }
 }
 
 
@@ -5298,5 +5281,66 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 
 
+
+
+
+void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int ARow,
+          TRect &Rect, TGridDrawState State)
+{
+	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	int W=DrawGrid_otoce->DefaultColWidth  *Z;
+	int H=DrawGrid_otoce->DefaultRowHeight  *Z;
+	int P=-1*DrawGrid_otoce->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+
+	Cantialising a;
+	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+	bmp_in->Width=DrawGrid_otoce->Width*Z;bmp_in->Height=DrawGrid_otoce->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+	double Zoom_back=Zoom;//záloha zoomu
+	Zoom=1;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+	short pocet_elementu=2;
+	for(unsigned short n=1;n<=pocet_elementu;n++)
+      {
+      d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","",n-1);
+      }
+
+	Zoom=Zoom_back;//návrácení původního zoomu
+	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+	DrawGrid_otoce->Canvas->Draw(0,0,bmp_out);
+	delete (bmp_out);//velice nutné
+	delete (bmp_in);//velice nutné
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int ARow,
+          TRect &Rect, TGridDrawState State)
+{
+  short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	int W=DrawGrid_ostatni->DefaultColWidth  *Z;
+	int H=DrawGrid_ostatni->DefaultRowHeight  *Z;
+	int P=-1*DrawGrid_ostatni->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+
+	Cantialising a;
+	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+	bmp_in->Width=DrawGrid_ostatni->Width*Z;bmp_in->Height=DrawGrid_ostatni->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+	double Zoom_back=Zoom;//záloha zoomu
+	Zoom=1;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+	short pocet_elementu=1;
+	for(unsigned short n=1;n<=pocet_elementu;n++)
+	{
+  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","");
+	}
+	Zoom=Zoom_back;//návrácení původního zoomu
+	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+	DrawGrid_ostatni->Canvas->Draw(0,0,bmp_out);
+	delete (bmp_out);//velice nutné
+	delete (bmp_in);//velice nutné
+}
+//---------------------------------------------------------------------------
 
 
