@@ -3190,7 +3190,7 @@ object Form1: TForm1
       HeaderFont.Style = []
       HeaderHeight = 30
       HeaderMargin = 10
-      HeaderAutoColor = True
+      HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_ostatni: TDrawGrid
         Left = 6
@@ -3254,7 +3254,7 @@ object Form1: TForm1
       HeaderFont.Style = []
       HeaderHeight = 30
       HeaderMargin = 10
-      HeaderAutoColor = True
+      HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_otoce: TDrawGrid
         Left = 6
@@ -4068,8 +4068,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1125
-        Top = 1288
+        Left = 1131
+        Top = 1294
         Width = 244
         Height = 31
         Align = alCustom
@@ -6253,7 +6253,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800A005B80510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800A005BC0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7378,7 +7378,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013400D005E80530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013400D005EC0530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
