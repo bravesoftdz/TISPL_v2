@@ -265,6 +265,10 @@ __published:	// IDE-managed Components
 	TscButton *scButton_parmlinky_defzakazek;
 	TscGPCheckBox *scGPCheckBox_pocet_voziku_dle_WIP;
 	TscGPGlyphButton *scGPGlyphButton_info_cekani;
+  TscListGroupPanel *scListGroupPanel_hlavickaOtoce;
+  TDrawGrid *DrawGrid_otoce;
+  TscListGroupPanel *scListGroupPanel_hlavickaOstatni;
+  TDrawGrid *DrawGrid_ostatni;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -415,12 +419,16 @@ __published:	// IDE-managed Components
 	void __fastcall scGPCheckBox_pocet_voziku_dle_WIPClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_info_cekaniClick(TObject *Sender);
 	void __fastcall FormDblClick(TObject *Sender);
+  void __fastcall DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
+          TGridDrawState State);
+  void __fastcall DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
+          TGridDrawState State);
 
 
 // User declarations
 	////struktury, výèty
 public:
-	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE};Tmod MOD;
+	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE};Takce Akce;
 	Cvektory::TObjekt *pom,*pom_vyhybka,*copyObjekt;
