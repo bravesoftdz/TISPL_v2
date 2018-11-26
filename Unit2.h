@@ -48,7 +48,7 @@ struct TElement
 
 	bool AA;
 	long puvX,puvY;
-	long aktX,aktY;
+	double aktX,aktY;
 public:		// User declarations
 	__fastcall TForm2(TComponent* Owner);
 	void OnClick(long Tag,unsigned long Col,unsigned long Row);

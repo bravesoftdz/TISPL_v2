@@ -1139,6 +1139,7 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
+	bool raster_active=false;
 	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
 	{
 		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
@@ -1148,11 +1149,24 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")bmp->LoadFromFile("conf");
 			if(FileName_short(FileName)=="VÝHYBKY_TESTm.tispl")bmp->LoadFromFile("conf2");
 			if(FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")bmp->LoadFromFile("conf3");
-			bmp->Transparent=true;
-			bmp->TransparentColor=clWhite;
 			Canvas->Draw(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,bmp);
 			delete(bmp);
+			raster_active=true;
 		}
+	}
+
+	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+	if(FileExists("kabina_base_coat.bmp"))
+	{
+		Graphics::TBitmap *bmp=new Graphics::TBitmap;
+		bmp->LoadFromFile("kabina_base_coat.bmp");
+		long X=10,Y=-10;long double resolution=0.01200428724544480171489817792069;  //metry děleno PX
+		//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem
+		Canvas->Pen->Color=clWhite;Canvas->Brush->Color=clWhite;
+		Canvas->Rectangle(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,Width,Height);
+		Canvas->StretchDraw(TRect(F->m.L2Px(X),F->m.L2Py(Y),F->m.round(F->m.L2Px(X)+bmp->Width*F->Zoom*resolution/F->m2px),F->m.round(F->m.L2Py(Y)+bmp->Height*F->Zoom*resolution/F->m2px)),bmp);
+		delete(bmp);
+		raster_active=true;
 	}
 
 	if(!nahled_objektu)
@@ -1184,6 +1198,11 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_vektory(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				if(raster_active)
+				{
+					bmp_out->Transparent=true;
+					bmp_out->TransparentColor=clWhite;
+				}
 				Canvas->Draw(0,0,bmp_out);
 				delete (bmp_out);//velice nutné
 				delete (bmp_grid);//velice nutné
@@ -1342,8 +1361,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 102:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x+1,Mouse->CursorPos.y);break;}
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
-		//CTRL+V
-		case 86: /*if(ssCtrl)příkaz*/;break;
+		//CTRL+M
+		case 77: if(ssCtrl)Akce=MEASURE;break;
 		//F1 - volání nápovědy
 		case 112:break;
 		//F2
@@ -1605,6 +1624,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							break;
 						}
 						case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
+						case MEASURE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
 						default: break;
 					}
 					DuvodUlozit(true);
@@ -1717,7 +1737,6 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 							zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
 					}
 				}
-
 				if(!add_posledni)//pro situaci přidávání mezi prvky
 				{
 					d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
@@ -1746,11 +1765,18 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case VYH://přidávání vyhýbky
 		{
-				d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
-				minule_souradnice_kurzoru=TPoint(X,Y);
-				d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
-				break;
+			d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
+			minule_souradnice_kurzoru=TPoint(X,Y);
+			d.odznac_oznac_vetev(Canvas,X,Y,pom_vyhybka);
+			break;
 		}
+		case MEASURE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
+		{
+			if(stisknute_leve_tlacitko_mysi)
+			{
+				d.vykresli_meridlo(Canvas,X,Y);
+			}
+		}break;
 		case NIC:
 		{
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
@@ -1780,6 +1806,13 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				case ADD:add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 				case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 				case MOVE:move_objekt(X,Y);break;//posun objektu
+				case MEASURE:
+				{
+					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
+					MB(AnsiString(delka)+" [metrů]");
+					Akce=NIC;
+					Invalidate();
+				}break;
 				default: break;
 			}
 	 }
@@ -2515,7 +2548,7 @@ if(MOD==NAHLED)
 
 	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=1;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=4;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
@@ -4537,6 +4570,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 		C=C->dalsi;
 	}
 		 */
+	  //Zoom*=2;
 	  Form2->ShowModal();
 }
 //---------------------------------------------------------------------------
@@ -5306,13 +5340,12 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 
 	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=1;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=2;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
-      {
-      d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","",n-1);
-      }
-
+	{
+			d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","",n-1);
+	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	DrawGrid_otoce->Canvas->Draw(0,0,bmp_out);
@@ -5336,11 +5369,11 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 
 	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=1;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=1;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","");
+		d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"","");
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA

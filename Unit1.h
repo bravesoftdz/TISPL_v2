@@ -430,7 +430,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE};Takce Akce;
 	Cvektory::TObjekt *pom,*pom_vyhybka,*copyObjekt;
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
@@ -497,14 +497,7 @@ private:
 	short n_prihlaseni;
 	bool ortogonalizace_stav;
 
-
-public:	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
 private:
-	TPointD akt_souradnice_kurzoru;//uchová aktuální pozici kurzoru v logických jednotkách, resp. souøadnicích
-	TPoint vychozi_souradnice_kurzoru;//uchová výchozí pozici kurzoru
-	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
-	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
-
 	bool pan_non_locked;
 	bool stisknute_leve_tlacitko_mysi;//uchovává stav levého tlaèítka myši
 	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
@@ -538,6 +531,13 @@ private:
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
+
+	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
+	TPointD akt_souradnice_kurzoru;//uchová aktuální pozici kurzoru v logických jednotkách, resp. souøadnicích
+	TPoint vychozi_souradnice_kurzoru;//uchová výchozí pozici kurzoru
+	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
+	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
+
 	UnicodeString VERZE;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
 	double fps;//frames per second, èetnost snímkù za sekundu - používá se pro animace a simulace

@@ -48,8 +48,9 @@ class Cvykresli
 	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
-	void vykresli_grid(TCanvas *canv, int size_grid=10);
-//	void vykresli_graf_rezervy(TCanvas *canv);//mód graf rezerv
+	void vykresli_grid(TCanvas *canv,int size_grid=10);
+	void vykresli_meridlo(TCanvas *canv,int X,int Y);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti
+	//	void vykresli_graf_rezervy(TCanvas *canv);//mód graf rezerv
 	void vykresli_casove_osy(TCanvas *canv);//MARO metoda, celkové vykreslení módu èasové osy
 	void vykresli_vytizenost_objektu(TCanvas *canv);
 	double proces(TCanvas *canv, unsigned int n, double X_predchozi, double X, int Y, Cvektory::TCesta *C/*segment cesty*/, Cvektory::TVozik *vozik);
@@ -76,7 +77,7 @@ class Cvykresli
 	void drawRectText(TCanvas *canv,TRect Rect, UnicodeString Text);
 	void editacni_okno(TCanvas *canv, unsigned int X1, unsigned int Y1,unsigned  int X2,unsigned  int Y2, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
 	void editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned short int size=1, COLORREF color=clBlack);//nakreslí editacni_okno
-	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, unsigned short int size=3,COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid);//zajistí vykreslení šipky - orientace spojovací linie
+	void sipka(TCanvas *canv,int X, int Y,float azimut,bool bez_vyplne=false, float=3,COLORREF color=clBlack,COLORREF color_brush=clGray,TPenMode PenMode=pmCopy,TPenStyle PenStyle=psSolid);//zajistí vykreslení šipky - orientace spojovací linie
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
