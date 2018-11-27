@@ -139,7 +139,6 @@ __published:	// IDE-managed Components
 	TButton *Button5;
 	TButton *Button6;
 	TButton *Button7;
-	TButton *Button8;
 	TButton *Button9;
 	TButton *Button10;
 	TChart *Chart1;
@@ -296,7 +295,6 @@ __published:	// IDE-managed Components
           TPoint &MousePos, bool &Handled);
 	void __fastcall DrawGrid_knihovnaMouseLeave(TObject *Sender);
 	void __fastcall DrawGrid_knihovnaKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall DrawGrid_knihovnaKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall RzSizePanel_knihovna_objektu_OLDMouseEnter(TObject *Sender);
@@ -344,7 +342,6 @@ __published:	// IDE-managed Components
 	void __fastcall Button5Click(TObject *Sender);
 	void __fastcall Button6Click(TObject *Sender);
 	void __fastcall Button7Click(TObject *Sender);
-	void __fastcall Button8Click(TObject *Sender);
 	void __fastcall Button9Click(TObject *Sender);
 	void __fastcall Button10Click(TObject *Sender);
 	void __fastcall AnalyzaClick(TObject *Sender);
@@ -423,6 +420,15 @@ __published:	// IDE-managed Components
           TGridDrawState State);
   void __fastcall DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
           TGridDrawState State);
+  void __fastcall DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+  void __fastcall DrawGrid_otoceKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
+  void __fastcall DrawGrid_otoceKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+  void __fastcall DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
+
+
+
 
 
 // User declarations
@@ -560,6 +566,8 @@ public:		// User declarations
 	bool dblClick;
 	int vybrany_objekt;
 	short VyID;//objekt-symbol vyhýbky - ID typu
+  int knihovna_id; // id drawgrid knihovny
+  int element_id;  // id vybraneho elementu z knihoven
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì

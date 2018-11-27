@@ -310,7 +310,6 @@ object Form1: TForm1
     Caption = 'D'#233'lka dopravn'#237'ku'
     TabOrder = 8
     Visible = False
-    OnClick = Button8Click
   end
   object Button9: TButton
     Left = 183
@@ -3136,7 +3135,7 @@ object Form1: TForm1
       HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_knihovna: TDrawGrid
-        Left = 6
+        Left = 0
         Top = 33
         Width = 165
         Height = 350
@@ -3159,7 +3158,6 @@ object Form1: TForm1
         ScrollBars = ssNone
         TabOrder = 0
         OnDrawCell = DrawGrid_knihovnaDrawCell
-        OnKeyDown = DrawGrid_knihovnaKeyDown
         OnKeyUp = DrawGrid_knihovnaKeyUp
         OnMouseDown = DrawGrid_knihovnaMouseDown
         OnMouseLeave = DrawGrid_knihovnaMouseLeave
@@ -3217,19 +3215,14 @@ object Form1: TForm1
         TabOrder = 0
         Visible = False
         OnDrawCell = DrawGrid_ostatniDrawCell
-        OnKeyDown = DrawGrid_knihovnaKeyDown
-        OnKeyUp = DrawGrid_knihovnaKeyUp
-        OnMouseDown = DrawGrid_knihovnaMouseDown
-        OnMouseLeave = DrawGrid_knihovnaMouseLeave
-        OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
-        OnMouseWheelUp = DrawGrid_knihovnaMouseWheelUp
+        OnMouseDown = DrawGrid_ostatniMouseDown
       end
     end
     object scListGroupPanel_hlavickaOtoce: TscListGroupPanel
       Left = 0
       Top = 224
       Width = 166
-      Height = 91
+      Height = 87
       Align = alCustom
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3281,10 +3274,9 @@ object Form1: TForm1
         TabOrder = 0
         Visible = False
         OnDrawCell = DrawGrid_otoceDrawCell
-        OnKeyDown = DrawGrid_knihovnaKeyDown
-        OnKeyUp = DrawGrid_knihovnaKeyUp
-        OnMouseDown = DrawGrid_knihovnaMouseDown
-        OnMouseLeave = DrawGrid_knihovnaMouseLeave
+        OnKeyDown = DrawGrid_otoceKeyDown
+        OnKeyUp = DrawGrid_otoceKeyUp
+        OnMouseDown = DrawGrid_otoceMouseDown
         OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
         OnMouseWheelUp = DrawGrid_knihovnaMouseWheelUp
       end
@@ -4068,8 +4060,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1131
-        Top = 1294
+        Left = 1137
+        Top = 1300
         Width = 244
         Height = 31
         Align = alCustom
@@ -6253,7 +6245,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800A005BC0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800A005C00510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7378,7 +7370,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013400D005EC0530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013400D005F00530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
