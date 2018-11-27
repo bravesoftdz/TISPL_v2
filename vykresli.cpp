@@ -2418,6 +2418,22 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,short stav,double rotace,bool kurzor)
+{
+	switch(typ)
+	{
+			case 0: vykresli_stopku(canv,X,Y,name,short_name,stav,rotace,kurzor);break;
+			case 1: vykresli_robota(canv,X,Y,name,short_name,typ,stav,rotace,kurzor);break;
+			case 2: vykresli_robota(canv,X,Y,name,short_name,typ,stav,rotace,kurzor);break;
+			case 3: vykresli_robota(canv,X,Y,name,short_name,typ,stav,rotace,kurzor);break;
+			case 4: vykresli_robota(canv,X,Y,name,short_name,typ,stav,rotace,kurzor);break;
+			case 5: vykresli_otoc(canv,X,Y,name,short_name,typ,stav,rotace,kurzor);break;
+			case 6: vykresli_otoc(canv,X,Y,name,short_name,typ,stav,rotace,kurzor);break;
+			default: vykresli_stopku(canv,X,Y,name,short_name,stav,rotace,kurzor);break;
+	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,short stav,double rotace,bool kurzor)
 {
 	double Z=F->Zoom;
@@ -2435,9 +2451,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//přidružené elementy
-	if(typ==1)vykresli_stopku(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",stav,rotace,kurzor);//robot se stopkou
-	if(typ==2)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",0,stav,rotace,kurzor);//s pasivní otočí
-	if(typ==3)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",1,stav,rotace,kurzor);//s aktivní otočí (tj. s otočí a se stopkou)
+	if(typ==2)vykresli_stopku(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",stav,rotace,kurzor);//robot se stopkou
+	if(typ==3)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",5,stav,rotace,kurzor);//s pasivní otočí
+	if(typ==4)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",6,stav,rotace,kurzor);//s aktivní otočí (tj. s otočí a se stopkou)
 
 	//nastavení pera
 	if(kurzor)//stav kurzor
@@ -2536,7 +2552,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	short size=m.round(3.5*Z);
 	float width=0.8*Z;
 
-	TColor barva=clBlack; if(typ==1)barva=clRed;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+	TColor barva=clBlack; if(typ==6)barva=clRed;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	if(!kurzor)//v módu kurzor se název nezobrazuje
 	{
@@ -2578,7 +2594,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	}
 
 	//pokud je otoč aktivní tj. se stopkou
-	if(typ==1)vykresli_stopku(canv,X,Y,"","",stav,rotace,kurzor);
+	if(typ==6)vykresli_stopku(canv,X,Y,"","",stav,rotace,kurzor);
 
 	//text
 	if(!kurzor)//v módu kurzor se název nezobrazuje
