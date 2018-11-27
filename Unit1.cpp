@@ -177,6 +177,13 @@ void TForm1::NewDesignSettings()
  //	scListGroupNastavProjektu->HeaderAutoColor=true;
 	scListGroupKnihovObjektu->HeaderAutoColor=true;
 	scListGroupKnihovObjektu->Color=light_gray;
+
+  scListGroupPanel_hlavickaOtoce->HeaderAutoColor=scListGroupKnihovObjektu->HeaderAutoColor;
+  scListGroupPanel_hlavickaOtoce->Color=scListGroupKnihovObjektu->Color=light_gray;
+  scListGroupPanel_hlavickaOstatni->Color=light_gray;
+
+  scListGroupPanel_hlavickaOstatni->HeaderAutoColor=scListGroupKnihovObjektu->HeaderAutoColor;
+  scListGroupPanel_hlavickaOstatni->Color=scListGroupKnihovObjektu->Color=light_gray;
 	//scSplitView_OPTIONS->Color=light_gray;
  //	scExPanel_vrstvy->Color=light_gray;
  //	scExPanel_ostatni->Color=light_gray;
