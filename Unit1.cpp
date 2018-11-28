@@ -3400,6 +3400,44 @@ void TForm1::NP()
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
 	}
 }
+
+void TForm1::NP_input()
+
+{
+
+   MOD=NAHLED;
+
+   DrawGrid_knihovna->DefaultRowHeight=100;
+   DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
+   DrawGrid_knihovna->Invalidate();
+   scListGroupPanel_hlavickaOtoce->Visible=true;
+   scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
+   DrawGrid_otoce->Visible=true;
+   scListGroupPanel_hlavickaOstatni->Visible=true;
+   scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
+   DrawGrid_ostatni->Visible=true;
+   scListGroupPanel_geometrie->Visible=true;
+   scListGroupPanel_geometrie->Top=scListGroupPanel_hlavickaOstatni->Top +   scListGroupPanel_hlavickaOstatni->Height;
+   DrawGrid_geometrie->Visible=true;
+   scListGroupPanel_poznamky->Visible=true;
+   scListGroupPanel_poznamky->Top= scListGroupPanel_geometrie->Top + scListGroupPanel_geometrie->Height;
+   DrawGrid_poznamky->Visible=true;
+
+   scEdit_nazev->Visible=true;
+   scEdit_zkratka->Visible=true;
+
+   scEdit_nazev->Top= scGPPanel_mainmenu->Height + 10 ;
+   scEdit_zkratka->Top =  scEdit_nazev->Top;
+   scEdit_nazev->Left = Simulace->Left;
+   scEdit_zkratka->Left = scEdit_nazev->Left +  scEdit_nazev->Width + 10;
+
+   scGPButton_OK->Visible=true;
+   scGPButton_storno->Visible=true;
+ 		// matamaticky exaktní napozicování tlačítek OK a storno
+		Form1->m.designButton(scGPButton_OK, Form1, 1, 2);
+		Form1->m.designButton(scGPButton_storno, Form1, 2, 2);
+
+}
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
 void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
@@ -5172,38 +5210,6 @@ void __fastcall TForm1::scButton2Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::Button11Click(TObject *Sender)
-{
-
-   if(MOD==NAHLED)
-   {
-   DrawGrid_knihovna->DefaultRowHeight=50;
-   scListGroupPanel_hlavickaOtoce->Visible=false;
-   scListGroupPanel_hlavickaOstatni->Visible=false;
-   DrawGrid_knihovna->Height=400;
-   scListGroupKnihovObjektu->Align=alLeft;
-   DrawGrid_knihovna->Invalidate();
-   MOD=SCHEMA;
-   }
-   else
-   {
-
-   MOD=NAHLED;
-   DrawGrid_knihovna->DefaultRowHeight=100;
-   DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
-   DrawGrid_knihovna->Invalidate();
-   scListGroupPanel_hlavickaOtoce->Visible=true;
-   scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
-   DrawGrid_otoce->Visible=true;
-   scListGroupPanel_hlavickaOstatni->Visible=true;
-   scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
-   DrawGrid_ostatni->Visible=true;
-
-   }
-}
-
-
-//---------------------------------------------------------------------------
 void __fastcall TForm1::ComboBoxCekaniChange(TObject *Sender)
 {
 	//pokud bych chtěl používat i v v modu vytzení objektu, ale při znovu výberu náhodne hodnoty házelo chybu:if(d.mod_vytizenost_objektu){d.JIZPOCITANO=false;d.mod_vytizenost_objektu=false;d.vykresli_casove_osy(Canvas);d.mod_vytizenost_objektu=true;}
@@ -5503,6 +5509,72 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 	}
 	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
    ShowMessage(element_id);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button11Click(TObject *Sender)
+{
+// if(MOD==NAHLED)
+//   {
+//   DrawGrid_knihovna->DefaultRowHeight=50;
+//   scListGroupPanel_hlavickaOtoce->Visible=false;
+//   scListGroupPanel_hlavickaOstatni->Visible=false;
+//   scListGroupPanel_geometrie->Visible=false;
+//   scListGroupPanel_poznamky->Visible=false;
+//   DrawGrid_knihovna->Height=400;
+//   scListGroupKnihovObjektu->Align=alLeft;
+//   DrawGrid_knihovna->Invalidate();
+//   MOD=SCHEMA;
+//   }
+//   else
+//   {
+//
+//   MOD=NAHLED;
+//   DrawGrid_knihovna->DefaultRowHeight=100;
+//   DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
+//   DrawGrid_knihovna->Invalidate();
+//   scListGroupPanel_hlavickaOtoce->Visible=true;
+//   scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
+//   DrawGrid_otoce->Visible=true;
+//   scListGroupPanel_hlavickaOstatni->Visible=true;
+//   scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
+//   DrawGrid_ostatni->Visible=true;
+//   scListGroupPanel_geometrie->Visible=true;
+//   scListGroupPanel_geometrie->Top=scListGroupPanel_hlavickaOstatni->Top +   scListGroupPanel_hlavickaOstatni->Height;
+//   DrawGrid_geometrie->Visible=true;
+//   scListGroupPanel_poznamky->Visible=true;
+//   scListGroupPanel_poznamky->Top= scListGroupPanel_geometrie->Top + scListGroupPanel_geometrie->Height;
+//   DrawGrid_poznamky->Visible=true;
+//   }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
+{
+ if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
+   {
+   DrawGrid_knihovna->DefaultRowHeight=50;
+   scListGroupPanel_hlavickaOtoce->Visible=false;
+   scListGroupPanel_hlavickaOstatni->Visible=false;
+   scListGroupPanel_geometrie->Visible=false;
+   scListGroupPanel_poznamky->Visible=false;
+   DrawGrid_knihovna->Height=400;
+   scListGroupKnihovObjektu->Align=alLeft;
+   DrawGrid_knihovna->Invalidate();
+
+   scEdit_nazev->Visible=false;
+   scEdit_zkratka->Visible=false;
+
+   scEdit_nazev->Top= scGPPanel_mainmenu->Height + 10 ;
+   scEdit_zkratka->Top =  scEdit_nazev->Top;
+   scEdit_nazev->Left = Simulace->Left;
+   scEdit_zkratka->Left = scEdit_nazev->Left +  scEdit_nazev->Width + 10;
+   scGPButton_OK->Visible=false;
+   scGPButton_storno->Visible=false;
+
+   MOD=SCHEMA;
+
+   }
 }
 //---------------------------------------------------------------------------
 

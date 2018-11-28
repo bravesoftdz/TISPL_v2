@@ -268,6 +268,14 @@ __published:	// IDE-managed Components
   TDrawGrid *DrawGrid_otoce;
   TscListGroupPanel *scListGroupPanel_hlavickaOstatni;
   TDrawGrid *DrawGrid_ostatni;
+  TscListGroupPanel *scListGroupPanel_geometrie;
+  TDrawGrid *DrawGrid_geometrie;
+  TscListGroupPanel *scListGroupPanel_poznamky;
+  TDrawGrid *DrawGrid_poznamky;
+  TscGPButton *scGPButton_OK;
+  TscGPButton *scGPButton_storno;
+  TscEdit *scEdit_nazev;
+  TscEdit *scEdit_zkratka;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -393,7 +401,6 @@ __published:	// IDE-managed Components
 	void __fastcall hl_spojak_zakazkyClick(TObject *Sender);
 	void __fastcall button_zakazky_tempClick(TObject *Sender);
 	void __fastcall scButton2Click(TObject *Sender);
-	void __fastcall Button11Click(TObject *Sender);
 	void __fastcall scGPGlyphButton_definice_zakazekClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_close_grafyClick(TObject *Sender);
 	void __fastcall ComboBoxCekaniChange(TObject *Sender);
@@ -426,6 +433,8 @@ __published:	// IDE-managed Components
   void __fastcall DrawGrid_otoceKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
+  void __fastcall Button11Click(TObject *Sender);
+  void __fastcall scGPButton_stornoClick(TObject *Sender);
 
 
 
@@ -571,6 +580,7 @@ public:		// User declarations
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
+  void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
 	void ZOOM_IN();//pøiblížení
 	void ZOOM_OUT();//oddálení
 	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
