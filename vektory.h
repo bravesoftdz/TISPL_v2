@@ -130,6 +130,23 @@ class Cvektory
 			unsigned short typ;//0 - podlahový, 1 - závěsný
 	};
 
+	struct T_raster
+	{
+			AnsiString filename;//adresa umístění podkladového rastru na disku
+			long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
+			double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
+			bool show;//indikace zda je raster zobrazen
+			bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
+			int dim;//úroveň ztlumení
+	};
+
+	struct T_vector
+	{
+			int vector;//úroveň ztlumení vektorů - zatím nebude využito
+			bool transparent;//zda bude vektorová vrstva transparentní - zatím nebude využito
+	};
+
+
 	struct T_parametry_projektu //(Parametry výroby + Parametry linky (vozíky)
 	{
 			TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
@@ -143,6 +160,8 @@ class Cvektory
 			double vyska_jig;
 			double delka_podvozek;
 			short typ_voziku;//0 - podlahový, 1 - podvěsný
+			T_raster raster;
+			T_vector vector;
 	};
 	T_parametry_projektu PP;
 

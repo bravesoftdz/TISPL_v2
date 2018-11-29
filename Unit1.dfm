@@ -3158,6 +3158,7 @@ object Form1: TForm1
         ScrollBars = ssNone
         TabOrder = 0
         OnDrawCell = DrawGrid_knihovnaDrawCell
+        OnKeyDown = FormKeyDown
         OnKeyUp = DrawGrid_knihovnaKeyUp
         OnMouseDown = DrawGrid_knihovnaMouseDown
         OnMouseLeave = DrawGrid_knihovnaMouseLeave
@@ -3215,6 +3216,8 @@ object Form1: TForm1
         TabOrder = 0
         Visible = False
         OnDrawCell = DrawGrid_ostatniDrawCell
+        OnKeyDown = FormKeyDown
+        OnKeyUp = DrawGrid_knihovnaKeyUp
         OnMouseDown = DrawGrid_ostatniMouseDown
       end
     end
@@ -3274,8 +3277,8 @@ object Form1: TForm1
         TabOrder = 0
         Visible = False
         OnDrawCell = DrawGrid_otoceDrawCell
-        OnKeyDown = DrawGrid_otoceKeyDown
-        OnKeyUp = DrawGrid_otoceKeyUp
+        OnKeyDown = FormKeyDown
+        OnKeyUp = DrawGrid_knihovnaKeyUp
         OnMouseDown = DrawGrid_otoceMouseDown
         OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
         OnMouseWheelUp = DrawGrid_knihovnaMouseWheelUp
@@ -3330,6 +3333,8 @@ object Form1: TForm1
         ScrollBars = ssNone
         TabOrder = 0
         Visible = False
+        OnKeyDown = FormKeyDown
+        OnKeyUp = DrawGrid_knihovnaKeyUp
       end
     end
     object scListGroupPanel_poznamky: TscListGroupPanel
@@ -3381,6 +3386,8 @@ object Form1: TForm1
         ScrollBars = ssNone
         TabOrder = 0
         Visible = False
+        OnKeyDown = FormKeyDown
+        OnKeyUp = DrawGrid_knihovnaKeyUp
       end
     end
   end
@@ -4163,8 +4170,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1143
-        Top = 1306
+        Left = 1149
+        Top = 1312
         Width = 244
         Height = 31
         Align = alCustom
@@ -6685,7 +6692,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800A005C40510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C805C80510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7810,7 +7817,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013400D005F40530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013400F805F80530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

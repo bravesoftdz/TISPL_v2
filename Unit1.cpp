@@ -357,6 +357,12 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 			 d.v.PP.vyska_jig=1;
 			 d.v.PP.delka_podvozek=1;
 			 d.v.PP.typ_voziku=0;
+			 d.v.PP.raster.filename="";
+			 d.v.PP.raster.resolution=m2px;
+			 d.v.PP.raster.X=0;
+			 d.v.PP.raster.Y=0;
+			 d.v.PP.raster.show=false;
+
 
 			 Akce=NIC;Screen->Cursor=crDefault;//změní kurzor na default
 
@@ -1144,34 +1150,46 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
-	bool raster_active=false;
-	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
-	{
-		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
-		if(FileExists("conf") && FileExists("conf2") && FileExists("conf3"))
-		{
-			Graphics::TBitmap *bmp=new Graphics::TBitmap;
-			if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")bmp->LoadFromFile("conf");
-			if(FileName_short(FileName)=="VÝHYBKY_TESTm.tispl")bmp->LoadFromFile("conf2");
-			if(FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")bmp->LoadFromFile("conf3");
-			Canvas->Draw(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,bmp);
-			delete(bmp);
-			raster_active=true;
-		}
-	}
 
-	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
-	if(FileExists("kabina_base_coat.bmp"))
+//	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
+//	{
+//		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+//		if(FileExists("conf") && FileExists("conf2") && FileExists("conf3"))
+//		{
+//			Graphics::TBitmap *bmp=new Graphics::TBitmap;
+//			if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl")bmp->LoadFromFile("conf");
+//			if(FileName_short(FileName)=="VÝHYBKY_TESTm.tispl")bmp->LoadFromFile("conf2");
+//			if(FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")bmp->LoadFromFile("conf3");
+//			Canvas->Draw(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,bmp);
+//			delete(bmp);
+//			d.v.PP.raster.show=true;
+//		}
+//	}
+
+	//toto Rosta bude nastavovat jinde z uživatelského vstupu/rozhraní
+	d.v.PP.raster.show=true;
+	d.v.PP.raster.filename="kabina_base_coat.bmp";
+	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());//Rosto - nebude použito
+	d.v.PP.raster.X=10;d.v.PP.raster.Y=-10;//souřadnice v metrech
+	d.v.PP.raster.resolution=0.01200428724544480171489817792069;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
+	//---
+
+	//načtení rastru
+	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
 	{
-		Graphics::TBitmap *bmp=new Graphics::TBitmap;
-		bmp->LoadFromFile("kabina_base_coat.bmp");
-		long X=10,Y=-10;long double resolution=0.01200428724544480171489817792069;  //metry děleno PX
-		//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem
-		Canvas->Pen->Color=clWhite;Canvas->Brush->Color=clWhite;
-		Canvas->Rectangle(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,Width,Height);
-		Canvas->StretchDraw(TRect(F->m.L2Px(X),F->m.L2Py(Y),F->m.round(F->m.L2Px(X)+bmp->Width*F->Zoom*resolution/F->m2px),F->m.round(F->m.L2Py(Y)+bmp->Height*F->Zoom*resolution/F->m2px)),bmp);
-		delete(bmp);
-		raster_active=true;
+		if(FileExists(d.v.PP.raster.filename))
+		{
+			if(d.v.PP.raster.resolution==0)d.v.PP.raster.resolution=m2px;//v případě nového vstupu bez zadaného rozlišení je m2px
+			Graphics::TBitmap *bmp=new Graphics::TBitmap;
+			bmp->LoadFromFile(d.v.PP.raster.filename);
+			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem
+			Canvas->Pen->Color=clWhite;Canvas->Brush->Color=clWhite;
+			Canvas->Rectangle(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,Width,Height);
+			//vykreslení strečovaného rastru dle zadaného rozlišení
+			Canvas->StretchDraw(TRect(m.L2Px(d.v.PP.raster.X),m.L2Py(d.v.PP.raster.Y),m.round(m.L2Px(d.v.PP.raster.X)+bmp->Width*Zoom*d.v.PP.raster.resolution/m2px),m.round(m.L2Py(d.v.PP.raster.Y)+bmp->Height*Zoom*d.v.PP.raster.resolution/m2px)),bmp);
+			delete(bmp);
+		}
+		else d.v.PP.raster.show=false;
 	}
 
 	if(!nahled_objektu)
@@ -1203,11 +1221,13 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_vektory(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				if(raster_active)
+				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
 					bmp_out->TransparentColor=clWhite;
 				}
+				else bmp_out->Transparent=false;
+
 				Canvas->Draw(0,0,bmp_out);
 				delete (bmp_out);//velice nutné
 				delete (bmp_grid);//velice nutné
@@ -1367,7 +1387,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
 		//CTRL+M
-		case 77: if(ssCtrl)Akce=MEASURE;break;
+		case 77: if(ssCtrl)Akce=MEASURE;MessageBeep(0);break;
 		//F1 - volání nápovědy
 		case 112:break;
 		//F2
@@ -1619,7 +1639,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							int Gh=vrat_max_vysku_grafu();
 							Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
 							Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
-							//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
+							Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
 							break;
 						}
 						case ZOOM_W:
@@ -1722,94 +1742,51 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			d.editacni_okno(Canvas, vychozi_souradnice_kurzoru,akt_souradnice_kurzoru_PX,5,(TColor)RGB(0,128,192));//nakreslí nové okno
       break;
 		}
-		case ADD://přídávání objektu, posun navigačních linii
+		case ADD://přídávání objektu či elementu, posun navigačních linii
 		{        //algoritmy v tomto CASE (včetně dílčích algoritmu) by bylo možné sloučit, ale bylo by to dost práce navíc...
-     if(MOD!=NAHLED)
-     {
-			if(probehl_zoom==false)//ošetření proti nežádoucímu chování po zoomu
+			if(MOD!=NAHLED)
 			{
-				if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
+				if(probehl_zoom==false)//ošetření proti nežádoucímu chování po zoomu
 				{
-					Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
-					if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
+					if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
 					{
+						Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
+						if(p!=NULL && p!=pom)//byl nalezen meziprostor k přidávání, porovnám tedy jestli se jedná o nový
+						{
 							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
 							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 							zneplatnit_minulesouradnice();pom=p;add_posledni=false;
-					}          // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
-					if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
-					{
+						}          // p==NULL a  || d.v.OBJEKTY->predchozi->n==2 zajišťuje možnost přídání i mezi dva prvky nebo přídání za dva prvky standardně
+						if(p==NULL && (d.lezi_v_pasmu_poslednim(Canvas,X,Y) || d.v.OBJEKTY->predchozi->n==2))//kurzor se nenachází v prostoru mezi prkvy, je tedy možné přidávat mezi poslední a první prvek, tedy na konec spojového seznamu
+						{
 							if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
 							else if(pom!=NULL)d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
 							zneplatnit_minulesouradnice();add_posledni=true;pom=NULL;
+						}
+					}
+					if(!add_posledni)//pro situaci přidávání mezi prvky
+					{
+						d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+						minule_souradnice_kurzoru=TPoint(X,Y);
+						d.odznac_oznac_objekt_novy(Canvas,X,Y,pom);
+					}
+					else//pro situaci poslední první objekt, standardní přidávání nakonec
+					{
+						d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
+						minule_souradnice_kurzoru=TPoint(X,Y);
+						d.odznac_oznac_objekt_novy_posledni(Canvas,X,Y);
 					}
 				}
-				if(!add_posledni)//pro situaci přidávání mezi prvky
-				{
-					d.odznac_oznac_objekt_novy(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-					minule_souradnice_kurzoru=TPoint(X,Y);
-					d.odznac_oznac_objekt_novy(Canvas,X,Y,pom);
-				}
-				else//pro situaci poslední první objekt, standardní přidávání nakonec
-				{
-					d.odznac_oznac_objekt_novy_posledni(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y);
-					minule_souradnice_kurzoru=TPoint(X,Y);
-					d.odznac_oznac_objekt_novy_posledni(Canvas,X,Y);
-				}
+				probehl_zoom=false;
 			}
-			probehl_zoom=false;
-      }
-      if(MOD==NAHLED && knihovna_id==1)
-      {
-          int Col,Row;
-          Col=DrawGrid_knihovna->Col; Row=DrawGrid_knihovna->Row;
-
-          if(Row==0)
-          {
-          d.vykresli_robota(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",Col+1,1,0,true);
-          minule_souradnice_kurzoru=TPoint(X,Y);
-          d.vykresli_robota(Canvas,X,Y,"","",Col+1,1,0,true);
-        //  element_id=Col+1;
-          }
-          if(Row==1)
-          {
-          d.vykresli_robota(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",Col+3,1,0,true);
-          minule_souradnice_kurzoru=TPoint(X,Y);
-          d.vykresli_robota(Canvas,X,Y,"","",Col+3,1,0,true);
-        //  element_id=Col+3;
-          }
-      }
-      if(MOD==NAHLED && knihovna_id==2)
-      {
-
-          int Col,Row;
-          Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
-
-          if(Row==0)
-          {
-          d.vykresli_otoc(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",Col+5,1,0,true);
-          minule_souradnice_kurzoru=TPoint(X,Y);
-          d.vykresli_otoc(Canvas,X,Y,"","",Col+5,1,0,true);
-         // element_id=Col+5;
-          }
-      }
-
-       if(MOD==NAHLED && knihovna_id==3)
-      {
-          int Col,Row;
-          Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
-
-          if(Row==0)
-          {
-          d.vykresli_stopku(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",1,0,true);
-          minule_souradnice_kurzoru=TPoint(X,Y);
-          d.vykresli_stopku(Canvas,X,Y,"","",1,0,true);
-          element_id=0;
-          }
-
-      }
+			if(MOD==NAHLED)
+			{
+				d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1);
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				d.vykresli_element(Canvas,X,Y,"","",element_id,-1);
+			}
 			break;
-    }
+		}
 		case MOVE://posun objektu
 		{
 			if(posun_objektu)
@@ -2363,8 +2340,15 @@ void TForm1::ESC()
 		case MOVE:d.odznac_oznac_objekt(Canvas,pom,akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x,akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y);break;
 		case ADD:
 		{
-			if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-			else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+			if(MOD!=NAHLED)
+			{
+				if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+				else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+			}
+			else
+			{
+				d.vykresli_element(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"","",element_id,-1);
+      }
 		}break;
 		case VYH:
 		{
@@ -2605,7 +2589,7 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	short pocet_elementu=2;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"OTOČ","",n+4,1,0,0);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"OTOČ","",n+4);
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -2633,7 +2617,7 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	short pocet_elementu=1;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-		d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"STOP STANICE","",1,0,0);
+		d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"STOP","");
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -2647,7 +2631,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 {
 if(MOD==NAHLED)
 {
-  scListGroupKnihovObjektu->Caption="Knihovna robotů";
+	scListGroupKnihovObjektu->Caption="ROBOTI";
 
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	int W=DrawGrid_knihovna->DefaultColWidth  *Z;
@@ -2665,7 +2649,7 @@ if(MOD==NAHLED)
 	short pocet_elementu=4;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 80 ,"ROBOT s","akt. otočí",n,1,0,0);
+		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 80,"ROBOT s","akt. otočí",n);
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -2676,7 +2660,7 @@ if(MOD==NAHLED)
   if(MOD==SCHEMA)
   {
 	////////////////////neAA verze
-  scListGroupKnihovObjektu->Caption="Knihovna objektů";
+	scListGroupKnihovObjektu->Caption="knihovna OBJEKTŮ";
 	TCanvas* C=DrawGrid_knihovna->Canvas;
 	int W=DrawGrid_knihovna->DefaultColWidth;
 	int H=DrawGrid_knihovna->DefaultRowHeight;
@@ -2799,7 +2783,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 			Akce=NIC;kurzor(standard);
 		}
 	}
-  ShowMessage(element_id);
+  //ShowMessage(element_id);
 	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
 }
 //---------------------------------------------------------------------------
@@ -4714,8 +4698,10 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 		C=C->dalsi;
 	}
 		 */
-	  //Zoom*=2;
-	  Form2->ShowModal();
+		Zoom*=2;
+		//Form2->ShowModal();
+
+		//Akce=MEASURE;
 }
 //---------------------------------------------------------------------------
 
@@ -5465,24 +5451,6 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
    ShowMessage(element_id);
 }
 //---------------------------------------------------------------------------
-
-
-
-void __fastcall TForm1::DrawGrid_otoceKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
-
-{
-	FormKeyUp(Sender,Key,Shift);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::DrawGrid_otoceKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-
-{
- FormKeyDown(Sender,Key,Shift);
-}
-//---------------------------------------------------------------------------
-
-
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
@@ -5577,4 +5545,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    }
 }
 //---------------------------------------------------------------------------
+
+
 

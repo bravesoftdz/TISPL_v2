@@ -429,12 +429,12 @@ __published:	// IDE-managed Components
           TGridDrawState State);
   void __fastcall DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
-  void __fastcall DrawGrid_otoceKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
-  void __fastcall DrawGrid_otoceKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
   void __fastcall Button11Click(TObject *Sender);
   void __fastcall scGPButton_stornoClick(TObject *Sender);
+
+
 
 
 

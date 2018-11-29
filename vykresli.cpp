@@ -2419,22 +2419,22 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
-void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short stav,double rotace,short typ)
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
-	switch(typ)
+	switch(eID)
 	{
-			case 0: vykresli_stopku(canv,X,Y,name,short_name,stav,rotace,typ);break;
-			case 1: vykresli_robota(canv,X,Y,name,short_name,eID,stav,rotace,typ);break;
-			case 2: vykresli_robota(canv,X,Y,name,short_name,eID,stav,rotace,typ);break;
-			case 3: vykresli_robota(canv,X,Y,name,short_name,eID,stav,rotace,typ);break;
-			case 4: vykresli_robota(canv,X,Y,name,short_name,eID,stav,rotace,typ);break;
-			case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,stav,rotace,typ);break;
-			case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,stav,rotace,typ);break;
-			default: vykresli_stopku(canv,X,Y,name,short_name,stav,rotace,typ);break;
+		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
+		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		default: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short stav,double rotace,short typ)
+void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
 
@@ -2490,7 +2490,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short stav,double rotace,short typ)
+void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
 
@@ -2508,9 +2508,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//přidružené elementy
-	if(eID==2)vykresli_stopku(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena-2*Z),"","",stav,rotace,typ);//robot se stopkou
-	if(eID==3)vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena-2*Z),"","",5,stav,rotace,typ);//s pasivní otočí
-	if(eID==4)vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena-2*Z),"","",6,stav,rotace,typ);//s aktivní otočí (tj. s otočí a se stopkou)
+	if(eID==2)vykresli_stopku(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",typ,rotace,stav);//robot se stopkou
+	if(eID==3)vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",5,typ,rotace,stav);//s pasivní otočí
+	if(eID==4)vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",6,typ,rotace,stav);//s aktivní otočí (tj. s otočí a se stopkou)
 
 	//nastavení pera
 	if(typ==-1)//stav kurzor
@@ -2654,7 +2654,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 //	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short stav,double rotace,short typ)
+void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
 	short size=m.round(3.5*Z);
@@ -2703,7 +2703,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	}
 
 	//pokud je otoč aktivní tj. se stopkou
-	if(eID==6)vykresli_stopku(canv,X,Y,"","",stav,rotace,typ);
+	if(eID==6)vykresli_stopku(canv,X,Y,"","",typ,stav,rotace);
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
@@ -2726,6 +2726,52 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 			canv->TextOutW(X-canv->TextWidth(name)/2,Y+size+1*Z,name);
 		}
 	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,TColor Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
+{
+	canv->Pen->Width=Width;
+	canv->Pen->Color=Color;
+	canv->Pen->Mode=PenMode;
+	canv->Pen->Style=PenStyle;
+	line(canv,X1,Y1,X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
+{
+	canv->MoveTo(X1,Y1);
+	canv->LineTo(X2,Y2);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek)
+{
+	int W=F->DrawGrid_knihovna->DefaultColWidth*3;
+	int H=F->DrawGrid_knihovna->DefaultRowHeight*3;
+
+	//vykreslení linie
+	set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
+	line(canv,X-W/2+10*3,Y,X+W/2-10*3,Y);
+
+	//popisek
+	canv->Font->Color=clBlack;
+	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+	canv->Font->Size=10*3;
+	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+10*3,Popisek);
+}
+void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek)
+{
+	int W=F->DrawGrid_knihovna->DefaultColWidth*3;
+	int H=F->DrawGrid_knihovna->DefaultRowHeight*3;
+
+	//vykreslení linie
+	set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
+	canv->Arc(X-W/2+10*3,Y-W/2+10*3,X+W/2-10*3,Y+W/2-10*3,X+W/2-10*3,Y+W/2-10*3,X-W/2+10*3,Y-W/2+10*3);
+
+	//popisek
+	canv->Font->Color=clBlack;
+	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+	canv->Font->Size=10*3;
+	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+10*3,Popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
