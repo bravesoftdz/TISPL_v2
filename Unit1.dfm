@@ -2713,8 +2713,8 @@ object Form1: TForm1
       JumpWhenClick = True
       CanFocused = False
       MouseSupport = True
-      MinValue = 0
-      MaxValue = 10
+      MinValue = 1
+      MaxValue = 15
       Value = 2
       Vertical = False
       ReadOnly = False

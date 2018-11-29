@@ -2052,10 +2052,11 @@ void TForm1::ZOOM_IN()
 				ZOOM();
 		}
 		else
-		if(Zoom<5) //max
+		if(Zoom<10) //max
 		{
 			Uloz_predchozi_pohled();
-			Zoom+=0.5;
+      if(Zoom>=5) Zoom+=1.0;
+			else Zoom+=0.5;
 			ZOOM();
 		}
 }
@@ -2066,7 +2067,8 @@ void TForm1::ZOOM_OUT()
 		if(Zoom>0.5)
 		{
 			Uloz_predchozi_pohled();
-			Zoom-=0.5;
+      if(Zoom>=5) Zoom-=1.0;
+			else Zoom-=0.5;
 			ZOOM();
 		}
 		else
@@ -3406,6 +3408,10 @@ void TForm1::NP_input()
 {
 
    MOD=NAHLED;
+
+   Zoom_predchozi=Zoom;
+   Zoom=5.0; on_change_zoom_change_scGPTrackBar();
+   Zoom_predchozi=Zoom;
 
    DrawGrid_knihovna->DefaultRowHeight=100;
    DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
@@ -4972,6 +4978,11 @@ void __fastcall TForm1::scGPTrackBar1Change(TObject *Sender)
 			case 8:Zoom=4;break;
 			case 9:Zoom=4.5;break;
 			case 10:Zoom=5;break;
+      case 11:Zoom=6;break;
+      case 12:Zoom=7;break;
+      case 13:Zoom=8;break;
+      case 14:Zoom=9;break;
+      case 15:Zoom=10;break;
 		}
 		scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 		REFRESH();
@@ -4991,6 +5002,11 @@ void TForm1::on_change_zoom_change_scGPTrackBar()
 	if(Zoom==4)			scGPTrackBar1->Value=8;
 	if(Zoom==4.5)		scGPTrackBar1->Value=9;
 	if(Zoom==5)			scGPTrackBar1->Value=10;
+  if(Zoom==6)		  scGPTrackBar1->Value=11;
+  if(Zoom==7)		  scGPTrackBar1->Value=12;
+  if(Zoom==8)		  scGPTrackBar1->Value=13;
+  if(Zoom==9)		  scGPTrackBar1->Value=14;
+  if(Zoom==10)		scGPTrackBar1->Value=15;
 	scLabel_ZOOM->Caption=AnsiString(Zoom*100)+" %";
 }
 //---------------------------------------------------------------------------
@@ -5553,6 +5569,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
  if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
    {
+   Zoom=1.0;
+   on_change_zoom_change_scGPTrackBar();
+
+
    DrawGrid_knihovna->DefaultRowHeight=50;
    scListGroupPanel_hlavickaOtoce->Visible=false;
    scListGroupPanel_hlavickaOstatni->Visible=false;
@@ -5577,4 +5597,5 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    }
 }
 //---------------------------------------------------------------------------
+
 
