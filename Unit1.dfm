@@ -3168,9 +3168,9 @@ object Form1: TForm1
     end
     object scListGroupPanel_hlavickaOstatni: TscListGroupPanel
       Left = 0
-      Top = 317
+      Top = 315
       Width = 166
-      Height = 120
+      Height = 85
       Align = alCustom
       TabOrder = 1
       Visible = False
@@ -3195,7 +3195,7 @@ object Form1: TForm1
         Left = 0
         Top = 32
         Width = 165
-        Height = 57
+        Height = 53
         ParentCustomHint = False
         Align = alCustom
         BevelInner = bvNone
@@ -3204,7 +3204,7 @@ object Form1: TForm1
         ColCount = 2
         Ctl3D = False
         DefaultColWidth = 70
-        DefaultRowHeight = 50
+        DefaultRowHeight = 53
         FixedColor = clWhite
         FixedCols = 0
         RowCount = 4
@@ -3225,7 +3225,7 @@ object Form1: TForm1
       Left = 0
       Top = 224
       Width = 166
-      Height = 87
+      Height = 85
       Align = alCustom
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3256,7 +3256,7 @@ object Form1: TForm1
         Left = 0
         Top = 32
         Width = 165
-        Height = 55
+        Height = 53
         ParentCustomHint = False
         Align = alCustom
         BevelInner = bvNone
@@ -3265,7 +3265,7 @@ object Form1: TForm1
         ColCount = 2
         Ctl3D = False
         DefaultColWidth = 70
-        DefaultRowHeight = 50
+        DefaultRowHeight = 53
         FixedColor = clWhite
         FixedCols = 0
         RowCount = 4
@@ -3313,7 +3313,7 @@ object Form1: TForm1
         Left = 0
         Top = 32
         Width = 165
-        Height = 57
+        Height = 48
         ParentCustomHint = False
         Align = alCustom
         BevelInner = bvNone
@@ -4170,8 +4170,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1149
-        Top = 1312
+        Left = 1155
+        Top = 1318
         Width = 244
         Height = 31
         Align = alCustom
@@ -6692,7 +6692,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800C805C80510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C805CC0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7817,7 +7817,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013400F805F80530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013400F805FC0530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -2589,9 +2589,13 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	double Zoom_back=Zoom;//záloha zoomu
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=2;
+  AnsiString label1;
+  AnsiString label2;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"OTOČ","",n+4);
+    if(n==1){ label1= "Pasivní"; label2=""; }
+    if(n==2){ label1= "Aktivní"; label2=""; }
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4);
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -2648,10 +2652,16 @@ if(MOD==NAHLED)
 	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+  AnsiString label1;
+  AnsiString label2;
 	short pocet_elementu=4;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 80,"ROBOT s","akt. otočí",n);
+  if(n==1){ label1= "Kontinuální"; label2="lakování"; }
+  if(n==2){ label1= "S&G"; label2="lakování"; }
+  if(n==3){ label1= "Kontinuální s";  label2="pasiv. otočí"; }
+  if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
+		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -3397,7 +3407,8 @@ void TForm1::NP_input()
    Zoom=5.0; on_change_zoom_change_scGPTrackBar();
    Zoom_predchozi=Zoom;
 
-   DrawGrid_knihovna->DefaultRowHeight=100;
+   DrawGrid_knihovna->DefaultRowHeight=140;
+   DrawGrid_knihovna->DefaultColWidth=80;
    DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
    DrawGrid_knihovna->Invalidate();
    scListGroupPanel_hlavickaOtoce->Visible=true;
