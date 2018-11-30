@@ -1166,13 +1166,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		}
 //	}
 
-	//toto Rosta bude nastavovat jinde z uživatelského vstupu/rozhraní
-	d.v.PP.raster.show=true;
-	d.v.PP.raster.filename="kabina_base_coat.bmp";
-	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());//Rosto - nebude použito
-	d.v.PP.raster.X=10;d.v.PP.raster.Y=-10;//souřadnice v metrech
-	d.v.PP.raster.resolution=0.01200428724544480171489817792069;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
-	//---
 
 	//načtení rastru
 	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
@@ -2637,7 +2630,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 {
 if(MOD==NAHLED)
 {
-	scListGroupKnihovObjektu->Caption="ROBOTI";
+	scListGroupKnihovObjektu->Caption="Roboti";
 
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	int W=DrawGrid_knihovna->DefaultColWidth  *Z;
@@ -2776,9 +2769,11 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
 	Col=DrawGrid_knihovna->Col; Row=DrawGrid_knihovna->Row;
   knihovna_id=1;
-
+  if(MOD==NAHLED)
+  {
   if(Row==0)element_id=Col+1;
   if(Row==1)element_id=Col+3;
+  }
 
 	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
 	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
@@ -2831,11 +2826,6 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseLeave(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //přeposílá událost na form
-void __fastcall TForm1::DrawGrid_knihovnaKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
-{
-	FormKeyUp(Sender,Key,Shift);
-}
-//---------------------------------------------------------------------------
 //přeposílá událost na form
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
@@ -4846,6 +4836,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 		scSplitView_MENU->Close();
 		deaktivace_zamerovace();
 	}
+  //if(d.v.PP.raster.show==true) scGPCheckBox_zobraz_podklad->Checked=true;
 
 }
 //---------------------------------------------------------------------------
@@ -5457,8 +5448,10 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 	int Col,Row;
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
   knihovna_id=2;
+  if(MOD==NAHLED)
+  {
   if(Row==0) element_id=Col+5;
-
+  }
 	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
 	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
 
@@ -5475,7 +5468,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 		}
 	}
 	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
-   ShowMessage(element_id);
+  // ShowMessage(element_id);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
@@ -5485,7 +5478,10 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
 	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
   knihovna_id=3;
+  if(MOD==NAHLED)
+  {
   if(Row==0)  element_id=0;
+  }
 
 	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
 	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
@@ -5503,7 +5499,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 		}
 	}
 	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
-   ShowMessage(element_id);
+  // ShowMessage(element_id);
 }
 //---------------------------------------------------------------------------
 
@@ -5577,5 +5573,131 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
+{
 
+ 	scSplitView_MENU->Opened=false;
+  OpenDialog1->Title="Načíst podklad";
+	OpenDialog1->DefaultExt="*.bmp";
+	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
+	if(OpenDialog1->Execute())
+	{
+		//načtení podkladu
+		Nacist_podklad(OpenDialog1->FileName);
+	}
+}
+//---------------------------------------------------------------------------
+
+ unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor)
+ {
+
+	d.v.PP.raster.show=true;
+	d.v.PP.raster.filename=soubor;
+	d.v.PP.raster.X=10;d.v.PP.raster.Y=-10;//souřadnice v metrech
+	d.v.PP.raster.resolution=0.01200428724544480171489817792069;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
+  scGPCheckBox_zobraz_podklad->Checked=true;
+  scButton_nacist_podklad->Down=false;
+  REFRESH();
+
+ }
+ //--------------------------------------------------------------
+void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, int ARow,
+          TRect &Rect, TGridDrawState State)
+{
+
+	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	int W=DrawGrid_geometrie->DefaultColWidth  *Z;
+	int H=DrawGrid_geometrie->DefaultRowHeight  *Z;
+	int P=-1*DrawGrid_geometrie->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+
+	Cantialising a;
+	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+	bmp_in->Width=DrawGrid_geometrie->Width*Z;bmp_in->Height=DrawGrid_geometrie->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+	double Zoom_back=Zoom;//záloha zoomu
+	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+	short pocet_elementu=2;
+  AnsiString label1;
+  AnsiString label2;
+	for(unsigned short n=1;n<=pocet_elementu;n++)
+	{
+    if(n==1)
+    {
+     label1= "Linie";
+     label2="";
+     d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+   //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+     }
+    if(n==2)
+    {
+     label1= "Oblouk";
+     label2="";
+     d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+     }
+
+	}
+	Zoom=Zoom_back;//návrácení původního zoomu
+	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+	DrawGrid_geometrie->Canvas->Draw(0,0,bmp_out);
+	delete (bmp_out);//velice nutné
+	delete (bmp_in);//velice nutné
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+	int Col,Row;
+	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
+	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
+  knihovna_id=4;
+  if(MOD==NAHLED)
+  {
+  if(Row==0 && Col==0)  element_id=7;
+  if(Row==0 && Col==1)  element_id=8;
+  }
+
+	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
+	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
+
+	if(Col>-1 && Row>-1)
+	{
+		vybrany_objekt=Col+Row+Row;
+		Akce=ADD;kurzor(add_o);//Screen->Cursor=crCross;
+		add_posledni=true;pom=NULL;
+		//ShowMessage(vybrany_objekt);
+		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
+		{
+			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
+			Akce=NIC;kurzor(standard);
+		}
+	}
+	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
+  // ShowMessage(element_id);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
+{
+ if(!scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
+    {
+    d.v.PP.raster.show=false;
+    scSplitView_OPTIONS->Opened=false;
+    scGPCheckBox_zobraz_podklad->Checked=false;
+    }
+
+ if(scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
+    {
+    d.v.PP.raster.show=true;
+    scSplitView_OPTIONS->Opened=false;
+    scGPCheckBox_zobraz_podklad->Checked=true;
+    }
+
+     REFRESH();
+}
+//---------------------------------------------------------------------------
 
