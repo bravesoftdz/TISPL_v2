@@ -281,6 +281,13 @@ __published:	// IDE-managed Components
   TscGPCheckBox *scGPCheckBox2;
   TscGPTrackBar *scGPTrackBar2;
   TscLabel *scLabel1_svetelnost;
+  TscGPButton *scGPButton_kalibrace;
+  TscGPButton *scGPButton_adjustace;
+  TscGPLabel *scGPLabel_otoce;
+  TscGPLabel *scGPLabel_stop;
+  TscGPLabel *scGPLabel_geometrie;
+  TscGPLabel *scGPLabel_poznamky;
+  TscGPLabel *scGPLabel_roboti;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -443,6 +450,10 @@ __published:	// IDE-managed Components
   void __fastcall DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
   void __fastcall scGPCheckBox_zobraz_podkladClick(TObject *Sender);
+  void __fastcall scGPButton_kalibraceClick(TObject *Sender);
+  void __fastcall scGPButton_adjustaceClick(TObject *Sender);
+  void __fastcall DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int ARow,
+          TRect &Rect, TGridDrawState State);
 
 
 
@@ -456,7 +467,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE};Takce Akce;
 	Cvektory::TObjekt *pom,*pom_vyhybka,*copyObjekt;
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA V›PO»ETNÕ »¡ST PO tj. PO_math
@@ -523,6 +534,7 @@ private:
 	UnicodeString LICENCE;
 	short n_prihlaseni;
 	bool ortogonalizace_stav;
+  bool kalibrace_hotova;
 
 private:
 	bool pan_non_locked;

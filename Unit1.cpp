@@ -23,6 +23,8 @@
 #include "kabina_schema.h"
 #include "Unit2.h"
 #include "gapoR.h"
+#include "adjustace.h"
+#include "kalibrace.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -169,6 +171,7 @@ void TForm1::NewDesignSettings()
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
 	TColor active_blue=(TColor)RGB(0,120,215);
+  TColor clDrawGridHeaderFont=m.clIntensive(RGB(43,87,154),0);
 
 	PopupMenuButton->Left = 0;
 	PopupMenuButton->Visible = false;
@@ -176,6 +179,12 @@ void TForm1::NewDesignSettings()
 	DetailsButton->Visible = true;
 	scSplitView_OPTIONS->Opened=false;
 	scSplitView_OPTIONS->Align=alRight;
+
+  scGPLabel_otoce->Font->Color=clDrawGridHeaderFont;
+  scGPLabel_roboti->Font->Color= scGPLabel_otoce->Font->Color;
+  scGPLabel_stop->Font->Color= scGPLabel_otoce->Font->Color;
+  scGPLabel_geometrie->Font->Color = scGPLabel_otoce->Font->Color;
+  scGPLabel_poznamky->Font->Color =  scGPLabel_otoce->Font->Color;
 
  //	scGPGlyphButton_definice_zakazek->Options->NormalColor=active_blue;
  //	scGPGlyphButton_parametry_linky->Options->NormalColor=active_blue;
@@ -1643,6 +1652,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						}
 						case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
 						case MEASURE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
+            case ADJUSTACE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
 						default: break;
 					}
 					DuvodUlozit(true);
@@ -1804,6 +1814,13 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				d.vykresli_meridlo(Canvas,X,Y);
 			}
 		}break;
+    case ADJUSTACE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
+		{
+			if(stisknute_leve_tlacitko_mysi)
+			{
+				d.vykresli_meridlo(Canvas,X,Y);
+			}
+		}break;
 		case NIC:
 		{
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
@@ -1838,6 +1855,20 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				{
 					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
 					MB(AnsiString(delka)+" [metrů]");
+					Akce=NIC;
+					Invalidate();
+				}break;
+        case ADJUSTACE:
+				{
+					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
+					//"Zadejte vzdálenost v metrech"
+          if(Form_adjustace->ShowModal()==mrOk)
+		      {
+          double vzdalenost=0.0;
+          vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value;
+          d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
+          REFRESH();
+          } else  d.v.PP.raster.show=false;
 					Akce=NIC;
 					Invalidate();
 				}break;
@@ -2586,8 +2617,8 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
   AnsiString label2;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-    if(n==1){ label1= "Pasivní"; label2=""; }
-    if(n==2){ label1= "Aktivní"; label2=""; }
+    if(n==1){ label1= "pasivní"; label2=""; }
+    if(n==2){ label1= "aktivní"; label2=""; }
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4);
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
@@ -2624,6 +2655,51 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	delete (bmp_out);//velice nutné
 	delete (bmp_in);//velice nutné
 }
+
+//------------------------------------------------------------------------------------------------
+
+void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int ARow,
+          TRect &Rect, TGridDrawState State)
+{
+	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	int W=DrawGrid_poznamky->DefaultColWidth  *Z;
+	int H=DrawGrid_poznamky->DefaultRowHeight  *Z;
+	int P=-1*DrawGrid_poznamky->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+
+	Cantialising a;
+	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+	bmp_in->Width=DrawGrid_poznamky->Width*Z;bmp_in->Height=DrawGrid_poznamky->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+	double Zoom_back=Zoom;//záloha zoomu
+	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+	short pocet_elementu=2;
+  AnsiString label1;
+  AnsiString label2;
+	for(unsigned short n=1;n<=pocet_elementu;n++)
+	{
+    if(n==1)
+    {
+     label1= "text";
+     label2="";
+     d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1);
+   //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+     }
+    if(n==2)
+    {
+     label1= "šipka";
+     label2="";
+     d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1);
+     }
+
+	}
+	Zoom=Zoom_back;//návrácení původního zoomu
+	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+	DrawGrid_poznamky->Canvas->Draw(0,0,bmp_out);
+	delete (bmp_out);//velice nutné
+	delete (bmp_in);//velice nutné
+}
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
 			TGridDrawState State)
@@ -2650,9 +2726,9 @@ if(MOD==NAHLED)
 	short pocet_elementu=4;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-  if(n==1){ label1= "Kontinuální"; label2="lakování"; }
+  if(n==1){ label1= "kontinuální"; label2="lakování"; }
   if(n==2){ label1= "S&G"; label2="lakování"; }
-  if(n==3){ label1= "Kontinuální s";  label2="pasiv. otočí"; }
+  if(n==3){ label1= "kontinuální s";  label2="pasiv. otočí"; }
   if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
 		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
 	}
@@ -2665,7 +2741,7 @@ if(MOD==NAHLED)
   if(MOD==SCHEMA)
   {
 	////////////////////neAA verze
-	scListGroupKnihovObjektu->Caption="knihovna OBJEKTŮ";
+	scListGroupKnihovObjektu->Caption="Technolog.objekty";
 	TCanvas* C=DrawGrid_knihovna->Canvas;
 	int W=DrawGrid_knihovna->DefaultColWidth;
 	int H=DrawGrid_knihovna->DefaultRowHeight;
@@ -3401,18 +3477,38 @@ void TForm1::NP_input()
    DrawGrid_knihovna->DefaultColWidth=80;
    DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
    DrawGrid_knihovna->Invalidate();
+
+   DrawGrid_otoce->DefaultColWidth=80;
+
+    scGPLabel_roboti->Visible=true;
+    scGPLabel_otoce->Visible=true;
+    scGPLabel_stop->Visible=true;
+    scGPLabel_geometrie->Visible=true;
+    scGPLabel_poznamky->Visible=true;
+
+    scGPLabel_roboti->Top=scGPPanel_mainmenu->Height;
+
    scListGroupPanel_hlavickaOtoce->Visible=true;
    scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
+   scGPLabel_otoce->Top = scListGroupPanel_hlavickaOtoce->Top  + scGPPanel_mainmenu->Height;//scListGroupPanel_hlavickaOtoce->Top + scGPPanel_mainmenu->Height;
    DrawGrid_otoce->Visible=true;
+
    scListGroupPanel_hlavickaOstatni->Visible=true;
    scListGroupPanel_hlavickaOstatni->Top=scListGroupPanel_hlavickaOtoce->Top + scListGroupPanel_hlavickaOtoce->Height;
+   scGPLabel_stop->Top=scListGroupPanel_hlavickaOstatni->Top + scGPPanel_mainmenu->Height;
    DrawGrid_ostatni->Visible=true;
+
    scListGroupPanel_geometrie->Visible=true;
    scListGroupPanel_geometrie->Top=scListGroupPanel_hlavickaOstatni->Top +   scListGroupPanel_hlavickaOstatni->Height;
+   scGPLabel_geometrie->Top=scListGroupPanel_geometrie->Top + scGPPanel_mainmenu->Height;
    DrawGrid_geometrie->Visible=true;
+
    scListGroupPanel_poznamky->Visible=true;
    scListGroupPanel_poznamky->Top= scListGroupPanel_geometrie->Top + scListGroupPanel_geometrie->Height;
+   scGPLabel_poznamky->Top=scListGroupPanel_poznamky->Top + scGPPanel_mainmenu->Height;
    DrawGrid_poznamky->Visible=true;
+
+ //  scGPLabel1->Font
 
    scEdit_nazev->Visible=true;
    scEdit_zkratka->Visible=true;
@@ -5557,6 +5653,12 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    scListGroupKnihovObjektu->Align=alLeft;
    DrawGrid_knihovna->Invalidate();
 
+   scGPLabel_roboti->Visible=false;
+   scGPLabel_otoce->Visible=false;
+   scGPLabel_stop->Visible=false;
+   scGPLabel_geometrie->Visible=false;
+   scGPLabel_poznamky->Visible=false;
+
    scEdit_nazev->Visible=false;
    scEdit_zkratka->Visible=false;
 
@@ -5590,14 +5692,15 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 
  unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor)
  {
-
-	d.v.PP.raster.show=true;
+  ShowMessage("ted");
+  d.v.PP.raster.show=true;
 	d.v.PP.raster.filename=soubor;
 	d.v.PP.raster.X=10;d.v.PP.raster.Y=-10;//souřadnice v metrech
 	d.v.PP.raster.resolution=0.01200428724544480171489817792069;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
   scGPCheckBox_zobraz_podklad->Checked=true;
   scButton_nacist_podklad->Down=false;
   REFRESH();
+  Form_kalibrace->ShowModal();
 
  }
  //--------------------------------------------------------------
@@ -5625,14 +5728,14 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 	{
     if(n==1)
     {
-     label1= "Linie";
+     label1= "linie";
      label2="";
      d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
    //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
      }
     if(n==2)
     {
-     label1= "Oblouk";
+     label1= "oblouky";
      label2="";
      d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
      }
@@ -5700,4 +5803,28 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
      REFRESH();
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
+{
+kurzor(add_o);
+d.v.PP.raster.X=akt_souradnice_kurzoru_PX.x;
+d.v.PP.raster.Y=akt_souradnice_kurzoru_PX.y;
+//d.v.PP.raster.X=m.P2Lx
+REFRESH();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
+{
+Akce=ADJUSTACE;
+}
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+
+
+
+
+
 
