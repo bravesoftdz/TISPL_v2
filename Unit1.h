@@ -276,6 +276,11 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_storno;
   TscEdit *scEdit_nazev;
   TscEdit *scEdit_zkratka;
+  TscGPCheckBox *scGPCheckBox_zobraz_podklad;
+  TscButton *scButton_nacist_podklad;
+  TscGPCheckBox *scGPCheckBox2;
+  TscGPTrackBar *scGPTrackBar2;
+  TscLabel *scLabel1_svetelnost;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -302,7 +307,6 @@ __published:	// IDE-managed Components
 	void __fastcall DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled);
 	void __fastcall DrawGrid_knihovnaMouseLeave(TObject *Sender);
-	void __fastcall DrawGrid_knihovnaKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall RzSizePanel_knihovna_objektu_OLDMouseEnter(TObject *Sender);
@@ -433,6 +437,13 @@ __published:	// IDE-managed Components
           TShiftState Shift, int X, int Y);
   void __fastcall Button11Click(TObject *Sender);
   void __fastcall scGPButton_stornoClick(TObject *Sender);
+  void __fastcall scButton_nacist_podkladClick(TObject *Sender);
+  void __fastcall DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, int ARow,
+          TRect &Rect, TGridDrawState State);
+  void __fastcall DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
+  void __fastcall scGPCheckBox_zobraz_podkladClick(TObject *Sender);
+
 
 
 
@@ -455,7 +466,6 @@ private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
-
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
@@ -481,7 +491,9 @@ private:
 	void Novy_soubor();//samotné vytvoøení nového souboru
 	void Ulozit_soubor();//samotné uložení
 	void Otevrit_soubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
+  void Nacist_podklad();//realizuje otevøení opendialogu s následným voláním realizace samotného nacteni podkladu
 	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
+  unsigned short int Nacist_podklad(UnicodeString soubor);//realizuje nacteni podkladu
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
