@@ -33,9 +33,10 @@ class Cmy
 	//long L2Px(double logicka, unsigned short int Zoom, double Posunuti, unsigned short int ClientWidth);//Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
 	//long L2Py(double logicka, unsigned short int Zoom, double Posunuti, unsigned short int ClientHeight);//Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
 	//long L2PyTEST(double logicka, unsigned short int Zoom, double Posunuti, unsigned short int ClientHeight);//Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
-	long m2px(unsigned int meter,unsigned int Scale=1);//pøevede vzdálenost v metrech na vzdálenost monitoru
-  float px2m(unsigned int px,unsigned int Scale=1);//Pøevede logické jednotky (udajnì metry) na pixely monitoru
-  long px_offset(unsigned int X,unsigned int Y,long Distance);//vráti souøadnice pixelù posunuté o Distance METRù
+	//long m2px(unsigned int meter,unsigned int Scale=1);//pøevede vzdálenost v metrech na vzdálenost monitoru
+	//float px2m(unsigned int px,unsigned int Scale=1);//Pøevede logické jednotky (udajnì metry) na pixely monitoru
+	long double getResolution(int puvX,int puvY,int aktX,int aktY,double metry);//dle zmìøeného úseku na monitoru pøevede tuto pixelovou vzádlenost a hodnotu v podobì uživatelského vstupu v metrech na hodnotu rozlišení podkladu
+	long px_offset(unsigned int X,unsigned int Y,long Distance);//vráti souøadnice pixelù posunuté o Distance METRù
 	bool cele_cislo(double number);
 	double mod_d(double number1,double number2);//možno nahradit fci fmod z math.h  - to si už tak nejsem jistý viz paramatry této funkce - ukazatel?
 	bool isFinite(double number1,double number2);

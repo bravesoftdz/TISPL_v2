@@ -98,6 +98,12 @@ double Cmy::P2Ly(long fyzicka)
 	{return 0;}
 }
 /////////////////////////////////////////////////////////////////////////////
+//dle zmìøeného úseku na monitoru pøevede tuto pixelovou vzádlenost a hodnotu v podobì uživatelského vstupu v metrech na hodnotu rozlišení podkladu
+long double Cmy::getResolution(int puvX,int puvY,int aktX,int aktY,double metry)
+{
+	return metry/delka(puvX,puvY,aktX,aktY);//výpoèet metry dìleno poèet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického mìøítka) je 0.1
+}
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::delka(double X1,double Y1,double X2,double Y2)
 {
 	return sqrt(pow(X2-X1,2)+ pow(Y2-Y1,2));

@@ -2430,7 +2430,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		default: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
+		default:vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2498,6 +2498,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double rotace_ramene=0;
 	double delka_ramena=1.2*Z/F->m2px;
 	float sirka_ramena=0.2*Z/F->m2px;
+	double delka_LO=1.5*Z/F->m2px;//délka lakovacího okna
 
 	//konstanty
 	float sirka_zakladny=1.0*Z/F->m2px;
@@ -2506,11 +2507,15 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	float tloustka_linie=1/3.0;
 	TColor barva=clBlack;
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
-
+																		 //if(eID==4)vykresli_lakovaci_okno(canv,X,Y,delka_LO,delka_ramena,rotace);
 	//přidružené elementy
-	if(eID==2)vykresli_stopku(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",typ,rotace,stav);//robot se stopkou
-	if(eID==3)vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",5,typ,rotace,stav);//s pasivní otočí
-	if(eID==4)vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",6,typ,rotace,stav);//s aktivní otočí (tj. s otočí a se stopkou)
+	switch(eID)
+	{
+		case 1: if(typ==1)vykresli_lakovaci_okno(canv,X,Y-sirka_zakladny/2,delka_LO,delka_ramena,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 2: vykresli_stopku(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",typ,rotace,stav);break;//robot se stopkou
+		case 3: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",5,typ,rotace,stav);break;//s pasivní otočí
+		case 4: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",6,typ,rotace,stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+	}
 
 	//nastavení pera
 	if(typ==-1)//stav kurzor
@@ -2568,7 +2573,6 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	Sx=Sx+K.x;Sy=Sy+K.y;
 	K=m.rotace(sirka_ramena*1.5,90,0);
 	canv->LineTo(Sx+K.x,Sy+K.y);
-
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
@@ -2703,7 +2707,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	}
 
 	//pokud je otoč aktivní tj. se stopkou
-	if(eID==6)vykresli_stopku(canv,X,Y,"","",typ,stav,rotace);
+	if(eID==6)vykresli_stopku(canv,X,Y,"","",typ,rotace,stav);
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
@@ -2728,6 +2732,17 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double delka_LO,double delka_ramena,double rotace)
+{
+	canv->Pen->Width=1;
+	canv->Pen->Color=clGray;
+	canv->Pen->Mode=pmCopy;
+	canv->Pen->Style=psDash;
+	//m.rotace(delka_ramena/2,25,0);
+	line(canv,X,Y,m.round(X-delka_LO/2),m.round(Y-delka_ramena));
+	line(canv,X,Y,m.round(X+delka_LO/2),m.round(Y-delka_ramena));
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,TColor Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
 {
 	canv->Pen->Width=Width;
@@ -2745,33 +2760,90 @@ void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek)
 {
-	int W=F->DrawGrid_knihovna->DefaultColWidth*3;
-	int H=F->DrawGrid_knihovna->DefaultRowHeight*3;
+	short o=10*3;
+	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 
 	//vykreslení linie
 	set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
-	line(canv,X-W/2+10*3,Y,X+W/2-10*3,Y);
+	line(canv,X-W+8,Y-W/2,X+W-8,Y-W/2);
 
 	//popisek
+	canv->Brush->Style=bsClear;
 	canv->Font->Color=clBlack;
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
-	canv->Font->Size=10*3;
-	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+10*3,Popisek);
+	canv->Font->Size=o;
+	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
+
+//	set_pen(canv,clRed,1,PS_ENDCAP_FLAT);
+//	line(canv,X-5,Y-5,X+5,Y+5);
+//	line(canv,X+5,Y+5,X-5,Y-5);
 }
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek)
 {
-	int W=F->DrawGrid_knihovna->DefaultColWidth*3;
-	int H=F->DrawGrid_knihovna->DefaultRowHeight*3;
+	short o=10*3;
+	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	short C=W/2;//zajištění vycentrování
 
 	//vykreslení linie
 	set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
-	canv->Arc(X-W/2+10*3,Y-W/2+10*3,X+W/2-10*3,Y+W/2-10*3,X+W/2-10*3,Y+W/2-10*3,X-W/2+10*3,Y-W/2+10*3);
+	canv->Arc(X-W-C,Y-W,X+W-C,Y+W,X+W-C,Y,X-C,Y-W);//směr proti hodinovým ručičkám
 
 	//popisek
+	canv->Brush->Style=bsClear;
 	canv->Font->Color=clBlack;
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
-	canv->Font->Size=10*3;
-	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+10*3,Popisek);
+	canv->Font->Size=o;
+	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
+}
+
+//		int X=300;int Y=600;//střed čtverce obsaného
+//		int R=500;//Radius
+//		int SA=90;//výchozí úhel, pod kterým oblouk začíná, musí být kladný
+//		int RA=-90;//rotační úhel, pod kterým je oblouk rotován - směřován, může být záporný
+//		Canvas->MoveTo(X, Y-R);//musí se přesunout pero na začátek, v případě kontinuálního kreslení netřeba
+//		Canvas->AngleArc(X, Y, R,SA,RA);
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek)
+{
+	short o=10*3;
+	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	short C=W/2;//zajištění vycentrování
+	canv->Brush->Style=bsClear;
+	canv->Font->Color=clGray;
+
+	//ikona - ABC
+	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+	canv->Font->Size=o*1.5;
+	canv->TextOutW(X-canv->TextWidth("ABC")/2,Y-o*2,"ABC");
+
+	//popisek
+	canv->Brush->Style=bsClear;
+	canv->Font->Size=o;
+	canv->Font->Color=clBlack;
+	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek)
+{
+	short o=10*3;
+	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	short C=W/2;//zajištění vycentrování
+	canv->Brush->Style=bsClear;
+	canv->Font->Color=clGray;
+
+	//vykreslení linie
+	set_pen(canv,clGray,1*3,PS_ENDCAP_FLAT);
+	line(canv,X-W+8,Y,X+W-8,Y-W+8);
+
+	//vykreslení šipky                      //pozor musí být invetované souřadnice Y (log. vs. fyz. souřadnice), metoda je stavěna na kartéské (logické souřadnice), nikoliv soužadnice monitoru (fyzické)
+	sipka(canv,X+W-8,Y-W+8,m.azimut(X-W+8,Y,X+W-8,Y+W-8),false,1,clGray,clGray);//děleno Z na negaci *Zoom v metodě šipka
+
+	//popisek
+	canv->Font->Size=o;
+	canv->Brush->Style=bsClear;
+	canv->Font->Color=clBlack;
+	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -72,10 +72,13 @@ class Cvykresli
 	void vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1);
 	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
 	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
+	void vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double delka_LO,double delka_ramena,double rotace=0);
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,TColor Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
-	void vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek);
-	void vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek);
+	void vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek="linie");
+	void vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek="oblouky");
+	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text");
+	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice");
 	void rotace_textu(TCanvas *canv, long rotace);//úhel rotace je desetinách stupnì
 	void set_pen(TCanvas *canv, TColor color, int width, int style=PS_ENDCAP_SQUARE);//vrátí HANDLE na nastavení pera,//popø.PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE viz Matoušek III str. 179 èi http://www.zive.cz/clanky/geometricka-pera/sc-3-a-103079
 	TColor set_color(TCanvas *canv, Cvektory::TObjekt *O);
