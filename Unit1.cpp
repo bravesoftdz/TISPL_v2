@@ -171,7 +171,7 @@ void TForm1::NewDesignSettings()
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
 	TColor active_blue=(TColor)RGB(0,120,215);
-  TColor clDrawGridHeaderFont=m.clIntensive(RGB(43,87,154),0);
+  TColor clDrawGridHeaderFont=m.clIntensive(RGB(43,87,154),30);
 
 	PopupMenuButton->Left = 0;
 	PopupMenuButton->Visible = false;
@@ -1159,6 +1159,15 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
+
+ if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
+ {
+   scGPLabel_roboti->Visible=true;
+   scGPLabel_roboti->Caption="Technolog. objekty";
+   scGPLabel_roboti->ContentMarginLeft=4;
+   scListGroupKnihovObjektu->Height=1920; // kvůli odstranění bílé linky, která vznikala pod knihovnou objektů
+   }
+
 
 //	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
 //	{
@@ -2683,14 +2692,14 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
     {
      label1= "text";
      label2="";
-     d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1);
+     d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
    //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
      }
     if(n==2)
     {
      label1= "šipka";
      label2="";
-     d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1);
+     d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
      }
 
 	}
@@ -3475,6 +3484,7 @@ void TForm1::NP_input()
 
    DrawGrid_knihovna->DefaultRowHeight=140;
    DrawGrid_knihovna->DefaultColWidth=80;
+   DrawGrid_knihovna->Left=0;
    DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
    DrawGrid_knihovna->Invalidate();
 
@@ -3508,7 +3518,10 @@ void TForm1::NP_input()
    scGPLabel_poznamky->Top=scListGroupPanel_poznamky->Top + scGPPanel_mainmenu->Height;
    DrawGrid_poznamky->Visible=true;
 
- //  scGPLabel1->Font
+   //musí být nastaven i zde, protože se tento label používá jak ve schematu tak i zde
+   scGPLabel_roboti->Visible=true;
+   scGPLabel_roboti->Caption="Roboti";
+   scGPLabel_roboti->ContentMarginLeft=10;
 
    scEdit_nazev->Visible=true;
    scEdit_zkratka->Visible=true;
@@ -5645,6 +5658,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 
 
    DrawGrid_knihovna->DefaultRowHeight=50;
+   DrawGrid_knihovna->DefaultColWidth=70;
+   DrawGrid_knihovna->Left=10;
    scListGroupPanel_hlavickaOtoce->Visible=false;
    scListGroupPanel_hlavickaOstatni->Visible=false;
    scListGroupPanel_geometrie->Visible=false;
@@ -5668,6 +5683,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    scEdit_zkratka->Left = scEdit_nazev->Left +  scEdit_nazev->Width + 10;
    scGPButton_OK->Visible=false;
    scGPButton_storno->Visible=false;
+
+   scGPLabel_roboti->Visible=true;
+   scGPLabel_roboti->Caption="Technolog. objekty";
+   scGPLabel_roboti->ContentMarginLeft=4;
 
    MOD=SCHEMA;
 
@@ -5822,6 +5841,7 @@ Akce=ADJUSTACE;
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
+
 
 
 

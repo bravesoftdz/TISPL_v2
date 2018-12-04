@@ -3141,9 +3141,9 @@ object Form1: TForm1
       HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_knihovna: TDrawGrid
-        Left = 0
+        Left = 10
         Top = 33
-        Width = 165
+        Width = 167
         Height = 350
         ParentCustomHint = False
         Align = alCustom
@@ -3175,7 +3175,7 @@ object Form1: TForm1
       Left = 0
       Top = 315
       Width = 166
-      Height = 85
+      Height = 90
       Align = alCustom
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clNone
@@ -3189,7 +3189,7 @@ object Form1: TForm1
       AutoSize = False
       RowCount = 1
       RowLineMargin = 0
-      RowHeight = 5
+      RowHeight = 0
       GroupColor = clWindow
       GroupColorAlpha = 255
       Color = clBtnFace
@@ -3207,7 +3207,7 @@ object Form1: TForm1
         Left = 0
         Top = 32
         Width = 165
-        Height = 60
+        Height = 70
         ParentCustomHint = False
         Align = alCustom
         BevelInner = bvNone
@@ -3216,7 +3216,7 @@ object Form1: TForm1
         ColCount = 2
         Ctl3D = False
         DefaultColWidth = 80
-        DefaultRowHeight = 55
+        DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
         RowCount = 4
@@ -3236,7 +3236,7 @@ object Form1: TForm1
       Left = 0
       Top = 224
       Width = 166
-      Height = 85
+      Height = 90
       Align = alCustom
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3267,7 +3267,7 @@ object Form1: TForm1
         Left = 0
         Top = 32
         Width = 165
-        Height = 60
+        Height = 70
         ParentCustomHint = False
         Align = alCustom
         BevelInner = bvNone
@@ -3276,7 +3276,7 @@ object Form1: TForm1
         ColCount = 2
         Ctl3D = False
         DefaultColWidth = 80
-        DefaultRowHeight = 55
+        DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
         RowCount = 4
@@ -3298,7 +3298,7 @@ object Form1: TForm1
       Left = 0
       Top = 398
       Width = 166
-      Height = 100
+      Height = 90
       Align = alCustom
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clNone
@@ -3329,7 +3329,7 @@ object Form1: TForm1
         Left = 0
         Top = 32
         Width = 165
-        Height = 80
+        Height = 70
         ParentCustomHint = False
         Align = alCustom
         BevelInner = bvNone
@@ -3338,7 +3338,7 @@ object Form1: TForm1
         ColCount = 2
         Ctl3D = False
         DefaultColWidth = 80
-        DefaultRowHeight = 60
+        DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
         RowCount = 4
@@ -3389,7 +3389,7 @@ object Form1: TForm1
         Left = 0
         Top = 32
         Width = 165
-        Height = 65
+        Height = 70
         ParentCustomHint = False
         Align = alCustom
         BevelInner = bvNone
@@ -3398,7 +3398,7 @@ object Form1: TForm1
         ColCount = 2
         Ctl3D = False
         DefaultColWidth = 80
-        DefaultRowHeight = 60
+        DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
         RowCount = 4
