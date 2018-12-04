@@ -2577,7 +2577,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
 	{
-		canv->Font->Color=barva;
+		canv->Font->Color=m.clIntensive(barva,100);
 		canv->Font->Size=2*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 		AnsiString T=short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
@@ -2714,7 +2714,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	{
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
-		canv->Font->Color=barva;
+		canv->Font->Color=barva;if(eID==5)canv->Font->Color=m.clIntensive(barva,100);
 		canv->Font->Size=2*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
@@ -2769,7 +2769,7 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 
 	//popisek
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=clBlack;
+	canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 	canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
@@ -2791,7 +2791,7 @@ void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popi
 
 	//popisek
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=clBlack;
+	canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 	canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
@@ -2810,7 +2810,7 @@ void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popise
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 	short C=W/2;//zajištění vycentrování
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=clGray;
+	canv->Font->Color=clBlack;
 
 	//ikona - ABC
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
@@ -2820,7 +2820,7 @@ void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popise
 	//popisek
 	canv->Brush->Style=bsClear;
 	canv->Font->Size=o;
-	canv->Font->Color=clBlack;
+	canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2830,19 +2830,18 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 	short C=W/2;//zajištění vycentrování
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=clGray;
 
 	//vykreslení linie
-	set_pen(canv,clGray,1*3,PS_ENDCAP_FLAT);
+	set_pen(canv,clBlack,1*3,PS_ENDCAP_FLAT);
 	line(canv,X-W+8,Y,X+W-8,Y-W+8);
 
 	//vykreslení šipky                      //pozor musí být invetované souřadnice Y (log. vs. fyz. souřadnice), metoda je stavěna na kartéské (logické souřadnice), nikoliv soužadnice monitoru (fyzické)
-	sipka(canv,X+W-8,Y-W+8,m.azimut(X-W+8,Y,X+W-8,Y+W-8),false,1,clGray,clGray);//děleno Z na negaci *Zoom v metodě šipka
+	sipka(canv,X+W-8,Y-W+8,m.azimut(X-W+8,Y,X+W-8,Y+W-8),false,1,clBlack,clBlack);//děleno Z na negaci *Zoom v metodě šipka
 
 	//popisek
 	canv->Font->Size=o;
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=clBlack;
+	canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
