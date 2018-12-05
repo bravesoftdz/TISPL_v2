@@ -844,8 +844,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->Y=Y;
 
   //mGrid elementu
-//	novy->mGrid=new TmGrid(F);
-//	novy->mGrid->Tag=novy->n;//ID tabulky
+	novy->mGrid=new TmGrid(F);
+	novy->mGrid->Tag=novy->n;//ID tabulky
 
 	//ukazatelové propojení
 	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -853,7 +853,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->dalsi=NULL;
 	novy->sparovany=NULL;
 	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-	return Objekt->elementy->predchozi;
+	return novy;
 }
 ////---------------------------------------------------------------------------
 //vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)

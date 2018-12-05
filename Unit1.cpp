@@ -1186,7 +1186,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	{
 		if(FileExists(d.v.PP.raster.filename))
 		{
-			if(d.v.PP.raster.resolution==0)d.v.PP.raster.resolution=m2px;//v případě nového vstupu bez zadaného rozlišení je m2px
+			if(d.v.PP.raster.resolution==0)d.v.PP.raster.resolution=m2px;//v případě nového vstupu bez zadaného rozlišení defaultně je m2px
 			Graphics::TBitmap *bmp=new Graphics::TBitmap;
 			bmp->LoadFromFile(d.v.PP.raster.filename);
 			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem
@@ -1233,7 +1233,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//vykreslování mGridu
-			//if(d.v.OBJEKTY->dalsi->elementy!=NULL)d.v.OBJEKTY->dalsi->elementy->dalsi->mGrid->Show();//mGrid test
+			//if(pom->elementy!=NULL)d.v.OBJEKTY->dalsi->elementy->dalsi->mGrid->Show();//mGrid test
 			//grafické měřítko
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
@@ -2605,8 +2605,8 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 //---------------------------------------------------------------------------
 void TForm1::add_element(int X, int Y)
 {
-	//vložení elementu na dané souřadnice a do do patřičného spojáku
-	Cvektory::TElement *E=d.v.vloz_element(/*pom*/d.v.OBJEKTY->dalsi,element_id,m.P2Lx(X),m.P2Ly(Y));
+	//vložení elementu na dané souřadnice a do patřičného spojáku
+	Cvektory::TElement *E=d.v.vloz_element(pom,element_id,m.P2Lx(X),m.P2Ly(Y));
 
 	//nadesignování tabulek dle typu elementu
 	switch(element_id)
@@ -2615,6 +2615,7 @@ void TForm1::add_element(int X, int Y)
 		{
 			break;
 		}
+
 		case 1://robot (kontinuální)
 		{
 //			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
@@ -5712,7 +5713,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
- if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
+   if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
    {
    Zoom=1.0;
    on_change_zoom_change_scGPTrackBar();
@@ -5750,9 +5751,9 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    scGPLabel_roboti->Caption="Technolog. objekty";
    scGPLabel_roboti->ContentMarginLeft=4;
 
-   MOD=SCHEMA;
-
-   }
+	 MOD=SCHEMA;
+	 pom=NULL;
+	 }
 }
 //---------------------------------------------------------------------------
 
