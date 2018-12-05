@@ -3519,6 +3519,7 @@ void TForm1::NP_input()
    DrawGrid_poznamky->Visible=true;
 
    //musí být nastaven i zde, protože se tento label používá jak ve schematu tak i zde
+   scGPLabel_roboti->Font->Style =  TFontStyles() << fsBold;
    scGPLabel_roboti->Visible=true;
    scGPLabel_roboti->Caption="Roboti";
    scGPLabel_roboti->ContentMarginLeft=10;
@@ -5660,6 +5661,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    DrawGrid_knihovna->DefaultRowHeight=50;
    DrawGrid_knihovna->DefaultColWidth=70;
    DrawGrid_knihovna->Left=10;
+
    scListGroupPanel_hlavickaOtoce->Visible=false;
    scListGroupPanel_hlavickaOstatni->Visible=false;
    scListGroupPanel_geometrie->Visible=false;

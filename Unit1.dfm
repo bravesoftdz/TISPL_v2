@@ -7407,7 +7407,7 @@ object Form1: TForm1
     Font.Color = 10114859
     Font.Height = -15
     Font.Name = 'Verdana'
-    Font.Style = [fsBold]
+    Font.Style = []
     ParentFont = False
     TabOrder = 52
     Visible = False
