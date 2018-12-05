@@ -2525,6 +2525,11 @@ void TForm1::move_objekt(int X, int Y)
 		pom=NULL;
 }
 //---------------------------------------------------------------------------
+void TForm1::add_element(int X, int Y)
+{
+
+}
+//---------------------------------------------------------------------------
 void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu pořadí (to musí ještě uživatel potvrdit)
 {
 		//zjištění oblasti, vynechává situace, kdy se nejedná o změnu pořadí

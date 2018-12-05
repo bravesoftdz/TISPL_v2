@@ -495,6 +495,7 @@ private:
 	void pan_move_map();
 	void add_objekt(int X, int Y);
 	Cvektory::TObjekt *add_objekt_za();
+	void add_element(int X, int Y);
 	void move_objekt(int X, int Y);
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text);
