@@ -63,8 +63,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	Form1->Width=1290;//workaround bílé mezery v záložkové liště - nefunguje
 
-	NewDesignSettings();//záležitost s novým designem
-
 	m2px=0.1;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel při zoomu 1x
 	fps=24*3;//frames per second, četnost snímků za sekundu - používá se pro animace a simulace, misto 24Hz 60Hz, hráči her doporučují min fps 60 + min obnovovací frekvence monitoru 60Hz
 	//https://cdr.cz/blog/30-fps-vs-60-fps-shrnuti-velke-internetove-debaty
@@ -75,13 +73,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	////nastavení aplikace
 	upozornovat_na_zmenu_TT_parametru=true;
 	Application->HintHidePause=20000; //nastavení délky trvání zobrazení Hintů -  20s
-
-	//nastavení knihovnky
-	//DrawGrid_knihovna->Enabled=false;
-	DrawGrid_knihovna->RowCount=pocet_objektu_knihovny/2;//velikosti buněk
-	if(pocet_objektu_knihovny>0)vybrany_objekt=0;else//-použival jsem v době kdy jsem chtěl mít implicitní prvek pokud existuje nějaký prvek v knihovně, tak nastaví vybraný prvek jako první
-	vybrany_objekt=-1;
-	VyID=10;//objekt-symbol vyhýbky - ID typu
 
 	//mřížka
 	grid=true; size_grid=10;//velikost je v logických jednotkách (metrech)
@@ -154,14 +145,21 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 	d.v.nacti_CSV_retezy("řetězy.csv");
 
-  //uložení ID knihovny   1 - roboti, 2 - otoče, 3 - ostatní (stop)
-  knihovna_id=0;
-  element_id=99;
 
+	//nastavení knihovnky
+	//DrawGrid_knihovna->Enabled=false;
+	DrawGrid_knihovna->RowCount=pocet_objektu_knihovny/2;//velikosti buněk
+	if(pocet_objektu_knihovny>0)vybrany_objekt=0;else//-použival jsem v době kdy jsem chtěl mít implicitní prvek pokud existuje nějaký prvek v knihovně, tak nastaví vybraný prvek jako první
+	vybrany_objekt=-1;
+	VyID=10;//objekt-symbol vyhýbky - ID typu
+	knihovna_id=0;
+	element_id=99;
+
+	DesignSettings();//nastavení designu v konstruktoru
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
-void TForm1::NewDesignSettings()
+void TForm1::DesignSettings()
 {
 	//maximalizace formuláře jinak to s novým designem nejde
 	Form1->Width=Screen->WorkAreaWidth;
@@ -210,6 +208,14 @@ void TForm1::NewDesignSettings()
 	Simulace->Options->PressedColor=light_gray;
 
 	scExPanel_ostatni->Top=72+27;
+
+	if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
+	{
+		scGPLabel_roboti->Visible=true;
+		scGPLabel_roboti->Caption="Technolog. objekty";
+		scGPLabel_roboti->ContentMarginLeft=4;
+		scListGroupKnihovObjektu->Height=1920; // kvůli odstranění bílé linky, která vznikala pod knihovnou objektů
+	}
 
 	//pozice ovládacích prvků
 //	scListGroupNastavProjektu->Left=0;
@@ -1159,16 +1165,6 @@ void TForm1::kurzor(TKurzory typ_kurzor)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormPaint(TObject *Sender)
 {
-
- if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
- {
-   scGPLabel_roboti->Visible=true;
-   scGPLabel_roboti->Caption="Technolog. objekty";
-   scGPLabel_roboti->ContentMarginLeft=4;
-   scListGroupKnihovObjektu->Height=1920; // kvůli odstranění bílé linky, která vznikala pod knihovnou objektů
-   }
-
-
 //	if(FileName_short(FileName)=="VÝHYBKY_TEST.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTm.tispl" || FileName_short(FileName)=="VÝHYBKY_TESTv.tispl")
 //	{
 //		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
@@ -1206,13 +1202,42 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	if(!nahled_objektu)
 	{
 	//vykreslení gridu
-	if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
+	if(grid && Zoom>0.5 && !antialiasing && MOD!=LAYOUT && MOD!=NAHLED &&/*MOD!=REZERVY &&*/ MOD!=CASOVAOSA && MOD!=TECHNOPROCESY)d.vykresli_grid(Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí
 
 	//jednoltivé mody
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
 	switch(MOD)
 	{
-		case NAHLED:
+		case NAHLED://vykreslení všech vektorových elementů
+		{
+			if(!antialiasing)d.vykresli_vektory(Canvas);
+			else
+			{
+				Cantialising a;
+				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+				//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
+				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+				d.vykresli_vektory(bmp_in->Canvas);
+				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
+				{
+					bmp_out->Transparent=true;
+					bmp_out->TransparentColor=clWhite;
+				}
+				else bmp_out->Transparent=false;
+
+				Canvas->Draw(0,0,bmp_out);
+				delete (bmp_out);//velice nutné
+				delete (bmp_in);//velice nutné
+			}
+			//vykreslování mGridu
+			//if(d.v.OBJEKTY->dalsi->elementy!=NULL)d.v.OBJEKTY->dalsi->elementy->dalsi->mGrid->Show();//mGrid test
+			//grafické měřítko
+			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
+			break;
+    }
 		case SCHEMA://vykreslování všech vektorů ve schématu
 		{
 			if(!antialiasing)d.vykresli_vektory(Canvas);
@@ -1221,7 +1246,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Cantialising a;
 				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;
 				bmp_grid->Width=0;bmp_grid->Height=0;
-				if(grid && Zoom_predchozi_AA>0.5 && !NAHLED)//je-li grid zobrazen
+				if(grid && Zoom_predchozi_AA>0.5)//je-li grid zobrazen
 				{
 					bmp_grid->Width=ClientWidth;bmp_grid->Height=ClientHeight;
 					d.vykresli_grid(bmp_grid->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
@@ -1245,7 +1270,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_grid);//velice nutné
 				delete (bmp_in);//velice nutné
 			}
-			if(MOD==NAHLED && d.v.OBJEKTY->dalsi->elementy!=NULL)d.v.OBJEKTY->dalsi->elementy->dalsi->mGrid->Show();//mGrid test
 			//grafické měřítko
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
@@ -1859,11 +1883,13 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					break;
 				}
 				case ZOOM_W:ZOOM_WINDOW();break;//ZOOM_WINDOW
-				case ADD:
-					if(MOD==SCHEMA)add_objekt(X,Y);
-					else	{d.v.vloz_element(/*pom*/d.v.OBJEKTY->dalsi,element_id,m.P2Lx(X),m.P2Ly(Y));Akce=NIC;REFRESH();DuvodUlozit(true);}
+				case ADD://přidání objekt či elementu
+				{
+					if(MOD==SCHEMA)add_objekt(X,Y);//přídání objektu v modu SCHEMA
+					else					 add_element(X,Y);//přídání elementu v modu NAHLED
 					zneplatnit_minulesouradnice();
-					break;//přidání objekt
+					break;
+				}
 				case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 				case MOVE:move_objekt(X,Y);break;//posun objektu
 				case MEASURE:
@@ -2525,11 +2551,6 @@ void TForm1::move_objekt(int X, int Y)
 		pom=NULL;
 }
 //---------------------------------------------------------------------------
-void TForm1::add_element(int X, int Y)
-{
-
-}
-//---------------------------------------------------------------------------
 void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu pořadí (to musí ještě uživatel potvrdit)
 {
 		//zjištění oblasti, vynechává situace, kdy se nejedná o změnu pořadí
@@ -2580,6 +2601,63 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 				}
 			}
 		}
+}
+//---------------------------------------------------------------------------
+void TForm1::add_element(int X, int Y)
+{
+	//vložení elementu na dané souřadnice a do do patřičného spojáku
+	Cvektory::TElement *E=d.v.vloz_element(/*pom*/d.v.OBJEKTY->dalsi,element_id,m.P2Lx(X),m.P2Ly(Y));
+
+	//nadesignování tabulek dle typu elementu
+	switch(element_id)
+	{
+		case 0://stop stanice
+		{
+			break;
+		}
+		case 1://robot (kontinuální)
+		{
+//			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
+//			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
+//			E->mGrid->Cells[0][0].Text="robot KK";
+//			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
+//			E->mGrid->Cells[0][1].Text=E->eID;
+//			E->mGrid->Cells[2][2].Text=E->n;
+			break;
+		}
+		case 2://robot se stop stanicí
+		{
+//			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
+//			E->mGrid->Create(3,7);//samotné vytvoření matice-tabulky
+//			E->mGrid->Cells[0][0].Text="robot S&G";
+//			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
+//			E->mGrid->Cells[0][1].Text=E->eID;
+//			E->mGrid->Cells[2][2].Text=E->n;
+			break;
+		}
+		case 3://robot s pasivní otočí
+		{
+			break;
+		}
+		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
+		{
+			break;
+		}
+		case 5://otoč pasivní
+		{
+			break;
+		}
+		case 6://	otoč aktivní (resp. otoč se stop stanicí)
+		{
+			break;
+		}
+	}
+
+	//až na konec:
+	E=NULL;delete E;
+	Akce=NIC;
+	REFRESH();
+	DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
 //zapíná či vypíná automatickou ortogonalizaci

@@ -836,31 +836,24 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 {
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by  ještě nebyla založena hlavička, tak ji založí
 
+	//atributy elementu
 	TElement *novy=new TElement;
 	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
 
-	novy->mGrid=new TmGrid(F);
-	novy->mGrid->Tag=novy->n;//ID tabulky
+  //mGrid elementu
+//	novy->mGrid=new TmGrid(F);
+//	novy->mGrid->Tag=novy->n;//ID tabulky
 
-	//toto bude jinde
-	novy->mGrid->Left=m.L2Px(X);novy->mGrid->Top=m.L2Py(Y);//hodné jako druhé (popř. by bylo nutné překreslovat)
-	novy->mGrid->AntiAliasing_text=true;
-	novy->mGrid->Border.Width=2;
-	novy->mGrid->Create(3+novy->n,5);//samotné vytvoření matice-tabulky
-	novy->mGrid->Cells[0][0].Text=novy->n;
-	novy->mGrid->Cells[0][1].Type=novy->mGrid->EDIT;
-	novy->mGrid->Cells[2][2].Text="Test";
-	//--
-
+	//ukazatelové propojení
 	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=NULL;
 	novy->sparovany=NULL;
 	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-	return novy;
+	return Objekt->elementy->predchozi;
 }
 ////---------------------------------------------------------------------------
 //vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)

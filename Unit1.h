@@ -495,8 +495,8 @@ private:
 	void pan_move_map();
 	void add_objekt(int X, int Y);
 	Cvektory::TObjekt *add_objekt_za();
-	void add_element(int X, int Y);
 	void move_objekt(int X, int Y);
+	void add_element(int X, int Y);
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text);
 	void akutalizace_stavu_prichytavani_vSB();
@@ -521,7 +521,7 @@ private:
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
 	void log2webOnlyText(UnicodeString Text);//pouze text
 	void startUP();//pøi aktivaci formuláøe, pro zpøehlednìní kodu
-	void NewDesignSettings();//nastavení noveho designu
+	void DesignSettings();//nastavení designu v konstruktoru
 	void aktualizace();//kontrola aktuálnosti verze a pøípadì nabídka na stažení nové
 	void onPopUP(int X, int Y);//nastavení zobrazení popUPmenu a jeho volání vèetnì pozice
 	void close_all_items_popUPmenu();//zajistí skrýtí všech položek popUPmenu
