@@ -278,10 +278,13 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 			 AnsiString error_text="";
 			 if(objekty[Row].rezim==0 || objekty[Row].rezim==2)//situace 1 - pøípad testování zda daný objekt (v S&G èi PP), který se mìní (objekty[Row]) je co se týèe pøejezdu OK
 			 {
+				 //4.12.2018 zdm,
+				 /*
 				 double MT=objekty[Row].MT1+objekty[Row].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
 				 double WT=objekty[Row].WT1-objekty[Row].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
 				 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 				 error_text=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[Row].n),CT,MT,WT,RD,DD,aRDunit);
+				 */
 			 }
 			 else//situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
 			 {
@@ -291,11 +294,14 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 					 {                           //odfiltrování situace 1 tzn. objekty[Row]!=objekty[i] tj. stejný objekt - to nyní probíhá automaticky, protože se porovnávají režimy KK a proti tomu S&G èi PP, tj. nemùže se porovnávat totožný objekt
 						 if(objekty[Row].pohon->n==objekty[i].pohon->n && (rezim==0 || rezim==2))//nalezen objekt ze stejné skupiny (stejný pohon) v režimu S&G èi PP, nutno tedy testovat možnost pøejezdu
 						 {
+						   //4.12.2018 zdm,
+							 /*
 							 double MT=objekty[i].MT1+objekty[i].MT2; //MT by mìlo být zaktualizované dle gapo zmìny
 							 double WT=objekty[i].WT1+objekty[i].WT2;//otzka je jak dodat WT popø. PT, mìly by být zaktualizované
 							 //vrátí rozdíl aktuální rychlosti pohonu a potøebné k uskuteèní pøejezdu, pokud je hodnota 0 je v poøádku, je-li záporná, pøejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
 							 AnsiString error_text2=F->d.v.kontrola_rychlosti_prejezdu(F->d.v.vrat_objekt(objekty[i].n),CT,MT,WT,RD,DD,aRDunit);
 							 if(error_text!="")error_text+="<br>"+error_text2;else error_text+=error_text2;//pokud existuje již pøedchozí chybový záznam a bude následovat chybový je nutné odøádkovat
+							 */
 						 }
 					 }
 				 }
