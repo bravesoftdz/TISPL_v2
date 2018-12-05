@@ -1233,14 +1233,19 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//vykreslování mGridu
-			//if(pom->elementy!=NULL)d.v.OBJEKTY->dalsi->elementy->dalsi->mGrid->Show();//mGrid test
+			if(pom->elementy!=NULL)
+			{
+				pom->elementy->dalsi->mGrid->Show();//mGrid test
+				if(pom->elementy->dalsi->dalsi!=NULL)
+				pom->elementy->dalsi->dalsi->mGrid->Show();//mGrid test
+			}
 			//grafické měřítko
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
     }
 		case SCHEMA://vykreslování všech vektorů ve schématu
 		{
-			if(!antialiasing)d.vykresli_vektory(Canvas);
+			if(!antialiasing)d.vykresli_objekty(Canvas);
 			else
 			{
 				Cantialising a;
@@ -1255,7 +1260,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-				d.vykresli_vektory(bmp_in->Canvas);
+				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
@@ -2618,22 +2623,23 @@ void TForm1::add_element(int X, int Y)
 
 		case 1://robot (kontinuální)
 		{
-//			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
-//			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
-//			E->mGrid->Cells[0][0].Text="robot KK";
-//			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
-//			E->mGrid->Cells[0][1].Text=E->eID;
-//			E->mGrid->Cells[2][2].Text=E->n;
+			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
+			E->mGrid->Border.Width=2;
+			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="robot KK";
+			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[0][1].Text=E->eID;
+			E->mGrid->Cells[0][2].Text=E->n;
 			break;
 		}
 		case 2://robot se stop stanicí
 		{
-//			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
-//			E->mGrid->Create(3,7);//samotné vytvoření matice-tabulky
-//			E->mGrid->Cells[0][0].Text="robot S&G";
-//			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
-//			E->mGrid->Cells[0][1].Text=E->eID;
-//			E->mGrid->Cells[2][2].Text=E->n;
+			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
+			E->mGrid->Create(3,7);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="robot S&G";
+			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[0][1].Text=E->eID;
+			E->mGrid->Cells[0][2].Text=E->n;
 			break;
 		}
 		case 3://robot s pasivní otočí
@@ -4217,13 +4223,13 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 			switch(MOD)//uloží obraz dle daného modu zobrazení
 			{
 				case SCHEMA:
-				if(!antialiasing)d.vykresli_vektory(Bitmap->Canvas);//vykreslování všech vektorů
+				if(!antialiasing)d.vykresli_objekty(Bitmap->Canvas);//vykreslování všech vektorů
 				else
 				{
 					Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 					bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 					Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-					d.vykresli_vektory(bmp_in->Canvas);
+					d.vykresli_objekty(bmp_in->Canvas);
 					Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 					Cantialising a;
 					Graphics::TBitmap *bmp_grid=new Graphics::TBitmap; //grid zasílám nulovou bitmapu jako parametr, na NULL ač bylo ošetřené tak padalo

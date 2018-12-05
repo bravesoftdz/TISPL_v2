@@ -25,8 +25,6 @@ class Cvykresli
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	Cvektory::TProces *Pom_proces;//pomocný ukazatel na proces, využívá se v pøi naèítání pùvodnì vytvoøených náhodných hodnot èekání na palec
 
-
-
 	public:
 	Cvykresli();//konstruktor
 	Cvektory v;
@@ -45,6 +43,7 @@ class Cvykresli
 	};TTP TP;//nastavení modu technologické procesy
 
 	void vykresli_vektory(TCanvas *canv);
+	void vykresli_objekty(TCanvas *canv);
 	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
