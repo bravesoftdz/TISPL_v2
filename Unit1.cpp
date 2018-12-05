@@ -1429,7 +1429,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
 		//CTRL+M
-		case 77: if(ssCtrl)Akce=MEASURE;break;
+		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
 		//F1 - volání nápovědy
 		case 112:break;
 		//F2
@@ -1692,7 +1692,13 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						}
 						case MOVE: d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y); break;
 						case MEASURE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
-            case ADJUSTACE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
+						case KALIBRACE:
+						{
+							minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;
+							//+změnit kurzor
+						break;
+            }
+						case ADJUSTACE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
 						default: break;
 					}
 					DuvodUlozit(true);
@@ -1854,7 +1860,14 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				d.vykresli_meridlo(Canvas,X,Y);
 			}
 		}break;
-    case ADJUSTACE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
+		case KALIBRACE:
+		{
+			if(stisknute_leve_tlacitko_mysi)
+			{
+				d.vykresli_meridlo(Canvas,X,Y);
+			}
+		}break;
+		case ADJUSTACE:
 		{
 			if(stisknute_leve_tlacitko_mysi)
 			{
@@ -1901,26 +1914,34 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				{
 					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
 					MB(AnsiString(delka)+" [metrů]");
-					Akce=NIC;
+					Akce=NIC;kurzor(standard);
+					REFRESH();
+					break;
+				}
+				case KALIBRACE:
+				{
+					d.v.PP.raster.X=m.P2Lx(X)+d.v.PP.raster.X-m.P2Lx(vychozi_souradnice_kurzoru.X);
+					d.v.PP.raster.Y=m.P2Ly(Y)+d.v.PP.raster.Y-m.P2Ly(vychozi_souradnice_kurzoru.Y);
+					Akce=NIC;kurzor(standard);
 					Invalidate();
-				}break;
-        case ADJUSTACE:
+					break;
+				}
+				case ADJUSTACE:
 				{
           if(Form_adjustace->ShowModal()==mrOk)//MB "Zadejte vzdálenost v metrech"
 		      {
             double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value;
-            d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
-            ShowMessage(AnsiString((double)d.v.PP.raster.resolution));
+						d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
           }
           else
           {
             d.v.PP.raster.show=false;
             d.v.PP.raster.filename="";
           }
-					Akce=NIC;
-          REFRESH();
-					Invalidate();
-				}break;
+					Akce=NIC;kurzor(standard);
+					REFRESH();
+					break;
+				}
 				default: break;
 			}
 	 }
@@ -2626,7 +2647,7 @@ void TForm1::add_element(int X, int Y)
 
 		case 1://robot (kontinuální)
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
+			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Border.Width=2;
 			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="robot KK";
@@ -2637,7 +2658,7 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 2://robot se stop stanicí
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;//hodné jako druhé (popř. by bylo nutné překreslovat)
+			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Create(3,7);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="robot S&G";
 			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
@@ -5794,9 +5815,8 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   scGPCheckBox_zobraz_podklad->Checked=true;
   scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
   REFRESH();
-  Form_kalibrace->ShowModal();
-
- }
+	//Form_kalibrace->ShowModal();  smazat
+}
  //--------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, int ARow,
           TRect &Rect, TGridDrawState State)
@@ -5863,13 +5883,13 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
 {
-  kurzor(kalibrovat);
-  Akce=KALIBRACE;
+	kurzor(add_o);//pozor kurzor kalibrovat neni vycentrovaný, je třeba jej imageeditoru předělat
+	Akce=KALIBRACE;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 {
-  kurzor(posun_t);
+	kurzor(add_o);
   Akce=ADJUSTACE;
 }
 //---------------------------------------------------------------------------

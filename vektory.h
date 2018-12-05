@@ -324,6 +324,12 @@ class Cvektory
 					double vyska_jig;
 					double delka_podvozek;
 					double typ_vozik;
+//					AnsiString filename;//adresa umístění podkladového rastru na disku
+//					long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
+//					double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
+//					bool show;//indikace zda je raster zobrazen
+//					bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
+//					int dim;//úroveň ztlumení
 		};
 		TFile_hlavicka File_hlavicka;
 
