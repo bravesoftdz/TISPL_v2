@@ -1864,7 +1864,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			if(stisknute_leve_tlacitko_mysi)
 			{
-				d.vykresli_meridlo(Canvas,X,Y);
+				d.vykresli_meridlo(Canvas,X,Y,true);
 			}
 		}break;
 		case ADJUSTACE:
@@ -1939,7 +1939,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
             d.v.PP.raster.filename="";
           }
 					Akce=NIC;kurzor(standard);
-					REFRESH();
+					Invalidate();
 					break;
 				}
 				default: break;

@@ -530,7 +530,7 @@ void Cvykresli::vykresli_grid(TCanvas *canv, int size_grid)
 //}
 ////---------------------------------------------------------------------------
 //v případě měření vzdálenosti vykreslí spojnici a popř. vypisuje hodnotu vzdálenosti
-void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y)
+void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka)
 {
 //		bool popisek_napravo=true;
 //		if(X<=F->vychozi_souradnice_kurzoru.x)popisek_napravo=false;
@@ -574,13 +574,27 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y)
 //		canv->Brush->Style=bsClear;
 //		canv->Font->Color=m.clIntensive(clRed,100);
 //		canv->TextOutW(Xt,Y-10,AnsiString(delka)+" [m]");
+													 //zabraňuje nechtěnému úvodnímu efektu
+		if(kalibracni_sipka && F->minule_souradnice_kurzoru!=F->vychozi_souradnice_kurzoru)
+		{
+			double A=m.azimut(F->vychozi_souradnice_kurzoru.x,-F->vychozi_souradnice_kurzoru.y,F->minule_souradnice_kurzoru.x,-F->minule_souradnice_kurzoru.y);
+			sipka(canv,(F->vychozi_souradnice_kurzoru.x+F->minule_souradnice_kurzoru.x)/2,(F->vychozi_souradnice_kurzoru.y+F->minule_souradnice_kurzoru.y)/2,A,true,10,m.clIntensive(clRed,100),m.clIntensive(clRed,100),pmNotXor,psSolid);
+		}
 
 		//linie
-		set_pen(canv, m.clIntensive(clRed,100),10,PS_ENDCAP_FLAT);
+		short W=10;
+		if(kalibracni_sipka)W=5;
+		set_pen(canv, m.clIntensive(clRed,100),W,PS_ENDCAP_FLAT);
 		canv->Pen->Mode=pmNotXor;
 		canv->MoveTo(F->vychozi_souradnice_kurzoru.x,F->vychozi_souradnice_kurzoru.y);canv->LineTo(F->minule_souradnice_kurzoru.x,F->minule_souradnice_kurzoru.y);
 		F->minule_souradnice_kurzoru=TPoint(X,Y);
 		canv->MoveTo(F->vychozi_souradnice_kurzoru.x,F->vychozi_souradnice_kurzoru.y);canv->LineTo(X,Y);
+																				//zabraňuje nechtěnému úvodnímu efektu
+		if(kalibracni_sipka  && F->minule_souradnice_kurzoru!=F->vychozi_souradnice_kurzoru)
+		{
+			double A=m.azimut(F->vychozi_souradnice_kurzoru.x,-F->vychozi_souradnice_kurzoru.y,X,-Y);
+			sipka(canv,(F->vychozi_souradnice_kurzoru.x+X)/2,(F->vychozi_souradnice_kurzoru.y+Y)/2,A,true,10,m.clIntensive(clRed,100),m.clIntensive(clRed,100),pmNotXor,psSolid);
+		}
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
