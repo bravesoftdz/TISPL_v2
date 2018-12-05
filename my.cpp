@@ -101,7 +101,7 @@ double Cmy::P2Ly(long fyzicka)
 //dle zmìøeného úseku na monitoru pøevede tuto pixelovou vzádlenost a hodnotu v podobì uživatelského vstupu v metrech na hodnotu rozlišení podkladu
 long double Cmy::getResolution(int puvX,int puvY,int aktX,int aktY,double metry)
 {
-	return metry/delka(puvX,puvY,aktX,aktY);//výpoèet metry dìleno poèet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického mìøítka) je 0.1
+	return metry/delka(P2Lx(puvX),P2Ly(puvY),P2Lx(aktX),P2Ly(aktY))*F->m2px;//výpoèet metry dìleno poèet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického mìøítka) je 0.1
 }
 /////////////////////////////////////////////////////////////////////////////
 double Cmy::delka(double X1,double Y1,double X2,double Y2)

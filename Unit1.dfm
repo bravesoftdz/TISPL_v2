@@ -3078,7 +3078,7 @@ object Form1: TForm1
     BorderStyle = scpbsRightShadowLine
     WallpaperIndex = -1
     LightBorderColor = 33023
-    ShadowBorderColor = clBtnShadow
+    ShadowBorderColor = clBtnFace
     CaptionGlowEffect.Enabled = False
     CaptionGlowEffect.Color = clMedGray
     CaptionGlowEffect.AlphaValue = 255
@@ -3848,7 +3848,7 @@ object Form1: TForm1
     Color = clBtnFace
     ParentColor = False
     State = cbChecked
-    TabOrder = 39
+    TabOrder = 38
     Visible = False
     OnClick = CheckBoxVytizenost_Click
   end
@@ -3866,7 +3866,7 @@ object Form1: TForm1
     Align = alCustom
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 41
+    TabOrder = 39
     TabStop = True
     Visible = False
     OnClick = scGPGlyphButton_definice_zakazekClick
@@ -3971,7 +3971,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 42
+    TabOrder = 40
     TabStop = True
     Visible = False
     Animation = False
@@ -4077,7 +4077,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 43
+    TabOrder = 41
     TabStop = True
     Visible = False
     OnClick = scGPButton_stornoClick
@@ -4232,7 +4232,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 44
+    TabOrder = 42
     Visible = False
   end
   object scEdit_zkratka: TscEdit
@@ -4302,7 +4302,7 @@ object Form1: TForm1
     Top = 34
     Width = 250
     Height = 622
-    Align = alCustom
+    Anchors = [akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
     Font.Height = -11
@@ -4638,8 +4638,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1251
-        Top = 1414
+        Left = 1269
+        Top = 1432
         Width = 244
         Height = 31
         Align = alCustom
@@ -4727,8 +4727,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 1155
-        ExplicitTop = 1318
       end
       object ComboBoxDOmin: TComboBox
         Left = 64
@@ -6048,7 +6046,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
       WordWrap = False
-      ExplicitTop = 280
     end
     object scButton_zaloha: TscButton
       Left = 0
@@ -6233,7 +6230,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 160
     end
     object scGPSwitch_AA: TscGPSwitch
       Left = 100
@@ -6526,7 +6522,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 200
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
@@ -6952,7 +6947,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 240
     end
     object scButton_nacist_podklad: TscButton
       Left = 0
@@ -7045,9 +7039,6 @@ object Form1: TForm1
       GroupIndex = 1
       AllowAllUp = True
       WordWrap = False
-      ExplicitLeft = -3
-      ExplicitTop = 166
-      ExplicitWidth = 180
     end
   end
   object scGPButton_kalibrace: TscGPButton
@@ -7440,7 +7431,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800C805CC0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C805D80510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8565,7 +8556,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013400F805FC0530003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013400F805080630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
