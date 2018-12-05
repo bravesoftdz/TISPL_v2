@@ -1901,16 +1901,19 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				}break;
         case ADJUSTACE:
 				{
-					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
-					//"Zadejte vzdálenost v metrech"
-          if(Form_adjustace->ShowModal()==mrOk)
+          if(Form_adjustace->ShowModal()==mrOk)//MB "Zadejte vzdálenost v metrech"
 		      {
-          double vzdalenost=0.0;
-          vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value;
-          d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
-          REFRESH();
-          } else  d.v.PP.raster.show=false;
+            double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value;
+            d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
+            ShowMessage(AnsiString((double)d.v.PP.raster.resolution));
+          }
+          else
+          {
+            d.v.PP.raster.show=false;
+            d.v.PP.raster.filename="";
+          }
 					Akce=NIC;
+          REFRESH();
 					Invalidate();
 				}break;
 				default: break;
@@ -3606,7 +3609,9 @@ void TForm1::NP_input()
 
    Zoom_predchozi=Zoom;
    Zoom=5.0; on_change_zoom_change_scGPTrackBar();
-   Zoom_predchozi=Zoom;
+
+   minule_souradnice_kurzoru.x =akt_souradnice_kurzoru.x;
+   minule_souradnice_kurzoru.y =akt_souradnice_kurzoru.y;
 
    DrawGrid_knihovna->DefaultRowHeight=140;
    DrawGrid_knihovna->DefaultColWidth=80;
@@ -5713,11 +5718,15 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
+
    if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
    {
+  // Zoom=Zoom_predchozi;
    Zoom=1.0;
    on_change_zoom_change_scGPTrackBar();
 
+   akt_souradnice_kurzoru.x = minule_souradnice_kurzoru.x;
+   akt_souradnice_kurzoru.y = minule_souradnice_kurzoru.y;
 
    DrawGrid_knihovna->DefaultRowHeight=50;
    DrawGrid_knihovna->DefaultColWidth=70;
@@ -5752,14 +5761,13 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    scGPLabel_roboti->ContentMarginLeft=4;
 
 	 MOD=SCHEMA;
+   REFRESH();
 	 pom=NULL;
 	 }
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
-
  	scSplitView_MENU->Opened=false;
   OpenDialog1->Title="Načíst podklad";
 	OpenDialog1->DefaultExt="*.bmp";
@@ -5771,16 +5779,14 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
  unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor)
  {
-  ShowMessage("ted");
   d.v.PP.raster.show=true;
 	d.v.PP.raster.filename=soubor;
-	d.v.PP.raster.X=10;d.v.PP.raster.Y=-10;//souřadnice v metrech
-	d.v.PP.raster.resolution=0.01200428724544480171489817792069;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
+	d.v.PP.raster.X=m.P2Lx(scSplitView_LEFTTOOLBAR->Width +10);d.v.PP.raster.Y=m.P2Ly(scGPPanel_mainmenu->Height + 10);//souřadnice v metrech
+	d.v.PP.raster.resolution=m2px;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
   scGPCheckBox_zobraz_podklad->Checked=true;
-  scButton_nacist_podklad->Down=false;
+  scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
   REFRESH();
   Form_kalibrace->ShowModal();
 
@@ -5849,25 +5855,20 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
      REFRESH();
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
 {
-kurzor(add_o);
-d.v.PP.raster.X=akt_souradnice_kurzoru_PX.x;
-d.v.PP.raster.Y=akt_souradnice_kurzoru_PX.y;
-//d.v.PP.raster.X=m.P2Lx
-REFRESH();
+  kurzor(kalibrovat);
+  Akce=KALIBRACE;
 }
 //---------------------------------------------------------------------------
-
-
 void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 {
-Akce=ADJUSTACE;
+  kurzor(posun_t);
+  Akce=ADJUSTACE;
 }
 //---------------------------------------------------------------------------
 
-//---------------------------------------------------------------------------
+
 
 
 

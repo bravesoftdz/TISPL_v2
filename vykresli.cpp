@@ -535,48 +535,48 @@ void Cvykresli::vykresli_grid(TCanvas *canv, int size_grid)
 //v případě měření vzdálenosti vykreslí spojnici a popř. vypisuje hodnotu vzdálenosti
 void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y)
 {
-		bool popisek_napravo=true;
-		if(X<=F->vychozi_souradnice_kurzoru.x)popisek_napravo=false;
-
-		canv->Font->Size=12;
-		canv->Font->Name="Arial";
-		canv->Font->Color=clWhite;
-
-		canv->Brush->Color=clWhite;
-		//canv->Brush->Style=bsClear;
-
-		//délka text předchozí smazání
-		double delka=m.round2double(m.delka(m.P2Lx(F->vychozi_souradnice_kurzoru.X),m.P2Ly(F->vychozi_souradnice_kurzoru.Y),m.P2Lx(F->minule_souradnice_kurzoru.x),m.P2Ly(F->minule_souradnice_kurzoru.y)),2);
-		long Xt=F->minule_souradnice_kurzoru.x;
-		short Z=1;//znamenko
-		if(!popisek_napravo)
-		{
-			Xt=Xt-canv->TextWidth(AnsiString(delka)+" [m]");
-			Z=-1;
-		}
-
-		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-10,AnsiString(delka)+" [m]");
-
-		canv->TextOutW(Xt+9*Z,F->minule_souradnice_kurzoru.y-10,AnsiString(delka)+" [m]");
-		canv->TextOutW(Xt+11*Z,F->minule_souradnice_kurzoru.y-10,AnsiString(delka)+" [m]");
-		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-9,AnsiString(delka)+" [m]");
-		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-11,AnsiString(delka)+" [m]");
-		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-8,AnsiString(delka)+" [m]");
-
-//	 nedoděláno	HRGN hreg_old=CreateRectRgn(Xt+10*Z,F->minule_souradnice_kurzoru.y-10,F->minule_souradnice_kurzoru.x+10+canv->TextWidth(AnsiString(delka)+" [m]  "),F->minule_souradnice_kurzoru.y-10+canv->TextHeight(AnsiString(delka)+" [m]"));
-		delka=m.round2double(m.delka(m.P2Lx(F->vychozi_souradnice_kurzoru.X),m.P2Ly(F->vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y)),2);
-		if(popisek_napravo)Xt=X+10;else Xt=X-10-canv->TextWidth(AnsiString(delka)+" [m]");
-//	 nedoděláno	HRGN hreg_new=CreateRectRgn(Xt,Y-10,X+10+canv->TextWidth(AnsiString(delka)+" [m]"),Y-10+canv->TextHeight(AnsiString(delka)+" [m]"));
-//		HRGN hreg_diff=CreateRectRgn(0,0,0,0);
-//		CombineRgn(hreg_diff,hreg_old,hreg_new,RGN_DIFF);
-//		InvalidateRgn(F->Handle,hreg_diff,TRUE);
-		//InvertRgn(canv->Handle,hreg_diff);//označí region)
-
-		//délka text aktuální
-		//canv->Brush->Color=clWhite;
-		canv->Brush->Style=bsClear;
-		canv->Font->Color=m.clIntensive(clRed,100);
-		canv->TextOutW(Xt,Y-10,AnsiString(delka)+" [m]");
+//		bool popisek_napravo=true;
+//		if(X<=F->vychozi_souradnice_kurzoru.x)popisek_napravo=false;
+//
+//		canv->Font->Size=12;
+//		canv->Font->Name="Arial";
+//		canv->Font->Color=clWhite;
+//
+//		canv->Brush->Color=clWhite;
+//		//canv->Brush->Style=bsClear;
+//
+//		//délka text předchozí smazání
+//		double delka=m.round2double(m.delka(m.P2Lx(F->vychozi_souradnice_kurzoru.X),m.P2Ly(F->vychozi_souradnice_kurzoru.Y),m.P2Lx(F->minule_souradnice_kurzoru.x),m.P2Ly(F->minule_souradnice_kurzoru.y)),2);
+//		long Xt=F->minule_souradnice_kurzoru.x;
+//		short Z=1;//znamenko
+//		if(!popisek_napravo)
+//		{
+//			Xt=Xt-canv->TextWidth(AnsiString(delka)+" [m]");
+//			Z=-1;
+//		}
+//
+//		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-10,AnsiString(delka)+" [m]");
+//
+//		canv->TextOutW(Xt+9*Z,F->minule_souradnice_kurzoru.y-10,AnsiString(delka)+" [m]");
+//		canv->TextOutW(Xt+11*Z,F->minule_souradnice_kurzoru.y-10,AnsiString(delka)+" [m]");
+//		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-9,AnsiString(delka)+" [m]");
+//		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-11,AnsiString(delka)+" [m]");
+//		canv->TextOutW(Xt+10*Z,F->minule_souradnice_kurzoru.y-8,AnsiString(delka)+" [m]");
+//
+////	 nedoděláno	HRGN hreg_old=CreateRectRgn(Xt+10*Z,F->minule_souradnice_kurzoru.y-10,F->minule_souradnice_kurzoru.x+10+canv->TextWidth(AnsiString(delka)+" [m]  "),F->minule_souradnice_kurzoru.y-10+canv->TextHeight(AnsiString(delka)+" [m]"));
+//		delka=m.round2double(m.delka(m.P2Lx(F->vychozi_souradnice_kurzoru.X),m.P2Ly(F->vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y)),2);
+//		if(popisek_napravo)Xt=X+10;else Xt=X-10-canv->TextWidth(AnsiString(delka)+" [m]");
+////	 nedoděláno	HRGN hreg_new=CreateRectRgn(Xt,Y-10,X+10+canv->TextWidth(AnsiString(delka)+" [m]"),Y-10+canv->TextHeight(AnsiString(delka)+" [m]"));
+////		HRGN hreg_diff=CreateRectRgn(0,0,0,0);
+////		CombineRgn(hreg_diff,hreg_old,hreg_new,RGN_DIFF);
+////		InvalidateRgn(F->Handle,hreg_diff,TRUE);
+//		//InvertRgn(canv->Handle,hreg_diff);//označí region)
+//
+//		//délka text aktuální
+//		//canv->Brush->Color=clWhite;
+//		canv->Brush->Style=bsClear;
+//		canv->Font->Color=m.clIntensive(clRed,100);
+//		canv->TextOutW(Xt,Y-10,AnsiString(delka)+" [m]");
 
 		//linie
 		set_pen(canv, m.clIntensive(clRed,100),10,PS_ENDCAP_FLAT);
