@@ -29,11 +29,6 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->name="";//celý název objektu
 	novy->rezim=0;
 	novy->CT=0;//pro status návrh
-	novy->MT1=0;//pro status návrh, převážně pro S&G a PP
-	novy->PT=0;//pro status návrh, převážně pro S&G a PP
-	novy->WT1=0;//pro status návrh, převážně pro S&G a PP
-	novy->MT2=0;//pro status návrh, převážně pro S&G a PP
-	novy->WT2=0;//pro status návrh, převážně pro S&G a PP
 	novy->RD=0;//pro status návrh
 	novy->delka_dopravniku=0;//delka dopravníku v rámci objektu
 	novy->kapacita=0;
@@ -42,6 +37,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->rotace=0;//rotace jigu v objektu
 	novy->mezera=0;//velikost mezery mezi vozíky
 	novy->pohon=NULL;//ukazatel na použitý pohon
+	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
@@ -75,11 +71,6 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->CT=PP.TT;//pro status návrh
-	novy->MT1=0;//pro status návrh, převážně pro S&G a PP
-	novy->PT=0;//pro status návrh, převážně pro S&G a PP
-	novy->WT1=0;//pro status návrh, převážně pro S&G a PP
-	novy->MT2=0;//pro status návrh, převážně pro S&G a PP
-	novy->WT2=0;//pro status návrh, převážně pro S&G a PP
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
 	novy->kapacita=1;
@@ -90,6 +81,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->mezera_jig=0;//mezera mezi jigy
 	novy->mezera_podvozek=0;//mezera mezi podvozky
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
+	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
@@ -123,11 +115,6 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
 	novy->CT=PP.TT;//pro status návrh
-	novy->MT1=0;//pro status návrh, převážně pro S&G a PP
-	novy->PT=0;//pro status návrh, převážně pro S&G a PP
-	novy->WT1=0;//pro status návrh, převážně pro S&G a PP
-	novy->MT2=0;//pro status návrh, převážně pro S&G a PP
-	novy->WT2=0;//pro status návrh, převážně pro S&G a PP
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
 	novy->kapacita=1;
@@ -138,6 +125,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->mezera_jig=0;//mezera mezi jigy
 	novy->mezera_podvozek=0;//mezera mezi podvozky
 	novy->pohon=NULL;//při vložení nemá vložen žádný pohon
+	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
@@ -217,11 +205,6 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 	{
 		novy->rezim=Objekt->rezim;
 		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
-		novy->MT1=Objekt->MT1;//pro status návrh, převážně pro S&G a PP
-		novy->PT=Objekt->PT;//pro status návrh, převážně pro S&G a PP
-		novy->WT1=Objekt->WT1;//pro status návrh, převážně pro S&G a PP
-		novy->MT2=Objekt->MT2;//pro status návrh, převážně pro S&G a PP
-		novy->WT2=Objekt->WT2;//pro status návrh, převážně pro S&G a PP
 		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
 		novy->delka_dopravniku=Objekt->delka_dopravniku;
 		novy->kapacita=Objekt->kapacita;
@@ -232,6 +215,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->mezera_jig=Objekt->mezera_jig;//mezera mezi jigy
 		novy->mezera_podvozek=Objekt->mezera_podvozek;//mezera mezi podvozky
 		novy->pohon=Objekt->pohon;
+		novy->elementy=Objekt->elementy;
 		novy->min_prujezdni_profil.x=Objekt->min_prujezdni_profil.x;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->min_prujezdni_profil.y=Objekt->min_prujezdni_profil.y;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
@@ -813,6 +797,7 @@ long Cvektory::vymaz_seznam_OBJEKTY()
 	long pocet_smazanych_objektu=0;
 	while (OBJEKTY!=NULL)
 	{
+		vymaz_elementy(OBJEKTY->predchozi);
 		pocet_smazanych_objektu++;
 		OBJEKTY->predchozi=NULL;
 		delete OBJEKTY->predchozi;
@@ -821,6 +806,79 @@ long Cvektory::vymaz_seznam_OBJEKTY()
 
 	return pocet_smazanych_objektu;
 };
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+//ELEMENTY
+//danému objektu vytvoří hlavičku elementů
+void Cvektory::hlavicka_elementy(TObjekt *Objekt)
+{
+	Objekt->elementy=new TElement;
+	Objekt->elementy->n=0;
+	Objekt->elementy->eID=0;
+	Objekt->elementy->short_name="";
+	Objekt->elementy->name="";
+	Objekt->elementy->X=0;
+	Objekt->elementy->Y=0;
+	Objekt->elementy->rotace_symbolu=0;
+	Objekt->elementy->rotace_jigu=0;
+	Objekt->elementy->stav=true;
+
+	Objekt->elementy->mGrid=NULL;
+
+	Objekt->elementy->sparovany=NULL;
+	Objekt->elementy->predchozi=Objekt->elementy;//ukazuje sam na sebe
+	Objekt->elementy->dalsi=NULL;
+}
+////---------------------------------------------------------------------------
+//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
+Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y)
+{
+	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by  ještě nebyla založena hlavička, tak ji založí
+
+	TElement *novy=new TElement;
+	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
+	novy->eID=eID;
+	novy->X=X;
+	novy->Y=Y;
+
+	novy->mGrid=new TmGrid(F);
+	novy->mGrid->Tag=novy->n;//ID tabulky
+
+	//toto bude jinde
+	novy->mGrid->Left=m.L2Px(X);novy->mGrid->Top=m.L2Py(Y);//hodné jako druhé (popř. by bylo nutné překreslovat)
+	novy->mGrid->AntiAliasing_text=true;
+	novy->mGrid->Border.Width=2;
+	novy->mGrid->Create(3+novy->n,5);//samotné vytvoření matice-tabulky
+	novy->mGrid->Cells[0][0].Text=novy->n;
+	novy->mGrid->Cells[0][1].Type=novy->mGrid->EDIT;
+	novy->mGrid->Cells[2][2].Text="Test";
+	//--
+
+	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+	novy->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	novy->dalsi=NULL;
+	novy->sparovany=NULL;
+	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	return novy;
+}
+////---------------------------------------------------------------------------
+//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)
+long Cvektory::vymaz_elementy(TObjekt *Objekt)
+{
+	long pocet_smazanych_objektu=0;
+	while (Objekt->elementy!=NULL)
+	{
+		//vymaz_gObjekty(Objekt->elementy->predchozi);
+		Objekt->elementy->predchozi->mGrid->Delete();
+		Objekt->elementy->predchozi->mGrid==NULL;
+		Objekt->elementy->predchozi=NULL;
+		delete Objekt->elementy->predchozi;
+		Objekt->elementy=Objekt->elementy->dalsi;
+		pocet_smazanych_objektu++;
+	};
+	return pocet_smazanych_objektu;
+}
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -840,7 +898,7 @@ void Cvektory::hlavicka_POHONY()
 
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
-	POHONY=novy;//OBJEKTY
+	POHONY=novy;
 }
 ////---------------------------------------------------------------------------
 //vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
@@ -1047,7 +1105,7 @@ AnsiString Cvektory::vypis_objekty_nestihajici_prejezd(TPohon *pohon,double test
 		{                         //pro S&G a PP                         //pro konkrétní režim
 			if(rezim==-1 || (rezim==20 && (O->rezim==0 || O->rezim==2)) || O->rezim==rezim)//filtr režimu
 			{
-				double rRD=m.kontrola_rychlosti_prejezdu(O->CT,O->MT1+O->MT2,O->PT,O->WT1+O->WT2,O->delka_dopravniku,testRD);
+				double rRD=0;//4.12.2018 zdm, m.kontrola_rychlosti_prejezdu(O->CT,O->MT1+O->MT2,O->PT,O->WT1+O->WT2,O->delka_dopravniku,testRD);
 				if(rRD!=0)
 				{
 					objekty=O->short_name+", ";
@@ -1085,11 +1143,11 @@ AnsiString Cvektory::kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double C
 			aRD=0;
 			MT=0;
 		}
-		if(WT==0)WT=O->WT1+O->WT2;//pokud není dodáno WT, tak zkusí vzít z uložení
+		//4.12.2018 zdm, if(WT==0)WT=O->WT1+O->WT2;//pokud není dodáno WT, tak zkusí vzít z uložení
 	}
 
 	//vrátí rozdíl aktuální rychlosti pohonu a potřebné k uskuteční přejezdu, pokud je hodnota 0 je v pořádku, je-li záporná, přejezd se nestíhá o danou hodnotu v m/s, je-li kladná, je aktuální rychlost o danou hodnoutu hodnotu v m/s vyšší
-	double rRD=m.kontrola_rychlosti_prejezdu(CT,MT,O->PT,WT,DD,aRD);//pokud není MT dodáno bude spočítáno, pokud nebude vyčísleno PT a WT, bude MT totožné s CT, bude tedy splněna alespoň minumální nutná (nikoliv dostatčující) podmínka, kdy DD/CT>=aRD
+	double rRD=0;//4.12.2018 zdm m.kontrola_rychlosti_prejezdu(CT,MT,O->PT,WT,DD,aRD);//pokud není MT dodáno bude spočítáno, pokud nebude vyčísleno PT a WT, bude MT totožné s CT, bude tedy splněna alespoň minumální nutná (nikoliv dostatčující) podmínka, kdy DD/CT>=aRD
 	if(rezim==0 && m.null(rRD)!=0 || rezim==2 && rRD<0)//problém nastane pokud rRD tzn. rozdíl od aRD pro S&G, pro PP se pouze řeší pokud je rRD menší než aRD
 	{
 		error_text=O->short_name;

@@ -4,6 +4,7 @@
 #include <vcl.h>
 #include "knihovna_objektu.h"
 #include "my.h"
+#include "TmGrid.h"
 //#define TITULEK "Omap editor"
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -29,6 +30,41 @@ class Cvektory
 	};
 	TPohon *POHONY;//spojový seznam pohonů
 
+	struct TElement
+	{
+			unsigned long n; //pořadí ve spoj.seznamu
+			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí)
+			UnicodeString short_name;//krátký název max. 4 znaky
+			UnicodeString name;//celý název objektu
+			double X, Y;//umístění
+			short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
+			double rotace_jigu;//úhel rotace jigu vůči podvozku
+			bool stav;
+
+			double LO1;
+			double OTOC_delka;
+			double LO2;
+			double LO_pozice;
+
+			double PT1;
+			double PTotoc;
+			double PT2;
+			double TIME;//CT, PT, WT, RT,...
+
+			unsigned int akt_pocet_voziku;
+			unsigned int max_pocet_voziku;
+
+			//Gobjekt, Gelement doplnit
+			TmGrid *mGrid;
+
+			UnicodeString poznamka;//uloží poznámku
+
+
+			struct TElement *sparovany;//ukazatel na následující spárovaný element ve spojovém seznamu (nemusí být totožný s dalším)
+			struct TElement *predchozi;//ukazatel na předchozí element ve spojovém seznamu
+			struct TElement *dalsi;//ukazatel na  další element ve spojovém seznamu
+	};
+
 	struct TObjekt
 	{
 			unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -38,11 +74,6 @@ class Cvektory
 			double X, Y;//umístění objektu
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP),3-stopka
 			double CT;//pro status návrh
-			double MT1;//pro status návrh, převážně pro S&G a PP
-			double PT;//pro status návrh, převážně pro S&G a PP
-			double WT1;//pro status návrh, převážně pro S&G a PP
-			double MT2;//pro status návrh, převážně pro S&G a PP
-			double WT2;//pro status návrh, převážně pro S&G a PP
 			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			double kapacita;//uživatelsky zadaná kapacita
@@ -53,6 +84,7 @@ class Cvektory
 			double mezera_jig;//mezera mezi jigy
 			double mezera_podvozek;//mezera mezi podvozky
 			TPohon *pohon;//ukazatel na použitý pohon
+			TElement *elementy;
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
@@ -330,6 +362,10 @@ TObjekt *vrat_objekty_bez_pohonu();//vratí formou ukazatele na pole objekty bez
 		void ortogonalizovat();//ortogonalizuje schéma
 		long vymaz_seznam_OBJEKTY();
 
+//metody pro ELEMENTY
+		void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
+		TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
+		long vymaz_elementy(TObjekt *Objekt);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)
 //metody pro POHONY
 		void hlavicka_POHONY();
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).

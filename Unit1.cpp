@@ -1212,6 +1212,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	Zoom_predchozi_AA=Zoom;//musí být tu, před mody (mohl by být i před kreslením gridu)
 	switch(MOD)
 	{
+		case NAHLED:
 		case SCHEMA://vykreslování všech vektorů ve schématu
 		{
 			if(!antialiasing)d.vykresli_vektory(Canvas);
@@ -1220,7 +1221,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Cantialising a;
 				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;
 				bmp_grid->Width=0;bmp_grid->Height=0;
-				if(grid && Zoom_predchozi_AA>0.5)//je-li grid zobrazen
+				if(grid && Zoom_predchozi_AA>0.5 && !NAHLED)//je-li grid zobrazen
 				{
 					bmp_grid->Width=ClientWidth;bmp_grid->Height=ClientHeight;
 					d.vykresli_grid(bmp_grid->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
@@ -1244,6 +1245,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_grid);//velice nutné
 				delete (bmp_in);//velice nutné
 			}
+			if(MOD==NAHLED && d.v.OBJEKTY->dalsi->elementy!=NULL)d.v.OBJEKTY->dalsi->elementy->dalsi->mGrid->Show();//mGrid test
 			//grafické měřítko
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
@@ -1857,7 +1859,11 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					break;
 				}
 				case ZOOM_W:ZOOM_WINDOW();break;//ZOOM_WINDOW
-				case ADD:add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
+				case ADD:
+					if(MOD==SCHEMA)add_objekt(X,Y);
+					else	{d.v.vloz_element(/*pom*/d.v.OBJEKTY->dalsi,element_id,m.P2Lx(X),m.P2Ly(Y));Akce=NIC;REFRESH();DuvodUlozit(true);}
+					zneplatnit_minulesouradnice();
+					break;//přidání objekt
 				case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 				case MOVE:move_objekt(X,Y);break;//posun objektu
 				case MEASURE:
@@ -3473,10 +3479,8 @@ void TForm1::NP()
 }
 
 void TForm1::NP_input()
-
 {
-
-   MOD=NAHLED;
+	 MOD=NAHLED;
 
    Zoom_predchozi=Zoom;
    Zoom=5.0; on_change_zoom_change_scGPTrackBar();
@@ -3538,6 +3542,8 @@ void TForm1::NP_input()
 		Form1->m.designButton(scGPButton_OK, Form1, 1, 2);
 		Form1->m.designButton(scGPButton_storno, Form1, 2, 2);
 
+		Invalidate();
+		REFRESH();
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
