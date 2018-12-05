@@ -2455,7 +2455,6 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		default:vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

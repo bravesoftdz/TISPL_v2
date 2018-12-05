@@ -2942,30 +2942,68 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	int Col,Row;
 	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
 	Col=DrawGrid_knihovna->Col; Row=DrawGrid_knihovna->Row;
-  knihovna_id=1;
-  if(MOD==NAHLED)
+
+	if(MOD==NAHLED)
   {
-  if(Row==0)element_id=Col+1;
-  if(Row==1)element_id=Col+3;
-  }
-
-	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
-	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
-
-	if(Col>-1 && Row>-1)
-	{
-		vybrany_objekt=Col+Row+Row;
-		Akce=ADD;kurzor(add_o);//Screen->Cursor=crCross;
-		add_posledni=true;pom=NULL;
-		//ShowMessage(vybrany_objekt);
-		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
-		{
-			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
-			Akce=NIC;kurzor(standard);
-		}
+		knihovna_id=1;
+		if(Row==0)element_id=Col+1;
+		if(Row==1)element_id=Col+3;
+		SB("Kliknutím na libovolné místo umístíte vybraný element.");
+		Akce=ADD;kurzor(add_o);
 	}
+	else//pro SCHEMA
+	{
+		SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
+		//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
+		if(Col>-1 && Row>-1)
+		{
+			vybrany_objekt=Col+Row+Row;
+			Akce=ADD;kurzor(add_o);//Screen->Cursor=crCross;
+			add_posledni=true;pom=NULL;
+			//ShowMessage(vybrany_objekt);
+			if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
+			{
+				MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
+				Akce=NIC;kurzor(standard);
+			}
+		}
   //ShowMessage(element_id);
 	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Button,
+					TShiftState Shift, int X, int Y)
+{
+	int Col,Row;
+	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
+	knihovna_id=2;
+	if(Row==0) element_id=Col+5;
+	SB("Kliknutím na libovolné místo umístíte vybraný element.");
+	Akce=ADD;kurzor(add_o);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
+					TShiftState Shift, int X, int Y)
+{
+	int Col,Row;
+	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
+	knihovna_id=3;
+	if(Row==0)  element_id=0;
+	SB("Kliknutím na libovolné místo umístíte vybraný element.");
+	Akce=ADD;kurzor(add_o);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButton Button,
+					TShiftState Shift, int X, int Y)
+{
+	int Col,Row;
+	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
+	knihovna_id=4;
+	if(Row==0 && Col==0)  element_id=7;
+	if(Row==0 && Col==1)  element_id=8;
+	SB("Kliknutím na libovolné místo umístíte vybraný element.");
+	Akce=ADD;kurzor(add_o);
 }
 //---------------------------------------------------------------------------
 //přeposílá událost na form
@@ -5634,74 +5672,7 @@ void TForm1::db_connection()
 	FDConnection1->Params->DriverID="Mysql";
 	FDConnection1->Params->Add("Server=81.2.243.72");
 }
-
-
 //---------------------------------------------------------------------------
-
-
-
-
-void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
-{
-	int Col,Row;
-	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
-  knihovna_id=2;
-  if(MOD==NAHLED)
-  {
-  if(Row==0) element_id=Col+5;
-  }
-	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
-	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
-
-	if(Col>-1 && Row>-1)
-	{
-		vybrany_objekt=Col+Row+Row;
-		Akce=ADD;kurzor(add_o);//Screen->Cursor=crCross;
-		add_posledni=true;pom=NULL;
-		//ShowMessage(vybrany_objekt);
-		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
-		{
-			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
-			Akce=NIC;kurzor(standard);
-		}
-	}
-	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
-  // ShowMessage(element_id);
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
-{
-	int Col,Row;
-	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
-	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
-  knihovna_id=3;
-  if(MOD==NAHLED)
-  {
-  if(Row==0)  element_id=0;
-  }
-
-	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
-	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
-
-	if(Col>-1 && Row>-1)
-	{
-		vybrany_objekt=Col+Row+Row;
-		Akce=ADD;kurzor(add_o);//Screen->Cursor=crCross;
-		add_posledni=true;pom=NULL;
-		//ShowMessage(vybrany_objekt);
-		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
-		{
-			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
-			Akce=NIC;kurzor(standard);
-		}
-	}
-	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
-  // ShowMessage(element_id);
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
 // if(MOD==NAHLED)
@@ -5858,42 +5829,6 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 	delete (bmp_in);//velice nutné
 }
 //---------------------------------------------------------------------------
-
-
-void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
-{
-	int Col,Row;
-	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
-	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
-  knihovna_id=4;
-  if(MOD==NAHLED)
-  {
-  if(Row==0 && Col==0)  element_id=7;
-  if(Row==0 && Col==1)  element_id=8;
-  }
-
-	SB("Kliknutím na libovolné místo umístíte objekt "+knihovna_objektu[Col+Row+Row].name);
-	//SB(AnsiString(DrawGrid_knihovna->TopRow)+" "+AnsiString(Col)+" "+AnsiString(Row)+" "+knihovna_objektu[Col+Row+Row].name);
-
-	if(Col>-1 && Row>-1)
-	{
-		vybrany_objekt=Col+Row+Row;
-		Akce=ADD;kurzor(add_o);//Screen->Cursor=crCross;
-		add_posledni=true;pom=NULL;
-		//ShowMessage(vybrany_objekt);
-		if(VyID==vybrany_objekt && d.v.OBJEKTY->predchozi->n<3)//pokud je vybraná vyhýbka nejsou alespoň 3 objekty
-		{
-			MB("Výhybku lze nastavit, pokud jsou k dispozici minimálně 3 technologické objekty!");
-			Akce=NIC;kurzor(standard);
-		}
-	}
-	//*pozn n-tý sloupec + (n-tý řádek - 1)* celkový počet slouců
-  // ShowMessage(element_id);
-}
-//---------------------------------------------------------------------------
-
-
 void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 {
  if(!scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
