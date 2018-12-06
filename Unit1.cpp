@@ -47,6 +47,9 @@
 #pragma link "scGPImages"
 #pragma link "scHtmlControls"
 #pragma link "scWebBrowser"
+#pragma link "scHint"
+#pragma link "scGPExtControls"
+#pragma link "rHintWindow"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
@@ -710,7 +713,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	Timer_simulace->Enabled=false;
 	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+	//scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=true;
 	scListGroupKnihovObjektu->Top=0;
 //	scListGroupNastavProjektu->Visible=true;
@@ -739,6 +742,19 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	scGPCheckBox_ortogon->Align=alTop;
 	scGPCheckBox_ortogon->Left=3;
 	scGPCheckBox_ortogon->Visible=true;
+  scGPCheckBox_zobraz_podklad->Align=alTop;
+  scGPCheckBox_zobraz_podklad->Left=scGPCheckBox_ortogon->Left;
+  scGPCheckBox_stupne_sedi->Align=alTop;
+  scGPCheckBox_stupne_sedi->Left=scGPCheckBox_ortogon->Left;
+  scGPButton_kalibrace->Align=alTop;
+  scGPButton_adjustace->Align=alTop;
+  scLabel1_svetelnost->Top=scGPButton_adjustace->Top + pravyoption_nadpis->Height + 6;  //pár px navíc kvůli vzdušnosti
+  scGPTrackBar_svetelnost_posuvka->Top=scLabel1_svetelnost->Top;
+  //scGPCheckBox_stupne_sedi->Top=scGPCheckBox_zobraz_podklad->Top+scGPCheckBox_zobraz_podklad->Height;
+  //scLabel1_svetelnost->Top= scGPCheckBox_stupne_sedi->Top + scGPCheckBox_stupne_sedi->Height;
+ // scGPTrackBar_svetelnost_posuvka->Top  = scLabel1_svetelnost->Top;
+  //scGPButton_kalibrace->Top = scLabel1_svetelnost->Top + scLabel1_svetelnost->Height;
+  //scGPButton_adjustace->Top = scLabel1_svetelnost->Top + scLabel1_svetelnost->Height;
 	scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
 	scGPGlyphButton_close_legenda_casove_osy->Visible=false;
  //	scGPButton_header_def_zakazek->Visible=false;
@@ -791,7 +807,7 @@ void __fastcall TForm1::LayoutClick(TObject *Sender)
 	MOD=LAYOUT;
 	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+ //	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scGPCheckBox_ortogon->Visible=false;
 	scGPCheckBox_pocet_voziku_dle_WIP->Visible=false;
@@ -863,7 +879,7 @@ void __fastcall TForm1::AnalyzaClick(TObject *Sender)
 			DuvodUlozit(true);
 			scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 			scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-			scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+	 //		scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 			scSplitView_LEFTTOOLBAR->Visible=false;
 			scListGroupKnihovObjektu->Visible=false;
 			Button3->Visible=false;
@@ -1033,7 +1049,7 @@ void __fastcall TForm1::SyntezaClick(TObject *Sender)
 	Label_zamerovac->Visible=false;
 	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+	//scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scSplitView_LEFTTOOLBAR->Visible=false;
 	scListGroupKnihovObjektu->Visible=false;
 	g.ShowGrafy(false);
@@ -1861,14 +1877,16 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 		}break;
 		case KALIBRACE:
-		{
+		{   //zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+    zobraz_tip("Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu.");
 			if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y,true);
 			}
 		}break;
 		case ADJUSTACE:
-		{
+		{ //zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+      zobraz_tip("Tažením myši z výchozího bodu směřujte do cílového bodu, po puštění myši musíte zadat skutečnou vzdálenost mezi body.");
 			if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y);
@@ -3221,11 +3239,11 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 //---------------------------------------------------------------------------
 void TForm1::zobraz_tip(UnicodeString text)
 {
-	Canvas->Font->Color=clRed;
-	SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
-	Canvas->Font->Size=9;
+	Canvas->Font->Color=m.clIntensive(clRed,100);
+ 	SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
+	Canvas->Font->Size=14;
 	Canvas->Font->Name="Arial";
-	Canvas->Font->Style = TFontStyles()<< fsBold;//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+	Canvas->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 	Canvas->TextOutW(ClientWidth-Canvas->TextWidth(text)-10,Form1->scGPPanel_statusbar->Top-20,text);
 	Canvas->Font->Color=clBlack;
 }
@@ -5096,7 +5114,7 @@ void __fastcall TForm1::MaxButtonClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
+void __fastcall TForm1::scGPGlyphButton_OPTIONS_OldClick(TObject *Sender)
 {
   ESC();//zruší případnou rozdělanou akci
 	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
@@ -5158,7 +5176,7 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 {
 	if(scSplitView_MENU->Opened)scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
-	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
+ //	scGPGlyphButton_OPTIONS->Down=false;//vypne případné podsvícení buttnu (aktivitu)
 	scButton_parmlinky_defzakazek->Down=false;
 	if(scGPButton_header_projekt->ImageIndex==49)
 	{
@@ -5815,7 +5833,20 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   scGPCheckBox_zobraz_podklad->Checked=true;
   scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
   REFRESH();
-	//Form_kalibrace->ShowModal();  smazat
+
+  zobraz_tip("Pro správné umístění podkladu a nastavení měřítka, využijte nastavení v pravém horním menu.");
+  if(mrOk==MB("Pro správné umístění podkladu a nastavení měřítka, využijte nastavení v pravém horním menu. Přejít do nastavení?",MB_OKCANCEL))
+  {
+  scSplitView_OPTIONS->Opened=true;
+  }
+  else
+  {
+  scGPGlyphButton_OPTIONS->Active=true;
+  //scGPGlyphButton_OPTIONS->GlyphColor= (TColor)RGB(255, 128, 0);
+  //scGPGlyphButton_OPTIONS->GlyphThickness=2;
+  scGPGlyphButton_OPTIONS->ShowHint=true;
+  }
+
 }
  //--------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, int ARow,
@@ -5885,20 +5916,47 @@ void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
 {
 	kurzor(add_o);//pozor kurzor kalibrovat neni vycentrovaný, je třeba jej imageeditoru předělat
 	Akce=KALIBRACE;
-}
+  scSplitView_OPTIONS->Opened=false;
+   }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 {
 	kurzor(add_o);
   Akce=ADJUSTACE;
+  scSplitView_OPTIONS->Opened=false;
+  }
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
+{
+  ESC();//zruší případnou rozdělanou akci
+	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
+
+  scGPGlyphButton_OPTIONS->Active=false;
+  scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
+  scGPGlyphButton_OPTIONS->GlyphThickness=1;
+
+	if(scSplitView_MENU->Opened)
+	{
+		scSplitView_MENU->Close();
+		deaktivace_zamerovace();
+	}
+
 }
 //---------------------------------------------------------------------------
 
 
+void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseEnter(TObject *Sender)
+{
+    scGPGlyphButton_OPTIONS->GlyphColor=(TColor)RGB(0,120,215);
+}
+//---------------------------------------------------------------------------
 
 
-
-
-
+void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseLeave(TObject *Sender)
+{
+scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
+}
+//---------------------------------------------------------------------------
 
 

@@ -3,24 +3,25 @@ object Form_adjustace: TForm_adjustace
   Top = 0
   BorderStyle = bsNone
   Caption = 'Form_adjustace'
-  ClientHeight = 161
+  ClientHeight = 137
   ClientWidth = 360
-  Color = clBtnFace
+  Color = 15790320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel_vzdalenost: TrHTMLLabel
     Left = 8
     Top = 55
-    Width = 173
+    Width = 238
     Height = 19
-    Caption = 'Skute'#269'n'#225' vzd'#225'lenost [m]'
+    Caption = 'Zadejte skute'#269'nou vzd'#225'lenost [m]'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -67,7 +68,6 @@ object Form_adjustace: TForm_adjustace
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitWidth = 400
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 310
@@ -165,7 +165,6 @@ object Form_adjustace: TForm_adjustace
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 350
     end
     object scLabel_titulek: TscLabel
       AlignWithMargins = True
@@ -200,12 +199,11 @@ object Form_adjustace: TForm_adjustace
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Nastaven'#237' podkladu '
-      ExplicitWidth = 266
     end
   end
   object scGPButton_storno: TscGPButton
-    Left = 164
-    Top = 111
+    Left = 188
+    Top = 95
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -311,7 +309,7 @@ object Form_adjustace: TForm_adjustace
   end
   object scGPButton_OK: TscGPButton
     Left = 44
-    Top = 111
+    Top = 95
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -322,6 +320,7 @@ object Form_adjustace: TForm_adjustace
     ParentFont = False
     TabOrder = 2
     TabStop = True
+    OnClick = scGPButton_OKClick
     Animation = False
     Caption = 'Ulo'#382'it'
     CanFocused = True
@@ -415,9 +414,9 @@ object Form_adjustace: TForm_adjustace
     AllowAllUp = False
   end
   object scGPNumericEdit_vzdalenost: TscGPNumericEdit
-    Left = 196
+    Left = 252
     Top = 48
-    Width = 156
+    Width = 100
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite
@@ -497,5 +496,6 @@ object Form_adjustace: TForm_adjustace
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
+    OnKeyDown = FormKeyDown
   end
 end

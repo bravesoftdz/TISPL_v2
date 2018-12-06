@@ -26,8 +26,13 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_stornoClick(TObject *Sender);
   void __fastcall KonecClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
+  void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+  void __fastcall scGPButton_OKClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
+
+   void position();
+
   __fastcall TForm_adjustace(TComponent* Owner);
 };
 //---------------------------------------------------------------------------

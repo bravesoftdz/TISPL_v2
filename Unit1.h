@@ -94,6 +94,9 @@
 #include "vykresli.h"
 #include "grafy.h"
 #include "PO_math.h"
+#include "scHint.hpp"
+#include "scGPExtControls.hpp"
+#include "rHintWindow.hpp"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -186,7 +189,6 @@ __published:	// IDE-managed Components
 	TscGPButton *PopupMenuButton;
 	TscGPButton *Analyza;
 	TscGPButton *Synteza;
-	TscGPGlyphButton *scGPGlyphButton_OPTIONS;
 	TscGPGlyphButton *Toolbar_Ulozit;
 	TscGPGlyphButton *Toolbar_NovySoubor;
 	TscGPGlyphButton *Toolbar_Otevrit;
@@ -278,16 +280,17 @@ __published:	// IDE-managed Components
   TscEdit *scEdit_zkratka;
   TscGPCheckBox *scGPCheckBox_zobraz_podklad;
   TscButton *scButton_nacist_podklad;
-  TscGPCheckBox *scGPCheckBox2;
-  TscGPTrackBar *scGPTrackBar2;
+  TscGPCheckBox *scGPCheckBox_stupne_sedi;
+  TscGPTrackBar *scGPTrackBar_svetelnost_posuvka;
   TscLabel *scLabel1_svetelnost;
   TscGPButton *scGPButton_kalibrace;
-  TscGPButton *scGPButton_adjustace;
   TscGPLabel *scGPLabel_otoce;
   TscGPLabel *scGPLabel_stop;
   TscGPLabel *scGPLabel_geometrie;
   TscGPLabel *scGPLabel_poznamky;
   TscGPLabel *scGPLabel_roboti;
+  TscGPButton *scGPButton_adjustace;
+  TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -389,7 +392,7 @@ __published:	// IDE-managed Components
 	void __fastcall SQL_processIDClick(TObject *Sender);
 	void __fastcall rComboBoxKrokChange(TObject *Sender);
 	void __fastcall MaxButtonClick(TObject *Sender);
-	void __fastcall scGPGlyphButton_OPTIONSClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_OPTIONS_OldClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_ZOOM_PLUSClick(TObject *Sender);
@@ -454,6 +457,9 @@ __published:	// IDE-managed Components
   void __fastcall scGPButton_adjustaceClick(TObject *Sender);
   void __fastcall DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int ARow,
           TRect &Rect, TGridDrawState State);
+  void __fastcall scGPGlyphButton_OPTIONSClick(TObject *Sender);
+  void __fastcall scGPGlyphButton_OPTIONSMouseEnter(TObject *Sender);
+  void __fastcall scGPGlyphButton_OPTIONSMouseLeave(TObject *Sender);
 
 
 
