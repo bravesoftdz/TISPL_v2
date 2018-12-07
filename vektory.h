@@ -164,7 +164,7 @@ class Cvektory
 
 	struct T_raster
 	{
-			AnsiString filename;//adresa umístění podkladového rastru na disku
+			UnicodeString filename;//adresa umístění podkladového rastru na disku
 			long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
 			double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
 			bool show;//indikace zda je raster zobrazen
@@ -218,21 +218,6 @@ class Cvektory
 			struct TG_Objekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	TG_objekt *G_OBJEKTY;//spojový seznam
-
-	struct TDopravnik
-	{
-			//toto zv86it TPohonz* pohon;
-			TG_objekt *g_objekt; //spojový seznam G_objektů, ze kterých se dopravní skládá
-			TPalec *palec; //spojový seznam palců, příslušných k dopravníku - zvážit příslušnot v palcích
-			struct TDopravnik *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TDopravnik *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-	TDopravnik *DOPRAVNIKY;
-
-//	znovu zvážit
-//	objekt1	->G_objekt1->dopravnik1
-//					->G_objekt2->dopravnik1
-//					->G_objekt3->dopravnik...
 
 	struct TProces
 	{
@@ -324,12 +309,6 @@ class Cvektory
 					double vyska_jig;
 					double delka_podvozek;
 					double typ_vozik;
-//					AnsiString filename;//adresa umístění podkladového rastru na disku
-//					long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
-//					double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
-//					bool show;//indikace zda je raster zobrazen
-//					bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
-//					int dim;//úroveň ztlumení
 		};
 		TFile_hlavicka File_hlavicka;
 
@@ -508,6 +487,16 @@ public:
 
 //pomocné struktury pro ukládání do bináru
 private:
+		struct C_raster
+		{
+			unsigned int text_length;
+			long double resolution;//rozlišení metrů na jeden pixel rastrového podkladu
+			double X,Y;//logické souřadnice (v metrech) umístění rastrového podkladu v projektu
+			bool show;//indikace zda je raster zobrazen
+			bool grayscale;//zda bude či nebude rastrový podklad v odstínech šedi či nikoliv
+			int dim;//úroveň ztlumení
+		};
+
 		struct C_pohon//pro konverzi do bináru
 		{
 				unsigned int n;

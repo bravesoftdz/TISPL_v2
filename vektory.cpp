@@ -2339,6 +2339,24 @@ short int Cvektory::uloz_do_souboru(UnicodeString FileName)
 		 vytvor_hlavicku_souboru();
 		 FileStream->Write(&File_hlavicka,sizeof(TFile_hlavicka));
 
+		 //uložení parametrů rastru
+		 C_raster *R=new C_raster;
+		 R->text_length=PP.raster.filename.Length()+1;
+		 R->resolution=PP.raster.resolution;
+		 R->X=PP.raster.X;
+		 R->Y=PP.raster.Y;
+		 R->show=PP.raster.show;
+		 R->grayscale=PP.raster.grayscale;
+		 R->dim=PP.raster.dim;
+		 FileStream->Write(R,sizeof(C_raster));//zapiše jeden prvek do souboru
+
+		 //text - adresa rastru
+		 wchar_t *name=new wchar_t[R->text_length];
+		 name=PP.raster.filename.c_str();
+		 FileStream->Write(name,R->text_length*sizeof(wchar_t));//zapiše druhý řetězec za prvek bod
+		 name=NULL; delete[] name;
+		 R=NULL;delete R;
+
 		 //uložení pohonu
 		 TPohon *ukaz1=POHONY->dalsi;
 		 while (ukaz1!=NULL)
@@ -2545,8 +2563,24 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			{
 			TFileStream *FileStream=new TFileStream(FileName,fmOpenRead);
 
-			//zapiše hlavičku ze souboru
+			//načte hlavičku ze souboru
 			FileStream->Read(&File_hlavicka,sizeof(TFile_hlavicka));//načte hlavičku ze souboru
+
+			//uložení parametrů rastru
+			C_raster *R=new C_raster;
+			FileStream->Read(R,sizeof(C_raster));//načte jeden prvek ze souboru
+			PP.raster.resolution=R->resolution;
+			PP.raster.X=R->X;
+			PP.raster.Y=R->Y;
+			PP.raster.show=R->show;
+			PP.raster.grayscale=R->grayscale;
+			PP.raster.dim=R->text_length;
+			//adresa rastru
+			wchar_t *name=new wchar_t[R->text_length];
+			FileStream->Read(name,R->text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu
+			PP.raster.filename=name;
+			name=NULL; delete[] name;
+			R=NULL;delete R;
 
 			//vytvoří nové hlavičky pro spojové seznamy
 			hlavicka_POHONY();
