@@ -19,9 +19,9 @@ object Form_adjustace: TForm_adjustace
   object rHTMLLabel_vzdalenost: TrHTMLLabel
     Left = 8
     Top = 55
-    Width = 238
+    Width = 212
     Height = 19
-    Caption = 'Zadejte skute'#269'nou vzd'#225'lenost [m]'
+    Caption = 'Zadejte skute'#269'nou vzd'#225'lenost '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -29,6 +29,21 @@ object Form_adjustace: TForm_adjustace
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+  end
+  object rHTMLLabel_jednotky: TrHTMLLabel
+    Left = 310
+    Top = 55
+    Width = 33
+    Height = 21
+    Caption = '<font color=#2b579a>[m]</font>'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    OnClick = rHTMLLabel_jednotkyClick
   end
   object scGPPanel_hlavicka: TscGPPanel
     Left = 0
@@ -414,9 +429,9 @@ object Form_adjustace: TForm_adjustace
     AllowAllUp = False
   end
   object scGPNumericEdit_vzdalenost: TscGPNumericEdit
-    Left = 252
-    Top = 48
-    Width = 100
+    Left = 226
+    Top = 49
+    Width = 76
     Height = 29
     Options.NormalColor = clWhite
     Options.HotColor = clWhite

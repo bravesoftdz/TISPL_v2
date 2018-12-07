@@ -291,6 +291,7 @@ __published:	// IDE-managed Components
   TscGPLabel *scGPLabel_roboti;
   TscGPButton *scGPButton_adjustace;
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
+  TscExPanel *scExPanel_podklad;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -460,6 +461,9 @@ __published:	// IDE-managed Components
   void __fastcall scGPGlyphButton_OPTIONSClick(TObject *Sender);
   void __fastcall scGPGlyphButton_OPTIONSMouseEnter(TObject *Sender);
   void __fastcall scGPGlyphButton_OPTIONSMouseLeave(TObject *Sender);
+  void __fastcall scExPanel_podkladClick(TObject *Sender);
+  void __fastcall scGPTrackBar_svetelnost_posuvkaChange(TObject *Sender);
+  void __fastcall scGPCheckBox_stupne_sediClick(TObject *Sender);
 
 
 
