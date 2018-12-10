@@ -740,16 +740,20 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	g.ShowGrafy(false);
 	ComboBoxCekani->Visible=false;
 	scGPCheckBox_ortogon->Align=alTop;
-	scGPCheckBox_ortogon->Left=3;
+	scGPCheckBox_ortogon->Left=10;
 	scGPCheckBox_ortogon->Visible=true;
   scGPCheckBox_zobraz_podklad->Align=alTop;
-  scGPCheckBox_zobraz_podklad->Left=scGPCheckBox_ortogon->Left;
+  scGPCheckBox_zobraz_podklad->Left=5;
   scGPCheckBox_stupne_sedi->Align=alTop;
-  scGPCheckBox_stupne_sedi->Left=scGPCheckBox_ortogon->Left;
-  scGPButton_kalibrace->Align=alTop;
-  scGPButton_adjustace->Align=alTop;
-  scLabel1_svetelnost->Top=scGPButton_adjustace->Top + pravyoption_nadpis->Height + 6;  //pár px navíc kvůli vzdušnosti
+  scGPCheckBox_stupne_sedi->Left=scGPCheckBox_zobraz_podklad->Left;
+  scLabel1_svetelnost->Top=scGPCheckBox_stupne_sedi->Top + pravyoption_nadpis->Height + 14;  //pár px navíc kvůli vzdušnosti
   scGPTrackBar_svetelnost_posuvka->Top=scLabel1_svetelnost->Top;
+
+  scGPButton_kalibrace->Left = 3;
+  scGPButton_adjustace->Left=  scGPButton_kalibrace->Left;
+  scGPButton_kalibrace->Top=scGPTrackBar_svetelnost_posuvka->Top + scLabel1_svetelnost->Height + 9;  //pár px navíc kvůli vzdušnosti
+  scGPButton_adjustace->Top=scGPButton_kalibrace->Top +  scGPButton_kalibrace->Height ;
+
   //scGPCheckBox_stupne_sedi->Top=scGPCheckBox_zobraz_podklad->Top+scGPCheckBox_zobraz_podklad->Height;
   //scLabel1_svetelnost->Top= scGPCheckBox_stupne_sedi->Top + scGPCheckBox_stupne_sedi->Height;
  // scGPTrackBar_svetelnost_posuvka->Top  = scLabel1_svetelnost->Top;
@@ -1883,7 +1887,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}break;
 		case ADJUSTACE:
 		{ //zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-      zobraz_tip("Tažením myši z výchozího bodu směřujte do cílového bodu, po puštění myši musíte zadat skutečnou vzdálenost mezi body.");
+      zobraz_tip("Tažením myši z výchozího bodu směřujte do cílového bodu podkladu, po puštění myši zadejte skutečnou vzdálenost mezi body v metrech či milimetrech.");
 			if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y);
@@ -1945,7 +1949,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				{
           if(Form_adjustace->ShowModal()==mrOk)//MB "Zadejte vzdálenost v metrech"
 		      {
-            double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value;
+
+            double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value/(1+999.0*Form_adjustace->Delkaunit);
 						d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
           }
           else
@@ -3263,11 +3268,11 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 void TForm1::zobraz_tip(UnicodeString text)
 {
 	Canvas->Font->Color=m.clIntensive(clRed,100);
- 	SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
+ 	//SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
 	Canvas->Font->Size=14;
 	Canvas->Font->Name="Arial";
 	Canvas->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-	Canvas->TextOutW(ClientWidth-Canvas->TextWidth(text)-10,Form1->scGPPanel_statusbar->Top-20,text);
+	Canvas->TextOutW(ClientWidth-Canvas->TextWidth(text)-10,Form1->scGPPanel_statusbar->Top-25,text);
 	Canvas->Font->Color=clBlack;
 }
 //---------------------------------------------------------------------------
@@ -3677,9 +3682,9 @@ void TForm1::NP_input()
 
    Zoom_predchozi=Zoom;
    Zoom=5.0; on_change_zoom_change_scGPTrackBar();
-
-   minule_souradnice_kurzoru.x =akt_souradnice_kurzoru.x;
-   minule_souradnice_kurzoru.y =akt_souradnice_kurzoru.y;
+//
+//   Posun_predchozi.x=Posun.x;
+//   Posun_predchozi.y=Posun.y;
 
    DrawGrid_knihovna->DefaultRowHeight=140;
    DrawGrid_knihovna->DefaultColWidth=80;
@@ -5789,12 +5794,12 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 
    if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
    {
-  // Zoom=Zoom_predchozi;
+   //Zoom=Zoom_predchozi;
    Zoom=1.0;
    on_change_zoom_change_scGPTrackBar();
 
-   akt_souradnice_kurzoru.x = minule_souradnice_kurzoru.x;
-   akt_souradnice_kurzoru.y = minule_souradnice_kurzoru.y;
+//   Posun.x=Posun_predchozi.x;
+//   Posun.y=Posun_predchozi.y;
 
    DrawGrid_knihovna->DefaultRowHeight=50;
    DrawGrid_knihovna->DefaultColWidth=70;
@@ -5857,10 +5862,16 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
   REFRESH();
 
-  zobraz_tip("Pro správné umístění podkladu a nastavení měřítka, využijte nastavení v pravém horním menu.");
-  if(mrOk==MB("Pro správné umístění podkladu a nastavení měřítka, využijte nastavení v pravém horním menu. Přejít do nastavení?",MB_OKCANCEL))
+  zobraz_tip("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu.");
+  if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít přímo do nastavení?",MB_OKCANCEL))
   {
+  //scGPGlyphButton_OPTIONSClick(Sender);  //tohle nesežral
   scSplitView_OPTIONS->Opened=true;
+
+  scGPCheckBox_zobraz_podklad->Enabled=true;
+  scGPCheckBox_stupne_sedi->Enabled=true;
+  scGPTrackBar_svetelnost_posuvka->Enabled=true;
+  scLabel1_svetelnost->Enabled=true;
   }
   else
   {
@@ -5923,6 +5934,7 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
     d.v.PP.raster.show=false;
     scSplitView_OPTIONS->Opened=false;
     scGPCheckBox_zobraz_podklad->Checked=false;
+    DuvodUlozit(true);
     }
 
  if(scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
@@ -5930,6 +5942,7 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
     d.v.PP.raster.show=true;
     scSplitView_OPTIONS->Opened=false;
     scGPCheckBox_zobraz_podklad->Checked=true;
+    DuvodUlozit(true);
     }
 
      REFRESH();
@@ -5952,18 +5965,39 @@ void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 {
-	ESC();//zruší případnou rozdělanou akci
-	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
+//  ESC();//zruší případnou rozdělanou akci  - způsobuje problém při zavírání splitview
 
   scGPGlyphButton_OPTIONS->Active=false;
   scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
   scGPGlyphButton_OPTIONS->GlyphThickness=1;
 
-	if(scSplitView_MENU->Opened)
+ 	//nastavení checkboxu na checked pokud je již rastr uložen a má být zobrazen
+	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
 	{
-		scSplitView_MENU->Close();
-		deaktivace_zamerovace();
-	}
+		if(FileExists(d.v.PP.raster.filename))
+    {
+    scGPCheckBox_zobraz_podklad->Checked=true;
+    scGPTrackBar_svetelnost_posuvka->Value=d.v.PP.raster.dim;
+    if(d.v.PP.raster.grayscale) scGPCheckBox_stupne_sedi->Checked=true;
+    }
+  }
+
+  if(d.v.PP.raster.filename=="")
+  {
+  scGPCheckBox_zobraz_podklad->Enabled=false;
+  scGPCheckBox_stupne_sedi->Enabled=false;
+  scGPTrackBar_svetelnost_posuvka->Enabled=false;
+  scLabel1_svetelnost->Enabled=false;
+  }
+  else
+  {
+  scGPCheckBox_zobraz_podklad->Enabled=true;
+  scGPCheckBox_stupne_sedi->Enabled=true;
+  scGPTrackBar_svetelnost_posuvka->Enabled=true;
+  scLabel1_svetelnost->Enabled=true;
+  }
+
+ scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
 }
 //---------------------------------------------------------------------------
@@ -5981,5 +6015,29 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSMouseLeave(TObject *Sender)
 scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
 }
 //---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::scExPanel_podkladClick(TObject *Sender)
+{
+//
+	scExPanel_podklad->RollUpState=!scExPanel_podklad->RollUpState;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPTrackBar_svetelnost_posuvkaChange(TObject *Sender)
+{
+d.v.PP.raster.dim=scGPTrackBar_svetelnost_posuvka->Value;
+REFRESH();
+DuvodUlozit(true);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::scGPCheckBox_stupne_sediClick(TObject *Sender)
+{
+DuvodUlozit(true);
+}
+//---------------------------------------------------------------------------
+
 
 

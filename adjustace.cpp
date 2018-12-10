@@ -38,6 +38,9 @@ void __fastcall TForm_adjustace::FormShow(TObject *Sender)
  		Form_adjustace->Top=Form1->ClientHeight/2-Form_adjustace->Height/2;
     position(); //napozicování - formuláø se zobrazí 10px od kurzoru
     scGPNumericEdit_vzdalenost->SetFocus();
+    Delkaunit=M;
+    scGPNumericEdit_vzdalenost->Value=0.0;
+    rHTMLLabel_jednotkyClick(this);
 }
 //---------------------------------------------------------------------------
 void TForm_adjustace::position()
@@ -72,6 +75,25 @@ void __fastcall TForm_adjustace::FormKeyDown(TObject *Sender, WORD &Key, TShiftS
 void __fastcall TForm_adjustace::scGPButton_OKClick(TObject *Sender)
 {
   ModalResult=mrOk;    //kvùli enter na klávesnici zde je nutné pøidat ještì toto
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_adjustace::rHTMLLabel_jednotkyClick(TObject *Sender)
+{
+ if(Delkaunit==M){
+
+ Delkaunit=MM;
+ rHTMLLabel_jednotky->Caption="<font color=#2b579a>[mm]</font>";
+ scGPNumericEdit_vzdalenost->Value=scGPNumericEdit_vzdalenost->Value*1000.0;
+ }
+ else
+ {
+ Delkaunit=M;
+ rHTMLLabel_jednotky->Caption="<font color=#2b579a>[m]</font>";
+ scGPNumericEdit_vzdalenost->Value=scGPNumericEdit_vzdalenost->Value/1000.0;
+ }
+
 }
 //---------------------------------------------------------------------------
 

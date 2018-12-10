@@ -23,15 +23,18 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_OK;
   TscGPNumericEdit *scGPNumericEdit_vzdalenost;
   TrHTMLLabel *rHTMLLabel_vzdalenost;
+  TrHTMLLabel *rHTMLLabel_jednotky;
   void __fastcall scGPButton_stornoClick(TObject *Sender);
   void __fastcall KonecClick(TObject *Sender);
   void __fastcall FormShow(TObject *Sender);
   void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
   void __fastcall scGPButton_OKClick(TObject *Sender);
+  void __fastcall rHTMLLabel_jednotkyClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 
    void position();
+   enum Tm_mm{M=0,MM};Tm_mm Delkaunit;
 
   __fastcall TForm_adjustace(TComponent* Owner);
 };
