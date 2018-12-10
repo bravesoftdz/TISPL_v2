@@ -2473,6 +2473,9 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 {
 	double Z=F->Zoom;
 
+	short size=8*F->Zoom; //pův. 7
+	short sklon=50;       //pův. 45°
+
 	TColor barva=clRed;
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 	//barva výplně
@@ -2495,8 +2498,6 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Brush->Style=bsSolid;
 	}
 
-	short size=8*F->Zoom; //pův. 7
-	short sklon=50;       //pův. 45°
 
 	//referenční bode ve špičce, špička je směrem dolu
 	POINT body[3]={{F->m.round(X+m.rotace(1,sklon,rotace).x*size/2),F->m.round(Y+m.rotace(1,sklon,rotace).y*size)},{X,Y},{F->m.round(X+m.rotace(1,360-sklon,rotace).x/2*size),F->m.round(Y+m.rotace(1,360-sklon,rotace).y*size)}};
@@ -2786,6 +2787,7 @@ void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,TColor Width
 	canv->Pen->Color=Color;
 	canv->Pen->Mode=PenMode;
 	canv->Pen->Style=PenStyle;
+	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
 	line(canv,X1,Y1,X2,Y2);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2869,7 +2871,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->Brush->Style=bsClear;
 
 	//vykreslení linie
-	set_pen(canv,clBlack,1*3,PS_ENDCAP_FLAT);
+	set_pen(canv,clBlack,1*3,PS_ENDCAP_SQUARE);
 	line(canv,X-W+8,Y,X+W-8,Y-W+8);
 
 	//vykreslení šipky                      //pozor musí být invetované souřadnice Y (log. vs. fyz. souřadnice), metoda je stavěna na kartéské (logické souřadnice), nikoliv soužadnice monitoru (fyzické)
@@ -2880,6 +2882,24 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->Brush->Style=bsClear;
 	canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void  Cvykresli::vykresli_mGridy()
+{
+	 if(F->pom->elementy!=NULL)
+	 {
+		 Cvektory::TElement *E=F->pom->elementy->dalsi;//přeskočí rovnou hlavičku
+		 while(E!=NULL)
+		 {
+			 E->mGrid->Left=m.L2Px(E->Xt);
+			 E->mGrid->Top=m.L2Py(E->Yt);
+			 if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=false;
+			 else E->mGrid->MovingTable=true;
+			 E->mGrid->Show();//mGrid test
+			 E=E->dalsi;
+		 }
+		 E=NULL;delete E;
+	 }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -607,7 +607,7 @@ public:		// User declarations
 	int vybrany_objekt;
 	short VyID;//objekt-symbol vyhýbky - ID typu
   int knihovna_id; // id drawgrid knihovny
-  int element_id;  // id vybraneho elementu z knihoven
+	int element_id;  // id vybraneho elementu z knihoven
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì

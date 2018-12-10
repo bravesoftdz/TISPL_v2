@@ -49,6 +49,9 @@ class TmGrid
 		bool MergeState;//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouží jako pomùcka pøi vykreslování orámování slouèených bunìk, zatím zùstává nevyužito
 		TFont *Font;//vlastnosti fontu v buòce
 		TPoint TextPositon;//pozice textu v buòce (levý horní roh buòky je 0,0)
+		TBrush *isEmpty;//podmínìné formátování, pozadí buòky, když je prázdná
+		TFont *isNegativeNumber;//podmínìné formátování, pokud je zaporné èíslo
+		TFont *isZero;//podmínìné formátování, pokud se jedná o nulové èíslo
 		UnicodeString Text;//samotný text buòky
 	};
 
@@ -108,6 +111,7 @@ class TmGrid
 	TRows *Rows;//alokace jednorozmìrneho dynamickeho pole øádkù
 	TCells DefaultCell;//deafultní vzorová VIRTUÁLNÍ buòka, podle ní se nastaví všechny pøi prvním naètení tabulky, pokud není pøed Show() ještì nastaveno jinak
 	short Decimal;//implicitní poèet desetinných míst u numericeditù
+	bool MovingTable;//pokud je nastaveno na true, komponenty se zmìní na typ DRAW tj. tak, aby došlo k posunu dané buòky
 
  //protected: - nefugovalo, jak jsme si pøedstavoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat

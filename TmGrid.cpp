@@ -24,7 +24,7 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultColWidth=90,DefaultRowHeight=25;//výchozí výška a šíøka øádku
 	Row=0;Col=0;//aktuální øádek a sloupec
 	AntiAliasing_grid=false;
-	AntiAliasing_text=false;
+	AntiAliasing_text=true;
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	preRowInd=-1;
 	Decimal=3;//implicitní poèet desetinných míst u numericeditù
@@ -49,6 +49,15 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
 	DefaultCell.Font->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	DefaultCell.Font->Name="Arial";
+	DefaultCell.isNegativeNumber->Size=12;
+	DefaultCell.isNegativeNumber->Color=(TColor)RGB(43,87,154);//(TColor)RGB(128,128,128);
+	DefaultCell.isNegativeNumber->Orientation=0;
+	DefaultCell.isNegativeNumber->Style=TFontStyles();
+	DefaultCell.isNegativeNumber->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
+	DefaultCell.isNegativeNumber->Pitch=System::Uitypes::TFontPitch::fpVariable;
+	DefaultCell.isNegativeNumber->Name="Arial";
+	*DefaultCell.isNegativeNumber=*DefaultCell.Font;
+	*DefaultCell.isZero=*DefaultCell.Font;
 	DefaultCell.TextPositon.X=0;
 	DefaultCell.TextPositon.Y=0;
 	DefaultCell.Text="";
@@ -64,6 +73,8 @@ TmGrid::TmGrid(TForm *Owner)
 	//pozadí
 	DefaultCell.Background->Color=clWhite;
 	DefaultCell.Background->Style=bsSolid;
+	DefaultCell.isEmpty->Color=clWhite;
+	DefaultCell.isEmpty->Style=bsSolid;
 	//orámování
 	*DefaultCell.TopBorder=defBorder;
 	*DefaultCell.BottomBorder=defBorder;
@@ -74,7 +85,7 @@ TmGrid::TmGrid(TForm *Owner)
 //destruktor, probíhá pøi ukonèování programu, tj. zvážit zda není pozdì
 TmGrid::~TmGrid()
 {
-		Delete();
+	Delete();
 }
 //---------------------------------------------------------------------------
 //vytvoøí tabulku
@@ -92,9 +103,13 @@ void TmGrid::Create()
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
 			////BUÒKY
-			//Cells[X][Y]=DefaultCell; //- nelze, takto pøevezme celý ukazatel
+			//Cells[X][Y]=DefaultCell; //- nelze, takto pøevezme celý ukazatel a CreateCell(Cells[X][Y]); alokovalo Border znovu
+			//alokace pamìti
 			Cells[X][Y].Font=new TFont();
-			Cells[X][Y].Background=new TBrush();//alokace pamìti
+			Cells[X][Y].Background=new TBrush();
+			Cells[X][Y].isNegativeNumber=new TFont();
+			Cells[X][Y].isZero=new TFont();
+			Cells[X][Y].isEmpty=new TBrush();
 			CopyAreaCell(DefaultCell,Cells[X][Y],true);//kopie vlastností, bez orámování
 			////orámování bunìk ukazatelem
 			CreateLinkBorder(X,Y,DefaultCell);
@@ -163,7 +178,10 @@ void TmGrid::CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell)
 void TmGrid::CreateCell(TCells &NewCell)
 {
 	NewCell.Font=new TFont();
+	NewCell.isNegativeNumber=new TFont();
+	NewCell.isZero=new TFont();
 	NewCell.Background=new TBrush();
+	NewCell.isEmpty=new TBrush();
 	NewCell.TopBorder=new TBorder;
 	NewCell.BottomBorder=new TBorder;
 	NewCell.LeftBorder=new TBorder;
@@ -301,7 +319,8 @@ void TmGrid::Draw(TCanvas *C)
 			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
 			////barva pozadí buòky
-			C->Brush->Color=Cells[X][Y].Background->Color;
+			if(Cells[X][Y].Text=="")C->Brush->Color=Cells[X][Y].isEmpty->Color;else C->Brush->Color=Cells[X][Y].Background->Color;//podmínìné formátování
+
 			C->Brush->Style=Cells[X][Y].Background->Style;
 			C->FillRect(Rb);
 
@@ -405,7 +424,7 @@ void TmGrid::SetColRow()
 void TmGrid::SetBorder(TCanvas *C,TBorder *Border)
 {
 	DeleteObject(C->Pen->Handle);//zruší pùvodní pero       //PS_ENDCAP_FLAT PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE
-	DWORD pStyle = PS_GEOMETRIC | PS_SOLID | PS_ENDCAP_SQUARE/* PS_ENDCAP_ROUND PS_ENDCAP_SQUARE PS_ENDCAP_FLAT | PS_JOIN_BEVEL | PS_INSIDEFRAME*/;
+	DWORD pStyle = PS_GEOMETRIC | PS_SOLID | PS_ENDCAP_SQUARE /* PS_ENDCAP_ROUND PS_ENDCAP_SQUARE PS_ENDCAP_FLAT | PS_JOIN_BEVEL | PS_INSIDEFRAME*/;
 	DWORD pWidth = Border->Width;
 	if(AntiAliasing_grid)pWidth *=3;
 
@@ -427,9 +446,15 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			short Zoom=1;if(AntiAliasing_text)Zoom=3;
 			//nastavení fontu
 			Canv->Font=Cell.Font;
+			int Orientation=Cell.Font->Orientation;
+			if(F->m.null(F->ms.MyToDouble(Cell.Text))<0)Canv->Font=Cell.isNegativeNumber;//podmínìné formátování
+			Cell.isZero->Color=clYellow;
+			if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))Canv->Font=Cell.isZero;//podmínìné formátování
+			Canv->Font->Orientation=Orientation;//musí ještì vrátit orientaci pokud byla podmínìným formátováním pøepsána
 			Canv->Font->Size*=Zoom;
-			//SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
-			Canv->Brush->Color=Cell.Background->Color;Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
+			//SetBkMode(canv->Handle,OPAQUE);//nastavení netransparentního pozadí
+			if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;else Canv->Brush->Color=Cell.Background->Color;//podmínìné formátování//zde se asi nezohledòuje, spíše v drawgrid, ale otázka je jak bez AA
+			Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 			//zarovnání
 			//samotný výpis
 			long L=Rt.Left,T=Rt.Top;
@@ -466,6 +491,12 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case EDIT:
 		{
 			SetEdit(R,X,Y,Cell);
+			if(!MovingTable)
+			{
+				Ttype TypeTemp=Cell.Type;Cell.Type=DRAW;//nastaví jiný typ, ale jen provizornì
+				SetComponents(Canv,R,Rt,X,Y,Cell);
+				Cell.Type=TypeTemp;//navrácení pøedchozího typu
+			}
 		}break;
 		case readNUMERIC:
 		{
@@ -474,6 +505,12 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case NUMERIC:
 		{
 			SetNumeric(R,X,Y,Cell);
+			if(!MovingTable)
+			{
+				Ttype TypeTemp=Cell.Type;Cell.Type=DRAW;//nastaví jiný typ, ale jen provizornì
+				SetComponents(Canv,R,Rt,X,Y,Cell);
+				Cell.Type=TypeTemp;//navrácení pøedchozího typu
+			}
 		}break;
 		case LABEL:
 		{
@@ -488,7 +525,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			B->Left=R.Left+floor(Cell.LeftBorder->Width/2.0);
 			B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
 			B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
-//			B->Options->NormalColor=Cell.Background->Color;
+//			B->Options->NormalColor=Cell.Background->Color; nechat
 			B->Options->FrameNormalColor=B->Options->NormalColor;
 			B->Font=Cell.Font;
 			B->Caption=Cell.Text;
@@ -596,6 +633,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPEdit *E=createEdit(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==EDIT)E->Enabled=true;else E->Enabled=false;
+	E->Visible=MovingTable;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
 	E->AutoSize=false;
 	E->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	E->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
@@ -603,7 +641,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	E->ShowHint=false;//implicitnì u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
 	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
-	E->Options->NormalColor=Cell.Background->Color;
+	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
 	E->Options->FrameNormalColor=Cell.Background->Color;
 	E->Options->FrameNormalColorAlpha=255;
@@ -623,7 +661,9 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		case BOTTOM:E->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
 	}
 	E->Font=Cell.Font;
-	if(!E->Focused())//pokud je na buòce focus resp. je aktivní
+	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
+	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmínìné formátování
+	if(!E->Focused())//pokud není na buòce focus resp. není aktivní
 	E->Text=Cell.Text;
 	//vlastník
 	E->Parent=Form;//musí být až na konci
@@ -637,6 +677,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPNumericEdit *N=createNumeric(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
+	N->Visible=MovingTable;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
 	N->AutoSize=false;
 	N->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	N->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
@@ -647,7 +688,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->ValueType=scvtFloat;
 	N->ShowHint=true;
 	N->Hint=Cell.Text;
-	N->Options->NormalColor=Cell.Background->Color;
+	if(Cell.Text=="")N->Options->NormalColor=Cell.isEmpty->Color;else N->Options->NormalColor=Cell.Background->Color;
 	N->Options->NormalColorAlpha=255;
 	N->Options->FrameNormalColor=Cell.Background->Color;
 	N->Options->FrameNormalColorAlpha=255;
@@ -667,6 +708,8 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		case BOTTOM:N->ContentMarginTop=N->Height-getWidthHeightText(Cell).Y;break;
 	}
 	N->Font=Cell.Font;
+	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmínìné formátování
+	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmínìné formátování
 	if(!N->Focused())//pokud je na buòce focus resp. je aktivní
 	{
 		TMyString ms;
@@ -689,7 +732,7 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	/*if(Cell.MergeState==false)*/L->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	L->ShowHint=false;//implicitnì u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
 	L->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
-	L->Color=Cell.Background->Color;
+	if(Cell.Text=="")L->Color=Cell.isEmpty->Color;else L->Color=Cell.Background->Color;
 	L->Margins->Left=0;L->Margins->Right=0;L->Margins->Top=0;L->Margins->Bottom=0;
 	switch(Cell.Align)
 	{
@@ -705,6 +748,8 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 //		case BOTTOM:L->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
 //	}
 	L->Font=Cell.Font;
+	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))L->Font=Cell.isNegativeNumber;//podmínìné formátování
+	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))L->Font=Cell.isZero;//podmínìné formátování
 	L->Caption=Cell.Text;
 	//vlastník
 	L->Parent=Form;//musí být až na konci
@@ -1286,13 +1331,15 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	if(copyComponent){CopyCell.Type=RefCell.Type;/*createComponent(RefCell.Type,)*/}
 	else CopyCell.Type=DRAW;
 	////text + font
-	//*CopyCell.Font=*RefCell.Font;
+	//*CopyCell.Font=*RefCell.Font; - asi nejede
 	CopyCell.Font->Size=RefCell.Font->Size;
 	CopyCell.Font->Color=RefCell.Font->Color;
 	CopyCell.Font->Orientation=RefCell.Font->Orientation;
 	CopyCell.Font->Style=RefCell.Font->Style;
 	CopyCell.Font->Pitch=RefCell.Font->Pitch;
 	CopyCell.Font->Name=RefCell.Font->Name;
+	*CopyCell.isNegativeNumber=*RefCell.isNegativeNumber;
+	*CopyCell.isZero=*RefCell.isZero;
 	CopyCell.TextPositon.X=RefCell.TextPositon.X;
 	CopyCell.TextPositon.Y=RefCell.TextPositon.Y;
 	CopyCell.Text=RefCell.Text;
@@ -1307,9 +1354,11 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	//indikátor slouèení
 	CopyCell.MergeState=RefCell.MergeState;
 	////pozadí
-	//*CopyCell.Background=*RefCell.Background;
+	//*CopyCell.Background=*RefCell.Background;  - asi nejede
 	CopyCell.Background->Color=RefCell.Background->Color;
 	CopyCell.Background->Style=RefCell.Background->Style;
+	CopyCell.isEmpty->Color=RefCell.isEmpty->Color;
+	CopyCell.isEmpty->Style=RefCell.isEmpty->Style;
 }
 //---------------------------------------------------------------------------
 //zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)

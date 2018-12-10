@@ -37,6 +37,7 @@ class Cvektory
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
 			double X, Y;//umístění
+			double Xt,Yt;//umístění tabulky, resp. mGridu
 			short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
 			double rotace_jigu;//úhel rotace jigu vůči podvozku
 			bool stav;

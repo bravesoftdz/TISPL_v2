@@ -842,6 +842,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
+	novy->Xt=X;
+	novy->Yt=Y-1;//-1 výchozí odsazení tabulky
 
   //mGrid elementu
 	novy->mGrid=new TmGrid(F);

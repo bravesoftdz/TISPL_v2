@@ -1249,12 +1249,8 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//vykreslování mGridu
-			if(pom->elementy!=NULL)
-			{
-				pom->elementy->dalsi->mGrid->Show();//mGrid test
-				if(pom->elementy->dalsi->dalsi!=NULL)
-				pom->elementy->dalsi->dalsi->mGrid->Show();//mGrid test
-			}
+			if(pom->elementy!=NULL)d.vykresli_mGridy();
+
 			//grafické měřítko
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
@@ -1690,6 +1686,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						case PAN:
 						{
+							if(pom!=NULL)d.vykresli_mGridy();//slouží k aktualizaci gridu při přesouvání obrazu
 							kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 							int W=scSplitView_LEFTTOOLBAR->Width;
 							if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
@@ -1922,7 +1919,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				case ADD://přidání objekt či elementu
 				{
 					if(MOD==SCHEMA)add_objekt(X,Y);//přídání objektu v modu SCHEMA
-					else					 add_element(X,Y);//přídání elementu v modu NAHLED
+					else {d.vykresli_element(Canvas,X,Y,"","",element_id,-1);add_element(X,Y);}//přídání elementu v modu NAHLED
 					zneplatnit_minulesouradnice();
 					break;
 				}
@@ -1933,7 +1930,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
 					MB(AnsiString(delka)+" [metrů]");
 					Akce=NIC;kurzor(standard);
-					REFRESH();
+					Invalidate();
 					break;
 				}
 				case KALIBRACE:
@@ -2458,6 +2455,7 @@ void TForm1::ESC()
 			{
 				if(add_posledni)d.odznac_oznac_objekt_novy_posledni(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 				else d.odznac_oznac_objekt_novy(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,pom);
+				pom=NULL;//nesmí být v další sekci
 			}
 			else
 			{
@@ -2470,7 +2468,6 @@ void TForm1::ESC()
 			d.v.smaz_objekt(pom_vyhybka);
 		}break;
 	}
-	pom=NULL;
 	pom_vyhybka=NULL;
 	proces_pom=NULL;
 	kurzor(standard);
@@ -2660,6 +2657,12 @@ void TForm1::add_element(int X, int Y)
 	{
 		case 0://stop stanice
 		{
+			E->mGrid->Left=X;E->mGrid->Top=Y;
+			E->mGrid->Border.Width=1;
+			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="stop stanice";
+			E->mGrid->Cells[0][1].Text=E->eID;
+			E->mGrid->Cells[0][2].Text=E->n;
 			break;
 		}
 
@@ -2686,18 +2689,38 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 3://robot s pasivní otočí
 		{
+			E->mGrid->Left=X;E->mGrid->Top=Y;
+			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="robot s pasivní otočí";
+			E->mGrid->Cells[0][1].Text=E->eID;
+			E->mGrid->Cells[0][2].Text=E->n;
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
+			E->mGrid->Left=X;E->mGrid->Top=Y;
+			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="robot s aktivní otočí";
+			E->mGrid->Cells[0][1].Text=E->eID;
+			E->mGrid->Cells[0][2].Text=E->n;
 			break;
 		}
 		case 5://otoč pasivní
 		{
+			E->mGrid->Left=X;E->mGrid->Top=Y;
+			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="otoč pasivní";
+			E->mGrid->Cells[0][1].Text=E->eID;
+			E->mGrid->Cells[0][2].Text=E->n;
 			break;
 		}
-		case 6://	otoč aktivní (resp. otoč se stop stanicí)
+		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
+			E->mGrid->Left=X;E->mGrid->Top=Y;
+			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="otoč aktivní";
+			E->mGrid->Cells[0][1].Text=E->eID;
+			E->mGrid->Cells[0][2].Text=E->n;
 			break;
 		}
 	}
@@ -4993,7 +5016,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 		C=C->dalsi;
 	}
 		 */
-		Zoom*=2;
+		//Zoom*=2;
 		//Form2->ShowModal();
 
 		//Akce=MEASURE;
@@ -5929,7 +5952,7 @@ void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 {
-  ESC();//zruší případnou rozdělanou akci
+	ESC();//zruší případnou rozdělanou akci
 	scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
   scGPGlyphButton_OPTIONS->Active=false;
