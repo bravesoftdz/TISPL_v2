@@ -2675,11 +2675,13 @@ void TForm1::add_element(int X, int Y)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Border.Width=2;
-			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
-			E->mGrid->Cells[0][0].Text="robot KK";
-			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
-			E->mGrid->Cells[0][1].Text=E->eID;
-			E->mGrid->Cells[0][2].Text=E->n;
+			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="kontinuální lakování";
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+      E->mGrid->Cells[0][1].Text="PT";
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][2].Text="LO";
+      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
 			break;
 		}
 		case 2://robot se stop stanicí
@@ -2694,20 +2696,53 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 3://robot s pasivní otočí
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
-			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
-			E->mGrid->Cells[0][0].Text="robot s pasivní otočí";
-			E->mGrid->Cells[0][1].Text=E->eID;
-			E->mGrid->Cells[0][2].Text=E->n;
+//        Varianta 1
+//			E->mGrid->Left=X;E->mGrid->Top=Y;
+//			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
+//			E->mGrid->Cells[0][0].Text="kontinuální s pasiv. otočí";
+//      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+//      E->mGrid->Cells[0][1].Text="PT1 [s]";
+//			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+//      E->mGrid->Cells[0][2].Text="LO1 [mm]";
+//      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+//      E->mGrid->Cells[0][3].Text="PT2 [s]";
+//			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+//      E->mGrid->Cells[0][4].Text="LO2 [mm]";
+//      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+
+      E->mGrid->Left=X;E->mGrid->Top=Y;
+			E->mGrid->Create(4,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="kontinuální s pasiv. otočí";
+      E->mGrid->MergeCells(0,0,3,0); //sloučení buněk - vytvoření hlavičky v tabulce
+      E->mGrid->Cells[0][1].Text="PT1 [s]";
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[2][1].Text="PT2 [s]";
+      E->mGrid->Cells[3][1].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][2].Text="LO1 [mm]";
+      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[2][2].Text="LO2 [mm]";
+      E->mGrid->Cells[3][2].Type=E->mGrid->EDIT;
+
+
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
-			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
-			E->mGrid->Cells[0][0].Text="robot s aktivní otočí";
-			E->mGrid->Cells[0][1].Text=E->eID;
-			E->mGrid->Cells[0][2].Text=E->n;
+			E->mGrid->Border.Width=2;
+			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="S&G lakování se STOP";
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+      E->mGrid->Cells[0][1].Text="PT1 [s]";
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][2].Text="PTo [s]";
+      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][3].Text="PT2 [s]";
+      E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][4].Text="WT [s]";
+      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+
+
 			break;
 		}
 		case 5://otoč pasivní
@@ -5965,7 +6000,8 @@ void __fastcall TForm1::scGPButton_adjustaceClick(TObject *Sender)
 
 void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 {
-//  ESC();//zruší případnou rozdělanou akci  - způsobuje problém při zavírání splitview
+  ESC();//zruší případnou rozdělanou akci  - způsobuje problém při zavírání splitview
+  scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
 
   scGPGlyphButton_OPTIONS->Active=false;
   scGPGlyphButton_OPTIONS->GlyphColor=clWhite;
@@ -5976,6 +6012,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
 	{
 		if(FileExists(d.v.PP.raster.filename))
     {
+   // ShowMessage(d.v.PP.raster.dim);
     scGPCheckBox_zobraz_podklad->Checked=true;
     scGPTrackBar_svetelnost_posuvka->Value=d.v.PP.raster.dim;
     if(d.v.PP.raster.grayscale) scGPCheckBox_stupne_sedi->Checked=true;
@@ -5996,9 +6033,6 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   scGPTrackBar_svetelnost_posuvka->Enabled=true;
   scLabel1_svetelnost->Enabled=true;
   }
-
- scSplitView_OPTIONS->Opened = !scSplitView_OPTIONS->Opened;
-
 }
 //---------------------------------------------------------------------------
 
@@ -6035,9 +6069,68 @@ DuvodUlozit(true);
 
 void __fastcall TForm1::scGPCheckBox_stupne_sediClick(TObject *Sender)
 {
-DuvodUlozit(true);
+ if(!scGPCheckBox_stupne_sedi->Checked && scSplitView_OPTIONS->Opened)
+    {
+    d.v.PP.raster.grayscale=false;
+    scSplitView_OPTIONS->Opened=false;
+    scGPCheckBox_stupne_sedi->Checked=false;
+    DuvodUlozit(true);
+    }
+
+ if(scGPCheckBox_stupne_sedi->Checked && scSplitView_OPTIONS->Opened)
+    {
+    d.v.PP.raster.grayscale=true;
+    scSplitView_OPTIONS->Opened=false;
+    scGPCheckBox_stupne_sedi->Checked=true;
+    DuvodUlozit(true);
+    }
+
+ REFRESH();
 }
 //---------------------------------------------------------------------------
 
 
+
+void __fastcall TForm1::DrawGrid_ostatniMouseWheelDown(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled)
+{
+FormMouseWheelDown(Sender,Shift,MousePos,Handled);
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::DrawGrid_geometrieMouseWheelDown(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled)
+{
+//FormMouseWheelDown(Sender,Shift,MousePos,Handled);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::DrawGrid_poznamkyMouseWheelDown(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled)
+{
+FormMouseWheelDown(Sender,Shift,MousePos,Handled);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled)
+{
+	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::DrawGrid_geometrieMouseWheelUp(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled)
+{
+	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled)
+{
+	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
+}
+//---------------------------------------------------------------------------
 

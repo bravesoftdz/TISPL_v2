@@ -3161,6 +3161,8 @@ object Form1: TForm1
         OnDrawCell = DrawGrid_ostatniDrawCell
         OnKeyDown = FormKeyDown
         OnMouseDown = DrawGrid_ostatniMouseDown
+        OnMouseWheelDown = DrawGrid_ostatniMouseWheelDown
+        OnMouseWheelUp = DrawGrid_ostatniMouseWheelUp
       end
     end
     object scListGroupPanel_hlavickaOtoce: TscListGroupPanel
@@ -3283,6 +3285,8 @@ object Form1: TForm1
         OnDrawCell = DrawGrid_geometrieDrawCell
         OnKeyDown = FormKeyDown
         OnMouseDown = DrawGrid_geometrieMouseDown
+        OnMouseWheelDown = DrawGrid_geometrieMouseWheelDown
+        OnMouseWheelUp = DrawGrid_geometrieMouseWheelUp
       end
     end
     object scListGroupPanel_poznamky: TscListGroupPanel
@@ -3342,6 +3346,8 @@ object Form1: TForm1
         Visible = False
         OnDrawCell = DrawGrid_poznamkyDrawCell
         OnKeyDown = FormKeyDown
+        OnMouseWheelDown = DrawGrid_poznamkyMouseWheelDown
+        OnMouseWheelUp = DrawGrid_poznamkyMouseWheelUp
       end
     end
   end
@@ -4570,8 +4576,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1947
-        Top = 2110
+        Left = 1953
+        Top = 2116
         Width = 244
         Height = 31
         Align = alCustom
@@ -5760,8 +5766,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
         AlignWithMargins = True
-        Left = 9
-        Top = 47
+        Left = 15
+        Top = 53
         Width = 246
         Height = 36
         Align = alCustom
@@ -5849,8 +5855,8 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 3
-        ExplicitTop = 41
+        ExplicitLeft = 12
+        ExplicitTop = 50
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
         Left = 3
@@ -7422,7 +7428,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800C805EC0510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C805F00510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8547,7 +8553,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013600F805340630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013600F805380630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

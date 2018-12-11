@@ -2576,7 +2576,7 @@ short int Cvektory::nacti_ze_souboru(UnicodeString FileName)
 			PP.raster.Y=R->Y;
 			PP.raster.show=R->show;
 			PP.raster.grayscale=R->grayscale;
-			PP.raster.dim=R->text_length;
+			PP.raster.dim=R->dim;
 			//adresa rastru
 			wchar_t *name=new wchar_t[R->text_length];
 			FileStream->Read(name,R->text_length*sizeof(wchar_t));//načte jeden nazev fontu za prvekem bod a popisek bodu

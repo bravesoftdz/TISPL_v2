@@ -464,6 +464,18 @@ __published:	// IDE-managed Components
   void __fastcall scExPanel_podkladClick(TObject *Sender);
   void __fastcall scGPTrackBar_svetelnost_posuvkaChange(TObject *Sender);
   void __fastcall scGPCheckBox_stupne_sediClick(TObject *Sender);
+  void __fastcall DrawGrid_ostatniMouseWheelDown(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled);
+  void __fastcall DrawGrid_geometrieMouseWheelDown(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled);
+  void __fastcall DrawGrid_poznamkyMouseWheelDown(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled);
+  void __fastcall DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled);
+  void __fastcall DrawGrid_geometrieMouseWheelUp(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled);
+  void __fastcall DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
+          TPoint &MousePos, bool &Handled);
 
 
 
@@ -482,11 +494,14 @@ public:
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA V›PO»ETNÕ »¡ST PO tj. PO_math
 	UnicodeString get_user_name();
+  DrawGridWndProc(TMessage &Message);
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
+
+  TWndMethod PreviousWndProc;
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
