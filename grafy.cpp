@@ -432,7 +432,7 @@ void Cgrafy::graf3() {
 		// Cvektory::TZakazka *ukaz = Form1->d.v.ZAKAZKY->dalsi;
 		// while (ukaz != NULL) {
 		//
-		// Form1->Series5->Add(Form1->d.v.vrat_AVGsumPT_zakazky(ukaz), ukaz->n,ukaz->barva);
+		// Form1->Series5->Add(Form1->d.v.vrFTat_AVGsumPT_zakazky(ukaz), ukaz->n,ukaz->barva);
 		//
 		// if(Form1->d.v.vrat_AVGsumWT_zakazky(ukaz)>0)
 		// {
