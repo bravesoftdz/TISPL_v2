@@ -4576,8 +4576,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1953
-        Top = 2116
+        Left = 1959
+        Top = 2122
         Width = 244
         Height = 31
         Align = alCustom
@@ -5672,8 +5672,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
         AlignWithMargins = True
-        Left = 6
-        Top = 81
+        Left = 9
+        Top = 84
         Width = 225
         Height = 36
         Align = alCustom
@@ -5761,13 +5761,11 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 3
-        ExplicitTop = 78
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
         AlignWithMargins = True
-        Left = 15
-        Top = 53
+        Left = 18
+        Top = 56
         Width = 246
         Height = 36
         Align = alCustom
@@ -5855,8 +5853,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitLeft = 12
-        ExplicitTop = 50
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
         Left = 3
@@ -7428,7 +7424,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800C805F00510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C805F40510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8553,7 +8549,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013600F805380630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013600F8053C0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

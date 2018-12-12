@@ -2656,7 +2656,8 @@ void TForm1::add_element(int X, int Y)
 {
 	//vložení elementu na dané souřadnice a do patřičného spojáku
 	Cvektory::TElement *E=d.v.vloz_element(pom,element_id,m.P2Lx(X),m.P2Ly(Y));
-
+  TColor clHeaderFont=clBlack;
+  TColor clBackgroundHidden=m.clIntensive(RGB(128,128,128),105);
 	//nadesignování tabulek dle typu elementu
 	switch(element_id)
 	{
@@ -2664,11 +2665,23 @@ void TForm1::add_element(int X, int Y)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Border.Width=1;
-			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Create(2,6);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="stop stanice";
-			E->mGrid->Cells[0][1].Text=E->eID;
-			E->mGrid->Cells[0][2].Text=E->n;
-			break;
+      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+      E->mGrid->Cells[0][1].Text="výběr párové STOP";
+      E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][2].Text="WT stop [s]";
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][3].Text="WT palec [s]";
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][4].Text="akt. počet vozíků";
+      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][5].Text="max. počet vozíků";
+      E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;
+      //E->mGrid->Columns[0].Width=160;
+      E->mGrid->SetColumnAutoFit(0);
+      break;
 		}
 
 		case 1://robot (kontinuální)
@@ -2677,21 +2690,25 @@ void TForm1::add_element(int X, int Y)
 			E->mGrid->Border.Width=2;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="kontinuální lakování";
+      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
       E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
-      E->mGrid->Cells[0][1].Text="PT";
+      E->mGrid->Cells[0][1].Text="PT [s]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-      E->mGrid->Cells[0][2].Text="LO";
+      E->mGrid->Cells[0][2].Text="LO [mm]";
       E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
 			break;
 		}
 		case 2://robot se stop stanicí
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
-			E->mGrid->Create(3,7);//samotné vytvoření matice-tabulky
-			E->mGrid->Cells[0][0].Text="robot S&G";
-			E->mGrid->Cells[0][1].Type=E->mGrid->EDIT;
-			E->mGrid->Cells[0][1].Text=E->eID;
-			E->mGrid->Cells[0][2].Text=E->n;
+			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="S&G lakování";
+      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+      E->mGrid->Cells[0][1].Text="PT [s]";
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[0][2].Text="WT [s]";
+      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
 			break;
 		}
 		case 3://robot s pasivní otočí
@@ -2711,19 +2728,24 @@ void TForm1::add_element(int X, int Y)
 //      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
 
       E->mGrid->Left=X;E->mGrid->Top=Y;
-			E->mGrid->Create(4,3);//samotné vytvoření matice-tabulky
-			E->mGrid->Cells[0][0].Text="kontinuální s pasiv. otočí";
-      E->mGrid->MergeCells(0,0,3,0); //sloučení buněk - vytvoření hlavičky v tabulce
+			E->mGrid->Create(6,3);//samotné vytvoření matice-tabulky
+			E->mGrid->Cells[0][0].Text="kontinuální lakování s pasivní otočí";
+      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+      E->mGrid->MergeCells(0,0,5,0); //sloučení buněk - vytvoření hlavičky v tabulce
       E->mGrid->Cells[0][1].Text="PT1 [s]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-      E->mGrid->Cells[2][1].Text="PT2 [s]";
-      E->mGrid->Cells[3][1].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[2][1].Text="otoč [s]";
+      E->mGrid->Cells[3][1].Text=" ";  // původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+      E->mGrid->Cells[3][1].Background->Color=clBackgroundHidden;
+    //  E->mGrid->getEdit(3,1)->Enabled=false;   // u pasivní otoče nelze zadat čas
+      E->mGrid->Cells[4][1].Text="PT2 [s]";
+      E->mGrid->Cells[5][1].Type=E->mGrid->EDIT;
       E->mGrid->Cells[0][2].Text="LO1 [mm]";
       E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
-			E->mGrid->Cells[2][2].Text="LO2 [mm]";
+			E->mGrid->Cells[2][2].Text="otoč [mm]";
       E->mGrid->Cells[3][2].Type=E->mGrid->EDIT;
-
-
+      E->mGrid->Cells[4][2].Text="LO2 [mm]";
+      E->mGrid->Cells[5][2].Type=E->mGrid->EDIT;
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
@@ -2731,7 +2753,8 @@ void TForm1::add_element(int X, int Y)
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Border.Width=2;
 			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
-			E->mGrid->Cells[0][0].Text="S&G lakování se STOP";
+			E->mGrid->Cells[0][0].Text="S&G lakování s akt. otočí";
+      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
       E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
       E->mGrid->Cells[0][1].Text="PT1 [s]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
@@ -2742,6 +2765,45 @@ void TForm1::add_element(int X, int Y)
       E->mGrid->Cells[0][4].Text="WT [s]";
       E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
 
+      //tabulka pro celkový součet PT u robota S&G
+//      E->mGrid->Left=X;E->mGrid->Top=Y;
+//			E->mGrid->Border.Width=2;
+//			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+//			E->mGrid->Cells[0][0].Text="ROBOT";
+//      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+//      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+//      E->mGrid->Cells[0][1].Text="PT TOTAL [s]";
+//      E->mGrid->Cells[1][1].Text=" ";  // původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+//      E->mGrid->Cells[1][1].Background->Color=clBackgroundHidden;
+//      E->mGrid->Cells[0][2].Text="max WT [s]";
+//      E->mGrid->Cells[1][2].Text=" ";  // původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+//      E->mGrid->Cells[1][2].Background->Color=clBackgroundHidden;
+//      E->mGrid->SetColumnAutoFit(0);
+
+      //tabulka pro pohon
+//      E->mGrid->Left=X;E->mGrid->Top=Y;
+//			E->mGrid->Border.Width=2;
+//   // E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky   pro SG lakování
+//			E->mGrid->Create(2,6);//samotné vytvoření matice-tabulky   pro KK lakování
+//			E->mGrid->Cells[0][0].Text="POHON";
+//      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+//      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+//      E->mGrid->Cells[0][1].Text="používaný pohon [m/min]";
+//      E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+//      E->mGrid->Cells[0][2].Text="rychlost [m/min]";
+//      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+//      E->mGrid->Cells[0][3].Text="rozteč [mm]";
+//      E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+//       //pokud půjde o KK režim
+////
+//      E->mGrid->Cells[0][4].Text="mezera jig [mm]";
+//      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+//      E->mGrid->Cells[0][5].Text="rozestup [palec]";
+//      E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;
+//      E->mGrid->SetColumnAutoFit(0);
+
+
+
 
 			break;
 		}
@@ -2750,8 +2812,14 @@ void TForm1::add_element(int X, int Y)
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="otoč pasivní";
-			E->mGrid->Cells[0][1].Text=E->eID;
-			E->mGrid->Cells[0][2].Text=E->n;
+      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+			E->mGrid->Cells[0][1].Text="Délka [mm]";
+      E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[1][1].Background->Color=clBackgroundHidden;
+			E->mGrid->Cells[0][2].Text="PT [s]";         //PT u pasivní nelze zadat
+      E->mGrid->Cells[1][2].Text=" ";  // původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+      E->mGrid->Cells[1][2].Background->Color=clBackgroundHidden;
 			break;
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
@@ -2759,8 +2827,13 @@ void TForm1::add_element(int X, int Y)
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="otoč aktivní";
-			E->mGrid->Cells[0][1].Text=E->eID;
-			E->mGrid->Cells[0][2].Text=E->n;
+      E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+			E->mGrid->Cells[0][1].Text="Délka [mm]";   //D u aktivní nelze zadat
+      E->mGrid->Cells[1][1].Text=" ";  // původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+      E->mGrid->Cells[1][1].Background->Color=clBackgroundHidden;
+			E->mGrid->Cells[0][2].Text="PT [s]";
+      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
 			break;
 		}
 	}
@@ -5864,6 +5937,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
    scGPButton_OK->Visible=false;
    scGPButton_storno->Visible=false;
 
+   scGPLabel_roboti->Font->Style = TFontStyles(); // zrušení tučného písma resp. všech případných dalších Font style nastavení
    scGPLabel_roboti->Visible=true;
    scGPLabel_roboti->Caption="Technolog. objekty";
    scGPLabel_roboti->ContentMarginLeft=4;
