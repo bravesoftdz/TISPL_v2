@@ -144,6 +144,12 @@
         <AppEnableHighDPI>true</AppEnableHighDPI>
     </PropertyGroup>
     <ItemGroup>
+        <CppCompile Include="adjustace.cpp">
+            <Form>Form_adjustace</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>adjustace.h</DependentOn>
+            <BuildOrder>36</BuildOrder>
+        </CppCompile>
         <CppCompile Include="antialiasing.cpp">
             <DependentOn>antialiasing.h</DependentOn>
             <BuildOrder>17</BuildOrder>
@@ -339,17 +345,18 @@
         <FormResources Include="Unit2.dfm"/>
         <FormResources Include="Unit1.dfm"/>
         <FormResources Include="TT_kalkulator.dfm"/>
-        <FormResources Include="gapoTT.dfm"/>
-        <FormResources Include="gapoR.dfm"/>
-        <FormResources Include="gapoV.dfm"/>
-        <FormResources Include="eDesigner.dfm"/>
-        <FormResources Include="casovaOsa_info.dfm"/>
-        <FormResources Include="cesty.dfm"/>
-        <FormResources Include="MyMessageBox.dfm"/>
         <FormResources Include="parametry.dfm"/>
-        <FormResources Include="kabina_schema.dfm"/>
+        <FormResources Include="gapoR.dfm"/>
+        <FormResources Include="eDesigner.dfm"/>
+        <FormResources Include="gapoV.dfm"/>
+        <FormResources Include="gapoTT.dfm"/>
+        <FormResources Include="adjustace.dfm"/>
+        <FormResources Include="cesty.dfm"/>
+        <FormResources Include="casovaOsa_info.dfm"/>
+        <FormResources Include="MyMessageBox.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="kalendar.dfm"/>
+        <FormResources Include="kabina_schema.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
