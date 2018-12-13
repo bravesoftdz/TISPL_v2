@@ -654,11 +654,14 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		case RIGHT:	E->Alignment=taRightJustify;break;
 	}
 	E->ContentMarginBottom=0;
-	switch(Cell.Valign)
+	if(Cell.Text!="")
 	{
-		case TOP:		E->ContentMarginTop=0;break;
-		case MIDDLE:E->ContentMarginTop=E->Height/2-getWidthHeightText(Cell).Y/2;break;
-		case BOTTOM:E->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
+		switch(Cell.Valign)
+		{
+			case TOP:		E->ContentMarginTop=0;break;
+			case MIDDLE:E->ContentMarginTop=E->Height/2-getWidthHeightText(Cell).Y/2;break;
+			case BOTTOM:E->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
+		}
 	}
 	E->Font=Cell.Font;
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
@@ -701,11 +704,14 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		case RIGHT:	N->Alignment=taRightJustify;break;
 	}
 	N->ContentMarginBottom=0;
-	switch(Cell.Valign)
+	if(Cell.Text!="")
 	{
-		case TOP:		N->ContentMarginTop=0;break;
-		case MIDDLE:N->ContentMarginTop=N->Height/2-getWidthHeightText(Cell).Y/2;break;
-		case BOTTOM:N->ContentMarginTop=N->Height-getWidthHeightText(Cell).Y;break;
+		switch(Cell.Valign)
+		{
+			case TOP:		N->ContentMarginTop=0;break;
+			case MIDDLE:N->ContentMarginTop=N->Height/2-getWidthHeightText(Cell).Y/2;break;
+			case BOTTOM:N->ContentMarginTop=N->Height-getWidthHeightText(Cell).Y;break;
+		}
 	}
 	N->Font=Cell.Font;
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmínìné formátování
