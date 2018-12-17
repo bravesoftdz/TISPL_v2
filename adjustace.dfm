@@ -429,7 +429,7 @@ object Form_adjustace: TForm_adjustace
     AllowAllUp = False
   end
   object scGPNumericEdit_vzdalenost: TscGPNumericEdit
-    Left = 226
+    Left = 225
     Top = 49
     Width = 76
     Height = 29

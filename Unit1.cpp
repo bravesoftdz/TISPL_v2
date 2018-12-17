@@ -2666,25 +2666,39 @@ void TForm1::add_element(int X, int Y)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Border.Width=1;
+    //  E->mGrid->Border.Color=clBlack;
 			E->mGrid->Create(2,6);//samotné vytvoření matice-tabulky
       E->name="STOP stanice";
       E->short_name="STOP";
+
 			E->mGrid->Cells[0][0].Text=E->name;
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+      //E->mGrid->Cells[0][0].Background->Color=clBlue;
       E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
       E->mGrid->Cells[0][1].Text="výběr párové STOP";
       E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
-			E->mGrid->Cells[0][2].Text="WT stop [s]";
-      E->mGrid->Cells[1][2].Text="";
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+		  //E->mGrid->Cells[0][2].Type=E->mGrid->LABEL; E->mGrid->Cells[0][2].Text="WT stop <font color=#2b579a>[s]</font>";
+      E->mGrid->Cells[0][2].Text="WT stop [s]";
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text="25";
       E->mGrid->Cells[0][3].Text="WT palec [s]";
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text="3";
       E->mGrid->Cells[0][4].Text="akt. počet vozíků";
-      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text="6";
       E->mGrid->Cells[0][5].Text="max. počet vozíků";
-      E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text="7";
       //E->mGrid->Columns[0].Width=160;
       E->mGrid->SetColumnAutoFit(0);
+
+
+      for(int i=1;i<=5;i++)
+      {
+       E->mGrid->Cells[1][i].Font->Color=clBlack;
+       E->mGrid->Cells[0][i].Font->Color=clBlack;
+      // E->mGrid->Cells[0][i-1].BottomBorder->Color=clBlack;
+      // E->mGrid->Cells[1][i-1].BottomBorder->Color=clBlack;
+      // E->mGrid->Cells[0][i].RightBorder->Color=clBlack;
+      }
+
       break;
 		}
 
@@ -3384,6 +3398,7 @@ void TForm1::zobraz_tip(UnicodeString text)
  	//SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
 	Canvas->Font->Size=14;
 	Canvas->Font->Name="Arial";
+  Canvas->Brush->Color=clWhite;
 	Canvas->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 	Canvas->TextOutW(ClientWidth-Canvas->TextWidth(text)-10,Form1->scGPPanel_statusbar->Top-25,text);
 	Canvas->Font->Color=clBlack;
@@ -5986,6 +6001,8 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   scGPCheckBox_stupne_sedi->Enabled=true;
   scGPTrackBar_svetelnost_posuvka->Enabled=true;
   scLabel1_svetelnost->Enabled=true;
+  scGPButton_kalibrace->Enabled=true;
+  scGPButton_adjustace->Enabled=true;
   }
   else
   {
@@ -6104,12 +6121,19 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   scGPCheckBox_stupne_sedi->Enabled=false;
   scGPTrackBar_svetelnost_posuvka->Enabled=false;
   scLabel1_svetelnost->Enabled=false;
+  scGPButton_adjustace->Enabled=false;
+  scGPButton_kalibrace->Enabled=false;
+  scLabel1_svetelnost->Enabled=false;
+
   }
   else
   {
   scGPCheckBox_zobraz_podklad->Enabled=true;
   scGPCheckBox_stupne_sedi->Enabled=true;
   scGPTrackBar_svetelnost_posuvka->Enabled=true;
+  scLabel1_svetelnost->Enabled=true;
+  scGPButton_adjustace->Enabled=true;
+  scGPButton_kalibrace->Enabled=true;
   scLabel1_svetelnost->Enabled=true;
   }
 }
@@ -6212,4 +6236,12 @@ void __fastcall TForm1::DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftSta
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button14Click(TObject *Sender)
+{
+MOD=SCHEMA;
+
+}
+//---------------------------------------------------------------------------
+
 

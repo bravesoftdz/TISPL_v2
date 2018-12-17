@@ -97,3 +97,5 @@ void __fastcall TForm_adjustace::rHTMLLabel_jednotkyClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+
