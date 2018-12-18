@@ -2659,6 +2659,12 @@ void TForm1::add_element(int X, int Y)
 
   TColor clHeaderFont=clBlack;
   TColor clBackgroundHidden=m.clIntensive(RGB(128,128,128),105);
+  TColor clBorder= clBlack;
+  TColor clFontLeft = clBlack;
+  TColor clFontRight = clBlack;
+  TColor clBottomBorder = clBlack;
+  TColor clRightBorder  = clBlack;
+
 	//nadesignování tabulek dle typu elementu
 	switch(element_id)
 	{
@@ -2666,15 +2672,20 @@ void TForm1::add_element(int X, int Y)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Border.Width=1;
-    //  E->mGrid->Border.Color=clBlack;
+      E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,6);//samotné vytvoření matice-tabulky
       E->name="STOP stanice";
       E->short_name="STOP";
 
+//      E->mGrid->Cells[0][1].Font->Color=clFontLeft;
+//      E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
+//      E->mGrid->Cells[0][1].RightBorder->Color=clRightBorder;
+//      E->mGrid->SetCells(E->mGrid->Cells[0][1],0,1,1,E->mGrid->RowCount-1);//zkopirování designu buněk
+
 			E->mGrid->Cells[0][0].Text=E->name;
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
       //E->mGrid->Cells[0][0].Background->Color=clBlue;
-      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+      E->mGrid->Columns[0].Width=300;
       E->mGrid->Cells[0][1].Text="výběr párové STOP";
       E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 		  //E->mGrid->Cells[0][2].Type=E->mGrid->LABEL; E->mGrid->Cells[0][2].Text="WT stop <font color=#2b579a>[s]</font>";
@@ -2686,19 +2697,21 @@ void TForm1::add_element(int X, int Y)
       E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text="6";
       E->mGrid->Cells[0][5].Text="max. počet vozíků";
       E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text="7";
-      //E->mGrid->Columns[0].Width=160;
-      E->mGrid->SetColumnAutoFit(0);
+      E->mGrid->Columns[0].Width=160;
+      E->mGrid->SetColumnAutoFit(-4);
 
 
-      for(int i=1;i<=5;i++)
+       for(int i=1;i<=5;i++)
       {
-       E->mGrid->Cells[1][i].Font->Color=clBlack;
-       E->mGrid->Cells[0][i].Font->Color=clBlack;
-      // E->mGrid->Cells[0][i-1].BottomBorder->Color=clBlack;
-      // E->mGrid->Cells[1][i-1].BottomBorder->Color=clBlack;
-      // E->mGrid->Cells[0][i].RightBorder->Color=clBlack;
+       E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+       E->mGrid->Cells[1][i].Font->Color=clFontRight;
+       E->mGrid->Cells[0][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[1][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[0][i].RightBorder->Color=clRightBorder;
       }
 
+
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
       break;
 		}
 
@@ -2706,7 +2719,14 @@ void TForm1::add_element(int X, int Y)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
 			E->mGrid->Border.Width=1;
+      E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+
+//      E->mGrid->Cells[0][1].Font->Color=clFontLeft;
+//      E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
+//      E->mGrid->Cells[0][1].RightBorder->Color=clRightBorder;
+//      E->mGrid->SetCells(E->mGrid->Cells[0][1],0,1,1,E->mGrid->RowCount-1);//zkopirování designu buněk
+
 			E->mGrid->Cells[0][0].Text="kontinuální lakování";
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
       E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
@@ -2714,44 +2734,61 @@ void TForm1::add_element(int X, int Y)
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
       E->mGrid->Cells[0][2].Text="LO [mm]";
       E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+
+      for(int i=1;i<=2;i++)
+      {
+       E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+       E->mGrid->Cells[1][i].Font->Color=clFontRight;
+       E->mGrid->Cells[0][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[1][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[0][i].RightBorder->Color=clRightBorder;
+      }
 			break;
 		}
 		case 2://robot se stop stanicí
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
       E->mGrid->Border.Width=1;
+      E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
+
+      E->mGrid->Cells[0][1].Font->Color=clFontLeft;
+      E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
+      E->mGrid->Cells[0][1].RightBorder->Color=clRightBorder;
+      E->mGrid->SetCells(E->mGrid->Cells[0][1],0,1,1,E->mGrid->RowCount-1);//zkopirování designu buněk
+
 			E->mGrid->Cells[0][0].Text="S&G lakování";
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
-      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
       E->mGrid->Cells[0][1].Text="PT [s]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
       E->mGrid->Cells[0][2].Text="WT [s]";
       E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+
+      for(int i=1;i<=2;i++)
+      {
+       E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+       E->mGrid->Cells[1][i].Font->Color=clFontRight;
+       E->mGrid->Cells[0][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[1][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[0][i].RightBorder->Color=clRightBorder;
+      }
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
 			break;
 		}
 		case 3://robot s pasivní otočí
 		{
-//        Varianta 1
-//			E->mGrid->Left=X;E->mGrid->Top=Y;
-//			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
-//			E->mGrid->Cells[0][0].Text="kontinuální s pasiv. otočí";
-//      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
-//      E->mGrid->Cells[0][1].Text="PT1 [s]";
-//			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-//      E->mGrid->Cells[0][2].Text="LO1 [mm]";
-//      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
-//      E->mGrid->Cells[0][3].Text="PT2 [s]";
-//			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
-//      E->mGrid->Cells[0][4].Text="LO2 [mm]";
-//      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
-
       E->mGrid->Left=X;E->mGrid->Top=Y;
       E->mGrid->Border.Width=1;
+      E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(6,3);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="kontinuální lakování s pasivní otočí";
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
-      E->mGrid->MergeCells(0,0,5,0); //sloučení buněk - vytvoření hlavičky v tabulce
+
+      //E->mGrid->Cells[0][1].Font->Color=clFontLeft;
+      //E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
+      //E->mGrid->Cells[0][1].RightBorder->Color=clRightBorder;
+      //E->mGrid->SetCells(E->mGrid->Cells[0][1],0,1,5,E->mGrid->RowCount-1);//zkopirování designu buněk
+
       E->mGrid->Cells[0][1].Text="PT1 [s]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
       E->mGrid->Cells[2][1].Text="otoč [s]";
@@ -2766,24 +2803,64 @@ void TForm1::add_element(int X, int Y)
       E->mGrid->Cells[3][2].Type=E->mGrid->EDIT;
       E->mGrid->Cells[4][2].Text="LO2 [mm]";
       E->mGrid->Cells[5][2].Type=E->mGrid->EDIT;
+
+      for(int i=1;i<=2;i++)
+      {
+       E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+       E->mGrid->Cells[1][i].Font->Color=clFontRight;
+       E->mGrid->Cells[2][i].Font->Color=clFontRight;
+       E->mGrid->Cells[3][i].Font->Color=clFontRight;
+       E->mGrid->Cells[4][i].Font->Color=clFontRight;
+       E->mGrid->Cells[5][i].Font->Color=clFontRight;
+       E->mGrid->Cells[0][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[1][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[2][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[3][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[4][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[5][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[0][i].RightBorder->Color=clRightBorder;
+       E->mGrid->Cells[1][i].RightBorder->Color=clRightBorder;
+       E->mGrid->Cells[2][i].RightBorder->Color=clRightBorder;
+       E->mGrid->Cells[3][i].RightBorder->Color=clRightBorder;
+       E->mGrid->Cells[4][i].RightBorder->Color=clRightBorder;
+       E->mGrid->Cells[5][i].RightBorder->Color=clRightBorder;
+      }
+      E->mGrid->MergeCells(0,0,5,0); //sloučení buněk - vytvoření hlavičky v tabulce
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
+      E->mGrid->Border.Color=clBorder;
 			E->mGrid->Border.Width=1;
 			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="S&G lakování s akt. otočí";
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+
+//      E->mGrid->Cells[0][1].Font->Color=clFontLeft;
+//      E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
+//      E->mGrid->Cells[0][1].RightBorder->Color=clRightBorder;
+//      E->mGrid->SetCells(E->mGrid->Cells[0][1],0,1,1,E->mGrid->RowCount-1);//zkopirování designu buněk
       E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
       E->mGrid->Cells[0][1].Text="PT1 [s]";
-			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text="80";
       E->mGrid->Cells[0][2].Text="PTo [s]";
-      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text="20";
       E->mGrid->Cells[0][3].Text="PT2 [s]";
-      E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text="80";
       E->mGrid->Cells[0][4].Text="WT [s]";
-      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;
+      E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text="5";
+
+      for(int i=1;i<=4;i++)
+      {
+    // E->mGrid->Cells[1][i].Font->Color=m.clIntensive(RGB(0,0,0),100);//clBlack;
+       E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+       E->mGrid->Cells[1][i].Font->Color=clFontRight;
+       E->mGrid->Cells[0][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[1][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[0][i].RightBorder->Color=clRightBorder;
+      }
+
 
       //tabulka pro celkový součet PT u robota S&G
 //      E->mGrid->Left=X;E->mGrid->Top=Y;
@@ -2828,31 +2905,64 @@ void TForm1::add_element(int X, int Y)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
       E->mGrid->Border.Width=1;
+      E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="otoč pasivní";
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
-      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+
+//    E->mGrid->Cells[0][1].Font->Color=clFontLeft;
+//    E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
+//    E->mGrid->Cells[0][1].RightBorder->Color=clRightBorder;
+//    E->mGrid->SetCells(E->mGrid->Cells[0][1],0,1,1,E->mGrid->RowCount-1);//zkopirování designu buněk
+
 			E->mGrid->Cells[0][1].Text="Délka [mm]";
       E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
       E->mGrid->Cells[1][1].Background->Color=clBackgroundHidden;
 			E->mGrid->Cells[0][2].Text="PT [s]";         //PT u pasivní nelze zadat
       E->mGrid->Cells[1][2].Text=" ";  // původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
       E->mGrid->Cells[1][2].Background->Color=clBackgroundHidden;
+
+      for(int i=1;i<=2;i++)
+      {
+       E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+       E->mGrid->Cells[1][i].Font->Color=clFontRight;
+       E->mGrid->Cells[0][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[1][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[0][i].RightBorder->Color=clRightBorder;
+      }
+      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
 			break;
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
 			E->mGrid->Left=X;E->mGrid->Top=Y;
       E->mGrid->Border.Width=1;
+      E->mGrid->Border.Color=clBorder;
+
+//    E->mGrid->Cells[0][1].Font->Color=clFontLeft;
+//    E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
+//    E->mGrid->Cells[0][1].RightBorder->Color=clRightBorder;
+//    E->mGrid->SetCells(E->mGrid->Cells[0][1],0,1,1,E->mGrid->RowCount-1);//zkopirování designu buněk
+
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
 			E->mGrid->Cells[0][0].Text="otoč aktivní";
       E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
-      E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
+
 			E->mGrid->Cells[0][1].Text="Délka [mm]";   //D u aktivní nelze zadat
       E->mGrid->Cells[1][1].Text=" ";  // původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
       E->mGrid->Cells[1][1].Background->Color=clBackgroundHidden;
 			E->mGrid->Cells[0][2].Text="PT [s]";
       E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;
+
+      for(int i=1;i<=2;i++)
+      {
+       E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+       E->mGrid->Cells[1][i].Font->Color=clFontRight;
+       E->mGrid->Cells[0][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[1][i-1].BottomBorder->Color=clBottomBorder;
+       E->mGrid->Cells[0][i].RightBorder->Color=clRightBorder;
+      }
+       E->mGrid->MergeCells(0,0,1,0); //sloučení buněk - vytvoření hlavičky v tabulce
 			break;
 		}
 	}

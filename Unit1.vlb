@@ -251,7 +251,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=1463,166,171,36
+Coordinates=514,556,124,36
 Visible=True
 
 [scSplitView_OPTIONS]
@@ -376,9 +376,6 @@ Coordinates=354,326,91,36
 
 [scGPSwitch_grid]
 Coordinates=1004,280,91,36
-
-[scGPGlyphButton_OPTIONS]
-Coordinates=514,556,124,36
 
 [scGPGlyphButton_close_grafy]
 Coordinates=1681,56,158,36
