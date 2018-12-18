@@ -476,6 +476,7 @@ __published:	// IDE-managed Components
           TPoint &MousePos, bool &Handled);
   void __fastcall DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled);
+  void __fastcall Button14Click(TObject *Sender);
 
 
 

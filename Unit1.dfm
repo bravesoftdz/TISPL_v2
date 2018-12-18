@@ -4576,8 +4576,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 1959
-        Top = 2122
+        Left = 1989
+        Top = 2152
         Width = 244
         Height = 31
         Align = alCustom
@@ -5489,7 +5489,7 @@ object Form1: TForm1
         Options.HotColor = 10114859
         Options.PressedColor = clBtnShadow
         Options.FocusedColor = 10114859
-        Options.DisabledColor = clBtnFace
+        Options.DisabledColor = 10114859
         Options.NormalColor2 = clNone
         Options.HotColor2 = clNone
         Options.PressedColor2 = clNone
@@ -5509,7 +5509,7 @@ object Form1: TForm1
         Options.FrameHotColor = 10114859
         Options.FramePressedColor = clHighlight
         Options.FrameFocusedColor = 10114859
-        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameDisabledColor = 10114859
         Options.FrameWidth = 1
         Options.FrameNormalColorAlpha = 255
         Options.FrameHotColorAlpha = 200
@@ -5594,7 +5594,7 @@ object Form1: TForm1
         Options.HotColor = 10114859
         Options.PressedColor = clBtnShadow
         Options.FocusedColor = 10114859
-        Options.DisabledColor = clBtnFace
+        Options.DisabledColor = 10114859
         Options.NormalColor2 = clNone
         Options.HotColor2 = clNone
         Options.PressedColor2 = clNone
@@ -5614,7 +5614,7 @@ object Form1: TForm1
         Options.FrameHotColor = 10114859
         Options.FramePressedColor = clHighlight
         Options.FrameFocusedColor = 10114859
-        Options.FrameDisabledColor = clBtnShadow
+        Options.FrameDisabledColor = 10114859
         Options.FrameWidth = 1
         Options.FrameNormalColorAlpha = 255
         Options.FrameHotColorAlpha = 200
@@ -5671,9 +5671,8 @@ object Form1: TForm1
         AllowAllUp = False
       end
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
-        AlignWithMargins = True
-        Left = 9
-        Top = 84
+        Left = 3
+        Top = 69
         Width = 225
         Height = 36
         Align = alCustom
@@ -5763,9 +5762,8 @@ object Form1: TForm1
         UseFontColorToStyleColor = False
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
-        AlignWithMargins = True
-        Left = 18
-        Top = 56
+        Left = 3
+        Top = 41
         Width = 246
         Height = 36
         Align = alCustom
@@ -5855,8 +5853,8 @@ object Form1: TForm1
         UseFontColorToStyleColor = False
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
-        Left = 3
-        Top = 116
+        Left = 163
+        Top = 111
         Width = 73
         Height = 20
         TabOrder = 4
@@ -5885,8 +5883,8 @@ object Form1: TForm1
         ThumbUseCursor = False
       end
       object scLabel1_svetelnost: TscLabel
-        Left = 82
-        Top = 114
+        Left = 3
+        Top = 111
         Width = 154
         Height = 19
         Font.Charset = DEFAULT_CHARSET
@@ -7424,7 +7422,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800C805F40510001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C805080610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8549,7 +8547,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013600F8053C0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013600F805500630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
