@@ -820,6 +820,8 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->name="";
 	Objekt->elementy->X=0;
 	Objekt->elementy->Y=0;
+	Objekt->elementy->Xt=0;
+	Objekt->elementy->Yt=0;
 	Objekt->elementy->rotace_symbolu=0;
 	Objekt->elementy->rotace_jigu=0;
 	Objekt->elementy->stav=true;
@@ -856,6 +858,23 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->sparovany=NULL;
 	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
 	return novy;
+}
+////---------------------------------------------------------------------------
+//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
+int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
+{
+	 int RET=-1;
+	 if(Objekt->elementy!=NULL)
+	 {
+		 TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+		 while(E!=NULL)
+		 {
+			 if(1<=E->eID && E->eID<=4) RET=E->eID;
+			 E=E->dalsi;
+		 }
+		 E=NULL;delete E;
+	 }
+	 return RET;
 }
 ////---------------------------------------------------------------------------
 //vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)

@@ -351,6 +351,7 @@ TObjekt *vrat_objekty_bez_pohonu();//vratí formou ukazatele na pole objekty bez
 //metody pro ELEMENTY
 		void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
 		TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
+		int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
 		long vymaz_elementy(TObjekt *Objekt);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)
 //metody pro POHONY
 		void hlavicka_POHONY();
