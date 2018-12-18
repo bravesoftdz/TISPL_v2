@@ -2613,7 +2613,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
 	{
-		canv->Font->Color=m.clIntensive(barva,100);
+		if(stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;
 		canv->Font->Size=2*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 		AnsiString T=short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
@@ -2752,7 +2752,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	{
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
-		canv->Font->Color=barva;if(eID==5)canv->Font->Color=m.clIntensive(barva,100);
+		canv->Font->Color=barva;if(eID==5 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);
 		canv->Font->Size=2*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
