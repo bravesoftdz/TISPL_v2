@@ -2476,9 +2476,10 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	short size=8*F->Zoom; //pův. 7
 	short sklon=50;       //pův. 45°
 
+	//barva výplně
 	TColor barva=clRed;
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
-	//barva výplně
+
 	if(typ==-1)//kurzor
 	{
 		canv->Pen->Color=clBlack;
@@ -2487,6 +2488,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Pen->Width=1;
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
+		size=6*F->Zoom;//kvůli bílému orámování stopky v normálním zobrazení musí být menší
 	}
 	else
 	{
@@ -2496,12 +2498,18 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Pen->Style=psSolid;
 		canv->Brush->Color=barva;
 		canv->Brush->Style=bsSolid;
+		switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
+		{
+			case 0: Y+=1*Z;break;
+			case 90: X+=1*Z;break;//ověřit
+			case 180: Y-=1*Z;break;
+			case 270: X-=1*Z;break;//ověřit
+		}
 	}
-
-
 	//referenční bode ve špičce, špička je směrem dolu
 	POINT body[3]={{F->m.round(X+m.rotace(1,sklon,rotace).x*size/2),F->m.round(Y+m.rotace(1,sklon,rotace).y*size)},{X,Y},{F->m.round(X+m.rotace(1,360-sklon,rotace).x/2*size),F->m.round(Y+m.rotace(1,360-sklon,rotace).y*size)}};
 	canv->Polygon((TPoint*)body,2);
+
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
