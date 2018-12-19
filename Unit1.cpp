@@ -2657,6 +2657,8 @@ void TForm1::add_element(int X, int Y)
 	//vložení elementu na dané souřadnice a do patřičného spojáku
 	Cvektory::TElement *E=d.v.vloz_element(pom,element_id,m.P2Lx(X),m.P2Ly(Y));
 
+  int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom);
+
   TColor clHeaderFont=clBlack;
   TColor clBackgroundHidden=m.clIntensive(RGB(128,128,128),105);
   TColor clBorder= clBlack;
@@ -2971,6 +2973,7 @@ void TForm1::add_element(int X, int Y)
 	E=NULL;delete E;
 	Akce=NIC;
 	REFRESH();
+  DrawGrid_knihovna->Invalidate();
 	DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
@@ -3027,12 +3030,20 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	short pocet_elementu=2;
   AnsiString label1;
   AnsiString label2;
-	for(unsigned short n=1;n<=pocet_elementu;n++)
+
+
+
+ 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
     if(n==1){ label1= "pasivní"; label2=""; }
     if(n==2){ label1= "aktivní"; label2=""; }
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4);
+    if(pom->id!=3)
+    {
+         d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,1);
+    }
+    else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,-1);
 	}
+
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	DrawGrid_otoce->Canvas->Draw(0,0,bmp_out);
@@ -3059,7 +3070,12 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	short pocet_elementu=1;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-		d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"STOP","");
+  if(pom->id!=3)
+  {
+          d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"STOP","");
+  } else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"STOP","",0,0,-1);
+
+
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
@@ -3136,14 +3152,39 @@ if(MOD==NAHLED)
   AnsiString label1;
   AnsiString label2;
 	short pocet_elementu=4;
+  int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom);
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
   if(n==1){ label1= "kontinuální"; label2="lakování"; }
   if(n==2){ label1= "S&G"; label2="lakování"; }
   if(n==3){ label1= "kontinuální s";  label2="pasiv. otočí"; }
   if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
-		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+
+  if(pom->id==3)
+    {
+    if(EID==-1) d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+    }else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n,0,0,-1);
 	}
+   if(pom->id==3)
+   {
+   if(EID==1 || EID==3)
+   {
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P + 30,label1,label2,1);
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P + 30,label1,label2,2,0,0,-1);
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P + 30,label1,label2,3);
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P + 30,label1,label2,4,0,0,-1);
+   }
+   else if (EID==2 || EID==4)
+   {
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P + 30,label1,label2,1,0,0,-1);
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P + 30,label1,label2,2);
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P + 30,label1,label2,3,0,0,-1);
+    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P + 30,label1,label2,4);
+
+   }
+
+   }
+
 	Zoom=Zoom_back;//návrácení původního zoomu
 	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 	DrawGrid_knihovna->Canvas->Draw(0,0,bmp_out);
@@ -6150,14 +6191,15 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
     {
      label1= "linie";
      label2="";
-     d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
-   //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+    if(pom->id!=3) d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+    else           d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
      }
     if(n==2)
     {
      label1= "oblouky";
      label2="";
-     d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+     if(pom->id!=3) d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+     else           d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
      }
 
 	}
@@ -6353,5 +6395,6 @@ MOD=SCHEMA;
 
 }
 //---------------------------------------------------------------------------
+
 
 
