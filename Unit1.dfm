@@ -2991,7 +2991,7 @@ object Form1: TForm1
   object scSplitView_LEFTTOOLBAR: TscSplitView
     Left = 0
     Top = 34
-    Width = 167
+    Width = 168
     Height = 622
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
@@ -3025,7 +3025,7 @@ object Form1: TForm1
     CompactHeight = 20
     GripSize = 0
     Opened = True
-    OpenedWidth = 167
+    OpenedWidth = 168
     OpenedHeight = 50
     OpenedMinWidth = 0
     OpenedMaxWidth = 0
@@ -3072,9 +3072,9 @@ object Form1: TForm1
       HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_knihovna: TDrawGrid
-        Left = 10
+        Left = 14
         Top = 33
-        Width = 167
+        Width = 160
         Height = 350
         ParentCustomHint = False
         Align = alCustom
@@ -3135,9 +3135,9 @@ object Form1: TForm1
       HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_ostatni: TDrawGrid
-        Left = 0
+        Left = 3
         Top = 32
-        Width = 165
+        Width = 160
         Height = 70
         ParentCustomHint = False
         Align = alCustom
@@ -3197,9 +3197,9 @@ object Form1: TForm1
       HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_otoce: TDrawGrid
-        Left = 0
+        Left = 3
         Top = 32
-        Width = 165
+        Width = 160
         Height = 70
         ParentCustomHint = False
         Align = alCustom
@@ -3259,9 +3259,9 @@ object Form1: TForm1
       HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_geometrie: TDrawGrid
-        Left = 0
+        Left = 3
         Top = 32
-        Width = 165
+        Width = 160
         Height = 70
         ParentCustomHint = False
         Align = alCustom
@@ -3321,9 +3321,9 @@ object Form1: TForm1
       HeaderAutoColor = False
       TransparentBackground = False
       object DrawGrid_poznamky: TDrawGrid
-        Left = 0
+        Left = 3
         Top = 32
-        Width = 165
+        Width = 160
         Height = 70
         ParentCustomHint = False
         Align = alCustom
@@ -4576,8 +4576,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2001
-        Top = 2164
+        Left = 2007
+        Top = 2170
         Width = 244
         Height = 31
         Align = alCustom
@@ -5912,7 +5912,7 @@ object Form1: TForm1
   object scGPLabel_otoce: TscGPLabel
     Left = 0
     Top = 258
-    Width = 166
+    Width = 168
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
@@ -5950,7 +5950,7 @@ object Form1: TForm1
   object scGPLabel_stop: TscGPLabel
     Left = 0
     Top = 349
-    Width = 166
+    Width = 168
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
@@ -5988,7 +5988,7 @@ object Form1: TForm1
   object scGPLabel_geometrie: TscGPLabel
     Left = 0
     Top = 432
-    Width = 166
+    Width = 168
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
@@ -6026,7 +6026,7 @@ object Form1: TForm1
   object scGPLabel_poznamky: TscGPLabel
     Left = 0
     Top = 542
-    Width = 166
+    Width = 168
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
@@ -6064,7 +6064,7 @@ object Form1: TForm1
   object scGPLabel_roboti: TscGPLabel
     Left = 0
     Top = 34
-    Width = 166
+    Width = 168
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
@@ -7422,7 +7422,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800C805100610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011800C805140610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8547,7 +8547,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013600F805580630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013600F8055C0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

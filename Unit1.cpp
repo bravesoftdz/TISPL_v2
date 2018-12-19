@@ -3072,8 +3072,8 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	{
   if(pom->id!=3)
   {
-          d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"STOP","");
-  } else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P,"STOP","",0,0,-1);
+          d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","");
+  } else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","",0,0,-1);
 
 
 	}
@@ -3967,7 +3967,7 @@ void TForm1::NP_input()
 
    DrawGrid_knihovna->DefaultRowHeight=140;
    DrawGrid_knihovna->DefaultColWidth=80;
-   DrawGrid_knihovna->Left=0;
+   DrawGrid_knihovna->Left=3;
    DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
    DrawGrid_knihovna->Invalidate();
 
@@ -6082,7 +6082,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 
    DrawGrid_knihovna->DefaultRowHeight=50;
    DrawGrid_knihovna->DefaultColWidth=70;
-   DrawGrid_knihovna->Left=10;
+   DrawGrid_knihovna->Left=14;
 
    scListGroupPanel_hlavickaOtoce->Visible=false;
    scListGroupPanel_hlavickaOstatni->Visible=false;
