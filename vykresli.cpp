@@ -2493,17 +2493,17 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	else
 	{
 		canv->Pen->Color=clWhite;//bílý framing okolo stopky
-		canv->Pen->Width=1*Z;
+		canv->Pen->Width=m.round(0.6*Z);
 		canv->Pen->Mode=pmCopy;
 		canv->Pen->Style=psSolid;
 		canv->Brush->Color=barva;
 		canv->Brush->Style=bsSolid;
 		switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 		{
-			case 0: Y+=1*Z;break;
-			case 90: X+=1*Z;break;//ověřit
-			case 180: Y-=1*Z;break;
-			case 270: X-=1*Z;break;//ověřit
+			case 0: Y+=m.round(1*Z);break;
+			case 90: X+=m.round(1*Z);break;//ověřit
+			case 180: Y-=m.round(1*Z);break;
+			case 270: X-=m.round(1*Z);break;//ověřit
 		}
 	}
 	//referenční bode ve špičce, špička je směrem dolu
@@ -2523,7 +2523,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		if(typ==1)//normální zobrazení typ==1
 		{
 			rotace_textu(canv,rotace*10+900);
-			canv->TextOutW(F->m.round(X-canv->TextHeight(T)/2),F->m.round(Y-size+1.5*Z),T);
+			canv->TextOutW(F->m.round(X-canv->TextHeight(T)/2),F->m.round(Y-size+2*Z),T);
 			rotace_textu(canv,0);
 		}
 		else//ikona v knihovně elementů je text pod elementem
@@ -2603,20 +2603,51 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	//druhý kloub
 	float Sx=m.round((X+sirka_ramena/2.0+K.x+K2.x+X-sirka_ramena/2+K.x+K2.x)/2.0);
 	float Sy=m.round((Y-sirka_zakladny/2.0+K.y+K2.y+Y-sirka_zakladny/2.0+K.y+K2.y)/2.0);
-	canv->Ellipse(m.round(Sx-sirka_ramena/2),m.round(Sy-sirka_ramena/2),m.round(Sx+sirka_ramena/2),m.round(Sy+sirka_ramena/2));
+//	canv->Ellipse(m.round(Sx-sirka_ramena/2),m.round(Sy-sirka_ramena/2),m.round(Sx+sirka_ramena/2),m.round(Sy+sirka_ramena/2));
+
+
 	//tryska
-	K=m.rotace(sirka_ramena/4,0,0);
-	canv->MoveTo(Sx,Sy);
-	Sx=Sx+K.x;Sy=Sy+K.y;
-	canv->LineTo(Sx,Sy);
-	K=m.rotace(sirka_ramena*1.5,270,0);
-	canv->LineTo(Sx+K.x,Sy+K.y);
-	Sx=Sx+K.x;Sy=Sy+K.y;
-	K=m.rotace(sirka_ramena*2/4,180,0);
-	canv->LineTo(Sx+K.x,Sy+K.y);
-	Sx=Sx+K.x;Sy=Sy+K.y;
-	K=m.rotace(sirka_ramena*1.5,90,0);
-	canv->LineTo(Sx+K.x,Sy+K.y);
+//	K=m.rotace(sirka_ramena/4,0,0);
+//	canv->MoveTo(Sx,Sy);
+//	Sx=Sx+K.x;Sy=Sy+K.y;
+//	canv->LineTo(Sx,Sy);
+//	K=m.rotace(sirka_ramena*1.5,270,0);
+//	canv->LineTo(Sx+K.x,Sy+K.y);
+//	Sx=Sx+K.x;Sy=Sy+K.y;
+//	K=m.rotace(sirka_ramena*2/4,180,0);
+//	canv->LineTo(Sx+K.x,Sy+K.y);
+//	Sx=Sx+K.x;Sy=Sy+K.y;
+//	K=m.rotace(sirka_ramena*1.5,90,0);
+//	canv->LineTo(Sx+K.x,Sy+K.y);
+	long cX=X;long cY=m.round(Y-sirka_zakladny/2-delka_ramena);//skutečný (nikoliv uchopovací) referenční bod
+	float TP=3.0;//triska poměr vůči šířce
+	canv->Ellipse(m.round(cX-sirka_ramena/TP),m.round(cY-sirka_ramena/TP),m.round(cX+sirka_ramena/TP),m.round(cY+sirka_ramena/TP));
+	//nahoru ze skutečného referenčního bodu
+	K=m.rotace(sirka_ramena/TP,0+25,0);
+	//line(canv,cX,cY,m.round(cX+K.x),m.round(cY+K.y));
+	canv->MoveTo(m.round(cX+K.x),m.round(cY+K.y));
+	//nahoře doprava ze skutečného referenčního bodu
+	K2=m.rotace(sirka_ramena*1.5,90+25,0);
+	canv->LineTo(m.round(cX+K.x+K2.x),m.round(cY+K.y+K2.y));
+	TPointD K3;K3.x=cX+K.x+K2.x;K3.y=cY+K.y+K2.y;
+	//dolu ze skutečného referenčního bodu
+	K=m.rotace(sirka_ramena/TP,180+25,0);
+	//line(canv,cX,cY,m.round(cX+K.x),m.round(cY+K.y));
+	canv->MoveTo(m.round(cX+K.x),m.round(cY+K.y));
+	//dole doprava ze skutečného referenčního bodu
+	K2=m.rotace(sirka_ramena*1.5,90+25,0);
+	canv->LineTo(m.round(cX+K.x+K2.x),m.round(cY+K.y+K2.y));
+
+	//druhý kloub
+	Sx=(K3.x+cX+K.x+K2.x)/2.0;
+	Sy=(K3.y+cY+K.y+K2.y)/2.0;
+	canv->Ellipse(m.round(Sx-sirka_ramena/TP),m.round(Sy-sirka_ramena/TP),m.round(Sx+sirka_ramena/TP),m.round(Sy+sirka_ramena/TP));
+
+
+
+	//testovací osa
+	linie(canv,cX-100,cY,cX+100,cY,1,clRed);
+	linie(canv,X,Y,cX,cY,1,clRed);
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
@@ -2638,9 +2669,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		}
 	}
 
-
-
-//stará verze
+//nejstarší verze
 //	double Z=F->Zoom;
 //
 //	//vstupní parametry
@@ -2834,13 +2863,13 @@ void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popi
 	short C=W/2;//zajištění vycentrování
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
-	//vykreslení linie
+	//vykreslení oblouku
 	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
 	canv->Arc(X-W-C,Y-W,X+W-C,Y+W,X+W-C,Y,X-C,Y-W);//směr proti hodinovým ručičkám
 
 	//popisek
 	canv->Brush->Style=bsClear;
-	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(barva,100);
+	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 	canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
