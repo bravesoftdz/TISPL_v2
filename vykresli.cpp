@@ -2805,18 +2805,19 @@ void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
 	canv->LineTo(X2,Y2);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek)
+void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//vykreslení linie
-	set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
+	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
 	line(canv,X-W+8,Y-W/2,X+W-8,Y-W/2);
 
 	//popisek
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=m.clIntensive(clBlack,100);
+	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 	canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
@@ -2826,19 +2827,20 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 //	line(canv,X+5,Y+5,X-5,Y-5);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek)
+void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 	short C=W/2;//zajištění vycentrování
+	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//vykreslení linie
-	set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
+	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
 	canv->Arc(X-W-C,Y-W,X+W-C,Y+W,X+W-C,Y,X-C,Y-W);//směr proti hodinovým ručičkám
 
 	//popisek
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=m.clIntensive(clBlack,100);
+	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(barva,100);
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 	canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
@@ -2851,13 +2853,14 @@ void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popi
 //		Canvas->MoveTo(X, Y-R);//musí se přesunout pero na začátek, v případě kontinuálního kreslení netřeba
 //		Canvas->AngleArc(X, Y, R,SA,RA);
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek)
+void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 	short C=W/2;//zajištění vycentrování
+	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=clBlack;
+	canv->Font->Color=barva;
 
 	//ikona - ABC
 	canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
@@ -2867,28 +2870,29 @@ void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popise
 	//popisek
 	canv->Brush->Style=bsClear;
 	canv->Font->Size=o;
-	canv->Font->Color=m.clIntensive(clBlack,100);
+	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(barva,100);
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek)
+void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 	short C=W/2;//zajištění vycentrování
+	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 	canv->Brush->Style=bsClear;
 
 	//vykreslení linie
-	set_pen(canv,clBlack,1*3,PS_ENDCAP_SQUARE);
+	set_pen(canv,barva,1*3,PS_ENDCAP_SQUARE);
 	line(canv,X-W+8,Y,X+W-8,Y-W+8);
 
-	//vykreslení šipky                      //pozor musí být invetované souřadnice Y (log. vs. fyz. souřadnice), metoda je stavěna na kartéské (logické souřadnice), nikoliv soužadnice monitoru (fyzické)
+	//vykreslení šipky                      //pozor musí být invertované souřadnice Y (log. vs. fyz. souřadnice), metoda je stavěna na kartéské (logické souřadnice), nikoliv soužadnice monitoru (fyzické)
 	sipka(canv,X+W-8,Y-W+8,m.azimut(X-W+8,Y,X+W-8,Y+W-8),false,1,clBlack,clBlack);//děleno Z na negaci *Zoom v metodě šipka
 
 	//popisek
 	canv->Font->Size=o;
 	canv->Brush->Style=bsClear;
-	canv->Font->Color=m.clIntensive(clBlack,100);
+	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(barva,100);
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
