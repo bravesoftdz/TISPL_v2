@@ -48,6 +48,18 @@ double Cmy::mod_d(double number1,double number2)
 	return fmod(number1,number2);//toto ale také nefunguje pro druhou reálnou hodnotu dobøe
 }
 /////////////////////////////////////////////////////////////////////////////
+//pøevede stupnì na radiány
+double Cmy::ToRad(double number)
+{
+	return number*M_PI/180.0;
+}
+/////////////////////////////////////////////////////////////////////////////
+//pøevede radiány na stupnì
+double Cmy::ToDeg(double number)
+{
+	return number*180/M_PI;
+}
+//////////////////////////////////////////////////////////////////////////////
 //Pøevede logické souøadnice na fyzické (displej zaøízení) , vraci fyzické souøadnice
 TPoint Cmy::L2P(double logickaX, double logickaY)
 {

@@ -24,15 +24,13 @@ __fastcall TForm2::TForm2(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormShow(TObject *Sender)
 {
-
-
-
 		TElement *E=new TElement;
 
 		E->mG=new TmGrid(this);//vždy nutno jako první
 		E->mG->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 		E->mG->Left=50;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
+		E->mG->MovingTable=true;
 		E->mG->Border.Width=2;
 
 		unsigned long ColCount=3;//pevný poèet slopcù
@@ -40,6 +38,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 		E->mG->Cells[1][1].Type=E->mG->EDIT;
+		//E->mG->Cells[1][1].Text="abc1";
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
@@ -52,13 +51,15 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E1->mG->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 		E1->mG->Left=200;E1->mG->Top=200;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E1->mG->AntiAliasing_text=true;
+		E1->mG->MovingTable=true;
 		E1->mG->Border.Width=2;
 
 		ColCount=2;//pevný poèet slopcù
 		RowCount=5;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-		E1->mG->Cells[0][1].Type=E1->mG->EDIT;
+		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+		//E1->mG->Cells[1][1].Text="abc";
 
 		E1->predchozi=NULL;
 		E1->dalsi=NULL;
@@ -192,8 +193,8 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormPaint(TObject *Sender)
 {
-	//ELEMENTY->mG->Show();
-	//ELEMENTY->dalsi->mG->Show();
+	ELEMENTY->mG->Show();
+	ELEMENTY->dalsi->mG->Show();
 
 	//mGrid2->Show();
 	//nastaví formuláø dle velikosti tabulky, musí být až po Show
@@ -207,49 +208,49 @@ void __fastcall TForm2::FormPaint(TObject *Sender)
 //	Canvas->LineTo(400,400);
 
 
-	//if(FileName_short(FileName)=="kabina_base_coat.bmp")
-	{
-		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
-		if(FileExists("kabina_base_coat.bmp"))
-		{
-			Graphics::TBitmap *bmp=new Graphics::TBitmap;
-			bmp->LoadFromFile("kabina_base_coat.bmp");
-			long X=10,Y=-10;long double resolution=0.01200428724544480171489817792069;
-			Canvas->StretchDraw(TRect(F->m.L2Px(X),F->m.L2Py(Y),F->m.round(F->m.L2Px(X)+bmp->Width*F->Zoom*resolution/F->m2px),F->m.round(F->m.L2Py(Y)+bmp->Height*F->Zoom*resolution/F->m2px)),bmp);
-			delete(bmp);
-		}
-	}
-
-
-	Cvykresli d;
-	if(AA)
-	{
-		Cantialising a;
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-		F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-		d.vykresli_robota(bmp_in->Canvas,F->m.L2Px(aktX),F->m.L2Py(aktY),"Robot 1","R1",0,1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+100+10)*F->Zoom,aktY*F->Zoom,"Robot 2","R2",1,1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+200+20)*F->Zoom,aktY*F->Zoom,"Robot 3","R3",2,1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+300+30)*F->Zoom,aktY*F->Zoom,"Robot 4","R4",3,1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+400+40)*F->Zoom,aktY*F->Zoom,"Robot 5","R5",0,-1);
-		d.vykresli_stopku(bmp_in->Canvas,F->m.L2Px(aktX)+100,F->m.L2Py(aktY),"Stop 1","S1",1,0);
-		d.vykresli_otoc(bmp_in->Canvas,F->m.L2Px(aktX)+200,F->m.L2Py(aktY),"Otoè pasiv","O1",0,0);
-//		d.vykresli_otoc(bmp_in->Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
-		F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
-		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
-		bmp_out->Transparent=true;
-		bmp_out->TransparentColor=clWhite;
-		Canvas->Draw(0,0,bmp_out);
-		delete (bmp_out);//velice nutné
-		delete (bmp_in);//velice nutné
-	}
-	else
-	{
-		d.vykresli_robota(Canvas,aktX,aktY,"Robot 1","R1",0,1);
-		d.vykresli_stopku(Canvas,(aktX-600)*F->Zoom,aktY*F->Zoom,"Stop 1","S1",1,0);
-		d.vykresli_otoc(Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
-	}
+//	//if(FileName_short(FileName)=="kabina_base_coat.bmp")
+//	{
+//		SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+//		if(FileExists("kabina_base_coat.bmp"))
+//		{
+//			Graphics::TBitmap *bmp=new Graphics::TBitmap;
+//			bmp->LoadFromFile("kabina_base_coat.bmp");
+//			long X=10,Y=-10;long double resolution=0.01200428724544480171489817792069;
+//			Canvas->StretchDraw(TRect(F->m.L2Px(X),F->m.L2Py(Y),F->m.round(F->m.L2Px(X)+bmp->Width*F->Zoom*resolution/F->m2px),F->m.round(F->m.L2Py(Y)+bmp->Height*F->Zoom*resolution/F->m2px)),bmp);
+//			delete(bmp);
+//		}
+//	}
+//
+//
+//	Cvykresli d;
+//	if(AA)
+//	{
+//		Cantialising a;
+//		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//		F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//		d.vykresli_robota(bmp_in->Canvas,F->m.L2Px(aktX),F->m.L2Py(aktY),"Robot 1","R1",0,1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+100+10)*F->Zoom,aktY*F->Zoom,"Robot 2","R2",1,1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+200+20)*F->Zoom,aktY*F->Zoom,"Robot 3","R3",2,1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+300+30)*F->Zoom,aktY*F->Zoom,"Robot 4","R4",3,1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+400+40)*F->Zoom,aktY*F->Zoom,"Robot 5","R5",0,-1);
+//		d.vykresli_stopku(bmp_in->Canvas,F->m.L2Px(aktX)+100,F->m.L2Py(aktY),"Stop 1","S1",1,0);
+//		d.vykresli_otoc(bmp_in->Canvas,F->m.L2Px(aktX)+200,F->m.L2Py(aktY),"Otoè pasiv","O1",0,0);
+////		d.vykresli_otoc(bmp_in->Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
+//		F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
+//		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
+//		bmp_out->Transparent=true;
+//		bmp_out->TransparentColor=clWhite;
+//		Canvas->Draw(0,0,bmp_out);
+//		delete (bmp_out);//velice nutné
+//		delete (bmp_in);//velice nutné
+//	}
+//	else
+//	{
+//		d.vykresli_robota(Canvas,aktX,aktY,"Robot 1","R1",0,1);
+//		d.vykresli_stopku(Canvas,(aktX-600)*F->Zoom,aktY*F->Zoom,"Stop 1","S1",1,0);
+//		d.vykresli_otoc(Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button1Click(TObject *Sender)

@@ -3388,7 +3388,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button11'
     TabOrder = 29
-    Visible = False
     OnClick = Button11Click
   end
   object scGPGlyphButton_close_grafy: TscGPGlyphButton
@@ -3754,13 +3753,12 @@ object Form1: TForm1
     AllowAllUp = True
   end
   object Button13: TButton
-    Left = 752
-    Top = 493
+    Left = 371
+    Top = 432
     Width = 75
     Height = 25
     Caption = 'Button13'
     TabOrder = 36
-    Visible = False
     OnClick = Button13Click
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
@@ -4576,8 +4574,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2007
-        Top = 2170
+        Left = 2046
+        Top = 2209
         Width = 244
         Height = 31
         Align = alCustom
@@ -5545,7 +5543,7 @@ object Form1: TForm1
         RepeatClickInterval = 100
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 255
+        GlowEffect.AlphaValue = 95
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -5650,7 +5648,7 @@ object Form1: TForm1
         RepeatClickInterval = 100
         GlowEffect.Enabled = False
         GlowEffect.Color = clHighlight
-        GlowEffect.AlphaValue = 255
+        GlowEffect.AlphaValue = 95
         GlowEffect.GlowSize = 7
         GlowEffect.Offset = 0
         GlowEffect.Intensive = True
@@ -7422,7 +7420,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800C805140610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003006300610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8547,7 +8545,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013600F8055C0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010136007806780630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -25199,5 +25197,12 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {}
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 456
+    Top = 424
   end
 end

@@ -5304,6 +5304,10 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 		//Form2->ShowModal();
 
 		//Akce=MEASURE;
+
+		//RO-=(1.2*Zoom/m2px)/20.0;
+		//REFRESH();
+		Timer1->Enabled=!Timer1->Enabled;
 }
 //---------------------------------------------------------------------------
 
@@ -6065,6 +6069,9 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //   scListGroupPanel_poznamky->Top= scListGroupPanel_geometrie->Top + scListGroupPanel_geometrie->Height;
 //   DrawGrid_poznamky->Visible=true;
 //   }
+
+	RO+=(1.2*Zoom/F->m2px)/20.0;
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 
@@ -6397,4 +6404,39 @@ MOD=SCHEMA;
 //---------------------------------------------------------------------------
 
 
+
+
+void __fastcall TForm1::Timer1Timer(TObject *Sender)
+{
+		if(ROs==0)
+		{
+			if(RO>-(1.2*Zoom/m2px))
+			{
+				RO-=(1.2*Zoom/m2px)/20.0;
+			}
+			else ROs=1;
+		}
+		else
+		{
+			if(RO<(1.2*Zoom/m2px))
+			{
+				RO+=(1.2*Zoom/m2px)/20.0;
+			}
+			else ROs=0;
+		}
+
+		if(ROsts==0)
+		{
+			if(ROst<30)ROst+=5;
+			else ROsts=1;
+		}
+		else
+		{
+			if(ROst>-30)ROst-=5;
+			else ROsts=0;
+		}
+
+		REFRESH();
+}
+//---------------------------------------------------------------------------
 

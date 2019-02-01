@@ -147,7 +147,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykresl9 pom a jeho elementy
 				E=E->dalsi;//přeskočí hlavičku
 				while(E!=NULL)
 				{
-					vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1);
+					vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,0,1);
 					E=E->dalsi;//posun na další element
 				}
 		 }
@@ -2463,7 +2463,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,1.5,F->RO,F->ROst);break;
 		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 	}
@@ -2534,31 +2534,38 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
+void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO,double aP,float TS)
 {
-	double Z=F->Zoom;
+	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 
-	//vstupní parametry
-	double rotace_ramene=0;
-	double delka_ramena=1.2*Z/F->m2px;
-	float sirka_ramena=0.2*Z/F->m2px;
-	double delka_LO=1.5*Z/F->m2px;//délka lakovacího okna
+	//vstupní parametry - budou součástí parametrů metody  robotoa
+	LO*=Z/F->m2px;//délka lakovacího okna
+	aP;//prozatim jen pro animaci//0//LO/2.0;//aktuální pozice odsazení tryskového kloubu i trysky (ve svislé poloze trysky) v lakovacím okně
+	TS;//Tryska Sklon stupně
+
 
 	//konstanty
+	double pLOvC=1/2.0;//část z LO v delší části (většinou v polovina),bude sloužit na vyosení LO mimo osu robota
+	double DkRB=1.2*Z/F->m2px;//délka k referenčnímu bodu od středu prvního kloubu ramena, respektive odsazení robota od linky
+	float tloustka_linie=1/3.0;//vykreslovací linie robota
+	float zaobleni=4*Z;//míra zaoblení základny
 	float sirka_zakladny=1.0*Z/F->m2px;
 	float delka_zakladny=1.2*Z/F->m2px;
-	float zaobleni=4*Z;
-	float tloustka_linie=1/3.0;
+	float sirka_ramena=0.2*Z/F->m2px;
+	float DT=0.35*Z/F->m2px;//délka trysky
+	float TW=sirka_ramena;//tryska šířka před zúžením, v místě z kloubu
+	float TZ=TW/2.0;//tryska ve zúžení
+	double DR=sqrt(pow(LO*pLOvC,2)+pow(DkRB-DT,2));//délka ruky/ramene obou částí (paže i předloktí) ///old model (tryska v extremní poloze stejný úhel jako rameno): double DR=(DkRB-DT)/cos(atan((LO*pLOvC)/DkRB));
 	TColor barva=clBlack;
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
-																		 //if(eID==4)vykresli_lakovaci_okno(canv,X,Y,delka_LO,delka_ramena,rotace);
+																		// if(eID==4)vykresli_lakovaci_okno(canv,X,Y,LO,delka_ramena,rotace);
 	//přidružené elementy
 	switch(eID)
-	{
-		case 1: if(typ==1)vykresli_lakovaci_okno(canv,X,Y-sirka_zakladny/2,delka_LO,delka_ramena,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
-		case 2: vykresli_stopku(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",typ,rotace,stav);break;//robot se stopkou
-		case 3: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",5,typ,rotace,stav);break;//s pasivní otočí
-		case 4: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-delka_ramena),"","",6,typ,rotace,stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+	{                                                      //!!!!dodělat rotaci
+		case 1: if(typ==1)vykresli_lakovaci_okno(canv,X,Y-sirka_zakladny/2,LO,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 2: vykresli_stopku(canv,X,m.round(Y-sirka_zakladny/2-DkRB),"","",typ,rotace,stav);break;//robot se stopkou
+		case 3: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-DkRB),"","",5,typ,rotace,stav);break;//s pasivní otočí
+		case 4: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-DkRB),"","",6,typ,rotace,stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
 	//nastavení pera
@@ -2580,74 +2587,40 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	canv->Pen->Color=barva;
 	canv->Brush->Color=clWhite;
 
-	//základna
+	////základna
 	TRect zakladna=TRect(m.round(X-delka_zakladny/2.0),m.round(Y-sirka_zakladny/2.0),m.round(X+delka_zakladny/2.0),m.round(Y+sirka_zakladny/2.0));
 	canv->RoundRect(zakladna,zaobleni,zaobleni);
 
-	//rameno
-	//první část
-	TPointD K=m.rotace(delka_ramena/2,25,0);
-	canv->MoveTo(m.round(X+sirka_ramena/2.0),m.round(Y-sirka_zakladny/2.0));
-	canv->LineTo(m.round(X+sirka_ramena/2.0+K.x),m.round(Y-sirka_zakladny/2.0+K.y));
-	canv->MoveTo(m.round(X-sirka_ramena/2.0),m.round(Y-sirka_zakladny/2.0));
-	canv->LineTo(m.round(X-sirka_ramena/2+K.x),m.round(Y-sirka_zakladny/2.0+K.y));
-	//první kloub
-	//canv->Brush->Style=bsClear;
-	canv->Ellipse(m.round(X-sirka_ramena/2.+K.x),m.round(Y-sirka_zakladny/2.0-sirka_ramena/2.0+K.y),m.round(X+sirka_ramena/2+K.x),m.round(Y-sirka_zakladny/2.0+sirka_ramena/2.0+K.y));
-	//druhá část
-	TPointD K2=m.rotace(delka_ramena/2,25-60,0);
-	canv->MoveTo(m.round(X+sirka_ramena/2.0+K.x),m.round(Y-sirka_zakladny/2.0+K.y));
-	canv->LineTo(m.round(X+sirka_ramena/2.0+K.x+K2.x),m.round(Y-sirka_zakladny/2.0+K.y+K2.y));
-	canv->MoveTo(m.round(X-sirka_ramena/2+K.x),m.round(Y-sirka_zakladny/2.0+K.y));
-	canv->LineTo(m.round(X-sirka_ramena/2+K.x+K2.x),m.round(Y-sirka_zakladny/2.0+K.y+K2.y));
-	//druhý kloub
-	float Sx=m.round((X+sirka_ramena/2.0+K.x+K2.x+X-sirka_ramena/2+K.x+K2.x)/2.0);
-	float Sy=m.round((Y-sirka_zakladny/2.0+K.y+K2.y+Y-sirka_zakladny/2.0+K.y+K2.y)/2.0);
-//	canv->Ellipse(m.round(Sx-sirka_ramena/2),m.round(Sy-sirka_ramena/2),m.round(Sx+sirka_ramena/2),m.round(Sy+sirka_ramena/2));
+	////tryska
+	long cX=X-aP;long cY=m.round(Y-sirka_zakladny/2-DkRB+DT);//skutečný referenční bod (nikoliv uchopovací, ten je u robota odlišný) minus výška trysky
+	//!!!!dodělat rotaci
+	polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace);//zde bude TS pro animaci či parametrizování
 
+	////ramena
+	double Alfa1=atan((aP)/(DkRB-DT));
+	double Prepona=sqrt(pow(aP,2)+pow(DkRB-DT,2));//v dokumentaci označeno jako X
+	double Alfa2=acos(Prepona/DR);
+	double Alfa=Alfa2-Alfa1;
+	double Gama=180.0-(180.0-2*Alfa2)-Alfa;//Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
+	//první část - od základny
+		//!!!!dodělat rotaci
+	TPoint S=polygonDleOsy(canv,X,m.round(Y-sirka_zakladny/2.0),DR/2,sirka_ramena,sirka_ramena,270+m.ToDeg(Alfa),rotace);//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
+	//druhá část k trysce (kresleno směrem od trysky)
+		//!!!!dodělat rotaci
+	polygonDleOsy(canv,cX,cY,DR/2,sirka_ramena,sirka_ramena,270+180-m.ToDeg(Gama),rotace);
 
-	//tryska
-//	K=m.rotace(sirka_ramena/4,0,0);
-//	canv->MoveTo(Sx,Sy);
-//	Sx=Sx+K.x;Sy=Sy+K.y;
-//	canv->LineTo(Sx,Sy);
-//	K=m.rotace(sirka_ramena*1.5,270,0);
-//	canv->LineTo(Sx+K.x,Sy+K.y);
-//	Sx=Sx+K.x;Sy=Sy+K.y;
-//	K=m.rotace(sirka_ramena*2/4,180,0);
-//	canv->LineTo(Sx+K.x,Sy+K.y);
-//	Sx=Sx+K.x;Sy=Sy+K.y;
-//	K=m.rotace(sirka_ramena*1.5,90,0);
-//	canv->LineTo(Sx+K.x,Sy+K.y);
-	long cX=X;long cY=m.round(Y-sirka_zakladny/2-delka_ramena);//skutečný (nikoliv uchopovací) referenční bod
-	float TP=3.0;//triska poměr vůči šířce
-	canv->Ellipse(m.round(cX-sirka_ramena/TP),m.round(cY-sirka_ramena/TP),m.round(cX+sirka_ramena/TP),m.round(cY+sirka_ramena/TP));
-	//nahoru ze skutečného referenčního bodu
-	K=m.rotace(sirka_ramena/TP,0+25,0);
-	//line(canv,cX,cY,m.round(cX+K.x),m.round(cY+K.y));
-	canv->MoveTo(m.round(cX+K.x),m.round(cY+K.y));
-	//nahoře doprava ze skutečného referenčního bodu
-	K2=m.rotace(sirka_ramena*1.5,90+25,0);
-	canv->LineTo(m.round(cX+K.x+K2.x),m.round(cY+K.y+K2.y));
-	TPointD K3;K3.x=cX+K.x+K2.x;K3.y=cY+K.y+K2.y;
-	//dolu ze skutečného referenčního bodu
-	K=m.rotace(sirka_ramena/TP,180+25,0);
-	//line(canv,cX,cY,m.round(cX+K.x),m.round(cY+K.y));
-	canv->MoveTo(m.round(cX+K.x),m.round(cY+K.y));
-	//dole doprava ze skutečného referenčního bodu
-	K2=m.rotace(sirka_ramena*1.5,90+25,0);
-	canv->LineTo(m.round(cX+K.x+K2.x),m.round(cY+K.y+K2.y));
+	////klouby
+	//první kloub mezi prvním ramenem a základnou
+	//!!!!dodělat rotaci
+	canv->Ellipse(m.round(X-sirka_ramena/2.0),m.round(Y-sirka_zakladny/2.0-sirka_ramena/2.0),m.round(X+sirka_ramena/2.0),m.round(Y-sirka_zakladny/2.0+sirka_ramena/2.0));
+	//druhý kloub mezi rameny
+	canv->Ellipse(m.round(S.x-sirka_ramena/2.0),m.round(S.y-sirka_ramena/2.0),m.round(S.x+sirka_ramena/2.0),m.round(S.y+sirka_ramena/2.0));
+	//třetí kloub mezi ramenem a tryskou
+	canv->Ellipse(m.round(cX-sirka_ramena/2.0),m.round(cY-sirka_ramena/2.0),m.round(cX+sirka_ramena/2.0),m.round(cY+sirka_ramena/2.0));
 
-	//druhý kloub
-	Sx=(K3.x+cX+K.x+K2.x)/2.0;
-	Sy=(K3.y+cY+K.y+K2.y)/2.0;
-	canv->Ellipse(m.round(Sx-sirka_ramena/TP),m.round(Sy-sirka_ramena/TP),m.round(Sx+sirka_ramena/TP),m.round(Sy+sirka_ramena/TP));
-
-
-
-	//testovací osa
-	linie(canv,cX-100,cY,cX+100,cY,1,clRed);
-	linie(canv,X,Y,cX,cY,1,clRed);
+	//	//testovací osa - smazat
+	//linie(canv,cX-100,cY,cX+100,cY,1,clRed);
+	//linie(canv,X,Y,cX,cY,1,clRed);
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
@@ -2668,69 +2641,6 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+sirka_zakladny/2.0+1*Z+1*Z+canv->TextHeight(name)),short_name);
 		}
 	}
-
-//nejstarší verze
-//	double Z=F->Zoom;
-//
-//	//vstupní parametry
-//	double rotace_ramene=0;
-//	double delka_ramena=12;
-//
-//	//konstanty
-//	short sirka_zakladny=10;
-//	short delka_zakladny=12;
-//	short zaobleni=4;
-//	float tloustka_linie=1/3.0;
-//	TColor barva=clBlack;
-//	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
-//
-//	//přidružené elementy
-//	if(typ==2)vykresli_stopku(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",stav,rotace,kurzor);//robot se stopkou
-//	if(typ==3)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",5,stav,rotace,kurzor);//s pasivní otočí
-//	if(typ==4)vykresli_otoc(canv,X,Y-sirka_zakladny/2*Z-delka_ramena*Z-1*2*Z,"","",6,stav,rotace,kurzor);//s aktivní otočí (tj. s otočí a se stopkou)
-//
-//	//nastavení pera
-//	if(kurzor)//stav kurzor
-//	{
-//		canv->Pen->Mode=pmNotXor;
-//		canv->Pen->Style=psDot;
-//		canv->Pen->Color=barva;
-//		canv->Pen->Width=1;
-//		canv->Brush->Style=bsClear;
-//	}
-//	else
-//	{
-//		canv->Pen->Mode=pmCopy;
-//		canv->Pen->Style=psSolid;
-//		canv->Pen->Width=F->m.round(tloustka_linie*Z);
-//		canv->Brush->Style=bsSolid;
-//	}
-//	canv->Pen->Color=barva;
-//	canv->Brush->Color=clWhite;
-//
-//	//základna
-//	TRect zakladna=TRect(X-delka_zakladny/2*Z,Y-sirka_zakladny/2*Z,X+delka_zakladny/2*Z,Y+sirka_zakladny/2*Z);
-//	canv->RoundRect(zakladna,zaobleni*Z,zaobleni*Z);
-//
-//	//rameno
-//	canv->Rectangle(X-1*Z,Y-sirka_zakladny/2*Z,X+1*Z,Y-sirka_zakladny/2*Z-delka_ramena/2*Z);//první část
-//	canv->Rectangle(X-0.75*Z,Y-sirka_zakladny/2*Z-delka_ramena/2*Z,X+0.75*Z,Y-sirka_zakladny/2*Z-delka_ramena*Z);//druhá část
-//	canv->Brush->Style=bsClear;
-//
-//	//triska
-//	canv->Brush->Style=bsClear;
-//	canv->Ellipse(X-1*Z,Y-sirka_zakladny/2*Z-delka_ramena*Z,X+1*Z,Y-sirka_zakladny/2*Z-delka_ramena*Z-2*Z);//tryska
-//
-//	//text
-//	if(!kurzor)//v módu kurzor se název nezobrazuje
-//	{
-//		canv->Font->Color=barva;
-//		canv->Font->Size=2*Z;
-//		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
-//		AnsiString T=short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
-//		//rotace_textu(canv,900);
-//		drawRectText(canv,zakladna,T);
-//	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
@@ -2807,15 +2717,55 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double delka_LO,double delka_ramena,double rotace)
+void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO,double delka_ramena,double rotace)
 {
 	canv->Pen->Width=1;
 	canv->Pen->Color=clGray;
 	canv->Pen->Mode=pmCopy;
 	canv->Pen->Style=psDash;
 	//m.rotace(delka_ramena/2,25,0);
-	line(canv,X,Y,m.round(X-delka_LO/2),m.round(Y-delka_ramena));
-	line(canv,X,Y,m.round(X+delka_LO/2),m.round(Y-delka_ramena));
+	//dodělat rotaci!!!
+	line(canv,X,Y,m.round(X-LO/2),m.round(Y-delka_ramena));
+	line(canv,X,Y,m.round(X+LO/2),m.round(Y-delka_ramena));
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
+TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace)
+{
+	//polovina od osy
+	sirka1/=2.0;
+	sirka2/=2.0;
+
+	//vytvoření pole pro vykreslení celého polygonu
+	TPoint *P=new TPoint[5];//vytovoří pole pro polyline
+	//nahoru ze skutečného referenčního bodu
+	TPointD K=m.rotace(sirka1,0+sklon,rotace);
+	P[0].x=m.round(X+K.x);P[0].y=m.round(Y+K.y);
+	///K=m.rotace(sirka1,0+sklon,rotace);
+	//nahoře doprava ze skutečného referenčního bodu
+	K=m.rotace(delka,90+sklon,rotace);
+	TPointD K2=m.rotace(sirka2,0+sklon,rotace);
+	P[1].x=m.round(X+K.x+K2.x);P[1].y=m.round(Y+K.y+K2.y);
+	//dolu ze z předchozího bodu
+	K=m.rotace(sirka2*2,180+sklon,rotace);
+	P[2].x=m.round(P[1].x+K.x);P[2].y=m.round(P[1].y+K.y);
+	//dole ze skutečného referenčního bodu
+	K=m.rotace(sirka1,0+sklon+180,rotace);
+	P[3].x=m.round(X+K.x);P[3].y=m.round(Y+K.y);
+	//zpět nahoru do P[0]
+	P[4]=P[0];
+
+	//samotné vykreslení
+	canv->Polyline(P,4);
+
+	//vratí souřadnice konce osy polygonu
+	TPoint RET;
+	RET.x=m.round((P[1].x+P[2].x)/2.0);RET.y=m.round((P[1].y+P[2].y)/2.0);
+
+	//zrušení a uvolnění ukazatele
+	P=NULL;delete P;
+
+	return RET;//vratí souřadnice konce osy polygonu
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,TColor Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
@@ -2927,7 +2877,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void  Cvykresli::vykresli_mGridy()
 {
-	 if(F->pom->elementy!=NULL)
+	 if(F->pom->elementy!=NULL && F->Timer1->Enabled==false)
 	 {
 		 Cvektory::TElement *E=F->pom->elementy->dalsi;//přeskočí rovnou hlavičku
 		 while(E!=NULL)
