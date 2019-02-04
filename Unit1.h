@@ -571,8 +571,8 @@ private:
 	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 	unsigned short int vyska_menu;
 
-	double Zoom_predchozi;
-	TPointD Posun_predchozi;
+	double Zoom_predchozi,Zoom_predchozi2;
+	TPointD Posun_predchozi,Posun_predchozi2;
 	short jedno_ze_tri_otoceni_koleckem_mysi;
 	short doba_neotaceni_mysi;
 	bool uchop_zobrazen;

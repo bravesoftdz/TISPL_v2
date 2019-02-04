@@ -1514,12 +1514,12 @@ void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
   {            //mezerník
 		case 1: if(Key==32){Akce=NIC; kurzor(standard);/*vrat_puvodni_akci();*/}break;//PAN
 		case 2:
-    {
+		{
 			Akce=NIC; kurzor(standard);
 			pan_move_map();
 			//vrat_puvodni_akci();
 		}
-    break;//PAN_MOVE
+		break;//PAN_MOVE
     default: break;
   }
 	}
@@ -2343,7 +2343,7 @@ void TForm1::pan_move_map()
 	}
 	else
 	{
-   //osetrit zbytecne invalidovani
+	 //osetrit zbytecne invalidovani
 		if(d.PosunT.x-(akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x)<0)d.PosunT.x=0;
 		else d.PosunT.x-=(akt_souradnice_kurzoru_PX.x-vychozi_souradnice_kurzoru.x);
 		if(d.PosunT.y-(akt_souradnice_kurzoru_PX.y-vychozi_souradnice_kurzoru.y)<0)d.PosunT.y=0;
@@ -3954,16 +3954,25 @@ void TForm1::NP()
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
 	}
 }
-
+//---------------------------------------------------------------------------
 void TForm1::NP_input()
 {
 	 MOD=NAHLED;
 
-   Zoom_predchozi=Zoom;
-   Zoom=5.0; on_change_zoom_change_scGPTrackBar();
-//
-//   Posun_predchozi.x=Posun.x;
-//   Posun_predchozi.y=Posun.y;
+	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
+	 //zazálohování hodnot posunu a zoomu
+	 Posun_predchozi2=Posun_predchozi=Posun;
+	 Zoom_predchozi2=Zoom_predchozi=Zoom;
+	 //nastavení zoomu na vhodný náhled
+	 Zoom=5.0;
+	 probehl_zoom=true;
+	 zneplatnit_minulesouradnice();
+	 Posun.x=m.round(pom->X/m2px-(ClientWidth+scSplitView_LEFTTOOLBAR->Width)/2/Zoom);
+	 Posun.y=m.round(-pom->Y/m2px-(ClientHeight)/2/Zoom);
+	 on_change_zoom_change_scGPTrackBar();
+	 //vycentruje kurzor na střed monitoru - na X nefunguje přesně
+	 if(vycentrovat)Mouse->CursorPos=TPoint(m.L2Px(akt_souradnice_kurzoru.x),m.L2Py(akt_souradnice_kurzoru.y)+vyska_menu);
+	 vycentrovat=true;
 
    DrawGrid_knihovna->DefaultRowHeight=140;
    DrawGrid_knihovna->DefaultColWidth=80;
@@ -3973,13 +3982,13 @@ void TForm1::NP_input()
 
    DrawGrid_otoce->DefaultColWidth=80;
 
-    scGPLabel_roboti->Visible=true;
-    scGPLabel_otoce->Visible=true;
-    scGPLabel_stop->Visible=true;
-    scGPLabel_geometrie->Visible=true;
-    scGPLabel_poznamky->Visible=true;
+	 scGPLabel_roboti->Visible=true;
+	 scGPLabel_otoce->Visible=true;
+	 scGPLabel_stop->Visible=true;
+	 scGPLabel_geometrie->Visible=true;
+	 scGPLabel_poznamky->Visible=true;
 
-    scGPLabel_roboti->Top=scGPPanel_mainmenu->Height;
+	 scGPLabel_roboti->Top=scGPPanel_mainmenu->Height;
 
    scListGroupPanel_hlavickaOtoce->Visible=true;
    scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
@@ -4017,12 +4026,13 @@ void TForm1::NP_input()
 
    scGPButton_OK->Visible=true;
    scGPButton_storno->Visible=true;
- 		// matamaticky exaktní napozicování tlačítek OK a storno
-		Form1->m.designButton(scGPButton_OK, Form1, 1, 2);
-		Form1->m.designButton(scGPButton_storno, Form1, 2, 2);
 
-		Invalidate();
-		REFRESH();
+	 // matamaticky exaktní napozicování tlačítek OK a storno
+	 Form1->m.designButton(scGPButton_OK, Form1, 1, 2);
+	 Form1->m.designButton(scGPButton_storno, Form1, 2, 2);
+
+	 Invalidate();
+	 REFRESH();
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
@@ -5308,6 +5318,9 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 		//RO-=(1.2*Zoom/m2px)/20.0;
 		//REFRESH();
 		Timer1->Enabled=!Timer1->Enabled;
+		scGPSwitch_meritko->State=!Timer1->Enabled;
+		d.v.PP.raster.show=!Timer1->Enabled;
+
 }
 //---------------------------------------------------------------------------
 
@@ -6070,8 +6083,9 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //   DrawGrid_poznamky->Visible=true;
 //   }
 
-	RO+=(1.2*Zoom/F->m2px)/20.0;
+	Posun.x=500/m2px;
 	REFRESH();
+
 }
 //---------------------------------------------------------------------------
 
@@ -6080,12 +6094,11 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 
    if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
    {
-   //Zoom=Zoom_predchozi;
-   Zoom=1.0;
-   on_change_zoom_change_scGPTrackBar();
-
-//   Posun.x=Posun_predchozi.x;
-//   Posun.y=Posun_predchozi.y;
+	 //navrácení zoomu a posunu do původních hodnt
+	 Zoom=Zoom_predchozi2;
+	 on_change_zoom_change_scGPTrackBar();
+	 Posun.x=Posun_predchozi2.x;
+	 Posun.y=Posun_predchozi2.y;
 
    DrawGrid_knihovna->DefaultRowHeight=50;
    DrawGrid_knihovna->DefaultColWidth=70;
@@ -6219,23 +6232,22 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 {
- if(!scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
-    {
-    d.v.PP.raster.show=false;
-    scSplitView_OPTIONS->Opened=false;
-    scGPCheckBox_zobraz_podklad->Checked=false;
-    DuvodUlozit(true);
-    }
+	if(!scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
+	{
+		d.v.PP.raster.show=false;
+		scSplitView_OPTIONS->Opened=false;
+		scGPCheckBox_zobraz_podklad->Checked=false;
+		DuvodUlozit(true);
+	}
 
- if(scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
-    {
-    d.v.PP.raster.show=true;
-    scSplitView_OPTIONS->Opened=false;
-    scGPCheckBox_zobraz_podklad->Checked=true;
-    DuvodUlozit(true);
-    }
-
-     REFRESH();
+	if(scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
+	{
+		d.v.PP.raster.show=true;
+		scSplitView_OPTIONS->Opened=false;
+		scGPCheckBox_zobraz_podklad->Checked=true;
+		DuvodUlozit(true);
+	}
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
@@ -6408,6 +6420,9 @@ MOD=SCHEMA;
 
 void __fastcall TForm1::Timer1Timer(TObject *Sender)
 {
+
+
+
 		if(ROs==0)
 		{
 			if(RO>-(1.2*Zoom/m2px))
@@ -6439,4 +6454,5 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender)
 		REFRESH();
 }
 //---------------------------------------------------------------------------
+
 
