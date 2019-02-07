@@ -2654,6 +2654,10 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 //---------------------------------------------------------------------------
 void TForm1::add_element(int X, int Y)
 {
+	//ovlivňování souřadnic, aby element byl umístěn přímo na osou
+	Y=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0;
+
+
 	//vložení elementu na dané souřadnice a do patřičného spojáku
 	Cvektory::TElement *E=d.v.vloz_element(pom,element_id,m.P2Lx(X),m.P2Ly(Y));
 
