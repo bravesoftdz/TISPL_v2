@@ -3,13 +3,13 @@
 	<Transactions>
     <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.832,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.660,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.306,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoV.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.229,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.660,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.832,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.235,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.916,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.cpp</Transaction>
@@ -158,5 +158,9 @@
     <File Path="gapoV.cpp"/>
     <File Path="gapoV.dfm"/>
     <File Path="gapoV.h"/>
+    <File Path="adjustace.cpp"/>
+    <File Path="adjustace.cpp"/>
+    <File Path="adjustace.dfm"/>
+    <File Path="adjustace.h"/>
   </ProjectSortOrder>
 </BorlandProject>
