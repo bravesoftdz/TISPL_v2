@@ -2474,12 +2474,13 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double Z=F->Zoom;
 
 	short size=8*F->Zoom; //pův. 7
-	short sklon=50;       //pův. 45°
+	short sklon=50;   //pův. 45°
 
 	//barva výplně
 	TColor barva=clRed;
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
+	//typ zobrazení
 	if(typ==-1)//kurzor
 	{
 		canv->Pen->Color=clBlack;
@@ -2489,7 +2490,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 		size=6*F->Zoom;//kvůli bílému orámování stopky v normálním zobrazení musí být menší
-	}
+	}//normální
 	else
 	{
 		canv->Pen->Color=clWhite;//bílý framing okolo stopky
@@ -2498,32 +2499,41 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Pen->Style=psSolid;
 		canv->Brush->Color=barva;
 		canv->Brush->Style=bsSolid;
-		switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
-		{
-			case 0: Y+=m.round(1*Z);break;
-			case 90: X+=m.round(1*Z);break;//ověřit
-			case 180: Y-=m.round(1*Z);break;
-			case 270: X-=m.round(1*Z);break;//ověřit
-		}
 	}
-	//referenční bode ve špičce, špička je směrem dolu
-	POINT body[3]={{F->m.round(X+m.rotace(1,sklon,rotace).x*size/2),F->m.round(Y+m.rotace(1,sklon,rotace).y*size)},{X,Y},{F->m.round(X+m.rotace(1,360-sklon,rotace).x/2*size),F->m.round(Y+m.rotace(1,360-sklon,rotace).y*size)}};
+	//rotace
+	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
+	{
+		case 0: 	Y+=m.round(1*Z);break;
+		case 90: 	X-=m.round(1*Z/2);break;
+		case 180: Y-=m.round(1*Z);break;
+		case 270: X+=m.round(1*Z/2);break;
+	}
+	//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
+	float sizeX=size;float sizeY=size;
+	if(rotace==0 || rotace==180)sizeX/=2.0;
+	if(rotace==90 || rotace==270)sizeY/=2.0;
+	POINT body[3]={{F->m.round(X+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(Y+m.rotace(1,sklon,rotace).y*sizeY)},{X,Y},{F->m.round(X+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(Y+m.rotace(1,360-sklon,rotace).y*sizeY)}};
 	canv->Polygon((TPoint*)body,2);
-
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
 	{
 		canv->Font->Color=barva;
 		canv->Font->Size=F->m.round(2*Z);
-		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+		canv->Font->Name="Arial";
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
 		if(typ==1)//normální zobrazení typ==1
 		{
-			rotace_textu(canv,rotace*10+900);
-			canv->TextOutW(F->m.round(X-canv->TextHeight(T)/2),F->m.round(Y-size+2*Z),T);
+			//rotace
+			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
+			{
+				case 0: 	rotace_textu(canv,0+900);canv->TextOutW(m.round(X-canv->TextHeight(T)/2),m.round(Y-size+2*Z),T);break;
+				case 90:	rotace_textu(canv,0);		 canv->TextOutW(m.round(X+size-2*Z),m.round(Y-canv->TextHeight(T)/2),T);break;
+				case 180:	rotace_textu(canv,2700); canv->TextOutW(m.round(X+canv->TextHeight(T)/2),m.round(Y+size-2*Z),T);break;
+				case 270:	rotace_textu(canv,0);	   canv->TextOutW(m.round(X-canv->TextWidth(T)-size+2*Z),m.round(Y-canv->TextHeight(T)/2),T);break;
+			}
 			rotace_textu(canv,0);
 		}
 		else//ikona v knihovně elementů je text pod elementem
@@ -2535,7 +2545,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO,double aP,float TS)
-{            rotace=180;
+{
 	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 
 	//vstupní parametry - budou součástí parametrů metody  robotoa
@@ -2558,14 +2568,19 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double DR=sqrt(pow(LO*pLOvC,2)+pow(DkRB-DT,2));//délka ruky/ramene obou částí (paže i předloktí) ///old model (tryska v extremní poloze stejný úhel jako rameno): double DR=(DkRB-DT)/cos(atan((LO*pLOvC)/DkRB));
 	TColor barva=clBlack;
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+	if(rotace==90 || rotace==270){float temp=delka_zakladny;delka_zakladny=sirka_zakladny;sirka_zakladny=temp;}
 																		// if(eID==4)vykresli_lakovaci_okno(canv,X,Y,LO,delka_ramena,rotace);
 	//přidružené elementy
+	long pX=X;long pY=m.round(Y-sirka_zakladny/2.0-DkRB);
+	if(rotace==90){pX=m.round(X+delka_zakladny/2.0+DkRB);pY=Y;}
+	if(rotace==270){pX=m.round(X-delka_zakladny/2.0-DkRB);pY=Y;}
+	if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);}
 	switch(eID)
-	{                                                      //!!!!dodělat rotaci
-		case 1: if(typ==1)vykresli_lakovaci_okno(canv,X,Y-sirka_zakladny/2,LO,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
-		case 2: vykresli_stopku(canv,X,m.round(Y-sirka_zakladny/2-DkRB),"","",typ,rotace,stav);break;//robot se stopkou
-		case 3: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-DkRB),"","",5,typ,rotace,stav);break;//s pasivní otočí
-		case 4: vykresli_otoc(canv,X,m.round(Y-sirka_zakladny/2-DkRB),"","",6,typ,rotace,stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+	{                                                      //!!!!dodělat rotaci ve vykreli lakovací okno
+		case 1: if(typ==1)vykresli_lakovaci_okno(canv,pX,pY,LO,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 2: vykresli_stopku(canv,pX,pY,"","",typ,rotace,stav);break;//robot se stopkou
+		case 3: vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
+		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,rotace,stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
 	//nastavení pera
@@ -2588,14 +2603,13 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	canv->Brush->Color=clWhite;
 
 	////základna
-	if(rotace==90 || rotace==270){float temp=delka_zakladny;delka_zakladny=sirka_zakladny;sirka_zakladny=temp;}
 	TRect zakladna=TRect(m.round(X-delka_zakladny/2.0),m.round(Y-sirka_zakladny/2.0),m.round(X+delka_zakladny/2.0),m.round(Y+sirka_zakladny/2.0));
 	canv->RoundRect(zakladna,zaobleni,zaobleni);
 
 	////tryska
 	long cX=X-aP;long cY=m.round(Y-sirka_zakladny/2.0-DkRB+DT);//skutečný referenční bod (nikoliv uchopovací, ten je u robota odlišný) minus výška trysky
-	if(rotace==90){cX=X+delka_zakladny/2.0+DkRB-DT;cY=Y-aP;}
-	if(rotace==270){cX=X-delka_zakladny/2.0-DkRB+DT;cY=Y+aP;}
+	if(rotace==90){cX=m.round(X+delka_zakladny/2.0+DkRB-DT);cY=Y-aP;}
+	if(rotace==270){cX=m.round(X-delka_zakladny/2.0-DkRB+DT);cY=Y+aP;}
 	if(rotace==180){cX=X+aP;cY=m.round(Y+sirka_zakladny/2.0+DkRB-DT);}
 	polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace);//zde bude TS pro animaci či parametrizování
 
@@ -2606,7 +2620,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double Alfa=Alfa2-Alfa1;
 	double Gama=180.0-(180.0-2*Alfa2)-Alfa;//Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
 	//rotace i kloubu
-	long pX=X;long pY=Y-sirka_zakladny/2.0;
+	pX=X;pY=Y-sirka_zakladny/2.0;
 	if(rotace==90){pX=X+delka_zakladny/2.0;pY=Y;}
 	if(rotace==270){pX=X-delka_zakladny/2.0;pY=Y;}
 	if(rotace==180){pY=Y+sirka_zakladny/2.0;}
@@ -2624,20 +2638,27 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	canv->Ellipse(m.round(cX-sirka_ramena/2.0),m.round(cY-sirka_ramena/2.0),m.round(cX+sirka_ramena/2.0),m.round(cY+sirka_ramena/2.0));
 
 	//	//testovací osa - smazat
-	//linie(canv,cX-100,cY,cX+100,cY,1,clRed);
-	//linie(canv,X,Y,cX,cY,1,clRed);
-										name=short_name="R1";//prozatim
+//	linie(canv,cX-100,cY,cX+100,cY,1,clRed);
+//	linie(canv,X,Y,cX,cY,1,clRed);
+	name="Robot1";//prozatim
+	short_name="R1";//prozatim
+
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
 	{
 		if(stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;
-		canv->Font->Size=2*Z;
+		canv->Font->Size=5*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
-		AnsiString T=short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
+		AnsiString T=short_name;if(Z>4*3){T=name;canv->Font->Size=2*Z;}//od daného zoomu zobrazuje celý název
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
-			rotace_textu(canv,-rotace*10);
-			drawRectText(canv,zakladna,T);
+			if(rotace==0 || rotace==180)drawRectText(canv,zakladna,T); //nefunguje správně při rotaci //pro po orototován9 o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
+			else
+			{
+				rotace_textu(canv,-rotace*10);
+				if(rotace==90)canv->TextOutW(m.round(X+canv->TextHeight(T)/2.0),m.round(Y-canv->TextWidth(T)/2.0),name);
+				if(rotace==270)canv->TextOutW(m.round(X-canv->TextHeight(T)/2.0),m.round(Y+canv->TextWidth(T)/2.0),name);
+			}
 		}
 		else//ikona
 		{
@@ -2678,27 +2699,56 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	//vykreslení elementu
 	canv->Ellipse(X-size,Y-size,X+size,Y+size);
 
-	if(typ==-1)//mód kurzor
+	double R=rotace;
+	if(R==0 || R==180)
 	{
-		//šipka
-		sipka(canv,X-size,Y+width,rotace-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
-		sipka(canv,X+size,Y-width,rotace-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+		R=0;//nerozlišuje se zda 0 nebo 180, v těchto případech je symbol stejně orotován
+		if(typ==-1)//mód kurzor
+		{
+			//šipka
+			sipka(canv,m.round(X-size),m.round(Y+width),rotace-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+size),m.round(Y-width),rotace-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+		}
+		else
+		{
+			canv->Pen->Color=clWhite;
+			canv->Brush->Style=bsSolid;
+
+			//přeříznutí pod šipkou
+			canv->Rectangle(X-size,Y-width,m.round(X-size+1*Z),Y);//přežíznutí, možná lépe řešit obloukem
+			canv->Rectangle(m.round(X+size-1*Z),Y,X+size,Y+width);//přežíznutí, možná lépe řešit obloukem
+			//šipka
+			sipka(canv,m.round(X-size),m.round(Y+width),R-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+size),m.round(Y-width),R-180-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+		}
 	}
 	else
 	{
-		canv->Pen->Color=clWhite;
-		canv->Brush->Style=bsSolid;
-		//přeříznutí pod šipkou
-		canv->Rectangle(X-size,Y-width,X-size+1*Z,Y);//přežíznutí, možná lépe řešit obloukem
-		canv->Rectangle(X+size-1*Z,Y,X+size,Y+width);//přežíznutí, možná lépe řešit obloukem
-		//šipka
-		sipka(canv,m.round(X-size),m.round(Y+width),rotace-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
-		sipka(canv,m.round(X+size),m.round(Y-width),rotace-180-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+		R=90;//nerozlišuje se zda 90 nebo 270, v těchto případech je symbol stejně orotován
+		if(typ==-1)//mód kurzor
+		{
+			//šipka
+			sipka(canv,m.round(X-width),m.round(Y-size),R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+		}
+		else
+		{
+			canv->Pen->Color=clWhite;
+			canv->Brush->Style=bsSolid;
+
+			//přeříznutí pod šipkou
+			canv->Rectangle(X+width,Y-size,m.round(X+width-1*Z),m.round(Y-size+width+1*Z));//přežíznutí, možná lépe řešit obloukem
+			canv->Rectangle(X+width,Y+size,m.round(X+width-1.5*Z),m.round(Y+size+width-1*Z));//přežíznutí, možná lépe řešit obloukem
+			//šipka
+			sipka(canv,m.round(X-width),m.round(Y-size),R-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,false,width/Z,barva,barva);//děleno Z na negaci *Zoom v metodě šipka
+		}
 	}
+
 
 	//pokud je otoč aktivní tj. se stopkou
 	if(eID==6)vykresli_stopku(canv,X,Y,"","",typ,rotace,stav);
-
+											 //name="Otoč";
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
 	{
