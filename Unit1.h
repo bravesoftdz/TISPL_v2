@@ -293,6 +293,7 @@ __published:	// IDE-managed Components
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
   TscExPanel *scExPanel_podklad;
 	TTimer *Timer1;
+	TMemo *Memo3;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
