@@ -295,6 +295,7 @@ __published:	// IDE-managed Components
 	TTimer *Timer1;
 	TMemo *Memo3;
 	TscGPButton *scGPButton_Test;
+	TscGPButton *scGPButton1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -482,6 +483,7 @@ __published:	// IDE-managed Components
   void __fastcall Button_testClick(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall scGPButton_TestClick(TObject *Sender);
+	void __fastcall scGPButton1Click(TObject *Sender);
 
 
 

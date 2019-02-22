@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
-#ifndef Unit3H
-#define Unit3H
+#ifndef Unit4H
+#define Unit4H
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -9,39 +9,42 @@
 #include <Vcl.Forms.hpp>
 #include "scControls.hpp"
 #include "scGPControls.hpp"
-#include "scGPExtControls.hpp"
-#include <Vcl.Mask.hpp>
 #include "rHTMLLabel.hpp"
 //---------------------------------------------------------------------------
-class TForm3 : public TForm
+class TForm4 : public TForm
 {
 __published:	// IDE-managed Components
 	TscGPPanel *scGPPanel2;
 	TscGPGlyphButton *Konec;
 	TscLabel *scLabel1;
-	TscGPButton *Button_save;
+	TscGPButton *Button_pridat;
+	TscGPButton *Button_odebrat;
 	TscGPButton *Button_storno;
-	TrHTMLLabel *rHTMLLabel_cislo1;
+	TEdit *Edit1;
+	TEdit *Edit2;
+	TEdit *Edit3;
+	TEdit *Edit4;
 	TrHTMLLabel *rHTMLLabel1;
-	TEdit *E_vstup1;
-	TEdit *E_vstup2;
-	TButton *Button1;
-	TMemo *Memo1;
+	TrHTMLLabel *rHTMLLabel2;
+	TrHTMLLabel *rHTMLLabel3;
+	TrHTMLLabel *rHTMLLabel4;
+	TEdit *Edit5;
+	TrHTMLLabel *rHTMLLabel5;
 	void __fastcall Button_stornoClick(TObject *Sender);
-	void __fastcall Button_saveClick(TObject *Sender);
-	void __fastcall FormShow(TObject *Sender);
-	void __fastcall E_vstup1Change(TObject *Sender);
-	void __fastcall E_vstup2Change(TObject *Sender);
-	void __fastcall FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall Button_pridatClick(TObject *Sender);
+	void __fastcall Button_odebratClick(TObject *Sender);
 private:	// User declarations
-	void kontrola ();
-	void vypocet ();
-	bool pom1, pom2;
+//	struct TPohon
+//	{
+//		string name;
+//		double min_rychost;
+//		double max_rychlost;
+//		double roztec;
+//	};
 public:		// User declarations
-	__fastcall TForm3(TComponent* Owner);
+	__fastcall TForm4(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm3 *Form3;
+extern PACKAGE TForm4 *Form4;
 //---------------------------------------------------------------------------
 #endif

@@ -1,10 +1,10 @@
-object Form3: TForm3
+object Form4: TForm4
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  Caption = 'Form3'
-  ClientHeight = 334
-  ClientWidth = 466
+  Caption = 'Form4'
+  ClientHeight = 364
+  ClientWidth = 465
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,16 +12,14 @@ object Form3: TForm3
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnKeyUp = FormKeyUp
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object rHTMLLabel_cislo1: TrHTMLLabel
-    Left = 22
-    Top = 57
-    Width = 121
-    Height = 21
-    Caption = 'Prvn'#237' '#269#237'slo <font color=#2b579a>[+/-]</font>:'
+  object rHTMLLabel1: TrHTMLLabel
+    Left = 74
+    Top = 58
+    Width = 107
+    Height = 19
+    Caption = 'N'#225'zev pohonu:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -30,12 +28,54 @@ object Form3: TForm3
     Font.Quality = fqClearType
     ParentFont = False
   end
-  object rHTMLLabel1: TrHTMLLabel
-    Left = 22
-    Top = 105
-    Width = 128
-    Height = 21
-    Caption = 'Druh'#233' '#269#237'slo <font color=#2b579a>[+/-]</font>:'
+  object rHTMLLabel2: TrHTMLLabel
+    Left = 74
+    Top = 85
+    Width = 96
+    Height = 19
+    Caption = 'Min. rychlost:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel3: TrHTMLLabel
+    Left = 74
+    Top = 112
+    Width = 99
+    Height = 19
+    Caption = 'Max. rychlost:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel4: TrHTMLLabel
+    Left = 74
+    Top = 139
+    Width = 52
+    Height = 19
+    Caption = 'Rozte'#269':'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = 19
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+  end
+  object rHTMLLabel5: TrHTMLLabel
+    Left = 74
+    Top = 164
+    Width = 76
+    Height = 19
+    Caption = 'ID pohonu'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGray
     Font.Height = 19
@@ -47,7 +87,7 @@ object Form3: TForm3
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 466
+    Width = 465
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -84,7 +124,7 @@ object Form3: TForm3
     WallpaperIndex = -1
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 416
+      Left = 415
       Top = 0
       Width = 50
       Height = 33
@@ -182,7 +222,7 @@ object Form3: TForm3
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 416
+      Width = 415
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -209,12 +249,12 @@ object Form3: TForm3
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      Caption = 'Testovac'#237' kalkula'#269'ka'
+      Caption = 'Pohony'
     end
   end
-  object Button_save: TscGPButton
-    Left = 118
-    Top = 287
+  object Button_pridat: TscGPButton
+    Left = 71
+    Top = 227
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -226,9 +266,9 @@ object Form3: TForm3
     ParentFont = False
     TabOrder = 1
     TabStop = True
-    OnClick = Button_saveClick
+    OnClick = Button_pridatClick
     Animation = False
-    Caption = 'Ulo'#382'it'
+    Caption = 'Upravit p.'
     CanFocused = True
     CustomDropDown = False
     Margin = -1
@@ -319,9 +359,9 @@ object Form3: TForm3
     GroupIndex = 0
     AllowAllUp = False
   end
-  object Button_storno: TscGPButton
-    Left = 234
-    Top = 287
+  object Button_odebrat: TscGPButton
+    Left = 187
+    Top = 227
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -332,6 +372,113 @@ object Form3: TForm3
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 2
+    TabStop = True
+    OnClick = Button_odebratClick
+    Animation = False
+    Caption = 'Upravit p.ID'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    Images = Form1.scGPVirtualImageList1
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = 33023
+    Options.HotColor = 1871359
+    Options.PressedColor = clBlack
+    Options.FocusedColor = 33023
+    Options.DisabledColor = clPurple
+    Options.NormalColor2 = clNone
+    Options.HotColor2 = clNone
+    Options.PressedColor2 = clNone
+    Options.FocusedColor2 = clNone
+    Options.DisabledColor2 = clNone
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.NormalColor2Alpha = 255
+    Options.HotColor2Alpha = 255
+    Options.PressedColor2Alpha = 255
+    Options.FocusedColor2Alpha = 255
+    Options.DisabledColor2Alpha = 255
+    Options.FrameNormalColor = 1871359
+    Options.FrameHotColor = 1871359
+    Options.FramePressedColor = 1871359
+    Options.FrameFocusedColor = 1871359
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clWhite
+    Options.FontHotColor = clWhite
+    Options.FontPressedColor = clWhite
+    Options.FontFocusedColor = clWhite
+    Options.FontDisabledColor = clAqua
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeFillGradientColorOffset = 25
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.ArrowAreaSize = 0
+    Options.ArrowType = scgpatDefault
+    Options.ArrowThickness = 2
+    Options.ArrowThicknessScaled = False
+    Options.StyleColors = True
+    HotImageIndex = -1
+    ModalResult = 2
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    SplitButton = False
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clMaroon
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 1
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clRed
+    GlowEffect.FocusedColor = clRed
+    GlowEffect.PressedGlowSize = 1
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object Button_storno: TscGPButton
+    Left = 299
+    Top = 227
+    Width = 100
+    Height = 35
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clMenuBar
+    Font.Height = -17
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 3
     TabStop = True
     OnClick = Button_stornoClick
     Animation = False
@@ -426,44 +573,39 @@ object Form3: TForm3
     GroupIndex = 0
     AllowAllUp = False
   end
-  object E_vstup1: TEdit
-    Left = 168
-    Top = 59
-    Width = 281
-    Height = 21
-    TabOrder = 3
-    OnChange = E_vstup1Change
-  end
-  object E_vstup2: TEdit
-    Left = 168
-    Top = 105
-    Width = 281
+  object Edit1: TEdit
+    Left = 187
+    Top = 56
+    Width = 212
     Height = 21
     TabOrder = 4
-    OnChange = E_vstup2Change
   end
-  object Button1: TButton
-    Left = 356
-    Top = 287
-    Width = 98
-    Height = 25
-    Caption = 'N'#225'zev p. p.'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -17
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
+  object Edit2: TEdit
+    Left = 187
+    Top = 83
+    Width = 212
+    Height = 21
     TabOrder = 5
-    OnClick = Button1Click
   end
-  object Memo1: TMemo
-    Left = 168
-    Top = 152
-    Width = 185
-    Height = 89
-    Lines.Strings = (
-      'Memo1')
+  object Edit3: TEdit
+    Left = 187
+    Top = 110
+    Width = 212
+    Height = 21
     TabOrder = 6
+  end
+  object Edit4: TEdit
+    Left = 187
+    Top = 137
+    Width = 212
+    Height = 21
+    TabOrder = 7
+  end
+  object Edit5: TEdit
+    Left = 187
+    Top = 164
+    Width = 212
+    Height = 21
+    TabOrder = 8
   end
 end
