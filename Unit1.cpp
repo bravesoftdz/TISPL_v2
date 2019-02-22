@@ -25,6 +25,8 @@
 #include "gapoR.h"
 #include "adjustace.h"
 #include "kalibrace.h"
+#include "Unit3.h"
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -6412,7 +6414,7 @@ void __fastcall TForm1::DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftSta
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm1::Button14Click(TObject *Sender)
+void __fastcall TForm1::Button_testClick(TObject *Sender)
 {
 MOD=SCHEMA;
 
@@ -6459,4 +6461,10 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm1::scGPButton_TestClick(TObject *Sender)
+{
+	Form3->ShowModal();
+}
+//---------------------------------------------------------------------------
 

@@ -294,6 +294,7 @@ __published:	// IDE-managed Components
   TscExPanel *scExPanel_podklad;
 	TTimer *Timer1;
 	TMemo *Memo3;
+	TscGPButton *scGPButton_Test;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -478,8 +479,9 @@ __published:	// IDE-managed Components
           TPoint &MousePos, bool &Handled);
   void __fastcall DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled);
-  void __fastcall Button14Click(TObject *Sender);
+  void __fastcall Button_testClick(TObject *Sender);
 	void __fastcall Timer1Timer(TObject *Sender);
+	void __fastcall scGPButton_TestClick(TObject *Sender);
 
 
 
