@@ -99,7 +99,9 @@ class TmGrid
 	long GetIdxRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
 	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
 	//promìnné
-	long Tag;//ID tabulky (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
+	long Tag;//ID formuláøe, v kterém je tabulka èi tabuky daného formuláøe volány
+	long ID;//ID konkrétní tabulky, v jednom formuláøi vhodné unikátní èíslo, mimo formuláøe totožná hodnota nevadí (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
+  long typeID;//pomocné ID tabulky, napø. pro rozlišení typu tabulky, nemusí být využito, i v rámci jednoho formuláøe mùže být totožné
 	long Left,Top,preLeft,preTop;//umístìní celé komponenty
 	unsigned long ColCount,RowCount;//poèet øádkù a sloupcù
 	unsigned short DefaultColWidth,DefaultRowHeight;//výchozí výška a šíøka øádku

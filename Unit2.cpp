@@ -24,10 +24,12 @@ __fastcall TForm2::TForm2(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormShow(TObject *Sender)
 {
+		////////E0
 		TElement *E=new TElement;
 
 		E->mG=new TmGrid(this);//vždy nutno jako první
-		E->mG->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+		E->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+		E->mG->ID=0;
 		E->mG->Left=50;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
 		E->mG->MovingTable=true;
@@ -38,17 +40,20 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 		E->mG->Cells[1][1].Type=E->mG->EDIT;
-		//E->mG->Cells[1][1].Text="abc1";
+		E->mG->Cells[1][1].Text="abc0";
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
 
 		ELEMENTY=E;
 
+
+		////////E1
 		TElement *E1=new TElement;
 
 		E1->mG=new TmGrid(this);//vždy nutno jako první
-		E1->mG->Tag=2;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+		E1->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+		E1->mG->ID=1;
 		E1->mG->Left=200;E1->mG->Top=200;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E1->mG->AntiAliasing_text=true;
 		E1->mG->MovingTable=true;
@@ -59,12 +64,13 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
-		//E1->mG->Cells[1][1].Text="abc";
+		E1->mG->Cells[1][1].Text="abc1";
 
 		E1->predchozi=NULL;
 		E1->dalsi=NULL;
 
 		ELEMENTY->dalsi=E1;
+
 
 
 
@@ -287,17 +293,17 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 
 
 	//mGrid->AntiAliasing_grid=!mGrid->AntiAliasing_grid;
-	 mGrid->Left+=10;
+	 ELEMENTY->mG->Left+=10;
 	//zmìna posunu tabulky
 
-
+	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
 //---------------------------------------------------------------------------
 //test volání pøi onclick
-void TForm2::OnClick(long Tag,unsigned long Col,unsigned long Row)
+void TForm2::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	ShowMessage("Došlo ke kliku v tabulce: "+AnsiString(Tag)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	ShowMessage("Došlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
 //	mGrid->HighlightCell(Col,Row);
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
