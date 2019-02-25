@@ -4122,6 +4122,7 @@ object Form1: TForm1
     CustomBackgroundImageHotIndex = -1
     CustomBackgroundImageDisabledIndex = -1
     PromptTextColor = clNone
+    HidePromptTextIfFocused = False
     WallpaperIndex = -1
     LeftButton.ComboButton = False
     LeftButton.Enabled = True
@@ -4184,6 +4185,7 @@ object Form1: TForm1
     CustomBackgroundImageHotIndex = -1
     CustomBackgroundImageDisabledIndex = -1
     PromptTextColor = clNone
+    HidePromptTextIfFocused = False
     WallpaperIndex = -1
     LeftButton.ComboButton = False
     LeftButton.Enabled = True
@@ -4306,6 +4308,7 @@ object Form1: TForm1
       ContentMarginRight = 5
       ContentMarginTop = 5
       ContentMarginBottom = 5
+      DisabledFontColor = clNone
       FrameWidth = 0
       FillColor = clBtnHighlight
       FillColorAlpha = 20
@@ -4419,6 +4422,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -4510,6 +4514,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -4574,8 +4579,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2052
-        Top = 2215
+        Left = 2070
+        Top = 2233
         Width = 244
         Height = 31
         Align = alCustom
@@ -4602,6 +4607,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -4818,6 +4824,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -4910,6 +4917,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -5204,6 +5212,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -5697,6 +5706,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -5788,6 +5798,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -5926,6 +5937,7 @@ object Form1: TForm1
     ContentMarginRight = 5
     ContentMarginTop = 7
     ContentMarginBottom = 5
+    DisabledFontColor = clNone
     FrameWidth = 0
     FillColor = clBtnText
     FillColorAlpha = 20
@@ -5964,6 +5976,7 @@ object Form1: TForm1
     ContentMarginRight = 5
     ContentMarginTop = 7
     ContentMarginBottom = 5
+    DisabledFontColor = clNone
     FrameWidth = 0
     FillColor = clBtnText
     FillColorAlpha = 20
@@ -6002,6 +6015,7 @@ object Form1: TForm1
     ContentMarginRight = 5
     ContentMarginTop = 7
     ContentMarginBottom = 5
+    DisabledFontColor = clNone
     FrameWidth = 0
     FillColor = clBtnText
     FillColorAlpha = 20
@@ -6040,6 +6054,7 @@ object Form1: TForm1
     ContentMarginRight = 5
     ContentMarginTop = 7
     ContentMarginBottom = 5
+    DisabledFontColor = clNone
     FrameWidth = 0
     FillColor = clBtnText
     FillColorAlpha = 20
@@ -6078,6 +6093,7 @@ object Form1: TForm1
     ContentMarginRight = 5
     ContentMarginTop = 7
     ContentMarginBottom = 5
+    DisabledFontColor = clNone
     FrameWidth = 0
     FillColor = clBtnText
     FillColorAlpha = 20
@@ -7416,11 +7432,216 @@ object Form1: TForm1
       WordWrap = False
     end
   end
+  object Memo3: TMemo
+    Left = 560
+    Top = 368
+    Width = 185
+    Height = 89
+    Lines.Strings = (
+      'Memo3')
+    TabOrder = 51
+  end
+  object scGPButton_Test: TscGPButton
+    Left = 751
+    Top = 404
+    Width = 100
+    Height = 35
+    TabOrder = 52
+    TabStop = True
+    OnClick = scGPButton_TestClick
+    Animation = False
+    Caption = 'Zoprazeni p. obj.'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = clBtnFace
+    Options.HotColor = clBtnFace
+    Options.PressedColor = clBtnShadow
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnFace
+    Options.NormalColor2 = clNone
+    Options.HotColor2 = clNone
+    Options.PressedColor2 = clNone
+    Options.FocusedColor2 = clNone
+    Options.DisabledColor2 = clNone
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.NormalColor2Alpha = 255
+    Options.HotColor2Alpha = 255
+    Options.PressedColor2Alpha = 255
+    Options.FocusedColor2Alpha = 255
+    Options.DisabledColor2Alpha = 255
+    Options.FrameNormalColor = clBtnShadow
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeFillGradientColorOffset = 25
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.ArrowAreaSize = 0
+    Options.ArrowType = scgpatDefault
+    Options.ArrowThickness = 2
+    Options.ArrowThicknessScaled = False
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    SplitButton = False
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
+  object scGPButton1: TscGPButton
+    Left = 751
+    Top = 445
+    Width = 100
+    Height = 35
+    TabOrder = 53
+    TabStop = True
+    OnClick = scGPButton1Click
+    Animation = False
+    Caption = 'Upravit pohon'
+    CanFocused = True
+    CustomDropDown = False
+    Margin = -1
+    Spacing = 1
+    Layout = blGlyphLeft
+    ImageIndex = -1
+    ImageMargin = 0
+    TransparentBackground = True
+    Options.NormalColor = clBtnFace
+    Options.HotColor = clBtnFace
+    Options.PressedColor = clBtnShadow
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnFace
+    Options.NormalColor2 = clNone
+    Options.HotColor2 = clNone
+    Options.PressedColor2 = clNone
+    Options.FocusedColor2 = clNone
+    Options.DisabledColor2 = clNone
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.NormalColor2Alpha = 255
+    Options.HotColor2Alpha = 255
+    Options.PressedColor2Alpha = 255
+    Options.FocusedColor2Alpha = 255
+    Options.DisabledColor2Alpha = 255
+    Options.FrameNormalColor = clBtnShadow
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeFillGradientColorOffset = 25
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpRect
+    Options.ArrowSize = 9
+    Options.ArrowAreaSize = 0
+    Options.ArrowType = scgpatDefault
+    Options.ArrowThickness = 2
+    Options.ArrowThicknessScaled = False
+    Options.StyleColors = True
+    HotImageIndex = -1
+    FocusedImageIndex = -1
+    PressedImageIndex = -1
+    UseGalleryMenuImage = False
+    UseGalleryMenuCaption = False
+    ScaleMarginAndSpacing = False
+    WidthWithCaption = 0
+    WidthWithoutCaption = 0
+    SplitButton = False
+    RepeatClick = False
+    RepeatClickInterval = 100
+    GlowEffect.Enabled = False
+    GlowEffect.Color = clHighlight
+    GlowEffect.AlphaValue = 255
+    GlowEffect.GlowSize = 7
+    GlowEffect.Offset = 0
+    GlowEffect.Intensive = True
+    GlowEffect.StyleColors = True
+    GlowEffect.HotColor = clNone
+    GlowEffect.PressedColor = clNone
+    GlowEffect.FocusedColor = clNone
+    GlowEffect.PressedGlowSize = 7
+    GlowEffect.PressedAlphaValue = 255
+    GlowEffect.States = [scsHot, scsPressed, scsFocused]
+    ImageGlow = True
+    ShowGalleryMenuFromTop = False
+    ShowGalleryMenuFromRight = False
+    ShowMenuArrow = True
+    ShowFocusRect = True
+    Down = False
+    GroupIndex = 0
+    AllowAllUp = False
+  end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118003406340610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118003406400610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8535,6 +8756,12 @@ object Form1: TForm1
     TabIndex = 0
     TabsPosition = sctpLeft
     ShowInactiveTab = True
+    CaptionWallpaperIndex = -1
+    CaptionWallpaperInActiveIndex = -1
+    CaptionWallpaperLeftMargin = 1
+    CaptionWallpaperTopMargin = 1
+    CaptionWallpaperRightMargin = 1
+    CaptionWallpaperBottomMargin = 1
     Left = 567
     Top = 296
   end
@@ -8545,7 +8772,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010136007C067C0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010136007C06880630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
