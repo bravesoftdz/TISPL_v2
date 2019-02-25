@@ -836,11 +836,12 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 //vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y)
 {
-	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by  ještě nebyla založena hlavička, tak ji založí
+	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by ještě nebyla založena hlavička, tak ji založí
 
 	//atributy elementu
 	TElement *novy=new TElement;
 	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
+
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
@@ -849,7 +850,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 
   //mGrid elementu
 	novy->mGrid=new TmGrid(F);
-	novy->mGrid->Tag=novy->n;//ID tabulky
+	novy->mGrid->Tag=6;//ID formu
+	novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	novy->mGrid->typeID=novy->eID;//přiřazení typu elementu typu tabulky, bude sloužit pro rychlou klasifikaci typu elementu resp. tabulky
 
 	//ukazatelové propojení
 	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek

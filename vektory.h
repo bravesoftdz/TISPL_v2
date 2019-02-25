@@ -30,10 +30,19 @@ class Cvektory
 	};
 	TPohon *POHONY;//spojový seznam pohonů
 
+	struct TG_element//pouze struktura
+	{
+			//double X1,Y1,X2,Y2;//umístění objektu - otázka zda bude potřeba
+			//double radius;
+			unsigned short typ;//0-linie, 1 oblouk
+			double delka;
+			double rotace;
+	};
+
 	struct TElement
 	{
 			unsigned long n; //pořadí ve spoj.seznamu
-			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí)
+			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
 			double X, Y;//umístění
@@ -55,7 +64,7 @@ class Cvektory
 			unsigned int akt_pocet_voziku;
 			unsigned int max_pocet_voziku;
 
-			//Gobjekt, Gelement doplnit
+			TG_element Gelement;
 			TmGrid *mGrid;
 
 			UnicodeString poznamka;//uloží poznámku
@@ -72,7 +81,8 @@ class Cvektory
 			unsigned int id; //id typu objektu
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
-			double X, Y;//umístění objektu
+			double X, Y;//umístění objektu ve schématu
+			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW dodat do CObjekt
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP),3-stopka
 			double CT;//pro status návrh
 			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
@@ -87,6 +97,7 @@ class Cvektory
 			TPohon *pohon;//ukazatel na použitý pohon
 			TElement *elementy;
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
+			TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW dodat do CObjekt
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 			double odchylka;//povolená odchylka u PP z CT
@@ -208,17 +219,6 @@ class Cvektory
 			struct TPalec *dalsi;
 	};
 	TPalec *PALCE;//spojový seznam palců na řetězu
-
-	struct TG_objekt
-	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			double X1,Y1,X2,Y2;//umístění objektu
-			UnicodeString name;//název G_objektu
-			double radius;//0==linie, 0> oblouk na jednu stranu, 0< oblouk na druhou stranu
-			struct TG_Objekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TG_Objekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-	TG_objekt *G_OBJEKTY;//spojový seznam
 
 	struct TProces
 	{
