@@ -199,6 +199,8 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		OBJEKTY->predchozi->name=novy->name;
 		OBJEKTY->predchozi->X=novy->X;
 		OBJEKTY->predchozi->Y=novy->Y;
+		OBJEKTY->predchozi->Xk=novy->Xk;
+		OBJEKTY->predchozi->Yk=novy->Yk;
 		return OBJEKTY->predchozi;//vrátí poslední ukazatel na prvek seznamu
 	}
 	else//vkládání mezi objekty
@@ -238,6 +240,44 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		zvys_indexy(p);//indexy zvýšit separátně se tady psalo
 		return novy;//vrátí ukazatel na posledně kopírovaný objekt
 	}
+}
+//---------------------------------------------------------------------------
+//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
+void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
+{
+	Kopie->n=Original->n;
+	Kopie->id=Original->id;
+	Kopie->short_name=Original->short_name;
+	Kopie->name=Original->name;
+	Kopie->X=Original->X;
+	Kopie->Y=Original->Y;
+	Kopie->Xk=Original->Xk;
+	Kopie->Yk=Original->Yk;
+	Kopie->rezim=Original->rezim;
+	Kopie->CT=Original->CT;
+	Kopie->RD=Original->RD;
+	Kopie->delka_dopravniku=Original->delka_dopravniku;
+	Kopie->kapacita=Original->kapacita;
+	Kopie->kapacita_dop=Original->kapacita_dop;
+	Kopie->pozice=Original->pozice;
+	Kopie->rotace=Original->rotace;
+	Kopie->mezera=Original->mezera;
+	Kopie->mezera_jig=Original->mezera_jig;
+	Kopie->mezera_podvozek=Original->mezera_podvozek;
+	if(Kopie->pohon==NULL)Kopie->pohon=new TPohon;if(Original->pohon!=NULL)*Kopie->pohon=*Original->pohon;else Kopie->pohon=NULL;
+	kopiruj_elementy(Original,Kopie);
+	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
+	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
+	Kopie->cekat_na_palce=Original->cekat_na_palce;
+	Kopie->stopka=Original->stopka;
+	Kopie->odchylka=Original->odchylka;
+	Kopie->obsazenost=Original->obsazenost;
+	Kopie->CT_zamek=Original->CT_zamek;
+	Kopie->RD_zamek=Original->RD_zamek;
+	Kopie->DD_zamek=Original->DD_zamek;
+	Kopie->K_zamek=Original->K_zamek;
+	Kopie->poznamka=Original->poznamka;
+	Kopie->probehla_aktualizace_prirazeni_pohonu=Original->probehla_aktualizace_prirazeni_pohonu;
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
@@ -309,6 +349,7 @@ short int Cvektory::smaz_objekt(TObjekt *Objekt)
 		}
 	}
 
+  vymaz_elementy(Objekt);
 	Objekt=NULL;delete Objekt;//smaže mazaný prvek
 
 	return 0;
@@ -836,58 +877,124 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 //vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y)
 {
-	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by ještě nebyla založena hlavička, tak ji založí
+	//pokud by ještě nebyla založena hlavička, tak ji založí
+	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);
+
+	//alokace paměti
+	TElement *novy=new TElement;
 
 	//atributy elementu
-	TElement *novy=new TElement;
-	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
-
+//	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku již řešeno v vloz_element(Objekt,novy);
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
 	novy->Xt=X;
 	novy->Yt=Y-1;//-1 výchozí odsazení tabulky
 
-  //mGrid elementu
+	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
 	novy->mGrid->Tag=6;//ID formu
 	novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 	novy->mGrid->typeID=novy->eID;//přiřazení typu elementu typu tabulky, bude sloužit pro rychlou klasifikaci typu elementu resp. tabulky
 
 	//ukazatelové propojení
-	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
-	novy->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-	novy->dalsi=NULL;
-	novy->sparovany=NULL;
-	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	vloz_element(Objekt,novy);
+//	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
+//	novy->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+//	novy->dalsi=NULL;
+//	novy->sparovany=NULL;
+//	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+
+	//návrácení ukazatelele na element k dalšímu použití
 	return novy;
+}
+////---------------------------------------------------------------------------
+//vloží element do spojového seznamu elementů daného technologického objektu
+void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
+{
+	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by ještě nebyla založena hlavička, tak ji založí
+
+	Element->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
+
+	//ukazatelové propojení
+	Objekt->elementy->predchozi->dalsi=Element;//poslednímu prvku přiřadím ukazatel na nový prvek
+	Element->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+	Element->dalsi=NULL;
+	Element->sparovany=NULL;
+	Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+}
+////---------------------------------------------------------------------------
+//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
+void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
+{
+	Kopie->n=Original->n;
+	Kopie->eID=Original->eID;
+	Kopie->short_name=Original->short_name;
+	Kopie->name=Original->name;
+	Kopie->X=Original->X;
+	Kopie->Y=Original->Y;
+	Kopie->Xt=Original->Xt;
+	Kopie->Yt=Original->Yt;
+	Kopie->rotace_symbolu=Original->rotace_symbolu;
+	Kopie->rotace_jigu=Original->rotace_jigu;
+	Kopie->stav=Original->stav;
+	Kopie->LO1=Original->LO1;
+	Kopie->OTOC_delka=Original->OTOC_delka;
+	Kopie->LO2=Original->LO2;
+	Kopie->LO_pozice=Original->LO_pozice;
+	Kopie->PT1=Original->PT1;
+	Kopie->PTotoc=Original->PTotoc;
+	Kopie->PT2=Original->PT2;
+	Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
+	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
+	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
+	Kopie->Gelement=Original->Gelement;
+	Kopie->mGrid=Original->mGrid;
+	Kopie->poznamka=Original->poznamka;
+}
+////---------------------------------------------------------------------------
+void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)
+{
+	TElement *E=Original->elementy;
+	if(E!=NULL)//pokud elementy existují nakopíruje je do pomocného spojáku pomocného objektu
+	{
+		E=E->dalsi;//přeskočí hlavičku
+		while(E!=NULL)
+		{
+			TElement *Et=new TElement;
+			kopiruj_element(E,Et);
+			vloz_element(Kopie,Et);
+			E=E->dalsi;//posun na další element
+		}
+	}
+	E=NULL;delete E;
 }
 ////---------------------------------------------------------------------------
 //vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
 int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 {
-	 int RET=-1;
-	 if(Objekt->elementy!=NULL)
-	 {
-		 TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
-		 while(E!=NULL)
-		 {
-			 if(1<=E->eID && E->eID<=4) RET=E->eID;
-			 E=E->dalsi;
-		 }
-		 E=NULL;delete E;
-	 }
-	 return RET;
+	int RET=-1;
+	if(Objekt->elementy!=NULL)
+	{
+		TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+		while(E!=NULL)
+		{
+			if(1<=E->eID && E->eID<=4) RET=E->eID;
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+	}
+	return RET;
 }
 ////---------------------------------------------------------------------------
-//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)
-long Cvektory::vymaz_elementy(TObjekt *Objekt)
+//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
+long Cvektory::vymaz_elementy(TObjekt *Objekt,bool mGridSmazat)
 {
 	long pocet_smazanych_objektu=0;
 	while (Objekt->elementy!=NULL)
 	{
 		//vymaz_gObjekty(Objekt->elementy->predchozi);
-		Objekt->elementy->predchozi->mGrid->Delete();
+		if(mGridSmazat)Objekt->elementy->predchozi->mGrid->Delete();
 		Objekt->elementy->predchozi->mGrid==NULL;
 		Objekt->elementy->predchozi=NULL;
 		delete Objekt->elementy->predchozi;

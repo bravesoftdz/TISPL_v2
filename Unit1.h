@@ -484,6 +484,7 @@ __published:	// IDE-managed Components
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall scGPButton_TestClick(TObject *Sender);
 	void __fastcall scGPButton1Click(TObject *Sender);
+	void __fastcall scGPButton_OKClick(TObject *Sender);
 
 
 

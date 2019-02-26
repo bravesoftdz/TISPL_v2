@@ -2677,15 +2677,12 @@ void TForm1::add_element(int X, int Y)
 	Y=m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);
 
 	//vložení elementu na dané souřadnice a do patřičného spojáku - pozor jedná se o chybu návrhu, nemělo by se vkládát do pom resp. ostrého spojáku objektů pro případ storna....
-	pom_temp=new Cvektory::TObjekt;
-	pom_temp->elementy=NULL;//pom->elementy nutno nakopírovat bez ukazatelového propojení (cyklem)
 	Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y));
 
 	//navrácení rotace dle umístění v objektu
 	E->rotace_symbolu=rotace_symbolu;
 
 	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-	ShowMessage(EID);
 
 	TColor clHeaderFont=clBlack;
 	TColor clBackgroundHidden=m.clIntensive(RGB(128,128,128),105);
@@ -3984,6 +3981,11 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 MOD=NAHLED;
+
+	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
+	 pom_temp=new Cvektory::TObjekt; pom_temp->elementy=NULL;
+	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
+	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 
 	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
 	 //zazálohování hodnot posunu a zoomu
@@ -6112,65 +6114,65 @@ Form2->ShowModal();
 //   DrawGrid_poznamky->Visible=true;
 //   }
 
-
+	d.v.kopiruj_objekt(pom_temp,pom);
 
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
+	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
+	{
+		//navrácení zoomu a posunu do původních hodnt
+		Zoom=Zoom_predchozi2;
+		on_change_zoom_change_scGPTrackBar();
+		Posun.x=Posun_predchozi2.x;
+		Posun.y=Posun_predchozi2.y;
 
-   if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
-   {
-	 //navrácení zoomu a posunu do původních hodnt
-	 Zoom=Zoom_predchozi2;
-	 on_change_zoom_change_scGPTrackBar();
-	 Posun.x=Posun_predchozi2.x;
-	 Posun.y=Posun_predchozi2.y;
+		DrawGrid_knihovna->DefaultRowHeight=50;
+		DrawGrid_knihovna->DefaultColWidth=70;
+		DrawGrid_knihovna->Left=14;
 
-   DrawGrid_knihovna->DefaultRowHeight=50;
-   DrawGrid_knihovna->DefaultColWidth=70;
-   DrawGrid_knihovna->Left=14;
+		scListGroupPanel_hlavickaOtoce->Visible=false;
+		scListGroupPanel_hlavickaOstatni->Visible=false;
+		scListGroupPanel_geometrie->Visible=false;
+		scListGroupPanel_poznamky->Visible=false;
+		DrawGrid_knihovna->Height=400;
+		scListGroupKnihovObjektu->Align=alLeft;
+		DrawGrid_knihovna->Invalidate();
 
-   scListGroupPanel_hlavickaOtoce->Visible=false;
-   scListGroupPanel_hlavickaOstatni->Visible=false;
-   scListGroupPanel_geometrie->Visible=false;
-   scListGroupPanel_poznamky->Visible=false;
-   DrawGrid_knihovna->Height=400;
-   scListGroupKnihovObjektu->Align=alLeft;
-   DrawGrid_knihovna->Invalidate();
+		scGPLabel_roboti->Visible=false;
+		scGPLabel_otoce->Visible=false;
+		scGPLabel_stop->Visible=false;
+		scGPLabel_geometrie->Visible=false;
+		scGPLabel_poznamky->Visible=false;
 
-   scGPLabel_roboti->Visible=false;
-   scGPLabel_otoce->Visible=false;
-   scGPLabel_stop->Visible=false;
-   scGPLabel_geometrie->Visible=false;
-   scGPLabel_poznamky->Visible=false;
+		scEdit_nazev->Visible=false;
+		scEdit_zkratka->Visible=false;
 
-   scEdit_nazev->Visible=false;
-   scEdit_zkratka->Visible=false;
+		scEdit_nazev->Top= scGPPanel_mainmenu->Height + 10 ;
+		scEdit_zkratka->Top =  scEdit_nazev->Top;
+		scEdit_nazev->Left = Simulace->Left;
+		scEdit_zkratka->Left = scEdit_nazev->Left +  scEdit_nazev->Width + 10;
+		scGPButton_OK->Visible=false;
+		scGPButton_storno->Visible=false;
 
-   scEdit_nazev->Top= scGPPanel_mainmenu->Height + 10 ;
-   scEdit_zkratka->Top =  scEdit_nazev->Top;
-   scEdit_nazev->Left = Simulace->Left;
-   scEdit_zkratka->Left = scEdit_nazev->Left +  scEdit_nazev->Width + 10;
-   scGPButton_OK->Visible=false;
-   scGPButton_storno->Visible=false;
+		scGPLabel_roboti->Font->Style = TFontStyles(); // zrušení tučného písma resp. všech případných dalších Font style nastavení
+		scGPLabel_roboti->Visible=true;
+		scGPLabel_roboti->Caption="Technolog. objekty";
+		scGPLabel_roboti->ContentMarginLeft=4;
 
-   scGPLabel_roboti->Font->Style = TFontStyles(); // zrušení tučného písma resp. všech případných dalších Font style nastavení
-   scGPLabel_roboti->Visible=true;
-   scGPLabel_roboti->Caption="Technolog. objekty";
-   scGPLabel_roboti->ContentMarginLeft=4;
-
-	 MOD=SCHEMA;
-   REFRESH();
-	 pom=NULL;
-	 }
+		MOD=SCHEMA;
+		REFRESH();
+		pom=NULL;
+		d.v.vymaz_elementy(pom_temp,false);
+		pom_temp=NULL; delete pom_temp;
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
- 	scSplitView_MENU->Opened=false;
-  OpenDialog1->Title="Načíst podklad";
+	scSplitView_MENU->Opened=false;
+	OpenDialog1->Title="Načíst podklad";
 	OpenDialog1->DefaultExt="*.bmp";
 	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
 	if(OpenDialog1->Execute())
@@ -6494,6 +6496,14 @@ void __fastcall TForm1::scGPButton_TestClick(TObject *Sender)
 void __fastcall TForm1::scGPButton1Click(TObject *Sender)
 {
 	Form4->ShowModal();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
+{
+	d.v.kopiruj_objekt(pom_temp,pom);
+	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
 //---------------------------------------------------------------------------
 

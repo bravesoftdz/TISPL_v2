@@ -143,6 +143,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 	line(canv,0,Y,F->ClientWidth*3,Y);
 
 	//vykreslení všech elementů mimo těch, co jsou v aktuálně zobrazovaném náhledu (tedy editovaných elementů), to kvůli aktuálnosti zobrazení, pokud náhled není aktivní jsou vykresleny všechny všech objekůt
+	short stav=1;
+	if(F->pom_temp!=NULL)stav=-1;//mimo aktivní zobrazovaný objekt jsou elementy neaktivní
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
@@ -152,14 +154,10 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 				E=E->dalsi;//přeskočí hlavičku
 				while(E!=NULL)
 				{
-					short stav=-1;//pro sousední objekty k aktuálně zobrazovanému, pro layout potom odstavit včetně podmínky
-					if(F->pom_temp!=NULL)//pro aktivní zobrazovaný objekt
+					if(F->pom_temp!=O)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
 					{
-						if(F->pom_temp!=O)//aktuálně nahlížený editovaný objekt se nevykresluje
-						{
-							vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,stav);
-							//zde bude ještě vykreslení g_elementu
-						}
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,stav);
+						//zde bude ještě vykreslení g_elementu
 					}
 					E=E->dalsi;//posun na další element
 				}
@@ -174,18 +172,17 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 	{
 		Cvektory::TElement *E=F->pom_temp->elementy;
 		if(E!=NULL)//pokud elementy existují
-		 {
-				E=E->dalsi;//přeskočí hlavičku
-				while(E!=NULL)
-				{
-					vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,1);
-					//zde bude ještě vykreslení g_elementu
-					E=E->dalsi;//posun na další element
-				}
-		 }
-		 E=NULL;delete E;
+		{
+			E=E->dalsi;//přeskočí hlavičku
+			while(E!=NULL)
+			{
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,1);
+				 //zde bude ještě vykreslení g_elementu
+				 E=E->dalsi;//posun na další element
+			}
+		}
+		E=NULL;delete E;
 	}
-
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
