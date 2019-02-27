@@ -30,9 +30,13 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel4;
 	TEdit *Edit5;
 	TrHTMLLabel *rHTMLLabel5;
+	TButton *Button1;
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall Button_pridatClick(TObject *Sender);
 	void __fastcall Button_odebratClick(TObject *Sender);
+	void __fastcall FormPaint(TObject *Sender);
+	void __fastcall FormShow(TObject *Sender);
+	void __fastcall Button1Click(TObject *Sender);
 private:	// User declarations
 //	struct TPohon
 //	{
@@ -41,8 +45,12 @@ private:	// User declarations
 //		double max_rychlost;
 //		double roztec;
 //	};
+	TColor clOLD,clLOCKED,clUNLOCKED,clBACKGROUND;
 public:		// User declarations
 	__fastcall TForm4(TComponent* Owner);
+	void OnClick(long Tag,unsigned long Col,unsigned long Row);
+	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
+	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm4 *Form4;

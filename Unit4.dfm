@@ -3,8 +3,8 @@ object Form4: TForm4
   Top = 0
   BorderStyle = bsNone
   Caption = 'Form4'
-  ClientHeight = 364
-  ClientWidth = 465
+  ClientHeight = 675
+  ClientWidth = 832
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,8 @@ object Form4: TForm4
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnPaint = FormPaint
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object rHTMLLabel1: TrHTMLLabel
@@ -87,7 +89,7 @@ object Form4: TForm4
   object scGPPanel2: TscGPPanel
     Left = 0
     Top = 0
-    Width = 465
+    Width = 832
     Height = 34
     Align = alTop
     TabOrder = 0
@@ -124,7 +126,7 @@ object Form4: TForm4
     WallpaperIndex = -1
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
-      Left = 415
+      Left = 782
       Top = 0
       Width = 50
       Height = 33
@@ -222,7 +224,7 @@ object Form4: TForm4
     object scLabel1: TscLabel
       Left = 0
       Top = 0
-      Width = 415
+      Width = 782
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -607,5 +609,14 @@ object Form4: TForm4
     Width = 212
     Height = 21
     TabOrder = 8
+  end
+  object Button1: TButton
+    Left = 496
+    Top = 248
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 9
+    OnClick = Button1Click
   end
 end
