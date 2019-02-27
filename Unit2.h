@@ -44,14 +44,14 @@ struct TElement
 		struct TElement *predchozi;//ukazatel na pøedchozí objekt ve spojovém seznamu
 		struct TElement *dalsi;//ukazatel na další objekt ve spojovém seznamu
 	};
-	TElement *ELEMENTY;//spojový seznam vozíkù
+	TElement *ELEMENTY;//testovací spojový seznam elementù
 
 	bool AA;
 	long puvX,puvY;
 	double aktX,aktY;
 public:		// User declarations
 	__fastcall TForm2(TComponent* Owner);
-	void OnClick(long Tag,unsigned long Col,unsigned long Row);
+	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 };

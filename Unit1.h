@@ -484,6 +484,7 @@ __published:	// IDE-managed Components
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall scGPButton_TestClick(TObject *Sender);
 	void __fastcall scGPButton1Click(TObject *Sender);
+	void __fastcall scGPButton_OKClick(TObject *Sender);
 
 
 
@@ -498,7 +499,7 @@ public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE};Takce Akce;
-	Cvektory::TObjekt *pom,*pom_vyhybka,*copyObjekt;
+	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	UnicodeString get_user_name();
@@ -656,7 +657,7 @@ public:		// User declarations
 	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovým osám (maro) a techn.procesùm(roma)
 	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na výpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
-  short RO; short ROs; short ROst;short ROsts;
+  short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

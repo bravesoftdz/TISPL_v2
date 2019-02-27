@@ -136,8 +136,15 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	O=NULL;delete O;
 }
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykresl9 pom a jeho elementy
+void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, to jak funkční tak i geometrické elementy, v případě aktivního náhledu objektu nevykresluje od daného/nahlíženého objektu uložené vektory, ale vektory aktuální z náhledu, tedy z pom_temp
 {
+	//prozatim vykreslení pohonu
+	long Y=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0*3;
+	line(canv,0,Y,F->ClientWidth*3,Y);
+
+	//vykreslení všech elementů mimo těch, co jsou v aktuálně zobrazovaném náhledu (tedy editovaných elementů), to kvůli aktuálnosti zobrazení, pokud náhled není aktivní jsou vykresleny všechny všech objekůt
+	short stav=1;
+	if(F->pom_temp!=NULL)stav=-1;//mimo aktivní zobrazovaný objekt jsou elementy neaktivní
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
@@ -147,7 +154,11 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykresl9 pom a jeho elementy
 				E=E->dalsi;//přeskočí hlavičku
 				while(E!=NULL)
 				{
-					vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,0,1);
+					if(F->pom_temp!=O)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
+					{
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,stav);
+						//zde bude ještě vykreslení g_elementu
+					}
 					E=E->dalsi;//posun na další element
 				}
 		 }
@@ -155,6 +166,23 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykresl9 pom a jeho elementy
 		 O=O->dalsi;//posun na další objekt
 	}
 	O=NULL;delete O;
+
+	//vykreslení elementů z náhledu/tedy z provizorního spojáku, to kvůli aktuálnosti zobrazení
+	if(F->pom_temp!=NULL)//pro náhled
+	{
+		Cvektory::TElement *E=F->pom_temp->elementy;
+		if(E!=NULL)//pokud elementy existují
+		{
+			E=E->dalsi;//přeskočí hlavičku
+			while(E!=NULL)
+			{
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,1);
+				 //zde bude ještě vykreslení g_elementu
+				 E=E->dalsi;//posun na další element
+			}
+		}
+		E=NULL;delete E;
+	}
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
@@ -2972,7 +3000,7 @@ void  Cvykresli::vykresli_mGridy()
 			 E->mGrid->Top=m.L2Py(E->Yt);
 			 //if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=false;
 			 //else
-			 E->mGrid->MovingTable=true;
+//			 E->mGrid->MovingTable=true;
 			 E->mGrid->Show();//mGrid test
 			 E=E->dalsi;
 		 }

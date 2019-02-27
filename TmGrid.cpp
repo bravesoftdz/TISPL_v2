@@ -681,7 +681,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPNumericEdit *N=createNumeric(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
-	N->Visible=MovingTable;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
+	N->Visible=MovingTable;//pøi posunu tabulky se skryje NUMERIC a je místo nìj DRAW
 	N->AutoSize=false;
 	N->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	N->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
@@ -1038,14 +1038,14 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 {
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
-		//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
+		ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 
 		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,ID,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="77")Form4->OnClick(Tag,Col,Row);  //MV
 	}
@@ -1600,7 +1600,8 @@ void TmGrid::realock()
 //	}
 //	bufCells=NULL; delete bufCells;
 //	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
-//}
+//}
+
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vytvoøenou komponentu dle Type, pokud existuje, tak se nic nedìje
 void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)

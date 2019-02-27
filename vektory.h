@@ -30,14 +30,23 @@ class Cvektory
 	};
 	TPohon *POHONY;//spojový seznam pohonů
 
+	struct TG_element//pouze struktura
+	{
+			//double X1,Y1,X2,Y2;//umístění objektu - otázka zda bude potřeba
+			//double radius;
+			unsigned short typ;//0-linie, 1 oblouk
+			double delka;
+			double rotace;
+	};
+
 	struct TElement
 	{
 			unsigned long n; //pořadí ve spoj.seznamu
-			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí)
+			unsigned int eID; //id typu elementu: 0 - stop stanice, 1 - robot, 2 - robot se stop stanicí, 3 - robot s pasivní otočí, 4 - robot s aktivní otočí (resp. s otočí a stop stanicí), 5 - otoč pasivní, 6 - otoč aktivní (resp. otoč se stop stanicí), 7 - pouze geometrická zarážka
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
-			double X, Y;//umístění
-			double Xt,Yt;//umístění tabulky, resp. mGridu
+			double X, Y;//umístění v logických (metrických) souřadnicích
+			double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
 			short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
 			double rotace_jigu;//úhel rotace jigu vůči podvozku
 			bool stav;
@@ -55,7 +64,7 @@ class Cvektory
 			unsigned int akt_pocet_voziku;
 			unsigned int max_pocet_voziku;
 
-			//Gobjekt, Gelement doplnit
+			TG_element Gelement;
 			TmGrid *mGrid;
 
 			UnicodeString poznamka;//uloží poznámku
@@ -72,7 +81,8 @@ class Cvektory
 			unsigned int id; //id typu objektu
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
-			double X, Y;//umístění objektu
+			double X,Y;//umístění objektu ve schématu
+			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW dodat do CObjekt
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP),3-stopka
 			double CT;//pro status návrh
 			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
@@ -87,6 +97,7 @@ class Cvektory
 			TPohon *pohon;//ukazatel na použitý pohon
 			TElement *elementy;
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
+			TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW dodat do CObjekt
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 			double odchylka;//povolená odchylka u PP z CT
@@ -209,17 +220,6 @@ class Cvektory
 	};
 	TPalec *PALCE;//spojový seznam palců na řetězu
 
-	struct TG_objekt
-	{
-			unsigned long n; //pořadí objektu ve spoj.seznamu
-			double X1,Y1,X2,Y2;//umístění objektu
-			UnicodeString name;//název G_objektu
-			double radius;//0==linie, 0> oblouk na jednu stranu, 0< oblouk na druhou stranu
-			struct TG_Objekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-			struct TG_Objekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
-	};
-	TG_objekt *G_OBJEKTY;//spojový seznam
-
 	struct TProces
 	{
 			unsigned long n; //pořadí objektu ve spoj.seznamu
@@ -322,6 +322,7 @@ class Cvektory
 		TObjekt *vloz_objekt(unsigned int id, double X, double Y,TObjekt *p);//přetížená fce vkládá objekt za objekt p + vrátí ukazatel na vložený prvek
 		void vloz_objekt(TObjekt *Objekt);//přetížená fce
 		TObjekt *kopiruj_objekt(TObjekt *Objekt,short offsetX=0,short offsetY=0,AnsiString index_name="",bool remove_pre_index=false,TObjekt *p=NULL);//zkopíruje objekt Objekt na konec spojového seznamu Objektů, za předpokladu že p==NULL, pokud p není NULL je objekt za tento objekt p ve spojovém seznamů objektů zařazen, hodnota offsetu je hodnota odsazení zkopírovoaného objektu od objektu vzorového,index_name slouží pro rozlišení např. LAK, LAK1, LAK2...,zároveň vrací ukazatel na právě zkopírovaný objekt např. pro další použití
+void kopiruj_objekt(TObjekt *Original,TObjekt *Kopie);//zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze ukazatel na mGrid originálu zůstané propojený
 		TObjekt *najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ=-1);//hledá bod v dané oblasti
 		TObjekt *vrat_objekt(unsigned int n);//dle zadaného n vrátí ukazatel na hledaný objekt
 		TObjekt *vrat_objekt_z_roma(int X);//dle X kurzoru myši vrátí z modu procesy (ROMA) ukazatel na aktuální objekt
@@ -351,8 +352,11 @@ TObjekt *vrat_objekty_bez_pohonu();//vratí formou ukazatele na pole objekty bez
 //metody pro ELEMENTY
 		void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
 		TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
+void vloz_element(TObjekt *Objekt,TElement *Element);//vloží element do spojového seznamu elementů daného technologického objektu
+void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
+void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);
 		int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
-		long vymaz_elementy(TObjekt *Objekt);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky)
+		long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
 //metody pro POHONY
 		void hlavicka_POHONY();
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
