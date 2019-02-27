@@ -332,7 +332,9 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
 	 bool novy=true;
 	 if(duvod_k_ulozeni)
 	 {
-			int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
+			AnsiString FNs=FileName_short(FileName);
+			if(FNs=="")FNs="Nový.tispl";
+			int result=MB(FNs+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
 			switch(result)
 			{
 				case mrYes:     UlozitClick(this); if(!stisknuto_storno)novy=true;else novy=false; break;
@@ -1139,6 +1141,18 @@ void TForm1::S(UnicodeString Text)
 		ShowMessage(Text);
 }
 //---------------------------------------------------------------------------
+//usnadňuje přístup k ShowMessage - MaKr
+void TForm1::Sk(UnicodeString Text,AnsiString umisteni)
+{
+	S(umisteni+"/MaKr\n"+Text);
+}
+//---------------------------------------------------------------------------
+//usnadňuje přístup k ShowMessage - MaVl
+void TForm1::Sv(UnicodeString Text,AnsiString umisteni)
+{
+	S(umisteni+"/MaVl\n"+Text);
+}
+//---------------------------------------------------------------------------
 //vola rychle myMessageBox
 int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,int mbTYPE,bool centrovat_text,bool checkbox_zobrazit,int width,bool default_button_caption)
 {
@@ -1256,7 +1270,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//vykreslování mGridu
-			if(pom->elementy!=NULL)d.vykresli_mGridy();
+			if(pom_temp->elementy!=NULL)d.vykresli_mGridy();
 
 			//grafické měřítko
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
@@ -2663,18 +2677,30 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 //---------------------------------------------------------------------------
 void TForm1::add_element(int X, int Y)
 {
-	//rotace dle umístění na ose Y
-	short rotace_symbolu=0;
-	if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu=180;}
+	////ČÁSTEČNĚ PROVIZORNĚ
+	//rotace dle umístění na ose Y či X dle trendu
+	short trend=m.Rt90(d.trend(pom));
+	short rotace_symbolu=trend-90;                //Sk(trend,"Unit1");
+
+	if(trend==90 || trend==270)//pohon vodorovně
+	{
+		if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu+=180;}
+	}
+	else//pohon svisle
+	{
+		if(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0<X)rotace_symbolu+=180;
+	}
 
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - provizorní pro robota
 	double DoSkRB=0;
 	if(1<=element_id && element_id<=4)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
-		DoSkRB=(1.2+1/2.0)*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu
+		DoSkRB=(1.2+1/2.0)*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}
-	Y=m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);
+	if(trend==90 || trend==270)Y=m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);//vodorovný pohon
+	else X=m.round(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0+DoSkRB);//svislý pohon
+	////---- konec PROVIZORNĚ
 
 	//vložení elementu na dané souřadnice a do patřičného spojáku - pozor jedná se o chybu návrhu, nemělo by se vkládát do pom resp. ostrého spojáku objektů pro případ storna....
 	Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y));
@@ -2682,8 +2708,31 @@ void TForm1::add_element(int X, int Y)
 	//navrácení rotace dle umístění v objektu
 	E->rotace_symbolu=rotace_symbolu;
 
-	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+	//nadesignuje tabulky daného elementu
+	design_element(E);
 
+	//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
+	short O=10*3;//hodnota odsazení
+	switch(rotace_symbolu)
+	{
+		case 0:		E->Xt=m.P2Lx(X-E->mGrid->Width/2.0);			E->Yt=m.P2Ly(Y-E->mGrid->Height-DoSkRB-O);break;
+		case 90:	E->Xt=m.P2Lx(X-DoSkRB+O); 								E->Yt=m.P2Ly(Y-E->mGrid->Height/2.0);break;//pozor invertované DoSkRB
+		case 180:	E->Xt=m.P2Lx(X-E->mGrid->Width/2.0);			E->Yt=m.P2Ly(Y-DoSkRB+O);break;//pozor invertované DoSkRB
+		case 270:	E->Xt=m.P2Lx(X-DoSkRB-E->mGrid->Width-O); E->Yt=m.P2Ly(Y-E->mGrid->Height/2.0);break;
+	}
+
+	//až na konec:
+	E=NULL;delete E;
+	Akce=NIC;
+	REFRESH();
+	DrawGrid_knihovna->Invalidate();
+	DuvodUlozit(true);
+}
+//---------------------------------------------------------------------------
+//nadesignuje tabulky daného elementu
+void TForm1::design_element(Cvektory::TElement *E)
+{
+	//definice barev
 	TColor clHeaderFont=clBlack;
 	TColor clBackgroundHidden=m.clIntensive(RGB(128,128,128),105);
 	TColor clBorder= clBlack;
@@ -2697,7 +2746,7 @@ void TForm1::add_element(int X, int Y)
 	{
 		case 0://stop stanice
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
+			//E->mGrid->Left=X;E->mGrid->Top=Y;  netřeba
 			E->mGrid->Border.Width=1;
 			E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,6);//samotné vytvoření matice-tabulky
@@ -2742,7 +2791,7 @@ void TForm1::add_element(int X, int Y)
 
 		case 1://robot (kontinuální)
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
+			//E->mGrid->Left=X;E->mGrid->Top=Y;  netřeba
 			E->mGrid->Border.Width=1;
 			E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
@@ -2772,7 +2821,7 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 2://robot se stop stanicí
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
+			//E->mGrid->Left=X;E->mGrid->Top=Y;  netřeba
 			E->mGrid->Border.Width=1;
 			E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
@@ -2802,7 +2851,7 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 3://robot s pasivní otočí
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
+			//E->mGrid->Left=X;E->mGrid->Top=Y;  netřeba
 			E->mGrid->Border.Width=1;
 			E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(6,3);//samotné vytvoření matice-tabulky
@@ -2855,7 +2904,7 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
+			//E->mGrid->Left=X;E->mGrid->Top=Y;  netřeba
 			E->mGrid->Border.Color=clBorder;
 			E->mGrid->Border.Width=1;
 			E->mGrid->Create(2,5);//samotné vytvoření matice-tabulky
@@ -2928,7 +2977,7 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 5://otoč pasivní
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
+			//E->mGrid->Left=X;E->mGrid->Top=Y;  netřeba
 			E->mGrid->Border.Width=1;
 			E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,3);//samotné vytvoření matice-tabulky
@@ -2960,7 +3009,7 @@ void TForm1::add_element(int X, int Y)
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
-			E->mGrid->Left=X;E->mGrid->Top=Y;
+			//E->mGrid->Left=X;E->mGrid->Top=Y;  netřeba
 			E->mGrid->Border.Width=1;
 			E->mGrid->Border.Color=clBorder;
 
@@ -2991,13 +3040,6 @@ void TForm1::add_element(int X, int Y)
 			break;
 		}
 	}
-
-	//až na konec:
-	E=NULL;delete E;
-	Akce=NIC;
-	REFRESH();
-	DrawGrid_knihovna->Invalidate();
-	DuvodUlozit(true);
 }
 //---------------------------------------------------------------------------
 //zapíná či vypíná automatickou ortogonalizaci
@@ -3197,7 +3239,7 @@ if(MOD==NAHLED)
     d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P + 30,label1,label2,3);
     d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P + 30,label1,label2,4,0,0,-1);
    }
-   else if (EID==2 || EID==4)
+	 else if (EID==2 || EID==4)
    {
     d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P + 30,label1,label2,1,0,0,-1);
     d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P + 30,label1,label2,2);
@@ -3623,7 +3665,9 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 {
 	if(duvod_k_ulozeni)
 	{
-		int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
+		AnsiString FNs=FileName_short(FileName);
+		if(FNs=="")FNs="Nový.tispl";
+		int result=MB(FNs+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
 		switch(result)
 		{
 			case mrYes:     UlozitClick(this); if(!stisknuto_storno){/*ulozit_posledni_otevreny();*/ vse_odstranit(); CanClose=true;}else CanClose=false; break;
@@ -4308,8 +4352,10 @@ void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 	scSplitView_MENU->Opened=false;
 	scButton_otevrit->Down=false;
 	if(duvod_k_ulozeni)//pokud existuje předcházejicí soubor, který je nutný uložit
-  {
-		int result=MB(FileName_short(FileName)+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
+	{
+		AnsiString FNs=FileName_short(FileName);
+		if(FNs=="")FNs="Nový.tispl";
+		int result=MB(FNs+" byl změněn.\nChcete ho před ukončením uložit?",MB_YESNOCANCEL);
 		switch(result)
 		{
 			case mrYes:     UlozitClick(this); if(!stisknuto_storno){Otevrit_soubor();}break;
@@ -6079,7 +6125,7 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-Form2->ShowModal();
+//Form2->ShowModal();
 
 // if(MOD==NAHLED)
 //   {
@@ -6114,7 +6160,8 @@ Form2->ShowModal();
 //   DrawGrid_poznamky->Visible=true;
 //   }
 
-	d.v.kopiruj_objekt(pom_temp,pom);
+	d.v.rotace_elementu(pom_temp,90);
+	REFRESH();
 
 }
 //---------------------------------------------------------------------------

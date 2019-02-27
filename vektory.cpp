@@ -888,8 +888,6 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
-	novy->Xt=X;
-	novy->Yt=Y-1;//-1 výchozí odsazení tabulky
 
 	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
@@ -985,6 +983,20 @@ int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 		E=NULL;delete E;
 	}
 	return RET;
+}
+////---------------------------------------------------------------------------
+//orotuje všechny elementy daného objektu o danou hodnotu
+void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
+{
+	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	while(E!=NULL)
+	{
+		if(E->rotace_symbolu+rotace>360)E->rotace_symbolu=0;//kvůli přetýkání na dvě podmínky
+		E->rotace_symbolu+=rotace;
+		if(E->rotace_symbolu==360)E->rotace_symbolu=0;
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
 }
 ////---------------------------------------------------------------------------
 //vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid

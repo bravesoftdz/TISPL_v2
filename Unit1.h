@@ -531,6 +531,7 @@ private:
 	Cvektory::TObjekt *add_objekt_za();
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
+	void design_element(Cvektory::TElement *E);//nadesignuje tabulky daného elementu
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text);
 	void akutalizace_stavu_prichytavani_vSB();
@@ -646,6 +647,8 @@ public:		// User declarations
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
+	void Sk(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaKr
+	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaVl
 	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadòuje pøístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitnì), vymaže zpravu, parametr add rozhoduje, zda bude nový text pøeden k pøedešlému textu èi nikoliv, pokud zpráva obsahuje nìjaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
 	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true);
