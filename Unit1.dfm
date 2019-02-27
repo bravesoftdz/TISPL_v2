@@ -4603,6 +4603,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -5698,6 +5699,7 @@ object Form1: TForm1
         GlowEffect.PressedAlphaValue = 255
         GlowEffect.States = [scsHot, scsPressed, scsFocused]
         ImageGlow = True
+        DisabledFontColor = clNone
         Options.NormalColor = clWindow
         Options.HotColor = clWindow
         Options.PressedColor = clWindow
@@ -7419,9 +7421,9 @@ object Form1: TForm1
   end
   object Memo3: TMemo
     Left = 560
-    Top = 368
+    Top = 223
     Width = 185
-    Height = 89
+    Height = 234
     Lines.Strings = (
       'Memo3')
     TabOrder = 51

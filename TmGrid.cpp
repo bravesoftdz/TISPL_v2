@@ -9,6 +9,7 @@
 #include "gapoR.h"
 #include "unit2.h"
 #include "poznamky.h"
+#include "unit4.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -1046,7 +1047,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,ID,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
-		//6 - tka Unit1 rezervace
+		if(AnsiString(Tag).SubString(1,1)=="77")Form4->OnClick(Tag,Col,Row);  //MV
 	}
 }
 //---------------------------------------------------------------------------
@@ -1062,7 +1063,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row);
-		//6 - tka Unit1 rezervace
+		if(AnsiString(Tag).SubString(1,1)=="77")Form4->OnClick(Tag,Col,Row);	//MV
 	}
 }
 //---------------------------------------------------------------------------
@@ -1079,7 +1080,7 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
-		//6 - tka Unit1 rezervace
+		if(AnsiString(Tag).SubString(1,1)=="77")Form4->OnClick(Tag,Col,Row);	//MV
 	}
 }
 //---------------------------------------------------------------------------
@@ -1094,7 +1095,7 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
-		//6 - tka Unit1 rezervace
+		if(AnsiString(Tag).SubString(1,1)=="77")Form4->OnClick(Tag,Col,Row);	//MV
 	}
 }
 //---------------------------------------------------------------------------
@@ -1599,7 +1600,8 @@ void TmGrid::realock()
 //	}
 //	bufCells=NULL; delete bufCells;
 //	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
-//}
+//}
+
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vytvoøenou komponentu dle Type, pokud existuje, tak se nic nedìje
 void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
