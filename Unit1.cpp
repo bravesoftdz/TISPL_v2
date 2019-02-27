@@ -27,6 +27,7 @@
 #include "kalibrace.h"
 #include "Unit3.h"
 #include "Unit4.h"
+#include "Z_rozliseni.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -311,6 +312,13 @@ void TForm1::aktualizace()
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
+	//DPI handling
+	int DPI, otherDPI = 0;
+	DPI = get_DPI();
+	if (DPI != 96) {
+		otherDPI = DPI * 100 / 96;
+		Form_Z_rozliseni->ShowModal();
+	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -433,9 +441,10 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 		{
 			Timer_tr->Enabled=false;
 			startUP();
-    }
 	}
-}
+	}
+
+ }
 //---------------------------------------------------------------------------
 //Metoda pro trial verzi
 bool TForm1::ttr(UnicodeString Text)
@@ -2684,7 +2693,7 @@ void TForm1::add_element(int X, int Y)
       E->mGrid->Border.Color=clBorder;
 			E->mGrid->Create(2,6);//samotné vytvoření matice-tabulky
       E->name="STOP stanice";
-      E->short_name="STOP";
+	  E->short_name="STOP";
 
 //      E->mGrid->Cells[0][1].Font->Color=clFontLeft;
 //      E->mGrid->Cells[0][0].BottomBorder->Color=clBottomBorder;
@@ -4475,6 +4484,16 @@ void TForm1::vse_odstranit()
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+int TForm1::get_DPI ()    //MV načte a vrátí DPI zobraovače
+{
+	//Deklarace
+	HDC desktopDc;
+	int DPI;
+	//Načte DPI zobrazovače
+	desktopDc = GetDC(NULL);
+	DPI = GetDeviceCaps(desktopDc,LOGPIXELSX);
+	return DPI;
+}
 UnicodeString TForm1::get_computer_name()
 {
 	 wchar_t *pc=new wchar_t[MAX_COMPUTERNAME_LENGTH+1];

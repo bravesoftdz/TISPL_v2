@@ -542,6 +542,7 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
+	int get_DPI ();     // MV
 
 	UnicodeString get_temp_dir();
 	AnsiString FileName_short(AnsiString FileName);
