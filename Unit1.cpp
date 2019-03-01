@@ -1489,7 +1489,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F8
 		case 119:ZOOM_OUT();break;
 		//F9
-		case 120:break;
+		case 120:Button13->Visible!=Button13->Visible;break;
 		//F10
 		case 121: Invalidate();break;
 		//F11
@@ -1876,7 +1876,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				//--prozatim
 				//rotace dle umístění na ose Y
 				short rotace_symbolu=0;
-				if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu=180;}
+				//if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu=180;}
+				rotace_symbolu=rotace_symbol(m.Rt90(d.trend(pom)),X,Y);
 				//--
 				d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
 				minule_souradnice_kurzoru=TPoint(X,Y);
@@ -2684,21 +2685,12 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 		}
 }
 //---------------------------------------------------------------------------
-void TForm1::add_element(int X, int Y)
+void TForm1::add_element (int X, int Y)
 {
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
 	short trend=m.Rt90(d.trend(pom));
-	short rotace_symbolu=trend-90;                //Sk(trend,"Unit1");
-
-	if(trend==90 || trend==270)//pohon vodorovně
-	{
-		if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu+=180;}
-	}
-	else//pohon svisle
-	{
-		if(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0<X)rotace_symbolu+=180;
-	}
+	short rotace_symbolu=rotace_symbol(trend,X,Y);
 
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - provizorní pro robota
 	double DoSkRB=0;
@@ -2736,6 +2728,22 @@ void TForm1::add_element(int X, int Y)
 	REFRESH();
 	DrawGrid_knihovna->Invalidate();
 	DuvodUlozit(true);
+}
+//---------------------------------------------------------------------------
+//provizorně
+short TForm1::rotace_symbol(short trend,int X, int Y)
+{
+	short rotace_symbolu=trend-90;
+
+	if(trend==90 || trend==270)//pohon vodorovně
+	{
+		if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu+=180;}
+	}
+	else//pohon svisle
+	{
+		if(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0<X)rotace_symbolu+=180;
+	}
+	return rotace_symbolu;
 }
 //---------------------------------------------------------------------------
 //nadesignuje tabulky daného elementu
@@ -4111,6 +4119,11 @@ void TForm1::NP_input()
 	 //matamaticky exaktní napozicování tlačítek OK a storno
 	 Form1->m.designButton(scGPButton_OK, Form1, 1, 2);
 	 Form1->m.designButton(scGPButton_storno, Form1, 2, 2);
+
+	 //prozatim definice kabiny
+	 pom_temp->rozmer_kabiny.x=10;//default délka 10 m
+	 pom_temp->rozmer_kabiny.y=6;//default šířka 6 m
+	 pom_temp->Xk=m.P2Lx(scSplitView_LEFTTOOLBAR->Width+100);pom_temp->Yk=m.P2Ly((ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0)+pom_temp->rozmer_kabiny.y/2.0;//provizorní vložení
 
 	 Invalidate();
 	 REFRESH();
@@ -6144,7 +6157,7 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-//Form2->ShowModal();
+	Form2->ShowModal();
 
 // if(MOD==NAHLED)
 //   {

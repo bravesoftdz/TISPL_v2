@@ -166,7 +166,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 	//vykreslení elementů z náhledu/tedy z provizorního spojáku, to kvůli aktuálnosti zobrazení
 	if(F->pom_temp!=NULL)//pro náhled
 	{
-		//prozatim vykreslení pohonu
+		////prozatim vykreslení POHONU
 		short Trend=m.Rt90(trend(F->pom));
 		if(Trend==0 || Trend==180) //svisle
 		{
@@ -179,6 +179,27 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			line(canv,0,Y,F->ClientWidth*3,Y);
 		}
 
+		////vykreslení obrysu OBJEKTU
+		//pero+výplň
+		canv->Brush->Color=clWhite;
+		canv->Brush->Style=bsClear;
+		canv->Pen->Color=clRed;
+		canv->Pen->Width=F->Zoom*0.2;//pův. 0.5 bez duble linie
+		//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
+		short Ov=Form1->Zoom*0.4;
+		canv->Rectangle(m.L2Px(F->pom_temp->Xk)-Ov,m.L2Py(F->pom_temp->Yk)-Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)+Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)+Ov);//dvojitý rám - vnější
+		canv->Rectangle(m.L2Px(F->pom_temp->Xk)+Ov,m.L2Py(F->pom_temp->Yk)+Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)-Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)-Ov);//dvojitý rám - vnitřní
+		//nazev objektu
+		canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+		canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
+		canv->Font->Name="Arial";
+		canv->Font->Color=clRed;
+		canv->Font->Size=2*3*F->Zoom;
+		canv->Font->Style = TFontStyles();//<< fsBold;//zapnutí tučného písma
+		AnsiString T=F->pom_temp->name.UpperCase();
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
+
+		////vykreslení jednotlivých ELEMENTŮ
 		Cvektory::TElement *E=F->pom_temp->elementy;
 		if(E!=NULL)//pokud elementy existují
 		{
@@ -187,6 +208,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			{
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,1);
 				 //zde bude ještě vykreslení g_elementu
+				 //zde bude ještě vykreslení ještě kót
+				 if(E->predchozi->n!=0)vykresli_koty(canv,E->predchozi,E);
 				 E=E->dalsi;//posun na další element
 			}
 		}
@@ -3029,6 +3052,13 @@ void  Cvykresli::vykresli_mGridy()
 		 }
 		 E=NULL;delete E;
 	 }
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_koty(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
+{
+	 float O=-1;
+	 linie(canv,m.L2Px(Element_od->X),m.L2Py(Element_od->Y+O),m.L2Px(Element_do->X),m.L2Py(Element_do->Y+O),1,clGray);
+	 canv->TextOutW(m.L2Px((Element_od->X+Element_do->X)/2.0),m.L2Py(Element_od->Y+O),AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

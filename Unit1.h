@@ -531,6 +531,7 @@ private:
 	Cvektory::TObjekt *add_objekt_za();
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
+	short rotace_symbol(short trend,int X, int Y);
 	void design_element(Cvektory::TElement *E);//nadesignuje tabulky daného elementu
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text);
