@@ -35,6 +35,15 @@ AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString m
 	return RETT;
 }
 /////////////////////////////////////////////////////////////////////////////
+//zaokrouhlí na násobky 90tky, 360° pøevede na 0°, vìtší než 360° vratí za 0°
+short Cmy::Rt90(double number)
+{
+	short RET=round(number/90.0)*90;
+	if(RET>=360)RET-=360;
+	if(RET>=360)RET=Rt90(RET);//rekurzce pro pøípady, že se bude jednát o nìkolikanásobnou rotaci èi kvùlip pøevodu z 360° na 0°
+	return RET;
+}
+/////////////////////////////////////////////////////////////////////////////
 //ovìøí, zda dané èíslo je celé èíslo
 bool Cmy::cele_cislo(double number)
 {
@@ -136,6 +145,7 @@ double Cmy::azimut(double X1,double Y1,double X2,double Y2)
 	catch(...)
 	{return 0;}
 }
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::uhel(double X1,double Y1,double X2,double Y2)
 {
 	try

@@ -320,7 +320,8 @@ void TmGrid::Draw(TCanvas *C)
 			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
 			////barva pozadí buòky
-			if(Cells[X][Y].Text=="")C->Brush->Color=Cells[X][Y].isEmpty->Color;else C->Brush->Color=Cells[X][Y].Background->Color;//podmínìné formátování
+			//28.2.provizorní fix if(Cells[X][Y].Text=="")C->Brush->Color=Cells[X][Y].isEmpty->Color;else //podmínìné formátování
+			C->Brush->Color=Cells[X][Y].Background->Color;//pro aktivaci podmínìného formátování pøidat do else
 
 			C->Brush->Style=Cells[X][Y].Background->Style;
 			C->FillRect(Rb);
@@ -447,14 +448,17 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			short Zoom=1;if(AntiAliasing_text)Zoom=3;
 			//nastavení fontu
 			Canv->Font=Cell.Font;
+			/* //28.2.provizorní fix
 			int Orientation=Cell.Font->Orientation;
 			if(F->m.null(F->ms.MyToDouble(Cell.Text))<0)Canv->Font=Cell.isNegativeNumber;//podmínìné formátování
 			Cell.isZero->Color=clYellow;
 			if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))Canv->Font=Cell.isZero;//podmínìné formátování
 			Canv->Font->Orientation=Orientation;//musí ještì vrátit orientaci pokud byla podmínìným formátováním pøepsána
+			*/
 			Canv->Font->Size*=Zoom;
 			//SetBkMode(canv->Handle,OPAQUE);//nastavení netransparentního pozadí
-			if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;else Canv->Brush->Color=Cell.Background->Color;//podmínìné formátování//zde se asi nezohledòuje, spíše v drawgrid, ale otázka je jak bez AA
+			//28.2.provizorní fix if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;else //podmínìné formátování//zde se asi nezohledòuje, spíše v drawgrid, ale otázka je jak bez AA
+			Canv->Brush->Color=Cell.Background->Color;//pro podmínìné formátování zaøadit do výše uvedené else vìtve
 			Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
 			//zarovnání
 			//samotný výpis
@@ -665,8 +669,8 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		}
 	}
 	E->Font=Cell.Font;
-	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
-	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmínìné formátování
+	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
+	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmínìné formátování
 	if(!E->Focused())//pokud není na buòce focus resp. není aktivní
 	E->Text=Cell.Text;
 	//vlastník
@@ -715,8 +719,8 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		}
 	}
 	N->Font=Cell.Font;
-	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmínìné formátování
-	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmínìné formátování
+	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmínìné formátování
+	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmínìné formátování
 	if(!N->Focused())//pokud je na buòce focus resp. je aktivní
 	{
 		TMyString ms;
@@ -755,8 +759,8 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 //		case BOTTOM:L->ContentMarginTop=E->Height-getWidthHeightText(Cell).Y;break;
 //	}
 	L->Font=Cell.Font;
-	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))L->Font=Cell.isNegativeNumber;//podmínìné formátování
-	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))L->Font=Cell.isZero;//podmínìné formátování
+	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))L->Font=Cell.isNegativeNumber;//podmínìné formátování
+	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))L->Font=Cell.isZero;//podmínìné formátování
 	L->Caption=Cell.Text;
 	//vlastník
 	L->Parent=Form;//musí být až na konci

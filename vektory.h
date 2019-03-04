@@ -82,7 +82,7 @@ class Cvektory
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
 			double X,Y;//umístění objektu ve schématu
-			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW dodat do CObjekt
+			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP),3-stopka
 			double CT;//pro status návrh
 			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
@@ -97,7 +97,7 @@ class Cvektory
 			TPohon *pohon;//ukazatel na použitý pohon
 			TElement *elementy;
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
-			TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW dodat do CObjekt
+			TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW + dodat do CObjekt
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 			double odchylka;//povolená odchylka u PP z CT
@@ -278,40 +278,39 @@ class Cvektory
 
 	struct TRetez
 	{
-		unsigned int n; //pořadí objektu ve spoj.seznamu
-		AnsiString name;//název řetězu
-		double roztec;//rozteč palců na řetězů v metrech
-		struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
-		struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
+			unsigned int n; //pořadí objektu ve spoj.seznamu
+			AnsiString name;//název řetězu
+			double roztec;//rozteč palců na řetězů v metrech
+			struct TRetez *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
+			struct TRetez *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 	};
 	struct TRetez *RETEZY;
 
-
-		struct TFile_hlavicka
-		{
-					unsigned short int Verze;
-					unsigned short int Mod;
-					double Zoom;
-					long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
-					long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
-					unsigned int pocet_objektu;
-					unsigned int pocet_pohonu;
-					unsigned int pocet_zakazek;
-					unsigned int pocet_voziku;
-					//parametry projektu (PP):
-					TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
-					unsigned long  mnozstvi;//požadované množství
-					double hod_den;//počet hodin za den
-					double dni_rok;//počet hodin za den
-					double efektivita;//přepokládaná výrobní efektivina
-					double TT;//globální TT linky
-					double delka_jig;
-					double sirka_jig;
-					double vyska_jig;
-					double delka_podvozek;
-					double typ_vozik;
-		};
-		TFile_hlavicka File_hlavicka;
+	struct TFile_hlavicka
+	{
+		 unsigned short int Verze;
+		 unsigned short int Mod;
+		 double Zoom;
+		 long PosunutiX;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
+		 long PosunutiY;//proměnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souřadnicích zařízení
+		 unsigned int pocet_objektu;
+		 unsigned int pocet_pohonu;
+		 unsigned int pocet_zakazek;
+		 unsigned int pocet_voziku;
+		 //parametry projektu (PP):
+		 TDateTime cas_start;//začátek výroby v SEČ (resp. LSEČ)
+		 unsigned long  mnozstvi;//požadované množství
+		 double hod_den;//počet hodin za den
+		 double dni_rok;//počet hodin za den
+		 double efektivita;//přepokládaná výrobní efektivina
+		 double TT;//globální TT linky
+		 double delka_jig;
+		 double sirka_jig;
+		 double vyska_jig;
+		 double delka_podvozek;
+		 double typ_vozik;
+	};
+	TFile_hlavicka File_hlavicka;
 
 //konstruktor
 		Cvektory();
@@ -356,7 +355,16 @@ void vloz_element(TObjekt *Objekt,TElement *Element);//vloží element do spojov
 void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
 void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);
 		int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
+void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy daného objektu o danou hodnotu
+TElement *najdi_element(TObjekt *Objekt, double X, double Y,double offsetX, double offsetY);//hledá element v dané oblasti definované pomocí +-offset, pracuje v logických/metrických souradnicich
+TElement *vrat_element(TObjekt *Objekt, unsigned int n);//vraťí ukazatel na element dle n elementu umístěného v daném objektu
+//dodělat void zmen_poradi_Elementu(TObjekt *Objekt, TElement Element,TObjekt *zaElement);
+//dodělat void zmen_poradi_Elementu(TObjekt *Objekt unsigned long aktualni_poradi,unsigned long nove_poradi);
+void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
+void smaz_element(TElement *Element);//smaže element ze seznamu
 		long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
+
+
 //metody pro POHONY
 		void hlavicka_POHONY();
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).

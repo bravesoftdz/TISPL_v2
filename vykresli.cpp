@@ -138,10 +138,6 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, to jak funkční tak i geometrické elementy, v případě aktivního náhledu objektu nevykresluje od daného/nahlíženého objektu uložené vektory, ale vektory aktuální z náhledu, tedy z pom_temp
 {
-	//prozatim vykreslení pohonu
-	long Y=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0*3;
-	line(canv,0,Y,F->ClientWidth*3,Y);
-
 	//vykreslení všech elementů mimo těch, co jsou v aktuálně zobrazovaném náhledu (tedy editovaných elementů), to kvůli aktuálnosti zobrazení, pokud náhled není aktivní jsou vykresleny všechny všech objekůt
 	short stav=1;
 	if(F->pom_temp!=NULL)stav=-1;//mimo aktivní zobrazovaný objekt jsou elementy neaktivní
@@ -170,6 +166,40 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 	//vykreslení elementů z náhledu/tedy z provizorního spojáku, to kvůli aktuálnosti zobrazení
 	if(F->pom_temp!=NULL)//pro náhled
 	{
+		////prozatim vykreslení POHONU
+		short Trend=m.Rt90(trend(F->pom));
+		if(Trend==0 || Trend==180) //svisle
+		{
+			long X=(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0)*3;
+			line(canv,X,F->scLabel_titulek->Height*3,X,F->scGPPanel_statusbar->Top*3);
+		}
+		else//vodorovně
+		{
+			long Y=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0*3;
+			line(canv,0,Y,F->ClientWidth*3,Y);
+		}
+
+		////vykreslení obrysu OBJEKTU
+		//pero+výplň
+		canv->Brush->Color=clWhite;
+		canv->Brush->Style=bsClear;
+		canv->Pen->Color=clRed;
+		canv->Pen->Width=F->Zoom*0.2;//pův. 0.5 bez duble linie
+		//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
+		short Ov=Form1->Zoom*0.4;
+		canv->Rectangle(m.L2Px(F->pom_temp->Xk)-Ov,m.L2Py(F->pom_temp->Yk)-Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)+Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)+Ov);//dvojitý rám - vnější
+		canv->Rectangle(m.L2Px(F->pom_temp->Xk)+Ov,m.L2Py(F->pom_temp->Yk)+Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)-Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)-Ov);//dvojitý rám - vnitřní
+		//nazev objektu
+		canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+		canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
+		canv->Font->Name="Arial";
+		canv->Font->Color=clRed;
+		canv->Font->Size=2*3*F->Zoom;
+		canv->Font->Style = TFontStyles();//<< fsBold;//zapnutí tučného písma
+		AnsiString T=F->pom_temp->name.UpperCase();
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
+
+		////vykreslení jednotlivých ELEMENTŮ
 		Cvektory::TElement *E=F->pom_temp->elementy;
 		if(E!=NULL)//pokud elementy existují
 		{
@@ -178,6 +208,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			{
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,1);
 				 //zde bude ještě vykreslení g_elementu
+				 //zde bude ještě vykreslení ještě kót
+				 if(E->predchozi->n!=0)vykresli_koty(canv,E->predchozi,E);
 				 E=E->dalsi;//posun na další element
 			}
 		}
@@ -1789,6 +1821,19 @@ bool Cvykresli::lezi_v_pasmu(TCanvas *c,long X,long Y,long x1,long y1,long x2,lo
 		return ret;
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vratí trend schématu pro objekt z parametru,pro jeden prvek automaticky bude trend schématu 0°, pokud se jedná o první prvek, tak výjimka, řeší trend podle prvku následujícího, pro další se hledí na trend podle azimutu k předchozímu prvku
+double Cvykresli::trend(Cvektory::TObjekt *Objekt)
+{
+	double trend=0;
+	if(v.OBJEKTY->predchozi->n==1)trend=90;//pro jeden prvek automaticky bude trend schématu 90°
+	else//pro více objektů
+	{
+		if(Objekt->n==1)trend=m.azimut(Objekt->X,Objekt->Y,Objekt->dalsi->X,Objekt->dalsi->Y);//pokud se jedná o první prvek, tak výjimka, řeší trend podle prvku následujícího
+		else trend=m.azimut(Objekt->predchozi->X,Objekt->predchozi->Y,Objekt->X,Objekt->Y);//pro další se hledí na trend podle azimutu k předchozímu prvku
+	}
+	return trend;
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2485,6 +2530,7 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
 void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
+  rotace=m.Rt90(rotace);
 	switch(eID)
 	{
 		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
@@ -2991,9 +3037,9 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void  Cvykresli::vykresli_mGridy()
 {
-	 if(F->pom->elementy!=NULL && F->Timer1->Enabled==false)
+	 if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
 	 {
-		 Cvektory::TElement *E=F->pom->elementy->dalsi;//přeskočí rovnou hlavičku
+		 Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 		 while(E!=NULL)
 		 {
 			 E->mGrid->Left=m.L2Px(E->Xt);
@@ -3006,6 +3052,13 @@ void  Cvykresli::vykresli_mGridy()
 		 }
 		 E=NULL;delete E;
 	 }
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_koty(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
+{
+	 float O=-1;
+	 linie(canv,m.L2Px(Element_od->X),m.L2Py(Element_od->Y+O),m.L2Px(Element_do->X),m.L2Py(Element_do->Y+O),1,clGray);
+	 canv->TextOutW(m.L2Px((Element_od->X+Element_do->X)/2.0),m.L2Py(Element_od->Y+O),AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

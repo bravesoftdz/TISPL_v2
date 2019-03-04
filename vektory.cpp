@@ -294,7 +294,7 @@ Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, dou
 		if(typ==F->VyID)//výhybka
 		{
 			if(p->X-offsetX*F->m2px<=X && X<=p->X+offsetX*F->m2px && p->Y+offsetY*F->m2px>=Y && Y>=p->Y-offsetY*F->m2px){ret=p;break;}//nalezeno !
-    }
+		}
 		p=p->dalsi;//posun na další prvek
 	}
 	p=NULL;delete p;
@@ -888,8 +888,6 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
-	novy->Xt=X;
-	novy->Yt=Y-1;//-1 výchozí odsazení tabulky
 
 	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
@@ -985,6 +983,92 @@ int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 		E=NULL;delete E;
 	}
 	return RET;
+}
+////---------------------------------------------------------------------------
+//orotuje všechny elementy daného objektu o danou hodnotu
+void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
+{
+	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	while(E!=NULL)
+	{
+		if(E->rotace_symbolu+rotace>360)E->rotace_symbolu=0;//kvůli přetýkání na dvě podmínky
+		E->rotace_symbolu+=rotace;
+		if(E->rotace_symbolu==360)E->rotace_symbolu=0;
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
+}
+////---------------------------------------------------------------------------
+//hledá element v dané oblasti definované pomocí +-offset, pracuje v logických/metrických souradnicich
+Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y,double offsetX, double offsetY)
+{
+	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	while(E!=NULL)
+	{
+		if(E->X-offsetX<=X && X<=E->X+offsetX && E->Y-offsetY<=Y && Y<=E->Y+offsetY)break;
+		else E=E->dalsi;
+	}
+	return E;
+}
+////---------------------------------------------------------------------------
+//vraťí ukazatel na element dle n elementu umístěného v daném objektu
+Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
+{
+	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	while(E!=NULL)
+	{
+		if(E->n==n) break;
+		else E=E->dalsi;
+	}
+	return E;
+}
+////---------------------------------------------------------------------------
+//smaže element ze seznamu
+void Cvektory::smaz_element(TObjekt *Objekt, unsigned int n)
+{
+	smaz_element(vrat_element(Objekt,n));
+}
+////---------------------------------------------------------------------------
+//smaže element ze seznamu
+void Cvektory::smaz_element(TElement *Element)
+{
+	//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
+	if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
+	{
+		Element->predchozi->dalsi=Element->dalsi;
+		Element->dalsi->predchozi=Element->predchozi;
+	}
+	else//poslední prvek
+	{
+		if(Element->n==1)//pokud je mazaný prvek hned za hlavičkou
+		{
+			Element->predchozi->predchozi=Element->predchozi; //popř hlavička bude ukazovat sama na sebe
+			Element->predchozi->dalsi=NULL;
+		}
+		else
+		{
+			Element->predchozi->dalsi=NULL;
+			TElement *Eh=Element;//Element hlavička
+			while(Eh->n!=0)//postup k hlavičce, jinak by se musel parametrem metody předávat ukazatal na Objekt, který element vlastní
+			{
+				Eh=Eh->predchozi;
+			}
+			Eh->predchozi=Element->predchozi;//zapis do hlavičky poslední prvek seznamu
+			Eh=NULL;delete Eh;
+		}
+	}
+
+	//přeindexování (n/ID) původního následujícího objektu a prvků všech za nim následujících
+	TElement *E=Element->dalsi;
+	while(E!=NULL)
+	{
+		E->n--;
+		E=E->dalsi;//posun na další
+	}
+
+	//odstranění z pěměti
+	//if(mGridSmazat)Element->mGrid->Delete(); mGrid nemažee
+	Element=NULL;delete Element;
 }
 ////---------------------------------------------------------------------------
 //vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid
