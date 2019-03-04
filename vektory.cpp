@@ -883,25 +883,40 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	//alokace paměti
 	TElement *novy=new TElement;
 
-	//atributy elementu
-//	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku již řešeno v vloz_element(Objekt,novy);
-	novy->eID=eID;
-	novy->X=X;
-	novy->Y=Y;
-
-	//mGrid elementu
-	novy->mGrid=new TmGrid(F);
-	novy->mGrid->Tag=6;//ID formu
-	novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-	novy->mGrid->typeID=novy->eID;//přiřazení typu elementu typu tabulky, bude sloužit pro rychlou klasifikaci typu elementu resp. tabulky
-
-	//ukazatelové propojení
+	//ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
 	vloz_element(Objekt,novy);
 //	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 //	novy->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 //	novy->dalsi=NULL;
 //	novy->sparovany=NULL;
 //	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+
+
+	//atributy elementu
+//	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku již řešeno v vloz_element(Objekt,novy);
+	novy->eID=eID;
+	novy->X=X;
+	novy->Y=Y;
+	//název
+	AnsiString T="";
+	switch(eID)
+  {
+		case 0: T="Stop stanice"; break;//stop stanice
+		case 1: T="Robot"; break;//robot
+		case 2: T="Robot"; break;//robot
+		case 3: T="Robot"; break;//robot
+		case 4: T="Robot"; break;//robot
+		case 5: T="Otoč"; break;//otoc
+		case 6: T="Otoč"; break;//otoc
+  }
+	novy->name=T+" "+novy->n;
+	//dodělat automaticky shortname
+
+	//mGrid elementu
+	novy->mGrid=new TmGrid(F);
+	novy->mGrid->Tag=6;//ID formu
+	novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	novy->mGrid->typeID=novy->eID;//přiřazení typu elementu typu tabulky, bude sloužit pro rychlou klasifikaci typu elementu resp. tabulky
 
 	//návrácení ukazatelele na element k dalšímu použití
 	return novy;

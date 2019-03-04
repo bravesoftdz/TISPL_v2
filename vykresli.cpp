@@ -23,6 +23,9 @@ Cvykresli::Cvykresli()
 	grafickeDilema=true;
 	Pom_proces=new Cvektory::TProces;
 	precision=2;//počet desetinných míst čísel na časové ose
+	Robot_sirka_zakladny=1.0;
+	Robot_delka_zakladny=1.2;
+	DoSkRB=(1.2+Robot_sirka_zakladny/2.0);//delka od středu (X,Y bodu) robota k referenčnímu bodu robota (tj. k trysce) v metrech
 }
 //---------------------------------------------------------------------------
 //vrátí souřadnice dle typu buď středové nebo excentrické v podobě levého horního rohu objektu
@@ -2632,8 +2635,8 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double DkRB=1.2*Z/F->m2px;//délka k referenčnímu bodu od středu prvního kloubu ramena, respektive odsazení robota od linky
 	float tloustka_linie=1/3.0;//vykreslovací linie robota
 	float zaobleni=4*Z;//míra zaoblení základny
-	float sirka_zakladny=1.0*Z/F->m2px;
-	float delka_zakladny=1.2*Z/F->m2px;
+	float sirka_zakladny=Robot_sirka_zakladny*Z/F->m2px;
+	float delka_zakladny=Robot_delka_zakladny*Z/F->m2px;
 	float sirka_ramena=0.2*Z/F->m2px;
 	float DT=0.35*Z/F->m2px;//délka trysky
 	float TW=sirka_ramena;//tryska šířka před zúžením, v místě z kloubu
@@ -3056,9 +3059,32 @@ void  Cvykresli::vykresli_mGridy()
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_koty(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
 {
-	 float O=-1;
-	 linie(canv,m.L2Px(Element_od->X),m.L2Py(Element_od->Y+O),m.L2Px(Element_do->X),m.L2Py(Element_do->Y+O),1,clGray);
-	 canv->TextOutW(m.L2Px((Element_od->X+Element_do->X)/2.0),m.L2Py(Element_od->Y+O),AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
+	 //linie(canv,m.L2Px(Element_od->X),m.L2Py(Element_od->Y+O),m.L2Px(Element_do->X),m.L2Py(Element_do->Y+O),1,clGray);
+	 //canv->TextOutW(m.L2Px((Element_od->X+Element_do->X)/2.0),m.L2Py(Element_od->Y+O),AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
+
+	 float O=-DoSkRB*2;//odsazení sipky elementu obecne
+	 float Or_od=0;//odsazení robot od
+	 float Or_do=0;//odsazení robot do
+
+	 if(1<=Element_od->eID && Element_od->eID<=4)Or_od=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
+	 if(1<=Element_do->eID && Element_do->eID<=4)Or_do=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
+	 if(Element_od->rotace_symbolu==180 || Element_od->rotace_symbolu==270)Or_od*=-1;
+	 if(Element_do->rotace_symbolu==180 || Element_do->rotace_symbolu==270)Or_od*=-1;
+
+	 long X1=m.L2Px(Element_od->X);
+	 long Y1=m.L2Py(Element_od->Y+O+Or_od);
+	 long X2=m.L2Px(Element_do->X);
+	 long Y2=m.L2Py(Element_do->Y+O+Or_do);
+
+//	 if(Element_od->rotace_symbolu==0 || Element_od->rotace_symbolu==180)//pří vodorovné rotaci náhledu
+//	 {
+//		 linie(canv,m.L2Px(Element_od->X),m.L2Py(Element_od->Y+O+Or_od),m.L2Px(Element_do->X),m.L2Py(Element_do->Y+O+Or_do),1,clGray);
+//		 canv->TextOutW(m.L2Px((Element_od->X+Element_do->X)/2.0),m.L2Py(Element_od->Y+O),AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
+//	 }
+
+	 linie(canv,X1,Y1,X2,Y2,1,clGray);
+	 canv->TextOutW((X1+X2)/2,(Y1+Y2)/2,AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
+
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

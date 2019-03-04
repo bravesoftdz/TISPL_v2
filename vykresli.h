@@ -103,6 +103,9 @@ double trend(Cvektory::TObjekt *Objekt);//vratí trend schématu pro objekt z para
 	void vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx);
 
 	short O_width,O_height,V_width;//logické parametry, nezoomovat
+	float Robot_sirka_zakladny;
+	float Robot_delka_zakladny;
+	double DoSkRB;//delka od støedu (X,Y bodu) robota k referenènímu bodu robota (tj. k trysce) v metrech
 	unsigned long cas;//ms
 	double PX2MIN;//mìøítko PX na MIN
 	short KrokY;//rozteè na èasových osách
