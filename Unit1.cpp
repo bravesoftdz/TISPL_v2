@@ -310,13 +310,6 @@ void TForm1::aktualizace()
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
-	//DPI handling
-	int DPI, otherDPI = 0;
-	DPI = get_DPI();
-	if (DPI != 96) {
-		otherDPI = DPI * 100 / 96;
-		Form_Z_rozliseni->ShowModal();
-	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -623,6 +616,15 @@ void TForm1::startUP()
 		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
 		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
 		Form_parametry_linky->ShowModal();//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky
+	}
+
+	//DPI handling
+	int DPI, otherDPI = 0;
+	DPI = get_DPI();
+	if (DPI != 96)
+	{
+		otherDPI = DPI * 100 / 96;
+		Form_Z_rozliseni->ShowModal();
 	}
 }
 //---------------------------------------------------------------------------
@@ -1487,7 +1489,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F8
 		case 119:ZOOM_OUT();break;
 		//F9
-		case 120:Button13->Visible!=Button13->Visible;break;
+		case 120:Button11->Visible!=Button11->Visible;break;
 		//F10
 		case 121: Invalidate();break;
 		//F11
@@ -1697,15 +1699,28 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					//aktivuje POSUN OBJEKTU,pokud je kliknuto v místě objektu (v jeho vnitřku)
 					if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
 					{
-						if(MOD==SCHEMA)
+						if(MOD==NAHLED && pom_temp!=NULL)
 						{
-							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width,d.V_width,VyID);//šlo by nahradit, kruhovým regionem, což by bylo exaktnější
-							if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
-							pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
-							if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
-							else {Akce=PAN;pan_non_locked=true;}//test - přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
+							pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+							if(pom_element!=NULL){Akce=MOVE_TABLE;kurzor(posun_l);}//tabulka nalezena, tzn. klik na tabulce
+							else //tabulka nenalezena, takže zkouší najít element
+							{
+								//element_pom=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+								//if(element_pom!=NULL)Akce=MOVE_ELEMENT;kurzor(posun_v);//element nalezen, tzn. klik na elemementu nikoliv na tabulce
+              }
 						}
-						else {Akce=PAN;pan_non_locked=true;}//test - přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
+						else
+						{
+							if(MOD==SCHEMA)
+							{
+								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width,d.V_width,VyID);//šlo by nahradit, kruhovým regionem, což by bylo exaktnější
+								if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
+								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+								if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
+								else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
+							}
+							else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt   = Rosťova prosba
+						}
 					}
 
 					if(funkcni_klavesa==1 || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
@@ -1892,6 +1907,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				minule_souradnice_kurzoru=TPoint(X,Y);
 				d.odznac_oznac_objekt(Canvas,pom,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y);
 			}
+			break;
+		}
+		case MOVE_TABLE://posun tabulky elementu
+		{
+			InvalidateRect(Handle,&TRect(pom_element->mGrid->Left-1,pom_element->mGrid->Top-1,pom_element->mGrid->Left+pom_element->mGrid->Width+1,pom_element->mGrid->Top+pom_element->mGrid->Height+1),true);//smaže starou oblast
+			//šlo by vylepšit překreslovaním pouze obdélníku rozdílu mezi souřadnicemi
+			pom_element->Xt=akt_souradnice_kurzoru.x;
+			pom_element->Yt=akt_souradnice_kurzoru.y;
+			FormPaint(this);
 			break;
 		}
 		case VYH://přidávání vyhýbky
@@ -4556,6 +4580,7 @@ void TForm1::vse_odstranit()
 		d.v.vse_odstranit();
 		pom=NULL;delete pom;
 		pom_temp=NULL;delete pom_temp;
+		pom_element=NULL;delete pom_element;
 		proces_pom=NULL;delete proces_pom;
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
@@ -4563,7 +4588,8 @@ void TForm1::vse_odstranit()
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-int TForm1::get_DPI ()    //MV načte a vrátí DPI zobraovače
+//načte a vrátí DPI zobraovače
+int TForm1::get_DPI ()
 {
 	//Deklarace
 	HDC desktopDc;
@@ -4573,6 +4599,7 @@ int TForm1::get_DPI ()    //MV načte a vrátí DPI zobraovače
 	DPI = GetDeviceCaps(desktopDc,LOGPIXELSX);
 	return DPI;
 }
+//---------------------------------------------------------------------------
 UnicodeString TForm1::get_computer_name()
 {
 	 wchar_t *pc=new wchar_t[MAX_COMPUTERNAME_LENGTH+1];
@@ -6190,8 +6217,10 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //   DrawGrid_poznamky->Visible=true;
 //   }
 
-	d.v.rotace_elementu(pom_temp,90);
-	REFRESH();
+//	d.v.rotace_elementu(pom_temp,90);
+//	REFRESH();
+
+
 
 }
 //---------------------------------------------------------------------------

@@ -1026,6 +1026,18 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y,
 	return E;
 }
 ////---------------------------------------------------------------------------
+//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
+Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
+{
+	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	while(E!=NULL)
+	{
+		if(E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)break;
+		else E=E->dalsi;
+	}
+	return E;
+}
+////---------------------------------------------------------------------------
 //vraťí ukazatel na element dle n elementu umístěného v daném objektu
 Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
 {

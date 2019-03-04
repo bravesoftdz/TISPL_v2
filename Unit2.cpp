@@ -39,6 +39,8 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+		E->mG->Cells[0][0].Type=E->mG->EDIT;
+		E->mG->Cells[0][0].Text="ooo";
 		E->mG->Cells[1][1].Type=E->mG->EDIT;
 		E->mG->Cells[1][1].Text="abc0";
 
@@ -63,6 +65,8 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		RowCount=5;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+		E1->mG->Cells[0][1].Type=E1->mG->EDIT;
+		E1->mG->Cells[0][1].Text="OOO";
 		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][1].Text="abc1";
 
@@ -228,28 +232,28 @@ void __fastcall TForm2::FormPaint(TObject *Sender)
 //	}
 //
 //
-//	Cvykresli d;
+	Cvykresli d;
 //	if(AA)
 //	{
-//		Cantialising a;
-//		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-//		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-//		F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-//		d.vykresli_robota(bmp_in->Canvas,F->m.L2Px(aktX),F->m.L2Py(aktY),"Robot 1","R1",0,1);
-////		d.vykresli_robota(bmp_in->Canvas,(aktX+100+10)*F->Zoom,aktY*F->Zoom,"Robot 2","R2",1,1);
-////		d.vykresli_robota(bmp_in->Canvas,(aktX+200+20)*F->Zoom,aktY*F->Zoom,"Robot 3","R3",2,1);
-////		d.vykresli_robota(bmp_in->Canvas,(aktX+300+30)*F->Zoom,aktY*F->Zoom,"Robot 4","R4",3,1);
-////		d.vykresli_robota(bmp_in->Canvas,(aktX+400+40)*F->Zoom,aktY*F->Zoom,"Robot 5","R5",0,-1);
+		Cantialising a;
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+		d.vykresli_robota(bmp_in->Canvas,F->m.L2Px(aktX),F->m.L2Py(aktY),"Robot 1","R1",1);
+//		d.vykresli_robota(bmp_in->Canvas,(aktX+100+10)*F->Zoom,aktY*F->Zoom,"Robot 2","R2",1,1);
+//		d.vykresli_robota(bmp_in->Canvas,(aktX+200+20)*F->Zoom,aktY*F->Zoom,"Robot 3","R3",2,1);
+//		d.vykresli_robota(bmp_in->Canvas,(aktX+300+30)*F->Zoom,aktY*F->Zoom,"Robot 4","R4",3,1);
+//		d.vykresli_robota(bmp_in->Canvas,(aktX+400+40)*F->Zoom,aktY*F->Zoom,"Robot 5","R5",0,-1);
 //		d.vykresli_stopku(bmp_in->Canvas,F->m.L2Px(aktX)+100,F->m.L2Py(aktY),"Stop 1","S1",1,0);
 //		d.vykresli_otoc(bmp_in->Canvas,F->m.L2Px(aktX)+200,F->m.L2Py(aktY),"Otoè pasiv","O1",0,0);
-////		d.vykresli_otoc(bmp_in->Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
-//		F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
-//		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
-//		bmp_out->Transparent=true;
-//		bmp_out->TransparentColor=clWhite;
-//		Canvas->Draw(0,0,bmp_out);
-//		delete (bmp_out);//velice nutné
-//		delete (bmp_in);//velice nutné
+//		d.vykresli_otoc(bmp_in->Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
+		F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
+		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
+		bmp_out->Transparent=true;
+		bmp_out->TransparentColor=clWhite;
+		Canvas->Draw(0,0,bmp_out);
+		delete (bmp_out);//velice nutné
+		delete (bmp_in);//velice nutné
 //	}
 //	else
 //	{
@@ -415,20 +419,30 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
-	if(aktX==-50000 && aktY==-50000)
+//	if(aktX==-50000 && aktY==-50000)
+//	{
+//		Cvykresli d;
+//		//d.vykresli_robota(Canvas,puvX,puvY,"","",3,1,0,true);
+//		//d.vykresli_robota(Canvas,X,Y,"","",3,1,0,true);
+//
+//		//d.vykresli_stopku(Canvas,puvX,puvY,"","",0,0,true);
+//		//d.vykresli_stopku(Canvas,X,Y,"","",0,0,true);
+//
+//		d.vykresli_otoc(Canvas,puvX,puvY,"","",1,1,0,true);
+//		d.vykresli_otoc(Canvas,X,Y,"","",1,1,0,true);
+//
+//
+//		puvX=X,puvY=Y;
+//	}
+	if(Shift.Contains(ssShift)){aktX=F->m.P2Lx(X);aktY=F->m.P2Ly(Y);Invalidate();FormPaint(this);}
+
+	if(Shift.Contains(ssCtrl))
 	{
-		Cvykresli d;
-		//d.vykresli_robota(Canvas,puvX,puvY,"","",3,1,0,true);
-		//d.vykresli_robota(Canvas,X,Y,"","",3,1,0,true);
-
-		//d.vykresli_stopku(Canvas,puvX,puvY,"","",0,0,true);
-		//d.vykresli_stopku(Canvas,X,Y,"","",0,0,true);
-
-		d.vykresli_otoc(Canvas,puvX,puvY,"","",1,1,0,true);
-		d.vykresli_otoc(Canvas,X,Y,"","",1,1,0,true);
-
-
-		puvX=X,puvY=Y;
+		InvalidateRect(Handle,&TRect(ELEMENTY->dalsi->mG->Left-1,ELEMENTY->dalsi->mG->Top-1,ELEMENTY->dalsi->mG->Left+ELEMENTY->dalsi->mG->Width+1,ELEMENTY->dalsi->mG->Top+ELEMENTY->dalsi->mG->Height+1),true);//smaže starou oblast
+		//šlo by vylepšit pøekreslovaním pouze obdélníku rozdílu mezi souøadnicemi
+		ELEMENTY->dalsi->mG->Left=X;ELEMENTY->dalsi->mG->Top=Y;
+		FormPaint(this);
+		//Invalidate();FormPaint(this);
 	}
 }
 //---------------------------------------------------------------------------
@@ -453,4 +467,8 @@ void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 	 }
 }
 //---------------------------------------------------------------------------
+
+
+
+
 
