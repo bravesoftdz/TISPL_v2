@@ -25,8 +25,6 @@
 #include "gapoR.h"
 #include "adjustace.h"
 #include "kalibrace.h"
-#include "Unit3.h"
-#include "Unit4.h"
 #include "Z_rozliseni.h"
 
 //---------------------------------------------------------------------------
@@ -6563,21 +6561,6 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender)
 		REFRESH();
 }
 //---------------------------------------------------------------------------
-
-
-
-void __fastcall TForm1::scGPButton_TestClick(TObject *Sender)
-{
-	Form3->ShowModal();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::scGPButton1Click(TObject *Sender)
-{
-	Form4->ShowModal();
-}
-//---------------------------------------------------------------------------
-
 
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {

@@ -3388,6 +3388,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button11'
     TabOrder = 29
+    Visible = False
     OnClick = Button11Click
   end
   object scGPGlyphButton_close_grafy: TscGPGlyphButton
@@ -3759,6 +3760,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button13'
     TabOrder = 36
+    Visible = False
     OnClick = Button13Click
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
@@ -4580,8 +4582,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2085
-        Top = 2248
+        Left = 2091
+        Top = 2254
         Width = 244
         Height = 31
         Align = alCustom
@@ -7435,214 +7437,19 @@ object Form1: TForm1
   end
   object Memo3: TMemo
     Left = 560
-    Top = 223
+    Top = 401
     Width = 185
-    Height = 234
+    Height = 56
     Lines.Strings = (
       'Memo3')
     TabOrder = 51
-  end
-  object scGPButton_Test: TscGPButton
-    Left = 751
-    Top = 404
-    Width = 100
-    Height = 35
-    TabOrder = 52
-    TabStop = True
-    OnClick = scGPButton_TestClick
-    Animation = False
-    Caption = 'Zoprazeni p. obj.'
-    CanFocused = True
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = clBtnFace
-    Options.HotColor = clBtnFace
-    Options.PressedColor = clBtnShadow
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnFace
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = clBtnShadow
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clHighlight
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.StyleColors = True
-    HotImageIndex = -1
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object scGPButton1: TscGPButton
-    Left = 751
-    Top = 445
-    Width = 100
-    Height = 35
-    TabOrder = 53
-    TabStop = True
-    OnClick = scGPButton1Click
-    Animation = False
-    Caption = 'Upravit pohon'
-    CanFocused = True
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = clBtnFace
-    Options.HotColor = clBtnFace
-    Options.PressedColor = clBtnShadow
-    Options.FocusedColor = clBtnFace
-    Options.DisabledColor = clBtnFace
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = clBtnShadow
-    Options.FrameHotColor = clHighlight
-    Options.FramePressedColor = clHighlight
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clBtnText
-    Options.FontHotColor = clBtnText
-    Options.FontPressedColor = clBtnText
-    Options.FontFocusedColor = clBtnText
-    Options.FontDisabledColor = clBtnShadow
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.StyleColors = True
-    HotImageIndex = -1
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clHighlight
-    GlowEffect.AlphaValue = 95
-    GlowEffect.GlowSize = 7
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clNone
-    GlowEffect.FocusedColor = clNone
-    GlowEffect.PressedGlowSize = 7
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
+    Visible = False
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004C064C0610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004C06500610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8773,7 +8580,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010136009406940630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010136009406980630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000A0020000010020000000000000E0
       0700000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -223,9 +223,6 @@ Coordinates=219,372,104,36
 [RzToolButton6]
 Coordinates=10,372,100,36
 
-[scGPButton1]
-Coordinates=841,326,90,36
-
 [scLabel16]
 Coordinates=455,326,73,36
 
@@ -251,7 +248,7 @@ Coordinates=319,280,124,36
 Coordinates=10,280,90,36
 
 []
-Coordinates=514,556,124,36
+Coordinates=841,326,90,36
 Visible=True
 
 [scSplitView_OPTIONS]
