@@ -1,41 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.660,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.306,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoV.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.229,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.832,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.235,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.916,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.992,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoTT.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.030,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.976,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapoR.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.941,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\PO_math.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.976,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.dfm=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapoR.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.738,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.341,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.306,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoV.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.992,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoTT.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.941,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\PO_math.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.306,C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoV.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.435,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\report.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.341,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.941,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\PO_math.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.976,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapoR.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.400,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\parametry_vozik.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.992,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoTT.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.941,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\PO_math.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.306,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoV.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.976,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapoR.dfm=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.941,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\PO_math.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.941,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\PO_math.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.992,C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoTT.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.341,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.916,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.235,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.030,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.992,C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoTT.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.832,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.660,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.341,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.738,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.306,C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoV.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.400,C:\Users\rosta\Desktop\ELTEP\KOD_OK\parametry_vozik.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.976,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapoR.h=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.306,C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoV.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.991,C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.976,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapoR.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.992,C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoTT.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.229,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\gapo.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.dfm=C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.913,C:\Users\rosta\Desktop\ELTEP\KOD_OK\PO_poznamky.cpp=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="antialiasing.cpp"/>
@@ -162,5 +162,17 @@
     <File Path="adjustace.cpp"/>
     <File Path="adjustace.dfm"/>
     <File Path="adjustace.h"/>
+    <File Path="Unit3.cpp"/>
+    <File Path="Unit3.cpp"/>
+    <File Path="Unit3.dfm"/>
+    <File Path="Unit3.h"/>
+    <File Path="Unit4.cpp"/>
+    <File Path="Unit4.cpp"/>
+    <File Path="Unit4.dfm"/>
+    <File Path="Unit4.h"/>
+    <File Path="Z_rozliseni.cpp"/>
+    <File Path="Z_rozliseni.cpp"/>
+    <File Path="Z_rozliseni.dfm"/>
+    <File Path="Z_rozliseni.h"/>
   </ProjectSortOrder>
 </BorlandProject>

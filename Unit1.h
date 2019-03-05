@@ -508,6 +508,7 @@ private:
 	Cvektory::TProces *proces_pom;
 
 	////metody
+	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
 	void edice();
 	void ESC();
 	void UP();void DOWN();void RIGHT();void LEFT();void Uloz_predchozi_pohled();//realizují posuny obrazu
