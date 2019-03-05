@@ -1696,22 +1696,26 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					stisknute_leve_tlacitko_mysi=true;
 					vychozi_souradnice_kurzoru=TPoint(X,Y);//výchozí souřadnice
 
-					//aktivuje POSUN OBJEKTU,pokud je kliknuto v místě objektu (v jeho vnitřku)
+					//aktivuje POSUN OBJEKTU, ELEMENTU či TABULKY,pokud je kliknuto v místě objektu (v jeho vnitřku)
 					if(Akce==NIC && posun_objektu==false && funkcni_klavesa==0)//pokud není aktivovaná jiná akce
 					{
-						if(MOD==NAHLED && pom_temp!=NULL)
+						if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
 						{
-							pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-							if(pom_element!=NULL){Akce=MOVE_TABLE;kurzor(posun_l);}//tabulka nalezena, tzn. klik na tabulce
-							else //tabulka nenalezena, takže zkouší najít element
+							pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));//TABULKA
+							if(pom_element!=NULL)//tabulka nalezena, tzn. klik na tabulce
 							{
-								//element_pom=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-								//if(element_pom!=NULL)Akce=MOVE_ELEMENT;kurzor(posun_v);//element nalezen, tzn. klik na elemementu nikoliv na tabulce
-              }
+								Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;
+							}
+							else //tabulka nenalezena, takže zkouší najít ELEMENT
+							{
+								pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+								if(pom_element!=NULL){Akce=MOVE_ELEMENT;kurzor(posun_v);}//element nalezen, tzn. klik na elemementu nikoliv na tabulce
+								else{Akce=PAN;pan_non_locked=true;}
+							}
 						}
 						else
 						{
-							if(MOD==SCHEMA)
+							if(MOD==SCHEMA)//OBJEKT
 							{
 								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width,d.V_width,VyID);//šlo by nahradit, kruhovým regionem, což by bylo exaktnější
 								if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
@@ -1753,7 +1757,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 							minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;
 							//+změnit kurzor
 						break;
-            }
+						}
 						case ADJUSTACE:minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;break;
 						default: break;
 					}
@@ -1911,11 +1915,11 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case MOVE_TABLE://posun tabulky elementu
 		{
-			InvalidateRect(Handle,&TRect(pom_element->mGrid->Left-1,pom_element->mGrid->Top-1,pom_element->mGrid->Left+pom_element->mGrid->Width+1,pom_element->mGrid->Top+pom_element->mGrid->Height+1),true);//smaže starou oblast
-			//šlo by vylepšit překreslovaním pouze obdélníku rozdílu mezi souřadnicemi
-			pom_element->Xt=akt_souradnice_kurzoru.x;
-			pom_element->Yt=akt_souradnice_kurzoru.y;
-			FormPaint(this);
+			pom_element->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+			pom_element->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+			minule_souradnice_kurzoru=TPoint(X,Y);
+			REFRESH();
+			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
 			break;
 		}
 		case VYH://přidávání vyhýbky
@@ -1984,6 +1988,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				}
 				case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 				case MOVE:move_objekt(X,Y);break;//posun objektu
+				case MOVE_TABLE:Akce=NIC;kurzor(standard);REFRESH();break;//posun tabulky elementu
 				case MEASURE:
 				{
 					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));

@@ -1014,9 +1014,11 @@ void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
 	E=NULL;delete E;
 }
 ////---------------------------------------------------------------------------
-//hledá element v dané oblasti definované pomocí +-offset, pracuje v logických/metrických souradnicich
-Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y,double offsetX, double offsetY)
+//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
+Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 {
+	double offsetX,offsetY;
+	//tady dodělat dle elementu velikost oblasti buď regionem nebo jen obdelníkem opsaným velikosti elementu
 	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
 	while(E!=NULL)
 	{
