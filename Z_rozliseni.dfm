@@ -50723,7 +50723,6 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitWidth = 874
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 939
@@ -50736,7 +50735,7 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Margins.Bottom = 1
       Align = alRight
       TabOrder = 0
-      OnClick = KonecClick
+      OnClick = scGPButton_stornoClick
       Animation = True
       Caption = 'Konec'
       CanFocused = False
@@ -50821,7 +50820,6 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 824
     end
     object scLabel1: TscLabel
       Left = 0
@@ -50854,7 +50852,6 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Zm'#283'na rozli'#353'en'#237
-      ExplicitWidth = 824
     end
     object MinButton: TscGPGlyphButton
       AlignWithMargins = True
@@ -50951,9 +50948,6 @@ object Form_Z_rozliseni: TForm_Z_rozliseni
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 601
-      ExplicitTop = 34
-      ExplicitHeight = 290
     end
   end
   object scGPButton_storno: TscGPButton
