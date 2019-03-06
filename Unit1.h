@@ -499,6 +499,7 @@ public:
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
+    enum TJednotky{zakladni=0,ostatní};TJednotky Tdraha, Tcas; //MV pro uchování jednotek v náhledu
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
   TWndMethod PreviousWndProc;
@@ -538,6 +539,7 @@ private:
 	void vse_odstranit();
 	UnicodeString get_computer_name();
 	int get_DPI();//MV
+	void redesign_element();
 	UnicodeString get_temp_dir();
 	AnsiString FileName_short(AnsiString FileName);
 	void nacist_nastaveni();
