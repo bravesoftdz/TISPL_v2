@@ -1700,17 +1700,10 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
 						{
-							pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));//TABULKA
-							if(pom_element!=NULL)//tabulka nalezena, tzn. klik na tabulce
-							{
-								Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;
-							}
-							else //tabulka nenalezena, takže zkouší najít ELEMENT
-							{
-								pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-								if(pom_element!=NULL){Akce=MOVE_ELEMENT;kurzor(posun_v);}//element nalezen, tzn. klik na elemementu nikoliv na tabulce
-								else{Akce=PAN;pan_non_locked=true;}
-							}
+								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
+								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_v);}//ELEMENT posun
+								if(JID==100){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
+								if(100<JID && JID<1000){/*doplní Martin Vlček předesignování tabulek*/}//první sloupec tabulky, libovolný řádek, přepnutí jednotek
 						}
 						else
 						{
@@ -1951,16 +1944,23 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				d.vykresli_meridlo(Canvas,X,Y);
 			}
 		}break;
-		case NIC:
+		case NIC://přejíždění po ploše aplikace, bez aktuálně nastavené akce
 		{
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
+			if(MOD==NAHLED && pom_temp!=NULL)
+			{
+					kurzor(standard);//umístít na začátek, JID==-1
+					getJobID_OnClick(X,Y);
+					//Memo3->Visible=true;Memo3->Lines->Add(JID);
+					if(JID==0)kurzor(posun_v);//ELEMENT
+					if(JID==100){kurzor(posun_l);/*pom_element->mGrid->Border.Width=3;*/pom_element->mGrid->Border.Color=(TColor)RGB(43,87,154);/*m.clIntensive(pom_element->mGrid->Border.Color,100);*/REFRESH(); }//hlavička TABULKA
+					if(100<JID && JID<1000)kurzor(pan);//první sloupec tabulky, libovolný řádek
+			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
-			//povoluje smazání či nastavení parametrů objektů, po přejetí myší přes daný objekt
 			break;
 		}
 		default: break;
 	}
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -2031,9 +2031,39 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	 else DrawGrid_knihovna->Enabled=false;*/
 }
 //---------------------------------------------------------------------------
+//vrátí do globální proměnné JID ID úlohy/funkcionality v místě kliku, -1 žádná, 0 - 9 rezervováno pro element, 10 - 99 - interaktivní text kóty, 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek, zároveň pokud bylo kliknuto na tabulku či element nahraje ukazatel do globální proměnné pom_element
+void TForm1::getJobID_OnClick(int X, int Y)
+{
+	JID=-1;//výchozí stav, nic nenalezeno
+	pom_element=new Cvektory::TElement; pom_element=NULL;
+	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));//TABULKA
+	if(pom_element!=NULL)//tabulka nalezena, tzn. klik či přejetí myší přes tabulku
+	{
+		int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
+		if(IdxRow==0)JID=100+0;//hlavička
+		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+		{
+			if(pom_element->mGrid->GetIdxColum(X,Y)==0)JID=100+IdxRow;//řádky v prvním sloupeci
+			else JID=1000+IdxRow;//řádky v dalších sloupcích
+		}
+	}
+	else //tabulka nenalezena, takže zkouší najít ELEMENT
+	{
+		pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+		if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+		{
+			JID=0;
+		}
+		else //ani element nenalezen, hledá tedy interaktivní TEXT, např. kóty atp.
+		{
+			//if()RET=10-99 zcela doplnit
+		}
+	}
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //deaktivuje zaměřovač label a svislice a kolmice
-void  TForm1::deaktivace_zamerovace()
+void TForm1::deaktivace_zamerovace()
 {
 	if(Label_zamerovac->Visible)
 	{

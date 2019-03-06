@@ -2653,7 +2653,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==270){pX=m.round(X-delka_zakladny/2.0-DkRB);pY=Y;lX=m.round(X-delka_zakladny/2.0);lY=Y;}
 	if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);lX=X;lY=m.round(Y+sirka_zakladny/2.0);}
 	switch(eID)
-	{                                                      //!!!!dodělat rotaci ve vykreli lakovací okno
+	{
 		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
 		case 2: vykresli_stopku(canv,pX,pY,"","",typ,rotace,stav);break;//robot se stopkou
 		case 3: vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
@@ -2723,7 +2723,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
 	{
-		if(stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;
+		if(typ==0)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Size=5*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 		AnsiString T=short_name;if(Z>4*3){T=name;canv->Font->Size=2*Z;}//od daného zoomu zobrazuje celý název
