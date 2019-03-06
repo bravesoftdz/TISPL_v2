@@ -1703,7 +1703,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
 								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_v);}//ELEMENT posun
 								if(JID==100){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
-								if(100<JID && JID<1000){/*doplní Martin Vlček předesignování tabulek*/}//první sloupec tabulky, libovolný řádek, přepnutí jednotek
+								if(100<JID && JID<1000){redesign_element();/*doplní Martin Vlček předesignování tabulek*/}//první sloupec tabulky, libovolný řádek, přepnutí jednotek
 						}
 						else
 						{
@@ -2971,8 +2971,14 @@ void TForm1::design_element(Cvektory::TElement *E)
 	//jednotky + příprava na readINI
 	AnsiString delka,cas,T_cas,T_delka;
 	short sirka,sirka1;
-	T_cas = readINI("nastaveni_form_parametry", "cas");
-	T_delka = readINI("nastaveni_form_parametry", "vzdalenost");
+	if (E->n==1)
+	{
+		Tdraha=0; Tcas=0;
+		writeINI("nastaveni_nahled", "cas", Tcas);
+		writeINI("nastaveni_nahled", "delka", Tdraha);
+	}
+	T_cas = readINI("nastaveni_nahled", "cas");
+	T_delka = readINI("nastaveni_nahled", "delka");
 	if (T_cas == 0)//s
 	{
 		cas="[s]";
@@ -3163,104 +3169,113 @@ void TForm1::redesign_element()//Update jednotek a šířek v tabulkách
 {
 	AnsiString delka,cas,T_cas,T_delka;
 	short sirka,sirka1;
-	T_cas = readINI("nastaveni_form_parametry", "cas");
-	T_delka = readINI("nastaveni_form_parametry", "vzdalenost");
-	if (T_cas == 0)//s
+	T_cas = readINI("nastaveni_nahled", "cas");
+	T_delka = readINI("nastaveni_nahled", "delka");
+	if (T_cas == 1)//s
 	{
 		cas="[s]";
-		if (T_delka == 0)//s a m
+		if (T_delka == 1)//s a m
 		{
 			delka="[m]";
 			sirka=80;
 			sirka1=60;
+			Tdraha=0;
 		}
 		else//s a mm
 		{
 			delka="[mm]";
 			sirka=95;
 			sirka1=80;
+			Tdraha=1;
 		}
+		Tcas=0;
+		
 	}
 	else//min
 	{
 		cas="[min]";
-		if (T_delka == 0)//min a m
+		if (T_delka == 1)//min a m
 		{
 			delka="[m]";
 			sirka=95;
 			sirka1=60;//očekávám menší čísla (min)
+			Tdraha=0;
 		}
 		else//min a mm
 		{
 			delka="[mm]";
 			sirka=95;
 			sirka1=80;//očekávám vetší čísla (mm)
+			Tdraha=1;
 		}
+		Tcas=1;
 	}
 	//Nastavení všech tabulek co jsou v náhledu
-	Cvektory::TObjekt *O1=d.v.OBJEKTY->dalsi;
-	while (O1!=0)
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while (O!=NULL)
 	{
-		Cvektory::TElement *E=O1->elementy->dalsi;
-		while (E!=0)
-		{
-        	switch(element_id)
-			{
-				case 0://stop stanice
-				{
-					E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
-					E->mGrid->Cells[0][3].Text="WT palec "+cas;
-				break;
-				}
-				case 1://robot (kontinuální)
-				{
-					E->mGrid->Cells[0][1].Text="PT "+cas;
-					E->mGrid->Cells[0][2].Text="LO "+delka;
-				break;
-				}
-				case 2://robot se stop stanicí
-				{
-					E->mGrid->Cells[0][1].Text="PT "+cas;
-					E->mGrid->Cells[0][2].Text="max WT "+cas;
-				break;
-				}
-				case 3://robot s pasivní otočí
-				{
-					E->mGrid->Cells[0][1].Text="PT1 "+cas;
-					E->mGrid->Cells[0][2].Text="LO1 "+delka;
-					E->mGrid->Cells[0][3].Text="otoč "+cas;
-					E->mGrid->Cells[0][4].Text="otoč "+delka;
-					E->mGrid->Cells[0][5].Text="PT2 "+cas;
-					E->mGrid->Cells[0][6].Text="LO2 "+delka;
-				break;
-				}
-				case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
-				{
-					E->mGrid->Cells[0][1].Text="PT1 "+cas;
-					E->mGrid->Cells[0][2].Text="PTo "+cas;
-					E->mGrid->Cells[0][3].Text="PT2 "+cas;
-					E->mGrid->Cells[0][4].Text="WT "+cas;
-				break;
-				}
-				case 5://otoč pasivní
-				{
-					E->mGrid->Cells[0][1].Text="délka "+delka;
-					E->mGrid->Cells[0][2].Text="PT "+cas;
-				break;
-				}
-				case 6://otoč aktivní (resp. otoč se stop stanicí)
-				{
-					E->mGrid->Cells[0][1].Text="délka "+delka;//D u aktivní nelze zadat
-					E->mGrid->Cells[0][2].Text="PT "+cas;
-				break;
-				}
-			}
+		Cvektory::TElement *E=O->elementy;//////////
+		while (E!=NULL)
+		{    E->mGrid->Cells[0][0].Text="test";
+//			switch(E->eID)
+//			{
+//				case 0://stop stanice
+//				{
+//					E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
+//					E->mGrid->Cells[0][3].Text="WT palec "+cas;
+//				break;
+//				}
+//				case 1://robot (kontinuální)
+//				{
+//					E->mGrid->Cells[0][1].Text="PT "+cas;
+//					E->mGrid->Cells[0][2].Text="LO "+delka;
+//				break;
+//				}
+//				case 2://robot se stop stanicí
+//				{
+//					E->mGrid->Cells[0][1].Text="PT "+cas;
+//					E->mGrid->Cells[0][2].Text="max WT "+cas;
+//				break;
+//				}
+//				case 3://robot s pasivní otočí
+//				{
+//					E->mGrid->Cells[0][1].Text="PT1 "+cas;
+//					E->mGrid->Cells[0][2].Text="LO1 "+delka;
+//					E->mGrid->Cells[0][3].Text="otoč "+cas;
+//					E->mGrid->Cells[0][4].Text="otoč "+delka;
+//					E->mGrid->Cells[0][5].Text="PT2 "+cas;
+//					E->mGrid->Cells[0][6].Text="LO2 "+delka;
+//				break;
+//				}
+//				case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
+//				{
+//					E->mGrid->Cells[0][1].Text="PT1 "+cas;
+//					E->mGrid->Cells[0][2].Text="PTo "+cas;
+//					E->mGrid->Cells[0][3].Text="PT2 "+cas;
+//					E->mGrid->Cells[0][4].Text="WT "+cas;
+//				break;
+//				}
+//				case 5://otoč pasivní
+//				{
+//					E->mGrid->Cells[0][1].Text="délka "+delka;
+//					E->mGrid->Cells[0][2].Text="PT "+cas;
+//				break;
+//				}
+//				case 6://otoč aktivní (resp. otoč se stop stanicí)
+//				{
+//					E->mGrid->Cells[0][1].Text="délka "+delka;//D u aktivní nelze zadat
+//					E->mGrid->Cells[0][2].Text="PT "+cas;
+//				break;
+//				}
+//			}
 			E=E->dalsi;
 		}
-		O1=O1->dalsi;
+		O=O->dalsi;
 		E=NULL; delete E;
 	}
-	O1=NULL; delete O1;
+	O=NULL; delete O;
+	writeINI("nastaveni_nahled", "cas", Tcas);
+	writeINI("nastaveni_nahled", "delka", Tdraha);
 	REFRESH();
 }
 //---------------------------------------------------------------------------
