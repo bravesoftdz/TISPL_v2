@@ -1017,9 +1017,9 @@ void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
 //hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 {
-	double offsetX,offsetY;
+	double offsetX=1;double offsetY=1;
 	//tady dodělat dle elementu velikost oblasti buď regionem nebo jen obdelníkem opsaným velikosti elementu
-	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
 	while(E!=NULL)
 	{
 		if(E->X-offsetX<=X && X<=E->X+offsetX && E->Y-offsetY<=Y && Y<=E->Y+offsetY)break;
@@ -1031,10 +1031,14 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 //hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 {
-	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
 	while(E!=NULL)
 	{
-		if(E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)break;
+		if(E->mGrid!=NULL)//ošetření proti neexistující tabulce
+		{
+			if(E->Xt<=X && X<=E->Xt+E->mGrid->Width*F->m2px/F->Zoom && E->Yt>=Y && Y>=E->Yt-E->mGrid->Height*F->m2px/F->Zoom)break;
+			else E=E->dalsi;
+		}
 		else E=E->dalsi;
 	}
 	return E;

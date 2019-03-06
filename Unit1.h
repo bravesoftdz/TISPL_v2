@@ -537,14 +537,14 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
-	int get_DPI ();     // MV
-
+	int get_DPI();//MV
 	UnicodeString get_temp_dir();
 	AnsiString FileName_short(AnsiString FileName);
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();
+	void getJobID_OnClick(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kliku, -1 žádná, 0 - 9 rezervováno pro element, 10 - 99 - interaktivní text kóty, 100- a výše rezervováno pro tabuku, kde 100 znamená nultý øádek, zároveò pokud bylo kliknuto na tabulku èi element nahraje ukazatel do globální promìnné pom_element
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
 	void log2web(UnicodeString Text);//automaticky pøidá parametry (èas, uživatel, licence)
@@ -629,6 +629,7 @@ public:		// User declarations
 	bool dblClick;
 	int vybrany_objekt;
 	short VyID;//objekt-symbol vyhýbky - ID typu
+	int JID;//JOB ID
   int knihovna_id; // id drawgrid knihovny
 	int element_id;  // id vybraneho elementu z knihoven
 
