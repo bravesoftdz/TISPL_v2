@@ -49,7 +49,7 @@ class Cvektory
 			double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
 			short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
 			double rotace_jigu;//úhel rotace jigu vůči podvozku
-			bool stav;
+			short stav;
 
 			double LO1;
 			double OTOC_delka;

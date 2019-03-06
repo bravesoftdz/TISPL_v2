@@ -1951,11 +1951,18 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD==NAHLED && pom_temp!=NULL)
 			{
 					kurzor(standard);//umístít na začátek, JID==-1
+					if(pom_element!=NULL)//odstranění předchozí případného highlightnutí buď tabulky nebo elementu
+					{
+						if(pom_element->mGrid!=NULL && JID==100)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
+						if(JID==0){pom_element->stav=1;}//ELEMENT
+					}
+					int puvJID=JID;
 					getJobID_OnClick(X,Y);
 					//Memo3->Visible=true;Memo3->Lines->Add(JID);
-					if(JID==0)kurzor(posun_v);//ELEMENT
-					if(JID==100){kurzor(posun_l);/*pom_element->mGrid->Border.Width=3;*/pom_element->mGrid->Border.Color=(TColor)RGB(43,87,154);/*m.clIntensive(pom_element->mGrid->Border.Color,100);*/REFRESH(); }//hlavička TABULKA
-					if(100<JID && JID<1000)kurzor(pan);//první sloupec tabulky, libovolný řádek
+					if(JID==0){kurzor(posun_v);pom_element->stav=2;}//ELEMENT
+					if(puvJID!=JID && (puvJID==0 || JID==0))REFRESH();//důvod k REFRESH, pouze v případě změny elementu
+					if(JID==100){kurzor(posun_l);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//hlavička TABULKA
+					if(100<JID && JID<1000){kurzor(pan);}//první sloupec tabulky, libovolný řádek
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -2036,7 +2043,6 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 void TForm1::getJobID_OnClick(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
-	pom_element=new Cvektory::TElement; pom_element=NULL;
 	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));//TABULKA
 	if(pom_element!=NULL)//tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 	{

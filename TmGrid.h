@@ -82,6 +82,8 @@ class TmGrid
 	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=2);//zajistí zvýraznìní dané buòky
 	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù dle èísla øádku Row
 	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
+	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznìní orámování tabulky
+	void HighlightTableOnMouse(int X,int Y);//zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPComboBox *getCombo(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu

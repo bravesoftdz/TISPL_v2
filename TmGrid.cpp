@@ -1714,8 +1714,26 @@ void TmGrid::selRow(long Row,TColor Color,bool newSel)
 	Form->Canvas->Pen->Color=Color;
 	short C=1-(short)newSel;
 
-	TPoint body[4]={TPoint(mGrid->Left-C,mGrid->Top+mGrid->Rows[Row].Top-C),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top-C),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height),TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height)};
+	//TPoint body[4]={TPoint(mGrid->Left-C,mGrid->Top+mGrid->Rows[Row].Top-C),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top-C),TPoint(mGrid->Left+mGrid->Width,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height),TPoint(mGrid->Left,mGrid->Top+mGrid->Rows[Row].Top+mGrid->Rows[Row].Height)}; //mohlo by dìlat problémy pùvodní kostra
+	TPoint body[4]={TPoint(Left-C,Top+Rows[Row].Top-C),TPoint(Left+Width,Top+Rows[Row].Top-C),TPoint(Left+Width,Top+Rows[Row].Top+Rows[Row].Height),TPoint(Left,Top+Rows[Row].Top+Rows[Row].Height)};
 	Form->Canvas->Polygon(body,3);
 	Form->Canvas->Pen->Mode=pmCopy;
+}
+//---------------------------------------------------------------------------
+//zajistí zvýraznìní orámování tabulky
+void TmGrid::HighlightTable(TColor Color,unsigned short Size,unsigned short Offset,TPenMode PenMode)
+{
+	Form->Canvas->Pen->Width=Size;
+	Form->Canvas->Pen->Color=Color;
+	Form->Canvas->Brush->Style=bsClear;
+	Form->Canvas->Pen->Mode=PenMode;
+	short o=0;if(Size>1)o=1;//pouze grafické odsazení
+	Form->Canvas->Rectangle(Left-Offset,Top-Offset,Left+Width+Offset+o,Top+Height+Offset+o);
+}
+//---------------------------------------------------------------------------
+//zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
+void TmGrid::HighlightTableOnMouse(int X,int Y)
+{
+	 if(Left<=X && X<=Left+Width && Y>Top && Y<Top+Height)HighlightTable();
 }
 //---------------------------------------------------------------------------
