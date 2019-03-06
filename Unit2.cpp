@@ -38,11 +38,17 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		unsigned long ColCount=3;//pevný poèet slopcù
 		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
+
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-		E->mG->Cells[0][0].Type=E->mG->EDIT;
-		E->mG->Cells[0][0].Text="ooo";
-		E->mG->Cells[1][1].Type=E->mG->EDIT;
-		E->mG->Cells[1][1].Text="abc0";
+
+		E->mG->Cells[0][1].Type=E->mG->DRAW;
+		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>";
+		E->mG->Cells[0][1].isLink->Color=clRed;
+		//E->mG->Cells[1][1].Type=E->mG->EDIT;
+		//E->mG->Cells[1][1].Text="abc0";
+
+		//E->mG->Columns[0].Width=800;
+		E->mG->SetColumnAutoFit(0);
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
@@ -65,9 +71,9 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		RowCount=5;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-		E1->mG->Cells[0][1].Type=E1->mG->EDIT;
+		//E1->mG->Cells[0][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[0][1].Text="OOO";
-		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+		//E1->mG->Cells[1][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][1].Text="abc1";
 
 		E1->predchozi=NULL;

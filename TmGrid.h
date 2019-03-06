@@ -52,6 +52,9 @@ class TmGrid
 		TBrush *isEmpty;//podmínìné formátování, pozadí buòky, když je prázdná
 		TFont *isNegativeNumber;//podmínìné formátování, pokud je zaporné èíslo
 		TFont *isZero;//podmínìné formátování, pokud se jedná o nulové èíslo
+		TFont *isLink;//podmínìné formátování v pøípadì výskytu tagu <a> resp </a>
+		TPoint LinkCoordinateStart;//kvùli uložení citelné oblasti pro link dané buòky
+		TPoint LinkCoordinateEnd;//kvùli uložení citelné oblasti pro link dané buòky
 		UnicodeString Text;//samotný text buòky
 	};
 
@@ -99,7 +102,9 @@ class TmGrid
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	long GetIdxRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
-	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+	TPoint CheckLink(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
+	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí zda se na dané buòce a souøadnicích nachází odkaz
 	//promìnné
 	long Tag;//ID formuláøe, v kterém je tabulka èi tabuky daného formuláøe volány
 	long ID;//ID konkrétní tabulky, v jednom formuláøi vhodné unikátní èíslo, mimo formuláøe totožná hodnota nevadí (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)

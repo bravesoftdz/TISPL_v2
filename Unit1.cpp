@@ -1703,7 +1703,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
 								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_v);}//ELEMENT posun
 								if(JID==100){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
-								if(100<JID && JID<1000){redesign_element();/*doplní Martin Vlček předesignování tabulek*/}//první sloupec tabulky, libovolný řádek, přepnutí jednotek
+								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 						}
 						else
 						{
@@ -1957,7 +1957,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					}
 					int puvJID=JID;
 					getJobID_OnClick(X,Y);
-					//Memo3->Visible=true;Memo3->Lines->Add(JID);
+					Memo3->Visible=true;Memo3->Lines->Add(JID);
 					if(JID==0){kurzor(posun_v);pom_element->stav=2;}//ELEMENT
 					if(puvJID!=JID && (puvJID==0 || JID==0))REFRESH();//důvod k REFRESH, pouze v případě změny elementu
 					if(JID==100){kurzor(posun_l);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//hlavička TABULKA
@@ -2049,8 +2049,17 @@ void TForm1::getJobID_OnClick(int X, int Y)
 		if(IdxRow==0)JID=100+0;//hlavička
 		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 		{
-			if(pom_element->mGrid->GetIdxColum(X,Y)==0)JID=100+IdxRow;//řádky v prvním sloupeci
-			else JID=1000+IdxRow;//řádky v dalších sloupcích
+			//old
+			//if(pom_element->mGrid->GetIdxColum(X,Y)==0)JID=100+IdxRow;//řádky v prvním sloupeci
+			//else JID=1000+IdxRow;//řádky v dalších sloupcích
+			//--old
+			int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+			if(IdxCol==0)//řádky v prvním sloupeci
+			{
+				if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+				else JID=1000+IdxRow;
+			}
+			else JID=2000+IdxRow;//řádky v dalších sloupcích
 		}
 	}
 	else //tabulka nenalezena, takže zkouší najít ELEMENT
@@ -2968,9 +2977,9 @@ void TForm1::design_element(Cvektory::TElement *E)
 	//definice barev
 	TColor clHeaderFont=clBlack;
 	TColor clBackgroundHidden=m.clIntensive(RGB(128,128,128),105);
-	TColor clBorder= clGray;
-	TColor clFontLeft = clGray;
-	TColor clFontRight = clBlue;
+	TColor clBorder= (TColor)RGB(128,128,128);
+	TColor clFontLeft = (TColor)RGB(128,128,128);
+	TColor clFontRight = (TColor)RGB(43,87,154);
 	TColor clBottomBorder = clBlack;
 	TColor clRightBorder  = clBlack;
 
@@ -3107,8 +3116,9 @@ void TForm1::design_element(Cvektory::TElement *E)
 		{
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,5);
+			E->mGrid->DefaultCell.isLink->Color=clFontRight;//přiřazení barvy fontu
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="PT1 "+cas;
+			E->mGrid->Cells[0][1].Text="PT1 <a>"+cas+"</a>";
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text="80";
 			E->mGrid->Cells[0][2].Text="PTo "+cas;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text="20";
