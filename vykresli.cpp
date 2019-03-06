@@ -2549,8 +2549,8 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
-
-	short size=8*F->Zoom; //pův. 7
+							 //pův. 7
+	short size=8*F->Zoom; if(stav==2)size=9*F->Zoom;
 	short sklon=50;   //pův. 45°
 
 	//barva výplně
@@ -2598,11 +2598,13 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Font->Color=barva;
 		canv->Font->Size=F->m.round(2*Z);
 		canv->Font->Name="Arial";
+		canv->Font->Style = TFontStyles();
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
 		if(typ==1)//normální zobrazení typ==1
 		{
+			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
 			//rotace
 			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 			{
@@ -2732,7 +2734,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		AnsiString T=short_name;if(Z>4*3){T=name;canv->Font->Size=2*Z;}//od daného zoomu zobrazuje celý název
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
-      if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
+			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
 			if(rotace==0 || rotace==180)drawRectText(canv,zakladna,T); //nefunguje správně při rotaci //pro po orototován9 o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
 			else
 			{
@@ -2753,8 +2755,8 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
-	short size=m.round(3.5*Z);
-	float width=0.8*Z;
+	short size=m.round(3.5*Z);if(stav==2)size=m.round(3.7*Z);
+	float width=0.8*Z;if(stav==2)width=1*Z;
 
 	TColor barva=clBlack; if(eID==6)barva=clRed;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
@@ -2838,9 +2840,11 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		canv->Font->Color=barva;if(eID==5 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);
 		canv->Font->Size=2*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+		canv->Font->Style = TFontStyles();
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
 		if(typ==1)//normální zobrazení
 		{
+			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
 			//rotace
 			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 			{
