@@ -5,6 +5,7 @@
 #include "scGPControls.hpp"//knihovna kvùli buttonumatp.
 #include "scGPExtControls.hpp"//knihovna kvùli editbox
 #include "scHtmlControls.hpp"//knihovna kvùli scHTMLLabel
+#include "MyString.h"//kvùli parsování
 //---------------------------------------------------------------------------
 class TmGrid
 {
@@ -52,6 +53,9 @@ class TmGrid
 		TBrush *isEmpty;//podmínìné formátování, pozadí buòky, když je prázdná
 		TFont *isNegativeNumber;//podmínìné formátování, pokud je zaporné èíslo
 		TFont *isZero;//podmínìné formátování, pokud se jedná o nulové èíslo
+		TFont *isLink;//podmínìné formátování v pøípadì výskytu tagu <a> resp </a>
+		TPoint LinkCoordinateStart;//kvùli uložení citelné oblasti pro link dané buòky
+		TPoint LinkCoordinateEnd;//kvùli uložení citelné oblasti pro link dané buòky
 		UnicodeString Text;//samotný text buòky
 	};
 
@@ -82,6 +86,9 @@ class TmGrid
 	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=2);//zajistí zvýraznìní dané buòky
 	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù dle èísla øádku Row
 	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
+	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznìní orámování tabulky
+	void HighlightTableOnMouse(int X,int Y);//zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
+	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistí pøebarvení odkazu v buòce odstínem barvy odkazu
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPComboBox *getCombo(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
@@ -97,7 +104,9 @@ class TmGrid
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	long GetIdxRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
-	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+	TPoint CheckLink(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
+	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí zda se na dané buòce a souøadnicích nachází odkaz
 	//promìnné
 	long Tag;//ID formuláøe, v kterém je tabulka èi tabuky daného formuláøe volány
 	long ID;//ID konkrétní tabulky, v jednom formuláøi vhodné unikátní èíslo, mimo formuláøe totožná hodnota nevadí (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
@@ -121,6 +130,7 @@ class TmGrid
 
  private:
 	TForm *Form;
+	TMyString ms;
 
 	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter

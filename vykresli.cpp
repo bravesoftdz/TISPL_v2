@@ -209,7 +209,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			E=E->dalsi;//přeskočí hlavičku
 			while(E!=NULL)
 			{
-				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,1);
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav);
 				 //zde bude ještě vykreslení g_elementu
 				 //zde bude ještě vykreslení ještě kót
 				 if(E->predchozi->n!=0)vykresli_koty(canv,E->predchozi,E);
@@ -2549,8 +2549,8 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
-
-	short size=8*F->Zoom; //pův. 7
+							 //pův. 7
+	short size=8*F->Zoom; if(stav==2)size=9*F->Zoom;
 	short sklon=50;   //pův. 45°
 
 	//barva výplně
@@ -2598,11 +2598,13 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Font->Color=barva;
 		canv->Font->Size=F->m.round(2*Z);
 		canv->Font->Name="Arial";
+		canv->Font->Style = TFontStyles();
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
 		if(typ==1)//normální zobrazení typ==1
 		{
+			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
 			//rotace
 			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 			{
@@ -2633,7 +2635,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	//konstanty
 	double pLOvC=1/2.0;//část z LO v delší části (většinou v polovina),bude sloužit na vyosení LO mimo osu robota
 	double DkRB=1.2*Z/F->m2px;//délka k referenčnímu bodu od středu prvního kloubu ramena, respektive odsazení robota od linky
-	float tloustka_linie=1/3.0;//vykreslovací linie robota
+	float tloustka_linie=1.05/3.0;//vykreslovací linie robota
 	float zaobleni=4*Z;//míra zaoblení základny
 	float sirka_zakladny=Robot_sirka_zakladny*Z/F->m2px;
 	float delka_zakladny=Robot_delka_zakladny*Z/F->m2px;
@@ -2644,6 +2646,8 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double DR=sqrt(pow(LO*pLOvC,2)+pow(DkRB-DT,2));//délka ruky/ramene obou částí (paže i předloktí) ///old model (tryska v extremní poloze stejný úhel jako rameno): double DR=(DkRB-DT)/cos(atan((LO*pLOvC)/DkRB));
 	TColor barva=clBlack;
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
+	if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn
+
 	if(rotace==90 || rotace==270){float temp=delka_zakladny;delka_zakladny=sirka_zakladny;sirka_zakladny=temp;}
 																		// if(eID==4)vykresli_lakovaci_okno(canv,X,Y,LO,delka_ramena,rotace);
 	//přidružené elementy
@@ -2724,11 +2728,13 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
 	{
 		if(typ==0)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
+		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 		canv->Font->Size=5*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
 		AnsiString T=short_name;if(Z>4*3){T=name;canv->Font->Size=2*Z;}//od daného zoomu zobrazuje celý název
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
+			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
 			if(rotace==0 || rotace==180)drawRectText(canv,zakladna,T); //nefunguje správně při rotaci //pro po orototován9 o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
 			else
 			{
@@ -2749,8 +2755,8 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
-	short size=m.round(3.5*Z);
-	float width=0.8*Z;
+	short size=m.round(3.5*Z);if(stav==2)size=m.round(3.7*Z);
+	float width=0.8*Z;if(stav==2)width=1*Z;
 
 	TColor barva=clBlack; if(eID==6)barva=clRed;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
@@ -2834,9 +2840,11 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		canv->Font->Color=barva;if(eID==5 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);
 		canv->Font->Size=2*Z;
 		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
+		canv->Font->Style = TFontStyles();
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
 		if(typ==1)//normální zobrazení
 		{
+			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
 			//rotace
 			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 			{

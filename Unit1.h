@@ -490,7 +490,7 @@ public:
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE};Takce Akce;
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
-  Cvektory::TElement *pom_element;
+	Cvektory::TElement *pom_element;
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA V›PO»ETNÕ »¡ST PO tj. PO_math
 	UnicodeString get_user_name();
