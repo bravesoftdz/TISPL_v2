@@ -1802,6 +1802,8 @@ void  TmGrid::HighlightLink(unsigned long Col,unsigned long Row,short Intensive)
 	Cmy m;
 	Form->Canvas->Font=Cells[Col][Row].Font;
 	Form->Canvas->Font->Color=m.clIntensive(Cells[Col][Row].Font->Color,Intensive);
+	Form->Canvas->Brush->Style=bsClear;
+	Form->Canvas->Brush->Color=clWhite;
 	Form->Canvas->TextOutW(Cells[Col][Row].LinkCoordinateStart.x,Cells[Col][Row].LinkCoordinateStart.y,ms.EP(Cells[Col][Row].Text,"<a>","</a>"));
 }
 //---------------------------------------------------------------------------
