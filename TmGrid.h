@@ -5,6 +5,7 @@
 #include "scGPControls.hpp"//knihovna kvùli buttonumatp.
 #include "scGPExtControls.hpp"//knihovna kvùli editbox
 #include "scHtmlControls.hpp"//knihovna kvùli scHTMLLabel
+#include "MyString.h"//kvùli parsování
 //---------------------------------------------------------------------------
 class TmGrid
 {
@@ -87,6 +88,7 @@ class TmGrid
 	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
 	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznìní orámování tabulky
 	void HighlightTableOnMouse(int X,int Y);//zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
+	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistí pøebarvení odkazu v buòce odstínem barvy odkazu
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPComboBox *getCombo(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
@@ -128,6 +130,7 @@ class TmGrid
 
  private:
 	TForm *Form;
+	TMyString ms;
 
 	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter

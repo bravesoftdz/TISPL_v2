@@ -2,7 +2,7 @@
 #pragma hdrstop
 #include "TmGrid.h"
 #include "antialiasing.h"
-#include "MyString.h"
+#include "my.h"
 #include <Clipbrd.hpp>
 #include "gapoTT.h"
 #include "gapoV.h"
@@ -502,7 +502,6 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			unsigned int Pos=Cell.Text.Pos("<a>");//pozice html tagu
 			if(Pos>0)//parsování HTML
 			{
-				TMyString ms;
 				AnsiString T1=ms.TrimRightFrom(Cell.Text,"<a>");//AnsiString T1=Cell.Text.SubString(1,Pos-1);
 				AnsiString Link=ms.EP(Cell.Text,"<a>","</a>");
 				AnsiString T2=ms.TrimLeftFromText(Cell.Text,"</a>");
@@ -520,9 +519,6 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 				Canv->Font=Cell.Font;
 				Canv->Font->Size*=Zoom;
 				Canv->TextOut(L+w,T,T2);
-ShowMessage(Cell.LinkCoordinateStart.x);  //dobrá
-				ShowMessage(Cell.LinkCoordinateEnd.x); //více vpravo
-
 			}
 			else //bez odkazu
 			Canv->TextOut(L,T,Cell.Text);
@@ -761,7 +757,6 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmínìné formátování
 	if(!N->Focused())//pokud je na buòce focus resp. je aktivní
 	{
-		TMyString ms;
 		N->Value=ms.MyToDouble(Cell.Text);
 	}
 	//vlastník
@@ -1216,7 +1211,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							Cells[ColCell_1][RowCell_1].Align=CENTER;
 							TscGPNumericEdit *N=createNumeric(ColCell_1,RowCell_1);
 							N->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left-Cells[ColCell_2][RowCell_2].RightBorder->Width;
-							N->Value=F->ms.MyToDouble(RefCell.Text);//bere až z poslední buòky sluèované oblasti
+							N->Value=ms.MyToDouble(RefCell.Text);//bere až z poslední buòky sluèované oblasti
 							N=NULL;delete N;
 						}break;
 						case LABEL:
@@ -1793,6 +1788,15 @@ bool TmGrid::CheckLink(int X,int Y,unsigned long Col,unsigned long Row)
 	&& Cells[Col][Row].LinkCoordinateStart.y<=Y && Y<=Cells[Col][Row].LinkCoordinateEnd.y)
 	return true;
 	else return false;
+}
+//---------------------------------------------------------------------------
+//zajistí pøebarvení odkazu v buòce danou barvou
+void  TmGrid::HighlightLink(unsigned long Col,unsigned long Row,short Intensive)
+{
+	Cmy m;
+	Form->Canvas->Font=Cells[Col][Row].Font;
+	Form->Canvas->Font->Color=m.clIntensive(Cells[Col][Row].Font->Color,Intensive);
+	Form->Canvas->TextOutW(Cells[Col][Row].LinkCoordinateStart.x,Cells[Col][Row].LinkCoordinateStart.y,ms.EP(Cells[Col][Row].Text,"<a>","</a>"));
 }
 //---------------------------------------------------------------------------
 

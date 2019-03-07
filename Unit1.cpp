@@ -1273,6 +1273,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				}
 				else bmp_out->Transparent=false;
 
+//				//test odstranění blikání mgridů viz bmp_out->Canvas->Draw(100,100,bmp);do bmp předat hotový mgrid
+//				SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
+//				Graphics::TBitmap *bmp=new Graphics::TBitmap;
+//				bmp->LoadFromFile("test.bmp");
+//				bmp_out->Canvas->Draw(100,100,bmp);
+//				delete(bmp);
+//				//---test
+
 				Canvas->Draw(0,0,bmp_out);
 				delete (bmp_out);//velice nutné
 				delete (bmp_in);//velice nutné
@@ -1702,7 +1710,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
 								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_v);}//ELEMENT posun
-								if(JID==100){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
+								if(JID==100 || 1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
 								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 						}
 						else
@@ -1950,18 +1958,19 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD==NAHLED && pom_temp!=NULL)
 			{
 					kurzor(standard);//umístít na začátek, JID==-1
-					if(pom_element!=NULL)//odstranění předchozí případného highlightnutí buď tabulky nebo elementu
+					if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
 					{
-						if(pom_element->mGrid!=NULL && JID==100)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
+						if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
+						if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
 						if(JID==0){pom_element->stav=1;}//ELEMENT
 					}
 					int puvJID=JID;
 					getJobID_OnClick(X,Y);
-					Memo3->Visible=true;Memo3->Lines->Add(JID);
+					//Memo3->Visible=true;Memo3->Lines->Add(JID);
 					if(JID==0){kurzor(posun_v);pom_element->stav=2;}//ELEMENT
 					if(puvJID!=JID && (puvJID==0 || JID==0))REFRESH();//důvod k REFRESH, pouze v případě změny elementu
-					if(JID==100){kurzor(posun_l);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//hlavička TABULKA
-					if(100<JID && JID<1000){kurzor(pan);}//první sloupec tabulky, libovolný řádek
+					if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_l);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
+					if(100<JID && JID<1000){kurzor(pan);pom_element->mGrid->HighlightLink(0,JID-100,-50);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -3227,12 +3236,35 @@ void TForm1::redesign_element()//Update jednotek a šířek v tabulkách
 		Tcas=1;
 	}
 	//Nastavení všech tabulek co jsou v náhledu
+	//////////test
+	Cvektory::TElement *E=pom_temp->elementy->dalsi;//zde lze přeskočit hlavičku
+	while (E!=NULL)
+	{
+		E->mGrid->Cells[0][1].Text="test"+AnsiString(E->n);
+		E=E->dalsi;
+	}
+	E=NULL; delete E;
 	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
 	while (O!=NULL)
 	{
-		Cvektory::TElement *E=O->elementy;//////////
+		Cvektory::TElement *E=O->elementy;//////////tady se nesmí přeskakovat hlavička
 		while (E!=NULL)
-		{    E->mGrid->Cells[0][0].Text="test";
+		{
+			if(E->n>0)//přeskočí funkčně hlavičku
+			E->mGrid->Cells[0][1].Text="test"+AnsiString(E->n);
+			E=E->dalsi;
+		}
+		E=NULL; delete E;
+		O=O->dalsi;
+	}
+	O=NULL; delete O;
+	//////////test konec
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while (O!=NULL)
+//	{
+//		Cvektory::TElement *E=O->elementy;//////////
+//		while (E!=NULL)
+//		{
 //			switch(E->eID)
 //			{
 //				case 0://stop stanice
@@ -3284,12 +3316,12 @@ void TForm1::redesign_element()//Update jednotek a šířek v tabulkách
 //				break;
 //				}
 //			}
-			E=E->dalsi;
-		}
-		O=O->dalsi;
-		E=NULL; delete E;
-	}
-	O=NULL; delete O;
+//			E=E->dalsi;
+//		}
+//		O=O->dalsi;
+//		E=NULL; delete E;
+//	}
+//	O=NULL; delete O;
 	writeINI("nastaveni_nahled", "cas", Tcas);
 	writeINI("nastaveni_nahled", "delka", Tdraha);
 	REFRESH();
