@@ -1079,7 +1079,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 {
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
-		ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
+		//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 
@@ -1089,7 +1089,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,ID,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
 
-		//if(AnsiString(Tag).SubString(1,1)=="7")FormX->OnClick(Tag,ID,Col,Row);//z unit1
+		if(AnsiString(Tag).SubString(1,1)=="6")Form2->OnClick(Tag,ID,Col,Row);//z unit1 do unit2 test
 	}
 }
 //---------------------------------------------------------------------------

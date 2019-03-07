@@ -313,7 +313,7 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 //test volání pøi onclick
 void TForm2::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	ShowMessage("Došlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	ShowMessage("UNIT2\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
 //	mGrid->HighlightCell(Col,Row);
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
