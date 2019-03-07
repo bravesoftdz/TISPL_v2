@@ -2855,27 +2855,32 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 			if ((x<=m.L2Px(O->Xt)+O->mGrid->Width && x>=m.L2Px(O->Xt)) ||//Překrývají se v X souřadnici
 			(x+E->mGrid->Width<=m.L2Px(O->Xt)+O->mGrid->Width && x+E->mGrid->Width>=m.L2Px(O->Xt)))
 			{
-				E->Xt=m.P2Lx(x);
+				//E->Xt=m.P2Lx(x);
+				x=x;
 				if ((y>=m.L2Py(O->Yt) && y<=m.L2Py(O->Yt)+O->mGrid->Height) ||//Překrývají se v X a Y souřadnici
 				(y+E->mGrid->Height>=m.L2Py(O->Yt) && y+E->mGrid->Height<=m.L2Py(O->Yt)+O->mGrid->Height))
 				{
-					E->Yt=m.P2Ly(y1);
+					//E->Yt=m.P2Ly(y1);
+					y=y1;
+					prekryti++;
 				}
-				else E->Yt=m.P2Ly(y);// Překrývají se jen v X souřadnici
-				prekryti++;//počet překrytí c X souřadnicích
+				//else E->Yt=m.P2Ly(y);// Překrývají se jen v X souřadnici
+				//prekryti++;//počet překrytí c X souřadnicích
 			}
-			else//Nepřekrývají se v X souřadnici
-			{
-				if (prekryti==0)//Pokud došlo k překrytí nějakým elementem, zabraní v dalším kroku (nekonfliktním) přemýstění
-				{
-					E->Xt=m.P2Lx(x);
-					E->Yt=m.P2Ly(y);
-				}
-			}
+//			else//Nepřekrývají se v X souřadnici
+//			{
+//				if (prekryti==0)//Pokud došlo k překrytí nějakým elementem, zabraní v dalším kroku (nekonfliktním) přemýstění
+//				{
+////					E->Xt=m.P2Lx(x);
+////					E->Yt=m.P2Ly(y);
+//				}
+//			}
 			if (prekryti==2)//pokud došlo ke 2 překrytím znamená to, že tabulku nelze nekonfliktně umístit
 			{
-				E->Xt=m.P2Lx(X);//vložení tabulky na kurzor
-				E->Yt=m.P2Ly(Y);
+//				E->Xt=m.P2Lx(X);//vložení tabulky na kurzor
+//				E->Yt=m.P2Ly(Y);
+				x=X;
+				y=Y;
 				break;//přerušení průchodu elementů, nejhorší možnost již nastala
 			}
 			O=O->predchozi;
@@ -2886,10 +2891,12 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 	{
 		if (hor)//pomocná podmínka aby tato větev operovala pouze s horizontálním rozložením kabiny
 		{
-			E->Xt=m.P2Lx(x);
-			E->Yt=m.P2Ly(y);
+//			E->Xt=m.P2Lx(x);
+//			E->Yt=m.P2Ly(y);
 		}
 	}
+	E->Xt=m.P2Lx(x);
+	E->Yt=m.P2Ly(y);
 
 	//Pro vertikální překlápění
 	if (E->predchozi->n>=1 && ver)
