@@ -48,7 +48,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->Cells[1][1].Text="abc0";
 
 		//E->mG->Columns[0].Width=800;
-		E->mG->SetColumnAutoFit(0);
+		//E->mG->SetColumnAutoFit(0);
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
