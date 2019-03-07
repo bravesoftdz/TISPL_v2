@@ -1029,15 +1029,19 @@ TPoint TmGrid::getWidthHeightText(TCells &Cell)
 {
 	TPoint RET;
 	Form->Canvas->Font=Cell.Font;//nastavení fontu
+	AnsiString T=Cell.Text;
+	if(Cell.Text.Pos("<a>"))//pokud obsahuje odkaz, tak vyseparovat
+	T=ms.delete_repeat(ms.delete_repeat(T,"<a>"),"</a>");
+
 	if(Cell.Font->Orientation==900 || Cell.Font->Orientation==2700)
 	{
-		RET.Y=Form->Canvas->TextWidth(Cell.Text);
-		RET.X=Form->Canvas->TextHeight(Cell.Text);
+		RET.Y=Form->Canvas->TextWidth(T);
+		RET.X=Form->Canvas->TextHeight(T);
 	}
 	else
 	{
-		RET.X=Form->Canvas->TextWidth(Cell.Text);
-		RET.Y=Form->Canvas->TextHeight(Cell.Text);
+		RET.X=Form->Canvas->TextWidth(T);
+		RET.Y=Form->Canvas->TextHeight(T);
   }
 	return RET;
 }
@@ -1084,6 +1088,8 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,ID,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
+
+		//if(AnsiString(Tag).SubString(1,1)=="7")FormX->OnClick(Tag,ID,Col,Row);//z unit1
 	}
 }
 //---------------------------------------------------------------------------
