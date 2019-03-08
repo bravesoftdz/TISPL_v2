@@ -171,6 +171,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	VyID=10;//objekt-symbol vyhýbky - ID typu
 	knihovna_id=0;
 	element_id=99;
+	refresh_mGrid=true;
 
 	DesignSettings();//nastavení designu v konstruktoru
 }
@@ -1298,7 +1299,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//vykreslování mGridu
-			if(pom_temp->elementy!=NULL)d.vykresli_mGridy();
+			if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy();
 
 			//grafické měřítko
 			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
@@ -1412,10 +1413,11 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing)
-void TForm1::REFRESH(bool invalidate)
+void TForm1::REFRESH(bool mGrid)
 {
-	if(!antialiasing && invalidate)Invalidate();
-	else {FormPaint(this);if(Label_wip->Visible)Label_wip->Invalidate();}//pokude je zapntutý antialiasing neproblikne, ale jen se "přeplácne" bitmapou nedojde k probliknutí
+	if(mGrid)refresh_mGrid=true;else refresh_mGrid=false;
+	FormPaint(this);
+	if(Label_wip->Visible)Label_wip->Invalidate();//}//pokude je zapntutý antialiasing neproblikne, ale jen se "přeplácne" bitmapou nedojde k probliknutí
 	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------

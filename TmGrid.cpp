@@ -282,10 +282,11 @@ void TmGrid::Show()
 	}
 }
 //---------------------------------------------------------------------------
-//zajistí vyvolání pøekreslení celé tabulky s pøeblikem, ale lépe používat pøímo ve v daném formuláøi FormPaint(this), což zajistí pøekreslení bez probliku
+//zajistí vyvolání pøekreslení celé tabulky
 void TmGrid::Refresh()
 {
-	 Form->Repaint();
+	 //Form->Repaint();// s pøeblikem, ale lépe používat pøímo ve v daném formuláøi FormPaint(this), což zajistí pøekreslení bez probliku
+	 Show();
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení celé tabulky vèetnì gridu, pokud

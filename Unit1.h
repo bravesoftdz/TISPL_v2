@@ -590,6 +590,7 @@ private:
 	bool upozornovat_na_zmenu_TT_parametru;
 	bool scSplitViews_closing_on_AA;
 	bool SplitViewOpen;
+	bool refresh_mGrid;
 
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
@@ -644,7 +645,7 @@ public:		// User declarations
   void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
 	void ZOOM_IN();//pøiblížení
 	void ZOOM_OUT();//oddálení
-	void REFRESH(bool invalidate=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
+	void REFRESH(bool mGrid=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
 	void DuvodUlozit(bool stav);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
