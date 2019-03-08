@@ -114,6 +114,14 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	HC=LoadCursor(HInstance,L"MOVE_POINT");
 	Screen->Cursors[11]=HC;
 
+  //Načtení z INI
+  AnsiString T=F->readINI("nastaveni_nahled", "cas");
+	if(T=="")PTunit=0;else PTunit=T.ToInt();
+	T=F->readINI("nastaveni_nahled","LO");
+	if(T=="")LOunit=0;else LOunit=T.ToInt();
+	T=F->readINI("nastaveni_nahled","Delka_otoce");
+	if(T=="")DOtocunit=0;else DOtocunit=T.ToInt();
+
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
 
@@ -6841,6 +6849,43 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
 	d.v.kopiruj_objekt(pom_temp,pom);
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
+}
+//---------------------------------------------------------------------------
+
+double TForm1::inLO(double inLO)
+{
+//input metoda na převod jednotek LO do Si
+	double LO=inLO;
+	if (LOunit == MM) LO=inLO/1000.0;
+	return LO;
+}
+
+double TForm1::outLO(double outLO)
+{
+//output metoda na převod jednotek z jádra do jednotek dle INI
+	double LO=outLO;
+	if (LOunit == MM) LO=outLO*1000.0;
+	return LO;
+}
+double TForm1::inPT(double inPT)
+{
+	double PT=inPT;
+	if (PTunit == SEC) PT=inPT/60.0;
+	return PT;
+
+}
+
+double TForm1::outPT(double outPT)
+{
+ 	double PT=outPT;
+	if (PTunit == SEC) PT=outPT*60.0;
+	return PT;
+}
+
+
+void __fastcall TForm1::scGPEdit1Change(TObject *Sender)
+{
+Memo3->Lines->Add("onchange");
 }
 //---------------------------------------------------------------------------
 
