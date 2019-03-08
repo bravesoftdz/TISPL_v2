@@ -580,7 +580,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			{
 				C=new TscGPComboBox(Form);//založí
 				C->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
-				C->Name="mGrid_COMBO_"+AnsiString(C->Tag);
+				C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
 				//události
 				C->OnClick=&getTagOnClick;
 				C->OnEnter=&getTagOnEnter;
