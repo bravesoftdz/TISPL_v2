@@ -502,7 +502,7 @@ public:
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o};
-  enum TJednotky{zakladni=0,ostatní};TJednotky Tdraha, Tcas; //MV pro uchování jednotek v náhledu
+  enum TJednotky{zakladni=0,ostatní};TJednotky TLO, Tcas, Tdelka_otoce; //MV pro uchování jednotek v náhledu
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
   TWndMethod PreviousWndProc;
@@ -563,6 +563,7 @@ private:
 	void ortogonalizace();//volá ortogonalizaci schéma, pokud je ortogonalizace povolena
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
+	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka,short sirka1,short sirka_o,short sirka_o1);
 
 	////promìnné
 	TDateTime TIME;

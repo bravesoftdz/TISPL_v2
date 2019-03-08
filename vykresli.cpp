@@ -3055,9 +3055,8 @@ void  Cvykresli::vykresli_mGridy()
 		 {
 			 E->mGrid->Left=m.L2Px(E->Xt);
 			 E->mGrid->Top=m.L2Py(E->Yt);
-			 //if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=false;
-			 //else
-//			 E->mGrid->MovingTable=true;
+			 if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
+			 else E->mGrid->MovingTable=false;
 			 E->mGrid->Show();//mGrid test
 			 E=E->dalsi;
 		 }
