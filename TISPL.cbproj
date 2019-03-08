@@ -116,12 +116,12 @@
         <BRCC_IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD;$(BRCC_IncludePath)</BRCC_IncludePath>
         <BCC_IncludePath>D:\SOFTWARE\TISPL\TISPL_sdilena\KOD</BCC_IncludePath>
         <LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;dbrtl.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACSqliteDriver.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vcldb.bpi;FireDACMySQLDriver.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DBXMySQLDriver.bpi;vclactnband.bpi;vclie.bpi;vclwinx.bpi</LinkPackageImports>
-        <VerInfo_Build>14</VerInfo_Build>
+        <VerInfo_Build>15</VerInfo_Build>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <Icon_MainIcon>TISPL_Icon1.ico</Icon_MainIcon>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=0.1.0.14;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o., 2017;LegalTrademarks=© ELTEP, s.r.o., 2017;OriginalFilename=Eltep - TISPL;ProductName=TISPL;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=0.1.0.15;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o., 2017;LegalTrademarks=© ELTEP, s.r.o., 2017;OriginalFilename=Eltep - TISPL;ProductName=TISPL;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppEnableHighDPI>true</AppEnableHighDPI>
     </PropertyGroup>
@@ -320,17 +320,11 @@
             <DependentOn>Unit2.h</DependentOn>
             <BuildOrder>32</BuildOrder>
         </CppCompile>
-        <CppCompile Include="Unit3.cpp">
-            <Form>Form3</Form>
+        <CppCompile Include="UnitX.cpp">
+            <Form>FormX</Form>
             <FormType>dfm</FormType>
-            <DependentOn>Unit3.h</DependentOn>
-            <BuildOrder>39</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="Unit4.cpp">
-            <Form>Form4</Form>
-            <FormType>dfm</FormType>
-            <DependentOn>Unit4.h</DependentOn>
-            <BuildOrder>38</BuildOrder>
+            <DependentOn>UnitX.h</DependentOn>
+            <BuildOrder>40</BuildOrder>
         </CppCompile>
         <CppCompile Include="uvod.cpp">
             <Form>Form_uvod</Form>
@@ -352,32 +346,31 @@
             <DependentOn>Z_rozliseni.h</DependentOn>
             <BuildOrder>37</BuildOrder>
         </CppCompile>
-        <FormResources Include="poznamky.dfm"/>
-        <FormResources Include="superform.dfm"/>
         <FormResources Include="report.dfm"/>
-        <FormResources Include="popUP_menu.dfm"/>
+        <FormResources Include="superform.dfm"/>
         <FormResources Include="parametry_vozik.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="pl_priority.dfm"/>
+        <FormResources Include="poznamky.dfm"/>
+        <FormResources Include="popUP_menu.dfm"/>
         <FormResources Include="uvod.dfm"/>
-        <FormResources Include="Unit2.dfm"/>
-        <FormResources Include="Unit1.dfm"/>
+        <FormResources Include="Z_rozliseni.dfm"/>
         <FormResources Include="TT_kalkulator.dfm"/>
-        <FormResources Include="parametry.dfm"/>
+        <FormResources Include="Unit1.dfm"/>
+        <FormResources Include="Unit2.dfm"/>
         <FormResources Include="gapoR.dfm"/>
         <FormResources Include="eDesigner.dfm"/>
-        <FormResources Include="gapoV.dfm"/>
         <FormResources Include="gapoTT.dfm"/>
+        <FormResources Include="gapoV.dfm"/>
         <FormResources Include="adjustace.dfm"/>
-        <FormResources Include="cesty.dfm"/>
         <FormResources Include="casovaOsa_info.dfm"/>
+        <FormResources Include="cesty.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
+        <FormResources Include="parametry.dfm"/>
+        <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="kalendar.dfm"/>
-        <FormResources Include="kabina_schema.dfm"/>
-        <FormResources Include="Z_rozliseni.dfm"/>
-        <FormResources Include="Unit4.dfm"/>
-        <FormResources Include="Unit3.dfm"/>
+        <FormResources Include="UnitX.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
