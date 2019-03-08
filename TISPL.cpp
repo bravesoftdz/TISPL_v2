@@ -28,6 +28,7 @@ USEFORM("parametry.cpp", Form_parametry);
 USEFORM("kabina_schema.cpp", Form_objekt_nahled);
 USEFORM("jig.cpp", Form_jig);
 USEFORM("kalendar.cpp", Form_kalendar);
+USEFORM("UnitX.cpp", FormX);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -59,6 +60,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
      Application->CreateForm(__classid(TF_gapoV), &F_gapoV);
      Application->CreateForm(__classid(TForm_adjustace), &Form_adjustace);
      Application->CreateForm(__classid(TForm_Z_rozliseni), &Form_Z_rozliseni);
+     Application->CreateForm(__classid(TFormX), &FormX);
      Application->ShowMainForm=false;//zabránìní zobrazení hlavního formu
 		Application->Run();
 	}
