@@ -916,7 +916,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->mGrid=new TmGrid(F);
 	novy->mGrid->Tag=6;//ID formu
 	novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-	novy->mGrid->typeID=novy->eID;//přiřazení typu elementu typu tabulky, bude sloužit pro rychlou klasifikaci typu elementu resp. tabulky
+	//novy->mGrid->typeID=novy->eID;//přiřazení typu elementu typu tabulky, bude sloužit pro rychlou klasifikaci typu elementu resp. tabulky
 
 	//návrácení ukazatelele na element k dalšímu použití
 	return novy;

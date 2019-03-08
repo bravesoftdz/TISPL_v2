@@ -530,7 +530,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case EDIT:
 		{
 			SetEdit(R,X,Y,Cell);
-			if(!MovingTable)
+			if(MovingTable)
 			{
 				Ttype TypeTemp=Cell.Type;Cell.Type=DRAW;//nastaví jinı typ, ale jen provizornì
 				SetComponents(Canv,R,Rt,X,Y,Cell);
@@ -544,7 +544,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case NUMERIC:
 		{
 			SetNumeric(R,X,Y,Cell);
-			if(!MovingTable)
+			if(MovingTable)
 			{
 				Ttype TypeTemp=Cell.Type;Cell.Type=DRAW;//nastaví jinı typ, ale jen provizornì
 				SetComponents(Canv,R,Rt,X,Y,Cell);
@@ -672,7 +672,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPEdit *E=createEdit(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==EDIT)E->Enabled=true;else E->Enabled=false;
-	E->Visible=MovingTable;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
+	E->Visible=!MovingTable;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
 	E->AutoSize=false;
 	E->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	E->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
@@ -719,7 +719,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPNumericEdit *N=createNumeric(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
-	N->Visible=MovingTable;//pøi posunu tabulky se skryje NUMERIC a je místo nìj DRAW
+	N->Visible=!MovingTable;//pøi posunu tabulky se skryje NUMERIC a je místo nìj DRAW
 	N->AutoSize=false;
 	N->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	N->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
@@ -808,7 +808,7 @@ TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
 	{
 		E = new TscGPEdit(Form);
 		E->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
-		E->Name="mGrid_EDIT_"+AnsiString(E->Tag);
+		E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);
 
 		//události
 		E->OnClick=&getTagOnClick;
@@ -826,7 +826,7 @@ TscGPNumericEdit *TmGrid::createNumeric(unsigned long Col,unsigned long Row)
 	{
 		N=new TscGPNumericEdit(Form);
 		N->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
-		N->Name="mGrid_NUMERIC_"+AnsiString(N->Tag);
+		N->Name="mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(N->Tag);
 		//události
 		N->OnClick=&getTagOnClick;
 		N->OnEnter=&getTagOnEnter;
@@ -843,7 +843,7 @@ TscHTMLLabel *TmGrid::createLabel(unsigned long Col,unsigned long Row)
 	{
 		L = new TscHTMLLabel(Form);
 		L->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
-		L->Name="mGrid_LABEL_"+AnsiString(L->Tag);
+		L->Name="mGrid_LABEL_"+AnsiString(ID)+"_"+AnsiString(L->Tag);
 
 		//události
 		L->OnClick=&getTagOnClick;
@@ -860,7 +860,7 @@ TscGPButton *TmGrid::createButton(unsigned long Col,unsigned long Row)
 	{
 		B = new TscGPButton(Form);
 		B->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
-		B->Name="mGrid_BUTTON_"+AnsiString(B->Tag);
+		B->Name="mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(B->Tag);
 
 		//události
 		B->OnClick=&getTagOnClick;
@@ -878,7 +878,7 @@ TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
 		Ch = new TscGPCheckBox(Form);
 		Ch->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
 		//Cell.Text=Ch->Tag; ShowMessage(Ch->Tag);
-		Ch->Name="mGrid_CHECK_"+AnsiString(Ch->Tag);
+		Ch->Name="mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(Ch->Tag);
 
 		//události
 		Ch->OnClick=&getTagOnClick;
@@ -896,7 +896,7 @@ TscGPRadioButton *TmGrid::createRadio(unsigned long Col,unsigned long Row)
 		Ra = new TscGPRadioButton(Form);
 		Ra->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
 		//Cell.Text=Ra->Tag; ShowMessage(Ra->Tag);
-		Ra->Name="mGrid_RADIO_"+AnsiString(Ra->Tag);
+		Ra->Name="mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(Ra->Tag);
 
 		//události
 		Ra->OnClick=&getTagOnClick;
@@ -1057,13 +1057,13 @@ void TmGrid::rotace_textu(long rotace)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //dle zadaného  èísla sloupce a èísla øádku  vrátí ukazatel nadanou komponentu
-TscGPEdit *TmGrid::getEdit(unsigned long Col,unsigned long Row){return (TscGPEdit *)Form->FindComponent("mGrid_EDIT_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscGPButton *TmGrid::getButton(unsigned long Col,unsigned long Row){return (TscGPButton *)Form->FindComponent("mGrid_BUTTON_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row){return (TscGPComboBox *)Form->FindComponent("mGrid_COMBO_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-TscHTMLLabel *TmGrid::getLabel(unsigned long Col,unsigned long Row){return (TscHTMLLabel *)Form->FindComponent("mGrid_LABEL_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPEdit *TmGrid::getEdit(unsigned long Col,unsigned long Row){return (TscGPEdit *)Form->FindComponent("mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPButton *TmGrid::getButton(unsigned long Col,unsigned long Row){return (TscGPButton *)Form->FindComponent("mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row){return (TscGPComboBox *)Form->FindComponent("mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPNumericEdit *TmGrid::getNumeric(unsigned long Col,unsigned long Row){return (TscGPNumericEdit *)Form->FindComponent("mGrid_NUMERIC_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscHTMLLabel *TmGrid::getLabel(unsigned long Col,unsigned long Row){return (TscHTMLLabel *)Form->FindComponent("mGrid_LABEL_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));};//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouí napø. pøi události onchange popø. dálších
 void TmGrid::getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row)
