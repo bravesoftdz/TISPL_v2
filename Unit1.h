@@ -502,7 +502,6 @@ public:
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j};
-  enum TJednotky{zakladni=0,ostatní};TJednotky TLO, Tcas, Tdelka_otoce; //MV pro uchování jednotek v náhledu
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
   TWndMethod PreviousWndProc;
@@ -662,10 +661,12 @@ public:		// User declarations
 	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na výpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
   short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
-  double inLO  (double inLO);
+	double inLO  (double inLO);
   double outLO (double outLO);
   double inPT  (double inPT);
-  double outPT (double outPT);
+	double outPT (double outPT);
+  double inDO (double outDO);
+	double outDO (double outDO);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
