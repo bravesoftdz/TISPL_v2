@@ -1017,13 +1017,75 @@ void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
 //hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 {
-	double offsetX=1;double offsetY=1;
-	//tady dodělat dle elementu velikost oblasti buď regionem nebo jen obdelníkem opsaným velikosti elementu
+	//vhodno přesunout do globálních proměnných do Cvykresli
+	short otoc_sirka=3.5;
+	short otoc_tloustka=0.8;
+	short size=7*F->Zoom;//stopka
+	short sklon=50;//stopka
+
+	//algoritmus prochází jednotlivé elementy a porovnává vůči jejich pozici aktuální pozici kurzoru, aby se zbytečně netestovalo vše (metoda se volá neustále při každém posunu kurzoru), postupuje algoritmus maximálně větveně (šetření strojového času), tedy v případě uspěchu ihned končí, v případě neúspěchu testuje dále
 	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!! kvůli ošetření ohledně existence elementu v objektu
 	while(E!=NULL)
 	{
-		if(E->X-offsetX<=X && X<=E->X+offsetX && E->Y-offsetY<=Y && Y<=E->Y+offsetY)break;
-		else E=E->dalsi;
+		if(E->n!=0)
+		{
+			int rotace=E->rotace_symbolu;
+			if(E->eID==0)//STOPKY
+			{
+				//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
+				float sizeX=size;float sizeY=size;
+				if(rotace==0 || rotace==180)sizeX/=2.0;
+				if(rotace==90 || rotace==270)sizeY/=2.0;
+				POINT body[3]={{F->m.round(m.L2Px(E->X)+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,sklon,rotace).y*sizeY)},{m.L2Px(E->X),m.L2Py(E->Y)},{F->m.round(m.L2Px(E->X)+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,360-sklon,rotace).y*sizeY)}};
+				//F->Canvas->Pen->Color=clBlue;F->Canvas->Polygon((TPoint*)body,2);  pro testovací zákres
+				if(PtInRegion(CreatePolygonRgn(body,3+1,WINDING),m.L2Px(X),m.L2Py(Y)))break;
+				else E=E->dalsi;
+			}
+			else
+			{
+				if(E->eID==5 || E->eID==6)//OTOČE
+				{
+					if(PtInCircle(TPoint(m.L2Px(X),m.L2Px(Y)),TPoint(m.L2Px(E->X),m.L2Px(E->Y)),m.round((otoc_sirka+otoc_tloustka/2.0)*F->Zoom)))break;
+					else E=E->dalsi;
+        }
+				else
+				{
+					if(1<=E->eID && E->eID<=4)//ROBOTI
+					{
+						//hledání, zda leží v regionu, region se liší dle rotace
+						HRGN hreg;
+						double DoSkRB=F->d.DoSkRB;
+						switch(rotace)
+						{
+							case 0: hreg=CreateRectRgn(m.L2Px(E->X-F->d.Robot_delka_zakladny/2.0),m.L2Py(E->Y+DoSkRB),m.L2Px(E->X+F->d.Robot_delka_zakladny/2.0),m.L2Py(E->Y-F->d.Robot_sirka_zakladny/2.0));break;
+							case 90:hreg=CreateRectRgn(m.L2Px(E->X-F->d.Robot_sirka_zakladny/2.0),m.L2Py(E->Y+F->d.Robot_delka_zakladny/2.0),m.L2Px(E->X+DoSkRB),m.L2Py(E->Y-F->d.Robot_delka_zakladny/2.0));break;
+							case 180:hreg=CreateRectRgn(m.L2Px(E->X-F->d.Robot_delka_zakladny/2.0),m.L2Py(E->Y+F->d.Robot_sirka_zakladny/2.0),m.L2Px(E->X+F->d.Robot_delka_zakladny/2.0),m.L2Py(E->Y-DoSkRB));DoSkRB*=-1;break;
+							case 270:hreg=CreateRectRgn(m.L2Px(E->X-DoSkRB),m.L2Py(E->Y+F->d.Robot_delka_zakladny/2.0),m.L2Px(E->X+F->d.Robot_sirka_zakladny/2.0),m.L2Py(E->Y-F->d.Robot_delka_zakladny/2.0));DoSkRB*=-1;break;
+						}
+						if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))break;
+						else//pokud nenalezeno, testuje ještě případně otoče robotů
+						{
+							if(E->eID==3 || E->eID==4)
+							{
+								if(rotace==0 || rotace==180)
+								{
+									if(PtInCircle(TPoint(m.L2Px(X),m.L2Py(Y)),TPoint(m.L2Px(E->X),m.L2Py(E->Y+DoSkRB)),m.round((otoc_sirka+otoc_tloustka/2.0)*F->Zoom)))break;//ROBOTi s otočemi
+									else E=E->dalsi;
+								}
+								else//90°, 270°
+								{
+									if(PtInCircle(TPoint(m.L2Px(X),m.L2Py(Y)),TPoint(m.L2Px(E->X+DoSkRB),m.L2Py(E->Y)),m.round((otoc_sirka+otoc_tloustka/2.0)*F->Zoom)))break;//ROBOTi s otočemi
+									else E=E->dalsi;
+                }
+							}
+							else E=E->dalsi;
+						}
+					}
+					else E=E->dalsi;
+				}
+			}
+		}
+		else  E=E->dalsi;
 	}
 	return E;
 }

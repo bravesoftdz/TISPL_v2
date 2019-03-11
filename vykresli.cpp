@@ -142,8 +142,8 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, to jak funkční tak i geometrické elementy, v případě aktivního náhledu objektu nevykresluje od daného/nahlíženého objektu uložené vektory, ale vektory aktuální z náhledu, tedy z pom_temp
 {
 	//vykreslení všech elementů mimo těch, co jsou v aktuálně zobrazovaném náhledu (tedy editovaných elementů), to kvůli aktuálnosti zobrazení, pokud náhled není aktivní jsou vykresleny všechny všech objekůt
-	short stav=1;
-	if(F->pom_temp!=NULL)stav=-1;//mimo aktivní zobrazovaný objekt jsou elementy neaktivní
+//	short stav=1;
+//	if(F->pom_temp!=NULL)stav=-1;//mimo aktivní zobrazovaný objekt jsou elementy neaktivní
 	Cvektory::TObjekt *O=v.OBJEKTY->dalsi;//přeskočí hlavičku
 	while (O!=NULL)
 	{
@@ -153,9 +153,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 				E=E->dalsi;//přeskočí hlavičku
 				while(E!=NULL)
 				{
-					if(F->pom_temp!=O)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
+					if(F->pom_temp->n!=O->n)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
 					{
-						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,stav);
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/);
 						//zde bude ještě vykreslení g_elementu
 					}
 					E=E->dalsi;//posun na další element
@@ -2549,9 +2549,8 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
-							 //pův. 7
 	short size=8*F->Zoom; if(stav==2)size=9*F->Zoom;
-	short sklon=50;   //pův. 45°
+	short sklon=50;
 
 	//barva výplně
 	TColor barva=clRed;
@@ -2581,9 +2580,9 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 	{
 		case 0: 	Y+=m.round(1*Z);break;
-		case 90: 	X-=m.round(1*Z/2);break;
+		case 90: 	X-=m.round(1*Z/2.0);break;
 		case 180: Y-=m.round(1*Z);break;
-		case 270: X+=m.round(1*Z/2);break;
+		case 270: X+=m.round(1*Z/2.0);break;
 	}
 	//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
 	float sizeX=size;float sizeY=size;

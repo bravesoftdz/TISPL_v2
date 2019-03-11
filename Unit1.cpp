@@ -1944,7 +1944,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				pom_element->Y+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
-			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
+			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
 			break;
 		}
 		case VYH://přidávání vyhýbky
