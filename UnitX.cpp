@@ -83,11 +83,10 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
            }
 
          }
-			 E->mGrid->Refresh();
-			 F->REFRESH(false);
-
-
-
+       //F->REFRESH();
+       E->mGrid->Refresh();
+       //V Unit1 je obsluha události pøi povolení Timeru
+       F->Timer2->Enabled=true;
 
 
        E=NULL;delete E;
