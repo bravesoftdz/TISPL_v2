@@ -1412,11 +1412,11 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-//vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing)
 void TForm1::REFRESH(bool mGrid)
 {
 	if(mGrid)refresh_mGrid=true;else refresh_mGrid=false;
 	FormPaint(this);
+	refresh_mGrid=true;//vrátí do původního stavu
 	if(Label_wip->Visible)Label_wip->Invalidate();//}//pokude je zapntutý antialiasing neproblikne, ale jen se "přeplácne" bitmapou nedojde k probliknutí
 	RM();//korekce chyby oskakování pravého menu
 }
@@ -1993,7 +1993,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					getJobID_OnClick(X,Y);
 					//Memo3->Visible=true;Memo3->Lines->Add(JID);
 					if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
-					if(puvJID!=JID && (puvJID==0 || JID==0))REFRESH();//důvod k REFRESH, pouze v případě změny elementu
+					if(puvJID!=JID && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
 					if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 					if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,-50);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 			}
