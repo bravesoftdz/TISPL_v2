@@ -83,12 +83,14 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
            }
 
          }
-       E->mGrid->Show();
-       //F->REFRESH();
+			 E->mGrid->Refresh();
+			 F->REFRESH(false);
+
+
+
+
 
        E=NULL;delete E;
-       input_state=NOTHING;
+			 input_state=NOTHING;
     }
-
-
 }
