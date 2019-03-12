@@ -4455,8 +4455,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2157
-        Top = 2320
+        Left = 2169
+        Top = 2332
         Width = 244
         Height = 31
         Align = alCustom
@@ -7457,7 +7457,7 @@ object Form1: TForm1
     object scGPLabel1: TscGPLabel
       Left = 344
       Top = 11
-      Width = 73
+      Width = 134
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBtnText
@@ -7491,7 +7491,7 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Layout = tlCenter
-      Caption = 'Orientace:'
+      Caption = 'Orientace n'#225'hledu:'
     end
     object scGPComboBox_orientace: TscGPComboBox
       Left = 444
@@ -8311,15 +8311,13 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL - Lakovna n'#225'hled'
-      ExplicitLeft = 459
-      ExplicitWidth = 99
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004C06700610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004C06780610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9450,7 +9448,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010138009406C40630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010138009406CC0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000D002000001002000000000000070
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

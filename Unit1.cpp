@@ -4067,7 +4067,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	{
 		case NAHLED:
 		{
-			pom_element=pom_element_smazat;
+			if (pom_element_smazat!=NULL) pom_element=pom_element_smazat;
 			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?","",MB_YESNO))
 			{
 				d.v.smaz_element(pom_element);
