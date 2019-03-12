@@ -507,7 +507,7 @@ public:
   enum Tm_mm{M=0,MM};Tm_mm DOtocunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec LOunit;//pøepínaè jednotek èasu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
-	Cvektory::TElement *pom_element;
+	Cvektory::TElement *pom_element,*pom_element_smazat;
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	UnicodeString get_user_name();

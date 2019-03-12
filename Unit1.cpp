@@ -2199,7 +2199,8 @@ void TForm1::onPopUP(int X, int Y)
 		case NAHLED:
 		{
 
-			if (pom_element!=NULL)//Pokud bylo kliknuto na element
+			pom_element_smazat=pom_element;
+			if (pom_element_smazat!=NULL)//Pokud bylo kliknuto na element
 			{
 				if(AnsiString("Nastavit "+pom_element->name).Length()>19) PopUPmenu->scLabel_smazat->Caption="  Smazat\n  "+pom_element->name.UpperCase();
 				else PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom_element->name.UpperCase();
@@ -4066,6 +4067,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	{
 		case NAHLED:
 		{
+			pom_element=pom_element_smazat;
 			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?","",MB_YESNO))
 			{
 				d.v.smaz_element(pom_element);
@@ -4074,6 +4076,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				REFRESH();
 				DuvodUlozit(true);
 			}
+			pom_element_smazat=NULL; delete pom_element_smazat;
 			break;
 		}
 		default:
@@ -4922,6 +4925,7 @@ void TForm1::vse_odstranit()
 		pom=NULL;delete pom;
 		pom_temp=NULL;delete pom_temp;
 		pom_element=NULL;delete pom_element;
+		pom_element_smazat=NULL;delete pom_element_smazat;
 		proces_pom=NULL;delete proces_pom;
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
