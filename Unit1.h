@@ -97,6 +97,7 @@
 #include "scHint.hpp"
 #include "scGPExtControls.hpp"
 #include "rHintWindow.hpp"
+#include "UnitX.h"
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -294,6 +295,7 @@ __published:	// IDE-managed Components
   TscExPanel *scExPanel_podklad;
 	TTimer *Timer1;
 	TMemo *Memo3;
+  TTimer *Timer2;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -482,6 +484,7 @@ __published:	// IDE-managed Components
 	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
+  void __fastcall Timer2Timer(TObject *Sender);
 
 
 // User declarations
