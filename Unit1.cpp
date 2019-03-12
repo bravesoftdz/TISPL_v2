@@ -6460,7 +6460,15 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-	Form2->ShowModal();
+//	Form2->ShowModal();
+Memo3->Visible=true;
+Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
+while(E!=NULL)
+{
+	 Memo3->Lines->Add(E->n);
+	 E=E->dalsi;
+}
+E=NULL;delete E;
 
 // if(MOD==NAHLED)
 //   {
@@ -6871,6 +6879,7 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender)
 
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
+	d.v.vymaz_elementy(pom,false);
 	d.v.kopiruj_objekt(pom_temp,pom);
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
