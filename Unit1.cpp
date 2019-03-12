@@ -197,7 +197,7 @@ void TForm1::DesignSettings()
 	scSplitView_OPTIONS->Align=alRight;
 
   scGPLabel_otoce->Font->Color=clDrawGridHeaderFont;
-  scGPLabel_roboti->Font->Color= scGPLabel_otoce->Font->Color;
+	scGPLabel_roboti->Font->Color= scGPLabel_otoce->Font->Color;
   scGPLabel_stop->Font->Color= scGPLabel_otoce->Font->Color;
   scGPLabel_geometrie->Font->Color = scGPLabel_otoce->Font->Color;
   scGPLabel_poznamky->Font->Color =  scGPLabel_otoce->Font->Color;
@@ -234,6 +234,27 @@ void TForm1::DesignSettings()
 		scGPLabel_roboti->ContentMarginLeft=4;
 		scListGroupKnihovObjektu->Height=1920; // kvůli odstranění bílé linky, která vznikala pod knihovnou objektů
 	}
+
+	////design spodní lišty////
+	scGPPanel_bottomtoolbar->Top=scGPPanel_statusbar->Top-scGPPanel_bottomtoolbar->Height;
+	scGPPanel_bottomtoolbar->Width=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+	scGPPanel_bottomtoolbar->Left=scSplitView_LEFTTOOLBAR->Width;
+	//vodorovné zarovnání prvků
+	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2-scGPLabel_otoce->Width;
+	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
+	scGPLabel1->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
+	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
+	scGPCheckBox_viditelnost->Left=scGPComboBox_orientace->Left+scGPComboBox_orientace->Width+22;
+	scGPLabel2->Left=scGPCheckBox_viditelnost->Left+scGPCheckBox_viditelnost->Width+22;
+	scButton_zamek->Left=scGPLabel2->Left+scGPLabel2->Width;
+	//svislé zarovnání prvků
+	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
+	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
+	scGPCheckBox_viditelnost->Top=scGPButton_ulozit->Top;
+	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
+	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
+	scGPLabel2->Top=scGPLabel1->Top;
+	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 
 	//pozice ovládacích prvků
 //	scListGroupNastavProjektu->Left=0;
@@ -1945,6 +1966,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
+			//zatím jen pro posun po ose x
+			if (pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x)
+				Smazat1Click(Sender);
 			break;
 		}
 		case VYH://přidávání vyhýbky
@@ -2172,6 +2196,27 @@ void TForm1::onPopUP(int X, int Y)
 		}
 		break;
 		case SIMULACE:break;
+		case NAHLED:
+		{
+
+			if (pom_element!=NULL)//Pokud bylo kliknuto na element
+			{
+				if(AnsiString("Nastavit "+pom_element->name).Length()>19) PopUPmenu->scLabel_smazat->Caption="  Smazat\n  "+pom_element->name.UpperCase();
+				else PopUPmenu->scLabel_smazat->Caption="  Smazat "+pom_element->name.UpperCase();
+				PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
+				PopUPmenu->Item_smazat->Visible=true;PopUPmenu->Panel_UP->Height+=34;
+			}
+			else
+			{
+			PopUPmenu->Item_posouvat->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_posunout->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_priblizit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_oddalit->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_vybrat_oknem->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			PopUPmenu->Item_cely_pohled->Visible=true;PopUPmenu->Panel_DOWN->Height+=34;
+			}
+			break;
+		}
 		default://pro SCHEMA
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
@@ -4017,26 +4062,46 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Smazat1Click(TObject *Sender)
 {
-	//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
-	if(pom!=NULL)//pokud byl prvek nalezen
+	switch (MOD)
 	{
-		Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom);
-		if(Z!=NULL)
-			MB("Nelze smazat objekt, který je součástí technologické cesty zakázky např.: "+UnicodeString(Z->name));
-		else
+		case NAHLED:
 		{
-			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
+			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?","",MB_YESNO))
 			{
-				d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
-				d.v.sniz_indexy(pom);
-				pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+				d.v.smaz_element(pom_element);
+				pom_element=NULL;
+				Akce=NIC;
 				REFRESH();
 				DuvodUlozit(true);
 			}
+			break;
 		}
+		default:
+		{
+			//ať to nemusí znovu hledat beru z pom Cvektory::TObjekt *p=d.v.najdi_bod(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+			if(pom!=NULL)//pokud byl prvek nalezen
+			{
+				Cvektory::TZakazka *Z=d.v.obsahuje_segment_cesty_objekt(pom);
+				if(Z!=NULL)
+					MB("Nelze smazat objekt, který je součástí technologické cesty zakázky např.: "+UnicodeString(Z->name));
+				else
+				{
+				if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu objekt \""+pom->name.UpperCase()+"\" smazat?","",MB_YESNO))
+				{
+					d.v.smaz_objekt(pom);//nalezeny můžeme odstranit odstranit
+					d.v.sniz_indexy(pom);
+					pom=NULL;//delete p; nepoužívat delete je to ukazatel na ostra data
+					REFRESH();
+					DuvodUlozit(true);
+				}
+				}
+			}
+			else
+			S("nenalezen");
+			break;
+		}
+
 	}
-	else
-	S("nenalezen");
 }
 //---------------------------------------------------------------------------
 //zobrazí paramety jednoho procesu na časových osách
@@ -4405,16 +4470,8 @@ void TForm1::NP_input()
 	 scGPLabel_roboti->Caption="Roboti";
 	 scGPLabel_roboti->ContentMarginLeft=10;
 
-	 scEdit_nazev->Visible=true;
-	 scEdit_zkratka->Visible=true;
-
-	 scEdit_nazev->Top= scGPPanel_mainmenu->Height + 10 ;
-	 scEdit_zkratka->Top =  scEdit_nazev->Top;
-	 scEdit_nazev->Left = Simulace->Left;
-	 scEdit_zkratka->Left = scEdit_nazev->Left +  scEdit_nazev->Width + 10;
-
-	 scGPButton_OK->Visible=true;
-	 scGPButton_storno->Visible=true;
+//	 scGPButton_OK->Visible=true;
+//	 scGPButton_storno->Visible=true;
 
 	 //matamaticky exaktní napozicování tlačítek OK a storno
 	 Form1->m.designButton(scGPButton_OK, Form1, 1, 2);
@@ -4424,6 +4481,12 @@ void TForm1::NP_input()
 	 pom_temp->rozmer_kabiny.x=10;//default délka 10 m
 	 pom_temp->rozmer_kabiny.y=6;//default šířka 6 m
 	 pom_temp->Xk=m.P2Lx(scSplitView_LEFTTOOLBAR->Width+100);pom_temp->Yk=m.P2Ly((ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0)+pom_temp->rozmer_kabiny.y/2.0;//provizorní vložení
+
+	 //zapnutí spodního panelu
+	 scGPPanel_bottomtoolbar->Visible=true;
+	 //zmena horní lišty
+	 scGPPanel_mainmenu->Visible=false;
+	 scGPPanel_schema->Visible=true;
 
 	 Invalidate();
 	 REFRESH();
@@ -6506,6 +6569,12 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
 	{
+		//vypnutí spodního panelu
+		scGPPanel_bottomtoolbar->Visible=false;
+		//změna horní lišty
+		scGPPanel_mainmenu->Visible=true;
+		scGPPanel_schema->Visible=false;
+
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
 		on_change_zoom_change_scGPTrackBar();
@@ -6530,13 +6599,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPLabel_geometrie->Visible=false;
 		scGPLabel_poznamky->Visible=false;
 
-		scEdit_nazev->Visible=false;
-		scEdit_zkratka->Visible=false;
-
-		scEdit_nazev->Top= scGPPanel_mainmenu->Height + 10 ;
-		scEdit_zkratka->Top =  scEdit_nazev->Top;
-		scEdit_nazev->Left = Simulace->Left;
-		scEdit_zkratka->Left = scEdit_nazev->Left +  scEdit_nazev->Width + 10;
 		scGPButton_OK->Visible=false;
 		scGPButton_storno->Visible=false;
 

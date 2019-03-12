@@ -277,8 +277,6 @@ __published:	// IDE-managed Components
   TDrawGrid *DrawGrid_poznamky;
   TscGPButton *scGPButton_OK;
   TscGPButton *scGPButton_storno;
-  TscEdit *scEdit_nazev;
-  TscEdit *scEdit_zkratka;
   TscGPCheckBox *scGPCheckBox_zobraz_podklad;
   TscButton *scButton_nacist_podklad;
   TscGPCheckBox *scGPCheckBox_stupne_sedi;
@@ -296,6 +294,19 @@ __published:	// IDE-managed Components
 	TTimer *Timer1;
 	TMemo *Memo3;
   TTimer *Timer2;
+	TscGPPanel *scGPPanel_bottomtoolbar;
+	TscGPCheckBox *scGPCheckBox_viditelnost;
+	TscGPPanel *scGPPanel_schema;
+	TscGPGlyphButton *scGPGlyphButton1;
+	TscGPGlyphButton *scGPGlyphButton3;
+	TscGPGlyphButton *scGPGlyphButton7;
+	TscGPLabel *scGPLabel1;
+	TscGPComboBox *scGPComboBox_orientace;
+	TscGPButton *scGPButton_ulozit;
+	TscGPButton *scGPButton_zahodit;
+	TscGPLabel *scGPLabel2;
+	TscButton *scButton_zamek;
+	TscLabel *scLabel1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
