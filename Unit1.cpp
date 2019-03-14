@@ -1863,6 +1863,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
 		Label_zamerovac->Visible=false;pocitadlo_doby_neaktivity=0;//deaktivace_zamerovace();nelze
 		Timer_neaktivity->Enabled=false;
+		Timer_neaktivity->Interval=1000;
 		if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false && Form_osa_info->Showing==false)Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
 	}
 	else //výpis metrických souřadnic
@@ -2006,20 +2007,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			if(MOD==NAHLED && pom_temp!=NULL)
 			{
-					kurzor(standard);//umístít na začátek, JID==-1
-					if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
-					{
-						if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
-						if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
-						if(JID==0){pom_element->stav=1;}//ELEMENT
-					}
-					int puvJID=JID;
-					getJobID_OnClick(X,Y);
-					//Memo3->Visible=true;Memo3->Lines->Add(JID);
-					if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
-					if(puvJID!=JID && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
-					if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
-					if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,-50);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
+				pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
+				Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -2097,8 +2086,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	 else DrawGrid_knihovna->Enabled=false;*/
 }
 //---------------------------------------------------------------------------
-//vrátí do globální proměnné JID ID úlohy/funkcionality v místě kliku, -1 žádná, 0 - 9 rezervováno pro element, 10 - 99 - interaktivní text kóty, 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek, zároveň pokud bylo kliknuto na tabulku či element nahraje ukazatel do globální proměnné pom_element
-void TForm1::getJobID_OnClick(int X, int Y)
+//vrátí do globální proměnné JID ID úlohy/funkcionality v místě kurzoru, -1 žádná, 0 - 9 rezervováno pro element, 10 - 99 - interaktivní text kóty, 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek, zároveň pokud bylo kliknuto na tabulku či element nahraje ukazatel do globální proměnné pom_element
+void TForm1::getJobID(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
 	//nejdříve testování zda se nepřejelo myší přes obrys kabiny
@@ -2142,6 +2131,28 @@ void TForm1::getJobID_OnClick(int X, int Y)
 			}
 		}
 	}
+	Memo3->Visible=true;
+	Memo3->Lines->Add(s_mazat++);
+}
+//---------------------------------------------------------------------------
+//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
+void TForm1::setJobIDOnMouseMove(int X, int Y)
+{
+	kurzor(standard);//umístít na začátek
+	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
+	{
+		if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
+		if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
+		if(JID==0){pom_element->stav=1;}//ELEMENT
+	}
+	int puvJID=JID;
+	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element, možno odstranit, až se mGrid bude posílat do celkové bitmapy
+	getJobID(X,Y);
+	if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
+	if((puvJID!=JID || pom_element!=pom_element_puv) && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
+	if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
+	if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,-50);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
+	pom_element_puv=NULL;delete pom_element_puv;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -5703,6 +5714,11 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 		{
 			Timer_neaktivity->Enabled=false;
 			d.zobrazit_label_zamerovac(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+		}
+		if(MOD==NAHLED && ++pocitadlo_doby_neaktivity==2)
+		{
+			Timer_neaktivity->Enabled=false;
+			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 		}
 }
 //---------------------------------------------------------------------------

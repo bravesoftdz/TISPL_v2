@@ -4455,8 +4455,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2169
-        Top = 2332
+        Left = 2175
+        Top = 2338
         Width = 244
         Height = 31
         Align = alCustom
@@ -7309,8 +7309,8 @@ object Form1: TForm1
     end
   end
   object Memo3: TMemo
-    Left = 558
-    Top = 401
+    Left = 938
+    Top = 71
     Width = 185
     Height = 56
     Lines.Strings = (
@@ -7379,7 +7379,7 @@ object Form1: TForm1
       ImageIndex = -1
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 255
+      GlowEffect.AlphaValue = 175
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -7701,7 +7701,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 255
+      GlowEffect.AlphaValue = 175
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -7805,7 +7805,7 @@ object Form1: TForm1
       RepeatClickInterval = 100
       GlowEffect.Enabled = False
       GlowEffect.Color = clHighlight
-      GlowEffect.AlphaValue = 255
+      GlowEffect.AlphaValue = 175
       GlowEffect.GlowSize = 7
       GlowEffect.Offset = 0
       GlowEffect.Intensive = True
@@ -8317,7 +8317,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004C06780610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118007C067C0610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9448,7 +9448,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010138009406CC0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013800D006D00630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000D002000001002000000000000070
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
