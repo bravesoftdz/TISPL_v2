@@ -182,7 +182,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			line(canv,0,Y,F->ClientWidth*3,Y);
 		}
 
-		////vykreslení obrysu OBJEKTU
+		////vykreslení obrysu OBJEKTU - kabiny
 		//pero+výplň
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;

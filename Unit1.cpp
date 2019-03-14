@@ -2101,36 +2101,45 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 void TForm1::getJobID_OnClick(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
-	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));//TABULKA
-	if(pom_element!=NULL)//tabulka nalezena, tzn. klik či přejetí myší přes tabulku
+	//nejdříve testování zda se nepřejelo myší přes obrys kabiny
+						//roteč linií  //šířka linie
+	short Ov=Zoom*0.4+F->Zoom*0.2/2.0;
+	if
+	(
+		m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov ||//svislá levá
+		m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov ||//svislá pravá
+		m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y ||//vodorovná horní
+		m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y//vodorovná dolní
+	)JID=-2;
+	else//dále tabulky či elementy
 	{
-		int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
-		if(IdxRow==0)JID=100+0;//hlavička
-		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+		pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));//TABULKA
+		if(pom_element!=NULL)//tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 		{
-			//old
-			//if(pom_element->mGrid->GetIdxColum(X,Y)==0)JID=100+IdxRow;//řádky v prvním sloupeci
-			//else JID=1000+IdxRow;//řádky v dalších sloupcích
-			//--old
-			int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
-			if(IdxCol==0)//řádky v prvním sloupeci
+			int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
+			if(IdxRow==0)JID=100+0;//hlavička
+			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 			{
-				if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-				else JID=1000+IdxRow;
+				int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+				if(IdxCol==0)//řádky v prvním sloupeci
+				{
+					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+					else JID=1000+IdxRow;
+				}
+				else JID=2000+IdxRow;//řádky v dalších sloupcích
 			}
-			else JID=2000+IdxRow;//řádky v dalších sloupcích
 		}
-	}
-	else //tabulka nenalezena, takže zkouší najít ELEMENT
-	{
-		pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-		if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+		else //tabulka nenalezena, takže zkouší najít ELEMENT
 		{
-			JID=0;
-		}
-		else //ani element nenalezen, hledá tedy interaktivní TEXT, např. kóty atp.
-		{
-			//if()RET=10-99 zcela doplnit
+			pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+			if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+			{
+				JID=0;
+			}
+			else //ani element nenalezen, hledá tedy interaktivní TEXT, např. kóty atp.
+			{
+				//if()RET=10-99 zcela doplnit
+			}
 		}
 	}
 }

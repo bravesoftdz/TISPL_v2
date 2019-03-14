@@ -1,0 +1,56 @@
+1) v Unit1 Loadnutí dat do Elementù resp. jejich mgridù -> založení metod inLO a outLO pro pøevody jednotek - globální promìnné
+2) kostra pro výpoèetní model Náhledu PO
+
+
+
+LAK - ujasnit - zadání pohonu - buï pøístup takový, že zadám hned pohon a nebo pohon nevyberu žádný a na základì
+zadání LO dojde k doporuèení rychlosti pohonu
+
+Pøi vložení KK robota, pokud nemám pøiøazený žádný pohon tak po zadání PT robota a LO dojde k výpoètu dop. rychlosti pohonu.
+Pøi vložení KK robota a mám pøiøazený pohon - je možné pøedvyplnit default rozmìr LO? A pokud by tomu tak bylo tak dojde
+k dopoèítání PT robota. Pøi zmìnì pohonu na jiný, dotázat se zda mùže být ovlinìno PT nebo LO (asi LO fixed)
+
+pøedúprava - elementy  - design v gridu jak mají vypadat, geometrie elementù - obecnì typy 
+
+bufferovací PP 
+prvotní zobrazení obdoba LAK bez orámování
+WT uchycení a WTè , k uchycení dojde v nìjaký okamžik, WTè mùže být nulové, protože CT mùže být zkrácen, nikdy však nesmím pøešvihnout CT
+(viz. foto tabule).Jak nazvat "klikatici" - délku v tìchto obj. Zadávání hodnot pravdìpod. do tabulky (PO - poznámky)
+
+pøejezdy a buffery
+
+NAV - galerie, umístìní lidských robotù. Zadání vzdálenosti mezi nima z toho vyplývají èasy PT na navìšování - velká 
+podobnost s tab. PO - poznámky - projekt nav_example - øešení èasu navìšování na Magnì.
+
+
+Posun øetìzu - je možný po ose Y (uvažováno výchozí zobrazení). V pøípadì orotování náhledu o 90st, kdy je retìz veden svisle kabinou -> je øetìz možné
+posouvat po ose X. 
+
+
+
+
+Transformace schematu do geometrie
+
+Pro korektní transformaci ze schématu do geometrie je nutné mít ortogonalizované schéma (90 st. úhly). 
+Byla uvažována automatická logika zalamování pøi umístìní nìkterých technolog. objektù, ale bylo rozhodnuto, že nebude automaticky rozhodováno a nebude se
+zalamovat.
+Pøevod do geometrie - pokud není uzavøen celý okruh linky, není možné spouštìt simulaci. 
+Pøi pøevodu do geometrie, je v nabídce knihovny zobrazeno vložení 4 obloukù a linie. Obloukem se rozumí pouze ta èást, kde je skuteèný oblouk - tzn
+bez liniové èásti. 
+Pøi nahrazování geo elementù, je uživatel dotazován skrze MB, zdali má k tomu skuteènì dojít, stejnì tak v pøípadì, kdy dochází ke zmìnì délky nad rámec 
+pracovní oblasti.
+Pøi nahrazování linie obloukem èi naopak, tak novìjší geo objekt nahrazuje ten pøedchozí, ale neplatí to v pøípadì nahrazování oblouku obloukem.
+
+Fèní elementy dìlìní na - STOP, roboti, otoèe, zarážky
+Geo - linie (délka, rotace), oblouky (délka, rotace)
+
+V pøípadì odstranìní STOP, vznikne na jeho místì zarážka.
+Pøi pøidání STOP stanice do linky s geometrií je linie èi oblouk rozdìlen na 2. 
+
+Quick Notes:
+
+Krok zpìt? Pøi zakreslování geometrie by se to hodilo
+
+
+
+
