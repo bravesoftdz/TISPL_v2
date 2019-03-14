@@ -182,7 +182,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			line(canv,0,Y,F->ClientWidth*3,Y);
 		}
 
-		////vykreslení obrysu OBJEKTU
+		////vykreslení obrysu OBJEKTU - kabiny
 		//pero+výplň
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
@@ -3166,7 +3166,7 @@ void Cvykresli::meritko(TCanvas *canv,long X,long Y)
 			if(X>-1 && Y>-1)L=X;
 			int T=Form1->scGPPanel_statusbar->Top-20;//umistění na Y - horního výchozího kraje měřítka
 			if(Y>-1 && Y>-1)T=Y;
-			if (F->scGPPanel_bottomtoolbar->Visible) T=T-F->scGPPanel_bottomtoolbar->Height-20;//posun při zobrazení toolbaru
+			if (F->scGPPanel_bottomtoolbar->Visible) T=T-F->scGPPanel_bottomtoolbar->Height;//posun při zobrazení toolbaru
 			int H=5;//výška měřítka
 			int K=1;//krok v metrech
 			if(Form1->Zoom==0.5)K=2;

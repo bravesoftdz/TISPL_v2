@@ -251,6 +251,7 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
+    ExplicitTop = 611
   end
   object Button3: TButton
     Left = 183
@@ -2528,6 +2529,7 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitTop = 653
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -3036,6 +3038,7 @@ object Form1: TForm1
     HideControls = False
     Animation = False
     DisplayMode = scsvmOverlay
+    ExplicitHeight = 543
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
       Top = 0
@@ -3896,220 +3899,6 @@ object Form1: TForm1
     GroupIndex = 0
     AllowAllUp = False
   end
-  object scGPButton_OK: TscGPButton
-    Left = 421
-    Top = 615
-    Width = 100
-    Height = 35
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMenuBar
-    Font.Height = -17
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 40
-    TabStop = True
-    Visible = False
-    OnClick = scGPButton_OKClick
-    Animation = False
-    Caption = 'Ulo'#382'it'
-    CanFocused = True
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = 33023
-    Options.HotColor = 1871359
-    Options.PressedColor = clLime
-    Options.FocusedColor = 1871359
-    Options.DisabledColor = clBlack
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 200
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 1871359
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = 1871359
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clWhite
-    Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
-    Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clAqua
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.StyleColors = True
-    HotImageIndex = -1
-    ModalResult = 1
-    ModalSetting = True
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clMaroon
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 1
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clRed
-    GlowEffect.FocusedColor = clRed
-    GlowEffect.PressedGlowSize = 1
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
-  object scGPButton_storno: TscGPButton
-    Left = 538
-    Top = 615
-    Width = 100
-    Height = 35
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMenuBar
-    Font.Height = -17
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 41
-    TabStop = True
-    Visible = False
-    OnClick = scGPButton_stornoClick
-    Animation = False
-    Caption = 'Storno'
-    CanFocused = True
-    CustomDropDown = False
-    Margin = -1
-    Spacing = 1
-    Layout = blGlyphLeft
-    ImageIndex = -1
-    ImageMargin = 0
-    TransparentBackground = True
-    Options.NormalColor = 33023
-    Options.HotColor = 1871359
-    Options.PressedColor = clRed
-    Options.FocusedColor = 33023
-    Options.DisabledColor = clPurple
-    Options.NormalColor2 = clNone
-    Options.HotColor2 = clNone
-    Options.PressedColor2 = clNone
-    Options.FocusedColor2 = clNone
-    Options.DisabledColor2 = clNone
-    Options.NormalColorAlpha = 255
-    Options.HotColorAlpha = 255
-    Options.PressedColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
-    Options.NormalColor2Alpha = 255
-    Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
-    Options.FocusedColor2Alpha = 255
-    Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = 33023
-    Options.FrameHotColor = 1871359
-    Options.FramePressedColor = clGray
-    Options.FrameFocusedColor = 1871359
-    Options.FrameDisabledColor = clBtnShadow
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 255
-    Options.FrameHotColorAlpha = 255
-    Options.FramePressedColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
-    Options.FontNormalColor = clWhite
-    Options.FontHotColor = clWhite
-    Options.FontPressedColor = clWhite
-    Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clAqua
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeFillGradientPressedAngle = -90
-    Options.ShapeFillGradientColorOffset = 25
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpRect
-    Options.ArrowSize = 9
-    Options.ArrowAreaSize = 0
-    Options.ArrowType = scgpatDefault
-    Options.ArrowThickness = 2
-    Options.ArrowThicknessScaled = False
-    Options.StyleColors = True
-    HotImageIndex = -1
-    ModalResult = 2
-    ModalSetting = True
-    FocusedImageIndex = -1
-    PressedImageIndex = -1
-    UseGalleryMenuImage = False
-    UseGalleryMenuCaption = False
-    ScaleMarginAndSpacing = False
-    WidthWithCaption = 0
-    WidthWithoutCaption = 0
-    SplitButton = False
-    RepeatClick = False
-    RepeatClickInterval = 100
-    GlowEffect.Enabled = False
-    GlowEffect.Color = clMaroon
-    GlowEffect.AlphaValue = 255
-    GlowEffect.GlowSize = 1
-    GlowEffect.Offset = 0
-    GlowEffect.Intensive = True
-    GlowEffect.StyleColors = True
-    GlowEffect.HotColor = clNone
-    GlowEffect.PressedColor = clRed
-    GlowEffect.FocusedColor = clRed
-    GlowEffect.PressedGlowSize = 1
-    GlowEffect.PressedAlphaValue = 255
-    GlowEffect.States = [scsHot, scsPressed, scsFocused]
-    ImageGlow = True
-    ShowGalleryMenuFromTop = False
-    ShowGalleryMenuFromRight = False
-    ShowMenuArrow = True
-    ShowFocusRect = True
-    Down = False
-    GroupIndex = 0
-    AllowAllUp = False
-  end
   object scSplitView_OPTIONS: TscSplitView
     Left = 952
     Top = 68
@@ -4164,11 +3953,12 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
+    ExplicitHeight = 543
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
       Width = 249
-      Height = 0
+      Height = 45
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
@@ -4203,10 +3993,11 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Caption = 'Nastaven'#237
+      ExplicitHeight = 0
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
-      Top = 0
+      Top = 45
       Width = 249
       Height = 88
       Margins.Left = 5
@@ -4242,6 +4033,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Obecn'#233
+      ExplicitTop = 0
       object ComboBoxCekani: TscComboBox
         Left = 3
         Top = 56
@@ -4455,8 +4247,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2169
-        Top = 2332
+        Left = 2187
+        Top = 2350
         Width = 244
         Height = 31
         Align = alCustom
@@ -5308,7 +5100,7 @@ object Form1: TForm1
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
-      Top = 88
+      Top = 133
       Width = 249
       Height = 334
       Align = alTop
@@ -5343,6 +5135,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Podklad'
+      ExplicitTop = 88
       object scGPButton_adjustace: TscGPButton
         Left = 11
         Top = 187
@@ -5805,7 +5598,7 @@ object Form1: TForm1
     Font.Name = 'Verdana'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 43
+    TabOrder = 41
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -5844,7 +5637,7 @@ object Form1: TForm1
     Font.Name = 'Verdana'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 44
+    TabOrder = 42
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -5883,7 +5676,7 @@ object Form1: TForm1
     Font.Name = 'Verdana'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 45
+    TabOrder = 43
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -5922,7 +5715,7 @@ object Form1: TForm1
     Font.Name = 'Verdana'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 46
+    TabOrder = 44
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -5961,7 +5754,7 @@ object Form1: TForm1
     Font.Name = 'Verdana'
     Font.Style = []
     ParentFont = False
-    TabOrder = 48
+    TabOrder = 46
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -6037,6 +5830,7 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_MENUOpened
+    ExplicitHeight = 543
     object scButton_konec: TscButton
       Left = 0
       Top = 538
@@ -6129,6 +5923,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 493
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -6405,6 +6200,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 443
     end
     object scButton_report: TscButton
       Left = 0
@@ -6881,6 +6677,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 393
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -7315,15 +7112,15 @@ object Form1: TForm1
     Height = 56
     Lines.Strings = (
       'Memo3')
-    TabOrder = 49
+    TabOrder = 47
     Visible = False
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
-    Left = 154
+    Left = 1
     Top = 684
-    Width = 1035
+    Width = 1202
     Height = 45
-    TabOrder = 50
+    TabOrder = 48
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
@@ -7494,8 +7291,8 @@ object Form1: TForm1
       Caption = 'Orientace n'#225'hledu:'
     end
     object scGPComboBox_orientace: TscGPComboBox
-      Left = 444
-      Top = 7
+      Left = 484
+      Top = 3
       Width = 120
       Height = 35
       Font.Charset = DEFAULT_CHARSET
@@ -7828,7 +7625,7 @@ object Form1: TForm1
     object scGPLabel2: TscGPLabel
       Left = 725
       Top = 11
-      Width = 148
+      Width = 137
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBtnText
@@ -7862,7 +7659,7 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Layout = tlCenter
-      Caption = 'Uzamknout rozm'#283'ry'
+      Caption = 'Uzamknout n'#225'hled'
     end
     object scButton_zamek: TscButton
       Left = 871
@@ -7958,7 +7755,7 @@ object Form1: TForm1
     Width = 1202
     Height = 34
     Align = alTop
-    TabOrder = 51
+    TabOrder = 49
     Visible = False
     BlurBackground = False
     BlurBackgroundAmount = 5
@@ -8317,7 +8114,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004C06780610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004C06840610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9448,7 +9245,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010138009406CC0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010138009406D80630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000D002000001002000000000000070
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
