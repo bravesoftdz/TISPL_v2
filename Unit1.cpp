@@ -240,7 +240,7 @@ void TForm1::DesignSettings()
 	scGPPanel_bottomtoolbar->Width=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
 	scGPPanel_bottomtoolbar->Left=scSplitView_LEFTTOOLBAR->Width;
 	//vodorovné zarovnání prvků
-	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2-scGPLabel_otoce->Width;
+	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPLabel1->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
@@ -4487,6 +4487,7 @@ void TForm1::NP_input()
 
 	 //zapnutí spodního panelu
 	 scGPPanel_bottomtoolbar->Visible=true;
+
 	 //zmena horní lišty
 	 scGPPanel_mainmenu->Visible=false;
 	 scGPPanel_schema->Visible=true;
@@ -4948,7 +4949,7 @@ int TForm1::get_DPI ()
 UnicodeString TForm1::get_computer_name()
 {
 	 wchar_t *pc=new wchar_t[MAX_COMPUTERNAME_LENGTH+1];
-   DWORD dwSize=MAX_COMPUTERNAME_LENGTH+1;
+	 DWORD dwSize=MAX_COMPUTERNAME_LENGTH+1;
    if(GetComputerName(pc,&dwSize))return AnsiString(pc);
    else return "";
 }

@@ -237,7 +237,7 @@ object Form1: TForm1
   end
   object Memo1: TMemo
     Left = 0
-    Top = 656
+    Top = 611
     Width = 1202
     Height = 42
     Align = alBottom
@@ -251,6 +251,7 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
+    ExplicitTop = 656
   end
   object Button3: TButton
     Left = 183
@@ -2493,7 +2494,7 @@ object Form1: TForm1
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
-    Top = 698
+    Top = 653
     Width = 1202
     Height = 28
     Align = alBottom
@@ -2528,6 +2529,7 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitTop = 698
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -2991,8 +2993,7 @@ object Form1: TForm1
     Left = 0
     Top = 68
     Width = 168
-    Height = 588
-    Anchors = [akLeft, akTop, akBottom]
+    Height = 543
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -11
@@ -4114,7 +4115,7 @@ object Form1: TForm1
     Left = 952
     Top = 68
     Width = 250
-    Height = 588
+    Height = 543
     Anchors = [akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
@@ -4164,6 +4165,7 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
+    ExplicitHeight = 588
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -5993,7 +5995,7 @@ object Form1: TForm1
     Left = 0
     Top = 68
     Width = 0
-    Height = 588
+    Height = 543
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     TabOrder = 23
@@ -6037,9 +6039,10 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_MENUOpened
+    ExplicitHeight = 588
     object scButton_konec: TscButton
       Left = 0
-      Top = 538
+      Top = 493
       Width = 0
       Height = 50
       Align = alBottom
@@ -6129,6 +6132,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 538
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -6316,7 +6320,7 @@ object Form1: TForm1
     end
     object scButton_zaloha: TscButton
       Left = 0
-      Top = 488
+      Top = 443
       Width = 0
       Height = 50
       Align = alBottom
@@ -6405,6 +6409,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 488
     end
     object scButton_report: TscButton
       Left = 0
@@ -6792,7 +6797,7 @@ object Form1: TForm1
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
-      Top = 438
+      Top = 393
       Width = 0
       Height = 50
       Align = alBottom
@@ -6881,6 +6886,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
+      ExplicitTop = 438
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -7319,10 +7325,11 @@ object Form1: TForm1
     Visible = False
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
-    Left = 154
-    Top = 684
-    Width = 1035
+    Left = 0
+    Top = 681
+    Width = 1202
     Height = 45
+    Align = alBottom
     TabOrder = 50
     Visible = False
     BlurBackground = False
@@ -7356,6 +7363,9 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    ExplicitLeft = 154
+    ExplicitTop = 684
+    ExplicitWidth = 1035
     object scGPCheckBox_viditelnost: TscGPCheckBox
       Left = 619
       Top = 3
@@ -7494,8 +7504,8 @@ object Form1: TForm1
       Caption = 'Orientace n'#225'hledu:'
     end
     object scGPComboBox_orientace: TscGPComboBox
-      Left = 444
-      Top = 7
+      Left = 484
+      Top = 3
       Width = 120
       Height = 35
       Font.Charset = DEFAULT_CHARSET
