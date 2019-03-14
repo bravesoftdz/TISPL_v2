@@ -240,11 +240,11 @@ void TForm1::DesignSettings()
 	scGPPanel_bottomtoolbar->Width=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
 	scGPPanel_bottomtoolbar->Left=scSplitView_LEFTTOOLBAR->Width;
 	//vodorovné zarovnání prvků
-	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2-scGPLabel_otoce->Width;
+	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
-	scGPLabel1->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
-	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
-	scGPCheckBox_viditelnost->Left=scGPComboBox_orientace->Left+scGPComboBox_orientace->Width+22;
+	scGPComboBox_orientace->Left=scGPButton_ulozit->Left-scGPComboBox_orientace->Width-22;
+	scGPLabel1->Left=scGPComboBox_orientace->Left-scGPLabel1->Width;
+	scGPCheckBox_viditelnost->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
 	scGPLabel2->Left=scGPCheckBox_viditelnost->Left+scGPCheckBox_viditelnost->Width+22;
 	scButton_zamek->Left=scGPLabel2->Left+scGPLabel2->Width;
 	//svislé zarovnání prvků
@@ -747,6 +747,26 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
+  ////design spodní lišty////
+	scGPPanel_bottomtoolbar->Top=scGPPanel_statusbar->Top-scGPPanel_bottomtoolbar->Height;
+	scGPPanel_bottomtoolbar->Width=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
+	scGPPanel_bottomtoolbar->Left=scSplitView_LEFTTOOLBAR->Width;
+	//vodorovné zarovnání prvků
+	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
+	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
+	scGPComboBox_orientace->Left=scGPButton_ulozit->Left-scGPComboBox_orientace->Width-22;
+	scGPLabel1->Left=scGPComboBox_orientace->Left-scGPLabel1->Width;
+	scGPCheckBox_viditelnost->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
+	scGPLabel2->Left=scGPCheckBox_viditelnost->Left+scGPCheckBox_viditelnost->Width+22;
+	scButton_zamek->Left=scGPLabel2->Left+scGPLabel2->Width;
+	//svislé zarovnání prvků
+	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
+	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
+	scGPCheckBox_viditelnost->Top=scGPButton_ulozit->Top;
+	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
+	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
+	scGPLabel2->Top=scGPLabel1->Top;
+	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupKnihovObjektu->Height+0+DetailsButton->Height);
 	if(/*MOD==REZERVY ||*/ MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
@@ -1744,9 +1764,10 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
 						{
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
-								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//ELEMENT posun
+								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;}//ELEMENT posun
 								if(JID==100 || 1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
 								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
+								if (JID==-2){Akce=MOVE_LAKOVNA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
 						}
 						else
 						{
@@ -1968,8 +1989,19 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			REFRESH();
 			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
 			//zatím jen pro posun po ose x
-			if (pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x)
+			if ((pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x)&&mazani)
 				Smazat1Click(Sender);
+			break;
+		}
+		case MOVE_LAKOVNA:
+		{
+			short trend=m.Rt90(d.trend(pom));
+			if (trend==90 || trend==270)
+				pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+			else
+				pom_temp->Xk+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+			minule_souradnice_kurzoru=TPoint(X,Y);
+			REFRESH();
 			break;
 		}
 		case VYH://přidávání vyhýbky
@@ -2009,6 +2041,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
 				Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
+					if (JID==-2){kurzor(posun_ind);}
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -2042,7 +2075,16 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 				case MOVE:move_objekt(X,Y);break;//posun objektu
 				case MOVE_TABLE:Akce=NIC;kurzor(standard);REFRESH();break;//posun tabulky elementu
-				case MOVE_ELEMENT:Akce=NIC;kurzor(standard);REFRESH();break;//posun elementu
+				case MOVE_ELEMENT:
+				{
+					if (el_vkabine(X,Y))
+					{
+						Akce=NIC;kurzor(standard);
+						REFRESH();
+					} else MB("Nelze vložit element mimo kabinu! Vložte element do kabiny.");
+					break;//posun elementu
+				}
+				case MOVE_LAKOVNA:Akce=NIC;kurzor(standard);REFRESH();break;//konec posunu lakovny
 				case MEASURE:
 				{
 					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
@@ -2863,9 +2905,11 @@ void TForm1::add_element (int X, int Y)
 	//rotace dle umístění na ose Y či X dle trendu
 	short trend=m.Rt90(d.trend(pom));
 	short rotace_symbolu=rotace_symbol(trend,X,Y);
+	bool vkabine=el_vkabine(X,Y) ;
 
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - provizorní pro robota
 	double DoSkRB=0;
+
 	if(1<=element_id && element_id<=4)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
 		DoSkRB=d.DoSkRB*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
@@ -2876,23 +2920,45 @@ void TForm1::add_element (int X, int Y)
 	////---- konec PROVIZORNĚ
 
 	//vložení elementu na dané souřadnice a do patřičného spojáku - pozor jedná se o chybu návrhu, nemělo by se vkládát do pom resp. ostrého spojáku objektů pro případ storna....
-	Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y));
+	if (vkabine)
+	{
+		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y));
+		//navrácení rotace dle umístění v objektu
+		E->rotace_symbolu=rotace_symbolu;
+		//nadesignuje tabulky daného elementu
+		design_element(E);
+		//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
+		aut_pozicovani(E,X,Y);
+		//až na konec:
+		E=NULL;delete E;
+		Akce=NIC;
+		REFRESH();
+		DrawGrid_knihovna->Invalidate();
+		DuvodUlozit(true);
+	}else MB("Nelze vložit element mimo lakovací kabinu! Vložte element do kabiny.");
+}
+//---------------------------------------------------------------------------
+//vrací zda se element nachází v lakovací kabině
+bool TForm1::el_vkabine(int X,int Y)
+{
+	short trend=m.Rt90(d.trend(pom));
+	bool vkabine;
+	double delka_robota=20;//20 = odsazení pro otoče a stopku od hrany lakovny
+	double odsazeni=5;//odsazení slouží k tomu aby element nebyl vkládán na obrys lakovny
 
-	//navrácení rotace dle umístění v objektu
-	E->rotace_symbolu=rotace_symbolu;
-
-	//nadesignuje tabulky daného elementu
-	design_element(E);
-
-	//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
-	aut_pozicovani(E,X,Y);
-
-	//až na konec:
-	E=NULL;delete E;
-	Akce=NIC;
-	REFRESH();
-	DrawGrid_knihovna->Invalidate();
-	DuvodUlozit(true);
+	if(1<=element_id && element_id<=4)delka_robota=d.Robot_delka_zakladny/2.0*Zoom/m2px;
+	//kontrola zda je kliknuto v kabině
+	if(trend==90 || trend==270)
+	{                                                                //-5 odsazení od xt = nelze vložit objekt prímo na obrys kabiny
+		if (m.L2Px(pom_temp->Xk)>X-delka_robota-odsazeni||X+delka_robota+odsazeni>m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)) vkabine=false;
+		else vkabine=true;
+	}
+	else
+	{
+		if (m.L2Py(pom_temp->Yk)>Y-delka_robota-odsazeni||Y+delka_robota+odsazeni>m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)) vkabine=false;
+		else vkabine=true;
+	}
+	return vkabine;
 }
 //---------------------------------------------------------------------------
 //automatické nekonfliktní pozicování tabulek podle tabulek ostatních elementů
@@ -4088,13 +4154,22 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		case NAHLED:
 		{
 			if (pom_element_smazat!=NULL) pom_element=pom_element_smazat;
-			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?","",MB_YESNO))
+			if (mazani)
 			{
-				d.v.smaz_element(pom_element);
-				pom_element=NULL;
-				Akce=NIC;
-				REFRESH();
-				DuvodUlozit(true);
+			int result=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?","",MB_YESNO);
+			switch(result)
+			{
+				case mrYes:
+				{
+          d.v.smaz_element(pom_element);
+					pom_element=NULL;
+					Akce=NIC;
+					REFRESH();
+					DuvodUlozit(true);
+					break;
+				}
+				case mrNo:mazani=false; break;
+			}
 			}
 			pom_element_smazat=NULL; delete pom_element_smazat;
 			break;
@@ -4123,7 +4198,6 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 			S("nenalezen");
 			break;
 		}
-
 	}
 }
 //---------------------------------------------------------------------------
@@ -4493,20 +4567,19 @@ void TForm1::NP_input()
 	 scGPLabel_roboti->Caption="Roboti";
 	 scGPLabel_roboti->ContentMarginLeft=10;
 
-//	 scGPButton_OK->Visible=true;
-//	 scGPButton_storno->Visible=true;
-
-	 //matamaticky exaktní napozicování tlačítek OK a storno
-	 Form1->m.designButton(scGPButton_OK, Form1, 1, 2);
-	 Form1->m.designButton(scGPButton_storno, Form1, 2, 2);
-
 	 //prozatim definice kabiny
-	 pom_temp->rozmer_kabiny.x=10;//default délka 10 m
-	 pom_temp->rozmer_kabiny.y=6;//default šířka 6 m
-	 pom_temp->Xk=m.P2Lx(scSplitView_LEFTTOOLBAR->Width+100);pom_temp->Yk=m.P2Ly((ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0)+pom_temp->rozmer_kabiny.y/2.0;//provizorní vložení
+	 if (pom_temp->elementy==NULL) //provizorně vyřešeno pomocí prázdné nebo plné lakovny
+	 {
+		Memo3->Lines->Add("První vložení");
+		pom_temp->rozmer_kabiny.x=10;//default délka 10 m
+		pom_temp->rozmer_kabiny.y=6;//default šířka 6 m
+		pom_temp->Xk=m.P2Lx(scSplitView_LEFTTOOLBAR->Width+100);pom_temp->Yk=m.P2Ly((ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0)+pom_temp->rozmer_kabiny.y/2.0;//provizorní vložení
+	 }
+
 
 	 //zapnutí spodního panelu
 	 scGPPanel_bottomtoolbar->Visible=true;
+
 	 //zmena horní lišty
 	 scGPPanel_mainmenu->Visible=false;
 	 scGPPanel_schema->Visible=true;
@@ -4968,7 +5041,7 @@ int TForm1::get_DPI ()
 UnicodeString TForm1::get_computer_name()
 {
 	 wchar_t *pc=new wchar_t[MAX_COMPUTERNAME_LENGTH+1];
-   DWORD dwSize=MAX_COMPUTERNAME_LENGTH+1;
+	 DWORD dwSize=MAX_COMPUTERNAME_LENGTH+1;
    if(GetComputerName(pc,&dwSize))return AnsiString(pc);
    else return "";
 }
@@ -6636,9 +6709,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPLabel_geometrie->Visible=false;
 		scGPLabel_poznamky->Visible=false;
 
-		scGPButton_OK->Visible=false;
-		scGPButton_storno->Visible=false;
-
 		scGPLabel_roboti->Font->Style = TFontStyles(); // zrušení tučného písma resp. všech případných dalších Font style nastavení
 		scGPLabel_roboti->Visible=true;
 		scGPLabel_roboti->Caption="Technolog. objekty";
@@ -6901,7 +6971,7 @@ FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled)
+					TPoint &MousePos, bool &Handled)
 {
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
@@ -7033,4 +7103,5 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
  Timer2->Enabled=false;
 }
 //---------------------------------------------------------------------------
+
 

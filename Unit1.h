@@ -275,8 +275,6 @@ __published:	// IDE-managed Components
   TDrawGrid *DrawGrid_geometrie;
   TscListGroupPanel *scListGroupPanel_poznamky;
   TDrawGrid *DrawGrid_poznamky;
-  TscGPButton *scGPButton_OK;
-  TscGPButton *scGPButton_storno;
   TscGPCheckBox *scGPCheckBox_zobraz_podklad;
   TscButton *scButton_nacist_podklad;
   TscGPCheckBox *scGPCheckBox_stupne_sedi;
@@ -503,7 +501,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_LAKOVNA};Takce Akce;
   enum Tm_mm{M=0,MM};Tm_mm DOtocunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec LOunit;//pøepínaè jednotek èasu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
@@ -511,7 +509,8 @@ public:
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	UnicodeString get_user_name();
-  DrawGridWndProc(TMessage &Message);
+	DrawGridWndProc(TMessage &Message);
+	bool mazani;
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
@@ -578,6 +577,7 @@ private:
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka,short sirka1,short sirka_o,short sirka_o1);
+  bool el_vkabine(int X,int Y);
 
 	////promìnné
 	TDateTime TIME;
