@@ -1996,12 +1996,33 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case MOVE_LAKOVNA:
 		{
 			short trend=m.Rt90(d.trend(pom));
-			if (trend==90 || trend==270)
-				pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+			short stredx=F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0;
+			short stredy=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0;
+			if (m.L2Py(pom_temp->Yk)<stredy+2 && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)>stredy)//||
+			//m.L2Px(pom_temp->Xk)<stredx+2 && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)>stredx)
+			{
+				if (trend==90 || trend==270)
+					pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				else
+					pom_temp->Xk+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				REFRESH();
+			}
 			else
-				pom_temp->Xk+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
+			{
+				if (trend==90 || trend==270)
+				{
+					if (m.L2Py(pom_temp->Yk)>stredy) pom_temp->Yk=m.P2Ly(stredy)+1;
+					else pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-1;
+				}
+				else
+				{
+					if (m.L2Px(pom_temp->Xk)>stredx) pom_temp->Xk=m.P2Lx(stredx)-1;
+					else pom_temp->Xk=m.P2Lx(stredx)-pom_temp->rozmer_kabiny.x+1;
+				}
+				Akce=NIC;
+				REFRESH();
+			}
 			break;
 		}
 		case VYH://přidávání vyhýbky
