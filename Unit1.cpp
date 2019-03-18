@@ -2155,7 +2155,7 @@ void TForm1::getJobID(int X, int Y)
 	JID=-1;//výchozí stav, nic nenalezeno
 	//nejdříve testování zda se nepřejelo myší přes obrys kabiny
 						//roteč linií  //šířka linie
-	short Ov=Zoom*0.4+F->Zoom*0.2/2.0;
+	short Ov=Zoom*0.4+F->Zoom*0.2/2.0*2;//dodatečné "*2" kvůli rozšíření citelné oblasti
 	if(m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
 	else if(m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
 	else if(m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
