@@ -193,13 +193,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)-Ov,m.L2Py(F->pom_temp->Yk)-Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)+Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)+Ov);//dvojitý rám - vnější
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)+Ov,m.L2Py(F->pom_temp->Yk)+Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)-Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)-Ov);//dvojitý rám - vnitřní
 		//nazev objektu
-		canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
-		canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
-		canv->Font->Name="Arial";
-		canv->Font->Color=clRed;
-		canv->Font->Size=2*3*F->Zoom;
-		canv->Font->Style = TFontStyles();//<< fsBold;//zapnutí tučného písma
-		AnsiString T=F->pom_temp->name.UpperCase();
+		nastavit_text_popisu_objektu_v_nahledu(canv);
+		AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
 		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
 
 		////vykreslení jednotlivých ELEMENTŮ
@@ -218,6 +213,16 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		}
 		E=NULL;delete E;
 	}
+}
+//---------------------------------------------------------------------------
+void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
+{
+	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+	canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
+	canv->Font->Name="Arial";
+	canv->Font->Color=clRed;
+	canv->Font->Size=2*3*F->Zoom;
+	canv->Font->Style = TFontStyles();//<< fsBold;//zapnutí tučného písma
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě

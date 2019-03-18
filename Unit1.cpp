@@ -2060,9 +2060,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			if(MOD==NAHLED && pom_temp!=NULL)
 			{
+				//kurzor(standard);//umístít na začátek
 				pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
 				Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
-					if (JID==-2){kurzor(posun_ind);}
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -2149,13 +2149,23 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	 else DrawGrid_knihovna->Enabled=false;*/
 }
 //---------------------------------------------------------------------------
-//vrátí do globální proměnné JID ID úlohy/funkcionality v místě kurzoru, -1 žádná, 0 - 9 rezervováno pro element, 10 - 99 - interaktivní text kóty, 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek, zároveň pokud bylo kliknuto na tabulku či element nahraje ukazatel do globální proměnné pom_element
+//vrátí do globální proměnné JID ID úlohy/funkcionality v místě kurzoru, zároveň pokud v místě tabulky či elementu nahraje ukazatel do globální proměnné pom_element
+//JID=-2;//svislá levá
+//JID=-4;//svislá pravá
+//JID=-3;//vodorovná horní
+//JID=-5;//vodorovná dolní
+//JID=-6;//název objektu
+//JID=-7;//zkratka objektu
+//JID=-1 žádná
+//JID=0 - 9 rezervováno pro element
+//JID=10 - 99 - interaktivní text kóty
+//JID=100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
 void TForm1::getJobID(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
 	//nejdříve testování zda se nepřejelo myší přes obrys kabiny
-						//roteč linií  //šířka linie
-	short Ov=Zoom*0.4+F->Zoom*0.2/2.0*2;//dodatečné "*2" kvůli rozšíření citelné oblasti
+						//roteč linií//šířka linie (polovina na každou stranu)
+	short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
 	if(m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
 	else if(m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
 	else if(m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
@@ -2187,12 +2197,17 @@ void TForm1::getJobID(int X, int Y)
 			}
 			else //ani element nenalezen, hledá tedy interaktivní TEXT, např. kóty atp.
 			{
+				//testování zda se nejedná o název či zkratku objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
+				d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+				AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
+				int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
+				int Yd=m.L2Py(F->pom_temp->Yk);
+				if(Xl<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-6;//název objektu
+				else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
 				//if()RET=10-99 zcela doplnit
 			}
 		}
 	}
-	Memo3->Visible=true;
-	Memo3->Lines->Add(s_mazat++);
 }
 //---------------------------------------------------------------------------
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
