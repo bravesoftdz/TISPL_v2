@@ -614,6 +614,7 @@ private:
 	AnsiString Caption;
 
 	short pocitadlo_doby_neaktivity;
+	TPoint pocitadlo_zmeny_pozice;
 
 	bool FMaximized;
 	TRect FOldBoundsRect;
