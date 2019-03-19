@@ -192,10 +192,12 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		short Ov=Form1->Zoom*0.4;
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)-Ov,m.L2Py(F->pom_temp->Yk)-Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)+Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)+Ov);//dvojitý rám - vnější
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)+Ov,m.L2Py(F->pom_temp->Yk)+Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)-Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)-Ov);//dvojitý rám - vnitřní
-		//nazev objektu
+		//název objektu
 		nastavit_text_popisu_objektu_v_nahledu(canv);
 		AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
 		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
+		//kóty
+		//vykresli_kotu()
 
 		////vykreslení jednotlivých ELEMENTŮ
 		Cvektory::TElement *E=F->pom_temp->elementy;
@@ -3102,7 +3104,12 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text, unsigned short width,TColor color)
+void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,AnsiString Text, double Offset,unsigned short width,TColor color)
+{
+	 Cvykresli::vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),Text,m.m2px(Offset),width,color);
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text, int Offset, unsigned short width, TColor color)
 {
 	//vykreslení postraních spojnic
 
@@ -3111,8 +3118,16 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	linie(canv,X1,Y1,X2,Y2,width,color);
 
 	//vykreslení postranních šipek
-	sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom,color);
-	sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom,color);
+	if(X1==X2)//svislá kóta
+	{
+		sipka(canv,X1,Y1,0,false,0.1/3.0*F->Zoom,color);
+		sipka(canv,X2,Y2,180,false,0.1/3.0*F->Zoom,color);
+	}
+	else//vodorovná kóta
+	{
+		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom,color);
+		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom,color);
+	}
 
 	 //popisek
 	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
