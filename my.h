@@ -4,7 +4,8 @@
 #include <vcl.h>
 #include "CTpointD.h"
 #include "scGPControls.hpp"//knihovna kvùli designování tlaèítek
-
+const double DOUBLE_MIN=-1.7*pow(10,-308.0);
+const double DOUBLE_MAX=1.7*pow(10,308.0);
 //---------------------------------------------------------------------------
 class Cmy
 {

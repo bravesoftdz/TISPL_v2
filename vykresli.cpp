@@ -3099,14 +3099,14 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 
 
 	 AnsiString T=AnsiString(m.round2double(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y),3,".."))+" [m]";
-	 vykresli_kotu(canv,X1,Y1,X2,Y2,T,1,clGray);
+	 vykresli_kotu(canv,X1,Y1,X2,Y2,T,0,1,clGray);
 
 
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,AnsiString Text, double Offset,unsigned short width,TColor color)
 {
-	 Cvykresli::vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),Text,m.m2px(Offset),width,color);
+	 vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),Text,m.m2px(Offset),width,color);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text, int Offset, unsigned short width, TColor color)
@@ -3128,6 +3128,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom,color);
 		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom,color);
 	}
+
 
 	 //popisek
 	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké

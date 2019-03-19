@@ -6753,14 +6753,14 @@ void TForm1::db_connection()
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
 //	Form2->ShowModal();
-Memo3->Visible=true;
-Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
-while(E!=NULL)
-{
-	 Memo3->Lines->Add(E->n);
-	 E=E->dalsi;
-}
-E=NULL;delete E;
+//Memo3->Visible=true;
+//Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
+//while(E!=NULL)
+//{
+//	 Memo3->Lines->Add(E->n);
+//	 E=E->dalsi;
+//}
+//E=NULL;delete E;
 
 // if(MOD==NAHLED)
 //   {
