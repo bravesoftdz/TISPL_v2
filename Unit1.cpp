@@ -242,11 +242,16 @@ void TForm1::DesignSettings()
 	//vodorovné zarovnání prvků
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
-	scGPComboBox_orientace->Left=scGPButton_ulozit->Left-scGPComboBox_orientace->Width-22;
-	scGPLabel1->Left=scGPComboBox_orientace->Left-scGPLabel1->Width;
-	scGPCheckBox_viditelnost->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
-	scGPLabel2->Left=scGPCheckBox_viditelnost->Left+scGPCheckBox_viditelnost->Width+22;
-	scButton_zamek->Left=scGPLabel2->Left+scGPLabel2->Width;
+	scGPLabel1->Left=22;
+	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
+	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
+	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width;
+	scGPCheckBox_viditelnost->Left=scGPLabel2->Left-scGPCheckBox_viditelnost->Width-22;
+//	scGPComboBox_orientace->Left=scGPButton_ulozit->Left-scGPComboBox_orientace->Width-22;
+//	scGPLabel1->Left=scGPComboBox_orientace->Left-scGPLabel1->Width;
+//	scGPCheckBox_viditelnost->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
+//	scGPLabel2->Left=scGPCheckBox_viditelnost->Left+scGPCheckBox_viditelnost->Width+22;
+//	scButton_zamek->Left=scGPLabel2->Left+scGPLabel2->Width;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
@@ -6138,8 +6143,25 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 //	AnsiString Text="aplikace stop";
 //	AnsiString strSQL = "INSERT INTO app_log (app_id,app_start,username,send_log_time,command,relation_id) VALUES (\""+ID+"\",\""+send_log_time+"\",\""+get_user_name()+"\",\""+send_log_time+"\",\""+Text+"\",\""+relation_id+"\")";
 //	FDConnection1->ExecSQL(strSQL);
-	scButton_konec->Down=false;
-	Close();//ukončí aplikaci
+	int vysledek;
+	if (MOD==NAHLED)
+	{
+		if (duvod_k_ulozeni)
+		{
+			vysledek=MB("Chcete uložit postup?",MB_YESNO);
+			switch (vysledek)
+			{
+				case mrYes:scGPButton_OKClick(Sender);break;
+				case mrNo:scGPButton_stornoClick(Sender);break;
+			}
+		}
+		else scGPButton_stornoClick(Sender);
+	}
+	else
+	{
+  	scButton_konec->Down=false;
+		Close();//ukončí aplikaci
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
