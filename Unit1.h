@@ -562,7 +562,7 @@ private:
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();
-	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, -1 žádná, 0 - 9 rezervováno pro element, 10 - 99 - interaktivní text kóty, 100- a výše rezervováno pro tabuku, kde 100 znamená nultý øádek, zároveò pokud bylo kliknuto na tabulku èi element nahraje ukazatel do globální promìnné pom_element
+	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
@@ -607,7 +607,6 @@ private:
 	bool scSplitViews_closing_on_AA;
 	bool SplitViewOpen;
 	bool refresh_mGrid;
-
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito pøi soubor nový
@@ -616,6 +615,7 @@ private:
 	AnsiString Caption;
 
 	short pocitadlo_doby_neaktivity;
+	TPoint pocitadlo_zmeny_pozice;
 
 	bool FMaximized;
 	TRect FOldBoundsRect;
@@ -684,7 +684,6 @@ public:		// User declarations
 	double outPT (double outPT);
   double inDO (double outDO);
 	double outDO (double outDO);
-	long s_mazat;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
