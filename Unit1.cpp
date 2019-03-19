@@ -172,7 +172,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	knihovna_id=0;
 	element_id=99;
 	refresh_mGrid=true;
-	d.zobrazit_koty=true;
 
 	DesignSettings();//nastavení designu v konstruktoru
 }
@@ -2061,10 +2060,12 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			if(MOD==NAHLED && pom_temp!=NULL)
 			{
-				//kurzor(standard);//umístít na začátek
-				pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
-				if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
-				Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
+				if(pom_temp->uzamknout_nahled==false)//pouze pokud je možné editovat (není uzamčen náhled)
+				{
+					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
+					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
+					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
+				}
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
