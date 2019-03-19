@@ -108,6 +108,8 @@ class Cvektory
 			short K_zamek;
 			UnicodeString poznamka;//uloží poznámku ke vzniku CT
 			bool probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+			bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+			bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu
 			struct TObjekt *dalsi2;//ukazatel na další2 objekt ve spojovém seznamu

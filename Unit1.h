@@ -605,7 +605,6 @@ private:
 	bool scSplitViews_closing_on_AA;
 	bool SplitViewOpen;
 	bool refresh_mGrid;
-
 	bool duvod_k_ulozeni;
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito pøi soubor nový

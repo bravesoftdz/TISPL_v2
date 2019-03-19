@@ -50,7 +50,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->K_zamek=0;
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
-
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
 	novy->dalsi2=NULL;
@@ -94,6 +95,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->K_zamek=0;
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -138,6 +141,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->K_zamek=0;
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=p->dalsi;
@@ -230,6 +235,8 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->K_zamek=Objekt->K_zamek;
 		novy->poznamka=Objekt->poznamka;
 		novy->probehla_aktualizace_prirazeni_pohonu=Objekt->probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+		novy->zobrazit_koty=Objekt->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+		novy->uzamknout_nahled=Objekt->zobrazit_koty;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		novy->dalsi=p->dalsi;
@@ -278,6 +285,8 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->K_zamek=Original->K_zamek;
 	Kopie->poznamka=Original->poznamka;
 	Kopie->probehla_aktualizace_prirazeni_pohonu=Original->probehla_aktualizace_prirazeni_pohonu;
+	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+	Kopie->uzamknout_nahled=Original->zobrazit_koty;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px

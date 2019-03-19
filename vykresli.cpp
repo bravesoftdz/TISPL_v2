@@ -207,7 +207,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav);
 				 //zde bude ještě vykreslení g_elementu
 				 //zde bude ještě vykreslení ještě kót
-				 if(E->predchozi->n!=0 && zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);
+				 if(E->predchozi->n!=0 && F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);
 				 E=E->dalsi;//posun na další element
 			}
 		}
