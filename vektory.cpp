@@ -236,7 +236,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->poznamka=Objekt->poznamka;
 		novy->probehla_aktualizace_prirazeni_pohonu=Objekt->probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 		novy->zobrazit_koty=Objekt->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
-		novy->uzamknout_nahled=Objekt->zobrazit_koty;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+		novy->uzamknout_nahled=Objekt->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		novy->dalsi=p->dalsi;
@@ -286,7 +286,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->poznamka=Original->poznamka;
 	Kopie->probehla_aktualizace_prirazeni_pohonu=Original->probehla_aktualizace_prirazeni_pohonu;
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
-	Kopie->uzamknout_nahled=Original->zobrazit_koty;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px

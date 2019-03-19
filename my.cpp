@@ -119,6 +119,18 @@ double Cmy::P2Ly(long fyzicka)
 	{return 0;}
 }
 /////////////////////////////////////////////////////////////////////////////
+//pøevede vzdálenost v metrech na vzdálenost monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
+long Cmy::m2px(double meter)
+{
+	return round(meter*F->Zoom/F->m2px);
+}
+/////////////////////////////////////////////////////////////////////////////
+//pøevede logické jednotky (metry) na pixely monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
+double Cmy::px2m(long px)
+{
+	return px/F->Zoom*F->m2px;
+}
+/////////////////////////////////////////////////////////////////////////////
 //dle zmìøeného úseku na monitoru pøevede tuto pixelovou vzádlenost a hodnotu v podobì uživatelského vstupu v metrech na hodnotu rozlišení podkladu
 long double Cmy::getResolution(int puvX,int puvY,int aktX,int aktY,double metry)
 {

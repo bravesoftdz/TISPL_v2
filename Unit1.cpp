@@ -169,6 +169,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(pocet_objektu_knihovny>0)vybrany_objekt=0;else//-použival jsem v době kdy jsem chtěl mít implicitní prvek pokud existuje nějaký prvek v knihovně, tak nastaví vybraný prvek jako první
 	vybrany_objekt=-1;
 	VyID=10;//objekt-symbol vyhýbky - ID typu
+	JID=-1;
 	knihovna_id=0;
 	element_id=99;
 	refresh_mGrid=true;
@@ -343,7 +344,7 @@ void TForm1::aktualizace()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
-    //DPI handling
+  //DPI handling
 	int DPI, otherDPI = 0;
 	DPI = get_DPI();
 	if (DPI != 96)
@@ -4561,6 +4562,7 @@ void TForm1::NP_input()
 	 //vycentruje kurzor na střed monitoru - na X nefunguje přesně
 	 if(vycentrovat)Mouse->CursorPos=TPoint(m.L2Px(akt_souradnice_kurzoru.x),m.L2Py(akt_souradnice_kurzoru.y)+vyska_menu);
 	 vycentrovat=true;
+	 JID=-1;
 
 	 DrawGrid_knihovna->DefaultRowHeight=140;
 	 DrawGrid_knihovna->DefaultColWidth=80;
