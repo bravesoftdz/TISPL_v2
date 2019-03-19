@@ -494,6 +494,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
   void __fastcall Timer2Timer(TObject *Sender);
+	void __fastcall scGPCheckBox_viditelnostClick(TObject *Sender);
 
 
 // User declarations
@@ -577,7 +578,8 @@ private:
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka,short sirka1,short sirka_o,short sirka_o1);
-  bool el_vkabine(int X,int Y);
+	bool el_vkabine(int X,int Y);
+	int el_mimoKabinu ();
 
 	////promìnné
 	TDateTime TIME;

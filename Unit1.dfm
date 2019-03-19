@@ -251,7 +251,6 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
-    ExplicitTop = 611
   end
   object Button3: TButton
     Left = 183
@@ -2529,7 +2528,6 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitTop = 653
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -3038,7 +3036,6 @@ object Form1: TForm1
     HideControls = False
     Animation = False
     DisplayMode = scsvmOverlay
-    ExplicitHeight = 543
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
       Top = 0
@@ -3953,7 +3950,6 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
-    ExplicitHeight = 543
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -3993,7 +3989,6 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Caption = 'Nastaven'#237
-      ExplicitHeight = 0
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
@@ -4033,7 +4028,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Obecn'#233
-      ExplicitTop = 0
       object ComboBoxCekani: TscComboBox
         Left = 3
         Top = 56
@@ -4247,8 +4241,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2187
-        Top = 2350
+        Left = 2217
+        Top = 2380
         Width = 244
         Height = 31
         Align = alCustom
@@ -5135,7 +5129,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Podklad'
-      ExplicitTop = 88
       object scGPButton_adjustace: TscGPButton
         Left = 11
         Top = 187
@@ -5830,7 +5823,6 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_MENUOpened
-    ExplicitHeight = 543
     object scButton_konec: TscButton
       Left = 0
       Top = 538
@@ -5923,7 +5915,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 493
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -6200,7 +6191,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 443
     end
     object scButton_report: TscButton
       Left = 0
@@ -6677,7 +6667,6 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 393
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -7156,7 +7145,7 @@ object Form1: TForm1
     object scGPCheckBox_viditelnost: TscGPCheckBox
       Left = 619
       Top = 3
-      Width = 100
+      Width = 125
       Height = 35
       BiDiMode = bdRightToLeft
       Font.Charset = DEFAULT_CHARSET
@@ -7168,8 +7157,9 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
       TabStop = True
+      OnClick = scGPCheckBox_viditelnostClick
       Animation = False
-      Caption = 'Skr'#253't k'#243'ty'
+      Caption = 'Zobrazit k'#243'ty'
       CanFocused = True
       Spacing = 1
       Layout = blGlyphLeft
@@ -7245,7 +7235,8 @@ object Form1: TForm1
       OptionsChecked.ShapeSize = 20
       OptionsChecked.CheckMarkThickness = 2
       OptionsChecked.StyleColors = True
-      Checked = False
+      Checked = True
+      State = cbChecked
       ScaleFrameWidth = True
       ScaleCheckMarkThickness = True
       ShowFocusRect = True
@@ -7623,7 +7614,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPLabel2: TscGPLabel
-      Left = 725
+      Left = 750
       Top = 11
       Width = 137
       Height = 19
@@ -7662,8 +7653,8 @@ object Form1: TForm1
       Caption = 'Uzamknout n'#225'hled'
     end
     object scButton_zamek: TscButton
-      Left = 871
-      Top = 4
+      Left = 890
+      Top = 16
       Width = 28
       Height = 29
       Margins.Left = 0
@@ -7678,7 +7669,7 @@ object Form1: TForm1
       Spacing = 0
       Layout = blGlyphLeft
       Images = scGPVirtualImageList1
-      ImageIndex = 37
+      ImageIndex = 38
       ImageMargin = 0
       TransparentBackground = True
       ColorOptions.NormalColor = clBtnFace
@@ -8114,7 +8105,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004C06840610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004C06980610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9245,7 +9236,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010138009406D80630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010138009406EC0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000D002000001002000000000000070
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
