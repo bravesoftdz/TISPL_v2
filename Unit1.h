@@ -495,6 +495,7 @@ __published:	// IDE-managed Components
   void __fastcall scGPEdit1Change(TObject *Sender);
   void __fastcall Timer2Timer(TObject *Sender);
 	void __fastcall scGPCheckBox_viditelnostClick(TObject *Sender);
+	void __fastcall scButton_zamekClick(TObject *Sender);
 
 
 // User declarations

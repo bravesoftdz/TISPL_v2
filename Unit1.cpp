@@ -248,11 +248,6 @@ void TForm1::DesignSettings()
 	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
 	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width;
 	scGPCheckBox_viditelnost->Left=scGPLabel2->Left-scGPCheckBox_viditelnost->Width-22;
-//	scGPComboBox_orientace->Left=scGPButton_ulozit->Left-scGPComboBox_orientace->Width-22;
-//	scGPLabel1->Left=scGPComboBox_orientace->Left-scGPLabel1->Width;
-//	scGPCheckBox_viditelnost->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
-//	scGPLabel2->Left=scGPCheckBox_viditelnost->Left+scGPCheckBox_viditelnost->Width+22;
-//	scButton_zamek->Left=scGPLabel2->Left+scGPLabel2->Width;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
@@ -760,11 +755,11 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	//vodorovné zarovnání prvků
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
-	scGPComboBox_orientace->Left=scGPButton_ulozit->Left-scGPComboBox_orientace->Width-22;
-	scGPLabel1->Left=scGPComboBox_orientace->Left-scGPLabel1->Width;
-	scGPCheckBox_viditelnost->Left=scGPButton_zahodit->Left+scGPButton_zahodit->Width+22;
-	scGPLabel2->Left=scGPCheckBox_viditelnost->Left+scGPCheckBox_viditelnost->Width+22;
-	scButton_zamek->Left=scGPLabel2->Left+scGPLabel2->Width;
+	scGPLabel1->Left=22;
+	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
+	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
+	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width;
+	scGPCheckBox_viditelnost->Left=scGPLabel2->Left-scGPCheckBox_viditelnost->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
@@ -4678,12 +4673,18 @@ void TForm1::NP_input()
 	 scGPLabel_roboti->ContentMarginLeft=10;
 
 	 //prozatim definice kabiny
-	 if (pom_temp->Xk==-999&&pom_temp->Xk==-999) //provizorně vyřešeno pomocí prázdné nebo plné lakovny
-	 {
+//	 if (pom_temp->Xk==-999&&pom_temp->Xk==-999) //provizorně vyřešeno pomocí prázdné nebo plné lakovny
+//	 {
 		pom_temp->rozmer_kabiny.x=10;//default délka 10 m
 		pom_temp->rozmer_kabiny.y=6;//default šířka 6 m
 		pom_temp->Xk=m.P2Lx(scSplitView_LEFTTOOLBAR->Width+100);pom_temp->Yk=m.P2Ly((ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0)+pom_temp->rozmer_kabiny.y/2.0;//provizorní vložení
-	 }
+//	 }
+
+		//nastavení tlačítek na výchozí hodnoty
+	if(pom_temp->zobrazit_koty) scGPCheckBox_viditelnost->Checked=true;
+	else scGPCheckBox_viditelnost->Checked=false;
+	if(pom_temp->uzamknout_nahled) scButton_zamek->ImageIndex=37; //zamčeno
+	else scButton_zamek->ImageIndex=38;
 
 
 	 //zapnutí spodního panelu
@@ -7168,6 +7169,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
 	d.v.vymaz_elementy(pom,false);
 	d.v.kopiruj_objekt(pom_temp,pom);
+	DuvodUlozit(true);
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
 //---------------------------------------------------------------------------
@@ -7233,9 +7235,29 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
 
 void __fastcall TForm1::scGPCheckBox_viditelnostClick(TObject *Sender)
 {
-	if(scGPCheckBox_viditelnost->Checked);
+	if(scGPCheckBox_viditelnost->Checked)
+		pom_temp->zobrazit_koty=true;
+	else
+		pom_temp->zobrazit_koty=false;
+	REFRESH();
+}
+//---------------------------------------------------------------------------
 
-	else;
+void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
+{
+	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
+	{
+		pom_temp->uzamknout_nahled=false;
+		scButton_zamek->ImageIndex=38;//odemčeno
+	}
+	else
+	{
+		pom_temp->uzamknout_nahled=true;
+		scButton_zamek->ImageIndex=37;
+	}
+  pom_element=NULL;
+	JID=-1;
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 
