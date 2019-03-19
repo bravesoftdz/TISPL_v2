@@ -1684,7 +1684,8 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
 //	delete O;
 //	delete P;
 //	return data;
-//}
+//}
+
 ////---------------------------------------------------------------------------
 //smaze body z pameti
 long Cvektory::vymaz_seznam_POHONY()
@@ -3144,7 +3145,8 @@ void Cvektory::SaveText2File(AnsiString Text,AnsiString FileName)
 //short int Cvektory::ulozit_report(UnicodeString FileName)
 //{
 //	//
-//}
+//}
+
 //ZDM
 //---------------------------------------------------------------------------
 //AnsiString Cvektory::get_csv_xls(AnsiString S)//S=separator
@@ -3225,7 +3227,8 @@ void Cvektory::SaveText2File(AnsiString Text,AnsiString FileName)
 //		data+="</table>";//tělo konec tabulky
 //		data+="</body></html>";//patička
 //		return data;
-//}
+//}
+
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //void Cvektory::get_LT_a_max_min_TT()
