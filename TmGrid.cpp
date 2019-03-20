@@ -26,6 +26,7 @@ TmGrid::TmGrid(TForm *Owner)
 	Row=0;Col=0;//aktuální øádek a sloupec
 	AntiAliasing_grid=false;
 	AntiAliasing_text=true;
+	MovingTable=false;
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	preRowInd=-1;
 	Decimal=3;//implicitní poèet desetinných míst u numericeditù

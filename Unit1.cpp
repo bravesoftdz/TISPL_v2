@@ -119,7 +119,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	Screen->Cursors[13]=HC;
 	
 	  //Načtení z INI
-	AnsiString T=F->readINI("nastaveni_nahled", "cas");
+	AnsiString T=readINI("nastaveni_nahled", "cas");
 	if(T=="")PTunit=0;else PTunit=T.ToInt();
 	T=F->readINI("nastaveni_nahled","LO");
 	if(T=="")LOunit=0;else LOunit=T.ToInt();
@@ -6754,7 +6754,7 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-//	Form2->ShowModal();
+	Form2->ShowModal();
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
 //while(E!=NULL)

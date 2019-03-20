@@ -199,8 +199,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		//kóty
 		if(F->pom_temp->zobrazit_koty)
 		{
-			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test");
-			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test2");
+			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3);
+			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3);
     }
 
 		////vykreslení jednotlivých ELEMENTŮ
@@ -228,7 +228,8 @@ void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
 	canv->Font->Name="Arial";
 	canv->Font->Color=clRed;
 	canv->Font->Size=2*3*F->Zoom;
-	canv->Font->Style = TFontStyles();//<< fsBold;//zapnutí tučného písma
+	canv->Font->Style = TFontStyles();
+	if(F->JID==-6)canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
@@ -3058,92 +3059,96 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void  Cvykresli::vykresli_mGridy()
 {
-	 if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
-	 {
-		 Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
-		 while(E!=NULL)
-		 {
-			 E->mGrid->Left=m.L2Px(E->Xt);
-			 E->mGrid->Top=m.L2Py(E->Yt);
-			 if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
-			 else E->mGrid->MovingTable=false;
-			 E->mGrid->Show();//mGrid test
-			 E=E->dalsi;
-		 }
-		 E=NULL;delete E;
-	 }
+	if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
+	{
+		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
+		while(E!=NULL)
+		{
+			E->mGrid->Left=m.L2Px(E->Xt);
+			E->mGrid->Top=m.L2Py(E->Yt);
+			if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
+			else E->mGrid->MovingTable=false;
+			E->mGrid->Show();//mGrid test
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
 {
-	 //linie(canv,m.L2Px(Element_od->X),m.L2Py(Element_od->Y+O),m.L2Px(Element_do->X),m.L2Py(Element_do->Y+O),1,clGray);
-	 //canv->TextOutW(m.L2Px((Element_od->X+Element_do->X)/2.0),m.L2Py(Element_od->Y+O),AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
+	 float O=DoSkRB*2;//odsazení sipky elementu obecne
+//	 float Or=0;//odsazení robot od
+//	 float Or_do=0;//odsazení robot do
+//
+//	 if(1<=Element_od->eID && Element_od->eID<=4)Or_od=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
+//	 if(1<=Element_do->eID && Element_do->eID<=4)Or_do=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
+//	 if(Element_od->rotace_symbolu==180 || Element_od->rotace_symbolu==270)Or_od*=-1;
+//	 if(Element_do->rotace_symbolu==180 || Element_do->rotace_symbolu==270)Or_od*=-1;
 
-	 float O=-DoSkRB*2;//odsazení sipky elementu obecne
-	 float Or_od=0;//odsazení robot od
-	 float Or_do=0;//odsazení robot do
+	 if(F->pom_temp->elementy->dalsi->rotace_symbolu==180)O*=-1;
 
-	 if(1<=Element_od->eID && Element_od->eID<=4)Or_od=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
-	 if(1<=Element_do->eID && Element_do->eID<=4)Or_do=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
-	 if(Element_od->rotace_symbolu==180 || Element_od->rotace_symbolu==270)Or_od*=-1;
-	 if(Element_do->rotace_symbolu==180 || Element_do->rotace_symbolu==270)Or_od*=-1;
-
-	 long X1=m.L2Px(Element_od->X);
-	 long Y1=m.L2Py(Element_od->Y+O+Or_od);
-	 long X2=m.L2Px(Element_do->X);
-	 long Y2=m.L2Py(Element_do->Y+O+Or_do);
 
 //	 if(Element_od->rotace_symbolu==0 || Element_od->rotace_symbolu==180)//pří vodorovné rotaci náhledu
-//	 {
-//		 linie(canv,m.L2Px(Element_od->X),m.L2Py(Element_od->Y+O+Or_od),m.L2Px(Element_do->X),m.L2Py(Element_do->Y+O+Or_do),1,clGray);
-//		 canv->TextOutW(m.L2Px((Element_od->X+Element_do->X)/2.0),m.L2Py(Element_od->Y+O),AnsiString(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y))+" [m]");
-//	 }
 
-//doplnit když jeden ze zúčastněních elementů bude stav=2 tak tučně
+	 //highlight
+	 bool highlight=false;
+	 if(Element_od->stav==2 || Element_do->stav==2)highlight=true;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se daná kóta
 
-
-	 AnsiString T=AnsiString(m.round2double(m.delka(Element_od->X,Element_od->Y,Element_do->X,Element_do->Y),3,".."))+" [m]";
-	 vykresli_kotu(canv,X1,Y1,X2,Y2,T,0,1,clGray);
-
-
+	 //samotné vykreslení kóty
+	 vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,O,highlight);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,AnsiString Text, double Offset,unsigned short width,TColor color)
+//v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky
+void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,double Offset,bool highlight,float width,TColor color)
 {
-	 vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),Text,m.m2px(Offset),width,color);
+	AnsiString T=AnsiString(m.round2double(m.delka(X1,Y1,X2,Y2),3,".."));
+	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,m.m2px(Offset),highlight,width,color);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text, int Offset, unsigned short width, TColor color)
+//v px + dosazuje aktuálně nastavené jednotky
+void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,int Offset,bool highlight,float width, TColor color)
 {
-	//vykreslení postraních spojnic
+	width=m.round(width*F->Zoom);if(highlight)width*=2;
+	unsigned short Presah=m.round(1.3*F->Zoom);//přesah packy u kóty
 
-
-	//vykreslení linie
-	linie(canv,X1,Y1,X2,Y2,width,color);
-
-	//vykreslení postranních šipek
+	//vykreslení postranních šipek   pozn. pokud nebudu chtít používat "vystoupení" kóty při highligtování, tak odstranit Presah*(int)highlight
 	if(X1==X2)//svislá kóta
 	{
-		sipka(canv,X1,Y1,0,false,0.1/3.0*F->Zoom,color);
-		sipka(canv,X2,Y2,180,false,0.1/3.0*F->Zoom,color);
+		linie(canv,X1,Y1,X1+Offset+Presah+Presah*(int)highlight,Y1,width,color);//vykreslení postranních spojnic
+		linie(canv,X2,Y2,X2+Offset+Presah+Presah*(int)highlight,Y2,width,color);//vykreslení postranních spojnic
+		X1+=Offset;X2+=Offset;
+		sipka(canv,X1,Y1,0,false,0.1/3.0*F->Zoom*(1+0.5*(int)highlight),color);
+		sipka(canv,X2,Y2,180,false,0.1/3.0*F->Zoom*(1+0.5*(int)highlight),color);
 	}
 	else//vodorovná kóta
 	{
-		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom,color);
-		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom,color);
+		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*(int)highlight,width,color);//vykreslení postraních spojnic
+		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*(int)highlight,width,color);//vykreslení postraních spojnic
+		Y1+=Offset+Presah*2*(int)highlight;Y2+=Offset+Presah*2*(int)highlight;
+		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom*(1+0.3*(int)highlight),color);
+		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom*(1+0.3*(int)highlight),color);
 	}
 
+	//vykreslení hlavní linie
+	linie(canv,X1,Y1,X2,Y2,width,color);
 
-	 //popisek
+	//popisek
 	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
 	canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
 	canv->Font->Name="Arial";
 	canv->Font->Color=color;
-	canv->Font->Size=width*2*F->Zoom;
-	canv->Font->Style = TFontStyles();//<< fsBold;//zapnutí tučného písma
+	canv->Font->Size=m.round(width*12);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
+	if(highlight){canv->Font->Style = TFontStyles()<< fsBold;canv->Font->Size=m.round(canv->Font->Size/2.0);}//při highlighnutí se text se šířkou nezvětštuje, pouze ztučňuje
+	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
 	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
 	canv->Brush->Color=clWhite;
-	canv->TextOutW((X1+X2)/2-canv->TextWidth(Text)/2,(Y1+Y2)/2-canv->TextHeight(Text)/2,Text);
+	AnsiString Jednotky=F->readINI("nastaveni_nahled","koty_delka");if(Jednotky==1)Jednotky=" [mm]";else Jednotky=" [m]";
+	long X=(X1+X2)/2-canv->TextWidth(Text)/2;
+	long Y=(Y1+Y2)/2-canv->TextHeight(Text)/2;
+	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
+	canv->Font->Color=(TColor)RGB(43,87,154);
+	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
