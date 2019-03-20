@@ -197,8 +197,12 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
 		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
 		//kóty
-		vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test");
-		vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test2");
+		if(F->pom_temp->zobrazit_koty)
+		{
+			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test");
+			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test2");
+    }
+
 		////vykreslení jednotlivých ELEMENTŮ
 		Cvektory::TElement *E=F->pom_temp->elementy;
 		if(E!=NULL)//pokud elementy existují
@@ -3207,7 +3211,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 //vykresluje měřítko
 void Cvykresli::meritko(TCanvas *canv,long X,long Y)
 {
-	if(Form1->MOD!=Form1->TECHNOPROCESY)
+	if(F->MOD!=F->TECHNOPROCESY)
 	{
 			//proměnné nastavení měřítka
 			int L=Form1->scSplitView_LEFTTOOLBAR->Width+5;//umístění na X - levého výchozího kraje měřítka
@@ -3221,8 +3225,8 @@ void Cvykresli::meritko(TCanvas *canv,long X,long Y)
 			if(Form1->Zoom==0.5)K=2;
 			if(Form1->Zoom==0.25)K=5;
 			int M=10;//MAX políček
-			TColor barva_meritko=(TColor)RGB(128,128,128);//barva měřítka
-			//TColor barva_meritko=(TColor)RGB(43,87,154);//(0,120,215);barva měřítka
+			TColor barva_meritko=(TColor)RGB(127,127,127);//barva měřítka - nesmí být 128,128,128, resp. clGray
+			if(F->MOD==F->NAHLED)barva_meritko=(TColor)RGB(150,150,150);
 
 			//nastavení pera a fontu canvasu
 			canv->Pen->Color=barva_meritko;
