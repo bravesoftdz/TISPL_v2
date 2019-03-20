@@ -18,6 +18,7 @@ object Form1: TForm1
   OnCloseQuery = FormCloseQuery
   OnDblClick = FormDblClick
   OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   OnKeyUp = FormKeyUp
   OnMouseDown = FormMouseDown
   OnMouseMove = FormMouseMove
@@ -3095,6 +3096,7 @@ object Form1: TForm1
         TabOrder = 0
         OnDrawCell = DrawGrid_knihovnaDrawCell
         OnKeyDown = FormKeyDown
+        OnKeyPress = FormKeyPress
         OnMouseDown = DrawGrid_knihovnaMouseDown
         OnMouseLeave = DrawGrid_knihovnaMouseLeave
         OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
@@ -4241,8 +4243,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2229
-        Top = 2392
+        Left = 2241
+        Top = 2404
         Width = 244
         Height = 31
         Align = alCustom
@@ -7095,8 +7097,8 @@ object Form1: TForm1
     end
   end
   object Memo3: TMemo
-    Left = 938
-    Top = 71
+    Left = 644
+    Top = 383
     Width = 185
     Height = 56
     Lines.Strings = (
@@ -7404,6 +7406,8 @@ object Form1: TForm1
       ListBoxOptions.FrameScaleWidth = False
       MouseWheelSupport = True
       Color = clNone
+      OnKeyDown = FormKeyDown
+      OnKeyPress = FormKeyPress
     end
     object scGPButton_ulozit: TscGPButton
       Left = 96
@@ -7432,8 +7436,8 @@ object Form1: TForm1
       Options.NormalColor = 33023
       Options.HotColor = 1871359
       Options.PressedColor = clLime
-      Options.FocusedColor = 1871359
-      Options.DisabledColor = clBlack
+      Options.FocusedColor = 33023
+      Options.DisabledColor = 33023
       Options.NormalColor2 = clNone
       Options.HotColor2 = clNone
       Options.PressedColor2 = clNone
@@ -7443,7 +7447,7 @@ object Form1: TForm1
       Options.HotColorAlpha = 255
       Options.PressedColorAlpha = 255
       Options.FocusedColorAlpha = 255
-      Options.DisabledColorAlpha = 200
+      Options.DisabledColorAlpha = 100
       Options.NormalColor2Alpha = 255
       Options.HotColor2Alpha = 255
       Options.PressedColor2Alpha = 255
@@ -7451,20 +7455,20 @@ object Form1: TForm1
       Options.DisabledColor2Alpha = 255
       Options.FrameNormalColor = 33023
       Options.FrameHotColor = 1871359
-      Options.FramePressedColor = clGray
-      Options.FrameFocusedColor = 1871359
-      Options.FrameDisabledColor = clBtnShadow
+      Options.FramePressedColor = 33023
+      Options.FrameFocusedColor = 33023
+      Options.FrameDisabledColor = 33023
       Options.FrameWidth = 1
       Options.FrameNormalColorAlpha = 255
       Options.FrameHotColorAlpha = 255
       Options.FramePressedColorAlpha = 255
       Options.FrameFocusedColorAlpha = 255
-      Options.FrameDisabledColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 100
       Options.FontNormalColor = clWhite
       Options.FontHotColor = clWhite
       Options.FontPressedColor = clWhite
       Options.FontFocusedColor = clWhite
-      Options.FontDisabledColor = clAqua
+      Options.FontDisabledColor = clWhite
       Options.ShapeFillGradientAngle = 90
       Options.ShapeFillGradientPressedAngle = -90
       Options.ShapeFillGradientColorOffset = 25
@@ -7616,7 +7620,7 @@ object Form1: TForm1
     object scGPLabel2: TscGPLabel
       Left = 750
       Top = 11
-      Width = 137
+      Width = 239
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBtnText
@@ -7650,7 +7654,7 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Layout = tlCenter
-      Caption = 'Uzamknout n'#225'hled'
+      Caption = 'Uzamknout rozm'#237'st'#283'n'#237' a rozm'#283'ry'
     end
     object scButton_zamek: TscButton
       Left = 890
@@ -8106,7 +8110,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004C06A00610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004C06A80610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9237,7 +9241,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010138009406F40630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010138009406FC0630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000D002000001002000000000000070
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -27091,5 +27095,12 @@ object Form1: TForm1
     OnTimer = Timer2Timer
     Left = 704
     Top = 320
+  end
+  object TimerKurzor: TTimer
+    Enabled = False
+    Interval = 600
+    OnTimer = TimerKurzorTimer
+    Left = 536
+    Top = 40
   end
 end
