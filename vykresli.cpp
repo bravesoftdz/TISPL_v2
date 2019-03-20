@@ -197,8 +197,8 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
 		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
 		//kóty
-		//vykresli_kotu()
-
+		vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test");
+		vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,"test2");
 		////vykreslení jednotlivých ELEMENTŮ
 		Cvektory::TElement *E=F->pom_temp->elementy;
 		if(E!=NULL)//pokud elementy existují

@@ -2061,7 +2061,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}break;
 		case KALIBRACE:
 		{   //zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-    zobraz_tip("Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu.");
+    	zobraz_tip("Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu.");
 			if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y,true);
