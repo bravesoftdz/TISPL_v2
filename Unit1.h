@@ -584,9 +584,10 @@ private:
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka,short sirka1,short sirka_o,short sirka_o1);
 	bool el_vkabine(int X,int Y);
-	int el_mimoKabinu ();
+	int el_mimoKabinu ();//1-robot z leva, 2-robot z prava, 3-nerobot zl., 4-nerobot zp., 5-robot ze spoda, 6-robot z vrchu, 7-nerobot zes., 8-nerobot zvr.
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);
+	double vrat_hranici(int mimo);
 
 	////promìnné
 	TDateTime TIME;

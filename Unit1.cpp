@@ -2040,8 +2040,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			short trend=m.Rt90(d.trend(pom));
 			short stredx=F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0;
 			short stredy=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0;
-			if ((m.L2Py(pom_temp->Yk)<stredy+2 && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)>stredy&&mimo==0&&(trend==90||trend==270))||
-			(m.L2Px(pom_temp->Xk)<stredx+2 && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)>stredx&&mimo==0&&(trend!=90||trend!=270)))
+//						if ((m.L2Py(pom_temp->Yk)<stredy+2 && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)>stredy&&mimo==0&&(trend==90||trend==270))||
+//			(m.L2Px(pom_temp->Xk)<stredx+2 && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)>stredx&&mimo==0&&(trend!=90||trend!=270)))
+			if ((mimo==0&&(trend==90||trend==270))||(mimo==0&&(trend!=90||trend!=270)))
 			{
 				if (trend==90 || trend==270)
 					pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
@@ -2056,7 +2057,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				{
 					switch (mimo)
 					{
-						case 0:{if(m.L2Py(pom_temp->Yk)>stredy) pom_temp->Yk=m.P2Ly(stredy)+1;else pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-1;}break;
+						case -1:{if(m.L2Py(pom_temp->Yk)>stredy) pom_temp->Yk=m.P2Ly(stredy)+1;else pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-1;}break;
 						case 5:{pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-d.DoSkRB-d.Robot_sirka_zakladny/2;zobraz_tip("Nelze mít element mimo kabinu");}break;
 						case 6:{pom_temp->Yk=m.P2Ly(stredy)+d.DoSkRB+d.Robot_sirka_zakladny/2;zobraz_tip("Nelze mít element mimo kabinu");}break;
 						case 7:{pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-1;zobraz_tip("Nelze mít element mimo kabinu");}break;
@@ -2067,7 +2068,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				{
 					switch (mimo)
 					{
-						case 0:{if (m.L2Px(pom_temp->Xk)>stredx) pom_temp->Xk=m.P2Lx(stredx)-1;else pom_temp->Xk=m.P2Lx(stredx)-pom_temp->rozmer_kabiny.x+1;}break;
+						case -2:{if (m.L2Px(pom_temp->Xk)>stredx) pom_temp->Xk=m.P2Lx(stredx)-1;else pom_temp->Xk=m.P2Lx(stredx)-pom_temp->rozmer_kabiny.x+1;}break;
 						case 1:pom_temp->Xk=m.P2Lx(stredx)-d.DoSkRB-d.Robot_sirka_zakladny/2;break;
 						case 2:pom_temp->Xk=m.P2Lx(stredx)-pom_temp->rozmer_kabiny.x+d.DoSkRB+d.Robot_sirka_zakladny/2;break;
 						case 4:pom_temp->Xk=m.P2Lx(stredx)-pom_temp->rozmer_kabiny.x+1;break;
@@ -2082,10 +2083,26 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case ROZMER_KABINA:
 		{
-			if(JID==-4)
+			int mimo=el_mimoKabinu();
+			if(JID==-4&&mimo==0)
 				pom_temp->rozmer_kabiny.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-			else
-			pom_temp->rozmer_kabiny.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+			if(JID==-5&&mimo==0)
+				pom_temp->rozmer_kabiny.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+			if(mimo!=0)
+			{
+				//MB("Nelze provést, všichni roboti musí být v kabině.",MB_OK);
+				switch(mimo)
+				{
+					case -2:
+					case -1:
+					case 2:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+0.05;break;
+					case 5:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+0.05;break;
+					case 4:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+1;break;
+					case 7:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+1;break;
+					default:break;
+				}
+				Akce=NIC;
+			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			nahled_ulozit(true);
@@ -3087,49 +3104,97 @@ bool TForm1::el_vkabine(int X,int Y)
 //vrací hodnotu
 int TForm1::el_mimoKabinu ()
 {
-	double min=9999999, max=-9999999;
-	int minID,maxID;
-	int vrat=0;
+	short stredx=F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0;
+	short stredy=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0;
+	double xmin=9999999, xmax=-9999999,ymin=9999999, ymax=-9999999;
 	short trend=m.Rt90(d.trend(pom));
-	if((trend!=90 && trend!=270)) //X
+	int xminID,xmaxID,yminID,ymaxID;
+	int vrat=0;
+
+	Cvektory::TElement *E=pom_temp->elementy;
+	while (E!=NULL)
 	{
-		Cvektory::TElement *E=pom_temp->elementy;
-		while (E!=NULL)
+		if(E->n>0) //nefunguje zatím je to zde provyzorně
 		{
-			if(E->n>0) //nefunguje zatím je to zde provyzorně
-			{
-			if(E->X<min) {min=E->X;minID=E->eID;}
-			if(E->X>max) {max=E->X;maxID=E->eID;}
-			}
-			E=E->dalsi;
+		if(E->X<xmin) {xmin=E->X;xminID=E->eID;}
+		if(E->X>xmax) {xmax=E->X;xmaxID=E->eID;}
+		if(E->Y<ymin) {ymin=E->Y;yminID=E->eID;}
+		if(E->Y>ymax) {ymax=E->Y;ymaxID=E->eID;}
 		}
-		E=NULL; delete E;
-		if(pom_temp->Xk>min-d.Robot_sirka_zakladny/2&&(minID>0 && minID<5)) vrat=1;//robot z leva
-		if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<max+d.Robot_sirka_zakladny/2&&(maxID>0 && maxID<5)) vrat=2;//robot z prava
-		if(pom_temp->Xk>min-d.Robot_sirka_zakladny/2&&(minID==0 || minID>4)) vrat=3;//nerobot z leva
-		if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<max+d.Robot_sirka_zakladny/2&&(maxID==0 || maxID>4)) vrat=4;//nerobot z prava
+		E=E->dalsi;
 	}
-	else
-	{
-  	Cvektory::TElement *E=pom_temp->elementy;
-		while (E!=NULL)
-		{
-			if(E->n>0)
-			{
-			if(E->Y<min) {min=E->Y;minID=E->eID;}
-			if(E->Y>max) {max=E->Y;maxID=E->eID;}
-			}
-			E=E->dalsi;
-		}
-		E=NULL; delete E;
-		if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>min-d.Robot_sirka_zakladny/2&&(minID>0 && minID<5)) vrat=5;//robot ze spoda
-		if(pom_temp->Yk<max+d.Robot_sirka_zakladny/2&&(maxID>0 && maxID<5)) vrat=6;//robot z vrchu
-		if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>min-d.Robot_sirka_zakladny/2&&(minID==0 || minID>4)) vrat=7;//nerobot ze spoda
-		if(pom_temp->Yk<max+d.Robot_sirka_zakladny/2&&(maxID==0 || maxID>4)) vrat=8;//nerobot z vrchu
-	}
+	E=NULL; delete E;
+	//kontrola přesažení elementuy
+	if(pom_temp->Xk>xmin-d.Robot_sirka_zakladny/2&&(xminID>0 && xminID<5)) vrat=1;//robot z leva
+	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax+d.Robot_sirka_zakladny/2&&(xmaxID>0 && xmaxID<5)) vrat=2;//robot z prava
+	if(pom_temp->Xk>xmin-d.Robot_sirka_zakladny/2&&(xminID==0 || xminID>4)) vrat=3;//nerobot z leva
+	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax+d.Robot_sirka_zakladny/2&&(xmaxID==0 || xmaxID>4)) vrat=4;//nerobot z prava
+	//kontrola přesažení elementu
+	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin-d.Robot_sirka_zakladny/2&&(yminID>0 && yminID<5)) vrat=5;//robot ze spoda
+	if(pom_temp->Yk<ymax+d.Robot_sirka_zakladny/2&&(ymaxID>0 && ymaxID<5)) vrat=6;//robot z vrchu
+	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin-d.Robot_sirka_zakladny/2&&(yminID==0 || yminID>4)) vrat=7;//nerobot ze spoda
+	if(pom_temp->Yk<ymax+d.Robot_sirka_zakladny/2&&(ymaxID==0 || ymaxID>4)) vrat=8;//nerobot z vrchu
+	//kontrola přesažení pohonu
+	if((m.L2Py(pom_temp->Yk)>=stredy||m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)<=stredy)&&(trend==90||trend==270)) vrat=-1;
+	if((m.L2Px(pom_temp->Xk)>=stredx||m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)<=stredx)&&(trend!=90&&trend!=270)) vrat=-2;
+
 	return vrat;
 }
 //---------------------------------------------------------------------------
+//vrátí souřadnice posledního prvku, vstupní parametr rozhoduje z jaké strany
+double TForm1::vrat_hranici(int mimo)
+{
+	double souradnice;
+	double min=9999999, max=-9999999;
+	Cvektory::TElement *E=pom_temp->elementy;
+	switch(mimo)
+	{
+		case 2:
+		{
+			while (E!=NULL)
+			{
+				if(E->n>0) //nefunguje zatím je to zde provyzorně
+					if(E->X>max) max=E->X;
+				E=E->dalsi;
+			}
+			souradnice=max+d.Robot_delka_zakladny/2;
+		}break;
+		case 5:
+		{
+			while (E!=NULL)
+			{
+				if(E->n>0) //nefunguje zatím je to zde provyzorně
+					if(E->Y<min) min=E->Y;
+				E=E->dalsi;
+			}
+			souradnice=min-d.Robot_sirka_zakladny/2;
+		}break;
+		case 4:
+		{
+    	while (E!=NULL)
+			{
+				if(E->n>0) //nefunguje zatím je to zde provyzorně
+					if(E->X>max) max=E->X;
+				E=E->dalsi;
+			}
+			souradnice=max;
+		}break;
+		case 7:
+		{
+    	while (E!=NULL)
+			{
+				if(E->n>0) //nefunguje zatím je to zde provyzorně
+					if(E->Y<min) min=E->Y;
+				E=E->dalsi;
+			}
+			souradnice=min;
+		}break;
+	}
+	E=NULL; delete E;
+	return souradnice;
+}
+//---------------------------------------------------------------------------
+//metoda pro sledování zda je nutné náhled uložit
 void TForm1::nahled_ulozit (bool duvod_ulozit)
 {
 	if(duvod_ulozit) scGPButton_ulozit->Enabled=true;
