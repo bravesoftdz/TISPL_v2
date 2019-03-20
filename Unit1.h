@@ -305,6 +305,7 @@ __published:	// IDE-managed Components
 	TscGPLabel *scGPLabel2;
 	TscButton *scButton_zamek;
 	TscLabel *scLabel1;
+	TTimer *TimerKurzor;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -496,6 +497,9 @@ __published:	// IDE-managed Components
   void __fastcall Timer2Timer(TObject *Sender);
 	void __fastcall scGPCheckBox_viditelnostClick(TObject *Sender);
 	void __fastcall scButton_zamekClick(TObject *Sender);
+	void __fastcall TimerKurzorTimer(TObject *Sender);
+	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
+
 
 
 // User declarations
@@ -503,7 +507,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_LAKOVNA};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA};Takce Akce;
   enum Tm_mm{M=0,MM};Tm_mm DOtocunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec LOunit;//pøepínaè jednotek èasu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
@@ -516,7 +520,7 @@ public:
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
-	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j};
+	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
   TWndMethod PreviousWndProc;
@@ -580,7 +584,10 @@ private:
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka,short sirka1,short sirka_o,short sirka_o1);
 	bool el_vkabine(int X,int Y);
-	int el_mimoKabinu ();
+	int el_mimoKabinu ();//1-robot z leva, 2-robot z prava, 3-nerobot zl., 4-nerobot zp., 5-robot ze spoda, 6-robot z vrchu, 7-nerobot zes., 8-nerobot zvr.
+	void Smaz_kurzor ();
+	void vykresli_kurzor(int index);
+	double vrat_hranici(int mimo);
 
 	////promìnné
 	TDateTime TIME;
@@ -612,6 +619,10 @@ private:
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito pøi soubor nový
 	bool start_ortogonalizace;
+	bool editace_textu;//mimo enum akce z dùvodu zobrazování kurozù pøi editaci a pøepínání na jiné akce
+	bool stav_kurzoru;//kurzon vykreslen/nevykreslen
+	int index_kurzoru;
+	AnsiString nazev_puvodni;// používáno pro uchovávání pùvodního názvu objektu z dùvodu zrušení editace
 
 	AnsiString Caption;
 
@@ -656,6 +667,7 @@ public:		// User declarations
 	int JID;//JOB ID
   int knihovna_id; // id drawgrid knihovny
 	int element_id;  // id vybraneho elementu z knihoven
+	void nahled_ulozit (bool duvod_ulozit);
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
