@@ -2107,7 +2107,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}break;
 		case KALIBRACE:
 		{   //zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-    zobraz_tip("Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu.");
+    	zobraz_tip("Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu.");
 			if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y,true);
@@ -2126,13 +2126,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			if(MOD==NAHLED && pom_temp!=NULL)
 			{
-				if(pom_temp->uzamknout_nahled==false)//pouze pokud je možné editovat (není uzamčen náhled)
-				{
 					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
 					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
 					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
-				}
-//					{kurzor(posun_ind);}
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -2234,48 +2230,54 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 void TForm1::getJobID(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
-	//nejdříve testování zda se nepřejelo myší přes obrys kabiny
-						//roteč linií//šířka linie (polovina na každou stranu)
-	short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
-	if(m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
-	else if(m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
-	else if(m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
-	else if(m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
-	else//dále tabulky či elementy
+
+	//nejdříve TABULKA
+	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+	if(pom_element!=NULL && pom_temp->uzamknout_nahled==false)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 	{
-		pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));//TABULKA
-		if(pom_element!=NULL)//tabulka nalezena, tzn. klik či přejetí myší přes tabulku
+		int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
+		if(IdxRow==0)JID=100+0;//hlavička
+		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 		{
-			int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
-			if(IdxRow==0)JID=100+0;//hlavička
-			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+			int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+			if(IdxCol==0)//řádky v prvním sloupeci
 			{
-				int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
-				if(IdxCol==0)//řádky v prvním sloupeci
-				{
-					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-					else JID=1000+IdxRow;
-				}
-				else JID=2000+IdxRow;//řádky v dalších sloupcích
+				if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+				else JID=1000+IdxRow;
 			}
+			else JID=2000+IdxRow;//řádky v dalších sloupcích
 		}
-		else //tabulka nenalezena, takže zkouší najít ELEMENT
+	}
+	else//tabulka nenalezena, takže zkouší najít ELEMENT
+	{
+		pom_element=NULL;
+		if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
+		if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
 		{
-			pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-			if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+			JID=0;
+		}
+		else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+		{
+			//testování zda se nepřejelo myší přes OBRYS kabiny, pokud je dovoleno měnit rozměry a rozmístění kabiny
+								//roteč linií//šířka linie (polovina na každou stranu)
+			short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
+			if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
+			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
+			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
+			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
+			//testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
+			else
 			{
-				JID=0;
-			}
-			else //ani element nenalezen, hledá tedy interaktivní TEXT, např. kóty atp.
-			{
-				//testování zda se nejedná o název či zkratku objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
 				d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
 				AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
 				int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
 				int Yd=m.L2Py(F->pom_temp->Yk);
 				if(Xl<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-6;//název objektu
 				else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
-				//if()RET=10-99 zcela doplnit
+				else//další kóty
+				{
+					//if( && pom_temp->uzamknout_nahled==false)RET=10-99 zcela doplnit
+				}
 			}
 		}
 	}
