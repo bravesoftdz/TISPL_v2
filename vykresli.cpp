@@ -200,9 +200,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		if(F->pom_temp->zobrazit_koty)
 		{
 			short highlight=0;
-			if(F->JID==-8)highlight=2;
+			if(F->JID==-8)highlight=1;
 			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
-			if(F->JID==-9)highlight=2;else  highlight=0;
+			if(F->JID==-9)highlight=1;else  highlight=0;
 			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
 		}
 
@@ -215,8 +215,16 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			{
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav);
 				 //zde bude ještě vykreslení g_elementu
-				 //zde bude ještě vykreslení ještě kót
-				 if(E->predchozi->n!=0 && F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);
+				 //vykreslení kót
+				 if(F->pom_temp->zobrazit_koty)
+				 {
+					 if(E->predchozi->n!=0)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
+					 else//od počátku kabiny k prvnímu elementu
+					 {
+						short H=0;if(E->stav==2)H=1;
+						vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk,E->X,E->Y,0,H);
+					 }
+				 }                         //dodělat výše uvedené, včetně rotace
 				 E=E->dalsi;//posun na další element
 			}
 		}
@@ -226,7 +234,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 //---------------------------------------------------------------------------
 void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
 {
-	canv->Font->Name="Roboto Cn";"Arial";
+	canv->Font->Name=F->aFont->Name;
 	canv->Font->Color=clRed;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles();
@@ -250,6 +258,7 @@ void Cvykresli::prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A
 //zajistí vykreslení šipky - orientace spojovací linie
 void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne, float size,COLORREF color,COLORREF color_brush,TPenMode PenMode,TPenStyle PenStyle,bool teziste_stred)
 {
+	azimut=fmod(azimut,360);//ošetření proti přetýkání azimutu
 	canv->Pen->Mode=PenMode;
 	canv->Pen->Width=1;
 	canv->Pen->Style=PenStyle;
@@ -2747,11 +2756,11 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	{
 		if(typ==0)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-		canv->Font->Size=5*Z;
-		canv->Font->Name="Arial";//canv->Font->Name="Courier New";//canv->Font->Name="MS Sans Serif";
-		AnsiString T=short_name;if(Z>4*3){T=name;canv->Font->Size=2*Z;}//od daného zoomu zobrazuje celý název
+		if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
+		AnsiString T=short_name;if(Z>4*3){T=name;if(F->aFont->Size==12)canv->Font->Size=2*Z; else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
+			canv->Font->Name=F->aFont->Name;
 			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
 			if(rotace==0 || rotace==180)drawRectText(canv,zakladna,T); //nefunguje správně při rotaci //pro po orototován9 o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
 			else
@@ -2763,6 +2772,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		}
 		else//ikona
 		{
+			canv->Font->Name="Arial";//F->aFont->Name;
 			canv->Font->Size=F->m.round(3*Z);                                  //1 pouze korekce
 			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+sirka_zakladny/2.0+1*Z),name);
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+sirka_zakladny/2.0+1*Z+1*Z+canv->TextHeight(name)),short_name);
@@ -3109,7 +3119,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,double Offset,short highlight,float width,TColor color)
 {
-	AnsiString T=AnsiString(m.round2double(m.delka(X1,Y1,X2,Y2),3,".."));
+	int J=1;AnsiString Jednotky=F->readINI("nastaveni_nahled","koty_delka");if(Jednotky==1)J=1000;//případný převod m->mm
+	AnsiString T=AnsiString(m.round2double(m.delka(X1,Y1,X2,Y2)*J,3,".."));
 	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,m.m2px(Offset),highlight,width,color);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3139,8 +3150,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*V,width,color);//vykreslení postraních spojnic
 		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*V,width,color);//vykreslení postraních spojnic
 		Y1+=Offset+Presah*V;Y2+=Offset+Presah*V;
-		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
-		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
+		sipka(canv,X1,Y1,m.azimut(X1,Y1,X2,Y2)-180,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
+		sipka(canv,X2,Y2,m.azimut(X1,Y1,X2,Y2),false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
 	}
 
 	//vykreslení hlavní linie

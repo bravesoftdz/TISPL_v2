@@ -515,7 +515,7 @@ public:
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	UnicodeString get_user_name();
-	DrawGridWndProc(TMessage &Message);
+	//toto je na co?:DrawGridWndProc(TMessage &Message);
 	bool mazani;
 
 private:
@@ -523,7 +523,7 @@ private:
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
-  TWndMethod PreviousWndProc;
+  //toto je na co?:TWndMethod PreviousWndProc;
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
@@ -559,9 +559,10 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
-	int get_DPI();//MV
-	void redesign_element();
 	UnicodeString get_temp_dir();
+	UnicodeString get_Windows_dir();
+	int get_DPI();
+	void redesign_element();
 	AnsiString FileName_short(AnsiString FileName);
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
@@ -651,6 +652,7 @@ public:		// User declarations
 	Cvykresli d;
 	Cgrafy g;
 	UnicodeString FileName;
+	TFont *aFont;//aktuální nastavený výchozí font
 	double Zoom; //promìnná uchovávajicí velikost Zoomu
 	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
 	bool grid;

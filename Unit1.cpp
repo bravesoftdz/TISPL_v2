@@ -168,6 +168,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 	d.v.nacti_CSV_retezy("řetězy.csv");
 
+	//načtení aktuálního Fontu
+	aFont=new TFont();//aktuální nastavený výchozí font
+	aFont->Name="Arial";aFont->Size=12;aFont->Color=clBlack;
+	if(FileExists(get_Windows_dir()+"\\Fonts\\Roboto-Condensed.ttf")){aFont->Name="Roboto Cn";aFont->Size=14;}//pokud je k dispozici Roboto Cn, tak ho nastaví
 
 	//nastavení knihovnky
 	//DrawGrid_knihovna->Enabled=false;
@@ -2312,7 +2316,7 @@ void TForm1::getJobID(int X, int Y)
 //---------------------------------------------------------------------------
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
-{
+{                                                  //pom_element->mGrid->Cells[0][0].Font->Style=TFontStyles()<< fsBold; - nefunguje něco to přenastavuje jinak
 	kurzor(standard);//umístít na začátek
 	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
 	{
@@ -5291,6 +5295,7 @@ void TForm1::vse_odstranit()
 		proces_pom=NULL;delete proces_pom;
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
+		aFont=NULL; delete aFont;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -5329,6 +5334,15 @@ UnicodeString TForm1::get_temp_dir()
 	 GetTempPathW(MAX_PATH,lpTempPathBuffer);
 	 UnicodeString TempPath=lpTempPathBuffer;
 	 return TempPath;
+}
+//---------------------------------------------------------------------------
+UnicodeString TForm1::get_Windows_dir()
+{
+	const unsigned int INFO_BUFFER_SIZE=32767;
+	TCHAR  infoBuf[INFO_BUFFER_SIZE];
+	DWORD  bufCharCount = INFO_BUFFER_SIZE;
+	GetWindowsDirectory( infoBuf, INFO_BUFFER_SIZE ); //GetSystemDirectory
+	return infoBuf;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -6912,6 +6926,7 @@ void TForm1::db_connection()
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
 	Form2->ShowModal();
+
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
 //while(E!=NULL)

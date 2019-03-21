@@ -55,6 +55,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
@@ -104,6 +105,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
@@ -153,6 +155,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
 	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -247,6 +250,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->poznamka=Objekt->poznamka;
 		novy->probehla_aktualizace_prirazeni_pohonu=Objekt->probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 		novy->zobrazit_koty=Objekt->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+		novy->zobrazit_mGrid=Objekt->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 		novy->uzamknout_nahled=Objekt->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -297,6 +301,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->poznamka=Original->poznamka;
 	Kopie->probehla_aktualizace_prirazeni_pohonu=Original->probehla_aktualizace_prirazeni_pohonu;
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 }
 //---------------------------------------------------------------------------
@@ -887,6 +892,18 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->rotace_jigu=0;
 	Objekt->elementy->stav=true;
 
+	Objekt->elementy->LO1=0;
+	Objekt->elementy->OTOC_delka=0;
+	Objekt->elementy->LO2=0;
+	Objekt->elementy->LO_pozice=0;
+
+	Objekt->elementy->PT1=0;
+	Objekt->elementy->PTotoc=0;
+	Objekt->elementy->PT2=0;
+
+	Objekt->elementy->WT=0;
+	Objekt->elementy->WTpalec=0;
+
 	Objekt->elementy->mGrid=NULL;
 
 	Objekt->elementy->sparovany=NULL;
@@ -977,7 +994,9 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->PT1=Original->PT1;
 	Kopie->PTotoc=Original->PTotoc;
 	Kopie->PT2=Original->PT2;
-	Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
+	Kopie->WT=Original->WT;
+	Kopie->WTpalec=Original->WTpalec;
+	//Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->Gelement=Original->Gelement;

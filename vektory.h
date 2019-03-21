@@ -59,7 +59,10 @@ class Cvektory
 			double PT1;
 			double PTotoc;
 			double PT2;
-			double TIME;//CT, PT, WT, RT,...
+
+			double WT;
+			double WTpalec;
+			//double TIME;//CT, PT, WT, RT,...
 
 			unsigned int akt_pocet_voziku;
 			unsigned int max_pocet_voziku;
@@ -109,6 +112,7 @@ class Cvektory
 			UnicodeString poznamka;//uloží poznámku ke vzniku CT
 			bool probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
 			bool zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+			bool zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 			bool uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 			struct TObjekt *predchozi;//ukazatel na předchozí objekt ve spojovém seznamu
 			struct TObjekt *dalsi;//ukazatel na  další objekt ve spojovém seznamu

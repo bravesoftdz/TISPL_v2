@@ -39,7 +39,7 @@ AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString m
 short Cmy::Rt90(double number)
 {
 	short RET=round(number/90.0)*90;
-	if(RET>=360)RET-=360;
+	if(RET>=360)RET-=360;     //pøípadnì: RET=fmod(number,360.0);
 	if(RET>=360)RET=Rt90(RET);//rekurzce pro pøípady, že se bude jednát o nìkolikanásobnou rotaci èi kvùlip pøevodu z 360° na 0°
 	return RET;
 }
