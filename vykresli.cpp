@@ -3117,7 +3117,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,int Offset,short highlight,float width, TColor color)
 {
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
-	unsigned short Presah=m.round(1.3*F->Zoom);//přesah packy u kóty
+	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
 
@@ -3127,18 +3127,18 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 
 	//vykreslení postranních šipek
 	if(X1==X2)//svislá kóta
-	{                                         //*2 toto lze všude vyhodit
-		linie(canv,X1,Y1,X1+Offset+Presah+Presah*2*V,Y1,width,color);//vykreslení postranních spojnic
-		linie(canv,X2,Y2,X2+Offset+Presah+Presah*2*V,Y2,width,color);//vykreslení postranních spojnic
-		X1+=Offset+Presah*2*V;X2+=Offset+Presah*2*V;
+	{
+		linie(canv,X1,Y1,X1+Offset+Presah+Presah*V,Y1,width,color);//vykreslení postranních spojnic
+		linie(canv,X2,Y2,X2+Offset+Presah+Presah*V,Y2,width,color);//vykreslení postranních spojnic
+		X1+=Offset+Presah*V;X2+=Offset+Presah*V;
 		sipka(canv,X1,Y1,0,false,0.1/3.0*F->Zoom*(1+0.5*H),color,color,pmCopy,psSolid,false);
 		sipka(canv,X2,Y2,180,false,0.1/3.0*F->Zoom*(1+0.5*H),color,color,pmCopy,psSolid,false);
 	}
 	else//vodorovná kóta
 	{
-		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*2*V,width,color);//vykreslení postraních spojnic
-		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*2*V,width,color);//vykreslení postraních spojnic
-		Y1+=Offset+Presah*2*V;Y2+=Offset+Presah*2*V;
+		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*V,width,color);//vykreslení postraních spojnic
+		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*V,width,color);//vykreslení postraních spojnic
+		Y1+=Offset+Presah*V;Y2+=Offset+Presah*V;
 		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
 		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
 	}
