@@ -199,10 +199,10 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		//kóty
 		if(F->pom_temp->zobrazit_koty)
 		{
-			bool highlight=false;
-			if(F->JID==-8)highlight=true;
+			short highlight=0;
+			if(F->JID==-8)highlight=2;
 			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
-			if(F->JID==-9)highlight=true;else  highlight=false;
+			if(F->JID==-9)highlight=2;else  highlight=0;
 			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
 		}
 
@@ -248,7 +248,7 @@ void Cvykresli::prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení šipky - orientace spojovací linie
-void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne, float size,COLORREF color,COLORREF color_brush,TPenMode PenMode,TPenStyle PenStyle)
+void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne, float size,COLORREF color,COLORREF color_brush,TPenMode PenMode,TPenStyle PenStyle,bool teziste_stred)
 {
 	canv->Pen->Mode=PenMode;
 	canv->Pen->Width=1;
@@ -258,18 +258,24 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 	size=m.round(size*2*Form1->Zoom);
 	short sklon=230;
 
-	//střed v těžišti
+	if(!teziste_stred)//referenční bod není v těžišti,tak posun šipky tak, aby špička byla referenčním bodem
+	{
+		TPointD R=m.rotace(m.delka(X,Y,m.round(X+m.rotace(1,0,azimut).x*size),m.round(Y+m.rotace(1,0,azimut).y*size)),0,azimut);
+		X-=m.round(R.x);
+		Y-=m.round(R.y);
+	}
+
 	if(!bez_vyplne)//barevná výplň trojúhelníku
 	{
-		POINT body[3]={{X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size},{X+m.rotace(1,0,azimut).x*size,Y+m.rotace(1,0,azimut).y*size},{X+m.rotace(1,360-sklon,azimut).x*size,Y+m.rotace(1,360-sklon,azimut).y*size}};
+		POINT body[3]={{m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size)},{m.round(X+m.rotace(1,0,azimut).x*size),m.round(Y+m.rotace(1,0,azimut).y*size)},{m.round(X+m.rotace(1,360-sklon,azimut).x*size),m.round(Y+m.rotace(1,360-sklon,azimut).y*size)}};
 		canv->Polygon((TPoint*)body,2);
 	}
 	else//transparentní střed
 	{
-		canv->MoveTo(X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size);
-		canv->LineTo(X+m.rotace(1,0,azimut).x*size,Y+m.rotace(1,0,azimut).y*size);
-		canv->LineTo(X+m.rotace(1,360-sklon,azimut).x*size,Y+m.rotace(1,360-sklon,azimut).y*size);
-		canv->LineTo(X+m.rotace(1,sklon,azimut).x*size,Y+m.rotace(1,sklon,azimut).y*size);
+		canv->MoveTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));
+		canv->LineTo(m.round(X+m.rotace(1,0,azimut).x*size),m.round(Y+m.rotace(1,0,azimut).y*size));
+		canv->LineTo(m.round(X+m.rotace(1,360-sklon,azimut).x*size),m.round(Y+m.rotace(1,360-sklon,azimut).y*size));
+		canv->LineTo(m.round(X+m.rotace(1,sklon,azimut).x*size),m.round(Y+m.rotace(1,sklon,azimut).y*size));
 	}
 }
 //---------------------------------------------------------------------------
@@ -3093,42 +3099,48 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //	 if(Element_od->rotace_symbolu==0 || Element_od->rotace_symbolu==180)//pří vodorovné rotaci náhledu
 
 	 //highlight
-	 bool highlight=false;
-	 if(Element_od->stav==2 || Element_do->stav==2)highlight=true;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se daná kóta
+	 short highlight=0;
+	 if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
 
 	 //samotné vykreslení kóty
 	 vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,O,highlight);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky
-void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,double Offset,bool highlight,float width,TColor color)
+//v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
+void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,double Offset,short highlight,float width,TColor color)
 {
 	AnsiString T=AnsiString(m.round2double(m.delka(X1,Y1,X2,Y2),3,".."));
 	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,m.m2px(Offset),highlight,width,color);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//v px + dosazuje aktuálně nastavené jednotky
-void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,int Offset,bool highlight,float width, TColor color)
+//v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
+void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,int Offset,short highlight,float width, TColor color)
 {
-	width=m.round(width*F->Zoom);if(highlight)width*=2;
+	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	unsigned short Presah=m.round(1.3*F->Zoom);//přesah packy u kóty
+	short V=0;if(highlight==2)V=1;//vystoupení kóty
+	short H=0;if(highlight)H=1;
 
-	//vykreslení postranních šipek   pozn. pokud nebudu chtít používat "vystoupení" kóty při highligtování, tak odstranit Presah*(int)highlight
+	//ošetření v případě opačných souřadnic
+	if(X2<X1){long Xtemp=X2;X2=X1;X1=Xtemp;}
+	if(Y2<Y1){long Ytemp=Y2;Y2=Y1;Y1=Ytemp;}
+
+	//vykreslení postranních šipek
 	if(X1==X2)//svislá kóta
-	{
-		linie(canv,X1,Y1,X1+Offset+Presah+Presah*(int)highlight,Y1,width,color);//vykreslení postranních spojnic
-		linie(canv,X2,Y2,X2+Offset+Presah+Presah*(int)highlight,Y2,width,color);//vykreslení postranních spojnic
-		X1+=Offset;X2+=Offset;
-		sipka(canv,X1,Y1,0,false,0.1/3.0*F->Zoom*(1+0.5*(int)highlight),color);
-		sipka(canv,X2,Y2,180,false,0.1/3.0*F->Zoom*(1+0.5*(int)highlight),color);
+	{                                         //*2 toto lze všude vyhodit
+		linie(canv,X1,Y1,X1+Offset+Presah+Presah*2*V,Y1,width,color);//vykreslení postranních spojnic
+		linie(canv,X2,Y2,X2+Offset+Presah+Presah*2*V,Y2,width,color);//vykreslení postranních spojnic
+		X1+=Offset+Presah*2*V;X2+=Offset+Presah*2*V;
+		sipka(canv,X1,Y1,0,false,0.1/3.0*F->Zoom*(1+0.5*H),color,color,pmCopy,psSolid,false);
+		sipka(canv,X2,Y2,180,false,0.1/3.0*F->Zoom*(1+0.5*H),color,color,pmCopy,psSolid,false);
 	}
 	else//vodorovná kóta
 	{
-		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*(int)highlight,width,color);//vykreslení postraních spojnic
-		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*(int)highlight,width,color);//vykreslení postraních spojnic
-		Y1+=Offset+Presah*2*(int)highlight;Y2+=Offset+Presah*2*(int)highlight;
-		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom*(1+0.3*(int)highlight),color);
-		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom*(1+0.3*(int)highlight),color);
+		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*2*V,width,color);//vykreslení postraních spojnic
+		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*2*V,width,color);//vykreslení postraních spojnic
+		Y1+=Offset+Presah*2*V;Y2+=Offset+Presah*2*V;
+		sipka(canv,X1,Y1,270,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
+		sipka(canv,X2,Y2,90,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
 	}
 
 	//vykreslení hlavní linie
