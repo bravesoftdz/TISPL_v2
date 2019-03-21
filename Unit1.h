@@ -294,18 +294,15 @@ __published:	// IDE-managed Components
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
 	TscGPCheckBox *scGPCheckBox_viditelnost;
-	TscGPPanel *scGPPanel_schema;
-	TscGPGlyphButton *scGPGlyphButton1;
-	TscGPGlyphButton *scGPGlyphButton3;
-	TscGPGlyphButton *scGPGlyphButton7;
 	TscGPLabel *scGPLabel1;
 	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
 	TscGPLabel *scGPLabel2;
 	TscButton *scButton_zamek;
-	TscLabel *scLabel1;
 	TTimer *TimerKurzor;
+	TscGPButton *Nahled;
+	TscGPButton *scGPButton1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -499,6 +496,7 @@ __published:	// IDE-managed Components
 	void __fastcall scButton_zamekClick(TObject *Sender);
 	void __fastcall TimerKurzorTimer(TObject *Sender);
 	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall scGPButton1Click(TObject *Sender);
 
 
 
@@ -616,6 +614,7 @@ private:
 	bool SplitViewOpen;
 	bool refresh_mGrid;
 	bool duvod_k_ulozeni;
+	bool duvod_ulozit_nahled;
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito pøi soubor nový
 	bool start_ortogonalizace;

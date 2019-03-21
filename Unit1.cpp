@@ -205,7 +205,7 @@ void TForm1::DesignSettings()
 
   scGPLabel_otoce->Font->Color=clDrawGridHeaderFont;
 	scGPLabel_roboti->Font->Color= scGPLabel_otoce->Font->Color;
-  scGPLabel_stop->Font->Color= scGPLabel_otoce->Font->Color;
+	scGPLabel_stop->Font->Color= scGPLabel_otoce->Font->Color;
   scGPLabel_geometrie->Font->Color = scGPLabel_otoce->Font->Color;
   scGPLabel_poznamky->Font->Color =  scGPLabel_otoce->Font->Color;
 
@@ -256,6 +256,8 @@ void TForm1::DesignSettings()
 	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
 	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width;
 	scGPCheckBox_viditelnost->Left=scGPLabel2->Left-scGPCheckBox_viditelnost->Width-22;
+
+
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
@@ -367,6 +369,7 @@ void __fastcall TForm1::FormShow(TObject *Sender)
 //volání založení nový soubor z menu = nové nastavení souboru, nastevení aplikace je v konstruktoru
 void __fastcall TForm1::NovySouborClick(TObject *Sender)
 {
+	 if(duvod_k_ulozeni||duvod_ulozit_nahled) UlozitClick(this);
 	 Novy_soubor();//samotné vytvoření nového souboru
 	 //následující slouží pouze při uživatelsky volaném soubor nový
 	 Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
@@ -783,6 +786,9 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::schemaClick(TObject *Sender)
 {
+	if(MOD==NAHLED)KonecClick(this);
+	else
+	{
 	ESC();//zruší případnou rozdělanou akci
 	MOD=SCHEMA;
 	if(zobrazit_barvy_casovych_rezerv){zobrazit_barvy_casovych_rezerv=false;}
@@ -843,6 +849,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
 	SB("Kliknutím na libovolné místo přidáte objekt z knihovny nebo lze upravit stávájící schéma");
 
 	Invalidate();
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::testovnkapacity1Click(TObject *Sender)
@@ -1799,7 +1806,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
 						{
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
-								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;}//ELEMENT posun
+								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_smazat=pom_element;}//ELEMENT posun
 								if(JID==100 || 1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
 								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 								if(JID==-2||JID==-3){Akce=MOVE_KABINA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
@@ -2027,9 +2034,9 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
-			if(mazani&&(trend==90||trend==270)&&(1<=element_id && element_id<=4))
+			if(mazani&&(trend==90||trend==270)&&(1<=pom_element->eID && pom_element->eID<=4))
 				if(pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x) Smazat1Click(this);
-			if(mazani&&(trend!=90&&trend!=270)&&(1<=element_id && element_id<=4))
+			if(mazani&&(trend!=90&&trend!=270)&&(1<=pom_element->eID && pom_element->eID<=4))
 				if(pom_element->Y>pom_temp->Yk||pom_element->Y<pom_temp->Yk-pom_temp->rozmer_kabiny.y) Smazat1Click(this);
 			nahled_ulozit(true);
 			break;
@@ -2088,14 +2095,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				pom_temp->rozmer_kabiny.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			if(mimo!=0&&mimo!=4&&mimo!=7)
 			{
-				MB("Nelze provést, všichni roboti musí být v kabině.",MB_OK);
+				if(mimo==-2||mimo==-1) MB("Nelze provést, pohon musí být v kabině.",MB_OK);
+				else MB("Nelze provést, všichni roboti musí být v kabině.",MB_OK);
 				switch(mimo)
 				{
 					case -2:pom_temp->rozmer_kabiny.x=m.P2Lx(vrat_hranici(mimo))-pom_temp->Xk+1;break;
 					case -1:pom_temp->rozmer_kabiny.y=pom_temp->Yk-m.P2Ly(vrat_hranici(mimo))+1;break;
 					case 2:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+0.05;break;
 					case 5:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+0.05;break;
-//					case 4:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+1;break;
+//					case 4:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+1;break;   //neroboti mimo kabinu
 //					case 7:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+1;break;
 					default:break;
 				}
@@ -2184,6 +2192,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					Akce=NIC;kurzor(standard);
 					REFRESH();
 				} else MB("Nelze vložit element mimo kabinu! Vložte element do kabiny.");
+				pom_element_smazat=NULL; delete pom_element_smazat;
 				break;//posun elementu
 			}
 			case MOVE_KABINA:Akce=NIC;kurzor(standard);REFRESH();break;//konec posunu lakovny
@@ -3075,6 +3084,7 @@ void TForm1::add_element (int X, int Y)
 		DuvodUlozit(true); //"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?"
 	}else MB("Nelze vložit element mimo lakovací kabinu!");
 
+  //Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 	nahled_ulozit(true);//důvod k uložení náhledu
 }
 //---------------------------------------------------------------------------
@@ -3086,7 +3096,17 @@ bool TForm1::el_vkabine(int X,int Y)
 	double delka_robota=d.Robot_delka_zakladny/2.0*Zoom/m2px;//20 = odsazení pro otoče a stopku od hrany lakovny
 	double odsazeni=5;//odsazení slouží k tomu aby element nebyl vkládán na obrys lakovny
 
-	//kontrola zda je kliknuto v kabině
+	/////////kontrola obou souřadnic při vkládání elementu tz., že ikona robota musí být celá uvnitř kabiny
+//	if(1<=element_id && element_id<=4)
+//	{																															 //-5 odsazení od xt = nelze vložit objekt prímo na obrys kabiny
+//		if ((m.L2Px(pom_temp->Xk)>X-delka_robota-odsazeni||X+delka_robota+odsazeni>m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x))||
+//		(m.L2Py(pom_temp->Yk)>Y-delka_robota-odsazeni||Y+delka_robota+odsazeni>m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)))
+//			vkabine=false;
+//		else vkabine=true;
+//	}
+//	else vkabine=true;
+	/////////
+	/////////kontrola pouze jedné souřadnice (dáno orientaci kabiny), ikona robota může přesahovat kabinu
 	if(1<=element_id && element_id<=4)
 	{
 		if(trend==90 || trend==270)
@@ -3101,6 +3121,7 @@ bool TForm1::el_vkabine(int X,int Y)
 		}
 	}
 	else vkabine=true;
+	/////////
 	return vkabine;
 }
 //---------------------------------------------------------------------------
@@ -3202,8 +3223,8 @@ double TForm1::vrat_hranici(int mimo)
 //metoda pro sledování zda je nutné náhled uložit
 void TForm1::nahled_ulozit (bool duvod_ulozit)
 {
-	if(duvod_ulozit) scGPButton_ulozit->Enabled=true;
-	else scGPButton_ulozit->Enabled=false;
+	if(duvod_ulozit) {scGPButton_ulozit->Enabled=true;duvod_ulozit_nahled=true;}
+	else {scGPButton_ulozit->Enabled=false;duvod_ulozit_nahled=false;}
 
 }
 //---------------------------------------------------------------------------
@@ -3412,20 +3433,23 @@ void TForm1::design_element(Cvektory::TElement *E)
 
 		case 1://robot (kontinuální)
 		{
+			//defaultní hodnoty zapsané do elementu při jeho vytvoření
+			E->PT1=120;
+			E->LO1=1.5;
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,3);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			/////Test NUMERIC
 			E->mGrid->Cells[1][1].Type=E->mGrid->NUMERIC;
-			E->mGrid->Cells[1][1].Text=outPT(2);//2minuty
+			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			//E->mGrid->getNumeric(1,1)->Hint=10;//ms.MyToDouble(E->mGrid->Cells[1][1].Text);
 			//Memo3->Lines->Add(E->mGrid->getNumeric(1,1)->Name);
 			//E->mGrid->getNumeric(1,1)->Value=0.33333;
 			//E->mGrid->getNumeric(1,1)->Decimal=2;
 			//E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=120/(1+59.0*Tcas);
 			E->mGrid->Cells[0][2].Text="LO "+LO;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(1.5);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka;
@@ -3434,12 +3458,15 @@ void TForm1::design_element(Cvektory::TElement *E)
 		}
 		case 2://robot se stop stanicí
 		{
+			//defaultní hodnoty zapsané do elementu při jeho vytvoření
+			E->PT1=120;
+			//E->WT!!
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,3);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
-			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(120);
-			E->mGrid->Cells[0][2].Text="max WT "+cas;E->mGrid->Cells[1][2].Text=outPT(20);//chybí v elementu
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[0][2].Text="max WT "+cas;E->mGrid->Cells[1][2].Text=outPT(20);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka+30;
@@ -3448,25 +3475,32 @@ void TForm1::design_element(Cvektory::TElement *E)
 		}
 		case 3://robot s pasivní otočí
 		{
+			//defaultní hodnoty zapsané do elementu při jeho vytvoření
+			E->PT1=120;
+			E->LO1=1.2;
+			E->PTotoc=60;
+			E->OTOC_delka=0.6;
+			E->PT2=140;
+			E->LO2=1.4;
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,7);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
-			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(120);
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="LO1 "+LO;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(1.2);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
 			E->mGrid->Cells[0][3].Text="otoč "+cas;
-			E->mGrid->Cells[1][3].Text=outPT(60);//PTOtoc??
+			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][4].Text="otoč "+delka_otoce;
-			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outDO(0.6);
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outDO(E->OTOC_delka);
 			E->mGrid->Cells[0][4].BottomBorder->Width=2;
 			E->mGrid->Cells[1][4].BottomBorder->Width=2;
 			E->mGrid->Cells[0][5].Text="PT2 "+cas;
-			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(140);
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(E->PT2);
 			E->mGrid->Cells[0][6].Text="LO2 "+LO;
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outLO(1.4);
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outLO(E->LO2);
 			E->mGrid->Cells[0][6].BottomBorder->Width=2;
 			E->mGrid->Cells[1][6].BottomBorder->Width=2;
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -3477,17 +3511,22 @@ void TForm1::design_element(Cvektory::TElement *E)
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
+			//defaultní hodnoty zapsané do elementu při jeho vytvoření
+			E->PT1=80;
+			E->PTotoc=20;
+			E->PT2=80;
+			//E->WT!!!
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,5);
 			E->mGrid->DefaultCell.isLink->Color=clFontRight;//přiřazení barvy fontu
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
-			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(80);
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="PTo "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(20);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][3].Text="PT2 "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(80);
-			E->mGrid->Cells[0][4].Text="WT "+cas;//není v elementu / TIME ?
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2=80);
+			E->mGrid->Cells[0][4].Text="WT "+cas;
 			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(5);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -3497,13 +3536,16 @@ void TForm1::design_element(Cvektory::TElement *E)
 		}
 		case 5://otoč pasivní
 		{
+      //defaultní hodnoty zapsané do elementu při jeho vytvoření
+			E->OTOC_delka=1.5;
+			E->PTotoc=30;
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,3);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
-			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(0.8);
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
 			E->mGrid->Cells[0][2].Text="PT "+cas;//PT u pasivní nelze zadat
-			E->mGrid->Cells[1][2].Text=outPT(120);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_o+15;//Delší text
@@ -3512,13 +3554,16 @@ void TForm1::design_element(Cvektory::TElement *E)
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
+			//defaultní hodnoty zapsané do elementu při jeho vytvoření
+			E->OTOC_delka=1.2;
+			E->PTotoc=20;
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,3);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
-			E->mGrid->Cells[1][1].Text=outDO(0.8);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(30);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_o+15;
@@ -3534,7 +3579,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 	//formátování buněk tabulky (vždy stejn=)
 	for(int i=1;i<=E->mGrid->RowCount-1;i++)
 	{
-		if (E->mGrid->Cells[1][i].Type!=E->mGrid->EDIT)
+		if (E->mGrid->Cells[1][i].Type!=E->mGrid->EDIT&&E->mGrid->Cells[1][i].Type!=E->mGrid->NUMERIC)
 		{
 			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
 			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
@@ -3668,8 +3713,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[0][2].Text="LO "+LO;
-			E->mGrid->Cells[1][1].Text=outPT(120);
-			E->mGrid->Cells[1][2].Text=outLO(1.5);
+			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Columns[0].Width=sirka;
 			E->mGrid->Columns[1].Width=sirka1;
 			break;
@@ -3678,7 +3723,7 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[0][2].Text="max WT "+cas;
-			E->mGrid->Cells[1][1].Text=outPT(120);
+			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[1][2].Text=outPT(20);
 			E->mGrid->Columns[0].Width=sirka+30;
 			E->mGrid->Columns[1].Width=sirka1;
@@ -3692,12 +3737,12 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[0][4].Text="otoč "+delka_otoce;
 			E->mGrid->Cells[0][5].Text="PT2 "+cas;
 			E->mGrid->Cells[0][6].Text="LO2 "+LO;
-			E->mGrid->Cells[1][1].Text=outPT(120);
-			E->mGrid->Cells[1][2].Text=outLO(1.2);
-			E->mGrid->Cells[1][3].Text=outPT(60);
-			E->mGrid->Cells[1][4].Text=outDO(0.6);
-			E->mGrid->Cells[1][5].Text=outPT(140);
-			E->mGrid->Cells[1][6].Text=outLO(1.4);
+			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][2].Text=outLO(E->LO1);
+			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[1][4].Text=outDO(E->OTOC_delka);
+			E->mGrid->Cells[1][5].Text=outPT(E->PT2);
+			E->mGrid->Cells[1][6].Text=outLO(E->LO2);
 			E->mGrid->Columns[0].Width=sirka+10;
 			E->mGrid->Columns[1].Width=sirka1;
 			break;
@@ -3708,9 +3753,9 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[0][2].Text="PTo "+cas;
 			E->mGrid->Cells[0][3].Text="PT2 "+cas;
 			E->mGrid->Cells[0][4].Text="WT "+cas;
-			E->mGrid->Cells[1][1].Text=outPT(80);
-			E->mGrid->Cells[1][2].Text=outPT(20);
-			E->mGrid->Cells[1][3].Text=outPT(80);
+			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[1][3].Text=outPT(E->PT2);
 			E->mGrid->Cells[1][4].Text=outPT(5);
 			E->mGrid->Columns[0].Width=sirka+5;
 			E->mGrid->Columns[1].Width=sirka1;
@@ -3720,8 +3765,9 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][1].Text=outDO(0.8);
-			E->mGrid->Cells[1][2].Text=outPT(120);
+//			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
+			//E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->getEdit(1,1)->Text=99;
 			E->mGrid->Columns[0].Width=sirka_o+15;
 			E->mGrid->Columns[1].Width=sirka_o1;
 			break;
@@ -3730,8 +3776,10 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][1].Text=outDO(0.8);
-			E->mGrid->Cells[1][2].Text=outPT(30);
+//			E->mGrid->getEdit(1,1)->Text=99;
+//			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
+//			E->mGrid->getEdit(1,2)->Text=99;
+//			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			E->mGrid->Columns[0].Width=sirka_o+15;
 			E->mGrid->Columns[1].Width=sirka_o1;
 			break;
@@ -3922,9 +3970,9 @@ if(MOD==NAHLED)
   if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
 
   if(pom->id==3)
-    {
-    if(EID==-1) d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
-    }else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n,0,0,-1);
+		{
+		if(EID==-1) d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+		}else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n,0,0,-1);
 	}
    if(pom->id==3)
    {
@@ -4402,27 +4450,16 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 {
 	switch (MOD)
 	{
-		case NAHLED:
+		case NAHLED:       //kvůli MB hází při mazání z popUP paměťovou chybu
 		{
-			if (pom_element_smazat!=NULL) pom_element=pom_element_smazat;
-			if (mazani)
+			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element_smazat->name.UpperCase()+"\"?","",MB_YESNO))
 			{
-			int result=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?","",MB_YESNO);
-			switch(result)
-			{
-				case mrYes:
-				{
-					d.v.smaz_element(pom_element);
-					pom_element=NULL;
-					Akce=NIC;
-					REFRESH();
-					DuvodUlozit(true);
-					nahled_ulozit(true);
-					break;
-				}
-				case mrNo:mazani=false; break;
-			}
-			}
+				d.v.smaz_element(pom_element_smazat);
+				Akce=NIC;
+				REFRESH();
+				DuvodUlozit(true);
+				nahled_ulozit(true);
+			}else mazani=false;
 			pom_element_smazat=NULL; delete pom_element_smazat;
 			break;
 		}
@@ -4839,12 +4876,23 @@ void TForm1::NP_input()
 	 //zapnutí spodního panelu
 	 scGPPanel_bottomtoolbar->Visible=true;
 
-	 //zmena horní lišty
-	 scGPPanel_mainmenu->Visible=false;
-	 scGPPanel_schema->Visible=true;
+	//zmena horní lišty vlevo
+	scLabel_architekt->Visible=false;
+	scGPSwitch_rezim->Visible=false;
+	scLabel_klient->Visible=false;
+	//vpravo
+	scGPGlyphButton_zpravy_ikona->Visible=false;
+	Layout->Visible=false;
+	Analyza->Visible=false;
+	Synteza->Visible=false;
+	Simulace->Visible=false;
+	Nahled->Visible=true;
+	Nahled->Down=true;
+	Schema->Down=false;
+	scGPGlyphButton_zpravy_ikona->Visible=true;
 
-	 Invalidate();
-	 REFRESH();
+	Invalidate();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
@@ -5035,6 +5083,14 @@ AnsiString TForm1::FileName_short(AnsiString FileName)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
+	if(duvod_ulozit_nahled)
+	{
+		d.v.vymaz_elementy(pom,false);
+		d.v.kopiruj_objekt(pom_temp,pom);
+		DuvodUlozit(true);
+		nahled_ulozit(false);
+		Smaz_kurzor();
+	}
 	if(FileName=="Nový.tispl" || FileName.Pos(".tisplTemp"))UlozitjakoClick(this);
 	else
 	{
@@ -6957,9 +7013,25 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
 		//změna horní lišty
-		scGPPanel_mainmenu->Visible=true;
-		scGPPanel_schema->Visible=false;
-
+		Schema->Visible=false;
+//		Schema->Down=true;  ////////////////paměťová chyba!
+		Schema->Align=alNone;
+		scGPGlyphButton_zpravy_ikona->Visible=false;
+		scGPGlyphButton_zpravy_ikona->Align=alNone;
+		//vlevo
+		scLabel_klient->Visible=true;
+		scGPSwitch_rezim->Visible=true;
+		scLabel_architekt->Visible=true;
+		//vpravo
+		Nahled->Visible=false;
+		Simulace->Visible=true;
+		Synteza->Visible=true;
+		Analyza->Visible=true;
+		Layout->Visible=true;
+		Schema->Visible=true;
+		Schema->Align=alRight;
+		scGPGlyphButton_zpravy_ikona->Visible=true;
+		scGPGlyphButton_zpravy_ikona->Align=alRight;
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
 		on_change_zoom_change_scGPTrackBar();
@@ -7390,6 +7462,7 @@ void __fastcall TForm1::scGPCheckBox_viditelnostClick(TObject *Sender)
 		pom_temp->zobrazit_koty=true;
 	else
 		pom_temp->zobrazit_koty=false;
+	DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown (odchytávání klaves při editaci textu)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -7409,6 +7482,7 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 	Smaz_kurzor();
 	pom_element=NULL;
 	JID=-1;
+	DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -7457,4 +7531,13 @@ void TForm1::Smaz_kurzor ()
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm1::scGPButton1Click(TObject *Sender)
+{
+	if(scGPButton1->ImageIndex==55)
+		scGPButton1->ImageIndex=54;
+	else
+		scGPButton1->ImageIndex=55;
+}
+//---------------------------------------------------------------------------
 
