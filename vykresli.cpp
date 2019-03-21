@@ -204,7 +204,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
 			if(F->JID==-9)highlight=true;else  highlight=false;
 			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
-    }
+		}
 
 		////vykreslení jednotlivých ELEMENTŮ
 		Cvektory::TElement *E=F->pom_temp->elementy;
@@ -226,9 +226,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 //---------------------------------------------------------------------------
 void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
 {
-	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
-	canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
-	canv->Font->Name="Arial";
+	canv->Font->Name="Roboto Cn";"Arial";
 	canv->Font->Color=clRed;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles();

@@ -2240,6 +2240,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-7;//zkratka objektu
 //JID=-8;//vodorovná kóta
 //JID=-9;//svislá kóta
+//JID=-10;//jednotky kóty
 //JID=-1 žádná
 //JID=0 - 9 rezervováno pro element
 //JID=10 - 99 - interaktivní text kóty
@@ -2294,11 +2295,12 @@ void TForm1::getJobID(int X, int Y)
 				{
 					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 					{
-						//rozšíření citelné oblasti
-						short cO=5;
+						short cO=5;//rozšíření citelné oblasti v px
 						//JID=-8;//vodorovná kóta
-						if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO){JID=-8;REFRESH();}
+						if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)JID=-8;
 						//JID=-9;//svislá kóta
+						if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))JID=-9;
+            //další kóty
 						//RET=10-99 zcela doplnit
 					}
 				}
@@ -2318,19 +2320,19 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
 		if(JID==0){pom_element->stav=1;}//ELEMENT
 	}
-	int puvJID=JID;
+	int puvJID=JID;//záloha původního JID
 	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element, možno odstranit, až se mGrid bude posílat do celkové bitmapy
-	getJobID(X,Y);
+	getJobID(X,Y);//zjištění aktuálního JID
 	if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
 	if((puvJID!=JID || pom_element!=pom_element_puv) && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
 	if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 	if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,-50);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
-	if(JID==-2||JID==-3){kurzor(posun_ind);}
+	if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
 	if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 	if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
 	if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
-	if((puvJID!=JID) && (puvJID==-2||JID==-3 || JID==-2||JID==-3)){REFRESH();}
-	pom_element_puv=NULL;delete pom_element_puv;
+	if(puvJID!=JID && (-6>=JID||JID>=-9)){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
+	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
