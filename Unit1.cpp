@@ -119,6 +119,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	Screen->Cursors[13]=HC;
 	HC=LoadCursor(HInstance,L"EDIT_TEXT");
 	Screen->Cursors[14]=HC;
+	HC=LoadCursor(HInstance,L"ZMENA_D_X");
+	Screen->Cursors[15]=HC;
+	HC=LoadCursor(HInstance,L"ZMENA_D_Y");
+	Screen->Cursors[16]=HC;
 	
 	  //Načtení z INI
 	AnsiString T=readINI("nastaveni_nahled", "cas");
@@ -2023,14 +2027,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
-			if(mazani&&(trend==90||trend==270))
-			{
+			if(mazani&&(trend==90||trend==270)&&(1<=element_id && element_id<=4))
 				if(pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x) Smazat1Click(this);
-			}
-			else
-			{
+			if(mazani&&(trend!=90&&trend!=270)&&(1<=element_id && element_id<=4))
 				if(pom_element->Y>pom_temp->Yk||pom_element->Y<pom_temp->Yk-pom_temp->rozmer_kabiny.y) Smazat1Click(this);
-			}
 			nahled_ulozit(true);
 			break;
 		}
@@ -2040,8 +2040,6 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			short trend=m.Rt90(d.trend(pom));
 			short stredx=F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0;
 			short stredy=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0;
-//						if ((m.L2Py(pom_temp->Yk)<stredy+2 && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)>stredy&&mimo==0&&(trend==90||trend==270))||
-//			(m.L2Px(pom_temp->Xk)<stredx+2 && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)>stredx&&mimo==0&&(trend!=90||trend!=270)))
 			if ((mimo==0&&(trend==90||trend==270))||(mimo==0&&(trend!=90||trend!=270)))
 			{
 				if (trend==90 || trend==270)
@@ -2084,21 +2082,21 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case ROZMER_KABINA:
 		{
 			int mimo=el_mimoKabinu();
-			if(JID==-4&&mimo==0)
+			if(JID==-4&&(mimo==0||mimo==4||mimo==7))
 				pom_temp->rozmer_kabiny.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-			if(JID==-5&&mimo==0)
+			if(JID==-5&&(mimo==0||mimo==4||mimo==7))
 				pom_temp->rozmer_kabiny.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-			if(mimo!=0)
+			if(mimo!=0&&mimo!=4&&mimo!=7)
 			{
-				//MB("Nelze provést, všichni roboti musí být v kabině.",MB_OK);
+				MB("Nelze provést, všichni roboti musí být v kabině.",MB_OK);
 				switch(mimo)
 				{
-					case -2:
-					case -1:
+					case -2:pom_temp->rozmer_kabiny.x=m.P2Lx(vrat_hranici(mimo))-pom_temp->Xk+1;break;
+					case -1:pom_temp->rozmer_kabiny.y=pom_temp->Yk-m.P2Ly(vrat_hranici(mimo))+1;break;
 					case 2:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+0.05;break;
 					case 5:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+0.05;break;
-					case 4:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+1;break;
-					case 7:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+1;break;
+//					case 4:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+1;break;
+//					case 7:pom_temp->rozmer_kabiny.y=pom_temp->Yk-vrat_hranici(mimo)+1;break;
 					default:break;
 				}
 				Akce=NIC;
@@ -2319,7 +2317,9 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 	if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,-50);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 	if(JID==-2||JID==-3){kurzor(posun_ind);}
-	if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);
+	if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
+	if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
+	if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
 	if((puvJID!=JID) && (puvJID==-2||JID==-3 || JID==-2||JID==-3)){REFRESH();}
 	pom_element_puv=NULL;delete pom_element_puv;
 }
@@ -3083,29 +3083,32 @@ bool TForm1::el_vkabine(int X,int Y)
 {
 	short trend=m.Rt90(d.trend(pom));
 	bool vkabine;
-	double delka_robota=20;//20 = odsazení pro otoče a stopku od hrany lakovny
+	double delka_robota=d.Robot_delka_zakladny/2.0*Zoom/m2px;//20 = odsazení pro otoče a stopku od hrany lakovny
 	double odsazeni=5;//odsazení slouží k tomu aby element nebyl vkládán na obrys lakovny
 
-	if(1<=element_id && element_id<=4)delka_robota=d.Robot_delka_zakladny/2.0*Zoom/m2px;
 	//kontrola zda je kliknuto v kabině
-	if(trend==90 || trend==270)
-	{                                                                //-5 odsazení od xt = nelze vložit objekt prímo na obrys kabiny
-		if (m.L2Px(pom_temp->Xk)>X-delka_robota-odsazeni||X+delka_robota+odsazeni>m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)) vkabine=false;
-		else vkabine=true;
-	}
-	else
+	if(1<=element_id && element_id<=4)
 	{
-		if (m.L2Py(pom_temp->Yk)>Y-delka_robota-odsazeni||Y+delka_robota+odsazeni>m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)) vkabine=false;
-		else vkabine=true;
+		if(trend==90 || trend==270)
+		{                                                                //-5 odsazení od xt = nelze vložit objekt prímo na obrys kabiny
+			if (m.L2Px(pom_temp->Xk)>X-delka_robota-odsazeni||X+delka_robota+odsazeni>m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)) vkabine=false;
+			else vkabine=true;
+		}
+		else
+		{
+			if (m.L2Py(pom_temp->Yk)>Y-delka_robota-odsazeni||Y+delka_robota+odsazeni>m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)) vkabine=false;
+			else vkabine=true;
+		}
 	}
+	else vkabine=true;
 	return vkabine;
 }
 //---------------------------------------------------------------------------
 //vrací hodnotu
 int TForm1::el_mimoKabinu ()
 {
-	short stredx=F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0;
-	short stredy=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0;
+	short stredx=scSplitView_LEFTTOOLBAR->Width+(ClientWidth-scSplitView_LEFTTOOLBAR->Width)/2.0;
+	short stredy=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0;
 	double xmin=9999999, xmax=-9999999,ymin=9999999, ymax=-9999999;
 	short trend=m.Rt90(d.trend(pom));
 	int xminID,xmaxID,yminID,ymaxID;
@@ -3149,6 +3152,8 @@ double TForm1::vrat_hranici(int mimo)
 	Cvektory::TElement *E=pom_temp->elementy;
 	switch(mimo)
 	{
+		case -2:souradnice=scSplitView_LEFTTOOLBAR->Width+(ClientWidth-scSplitView_LEFTTOOLBAR->Width)/2.0;break;
+		case -1:souradnice=(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0;break;
 		case 2:
 		{
 			while (E!=NULL)
