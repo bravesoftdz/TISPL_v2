@@ -2157,80 +2157,80 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
-	 if(Button==mbLeft)//zohlední jenom stisk levého tlačítka myši
-	 {
-			if(pan_non_locked){pan_non_locked=false;Akce=NIC; kurzor(standard);pan_move_map();}
-    	switch(Akce)
+	if(Button==mbLeft)//zohlední jenom stisk levého tlačítka myši
+	{
+		if(pan_non_locked){pan_non_locked=false;Akce=NIC; kurzor(standard);pan_move_map();}
+		switch(Akce)
+		{
+			case PAN_MOVE://vratí z PAN_MOVE na PAN
 			{
-				case PAN_MOVE://vratí z PAN_MOVE na PAN
-				{
-					kurzor(pan); Akce=PAN;
-					pan_move_map();
-					break;
-				}
-				case ZOOM_W:ZOOM_WINDOW();break;//ZOOM_WINDOW
-				case ADD://přidání objekt či elementu
-				{
-					if(MOD==SCHEMA)add_objekt(X,Y);//přídání objektu v modu SCHEMA
-					else {d.vykresli_element(Canvas,X,Y,"","",element_id,-1);add_element(X,Y);}//přídání elementu v modu NAHLED
-					zneplatnit_minulesouradnice();
-					break;
-				}
-				case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
-				case MOVE:move_objekt(X,Y);break;//posun objektu
-				case MOVE_TABLE:Akce=NIC;kurzor(standard);REFRESH();break;//posun tabulky elementu
-				case MOVE_ELEMENT:
-				{
-					if (el_vkabine(X,Y))
-					{
-						Akce=NIC;kurzor(standard);
-						REFRESH();
-					} else MB("Nelze vložit element mimo kabinu! Vložte element do kabiny.");
-					break;//posun elementu
-				}
-				case MOVE_KABINA:Akce=NIC;kurzor(standard);REFRESH();break;//konec posunu lakovny
-				case ROZMER_KABINA:Akce=NIC;break;
-				case MEASURE:
-				{
-					double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
-					MB(AnsiString(delka)+" [metrů]");
-					Akce=NIC;kurzor(standard);
-					Invalidate();
-					break;
-				}
-				case KALIBRACE:
-				{
-					d.v.PP.raster.X=m.P2Lx(X)+d.v.PP.raster.X-m.P2Lx(vychozi_souradnice_kurzoru.X);
-					d.v.PP.raster.Y=m.P2Ly(Y)+d.v.PP.raster.Y-m.P2Ly(vychozi_souradnice_kurzoru.Y);
-					Akce=NIC;kurzor(standard);
-					Invalidate();
-					break;
-				}
-				case ADJUSTACE:
-				{
-          if(Form_adjustace->ShowModal()==mrOk)//MB "Zadejte vzdálenost v metrech"
-		      {
-
-            double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value/(1+999.0*Form_adjustace->Delkaunit);
-						d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
-          }
-          else
-          {
-            d.v.PP.raster.show=false;
-            d.v.PP.raster.filename="";
-          }
-					Akce=NIC;kurzor(standard);
-					Invalidate();
-					break;
-				}
-				default: break;
+				kurzor(pan); Akce=PAN;
+				pan_move_map();
+				break;
 			}
-	 }
-	 stisknute_leve_tlacitko_mysi=false;
+			case ZOOM_W:ZOOM_WINDOW();break;//ZOOM_WINDOW
+			case ADD://přidání objekt či elementu
+			{
+				if(MOD==SCHEMA)add_objekt(X,Y);//přídání objektu v modu SCHEMA
+				else {d.vykresli_element(Canvas,X,Y,"","",element_id,-1);add_element(X,Y);}//přídání elementu v modu NAHLED
+				zneplatnit_minulesouradnice();
+				break;
+			}
+			case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
+			case MOVE:move_objekt(X,Y);break;//posun objektu
+			case MOVE_TABLE:Akce=NIC;kurzor(standard);REFRESH();break;//posun tabulky elementu
+			case MOVE_ELEMENT:
+			{
+				if (el_vkabine(X,Y))
+				{
+					Akce=NIC;kurzor(standard);
+					REFRESH();
+				} else MB("Nelze vložit element mimo kabinu! Vložte element do kabiny.");
+				break;//posun elementu
+			}
+			case MOVE_KABINA:Akce=NIC;kurzor(standard);REFRESH();break;//konec posunu lakovny
+			case ROZMER_KABINA:Akce=NIC;break;
+			case MEASURE:
+			{
+				double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
+				MB(AnsiString(delka)+" [metrů]");
+				Akce=NIC;kurzor(standard);
+				Invalidate();
+				break;
+			}
+			case KALIBRACE:
+			{
+				d.v.PP.raster.X=m.P2Lx(X)+d.v.PP.raster.X-m.P2Lx(vychozi_souradnice_kurzoru.X);
+				d.v.PP.raster.Y=m.P2Ly(Y)+d.v.PP.raster.Y-m.P2Ly(vychozi_souradnice_kurzoru.Y);
+				Akce=NIC;kurzor(standard);
+				Invalidate();
+				break;
+			}
+			case ADJUSTACE:
+			{
+       if(Form_adjustace->ShowModal()==mrOk)//MB "Zadejte vzdálenost v metrech"
+		    {
 
-	 //vrat_puvodni_akci();
-	 /*if(X<=RzSizePanel_knihovna_objektu->Width) DrawGrid_knihovna->Enabled=true;
-	 else DrawGrid_knihovna->Enabled=false;*/
+				 double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value/(1+999.0*Form_adjustace->Delkaunit);
+					d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
+       }
+       else
+       {
+				 d.v.PP.raster.show=false;
+         d.v.PP.raster.filename="";
+       }
+				Akce=NIC;kurzor(standard);
+				Invalidate();
+				break;
+			}
+			default: break;
+		}
+	}
+	stisknute_leve_tlacitko_mysi=false;
+
+	//vrat_puvodni_akci();
+	/*if(X<=RzSizePanel_knihovna_objektu->Width) DrawGrid_knihovna->Enabled=true;
+	else DrawGrid_knihovna->Enabled=false;*/
 }
 //---------------------------------------------------------------------------
 //vrátí do globální proměnné JID ID úlohy/funkcionality v místě kurzoru, zároveň pokud v místě tabulky či elementu nahraje ukazatel do globální proměnné pom_element
