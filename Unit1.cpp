@@ -3957,105 +3957,103 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
 void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int ARow, TRect &Rect,
 			TGridDrawState State)
 {
-if(MOD==NAHLED)
-{
-	scListGroupKnihovObjektu->Caption="Roboti";
-	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
-	int W=DrawGrid_knihovna->DefaultColWidth  *Z;
-	int H=DrawGrid_knihovna->DefaultRowHeight  *Z;
-	int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
-
-	Cantialising a;
-	Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-	bmp_in->Width=DrawGrid_knihovna->Width*Z;bmp_in->Height=DrawGrid_knihovna->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
-
-	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
-	double Zoom_back=Zoom;//záloha zoomu
-	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
-  AnsiString label1;
-  AnsiString label2;
-	short pocet_elementu=4;
-  int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom);
-	for(unsigned short n=1;n<=pocet_elementu;n++)
+	if(MOD==NAHLED)
 	{
-  if(n==1){ label1= "kontinuální"; label2="lakování"; }
-  if(n==2){ label1= "S&G"; label2="lakování"; }
-  if(n==3){ label1= "kontinuální s";  label2="pasiv. otočí"; }
-  if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
+		scListGroupKnihovObjektu->Caption="Roboti";
+		short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+		int W=DrawGrid_knihovna->DefaultColWidth  *Z;
+		int H=DrawGrid_knihovna->DefaultRowHeight  *Z;
+		int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
 
-  if(pom->id==3)
+		Cantialising a;
+		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+		bmp_in->Width=DrawGrid_knihovna->Width*Z;bmp_in->Height=DrawGrid_knihovna->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+		TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
+
+		unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+		double Zoom_back=Zoom;//záloha zoomu
+		Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
+		AnsiString label1;
+		AnsiString label2;
+		short pocet_elementu=4;
+		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom);
+		for(unsigned short n=1;n<=pocet_elementu;n++)
 		{
-		if(EID==-1) d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
-		}else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n,0,0,-1);
+			if(n==1){ label1= "kontinuální"; label2="lakování"; }
+			if(n==2){ label1= "S&G"; label2="lakování"; }
+			if(n==3){ label1= "kontinuální s";  label2="pasiv. otočí"; }
+			if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
+
+			if(pom->id==3)
+			{
+				if(EID==-1)d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
+			}
+			else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n,0,0,-1);
+		}
+		if(pom->id==3)
+		{
+			if(EID==1 || EID==3)
+			{
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P + 30,label1,label2,1);
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P + 30,label1,label2,2,0,0,-1);
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P + 30,label1,label2,3);
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P + 30,label1,label2,4,0,0,-1);
+			}
+			else if (EID==2 || EID==4)
+			{
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P + 30,label1,label2,1,0,0,-1);
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P + 30,label1,label2,2);
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P + 30,label1,label2,3,0,0,-1);
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P + 30,label1,label2,4);
+			}
+		}
+
+		Zoom=Zoom_back;//návrácení původního zoomu
+		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+		DrawGrid_knihovna->Canvas->Draw(0,0,bmp_out);
+		delete (bmp_out);//velice nutné
+		delete (bmp_in);//velice nutné
 	}
-   if(pom->id==3)
-   {
-   if(EID==1 || EID==3)
-   {
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P + 30,label1,label2,1);
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P + 30,label1,label2,2,0,0,-1);
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P + 30,label1,label2,3);
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P + 30,label1,label2,4,0,0,-1);
-   }
-	 else if (EID==2 || EID==4)
-   {
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P + 30,label1,label2,1,0,0,-1);
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P + 30,label1,label2,2);
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P + 30,label1,label2,3,0,0,-1);
-    d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P + 30,label1,label2,4);
-
-   }
-
-   }
-
-	Zoom=Zoom_back;//návrácení původního zoomu
-	Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-	DrawGrid_knihovna->Canvas->Draw(0,0,bmp_out);
-	delete (bmp_out);//velice nutné
-	delete (bmp_in);//velice nutné
-  }
   if(MOD==SCHEMA)
 	{
-	////////////////////neAA verze
-	scListGroupKnihovObjektu->Caption="Technolog.objekty";
-	TCanvas* C=DrawGrid_knihovna->Canvas;
-	int W=DrawGrid_knihovna->DefaultColWidth;
-	int H=DrawGrid_knihovna->DefaultRowHeight;
-	int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+		////////////////////neAA verze
+		scListGroupKnihovObjektu->Caption="Technolog.objekty";
+		TCanvas* C=DrawGrid_knihovna->Canvas;
+		int W=DrawGrid_knihovna->DefaultColWidth;
+		int H=DrawGrid_knihovna->DefaultRowHeight;
+		int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
 
-
-	unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
-	C->Font->Style = TFontStyles()<< fsBold;
-	C->Font->Size=12;
-	C->Font->Name="Arial";
-	C->Pen->Width=1;
-	C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
-	C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
-	C->Font->Color=clWhite;
-	for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
-	{
-		UnicodeString text=knihovna_objektu[n-1].short_name;
-		//symbol objektu
-		if(VyID!=n-1)
+		unsigned short obdelnik_okrajX=10;unsigned short obdelnik_okrajY=5;unsigned short okraj_packy=obdelnik_okrajY;
+		C->Font->Style = TFontStyles()<< fsBold;
+		C->Font->Size=12;
+		C->Font->Name="Arial";
+		C->Pen->Width=1;
+		C->Pen->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+		C->Brush->Color=(TColor)RGB(190,190,190);//(TColor)RGB(19,115,169);
+		C->Font->Color=clWhite;
+		for(unsigned short n=1;n<=pocet_objektu_knihovny;n++)
 		{
-			//obdélník
-			C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
-			//packy
-			C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
-			C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
-			//písmo
-			C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
-		}
-		else//výhybka v bmp
-		{
-			Graphics::TBitmap *bmp=new Graphics::TBitmap();
-			ImageList48->GetBitmap(51,bmp);
-			C->Draw(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+P,bmp);
-			bmp=NULL;delete bmp;
+			UnicodeString text=knihovna_objektu[n-1].short_name;
+			//symbol objektu
+			if(VyID!=n-1)
+			{
+				//obdélník
+				C->Rectangle(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+obdelnik_okrajY+P,((n+1)%2+1)*W-obdelnik_okrajX,ceil(n/2.0)*H-obdelnik_okrajY+P);
+				//packy
+				C->MoveTo(((n+1)%2)*W+okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);
+				C->MoveTo(((n+1)%2)*W+W-obdelnik_okrajX,(ceil(n/2.0)-1)*H+H/2+P);C->LineTo(((n+1)%2)*W+W-okraj_packy,(ceil(n/2.0)-1)*H+H/2+P);
+				//písmo
+				C->TextOutW((Rect.Right-Rect.Left-C->TextWidth(text))/2+((n+1)%2)*W,(Rect.Bottom-Rect.Top-C->TextHeight(text))/2+(ceil(n/2.0)-1)*H+P,text);
+			}
+			else//výhybka v bmp
+			{
+				Graphics::TBitmap *bmp=new Graphics::TBitmap();
+				ImageList48->GetBitmap(51,bmp);
+				C->Draw(((n+1)%2)*W+obdelnik_okrajX,(ceil(n/2.0)-1)*H+P,bmp);
+				bmp=NULL;delete bmp;
+			}
 		}
 	}
- }
 //--------------------------------------------
 
 ////	////////////////////AA verze
