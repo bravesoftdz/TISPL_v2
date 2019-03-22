@@ -576,6 +576,23 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			B->Parent=Form;//musí být až na konci
 			B=NULL;delete B;
 		}break;
+		case glyphBUTTON:
+		{
+			//založení + tag + název
+			TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+			//atributy
+			gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0);
+			gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0);
+			gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
+			gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
+//			gB->Options->NormalColor=Cell.Background->Color; nechat
+			gB->Options->FrameNormalColor=gB->Options->NormalColor;
+			gB->Font=Cell.Font;
+			gB->Caption=Cell.Text;
+			//vlastník
+			gB->Parent=Form;//musí být až na konci
+			gB=NULL;delete gB;
+		}break;
 		case COMBO:
 		{
 			//založení + tag + název
