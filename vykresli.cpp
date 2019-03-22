@@ -20,6 +20,7 @@ Cvykresli::Cvykresli()
 	mod_vytizenost_objektu=false;
 	NOLIEX=2;
 	oY=5;//ofset na ose Y, 5 pouze grafická korekce
+	sizeP=3.3;//velikost textů popisků elementů v knihovně
 	grafickeDilema=true;
 	Pom_proces=new Cvektory::TProces;
 	precision=2;//počet desetinných míst čísel na časové ose
@@ -2645,7 +2646,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		else//ikona v knihovně elementů je text pod elementem
 		{
 			//canv->Font->Name="Arial";
-			canv->Font->Size=F->m.round(3.2*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
+			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
 			canv->TextOutW(F->m.round(X-canv->TextWidth(name)/2),Y,name);
 		}
 	}
@@ -2773,8 +2774,8 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		}
 		else//ikona
 		{
-			//canv->Font->Name="Arial";//F->aFont->Name;
-			canv->Font->Size=F->m.round(3.2*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
+			canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
+			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
 			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+sirka_zakladny/2.0+1*Z),name); //1 pouze korekce
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+sirka_zakladny/2.0+1*Z+1*Z+canv->TextHeight(name)),short_name);
 		}
@@ -2891,7 +2892,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		else//ikona
 		{
 			//canv->Font->Name="Arial";
-			canv->Font->Size=F->m.round(3.2*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
+			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
 			canv->TextOutW(X-canv->TextWidth(name)/2,Y+size+1*Z,name); //1 pouze korekce
 		}
 	}
@@ -2999,7 +3000,7 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->Brush->Style=bsClear;
 	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->Font->Name=F->aFont->Name;
-	canv->Font->Size=o*3.2/3;if(F->aFont->Size==12)canv->Font->Size=o;
+	canv->Font->Size=m.round(o*sizeP/3.0);if(F->aFont->Size==12)canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 
 //	set_pen(canv,clRed,1,PS_ENDCAP_FLAT);
@@ -3022,7 +3023,7 @@ void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popi
 	canv->Brush->Style=bsClear;
 	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(clBlack,100);
 	canv->Font->Name=F->aFont->Name;
-	canv->Font->Size=o*3.2/3;if(F->aFont->Size==12)canv->Font->Size=o;
+	canv->Font->Size=m.round(o*sizeP/3.0);if(F->aFont->Size==12)canv->Font->Size=o;
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 
@@ -3043,13 +3044,14 @@ void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->Font->Color=barva;
 
 	//ikona - ABC
-	canv->Font->Name=F->aFont->Name;
-	canv->Font->Size=o*1.5*3.2/3;if(F->aFont->Size==12)canv->Font->Size=o*1.5;
+	canv->Font->Name="Arial";
+	canv->Font->Size=o*1.5;
 	canv->TextOutW(X-canv->TextWidth("ABC")/2,Y-o*2,"ABC");
 
 	//popisek
 	canv->Brush->Style=bsClear;
-	canv->Font->Size=o;
+	canv->Font->Name=F->aFont->Name;
+	canv->Font->Size=m.round(o*sizeP/3.0);if(F->aFont->Size==12)canv->Font->Size=o;
 	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(barva,100);
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
@@ -3070,7 +3072,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	sipka(canv,X+W-8,Y-W+8,m.azimut(X-W+8,Y,X+W-8,Y+W-8),false,1,clBlack,clBlack);//děleno Z na negaci *Zoom v metodě šipka
 
 	//popisek
-	canv->Font->Size=o*3.2/3;if(F->aFont->Size==12)canv->Font->Size=o;
+	canv->Font->Size=m.round(o*sizeP/3.0);if(F->aFont->Size==12)canv->Font->Size=o;
 	canv->Brush->Style=bsClear;
 	if(stav==-1)canv->Font->Color=barva;canv->Font->Color=m.clIntensive(barva,100);
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);

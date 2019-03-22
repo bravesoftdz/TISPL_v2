@@ -23,6 +23,7 @@ class Cvykresli
 	int CorEy(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
 
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
+	float sizeP;//velikost textù popiskù elementù v knihovnì
 	Cvektory::TProces *Pom_proces;//pomocný ukazatel na proces, využívá se v pøi naèítání pùvodnì vytvoøených náhodných hodnot èekání na palec
 
 	public:
