@@ -873,6 +873,23 @@ TscGPButton *TmGrid::createButton(unsigned long Col,unsigned long Row)
 }
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
+{
+	TscGPGlyphButton *gB=getGlyphButton(Col,Row);//pokud již existuje
+	if(gB==NULL)//pokud ne, tak založí
+	{
+		gB = new TscGPGlyphButton(Form);
+		gB->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		gB->Name="mGrid_GlyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);
+
+		//události
+		gB->OnClick=&getTagOnClick;
+		gB->OnEnter=&getTagOnEnter;
+	}
+	return gB;
+}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
 {
 	TscGPCheckBox *Ch=getCheck(Col,Row);//pokud již existuje
@@ -1062,6 +1079,7 @@ void TmGrid::rotace_textu(long rotace)
 //dle zadaného  èísla sloupce a èísla øádku  vrátí ukazatel nadanou komponentu
 TscGPEdit *TmGrid::getEdit(unsigned long Col,unsigned long Row){return (TscGPEdit *)Form->FindComponent("mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPButton *TmGrid::getButton(unsigned long Col,unsigned long Row){return (TscGPButton *)Form->FindComponent("mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPGlyphButton *TmGrid::getGlyphButton(unsigned long Col,unsigned long Row){return (TscGPGlyphButton *)Form->FindComponent("mGrid_GlyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row){return (TscGPComboBox *)Form->FindComponent("mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
@@ -1658,6 +1676,7 @@ void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
 		case NUMERIC:			createNumeric(Col,Row);break;
 		case readNUMERIC:break;
 		case BUTTON:		 	createButton(Col,Row);break;
+		case glyphBUTTON:	createGlyphButton(Col,Row);break;
 		case COMBO:break;
 		case CHECK:				createCheck(Col,Row);break;
 		case RADIO:				createRadio(Col,Row);break;
