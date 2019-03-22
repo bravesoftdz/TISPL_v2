@@ -294,17 +294,15 @@ __published:	// IDE-managed Components
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
 	TscGPCheckBox *scGPCheckBox_viditelnost;
-	TscGPPanel *scGPPanel_schema;
-	TscGPGlyphButton *scGPGlyphButton1;
-	TscGPGlyphButton *scGPGlyphButton3;
-	TscGPGlyphButton *scGPGlyphButton7;
 	TscGPLabel *scGPLabel1;
 	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
 	TscGPLabel *scGPLabel2;
 	TscButton *scButton_zamek;
-	TscLabel *scLabel1;
+	TTimer *TimerKurzor;
+	TscGPButton *Nahled;
+	TscGPButton *scGPButton1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -494,6 +492,12 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
   void __fastcall Timer2Timer(TObject *Sender);
+	void __fastcall scGPCheckBox_viditelnostClick(TObject *Sender);
+	void __fastcall scButton_zamekClick(TObject *Sender);
+	void __fastcall TimerKurzorTimer(TObject *Sender);
+	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall scGPButton1Click(TObject *Sender);
+
 
 
 // User declarations
@@ -501,7 +505,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_LAKOVNA};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA};Takce Akce;
   enum Tm_mm{M=0,MM};Tm_mm DOtocunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec LOunit;//pøepínaè jednotek èasu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
@@ -509,15 +513,15 @@ public:
 	TPointD copyObjektRzRx;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	UnicodeString get_user_name();
-	DrawGridWndProc(TMessage &Message);
+	//toto je na co?:DrawGridWndProc(TMessage &Message);
 	bool mazani;
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
-	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j};
+	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
-  TWndMethod PreviousWndProc;
+  //toto je na co?:TWndMethod PreviousWndProc;
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
@@ -553,15 +557,16 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
-	int get_DPI();//MV
-	void redesign_element();
 	UnicodeString get_temp_dir();
+	UnicodeString get_Windows_dir();
+	int get_DPI();
+	void redesign_element();
 	AnsiString FileName_short(AnsiString FileName);
 	void nacist_nastaveni();
 	void ulozit_nastaveni();
 	void zavrit_uvod();//zavøe úvodní dialog
 	int vrat_max_vysku_grafu();
-	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, -1 žádná, 0 - 9 rezervováno pro element, 10 - 99 - interaktivní text kóty, 100- a výše rezervováno pro tabuku, kde 100 znamená nultý øádek, zároveò pokud bylo kliknuto na tabulku èi element nahraje ukazatel do globální promìnné pom_element
+	void getJobID(int X, int Y);//vrátí do globální promìnné JID ID úlohy/funkcionality v místì kurzoru, zároveò pokud v místì tabulky èi elementu nahraje ukazatel do globální promìnné pom_element, význam jednotlivých JID hodnot v komentáøi definici metody
 	void setJobIDOnMouseMove(int X, int Y);//dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 	void nastaveni_grafickeho_vystupu(Graphics::TBitmap * Bitmap,unsigned int OD,unsigned int PO);
 	bool ttr(UnicodeString Text);
@@ -577,7 +582,11 @@ private:
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka,short sirka1,short sirka_o,short sirka_o1);
-  bool el_vkabine(int X,int Y);
+	bool el_vkabine(int X,int Y);
+	int el_mimoKabinu ();//1-robot z leva, 2-robot z prava, 3-nerobot zl., 4-nerobot zp., 5-robot ze spoda, 6-robot z vrchu, 7-nerobot zes., 8-nerobot zvr.
+	void Smaz_kurzor ();
+	void vykresli_kurzor(int index);
+	double vrat_hranici(int mimo);
 
 	////promìnné
 	TDateTime TIME;
@@ -605,15 +614,20 @@ private:
 	bool scSplitViews_closing_on_AA;
 	bool SplitViewOpen;
 	bool refresh_mGrid;
-
 	bool duvod_k_ulozeni;
+	bool duvod_ulozit_nahled;
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito pøi soubor nový
 	bool start_ortogonalizace;
+	bool editace_textu;//mimo enum akce z dùvodu zobrazování kurozù pøi editaci a pøepínání na jiné akce
+	bool stav_kurzoru;//kurzon vykreslen/nevykreslen
+	int index_kurzoru;
+	AnsiString nazev_puvodni;// používáno pro uchovávání pùvodního názvu objektu z dùvodu zrušení editace
 
 	AnsiString Caption;
 
 	short pocitadlo_doby_neaktivity;
+	TPoint pocitadlo_zmeny_pozice;
 
 	bool FMaximized;
 	TRect FOldBoundsRect;
@@ -637,6 +651,7 @@ public:		// User declarations
 	Cvykresli d;
 	Cgrafy g;
 	UnicodeString FileName;
+	TFont *aFont;//aktuální nastavený výchozí font
 	double Zoom; //promìnná uchovávajicí velikost Zoomu
 	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
 	bool grid;
@@ -653,6 +668,7 @@ public:		// User declarations
 	int JID;//JOB ID
   int knihovna_id; // id drawgrid knihovny
 	int element_id;  // id vybraneho elementu z knihoven
+	void nahled_ulozit (bool duvod_ulozit);
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
@@ -682,7 +698,6 @@ public:		// User declarations
 	double outPT (double outPT);
   double inDO (double outDO);
 	double outDO (double outDO);
-	long s_mazat;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

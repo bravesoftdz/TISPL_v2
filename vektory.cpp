@@ -25,6 +25,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->id=0;
 	novy->X=0;
 	novy->Y=0;
+	novy->Xk=0;
+	novy->Yk=0;
 	novy->short_name="";//krátký název
 	novy->name="";//celý název objektu
 	novy->rezim=0;
@@ -40,6 +42,8 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->rozmer_kabiny.x=0;
+	novy->rozmer_kabiny.y=0;
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -50,7 +54,9 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->K_zamek=0;
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
-
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 	novy->predchozi=novy;//ukazuje sam na sebe
 	novy->dalsi=NULL;
 	novy->dalsi2=NULL;
@@ -70,6 +76,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu,pozice objektu
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
+	novy->Xk=X;//výchozí pozice kabiny
+	novy->Yk=Y;//výchozí pozice kabiny
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
@@ -84,6 +92,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
+	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -94,6 +104,9 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->K_zamek=0;
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	OBJEKTY->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
 	novy->predchozi=OBJEKTY->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
@@ -110,10 +123,11 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->id=id;
 	novy->short_name=knihovna_objektu[id].short_name;
 	novy->name=knihovna_objektu[id].name;
-	//režim tu před 14.11.2017 nebyl, nevím proč
 	novy->rezim=0;if(id==4 || id==5 || id==6)novy->rezim=2;//rezim objektu 0-S&G,1-Kontin.(line tracking),2-Postprocesní
 	novy->X=X;//přiřadím X osu
 	novy->Y=Y;//přiřadím Y osu
+	novy->Xk=X;//výchozí pozice kabiny
+	novy->Yk=Y;//výchozí pozice kabiny
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
@@ -128,6 +142,8 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->elementy=NULL;//ukazatel na přidružené elementy
 	novy->min_prujezdni_profil.x=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
+	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
+	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -138,6 +154,9 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->K_zamek=0;
 	novy->poznamka="";
 	novy->probehla_aktualizace_prirazeni_pohonu=false;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+	novy->zobrazit_koty=true;//proměnná určující, zda se budou zobrzovat kóty
+	novy->zobrazit_mGrid=true;//proměnná určující, zda budou zobrazeny mGridy
+	novy->uzamknout_nahled=false;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 	novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 	novy->dalsi=p->dalsi;
@@ -218,8 +237,8 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->mezera_podvozek=Objekt->mezera_podvozek;//mezera mezi podvozky
 		novy->pohon=Objekt->pohon;
 		novy->elementy=Objekt->elementy;
-		novy->min_prujezdni_profil.x=Objekt->min_prujezdni_profil.x;//výška a šířka minimálního průjezdního profilu v objektu
-		novy->min_prujezdni_profil.y=Objekt->min_prujezdni_profil.y;//výška a šířka minimálního průjezdního profilu v objektu
+		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
+		novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
 		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -230,6 +249,9 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->K_zamek=Objekt->K_zamek;
 		novy->poznamka=Objekt->poznamka;
 		novy->probehla_aktualizace_prirazeni_pohonu=Objekt->probehla_aktualizace_prirazeni_pohonu;//pouze pomocná proměnná využitá v momentu, kdy probíhá nové ukládání pohonů na PL a probíhá aktualizace n, tak ošetření proti situaci např. "2->3 a 3->4"//neukládá se do binárky
+		novy->zobrazit_koty=Objekt->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+		novy->zobrazit_mGrid=Objekt->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
+		novy->uzamknout_nahled=Objekt->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 
 		novy->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
 		novy->dalsi=p->dalsi;
@@ -278,6 +300,9 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->K_zamek=Original->K_zamek;
 	Kopie->poznamka=Original->poznamka;
 	Kopie->probehla_aktualizace_prirazeni_pohonu=Original->probehla_aktualizace_prirazeni_pohonu;
+	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
+	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
+	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
@@ -867,6 +892,18 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->rotace_jigu=0;
 	Objekt->elementy->stav=true;
 
+	Objekt->elementy->LO1=0;
+	Objekt->elementy->OTOC_delka=0;
+	Objekt->elementy->LO2=0;
+	Objekt->elementy->LO_pozice=0;
+
+	Objekt->elementy->PT1=0;
+	Objekt->elementy->PTotoc=0;
+	Objekt->elementy->PT2=0;
+
+	Objekt->elementy->WT=0;
+	Objekt->elementy->WTpalec=0;
+
 	Objekt->elementy->mGrid=NULL;
 
 	Objekt->elementy->sparovany=NULL;
@@ -957,7 +994,9 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->PT1=Original->PT1;
 	Kopie->PTotoc=Original->PTotoc;
 	Kopie->PT2=Original->PT2;
-	Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
+	Kopie->WT=Original->WT;
+	Kopie->WTpalec=Original->WTpalec;
+	//Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->Gelement=Original->Gelement;
@@ -1675,7 +1714,8 @@ AnsiString Cvektory::navrhni_POHONY(AnsiString separator,short m_min)
 //	delete O;
 //	delete P;
 //	return data;
-//}
+//}
+
 ////---------------------------------------------------------------------------
 //smaze body z pameti
 long Cvektory::vymaz_seznam_POHONY()
@@ -3135,7 +3175,8 @@ void Cvektory::SaveText2File(AnsiString Text,AnsiString FileName)
 //short int Cvektory::ulozit_report(UnicodeString FileName)
 //{
 //	//
-//}
+//}
+
 //ZDM
 //---------------------------------------------------------------------------
 //AnsiString Cvektory::get_csv_xls(AnsiString S)//S=separator
@@ -3216,7 +3257,8 @@ void Cvektory::SaveText2File(AnsiString Text,AnsiString FileName)
 //		data+="</table>";//tělo konec tabulky
 //		data+="</body></html>";//patička
 //		return data;
-//}
+//}
+
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
 //void Cvektory::get_LT_a_max_min_TT()

@@ -39,7 +39,7 @@ AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString m
 short Cmy::Rt90(double number)
 {
 	short RET=round(number/90.0)*90;
-	if(RET>=360)RET-=360;
+	if(RET>=360)RET-=360;     //pøípadnì: RET=fmod(number,360.0);
 	if(RET>=360)RET=Rt90(RET);//rekurzce pro pøípady, že se bude jednát o nìkolikanásobnou rotaci èi kvùlip pøevodu z 360° na 0°
 	return RET;
 }
@@ -117,6 +117,18 @@ double Cmy::P2Ly(long fyzicka)
 	}
 	catch(...)
 	{return 0;}
+}
+/////////////////////////////////////////////////////////////////////////////
+//pøevede vzdálenost v metrech na vzdálenost monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
+long Cmy::m2px(double meter)
+{
+	return round(meter*F->Zoom/F->m2px);
+}
+/////////////////////////////////////////////////////////////////////////////
+//pøevede logické jednotky (metry) na pixely monitoru dle konstanty m2px (metrù na pixel) a aktuální hodnoty promìnné Zoom
+double Cmy::px2m(long px)
+{
+	return px/F->Zoom*F->m2px;
 }
 /////////////////////////////////////////////////////////////////////////////
 //dle zmìøeného úseku na monitoru pøevede tuto pixelovou vzádlenost a hodnotu v podobì uživatelského vstupu v metrech na hodnotu rozlišení podkladu

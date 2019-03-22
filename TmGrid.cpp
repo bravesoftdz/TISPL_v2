@@ -27,6 +27,7 @@ TmGrid::TmGrid(TForm *Owner)
 	Row=0;Col=0;//aktuální øádek a sloupec
 	AntiAliasing_grid=false;
 	AntiAliasing_text=true;
+	MovingTable=false;
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	preRowInd=-1;
 	Decimal=3;//implicitní poèet desetinných míst u numericeditù
@@ -51,23 +52,23 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
 	DefaultCell.Font->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	DefaultCell.Font->Name="Arial";
-	DefaultCell.isNegativeNumber->Size=12;
+	DefaultCell.isNegativeNumber->Size=DefaultCell.Font->Size;
 	DefaultCell.isNegativeNumber->Color=(TColor)RGB(43,87,154);//(TColor)RGB(128,128,128);
 	DefaultCell.isNegativeNumber->Orientation=0;
 	DefaultCell.isNegativeNumber->Style=TFontStyles();
 	DefaultCell.isNegativeNumber->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
 	DefaultCell.isNegativeNumber->Pitch=System::Uitypes::TFontPitch::fpVariable;
-	DefaultCell.isNegativeNumber->Name="Arial";
+	DefaultCell.isNegativeNumber->Name=DefaultCell.Font->Name;
 	*DefaultCell.isNegativeNumber=*DefaultCell.Font;
 	*DefaultCell.isZero=*DefaultCell.Font;
 	*DefaultCell.isLink=*DefaultCell.Font;
-	DefaultCell.isLink->Size=12;
+	DefaultCell.isLink->Size=DefaultCell.Font->Size;
 	DefaultCell.isLink->Color=(TColor)RGB(43,87,154);//(TColor)RGB(128,128,128);
 	DefaultCell.isLink->Orientation=0;
 	DefaultCell.isLink->Style=TFontStyles();
 	DefaultCell.isLink->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
 	DefaultCell.isLink->Pitch=System::Uitypes::TFontPitch::fpVariable;
-	DefaultCell.isLink->Name="Arial";
+	DefaultCell.isLink->Name=DefaultCell.Font->Name;
 	DefaultCell.TextPositon.X=0;
 	DefaultCell.TextPositon.Y=0;
 	DefaultCell.Text="";
@@ -873,6 +874,23 @@ TscGPButton *TmGrid::createButton(unsigned long Col,unsigned long Row)
 }
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
+{
+	TscGPGlyphButton *gB=getGlyphButton(Col,Row);//pokud již existuje
+	if(gB==NULL)//pokud ne, tak založí
+	{
+		gB = new TscGPGlyphButton(Form);
+		gB->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		gB->Name="mGrid_GlyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);
+
+		//události
+		gB->OnClick=&getTagOnClick;
+		gB->OnEnter=&getTagOnEnter;
+	}
+	return gB;
+}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
 {
 	TscGPCheckBox *Ch=getCheck(Col,Row);//pokud již existuje
@@ -1062,6 +1080,7 @@ void TmGrid::rotace_textu(long rotace)
 //dle zadaného  èísla sloupce a èísla øádku  vrátí ukazatel nadanou komponentu
 TscGPEdit *TmGrid::getEdit(unsigned long Col,unsigned long Row){return (TscGPEdit *)Form->FindComponent("mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPButton *TmGrid::getButton(unsigned long Col,unsigned long Row){return (TscGPButton *)Form->FindComponent("mGrid_BUTTON_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
+TscGPGlyphButton *TmGrid::getGlyphButton(unsigned long Col,unsigned long Row){return (TscGPGlyphButton *)Form->FindComponent("mGrid_GlyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPComboBox *TmGrid::getCombo(unsigned long Col,unsigned long Row){return (TscGPComboBox *)Form->FindComponent("mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPCheckBox *TmGrid::getCheck(unsigned long Col,unsigned long Row){return (TscGPCheckBox *)Form->FindComponent("mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 TscGPRadioButton *TmGrid::getRadio(unsigned long Col,unsigned long Row){return (TscGPRadioButton *)Form->FindComponent("mGrid_RADIO_"+AnsiString(ID)+"_"+AnsiString(getTag(Col,Row)));}//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
@@ -1662,6 +1681,7 @@ void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
 		case NUMERIC:			createNumeric(Col,Row);break;
 		case readNUMERIC:break;
 		case BUTTON:		 	createButton(Col,Row);break;
+		case glyphBUTTON:	createGlyphButton(Col,Row);break;
 		case COMBO:break;
 		case CHECK:				createCheck(Col,Row);break;
 		case RADIO:				createRadio(Col,Row);break;

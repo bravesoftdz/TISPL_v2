@@ -18,6 +18,7 @@ object Form1: TForm1
   OnCloseQuery = FormCloseQuery
   OnDblClick = FormDblClick
   OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   OnKeyUp = FormKeyUp
   OnMouseDown = FormMouseDown
   OnMouseMove = FormMouseMove
@@ -251,7 +252,6 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 2
     Visible = False
-    ExplicitTop = 611
   end
   object Button3: TButton
     Left = 183
@@ -848,7 +848,7 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object Schema: TscGPButton
-      Left = 595
+      Left = 517
       Top = 0
       Width = 78
       Height = 34
@@ -954,6 +954,8 @@ object Form1: TForm1
       Down = True
       GroupIndex = 1
       AllowAllUp = False
+      ExplicitLeft = 595
+      ExplicitTop = -1
     end
     object PopupMenuButton: TscGPButton
       AlignWithMargins = True
@@ -2095,7 +2097,7 @@ object Form1: TForm1
     object scLabel_titulek: TscLabel
       Left = 459
       Top = 0
-      Width = 99
+      Width = 21
       Height = 34
       Margins.Left = 0
       Margins.Top = 0
@@ -2124,9 +2126,10 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
+      ExplicitWidth = 99
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
-      Left = 558
+      Left = 480
       Top = 0
       Width = 37
       Height = 34
@@ -2222,6 +2225,8 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ExplicitLeft = 459
+      ExplicitTop = -3
     end
     object scGPSwitch_rezim: TscGPSwitch
       AlignWithMargins = True
@@ -2491,6 +2496,116 @@ object Form1: TForm1
       Kind = scgpgkOneGear
       TransparentBackground = True
     end
+    object Nahled: TscGPButton
+      Left = 595
+      Top = 0
+      Width = 78
+      Height = 34
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 1
+      Align = alRight
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 22
+      Visible = False
+      Animation = True
+      Caption = 'N'#225'hled'
+      CanFocused = False
+      CustomDropDown = False
+      Margin = -1
+      Spacing = 1
+      Layout = blGlyphLeft
+      ImageIndex = -1
+      ImageMargin = 0
+      TransparentBackground = True
+      Options.NormalColor = clWhite
+      Options.HotColor = clWhite
+      Options.PressedColor = clBtnFace
+      Options.FocusedColor = clBtnFace
+      Options.DisabledColor = 16250613
+      Options.NormalColor2 = clNone
+      Options.HotColor2 = clNone
+      Options.PressedColor2 = clNone
+      Options.FocusedColor2 = clNone
+      Options.DisabledColor2 = clNone
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 30
+      Options.PressedColorAlpha = 255
+      Options.FocusedColorAlpha = 30
+      Options.DisabledColorAlpha = 0
+      Options.NormalColor2Alpha = 255
+      Options.HotColor2Alpha = 255
+      Options.PressedColor2Alpha = 255
+      Options.FocusedColor2Alpha = 255
+      Options.DisabledColor2Alpha = 255
+      Options.FrameNormalColor = clNone
+      Options.FrameHotColor = clNone
+      Options.FramePressedColor = clNone
+      Options.FrameFocusedColor = clNone
+      Options.FrameDisabledColor = clNone
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.FontNormalColor = clWhite
+      Options.FontHotColor = clWhite
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clWhite
+      Options.FontDisabledColor = clGray
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeFillGradientColorOffset = 25
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpRect
+      Options.ArrowSize = 9
+      Options.ArrowAreaSize = 0
+      Options.ArrowType = scgpatDefault
+      Options.ArrowThickness = 2
+      Options.ArrowThicknessScaled = False
+      Options.StyleColors = True
+      HotImageIndex = -1
+      FocusedImageIndex = -1
+      PressedImageIndex = -1
+      UseGalleryMenuImage = False
+      UseGalleryMenuCaption = False
+      ScaleMarginAndSpacing = False
+      WidthWithCaption = 0
+      WidthWithoutCaption = 0
+      SplitButton = False
+      RepeatClick = False
+      RepeatClickInterval = 100
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clHighlight
+      GlowEffect.AlphaValue = 95
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clBtnFace
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = False
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 1
+      AllowAllUp = False
+      ExplicitLeft = 654
+      ExplicitTop = -1
+    end
   end
   object scGPPanel_statusbar: TscGPPanel
     Left = 0
@@ -2529,7 +2644,6 @@ object Form1: TForm1
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
-    ExplicitTop = 653
     object RzStatusPane1: TRzStatusPane
       Left = 207
       Top = 0
@@ -2991,9 +3105,9 @@ object Form1: TForm1
   end
   object scSplitView_LEFTTOOLBAR: TscSplitView
     Left = 0
-    Top = 68
+    Top = 34
     Width = 168
-    Height = 588
+    Height = 622
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -3038,7 +3152,7 @@ object Form1: TForm1
     HideControls = False
     Animation = False
     DisplayMode = scsvmOverlay
-    ExplicitHeight = 543
+    ExplicitHeight = 588
     object scListGroupKnihovObjektu: TscListGroupPanel
       Left = 0
       Top = 0
@@ -3098,6 +3212,7 @@ object Form1: TForm1
         TabOrder = 0
         OnDrawCell = DrawGrid_knihovnaDrawCell
         OnKeyDown = FormKeyDown
+        OnKeyPress = FormKeyPress
         OnMouseDown = DrawGrid_knihovnaMouseDown
         OnMouseLeave = DrawGrid_knihovnaMouseLeave
         OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
@@ -3901,9 +4016,9 @@ object Form1: TForm1
   end
   object scSplitView_OPTIONS: TscSplitView
     Left = 952
-    Top = 68
+    Top = 34
     Width = 250
-    Height = 588
+    Height = 622
     Anchors = [akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
@@ -3953,12 +4068,12 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
-    ExplicitHeight = 543
+    ExplicitHeight = 588
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
       Width = 249
-      Height = 45
+      Height = 79
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
@@ -3993,11 +4108,11 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Caption = 'Nastaven'#237
-      ExplicitHeight = 0
+      ExplicitHeight = 45
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
-      Top = 45
+      Top = 79
       Width = 249
       Height = 88
       Margins.Left = 5
@@ -4033,7 +4148,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Obecn'#233
-      ExplicitTop = 0
+      ExplicitTop = 45
       object ComboBoxCekani: TscComboBox
         Left = 3
         Top = 56
@@ -4247,8 +4362,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2187
-        Top = 2350
+        Left = 2253
+        Top = 2416
         Width = 244
         Height = 31
         Align = alCustom
@@ -5100,7 +5215,7 @@ object Form1: TForm1
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
-      Top = 133
+      Top = 167
       Width = 249
       Height = 334
       Align = alTop
@@ -5135,7 +5250,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Podklad'
-      ExplicitTop = 88
+      ExplicitTop = 133
       object scGPButton_adjustace: TscGPButton
         Left = 11
         Top = 187
@@ -5784,9 +5899,9 @@ object Form1: TForm1
   end
   object scSplitView_MENU: TscSplitView
     Left = 0
-    Top = 68
+    Top = 34
     Width = 0
-    Height = 588
+    Height = 622
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     TabOrder = 23
@@ -5830,10 +5945,10 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_MENUOpened
-    ExplicitHeight = 543
+    ExplicitHeight = 588
     object scButton_konec: TscButton
       Left = 0
-      Top = 538
+      Top = 572
       Width = 0
       Height = 50
       Align = alBottom
@@ -5923,7 +6038,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 493
+      ExplicitTop = 538
     end
     object scButton_otevrit: TscButton
       Left = 0
@@ -6111,7 +6226,7 @@ object Form1: TForm1
     end
     object scButton_zaloha: TscButton
       Left = 0
-      Top = 488
+      Top = 522
       Width = 0
       Height = 50
       Align = alBottom
@@ -6200,7 +6315,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 443
+      ExplicitTop = 488
     end
     object scButton_report: TscButton
       Left = 0
@@ -6588,7 +6703,7 @@ object Form1: TForm1
     end
     object scButton_posledni_otevreny: TscButton
       Left = 0
-      Top = 438
+      Top = 472
       Width = 0
       Height = 50
       Align = alBottom
@@ -6677,7 +6792,7 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = True
       WordWrap = False
-      ExplicitTop = 393
+      ExplicitTop = 438
     end
     object scGPSwitch_meritko: TscGPSwitch
       Left = 100
@@ -7106,8 +7221,8 @@ object Form1: TForm1
     end
   end
   object Memo3: TMemo
-    Left = 938
-    Top = 71
+    Left = 644
+    Top = 383
     Width = 185
     Height = 56
     Lines.Strings = (
@@ -7156,7 +7271,7 @@ object Form1: TForm1
     object scGPCheckBox_viditelnost: TscGPCheckBox
       Left = 619
       Top = 3
-      Width = 100
+      Width = 125
       Height = 35
       BiDiMode = bdRightToLeft
       Font.Charset = DEFAULT_CHARSET
@@ -7168,8 +7283,9 @@ object Form1: TForm1
       ParentFont = False
       TabOrder = 0
       TabStop = True
+      OnClick = scGPCheckBox_viditelnostClick
       Animation = False
-      Caption = 'Skr'#253't k'#243'ty'
+      Caption = 'Zobrazit k'#243'ty'
       CanFocused = True
       Spacing = 1
       Layout = blGlyphLeft
@@ -7245,7 +7361,8 @@ object Form1: TForm1
       OptionsChecked.ShapeSize = 20
       OptionsChecked.CheckMarkThickness = 2
       OptionsChecked.StyleColors = True
-      Checked = False
+      Checked = True
+      State = cbChecked
       ScaleFrameWidth = True
       ScaleCheckMarkThickness = True
       ShowFocusRect = True
@@ -7413,6 +7530,8 @@ object Form1: TForm1
       ListBoxOptions.FrameScaleWidth = False
       MouseWheelSupport = True
       Color = clNone
+      OnKeyDown = FormKeyDown
+      OnKeyPress = FormKeyPress
     end
     object scGPButton_ulozit: TscGPButton
       Left = 96
@@ -7441,8 +7560,8 @@ object Form1: TForm1
       Options.NormalColor = 33023
       Options.HotColor = 1871359
       Options.PressedColor = clLime
-      Options.FocusedColor = 1871359
-      Options.DisabledColor = clBlack
+      Options.FocusedColor = 33023
+      Options.DisabledColor = 33023
       Options.NormalColor2 = clNone
       Options.HotColor2 = clNone
       Options.PressedColor2 = clNone
@@ -7452,7 +7571,7 @@ object Form1: TForm1
       Options.HotColorAlpha = 255
       Options.PressedColorAlpha = 255
       Options.FocusedColorAlpha = 255
-      Options.DisabledColorAlpha = 200
+      Options.DisabledColorAlpha = 100
       Options.NormalColor2Alpha = 255
       Options.HotColor2Alpha = 255
       Options.PressedColor2Alpha = 255
@@ -7460,20 +7579,20 @@ object Form1: TForm1
       Options.DisabledColor2Alpha = 255
       Options.FrameNormalColor = 33023
       Options.FrameHotColor = 1871359
-      Options.FramePressedColor = clGray
-      Options.FrameFocusedColor = 1871359
-      Options.FrameDisabledColor = clBtnShadow
+      Options.FramePressedColor = 33023
+      Options.FrameFocusedColor = 33023
+      Options.FrameDisabledColor = 33023
       Options.FrameWidth = 1
       Options.FrameNormalColorAlpha = 255
       Options.FrameHotColorAlpha = 255
       Options.FramePressedColorAlpha = 255
       Options.FrameFocusedColorAlpha = 255
-      Options.FrameDisabledColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 100
       Options.FontNormalColor = clWhite
       Options.FontHotColor = clWhite
       Options.FontPressedColor = clWhite
       Options.FontFocusedColor = clWhite
-      Options.FontDisabledColor = clAqua
+      Options.FontDisabledColor = clWhite
       Options.ShapeFillGradientAngle = 90
       Options.ShapeFillGradientPressedAngle = -90
       Options.ShapeFillGradientColorOffset = 25
@@ -7623,9 +7742,9 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPLabel2: TscGPLabel
-      Left = 725
+      Left = 750
       Top = 11
-      Width = 137
+      Width = 239
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBtnText
@@ -7659,11 +7778,11 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Layout = tlCenter
-      Caption = 'Uzamknout n'#225'hled'
+      Caption = 'Uzamknout rozm'#237'st'#283'n'#237' a rozm'#283'ry'
     end
     object scButton_zamek: TscButton
-      Left = 871
-      Top = 4
+      Left = 890
+      Top = 16
       Width = 28
       Height = 29
       Margins.Left = 0
@@ -7671,6 +7790,7 @@ object Form1: TForm1
       Margins.Right = 0
       Margins.Bottom = 0
       TabOrder = 6
+      OnClick = scButton_zamekClick
       Animation = False
       CanFocused = False
       CustomDropDown = False
@@ -7678,7 +7798,7 @@ object Form1: TForm1
       Spacing = 0
       Layout = blGlyphLeft
       Images = scGPVirtualImageList1
-      ImageIndex = 37
+      ImageIndex = 38
       ImageMargin = 0
       TransparentBackground = True
       ColorOptions.NormalColor = clBtnFace
@@ -7748,81 +7868,43 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
-  end
-  object scGPPanel_schema: TscGPPanel
-    Left = 0
-    Top = 34
-    Width = 1202
-    Height = 34
-    Align = alTop
-    TabOrder = 49
-    Visible = False
-    BlurBackground = False
-    BlurBackgroundAmount = 5
-    CustomImageIndex = -1
-    DragForm = False
-    DragTopForm = True
-    FillGradientAngle = 90
-    FillGradientBeginAlpha = 255
-    FillGradientEndAlpha = 255
-    FillGradientBeginColorOffset = 25
-    FillGradientEndColorOffset = 25
-    FrameWidth = 0
-    FillColor = 10114859
-    FillColorAlpha = 255
-    FillColor2 = clNone
-    FrameColor = clBtnShadow
-    FrameColorAlpha = 255
-    FrameRadius = 0
-    ShowCaption = False
-    CaptionGlowEffect.Enabled = False
-    CaptionGlowEffect.Color = clBtnShadow
-    CaptionGlowEffect.AlphaValue = 255
-    CaptionGlowEffect.GlowSize = 7
-    CaptionGlowEffect.Offset = 0
-    CaptionGlowEffect.Intensive = True
-    CaptionGlowEffect.StyleColors = True
-    Color = clBtnFace
-    Caption = 'scGPPanel_mainmenu'
-    TransparentBackground = True
-    StorePaintBuffer = True
-    Sizeable = False
-    WallpaperIndex = -1
-    object scGPGlyphButton1: TscGPGlyphButton
-      AlignWithMargins = True
-      Left = 1152
-      Top = 0
-      Width = 50
-      Height = 33
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 1
-      Align = alRight
-      TabOrder = 0
-      OnClick = KonecClick
-      Animation = True
-      Caption = 'Konec'
-      CanFocused = False
+    object scGPButton1: TscGPButton
+      Left = 263
+      Top = 7
+      Width = 25
+      Height = 25
+      Hint = 'Zobrazit/skr'#253't tabulky'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+      TabStop = True
+      Visible = False
+      OnClick = scGPButton1Click
+      Animation = False
+      CanFocused = True
       CustomDropDown = False
+      Margin = -1
+      Spacing = 1
       Layout = blGlyphLeft
+      Images = scGPVirtualImageList1
+      ImageIndex = 54
+      ImageMargin = 0
       TransparentBackground = True
-      ColorValue = clRed
       Options.NormalColor = clNone
-      Options.HotColor = clRed
-      Options.PressedColor = clRed
-      Options.FocusedColor = clBtnFace
-      Options.DisabledColor = clBtnText
+      Options.HotColor = clNone
+      Options.PressedColor = clNone
+      Options.FocusedColor = clNone
+      Options.DisabledColor = clNone
       Options.NormalColor2 = clNone
       Options.HotColor2 = clNone
       Options.PressedColor2 = clNone
       Options.FocusedColor2 = clNone
       Options.DisabledColor2 = clNone
-      Options.NormalColorAlpha = 0
-      Options.HotColorAlpha = 220
-      Options.PressedColorAlpha = 180
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 255
       Options.FocusedColorAlpha = 255
-      Options.DisabledColorAlpha = 5
+      Options.DisabledColorAlpha = 255
       Options.NormalColor2Alpha = 255
       Options.HotColor2Alpha = 255
       Options.PressedColor2Alpha = 255
@@ -7833,17 +7915,17 @@ object Form1: TForm1
       Options.FramePressedColor = clNone
       Options.FrameFocusedColor = clNone
       Options.FrameDisabledColor = clNone
-      Options.FrameWidth = 2
-      Options.FrameNormalColorAlpha = 70
-      Options.FrameHotColorAlpha = 100
-      Options.FramePressedColorAlpha = 150
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
       Options.FrameFocusedColorAlpha = 255
-      Options.FrameDisabledColorAlpha = 30
+      Options.FrameDisabledColorAlpha = 255
       Options.FontNormalColor = clBtnText
       Options.FontHotColor = clBtnText
       Options.FontPressedColor = clBtnText
       Options.FontFocusedColor = clBtnText
-      Options.FontDisabledColor = clBtnShadow
+      Options.FontDisabledColor = clNone
       Options.ShapeFillGradientAngle = 90
       Options.ShapeFillGradientPressedAngle = -90
       Options.ShapeFillGradientColorOffset = 25
@@ -7855,266 +7937,45 @@ object Form1: TForm1
       Options.ArrowThickness = 2
       Options.ArrowThicknessScaled = False
       Options.StyleColors = True
-      GlyphOptions.NormalColor = clWhite
-      GlyphOptions.HotColor = clWhite
-      GlyphOptions.PressedColor = clWhite
-      GlyphOptions.FocusedColor = clWhite
-      GlyphOptions.DisabledColor = clWhite
-      GlyphOptions.NormalColorAlpha = 255
-      GlyphOptions.HotColorAlpha = 255
-      GlyphOptions.PressedColorAlpha = 255
-      GlyphOptions.FocusedColorAlpha = 255
-      GlyphOptions.DisabledColorAlpha = 100
-      GlyphOptions.Kind = scgpbgkClose
-      GlyphOptions.Thickness = 1
-      GlyphOptions.ThicknessScaled = False
-      GlyphOptions.Size = 0
-      GlyphOptions.StyleColors = True
-      TextMargin = -1
+      HotImageIndex = -1
+      FocusedImageIndex = -1
+      PressedImageIndex = -1
+      UseGalleryMenuImage = False
+      UseGalleryMenuCaption = False
+      ScaleMarginAndSpacing = False
       WidthWithCaption = 0
       WidthWithoutCaption = 0
       SplitButton = False
       RepeatClick = False
       RepeatClickInterval = 100
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 0
-      AllowAllUp = False
-    end
-    object scGPGlyphButton3: TscGPGlyphButton
-      AlignWithMargins = True
-      Left = 1052
-      Top = 0
-      Width = 50
-      Height = 33
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 1
-      Align = alRight
-      TabOrder = 1
-      OnClick = MinButtonClick
-      Animation = True
-      Caption = 'scGPGlyphButton1'
-      CanFocused = False
-      CustomDropDown = False
-      Layout = blGlyphLeft
-      TransparentBackground = True
-      ColorValue = clRed
-      Options.NormalColor = clWhite
-      Options.HotColor = clWhite
-      Options.PressedColor = clBlack
-      Options.FocusedColor = clWhite
-      Options.DisabledColor = clWhite
-      Options.NormalColor2 = clNone
-      Options.HotColor2 = clNone
-      Options.PressedColor2 = clNone
-      Options.FocusedColor2 = clNone
-      Options.DisabledColor2 = clNone
-      Options.NormalColorAlpha = 0
-      Options.HotColorAlpha = 30
-      Options.PressedColorAlpha = 50
-      Options.FocusedColorAlpha = 255
-      Options.DisabledColorAlpha = 5
-      Options.NormalColor2Alpha = 255
-      Options.HotColor2Alpha = 255
-      Options.PressedColor2Alpha = 255
-      Options.FocusedColor2Alpha = 255
-      Options.DisabledColor2Alpha = 255
-      Options.FrameNormalColor = clNone
-      Options.FrameHotColor = clNone
-      Options.FramePressedColor = clNone
-      Options.FrameFocusedColor = clNone
-      Options.FrameDisabledColor = clNone
-      Options.FrameWidth = 2
-      Options.FrameNormalColorAlpha = 70
-      Options.FrameHotColorAlpha = 100
-      Options.FramePressedColorAlpha = 150
-      Options.FrameFocusedColorAlpha = 255
-      Options.FrameDisabledColorAlpha = 30
-      Options.FontNormalColor = clBtnText
-      Options.FontHotColor = clBtnText
-      Options.FontPressedColor = clBtnText
-      Options.FontFocusedColor = clBtnText
-      Options.FontDisabledColor = clBtnShadow
-      Options.ShapeFillGradientAngle = 90
-      Options.ShapeFillGradientPressedAngle = -90
-      Options.ShapeFillGradientColorOffset = 25
-      Options.ShapeCornerRadius = 10
-      Options.ShapeStyle = scgpRect
-      Options.ArrowSize = 9
-      Options.ArrowAreaSize = 0
-      Options.ArrowType = scgpatDefault
-      Options.ArrowThickness = 2
-      Options.ArrowThicknessScaled = False
-      Options.StyleColors = True
-      GlyphOptions.NormalColor = clWhite
-      GlyphOptions.HotColor = clWhite
-      GlyphOptions.PressedColor = clWhite
-      GlyphOptions.FocusedColor = clWhite
-      GlyphOptions.DisabledColor = clWhite
-      GlyphOptions.NormalColorAlpha = 200
-      GlyphOptions.HotColorAlpha = 255
-      GlyphOptions.PressedColorAlpha = 255
-      GlyphOptions.FocusedColorAlpha = 255
-      GlyphOptions.DisabledColorAlpha = 100
-      GlyphOptions.Kind = scgpbgkMinimize
-      GlyphOptions.Thickness = 1
-      GlyphOptions.ThicknessScaled = False
-      GlyphOptions.Size = 0
-      GlyphOptions.StyleColors = True
-      TextMargin = -1
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      SplitButton = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 0
-      AllowAllUp = False
-    end
-    object scGPGlyphButton7: TscGPGlyphButton
-      AlignWithMargins = True
-      Left = 1102
-      Top = 0
-      Width = 50
-      Height = 33
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 1
-      Align = alRight
-      TabOrder = 2
-      OnClick = MaxButtonClick
-      Animation = True
-      Caption = 'scGPGlyphButton1'
-      CanFocused = False
-      CustomDropDown = False
-      Layout = blGlyphLeft
-      TransparentBackground = True
-      ColorValue = clRed
-      Options.NormalColor = clWhite
-      Options.HotColor = clWhite
-      Options.PressedColor = clBlack
-      Options.FocusedColor = clWhite
-      Options.DisabledColor = clWhite
-      Options.NormalColor2 = clNone
-      Options.HotColor2 = clNone
-      Options.PressedColor2 = clNone
-      Options.FocusedColor2 = clNone
-      Options.DisabledColor2 = clNone
-      Options.NormalColorAlpha = 0
-      Options.HotColorAlpha = 30
-      Options.PressedColorAlpha = 50
-      Options.FocusedColorAlpha = 255
-      Options.DisabledColorAlpha = 5
-      Options.NormalColor2Alpha = 255
-      Options.HotColor2Alpha = 255
-      Options.PressedColor2Alpha = 255
-      Options.FocusedColor2Alpha = 255
-      Options.DisabledColor2Alpha = 255
-      Options.FrameNormalColor = clNone
-      Options.FrameHotColor = clNone
-      Options.FramePressedColor = clNone
-      Options.FrameFocusedColor = clNone
-      Options.FrameDisabledColor = clNone
-      Options.FrameWidth = 2
-      Options.FrameNormalColorAlpha = 70
-      Options.FrameHotColorAlpha = 100
-      Options.FramePressedColorAlpha = 150
-      Options.FrameFocusedColorAlpha = 255
-      Options.FrameDisabledColorAlpha = 30
-      Options.FontNormalColor = clBtnText
-      Options.FontHotColor = clBtnText
-      Options.FontPressedColor = clBtnText
-      Options.FontFocusedColor = clBtnText
-      Options.FontDisabledColor = clBtnShadow
-      Options.ShapeFillGradientAngle = 90
-      Options.ShapeFillGradientPressedAngle = -90
-      Options.ShapeFillGradientColorOffset = 25
-      Options.ShapeCornerRadius = 10
-      Options.ShapeStyle = scgpRect
-      Options.ArrowSize = 9
-      Options.ArrowAreaSize = 0
-      Options.ArrowType = scgpatDefault
-      Options.ArrowThickness = 2
-      Options.ArrowThicknessScaled = False
-      Options.StyleColors = True
-      GlyphOptions.NormalColor = clWhite
-      GlyphOptions.HotColor = clWhite
-      GlyphOptions.PressedColor = clWhite
-      GlyphOptions.FocusedColor = clWhite
-      GlyphOptions.DisabledColor = clWhite
-      GlyphOptions.NormalColorAlpha = 200
-      GlyphOptions.HotColorAlpha = 255
-      GlyphOptions.PressedColorAlpha = 255
-      GlyphOptions.FocusedColorAlpha = 255
-      GlyphOptions.DisabledColorAlpha = 100
-      GlyphOptions.Kind = scgpbgkMaximize
-      GlyphOptions.Thickness = 1
-      GlyphOptions.ThicknessScaled = False
-      GlyphOptions.Size = 0
-      GlyphOptions.StyleColors = True
-      TextMargin = -1
-      WidthWithCaption = 0
-      WidthWithoutCaption = 0
-      SplitButton = False
-      RepeatClick = False
-      RepeatClickInterval = 100
-      ShowGalleryMenuFromTop = False
-      ShowGalleryMenuFromRight = False
-      ShowMenuArrow = True
-      ShowFocusRect = True
-      Down = False
-      GroupIndex = 0
-      AllowAllUp = False
-    end
-    object scLabel1: TscLabel
-      Left = 0
-      Top = 0
-      Width = 1052
-      Height = 34
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 1
-      Align = alClient
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWhite
-      Font.Height = -13
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-      OnDblClick = scLabel_titulekDblClick
-      DragForm = True
-      DragTopForm = True
       GlowEffect.Enabled = False
-      GlowEffect.Color = clBtnShadow
+      GlowEffect.Color = clHighlight
       GlowEffect.AlphaValue = 255
       GlowEffect.GlowSize = 7
-      GlowEffect.Offset = 2
+      GlowEffect.Offset = 0
       GlowEffect.Intensive = True
       GlowEffect.StyleColors = True
-      AutoSize = False
-      Alignment = taCenter
-      VertAlignment = scvtaCenter
-      UseFontColorToStyleColor = True
-      Caption = 'TISPL - Lakovna n'#225'hled'
+      GlowEffect.HotColor = clNone
+      GlowEffect.PressedColor = clNone
+      GlowEffect.FocusedColor = clNone
+      GlowEffect.PressedGlowSize = 7
+      GlowEffect.PressedAlphaValue = 255
+      GlowEffect.States = [scsHot, scsPressed, scsFocused]
+      ImageGlow = True
+      ShowGalleryMenuFromTop = False
+      ShowGalleryMenuFromRight = False
+      ShowMenuArrow = True
+      ShowFocusRect = True
+      Down = False
+      GroupIndex = 0
+      AllowAllUp = False
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004C06840610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004C06B00610001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9245,7 +9106,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C010138009406D80630003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013A009406100730003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C0000000D002000001002000000000000070
       0800000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9559,6 +9420,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000800000
+      00780000000000000000000000880000007200000000000000000000008C0000
+      006B000000000000000200000090000000650000000000000002000000950000
+      00600000000000000005000000970000005A000000070000009B000000560000
+      00000000000A0000009D00000050000000000000000D0000009F0000004B0000
+      000000000010000000A2000000450000000000000013000000A3000000400000
+      000000000017000000A50000003B0000000000000000000000007C7C7CC77A7A
+      7AC60000000000000000777777C3747474C10000000000000000777777C37474
+      74C10000000000000000777777C3747474C10000000000000000777777C37474
+      74C10000000000000000777777C3747474C100000000777777C3747474C10000
+      000000000000777777C3747474C10000000000000000777777C3747474C10000
+      000000000000777777C3747474C10000000000000000777777C3747474C10000
+      0000000000007C7C7CC77A7A7AC6000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9570,6 +9444,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FE0000
+      00EF0000000000000003000000F3000000D90000000000000008000000F60000
+      00D1000000000000000D000000F8000000C80000000000000014000000FA0000
+      00BF000000000000001A000000FC000000B700000020000000FE000000AF0000
+      000000000028000000FE000000A8000000000000002F000000FF000000A00000
+      000000000037000000FF00000098000000000000003E000000FF000000900000
+      000000000058000000FF00000095000000000000000000000000CCCCCCFFCCCC
+      CCFF0000000000000000727272BF707070BD0000000000000000727272BF7070
+      70BD0000000000000000727272BF707070BD0000000000000000727272BF7070
+      70BD0000000000000000727272BF707070BD00000000727272BF707070BD0000
+      000000000000727272BF707070BD0000000000000000727272BF707070BD0000
+      000000000000727272BF707070BD0000000000000000727272BF707070BD0000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9581,10 +9468,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F00000000000000000000000220000001A0000000000000000000000240000
+      0018000000000000000000000026000000160000000000000000000000290000
+      001400000000000000000000002A00000011000000000000002D000000100000
+      0000000000000000002E0000000E00000000000000000000002F0000000D0000
+      000000000000000000310000000B000000000000000000000032000000090000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9596,14 +9492,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9615,14 +9516,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9634,14 +9540,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9653,10 +9564,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000001000000730000
+      00AB0000000C0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000048000000B200000034000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF00000000000000000000000000000000000000000000000E585858A7B9B9
+      B9F30606062C0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000606062DBABABAF4585858A70000000E0000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9668,10 +9588,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F00000000000000000000000000000000000000015000000B7000000FF0000
+      00FC000000270000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000008C000000FF000000F80000006C0000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF0000000000000000000000000000000007070731969696DBCCCCCCFFC0C0
+      C0F70505052A0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000606062DC0C0C0F7CCCCCCFF969696DB0707073100000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9683,10 +9612,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F00000000000000000000000000000003D000000E4000000FF000000EC0000
+      004B000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000800000099000000FF000000FF000000AA0000000E000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF0000000000000000000000001B1B1B5EBABABAF4CCCCCCFF9D9D9DE00A0A
+      0A3A000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000A0A0A3A9D9D9DE0CCCCCCFFBABABAF41B1B1B5E000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9698,12 +9636,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000100000077000000FB000000FF000000C70000001E0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000059000000F1000000FF000000DA000000300000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000D585858A8CCCCCCFFCCCCCCFF4E4E4E9F0000000B0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000B4E4E4E9FCCCCCCFFCCCCCCFF585858A70000
+      000D00000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9715,6 +9660,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F000000000000000AA000000FF000000FF000000FF000000D1000000CC0000
+      00CC000000CC000000CC000000CC000000CC000000CC000000CC000000CC0000
+      00CC000000CC000000CC000000CC000000CC000000CC000000CC000000CC0000
+      00CC000000CC000000CC000000CC000000CC000000CC000000CC000000CC0000
+      00CC000000CC000000CC000000CC000000E5000000FF000000FF000000F70000
+      00500000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF00000000818181CBCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF8080
+      80CA00000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9726,9 +9684,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F00000000000000028000000D3000000FF000000FF00000099000000330000
+      0033000000330000003300000033000000330000003300000033000000330000
+      0033000000330000003300000033000000330000003300000033000000330000
+      0033000000330000003300000033000000330000003300000033000000330000
+      0033000000330000003300000046000000D9000000FF000000FE0000008E0000
+      00050000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF0000000000000012636363B2CCCCCCFFCCCCCCFF4C4C4C9C000000090000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000C545454A4CCCCCCFFCCCCCCFF626262B10000
+      001200000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9740,10 +9708,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F000000000000000000000000A0000009F000000FF000000FF000000A40000
+      000C000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000038000000E1000000FF000000EF00000050000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF00000000000000000000000233333380C6C6C6FBCCCCCCFF8C8C8CD30505
+      0528000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000050505288C8C8CD3CCCCCCFFC6C6C6FB2C2C2C77000000010000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9755,10 +9732,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000005D000000F3000000FF0000
+      00D5000000120000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000053000000FA000000FF000000CB0000002100000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF0000000000000000000000000000000007070731969696DBCCCCCCFFC0C0
+      C0F7070707300000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000606062DC0C0C0F7CCCCCCFF969696DB0707073100000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9770,10 +9756,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000028000000D30000
+      00FC0000002A0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000089000000FF00000093000000070000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF00000000000000000000000000000000000000000000000E565656A6BABA
+      BAF4090909360000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000606062EB0B0B0ED585858A70000000E0000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9785,12 +9780,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000000000000050000
+      001D000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000010000001900000000000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9802,14 +9804,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9821,14 +9828,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9840,14 +9852,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F0000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9859,6 +9876,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      00F00000000000000000000000AE000000950000000000000002000000B40000
+      008F0000000000000004000000B8000000860000000000000008000000BC0000
+      007D000000000000000A000000C0000000780000000E000000C4000000710000
+      000000000012000000C50000006C0000000000000016000000C8000000650000
+      00000000001A000000C900000060000000000000001F000000CB000000590000
+      00000000005A000000FF00000096000000000000000000000000CCCCCCFFCCCC
+      CCFF0000000000000000777777C3747474C10000000000000000777777C37474
+      74C10000000000000000777777C3747474C10000000000000000777777C37474
+      74C10000000000000000777777C3747474C100000000777777C3747474C10000
+      000000000000777777C3747474C10000000000000000777777C3747474C10000
+      000000000000777777C3747474C10000000000000000777777C3747474C10000
+      000000000000CCCCCCFFCCCCCCFF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9870,6 +9900,19 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000D90000
+      00D40000000000000003000000E4000000CA0000000000000006000000E70000
+      00C0000000000000000B000000EB000000B8000000000000000F000000EF0000
+      00AF0000000000000015000000F1000000A700000019000000F4000000A00000
+      000000000020000000F7000000980000000000000026000000F8000000900000
+      00000000002D000000FA000000870000000000000032000000FB0000007F0000
+      000000000037000000FB0000007A000000000000000000000000707070BD8080
+      80CA0000000000000000727272BF707070BD0000000000000000727272BF7070
+      70BD0000000000000000727272BF707070BD0000000000000000727272BF7070
+      70BD0000000000000000727272BF707070BD00000000727272BF707070BD0000
+      000000000000727272BF707070BD0000000000000000727272BF707070BD0000
+      000000000000727272BF707070BD0000000000000000727272BF707070BD0000
+      000000000000707070BD808080CA000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9881,6 +9924,13 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000000000000A0000
+      000C00000000000000000000000A000000060000000000000000000000090000
+      000500000000000000000000000B0000000400000000000000000000000A0000
+      000400000000000000000000000C00000003000000000000000B000000030000
+      0000000000000000000D0000000200000000000000000000000D000000020000
+      0000000000000000000E0000000100000000000000000000000E000000010000
+      0000000000000000001500000001000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10258,195 +10308,6 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FF0000000A00000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFFFFF
-      FFFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10459,18 +10320,18 @@ object Form1: TForm1
       000000000000000000000000000000000009959595C300000009000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC3C3C3FF0000000B000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10483,18 +10344,18 @@ object Form1: TForm1
       000000000000000000000000000004040421CDCDCDE504040421000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFFFFFFFFFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFFFFFFFFFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10507,18 +10368,18 @@ object Form1: TForm1
       0000000000000000000004040421B5B5B5D7FFFFFFFFB5B5B5D7040404210000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000002C3C3C3FFC3C3
-      C3FF00000000000000000000000000000004C3C3C3FF00000000000000000000
-      000000000000C3C3C3FFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10531,18 +10392,18 @@ object Form1: TForm1
       0000000000000202021BC1C1C1DEFFFFFFFFFFFFFFFFFFFFFFFFC1C1C1DE0202
       021B000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000052000000C2000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000F7000000C100000051000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      000000000000000000000000000015151552767676C2CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFC0C0C0F7747474C114141451000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10555,18 +10416,18 @@ object Form1: TForm1
       00000202021AC6C6C6E1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC6C6
       C6E10202021A0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000AC3C3C3FFC3C3C3FF000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FA0000007800000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      00000000000000000000000000000000001600000079000000FA0000004A0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF00000000C3C3C3FFC3C3C3FFC3C3C3FF0000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFFC4C4C4FA2D2D2D7800000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000010101162D2D2D79C4C4C4FA1111114A0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10579,18 +10440,18 @@ object Form1: TForm1
       0524BCBCBCDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFBCBCBCDB0505052400000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000FFFFFFFFFC3C3C3FF000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000780000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      000000000000000000000000000000000000000000000000007A000000BF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3C3FF0000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF2D2D2D780000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      000000000000000000000000000000000000000000002E2E2E7A727272BF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10603,18 +10464,18 @@ object Form1: TForm1
       B7D8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFB7B7B7D80303031E000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF0000000000000005C3C3C3FFC3C3C3FF000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000001800000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      000000000000000000000000000000000000000000000000001A000000F20000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF00000000C3C3C3FFC3C3C3FFC3C3C3FF0000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0003FFFFFFFFFFFFFFFF00000002000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0101011800000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      000000000000000000000000000000000000000000000202021AB8B8B8F20000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10627,18 +10488,18 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFE9E9E9F4FFFFFFFFE9E9E9F4FFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFCACACAE3050505250000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10651,18 +10512,18 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFF2F2F2F6E42424282FFFFFFFF424242822F2F2F6EFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFF646464A00000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000969696C4A6A6A6CEA6A6A6CEA6A6
       A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6
       A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6
@@ -10675,18 +10536,18 @@ object Form1: TForm1
       FFFFFFFFFFFF3C3C3C7C0000000053535392FFFFFFFF53535392000000003C3C
       3C7CFFFFFFFFFFFFFFFF6363639F000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
@@ -10699,18 +10560,18 @@ object Form1: TForm1
       70A94C4C4C8B000000000000000052525291FFFFFFFF52525291000000000000
       00004C4C4C8B707070A900000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000009FFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
@@ -10723,18 +10584,18 @@ object Form1: TForm1
       000400000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000400000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFF0000000C00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF7878
       78AF676767A2676767A2676767A2676767A2676767A2676767A2676767A26767
       67A2676767A2676767A2676767A2676767A2676767A2676767A2676767A26767
@@ -10747,18 +10608,18 @@ object Form1: TForm1
       000000000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0101
       0115000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10771,18 +10632,18 @@ object Form1: TForm1
       000000000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       0524000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10795,18 +10656,18 @@ object Form1: TForm1
       000000000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000016262629E04040423000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       0524000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10819,18 +10680,18 @@ object Form1: TForm1
       000000000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       00005F5F5F9CFFFFFFFFC4C4C4E00303031E0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       0524000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10843,18 +10704,18 @@ object Form1: TForm1
       00000000000000000000000000005F5F5F9CFFFFFFFF5F5F5F9C000000000000
       00000000000000000000000000000000000000000000000000000000000A7575
       75ADFFFFFFFFFFFFFFFFFFFFFFFFB7B7B7D80505052400000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       0524000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10867,18 +10728,18 @@ object Form1: TForm1
       00000000000000000000000000000707072B1515154B0707072B000000000000
       0000000000000000000000000000000000000000000000000000000000074D4D
       4D8CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBCBCBCDB0303031D000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000FFFF
-      FFFFFFFFFFFFC3C3C3FF00000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       0524000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10891,18 +10752,18 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       00003C3C3C7CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC8C8C8E2020202180000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000AFFFFFFFFC3C3
-      C3FF000000060000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       0524000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -10915,18 +10776,18 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000029292967EFEFEFF7FFFFFFFFFFFFFFFFFFFFFFFFBDBDBDDC0404
-      0422000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFFFFFFFFFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      0422000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000002E2E2E6DBCBCBCDBBCBCBCDBBCBCBCDB0B0B
       0B36000000000000000000000000000000000000000000000000000000000000
@@ -10939,18 +10800,18 @@ object Form1: TForm1
       52910707072B0000000000000000000000000000000000000000000000000000
       00000707072B5252529152525291525252915252529152525291525252915252
       52915252529142424282EBEBEBF5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB3B3
-      B3D6040404200000000400000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC3C3C3FF00000003000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF00000000000000000000000000000000C3C3
-      C3FFFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      B3D6040404200000000400000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       052400000000000000000000000043434383FFFFFFFFFFFFFFFFFFFFFFFF1010
       1041000000000000000000000000000000000000000000000000000000000000
@@ -10963,18 +10824,18 @@ object Form1: TForm1
       FFFF191919510000000000000000000000000000000000000000000000000000
       000019191951FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFD3D3D3E8989898C500000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000000000000C3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FF0000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000EFFFFFFFFC3C3C3FF00000000000000000000000000000000000000000000
+      FFFFD3D3D3E8989898C500000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000003F3F3F7FFFFFFFFFFFFFFFFFFFFFFFFF0F0F
       0F3F000000000000000000000000000000000000000000000000000000000000
@@ -10987,18 +10848,18 @@ object Form1: TForm1
       52910707072B0000000000000000000000000000000000000000000000000000
       00000707072B5252529152525291525252915252529152525291525252915252
       52915252529142424282EBEBEBF5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB3B3
-      B3D6040404200000000400000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000000000000000
+      B3D6040404200000000400000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000003F3F3F7FFFFFFFFFFFFFFFFFFFFFFFFF0F0F
       0F3F000000000000000000000000000000000000000000000000000000000000
@@ -11011,18 +10872,18 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000029292967EFEFEFF7FFFFFFFFFFFFFFFFFFFFFFFFBDBDBDDC0404
-      0422000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000000000000000
+      0422000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000003F3F3F7FFFFFFFFFFFFFFFFFFFFFFFFF0F0F
       0F3F000000000B0B0B36BCBCBCDBBCBCBCDBBCBCBCDB2E2E2E6D000000000000
@@ -11035,18 +10896,18 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       00003C3C3C7CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC8C8C8E2020202180000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000003F3F3F7FFFFFFFFFFFFFFFFFFFFFFFFF0F0F
       0F3F0000000010101041FFFFFFFFFFFFFFFFFFFFFFFF43434383000000000000
@@ -11059,18 +10920,18 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000074D4D
       4D8CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBCBCBCDB0303031D000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000C3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FF0000
-      000E000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000003F3F3F7FFFFFFFFFFFFFFFFFFFFFFFFF0F0F
       0F3F000000000F0F0F3FFFFFFFFFFFFFFFFFFFFFFFFF3F3F3F7F000000000000
@@ -11083,18 +10944,18 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000000000000000000000000000000000000000000A7575
       75ADFFFFFFFFFFFFFFFFFFFFFFFFB7B7B7D80505052400000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000001FFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000003F3F3F7FFFFFFFFFFFFFFFFFFFFFFFFF0F0F
       0F3F000000000F0F0F3FFFFFFFFFFFFFFFFFFFFFFFFF3F3F3F7F000000000000
@@ -11107,18 +10968,18 @@ object Form1: TForm1
       00000000000000000000000000003030306F959595C33030306F000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       00005F5F5F9CFFFFFFFFC4C4C4E00303031E0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFF000000080000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0505
       05240000000000000000000000003F3F3F7FFFFFFFFFFFFFFFFFFFFFFFFF0F0F
       0F3F000000000F0F0F3FFFFFFFFFFFFFFFFFFFFFFFFF3F3F3F7F000000000000
@@ -11131,18 +10992,18 @@ object Form1: TForm1
       00000000000000000000000000005A5A5A98FFFFFFFF5A5A5A98000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000016262629E04040423000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000009FFFFFFFFFFFF
-      FFFF000000000000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF0101
       011500000000000000000000000036363676FFFFFFFFFFFFFFFFFFFFFFFF0909
       09310000000009090931FFFFFFFFFFFFFFFFFFFFFFFF36363676000000000000
@@ -11155,18 +11016,18 @@ object Form1: TForm1
       000000000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFF7878
       78AF676767A2676767A2676767A2A9A9A9D0FFFFFFFFFFFFFFFFFFFFFFFF8686
       86B9676767A2868686B9FFFFFFFFFFFFFFFFFFFFFFFFA9A9A9D0676767A26D6D
@@ -11179,18 +11040,18 @@ object Form1: TForm1
       000000000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF0000
       000000000000000000000000000000000000E5E5E5F2FFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
@@ -11203,18 +11064,18 @@ object Form1: TForm1
       000400000000000000000000000052525291FFFFFFFF52525291000000000000
       0000000000000000000400000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF00000000FFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
@@ -11227,18 +11088,18 @@ object Form1: TForm1
       70A94C4C4C8B000000000000000052525291FFFFFFFF52525291000000000000
       00004C4C4C8B707070A900000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000003CFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000FFFFFFFFFFFFFFFF000000030000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000000000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF000000000000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      0000000000000000000000000000000000000000000000000000CCCCCCFF0000
       000000000000000000000000000000000000969696C4A6A6A6CEA6A6A6CEA6A6
       A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6
       A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6A6CEA6A6
@@ -11251,18 +11112,18 @@ object Form1: TForm1
       FFFFFFFFFFFF3C3C3C7C0000000053535392FFFFFFFF53535392000000003C3C
       3C7CFFFFFFFFFFFFFFFF6363639F000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000003CFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000C3C3C3FFFFFFFFFFC3C3C3FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000FF0000
+      00FF000000FF000000FF0000000000000000000000FF00000000000000000000
+      00FF000000FF000000FF000000FF0000000000000000000000FF000000000000
+      0000000000FF000000FF000000FF000000FF0000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF000000000000
+      0000CCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11275,18 +11136,18 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFF2F2F2F6E42424282FFFFFFFF424242822F2F2F6EFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFF646464A00000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000003CFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF00000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000FFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000FFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      000000000000C3C3C3FFFFFFFFFFC3C3C3FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000FF0000
+      00FF000000FF000000FF0000000000000000000000FF00000000000000000000
+      00FF000000FF000000FF000000FF0000000000000000000000FF000000000000
+      0000000000FF000000FF000000FF000000FF0000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF000000000000
+      0000CCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11299,18 +11160,18 @@ object Form1: TForm1
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFE9E9E9F4FFFFFFFFE9E9E9F4FFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFCACACAE3050505250000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000003CFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFFC3C3C3FF00000003000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000C3C3C3FFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FF00000000000000000000
-      000000000000C3C3C3FFC3C3C3FF000000000000000000000000000000000000
-      000000000000C3C3C3FFFFFFFFFFC3C3C3FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000FF0000
+      00FF000000FF000000FF0000000000000000000000FF00000000000000000000
+      00FF000000FF000000FF000000FF0000000000000000000000FF000000000000
+      0000000000FF000000FF000000FF000000FF0000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF000000000000
+      0000CCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11323,18 +11184,18 @@ object Form1: TForm1
       B7D8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFB7B7B7D80303031E000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000003CFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF0000000000000000000000000000000000000000C3C3C3FFFFFFFFFFFFFF
-      FFFFC3C3C3FF0000000300000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000090000
-      0004000000000000000000000000000000000000000300000000000000000000
-      0000000000000000000B00000002000000000000000000000000000000000000
-      000000000000C3C3C3FFFFFFFFFFC3C3C3FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF0000000000000000000000FF000000FF0000
+      00FF000000FF0000000000000000000000FF0000000000000000000000FF0000
+      00FF000000FF000000FF0000000000000000000000FF00000000000000000000
+      00FF000000FF000000FF000000FF0000000000000000000000FF000000000000
+      0000000000FF000000FF000000FF000000FF0000000000000000000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000000000000000CCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF000000000000
+      0000CCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF0000000000000000CCCCCCFF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11347,18 +11208,18 @@ object Form1: TForm1
       0524BCBCBCDBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFBCBCBCDB0505052400000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FF0000003CFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF00000000000000000000000000000000C3C3C3FFFFFFFFFFFFFFFFFFC3C3
-      C3FF000000030000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000780000000000000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      000000000000000000000000000000000000000000000000007A000000BF0000
       0000000000000000000000000000000000000000000000000000000000000000
-      000000000000C3C3C3FFFFFFFFFFC3C3C3FF0000000000000000000000000000
+      00000000000000000000CCCCCCFF2D2D2D780000000000000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      000000000000000000000000000000000000000000002E2E2E7A727272BF0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11371,18 +11232,18 @@ object Form1: TForm1
       00000202021AC6C6C6E1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC6C6
       C6E10202021A0000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFC3C3C3FFC3C3C3FFFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000C3C3C3FFFFFFFFFFFFFFFFFFC3C3C3FF0000
-      0003000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000FF000000FA0000007800000000000000000000
+      0000000000000000000000000000000000FF0000000000000000000000000000
+      000000000000000000000000000000000000000000FF00000000000000000000
+      00000000000000000000000000000000000000000000000000FF000000000000
+      00000000000000000000000000000000001F00000079000000FA0000004A0000
       0000000000000000000000000000000000000000000000000000000000000000
-      000000000000C3C3C3FFFFFFFFFFC3C3C3FF0000000000000000000000000000
+      00000000000000000000CCCCCCFFC4C4C4FA2D2D2D7800000000000000000000
+      0000000000000000000000000000CCCCCCFF0000000000000000000000000000
+      000000000000000000000000000000000000CCCCCCFF00000000000000000000
+      00000000000000000000000000000000000000000000CCCCCCFF000000000000
+      00000000000000000000000000000303031F2D2D2D79C4C4C4FA1111114A0000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11395,18 +11256,18 @@ object Form1: TForm1
       0000000000000202021BC1C1C1DEFFFFFFFFFFFFFFFFFFFFFFFFC1C1C1DE0202
       021B000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFC3C3C3FF00000000C3C3C3FFFFFFFFFFC3C3
-      C3FF0000000000000000C3C3C3FFFFFFFFFFFFFFFFFFC3C3C3FF000000030000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000006C3C3C3FFC3C3C3FFC3C3C3FFFFFFFFFFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFFFFFFFFFC3C3C3FFC3C3C3FFC3C3C3FF000000000000
+      000000000000000000000000008B000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000003C3C3C8BCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11419,18 +11280,18 @@ object Form1: TForm1
       0000000000000000000004040421B5B5B5D7FFFFFFFFB5B5B5D7040404210000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFF00000000000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      000700000011000000110000000E0000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF00000000C3C3C3FFFFFFFFFFFFFFFFFFC3C3C3FF00000003000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000007C3C3C3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC3C3C3FF000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11443,18 +11304,18 @@ object Form1: TForm1
       000000000000000000000000000004040421CDCDCDE504040421000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000FFFFFFFFFFFF
-      FFFFC3C3C3FF000000000000000000000000000000000000000FFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FFC3C3C3FFFFFFFFFFFFFFFFFFC3C3C3FF0000000300000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000003C3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFFFFFFFFFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFFFFFFFFFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3
-      C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FFC3C3C3FF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11467,41 +11328,6 @@ object Form1: TForm1
       000000000000000000000000000000000009959595C300000009000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFC3C3C3FF000000030000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FF000000000000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000009C3C3
-      C3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC3C3C3FF00000003000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000C3C3C3FFFFFFFFFFC3C3
-      C3FFC3C3C3FF0000000000000000000000000000000000000000000000000000
-      0000C3C3C3FFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11523,9 +11349,6 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C3C3C3FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFC3C3C3FF000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -11547,9 +11370,47 @@ object Form1: TForm1
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000C3C3
-      C3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFC3C3C3FFC3C3C3FF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -27099,5 +26960,12 @@ object Form1: TForm1
     OnTimer = Timer2Timer
     Left = 704
     Top = 320
+  end
+  object TimerKurzor: TTimer
+    Enabled = False
+    Interval = 600
+    OnTimer = TimerKurzorTimer
+    Left = 536
+    Top = 40
   end
 end

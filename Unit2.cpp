@@ -64,7 +64,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E1->mG->ID=1;
 		E1->mG->Left=200;E1->mG->Top=200;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E1->mG->AntiAliasing_text=true;
-		E1->mG->MovingTable=true;
+		//E1->mG->MovingTable=true;
 		E1->mG->Border.Width=2;
 
 		ColCount=2;//pevný poèet slopcù
@@ -73,7 +73,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
 		//E1->mG->Cells[0][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[0][1].Text="OOO";
-		//E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][1].Text="abc1";
 
 		E1->predchozi=NULL;

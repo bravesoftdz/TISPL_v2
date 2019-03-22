@@ -141,5 +141,6 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 
 		E=NULL;delete E;
 		input_state=NOTHING;
+		F->nahled_ulozit(true);
 	}
 }
