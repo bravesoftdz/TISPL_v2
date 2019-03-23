@@ -189,8 +189,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		canv->Brush->Style=bsClear;
 		canv->Pen->Color=clRed;
 		canv->Pen->Width=F->Zoom*0.2;//pův. 0.5 bez duble linie
+		if(-2>=F->JID && F->JID>=-5)canv->Pen->Width*=2;
 		//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
-		short Ov=Form1->Zoom*0.4;
+		short Ov=F->Zoom*0.4; //ještě případné zvětšení: if(-2>=F->JID && F->JID>=-5)Ov*=2;
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)-Ov,m.L2Py(F->pom_temp->Yk)-Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)+Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)+Ov);//dvojitý rám - vnější
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)+Ov,m.L2Py(F->pom_temp->Yk)+Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)-Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)-Ov);//dvojitý rám - vnitřní
 		//název objektu
@@ -3078,7 +3079,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 	canv->TextOutW(X-canv->TextWidth(Popisek)/2,Y+o/2,Popisek);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void  Cvykresli::vykresli_mGridy()
+void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
 	if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
 	{
@@ -3089,7 +3090,7 @@ void  Cvykresli::vykresli_mGridy()
 			E->mGrid->Top=m.L2Py(E->Yt);
 			if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
 			else E->mGrid->MovingTable=false;
-			E->mGrid->Show();//mGrid test
+			E->mGrid->Show(canv);
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
@@ -3107,30 +3108,32 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //	 if(Element_od->rotace_symbolu==180 || Element_od->rotace_symbolu==270)Or_od*=-1;
 //	 if(Element_do->rotace_symbolu==180 || Element_do->rotace_symbolu==270)Or_od*=-1;
 
-	 if(F->pom_temp->elementy->dalsi->rotace_symbolu==180)O*=-1;
+	if(F->pom_temp->elementy->dalsi->rotace_symbolu==180)O*=-1;
 
 
 //	 if(Element_od->rotace_symbolu==0 || Element_od->rotace_symbolu==180)//pří vodorovné rotaci náhledu
 
-	 //highlight
-	 short highlight=0;
-	 if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
+	//highlight
+	short highlight=0;
+	if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
 
-	 //samotné vykreslení kóty
-	 vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,O,highlight);
+	//samotné vykreslení kóty
+	vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,O,highlight);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,double Offset,short highlight,float width,TColor color)
 {
 	int J=1;AnsiString Jednotky=F->readINI("nastaveni_nahled","koty_delka");if(Jednotky==1)J=1000;//případný převod m->mm
-	AnsiString T=AnsiString(m.round2double(m.delka(X1,Y1,X2,Y2)*J,3,".."));
+	double delka=m.delka(X1,Y1,X2,Y2)*J;
+	AnsiString T=m.round2double(delka,3,"..");if(highlight==1)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se
 	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,m.m2px(Offset),highlight,width,color);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
 void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,int Offset,short highlight,float width, TColor color)
 {
+	if(F->JID==-10)highlight=0;//pokud se mění pouze jednotky, tak se kóta nehiglightuje
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
@@ -3176,7 +3179,15 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	long Y=(Y1+Y2)/2-canv->TextHeight(Text)/2;
 	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
 	canv->Font->Color=(TColor)RGB(43,87,154);
+	if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
 	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
+
+	//do globální proměnné navrácení oblasti popisku a jednotek kóty
+	if(F->JID==-8 || F->JID==-9)
+	{
+		aktKotaOblast.rect1=TRect(X,Y,X+canv->TextWidth(Text),Y+canv->TextHeight(Text));
+		aktKotaOblast.rect2=TRect(X+canv->TextWidth(Text),Y,X+canv->TextWidth(Text)+canv->TextWidth(Jednotky),Y+canv->TextHeight(Jednotky));
+  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -247,7 +247,7 @@ void TmGrid::DeleteTable()
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení celé tabulky
-void TmGrid::Show()
+void TmGrid::Show(TCanvas *Canvas)
 {
 	//if(mGrid!=NULL)
 	{
@@ -263,7 +263,9 @@ void TmGrid::Show()
 		//ošetøení proti situaci AntiAliasing_text=true; a AntiAliasing_grid=false, která nemùže nastat resp. byla by zbyteèná
 		if(AntiAliasing_text==false)AntiAliasing_grid=false;
 
-		if(AntiAliasing_grid==false && AntiAliasing_text==false)Draw(Form->Canvas);
+		if(Canvas==NULL)Canvas=Form->Canvas;//pokud Canvas není definován, je pøedpokládáno kreslení pøímo do Form, kde je mGrid zobrazován
+
+		if(AntiAliasing_grid==false && AntiAliasing_text==false)Draw(Canvas);
 		else
 		{
 			Cantialising a;
@@ -273,8 +275,8 @@ void TmGrid::Show()
 			//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
 			Draw(bmp_in->Canvas);
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
-			Form->Canvas->Draw(Left,Top,bmp_out);
-			if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Form->Canvas);//kreslí se až nahoru
+			Canvas->Draw(Left,Top,bmp_out);
+			if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru
 			delete (bmp_out);//velice nutné
 			delete (bmp_in);//velice nutné
 		}
@@ -563,10 +565,10 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPButton *B=createButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
-			B->Top=R.Top+floor(Cell.TopBorder->Width/2.0);
-			B->Left=R.Left+floor(Cell.LeftBorder->Width/2.0);
-			B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
-			B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
+			B->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
+			B->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
+			B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
+			B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
 //			B->Options->NormalColor=Cell.Background->Color; nechat
 			B->Options->FrameNormalColor=B->Options->NormalColor;
 			B->Font=Cell.Font;
