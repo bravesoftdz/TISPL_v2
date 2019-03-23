@@ -124,7 +124,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	HC=LoadCursor(HInstance,L"ZMENA_D_Y");
 	Screen->Cursors[16]=HC;
 	
-	  //Načtení z INI
+	//Načtení z INI
 	AnsiString T=readINI("nastaveni_nahled", "cas");
 	if(T=="")PTunit=0;else PTunit=T.ToInt();
 	T=F->readINI("nastaveni_nahled","LO");

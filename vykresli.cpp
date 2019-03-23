@@ -3124,8 +3124,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,double Offset,short highlight,float width,TColor color)
 {
-	int J=1;AnsiString Jednotky=F->readINI("nastaveni_nahled","koty_delka");if(Jednotky==1)J=1000;//případný převod m->mm
-	double delka=m.delka(X1,Y1,X2,Y2)*J;
+	double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky + případný převod m->mm
 	AnsiString T=m.round2double(delka,3,"..");if(highlight==1)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se
 	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,m.m2px(Offset),highlight,width,color);
 }
@@ -3174,7 +3173,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
 	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
 	canv->Brush->Color=clWhite;
-	AnsiString Jednotky=F->readINI("nastaveni_nahled","koty_delka");if(Jednotky==1)Jednotky=" [mm]";else Jednotky=" [m]";
+	AnsiString Jednotky=" [m]";if(F->DKunit==1)Jednotky=" [mm]";
 	long X=(X1+X2)/2-canv->TextWidth(Text)/2;if(Y1==Y2)X=(X1+X2)/2-canv->TextWidth(Text+Jednotky)/2;//pro vodorovnou kotu zarovnání jinak
 	long Y=(Y1+Y2)/2-canv->TextHeight(Text)/2;
 	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
