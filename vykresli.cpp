@@ -3187,10 +3187,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	{
 		T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
 		//hodnoty
-		if(highlight){canv->Font->Style = TFontStyles()<< fsBold;canv->Font->Size=m.round(canv->Font->Size/2.0);}//při highlighnutí se text se šířkou nezvětštuje, pouze ztučňuje - musí být znovu
 		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
 		//jednotky
-		if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)  - musí být znovu
 		R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
 		if(Y1==Y2)//pro vodorovnou kótu                               //odebrání mezery
 		{
@@ -3406,7 +3404,22 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButt
 	if(zamek_aRD->ImageIndex==37 || zamek_Rz->ImageIndex==37){vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,O);}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-
+//zajišťuje vykreslování-vypisování tool tipu
+void Cvykresli::vykresli_tip(TCanvas *canv)
+{
+	canv->Font->Color=m.clIntensive(clRed,100);
+	//SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
+	canv->Font->Size=14;
+	canv->Font->Name="Arial";
+	canv->Brush->Color=clWhite;
+	canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+	if(F->scGPPanel_bottomtoolbar->Visible)
+		canv->TextOutW(F->ClientWidth-canv->TextWidth(F->TIP)-10,F->scGPPanel_bottomtoolbar->Top-25,F->TIP);
+	else
+		canv->TextOutW(F->ClientWidth-canv->TextWidth(F->TIP)-10,F->scGPPanel_statusbar->Top-25,F->TIP);
+	canv->Font->Color=clBlack;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
 //vytvoří zvuk
 void Cvykresli::sound()
 {

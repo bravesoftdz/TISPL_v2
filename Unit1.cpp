@@ -184,6 +184,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	JID=-1;
 	knihovna_id=0;
 	element_id=99;
+
 	refresh_mGrid=true;
 
 	DesignSettings();//nastavení designu v konstruktoru
@@ -470,6 +471,7 @@ void TForm1::Novy_soubor()//samotné vytvoření nového souboru
        SB("Kliknutím na libovolné místo přidáte objekt z knihovny");
 			 FileName="Nový.tispl";
 			 scLabel_titulek->Caption=Caption+" - ["+FileName+"]";
+			 TIP="";
 			 Invalidate();//vhodnější invalidate než refresh
 	 }
 }
@@ -1478,6 +1480,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
 	}
+	d.vykresli_tip(Canvas);//vypíše TIP
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool mGrid)
@@ -2317,22 +2320,24 @@ void TForm1::getJobID(int X, int Y)
 					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 					{
 						//vodorovná kóta či JID=-10;//jednotky kóty
-						if(F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)))JID=-10;
+						if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)))JID=-10;
 						else
 						{
-							short cO=5;//rozšíření citelné oblasti v px
 							//JID=-8;//vodorovná kóta
-							if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)
+							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
 							{
 								JID=-8;
 							}else
 							//JID=-9;//svislá kóta
-							if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
+							if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
 							{
 								JID=-9;
 							}
 							//další kóty
 							//RET=10-99 zcela doplnit
+							//short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
+							//if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)
+							//if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
 						}
 					}
 				}
@@ -2340,6 +2345,7 @@ void TForm1::getJobID(int X, int Y)
 		}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
+
 }
 //---------------------------------------------------------------------------
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
@@ -2348,8 +2354,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 
 	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
 	{
-		if(pom_element->mGrid!=NULL && pom_temp->zobrazit_mGrid)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
-		if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
+		//if(pom_element->mGrid!=NULL && pom_temp->zobrazit_mGrid)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
+		//if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
 		if(JID==0){pom_element->stav=1;}//ELEMENT
 	}
 	int puvJID=JID;//záloha původního JID
@@ -2359,14 +2365,14 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		kurzor(standard);//umístít na začátek
 		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
-			if((puvJID!=JID || pom_element!=pom_element_puv) && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
+		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
 		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
 		if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
 		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
-			if(puvJID!=JID && (-6>=JID||JID>=-9)){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
+		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){REFRESH();kurzor(zmena_j);}
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
@@ -4439,17 +4445,8 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 //---------------------------------------------------------------------------
 void TForm1::zobraz_tip(UnicodeString text)
 {
-	Canvas->Font->Color=m.clIntensive(clRed,100);
-	//SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
-	Canvas->Font->Size=14;
-	Canvas->Font->Name="Arial";
-  Canvas->Brush->Color=clWhite;
-	Canvas->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-	if(scGPPanel_bottomtoolbar->Visible)
-		Canvas->TextOutW(ClientWidth-Canvas->TextWidth(text)-10,Form1->scGPPanel_bottomtoolbar->Top-25,text);
-	else
-		Canvas->TextOutW(ClientWidth-Canvas->TextWidth(text)-10,Form1->scGPPanel_statusbar->Top-25,text);
-	Canvas->Font->Color=clBlack;
+	TIP=text;
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 void TForm1::akutalizace_stavu_prichytavani_vSB()
