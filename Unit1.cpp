@@ -1305,14 +1305,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		}
 //	}
 
-//  //při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu 	Problém při ruční minimalizaci!
-//	if(ClientHeight!=Monitor->Height&&!MaxButton->Down)
-//	{
-//	//maximalizace formuláře jinak to s novým designem nejde
-//	Form1->Width=Screen->WorkAreaWidth;
-//	Form1->Height=Screen->WorkAreaHeight;
-//	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
-//	}
+  //při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu 	Problém při ruční minimalizaci!
+	if(ClientHeight!=Monitor->Height&&FMaximized)
+	{
+		//maximalizace formuláře jinak to s novým designem nejde
+		Form1->Width=Screen->WorkAreaWidth;
+		Form1->Height=Screen->WorkAreaHeight;
+		FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
+	}
 
 	//načtení rastru
 	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
