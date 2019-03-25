@@ -124,13 +124,15 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	HC=LoadCursor(HInstance,L"ZMENA_D_Y");
 	Screen->Cursors[16]=HC;
 	
-	  //Načtení z INI
+	//Načtení z INI
 	AnsiString T=readINI("nastaveni_nahled", "cas");
 	if(T=="")PTunit=0;else PTunit=T.ToInt();
 	T=F->readINI("nastaveni_nahled","LO");
 	if(T=="")LOunit=0;else LOunit=T.ToInt();
 	T=F->readINI("nastaveni_nahled","Delka_otoce");
 	if(T=="")DOtocunit=0;else DOtocunit=T.ToInt();
+	T=F->readINI("nastaveni_nahled","koty_delka");
+	if(T=="")DKunit=0;else DKunit=T.ToInt();
 
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
@@ -259,17 +261,17 @@ void TForm1::DesignSettings()
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
 	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width;
-	scGPCheckBox_viditelnost->Left=scGPLabel2->Left-scGPCheckBox_viditelnost->Width-22;
-
-
+	scGPButton_viditelnostKoty->Left=scGPLabel2->Left-scGPButton_viditelnostKoty->Width-22;
+	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
-	scGPCheckBox_viditelnost->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel2->Top=scGPLabel1->Top;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
+	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
+	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
 
 	//pozice ovládacích prvků
 //	scListGroupNastavProjektu->Left=0;
@@ -763,7 +765,7 @@ response->Text = IdHTTP1->Post("http://85.255.8.81/tispl/skript_tispl.php", requ
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormResize(TObject *Sender)
 {
-  ////design spodní lišty////
+	////design spodní lišty////
 	scGPPanel_bottomtoolbar->Top=scGPPanel_statusbar->Top-scGPPanel_bottomtoolbar->Height;
 	scGPPanel_bottomtoolbar->Width=ClientWidth-scSplitView_LEFTTOOLBAR->Width;
 	scGPPanel_bottomtoolbar->Left=scSplitView_LEFTTOOLBAR->Width;
@@ -774,16 +776,17 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
 	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width;
-	scGPCheckBox_viditelnost->Left=scGPLabel2->Left-scGPCheckBox_viditelnost->Width-22;
+	scGPButton_viditelnostKoty->Left=scGPLabel2->Left-scGPButton_viditelnostKoty->Width-22;
+	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
-	scGPCheckBox_viditelnost->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel2->Top=scGPLabel1->Top;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
-	scListGroupKnihovObjektu->Height=scGPPanel_statusbar->Top-(2+scListGroupKnihovObjektu->Height+0+DetailsButton->Height);
+	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
+	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
 	if(/*MOD==REZERVY ||*/ MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
 }
@@ -1329,7 +1332,12 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	{
 		case NAHLED://vykreslení všech vektorových elementů
 		{
-			if(!antialiasing)d.vykresli_vektory(Canvas);
+			if(!antialiasing)
+			{
+				d.vykresli_vektory(Canvas);
+				if(pom_temp->elementy!=NULL && pom_temp->zobrazit_mGrid && refresh_mGrid)d.vykresli_mGridy();
+				if(scGPSwitch_meritko->State==true)d.meritko(Canvas);//grafické měřítko
+			}
 			else
 			{
 				Cantialising a;
@@ -1340,35 +1348,26 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_vektory(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				delete (bmp_in);//velice nutné
+				if(pom_temp->elementy!=NULL && pom_temp->zobrazit_mGrid && refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu
+				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
 					bmp_out->TransparentColor=clWhite;
 				}
 				else bmp_out->Transparent=false;
-
-//				//test odstranění blikání mgridů viz bmp_out->Canvas->Draw(100,100,bmp);do bmp předat hotový mgrid
-//				SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
-//				Graphics::TBitmap *bmp=new Graphics::TBitmap;
-//				bmp->LoadFromFile("test.bmp");
-//				bmp_out->Canvas->Draw(100,100,bmp);
-//				delete(bmp);
-//				//---test
-
-				Canvas->Draw(0,0,bmp_out);
+				Canvas->Draw(0,0,bmp_out);//finální vykreslení do Canvasu Formu1
 				delete (bmp_out);//velice nutné
-				delete (bmp_in);//velice nutné
 			}
-			//vykreslování mGridu
-			if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy();
-
-			//grafické měřítko
-			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
     }
 		case SCHEMA://vykreslování všech vektorů ve schématu
 		{
-			if(!antialiasing)d.vykresli_objekty(Canvas);
+			if(!antialiasing)
+			{
+				d.vykresli_objekty(Canvas);
+			}
 			else
 			{
 				Cantialising a;
@@ -1386,6 +1385,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
@@ -1398,8 +1398,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_grid);//velice nutné
 				delete (bmp_in);//velice nutné
 			}
-			//grafické měřítko
-			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
 			break;
 		}
 		case LAYOUT:
@@ -1471,6 +1469,15 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
 	}
+	//při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu
+	if(ClientHeight!=Monitor->Height)
+	{
+  //maximalizace formuláře jinak to s novým designem nejde
+	Form1->Width=Screen->WorkAreaWidth;
+	Form1->Height=Screen->WorkAreaHeight;
+	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
+	}
+
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool mGrid)
@@ -1817,6 +1824,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-6) {TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=0;nazev_puvodni=pom_temp->name;}
 								if(JID==-7) {TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=1;nazev_puvodni=pom_temp->short_name;}
 								if(JID==-4||JID==-5){Akce=ROZMER_KABINA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;} //vertikální-4
+								if(JID==-10)zmenJednotekKot();
 						}
 						else
 						{
@@ -1838,12 +1846,12 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
 						case PAN:
 						{
-							if(pom!=NULL)d.vykresli_mGridy();//slouží k aktualizaci gridu při přesouvání obrazu
+							if(pom_temp!=NULL)if(pom_temp->zobrazit_mGrid)d.vykresli_mGridy();//slouží k aktualizaci gridu při přesouvání obrazu
 							kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 							int W=scSplitView_LEFTTOOLBAR->Width;
 							if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
 							short H=scGPPanel_mainmenu->Height;// zmena designu RzToolbar1->Height;
-							int Gh=vrat_max_vysku_grafu();
+							int Gh=vrat_max_vysku_grafu();if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
 							Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
 							Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
 							//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
@@ -2093,16 +2101,16 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		case ROZMER_KABINA:
 		{
 			int mimo=el_mimoKabinu();
-			if(JID==-4&&(mimo==0||mimo==4||mimo==7))
+			if(JID==-4&&(mimo==0))//||mimo==4||mimo==7))
 				pom_temp->rozmer_kabiny.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-			if(JID==-5&&(mimo==0||mimo==4||mimo==7))
+			if(JID==-5&&(mimo==0))//||mimo==4||mimo==7))
 				pom_temp->rozmer_kabiny.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			if(mimo!=0&&mimo!=4&&mimo!=7)
 			{
 				if(mimo==-2||mimo==-1) MB("Nelze provést, pohon musí být v kabině.",MB_OK);
 				else MB("Nelze provést, všichni roboti musí být v kabině.",MB_OK);
 				switch(mimo)
-				{
+				{      Sv(pom_temp->elementy->dalsi->X);Sv(vrat_hranici(mimo));
 					case -2:pom_temp->rozmer_kabiny.x=m.P2Lx(vrat_hranici(mimo))-pom_temp->Xk+1;break;
 					case -1:pom_temp->rozmer_kabiny.y=pom_temp->Yk-m.P2Ly(vrat_hranici(mimo))+1;break;
 					case 2:pom_temp->rozmer_kabiny.x=vrat_hranici(mimo)-pom_temp->Xk+0.05;break;
@@ -2188,7 +2196,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 			case MOVE:move_objekt(X,Y);break;//posun objektu
-			case MOVE_TABLE:Akce=NIC;kurzor(standard);REFRESH();break;//posun tabulky elementu
+			case MOVE_TABLE:Akce=NIC;kurzor(standard);/*REFRESH();*/break;//posun tabulky elementu
 			case MOVE_ELEMENT:
 			{
 				if (el_vkabine(X,Y))
@@ -2309,10 +2317,18 @@ void TForm1::getJobID(int X, int Y)
 					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 					{
 						short cO=5;//rozšíření citelné oblasti v px
-						//JID=-8;//vodorovná kóta
-						if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)JID=-8;
-						//JID=-9;//svislá kóta
-						if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))JID=-9;
+						//JID=-8;//vodorovná kóta či JID=-10;//jednotky kóty
+						if(d.aktKotaOblast.rect2.PtInRect(TPoint(X,Y))){MessageBeep(0);/*JID=-10;*/kurzor(add_o);}
+
+						if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)
+						{
+							JID=-8;
+						}else
+						//JID=-9;//svislá kóta  či JID=-10;//jednotky kóty
+						if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
+						{
+							JID=-9;
+						}
             //další kóty
 						//RET=10-99 zcela doplnit
 					}
@@ -2339,12 +2355,13 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
 	if((puvJID!=JID || pom_element!=pom_element_puv) && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
 	if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
-	if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,-50);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
+	if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 	if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
 	if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 	if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
 	if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
 	if(puvJID!=JID && (-6>=JID||JID>=-9)){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
+	if(JID==-10)kurzor(zmena_j);
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
 //---------------------------------------------------------------------------
@@ -3153,7 +3170,7 @@ int TForm1::el_mimoKabinu ()
 	Cvektory::TElement *E=pom_temp->elementy;
 	while (E!=NULL)
 	{
-		if(E->n>0) //nefunguje zatím je to zde provyzorně
+		if((E->n>0)&&(1<=E->eID && E->eID<=4)) //nefunguje zatím je to zde provyzorně
 		{
 		if(E->X<xmin) {xmin=E->X;xminID=E->eID;}
 		if(E->X>xmax) {xmax=E->X;xmaxID=E->eID;}
@@ -3166,13 +3183,13 @@ int TForm1::el_mimoKabinu ()
 	//kontrola přesažení elementuy
 	if(pom_temp->Xk>xmin-d.Robot_sirka_zakladny/2&&(xminID>0 && xminID<5)) vrat=1;//robot z leva
 	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax+d.Robot_sirka_zakladny/2&&(xmaxID>0 && xmaxID<5)) vrat=2;//robot z prava
-	if(pom_temp->Xk>xmin-d.Robot_sirka_zakladny/2&&(xminID==0 || xminID>4)) vrat=3;//nerobot z leva
-	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax+d.Robot_sirka_zakladny/2&&(xmaxID==0 || xmaxID>4)) vrat=4;//nerobot z prava
+//	if(pom_temp->Xk>xmin-d.Robot_sirka_zakladny/2&&(xminID==0 || xminID>4)) vrat=3;//nerobot z leva
+//	if(pom_temp->Xk+pom_temp->rozmer_kabiny.x<xmax+d.Robot_sirka_zakladny/2&&(xmaxID==0 || xmaxID>4)) vrat=4;//nerobot z prava
 	//kontrola přesažení elementu
 	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin-d.Robot_sirka_zakladny/2&&(yminID>0 && yminID<5)) vrat=5;//robot ze spoda
 	if(pom_temp->Yk<ymax+d.Robot_sirka_zakladny/2&&(ymaxID>0 && ymaxID<5)) vrat=6;//robot z vrchu
-	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin-d.Robot_sirka_zakladny/2&&(yminID==0 || yminID>4)) vrat=7;//nerobot ze spoda
-	if(pom_temp->Yk<ymax+d.Robot_sirka_zakladny/2&&(ymaxID==0 || ymaxID>4)) vrat=8;//nerobot z vrchu
+//	if(pom_temp->Yk-pom_temp->rozmer_kabiny.y>ymin-d.Robot_sirka_zakladny/2&&(yminID==0 || yminID>4)) vrat=7;//nerobot ze spoda
+//	if(pom_temp->Yk<ymax+d.Robot_sirka_zakladny/2&&(ymaxID==0 || ymaxID>4)) vrat=8;//nerobot z vrchu
 	//kontrola přesažení pohonu
 	if((m.L2Py(pom_temp->Yk)>=stredy||m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)<=stredy)&&(trend==90||trend==270)) vrat=-1;
 	if((m.L2Px(pom_temp->Xk)>=stredx||m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)<=stredx)&&(trend!=90&&trend!=270)) vrat=-2;
@@ -3194,7 +3211,7 @@ double TForm1::vrat_hranici(int mimo)
 		{
 			while (E!=NULL)
 			{
-				if(E->n>0) //nefunguje zatím je to zde provyzorně
+				if((E->n>0)&&(1<=E->eID && E->eID<=4)) //nefunguje zatím je to zde provyzorně
 					if(E->X>max) max=E->X;
 				E=E->dalsi;
 			}
@@ -3202,7 +3219,7 @@ double TForm1::vrat_hranici(int mimo)
 		}break;
 		case 5:
 		{
-			while (E!=NULL)
+			while ((E->n>0)&&(1<=E->eID && E->eID<=4))
 			{
 				if(E->n>0) //nefunguje zatím je to zde provyzorně
 					if(E->Y<min) min=E->Y;
@@ -3212,7 +3229,7 @@ double TForm1::vrat_hranici(int mimo)
 		}break;
 		case 4:
 		{
-    	while (E!=NULL)
+			while ((E->n>0)&&(1<=E->eID && E->eID<=4))
 			{
 				if(E->n>0) //nefunguje zatím je to zde provyzorně
 					if(E->X>max) max=E->X;
@@ -3222,7 +3239,7 @@ double TForm1::vrat_hranici(int mimo)
 		}break;
 		case 7:
 		{
-    	while (E!=NULL)
+			while ((E->n>0)&&(1<=E->eID && E->eID<=4))
 			{
 				if(E->n>0) //nefunguje zatím je to zde provyzorně
 					if(E->Y<min) min=E->Y;
@@ -3411,6 +3428,9 @@ void TForm1::design_element(Cvektory::TElement *E)
 	TColor clFontRight = (TColor)RGB(43,87,154);
 	TColor clBottomBorder = clBlack;
 	TColor clRightBorder  = clBlack;
+
+  E->mGrid->DefaultCell.Font->Name=aFont->Name;
+	E->mGrid->DefaultCell.Font->Size=aFont->Size;
 	//definice jednotek a šířek
 	AnsiString LO,cas,delka_otoce;
 	short sirka=80,sirka1=60,sirka_o=80,sirka_o1=60;//hodnoty pro základní jednotky
@@ -3800,6 +3820,14 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			break;
 		}
 	}
+}
+//---------------------------------------------------------------------------
+//přepnutí jednotek v kótách, zapíše do globální proměnné a do INI
+void TForm1::zmenJednotekKot()
+{
+	if (DKunit==0) {DKunit=1;}
+	else {DKunit=0;}
+	writeINI("nastaveni_nahled","koty_delka", DKunit);
 }
 //---------------------------------------------------------------------------
 //zapíná či vypíná automatickou ortogonalizaci
@@ -4873,17 +4901,32 @@ void TForm1::NP_input()
 	 //prozatim definice kabiny
 	 if (pom_temp->Xk==pom_temp->X) //provizorně vyřešeno pomocí prázdné nebo plné lakovny
 	 {
-		pom_temp->rozmer_kabiny.x=10;//default délka 10 m
-		pom_temp->rozmer_kabiny.y=6;//default šířka 6 m
 		pom_temp->Xk=m.P2Lx(scSplitView_LEFTTOOLBAR->Width+100);pom_temp->Yk=m.P2Ly((ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0)+pom_temp->rozmer_kabiny.y/2.0;//provizorní vložení
 	 }
 
 		//nastavení tlačítek na výchozí hodnoty
-	if(pom_temp->zobrazit_koty) scGPCheckBox_viditelnost->Checked=true;
-	else scGPCheckBox_viditelnost->Checked=false;
 	if(pom_temp->uzamknout_nahled) scButton_zamek->ImageIndex=37; //zamčeno
 	else scButton_zamek->ImageIndex=38;
-
+	if(pom_temp->zobrazit_mGrid)
+		{
+			scGPButton_viditelnostmGrid->ImageIndex=54;
+			scGPButton_viditelnostmGrid->Hint="Skrýt tabulky";
+		}
+	else
+    {
+			scGPButton_viditelnostmGrid->ImageIndex=55;
+			scGPButton_viditelnostmGrid->Hint="Zobrazit tabulky";
+		}
+	if(pom_temp->zobrazit_koty)
+		{
+			scGPButton_viditelnostKoty->ImageIndex=56;
+			scGPButton_viditelnostKoty->Hint="Skrýt kóty";
+		}
+	else
+		{
+			scGPButton_viditelnostKoty->ImageIndex=57;
+			scGPButton_viditelnostKoty->Hint="Zobrazit kóty";
+		}
 
 	 scGPButton_ulozit->Enabled=false;
 	 //zapnutí spodního panelu
@@ -6389,7 +6432,7 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 	}
 	else
 	{
-  	scButton_konec->Down=false;
+		scButton_konec->Down=false;
 		Close();//ukončí aplikaci
 	}
 }
@@ -7478,19 +7521,7 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
  Timer2->Enabled=false;
 }
 //---------------------------------------------------------------------------
-
-
-void __fastcall TForm1::scGPCheckBox_viditelnostClick(TObject *Sender)
-{
-	if(scGPCheckBox_viditelnost->Checked)
-		pom_temp->zobrazit_koty=true;
-	else
-		pom_temp->zobrazit_koty=false;
-	DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown (odchytávání klaves při editaci textu)
-	REFRESH();
-}
-//---------------------------------------------------------------------------
-
+//vypnutí/zapnutí zamčení náhledu
 void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 {
 	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
@@ -7510,13 +7541,13 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
-
-
+//volá metodu vykresli_kurzor při editaci textu
 void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 {
 			vykresli_kurzor(index_kurzoru);
 }
 //---------------------------------------------------------------------------
+//vykresluje a maže kurzor
 void TForm1::vykresli_kurzor(int index)
 {
 	d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
@@ -7546,6 +7577,7 @@ void TForm1::vykresli_kurzor(int index)
 		}break;
 	}
 }
+//smaže kurzor pokud je stále vykreslený i po vypnutí editace textu
 void TForm1::Smaz_kurzor ()
 {
 	if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
@@ -7554,14 +7586,44 @@ void TForm1::Smaz_kurzor ()
 	REFRESH();
 }
 //---------------------------------------------------------------------------
-
-
-void __fastcall TForm1::scGPButton1Click(TObject *Sender)
+//přepíná viditelnost mGridů
+void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 {
-	if(scGPButton1->ImageIndex==55)
-		scGPButton1->ImageIndex=54;
+	if(scGPButton_viditelnostmGrid->ImageIndex==55)
+		{
+		scGPButton_viditelnostmGrid->ImageIndex=54;//zapnuto
+		scGPButton_viditelnostmGrid->Hint="Skrýt tabulky";
+		pom_temp->zobrazit_mGrid=true;
+		}
 	else
-		scGPButton1->ImageIndex=55;
+		{
+		scGPButton_viditelnostmGrid->ImageIndex=55;
+		scGPButton_viditelnostmGrid->Hint="Zobrazit tabulky";
+    pom_temp->zobrazit_mGrid=false;
+		}
+	nahled_ulozit(true);
+	DrawGrid_knihovna->SetFocus();
+	REFRESH();
+}
+//---------------------------------------------------------------------------
+//přepíná viditelnost kót
+void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
+{
+	if(scGPButton_viditelnostKoty->ImageIndex==57)
+		{
+		scGPButton_viditelnostKoty->ImageIndex=56;//zapnuto
+		scGPButton_viditelnostKoty->Hint="Skrýt kóty";
+		pom_temp->zobrazit_koty=true;
+		}
+	else
+		{
+		scGPButton_viditelnostKoty->ImageIndex=57;
+		scGPButton_viditelnostKoty->Hint="Zobrazit kóty";
+		pom_temp->zobrazit_koty=false;
+		}
+	nahled_ulozit(true);
+	DrawGrid_knihovna->SetFocus();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 

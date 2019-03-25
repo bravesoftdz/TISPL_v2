@@ -293,7 +293,6 @@ __published:	// IDE-managed Components
 	TMemo *Memo3;
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
-	TscGPCheckBox *scGPCheckBox_viditelnost;
 	TscGPLabel *scGPLabel1;
 	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
@@ -302,7 +301,8 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek;
 	TTimer *TimerKurzor;
 	TscGPButton *Nahled;
-	TscGPButton *scGPButton1;
+	TscGPButton *scGPButton_viditelnostmGrid;
+	TscGPButton *scGPButton_viditelnostKoty;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -492,11 +492,11 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
   void __fastcall Timer2Timer(TObject *Sender);
-	void __fastcall scGPCheckBox_viditelnostClick(TObject *Sender);
 	void __fastcall scButton_zamekClick(TObject *Sender);
 	void __fastcall TimerKurzorTimer(TObject *Sender);
 	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
-	void __fastcall scGPButton1Click(TObject *Sender);
+	void __fastcall scGPButton_viditelnostmGridClick(TObject *Sender);
+	void __fastcall scGPButton_viditelnostKotyClick(TObject *Sender);
 
 
 
@@ -506,7 +506,7 @@ public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA};Takce Akce;
-  enum Tm_mm{M=0,MM};Tm_mm DOtocunit;//pøepínaè jednotek vzdálenost
+	enum Tm_mm{M=0,MM};Tm_mm DOtocunit,DKunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec LOunit;//pøepínaè jednotek èasu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_smazat;
@@ -587,6 +587,7 @@ private:
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);
 	double vrat_hranici(int mimo);
+	void zmenJednotekKot();
 
 	////promìnné
 	TDateTime TIME;
