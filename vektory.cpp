@@ -904,6 +904,8 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->WT=0;
 	Objekt->elementy->WTpalec=0;
 
+	Objekt->elementy->kota_offset=0;
+
 	Objekt->elementy->mGrid=NULL;
 
 	Objekt->elementy->sparovany=NULL;
@@ -997,6 +999,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->WT=Original->WT;
 	Kopie->WTpalec=Original->WTpalec;
 	//Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
+	Kopie->kota_offset=Original->kota_offset;
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->Gelement=Original->Gelement;

@@ -2,7 +2,6 @@
 #pragma hdrstop
 #include "TmGrid.h"
 #include "antialiasing.h"
-#include "my.h"
 #include <Clipbrd.hpp>
 #include "gapoTT.h"
 #include "gapoV.h"
@@ -477,6 +476,8 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//28.2.provizorní fix if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;else //podmínìné formátování//zde se asi nezohledòuje, spíše v drawgrid, ale otázka je jak bez AA
 			Canv->Brush->Color=Cell.Background->Color;//pro podmínìné formátování zaøadit do výše uvedené else vìtve
 			Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
+			Canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejnì široké - TEST
+			Canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;//asi nepøináší zcela pøínos - TEST
 			//zarovnání
 			//samotný výpis
 			long L=Rt.Left,T=Rt.Top;
@@ -487,22 +488,22 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			if(Cell.Font->Orientation==2700){Rot=-1;W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
 			switch(Cell.Align)
 			{
-				case aNO:   L=Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
-				case LEFT:	L=Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2*Zoom;break;
-				case CENTER:L=(Rt.Left+Rt.Right)/2-W/2;break;
-				case RIGHT:	L=Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2*Zoom;if(Cell.Font->Orientation==2700)L-=H;break;
+				case aNO:   L=m.round(Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
+				case LEFT:	L=m.round(Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
+				case CENTER:L=m.round((Rt.Left+Rt.Right)/2.0-W/2.0);break;
+				case RIGHT:	L=m.round(Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2.0*Zoom);if(Cell.Font->Orientation==2700)L-=H;break;
 			}
 			switch(Cell.Valign)
 			{
 				case vNO:
 				{
 					T=Rt.Top+Cell.TextPositon.Y*Zoom;
-					if(Cell.Font->Orientation==0)T+=Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;
-					else T-=(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2*Zoom);
+					if(Cell.Font->Orientation==0)T+=m.round(Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);
+					else T-=m.round(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2.0*Zoom);
 				}break;
-				case TOP:		T=Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2*Zoom;break;
-				case MIDDLE:T=(Rt.Top+Rt.Bottom)/2-H/2;break;
-				case BOTTOM:T=Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2*Zoom;break;
+				case TOP:		T=m.round(Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);break;
+				case MIDDLE:T=m.round((Rt.Top+Rt.Bottom)/2.0-H/2.0);break;
+				case BOTTOM:T=m.round(Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2.0*Zoom);break;
 			}
 			unsigned int Pos=Cell.Text.Pos("<a>");//pozice html tagu
 			if(Pos>0)//parsování HTML
@@ -1842,8 +1843,7 @@ bool TmGrid::CheckLink(int X,int Y,unsigned long Col,unsigned long Row)
 //zajistí pøebarvení odkazu v buòce danou barvou
 void  TmGrid::HighlightLink(unsigned long Col,unsigned long Row,short Intensive)
 {
-	Cmy m;
-	Form->Canvas->Font=Cells[Col][Row].Font;
+	Form->Canvas->Font=Cells[Col][Row].isLink;
 	Form->Canvas->Font->Color=m.clIntensive(Cells[Col][Row].Font->Color,Intensive);
 	Form->Canvas->Brush->Style=bsClear;
 	Form->Canvas->Brush->Color=clWhite;

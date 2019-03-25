@@ -2272,7 +2272,7 @@ void TForm1::getJobID(int X, int Y)
 
 	//nejdříve TABULKA
 	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-	if(pom_element!=NULL && pom_temp->uzamknout_nahled==false)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
+	if(pom_element!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 	{
 		int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
 		if(IdxRow==0)JID=100+0;//hlavička
@@ -2316,21 +2316,24 @@ void TForm1::getJobID(int X, int Y)
 				{
 					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 					{
-						short cO=5;//rozšíření citelné oblasti v px
-						//JID=-8;//vodorovná kóta či JID=-10;//jednotky kóty
-						if(d.aktKotaOblast.rect2.PtInRect(TPoint(X,Y))){MessageBeep(0);/*JID=-10;*/kurzor(add_o);}
-
-						if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)
+						//vodorovná kóta či JID=-10;//jednotky kóty
+						if(F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)))JID=-10;
+						else
 						{
-							JID=-8;
-						}else
-						//JID=-9;//svislá kóta  či JID=-10;//jednotky kóty
-						if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
-						{
-							JID=-9;
+							short cO=5;//rozšíření citelné oblasti v px
+							//JID=-8;//vodorovná kóta
+							if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)
+							{
+								JID=-8;
+							}else
+							//JID=-9;//svislá kóta
+							if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
+							{
+								JID=-9;
+							}
+							//další kóty
+							//RET=10-99 zcela doplnit
 						}
-            //další kóty
-						//RET=10-99 zcela doplnit
 					}
 				}
 			}
@@ -2342,26 +2345,30 @@ void TForm1::getJobID(int X, int Y)
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
 {                                                  //pom_element->mGrid->Cells[0][0].Font->Style=TFontStyles()<< fsBold; - nefunguje něco to přenastavuje jinak
-	kurzor(standard);//umístít na začátek
+
 	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
 	{
-		if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
+		if(pom_element->mGrid!=NULL && pom_temp->zobrazit_mGrid)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
 		if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
 		if(JID==0){pom_element->stav=1;}//ELEMENT
 	}
 	int puvJID=JID;//záloha původního JID
 	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element, možno odstranit, až se mGrid bude posílat do celkové bitmapy
 	getJobID(X,Y);//zjištění aktuálního JID
-	if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
-	if((puvJID!=JID || pom_element!=pom_element_puv) && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
-	if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
-	if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
-	if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
-	if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
-	if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
-	if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
-	if(puvJID!=JID && (-6>=JID||JID>=-9)){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
-	if(JID==-10)kurzor(zmena_j);
+	if(puvJID!=JID)
+	{
+		kurzor(standard);//umístít na začátek
+		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
+			if((puvJID!=JID || pom_element!=pom_element_puv) && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
+		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
+		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
+		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
+		if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
+		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
+		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
+			if(puvJID!=JID && (-6>=JID||JID>=-9)){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
+		if(JID==-10){REFRESH();kurzor(zmena_j);}
+	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
 //---------------------------------------------------------------------------
@@ -3828,6 +3835,7 @@ void TForm1::zmenJednotekKot()
 	if (DKunit==0) {DKunit=1;}
 	else {DKunit=0;}
 	writeINI("nastaveni_nahled","koty_delka", DKunit);
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //zapíná či vypíná automatickou ortogonalizaci
@@ -4004,7 +4012,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		AnsiString label1;
 		AnsiString label2;
 		short pocet_elementu=4;
-		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom);
+		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
 		for(unsigned short n=1;n<=pocet_elementu;n++)
 		{
 			if(n==1){ label1= "kontinuální"; label2="lakování"; }
