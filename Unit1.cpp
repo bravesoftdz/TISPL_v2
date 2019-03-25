@@ -237,6 +237,7 @@ void TForm1::DesignSettings()
 	Analyza->Options->PressedColor=light_gray;
 	Synteza->Options->PressedColor=light_gray;
 	Simulace->Options->PressedColor=light_gray;
+	Nahled->Options->PressedColor=light_gray;
 
 	scExPanel_ostatni->Top=72+27;
 
@@ -1302,6 +1303,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		}
 //	}
 
+//  //při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu 	Problém při ruční minimalizaci!
+//	if(ClientHeight!=Monitor->Height&&!MaxButton->Down)
+//	{
+//	//maximalizace formuláře jinak to s novým designem nejde
+//	Form1->Width=Screen->WorkAreaWidth;
+//	Form1->Height=Screen->WorkAreaHeight;
+//	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
+//	}
 
 	//načtení rastru
 	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
@@ -1469,15 +1478,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
 	}
-	//při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu
-	if(ClientHeight!=Monitor->Height)
-	{
-  //maximalizace formuláře jinak to s novým designem nejde
-	Form1->Width=Screen->WorkAreaWidth;
-	Form1->Height=Screen->WorkAreaHeight;
-	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
-	}
-
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool mGrid)
@@ -2203,7 +2203,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				{
 					Akce=NIC;kurzor(standard);
 					REFRESH();
-				} else MB("Nelze vložit element mimo kabinu! Vložte element do kabiny.");
+				} else MB("Nelze vložit robota mimo kabinu!");
 				pom_element_smazat=NULL; delete pom_element_smazat;
 				break;//posun elementu
 			}
@@ -3114,7 +3114,12 @@ void TForm1::add_element (int X, int Y)
 		REFRESH();
 		DrawGrid_knihovna->Invalidate();
 		DuvodUlozit(true); //"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?"
-	}else MB("Nelze vložit element mimo lakovací kabinu!");
+	}
+	else
+	{
+	REFRESH();
+	MB("Nelze vložit robota mimo lakovací kabinu!");
+	}
 
   //Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 	nahled_ulozit(true);//důvod k uložení náhledu
@@ -3476,7 +3481,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			/////Test NUMERIC
-			E->mGrid->Cells[1][1].Type=E->mGrid->NUMERIC;
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
 			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			//E->mGrid->getNumeric(1,1)->Hint=10;//ms.MyToDouble(E->mGrid->Cells[1][1].Text);
 			//Memo3->Lines->Add(E->mGrid->getNumeric(1,1)->Name);
@@ -3619,10 +3624,15 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
 			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
 		}
-		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;//vypnout zarovnání
-		E->mGrid->Cells[0][i].RightMargin = 15;
+		//E->mGrid->Cells[0][i].Align=mGrid->RIGHT;//vypnout zarovnání
+		E->mGrid->Cells[0][i].RightMargin = 3;
+		E->mGrid->Cells[1][i].RightMargin = 3;
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
+		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;
+		E->mGrid->Cells[1][i].Align=mGrid->RIGHT;
 	}
+	E->mGrid->Columns[0].Width=57;
+	E->mGrid->Columns[1].Width=70;
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);
 }
@@ -4945,6 +4955,7 @@ void TForm1::NP_input()
 	Nahled->Visible=true;
 	Nahled->Down=true;
 	Schema->Down=false;
+	Schema->Options->PressedColor=Layout->Options->NormalColor;
 	scGPGlyphButton_zpravy_ikona->Visible=true;
 
 	Invalidate();
@@ -6421,7 +6432,7 @@ void __fastcall TForm1::KonecClick(TObject *Sender)
 	{
 		if (scGPButton_ulozit->Enabled)
 		{
-			vysledek=MB("Chcete uložit změny?",MB_YESNO);
+			vysledek=MB("Chcete uložit změny v náhledu?",MB_YESNO);
 			switch (vysledek)
 			{
 				case mrYes:scGPButton_OKClick(Sender);break;
@@ -7133,7 +7144,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		pom=NULL;
 		d.v.vymaz_elementy(pom_temp,false);
 		Smaz_kurzor();
-		pom_temp=NULL; delete pom_temp;
+		pom_temp=NULL; delete pom_temp;   Schema->Down=true;
 	}
 }
 //---------------------------------------------------------------------------
