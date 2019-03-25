@@ -1223,18 +1223,18 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 		pm.dP=0;
 		pm.Rotace=0;
 		//R-záležitosti   //POZOR: pm.RD je vždy aRD, až v sekci case 1 je vypoèítáno skuteèné RD=DD/CT                                                                                               //vrátí èíslo ve stringgridu øádku dle ID pohonu
-		pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].id-100)])/(1+59.0*aRDunit);///musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-    pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].id-100)])/(1+999.0*Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-    pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].id-100)])/(1+999.0*Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-   	pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].id-100)]);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.RD=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].id-100)])/(1+59.0*aRDunit);///musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+    pm.R=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].id-100)])/(1+999.0*Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+    pm.Rz=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].id-100)])/(1+999.0*Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+   	pm.Rx=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].id-100)]);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 	}
 	//R-záležitosti
 	if(objekty[Row].pohon!=NULL && pm.rezim!=100)
 	{                                                                                                                                         //pøevod
-		pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*aRDunit);///musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-		pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-		pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
-		pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.RD=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*aRDunit);///musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.R=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Runit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.Rz=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Rzunit);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
+		pm.Rx=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musím brát ze stringgridu, kvùli stornu, nikoliv pøímo z dat
 	}
 	else//pro objekty bez pøiøazeného pohonu
 	{
@@ -1554,7 +1554,7 @@ UnicodeString TF_gapoTT::calculate(unsigned long Row,short SaveTo)
 						O->pohon->aRD=pm.RD;
 						O->pohon->Rz=F->m.Rz(pm.RD);
 						if(CHECK[2] || CHECK[4])O->pohon->Rx     = F->m.Rx2(O->pohon->Rz,pm.R);//zùstává R, mìní se Rx
-						if(CHECK[4] || CHECK[6])O->pohon->roztec = F->m.R(O->pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]));//zùstává Rx, mìní se R
+						//if(CHECK[4] || CHECK[6])O->pohon->roztec = F->m.R(O->pohon->Rz,F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]));//zùstává Rx, mìní se R
 					}
 					O->CT=pm.CT;
 					O->RD=pm.DD/pm.CT;//nelze použít pm.RD pøímo, protože u S&G a PP by se RD!=aRD //POZOR: pm.RD je vždy aRD, až v sekci case 1 je vypoèítáno skuteèné RD=DD/CT

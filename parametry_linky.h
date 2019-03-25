@@ -25,7 +25,6 @@
 class TForm_parametry_linky : public TForm
 {
 __published:	// IDE-managed Components
-	TrStringGridEd *rStringGridEd_tab_dopravniky;
 	TscGPButton *Button_save;
 	TscGPButton *Button_storno;
 	TscGPPanel *scGPPanel2;
@@ -46,7 +45,6 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_add_mezi_pohony;
 	TscLabel *scLabel_TT_change_hint;
 	TMemo *Memo1;
-	TButton *Button1;
 	TscGPButton *scGPButton_jig;
 	TrHTMLLabel *rHTMLLabel_delka_jig;
 	TscGPSwitch *scGPSwitch;
@@ -55,7 +53,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel_JIG;
 	TscGPGlyphButton *Button_ADD;
 	TscGPGlyphButton *Button_DEL;
-	TrStringGridEd *rStringGridEd_hlavicka_tabulky;
 	TscGPNumericEdit *rEditNum_takt;
 	TscGPNumericEdit *scGPNumericEdit_delka_jig;
 	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
@@ -84,30 +81,21 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
 	TscGPNumericEdit *scGPNumericEdit_delka_podvozek;
 	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
-	TrMemoEx *rMemoEx_ID;
-	TrMemoEx *rMemoEx_Nazev;
-	TrMemoEx *rMemoEx1_rozestup;
-	TrMemoEx *rMemoEx2_prirazen;
-	TMemo *Memo2;
-	TMemo *Memo3;
 	TscGPButton *scGPButton_zamek_aRD;
 	TscGPButton *scGPButton_zamek_roztec;
 	TscGPButton *scGPButton_zamek_Rz;
 	TscGPButton *scGPButton_zamek_Rx;
 	TrHTMLHint *rHTMLHint1;
 	TrHTMLLabel *rHTMLLabel_InfoText;
-	TMemo *Memo4;
 	TscGPGlyphButton *scGPGlyphButton_TT;
 	TscGPGlyphButton *scGPGlyphButton_vozik_edit;
-	TButton *Button2;
-	TButton *Button3;
   TscGPGlyphButton *scGPGlyphButton_refresh;
-  TscHTMLLabel *rMemoEx1_rychlost;
   TrHTMLLabel *rHTMLLabel_info_zmenaR;
-  TscHTMLLabel *scHTMLLabel_roztec;
-  TscHTMLLabel *scHTMLLabel_rozestup_aktunas;
-  TscHTMLLabel *scHTMLLabel_rozestup;
   TscGPGlyphButton *scGPGlyphButton_ADD;
+  TscGPGlyphButton *scGPGlyphButton1;
+  TMemo *Memo2;
+  TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
+  TscGPButton *scGPButton1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -123,11 +111,6 @@ __published:	// IDE-managed Components
 	void __fastcall rHTMLLabel_taktClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall Button1Click(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender, int Col,
-          int Row, TrStringGridEdEditStyle &EditStyle);
-	void __fastcall rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender, int Col, int Row,
-          bool &CanEdit);
 	void __fastcall rEditNum_delkavozikuClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_jigClick(TObject *Sender);
 	void __fastcall rHTMLLabel_delka_vozikuClick(TObject *Sender);
@@ -141,8 +124,6 @@ __published:	// IDE-managed Components
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall scGPGlyphButton_infoClick(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikyMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y);
 	void __fastcall GlyphButton_closeClick(TObject *Sender);
 	void __fastcall scLabel_kopirovatClick(TObject *Sender);
 	void __fastcall scLabel_smazatClick(TObject *Sender);
@@ -159,35 +140,18 @@ __published:	// IDE-managed Components
 	void __fastcall scLabel_kopirovatMouseLeave(TObject *Sender);
 	void __fastcall GlyphButton_kopirovatMouseEnter(TObject *Sender);
 	void __fastcall GlyphButton_kopirovatMouseLeave(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikyGetCellParams(TObject *Sender, int Col,
-          int Row, TFont *AFont, TColor &Background, bool &Highlight);
 	void __fastcall scHTMLLabel_doporuc_pohonyClick(TObject *Sender);
 	void __fastcall scGPSwitchChangeState(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall rEditNum_taktClick(TObject *Sender);
-	void __fastcall scGPButton_zamek_aRDClick(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikyCellClick(TObject *Sender, int ACol,
-          int ARow);
-	void __fastcall scGPButton_zamek_RxClick(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikySetEditText(TObject *Sender, int ACol,
-          int ARow, const UnicodeString Value);
-	void __fastcall rStringGridEd_tab_dopravnikyGetEditText(TObject *Sender, int ACol,
-          int ARow, UnicodeString &Value);
-	void __fastcall scGPButton_zamek_roztecClick(TObject *Sender);
-	void __fastcall scGPButton_zamek_RzClick(TObject *Sender);
-	void __fastcall FormClick(TObject *Sender);
-	void __fastcall rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender, int Col,
-          int Row, TStringList *&PickList);
 	void __fastcall scGPGlyphButton_TTClick(TObject *Sender);
 	void __fastcall sc(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
-	void __fastcall Button3Click(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
   void __fastcall GlyphButton_refreshClick(TObject *Sender);
-  void __fastcall scHTMLLabel_roztecClick(TObject *Sender);
-  void __fastcall scHTMLLabel_rozestupClick(TObject *Sender);
-  void __fastcall rMemoEx1_rychlostClick(TObject *Sender);
+  void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
 
 
 private:	// User declarations
@@ -209,7 +173,7 @@ private:	// User declarations
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
 	void Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_edit E);
-
+ 	TColor clBACKGROUND;
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 	int getROW(int PID);//vrátí èíslo øádku dle pohon ID, pokud nenajde vrátí -1
@@ -222,6 +186,14 @@ public:		// User declarations
 	void show_min_Rz();
 	double getTT();
 	void VALIDACE(int ACol, int ARow);
+
+  	//metody volané z Tmgrid
+	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
+	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
+	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+  void getmGridColors();
+  void getmGridWidth();
+  void getDeleteButtonSettings(int Row);
 
 	short VID;//validation ID
 	double VID_value;
