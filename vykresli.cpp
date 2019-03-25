@@ -203,12 +203,12 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		{
 			short highlight=0;
 			if(F->JID==-8)highlight=1;
-			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
+			vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,0.3,highlight);
 			if(F->JID==-9)highlight=1;else  highlight=0;
-			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,0.3,highlight);
+			vykresli_kotu(canv,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk,F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y,NULL,0.3,highlight);
 		}
 
-		////vykreslení jednotlivých ELEMENTŮ
+		////vykreslení jednotlivých ELEMENTŮ aktuálně nahlíženého objektu
 		Cvektory::TElement *E=F->pom_temp->elementy;
 		if(E!=NULL)//pokud elementy existují
 		{
@@ -224,7 +224,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 					 else//od počátku kabiny k prvnímu elementu
 					 {
 						short H=0;if(E->stav==2)H=1;
-						vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk,E->X,E->Y,0,H);
+						vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk,E->X,E->Y,E,0,H);
 					 }
 				 }                         //dodělat výše uvedené, včetně rotace
 				 E=E->dalsi;//posun na další element
@@ -3118,19 +3118,19 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
 
 	//samotné vykreslení kóty
-	vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,O,highlight);
+	vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,Element_do,O,highlight);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
-void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,double Offset,short highlight,float width,TColor color)
+//v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
+void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color)
 {
 	double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky + případný převod m->mm
 	AnsiString T=m.round2double(delka,3,"..");if(highlight==1)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se
-	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,m.m2px(Offset),highlight,width,color);
+	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-//v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně
-void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,int Offset,short highlight,float width, TColor color)
+//v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
+void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color)
 {
 	if(F->JID==-10)highlight=0;//pokud se mění pouze jednotky, tak se kóta nehiglightuje
 	width=m.round(width*F->Zoom);if(highlight)width*=2;//šířka linie
@@ -3174,18 +3174,38 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí
 	canv->Brush->Color=clWhite;
 	AnsiString Jednotky=" [m]";if(F->DKunit==1)Jednotky=" [mm]";
-	long X=(X1+X2)/2-canv->TextWidth(Text)/2;if(Y1==Y2)X=(X1+X2)/2-canv->TextWidth(Text+Jednotky)/2;//pro vodorovnou kotu zarovnání jinak
+	long X=(X1+X2)/2-canv->TextWidth(Text)/2;if(Y1==Y2)X=(X1+X2)/2-canv->TextWidth(Text+Jednotky)/2;//pro vodorovnou kótu zarovnání jinak
 	long Y=(Y1+Y2)/2-canv->TextHeight(Text)/2;
 	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
 	canv->Font->Color=(TColor)RGB(43,87,154);
 	if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
 	canv->TextOutW(X+canv->TextWidth(Text),Y,Jednotky);//jednotky
 
-	//do globální proměnné navrácení oblasti popisku a jednotek kóty
-	if(F->JID==-8 || F->JID==-9)
+	////navrácení citelné oblasti popisku a jednotek kóty pro další použití a šetření strojového času
+	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
+	if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 	{
-		aktKotaOblast.rect1=TRect(X,Y,X+canv->TextWidth(Text),Y+canv->TextHeight(Text));
-		aktKotaOblast.rect2=TRect(X+canv->TextWidth(Text),Y,X+canv->TextWidth(Text)+canv->TextWidth(Jednotky),Y+canv->TextHeight(Jednotky));
+			T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
+			//hodnoty
+			if(highlight){canv->Font->Style = TFontStyles()<< fsBold;canv->Font->Size=m.round(canv->Font->Size/2.0);}//při highlighnutí se text se šířkou nezvětštuje, pouze ztučňuje - musí být znovu
+			R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
+			//jednotky
+			if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)  - musí být znovu
+			R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
+		if(Y1==Y2)//pro vodorovnou kótu                               //odebrání mezery
+		{
+			F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
+			F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+		}
+		else//pro svislou kótu
+		{
+			F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
+			F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+		}
+	}
+	else//kóty mezi elementy
+	{
+		//
   }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@
 #include "scGPExtControls.hpp"//knihovna kvùli editbox
 #include "scHtmlControls.hpp"//knihovna kvùli scHTMLLabel
 #include "MyString.h"//kvùli parsování
+#include "my.h"
 //---------------------------------------------------------------------------
 class TmGrid
 {
@@ -133,6 +134,7 @@ class TmGrid
  private:
 	TForm *Form;
 	TMyString ms;
+	Cmy m;
 
 	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter

@@ -64,6 +64,8 @@ class Cvektory
 			double WTpalec;
 			//double TIME;//CT, PT, WT, RT,...
 
+			double kota_offset;//odsazení kóty v metrech, kóta je uvažována od přechozího a k aktuálnímu elementu, offset vlastní aktuální element
+
 			unsigned int akt_pocet_voziku;
 			unsigned int max_pocet_voziku;
 
@@ -101,6 +103,8 @@ class Cvektory
 			TElement *elementy;
 			TPointD min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 			TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW + dodat do CObjekt
+			T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
+			T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 			double odchylka;//povolená odchylka u PP z CT
