@@ -917,9 +917,9 @@ UnicodeString TF_gapoV::calculate(unsigned long Row,short SaveTo)//NEWR
 	pm.Rotace=objekty[Row].rotace;
 	if(objekty[Row].pohon!=NULL)
 	{
-		pm.RD=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*Form_parametry_linky->aRDunit);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat
-		pm.R=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat		if(Rzunit==0)	pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)]); else pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/1000.0;//musím brát ze stringgridu, kvůli stornu, nikoliv přímo z dat
-		pm.Rx=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat
+		pm.RD=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[4][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+59.0*Form_parametry_linky->aRDunit);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat
+		pm.R=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[5][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/(1+999.0*Form_parametry_linky->Runit);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat		if(Rzunit==0)	pm.Rz=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)]); else pm.Rz=F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[6][Form_parametry_linky->getROW(objekty[Row].pohon->n)])/1000.0;//musím brát ze stringgridu, kvůli stornu, nikoliv přímo z dat
+		pm.Rx=0;//F->ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[7][Form_parametry_linky->getROW(objekty[Row].pohon->n)]);//musí se brát ze stringgridu, kvůli přípapdnému stornu, nikoliv přímo z dat
 	}
 	else
 	{

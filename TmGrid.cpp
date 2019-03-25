@@ -9,6 +9,7 @@
 #include "unit2.h"
 #include "unitX.h"
 #include "poznamky.h"
+#include "parametry_linky.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -1130,6 +1131,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnClick(Tag,ID,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnClick(Tag,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnClick(Tag,ID,Col,Row);   //z unit1 do unitX
+    if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnClick(Tag,ID,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1146,6 +1148,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnEnter(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnEnter(Tag,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnEnter(Tag,ID,Col,Row);//z unit1 do unitX
+    if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnEnter(Tag,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1163,6 +1166,7 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnChange(Tag,ID,Col,Row);//z unit1 do unitX
+    if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnChange(Tag,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1178,6 +1182,7 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnChange(Tag,ID,Col,Row);//z unit1 do unitX
+    if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnChange(Tag,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------

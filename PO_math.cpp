@@ -254,11 +254,11 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 		long 	plRow  = 0;//n øádku pohonu na PL
 		if(objekty[Row].pohon!=NULL && rezim!=100) plRow =	Form_parametry_linky->getROW(objekty[Row].pohon->n);//pro všechny objekty s pohony
 		if(objekty[Row].id>=100) plRow = Form_parametry_linky->getROW(objekty[Row].id-100);//pro nepoužívané pohony (bez pøiøazení)
-		double aRD_od=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
-		double aRD_do=ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow])/(1+59.0*aRDunit);
+		double aRD_od=0;//ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
+		double aRD_do=0;//ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[3][plRow])/(1+59.0*aRDunit);
 		if(!Form1->m.between(RD,aRD_od,aRD_do))
 		{
-			T="Rozsah rychlosti "+m.round2double(aRD_od*(1+59.0*aRDunit),2,"..")+" až "+m.round2double(aRD_do*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+" pohonu "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+" neopovídá nastavované rychlosti "+F->m.round2double(RD*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+"!";
+			T="";//"Rozsah rychlosti "+m.round2double(aRD_od*(1+59.0*aRDunit),2,"..")+" až "+m.round2double(aRD_do*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+" pohonu "+Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[1][plRow]+" neopovídá nastavované rychlosti "+F->m.round2double(RD*(1+59.0*aRDunit),2,"..")+" "+aRDunitT+"!";
 		}
 	}
 
