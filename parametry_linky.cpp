@@ -13,6 +13,7 @@
 #include "gapoR.h"
 #include "gapoTT.h"
 #include "gapoV.h"
+#include "TmGrid.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "rHTMLLabel"
@@ -31,15 +32,11 @@ TForm_parametry_linky *Form_parametry_linky;
 __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	: TForm(Owner)
 {
+  input_state=NO;
 	////designové záležitosti
 	Form_parametry_linky->Color=(TColor)RGB(240,240,240); //nastavení barvy formuláøe
-  rMemoEx1_rychlost->Color=(TColor)RGB(128,128,128);
-	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
-	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
-	zobrazitFrameForm=false;
 
-	 rStringGridEd_tab_dopravniky->SetColumnAutoFit(0);
-	 rStringGridEd_hlavicka_tabulky->SetColumnAutoFit(0);
+	zobrazitFrameForm=false;
 
 	//pop-up menu
 	//pozadí
@@ -51,13 +48,6 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	clAcGlyph=(TColor)RGB(0,128,255);//active
 	PopUPmenu->Color=clBg;//nastavení pozadí barvy formuláøe
 	pasiveColor();//nastaví všechny položky na pasivní resp. default barvu
-	//------
-
-	////jednotky
-	//Delkaunit=MM;
-	//Sirkaunit=Delkaunit;
-
-	//roletka_data=0;
 
 
 }
@@ -96,15 +86,7 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
-   Taktunit=S;
-	 Runit=M;
-	 Rzunit=MM;
-	 aRDunit=S;
-   Dmunit=M;
-   Delkaunit=M;
-
-   rHTMLLabel_InfoText->Caption="";
-   scHTMLLabel_rozestup->Height=27;
+    input_state=NOTHING;
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
@@ -115,7 +97,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     Dmunit=MM;
     }
     if(Form1->readINI("nastaveni_form_parametry_linky", "R") == "1")
-    {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
+    {  //budu pøevádìt na metry - roztec, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
     Runit=MM;
     }
     if(Form1->readINI("nastaveni_form_parametry_linky", "TT") == "1")
@@ -132,12 +114,76 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
 
     }
+
+    clBACKGROUND=(TColor)RGB(250,250,250);
+
+   	////////definice tabulky////////
+	mGrid=new TmGrid(this);//vždy nutno jako první
+  vypis(""); // prozmanuti vypisu - pro sicher
+	mGrid->Tag=7;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+  mGrid->ID=0;
+	mGrid->Left=2;mGrid->Top=335;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
+	mGrid->AntiAliasing_text=true;
+  mGrid->Border.Width=1;
+  mGrid->MovingTable=false;
+  //mGrid->DefaultCell.Font->Size=14;
+  //mGrid->DefaultCell.Font->Name="Roboto Cn";
+  mGrid->Create(9,2);//samotné vytvoøení matice-tabulky
+
+  getmGridWidth();
+
+  mGrid->SetColumnAutoFit(-4);
+
+  Form_parametry_linky->Width=mGrid->Width + 4;
+
+  ////////plnìní daty - hlavièka////////
+	mGrid->Cells[0][0].Text="ID";
+ 	mGrid->Cells[1][0].Text="Název";
+ if(aRDunit==MIN)	mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>";
+ else             mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/s]</a>";
+  mGrid->Cells[3][0].Text="";
+  mGrid->Cells[4][0].Text="";
+ if(Runit==MM) mGrid->Cells[5][0].Text="Rozteè <a>[mm]</a>";
+ else          mGrid->Cells[5][0].Text="Rozteè <a>[m]</a>";
+  mGrid->Cells[6][0].Text="Pøiøazen";
+  mGrid->Cells[7][0].Text="Pøiøazené objekty";
+  mGrid->Cells[8][0].Text="";
+
+
+
+  mGrid->Cells[0][1].Text="";
+	mGrid->Cells[1][1].Text="";
+	mGrid->Cells[2][1].Text="od";
+  mGrid->Cells[3][1].Text="do";
+  mGrid->Cells[4][1].Text="aktuální";
+  mGrid->Cells[5][1].Text="";
+  mGrid->Cells[6][1].Text="";
+
+  getmGridColors();
+
+//
+ 	mGrid->MergeCells(2,0,4,0);
+	mGrid->MergeCells(0,0,0,1);
+  mGrid->MergeCells(1,0,1,1);
+  mGrid->MergeCells(5,0,5,1);
+  mGrid->MergeCells(6,0,6,1);
+  mGrid->MergeCells(7,0,7,1);
+  mGrid->MergeCells(8,0,8,1);
+
+  //ShowMessage("ted");
+   Taktunit=S;
+	// Runit=M;
+	 Rzunit=MM;
+	// aRDunit=S;
+   Dmunit=M;
+   Delkaunit=M;
+
+   rHTMLLabel_InfoText->Caption="";
    rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height + 5;
    rHTMLLabel_info_zmenaR->Top= Button_storno->Top - Button_storno->Height + 5;
    rHTMLLabel_info_zmenaR->Left=Button_storno->Left;
    rHTMLLabel_info_zmenaR->Caption="";
-	 input_state = NOTHING;   //výchozí nastavení stavu
-	 Nastav_zamky(empty_klik_ico,empty_klik);
+	 //Nastav_zamky(empty_klik_ico,empty_klik);
 	 vypis(""); VID=-1;
 
 	 //povolení vstupù do zmìny TT a vozíku + Uložit + Storno button
@@ -148,7 +194,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
-		rMemoEx_Nazev->SetFocus();
+    //rStringGridEd_tab_dopravniky->SetFocus();
 		zobrazOramovani=false;
 
 		if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
@@ -162,7 +208,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		}
 		else
 		{
-			scGPButton_doporucene->Visible=true;
+			scGPButton_doporucene->Visible=false;
 			rHTMLLabel_doporuc_pohony->Caption="Navržené pohony pro objekty bez pøiøazených pohonù:";
 		}
 
@@ -174,30 +220,16 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
 			rHTMLLabel_sirka_jig->Visible=true;
-		 //	rEditNum_sirkavoziku->Visible=true;
-
-			rStringGridEd_tab_dopravniky->Visible=true;
-			//Button_ADD->Visible=true;
-			//Button_DEL->Visible=true;
-
-		 //	scRadioGroup_typVoziku->Visible=true;
-			//rEditNum_delkavoziku->Visible=true;
-			//rHTMLLabel_delka_voziku->Visible=true;
 		}
 		else          //Klient
 		{
 			scGPButton_vozik->Caption="   Jig";
 			scGPButton_vozik->ImageIndex=19;
 			scGPButton_pohon->Caption="   Pohon";
-
 			rHTMLLabel_sirka_jig->Visible=false;
-		 //	rEditNum_sirkavoziku->Visible=false;
 
-			rStringGridEd_tab_dopravniky->Visible=true;
 			Button_ADD->Visible=true;
 			Button_DEL->Visible=true;
-
-		 //	scRadioGroup_typVoziku->Visible=true;
 
 			scGPButton_obecne->Visible=false;
 			rHTMLLabel_takt->Visible=false;
@@ -208,22 +240,22 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(!data_nalezena)
 		{
-			rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
+      mGrid->RowCount=2; //slouèená hlavièka jsou 2 øádky
 		}
 
 
     //nastaveni rozmeru formu - dle poctu pohonu
 
-      rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
-      Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
+     // rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
+     // Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
      // scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
       Button_save->Top=Form_parametry_linky->Height - 40;
       Button_storno->Top=Form_parametry_linky->Height - 40;
       scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
-
+      scGPGlyphButton_DEL_nepouzite->Left=2;
 		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
 		//musí být umístìno až za nacti_pohony
-		zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
+	 //	zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
 		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
 		for(unsigned int PID=0;PID<zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
@@ -297,8 +329,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_jig->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_jig->Options->FramePressedColor=Form_parametry_linky->Color;
 
-	 rStringGridEd_tab_dopravniky->Left=1;
-	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
+	// rStringGridEd_tab_dopravniky->Left=1;
+ //	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
 
 
 	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
@@ -321,31 +353,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 rEditNum_takt->Value=Form1->d.v.PP.TT/60.0;
 	 } else rEditNum_takt->Value=Form1->d.v.PP.TT;
 
-	 //rStringGridEd_tab_dopravniky->Cells[0][0]="ID";
-	 //rStringGridEd_tab_dopravniky->Cells[1][0]="Název";
-	 rStringGridEd_tab_dopravniky->Cells[2][0]="od";
-	 rStringGridEd_tab_dopravniky->Cells[3][0]="do";
-	 rStringGridEd_tab_dopravniky->Cells[4][0]="aktuální";
-	 rStringGridEd_tab_dopravniky->Cells[5][0]="";
-	 rStringGridEd_tab_dopravniky->Cells[6][0]="";
-	 rStringGridEd_tab_dopravniky->Cells[7][0]="každý n-tý palec";
-	 //rStringGridEd_tab_dopravniky->Cells[8][0]="pøiøazen";
-
-	 rStringGridEd_hlavicka_tabulky->Cells[0][0]="";
-	 rStringGridEd_hlavicka_tabulky->Cells[1][0]="";
-	 rStringGridEd_hlavicka_tabulky->Cells[2][0]="";
-	 //rStringGridEd_hlavicka_tabulky->Cells[3][0]="Rychlost [m/min]";
-	 rStringGridEd_hlavicka_tabulky->Cells[4][0]="";
-	 rStringGridEd_hlavicka_tabulky->Cells[5][0]="";
-	// rStringGridEd_hlavicka_tabulky->Cells[6][0]="Rozestup";
-	 rStringGridEd_hlavicka_tabulky->Cells[7][0]="";
-	 rStringGridEd_hlavicka_tabulky->Cells[8][0]="";
-
-
-	//	rStringGridEd_tab_dopravniky->Columns->
-
-	 if(rStringGridEd_tab_dopravniky->RowCount>1 && rStringGridEd_tab_dopravniky->ColCount>=5){rStringGridEd_tab_dopravniky->Row=1;rStringGridEd_tab_dopravniky->Col=5;}//rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
-
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();
 
@@ -353,29 +360,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 if(existuji_nepouzivane_pohony())scGPGlyphButton_DEL_nepouzite->Visible=true;
 	 else scGPGlyphButton_DEL_nepouzite->Visible=false;
 
-	 rMemoEx_ID->Text="";
-   rMemoEx_Nazev->Text="";
-     // rMemoEx1_rychlost->Caption="";
-	 rMemoEx2_prirazen->Text="";
-   rMemoEx1_rozestup->Text="";
-
-
-
-	 rMemoEx_ID->Lines->Add("    ID");
-	 rMemoEx_Nazev->Lines->Add("    Název");
-   if(aRDunit==S)   rMemoEx1_rychlost->Caption="Rychlost <u>[m/s]</u></br>";//("   Rychlost [m/min]");
-   else    rMemoEx1_rychlost->Caption="Rychlost <u>[m/min]</u></br>";
-   rMemoEx1_rychlost->Height=28;
-
-
-	 if(Runit==M)  scHTMLLabel_roztec->Caption="rozteè <u>[m]</u>";
-	 else scHTMLLabel_roztec->Caption="rozteè <u>[mm]</u></br>";
-
- 	 if(Dmunit==M)  scHTMLLabel_rozestup->Caption="rozestup <u>[m]</u>";
-	 else scHTMLLabel_rozestup->Caption="rozestup <u>[mm]</u></br>";
-
-	 rMemoEx2_prirazen->Lines->Add("   Pøiøazen");
-   rMemoEx1_rozestup->Lines->Add("   Palce");
+	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
+	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 
 	 Storno=false;
 }
@@ -388,46 +374,77 @@ void TForm_parametry_linky::nacti_pohony ()
 
 	 if (ukaz!=NULL)
 	 {
-				rStringGridEd_tab_dopravniky->RowCount = Form1->d.v.POHONY->predchozi->n + 1;
+				mGrid->RowCount = Form1->d.v.POHONY->predchozi->n + 2;
+        mGrid->Refresh();
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
-				 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+				 for (int i=2;i<mGrid->RowCount;i++)
 				 {
-						//pùvodní if(Form1->d.v.pohon_je_pouzivan(ukaz->n))rStringGridEd_tab_dopravniky->Cells[5][i]="ano";else 	rStringGridEd_tab_dopravniky->Cells[5][i]="ne";
 						AnsiString OBJEKTY_POUZIVAJICI_POHON=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
-						if(OBJEKTY_POUZIVAJICI_POHON!="")rStringGridEd_tab_dopravniky->Cells[8][i]=OBJEKTY_POUZIVAJICI_POHON;
-						else rStringGridEd_tab_dopravniky->Cells[8][i]="nepoužíván";
+						if(OBJEKTY_POUZIVAJICI_POHON!="")mGrid->Cells[7][i].Text=OBJEKTY_POUZIVAJICI_POHON;
+						else mGrid->Cells[7][i].Text="-";
 
-					 //	ShowMessage(ukaz->roztec*1000.0);
+    				mGrid->Cells[0][i].Text = ukaz->n;
+						mGrid->Cells[1][i].Text = ukaz->name;
 
-						//	 ShowMessage(ukaz->rychlost_do*60.0);
-						rStringGridEd_tab_dopravniky->Cells[0][i] = ukaz->n;
-						rStringGridEd_tab_dopravniky->Cells[1][i] = ukaz->name;
+						 mGrid->Cells[2][i].Text = ukaz->rychlost_od*(1+59.0*aRDunit);
 
-					 //	if(ukaz->rychlost_od==0)  	rStringGridEd_tab_dopravniky->Cells[2][i] = "";
-					//	else
-						 rStringGridEd_tab_dopravniky->Cells[2][i] = ukaz->rychlost_od*(1+59.0*aRDunit);
+						if(ukaz->rychlost_do==0)   mGrid->Cells[3][i].Text ="";
+						else mGrid->Cells[3][i].Text = ukaz->rychlost_do*(1+59.0*aRDunit);
 
-						if(ukaz->rychlost_do==0)   rStringGridEd_tab_dopravniky->Cells[3][i] ="";
-						else rStringGridEd_tab_dopravniky->Cells[3][i] = ukaz->rychlost_do*(1+59.0*aRDunit);
+						if(ukaz->aRD==0)  	mGrid->Cells[4][i].Text = "";
+						else mGrid->Cells[4][i].Text = ukaz->aRD*(1+59.0*aRDunit);
 
-						if(ukaz->aRD==0)  	rStringGridEd_tab_dopravniky->Cells[4][i] = "";
-						else rStringGridEd_tab_dopravniky->Cells[4][i] = ukaz->aRD*(1+59.0*aRDunit);
-					 //	ShowMessage(ukaz->roztec);
 
-						if(ukaz->roztec==0) rStringGridEd_tab_dopravniky->Cells[5][i]="";
-						if(Runit==MM) rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec*(1+999.0*Runit);
-						else    rStringGridEd_tab_dopravniky->Cells[5][i] = ukaz->roztec;
+						if(ukaz->roztec==0) mGrid->Cells[5][i].Text="";
+						if(Runit==MM) mGrid->Cells[5][i].Text = ukaz->roztec*(1+999.0*Runit);
+						else    mGrid->Cells[5][i].Text = ukaz->roztec;
 
-						if(ukaz->Rz==0) rStringGridEd_tab_dopravniky->Cells[6][i]="";
-						else rStringGridEd_tab_dopravniky->Cells[6][i] = ukaz->Rz*(1+999.0*Dmunit);
 
-						if(ukaz->Rx==0) rStringGridEd_tab_dopravniky->Cells[7][i]="";
-						else rStringGridEd_tab_dopravniky->Cells[7][i] = ukaz->Rx;
+         getmGridWidth();
+
+          mGrid->Cells[1][i].Type=mGrid->EDIT;
+          mGrid->Cells[2][i].Type=mGrid->EDIT;
+          mGrid->Cells[3][i].Type=mGrid->EDIT;
+          mGrid->Cells[4][i].Type=mGrid->EDIT;
+          mGrid->Cells[5][i].Type=mGrid->EDIT;
+          mGrid->Cells[6][i].Type=mGrid->CHECK;
+          mGrid->Cells[7][i].Type=mGrid->BUTTON;
+          mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+
+
+
+           mGrid->Refresh(); // kvùli prací s následných Checkboxem je nutný refresh
+
+          if(Form1->d.v.pohon_je_pouzivan(ukaz->n)) {input_state=R; mGrid->getCheck(6,i)->Checked=true; } else  {input_state=R;mGrid->getCheck(6,i)->Checked=false;mGrid->getCheck(6,i)->Enabled=false;}
 
 						ukaz = ukaz->dalsi;
+
+             getDeleteButtonSettings(i);
+
+                        //mGrid->getEdit(7,i)->CanFocus()
+           mGrid->getButton(7,i)->ImageIndex=-1;
+           mGrid->getButton(7,i)->ShowCaption=true;
+           mGrid->getButton(7,i)->Caption=mGrid->Cells[7][i].Text;
+           mGrid->getButton(7,i)->Hint=mGrid->Cells[7][i].Text;
+           mGrid->getButton(7,i)->ShowHint=true;
+          // mGrid->getButton(7,i)->GlyphOptions->Thickness=1;
+           mGrid->getButton(7,i)->Options->NormalColor=clWhite;
+           mGrid->getButton(7,i)->Options->NormalColorAlpha=255;
+           mGrid->getButton(7,i)->Options->FrameWidth=1;
+           mGrid->getButton(7,i)->WordWrap=false;
+          // mGrid->Button(7,i)->GlyphOptions->Kind=scgpbgkCancel;
 				 }
 				 F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
 				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
+
+
+
+
+         mGrid->Refresh();
+
+
+         input_state=NOTHING;
+
 	}
 	else {  //pokud je spoják prázdný, zobrazím tyto pøednastavené hodnoty
 
@@ -438,11 +455,7 @@ void TForm_parametry_linky::nacti_pohony ()
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
 {
-	for(int i=1;i<=rStringGridEd_tab_dopravniky->RowCount;i++)
-	{
-		rStringGridEd_tab_dopravniky->Rows[i]->Clear();
-		rStringGridEd_tab_dopravniky->RowCount--;
-	}
+  mGrid->Delete();
 	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
 	Storno=true;
@@ -484,23 +497,23 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
      int nezobrazuj=0;
                       // pokud chci budu zobrazovat gapo R, ještì si zkontroluji celý obsah tabulky, zda nejsou náhodou vráceny všude výchozí hodnoty
-      if(zobrazGAPO_R)//pokud se hodnoty shodují, ruším zobrazení gapoR
-     {
-     for(int j=1;j<=rStringGridEd_tab_dopravniky->RowCount-1;j++)
-      {
-      Memo3->Lines->Add(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][j]));
-      Memo3->Lines->Add(F->d.v.vrat_pohon(j)->aRD*60.0);
-      if((rStringGridEd_tab_dopravniky->Cells[4][j]*(1+59.0*aRDunit))==F->d.v.vrat_pohon(j)->aRD &&
-      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][j])*(1+999.0*Runit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->roztec) &&
-      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][j])*(1+999.0*Rzunit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->Rz) &&
-      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][j])==F->d.v.vrat_pohon(j)->Rx)
-      {
-       nezobrazuj++;
-       }
-       else nezobrazuj=0;
-      } //pokud poèet øádkù beze zmìny sedí s celkovým poètem øádkù = žádná zmìna, nebudu nakonec gapo R zobrazovat, jinak zobrazím gapoR
-      if(nezobrazuj==rStringGridEd_tab_dopravniky->RowCount-1)    zobrazGAPO_R=false;  else zobrazGAPO_R=true;
-      }
+//      if(zobrazGAPO_R)//pokud se hodnoty shodují, ruším zobrazení gapoR
+//     {
+//     for(int j=1;j<=rStringGridEd_tab_dopravniky->RowCount-1;j++)
+//      {
+//      Memo3->Lines->Add(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][j]));
+//      Memo3->Lines->Add(F->d.v.vrat_pohon(j)->aRD*60.0);
+//      if((rStringGridEd_tab_dopravniky->Cells[4][j]*(1+59.0*aRDunit))==F->d.v.vrat_pohon(j)->aRD &&
+//      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][j])*(1+999.0*Runit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->roztec) /*&&
+//      F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][j])*(1+999.0*Rzunit)==F->ms.MyToDouble(F->d.v.vrat_pohon(j)->Rz) &&
+//     /* F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][j])==F->d.v.vrat_pohon(j)->Rx*/)
+//      {
+//       nezobrazuj++;
+//       }
+//       else nezobrazuj=0;
+//      } //pokud poèet øádkù beze zmìny sedí s celkovým poètem øádkù = žádná zmìna, nebudu nakonec gapo R zobrazovat, jinak zobrazím gapoR
+//      if(nezobrazuj==rStringGridEd_tab_dopravniky->RowCount-1)    zobrazGAPO_R=false;  else zobrazGAPO_R=true;
+//      }
 
 		if(zobrazGAPO_R)//pokud byl nìjaký používaný pohon zmìnìn
 		{
@@ -524,36 +537,36 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		//NEW
 		//kontrola rozmezí jednotlivých pohonù   - je to spravne, cekovat vzdy vuci RD?
 		AnsiString T="";
-		for(short i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-
-		{
-			//prùchod jednotlivými objekty, zda je daný pohon objektu pøiøazen a pokud ano, tak zda je mimo rozsah
-			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
-			while(O!=NULL)
-			{
-      double grid_od = 0;
-      double grid_do = 0;   //zde není nutný nic pøevádìt, pøevádí se levá èást v podmínce IF dle akt. jednotek
-       grid_od =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]);
-       grid_do =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]);
-
-				if(
-					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
-					O->rezim==1 && //je v režimu kontinuál a zároveò
-					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
-					(Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) < grid_od ||//je mimo rozsah (pod) nebo
-					 Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) > grid_do)//je mimo rozsah (nad)
-				)
-				{
-          Memo3->Lines->Add(grid_od);
-          Memo3->Lines->Add(grid_do);
-          Memo3->Lines->Add(aRDunit);
-					T+="Objekt: "+O->name+" Rychlost:"+O->RD*(1+59.0*aRDunit)+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
-					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
-				}
-				O=O->dalsi;
-			}
-			O=NULL;delete O;
-		}
+//		for(short i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+//
+//		{
+//			//prùchod jednotlivými objekty, zda je daný pohon objektu pøiøazen a pokud ano, tak zda je mimo rozsah
+//			Cvektory::TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
+//			while(O!=NULL)
+//			{
+//      double grid_od = 0;
+//      double grid_do = 0;   //zde není nutný nic pøevádìt, pøevádí se levá èást v podmínce IF dle akt. jednotek
+//       grid_od =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i]);
+//       grid_do =  Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i]);
+//
+//				if(
+//					O->pohon!=NULL && //když má objekt pøiøazen pohon a zároveò
+//					O->rezim==1 && //je v režimu kontinuál a zároveò
+//					O->pohon->n==Form1->ms.a2i(rStringGridEd_tab_dopravniky->Cells[0][i]) &&//pokud objekt má pohon pøiøazen a zároveò
+//					(Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) < grid_od ||//je mimo rozsah (pod) nebo
+//					 Form1->ms.MyToDouble(O->RD)*(1+59.0*aRDunit) > grid_do)//je mimo rozsah (nad)
+//				)
+//				{
+//          Memo3->Lines->Add(grid_od);
+//          Memo3->Lines->Add(grid_do);
+//          Memo3->Lines->Add(aRDunit);
+//					T+="Objekt: "+O->name+" Rychlost:"+O->RD*(1+59.0*aRDunit)+" vs. Pohon: "+rStringGridEd_tab_dopravniky->Cells[1][i];
+//					if(O->predchozi!=O)T+=",";//u posledního prvku nepøidá èárku
+//				}
+//				O=O->dalsi;
+//			}
+//			O=NULL;delete O;
+//		}
 
 		if(T!="")//byly nalezeny objekty mimo rozmezí + výpis
 		{
@@ -594,69 +607,56 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
   {
 		////////////////////////////////////////////////////////////////////////
 		//Pri zmene roztece  - volani zmìny rozteèe - pokud dojde ke zmìnì rozteèe u používaného pohonu - pøedám status pro zobrazení PL_priority
-			Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
-			while(P!=NULL)
-			{
-			     double roztec;
-					 if(Runit==M) roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n]);
-					 else 				roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n])/1000.0;
-					if(rStringGridEd_tab_dopravniky->Cells[8][P->n]!="nepoužíván"  && roztec!=P->roztec)
-					{
-					if(rStringGridEd_tab_dopravniky->Cells[5][P->n]!="")  //osetreni situace kdyz odmazu pohon a N je prazdne
-					{
-							Changes_roztec=true;
-						 //	Memo2->Lines->Add(rStringGridEd_tab_dopravniky->Cells[5][P->n]);
-						 //	Memo3->Lines->Add(P->roztec);
-						}
-					}
-					P=P->dalsi;
-				 }
-			P=NULL;delete P;
+//			Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;
+//			while(P!=NULL)
+//			{
+//			     double roztec;
+//					// if(Runit==M) roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n]);
+//				 //	 else 				roztec = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][P->n])/1000.0;
+//					if(rStringGridEd_tab_dopravniky->Cells[6][P->n]!="nepoužíván"  && roztec!=P->roztec)
+//					{
+//					if(rStringGridEd_tab_dopravniky->Cells[5][P->n]!="")  //osetreni situace kdyz odmazu pohon a N je prazdne
+//					{
+//							Changes_roztec=true;
+//						 //	Memo2->Lines->Add(rStringGridEd_tab_dopravniky->Cells[5][P->n]);
+//						 //	Memo3->Lines->Add(P->roztec);
+//						}
+//					}
+//					P=P->dalsi;
+//				 }
+//			P=NULL;delete P;
 
 
 			//////////////////////////////////////////////////
 
 			// Hlídaní následujících zmìn, pokud je pohon používaný
-
-				Cvektory::TPohon *p_prirazen=Form1->d.v.POHONY->dalsi;
-			while(p_prirazen!=NULL)
-			{
-						bool pohon_pouzivan=false;
-						AnsiString pohon_prirazen=Form1->d.v.vypis_objekty_vyuzivajici_pohon(p_prirazen->n);
-						if(pohon_prirazen!="")pohon_pouzivan=true;
-						else   pohon_pouzivan=false;
-
-				 //zmìna odpøiøazení
-					if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]=="nepoužíván"  && pohon_pouzivan)
-					{
-							Changes_prirazen=true;
-							zrusena_prirazeni_PID[getPID(p_prirazen->n)-1]=true;
-
-					}
-				 //zmìna aRD
-						if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n])/(1+59.0*aRDunit)!=p_prirazen->aRD)
-					{
-							Changes_aRD=true;
-
-					}
-
-					//zmìna Rz
-							if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n])/(1+999.0*Rzunit)!=p_prirazen->Rz)
-					{
-							Changes_Rz=true;
-
-					}
-					 //zmìna Rx
-								if(rStringGridEd_tab_dopravniky->Cells[8][p_prirazen->n]!="nepoužíván"  && F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][p_prirazen->n])!=p_prirazen->Rx)
-					{
-							Changes_Rx=true;
-
-					}
-
-					p_prirazen=p_prirazen->dalsi;
-				 }
-
-			p_prirazen=NULL;delete p_prirazen;
+//
+//				Cvektory::TPohon *p_prirazen=Form1->d.v.POHONY->dalsi;
+//			while(p_prirazen!=NULL)
+//			{
+//						bool pohon_pouzivan=false;
+//						AnsiString pohon_prirazen=Form1->d.v.vypis_objekty_vyuzivajici_pohon(p_prirazen->n);
+//						if(pohon_prirazen!="")pohon_pouzivan=true;
+//						else   pohon_pouzivan=false;
+//
+//				 //zmìna odpøiøazení
+//					if(rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n]=="nepoužíván"  && pohon_pouzivan)
+//					{
+//							Changes_prirazen=true;
+//							zrusena_prirazeni_PID[getPID(p_prirazen->n)-1]=true;
+//
+//					}
+//				 //zmìna aRD
+//						if(rStringGridEd_tab_dopravniky->Cells[6][p_prirazen->n]!="nepoužíván"  && F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][p_prirazen->n])/(1+59.0*aRDunit)!=p_prirazen->aRD)
+//					{
+//							Changes_aRD=true;
+//
+//					}
+//
+//					p_prirazen=p_prirazen->dalsi;
+//				 }
+//
+//			p_prirazen=NULL;delete p_prirazen;
 
 
 	 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -670,48 +670,43 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Form1->d.v.vymaz_seznam_POHONY();
 			Form1->d.v.hlavicka_POHONY();
 
-			for (int i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
+			for (int i = 2; i < mGrid->RowCount; i++)
 			{
 				double rychlost_od;
 				double rychlost_do;
 				double roztec;
 				double aRD;
-				double Rz;
-				double Rx;
+			 	double Rz;  //nepouzivane
+			 	double Rx;  //nepouzivane
 				UnicodeString nazev;
 
-				if (rStringGridEd_tab_dopravniky->Cells[1][i].IsEmpty()) nazev="nový pohon";
-				else  nazev=rStringGridEd_tab_dopravniky->Cells[1][i];
+				if (mGrid->Cells[1][i].Text=="") nazev="nový pohon";
+				else  nazev=mGrid->Cells[1][i].Text;
 
-				if (rStringGridEd_tab_dopravniky->Cells[2][i].IsEmpty()) rychlost_od=0;
-				else  rychlost_od=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][i])/(1+59.0*aRDunit);
+				if (mGrid->Cells[2][i].Text=="") rychlost_od=0;
+				else  rychlost_od=Form1->ms.MyToDouble(mGrid->Cells[2][i].Text)/(1+59.0*aRDunit);
 
-				if(rStringGridEd_tab_dopravniky->Cells[3][i].IsEmpty()) rychlost_do=0;
-				else 	rychlost_do=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][i])/(1+59.0*aRDunit);
+				if(mGrid->Cells[3][i].Text=="") rychlost_do=0;
+				else 	rychlost_do=Form1->ms.MyToDouble(mGrid->Cells[3][i].Text)/(1+59.0*aRDunit);
 
-				if(rStringGridEd_tab_dopravniky->Cells[4][i].IsEmpty()) aRD=0;
-				else aRD=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i])/(1+59.0*aRDunit);
+				if(mGrid->Cells[4][i].Text=="") aRD=0;
+				else aRD=Form1->ms.MyToDouble(mGrid->Cells[4][i].Text)/(1+59.0*aRDunit);
 
-				if(rStringGridEd_tab_dopravniky->Cells[5][i].IsEmpty()) roztec=0;
-				if(Runit==MM) roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000.0;
-				else roztec=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]);
+				if(mGrid->Cells[5][i].Text=="") roztec=0;
+				if(Runit==MM) roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
+				else roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text);
 
-
-				if(rStringGridEd_tab_dopravniky->Cells[6][i].IsEmpty()) Rz=0;
-				else Rz=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])/(1+999.0*Dmunit);
-
-				if(rStringGridEd_tab_dopravniky->Cells[7][i].IsEmpty()) Rx=0;
-				else Rx=Form1->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
+        Rz=0;Rx=0;
 
 				//uložení pohonu do spojáku
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
-				Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
+		//R - odstaveno	 //	Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
 			}
 			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
-			Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
-
+	 //R - odstaveno		//Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
+//
 
 			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
 			//	if(Form1->ms.MyToDouble(rEditNum_delkavoziku->Text) > Form1->ms.MyToDouble(rEditNum_delka_jigu->Text))
@@ -759,85 +754,111 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
 	//navýší poèet øádkù
-	rStringGridEd_tab_dopravniky->RowCount++;
-  if(rStringGridEd_tab_dopravniky->RowCount>=1)
-  {
-  rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
-  Form_parametry_linky->Height= Form_parametry_linky->Height+30;
-  //scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
-  Button_save->Top=Button_save->Top + 30;
-  Button_storno->Top=Button_storno->Top + 30;
-  scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
-  }
+  mGrid->AddRow(true,false);
+
+  int i = mGrid->RowCount -1 ;//poøadí øádku o jednièku nižší než poèet øádkù
+
+
+
+	mGrid->Cells[0][i].Text = mGrid->RowCount - 2;
+	mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
+
+   getmGridWidth();
+   mGrid->Cells[1][i].Type=mGrid->EDIT;
+   mGrid->Cells[2][i].Type=mGrid->EDIT;
+   mGrid->Cells[3][i].Type=mGrid->EDIT;
+   mGrid->Cells[4][i].Type=mGrid->EDIT;
+   mGrid->Cells[5][i].Type=mGrid->EDIT;
+   mGrid->Cells[6][i].Type=mGrid->CHECK;
+   mGrid->Cells[7][i].Text="-";
+   mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+
+
+  mGrid->Refresh();
+  mGrid->getCheck(6,i)->Enabled=false;
+  getDeleteButtonSettings(i);
+
+
+
+  //FormPaint(this);//zajistí pøekreslení bez probliku
+
+//	rStringGridEd_tab_dopravniky->RowCount++;
+//  if(rStringGridEd_tab_dopravniky->RowCount>=1)
+//  {
+//  rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
+//  Form_parametry_linky->Height= Form_parametry_linky->Height+30;
+//  //scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
+//  Button_save->Top=Button_save->Top + 30;
+//  Button_storno->Top=Button_storno->Top + 30;
+//  scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
+//  }
 	//zobrazOramovani=false;
 
-	//zaène plnit jednotlivé øádky
-	int i = rStringGridEd_tab_dopravniky->RowCount - 1;//poøadí øádku o jednièku nižší než poèet øádkù
-	rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
-	rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon "+AnsiString(getMaxPID());//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[2][i] = "";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[3][i] = "";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[4][i] = "";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
-	rStringGridEd_tab_dopravniky->Cells[5][i] = "";
-	rStringGridEd_tab_dopravniky->Cells[6][i] = "";
-	rStringGridEd_tab_dopravniky->Cells[7][i] = "";
-	rStringGridEd_tab_dopravniky->Cells[8][i] = "nepoužíván";
-
-	//doplní min Rz
-	show_min_Rz();
-
-	//pøesune focus na poslední øádek
-	rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;
-
-	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-	pozice_scGPGlyphButton_hint();
-
-	//existuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-	scGPGlyphButton_DEL_nepouzite->Visible=true;
- // input_clicked_edit=od_klik;
-	INPUT(2,i);
-	OUTPUT(0,2,i);
-	rStringGridEd_tab_dopravniky->Invalidate();
-	input_state=NOTHING;
+//	//zaène plnit jednotlivé øádky
+//	int i = rStringGridEd_tab_dopravniky->RowCount - 1;//poøadí øádku o jednièku nižší než poèet øádkù
+//	rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
+//	rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon "+AnsiString(getMaxPID());//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
+//	rStringGridEd_tab_dopravniky->Cells[2][i] = "";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
+//	rStringGridEd_tab_dopravniky->Cells[3][i] = "";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
+//	rStringGridEd_tab_dopravniky->Cells[4][i] = "";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
+//	rStringGridEd_tab_dopravniky->Cells[5][i] = "";
+//	rStringGridEd_tab_dopravniky->Cells[6][i] = "nepoužíván";
+//
+//	//doplní min Rz
+//	show_min_Rz();
+//
+//	//pøesune focus na poslední øádek
+//	rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;
+//
+//	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+//	pozice_scGPGlyphButton_hint();
+//
+//	//existuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+//	scGPGlyphButton_DEL_nepouzite->Visible=true;
+// // input_clicked_edit=od_klik;
+//	INPUT(2,i);
+//	OUTPUT(0,2,i);
+//	rStringGridEd_tab_dopravniky->Invalidate();
+//	input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
 //smaže poslední øádek - již se nepoužívá, ale nechvám
 void __fastcall TForm_parametry_linky::Button_DEL_Click(TObject *Sender)
 {
-	if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
-	{
-		AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
-				if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL)){
-
-				//pùvodní zakomentovaná konstrukcenefunguje správnì pro pøípad storna, proto øeší následující øádek, Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(rStringGridEd_tab_dopravniky->RowCount-1));
-				zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)-1]=true;
-				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
-
-					if(rStringGridEd_tab_dopravniky->RowCount>1)
-					{
-					rStringGridEd_tab_dopravniky->RowCount--;
-					}
-				 //	Form1->MB("Smazano");
-				}
-				else
-				{
-				 //storno   - nic se nedìje
-				}
-	}
-	else// pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
-	{
-		rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
-		if(rStringGridEd_tab_dopravniky->RowCount>1)
-		{
-			rStringGridEd_tab_dopravniky->RowCount--;
-		}
-	}
-
-	//	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
-	//	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
-
-	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-	pozice_scGPGlyphButton_hint();
+//	if(Form1->d.v.pohon_je_pouzivan(rStringGridEd_tab_dopravniky->RowCount-1))
+//	{
+//		AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(rStringGridEd_tab_dopravniky->RowCount-1),true);
+//				if(mrOk==Form1->MB("Pohon je používán pro objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_OKCANCEL)){
+//
+//				//pùvodní zakomentovaná konstrukcenefunguje správnì pro pøípad storna, proto øeší následující øádek, Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(rStringGridEd_tab_dopravniky->RowCount-1));
+//				zrusena_prirazeni_PID[getPID(rStringGridEd_tab_dopravniky->RowCount-1)-1]=true;
+//				rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
+//
+//					if(rStringGridEd_tab_dopravniky->RowCount>1)
+//					{
+//					rStringGridEd_tab_dopravniky->RowCount--;
+//					}
+//				 //	Form1->MB("Smazano");
+//				}
+//				else
+//				{
+//				 //storno   - nic se nedìje
+//				}
+//	}
+//	else// pohon neni pouzivany, mohu ho smazat cokoliv ze stringgridu
+//	{
+//		rStringGridEd_tab_dopravniky->Rows[rStringGridEd_tab_dopravniky->RowCount]->Clear();
+//		if(rStringGridEd_tab_dopravniky->RowCount>1)
+//		{
+//			rStringGridEd_tab_dopravniky->RowCount--;
+//		}
+//	}
+//
+//	//	for (long i = 1; i < rStringGridEd_tab_dopravniky->RowCount; i++)
+//	//	rStringGridEd_tab_dopravniky->Cells[0][i] = i;
+//
+//	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+//	pozice_scGPGlyphButton_hint();
 }
 //---------------------------------------------------------------------------
 
@@ -858,7 +879,7 @@ void __fastcall TForm_parametry_linky::Vypis_pohonyClick(TObject *Sender)
 //zobrazí panel se navrženými pohony
 void __fastcall TForm_parametry_linky::scGPButton_doporuceneClick(TObject *Sender)
 {
-		scExPanel_doporuc_pohony->Visible=true;
+		scExPanel_doporuc_pohony->Visible=false;
 		scGPButton_doporucene->Visible=false;
 		if(F->pom==NULL)//pokud je voláno PL pøímo                        //zajistí zobrazení ve stejných jednotkách jako na PO
 		scHTMLLabel_doporuc_pohony->Caption=F->d.v.navrhni_POHONY("</br>",F->ms.a2i(F->readINI("nastaveni_form_parametry", "RDt")));
@@ -932,48 +953,48 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 //tlaèítko na kopírování doporuèených pohonù do striggridu, nepøidává ale do pohonù
 void __fastcall TForm_parametry_linky::scGPGlyphButton_add_mezi_pohonyClick(TObject *Sender)
 {
-	 //najde max použité ID pohonu (protože ID nejsou seøazena, nutno hledat, nikoliv vzít id z posledního øádku)
-	 unsigned int ID=getMaxPID();
-
-	 //nová konstrukce zajišující pouze vložení do stringgridu, o samotné uložení pohonù se stará až tlaèítko uložit
-	 AnsiString T=scHTMLLabel_doporuc_pohony->Caption;
-
-	 while(T.Pos("</br>"))//bude parsovat dokud bude </br>
-	 {
-	 	//zvýšení poètu øádkù
-   	rStringGridEd_tab_dopravniky->RowCount++;
-    //dynamické zvìtšení tabulky - aby se nemusel zobrazovat postranní scrollbar
-       if(rStringGridEd_tab_dopravniky->RowCount>=1)
-      {
-      rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
-      Form_parametry_linky->Height= Form_parametry_linky->Height+30;
-      //scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
-      Button_save->Top=Button_save->Top + 30;
-      Button_storno->Top=Button_storno->Top + 30;
-      scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
-      }
-
-   	unsigned int i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
-	 	//plnìní øádku a parsování daty
-		rStringGridEd_tab_dopravniky->Cells[0][i]=++ID;//ID
-		rStringGridEd_tab_dopravniky->Cells[1][i]="Navržený pohon pro"+Form1->ms.EP(T,":",".");//název pohonu a vyèeštìní øetìzce pro další užití
-		rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,"Navržený pohon s rychlostí"," [");//T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
-		rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
-		//pro aRD až bude sloupec: rStringGridEd_tab_dopravniky->Cells[?][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
-		rStringGridEd_tab_dopravniky->Cells[8][i]="nepoužíván";
-		//smazání jednoho již nepotøebného záznamu
-		T=Form1->ms.TrimLeftFromText(T,"</br>");
-	 }
-	 //smazání již nahraných a skrytí panelu
-	 scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";//nepoužívá se tento výpis viditelnì, situace nenastane
-	 scExPanel_doporuc_pohony->Visible=false;
-	 scGPButton_doporucene->Visible=true;
-	 //pøesune focus na poslední øádek
-	 rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;
-	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-	 pozice_scGPGlyphButton_hint();
-	 //existují urèitì nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-	 scGPGlyphButton_DEL_nepouzite->Visible=true;
+//	 //najde max použité ID pohonu (protože ID nejsou seøazena, nutno hledat, nikoliv vzít id z posledního øádku)
+//	 unsigned int ID=getMaxPID();
+//
+//	 //nová konstrukce zajišující pouze vložení do stringgridu, o samotné uložení pohonù se stará až tlaèítko uložit
+//	 AnsiString T=scHTMLLabel_doporuc_pohony->Caption;
+//
+//	 while(T.Pos("</br>"))//bude parsovat dokud bude </br>
+//	 {
+//	 	//zvýšení poètu øádkù
+//   	rStringGridEd_tab_dopravniky->RowCount++;
+//    //dynamické zvìtšení tabulky - aby se nemusel zobrazovat postranní scrollbar
+//       if(rStringGridEd_tab_dopravniky->RowCount>=1)
+//      {
+//      rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
+//      Form_parametry_linky->Height= Form_parametry_linky->Height+30;
+//      //scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
+//      Button_save->Top=Button_save->Top + 30;
+//      Button_storno->Top=Button_storno->Top + 30;
+//      scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
+//      }
+//
+//   	unsigned int i=rStringGridEd_tab_dopravniky->RowCount-1;//pouze zkrácení zápisu
+//	 	//plnìní øádku a parsování daty
+//		rStringGridEd_tab_dopravniky->Cells[0][i]=++ID;//ID
+//		rStringGridEd_tab_dopravniky->Cells[1][i]="Navržený pohon pro"+Form1->ms.EP(T,":",".");//název pohonu a vyèeštìní øetìzce pro další užití
+//		rStringGridEd_tab_dopravniky->Cells[2][i]=Form1->ms.EP(T,"Navržený pohon s rychlostí"," [");//T=Form1->ms.TrimLeftFrom_UTF(T," </br>");
+//		rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
+//		//pro aRD až bude sloupec: rStringGridEd_tab_dopravniky->Cells[?][i]=rStringGridEd_tab_dopravniky->Cells[2][i];
+//		rStringGridEd_tab_dopravniky->Cells[6][i]="nepoužíván";
+//		//smazání jednoho již nepotøebného záznamu
+//		T=Form1->ms.TrimLeftFromText(T,"</br>");
+//	 }
+//	 //smazání již nahraných a skrytí panelu
+//	 scHTMLLabel_doporuc_pohony->Caption="Nejsou k dispozici žádné navržené pohony";//nepoužívá se tento výpis viditelnì, situace nenastane
+//	 scExPanel_doporuc_pohony->Visible=false;
+//	 scGPButton_doporucene->Visible=true;
+//	 //pøesune focus na poslední øádek
+//	 rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;
+//	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+//	 pozice_scGPGlyphButton_hint();
+//	 //existují urèitì nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+//	 scGPGlyphButton_DEL_nepouzite->Visible=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -999,120 +1020,9 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
-{
-	Cvektory:: TObjekt *O=Form1->d.v.OBJEKTY->dalsi;
-			while (O!=NULL){
-	Memo1->Lines->Add(O->pohon->n);
-
-	O=O->dalsi;
-		}
-}
-//---------------------------------------------------------------------------
-
-
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditStyle(TObject *Sender,
-					int Col, int Row, TrStringGridEdEditStyle &EditStyle)
-{
-  	//if(Col==5)  // Roletka_roztec(Row);
-	 // pokud je pohon ve stavu používán, vygeneruji roletku která umožní provést zmìnu na nepoužíván
-
-		if(Col==8 && rStringGridEd_tab_dopravniky->Cells[8][Row]!="nepoužíván")
-    {
-			 EditStyle=sgbDropDown;
-			 rStringGridEd_tab_dopravniky->Columns->Items[8]->PickList->Clear();
-			 rStringGridEd_tab_dopravniky->Columns->Items[8]->PickList->Add("nepoužíván");
-		}
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCanEdit(TObject *Sender,
-					int Col, int Row, bool &CanEdit)
-{
-
-		if (Col==1 && Row==0) {
-			CanEdit=false;
-			 }
-		if (Col==2 && Row==0) {
-			CanEdit=false;
-			 }
-		if (Col==3 && Row==0) {
-			CanEdit=false;
-			 }
-		if (Col==4 && Row==0) {
-			CanEdit=false;
-			 }
-		if (Col==5 && Row==0) {
-			CanEdit=false;
-			 }
-		if (Col==6 && Row==0) {
-			CanEdit=false;
-			 }
-		if (Col==7 && Row==0) {
-			CanEdit=false;
-			 }
-		if (Col==8 && Row==0) {
-			CanEdit=false;
-			 }
-
-		//Pokud je pohon používán, nastavím položky rychlost, rozteè atd jako readonly - nelze je mìnit.
-//	 for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-//	 {
-//		 if(rStringGridEd_tab_dopravniky->Cells[5][i]=="" && rStringGridEd_tab_dopravniky->Cells[8][i]=="nepoužíván" )
-//		 {
-//			// if(Row==i && Col==6) CanEdit=false;      //nakonec je vždy povoleno editovat
-//		 //	 if(Row==i && Col==7) CanEdit=false;
-//		 }
-//
-//	 }
-
-			for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-			 {
-					 //aRD
-					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==37)CanEdit=false;
-					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==38)CanEdit=true;
-
-					 //R
-					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==37)CanEdit=false;
-					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==38)CanEdit=true;
-
-					 //Rz
-					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==37)CanEdit=false;
-					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==38)CanEdit=true;
-
-					 //Rx
-					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==37)CanEdit=false;
-					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==38)CanEdit=true;
-
-//					 if(Row==i && Col==4 &&  scGPButton_zamek_Rz->ImageIndex==37)
-//					 {scGPButton_zamek_Rz->Visible=true; /*ShowMessage("kuk"); */  }
-
-			 }
-
-
-			 			 if(VID==1 || VID==2 || VID==3 || VID==23 || VID==4 || VID==5 || VID==6 || VID==7){
-
-			 //pokud se nejedná o øádek, kde právì dochází k validaci a zároveò vynechám nultý øádek (hlavièka)
-			 //tak do všech sloupcù dám šedou barvu
-
-			 if(Row!=Row_validace && Row!=0 && Col==1)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==2)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==3)  	  CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==4)  	  CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==5)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==6)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==7)  		CanEdit=false;
-			 if(Row!=Row_validace && Row!=0 && Col==8)  		CanEdit=false;
-      // if(Row==Row_validace && Row!=0 && Col!=Col_validace) 	CanEdit=false;
-
-
-			 }
 
 
 
-
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender)
 {
 	rHTMLLabel_delka_jigClick(Sender);
@@ -1190,22 +1100,23 @@ void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyKeyDown(TObje
 void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyEnter(TObject *Sender)
 
 {
- rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width;
+ //rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
- // ShowMessage(rStringGridEd_tab_dopravniky->RowCount);
- 	if (rStringGridEd_tab_dopravniky->RowCount<=1) {
-		 Button_DEL->Enabled=false;
-	}  else Button_DEL->Enabled=true;
+
+//  TPoint RET=mGrid->CheckLink(X,Y);
+//  Memo2->Lines->Add(RET.x);
 
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
- F->d.vykresli_packy_PL(Canvas,scGPButton_zamek_aRD,scGPButton_zamek_roztec,scGPButton_zamek_Rz,scGPButton_zamek_Rx);
+ 	mGrid->Show();//vykreslí tabulku
+
+ //F->d.vykresli_packy_PL(Canvas,scGPButton_zamek_aRD,scGPButton_zamek_roztec,scGPButton_zamek_Rz,scGPButton_zamek_Rx);
 
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 
@@ -1246,7 +1157,7 @@ unsigned int TForm_parametry_linky::getPID(int ROW)
 {
 	try
 	{
-		return rStringGridEd_tab_dopravniky->Cells[0][ROW].ToInt();
+		return mGrid->Cells[0][ROW].Text.ToInt();
 	}
 	catch(...)
 	{
@@ -1258,7 +1169,7 @@ unsigned int TForm_parametry_linky::getPID(int ROW)
 unsigned int TForm_parametry_linky::getMaxPID()
 {
 	unsigned int ID=0;//id
-	for(unsigned i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+	for(unsigned i=2;i<mGrid->RowCount;i++)
 	if(ID<getPID(i))ID=getPID(i);
 	return ID;
 }
@@ -1267,9 +1178,9 @@ unsigned int TForm_parametry_linky::getMaxPID()
 int TForm_parametry_linky::getROW(int PID)
 {
 	int RET=-1;
-	for(unsigned i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
+	for(unsigned i=2;i<mGrid->RowCount;i++)
 	{
-		if(PID==rStringGridEd_tab_dopravniky->Cells[0][i].ToInt())
+		if(PID==mGrid->Cells[0][i].Text.ToInt())
 		{
 			RET=i;
 			break;
@@ -1299,7 +1210,7 @@ void TForm_parametry_linky::pozice_scGPGlyphButton_hint()
 bool TForm_parametry_linky::existuji_nepouzivane_pohony()
 {
 	 bool RET=false;
-	 for(unsigned int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+	 for(unsigned int i=2;i<mGrid->RowCount;i++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
 	 {
 		if(!Form1->d.v.pohon_je_pouzivan(getPID(i)))//pohon není používaný
 		{
@@ -1313,37 +1224,6 @@ bool TForm_parametry_linky::existuji_nepouzivane_pohony()
 //-------------------------POP-UP MENU---------------------------------------
 //---------------------------------------------------------------------------
 //volání pop-up menu
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyMouseDown(TObject *Sender,
-					TMouseButton Button, TShiftState Shift, int X, int Y)
-{
-	 if(Button==mbRight && rStringGridEd_tab_dopravniky->Row>0)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
-	 {
-			PopUPmenu->Height=34*2;//zobrazené dvì položky
-			PopUPmenu->Left=X;PopUPmenu->Top=Y+rStringGridEd_tab_dopravniky->Top;//pozice
-			//nastávení textu polože
-			scLabel_kopirovat->Caption="  Kopírovat "+rStringGridEd_tab_dopravniky->Cells[1][rStringGridEd_tab_dopravniky->Row];
-			scLabel_smazat->Caption="  Smazat "+rStringGridEd_tab_dopravniky->Cells[1][rStringGridEd_tab_dopravniky->Row];
-			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-			if(existuji_nepouzivane_pohony())
-			{
-				PopUPmenu->Height=34*3;//zobrazené již tøi položky
-				Item_smazat_nepouzite->Visible=true;
-				scGPGlyphButton_DEL_nepouzite->Visible=true;
-			}
-			else
-			{
-				Item_smazat_nepouzite->Visible=false;
-				scGPGlyphButton_DEL_nepouzite->Visible=false;
-			}
-			//ošetøení, pokud je mimo obrazovku + 5 px okraj
-			if(PopUPmenu->Left>=ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
-			PopUPmenu->Left=ClientWidth-PopUPmenu->Width-5;
-			if(PopUPmenu->Top>=rStringGridEd_tab_dopravniky->Top+rStringGridEd_tab_dopravniky->Height-PopUPmenu->Height)
-			PopUPmenu->Top=rStringGridEd_tab_dopravniky->Top+rStringGridEd_tab_dopravniky->Height-PopUPmenu->Height-5;
-			PopUPmenu->Visible=true;
-	 }
-}
-//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //køížek, který skryje pop-up menu
 void __fastcall TForm_parametry_linky::GlyphButton_closeClick(TObject *Sender)
@@ -1368,24 +1248,24 @@ void TForm_parametry_linky::top_positon(int top)
 //zajišuje zkopírování pohonu, vloží na konec, nevkládáme za kopírovaný objekt, protože podle poøadí zùstává pøiøaøení k jednotlivým objektùm
 void __fastcall TForm_parametry_linky::scLabel_kopirovatClick(TObject *Sender)
 {
-	int ROW=rStringGridEd_tab_dopravniky->Row;
-	rStringGridEd_tab_dopravniky->InsertRowEx(ROW+1,false);
-	//zkopírování øádku za kopírovaný pohon
-	rStringGridEd_tab_dopravniky->Rows[ROW+1]=rStringGridEd_tab_dopravniky->Rows[ROW];
-	//název pøejmenování
-	rStringGridEd_tab_dopravniky->Cells[1][ROW+1]=rStringGridEd_tab_dopravniky->Cells[1][ROW]+" - kopie";
-	//nepoužíván
-	rStringGridEd_tab_dopravniky->Cells[8][ROW+1]="nepoužíván";
-	//indexace
-	rStringGridEd_tab_dopravniky->Cells[0][ROW+1]=getMaxPID()+1;
-	//pøesune focus na poslední øádek
-	rStringGridEd_tab_dopravniky->Row=ROW+1;
-	//skrytí pop-up menu
-	PopUPmenu->Visible=false;
-	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-	pozice_scGPGlyphButton_hint();
-	//existuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-	scGPGlyphButton_DEL_nepouzite->Visible=true;
+//	int ROW=rStringGridEd_tab_dopravniky->Row;
+//	rStringGridEd_tab_dopravniky->InsertRowEx(ROW+1,false);
+//	//zkopírování øádku za kopírovaný pohon
+//	rStringGridEd_tab_dopravniky->Rows[ROW+1]=rStringGridEd_tab_dopravniky->Rows[ROW];
+//	//název pøejmenování
+//	rStringGridEd_tab_dopravniky->Cells[1][ROW+1]=rStringGridEd_tab_dopravniky->Cells[1][ROW]+" - kopie";
+//	//nepoužíván
+//	rStringGridEd_tab_dopravniky->Cells[8][ROW+1]="nepoužíván";
+//	//indexace
+//	rStringGridEd_tab_dopravniky->Cells[0][ROW+1]=getMaxPID()+1;
+//	//pøesune focus na poslední øádek
+//	rStringGridEd_tab_dopravniky->Row=ROW+1;
+//	//skrytí pop-up menu
+//	PopUPmenu->Visible=false;
+//	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+//	pozice_scGPGlyphButton_hint();
+//	//existuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+//	scGPGlyphButton_DEL_nepouzite->Visible=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_kopirovatMouseEnter(TObject *Sender)
@@ -1419,31 +1299,31 @@ void __fastcall TForm_parametry_linky::GlyphButton_kopirovatMouseLeave(TObject *
 //zajišuje smázání pohonu na vybraném øádku
 void __fastcall TForm_parametry_linky::scLabel_smazatClick(TObject *Sender)
 {
-	int ROW=rStringGridEd_tab_dopravniky->Row;
-	bool smazat=false;
-	if(Form1->d.v.pohon_je_pouzivan(getPID(ROW)))//pohon je používaný
-	{
-			AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
-			myMessageBox->zobrazitFrameForm=true;//zajistí orámování MB
-			if(mrYes==Form1->MB("Pohon je používán objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_YESNO))
-			{
-				//Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW)); pùvodní pøímé smazání, ale nereflektovalo by pøípadné storno
-				//pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
-				zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
-				smazat=true;
-			}
-			myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
-	}
-	else//pohon není používaný a mùžeme tedy smazat rovnou
-	{
-		smazat=true;
-	}
-	//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
-	if(smazat)rStringGridEd_tab_dopravniky->DeleteRowEx(ROW);
-	//skrytí pop-up menu
-	PopUPmenu->Visible=false;
-	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-	pozice_scGPGlyphButton_hint();
+//	int ROW=rStringGridEd_tab_dopravniky->Row;
+//	bool smazat=false;
+//	if(Form1->d.v.pohon_je_pouzivan(getPID(ROW)))//pohon je používaný
+//	{
+//			AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
+//			myMessageBox->zobrazitFrameForm=true;//zajistí orámování MB
+//			if(mrYes==Form1->MB("Pohon je používán objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_YESNO))
+//			{
+//				//Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW)); pùvodní pøímé smazání, ale nereflektovalo by pøípadné storno
+//				//pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
+//				zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
+//				smazat=true;
+//			}
+//			myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
+//	}
+//	else//pohon není používaný a mùžeme tedy smazat rovnou
+//	{
+//		smazat=true;
+//	}
+//	//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
+//	if(smazat)rStringGridEd_tab_dopravniky->DeleteRowEx(ROW);
+//	//skrytí pop-up menu
+//	PopUPmenu->Visible=false;
+//	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+//	pozice_scGPGlyphButton_hint();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazatMouseEnter(TObject *Sender)
@@ -1477,33 +1357,33 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazatMouseLeave(TObject *Sen
 //prochází všechny pohany a pokud je pohon nepoužíván, smaže ho
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteClick(TObject *Sender)
 {
-	//skrytí pop-up menu
-	PopUPmenu->Visible=false;
-	rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
-	pozice_scGPGlyphButton_hint();//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-	if(mrYes==F->MB("Opravdu chcete smazat nepoužité pohony?",MB_YESNO))
-	{
-		for(int j=1;j<rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
-		{
-			if(Form1->d.v.pohon_je_pouzivan(getPID(j))==false)//pohon není používaný
-			{
-				//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
-				rStringGridEd_tab_dopravniky->DeleteRowEx(j);
-				j--;//musí po smazání nutnì snížit index
-
-				rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
-				Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
-				//scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
-				Button_save->Top=Form_parametry_linky->Height - 40;
-				Button_storno->Top=Form_parametry_linky->Height - 40;
-				scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
-				rHTMLLabel_InfoText->Top=  rStringGridEd_tab_dopravniky->Height + 8;
-				vypis("",false);
-			}
-		}
-		//neexistuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých nezobrazovat
-		scGPGlyphButton_DEL_nepouzite->Visible=false;
-	}
+//	//skrytí pop-up menu
+//	PopUPmenu->Visible=false;
+//	rStringGridEd_tab_dopravniky->FinishEditing();//ukonèí editaci a tím odstraní nepøíjemný vizuální efekt
+//	pozice_scGPGlyphButton_hint();//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
+//	if(mrYes==F->MB("Opravdu chcete smazat nepoužité pohony?",MB_YESNO))
+//	{
+//		for(int j=1;j<rStringGridEd_tab_dopravniky->RowCount;j++)//prochází všechny pohany a pokud je pohon nepoužíván, smažeho
+//		{
+//			if(Form1->d.v.pohon_je_pouzivan(getPID(j))==false)//pohon není používaný
+//			{
+//				//samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
+//				rStringGridEd_tab_dopravniky->DeleteRowEx(j);
+//				j--;//musí po smazání nutnì snížit index
+//
+//				rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
+//				Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
+//				//scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
+//				Button_save->Top=Form_parametry_linky->Height - 40;
+//				Button_storno->Top=Form_parametry_linky->Height - 40;
+//				scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
+//				rHTMLLabel_InfoText->Top=  rStringGridEd_tab_dopravniky->Height + 8;
+//				vypis("",false);
+//			}
+//		}
+//		//neexistuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých nezobrazovat
+//		scGPGlyphButton_DEL_nepouzite->Visible=false;
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scLabel_smazat_nepouziteMouseEnter(TObject *Sender)
@@ -1536,56 +1416,6 @@ void __fastcall TForm_parametry_linky::GlyphButton_smazat_nepouziteMouseLeave(TO
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetCellParams(TObject *Sender,
-					int Col, int Row, TFont *AFont, TColor &Background, bool &Highlight)
-{
-//Memo3->Lines->Add(VID);
- // vynechá první øádek a obarví sloupec tak jak má - pokud je zamèen zámek, je šedivý sloupec a nastaví se,
- // že není možné sloupec editovat - to se nastavuje v metodì rStringGridEd_tab_dopravnikyCanEdit
-
-				for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-			 {
-					 //aRD
-					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==37)Background=(TColor)RGB(212,212,212);
-					 if(Row==i && Col==4  && scGPButton_zamek_aRD->ImageIndex==38)Background=(TColor)RGB(255,255,255);
-
-					 //R
-					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==37)Background=(TColor)RGB(212,212,212);
-					 if(Row==i && Col==5  && scGPButton_zamek_roztec->ImageIndex==38)Background=(TColor)RGB(255,255,255);
-
-					 //Rz
-					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==37)Background=(TColor)RGB(212,212,212);
-					 if(Row==i && Col==6  && scGPButton_zamek_Rz->ImageIndex==38)Background=(TColor)RGB(255,255,255);
-
-					 //Rx
-					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==37)Background=(TColor)RGB(212,212,212);
-					 if(Row==i && Col==7  && scGPButton_zamek_Rx->ImageIndex==38)Background=(TColor)RGB(255,255,255);
-
-
-				 }
-
-				 if(VID==1 || VID==2 || VID==3 || VID==23 || VID==4 || VID==5 || VID==6 || VID==7)
-				 {
-
-			 //pokud se nejedná o øádek, kde právì dochází k validaci a zároveò vynechám nultý øádek (hlavièka)
-			 //tak do všech sloupcù dám šedou barvu
-
-			 if(Row!=Row_validace && Row!=0 && Col==1)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==2)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==3)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==4)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==5)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==6)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==7)  			 Background=(TColor)RGB(212,212,212);
-			 if(Row!=Row_validace && Row!=0 && Col==8)  			 Background=(TColor)RGB(212,212,212);
-
-      // if(Row==Row_validace && Row!=0 && Col!=Col_validace)  Background=(TColor)RGB(212,212,212);
-
-
-       }
-
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *Sender)
 {
 		// zavolá funkcionalitu tlaèítka na kopírování navržených pohonù do striggridu, nepøidává ale do pohonù
@@ -1601,7 +1431,7 @@ else  {rHTMLLabel_podvozek_zaves->Caption="Závìs"; rHTMLLabel_podvozek_zaves->Le
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
 {
-	//ShowMessage(Delkaunit);
+  //zapis do PL ini
 	Form1->writeINI("nastaveni_form_parametry_linky", "rozmery", Delkaunit);
 	Form1->writeINI("nastaveni_form_parametry_linky", "TT", Taktunit);
   Form1->writeINI("nastaveni_form_parametry_linky", "R", Runit);
@@ -1650,14 +1480,14 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 //
 		 input_clicked_edit=TT_klik;
 		 input_clicked_icon=empty_klik_ico;
-		 Nastav_zamky(empty_klik_ico,TT_klik);
+		// Nastav_zamky(empty_klik_ico,TT_klik);
 
 		 Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
 		 Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
 
 		 //pøekreslení podbarvení sloupcù
-		 rStringGridEd_tab_dopravniky->Visible=false;
-		 rStringGridEd_tab_dopravniky->Visible=true;
+//		 rStringGridEd_tab_dopravniky->Visible=false;
+//		 rStringGridEd_tab_dopravniky->Visible=true;
 
 		 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
 }
@@ -1666,522 +1496,8 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 void TForm_parametry_linky::Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_edit E)
 {
 
- if(I==empty_klik_ico && E==empty_klik) //výchozí nastavení zámkù - pøi formshowformu
- {
-
-		scGPButton_zamek_Rz->Visible=true;
-
-		scGPButton_zamek_aRD->ImageIndex=37; // zamknu aRD
-		scGPButton_zamek_Rz->ImageIndex=37; // zamknu Rz - jsou v korelaci
-
-		//odemèeno  Rx a Rz
-		scGPButton_zamek_Rx->ImageIndex=38;
-		scGPButton_zamek_roztec->ImageIndex=38;
- }
-
- ///////////////////////////////////////////////
-
-	if(I==empty_klik_ico && E==TT_klik) // nastavení zámkù pøi kliku do TT
- {
-		//	 ShowMessage("nastav");
-		scGPButton_zamek_aRD->ImageIndex=37; // zamknu aRD
-		scGPButton_zamek_Rz->ImageIndex=38; // odemknu Rz
-
-		//odemèeno  Rx a Rz
-		scGPButton_zamek_Rx->ImageIndex=38;
-		scGPButton_zamek_roztec->ImageIndex=38;
- }
-
-	if(I==aRD_klik_ico && E==aRD_klik) // nastavení zámkù pøi kliku do aRD s pøedchozím vstupem do aRD - souvisí s formshow
- {
-		//	 ShowMessage("nastav");
-		if(scGPButton_zamek_aRD->ImageIndex==37)
-		{
-				scGPButton_zamek_aRD->ImageIndex=38;
-        scGPButton_zamek_Rz->ImageIndex=38;
-				scGPButton_zamek_Rx->ImageIndex=38;
-				scGPButton_zamek_roztec->ImageIndex=37;
-
-
-
-		} else
-		{
-
-				scGPButton_zamek_aRD->ImageIndex=37;
-        scGPButton_zamek_Rz->ImageIndex=37;
-				scGPButton_zamek_Rx->ImageIndex=38;
-				scGPButton_zamek_roztec->ImageIndex=38;
-
-		}
- }
-
- ///////////////////////////////////////////////////////////////
-
- if(I==aRD_klik_ico && E==TT_klik) {  //nastavení zámkù pøi kliku do TT  a zaènu mìnit zámek aRD
-
-
- 	if(scGPButton_zamek_aRD->ImageIndex==37) //odemèeno
-			{
-				scGPButton_zamek_aRD->ImageIndex=38; // odemknu aRD
-				scGPButton_zamek_Rz->ImageIndex=37; // zamknu Rz
-
-				 //odemèeno roztec
-				scGPButton_zamek_roztec->ImageIndex=38; //odemèeno
-				scGPButton_zamek_Rx->ImageIndex=38;
-			}
-			else
-			{
-			//odemèeno
-			 scGPButton_zamek_aRD->ImageIndex=37;  //zamknu aRD
-			 scGPButton_zamek_Rz->ImageIndex=38;   //odemknu Rz
-
-				 //odemceno  roztec   a Rx
-				scGPButton_zamek_roztec->ImageIndex=38;
-				scGPButton_zamek_Rx->ImageIndex=38;
-
-
-			}
- }
-
- ///////////////////////////////////////////////////////////////////////
-
-
-	if(I==aRD_klik_ico && E==empty_klik)   //obecné nastavení zámku aRD bez ovlivnìní vstupu TT
-	{
-
-
-			if(scGPButton_zamek_aRD->ImageIndex==37) //zamèeno
-			{
-				scGPButton_zamek_aRD->ImageIndex=38; // odemknu aRD
-				scGPButton_zamek_Rz->ImageIndex=38; // odemknu Rz - jsou v korelaci
-
-				scGPButton_zamek_roztec->ImageIndex=37; //zamèeno
-				scGPButton_zamek_Rx->ImageIndex=38;      //odemèeno
-			}
-			else
-			{
-			//zamknu
-			 scGPButton_zamek_aRD->ImageIndex=37;
-			 scGPButton_zamek_Rz->ImageIndex=37;
-
-				 //odemknu  roztec   a zamknu Rx
-				scGPButton_zamek_roztec->ImageIndex=38;     //odemèeno
-				scGPButton_zamek_Rx->ImageIndex=37;       //zamèeno
-
-
-			}
-
-	}
-		 // nastavení chování zámku Rx, v pøípadì, že pøedtím došlo ke vstupu do buòky aRD
-
-	//Nastav_zamky(Rx_klik_ico,aRD_klik)
-
-	if(E==aRD_klik) {
-
-					 //Rz není vidìt a lze jej mìnit
-				// scGPButton_zamek_Rz->ImageIndex=38;
-			 //	 scGPButton_zamek_Rz->Visible=false;
-
-	}
-//////////////////////////////////////////////////////////////////
-																				 //	Nastav_zamky(Rx_klik_ico,aRD_klik)
-	if(I==Rx_klik_ico && E==aRD_klik)
-	{
-
-			 if(scGPButton_zamek_Rx->ImageIndex==37)
-			 {
-
-				 scGPButton_zamek_Rx->ImageIndex=38;
-				 scGPButton_zamek_roztec->ImageIndex=38;  //zamknu R
-
-				 scGPButton_zamek_Rz->ImageIndex=37;
-         scGPButton_zamek_aRD->ImageIndex=37;
-				// scGPButton_zamek_Rz->Visible=false;
-
-			 } else
-
-			 {
-				 scGPButton_zamek_Rx->ImageIndex=37;
-				 scGPButton_zamek_roztec->ImageIndex=38;  //odemknu R
-
-				 scGPButton_zamek_Rz->ImageIndex=38;
-         scGPButton_zamek_aRD->ImageIndex=38;
-			 }
-	}
-
-
-		if(I==R_klik_ico && E==aRD_klik)
-	{
-
-			 if(scGPButton_zamek_roztec->ImageIndex==37)
-			 {
-
-				 scGPButton_zamek_roztec->ImageIndex=38;
-				 scGPButton_zamek_Rx->ImageIndex=37;  //zamknu Rx
-
-				 //Rz není vidìt a lze jej mìnit
-				 scGPButton_zamek_Rz->ImageIndex=38;
-				// scGPButton_zamek_Rz->Visible=false;
-
-			 } else
-
-			 {
-
-				 scGPButton_zamek_Rx->ImageIndex=38;
-				 scGPButton_zamek_roztec->ImageIndex=37;  //odemknu R
-
-				 //Rz není vidìt a lze jej mìnit
-				 scGPButton_zamek_Rz->ImageIndex=38;
-			 //	 scGPButton_zamek_Rz->Visible=false;
-			 }
-
-
-	}
-			 if(I==aRD_klik_ico && E==R_klik)
-			 {
-				 //ShowMessage("ted");
-				if(scGPButton_zamek_aRD->ImageIndex==38)
-				{
-
-						scGPButton_zamek_aRD->ImageIndex=37;
-						scGPButton_zamek_Rz->ImageIndex=37;
-
-						scGPButton_zamek_Rx->ImageIndex=38;
-
-				}   else
-
-				{
-						scGPButton_zamek_aRD->ImageIndex=38;
-						scGPButton_zamek_Rz->ImageIndex=38;
-
-						scGPButton_zamek_Rx->ImageIndex=37;
-
-				}
-
-			 }
-
-
-       if(I==R_klik_ico && E==Rx_klik)
-			 {
-
-				if(scGPButton_zamek_roztec->ImageIndex==37)
-				{
-						scGPButton_zamek_roztec->ImageIndex=38;
-						scGPButton_zamek_aRD->ImageIndex=37;
-						scGPButton_zamek_Rz->ImageIndex=37;
-            scGPButton_zamek_Rx->ImageIndex=38;
-
-				}   else
-
-				{
-						scGPButton_zamek_roztec->ImageIndex=37;
-
-						scGPButton_zamek_Rz->ImageIndex=38;
-						scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_Rx->ImageIndex=38;
-
-				}
-
-			 }
-
-			if(I==R_klik_ico && E==R_klik)
-      {
-
-         if(scGPButton_zamek_roztec->ImageIndex==37)
-				{
-						scGPButton_zamek_roztec->ImageIndex=38;
-
-						scGPButton_zamek_aRD->ImageIndex=37;
-						scGPButton_zamek_Rz->ImageIndex=37;
-
-            scGPButton_zamek_Rx->ImageIndex=38;
-
-				}   else
-
-				{
-						scGPButton_zamek_roztec->ImageIndex=37;
-
-						scGPButton_zamek_Rz->ImageIndex=38;
-						scGPButton_zamek_aRD->ImageIndex=38;
-
-            scGPButton_zamek_Rx->ImageIndex=38;
-				}
-
-
-
-
-
-
-
-      }
-
-			 if(I==Rx_klik_ico && E==Rz_klik)
-			 {
-
-				if(scGPButton_zamek_Rx->ImageIndex==37)
-				{
-						scGPButton_zamek_Rx->ImageIndex=38;
-
-            scGPButton_zamek_roztec->ImageIndex=37;
-
-            scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_Rz->ImageIndex=38;
-
-
-
-				}   else
-
-				{
-						scGPButton_zamek_Rx->ImageIndex=37;
-						scGPButton_zamek_roztec->ImageIndex=38;
-            scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_Rz->ImageIndex=38;
-
-
-				}
-
-			 }
-
-			 //-------------------------------------------------------------
-				// if(input_clicked_edit==Rx_klik)  Nastav_zamky(aRD_klik_ico, Rx_klik);
-
-				 if(I==aRD_klik_ico && E==Rx_klik)
-			 {
-
-				if(scGPButton_zamek_aRD->ImageIndex==37)
-				{
-            scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_Rz->ImageIndex=38;
-						scGPButton_zamek_roztec->ImageIndex=37;
-            scGPButton_zamek_Rx->ImageIndex=38;
-
-				}   else
-
-				{
-            scGPButton_zamek_aRD->ImageIndex=37;
-            scGPButton_zamek_Rz->ImageIndex=37;
-						scGPButton_zamek_roztec->ImageIndex=38;
-            scGPButton_zamek_Rx->ImageIndex=38;
-
-				}
-
-			 }
-
-      if(I==Rx_klik_ico && E==R_klik)
-      {
-
-      	if(scGPButton_zamek_Rx->ImageIndex==38)
-				{
-						scGPButton_zamek_Rx->ImageIndex=37;
-
-            scGPButton_zamek_Rz->ImageIndex=38;
-						scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_roztec->ImageIndex=38;
-
-
-
-
-				}   else
-
-				{
-						scGPButton_zamek_Rx->ImageIndex=38;
-
-            scGPButton_zamek_Rz->ImageIndex=38;
-						scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_roztec->ImageIndex=37;
-
-				}
-
-
-      }
-
-        if(I==Rx_klik_ico && E==Rx_klik)
-      {
-
-      	if(scGPButton_zamek_Rx->ImageIndex==37)
-				{
-						scGPButton_zamek_Rx->ImageIndex=38;
-
-            scGPButton_zamek_Rz->ImageIndex=37;
-						scGPButton_zamek_aRD->ImageIndex=37;
-            scGPButton_zamek_roztec->ImageIndex=38;
-
-
-
-
-				}   else
-
-				{
-						scGPButton_zamek_Rx->ImageIndex=37;
-
-            scGPButton_zamek_Rz->ImageIndex=38;
-						scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_roztec->ImageIndex=38;
-
-				}
-
-
-      }
-
-
-
-
-
-
-//-----------------------------------------------------
-			 if(I==R_klik_ico && E==Rz_klik)
-			 {
-
-				if(scGPButton_zamek_roztec->ImageIndex==37)
-				{
-						scGPButton_zamek_roztec->ImageIndex=38;
-						scGPButton_zamek_Rx->ImageIndex=38;
-            scGPButton_zamek_aRD->ImageIndex=37;
-            scGPButton_zamek_Rz->ImageIndex=37;
-
-
-
-				}   else
-
-				{
-            scGPButton_zamek_roztec->ImageIndex=37;
-						scGPButton_zamek_Rx->ImageIndex=38;
-            scGPButton_zamek_aRD->ImageIndex=38;
-            scGPButton_zamek_Rz->ImageIndex=38;
-
-				}
-
-			 }
-
-
-			 //Rz nastavení
-		 if(I==Rz_klik_ico && E==R_klik)
-			 {
-
-				if(scGPButton_zamek_Rz->ImageIndex==37)
-				{
-						scGPButton_zamek_aRD->ImageIndex=38;
-						scGPButton_zamek_Rz->ImageIndex=38;
-
-						scGPButton_zamek_Rx->ImageIndex=38;
-            scGPButton_zamek_roztec->ImageIndex=37;
-
-
-
-				}   else
-
-				{
-						scGPButton_zamek_aRD->ImageIndex=37;
-						scGPButton_zamek_Rz->ImageIndex=37;
-
-						scGPButton_zamek_Rx->ImageIndex=38;
-            scGPButton_zamek_roztec->ImageIndex=38;
-				}
-
-			 }
-	//*************************************************************************
-				 if(I==Rz_klik_ico && E==Rx_klik)    //vstup z Rx editace do zamku Rz
-			 {
-
-				if(scGPButton_zamek_Rz->ImageIndex==38)
-				{
-						scGPButton_zamek_aRD->ImageIndex=37;
-						scGPButton_zamek_Rz->ImageIndex=37;
-
-						scGPButton_zamek_roztec->ImageIndex=38;
-            scGPButton_zamek_Rx->ImageIndex=38;
-
-				}   else
-
-				{
-						scGPButton_zamek_aRD->ImageIndex=38;
-						scGPButton_zamek_Rz->ImageIndex=38;
-
-						scGPButton_zamek_roztec->ImageIndex=38;
-            scGPButton_zamek_Rx->ImageIndex=37;
-				}
-
-			 }
-
-        if(I==Rz_klik_ico && E==Rz_klik)    //vstup z Rz editace do zamku Rz
-			 {
-
-				if(scGPButton_zamek_Rz->ImageIndex==38)
-				{
-
-						scGPButton_zamek_Rz->ImageIndex=37;
-            scGPButton_zamek_aRD->ImageIndex=37;
-
-						scGPButton_zamek_roztec->ImageIndex=38;
-            scGPButton_zamek_Rx->ImageIndex=38;
-
-				}   else
-
-				{
-				    scGPButton_zamek_Rz->ImageIndex=38;
-            scGPButton_zamek_aRD->ImageIndex=38;
-
-					 	scGPButton_zamek_roztec->ImageIndex=38;
-            scGPButton_zamek_Rx->ImageIndex=37;
-
-				}
-
-			 }
-
-
-			//Nastav_zamky(aRD_klik_ico,aRD_klik);
-          if(I==Rz_klik_ico && E==aRD_klik) 	Nastav_zamky(aRD_klik_ico,aRD_klik);   //vstup z Rz editace do zamku Rz
-
-       ////////////////////////////////////
-
-       		 if(I==Rz_klik_ico && E==empty_klik)    //vstup z Rz zamku bez predchoziho kliku do editu
-			 {
-				if(scGPButton_zamek_Rz->ImageIndex==38)  //odemceno
-				{
-					scGPButton_zamek_Rz->ImageIndex=37;
-
-
-
-				}   else   //Rz zamèeno
-
-				{
-
-						scGPButton_zamek_Rz->ImageIndex=38;
-
-				}
-
-			 }
-			 Invalidate();
-			 FormPaint(this);
 }
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scGPButton_zamek_aRDClick(TObject *Sender)
-
-{
-		 //pokud pøed klikem do aRD bylo kliknuto do TT, volá se jiné chování zámkù - aRD a Rz nemusí být provázány
-	 input_clicked_icon=aRD_klik_ico;
-
-	 if(input_clicked_edit==TT_klik) Nastav_zamky(aRD_klik_ico,TT_klik);
-	 if(input_clicked_edit==R_klik)  Nastav_zamky(aRD_klik_ico, R_klik);
-	 if(input_clicked_edit==Rx_klik)  Nastav_zamky(aRD_klik_ico, Rx_klik);
-	 if(input_clicked_edit==aRD_klik) Nastav_zamky(aRD_klik_ico,aRD_klik);
-   if(input_clicked_edit==Rz_klik)  Nastav_zamky(aRD_klik_ico,aRD_klik); //totožné chování
-	 if(input_clicked_edit==empty_klik) Nastav_zamky(aRD_klik_ico, aRD_klik);
-
-
-		//	ShowMessage(input_clicked_edit);  //6
-	 //	ShowMessage(input_clicked_icon);   //0
-
-
-		//workaround
-		//tato konstukce zaøídí, že se okamžitì nastaví šedé pozadí pro zamèený zámek
-		// pokud by to zde nebylo, tak se šedé pozadí vykreslí až pøi pøejetí myší pøes zamèený sloupec, což je pozdì
-		rStringGridEd_tab_dopravniky->Visible=false;
-		rStringGridEd_tab_dopravniky->Visible=true;
-    rStringGridEd_tab_dopravniky->SetFocus();
-
-}
 //---------------------------------------------------------------------------
 
 void TForm_parametry_linky::input_TT()
@@ -2196,526 +1512,57 @@ void TForm_parametry_linky::input_TT()
 
 void TForm_parametry_linky::INPUT(double Sloupec, double Radek)
 {
-		 Memo2->Lines->Add("INPUT"+ AnsiString(input_state));
-	 //Nastavení zámkù
-	 if(scGPButton_zamek_aRD->ImageIndex==37)  pm.aRD_locked=true;    //zamèen aRD
-	 else  pm.aRD_locked=false;
 
-	 if(scGPButton_zamek_roztec->ImageIndex==37)  pm.R_locked=true;    //zamèen R
-	 else  pm.R_locked=false;
-
-	 if(scGPButton_zamek_Rz->ImageIndex==37)  pm.Rz_locked=true;    //zamèen Rz
-	 else  pm.Rz_locked=false;
-
-	 if(scGPButton_zamek_Rz->ImageIndex==37)  pm.Rx_locked=true;    //zamèen Rx
-	 else  pm.Rx_locked=false;
-
-
-	 pm.TT=getTT();
-
-
-
- if(input_state==TT || input_state==aRD_prevod || input_state==R_prevod || input_state==Rz_prevod)  //vìtev TT - aktuálnì není využívána, POUZE PRO PØEVOD
- {
-
- for (int i=1;i<rStringGridEd_tab_dopravniky->RowCount;i++)
-	 {
-
-  if(aRDunit==S)  pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]); else pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][i]) /60.0;
-  if(Runit==M)		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i]); else pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][i])/1000.0;
-  if(Dmunit==M) 	pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]); else pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])/1000.0;
-		              pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][i]);
-
-		OUTPUT(i,0,0);  // po projití øádku, okamžité volání output - naplnìní obsahem konkrétního øádku
-
-    }
-
-	} else    // aktuálnì využívána pouze tato konstukce níže
-
-	{
-		 // uložení do struktury konkrétního øádku
-		pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][Radek])/(1+59.0*aRDunit);
-		pm.R  =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][Radek])/(1+999.0*Runit);
-		pm.Rz =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Radek])/(1+999.0*Dmunit);
-		pm.Rx =  F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][Radek]);
-
-		}
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 void TForm_parametry_linky::OUTPUT(double i, double Sloupec, double Radek)
 {
 
-		//Memo3->Lines->Add("OUTPUT"+ AnsiString(input_state));
-    rHTMLLabel_info_zmenaR->Caption="";
-
-	 if(i>0) // plnìní celé tabulky, pouze v pøípadì zmìny TT nebo pøevodu jednotek
-	 { //obraceny "logicky" postup - pokud mám nastavené s, chci zobrazit v m/min, èili dle toho pøevedu
-
-   if(input_state==aRD_prevod)
-   {
-    if(aRDunit==S)
-    {
-     rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD*60.0;
-     rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[3][i]*60.0;
-     rStringGridEd_tab_dopravniky->Cells[2][i]=rStringGridEd_tab_dopravniky->Cells[2][i]*60.0;
-
-    } else
-    {
-      rStringGridEd_tab_dopravniky->Cells[4][i]=pm.aRD;
-      rStringGridEd_tab_dopravniky->Cells[3][i]=rStringGridEd_tab_dopravniky->Cells[3][i]/60.0;
-      rStringGridEd_tab_dopravniky->Cells[2][i]=rStringGridEd_tab_dopravniky->Cells[2][i]/60.0;
-		}
-   }
-
-   if(input_state==R_prevod)
-   {
-    if(Runit==M)
-    {
-    rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R*1000.0;
-    } else   rStringGridEd_tab_dopravniky->Cells[5][i]=pm.R;
-   }
-
-   if(input_state==Rz_prevod)
-   {
-     if(Dmunit==M)
-    {
-    rStringGridEd_tab_dopravniky->Cells[6][i]=pm.Rz*1000.0;
-    } else  rStringGridEd_tab_dopravniky->Cells[6][i]=pm.Rz;
-   }
-
-		rStringGridEd_tab_dopravniky->Cells[7][i]=pm.Rx;
-	 }
-
-	 else
-	 {
-			// naplnìní konkrétního øádku na kterém došlo ke zmìnì
-
-		if(input_state!=aRD)  rStringGridEd_tab_dopravniky->Cells[4][Radek]=pm.aRD*(1+59*aRDunit);
-		if(input_state!=R)    rStringGridEd_tab_dopravniky->Cells[5][Radek]=pm.R*(1+999*Runit);
-		if(input_state!=RZ)   rStringGridEd_tab_dopravniky->Cells[6][Radek]=pm.Rz*(1+999*Dmunit);
-		if(input_state!=RX)   rStringGridEd_tab_dopravniky->Cells[7][Radek]=F->m.round2double(pm.Rx,6);
-                                                                                   //WA periodického èísla
-		VALIDACE(Sloupec,Radek);
-
-	 }
-
-
-
 }
 
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyCellClick(TObject *Sender,
-					int ACol, int ARow)
+
+void TForm_parametry_linky::Roletka_roztec(int Row)
+
 {
-
-if(ACol==1) {
-
- input_clicked_edit=nazev_klik;
- scGPButton_zamek_Rz->Visible=true;
- scGPButton_zamek_aRD->Visible=true;
- scGPButton_zamek_Rz->Visible=true;
- scGPButton_zamek_Rx->Visible=true;
-
-}
-if(ACol==2) {
-
- input_clicked_edit=od_klik;
- scGPButton_zamek_Rz->Visible=true;
- scGPButton_zamek_aRD->Visible=true;
- scGPButton_zamek_Rz->Visible=true;
- scGPButton_zamek_Rx->Visible=true;
-
-}
-if(ACol==3) {
-
- input_clicked_edit=do_klik;
- scGPButton_zamek_Rz->Visible=true;
- scGPButton_zamek_aRD->Visible=true;
- scGPButton_zamek_Rz->Visible=true;
- scGPButton_zamek_Rx->Visible=true;
-
-}
-
-
-if(ACol==4) {    //zmìna aRD
-
- input_clicked_edit=aRD_klik;
- Nastav_zamky(empty_klik_ico,aRD_klik);
- rStringGridEd_tab_dopravniky->Invalidate();
-
-}
-if(ACol==5) {    //zmìna R
-
- input_clicked_edit=R_klik;
- Nastav_zamky(empty_klik_ico,R_klik);
-
- Roletka_roztec(ARow);
- rStringGridEd_tab_dopravniky->Invalidate();
-
-}
-if(ACol==6) {    //zmìna Rz
-
-  input_clicked_edit=Rz_klik;
-	Nastav_zamky(empty_klik_ico,Rz_klik);
-  scGPButton_zamek_aRD->ImageIndex=38;
- // scGPButton_zamek_Rx->ImageIndex=38;
-  rStringGridEd_tab_dopravniky->Invalidate();
-
-}
-if(ACol==7) {    //zmìna Rx
-
- input_clicked_edit=Rx_klik;
- Nastav_zamky(empty_klik_ico,Rx_klik);
- rStringGridEd_tab_dopravniky->Invalidate();
-
-}
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::scGPButton_zamek_RxClick(TObject *Sender)
-{
-
-	if(input_clicked_edit==aRD_klik) Nastav_zamky(Rx_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
-	if(input_clicked_edit==Rz_klik) Nastav_zamky(Rx_klik_ico,Rz_klik);
-  if(input_clicked_edit==R_klik)  Nastav_zamky(Rx_klik_ico,R_klik);
-  if(input_clicked_edit==Rx_klik)  Nastav_zamky(Rx_klik_ico,Rx_klik);
-	if(input_clicked_edit==empty_klik)  Nastav_zamky(Rx_klik_ico,Rx_klik);// Nastav_zamky(Rx_klik_ico,empty_klik);
-
-		rStringGridEd_tab_dopravniky->Visible=false;
-		rStringGridEd_tab_dopravniky->Visible=true;
-    rStringGridEd_tab_dopravniky->SetFocus();
-
-}
-//---------------------------------------------------------------------------
-
-
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikySetEditText(TObject *Sender,
-					int ACol, int ARow, const UnicodeString Value)
-{
-
-				 //tato událost je volána vždy, nikoliv pouze pøi zmìnì obsahu - stringgrid nemá nativnì onchange událost
-				 // z tohoto dùvodu je pøi splnìní podmínky ihned uložen obsah buòky, a následnì porovnán.
-				 // pokud je rozdílný, došlo ke zmìnì a volám výpoèetní model
-    if(ACol==1 || ACol==2 || ACol==3 || ACol==4 || ACol==5 || ACol==6 || ACol==7)
-    {
-    rHTMLLabel_info_zmenaR->Caption="";
-
-
-    }
-		if(ACol==1)
-		{
-				if(input_state==NOTHING && input_clicked_edit==nazev_klik)
-				{
-					if(rStringGridEd_tab_dopravniky->Cells[1][ARow]!=NAZEV)
-					{
-			//	 ShowMessage("tady");
-				 INPUT(ACol,ARow);
-				 OUTPUT(0,ACol,ARow);
-				 rStringGridEd_tab_dopravniky->Invalidate();
-				 input_state=NOTHING;
-					}
-				}
-
-		}
-			if(ACol==2)
-		{
-				if(input_state==NOTHING && input_clicked_edit==od_klik)
-				{
-				if(rStringGridEd_tab_dopravniky->Cells[2][ARow]!=OD)
-				{
-				 INPUT(ACol,ARow);
-				 OUTPUT(0,ACol,ARow);
-				 rStringGridEd_tab_dopravniky->Invalidate();
-				 input_state=NOTHING;
-				 }
-				}
-
-		}
-			if(ACol==3)
-		{
-				if(input_state==NOTHING && input_clicked_edit==do_klik)
-				{
-				if(rStringGridEd_tab_dopravniky->Cells[3][ARow]!=DO)
-				{
-				 INPUT(ACol,ARow);
-				 OUTPUT(0,ACol,ARow);
-				 rStringGridEd_tab_dopravniky->Invalidate();
-				 input_state=NOTHING;
-				 }
-				}
-
-		}
-
-	if(ACol==4)
-		{
-				if(input_state==NOTHING && input_clicked_edit==aRD_klik)
-				{
-
-				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit)!=pm.aRD)
-				{
-				Memo2->Lines->Clear();
-				Memo2->Lines->Add("volam model pm.input_aRD");
-				input_state=aRD;
-				INPUT(ACol,ARow);
-				pm.input_aRD();
-				OUTPUT(0,ACol,ARow);
-				rStringGridEd_tab_dopravniky->Invalidate();
-			// if(rHTMLLabel_InfoText->Caption=="")	vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
-				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
-				zobrazOramovani=true;
-
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
-					{
-					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
-					}
-				input_state=NOTHING;
-				}
-
-				}
-
-
-		}
-
-	 if(ACol==5)
-		{
-				if(input_state==NOTHING && input_clicked_edit==R_klik)
-				{
-
-        double R_string=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
-
-				if(R_string!=pm.R)
-				{
-				Memo2->Lines->Clear();
-				Memo2->Lines->Add("volam model pm.input_R");
-        Memo2->Lines->Add(R_string);
-        Memo2->Lines->Add(pm.R);
-
-				input_state=R;
-				INPUT(ACol,ARow);
-				pm.input_R();
-				OUTPUT(0,ACol,ARow);
-				rStringGridEd_tab_dopravniky->Invalidate();
-			 if(scGPButton_zamek_aRD->ImageIndex==38 && rHTMLLabel_InfoText->Caption=="" )  //pokud je aRD odemèeno volám akt.data do roletky
-			 {	Roletka_roztec(ARow);
-					//vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
-					Memo2->Lines->Add("volam aktualiz R");
-					zobrazOramovani=true;
-					if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
-					{
-					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-         rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
-					}
-			 } //vypoèítání nových dat do roletky na základì zmìny Rz
-			 else zobrazOramovani=false;
-
-				input_state=NOTHING;
-				}
-
-				}
-
-		}
-
-		 if(ACol==6)
-		{
-				if(input_state==NOTHING && input_clicked_edit==Rz_klik)
-				{
-
-				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit)!=pm.Rz)
-				{
-				Memo2->Lines->Clear();
-				Memo2->Lines->Add("volam model pm.input_Rz");
-				input_state=RZ;
-				INPUT(ACol,ARow);
-				pm.input_Rz();
-				OUTPUT(0,ACol,ARow);
-				rStringGridEd_tab_dopravniky->Invalidate();
-			  //if(rHTMLLabel_InfoText->Caption=="")		vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
-				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
-				zobrazOramovani=true;
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
-				{
-					F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-          rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
-				}
-
-				input_state=NOTHING;
-				}
-
-				}
-		}
-
-	if(ACol==7)
-		{
-		if(input_state==NOTHING && input_clicked_edit==Rx_klik)
-				{
-				if(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow])!=pm.Rx)
-				{
-				Memo2->Lines->Clear();
-				Memo2->Lines->Add("volam model pm.input_Rx");
-				input_state=RX;
-				INPUT(ACol,ARow);
-				pm.input_Rx();
-				OUTPUT(0,ACol,ARow);
-				rStringGridEd_tab_dopravniky->Invalidate();
-				if(scGPButton_zamek_roztec->ImageIndex==37)
-				{
-				zobrazOramovani=true;
-       // ShowMessage("ted");
-				//vypis("Došlo ke zmìnì obsahu roletky rozteèe, mùžete vybrat nabízenou hodnotu.",false);
-				Roletka_roztec(ARow); //vypoèítání nových dat do roletky na základì zmìny Rz
-				if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
-				{
-				F_gapoR->pohony_zmena[getPID(ARow)].X=true;
-        rHTMLLabel_info_zmenaR->Caption="Pøi ukládání bude nutné provést úpravu parametrù objektù u zmìnìných pohonù.";
-				}
-				}    else zobrazOramovani=false;
-				rStringGridEd_tab_dopravniky->Invalidate();
-				input_state=NOTHING;
-				}
-
-				}
-
-		}
-
-
-
-//		if (ACol==4)  //aRD  // tohle je dobrý, že v ARow mám pøedanej øádek zrovna, který edituji, èili pak velmi jednoduše to pøedám tam kam potøebuji
-//		{
+//					double Rz=0.0;
+//											 //pokud Rz není prázdné, uložím si jeho hodnotu a použiju k pøedání.
+//											 //jinak nastavím Rz na -1 tzn., že do roletky zobrazím všechny rozteèe z katalogu
+//					if(!rStringGridEd_tab_dopravniky->Cells[6][Row].IsEmpty())
+//					{
+//					Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Row]);
+//					}  else Rz=-1;
 //
-//				//  pokud má rozteè a je nepoužívaný tak dovolím dopoèítávat resp. navrhovat hodnoty k uložení
-//		 if(!rStringGridEd_tab_dopravniky->Cells[5][ARow].IsEmpty() /*&& rStringGridEd_tab_dopravniky->Cells[8][ARow]=="nepoužíván"*/)
-//			{
-//				//Doporuèení Rz
-//				rStringGridEd_tab_dopravniky->Cells[6][ARow]=F->m.Rz(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/60.0);
-//
-//			//Doporuèení rozteèí
-//				double Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); //pøedám Rz
-//					AnsiString data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";");
-//
-//			 //	EditStyle=sgbDropDown;   //vyber typu  - nyní je nastaven globálnì v dfm
+//					AnsiString	data;
+//				 if(Runit==MM) data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",true);
+//				 else          data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",false);
+//         // Memo3->Lines->Clear();
+//         // Memo4->Lines->Clear();
+//          Memo3->Lines->Add(data);
+//          Memo4->Lines->Add(Rz);
 //				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
 //				TStringList *S=new TStringList;
 //				S->Add(data);
 //				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
 //				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
 //				S->DelimitedText=data;
-
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyGetEditText(TObject *Sender,
-					int ACol, int ARow, UnicodeString &Value)
-{
-
-		//tato událost je volána okamžitì po vstupu do buòky a uloží do struktury akt.zobrazená data
-		 if(ACol==1)   NAZEV=rStringGridEd_tab_dopravniky->Cells[1][ARow];
-
-		 if(ACol==2)   OD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
-
-		 if(ACol==3)   DO = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
-
-		 if(ACol==4)	pm.aRD = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
-
-		 if(ACol==5)  pm.R = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
-     // ShowMessage(pm.R);
-		 if(ACol==6)  pm.Rz = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Rzunit);
-
-		 if(ACol==7)  pm.Rx = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::scGPButton_zamek_roztecClick(TObject *Sender)
-
-{
-		if(input_clicked_edit==aRD_klik) Nastav_zamky(aRD_klik_ico,aRD_klik);  //v pøídì, kdy došlo ke kliknutí do buòky aRD nastavím chování Rx
-		if(input_clicked_edit==R_klik) Nastav_zamky(R_klik_ico,R_klik);
-		if(input_clicked_edit==Rz_klik) Nastav_zamky(R_klik_ico,Rz_klik);
-		if(input_clicked_edit==Rx_klik) Nastav_zamky(R_klik_ico,Rx_klik);
-		if(input_clicked_edit==empty_klik) Nastav_zamky(R_klik_ico,R_klik); //Nastav_zamky(R_klik_ico,empty_klik)  } // std.chování
-
-
-		rStringGridEd_tab_dopravniky->Visible=false;
-		rStringGridEd_tab_dopravniky->Visible=true;
-    rStringGridEd_tab_dopravniky->SetFocus();
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scGPButton_zamek_RzClick(TObject *Sender)
-{
-
-	 if(input_clicked_edit==Rz_klik) Nastav_zamky(Rz_klik_ico,Rz_klik);
-	 if(input_clicked_edit==R_klik)	 Nastav_zamky(Rz_klik_ico,R_klik);
-	 if(input_clicked_edit==Rx_klik)	 Nastav_zamky(Rz_klik_ico,Rx_klik);
-   if(input_clicked_edit==aRD_klik)	 Nastav_zamky(Rz_klik_ico,aRD_klik);
-	 if(input_clicked_edit==empty_klik){ Nastav_zamky(Rz_klik_ico,Rz_klik);} //shodne chování jako klik do aRD
-
-		rStringGridEd_tab_dopravniky->Visible=false;
-		rStringGridEd_tab_dopravniky->Visible=true;
-    rStringGridEd_tab_dopravniky->SetFocus();
-}
-
-//---------------------------------------------------------------------------
-
-void TForm_parametry_linky::Roletka_roztec(int Row)
-
-{
-					double Rz=0.0;
-											 //pokud Rz není prázdné, uložím si jeho hodnotu a použiju k pøedání.
-											 //jinak nastavím Rz na -1 tzn., že do roletky zobrazím všechny rozteèe z katalogu
-					if(!rStringGridEd_tab_dopravniky->Cells[6][Row].IsEmpty())
-					{
-					Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][Row]);
-					}  else Rz=-1;
-
-					AnsiString	data;
-				 if(Runit==MM) data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",true);
-				 else          data=Form1->d.v.vypis_retezy_s_pouzitelnou_rozteci(Rz,"",";",false);
-         // Memo3->Lines->Clear();
-         // Memo4->Lines->Clear();
-          Memo3->Lines->Add(data);
-          Memo4->Lines->Add(Rz);
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Clear();
-				TStringList *S=new TStringList;
-				S->Add(data);
-				S->StrictDelimiter=true;  //https://stackoverflow.com/questions/1335027/delphi-stringlist-delimiter-is-always-a-space-character-even-if-delimiter-is-se
-				S->Delimiter=';';     //nutno v jednoduchých uvozovkách, dvojí hodí chybu pøi pøekladu
-				S->DelimitedText=data;
-				S->DelimitedText=data;
-
-				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
-				//zobrazOramovani=true;
-				//F->m.frameRect(Rect(200,100,60,80),clBlue,2);
+//				S->DelimitedText=data;
+//
+//				rStringGridEd_tab_dopravniky->Columns->Items[5]->PickList->Assign(S); //Standartnì se používá Add(), ale v tomto pøípadì Assign()
+//				//zobrazOramovani=true;
+//				//F->m.frameRect(Rect(200,100,60,80),clBlue,2);
 
 		}
 
 
 
-void __fastcall TForm_parametry_linky::FormClick(TObject *Sender)
-{
-//zobrazení všech zámkù pøi kliku do formu
- scGPButton_zamek_roztec->Visible=true;
- scGPButton_zamek_aRD->Visible=true;
- scGPButton_zamek_Rz->Visible=true;
- scGPButton_zamek_Rx->Visible=true;
-}
-//---------------------------------------------------------------------------
-
-
-void __fastcall TForm_parametry_linky::rStringGridEd_tab_dopravnikyPicklistDropdown(TObject *Sender,
-          int Col, int Row, TStringList *&PickList)
-{
-if(Col==5) { vypis("",false);  }
-}
-//---------------------------------------------------------------------------
 
 
 double  TForm_parametry_linky::getRz(double i)
 {
-	double Rz=0;
-	if(Dmunit==M) Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
-	else          Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])*1000.0;
-	return Rz;
+//	double Rz=0;
+//	if(Dmunit==M) Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
+//	else          Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])*1000.0;
+//	return Rz;
 }
 
 double  TForm_parametry_linky::getTT()
@@ -2741,16 +1588,12 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
          double aRD=0;
          double R=0;
          double Rz=0;
-         double Rx= F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
-         if(aRDunit==S)  aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]); else aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
-         if(Runit==M)  R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else   R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
-         if(Dmunit==M)Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); else  Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit);
+         double Rx=0;
+       //  double Rx= F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
+     //    if(aRDunit==S)  aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]); else aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+   //      if(Runit==M)  R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else   R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
+      //   if(Dmunit==M)Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); else  Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit);
 
-         Memo3->Lines->Clear();
-         Memo3->Lines->Add(aRD);
-         Memo3->Lines->Add(R);
-         Memo3->Lines->Add(Rz);
-         Memo3->Lines->Add(Rx);
 
          TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),aRD,R,Rz,Rx,aRDunit,Runit,Dmunit);
 
@@ -2765,24 +1608,20 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
                Row_validace=ARow;
                Col_validace=ACol;
                vypis(TNValue.text);
-               Memo3->Lines->Clear(
-               );
-               Memo3->Lines->Add(VID_value);
-               Memo3->Lines->Add(TNValue.text);
 
             } else   //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
                    {
-									    if(Rx!=floor(Rx))
-                     {
-										 double dop_Rx=	Form1->m.round(Rx);
-										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
-										 Row_validace=ARow;
-                     Col_validace=ACol;
-                     Memo2->Lines->Add(dop_Rx);
-
-										 VID=7;
-										 VID_value=dop_Rx;
-                     }
+//									    if(Rx!=floor(Rx))
+//                     {
+//										 double dop_Rx=	Form1->m.round(Rx);
+//										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
+//										 Row_validace=ARow;
+//                     Col_validace=ACol;
+//                    // Memo2->Lines->Add(dop_Rx);
+//
+//										 VID=7;
+//										 VID_value=dop_Rx;
+//                     }
                     }
             }
 
@@ -2816,78 +1655,78 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
  switch(ACol)
 	 {
-		///////////////////////////////////////////////////////////////////////
-			case 1:     //NAZEV
-				{
-				if(rStringGridEd_tab_dopravniky->Cells[1][ARow]=="")
-						{
-						vypis("Název pohonu nesmí být prázdný!");
-						VID=1;
-						Row_validace=ARow;
-            Col_validace=ACol;
-						}
-
-				}
-				break;
-				case 2:     //OD - RD
-				{
-        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
-		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
-				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
-
-					if(Form1->m.between(RD,P_od,P_do))
-						{
-             ;
-						}
-						else
-						{
-              vypis("Neplatný rozsah rychlosti pohonu od-do!");
-              VID=23;
-              Row_validace=ARow;
-              Col_validace=ACol;
-						}
-				}
-				break;
-
-        case 3:     //DO - RD
-				{
-        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
-		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
-				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
-
-					if(Form1->m.between(RD,P_od,P_do))
-						{
-             ;
-						}
-						else
-						{
-              vypis("Neplatný rozsah rychlosti pohonu od-do!");
-              VID=23;
-              Row_validace=ARow;
-              Col_validace=ACol;
-						}
-				}
-				break;
-
-        case 4:     //aRD - RD
-				{
-        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
-		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
-				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
-
-					if(Form1->m.between(RD,P_od,P_do))
-						{
-            ;
-						}
-						else
-						{
-              vypis("Neplatný rozsah rychlosti pohonu od-do!");
-              VID=23;
-              Row_validace=ARow;
-              Col_validace=ACol;
-						}
-				}
-				break;
+//		///////////////////////////////////////////////////////////////////////
+//			case 1:     //NAZEV
+//				{
+//				if(rStringGridEd_tab_dopravniky->Cells[1][ARow]=="")
+//						{
+//						vypis("Název pohonu nesmí být prázdný!");
+//						VID=1;
+//						Row_validace=ARow;
+//            Col_validace=ACol;
+//						}
+//
+//				}
+//				break;
+//				case 2:     //OD - RD
+//				{
+//        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+//		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
+//				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
+//
+//					if(Form1->m.between(RD,P_od,P_do))
+//						{
+//             ;
+//						}
+//						else
+//						{
+//              vypis("Neplatný rozsah rychlosti pohonu od-do!");
+//              VID=23;
+//              Row_validace=ARow;
+//              Col_validace=ACol;
+//						}
+//				}
+//				break;
+//
+//        case 3:     //DO - RD
+//				{
+//        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+//		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
+//				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
+//
+//					if(Form1->m.between(RD,P_od,P_do))
+//						{
+//             ;
+//						}
+//						else
+//						{
+//              vypis("Neplatný rozsah rychlosti pohonu od-do!");
+//              VID=23;
+//              Row_validace=ARow;
+//              Col_validace=ACol;
+//						}
+//				}
+//				break;
+//
+//        case 4:     //aRD - RD
+//				{
+//        double RD   = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
+//		    double P_od = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[2][ARow])/(1+59.0*aRDunit);
+//				double P_do = F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[3][ARow])/(1+59.0*aRDunit);
+//
+//					if(Form1->m.between(RD,P_od,P_do))
+//						{
+//            ;
+//						}
+//						else
+//						{
+//              vypis("Neplatný rozsah rychlosti pohonu od-do!");
+//              VID=23;
+//              Row_validace=ARow;
+//              Col_validace=ACol;
+//						}
+//				}
+//				break;
 	 }
 
 }
@@ -2984,30 +1823,22 @@ void __fastcall TForm_parametry_linky::sc(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button2Click(TObject *Sender)
 {
-rStringGridEd_tab_dopravniky->Visible=true;
+//rStringGridEd_tab_dopravniky->Visible=true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_InfoTextClick(TObject *Sender)
 {
-		if(VID==4 || VID==5 || VID==6 || VID==7)
-		{
-		 rStringGridEd_tab_dopravniky->Cells[VID][Row_validace]=VID_value;
-		 INPUT(VID,Row_validace);
-     if(VID==7) pm.input_Rx();
-     if(VID==6) pm.input_Rz();
-     if(VID==5) pm.input_R();
-     if(VID==4) pm.input_aRD();
-		 OUTPUT(0,VID,Row_validace);
-		 rStringGridEd_tab_dopravniky->Invalidate();
-		}
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::Button3Click(TObject *Sender)
-{
-Memo4->Lines->Clear();
-Memo4->Lines->Add("input_state:"+AnsiString(input_state));
-Memo4->Lines->Add("input_clicked_edit:"+AnsiString(input_clicked_edit));
-Memo4->Lines->Add("input_clicked_icon:"+AnsiString(input_clicked_icon));
+//		if(VID==4 || VID==5 || VID==6 || VID==7)
+//		{
+//		 rStringGridEd_tab_dopravniky->Cells[VID][Row_validace]=VID_value;
+//		 INPUT(VID,Row_validace);
+//     if(VID==7) pm.input_Rx();
+//     if(VID==6) pm.input_Rz();
+//     if(VID==5) pm.input_R();
+//     if(VID==4) pm.input_aRD();
+//		 OUTPUT(0,VID,Row_validace);
+//		 rStringGridEd_tab_dopravniky->Invalidate();
+//		}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &CanClose)
@@ -3018,93 +1849,213 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
 {
-    nacti_pohony();
-		if(!data_nalezena)
-		{
-			rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
-		}
+//    nacti_pohony();
+//		if(!data_nalezena)
+//		{
+//			rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
+//		}
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::scHTMLLabel_roztecClick(TObject *Sender)
+
+//metody volané z Tmgrid
+void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-		input_state = R_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
-		if (Runit == MM) // pokud je v milimetrech, tak pøepne na metry
-		{
 
-			  scHTMLLabel_roztec->Caption="rozteè <u>[m]</u>";
-				INPUT(0,0);   //tento input volá zároveò i output
-				Runit = M;
-		}
-		else // pokud je metrech, tak pøepne na milimetry
-		{
-			scHTMLLabel_roztec->Caption="rozteè <u>[mm]</u>";
-			INPUT(0,0);    //tento input volá zároveò i output
-			Runit = MM;
-		}
-
-    if(rHTMLLabel_InfoText->Visible) // kvùli tomu když je zobrazen doporuè hodnota a kliknu do zmìny zobraz. jednotek - info text, ze zobrazí v akt. nastav. jednotkách
+//	ShowMessage("PL\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+//	mGrid->HighlightCell(Col,Row);
+//	mGrid->Cells[0][0].Text="test";
+//	FormPaint(this);//zajistí pøekreslení bez probliku
+//	//toto problikává mGrid->Refresh();
+ if(input_state==NOTHING)
+ {
+    if(Col==6 && Row>=2)
     {
-    VALIDACE(Col_validace,Row_validace);
+        if(mGrid->getCheck(6,Row)->Checked==false)
+        {
+            if(mrOk==Form1->MB("Pohon je používáný, opravdu má být zrušeno pøiøazení?",MB_OKCANCEL))
+            {
+             mGrid->getCheck(6,Row)->Enabled=false;
+            }  else mGrid->getCheck(6,Row)->Checked=true;
+        }
     }
 
-		input_state = NOTHING; // už se mohou pøepoèítávat
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::scHTMLLabel_rozestupClick(TObject *Sender)
-
-{
-	input_state = Rz_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
-		if (Dmunit == MM) // pokud je v milimetrech, tak pøepne na metry
-		{
-
-			  scHTMLLabel_rozestup->Caption="rozestup <u>[m]</u>";
-				INPUT(0,0);   //tento input volá zároveò i output
-				Dmunit = M;
-		}
-		else // pokud je metrech, tak pøepne na milimetry
-		{
-			scHTMLLabel_rozestup->Caption="rozestup <u>[mm]</u>";
-		 	INPUT(0,0);    //tento input volá zároveò i output
-			Dmunit = MM;
-		}
-
-    if(rHTMLLabel_InfoText->Visible) // kvùli tomu když je zobrazen doporuè hodnota a kliknu do zmìny zobraz. jednotek - info text, ze zobrazí v akt. nastav. jednotkách
+    if(Col==2 && Row==0)
     {
-    VALIDACE(Col_validace,Row_validace);
+     if(aRDunit==MIN)	mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>";
+     else             mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/s]</a>";
     }
 
-		input_state = NOTHING; // už se mohou pøepoèítávat
-
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm_parametry_linky::rMemoEx1_rychlostClick(TObject *Sender)
-{
-		input_state = aRD_prevod; // zámìr, aby se nepøepoèítavaly hodnoty
-		if (aRDunit == S)
-		{
-
-			  rMemoEx1_rychlost->Caption="Rychlost <u>[m/min]</u></br> ";
-				INPUT(0,0);   //tento input volá zároveò i output
-				aRDunit = MIN;
-		}
-		else // pokud je metrech, tak pøepne na milimetry
-		{
-			rMemoEx1_rychlost->Caption="Rychlost <u>[m/s]</u></br> ";
-			INPUT(0,0);    //tento input volá zároveò i output
-			aRDunit = S;
-		}
-
-    if(rHTMLLabel_InfoText->Visible) // kvùli tomu když je zobrazen doporuè hodnota a kliknu do zmìny zobraz. jednotek - info text, ze zobrazí v akt. nastav. jednotkách
+    if(Col==5 && Row==0)
     {
-    VALIDACE(Col_validace,Row_validace);
+     if(Runit==MM) mGrid->Cells[5][0].Text="Rozteè <a>[mm]</a>";
+     else          mGrid->Cells[5][0].Text="Rozteè <a>[m]</a>";
     }
 
-		input_state = NOTHING; // už se mohou pøepoèítávat
+
+ if(Col==8 && Row>=2)
+    {
+
+     ShowMessage("budu mazat pohon");
+
+    }
+ }
+
+}
+
+void TForm_parametry_linky::OnEnter(long Tag,unsigned long Col,unsigned long Row)
+{
+
+}
+void TForm_parametry_linky::OnChange(long Tag,unsigned long Col,unsigned long Row)
+{
+
 }
 //---------------------------------------------------------------------------
 
 
+void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+	 if(Button==mbRight && mGrid->Row>=2)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
+	 {
+      mGrid->MovingTable=true; mGrid->Refresh();
+			PopUPmenu->Height=34*2;//zobrazené dvì položky
+			PopUPmenu->Left=X;PopUPmenu->Top=Y+mGrid->Top;//pozice
+			//nastávení textu polože
+			scLabel_kopirovat->Caption="  Kopírovat "+mGrid->Cells[1][mGrid->Row].Text;
+			scLabel_smazat->Caption="  Smazat "+mGrid->Cells[1][mGrid->Row].Text;
+			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+			if(existuji_nepouzivane_pohony())
+			{
+				PopUPmenu->Height=34*3;//zobrazené již tøi položky
+				Item_smazat_nepouzite->Visible=true;
+				scGPGlyphButton_DEL_nepouzite->Visible=true;
+			}
+			else
+			{
+				Item_smazat_nepouzite->Visible=false;
+				scGPGlyphButton_DEL_nepouzite->Visible=false;
+			}
+			//ošetøení, pokud je mimo obrazovku + 5 px okraj
+			if(PopUPmenu->Left>=ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
+			PopUPmenu->Left=ClientWidth-PopUPmenu->Width-5;
+			if(PopUPmenu->Top>=mGrid->Top+mGrid->Height-PopUPmenu->Height)
+			PopUPmenu->Top=mGrid->Top+mGrid->Height-PopUPmenu->Height-5;
+			PopUPmenu->Visible=true;
+	 }
+   if(Button==mbLeft)      //pøepnutí jednotek
+   {
 
+      TPoint RET=mGrid->CheckLink(X,Y);
+      if(RET.x==4)
+      {
+       if(aRDunit==MIN) {	mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/s]</a>";   aRDunit=S;      }
+       else             { mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>"; aRDunit=MIN;    }
 
+           if(aRDunit==MIN)
+           {
+               for(int i=2;i<mGrid->RowCount;i++)
+               {
+               mGrid->Cells[2][i].Text=mGrid->Cells[2][i].Text*60.0;
+               mGrid->Cells[3][i].Text=mGrid->Cells[3][i].Text*60.0;
+               mGrid->Cells[4][i].Text=mGrid->Cells[4][i].Text*60.0;
+               }
+           }
+           else
+           {
+               for(int i=2;i<mGrid->RowCount;i++)
+               {
+               mGrid->Cells[2][i].Text=mGrid->Cells[2][i].Text/60.0;
+               mGrid->Cells[3][i].Text=mGrid->Cells[3][i].Text/60.0;
+               mGrid->Cells[4][i].Text=mGrid->Cells[4][i].Text/60.0;
+               }
+           }
+       mGrid->MergeCells(2,0,4,0);
+       Button_save->SetFocus();
+       mGrid->Refresh();
+
+      }
+      if(RET.x==5)
+      {
+           if(Runit==MM) {mGrid->Cells[5][0].Text="Rozteè <a>[m]</a>";   Runit=M;  }
+           else          {mGrid->Cells[5][0].Text="Rozteè <a>[mm]</a>";  Runit=MM; }
+
+           if(Runit==MM)
+           {
+               for(int i=2;i<mGrid->RowCount;i++)
+               {
+                mGrid->Cells[5][i].Text=mGrid->Cells[5][i].Text*1000.0;
+               }
+           }
+           else
+           {
+               for(int i=2;i<mGrid->RowCount;i++)
+               {
+                mGrid->Cells[5][i].Text=mGrid->Cells[5][i].Text/1000.0;
+               }
+           }
+            mGrid->MergeCells(5,0,5,1);
+            Button_save->SetFocus();
+            mGrid->Refresh();
+      }
+   }
+}
+//---------------------------------------------------------------------------
+void TForm_parametry_linky::getmGridColors()
+  {
+  mGrid->Cells[0][0].Font->Color=clGray;
+  mGrid->Cells[1][0].Font->Color=clBlack;
+  mGrid->Cells[2][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[3][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[4][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[5][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[6][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[7][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[8][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+
+  mGrid->Cells[2][1].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[3][1].Font->Color= mGrid->Cells[1][0].Font->Color;
+  mGrid->Cells[4][1].Font->Color= mGrid->Cells[1][0].Font->Color;
+
+  mGrid->Cells[0][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[1][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[2][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[3][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[4][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[5][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[6][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[7][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[8][0].Background->Color=clBACKGROUND;
+
+  mGrid->Cells[2][1].Background->Color=clBACKGROUND;
+  mGrid->Cells[3][1].Background->Color=clBACKGROUND;
+  mGrid->Cells[4][1].Background->Color=clBACKGROUND;
+  }
+//---------------------------------------------------------------------------
+  void TForm_parametry_linky::getmGridWidth()
+  {
+  mGrid->Columns[0].Width=30;
+  mGrid->Columns[1].Width=250;
+  mGrid->Columns[2].Width=100;
+  mGrid->Columns[3].Width=100;
+  mGrid->Columns[4].Width=100;
+  mGrid->Columns[5].Width=100;
+  mGrid->Columns[6].Width=70;
+  mGrid->Columns[7].Width=150;
+  mGrid->Columns[8].Width=30;
+  }
+//---------------------------------------------------------------------------
+  void TForm_parametry_linky::getDeleteButtonSettings(int Row)
+  {
+  mGrid->getGlyphButton(8,Row)->GlyphOptions->Kind=scgpbgkCancel;
+  mGrid->getGlyphButton(8,Row)->GlyphOptions->Thickness=1;
+  mGrid->getGlyphButton(8,Row)->Options->NormalColor=clWhite;
+  mGrid->getGlyphButton(8,Row)->Options->NormalColorAlpha=255;
+  mGrid->getGlyphButton(8,Row)->Options->FrameWidth=1;
+  mGrid->getGlyphButton(8,Row)->Options->FrameNormalColor=clWhite;
+  mGrid->getGlyphButton(8,Row)->Width=scGPGlyphButton_smazat_pohon->Width;
+  mGrid->getGlyphButton(8,Row)->Height=scGPGlyphButton_smazat_pohon->Height;
+  mGrid->getGlyphButton(8,Row)->Options->ShapeStyle=scgpRect;
+  mGrid->getGlyphButton(8,Row)->Hint="Smazat tento pohon";
+  mGrid->getGlyphButton(8,Row)->ShowHint=true;
+  }
