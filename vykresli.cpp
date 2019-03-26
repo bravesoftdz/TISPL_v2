@@ -3163,6 +3163,16 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//vykreslení hlavní linie
 	linie(canv,X1,Y1,X2,Y2,width,color);
 
+	//záměna textu v případě editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry)
+	if(F->editace_textu)
+	{
+		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
+		{
+			if(F->JID==-8 && Y1==Y2)Text=F->editovany_text;//pro vodorovnou kótu
+			if(F->JID==-9 && X1==X2)Text=F->editovany_text;//pro svislou kótu
+		}
+	}
+
 	//popisek
 	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
 	canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
@@ -3183,28 +3193,30 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 
 	////navrácení citelné oblasti popisku a jednotek kóty pro další použití a šetření strojového času
 	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
-	if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 	{
-		T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
-		//hodnoty
-		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
-		//jednotky
-		R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
-		if(Y1==Y2)//pro vodorovnou kótu                               //odebrání mezery
+		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
-			F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
-			F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+			T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
+			//hodnoty
+			R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
+			//jednotky
+			R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
+			if(Y1==Y2)//pro vodorovnou kótu                               //odebrání mezery
+			{
+				F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
+				F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+			}
+			else//pro svislou kótu
+			{
+				F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
+				F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+			}
 		}
-		else//pro svislou kótu
+		else//kóty mezi elementy
 		{
-			F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
-			F->pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
+			//
 		}
 	}
-	else//kóty mezi elementy
-	{
-		//
-  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
