@@ -1503,7 +1503,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//BACKSPACE
 		case 8: break;
 		//ENTER
-		case 13:if(editace_textu)Smaz_kurzor();break;
+		case 13:if(editace_textu)	Smaz_kurzor();break;
 		//ESC
 		case 27:ESC();break;
 		//MEZERNÍK
@@ -1647,28 +1647,15 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		REFRESH();
 		nahled_ulozit(true);
 	}
-	if (editace_textu&&index_kurzoru==2)
-	{      Memo3->Lines->Add(Key);
-		if(Key==8)//pokud je stisknut backspace
-			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1));
-		else
-		{
-			//if(ms.MyToDouble(kota+Key)==0)ESC();
-			//else
-			editovany_text+=Key);
-		}
-		//REFRESH();
-		Invalidate();
-		nahled_ulozit(true);
-	}
-	if (editace_textu&&index_kurzoru==3)
+	if (editace_textu&&(index_kurzoru==2||index_kurzoru==3))
 	{
-		AnsiString kota=pom_temp->rozmer_kabiny.y;
 		if(Key==8)//pokud je stisknut backspace
-			pom_temp->rozmer_kabiny.y=ms.MyToDouble(kota.SubString(1,kota.Length()-1));
+			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
 		else
-			pom_temp->rozmer_kabiny.y=ms.MyToDouble(kota+Key);
-		REFRESH();
+			editovany_text+=Key;
+		//kontrola zda nebylo zadáno něco jiného než číslo, pokud ano vrátí původní rozměry
+		if(ms.MyToDouble(editovany_text)==0&&index_kurzoru==2){editovany_text=pom_temp->rozmer_kabiny.x;zobraz_tip("Chybné zadání! Zadaná hodnota nebyla číslo.");}
+		if(ms.MyToDouble(editovany_text)==0&&index_kurzoru==3){editovany_text=pom_temp->rozmer_kabiny.y;zobraz_tip("Chybné zadání! Zadaná hodnota nebyla číslo.");}
 		nahled_ulozit(true);
 	}
 }
@@ -2104,10 +2091,10 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					switch (mimo)
 					{
 						case -1:{if(m.L2Py(pom_temp->Yk)>stredy) pom_temp->Yk=m.P2Ly(stredy)+1;else pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-1;}break;
-						case 5:{pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-d.DoSkRB-d.Robot_sirka_zakladny/2;zobraz_tip("Nelze mít element mimo kabinu");}break;
-						case 6:{pom_temp->Yk=m.P2Ly(stredy)+d.DoSkRB+d.Robot_sirka_zakladny/2;zobraz_tip("Nelze mít element mimo kabinu");}break;
-						case 7:{pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-1;zobraz_tip("Nelze mít element mimo kabinu");}break;
-						case 8:{pom_temp->Yk=m.P2Ly(stredy)+1;zobraz_tip("Nelze mít element mimo kabinu");}break;
+						case 5:{pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-d.DoSkRB-d.Robot_sirka_zakladny/2;zobraz_tip("Nelze mít robota mimo kabinu");}break;
+						case 6:{pom_temp->Yk=m.P2Ly(stredy)+d.DoSkRB+d.Robot_sirka_zakladny/2;zobraz_tip("Nelze mít robota mimo kabinu");}break;
+						case 7:{pom_temp->Yk=m.P2Ly(stredy)+pom_temp->rozmer_kabiny.y-1;zobraz_tip("Nelze mít robota mimo kabinu");}break;
+						case 8:{pom_temp->Yk=m.P2Ly(stredy)+1;zobraz_tip("Nelze mít robota mimo kabinu");}break;
 					}
 				}
 				else
@@ -2939,8 +2926,8 @@ void TForm1::ESC()
 		{
 			case 0:pom_temp->name=nazev_puvodni;break;
 			case 1:pom_temp->short_name=nazev_puvodni;break;
-//			case 2:pom_temp->rozmer_kabiny.x=ms.MyToDouble(nazev_puvodni);break;
-//			case 3:pom_temp->rozmer_kabiny.y=ms.MyToDouble(nazev_puvodni);break;
+			case 2:editovany_text=pom_temp->rozmer_kabiny.x;break;
+			case 3:editovany_text=pom_temp->rozmer_kabiny.y;break;
 		}
 		Smaz_kurzor();
 	}
@@ -4227,7 +4214,10 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 
 	if(MOD==NAHLED)
   {
-    if(Akce=!NIC) Smaz_kurzor();
+		if(Akce=!NIC)
+		{
+			Smaz_kurzor();
+		}
 		knihovna_id=1;
 		if(Row==0)element_id=Col+1;
 		if(Row==1)element_id=Col+3;
@@ -7666,6 +7656,9 @@ void TForm1::vykresli_kurzor(int index)
 //smaže kurzor pokud je stále vykreslený i po vypnutí editace textu
 void TForm1::Smaz_kurzor ()
 {
+	TIP="";
+	if(index_kurzoru==2)pom_temp->rozmer_kabiny.x=ms.MyToDouble(editovany_text);
+	if(index_kurzoru==3)pom_temp->rozmer_kabiny.y=ms.MyToDouble(editovany_text);
 	if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
 	TimerKurzor->Enabled=false;
 	editace_textu=false;
