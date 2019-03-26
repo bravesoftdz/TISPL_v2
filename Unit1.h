@@ -624,6 +624,7 @@ private:
 	bool stav_kurzoru;//kurzon vykreslen/nevykreslen
 	int index_kurzoru;
 	AnsiString nazev_puvodni;// používáno pro uchovávání pùvodního názvu objektu z dùvodu zrušení editace
+  AnsiString editovany_text;//uchovává editovanou hodnotu kót
 
 	AnsiString Caption;
 

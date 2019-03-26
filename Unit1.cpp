@@ -1647,6 +1647,30 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		REFRESH();
 		nahled_ulozit(true);
 	}
+	if (editace_textu&&index_kurzoru==2)
+	{      Memo3->Lines->Add(Key);
+		if(Key==8)//pokud je stisknut backspace
+			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1));
+		else
+		{
+			//if(ms.MyToDouble(kota+Key)==0)ESC();
+			//else
+			editovany_text+=Key);
+		}
+		//REFRESH();
+		Invalidate();
+		nahled_ulozit(true);
+	}
+	if (editace_textu&&index_kurzoru==3)
+	{
+		AnsiString kota=pom_temp->rozmer_kabiny.y;
+		if(Key==8)//pokud je stisknut backspace
+			pom_temp->rozmer_kabiny.y=ms.MyToDouble(kota.SubString(1,kota.Length()-1));
+		else
+			pom_temp->rozmer_kabiny.y=ms.MyToDouble(kota+Key);
+		REFRESH();
+		nahled_ulozit(true);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
@@ -1828,8 +1852,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-7) {TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=1;nazev_puvodni=pom_temp->short_name;}
 								if(JID==-4||JID==-5){Akce=ROZMER_KABINA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;} //vertikální-4
 								if(JID==-10)zmenJednotekKot();
-								if(JID==-8)vykresli_kurzor(2);
-								if(JID==-8)vykresli_kurzor(3);
+								if(JID==-8){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=2;editovany_text=pom_temp->rozmer_kabiny.x;}
+								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=3;editovany_text=pom_temp->rozmer_kabiny.y;}
 						}
 						else
 						{
@@ -2371,7 +2395,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
-		if((JID==-6||JID==-7)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
+		if((JID==-6||JID==-7||JID==-8||JID==-9)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
 		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
@@ -2915,6 +2939,8 @@ void TForm1::ESC()
 		{
 			case 0:pom_temp->name=nazev_puvodni;break;
 			case 1:pom_temp->short_name=nazev_puvodni;break;
+//			case 2:pom_temp->rozmer_kabiny.x=ms.MyToDouble(nazev_puvodni);break;
+//			case 3:pom_temp->rozmer_kabiny.y=ms.MyToDouble(nazev_puvodni);break;
 		}
 		Smaz_kurzor();
 	}
@@ -7621,12 +7647,16 @@ void TForm1::vykresli_kurzor(int index)
 		}break;
 		case 2:
 		{
+			Canvas->Pen->Color=clGray;
+			Canvas->Pen->Width=1.5;
 			Canvas->MoveTo(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.top);
 			Canvas->LineTo(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.bottom);
 			stav_kurzoru=!stav_kurzoru;
 		}break;
 		case 3:
 		{                        //timer spustit
+			Canvas->Pen->Color=clGray;
+			Canvas->Pen->Width=1.5;
 			Canvas->MoveTo(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.top);
 			Canvas->LineTo(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.bottom);
 			stav_kurzoru=!stav_kurzoru;
