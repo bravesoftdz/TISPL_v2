@@ -3168,8 +3168,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	{
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
-			if(F->JID==-8 && Y1==Y2)Text=F->editovany_text;//pro vodorovnou kótu
-			if(F->JID==-9 && X1==X2)Text=F->editovany_text;//pro svislou kótu
+			if(F->index_kurzoru==-8 && Y1==Y2)Text=F->editovany_text;//pro vodorovnou kótu
+			if(F->index_kurzoru==-9 && X1==X2)Text=F->editovany_text;//pro svislou kótu
 		}
 	}
 
