@@ -3947,18 +3947,27 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	short pocet_elementu=2;
   AnsiString label1;
   AnsiString label2;
-
-
-
+	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
  	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
     if(n==1){ label1= "pasivní"; label2=""; }
     if(n==2){ label1= "aktivní"; label2=""; }
-    if(pom->id!=3)
-    {
-         d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,1);
-    }
-    else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,-1);
+		if(pom_temp->id==3)
+		{
+				 d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,1);
+		}
+		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,-1);
+	}
+
+	if((EID==1||EID==3))
+	{
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15,label1,label2,1+4,0,0,1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15,label1,label2,2+4,0,0,-1);
+	}
+	if((EID==2||EID==4))
+	{
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15,label1,label2,1+4,0,0,-1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15,label1,label2,2+4,0,0,1);
 	}
 
 	Zoom=Zoom_back;//návrácení původního zoomu
@@ -3987,10 +3996,10 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	short pocet_elementu=1;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-	if(pom->id!=3)
-  {
+	if(pom_temp->id==3)
+	{
 					d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","");
-  } else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","",0,0,-1);
+	} else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","",0,0,-1);
 
 
 	}
@@ -4106,7 +4115,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		delete (bmp_out);//velice nutné
 		delete (bmp_in);//velice nutné
 	}
-  if(MOD==SCHEMA)
+	if(MOD==SCHEMA)
 	{
 		////////////////////neAA verze
 		scListGroupKnihovObjektu->Caption="Technolog.objekty";
@@ -4214,15 +4223,17 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 
 	if(MOD==NAHLED)
   {
-		if(Akce=!NIC)
-		{
-			Smaz_kurzor();
-		}
+		if(Akce=!NIC)	Smaz_kurzor();
 		knihovna_id=1;
 		if(Row==0)element_id=Col+1;
 		if(Row==1)element_id=Col+3;
-		SB("Kliknutím na libovolné místo umístíte vybraný element.");
-		Akce=ADD;kurzor(add_o);
+		//kontrola v jakém je kabina režimu (stop&go, kontinuální), podle toho dovolí vkládat roboty pouze stejného režimu
+		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+		if((EID==1||EID==3)&&(element_id==1||element_id==3)||(EID==2||EID==4)&&(element_id==2||element_id==4)||EID==-1||(funkcni_klavesa==2&&DEBUG))//při stisku shift lze tuto podmínku v debugu obejít
+		{
+			SB("Kliknutím na libovolné místo umístíte vybraný element.");
+			Akce=ADD;kurzor(add_o);
+		}
 	}
 	else//pro SCHEMA
 	{
@@ -4252,8 +4263,12 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
 	knihovna_id=2;
 	if(Row==0) element_id=Col+5;
-	SB("Kliknutím na libovolné místo umístíte vybraný element.");
-	Akce=ADD;kurzor(add_o);
+	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+	if((EID==1||EID==3)&&(element_id==5)||(EID==2||EID==4)&&(element_id==6)||EID==-1||(funkcni_klavesa==2&&DEBUG))
+	{
+		SB("Kliknutím na libovolné místo umístíte vybraný element.");
+		Akce=ADD;kurzor(add_o);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
