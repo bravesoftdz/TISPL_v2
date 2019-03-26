@@ -419,7 +419,8 @@ void __fastcall TForm2::Button4Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button3Click(TObject *Sender)
 {
-	mGrid->DeleteRow(3);
+	//mGrid->DeleteRow(3);
+	ELEMENTY->dalsi->mG->DeleteRow(3);
 	//mGrid->DeleteRow(mGrid->RowCount-1);//s problikem zpùsobuje show() v DeleteRow
 }
 //---------------------------------------------------------------------------

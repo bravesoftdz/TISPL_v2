@@ -621,7 +621,6 @@ private:
 	bool volat_parametry_linky;//použito pøi soubor nový
 	bool start_ortogonalizace;
 	bool stav_kurzoru;//kurzon vykreslen/nevykreslen
-	int index_kurzoru;
 	AnsiString nazev_puvodni;// používáno pro uchovávání pùvodního názvu objektu z dùvodu zrušení editace
 
 	AnsiString Caption;
@@ -671,6 +670,7 @@ public:		// User declarations
 	AnsiString TIP;//uchovává text TIPu
 	bool editace_textu;//mimo enum akce z dùvodu zobrazování kurozù pøi editaci a pøepínání na jiné akce
 	AnsiString editovany_text;//uchovává editovanou hodnotu kót
+	int index_kurzoru;
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
