@@ -1480,7 +1480,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
 	}
-	}
+	}      if(pom_temp!=NULL)Memo3->Lines->Add(pom_temp->rozmer_kabiny.x);
 	d.vykresli_tip(Canvas);//vypíše TIP
 }
 //---------------------------------------------------------------------------
@@ -1655,8 +1655,8 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else
 			editovany_text+=Key;
 		//kontrola zda nebylo zadáno něco jiného než číslo, pokud ano vrátí původní rozměry
-		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0&&index_kurzoru==-8){editovany_text=pom_temp->rozmer_kabiny.x;zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");}
-		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0&&index_kurzoru==-9){editovany_text=pom_temp->rozmer_kabiny.y;zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");}
+		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0&&index_kurzoru==-8){editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.x;zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
+		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0&&index_kurzoru==-9){editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.y;zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
 		nahled_ulozit(true);
 	}
 	REFRESH();
@@ -1841,8 +1841,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-7) {TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=-7;nazev_puvodni=pom_temp->short_name;}
 								if(JID==-4||JID==-5){Akce=ROZMER_KABINA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;} //vertikální-4
 								if(JID==-10)zmenJednotekKot();
-								if(JID==-8){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=pom_temp->rozmer_kabiny.x;}
-								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=pom_temp->rozmer_kabiny.y;}
+								if(JID==-8){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.x;}
+								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.y;}
 						}
 						else
 						{
@@ -2928,8 +2928,8 @@ void TForm1::ESC()
 		{
 			case -6:pom_temp->name=nazev_puvodni;break;
 			case -7:pom_temp->short_name=nazev_puvodni;break;
-			case -8:editovany_text=pom_temp->rozmer_kabiny.x;break;
-			case -9:editovany_text=pom_temp->rozmer_kabiny.y;break;
+			case -8:editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.x;break;
+			case -9:editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.y;break;
 		}
 		Smaz_kurzor();
 	}
@@ -4101,8 +4101,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30,label1,label2,2,0,0,-1);
 				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30,label1,label2,3);
 				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30,label1,label2,4,0,0,-1);
-				DrawGrid_otoce->Visible=false;
-				DrawGrid_otoce->Visible=true;
+				DrawGrid_otoce->Refresh();
 			}
 			else if (EID==2 || EID==4)
 			{
@@ -4110,8 +4109,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30,label1,label2,2);
 				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30,label1,label2,3,0,0,-1);
 				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30,label1,label2,4);
-				DrawGrid_otoce->Visible=false;
-				DrawGrid_otoce->Visible=true;
+				DrawGrid_otoce->Refresh();
 			}
 		}
 
@@ -4935,7 +4933,7 @@ void TForm1::NP_input()
 	 if(vycentrovat)Mouse->CursorPos=TPoint(m.L2Px(akt_souradnice_kurzoru.x),m.L2Py(akt_souradnice_kurzoru.y)+vyska_menu);
 	 vycentrovat=true;
 	 JID=-1;
-
+	 DrawGrid_knihovna->Visible=false; //nezobrazí přepozicování elementů
 	 DrawGrid_knihovna->DefaultRowHeight=140;
 	 DrawGrid_knihovna->DefaultColWidth=80;
 	 DrawGrid_knihovna->Left=3;
@@ -4951,6 +4949,7 @@ void TForm1::NP_input()
 	 scGPLabel_poznamky->Visible=true;
 
 	 scGPLabel_roboti->Top=scGPPanel_mainmenu->Height;
+	 DrawGrid_knihovna->Visible=true;
 
 	 scListGroupPanel_hlavickaOtoce->Visible=true;
 	 scListGroupPanel_hlavickaOtoce->Top=DrawGrid_knihovna->Height + scGPPanel_mainmenu->Height;
@@ -7162,7 +7161,6 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPPanel_bottomtoolbar->Visible=false;
 		//změna horní lišty
 		Schema->Visible=false;
-//		Schema->Down=true;  ////////////////paměťová chyba!
 		Schema->Align=alNone;
 		scGPGlyphButton_zpravy_ikona->Visible=false;
 		scGPGlyphButton_zpravy_ikona->Align=alNone;
@@ -7189,7 +7187,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		DrawGrid_knihovna->DefaultRowHeight=50;
 		DrawGrid_knihovna->DefaultColWidth=70;
 		DrawGrid_knihovna->Left=14;
-
+		DrawGrid_knihovna->Visible=false;
 		scListGroupPanel_hlavickaOtoce->Visible=false;
 		scListGroupPanel_hlavickaOstatni->Visible=false;
 		scListGroupPanel_geometrie->Visible=false;
@@ -7209,6 +7207,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPLabel_roboti->Caption="Technolog. objekty";
 		scGPLabel_roboti->ContentMarginLeft=4;
 
+		DrawGrid_knihovna->Visible=true;
 		MOD=SCHEMA;
 		REFRESH();
 		pom=NULL;
@@ -7678,11 +7677,14 @@ void TForm1::vykresli_kurzor(int index)
 void TForm1::Smaz_kurzor ()
 {
 	TIP="";
-	if(editovany_text==""&&index_kurzoru==-8)editovany_text=pom_temp->rozmer_kabiny.x;
-	if(editovany_text==""&&index_kurzoru==-9)editovany_text=pom_temp->rozmer_kabiny.y;
-	if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=ms.MyToDouble(editovany_text);
-	if(index_kurzoru==-9)pom_temp->rozmer_kabiny.y=ms.MyToDouble(editovany_text);
-	if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
+	if(editace_textu)
+	{
+		if(editovany_text==""&&index_kurzoru==-8)editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.x;
+		if(editovany_text==""&&index_kurzoru==-9)editovany_text=(1+999*DKunit)*pom_temp->rozmer_kabiny.y;
+		if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=ms.MyToDouble(editovany_text)/(1+999*DKunit);
+		if(index_kurzoru==-9)pom_temp->rozmer_kabiny.y=ms.MyToDouble(editovany_text)/(1+999*DKunit);
+  }
+		if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
 	TimerKurzor->Enabled=false;
 	editace_textu=false;
 	REFRESH();
