@@ -4443,10 +4443,11 @@ HRGN hreg=CreatePolygonRgn(body,5,WINDING);//vytvoření regionu
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void TForm1::zobraz_tip(UnicodeString text)
+void TForm1::zobraz_tip(UnicodeString text,TCanvas* canv)//prázdným (bez paremetrů) voláním  metody se tip smaže
 {
 	TIP=text;
-	REFRESH();
+	if(canv==NULL)REFRESH();//pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP
+	else d.vykresli_tip(canv);//pokud je parametrem předán Canvas vykreslí se přímo a jednorázově
 }
 //---------------------------------------------------------------------------
 void TForm1::akutalizace_stavu_prichytavani_vSB()
