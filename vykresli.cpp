@@ -2756,8 +2756,8 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 
 	//text
 	if(typ!=-1)//v módu kurzor se název nezobrazuje
-	{
-		if(typ==0)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
+	{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
+		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
 		if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
 		AnsiString T=short_name;if(Z>4*3){T=name;if(F->aFont->Size==12)canv->Font->Size=2*Z; else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
@@ -3185,13 +3185,11 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
 	if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 	{
-			T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
-			//hodnoty
-			if(highlight){canv->Font->Style = TFontStyles()<< fsBold;canv->Font->Size=m.round(canv->Font->Size/2.0);}//při highlighnutí se text se šířkou nezvětštuje, pouze ztučňuje - musí být znovu
-			R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
-			//jednotky
-			if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)  - musí být znovu
-			R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
+		T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
+		//hodnoty
+		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
+		//jednotky
+		R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
 		if(Y1==Y2)//pro vodorovnou kótu                               //odebrání mezery
 		{
 			F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
@@ -3406,7 +3404,22 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButt
 	if(zamek_aRD->ImageIndex==37 || zamek_Rz->ImageIndex==37){vykresli_packu(canv,R,Top,Rx,Top,Color,1,0,O);}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------
-
+//zajišťuje vykreslování-vypisování tool tipu
+void Cvykresli::vykresli_tip(TCanvas *canv)
+{
+	canv->Font->Color=m.clIntensive(clRed,100);
+	//SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
+	canv->Font->Size=14;
+	canv->Font->Name="Arial";
+	canv->Brush->Color=clWhite;
+	canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+	if(F->scGPPanel_bottomtoolbar->Visible)
+		canv->TextOutW(F->ClientWidth-canv->TextWidth(F->TIP)-10,F->scGPPanel_bottomtoolbar->Top-25,F->TIP);
+	else
+		canv->TextOutW(F->ClientWidth-canv->TextWidth(F->TIP)-10,F->scGPPanel_statusbar->Top-25,F->TIP);
+	canv->Font->Color=clBlack;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------
 //vytvoří zvuk
 void Cvykresli::sound()
 {

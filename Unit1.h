@@ -546,7 +546,7 @@ private:
 	short rotace_symbol(short trend,int X, int Y);
 	void design_element(Cvektory::TElement *E);//nadesignuje tabulky daného elementu
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
-	void zobraz_tip(UnicodeString text);
+	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
 	void akutalizace_stavu_prichytavani_vSB();
 	void Novy_soubor();//samotné vytvoøení nového souboru
 	void Ulozit_soubor();//samotné uložení
@@ -669,7 +669,7 @@ public:		// User declarations
 	int JID;//JOB ID
   int knihovna_id; // id drawgrid knihovny
 	int element_id;  // id vybraneho elementu z knihoven
-	void nahled_ulozit (bool duvod_ulozit);
+	AnsiString TIP;
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
@@ -678,6 +678,7 @@ public:		// User declarations
 	void ZOOM_OUT();//oddálení
 	void REFRESH(bool mGrid=true); //vybere buï Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do vìtve else
 	void DuvodUlozit(bool stav);
+	void nahled_ulozit(bool duvod_ulozit);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
 	void S(UnicodeString Text="");//usnadòuje pøístup k ShowMessage
 	void Sk(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadòuje pøístup k ShowMessage - MaKr
