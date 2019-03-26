@@ -1825,6 +1825,8 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-7) {TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=1;nazev_puvodni=pom_temp->short_name;}
 								if(JID==-4||JID==-5){Akce=ROZMER_KABINA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;} //vertikální-4
 								if(JID==-10)zmenJednotekKot();
+								if(JID==-8)vykresli_kurzor(2);
+								if(JID==-8)vykresli_kurzor(3);
 						}
 						else
 						{
@@ -7597,7 +7599,7 @@ void TForm1::vykresli_kurzor(int index)
 	d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
 	AnsiString T=pom_temp->name.UpperCase()+" / "+pom_temp->short_name.UpperCase();
 	int Xl=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
-	int Yd=m.L2Py(pom_temp->Yk);  int co=JID;
+	int Yd=m.L2Py(pom_temp->Yk);
 
 	//vykreslování kurzoru pro psaní textu
 	Canvas->Pen->Style=psSolid;
@@ -7617,6 +7619,18 @@ void TForm1::vykresli_kurzor(int index)
 		{
     	Canvas->MoveTo(Xl+2+Canvas->TextWidth(T),Yd-Canvas->TextHeight(T)+3);  //F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()
 			Canvas->LineTo(Xl+2+Canvas->TextWidth(T),Yd-6);
+			stav_kurzoru=!stav_kurzoru;
+		}break;
+		case 2:
+		{
+			Canvas->MoveTo(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.top);
+			Canvas->LineTo(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.bottom);
+			stav_kurzoru=!stav_kurzoru;
+		}break;
+		case 3:
+		{                        //timer spustit
+			Canvas->MoveTo(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.top);
+			Canvas->LineTo(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.bottom);
 			stav_kurzoru=!stav_kurzoru;
 		}break;
 	}
