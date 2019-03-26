@@ -95,7 +95,6 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton1;
   TMemo *Memo2;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
-  TscGPButton *scGPButton1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -194,6 +193,7 @@ public:		// User declarations
   void getmGridColors();
   void getmGridWidth();
   void getDeleteButtonSettings(int Row);
+  void getPrirazeneObjDesign(int Row);
 
 	short VID;//validation ID
 	double VID_value;
@@ -221,6 +221,7 @@ public:		// User declarations
 	bool Storno;
 	bool zobrazitFrameForm;
 	bool zobrazOramovani;
+  AnsiString OBJEKTY_POUZIVAJICI_POHON;
 
 	int roletka_data;
 };

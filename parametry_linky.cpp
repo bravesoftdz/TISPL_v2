@@ -145,11 +145,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->Cells[4][0].Text="";
  if(Runit==MM) mGrid->Cells[5][0].Text="Rozteè <a>[mm]</a>";
  else          mGrid->Cells[5][0].Text="Rozteè <a>[m]</a>";
-  mGrid->Cells[6][0].Text="Pøiøazen";
-  mGrid->Cells[7][0].Text="Pøiøazené objekty";
+  mGrid->Cells[6][0].Text="Používán";
+  mGrid->Cells[7][0].Text="- na objektech";
   mGrid->Cells[8][0].Text="";
 
-
+  mGrid->Cells[7][0].Align=Left;
 
   mGrid->Cells[0][1].Text="";
 	mGrid->Cells[1][1].Text="";
@@ -161,7 +161,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
   getmGridColors();
 
-//
  	mGrid->MergeCells(2,0,4,0);
 	mGrid->MergeCells(0,0,0,1);
   mGrid->MergeCells(1,0,1,1);
@@ -169,6 +168,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->MergeCells(6,0,6,1);
   mGrid->MergeCells(7,0,7,1);
   mGrid->MergeCells(8,0,8,1);
+
+
 
   //ShowMessage("ted");
    Taktunit=S;
@@ -379,9 +380,13 @@ void TForm_parametry_linky::nacti_pohony ()
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
 				 for (int i=2;i<mGrid->RowCount;i++)
 				 {
-						AnsiString OBJEKTY_POUZIVAJICI_POHON=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
-						if(OBJEKTY_POUZIVAJICI_POHON!="")mGrid->Cells[7][i].Text=OBJEKTY_POUZIVAJICI_POHON;
-						else mGrid->Cells[7][i].Text="-";
+						 OBJEKTY_POUZIVAJICI_POHON=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
+ 						if(OBJEKTY_POUZIVAJICI_POHON!="")
+            {
+            if(OBJEKTY_POUZIVAJICI_POHON.Length()>15) mGrid->Cells[7][i].Text=OBJEKTY_POUZIVAJICI_POHON.SubString(1,15)+"...";
+            else mGrid->Cells[7][i].Text=OBJEKTY_POUZIVAJICI_POHON;
+            }
+						else mGrid->Cells[7][i].Text="";
 
     				mGrid->Cells[0][i].Text = ukaz->n;
 						mGrid->Cells[1][i].Text = ukaz->name;
@@ -415,24 +420,12 @@ void TForm_parametry_linky::nacti_pohony ()
 
            mGrid->Refresh(); // kvùli prací s následných Checkboxem je nutný refresh
 
-          if(Form1->d.v.pohon_je_pouzivan(ukaz->n)) {input_state=R; mGrid->getCheck(6,i)->Checked=true; } else  {input_state=R;mGrid->getCheck(6,i)->Checked=false;mGrid->getCheck(6,i)->Enabled=false;}
+          if(Form1->d.v.pohon_je_pouzivan(ukaz->n)) {input_state=R; mGrid->getCheck(6,i)->Checked=true;mGrid->getCheck(6,i)->Enabled=true; } else  {input_state=R;mGrid->getCheck(6,i)->Checked=false;mGrid->getCheck(6,i)->Enabled=false;}
 
 						ukaz = ukaz->dalsi;
 
              getDeleteButtonSettings(i);
-
-                        //mGrid->getEdit(7,i)->CanFocus()
-           mGrid->getButton(7,i)->ImageIndex=-1;
-           mGrid->getButton(7,i)->ShowCaption=true;
-           mGrid->getButton(7,i)->Caption=mGrid->Cells[7][i].Text;
-           mGrid->getButton(7,i)->Hint=mGrid->Cells[7][i].Text;
-           mGrid->getButton(7,i)->ShowHint=true;
-          // mGrid->getButton(7,i)->GlyphOptions->Thickness=1;
-           mGrid->getButton(7,i)->Options->NormalColor=clWhite;
-           mGrid->getButton(7,i)->Options->NormalColorAlpha=255;
-           mGrid->getButton(7,i)->Options->FrameWidth=1;
-           mGrid->getButton(7,i)->WordWrap=false;
-          // mGrid->Button(7,i)->GlyphOptions->Kind=scgpbgkCancel;
+             getPrirazeneObjDesign(i);
 				 }
 				 F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
 				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
@@ -702,10 +695,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
-		//R - odstaveno	 //	Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
+	//R zakoment		Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
 			}
 			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
-	 //R - odstaveno		//Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
+	 //R zakoment   Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
 //
 
 			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
@@ -760,7 +753,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 
 
 
-	mGrid->Cells[0][i].Text = mGrid->RowCount - 2;
+	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
 	mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
 
    getmGridWidth();
@@ -770,13 +763,15 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
    mGrid->Cells[4][i].Type=mGrid->EDIT;
    mGrid->Cells[5][i].Type=mGrid->EDIT;
    mGrid->Cells[6][i].Type=mGrid->CHECK;
-   mGrid->Cells[7][i].Text="-";
+   mGrid->Cells[7][i].Type=mGrid->BUTTON;
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
 
   mGrid->Refresh();
   mGrid->getCheck(6,i)->Enabled=false;
   getDeleteButtonSettings(i);
+  getPrirazeneObjDesign(i);
+  FormPaint(this);
 
 
 
@@ -1122,6 +1117,20 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 
 	if(VID==-1) { scGPGlyphButton_ADD->Enabled=true; scGPGlyphButton_vozik_edit->Enabled=true; scGPGlyphButton_TT->Enabled=true;  }
 	else {       scGPGlyphButton_ADD->Enabled=false;  scGPGlyphButton_vozik_edit->Enabled=false; scGPGlyphButton_TT->Enabled=false; }
+
+
+    	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
+		Canvas->Pen->Width=2;
+		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
+
+
+		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
+		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
+
+
+   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
+    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
+
 
 }
 //---------------------------------------------------------------------------
@@ -1866,39 +1875,67 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
 //	//toto problikává mGrid->Refresh();
- if(input_state==NOTHING)
- {
-    if(Col==6 && Row>=2)
-    {
-        if(mGrid->getCheck(6,Row)->Checked==false)
+     if(input_state==NOTHING)
+     {
+        if(Col==6 && Row>=2)
         {
-            if(mrOk==Form1->MB("Pohon je používáný, opravdu má být zrušeno pøiøazení?",MB_OKCANCEL))
+            if(mGrid->getCheck(6,Row)->Checked==false)
             {
-             mGrid->getCheck(6,Row)->Enabled=false;
-            }  else mGrid->getCheck(6,Row)->Checked=true;
+                if(mrOk==Form1->MB("Pohon je používáný, opravdu má být zrušeno pøiøazení?",MB_OKCANCEL))
+                {
+                 mGrid->getCheck(6,Row)->Enabled=false;
+                }  else mGrid->getCheck(6,Row)->Checked=true;
+            }
         }
+
+        if(Col==2 && Row==0)
+        {
+         if(aRDunit==MIN)	mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>";
+         else             mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/s]</a>";
+        }
+
+        if(Col==5 && Row==0)
+        {
+         if(Runit==MM) mGrid->Cells[5][0].Text="Rozteè <a>[mm]</a>";
+         else          mGrid->Cells[5][0].Text="Rozteè <a>[m]</a>";
+        }
+
+
+        if(Col==8 && Row>=2)
+        {
+
+          int ROW=Row;
+          bool smazat=false;
+          if(Form1->d.v.pohon_je_pouzivan(getPID(ROW)))//pohon je používaný
+          {
+              AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
+              myMessageBox->zobrazitFrameForm=true;//zajistí orámování MB
+              if(mrYes==Form1->MB("Pohon je používán objekty: <b>"+objekty+"</b>. Opravdu má být pohon smazán?",MB_YESNO))
+              {
+                //Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW)); pùvodní pøímé smazání, ale nereflektovalo by pøípadné storno
+                //pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
+                zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
+                smazat=true;
+              }
+              myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
+          }
+          else//pohon není používaný a mùžeme tedy smazat rovnou
+          {
+            smazat=true;
+          }
+
+      //samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
+         if(smazat)
+          {
+          mGrid->DeleteRow(ROW,true);
+          getmGridColors();
+          getmGridWidth();
+        // mGrid->Refresh();
+          FormPaint(this);
+          }
+
+       }
     }
-
-    if(Col==2 && Row==0)
-    {
-     if(aRDunit==MIN)	mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>";
-     else             mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/s]</a>";
-    }
-
-    if(Col==5 && Row==0)
-    {
-     if(Runit==MM) mGrid->Cells[5][0].Text="Rozteè <a>[mm]</a>";
-     else          mGrid->Cells[5][0].Text="Rozteè <a>[m]</a>";
-    }
-
-
- if(Col==8 && Row>=2)
-    {
-
-     ShowMessage("budu mazat pohon");
-
-    }
- }
 
 }
 
@@ -1956,23 +1993,21 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
            {
                for(int i=2;i<mGrid->RowCount;i++)
                {
-               mGrid->Cells[2][i].Text=mGrid->Cells[2][i].Text*60.0;
-               mGrid->Cells[3][i].Text=mGrid->Cells[3][i].Text*60.0;
-               mGrid->Cells[4][i].Text=mGrid->Cells[4][i].Text*60.0;
+               mGrid->Cells[2][i].Text=F->ms.MyToDouble(mGrid->Cells[2][i].Text)*60.0;
+               mGrid->Cells[3][i].Text=F->ms.MyToDouble(mGrid->Cells[3][i].Text)*60.0;
+               mGrid->Cells[4][i].Text=F->ms.MyToDouble(mGrid->Cells[4][i].Text)*60.0;
                }
            }
            else
            {
                for(int i=2;i<mGrid->RowCount;i++)
                {
-               mGrid->Cells[2][i].Text=mGrid->Cells[2][i].Text/60.0;
-               mGrid->Cells[3][i].Text=mGrid->Cells[3][i].Text/60.0;
-               mGrid->Cells[4][i].Text=mGrid->Cells[4][i].Text/60.0;
+               mGrid->Cells[2][i].Text=F->ms.MyToDouble(mGrid->Cells[2][i].Text)/60.0;
+               mGrid->Cells[3][i].Text=F->ms.MyToDouble(mGrid->Cells[3][i].Text)/60.0;
+               mGrid->Cells[4][i].Text=F->ms.MyToDouble(mGrid->Cells[4][i].Text)/60.0;
                }
            }
        mGrid->MergeCells(2,0,4,0);
-       Button_save->SetFocus();
-       mGrid->Refresh();
 
       }
       if(RET.x==5)
@@ -1984,20 +2019,20 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
            {
                for(int i=2;i<mGrid->RowCount;i++)
                {
-                mGrid->Cells[5][i].Text=mGrid->Cells[5][i].Text*1000.0;
+                mGrid->Cells[5][i].Text=F->ms.MyToDouble(mGrid->Cells[5][i].Text)*1000.0;
                }
            }
            else
            {
                for(int i=2;i<mGrid->RowCount;i++)
                {
-                mGrid->Cells[5][i].Text=mGrid->Cells[5][i].Text/1000.0;
+                mGrid->Cells[5][i].Text=F->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
                }
            }
             mGrid->MergeCells(5,0,5,1);
-            Button_save->SetFocus();
-            mGrid->Refresh();
       }
+       Button_save->SetFocus();
+       mGrid->Refresh();
    }
 }
 //---------------------------------------------------------------------------
@@ -2017,6 +2052,11 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[3][1].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[4][1].Font->Color= mGrid->Cells[1][0].Font->Color;
 
+  mGrid->Cells[8][0].RightBorder->Color=clBlack;
+  mGrid->Cells[7][0].RightBorder->Width=0;
+  mGrid->Cells[8][1].RightBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
+  mGrid->Cells[8][0].TopBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
+
   mGrid->Cells[0][0].Background->Color=clBACKGROUND;
   mGrid->Cells[1][0].Background->Color=clBACKGROUND;
   mGrid->Cells[2][0].Background->Color=clBACKGROUND;
@@ -2025,11 +2065,14 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[5][0].Background->Color=clBACKGROUND;
   mGrid->Cells[6][0].Background->Color=clBACKGROUND;
   mGrid->Cells[7][0].Background->Color=clBACKGROUND;
-  mGrid->Cells[8][0].Background->Color=clBACKGROUND;
+  mGrid->Cells[8][0].Background->Color=Form_parametry_linky->Color;
 
   mGrid->Cells[2][1].Background->Color=clBACKGROUND;
   mGrid->Cells[3][1].Background->Color=clBACKGROUND;
   mGrid->Cells[4][1].Background->Color=clBACKGROUND;
+
+  mGrid->Cells[6][0].RightBorder->Color=clBACKGROUND;
+  mGrid->Cells[6][1].RightBorder->Color=clBACKGROUND;
   }
 //---------------------------------------------------------------------------
   void TForm_parametry_linky::getmGridWidth()
@@ -2040,9 +2083,21 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Columns[3].Width=100;
   mGrid->Columns[4].Width=100;
   mGrid->Columns[5].Width=100;
-  mGrid->Columns[6].Width=70;
+  mGrid->Columns[6].Width=80;
   mGrid->Columns[7].Width=150;
   mGrid->Columns[8].Width=30;
+
+      	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
+//		Canvas->Pen->Width=2;
+//		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
+//
+//
+//		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
+//		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
+//
+//
+//   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
+//    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
   }
 //---------------------------------------------------------------------------
   void TForm_parametry_linky::getDeleteButtonSettings(int Row)
@@ -2059,3 +2114,39 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->getGlyphButton(8,Row)->Hint="Smazat tento pohon";
   mGrid->getGlyphButton(8,Row)->ShowHint=true;
   }
+
+  void TForm_parametry_linky::getPrirazeneObjDesign(int Row)
+  {
+
+  TscGPButton *CH=mGrid->getButton(7,Row);
+
+  CH->ImageIndex=-1;
+  CH->ShowCaption=true;
+  CH->Caption=mGrid->Cells[7][Row].Text;
+
+  CH->ShowHint=true;
+  CH->Options->NormalColor=clWhite;
+  CH->Options->NormalColorAlpha=255;
+  CH->Options->FrameWidth=1;
+  CH->WordWrap=false;
+  CH->Margin=0;
+  CH->Hint=OBJEKTY_POUZIVAJICI_POHON;
+  CH->Options->FontNormalColor= clGlyph;
+  CH->Options->FontFocusedColor= clGlyph;
+  CH->Options->FontHotColor= clGlyph;
+  CH->Options->FontDisabledColor=clGlyph;
+  CH->Options->NormalColor=clWhite;
+  CH->Options->FocusedColor=CH->Options->NormalColor;
+  CH->Options->HotColor=CH->Options->NormalColor;
+  CH->Options->PressedColor=CH->Options->NormalColor;
+  CH->Options->FrameNormalColor=CH->Options->NormalColor;
+  CH->Options->PressedColor=CH->Options->NormalColor;
+  CH->Options->FramePressedColor=CH->Options->NormalColor;
+  CH->Options->FocusedColor=clWhite;
+  CH->Options->FocusedColorAlpha=255;
+  CH->Options->FrameFocusedColor=clWhite;
+  CH->CanFocused=false;
+ // CH->Down=true;
+  CH=NULL;delete CH;
+  }
+
