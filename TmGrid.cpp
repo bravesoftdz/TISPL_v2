@@ -1572,11 +1572,17 @@ void TmGrid::realock()
 {
 	//kopie do záložního pole a smazání
 	TCells **bufCells = new TCells*[bufColCount];//vytvoøí dynamické pole ukazatelu typu TCells dle poètu požadovaných sloupcù
+	TColumns *bufColumns = new TColumns[bufColCount];//vytvoøí dynamické pole ukazatelu typu TColumns kvùli záloze šíøky sloupcù
+	TRows *bufRows = new TRows[bufRowCount];//vytvoøí dynamické pole ukazatelu typu TRows kvùli záloze výšky sloupcù
+
 	for(unsigned long X=0;X<bufColCount;X++)
 	{
 		bufCells[X] = new TCells[bufRowCount];//pruchod po sloupcich, slupcùm dynamamického pole alokuje pamìt pro jednotlivé øádky- cyklus musí být samostatnì
 		bufCells[X] = Cells[X];//zkopírování pùvodních hodnot do zálohy //takto asi nevhodné kopírovat (zùstane ukazatel), s hvìzdickou sice hodnoty ale je potøeba pøidìlit pamìt pomocí new pro TBrush TFont a TBorders
+		bufColumns[X].Width=Columns[X].Width;
 	}
+
+	for(unsigned long Y=0;Y<bufRowCount;Y++)bufRows[Y].Height=Rows[Y].Height;
 
 	//poèty øádkù a sloupcù
 	unsigned long bufColCount2=ColCount;unsigned long bufRowCount2=RowCount;
@@ -1597,12 +1603,16 @@ void TmGrid::realock()
 	if(bufRowCount2>RowCount)bufRowCount=RowCount;else bufRowCount=bufRowCount2;//podle toho, co je menší
 	for(unsigned long Y=0;Y<bufRowCount;Y++)
 	{
+		Rows[Y].Height=bufRows[Y].Height;//navrácení pùvodní výšky øádku, protože voláním Create se nastavuje výška výchozí
 		for(unsigned long X=0;X<bufColCount;X++)
 		{
 			//nelze celý ukazatel
-			Cells[X][Y] = bufCells[X][Y];
+			Cells[X][Y] = bufCells[X][Y];//popø. CopyCell(bufCells[X][Y],Cells[X][Y],true);//nová verze
+			if(Y==0)Columns[X].Width=bufColumns[X].Width;//navrácení pùvodní šíøky slopcù, protože voláním Create se nastavuje šíøka výchozí
 		}
 	}
+	bufColumns=NULL; delete bufColumns;
+	bufRows=NULL; delete bufRows;
 
 	//smazání pùvodního bufCells
 	for(unsigned long X=0;X<bufColCount2;X++)

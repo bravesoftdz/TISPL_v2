@@ -67,17 +67,36 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E1->mG->MovingTable=true;
 		E1->mG->Border.Width=2;
 
-		ColCount=2;//pevný poèet slopcù
+
+		ColCount=3;//pevný poèet slopcù
 		RowCount=5;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+		E1->mG->Columns[1].Width=50;
+		E1->mG->SetColumnAutoFit(-4);
+
 		//E1->mG->Cells[0][1].Type=E1->mG->EDIT;
-		E1->mG->Cells[0][1].Text="OOO";
+		E1->mG->Cells[0][0].Text="OOO";
+		//E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+		E1->mG->Cells[0][0].Background->Color=clRed;
+			E1->mG->Cells[0][0].Font->Name="Roboto Cn";
+				E1->mG->Cells[0][0].Font->Color=clYellow;
 		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][1].Text="abc1";
+		E1->mG->Cells[1][2].Type=E1->mG->EDIT;
+		E1->mG->Cells[1][2].Text="abc2";
+		E1->mG->Cells[1][3].Type=E1->mG->EDIT;
+		E1->mG->Cells[1][3].Text="abc3";
+		E1->mG->Cells[1][4].Type=E1->mG->EDIT;
+		E1->mG->Cells[1][4].Text="abc4";
+
+		E1->mG->MergeCells(0,0,1,0);
+		E1->mG->MergeCells(2,0,2,1);
 
 		E1->predchozi=NULL;
 		E1->dalsi=NULL;
+
+
 
 		ELEMENTY->dalsi=E1;
 
@@ -407,14 +426,14 @@ C=NULL;delete C;
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button5Click(TObject *Sender)
 {
-	mGrid->AddRow();
+	ELEMENTY->dalsi->mG->AddRow();
 	//test pouze pøidání textu:
-	mGrid->Cells[1][mGrid->RowCount-1].Text=mGrid->RowCount-1;FormPaint(this);//nutno kvùli aktualizaci textu
+	//mGrid->Cells[1][mGrid->RowCount-1].Text=mGrid->RowCount-1;FormPaint(this);//nutno kvùli aktualizaci textu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button4Click(TObject *Sender)
 {
-	mGrid->InsertRow(3);//s problikem zpùsobuje show() v InsertRow
+	ELEMENTY->dalsi->mG->InsertRow(3);//s problikem zpùsobuje show() v InsertRow
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button3Click(TObject *Sender)
