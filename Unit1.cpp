@@ -2284,9 +2284,10 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-8;//vodorovná kóta
 //JID=-9;//svislá kóta
 //JID=-10;//jednotky kóty
+//JID=-11 a více//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);
 //JID=-1 žádná
-//JID=0 - 9 rezervováno pro element
-//JID=10 - 99 - interaktivní text kóty
+//JID=0 - 10 rezervováno pro element
+//JID=11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
 //JID=100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
 void TForm1::getJobID(int X, int Y)
 {
@@ -2338,25 +2339,26 @@ void TForm1::getJobID(int X, int Y)
 				{
 					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 					{
-						//JID=-10;//jednotky kóty
-						if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)))JID=-10;
+						short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
+						//jednotky kóty buď kabiny nebo kót elementů JID=-10
+						if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
 						else
 						{
 							//vodorovná kóta JID=-8
-							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
+							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO) //short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
 							{
 								JID=-8;
 							}else
 							//svislá kóta JID=-9
-							if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
+							if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
 							{
 								JID=-9;
 							}
-							//další kóty
-							//RET=10-99 zcela doplnit
-							//short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
-							//if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO)
-							//if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
+							else//kóty elementů RET=10-99
+							{
+								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
+								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+							}
 						}
 					}
 				}
@@ -2364,13 +2366,11 @@ void TForm1::getJobID(int X, int Y)
 		}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
-
 }
 //---------------------------------------------------------------------------
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
 {                                                  //pom_element->mGrid->Cells[0][0].Font->Style=TFontStyles()<< fsBold; - nefunguje něco to přenastavuje jinak
-
 	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
 	{
 		//if(pom_element->mGrid!=NULL && pom_temp->zobrazit_mGrid)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
@@ -2385,6 +2385,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		kurzor(standard);//umístít na začátek
 		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
 		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
+		if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
@@ -7100,7 +7101,8 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-	Form2->ShowModal();
+	//Form2->ShowModal();
+	Sk(m.round2double(2.64,3,".."));
 
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;

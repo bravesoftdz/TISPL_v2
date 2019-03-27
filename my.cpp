@@ -25,8 +25,8 @@ double Cmy::round2double(double number,unsigned short precision)
 AnsiString Cmy::round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal)
 {
 	double RET=round2double(number,precision);
-	AnsiString RETT="0";
-	if(RET*pow(10.0,precision)!=ceil(RET*pow(10.0,precision)))RETT=AnsiString(RET)+mark;//pokud èíslo obsahuje reálnou èást vrátí i se znakem pokraèování
+	AnsiString RETT="0"; //floor musí být z dùvodu porovnávání kladných i záporných èísel a také z dùvodu že není možné porovnávat double a int, ale je nutné porovnat int vs. int
+	if(floor(RET*pow(10.0,precision))!=ceil(number*pow(10.0,precision)))RETT=AnsiString(RET)+mark;//pokud èíslo obsahuje reálnou èást vrátí i se znakem pokraèování
 	else
 	{
 		if(add_decimal)RETT=F->ms.addDecimal(RET,precision);//pokud je požadavek na doplnìní reálných míst do stanoveného poètu

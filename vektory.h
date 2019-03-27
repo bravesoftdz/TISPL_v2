@@ -65,7 +65,7 @@ class Cvektory
 			//double TIME;//CT, PT, WT, RT,...
 
 			double kota_offset;//odsazení kóty v metrech, kóta je uvažována od přechozího a k aktuálnímu elementu, offset vlastní aktuální element
-			T2Rect Kota_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
+			T3Rect kota_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast kóty, popisku a jednotek kóty kabiny - nedovávat  do CObjekt
 
 			unsigned int akt_pocet_voziku;
 			unsigned int max_pocet_voziku;
@@ -370,6 +370,7 @@ void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy d
 TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 TElement *vrat_element(TObjekt *Objekt, unsigned int n);//vraťí ukazatel na element dle n elementu umístěného v daném objektu
+short PtInKota_elementu(TObjekt *Objekt,long X,long Y);//ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
 //dodělat void zmen_poradi_Elementu(TObjekt *Objekt, TElement Element,TObjekt *zaElement);
 //dodělat void zmen_poradi_Elementu(TObjekt *Objekt unsigned long aktualni_poradi,unsigned long nove_poradi);
 void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu

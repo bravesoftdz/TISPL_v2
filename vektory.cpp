@@ -1150,13 +1150,32 @@ Cvektory::TElement *Cvektory::najdi_tabulku(TObjekt *Objekt, double X, double Y)
 //vraťí ukazatel na element dle n elementu umístěného v daném objektu
 Cvektory::TElement *Cvektory::vrat_element(TObjekt *Objekt, unsigned int n)
 {
-	TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!!
 	while(E!=NULL)
 	{
 		if(E->n==n) break;
 		else E=E->dalsi;
 	}
 	return E;
+}
+////---------------------------------------------------------------------------
+//ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
+short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
+{
+	short RET=-1;//nic nenalezeno
+	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!!
+	while(E!=NULL)
+	{
+		if(E->kota_oblast.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_element=E;break;}//hodnoty kóty
+		else
+		{
+			if(E->kota_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
+			else if(E->kota_oblast.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_element=E;break;}//kóta celá
+		}
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
