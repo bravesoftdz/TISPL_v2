@@ -169,8 +169,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->MergeCells(7,0,7,1);
   mGrid->MergeCells(8,0,8,1);
 
-
-
   //ShowMessage("ted");
    Taktunit=S;
 	// Runit=M;
@@ -229,9 +227,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 			scGPButton_pohon->Caption="   Pohon";
 			rHTMLLabel_sirka_jig->Visible=false;
 
-			Button_ADD->Visible=true;
-			Button_DEL->Visible=true;
-
 			scGPButton_obecne->Visible=false;
 			rHTMLLabel_takt->Visible=false;
 			rEditNum_takt->Visible=false;
@@ -246,14 +241,12 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 
     //nastaveni rozmeru formu - dle poctu pohonu
+     setFormHeight();
 
      // rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->RowCount*30 + 48;
      // Form_parametry_linky->Height= rStringGridEd_tab_dopravniky->Height +428;
      // scGPGlyphButton_ADD->Top=Form_parametry_linky->Height - 65 ;
-      Button_save->Top=Form_parametry_linky->Height - 40;
-      Button_storno->Top=Form_parametry_linky->Height - 40;
-      scGPGlyphButton_DEL_nepouzite->Top=Form_parametry_linky->Height-30;
-      scGPGlyphButton_DEL_nepouzite->Left=2;
+
 		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
 		//musí být umístìno až za nacti_pohony
 	 //	zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
@@ -282,37 +275,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_pohon->Options->FramePressedColor=Form_parametry_linky->Color;
 
-	 scGPButton_zamek_aRD->Options->NormalColor=clWhite;
-	 scGPButton_zamek_aRD->Options->FocusedColor=clWhite;
-	 scGPButton_zamek_aRD->Options->HotColor=clWhite;
-	 scGPButton_zamek_aRD->Options->PressedColor=clWhite;
-	 scGPButton_zamek_aRD->Options->FrameNormalColor=clWhite;
-	 scGPButton_zamek_aRD->Options->PressedColor=clWhite;
-	 scGPButton_zamek_aRD->Options->FramePressedColor=clWhite;
-
-	 scGPButton_zamek_roztec->Options->NormalColor=clWhite;
-	 scGPButton_zamek_roztec->Options->FocusedColor=clWhite;
-	 scGPButton_zamek_roztec->Options->HotColor=clWhite;
-	 scGPButton_zamek_roztec->Options->PressedColor=clWhite;
-	 scGPButton_zamek_roztec->Options->FrameNormalColor=clWhite;
-	 scGPButton_zamek_roztec->Options->PressedColor=clWhite;
-	 scGPButton_zamek_roztec->Options->FramePressedColor=clWhite;
-
-	 scGPButton_zamek_Rz->Options->NormalColor=clWhite;
-	 scGPButton_zamek_Rz->Options->FocusedColor=clWhite;
-	 scGPButton_zamek_Rz->Options->HotColor=clWhite;
-	 scGPButton_zamek_Rz->Options->PressedColor=clWhite;
-	 scGPButton_zamek_Rz->Options->FrameNormalColor=clWhite;
-	 scGPButton_zamek_Rz->Options->PressedColor=clWhite;
-	 scGPButton_zamek_Rz->Options->FramePressedColor=clWhite;
-
-	 scGPButton_zamek_Rx->Options->NormalColor=clWhite;
-	 scGPButton_zamek_Rx->Options->FocusedColor=clWhite;
-	 scGPButton_zamek_Rx->Options->HotColor=clWhite;
-	 scGPButton_zamek_Rx->Options->PressedColor=clWhite;
-	 scGPButton_zamek_Rx->Options->FrameNormalColor=clWhite;
-	 scGPButton_zamek_Rx->Options->PressedColor=clWhite;
-	 scGPButton_zamek_Rx->Options->FramePressedColor=clWhite;
 
 	 scGPButton_obecne->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_obecne->Options->FocusedColor=Form_parametry_linky->Color;
@@ -357,12 +319,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();
 
-	 //testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-	 if(existuji_nepouzivane_pohony())scGPGlyphButton_DEL_nepouzite->Visible=true;
-	 else scGPGlyphButton_DEL_nepouzite->Visible=false;
-
 	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
+
+   setADD_ButtonPosition();
 
 	 Storno=false;
 }
@@ -431,11 +391,7 @@ void TForm_parametry_linky::nacti_pohony ()
 				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
 
 
-
-
          mGrid->Refresh();
-
-
          input_state=NOTHING;
 
 	}
@@ -741,6 +697,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		}
 
    } 	Form1->DuvodUlozit(true);
+
+    mGrid->Delete();
 		Close();//v testu, mùže padat
 }
 //---------------------------------------------------------------------------
@@ -764,14 +722,15 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
    mGrid->Cells[5][i].Type=mGrid->EDIT;
    mGrid->Cells[6][i].Type=mGrid->CHECK;
    mGrid->Cells[7][i].Type=mGrid->BUTTON;
-   mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
+   mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
   mGrid->Refresh();
   mGrid->getCheck(6,i)->Enabled=false;
   getDeleteButtonSettings(i);
   getPrirazeneObjDesign(i);
-  FormPaint(this);
+  setADD_ButtonPosition();
+  setFormHeight();
 
 
 
@@ -1123,15 +1082,13 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 		Canvas->Pen->Width=2;
 		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
 
-
+//
 		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
 		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
 
 
    	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
     Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
-
-
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1869,7 +1826,7 @@ void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
 //metody volané z Tmgrid
 void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-
+//
 //	ShowMessage("PL\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
 //	mGrid->HighlightCell(Col,Row);
 //	mGrid->Cells[0][0].Text="test";
@@ -1927,11 +1884,11 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
       //samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
          if(smazat)
           {
-          mGrid->DeleteRow(ROW,true);
-          getmGridColors();
-          getmGridWidth();
-        // mGrid->Refresh();
-          FormPaint(this);
+          Button_save->SetFocus(); //EXTREMNE DULEZITE, JINAK PAMETOVA CHYBA PRI ODSTRANOVANI ROW
+          mGrid->DeleteRow(ROW);
+          //nastaveni rozmeru formu - dle poctu pohonu a nove pozice Add buttonu
+          setADD_ButtonPosition();
+          setFormHeight();
           }
 
        }
@@ -1953,33 +1910,33 @@ void TForm_parametry_linky::OnChange(long Tag,unsigned long Col,unsigned long Ro
 void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
-	 if(Button==mbRight && mGrid->Row>=2)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
-	 {
-      mGrid->MovingTable=true; mGrid->Refresh();
-			PopUPmenu->Height=34*2;//zobrazené dvì položky
-			PopUPmenu->Left=X;PopUPmenu->Top=Y+mGrid->Top;//pozice
-			//nastávení textu polože
-			scLabel_kopirovat->Caption="  Kopírovat "+mGrid->Cells[1][mGrid->Row].Text;
-			scLabel_smazat->Caption="  Smazat "+mGrid->Cells[1][mGrid->Row].Text;
-			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-			if(existuji_nepouzivane_pohony())
-			{
-				PopUPmenu->Height=34*3;//zobrazené již tøi položky
-				Item_smazat_nepouzite->Visible=true;
-				scGPGlyphButton_DEL_nepouzite->Visible=true;
-			}
-			else
-			{
-				Item_smazat_nepouzite->Visible=false;
-				scGPGlyphButton_DEL_nepouzite->Visible=false;
-			}
-			//ošetøení, pokud je mimo obrazovku + 5 px okraj
-			if(PopUPmenu->Left>=ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
-			PopUPmenu->Left=ClientWidth-PopUPmenu->Width-5;
-			if(PopUPmenu->Top>=mGrid->Top+mGrid->Height-PopUPmenu->Height)
-			PopUPmenu->Top=mGrid->Top+mGrid->Height-PopUPmenu->Height-5;
-			PopUPmenu->Visible=true;
-	 }
+//	 if(Button==mbRight && mGrid->Row>=2)//je stisknuto pravé tlaèítko myši ve stringridu, tzn. volat popupmenu
+//	 {
+//      mGrid->MovingTable=true; mGrid->Refresh();
+//			PopUPmenu->Height=34*2;//zobrazené dvì položky
+//			PopUPmenu->Left=X;PopUPmenu->Top=Y+mGrid->Top;//pozice
+//			//nastávení textu polože
+//			scLabel_kopirovat->Caption="  Kopírovat "+mGrid->Cells[1][mGrid->Row].Text;
+//			scLabel_smazat->Caption="  Smazat "+mGrid->Cells[1][mGrid->Row].Text;
+//			//testuje zda existují nepoužíté pohony a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
+//			if(existuji_nepouzivane_pohony())
+//			{
+//				PopUPmenu->Height=34*3;//zobrazené již tøi položky
+//				Item_smazat_nepouzite->Visible=true;
+//				scGPGlyphButton_DEL_nepouzite->Visible=true;
+//			}
+//			else
+//			{
+//				Item_smazat_nepouzite->Visible=false;
+//				scGPGlyphButton_DEL_nepouzite->Visible=false;
+//			}
+//			//ošetøení, pokud je mimo obrazovku + 5 px okraj
+//			if(PopUPmenu->Left>=ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
+//			PopUPmenu->Left=ClientWidth-PopUPmenu->Width-5;
+//			if(PopUPmenu->Top>=mGrid->Top+mGrid->Height-PopUPmenu->Height)
+//			PopUPmenu->Top=mGrid->Top+mGrid->Height-PopUPmenu->Height-5;
+//			PopUPmenu->Visible=true;
+//	 }
    if(Button==mbLeft)      //pøepnutí jednotek
    {
 
@@ -2038,8 +1995,8 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::getmGridColors()
   {
-  mGrid->Cells[0][0].Font->Color=clGray;
-  mGrid->Cells[1][0].Font->Color=clBlack;
+  mGrid->Cells[0][0].Font->Color=F->m.clIntensive(clBlack,80);
+  mGrid->Cells[1][0].Font->Color=F->m.clIntensive(clBlack,50);
   mGrid->Cells[2][0].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[3][0].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[4][0].Font->Color= mGrid->Cells[1][0].Font->Color;
@@ -2086,33 +2043,25 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Columns[6].Width=80;
   mGrid->Columns[7].Width=150;
   mGrid->Columns[8].Width=30;
-
-      	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
-//		Canvas->Pen->Width=2;
-//		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
-//
-//
-//		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
-//		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
-//
-//
-//   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
-//    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
   }
 //---------------------------------------------------------------------------
   void TForm_parametry_linky::getDeleteButtonSettings(int Row)
   {
-  mGrid->getGlyphButton(8,Row)->GlyphOptions->Kind=scgpbgkCancel;
-  mGrid->getGlyphButton(8,Row)->GlyphOptions->Thickness=1;
-  mGrid->getGlyphButton(8,Row)->Options->NormalColor=clWhite;
-  mGrid->getGlyphButton(8,Row)->Options->NormalColorAlpha=255;
-  mGrid->getGlyphButton(8,Row)->Options->FrameWidth=1;
-  mGrid->getGlyphButton(8,Row)->Options->FrameNormalColor=clWhite;
-  mGrid->getGlyphButton(8,Row)->Width=scGPGlyphButton_smazat_pohon->Width;
-  mGrid->getGlyphButton(8,Row)->Height=scGPGlyphButton_smazat_pohon->Height;
-  mGrid->getGlyphButton(8,Row)->Options->ShapeStyle=scgpRect;
-  mGrid->getGlyphButton(8,Row)->Hint="Smazat tento pohon";
-  mGrid->getGlyphButton(8,Row)->ShowHint=true;
+  TscGPGlyphButton *H=mGrid->getGlyphButton(8,Row);
+
+  H->GlyphOptions->Kind=scgpbgkCancel;
+  H->GlyphOptions->Thickness=1;
+  H->Options->NormalColor=clWhite;
+  H->Options->NormalColorAlpha=255;
+  H->Options->FrameWidth=1;
+  H->Options->FrameNormalColor=clWhite;
+  H->Width=scGPGlyphButton_smazat_pohon->Width;
+  H->Height=scGPGlyphButton_smazat_pohon->Height;
+  H->Options->ShapeStyle=scgpRect;
+  H->Hint="Smazat tento pohon";
+  H->ShowHint=true;
+
+  H=NULL;delete H;
   }
 
   void TForm_parametry_linky::getPrirazeneObjDesign(int Row)
@@ -2148,5 +2097,26 @@ void TForm_parametry_linky::getmGridColors()
   CH->CanFocused=false;
  // CH->Down=true;
   CH=NULL;delete CH;
+  }
+
+
+  void TForm_parametry_linky::setADD_ButtonPosition ()
+  {
+
+  scGPGlyphButton_ADD->Top=mGrid->Top+mGrid->Height;
+  scGPGlyphButton_ADD->Left=mGrid->Left;
+  scGPGlyphButton_ADD->Width=mGrid->Columns[0].Width+1;
+  scGPGlyphButton_ADD->Height=mGrid->DefaultRowHeight;
+
+  }
+
+  void TForm_parametry_linky::setFormHeight()
+  {
+
+   Form_parametry_linky->Height=mGrid->Top + mGrid->RowCount*mGrid->DefaultRowHeight + 100;
+   Button_save->Top=Form_parametry_linky->Height - 40;
+   Button_storno->Top=Form_parametry_linky->Height - 40;
+   scGPGlyphButton_DEL_nepouzite->Top=Button_save->Top;
+   scGPGlyphButton_DEL_nepouzite->Left=mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
   }
 

@@ -515,6 +515,7 @@ public:
 	UnicodeString get_user_name();
 	//toto je na co?:DrawGridWndProc(TMessage &Message);
 	bool mazani;
+	bool zobrazeni_tabulek;
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
@@ -582,7 +583,7 @@ private:
 	void ortogonalizovat();//ortogonalizuje schéma
 	void db_connection();  // pøipojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
-	bool el_vkabine(int X,int Y);
+	bool el_vkabine(int X,int Y,int element_id);
 	int el_mimoKabinu ();//1-robot z leva, 2-robot z prava, 3-nerobot zl., 4-nerobot zp., 5-robot ze spoda, 6-robot z vrchu, 7-nerobot zes., 8-nerobot zvr.
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);

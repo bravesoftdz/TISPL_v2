@@ -51,8 +51,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel3;
 	TrHTMLLabel *rHTMLLabel4;
 	TrHTMLLabel *rHTMLLabel_JIG;
-	TscGPGlyphButton *Button_ADD;
-	TscGPGlyphButton *Button_DEL;
 	TscGPNumericEdit *rEditNum_takt;
 	TscGPNumericEdit *scGPNumericEdit_delka_jig;
 	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
@@ -81,10 +79,6 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_takttime_kalkulator;
 	TscGPNumericEdit *scGPNumericEdit_delka_podvozek;
 	TscGPNumericEdit *scGPNumericEdit_vyska_jig;
-	TscGPButton *scGPButton_zamek_aRD;
-	TscGPButton *scGPButton_zamek_roztec;
-	TscGPButton *scGPButton_zamek_Rz;
-	TscGPButton *scGPButton_zamek_Rx;
 	TrHTMLHint *rHTMLHint1;
 	TrHTMLLabel *rHTMLLabel_InfoText;
 	TscGPGlyphButton *scGPGlyphButton_TT;
@@ -93,7 +87,6 @@ __published:	// IDE-managed Components
   TrHTMLLabel *rHTMLLabel_info_zmenaR;
   TscGPGlyphButton *scGPGlyphButton_ADD;
   TscGPGlyphButton *scGPGlyphButton1;
-  TMemo *Memo2;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
@@ -194,6 +187,8 @@ public:		// User declarations
   void getmGridWidth();
   void getDeleteButtonSettings(int Row);
   void getPrirazeneObjDesign(int Row);
+  void setADD_ButtonPosition();
+  void setFormHeight();
 
 	short VID;//validation ID
 	double VID_value;
