@@ -31,6 +31,7 @@ TmGrid::TmGrid(TForm *Owner)
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a uije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se kadı sloupec individuálnì, 0 a více jen konkrétní sloupec uvedenı pomoc ColIdx
 	preRowInd=-1;
 	Decimal=3;//implicitní poèet desetinnıch míst u numericeditù
+	IntegerDecimalNull=false;//pokud je vıše uvedené Decimal na hodnotu vyšší ne 0, toto nastavuje zda se nuly doplní do poètu decimál i u celıch èísel
 	//orámování - default
 	TBorder defBorder;
 	defBorder.Color=(TColor)RGB(200,200,200);
@@ -587,6 +588,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
 			gB->Visible=VisibleComponents;
+			gB->GlyphOptions->Kind=scgpbgkOptions;
 			gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 			gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 			gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
@@ -755,7 +757,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)N->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	N->Decimal=Decimal;
+	N->Decimal=Decimal;if(!IntegerDecimalNull && m.cele_cislo(ms.MyToDouble(Cell.Text)))N->Decimal=0;//pokud se jedná o celé èíslo, nezobrazuje "reálnou èást" celého èísla tj. poèet nul do poètu decimal
 	N->DisplayType=scedtNumeric;
 	N->ValueType=scvtFloat;
 	N->ShowHint=true;
@@ -1558,7 +1560,6 @@ void TmGrid::DeleteRow(long Row,bool invalidate)
 {
 	if(Row<=RowCount-1 && RowCount-1>0)//nelze smazat pouze jenom jeden øádek
 	{
-		DeleteComponents(0,Row,ColCount-1,Row);//smae komponenty na daném øádku
 		//pøekopíruje øádek resp. buòky z øádku následujícího a ubere poslední øádek, pokud se nejedná o jedinı øádek
 		for(unsigned long Y=Row;Y<RowCount-1;Y++)
 		{
@@ -1568,7 +1569,7 @@ void TmGrid::DeleteRow(long Row,bool invalidate)
 			}
 			Rows[Y]=Rows[Y+1];
 		}
-		//DeleteComponents(0,RowCount-1,ColCount-1,RowCount-1);
+		DeleteComponents(0,RowCount-1,ColCount-1,RowCount-1);//smae komponenty z posledního øádku, pozor, je nutné odevzdat focus mimo mazané komponenty, jinak nastane pamìová chyba
 		RowCount--;
 	}
 	if(invalidate)Show();//pokud je poadováno pøekreslení //pøekreslení s problikem, jinak pouít pøímo ve formu formpaint a toto zakomentovat
