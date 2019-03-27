@@ -126,6 +126,7 @@ class TmGrid
 	TRows *Rows;//alokace jednorozmìrneho dynamickeho pole øádkù
 	TCells DefaultCell;//deafultní vzorová VIRTUÁLNÍ buòka, podle ní se nastaví všechny pøi prvním naètení tabulky, pokud není pøed Show() ještì nastaveno jinak
 	short Decimal;//implicitní poèet desetinných míst u numericeditù
+	bool IntegerDecimalNull;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do poètu decimál i u celých èísel
 	bool MovingTable;//pokud je nastaveno na true, komponenty se zmìní na typ DRAW tj. tak, aby došlo k posunu dané buòky
 	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
 

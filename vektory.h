@@ -65,6 +65,7 @@ class Cvektory
 			//double TIME;//CT, PT, WT, RT,...
 
 			double kota_offset;//odsazení kóty v metrech, kóta je uvažována od přechozího a k aktuálnímu elementu, offset vlastní aktuální element
+			T2Rect Kota_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
 
 			unsigned int akt_pocet_voziku;
 			unsigned int max_pocet_voziku;

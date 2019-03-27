@@ -2338,16 +2338,16 @@ void TForm1::getJobID(int X, int Y)
 				{
 					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 					{
-						//vodorovná kóta či JID=-10;//jednotky kóty
+						//JID=-10;//jednotky kóty
 						if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)))JID=-10;
 						else
 						{
-							//JID=-8;//vodorovná kóta
+							//vodorovná kóta JID=-8
 							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
 							{
 								JID=-8;
 							}else
-							//JID=-9;//svislá kóta
+							//svislá kóta JID=-9
 							if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
 							{
 								JID=-9;
