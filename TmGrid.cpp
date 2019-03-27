@@ -1557,7 +1557,9 @@ void TmGrid::InsertRow(long Row,bool copyComponentFromPreviousRow, bool invalida
 void TmGrid::DeleteRow(long Row,bool invalidate)
 {
 	if(Row<=RowCount-1 && RowCount-1>0)//nelze smazat pouze jenom jeden øádek
-	{ //pøekopíruje øádek resp. buòky na øádku následující a ubere poslední øádek,pokud se nejedná o jedinı øádek
+	{
+		DeleteComponents(0,Row,ColCount-1,Row);//smae komponenty na daném øádku
+		//pøekopíruje øádek resp. buòky z øádku následujícího a ubere poslední øádek, pokud se nejedná o jedinı øádek
 		for(unsigned long Y=Row;Y<RowCount-1;Y++)
 		{
 			for(unsigned long X=0;X<ColCount;X++)
@@ -1566,7 +1568,7 @@ void TmGrid::DeleteRow(long Row,bool invalidate)
 			}
 			Rows[Y]=Rows[Y+1];
 		}
-		DeleteComponents(0,RowCount-1,ColCount-1,RowCount-1);
+		//DeleteComponents(0,RowCount-1,ColCount-1,RowCount-1);
 		RowCount--;
 	}
 	if(invalidate)Show();//pokud je poadováno pøekreslení //pøekreslení s problikem, jinak pouít pøímo ve formu formpaint a toto zakomentovat
