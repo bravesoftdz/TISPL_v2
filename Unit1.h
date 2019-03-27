@@ -701,6 +701,8 @@ public:		// User declarations
 	double outPT (double outPT);
   double inDO (double outDO);
 	double outDO (double outDO);
+	double inDK (double outDK);
+	double outDK (double outDK);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
