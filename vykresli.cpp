@@ -3086,11 +3086,21 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 		while(E!=NULL)
 		{
-			E->mGrid->Left=m.L2Px(E->Xt);
-			E->mGrid->Top=m.L2Py(E->Yt);
-			if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
-			else E->mGrid->MovingTable=false;
-			E->mGrid->Show(canv);
+			if(F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+			{
+				E->mGrid->VisibleComponents=true;//stačí volat toto
+				E->mGrid->Left=m.L2Px(E->Xt);
+				E->mGrid->Top=m.L2Py(E->Yt);
+				if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
+				else E->mGrid->MovingTable=false;
+				E->mGrid->Show(canv);
+			}
+			else//pokud ne, je třeba skrýt komponenty
+			{
+				E->mGrid->VisibleComponents=false;
+				if(F->element_id==-1)E->mGrid->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
+				else E->mGrid->Show();//nutné jinak paměťová chyba
+			}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;

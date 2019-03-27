@@ -27,6 +27,7 @@ TmGrid::TmGrid(TForm *Owner)
 	AntiAliasing_grid=false;
 	AntiAliasing_text=true;
 	MovingTable=false;
+	VisibleComponents=true;
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	preRowInd=-1;
 	Decimal=3;//implicitní poèet desetinných míst u numericeditù
@@ -567,6 +568,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPButton *B=createButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
+			B->Visible=VisibleComponents;
 			B->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 			B->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 			B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
@@ -584,6 +586,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
+			gB->Visible=VisibleComponents;
 			gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 			gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 			gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
@@ -611,6 +614,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 				C->OnChange=&getTagOnChange;
 			}
 			//atributy
+			C->Visible=VisibleComponents;
 			C->Top=R.Top+floor(Cell.TopBorder->Width/2.0);
 			C->Left=R.Left+floor(Cell.LeftBorder->Width/2.0);
 			C->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
@@ -633,6 +637,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPCheckBox *Ch = createCheck(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
+			Ch->Visible=VisibleComponents;
 			switch(Cell.Align)
 			{
 				case aNO:		Ch->Left+=Left-preLeft;break;
@@ -662,6 +667,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPRadioButton *Ra = createRadio(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
+			Ra->Visible=VisibleComponents;
 			switch(Cell.Align)
 			{
 				case aNO:break;
@@ -696,7 +702,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPEdit *E=createEdit(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==EDIT)E->Enabled=true;else E->Enabled=false;
-	E->Visible=!MovingTable;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
+	if(!VisibleComponents || MovingTable)E->Visible=false;else E->Visible=true;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
 	E->AutoSize=false;
 	E->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	E->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
@@ -743,7 +749,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPNumericEdit *N=createNumeric(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
-	N->Visible=!MovingTable;//pøi posunu tabulky se skryje NUMERIC a je místo nìj DRAW
+	if(!VisibleComponents || MovingTable)N->Visible=false;else N->Visible=true;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
 	N->AutoSize=false;
 	N->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	N->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
@@ -793,6 +799,7 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//založení + tag + název
 	TscHTMLLabel *L=createLabel(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	//atributy
+	L->Visible=VisibleComponents;
 	L->AutoSizeHeight=false;L->AutoSizeWidth=false;
 	L->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	L->Left=R.Left+Cell.LeftBorder->Width-1;//ubere velikost komponenty podle šíøky orámování
@@ -1539,8 +1546,8 @@ void TmGrid::InsertRow(long Row,bool copyComponentFromPreviousRow, bool invalida
 
 		if(invalidate)//pokud je požadováno pøekreslení, zde je nutné celou oblast pøekreslit
 		{
-			//Show();netøeba
-			Form->Invalidate();//tøeba
+			//Show();netøeba //Form->Invalidate();//tøeba
+			Show();
 		}
 	}
 	else AddRow(copyComponentFromPreviousRow,invalidate);
@@ -1857,7 +1864,7 @@ bool TmGrid::CheckLink(int X,int Y,unsigned long Col,unsigned long Row)
 }
 //---------------------------------------------------------------------------
 //zajistí pøebarvení odkazu v buòce danou barvou
-void  TmGrid::HighlightLink(unsigned long Col,unsigned long Row,short Intensive)
+void TmGrid::HighlightLink(unsigned long Col,unsigned long Row,short Intensive)
 {
 	Form->Canvas->Font=Cells[Col][Row].isLink;
 	Form->Canvas->Font->Color=m.clIntensive(Cells[Col][Row].Font->Color,Intensive);
@@ -1866,4 +1873,26 @@ void  TmGrid::HighlightLink(unsigned long Col,unsigned long Row,short Intensive)
 	Form->Canvas->TextOutW(Cells[Col][Row].LinkCoordinateStart.x,Cells[Col][Row].LinkCoordinateStart.y,ms.EP(Cells[Col][Row].Text,"<a>","</a>"));
 }
 //---------------------------------------------------------------------------
-
+//podle stavu state buï zobrazí nebo skryje všechny komponenty
+void TmGrid::SetVisibleComponents(bool state)
+{
+	for(unsigned long X=0;X<=ColCount-1;X++)//po øádcích
+	{
+		for(unsigned long Y=0;Y<=RowCount-1;Y++)//po sloupcích
+		{
+			switch(Cells[X][Y].Type)
+			{
+				case readEDIT: 		getEdit(X,Y)->Visible=state;break;
+				case EDIT: 		 		getEdit(X,Y)->Visible=state;break;
+				case NUMERIC:  		getNumeric(X,Y)->Visible=state;break;
+				case readNUMERIC: getNumeric(X,Y)->Visible=state;break;
+				case BUTTON: 			getButton(X,Y)->Visible=state;break;
+				case COMBO: 			getCombo(X,Y)->Visible=state;break;
+				case CHECK:       getCheck(X,Y)->Visible=state;break;
+				case RADIO:				getRadio(X,Y)->Visible=state;break;
+				case glyphBUTTON:	getGlyphButton(X,Y)->Visible=state;break;
+			}
+		}
+	}
+}
+//---------------------------------------------------------------------------
