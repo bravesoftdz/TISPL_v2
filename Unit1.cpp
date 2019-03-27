@@ -1347,7 +1347,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(!antialiasing)
 			{
 				d.vykresli_vektory(Canvas);
-				if(pom_temp->elementy!=NULL && pom_temp->zobrazit_mGrid && refresh_mGrid)d.vykresli_mGridy();
+				if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy();
 				if(scGPSwitch_meritko->State==true)d.meritko(Canvas);//grafické měřítko
 			}
 			else
@@ -1361,7 +1361,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_in);//velice nutné
-				if(pom_temp->elementy!=NULL && pom_temp->zobrazit_mGrid && refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu
+				if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu
 				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
@@ -2347,16 +2347,16 @@ void TForm1::getJobID(int X, int Y)
 				{
 					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 					{
-						//vodorovná kóta či JID=-10;//jednotky kóty
+						//JID=-10;//jednotky kóty
 						if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)))JID=-10;
 						else
 						{
-							//JID=-8;//vodorovná kóta
+							//vodorovná kóta JID=-8
 							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
 							{
 								JID=-8;
 							}else
-							//JID=-9;//svislá kóta
+							//svislá kóta JID=-9
 							if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))
 							{
 								JID=-9;
@@ -3161,13 +3161,14 @@ void TForm1::add_element (int X, int Y)
 		E=NULL;delete E;
 		Akce=NIC;
 		REFRESH();
+		element_id=-1;//new kvůli skrývání komponent v mGridech, využívá metoda d.vykresli_mGridy(TCanvas *canv)
 		DrawGrid_knihovna->Invalidate();
 		DuvodUlozit(true); //"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?"
 	}
 	else
 	{
-	REFRESH();
-	zobraz_tip("Nelze vložit robota mimo lakovací kabinu!");
+	  REFRESH();
+	  zobraz_tip("Nelze vložit robota mimo kabinu!");
 	}
 
   //Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
@@ -7763,40 +7764,41 @@ void TForm1::Smaz_kurzor ()
 void __fastcall TForm1::scGPButton_viditelnostmGridClick(TObject *Sender)
 {
 	if(scGPButton_viditelnostmGrid->ImageIndex==55)//vypnuto budu zapínat
-		{
+	{
 		scGPButton_viditelnostmGrid->ImageIndex=54;//zapnuto
 		scGPButton_viditelnostmGrid->Hint="Skrýt tabulky";
 		pom_temp->zobrazit_mGrid=true;
-		}
+	}
 	else//zapnuto budu vypínat
-		{
+	{
 		scGPButton_viditelnostmGrid->ImageIndex=55;
 		scGPButton_viditelnostmGrid->Hint="Zobrazit tabulky";
-    pom_temp->zobrazit_mGrid=false;
-		}
+		pom_temp->zobrazit_mGrid=false;
+	}
 	nahled_ulozit(true);
-	DrawGrid_knihovna->SetFocus();//nutné z důvodu odchytávání kláves
 	REFRESH();
+	DrawGrid_knihovna->SetFocus();
+
 }
 //---------------------------------------------------------------------------
 //přepíná viditelnost kót
 void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 {
 	if(scGPButton_viditelnostKoty->ImageIndex==57)//vypnuto budu zapínat
-		{
+	{
 		scGPButton_viditelnostKoty->ImageIndex=56;//zapnuto
 		scGPButton_viditelnostKoty->Hint="Skrýt kóty";
 		pom_temp->zobrazit_koty=true;
-		}
+	}
 	else//zapnuto budu vypínat
-		{
+	{
 		scGPButton_viditelnostKoty->ImageIndex=57;
 		scGPButton_viditelnostKoty->Hint="Zobrazit kóty";
 		pom_temp->zobrazit_koty=false;
-		}
+	}
 	nahled_ulozit(true);
-	DrawGrid_knihovna->SetFocus();//nutné z důvodu odchytávání kláves
 	REFRESH();
+	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
 

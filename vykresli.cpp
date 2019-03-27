@@ -3086,11 +3086,21 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 		while(E!=NULL)
 		{
-			E->mGrid->Left=m.L2Px(E->Xt);
-			E->mGrid->Top=m.L2Py(E->Yt);
-			if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
-			else E->mGrid->MovingTable=false;
-			E->mGrid->Show(canv);
+			if(F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+			{
+				E->mGrid->VisibleComponents=true;//stačí volat toto
+				E->mGrid->Left=m.L2Px(E->Xt);
+				E->mGrid->Top=m.L2Py(E->Yt);
+				if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
+				else E->mGrid->MovingTable=false;
+				E->mGrid->Show(canv);
+			}
+			else//pokud ne, je třeba skrýt komponenty
+			{
+				E->mGrid->VisibleComponents=false;
+				if(F->element_id==-1)E->mGrid->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
+				else E->mGrid->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
+			}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
@@ -3194,13 +3204,14 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	////navrácení citelné oblasti popisku a jednotek kóty pro další použití a šetření strojového času
 	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
 	{
-		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
-		{
 			T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
 			//hodnoty
 			R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
 			//jednotky
 			R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
+
+		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
+		{
 			if(Y1==Y2)//pro vodorovnou kótu                               //odebrání mezery
 			{
 				F->pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
@@ -3214,7 +3225,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		}
 		else//kóty mezi elementy
 		{
-			//
+			 aktElement->Kota_oblastHodnotaAJednotky.rect1=R.rect1;//hodnoty
+			 aktElement->Kota_oblastHodnotaAJednotky.rect2=R.rect2;//jednotky
 		}
 	}
 }

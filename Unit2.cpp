@@ -68,7 +68,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E1->mG->Border.Width=2;
 
 
-		ColCount=3;//pevný poèet slopcù
+		ColCount=4;//pevný poèet slopcù
 		RowCount=5;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
@@ -81,14 +81,21 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E1->mG->Cells[0][0].Background->Color=clRed;
 			E1->mG->Cells[0][0].Font->Name="Roboto Cn";
 				E1->mG->Cells[0][0].Font->Color=clYellow;
+				E1->mG->Cells[3][1].Type=E1->mG->BUTTON;
 		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][1].Text="abc1";
-		E1->mG->Cells[1][2].Type=E1->mG->EDIT;
-		E1->mG->Cells[1][2].Text="abc2";
+
+		E1->mG->Cells[1][2].Type=E1->mG->NUMERIC;
+		E1->mG->Cells[1][2].Text="0.333";
+		E1->mG->Cells[3][2].Type=E1->mG->BUTTON;
+
 		E1->mG->Cells[1][3].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][3].Text="abc3";
+		E1->mG->Cells[3][3].Type=E1->mG->BUTTON;
+
 		E1->mG->Cells[1][4].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][4].Text="abc4";
+		E1->mG->Cells[3][4].Type=E1->mG->BUTTON;
 
 		E1->mG->MergeCells(0,0,1,0);
 		E1->mG->MergeCells(2,0,2,1);
@@ -332,11 +339,16 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 //test volání pøi onclick
 void TForm2::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	//ShowMessage("UNIT2\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	ShowMessage("UNIT2\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
 //	mGrid->HighlightCell(Col,Row);
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
 //	//toto problikává mGrid->Refresh();
+if(Col==3)
+{
+	ELEMENTY->dalsi->mG->DeleteRow(Row);
+}
+
 }
 //---------------------------------------------------------------------------
 void TForm2::OnEnter(long Tag,unsigned long Col,unsigned long Row)
@@ -439,7 +451,7 @@ void __fastcall TForm2::Button4Click(TObject *Sender)
 void __fastcall TForm2::Button3Click(TObject *Sender)
 {
 	//mGrid->DeleteRow(3);
-	ELEMENTY->dalsi->mG->DeleteRow(3);
+	ELEMENTY->dalsi->mG->DeleteRow(ELEMENTY->dalsi->mG->RowCount-1);
 	//mGrid->DeleteRow(mGrid->RowCount-1);//s problikem zpùsobuje show() v DeleteRow
 }
 //---------------------------------------------------------------------------
