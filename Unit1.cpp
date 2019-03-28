@@ -6391,6 +6391,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 		//RO-=(1.2*Zoom/m2px)/20.0;
 		//REFRESH();
+		scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
 		Timer1->Enabled=!Timer1->Enabled;
 		scGPSwitch_meritko->State=!Timer1->Enabled;
 		d.v.PP.raster.show=!Timer1->Enabled;
@@ -7142,7 +7143,7 @@ void TForm1::db_connection()
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
 	//Form2->ShowModal();
-	Sk(m.round2double(4.95846750518746,3,".."));
+
 
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
