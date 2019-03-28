@@ -7216,7 +7216,6 @@ object Form1: TForm1
     Lines.Strings = (
       'Memo3')
     TabOrder = 47
-    Visible = False
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
     Left = 1

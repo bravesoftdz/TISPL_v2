@@ -1663,7 +1663,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
 		else
 			editovany_text+=Key;
-		//if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0){editovany_text=inDK(pom_element_smazat->kota_offset);zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
+		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0){editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
 		nahled_ulozit(true);
 	}
 	REFRESH();
@@ -1850,7 +1850,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
 								if(JID==-8){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=inDK(pom_temp->rozmer_kabiny.x);}//editace kót kabiny
 								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
-								if(JID<=-11){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;/*editovany_text=inDK();*/pom_element_temp=pom_element;}//editace kót elementu
+								if(JID<=-11){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));}//editace kót elementu
 						}
 						else
 						{
@@ -2959,7 +2959,7 @@ void TForm1::ESC()
 			case -8:editovany_text=inDK(pom_temp->rozmer_kabiny.x);break;
 			case -9:editovany_text=inDK(pom_temp->rozmer_kabiny.y);break;
 		}
-		if(index_kurzoru<=-11);//editovany_text=inDK(pom_element_smazat->kota_offset);
+		if(index_kurzoru<=-11)editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));
 		Smaz_kurzor();
 	}
 	REFRESH();
@@ -7744,11 +7744,11 @@ void TForm1::Smaz_kurzor ()
 		//pokud bylo zadáno nic přepíše nic původními hodnotamy
 		if(editovany_text==""&&index_kurzoru==-8)editovany_text=inDK(pom_temp->rozmer_kabiny.x);
 		if(editovany_text==""&&index_kurzoru==-9)editovany_text=inDK(pom_temp->rozmer_kabiny.y);
-		if(editovany_text==""&&index_kurzoru<=-11);//editovany_text=inDK(pom_element_smazat->kota_offset);
+		if(editovany_text==""&&index_kurzoru<=-11)editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));
 		//zapisuje editované hodnoty do rozměrů kabiny
 		if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=outDK(ms.MyToDouble(editovany_text));
 		if(index_kurzoru==-9)pom_temp->rozmer_kabiny.y=outDK(ms.MyToDouble(editovany_text));
-		if(index_kurzoru<=-11);//pom_element_smazat->kota_offset=outDK(ms.MyToDouble(editovany_text));
+		if(index_kurzoru<=-11)d.v.posun_element(pom_element_temp,outDK(ms.MyToDouble(editovany_text)));
 		//kontrola zda jsou všechny elementy po editaci v kabině
 		int mimo=el_mimoKabinu();
 		//ukončí editaci
