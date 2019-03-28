@@ -72,7 +72,6 @@ class Cmy
 	double null(double number,double tolerance=0.0000000001);//zkontroluje èíslo, zda se nejadná o hodnout okolo nuly dle možné odchylky dle toleration, pøedchází zvláštnímu chování výpoètù okolo nuly
 
 	protected:
-
 };
 #endif
 

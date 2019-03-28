@@ -3210,7 +3210,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
 		//jednotky
 		R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
-                                                                  //odebrání mezery
+		                                                           //odebrání mezery
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
 			if(Y1==Y2)//pro vodorovnou kótu

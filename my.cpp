@@ -47,7 +47,7 @@ short Cmy::Rt90(double number)
 //ovìøí, zda dané èíslo je celé èíslo
 bool Cmy::cele_cislo(double number)
 {
-	 return number==floor(number);
+  return number==floor(number);
 }
 /////////////////////////////////////////////////////////////////////////////
 //modulo pro double hodnoty

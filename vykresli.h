@@ -128,6 +128,5 @@ double trend(Cvektory::TObjekt *Objekt);//vratí trend schématu pro objekt z para
 	protected:
 
 
-
 };
 #endif
