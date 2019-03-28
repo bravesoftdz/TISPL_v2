@@ -396,7 +396,7 @@ AnsiString kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double CT=0,double
 		void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
 		AnsiString navrhni_POHONY(AnsiString separator="</br>",short m_min=1);//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí, lze nastavit jednotky zobrazení rychlosti pohonu, implicintě m/min
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
-//		double delka_dopravniku(Cvektory::TObjekt *ukaz);
+//	double delka_dopravniku(Cvektory::TObjekt *ukaz);
 TTextNumber rVALIDACE(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short aRDunit,short Runit,short Rzunit);//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr getValueOrMessage 0 (který je zároveň implicitní), vratí doporučenou hodnotu dle VID, pokud je zvoleno 1, vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku, //vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
 private:
 TTextNumber validace_aRD(double aRD,TPohon *p);

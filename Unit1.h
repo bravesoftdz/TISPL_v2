@@ -499,7 +499,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_viditelnostKotyClick(TObject *Sender);
 
 
-
 // User declarations
 	////struktury, výèty
 public:

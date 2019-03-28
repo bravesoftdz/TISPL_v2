@@ -1190,7 +1190,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		{
 			TPointD vzd;
 			if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
-			{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
+			{               ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
 				vzd.x=Element->X-F->pom_temp->X;
 				vzd.y=Element->Y-(F->pom_temp->Y+F->pom_temp->Yk)/2.0;
 			}
