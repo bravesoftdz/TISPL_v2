@@ -64,7 +64,6 @@ class Cvektory
 			double WTpalec;
 			//double TIME;//CT, PT, WT, RT,...
 
-			double kota_offset;//odsazení kóty v metrech, kóta je uvažována od přechozího a k aktuálnímu elementu, offset vlastní aktuální element
 			T3Rect kota_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast kóty, popisku a jednotek kóty kabiny - nedovávat  do CObjekt
 
 			unsigned int akt_pocet_voziku;
@@ -88,7 +87,7 @@ class Cvektory
 			UnicodeString short_name;//krátký název max. 4 znaky
 			UnicodeString name;//celý název objektu
 			double X,Y;//umístění objektu ve schématu
-			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt
+			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
 			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP),3-stopka
 			double CT;//pro status návrh
 			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
@@ -106,6 +105,7 @@ class Cvektory
 			TPointD rozmer_kabiny;//délka a šířka obvodových zdí kabiny   - NEW + dodat do CObjekt
 			T2Rect kabinaKotaX_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
 			T2Rect kabinaKotaY_oblastHodnotaAJednotky;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast popisku a jednotek kóty kabiny - nedovávat  do CObjekt
+			double koty_elementy_offset;//odsazení kót elementů v metrech  - NEW + dodat do CObjekt!!!!
 			unsigned short cekat_na_palce;//0-ne,1-ano,2-automaticky
 			unsigned short stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 			double odchylka;//povolená odchylka u PP z CT
@@ -371,6 +371,7 @@ TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v 
 TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 TElement *vrat_element(TObjekt *Objekt, unsigned int n);//vraťí ukazatel na element dle n elementu umístěného v daném objektu
 short PtInKota_elementu(TObjekt *Objekt,long X,long Y);//ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , pozn. oblast kóty se testuje až jako poslední
+bool posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu=false);//posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
 //dodělat void zmen_poradi_Elementu(TObjekt *Objekt, TElement Element,TObjekt *zaElement);
 //dodělat void zmen_poradi_Elementu(TObjekt *Objekt unsigned long aktualni_poradi,unsigned long nove_poradi);
 void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu

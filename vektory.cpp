@@ -44,6 +44,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=0;
 	novy->rozmer_kabiny.y=0;
+	novy->koty_elementy_offset=0;//odsazení kót elementů v metrech
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -94,6 +95,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
+	novy->koty_elementy_offset=0;//odsazení kót elementů v metrech
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -144,6 +146,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
+	novy->koty_elementy_offset=0;//odsazení kót elementů v metrech
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -239,6 +242,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->elementy=Objekt->elementy;
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
+		novy->koty_elementy_offset=Objekt->koty_elementy_offset;//odsazení kót elementů v metrech
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
 		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -290,6 +294,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	kopiruj_elementy(Original,Kopie);
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
+	Kopie->koty_elementy_offset=Original->koty_elementy_offset;
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
 	Kopie->odchylka=Original->odchylka;
@@ -904,8 +909,6 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->WT=0;
 	Objekt->elementy->WTpalec=0;
 
-	Objekt->elementy->kota_offset=0;
-
 	Objekt->elementy->mGrid=NULL;
 
 	Objekt->elementy->sparovany=NULL;
@@ -999,7 +1002,6 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->WT=Original->WT;
 	Kopie->WTpalec=Original->WTpalec;
 	//Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
-	Kopie->kota_offset=Original->kota_offset;
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->Gelement=Original->Gelement;
@@ -1175,6 +1177,36 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 		E=E->dalsi;
 	}
 	E=NULL;delete E;
+	return RET;
+}
+////---------------------------------------------------------------------------
+//posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
+bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu)
+{ //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
+	bool RET=false;
+	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
+	{
+		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
+		{
+			TPointD vzd;
+			if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
+			{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
+				vzd.x=Element->X-F->pom_temp->X;
+				vzd.y=Element->Y-(F->pom_temp->Y+F->pom_temp->Yk)/2.0;
+			}
+			else//více elementů
+			{
+				vzd.x=Element->X-Element->predchozi->X;
+				vzd.y=Element->Y-Element->predchozi->Y;
+			}
+
+			if(vzd.x!=0)Element->X-=-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+			if(vzd.y!=0)Element->Y-=-(vzd.y/m.abs_d(vzd.y))*(m.abs_d(vzd.y)-vzdalenost);
+
+			//kontrola zda se vejdou stále všechny elementy do objektu - dodělat
+			//RET=
+		}
+	}
 	return RET;
 }
 ////---------------------------------------------------------------------------
