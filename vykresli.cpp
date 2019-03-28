@@ -3137,6 +3137,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color)
 {
 	double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky + případný převod m->mm
+	if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);
 	delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
@@ -3187,14 +3188,14 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	{
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
-			if(F->index_kurzoru==-8 && Y1==Y2)Text=F->editovany_text;//pro vodorovnou kótu
-			if(F->index_kurzoru==-9 && X1==X2)Text=F->editovany_text;//pro svislou kótu
+			if(F->index_kurzoru==-8 && Y1==Y2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro vodorovnou kótu
+			if(F->index_kurzoru==-9 && X1==X2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro svislou kótu
 		}
 		else//ostatní kóty
 		{
 			if(aktElement->n==F->pom_element_temp->n)//aktuální vykreslováná ko
 			{
-				Text=F->editovany_text;
+				Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);
 			}
 		}
 	}
