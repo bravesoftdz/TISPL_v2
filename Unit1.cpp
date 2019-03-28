@@ -7141,8 +7141,8 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-	Form2->ShowModal();
-	//Sk(m.round2double(2.32,3,".."));
+	//Form2->ShowModal();
+	Sk(m.round2double(4.95846750518746,3,".."));
 
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
