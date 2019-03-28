@@ -1666,7 +1666,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0){editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
 		nahled_ulozit(true);
 	}
-	Memo3->Lines->Add(editovany_text);
 	REFRESH();
 }
 //---------------------------------------------------------------------------
