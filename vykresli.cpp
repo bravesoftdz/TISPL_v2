@@ -156,7 +156,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 				{
 					if(F->pom_temp->n!=O->n)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
 					{
-						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/);
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/,E->LO1);
 						//zde bude ještě vykreslení g_elementu
 					}
 					E=E->dalsi;//posun na další element
@@ -215,7 +215,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			E=E->dalsi;//přeskočí hlavičku
 			while(E!=NULL)
 			{
-				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav);
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1);
 				 //zde bude ještě vykreslení g_elementu
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
@@ -2553,16 +2553,16 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
-void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO)
 {
   rotace=m.Rt90(rotace);
 	switch(eID)
 	{
 		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
-		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,1.5,F->RO,F->ROst);break;
+		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
+		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
+		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
+		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
 		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 	}
@@ -2647,6 +2647,8 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO,double aP,float TS)
 {
+	try
+	{
 	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 
 	//vstupní parametry - budou součástí parametrů metody  robotoa
@@ -2773,6 +2775,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+sirka_zakladny/2.0+1*Z+1*Z+canv->TextHeight(name)),short_name);
 		}
 	}
+	}catch(...){if(DEBUG)MessageBeep(0);}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)

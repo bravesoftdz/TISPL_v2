@@ -953,6 +953,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
   }
 	novy->name=T+" "+novy->n;
 	//dodělat automaticky shortname
+	novy->LO1=1.5;
 
 	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
