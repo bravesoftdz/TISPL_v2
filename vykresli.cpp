@@ -3100,19 +3100,10 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
 {
-	 float O=DoSkRB*2;//odsazení sipky elementu obecne
-//	 float Or=0;//odsazení robot od
-//	 float Or_do=0;//odsazení robot do
-//
-//	 if(1<=Element_od->eID && Element_od->eID<=4)Or_od=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
-//	 if(1<=Element_do->eID && Element_do->eID<=4)Or_do=DoSkRB;//pro roboty, které mají uchopovací bod jinde než referenční
-//	 if(Element_od->rotace_symbolu==180 || Element_od->rotace_symbolu==270)Or_od*=-1;
-//	 if(Element_do->rotace_symbolu==180 || Element_do->rotace_symbolu==270)Or_od*=-1;
+	//float O=DoSkRB*2;//odsazení sipky elementu obecne
 
-	if(F->pom_temp->elementy->dalsi->rotace_symbolu==180)O*=-1;
-
-
-//	 if(Element_od->rotace_symbolu==0 || Element_od->rotace_symbolu==180)//pří vodorovné rotaci náhledu
+	double O=F->pom_temp->koty_elementu_offset;
+	//O=DoSkRB;
 
 	//highlight
 	short highlight=0;
@@ -3123,8 +3114,11 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	}
 
 	//samotné vykreslení kóty
-	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk,Element_do->X,Element_do->Y,Element_do,0,highlight);//od kabiny k prvnímu elementu + dodělat
-	else vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,Element_do,O,highlight);//mezi elementy
+	//if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
+	//else vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,Element_do,O,highlight);//mezi elementy
+	//pouze pro rychlé zobrazení
+	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
+	else vykresli_kotu(canv,Element_od->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//mezi elementy
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
