@@ -1211,7 +1211,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
 		{
 			TPointD vzd;
-			if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
+			if(Element->n==1)//pro první element
 			{
 				vzd.x=Element->X-F->pom_temp->Xk;
 			}
