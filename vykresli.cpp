@@ -3127,8 +3127,10 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color)
 {
-	double delka=m.round2double(m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit),8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) + případný převod m->mm
-	//double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky + případný převod m->mm
+	double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky + případný převod m->mm
+	delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
+	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
+	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
 	AnsiString T=m.round2double(delka,3/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
 	if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
 	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color);
@@ -3184,7 +3186,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			{
 				Text=F->editovany_text;
 			}
-    }
+		}
 	}
 
 	//popisek
