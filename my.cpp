@@ -58,7 +58,7 @@ double Cmy::mod_d(double number1,double number2)
 }
 /////////////////////////////////////////////////////////////////////////////
 //fce vrátí absolutní hodnotu z double èísla, možno nahradit mocí fabs z math
-double abs_d(double number)
+double Cmy::abs_d(double number)
 {
   return fabs(number);
 }
