@@ -3117,7 +3117,10 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//highlight
 	short highlight=0;
 	if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
-	if(Element_do!=NULL)if((F->JID+10)*(-1)==(long)Element_do->n || (F->JID-10)==(long)Element_do->n)highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí zůstat tady
+	if(Element_do!=NULL)
+	{      //nahrazeno pousouvají se všechny kóty naráz, toto by bylo pro individální
+		if(/*(F->JID+10)*(-1)==(long)Element_do->n || */ 10<F->JID && F->JID<100 || F->JID-10==(long)Element_do->n)highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí zůstat tady
+	}
 
 	//samotné vykreslení kóty
 	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk,Element_do->X,Element_do->Y,Element_do,0,highlight);//od kabiny k prvnímu elementu + dodělat
@@ -3146,6 +3149,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	short Presah=m.round(1.3*F->Zoom);if(Offset<0)Presah*=-1;//přesah packy u kóty,v případě záporného offsetu je vystoupení kóty nazákladě tohot záporné
 	short V=0;if(highlight==2)V=1;//vystoupení kóty
 	short H=0;if(highlight)H=1;
+	short M=0;if(10<F->JID && F->JID<100)M=1;//při celkovém posunu kót se postranní spojnice nově nezvýrazňují
 
 	//ošetření v případě opačných souřadnic
 	if(X2<X1){long Xtemp=X2;X2=X1;X1=Xtemp;}
@@ -3154,16 +3158,16 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//vykreslení postranních šipek
 	if(X1==X2)//svislá kóta
 	{
-		linie(canv,X1,Y1,X1+Offset+Presah+Presah*V,Y1,width,color);//vykreslení postranních spojnic
-		linie(canv,X2,Y2,X2+Offset+Presah+Presah*V,Y2,width,color);//vykreslení postranních spojnic
+		linie(canv,X1,Y1,X1+Offset+Presah+Presah*V,Y1,width/(1+M*1.0),color);//vykreslení postranních spojnic
+		linie(canv,X2,Y2,X2+Offset+Presah+Presah*V,Y2,width/(1+M*1.0),color);//vykreslení postranních spojnic
 		X1+=Offset+Presah*V;X2+=Offset+Presah*V;
 		sipka(canv,X1,Y1,0,false,0.1/3.0*F->Zoom*(1+0.5*H),color,color,pmCopy,psSolid,false);
 		sipka(canv,X2,Y2,180,false,0.1/3.0*F->Zoom*(1+0.5*H),color,color,pmCopy,psSolid,false);
 	}
 	else//vodorovná kóta
 	{
-		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*V,width,color);//vykreslení postraních spojnic
-		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*V,width,color);//vykreslení postraních spojnic
+		linie(canv,X1,Y1,X1,Y1+Offset+Presah+Presah*V,width/(1+M*1.0),color);//vykreslení postraních spojnic
+		linie(canv,X2,Y2,X2,Y2+Offset+Presah+Presah*V,width/(1+M*1.0),color);//vykreslení postraních spojnic
 		Y1+=Offset+Presah*V;Y2+=Offset+Presah*V;
 		sipka(canv,X1,Y1,m.azimut(X1,Y1,X2,Y2)-180,false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
 		sipka(canv,X2,Y2,m.azimut(X1,Y1,X2,Y2),false,0.1/3.0*F->Zoom*(1+0.3*H),color,color,pmCopy,psSolid,false);
