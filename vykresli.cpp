@@ -3103,7 +3103,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//float O=DoSkRB*2;//odsazení sipky elementu obecne
 
 	double O=F->pom_temp->koty_elementu_offset;
-	//O=DoSkRB;
+
 
 	//highlight
 	short highlight=0;
@@ -3113,12 +3113,21 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 		if(/*(F->JID+10)*(-1)==(long)Element_do->n || */ 10<F->JID && F->JID<100 || F->JID-10==(long)Element_do->n)highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí zůstat tady
 	}
 
-	//samotné vykreslení kóty
+	//samotné vykreslení kóty -nehotové
 	//if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
 	//else vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,Element_do,O,highlight);//mezi elementy
+
 	//pouze pro rychlé zobrazení
 	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
 	else vykresli_kotu(canv,Element_od->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//mezi elementy
+
+	//nový fix
+//	double C1=0;if(Element_od!=NULL)if(1<=Element_od->eID && Element_od->eID<=4)C1=DoSkRB;bude to chtít pořešit rotaci a dva offsety od a do
+//	double C2=0;if(Element_do!=NULL)if(1<=Element_do->eID && Element_od->eID<=4)C2=DoSkRB;
+//	if(Element_od->n==0)
+//	vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
+//	else
+//	vykresli_kotu(canv,Element_od->X,Element_od->Y-C1,Element_do->X,Element_do->Y-C2,Element_do,O-C2,highlight);//mezi elementy
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
