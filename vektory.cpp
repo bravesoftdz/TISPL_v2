@@ -44,7 +44,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=0;
 	novy->rozmer_kabiny.y=0;
-	novy->koty_elementy_offset=0;//odsazení kót elementů v metrech
+	novy->koty_elementu_offset=0;//odsazení kót elementů v metrech
 	novy->cekat_na_palce=0;//0-ne,1-ano,2-automaticky
 	novy->stopka=0;//zda následuje na konci objektu stopka//0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -95,7 +95,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	novy->koty_elementy_offset=0;//odsazení kót elementů v metrech
+	novy->koty_elementu_offset=0;//odsazení kót elementů v metrech
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -146,7 +146,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->min_prujezdni_profil.y=0;//výška a šířka minimálního průjezdního profilu v objektu
 	novy->rozmer_kabiny.x=10;//výchozí rozměr kabiny
 	novy->rozmer_kabiny.y=6;//výchozí rozměr kabiny
-	novy->koty_elementy_offset=0;//odsazení kót elementů v metrech
+	novy->koty_elementu_offset=0;//odsazení kót elementů v metrech
 	novy->cekat_na_palce=2;//0-ne,1-ano,2-automaticky
 	novy->stopka=2;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 	novy->odchylka=0;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -242,7 +242,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->elementy=Objekt->elementy;
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
-		novy->koty_elementy_offset=Objekt->koty_elementy_offset;//odsazení kót elementů v metrech
+		novy->koty_elementu_offset=Objekt->koty_elementu_offset;//odsazení kót elementů v metrech
 		novy->cekat_na_palce=Objekt->cekat_na_palce;//0-ne,1-ano,2-automaticky
 		novy->stopka=Objekt->stopka;//zda následuje na konci objektu stopka //0-ne,1-ano,2-automaticky
 		novy->odchylka=Objekt->odchylka;//odchylka z CT, využíváno hlavně u objektů v PP režimu
@@ -294,7 +294,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	kopiruj_elementy(Original,Kopie);
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
-	Kopie->koty_elementy_offset=Original->koty_elementy_offset;
+	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
 	Kopie->cekat_na_palce=Original->cekat_na_palce;
 	Kopie->stopka=Original->stopka;
 	Kopie->odchylka=Original->odchylka;
@@ -1208,6 +1208,19 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 		}
 	}
 	return RET;
+}
+////---------------------------------------------------------------------------
+//vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
+double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
+{
+	if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
+	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
+		return m.delka(Element->X,Element->Y,F->pom_temp->X,(F->pom_temp->Y+F->pom_temp->Yk)/2.0);
+	}
+	else//více elementů
+	{
+		return m.delka(Element->X,Element->Y,Element->predchozi->X,Element->predchozi->Y);
+	}
 }
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
