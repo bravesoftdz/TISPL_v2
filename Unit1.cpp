@@ -1636,7 +1636,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			pom_temp->name=pom_temp->name.SubString(1,pom_temp->name.Length()-1);
 		else
 			pom_temp->name+=Key;
-		//REFRESH();
 		nahled_ulozit(true);
 	}
 	if (editace_textu&&index_kurzoru==-7)
@@ -1645,7 +1644,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			pom_temp->short_name=pom_temp->short_name.SubString(1,pom_temp->short_name.Length()-1);
 		else
 			pom_temp->short_name+=Key;
-		//REFRESH();
 		nahled_ulozit(true);
 	}
 	if (editace_textu&&(index_kurzoru==-8||index_kurzoru==-9))
@@ -1657,6 +1655,15 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		//kontrola zda nebylo zadáno něco jiného než číslo, pokud ano vrátí původní rozměry
 		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0&&index_kurzoru==-8){editovany_text=inDK(pom_temp->rozmer_kabiny.x);zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
 		if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0&&index_kurzoru==-9){editovany_text=inDK(pom_temp->rozmer_kabiny.y);zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
+		nahled_ulozit(true);
+	}
+	if (editace_textu&&index_kurzoru<=-11)
+	{
+		if(Key==8)//pokud je stisknut backspace
+			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
+		else
+			editovany_text+=Key;
+		//if(editovany_text!=""&&ms.MyToDouble(editovany_text)==0){editovany_text=inDK(pom_element_smazat->kota_offset);zobraz_tip("Chybné zadání! Zadaná hodnota je neplatná.");MessageBeep(600);}
 		nahled_ulozit(true);
 	}
 	REFRESH();
@@ -1833,7 +1840,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(MOD==NAHLED && pom_temp!=NULL)//TABULKA či ELEMENT
 						{
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
-								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_smazat=pom_element;}//ELEMENT posun
+								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;}//ELEMENT posun
 								if(JID==100 || 1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
 								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 								if(JID==-2||JID==-3){Akce=MOVE_KABINA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
@@ -1843,6 +1850,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
 								if(JID==-8){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=inDK(pom_temp->rozmer_kabiny.x);}//editace kót kabiny
 								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
+								if(JID<=-11){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;/*editovany_text=inDK();*/pom_element_temp=pom_element;}//editace kót elementu
 						}
 						else
 						{
@@ -2230,11 +2238,11 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case MOVE_TABLE:Akce=NIC;kurzor(standard);/*REFRESH();*/break;//posun tabulky elementu
 			case MOVE_ELEMENT:
 			{
-				if (el_vkabine(X,Y,pom_element_smazat->eID))//kontrola zda se snaží uživatel vložit element do kabiny nebo mimo ni
+				if (el_vkabine(X,Y,pom_element_temp->eID))//kontrola zda se snaží uživatel vložit element do kabiny nebo mimo ni
 				{
 					Akce=NIC;kurzor(standard);
 					REFRESH();
-					pom_element_smazat=NULL; delete pom_element_smazat;
+					pom_element_temp=NULL; delete pom_element_temp;
 				} else zobraz_tip("Nelze vložit robota mimo kabinu!");
 				break;//posun elementu
 			}
@@ -2398,7 +2406,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
-		if((JID==-6||JID==-7||JID==-8||JID==-9)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
+		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
 		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
@@ -2471,7 +2479,7 @@ void TForm1::onPopUP(int X, int Y)
 		case NAHLED:
 		{
 
-			pom_element_smazat=pom_element;
+			pom_element_temp=pom_element;
 			mazani=true;
 			if (pom_element!=NULL)//Pokud bylo kliknuto na element
 			{
@@ -2951,6 +2959,7 @@ void TForm1::ESC()
 			case -8:editovany_text=inDK(pom_temp->rozmer_kabiny.x);break;
 			case -9:editovany_text=inDK(pom_temp->rozmer_kabiny.y);break;
 		}
+		if(index_kurzoru<=-11);//editovany_text=inDK(pom_element_smazat->kota_offset);
 		Smaz_kurzor();
 	}
 	REFRESH();
@@ -4573,16 +4582,16 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	{
 		case NAHLED:       //kvůli MB hází při mazání z popUP paměťovou chybu
 		{
-			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element_smazat->name.UpperCase()+"\"?","",MB_YESNO))
+			if(mrYes==MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,"Chcete opravdu smazat \""+pom_element_temp->name.UpperCase()+"\"?","",MB_YESNO))
 			{
-				d.v.smaz_element(pom_element_smazat);
+				d.v.smaz_element(pom_element_temp);
 				Akce=NIC;
 				REFRESH();
 				DuvodUlozit(true);
 				nahled_ulozit(true);
 				DrawGrid_knihovna->Refresh();
 				DrawGrid_otoce->Refresh();
-				pom_element_smazat=NULL; delete pom_element_smazat;
+				pom_element_temp=NULL; delete pom_element_temp;
 			}else mazani=false;
 			break;
 		}
@@ -5499,7 +5508,7 @@ void TForm1::vse_odstranit()
 		pom_temp=NULL;delete pom_temp;
 		pom_element=NULL;delete pom_element;
 		proces_pom=NULL;delete proces_pom;
-		pom_element_smazat=NULL; delete pom_element_smazat;
+		pom_element_temp=NULL; delete pom_element_temp;
 		copyObjekt=NULL;delete copyObjekt;
 		copyObjektRzRx.x=0;copyObjektRzRx.y=0;
 		aFont=NULL; delete aFont;
@@ -7717,19 +7726,29 @@ void TForm1::vykresli_kurzor(int index)
 			stav_kurzoru=!stav_kurzoru;
 		}break;
 	}
+	if(index<=-11)
+	{
+      Canvas->Pen->Color=clGray;
+			Canvas->Pen->Width=1.5;
+			Canvas->MoveTo(pom_element_temp->kota_oblast.rect1.right+1,pom_element_temp->kota_oblast.rect1.top);
+			Canvas->LineTo(pom_element_temp->kota_oblast.rect1.right+1,pom_element_temp->kota_oblast.rect1.bottom);
+			stav_kurzoru=!stav_kurzoru;
+  }
 }
 //smaže kurzor pokud je stále vykreslený i po vypnutí editace textu
 void TForm1::Smaz_kurzor ()
 {
-  TIP="";
+	TIP="";
 	if(editace_textu)//ukončí editaci textu
 	{
 		//pokud bylo zadáno nic přepíše nic původními hodnotamy
 		if(editovany_text==""&&index_kurzoru==-8)editovany_text=inDK(pom_temp->rozmer_kabiny.x);
 		if(editovany_text==""&&index_kurzoru==-9)editovany_text=inDK(pom_temp->rozmer_kabiny.y);
+		if(editovany_text==""&&index_kurzoru<=-11);//editovany_text=inDK(pom_element_smazat->kota_offset);
 		//zapisuje editované hodnoty do rozměrů kabiny
 		if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=outDK(ms.MyToDouble(editovany_text));
 		if(index_kurzoru==-9)pom_temp->rozmer_kabiny.y=outDK(ms.MyToDouble(editovany_text));
+		if(index_kurzoru<=-11);//pom_element_smazat->kota_offset=outDK(ms.MyToDouble(editovany_text));
 		//kontrola zda jsou všechny elementy po editaci v kabině
 		int mimo=el_mimoKabinu();
 		//ukončí editaci
@@ -7758,6 +7777,8 @@ void TForm1::Smaz_kurzor ()
 	if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
 	TimerKurzor->Enabled=false;
 	editace_textu=false;
+	//využívání pro uchování ukazatele při editaci kót
+	pom_element_temp=NULL; delete pom_element_temp;
 	REFRESH();
 }
 //---------------------------------------------------------------------------
