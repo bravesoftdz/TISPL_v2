@@ -16,7 +16,7 @@ class Cmy
 	double round2double(double number,unsigned short precision);//zaokrouhlí na poèet desetinných míst dle precison
 	AnsiString round2double(double number,unsigned short precision,AnsiString mark,bool add_decimal=false);//zaokrouhlí na poèet desetinných míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø dvì teèky .. jakože èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision, pokud je nastaven poslední parametr add_decimal na true a je-li reálná èást kratší než poèet reaálných míst decimál, jsou do tohototo poètu doplnìny nuly
 	short Rt90(double number);//zaokrouhlí na násobky 90tky, 360° pøevede na 0°, vìtší než 360° vratí za 0°
-	double abs_d(double number);//fce vrátí absolutní hodnotu z double èísla, možno nahradit mocí fabs z maht
+	double abs_d(double number);//fce vrátí absolutní hodnotu z double èísla, možno nahradit mocí fabs z math
 	double ToRad(double number);
 	double ToDeg(double number);
 	TPointD P2L(TPoint fyzicke);

@@ -57,6 +57,12 @@ double Cmy::mod_d(double number1,double number2)
 	return fmod(number1,number2);//toto ale také nefunguje pro druhou reálnou hodnotu dobøe
 }
 /////////////////////////////////////////////////////////////////////////////
+//fce vrátí absolutní hodnotu z double èísla, možno nahradit mocí fabs z math
+double abs_d(double number)
+{
+  return fabs(number);
+}
+/////////////////////////////////////////////////////////////////////////////
 //pøevede stupnì na radiány
 double Cmy::ToRad(double number)
 {
