@@ -82,18 +82,18 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 			E1->mG->Cells[0][0].Font->Name="Roboto Cn";
 				E1->mG->Cells[0][0].Font->Color=clYellow;
 				E1->mG->Cells[3][1].Type=E1->mG->BUTTON;
-		E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+		//E1->mG->Cells[1][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][1].Text="abc1";
 
-		E1->mG->Cells[1][2].Type=E1->mG->NUMERIC;
+		//E1->mG->Cells[1][2].Type=E1->mG->NUMERIC;
 		E1->mG->Cells[1][2].Text="0.333";
 		E1->mG->Cells[3][2].Type=E1->mG->BUTTON;
 
-		E1->mG->Cells[1][3].Type=E1->mG->EDIT;
+		//E1->mG->Cells[1][3].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][3].Text="abc3";
 		E1->mG->Cells[3][3].Type=E1->mG->BUTTON;
 
-		E1->mG->Cells[1][4].Type=E1->mG->EDIT;
+		//E1->mG->Cells[1][4].Type=E1->mG->EDIT;
 		E1->mG->Cells[1][4].Text="abc4";
 		E1->mG->Cells[3][4].Type=E1->mG->BUTTON;
 

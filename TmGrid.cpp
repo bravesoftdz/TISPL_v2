@@ -486,9 +486,9 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			long L=Rt.Left,T=Rt.Top;
 			int W=getWidthHeightText(Cell).X*Zoom;
 			int H=getWidthHeightText(Cell).Y*Zoom;
-			short Rot=1;//slouží jako pomùcka rotace
-			if(Cell.Font->Orientation==900){Rot=-1;H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
-			if(Cell.Font->Orientation==2700){Rot=-1;W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
+			//short Rot=1;//slouží jako pomùcka rotace
+			if(Cell.Font->Orientation==900){/*Rot=-1;*/H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
+			if(Cell.Font->Orientation==2700){/*Rot=-1;*/W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
 			switch(Cell.Align)
 			{
 				case aNO:   L=m.round(Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
@@ -588,7 +588,6 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
 			gB->Visible=VisibleComponents;
-			gB->GlyphOptions->Kind=scgpbgkOptions;
 			gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 			gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 			gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
@@ -710,7 +709,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)E->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	E->ShowHint=false;//implicitnì u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
+	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
 	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
@@ -1530,7 +1529,7 @@ void TmGrid::AddRow(bool copyComponentFromPreviousRow,bool invalidate)
 }
 //---------------------------------------------------------------------------
 //pøídá øádek za øádek uvedený dle parametru Row,, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pøedchozího øádku, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v užitém formuláøi
-void TmGrid::InsertRow(long Row,bool copyComponentFromPreviousRow, bool invalidate)
+void TmGrid::InsertRow(unsigned long Row,bool copyComponentFromPreviousRow, bool invalidate)
 {
 	if(Row<RowCount-1)//pokud se nejedná o poslední øádek, tam je to zbyteèné a øeší else vìtev AddRow
 	{
@@ -1556,7 +1555,7 @@ void TmGrid::InsertRow(long Row,bool copyComponentFromPreviousRow, bool invalida
 }
 //---------------------------------------------------------------------------
 //smaže celý øádek, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v užitém formuláøi
-void TmGrid::DeleteRow(long Row,bool invalidate)
+void TmGrid::DeleteRow(unsigned long Row,bool invalidate)
 {
 	if(Row<=RowCount-1 && RowCount-1>0)//nelze smazat pouze jenom jeden øádek
 	{

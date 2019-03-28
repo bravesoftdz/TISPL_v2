@@ -7132,8 +7132,8 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-	//Form2->ShowModal();
-	Sk(m.round2double(2.64,3,".."));
+	Form2->ShowModal();
+	//Sk(m.round2double(2.32,3,".."));
 
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
@@ -7297,7 +7297,6 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, int ARow,
           TRect &Rect, TGridDrawState State)
 {
-
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 	int W=DrawGrid_geometrie->DefaultColWidth  *Z;
 	int H=DrawGrid_geometrie->DefaultRowHeight  *Z;
@@ -7308,7 +7307,7 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 	bmp_in->Width=DrawGrid_geometrie->Width*Z;bmp_in->Height=DrawGrid_geometrie->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
 
-	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+	//unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=2;
@@ -7320,16 +7319,16 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
     {
      label1= "linie";
      label2="";
-    if(pom->id!=3) d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
-    else           d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
-     }
-    if(n==2)
-    {
-     label1= "oblouky";
-     label2="";
-     if(pom->id!=3) d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
-     else           d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
-     }
+		 if(pom->id!=3) d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+		 else           d.vykresli_ikonu_linie(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
+		}
+		if(n==2)
+		{
+		 label1= "oblouky";
+		 label2="";
+		 if(pom->id!=3) d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+		 else           d.vykresli_ikonu_oblouku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1,-1);
+		}
 
 	}
 	Zoom=Zoom_back;//návrácení původního zoomu

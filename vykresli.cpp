@@ -3031,7 +3031,6 @@ void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popise
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
-	short C=W/2;//zajištění vycentrování
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 	canv->Brush->Style=bsClear;
 	canv->Font->Color=barva;
@@ -3118,7 +3117,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//highlight
 	short highlight=0;
 	if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
-	if(Element_do!=NULL)if((F->JID+10)*(-1)==Element_do->n || (F->JID-10)==Element_do->n)highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí zůstat tady
+	if(Element_do!=NULL)if((F->JID+10)*(-1)==(long)Element_do->n || (F->JID-10)==(long)Element_do->n)highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí zůstat tady
 
 	//samotné vykreslení kóty
 	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk,Element_do->X,Element_do->Y,Element_do,0,highlight);//od kabiny k prvnímu elementu + dodělat
