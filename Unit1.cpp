@@ -265,7 +265,7 @@ void TForm1::DesignSettings()
 	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
 	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width-12;
 	scGPButton_viditelnostKoty->Left=scGPLabel2->Left-scGPButton_viditelnostKoty->Width-22;
-	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22; Image1->Left=scGPButton_viditelnostmGrid->Left-Image1->Width-22;
+	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
@@ -275,7 +275,6 @@ void TForm1::DesignSettings()
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
 	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
-	Image1->Top=(scGPPanel_bottomtoolbar->Height-Image1->Height)/2;
 
 	//pozice ovládacích prvků
 //	scListGroupNastavProjektu->Left=0;

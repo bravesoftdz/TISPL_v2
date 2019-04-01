@@ -304,7 +304,6 @@ __published:	// IDE-managed Components
 	TscGPButton *Nahled;
 	TscGPButton *scGPButton_viditelnostmGrid;
 	TscGPButton *scGPButton_viditelnostKoty;
-	TImage *Image1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
