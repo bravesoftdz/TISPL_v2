@@ -98,6 +98,7 @@
 #include "scGPExtControls.hpp"
 #include "rHintWindow.hpp"
 #include "UnitX.h"
+#include <Vcl.Imaging.pngimage.hpp>
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -303,6 +304,7 @@ __published:	// IDE-managed Components
 	TscGPButton *Nahled;
 	TscGPButton *scGPButton_viditelnostmGrid;
 	TscGPButton *scGPButton_viditelnostKoty;
+	TImage *Image1;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -703,6 +705,7 @@ public:		// User declarations
 	double outDO (double outDO);
 	double inDK (double outDK);
 	double outDK (double outDK);
+	bool filtr_klaves(System::WideChar &Key);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
