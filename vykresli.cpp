@@ -2653,7 +2653,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 
 	//vstupní parametry - budou součástí parametrů metody  robotoa
 	LO*=Z/F->m2px;//délka lakovacího okna
-	aP;//prozatim jen pro animaci//0//LO/2.0;//aktuální pozice odsazení tryskového kloubu i trysky (ve svislé poloze trysky) v lakovacím okně
+	aP; if(aP>LO/2.0)aP=LO/2.0;if(aP<-LO/2.0)aP=-LO/2.0;//Aktuální Pozice odsazení tryskového kloubu i trysky (ve svislé poloze trysky) v lakovacím okně + ochrana proti přetečení
 	TS;//Tryska Sklon stupně
 
 	//konstanty

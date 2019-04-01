@@ -5289,7 +5289,7 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 {
 	if(duvod_ulozit_nahled&&MOD==NAHLED)
 	{
-		d.v.vymaz_elementy(pom,false);
+		//toto ne d.v.vymaz_elementy(pom,false);
 		d.v.kopiruj_objekt(pom_temp,pom);
 		DuvodUlozit(true);
 		nahled_ulozit(false);
@@ -6419,8 +6419,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 		//Akce=MEASURE;
 
-		//RO-=(1.2*Zoom/m2px)/20.0;
-		//REFRESH();
+//		RO-=(1.5*Zoom/m2px)/20.0;
+//		REFRESH();
 		scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
 		Timer1->Enabled=!Timer1->Enabled;
 		scGPSwitch_meritko->State=!Timer1->Enabled;
@@ -7282,7 +7282,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		MOD=SCHEMA;
 		REFRESH();
 		pom=NULL;
-		d.v.vymaz_elementy(pom_temp,false);
+		d.v.vymaz_elementy(pom_temp,true);
 		Smaz_kurzor();
 		pom_temp=NULL; delete pom_temp;   Schema->Down=true;
 	}
@@ -7569,25 +7569,27 @@ MOD=SCHEMA;
 void __fastcall TForm1::Timer1Timer(TObject *Sender)
 {
 
+		short LO=1.5;//lakovací okno
 
-
+    //kýve se po šířce lakovacího okna
 		if(ROs==0)
 		{
-			if(RO>-(1.2*Zoom/m2px))
+			if(RO>-(LO*Zoom/m2px))
 			{
-				RO-=(1.2*Zoom/m2px)/20.0;
+				RO-=(LO*Zoom/m2px)/20.0;
 			}
 			else ROs=1;
 		}
 		else
 		{
-			if(RO<(1.2*Zoom/m2px))
+			if(RO<(LO*Zoom/m2px))
 			{
-				RO+=(1.2*Zoom/m2px)/20.0;
+				RO+=(LO*Zoom/m2px)/20.0;
 			}
 			else ROs=0;
 		}
 
+		//tryska - jen se kýve ze strany na strany v rozmezí -30 až +30 stupňů
 		if(ROsts==0)
 		{
 			if(ROst<30)ROst+=5;
@@ -7605,7 +7607,7 @@ void __fastcall TForm1::Timer1Timer(TObject *Sender)
 
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
-	d.v.vymaz_elementy(pom,false);
+	d.v.vymaz_elementy(pom,true);
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
