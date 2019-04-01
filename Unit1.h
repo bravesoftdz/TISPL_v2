@@ -98,6 +98,7 @@
 #include "scGPExtControls.hpp"
 #include "rHintWindow.hpp"
 #include "UnitX.h"
+#include <Vcl.Imaging.pngimage.hpp>
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -703,6 +704,7 @@ public:		// User declarations
 	double outDO (double outDO);
 	double inDK (double outDK);
 	double outDK (double outDK);
+	bool filtr_klaves(System::WideChar &Key);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
