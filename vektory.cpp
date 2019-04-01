@@ -1192,8 +1192,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //			TPointD vzd;
 //			if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
 //			{               ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-//				vzd.x=Element->X-F->pom_temp->X;
-//				vzd.y=Element->Y-(F->pom_temp->Y+F->pom_temp->Yk)/2.0;
+//				vzd.x=Element->X-F->pom_temp->Xk;
+//				vzd.y=Element->Y-F->pom_temp->Yk;
 //			}
 //			else//více elementů
 //			{
@@ -1202,12 +1202,13 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //			}
 //
 //			if(vzd.x!=0)Element->X-=-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-//			//if(vzd.y!=0)
-//			else Element->Y-=-(vzd.y/m.abs_d(vzd.y))*(m.abs_d(vzd.y)-vzdalenost);
+//			if(vzd.y!=0)Element->Y-=-(vzd.y/m.abs_d(vzd.y))*(m.abs_d(vzd.y)-vzdalenost);
 //
 //			//kontrola zda se vejdou stále všechny elementy do objektu - dodělat
 //			//RET=
 //		}
+
+		//provizorně jen pro vodorovnou levopravou kabinu
 		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
 		{
 			TPointD vzd;
@@ -1219,10 +1220,20 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			{
 				vzd.x=Element->X-Element->predchozi->X;
 			}
-
 			if(vzd.x!=0)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 
-			//kontrola zda se vejdou stále všechny elementy do objektu - dodělat
+			//v případě požadavku na posun i následujících elementů
+			if(pusun_dalsich_elementu)
+			{
+				TElement *E=Element->dalsi;
+				while(E!=NULL)
+				{
+					if(vzd.x!=0)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+					E=E->dalsi;
+				}
+				E=NULL;delete E;
+			}
+			// případně ještě kontrola zda se vejdou stále všechny elementy do objektu - dodělat
 			//RET=
 		}
 	}
@@ -1234,13 +1245,13 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
 {
 //	if(Element->n==1)//pro první
 //	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-//		return m.delka(F->pom_temp->Xk,(F->pom_temp->Yk+F->pom_temp->Yk-F->pom_tempadsf->Yk)/2.0,Element->X,Element->Y);
+//		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element->X,Element->Y);
 //	}
 //	else//více elementů
-//	{
+//	{                                    pozor u robotu jinde X,Y
 //		return m.delka(Element->X,Element->Y,Element->predchozi->X,Element->predchozi->Y);
 //	}
-//provizorně:
+//provizorně jen pro vodorovnou levopravou kabinu
 	if(Element->n==1)//pro první
 	{
 		return m.abs_d(F->pom_temp->Xk-Element->X);

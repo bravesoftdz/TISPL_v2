@@ -19,7 +19,7 @@ long Cmy::round(double number)
 double Cmy::round2double(double number,unsigned short precision)
 {
 	double decimal=number-floor(number);//nutno takto rozkládat, protože jinak by v pøípadì vìtšího celého základu nestaèil double
-	return number=number+round(decimal*pow(10.0,precision))/pow(10.0,precision);
+	return number=floor(number)+round(decimal*pow(10.0,precision))/pow(10.0,precision);
 }
 /////////////////////////////////////////////////////////////////////////////
 //zaokrouhlí na poèet desetinných míst dle precison a vratí hodnotu pomocí øetezce, za èíslem následuje znak, dle posledního parametru (napø. dvì teèky .. jakože èíslo pokraèuje), pokud èíslo obsahuje reálnou èást nezobrazenou v rámci precision, pokud je nastaven poslední parametr add_decimal na true a je-li reálná èást kratší než poèet reaálných míst decimál, jsou do tohototo poètu doplnìny nuly
