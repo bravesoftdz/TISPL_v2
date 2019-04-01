@@ -7228,6 +7228,13 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
 	{
+		MOD=SCHEMA;// před zoom
+
+		//smazání elementů - musí být napočátku, aby nebyl problik
+		pom=NULL;
+		d.v.vymaz_elementy(pom_temp,true);
+		pom_temp=NULL; delete pom_temp;
+
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
 		//změna horní lišty
@@ -7278,13 +7285,11 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPLabel_roboti->Caption="Technolog. objekty";
 		scGPLabel_roboti->ContentMarginLeft=4;
 
+
+		Schema->Down=true;
+		//REFRESH(); //- asi netřeba
 		DrawGrid_knihovna->Visible=true;
-		MOD=SCHEMA;
-		REFRESH();
-		pom=NULL;
-		d.v.vymaz_elementy(pom_temp,true);
 		Smaz_kurzor();
-		pom_temp=NULL; delete pom_temp;   Schema->Down=true;
 	}
 }
 //---------------------------------------------------------------------------
@@ -7611,7 +7616,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
-	Smaz_kurzor();
+	//Smaz_kurzor(); volá se znovu ve Stornu....
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
 //---------------------------------------------------------------------------
