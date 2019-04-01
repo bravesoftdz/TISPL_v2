@@ -1624,16 +1624,25 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 	//ShowMessage(Key);
 }
 //---------------------------------------------------------------------------
-bool TForm1::filtr_klaves(System::WideChar &Key)
+//vstupní parametr je editovaný text pomocí klávesnice, pokud je nově přidaný znak číslo či desetiná čáraka nebo tečka nic se neděje, pokud znak tyto pravidla nesplní je z řetězce odstraněn
+AnsiString TForm1::filtr_klaves(AnsiString text)
 {
-	bool ok=false;
-	AnsiString klavesa=Key;
-	if(klavesa>=0&&klavesa<=9)
-		ok=true;
-	if(klavesa==","||klavesa==".")
-		ok=true;
-	return ok;
+	AnsiString klavesa,klavesa2;
+	//separace poslední stisknuté klávesy
+	klavesa=text.SubString(text.Length(),1);
+	//separace předchozí klávesy, pokud text obsahuje min. 2 znaky
+	if(text.Length()>=2)
+		klavesa2=text.SubString(text.Length()-1,1);
+	//kontrola posledního znaku zda jde o číslo nebo tečku či čárku
+	if(klavesa>=0&&klavesa<=9||klavesa==","||klavesa==".");
+	else
+		text=text.SubString(1,text.Length()-1);//když je použit nevhodný znak je z řetězce odstraněn
+  //kontrola zda nejsou 2 oddělovací znaky zadány po sobě
+	if((klavesa==","||klavesa==".")&&(klavesa2==","||klavesa2=="."))
+		text=text.SubString(1,text.Length()-1);
+	return text;
 }
+//---------------------------------------------------------------------------
 //odchytávání znaků pro editaci názvů
 void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 {
@@ -1659,8 +1668,10 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		if(Key==8)//pokud je stisknut backspace
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
 		else
-			if(filtr_klaves(Key))
-				editovany_text+=Key;
+		{
+			editovany_text+=Key;
+			editovany_text=filtr_klaves(editovany_text);
+		}
 		nahled_ulozit(true);
 	}
 	if (editace_textu&&index_kurzoru<=-11)
@@ -1668,8 +1679,10 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		if(Key==8)//pokud je stisknut backspace
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
 		else
-			if(filtr_klaves(Key))
-				editovany_text+=Key;
+		{
+			editovany_text+=Key;
+			editovany_text=filtr_klaves(editovany_text);
+		}
 		nahled_ulozit(true);
 	}
 	REFRESH();
@@ -3564,13 +3577,13 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="výběr párové STOP";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][2].Text=outPT(E->WT);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->WT);
 			E->mGrid->Cells[0][3].Text="WT palec "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][3].Text=outPT(E->WTpalec);
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->WTpalec);
 			E->mGrid->Cells[0][4].Text="akt. počet vozíků";
-			E->mGrid->Cells[1][4].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][4].Text=6;
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=6;
 			E->mGrid->Cells[0][5].Text="max. počet vozíků";
-			E->mGrid->Cells[1][5].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][5].Text=7;
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=7;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
@@ -3584,11 +3597,10 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Create(2,3);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
-			/////Test NUMERIC
-			E->mGrid->Cells[1][1].Type=E->mGrid->NUMERIC;
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
 			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="LO "+LO;
-			E->mGrid->Cells[1][2].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
@@ -3601,7 +3613,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Create(2,3);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
-			E->mGrid->Cells[1][1].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="max WT "+cas;E->mGrid->Cells[1][2].Text=outPT(E->WT);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -3615,21 +3627,21 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Create(2,7);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
-			E->mGrid->Cells[1][1].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="LO1 "+LO;
-			E->mGrid->Cells[1][2].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
 			E->mGrid->Cells[0][3].Text="otoč "+cas;
 			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][4].Text="otoč "+delka_otoce;
-			E->mGrid->Cells[1][4].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][4].Text=outDO(E->OTOC_delka);
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outDO(E->OTOC_delka);
 			E->mGrid->Cells[0][4].BottomBorder->Width=2;
 			E->mGrid->Cells[1][4].BottomBorder->Width=2;
 			E->mGrid->Cells[0][5].Text="PT2 "+cas;
-			E->mGrid->Cells[1][5].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][5].Text=outPT(E->PT2);
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(E->PT2);
 			E->mGrid->Cells[0][6].Text="LO2 "+LO;
-			E->mGrid->Cells[1][6].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][6].Text=outLO(E->LO2);
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outLO(E->LO2);
 			E->mGrid->Cells[0][6].BottomBorder->Width=2;
 			E->mGrid->Cells[1][6].BottomBorder->Width=2;
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -3645,13 +3657,13 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->DefaultCell.isLink->Color=clFontRight;//přiřazení barvy fontu
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
-			E->mGrid->Cells[1][1].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="PTo "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][3].Text="PT2 "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
 			E->mGrid->Cells[0][4].Text="WT "+cas;
-			E->mGrid->Cells[1][4].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][4].Text=outPT(E->WT);
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(E->WT);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_4;
@@ -3664,7 +3676,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Create(2,3);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
-			E->mGrid->Cells[1][1].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
+			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
 			E->mGrid->Cells[0][2].Text="PT "+cas;//PT u pasivní nelze zadat
 			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -3681,7 +3693,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
 			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->NUMERIC;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
@@ -3697,7 +3709,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 	//formátování buněk tabulky (vždy stejn=)
 	for(int i=1;i<=E->mGrid->RowCount-1;i++)
 	{
-		if (E->mGrid->Cells[1][i].Type!=E->mGrid->NUMERIC)
+		if (E->mGrid->Cells[1][i].Type!=E->mGrid->EDIT)
 		{
 			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
 			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;

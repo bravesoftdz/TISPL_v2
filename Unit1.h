@@ -704,7 +704,7 @@ public:		// User declarations
 	double outDO (double outDO);
 	double inDK (double outDK);
 	double outDK (double outDK);
-	bool filtr_klaves(System::WideChar &Key);
+	AnsiString filtr_klaves(AnsiString text);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
