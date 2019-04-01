@@ -756,8 +756,9 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)N->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	N->Decimal=Decimal;if(!N->Focused() && !IntegerDecimalNull && m.cele_cislo(ms.MyToDouble(Cell.Text)))N->Decimal=0;//pokud se jedná o celé èíslo, nezobrazuje "reálnou èást" celého èísla tj. poèet nul do poètu decimal, nastavuje se pouze pokud není daný NUMERIC editovaný
-	if(N->Focused())N->Decimal=5;
+	//N->Decimal=Decimal;
+	//if(!N->Focused() && !IntegerDecimalNull && m.cele_cislo(ms.MyToDouble(Cell.Text)))N->Decimal=0;//pokud se jedná o celé èíslo, nezobrazuje "reálnou èást" celého èísla tj. poèet nul do poètu decimal, nastavuje se pouze pokud není daný NUMERIC editovaný
+	//if(N->Focused())N->Decimal=5;
 	N->DisplayType=scedtNumeric;
 	N->ValueType=scvtFloat;
 	N->ShowHint=true;
