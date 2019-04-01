@@ -1851,6 +1851,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-8){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=inDK(pom_temp->rozmer_kabiny.x);}//editace kót kabiny
 								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
 								if(JID<=-11){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));}//editace kót elementu
+								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}
 						}
 						else
 						{
@@ -2164,6 +2165,13 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			nahled_ulozit(true);
 			break;
 		}
+		case OFFSET_KOTY:
+		{
+			pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+			minule_souradnice_kurzoru=TPoint(X,Y);
+			REFRESH();
+			nahled_ulozit(true);
+		}
 		case VYH://přidávání vyhýbky
 		{
 			d.odznac_oznac_vetev(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom_vyhybka);
@@ -2248,6 +2256,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case MOVE_KABINA:Akce=NIC;kurzor(standard);REFRESH();break;//konec posunu lakovny
 			case ROZMER_KABINA:Akce=NIC;break;//konec editace rozmětu kabiny pomocí tahu
+			case OFFSET_KOTY:Akce=NIC;break;
 			case MEASURE:
 			{
 				double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
@@ -2411,6 +2420,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){REFRESH();kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
+		if(JID>=11&&JID<=99)kurzor(zmena_d_y);
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
@@ -7630,7 +7640,7 @@ double TForm1::outDO(double outDO)
 double TForm1::inDK(double inDK)
 {
 	double DK=inDK;
-	DK=inDK*(1+999*DKunit);
+	DK=inDK*(1+999.0*DKunit);
 	return DK;
 }
 //---------------------------------------------------------------------------
@@ -7638,7 +7648,7 @@ double TForm1::inDK(double inDK)
 double TForm1::outDK(double outDK)
 {
 	double DK=outDK;
-	DK=outDK/(1+999*DKunit);
+	DK=outDK/(1+999.0*DKunit);
 	return DK;
 }
 //---------------------------------------------------------------------------

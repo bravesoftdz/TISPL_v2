@@ -504,7 +504,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA};Takce Akce;
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA,OFFSET_KOTY};Takce Akce;
 	enum Tm_mm{M=0,MM};Tm_mm DOtocunit,DKunit;//pøepínaè jednotek vzdálenost
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec LOunit;//pøepínaè jednotek èasu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
