@@ -3113,7 +3113,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
 	if(Element_do!=NULL)
 	{
-		if(/*pusun_dalsich_elementu && */(F->JID+10)*(-1)==(long)Element_od->n)highlight=1;//v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
+		if(!F->posun_dalsich_elementu && (F->JID+10)*(-1)==(long)Element_od->n)highlight=1;//v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
 		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
 	}
 
@@ -3210,7 +3210,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	canv->Font->Size=m.round(width*12);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
 	if(highlight)
 	{                                                                 //v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
-		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || /*pusun_dalsich_elementu && */ (F->JID+10)*(-1)==(long)aktElement->predchozi->n || F->JID==-8 || F->JID==-9)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
+		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || F->JID==-8 || F->JID==-9)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
 		canv->Font->Size=m.round(canv->Font->Size/2.0);//při highlighnutí se text se šířkou nezvětštuje (proto /2 návrat na původní hodnotu, pouze ztučňuje a to jen za předpokladu, změny hodnot kót nikoliv linie kóty (její pozice/offsetu)
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma

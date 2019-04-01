@@ -187,6 +187,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	duvod_ulozit_nahled=false;
 
 	refresh_mGrid=true;
+	posun_dalsich_elementu=false;
 
 	DesignSettings();//nastavení designu v konstruktoru
 }
@@ -7786,7 +7787,7 @@ void TForm1::Smaz_kurzor ()
 		//zapisuje editované hodnoty do rozměrů kabiny
 		if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=outDK(ms.MyToDouble(editovany_text));
 		if(index_kurzoru==-9)pom_temp->rozmer_kabiny.y=outDK(ms.MyToDouble(editovany_text));
-		if(index_kurzoru<=-11)d.v.posun_element(pom_element_temp,outDK(ms.MyToDouble(editovany_text)));
+		if(index_kurzoru<=-11)d.v.posun_element(pom_element_temp,outDK(ms.MyToDouble(editovany_text)),posun_dalsich_elementu);
 		//kontrola zda jsou všechny elementy po editaci v kabině
 //		int mimo=el_mimoKabinu();
 		//ukončí editaci
@@ -7861,5 +7862,11 @@ void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
-
+void __fastcall TForm1::scGPCheckBox_pusun_dalsich_elementuClick(TObject *Sender)
+{
+	if(scGPCheckBox_pusun_dalsich_elementu->Checked)posun_dalsich_elementu=true;
+	else posun_dalsich_elementu=false;
+	DrawGrid_knihovna->SetFocus();
+}
+//---------------------------------------------------------------------------
 
