@@ -3136,13 +3136,13 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color)
 {
-	double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky + případný převod m->mm
+	double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky a šířky kabiny + případný převod m->mm
 	if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);
-	delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
+	//odstaveno zobrzazujeme jen na 3 vždy: delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
 	AnsiString T=m.round2double(delka,3/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
-	if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
+	//odstaveno zobrzazujeme jen na 3 vždy: if(highlight==1 || F->editace_textu)T=delka;//pokud se na kótu najede a předpokládá se editace tak se číslo rozbalí - nezaokrouhluje se, editace textu je možná navíc
 	vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3186,16 +3186,20 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//záměna textu v případě EDITACE kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry)
 	if(F->editace_textu)
 	{
-		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
+		if(F->editovany_text=="")Text="";
+		else
 		{
-			if(F->index_kurzoru==-8 && Y1==Y2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro vodorovnou kótu
-			if(F->index_kurzoru==-9 && X1==X2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro svislou kótu
-		}
-		else//ostatní kóty
-		{
-			if(aktElement->n==F->pom_element_temp->n)//aktuální vykreslováná ko
+			if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 			{
-				Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);
+				if(F->index_kurzoru==-8 && Y1==Y2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro vodorovnou kótu
+				if(F->index_kurzoru==-9 && X1==X2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro svislou kótu
+			}
+			else//ostatní kóty
+			{
+				if(aktElement->n==F->pom_element_temp->n)//aktuální vykreslováná ko
+				{
+					Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);
+				}
 			}
 		}
 	}
@@ -3212,7 +3216,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	canv->Brush->Color=clWhite;
 	AnsiString Jednotky=" [m]";if(F->DKunit==1)Jednotky=" [mm]";
 	long X=(X1+X2)/2-canv->TextWidth(Text)/2;if(Y1==Y2)X=(X1+X2)/2-canv->TextWidth(Text+Jednotky)/2;//pro vodorovnou kótu zarovnání jinak
-	long Y=(Y1+Y2)/2-canv->TextHeight(Text)/2;
+	long Y=(Y1+Y2)/2-canv->TextHeight(Jednotky)/2; //pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
 	canv->TextOutW(X,Y,Text);//číselná hodnota kóty
 	canv->Font->Color=(TColor)RGB(43,87,154);
 	if(F->JID==-10)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();//pokud se editují jednotky, jinak (ani při highlightu se neztučňují)
@@ -3222,13 +3226,13 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	if(F->MOD==F->NAHLED && F->pom_temp!=NULL)//pouze pokud se jedná o náhled a existuje ukazatel na pom_temp (což by mělo být při náhledu sice vždy...)
 	{
 		T2Rect R;float AA=3.0;if(!F->antialiasing)AA=1;
-		//oblast kóty (pro kótu kabiny se zatím nevyužívá)
+		//oblast kóty (pro kótu kabiny se zatím nevyužívá, protože kóta kabiny nelze odsadit)
 		TRect R0;
 		if(Y1==Y2)R0=TRect(m.round(X1/AA),m.round((Y1-Presah)/AA),m.round(X2/AA),m.round((Y2+Presah)/AA));//pro vodorovnou kótu
 		else R0=TRect(m.round((X1-Presah)/AA),m.round(Y1/AA),m.round((X2+Presah)/AA),m.round(Y2/AA));//pro svislou kótu
-		//hodnoty
-		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Text))/AA));
-		//jednotky
+		//oblast hodnota
+		R.rect1=TRect(m.round(X/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));//pozn. záměrně je zde TextHeight(Jednotky) z důvodu, že při smazání hodnoty by byl text prázdný a následně by to špatně pozicovalo jednotky
+		//oblast jednotky
 		R.rect2=TRect(m.round((X+canv->TextWidth(Text)+canv->TextWidth(" "))/AA),m.round(Y/AA),m.round((X+canv->TextWidth(Text)+canv->TextWidth(Jednotky))/AA),m.round((Y+canv->TextHeight(Jednotky))/AA));
 		                                                           //odebrání mezery
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
