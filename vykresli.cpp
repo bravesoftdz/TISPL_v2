@@ -3113,6 +3113,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	if(Element_od->stav==2 || Element_do->stav==2)highlight=2;//pokud bude jeden ze zúčastněných elementů vybrán, zvýrazní se a vystoupí daná kóta
 	if(Element_do!=NULL)
 	{
+		if(/*pusun_dalsich_elementu && */(F->JID+10)*(-1)==(long)Element_od->n)highlight=1;//v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
 		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
 	}
 
@@ -3183,20 +3184,20 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//vykreslení hlavní linie
 	linie(canv,X1,Y1,X2,Y2,width,color);
 
-	//záměna textu v případě EDITACE kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry)
+	//záměna (podsunutí editovaného) textu v případě EDITACE právě touto metodou vykreslované kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry) (protože se cyklem vykreslují všechny kóty i při platném JID)
 	if(F->editace_textu)
 	{
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
-			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=m.round2double(F->ms.MyToDouble(F->editovany_text),3);//pro vodorovnou kótu
-			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=m.round2double(F->ms.MyToDouble(F->editovany_text),3);//pro svislou kótu
+			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro vodorovnou kótu
+			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro svislou kótu
 		}
 		else//ostatní kóty
 		{
 			if(aktElement->n==F->pom_element_temp->n)//aktuální vykreslováná kota
 			{
 				if(F->editovany_text=="")Text="";//musí být v každé zvlášť pro řešení konkrétní editované kóty
-				else Text=m.round2double(F->ms.MyToDouble(F->editovany_text),3);
+				else Text=F->editovany_text;
 			}
 		}
 	}
@@ -3208,8 +3209,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	canv->Font->Color=color;
 	canv->Font->Size=m.round(width*12);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
 	if(highlight)
-	{
-		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || F->JID==-8 || F->JID==-9)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
+	{                                                                 //v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
+		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || /*pusun_dalsich_elementu && */ (F->JID+10)*(-1)==(long)aktElement->predchozi->n || F->JID==-8 || F->JID==-9)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty
 		canv->Font->Size=m.round(canv->Font->Size/2.0);//při highlighnutí se text se šířkou nezvětštuje (proto /2 návrat na původní hodnotu, pouze ztučňuje a to jen za předpokladu, změny hodnot kót nikoliv linie kóty (její pozice/offsetu)
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
