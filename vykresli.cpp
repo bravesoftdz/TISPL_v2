@@ -156,7 +156,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 				{
 					if(F->pom_temp->n!=O->n)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
 					{
-						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/);
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/,E->LO1);
 						//zde bude ještě vykreslení g_elementu
 					}
 					E=E->dalsi;//posun na další element
@@ -215,7 +215,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			E=E->dalsi;//přeskočí hlavičku
 			while(E!=NULL)
 			{
-				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav);
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1);
 				 //zde bude ještě vykreslení g_elementu
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
@@ -2553,16 +2553,16 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
-void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO)
 {
   rotace=m.Rt90(rotace);
 	switch(eID)
 	{
 		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
-		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,1.5,F->RO,F->ROst);break;
+		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
+		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
+		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
+		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO,F->RO,F->ROst);break;
 		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
 	}
@@ -2647,6 +2647,8 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO,double aP,float TS)
 {
+	try
+	{
 	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 
 	//vstupní parametry - budou součástí parametrů metody  robotoa
@@ -2773,6 +2775,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+sirka_zakladny/2.0+1*Z+1*Z+canv->TextHeight(name)),short_name);
 		}
 	}
+	}catch(...){if(DEBUG)MessageBeep(0);}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
@@ -3103,7 +3106,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//float O=DoSkRB*2;//odsazení sipky elementu obecne
 
 	double O=F->pom_temp->koty_elementu_offset;
-	//O=DoSkRB;
+
 
 	//highlight
 	short highlight=0;
@@ -3113,18 +3116,28 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 		if(/*(F->JID+10)*(-1)==(long)Element_do->n || */ 10<F->JID && F->JID<100 || F->JID-10==(long)Element_do->n)highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí zůstat tady
 	}
 
-	//samotné vykreslení kóty
+	//samotné vykreslení kóty -nehotové
 	//if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
 	//else vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,Element_do,O,highlight);//mezi elementy
+
 	//pouze pro rychlé zobrazení
 	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
 	else vykresli_kotu(canv,Element_od->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//mezi elementy
+
+	//nový fix
+//	double C1=0;if(Element_od!=NULL)if(1<=Element_od->eID && Element_od->eID<=4)C1=DoSkRB;bude to chtít pořešit rotaci a dva offsety od a do
+//	double C2=0;if(Element_do!=NULL)if(1<=Element_do->eID && Element_od->eID<=4)C2=DoSkRB;
+//	if(Element_od->n==0)
+//	vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
+//	else
+//	vykresli_kotu(canv,Element_od->X,Element_od->Y-C1,Element_do->X,Element_do->Y-C2,Element_do,O-C2,highlight);//mezi elementy
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
 void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color)
 {
 	double delka=m.delka(X1,Y1,X2,Y2)*(1+999*F->DKunit);//výpočet délky + případný převod m->mm
+	if(aktElement!=NULL) delka=v.vzdalenost_od_predchoziho_elementu(aktElement)*(1+999*F->DKunit);
 	delka=m.round2double(delka,8);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//if(!F->DKunit)delka=m.round2double(delka,5);//výpočet délky s max zobrazením na 8 míst (z důvodu případů 0.000000001 atp.) pouze v případě metrů, v mm by přetékalo při výpočtu, bylo by třeba long double
 	//else delka=m.round2double(delka,3);//if(AnsiString(delka).Pos("00000000001"))F->ms.MyToDouble(AnsiString(delka).SubString(1,AnsiString(delka).Pos("00000000001")-1));//pro mm ošetření proti 00000000001, protože nelze použít zaokrouhlení na větší počet desitnných míst
@@ -3175,14 +3188,14 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	{
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
-			if(F->index_kurzoru==-8 && Y1==Y2)Text=F->editovany_text;//pro vodorovnou kótu
-			if(F->index_kurzoru==-9 && X1==X2)Text=F->editovany_text;//pro svislou kótu
+			if(F->index_kurzoru==-8 && Y1==Y2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro vodorovnou kótu
+			if(F->index_kurzoru==-9 && X1==X2)Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);//pro svislou kótu
 		}
 		else//ostatní kóty
 		{
 			if(aktElement->n==F->pom_element_temp->n)//aktuální vykreslováná ko
 			{
-				Text=F->editovany_text;
+				Text=m.round2double(F->ms.MyToDouble(F->editovany_text),8);
 			}
 		}
 	}

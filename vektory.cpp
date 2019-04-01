@@ -953,6 +953,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
   }
 	novy->name=T+" "+novy->n;
 	//dodělat automaticky shortname
+	novy->LO1=1.5;
 
 	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
@@ -1186,23 +1187,40 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 	bool RET=false;
 	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
+//		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
+//		{
+//			TPointD vzd;
+//			if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
+//			{               ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
+//				vzd.x=Element->X-F->pom_temp->X;
+//				vzd.y=Element->Y-(F->pom_temp->Y+F->pom_temp->Yk)/2.0;
+//			}
+//			else//více elementů
+//			{
+//				vzd.x=Element->X-Element->predchozi->X;
+//				vzd.y=Element->Y-Element->predchozi->Y;
+//			}
+//
+//			if(vzd.x!=0)Element->X-=-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+//			//if(vzd.y!=0)
+//			else Element->Y-=-(vzd.y/m.abs_d(vzd.y))*(m.abs_d(vzd.y)-vzdalenost);
+//
+//			//kontrola zda se vejdou stále všechny elementy do objektu - dodělat
+//			//RET=
+//		}
 		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
 		{
 			TPointD vzd;
-			if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
-			{               ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-				vzd.x=Element->X-F->pom_temp->X;
-				vzd.y=Element->Y-(F->pom_temp->Y+F->pom_temp->Yk)/2.0;
+			if(Element->n==1)//pro první element
+			{
+				vzd.x=Element->X-F->pom_temp->Xk;
 			}
 			else//více elementů
 			{
 				vzd.x=Element->X-Element->predchozi->X;
-				vzd.y=Element->Y-Element->predchozi->Y;
 			}
 
-			if(vzd.x!=0)Element->X-=-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-			//if(vzd.y!=0)
-			else Element->Y-=-(vzd.y/m.abs_d(vzd.y))*(m.abs_d(vzd.y)-vzdalenost);
+			if(vzd.x!=0)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 
 			//kontrola zda se vejdou stále všechny elementy do objektu - dodělat
 			//RET=
@@ -1214,13 +1232,22 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
 double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
 {
-	if(F->pom_temp->elementy->predchozi->n==1)//pokud existuje jenom jeden element
-	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-		return m.delka(Element->X,Element->Y,F->pom_temp->X,(F->pom_temp->Y+F->pom_temp->Yk)/2.0);
+//	if(Element->n==1)//pro první
+//	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
+//		return m.delka(F->pom_temp->Xk,(F->pom_temp->Yk+F->pom_temp->Yk-F->pom_tempadsf->Yk)/2.0,Element->X,Element->Y);
+//	}
+//	else//více elementů
+//	{
+//		return m.delka(Element->X,Element->Y,Element->predchozi->X,Element->predchozi->Y);
+//	}
+//provizorně:
+	if(Element->n==1)//pro první
+	{
+		return m.abs_d(F->pom_temp->Xk-Element->X);
 	}
 	else//více elementů
 	{
-		return m.delka(Element->X,Element->Y,Element->predchozi->X,Element->predchozi->Y);
+		return m.abs_d(Element->X-Element->predchozi->X);
 	}
 }
 ////---------------------------------------------------------------------------
