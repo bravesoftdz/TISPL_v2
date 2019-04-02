@@ -67,7 +67,6 @@ __published:	// IDE-managed Components
 	TscButton *scButton_zamek_DD;
 	TscButton *scButton_zamek_RD;
 	TscGPNumericEdit *scGPNumericEdit_mezera;
-	TMemo *Memo1;
 	TscGPButton *scGPButton_header_projekt;
 	TscGPNumericEdit *scGPNumericEdit_RD;
 	TscGPGlyphButton *scGPGlyphButton_PO_text_memo;
@@ -135,7 +134,6 @@ __published:	// IDE-managed Components
 	void __fastcall scGPNumericEdit_rxClick(TObject *Sender);
 	void __fastcall scGPCheckBox_zaokrouhlitClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_viewClick(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
 	void __fastcall scComboBox_rotaceClick(TObject *Sender);
 	void __fastcall FormPaint(TObject *Sender);

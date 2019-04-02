@@ -2867,17 +2867,6 @@ object Form_parametry: TForm_parametry
     OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
   end
-  object Memo1: TMemo
-    Left = 56
-    Top = 176
-    Width = 129
-    Height = 123
-    Lines.Strings = (
-      'Memo'
-      '1')
-    TabOrder = 26
-    WantReturns = False
-  end
   object scGPButton_header_projekt: TscGPButton
     AlignWithMargins = True
     Left = 343
@@ -2892,7 +2881,7 @@ object Form_parametry: TForm_parametry
     Align = alCustom
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 31
+    TabOrder = 30
     OnClick = Button_dopravnik_parametryClick
     Animation = False
     CanFocused = False
@@ -3094,7 +3083,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 27
+    TabOrder = 26
     TabStop = True
     OnClick = scGPGlyphButton_PO_text_memoClick
     Animation = True
@@ -3267,7 +3256,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 28
+    TabOrder = 27
     OnChange = scGPNumericEdit_rozestupChange
     OnClick = scGPNumericEdit_rozestupClick
     OnKeyDown = FormKeyDown
@@ -3369,7 +3358,7 @@ object Form_parametry: TForm_parametry
     Top = 290
     Width = 28
     Height = 29
-    TabOrder = 29
+    TabOrder = 28
     Visible = False
     OnClick = scButton_K_zamekClick
     Animation = False
@@ -3547,9 +3536,8 @@ object Form_parametry: TForm_parametry
     Width = 75
     Height = 25
     Caption = 'Button1'
-    TabOrder = 30
+    TabOrder = 29
     Visible = False
-    OnClick = Button1Click
   end
   object scGPCheckBox_zaokrouhlit: TscGPCheckBox
     Left = 340
@@ -3740,7 +3728,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 32
+    TabOrder = 31
     OnChange = scGPNumericEdit_mezera_JIGChange
     OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
@@ -3833,7 +3821,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 33
+    TabOrder = 32
     OnChange = scGPNumericEdit_mezera_PODVOZEKChange
     OnClick = scGPNumericEdit_mezeraClick
     OnKeyDown = FormKeyDown
@@ -3856,7 +3844,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 34
+    TabOrder = 33
     TabStop = True
     OnClick = scGPGlyphButton_PO_text_memoClick
     Animation = True
@@ -3960,7 +3948,7 @@ object Form_parametry: TForm_parametry
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 35
+    TabOrder = 34
     TabStop = True
     OnClick = scGPGlyphButton_odchylkaClick
     Animation = True

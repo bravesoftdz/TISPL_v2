@@ -21,6 +21,8 @@
 #include <Vcl.Mask.hpp>
 #include "PL_math.h"
 #include "rHintWindow.hpp"
+#include <sstream>
+#include <iomanip>
 //---------------------------------------------------------------------------
 class TForm_parametry_linky : public TForm
 {
@@ -88,6 +90,9 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_ADD;
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
+  TscGPEdit *scGPEdit1;
+  TLabel *Label1;
+  TMemo *Memo2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -144,6 +149,7 @@ __published:	// IDE-managed Components
   void __fastcall GlyphButton_refreshClick(TObject *Sender);
   void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+  void __fastcall scGPEdit1KeyPress(TObject *Sender, System::WideChar &Key);
 
 
 private:	// User declarations

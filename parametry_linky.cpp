@@ -2120,3 +2120,36 @@ void TForm_parametry_linky::getmGridColors()
    scGPGlyphButton_DEL_nepouzite->Left=mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
   }
 
+void __fastcall TForm_parametry_linky::scGPEdit1KeyPress(TObject *Sender, System::WideChar &Key)
+
+{
+  // set this at design-time, or at least
+    // in the Form's constructor. It does not
+    // belong here...
+    //Edit1->MaxLength = 6;
+ //   ShowMessage(Key);
+
+//  if( Key == VK_BACK )
+//        return;
+//
+//    if( !((Key >= L'0') && (Key <= L'9') || (Key == L',')))
+//    {
+//        ShowMessage("Pouze èísla");
+//        Key = 0;
+//    }
+//    else if ((Key == L',') &&
+//        (Pos(Key, scGPEdit1->Text) > 0))
+//    {
+//        ShowMessage("Dvì desetinné èárky!");
+//        Key = 0;
+//    }
+
+//  Memo2->Lines->Add(scGPEdit1->Text);
+//    float value = 3.73456;
+//    std::stringstream ss;
+//    ss << std::setprecision(2) << value;
+//    Label1->Caption = ss.str().c_str();
+
+}
+//---------------------------------------------------------------------------
+

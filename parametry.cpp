@@ -1873,8 +1873,8 @@ void __fastcall TForm_parametry::FormKeyDown(TObject *Sender, WORD &Key,
      scGPButton_OK->Enabled=true;
 		 	if (DEBUG) // pouze v DEBUGU
 		 	{
-	 		Memo1->Visible = true;
-		 		Memo1->Lines->Clear();
+	 	 //	Memo1->Visible = true;
+		 //		Memo1->Lines->Clear();
 //		 		//	Memo1->Lines->Add(pm.T);
 //		 		Memo1->Top = 0;
 //				Memo1->Left = 0;
@@ -2470,7 +2470,7 @@ void TForm_parametry::OUTPUT()
 		// zpùsobuje to totiž pøepisování hodnot pøi zadávání hodnoty do editboxu
 		// takto jsou ošetøeny všechny vstupy
 		//!!!!Rz a Rx jsou nacitany pri volani metody Nacti_rx a nejsou soucasti OUTPUT resp. v PO_math jsou pøipraveny, ale nevyužity a neotestovány!!!
-      Memo1->Lines->Add(input_state);
+    //  Memo1->Lines->Add(input_state);
 		//TECHNOLOGICKÝ ÈAS
 		if (input_state != CT)
 		{
@@ -3307,18 +3307,18 @@ double TForm_parametry::Kontrola_mezery()
 						if(input_state == mezera_jig     && 	input_clicked_edit == mezera_klik) typ=1;
 						if(input_state == mezera_podvozek && 	input_clicked_edit == mezera_klik) typ=2;
 
-            Memo1->Lines->Add("d_jig"+AnsiString(Form1->d.v.PP.delka_jig));
-            Memo1->Lines->Add("s_jig"+AnsiString(Form1->d.v.PP.sirka_jig));
-            Memo1->Lines->Add("rotace"+AnsiString(scComboBox_rotace->ItemIndex));
-            Memo1->Lines->Add("roztec"+AnsiString(P->roztec));
-            Memo1->Lines->Add("mezera"+AnsiString(mezera));
-            Memo1->Lines->Add("typ"+AnsiString(typ));
-            Memo1->Lines->Add("Rx"+AnsiString(scGPNumericEdit_rx->Value));
-            Memo1->Lines->Add("Rz"+AnsiString(scGPNumericEdit_rozestup->Value));
+//            Memo1->Lines->Add("d_jig"+AnsiString(Form1->d.v.PP.delka_jig));
+//            Memo1->Lines->Add("s_jig"+AnsiString(Form1->d.v.PP.sirka_jig));
+//            Memo1->Lines->Add("rotace"+AnsiString(scComboBox_rotace->ItemIndex));
+//            Memo1->Lines->Add("roztec"+AnsiString(P->roztec));
+//            Memo1->Lines->Add("mezera"+AnsiString(mezera));
+//            Memo1->Lines->Add("typ"+AnsiString(typ));
+//            Memo1->Lines->Add("Rx"+AnsiString(scGPNumericEdit_rx->Value));
+//            Memo1->Lines->Add("Rz"+AnsiString(scGPNumericEdit_rozestup->Value));
 
 						doporuc_mezera = Form1->m.mezera_mezi_voziky(Form1->d.v.PP.delka_jig, Form1->d.v.PP.sirka_jig, scComboBox_rotace->ItemIndex,P->roztec,mezera,typ);
 
-            Memo1->Lines->Add("dopo.mezera"+AnsiString(doporuc_mezera));
+         //   Memo1->Lines->Add("dopo.mezera"+AnsiString(doporuc_mezera));
 						if(DMunit == MM)
 						{
 							 doporuc_mezera=doporuc_mezera*1000.0;
@@ -3938,11 +3938,6 @@ void __fastcall TForm_parametry::scGPGlyphButton_viewClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry::Button1Click(TObject *Sender)
-{
-Memo1->Lines->Add(VID);
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry::scGPButton_OKClick(TObject *Sender)
 {
