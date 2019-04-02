@@ -13,7 +13,7 @@ TFormX *FormX;
 __fastcall TFormX::TFormX(TComponent* Owner)
   : TForm(Owner)
 { //výchozí nastavení - pøi zobrazení tab.elementù je totiž vždy volán Onchange, pøi naèítání hodnot do buòek
-  // proto je nastaven input_state=NO, aby v tento moment neprobíhal žádný výpoèet v Onchange události
+	// proto je nastaven input_state=NO, aby v tento moment neprobíhal žádný výpoèet v Onchange události
  input_state=NO;
 }
 //---------------------------------------------------------------------------
@@ -23,7 +23,7 @@ void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
-input_state=NOTHING;
+input_state=NOTHING; Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID); E->mGrid->Refresh();
 }
 
 void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
@@ -54,15 +54,18 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if(Col==1 && Row==1) //vstup PT -> vystup LO
 					{
 						input_state=PT; //nastaveni stavu
+						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->PT1 = F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
+						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();//vzorový postup!!
+						F->Memo3->Lines->Add(F->filtr_klaves(E->mGrid->Cells[Col][Row].Text));
 						E->LO1 = /*F->pom_temp->pohon->aRD*/5.0 * E->PT1; //nahradit aRD                                      //vypocet
 						E->mGrid->Cells[Col][Row+1].Text = F->outLO(E->LO1); //OUTPUT
-						E->mGrid->getEdit(Col,Row+1)->Text=E->mGrid->Cells[Col][Row+1].Text;
+						E->mGrid->Cells[Col][Row+1].Text=E->mGrid->Cells[Col][Row+1].Text;
 					}
 					if(Col==1 && Row==2) //vstup LO -> vystup PT
 					{
 						input_state=LO; //nastaveni stavu
-						E->LO1 = F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
+						E->LO1 = F->inLO(F->ms.MyToDouble(F->filtr_klaves(E->mGrid->Cells[Col][Row].Text))); //INPUT
 						E->PT1 = E->LO1 / 5.0/*F->pom_temp->pohon->aRD*/;       //nahradit aRD             //vypocet
 						E->mGrid->Cells[Col][Row-1].Text = F->outPT(E->PT1);  //OUTPUT
 					}

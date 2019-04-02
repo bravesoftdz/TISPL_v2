@@ -98,6 +98,7 @@
 #include "scGPExtControls.hpp"
 #include "rHintWindow.hpp"
 #include "UnitX.h"
+#include <Vcl.Imaging.pngimage.hpp>
 //#include "vektory.h" //už vkládám pøes vykresli.h
 //#include "knihovna_objektu.h" //už vkládám pøes vykresli.h resp. vektory.h
 
@@ -303,6 +304,7 @@ __published:	// IDE-managed Components
 	TscGPButton *Nahled;
 	TscGPButton *scGPButton_viditelnostmGrid;
 	TscGPButton *scGPButton_viditelnostKoty;
+	TscGPCheckBox *scGPCheckBox_pusun_dalsich_elementu;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -497,6 +499,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall scGPButton_viditelnostmGridClick(TObject *Sender);
 	void __fastcall scGPButton_viditelnostKotyClick(TObject *Sender);
+	void __fastcall scGPCheckBox_pusun_dalsich_elementuClick(TObject *Sender);
 
 
 // User declarations
@@ -671,6 +674,7 @@ public:		// User declarations
 	bool editace_textu;//mimo enum akce z dùvodu zobrazování kurozù pøi editaci a pøepínání na jiné akce
 	AnsiString editovany_text;//uchovává editovanou hodnotu kót
 	int index_kurzoru;
+	bool posun_dalsich_elementu;//indikuje zda je požadován posun dalších elementù
 
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
@@ -694,7 +698,7 @@ public:		// User declarations
 	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovým osám (maro) a techn.procesùm(roma)
 	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na výpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
-  short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
+	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
 	double inLO  (double inLO);
   double outLO (double outLO);
   double inPT  (double inPT);
@@ -703,6 +707,7 @@ public:		// User declarations
 	double outDO (double outDO);
 	double inDK (double outDK);
 	double outDK (double outDK);
+	AnsiString filtr_klaves(AnsiString text);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
