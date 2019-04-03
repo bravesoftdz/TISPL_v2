@@ -86,7 +86,7 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
-    input_state=NOTHING;
+    input_state=LOADING;
 
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
@@ -249,7 +249,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
 		//musí být umístìno až za nacti_pohony
-	 //	zrusena_prirazeni_PID_size=rStringGridEd_tab_dopravniky->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
+	  zrusena_prirazeni_PID_size=mGrid->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
 		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
 		for(unsigned int PID=0;PID<zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
@@ -380,7 +380,7 @@ void TForm_parametry_linky::nacti_pohony ()
 
            mGrid->Refresh(); // kvùli prací s následných Checkboxem je nutný refresh
 
-          if(Form1->d.v.pohon_je_pouzivan(ukaz->n)) {input_state=R; mGrid->getCheck(6,i)->Checked=true;mGrid->getCheck(6,i)->Enabled=true; } else  {input_state=R;mGrid->getCheck(6,i)->Checked=false;mGrid->getCheck(6,i)->Enabled=false;}
+          if(Form1->d.v.pohon_je_pouzivan(ukaz->n)) {input_state=R; mGrid->getCheck(6,i)->Checked=true;mGrid->getCheck(6,i)->Enabled=true; } else  {input_state=R;mGrid->getCheck(6,i)->Checked=false;mGrid->getCheck(6,i)->Enabled=false; mGrid->Cells[7][i].Text="";}
 
 						ukaz = ukaz->dalsi;
 
@@ -651,10 +651,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
-	//R zakoment		Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
+ 	//	Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
 			}
 			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
-	 //R zakoment   Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
+ //	  Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
 //
 
 			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
@@ -705,6 +705,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 {
 	//navýší poèet øádkù
+  input_state=JOB;
   mGrid->AddRow(true,false);
 
   int i = mGrid->RowCount -1 ;//poøadí øádku o jednièku nižší než poèet øádkù
@@ -732,48 +733,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
   setADD_ButtonPosition();
   setFormHeight();
 
-
-
-  //FormPaint(this);//zajistí pøekreslení bez probliku
-
-//	rStringGridEd_tab_dopravniky->RowCount++;
-//  if(rStringGridEd_tab_dopravniky->RowCount>=1)
-//  {
-//  rStringGridEd_tab_dopravniky->Height=rStringGridEd_tab_dopravniky->Height+30;
-//  Form_parametry_linky->Height= Form_parametry_linky->Height+30;
-//  //scGPGlyphButton_ADD->Top=scGPGlyphButton_ADD->Top + 30;
-//  Button_save->Top=Button_save->Top + 30;
-//  Button_storno->Top=Button_storno->Top + 30;
-//  scGPGlyphButton_DEL_nepouzite->Top=scGPGlyphButton_DEL_nepouzite->Top+30;
-//  }
-	//zobrazOramovani=false;
-
-//	//zaène plnit jednotlivé øádky
-//	int i = rStringGridEd_tab_dopravniky->RowCount - 1;//poøadí øádku o jednièku nižší než poèet øádkù
-//	rStringGridEd_tab_dopravniky->Cells[0][i] = getMaxPID()+1;
-//	rStringGridEd_tab_dopravniky->Cells[1][i] = "nový pohon "+AnsiString(getMaxPID());//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
-//	rStringGridEd_tab_dopravniky->Cells[2][i] = "";//rStringGridEd_tab_dopravniky->Cells[2][i - 1];
-//	rStringGridEd_tab_dopravniky->Cells[3][i] = "";//rStringGridEd_tab_dopravniky->Cells[3][i - 1];
-//	rStringGridEd_tab_dopravniky->Cells[4][i] = "";//rStringGridEd_tab_dopravniky->Cells[4][i - 1];
-//	rStringGridEd_tab_dopravniky->Cells[5][i] = "";
-//	rStringGridEd_tab_dopravniky->Cells[6][i] = "nepoužíván";
-//
-//	//doplní min Rz
-//	show_min_Rz();
-//
-//	//pøesune focus na poslední øádek
-//	rStringGridEd_tab_dopravniky->Row=rStringGridEd_tab_dopravniky->RowCount-1;
-//
-//	//pozice info tlaèítka - asi je tlaèítko stejnì provizorní
-//	pozice_scGPGlyphButton_hint();
-//
-//	//existuje nepoužívaný pohon a je tedy vhodné nabídku na smazání nepoužitých zobrazovat
-//	scGPGlyphButton_DEL_nepouzite->Visible=true;
-// // input_clicked_edit=od_klik;
-//	INPUT(2,i);
-//	OUTPUT(0,2,i);
-//	rStringGridEd_tab_dopravniky->Invalidate();
-//	input_state=NOTHING;
+  input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
 //smaže poslední øádek - již se nepoužívá, ale nechvám
@@ -1832,6 +1792,7 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
 //	//toto problikává mGrid->Refresh();
+ bool smazat=false;
      if(input_state==NOTHING)
      {
         if(Col==6 && Row>=2)
@@ -1841,6 +1802,10 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
                 if(mrOk==Form1->MB("Pohon je používáný, opravdu má být zrušeno pøiøazení?",MB_OKCANCEL))
                 {
                  mGrid->getCheck(6,Row)->Enabled=false;
+                 mGrid->Cells[7][Row].Text="";
+                 mGrid->Refresh();
+                 zrusena_prirazeni_PID[getPID(Row)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
+				         smazat=true;
                 }  else mGrid->getCheck(6,Row)->Checked=true;
             }
         }
@@ -1860,9 +1825,9 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
 
         if(Col==8 && Row>=2)
         {
-
+          input_state=JOB;
           int ROW=Row;
-          bool smazat=false;
+          smazat=false;
           if(Form1->d.v.pohon_je_pouzivan(getPID(ROW)))//pohon je používaný
           {
               AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
@@ -1873,6 +1838,7 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
                 //pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
                 zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
                 smazat=true;
+               mGrid->getCheck(6,Row)->Checked=false;
               }
               myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
           }
@@ -1890,7 +1856,7 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
           setADD_ButtonPosition();
           setFormHeight();
           }
-
+       input_state=NOTHING;
        }
     }
 
@@ -1902,6 +1868,11 @@ void TForm_parametry_linky::OnEnter(long Tag,unsigned long Col,unsigned long Row
 }
 void TForm_parametry_linky::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
+if(Col>1 && Col<=4 && input_state==NOTHING )
+    {
+     mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(mGrid->Cells[Col][Row].Text);
+     mGrid->getEdit(Col,Row)->SelStart=mGrid->getEdit(Col,Row)->Text.Length();
+    }
 
 }
 //---------------------------------------------------------------------------

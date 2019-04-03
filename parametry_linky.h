@@ -90,9 +90,6 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_ADD;
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
-  TscGPEdit *scGPEdit1;
-  TLabel *Label1;
-  TMemo *Memo2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -154,7 +151,7 @@ __published:	// IDE-managed Components
 
 private:	// User declarations
 	TPL_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PL tj. PL_math
-	enum Tinput_state{NO,NOTHING,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod,R_prevod,Rz_prevod,aRD_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_state{NO,NOTHING,LOADING,JOB,DV,SV,TT,RZ,RX,aRD,R,jednotky_prevod,R_prevod,Rz_prevod,aRD_prevod};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	enum Tinput_clicked_edit {empty_klik,TT_klik,DV_klik,SV_klik,V_klik,Podvoz_klik,aRD_klik,R_klik,Rz_klik,Rx_klik,nazev_klik,od_klik,do_klik}; //zjisteni na ktery edit nebo bunku ve sloupci bylo kliknuto
 	enum Tinput_clicked_icon {empty_klik_ico,aRD_klik_ico,R_klik_ico,Rz_klik_ico,Rx_klik_ico}; //zjisteni na kterou ikonku zámku bylo kliknuto
 	enum Tinput_onchange {NOChange,aRDChange,RChange,RzChange,RxChange}; //zjisteni na kterou ikonku zámku bylo kliknuto
