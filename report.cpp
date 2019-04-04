@@ -48,19 +48,19 @@ short int TForm_report::ulozit_report(UnicodeString FileName)
 		AnsiString data="";//celková textová data k exportu
 
     	AnsiString T=F->readINI("nastaveni_form_parametry", "CT");
-	if(T=="")CTunit=0;else CTunit=T.ToInt();
+	if(T=="")CTunit=S;else CTunit=MIN;
 	T=F->readINI("nastaveni_form_parametry","RDt");
-	if(T=="")aRDunit=0;else aRDunit=T.ToInt();
+	if(T=="")aRDunit=S;else aRDunit=MIN;
 	T=F->readINI("nastaveni_form_parametry","DD");
-	if(T=="")DDunit=0;else DDunit=T.ToInt();
+	if(T=="")DDunit=M;else DDunit=MM;
 	T=F->readINI("nastaveni_form_parametry","DM");
-	if(T=="")Munit=0; else Munit =T.ToInt();
+	if(T=="")Munit=M; else Munit =MM;
   T=F->readINI("nastaveni_form_parametry_linky","R");
-	if(T=="")Runit=0; else Runit =T.ToInt();
+	if(T=="")Runit=M; else Runit =MM;
   T=F->readINI("nastaveni_form_parametry_linky","rozmery");
-	if(T=="")Sirkaunit=0; else Sirkaunit =T.ToInt();
+	if(T=="")Sirkaunit=M; else Sirkaunit =MM;
   T=F->readINI("nastaveni_form_parametry_linky","TT");
-	if(T=="")TTunit=0; else TTunit =T.ToInt();
+	if(T=="")TTunit=S; else TTunit =MIN;
 
 
 		//zjištìní exportovaného formátu
