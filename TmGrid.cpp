@@ -1846,15 +1846,15 @@ void TmGrid::HighlightTable(TColor Color,unsigned short Size,unsigned short Offs
 //zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
 void TmGrid::HighlightTableOnMouse(int X,int Y)
 {
-	 if(Left<=X && X<=Left+Width && Y>Top && Y<Top+Height)HighlightTable();
+	if(Left<=X && X<=Left+Width && Y>Top && Y<Top+Height)HighlightTable();
 }
 //---------------------------------------------------------------------------
 //dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 TPoint TmGrid::CheckLink(int X,int Y)
 {
-	unsigned long IndRow=GetIdxRow(X,Y);
-	unsigned long IndCol=GetIdxColum(X,Y);
-	if(CheckLink(X,Y,IndCol,IndRow))return TPoint(IndCol,IndRow);//odkaz na daných souøadnicích nalezen
+	long IndRow=GetIdxRow(X,Y);
+	long IndCol=GetIdxColum(X,Y);
+	if(IndRow>=0 && IndCol>=0 && CheckLink(X,Y,IndCol,IndRow))return TPoint(IndCol,IndRow);//odkaz na daných souøadnicích nalezen
 	else return TPoint(-1,-1);
 }
 //---------------------------------------------------------------------------
