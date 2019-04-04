@@ -1760,15 +1760,6 @@ void __fastcall TForm_parametry_linky::FormCloseQuery(TObject *Sender, bool &Can
 	else CanClose=false;
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm_parametry_linky::GlyphButton_refreshClick(TObject *Sender)
-{
-//    nacti_pohony();
-//		if(!data_nalezena)
-//		{
-//			rStringGridEd_tab_dopravniky->RowCount=1;    //defaultní poèet øádkù - hlavièka
-//		}
-}
-//---------------------------------------------------------------------------
 
 //metody volané z Tmgrid
 void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
@@ -2087,20 +2078,20 @@ void __fastcall TForm_parametry_linky::scGPEdit1KeyPress(TObject *Sender, System
     //Edit1->MaxLength = 6;
  //   ShowMessage(Key);
 
-//  if( Key == VK_BACK )
-//        return;
-//
-//    if( !((Key >= L'0') && (Key <= L'9') || (Key == L',')))
-//    {
-//        ShowMessage("Pouze èísla");
-//        Key = 0;
-//    }
-//    else if ((Key == L',') &&
-//        (Pos(Key, scGPEdit1->Text) > 0))
-//    {
-//        ShowMessage("Dvì desetinné èárky!");
-//        Key = 0;
-//    }
+  if( Key == VK_BACK )
+        return;
+
+    if( !((Key >= L'0') && (Key <= L'9') || (Key == L',')))
+    {
+        ShowMessage("Zadávejte pouze èísla");
+        Key = 0;
+    }
+    else if ((Key == L',') &&
+        (Pos(Key, scGPEdit1->Text) > 0))
+    {
+        ShowMessage("Dvì desetinné èárky!");
+        Key = 0;
+    }
 
 //  Memo2->Lines->Add(scGPEdit1->Text);
 //    float value = 3.73456;
@@ -2110,5 +2101,6 @@ void __fastcall TForm_parametry_linky::scGPEdit1KeyPress(TObject *Sender, System
 
 }
 //---------------------------------------------------------------------------
+
 
 
