@@ -90,6 +90,7 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_ADD;
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
+  TscGPEdit *scGPEdit1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -143,7 +144,6 @@ __published:	// IDE-managed Components
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall rHTMLLabel_InfoTextClick(TObject *Sender);
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
-  void __fastcall GlyphButton_refreshClick(TObject *Sender);
   void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
   void __fastcall scGPEdit1KeyPress(TObject *Sender, System::WideChar &Key);
