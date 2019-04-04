@@ -251,7 +251,7 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 	////VALIDACE aRD rozsahu od-do, pro objekty s pohony a pro všechny pohony
 	if(objekty[Row].pohon!=NULL)//tato validace se neøeší pro objekty bez pøiøazených pohonù
 	{
-		long 	plRow  = 0;//n øádku pohonu na PL
+	 	long 	plRow  = 0;//n øádku pohonu na PL
 		if(objekty[Row].pohon!=NULL && rezim!=100) plRow =	Form_parametry_linky->getROW(objekty[Row].pohon->n);//pro všechny objekty s pohony
 		if(objekty[Row].id>=100) plRow = Form_parametry_linky->getROW(objekty[Row].id-100);//pro nepoužívané pohony (bez pøiøazení)
 		double aRD_od=0;//ms.MyToDouble(Form_parametry_linky->rStringGridEd_tab_dopravniky->Cells[2][plRow])/(1+59.0*aRDunit);
@@ -288,7 +288,7 @@ void TPO_math::gapoVALIDACE(Cvektory::TObjekt *objekty,long Row,long RowCount,sh
 			 }
 			 else//situace 2 - testování, zda zmìna u daného KK objektu nezpùsobí problém u jiného PP èi SG objektu (objekty[i].pohon), projede všechny dotèené pp a sg z dané skupiny, kde se kliklo
 			 {
-				 for(unsigned long i=1;i<RowCount;i++)//projde všechny zobrazené objekty
+				 for (unsigned long i=1;i<RowCount;i++)//projde všechny zobrazené objekty
 				 {
 					 if(objekty[i].pohon!=NULL)//testovaný objekt musí mít pohon
 					 {                           //odfiltrování situace 1 tzn. objekty[Row]!=objekty[i] tj. stejný objekt - to nyní probíhá automaticky, protože se porovnávají režimy KK a proti tomu S&G èi PP, tj. nemùže se porovnávat totožný objekt

@@ -1,6 +1,6 @@
-unsigned short pocet_objektu_knihovny=12;
+const unsigned short pocet_objektu_knihovny=12;
 struct Tknihovna_objektu{unsigned int id; UnicodeString short_name; UnicodeString name;};
-Tknihovna_objektu knihovna_objektu[12]=
+Tknihovna_objektu const knihovna_objektu[12]=
 {
 	 {1 , "NAV", "navìšování"},
 	 {2 , "CO2", "CO2"},

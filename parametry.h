@@ -147,9 +147,6 @@ __published:	// IDE-managed Components
 private:	// User declarations
 	enum Tcomponents{POHON,DELKA,CEKANI,ODCHYLKA,KAPACITA,POZICE,STOPKA,TIME,RYCHLOST,ROTACE,MEZERA,MEZERA_JIG,MEZERA_PODVOZEK,ROZESTUP};//název souvisejících komponent
 	enum Tcomponents_state{HIGHLIGHT,ENABLED,DISABLED,READONLY,HIDE};//stav komponent
-	enum Tinput_state{NO,NOTHING,CT,DD,RD,K,P,mezera,mezera_jig,mezera_podvozek,Rz,Rx};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
-	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik,Rz_klik}; //zjisteni na ktery edit bylo kliknuto
-	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
 
 	void position();//hlídá a øeší pozici formuláøe,// napozicování celého formuláøe resp. ošetøení aby zùstal dialog na monitoru, pouze pro prvotní zobrazení dle souøadnic kurzoru myši, jinak dle uivatele
 	void set(Tcomponents C,Tcomponents_state S,bool move=true);//zajišuje zobrazení a napozicování patøièné konkrétní komponenty a zároveò udrování hodnoty offsetu - to pokud je move==true, jinak jen nastaví komponenty
@@ -161,7 +158,7 @@ private:	// User declarations
 	void input_P(); //pøepoèet hodnot vyplıvajících ze zmìny poètu pozic
 	void null_input_value();//vynuluje vstupní hodnoty
 	double Kontrola_mezery();
-	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
+
 	void Pohon_pouzivan(); //kontrola zdali je vybrany pohon pouzivan - dle toho nastav viditelne polozky
 	void Check_rozmezi_RD(); //kontrola  RD vùèi vybranému pohonu
 	void Nastav_M_R_Rx();
@@ -170,7 +167,6 @@ private:	// User declarations
 	void OUTPUT();
 	void packa_RDzamek(TCanvas *canv);//vykreslí packu od zamèeného zámku RD k souvisejícím hodnotám
 	void packa(Tcomponents start,Tcomponents end);//vykreslí packu mezi edity a comby
-	double RDunitD_funkce(double RD);//podpùrná funkce na pøepoèet jednotek RD
 	double getM();//vrátí hodnotu mezery z editboxu dle nastavenıch jednotek mezery mezera pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
 	double getM(double M);//vrátí hodnotu parametru dle nastavenıch jednotek mezery pøevedenou do SI jednotek + ošetøuje divné chování okolo nuly
 	void frameCorrelation(bool default_value=false);//stejnou barvou orámuje hodnoty v korelaci, pokud je default_value na true, nastaví všechny komponenty do vıchozího stavu
@@ -203,6 +199,10 @@ public:		// User declarations
 	enum Tminsec{S=0,MIN};Tminsec minsec;Tminsec CTunit;Tminsec RDunitT;//pøepínaè jednotek èasu
 	enum Tm_mm{M=0,MM};Tm_mm m_mm;Tm_mm DDunit;Tm_mm DMunit;Tm_mm Rzunit;//pøepínaè jednotek vzdálenost
 	enum Tzamek {LOCKED,UNLOCKED};Tzamek CT_zamek;Tzamek RD_zamek;Tzamek DD_zamek;Tzamek K_zamek;
+  enum Tinput_state{NO,NOTHING,CT,DD,RD,K,P,mezera,mezera_jig,mezera_podvozek,Rz,Rx};//uchovává vıbìr input hodnoty (aby se formuláøe necyklyly)
+	enum Tinput_clicked_edit {empty_klik,CT_klik,DD_klik,RD_klik,C_klik,mezera_klik,P_klik,Rotace_klik,Rx_klik,Rz_klik}; //zjisteni na ktery edit bylo kliknuto
+	enum Tinput_clicked_icon {empty_klik_ico,CT_klik_ico,DD_klik_ico,RD_klik_ico,C_klik_ico,mezera_klik_ico,P_klik_ico}; //zjisteni na ktery edit bylo kliknuto
+ 	void Nastav_zamky(double rezim,Tinput_clicked_icon I,Tinput_clicked_edit E,bool ikonka=true);
 
 	Tinput_state input_state;//stav vstupu CT,RD,DD,K
 	Tinput_clicked_edit input_clicked_edit;//zjisteni na ktery edit bylo kliknuto

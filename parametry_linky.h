@@ -177,7 +177,6 @@ public:		// User declarations
 	void INPUT(double Sloupec, double Radek);
 	void OUTPUT(double i,double Sloupec, double Radek);
 	void Roletka_roztec(int Row);
-	double getRz(double i);
 	void show_min_Rz();
 	double getTT();
 	void VALIDACE(int ACol, int ARow);
