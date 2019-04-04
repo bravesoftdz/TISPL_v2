@@ -1628,18 +1628,25 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 //vstupní parametr je editovaný text pomocí klávesnice, pokud je nově přidaný znak číslo či desetiná čáraka nebo tečka nic se neděje, pokud znak tyto pravidla nesplní je z řetězce odstraněn
 AnsiString TForm1::filtr_klaves(AnsiString text)
 {
+	int carky=0;
 	AnsiString klavesa,klavesa2;
 	//separace poslední stisknuté klávesy
 	klavesa=text.SubString(text.Length(),1);
-	//separace předchozí klávesy, pokud text obsahuje min. 2 znaky
+	//procházení celého řetězce (bez posledního znaku -> klavesa) zda se v něm již nenachází čátka nebo tečka
 	if(text.Length()>=2)
-		klavesa2=text.SubString(text.Length()-1,1);
+	{
+		for (int i=text.Length()-1;i>0;i--)
+			{
+				klavesa2=text.SubString(i,1); 
+				if(klavesa2==","||klavesa2==".") carky++;
+			}
+	 }
 	//kontrola posledního znaku zda jde o číslo nebo tečku či čárku
 	if(klavesa>=0&&klavesa<=9||klavesa==","||klavesa==".");
 	else
 		text=text.SubString(1,text.Length()-1);//když je použit nevhodný znak je z řetězce odstraněn
-  //kontrola zda nejsou 2 oddělovací znaky zadány po sobě
-	if((klavesa==","||klavesa==".")&&(klavesa2==","||klavesa2=="."))
+	//kontrola zda nejsou 2 oddělovací znaky zadány po sobě
+	if((klavesa==","||klavesa==".")&&carky==1)
 		text=text.SubString(1,text.Length()-1);
 	return text;
 }
@@ -1647,6 +1654,7 @@ AnsiString TForm1::filtr_klaves(AnsiString text)
 //odchytávání znaků pro editaci názvů
 void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 {
+	//projít řetězec for cyklem hledat "," nebo "."
 	if (editace_textu&&index_kurzoru==-6)
 	{
 		//switch(Key)
@@ -3559,14 +3567,14 @@ void TForm1::design_element(Cvektory::TElement *E)
 	if(PTunit==0&&LOunit==0&&DOtocunit==0) {sirka_3=68;sirka_cisla=70;}
 	else {sirka_3=81;sirka_cisla=100;}
 	//nastavení defaultních hodnot [m,s]
-	E->PT1=120;
-	E->PT2=100;
-	E->PTotoc=20;
-	E->LO1=1.5;
-	E->LO2=1.2;
-	E->OTOC_delka=0.5;
-	E->WT=30;
-	E->WTpalec=10;
+//	E->PT1=120;
+//	E->PT2=100;
+//	E->PTotoc=20;
+//	E->LO1=1.5;
+//	E->LO2=1.2;
+//	E->OTOC_delka=0.5;
+//	E->WT=30;
+//	E->WTpalec=10;
 	//nadesignování tabulek dle typu elementu
 	switch(element_id)
 	{
@@ -5029,18 +5037,6 @@ void TForm1::NP_input()
 	 scGPLabel_roboti->Caption="Roboti";
 	 scGPLabel_roboti->ContentMarginLeft=10;
 
-//	 if (pom_temp->Xk==pom_temp->X)
-//	 {
-//		 short trend=m.Rt90(d.trend(pom));//musí být pom
-//		 if (trend!=90&&trend!=270)
-//		 {
-//			 pom_temp->rozmer_kabiny.x=pom->rozmer_kabiny.y;
-//			 pom_temp->rozmer_kabiny.y=pom->rozmer_kabiny.x;
-//		 }
-//		 pom_temp->Xk=m.P2Lx(scSplitView_LEFTTOOLBAR->Width+(ClientWidth-scSplitView_LEFTTOOLBAR->Width)/2.0)-pom_temp->rozmer_kabiny.x/2.0;	//(scSplitView_LEFTTOOLBAR->Width+100)
-//		 pom_temp->Yk=m.P2Ly((ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0)+pom_temp->rozmer_kabiny.y/2.0;//provizorní vložení
-//	 }
-
 	//nastavení tlačítek na výchozí hodnoty
 	if(pom_temp->uzamknout_nahled) scButton_zamek->ImageIndex=37; //zamčeno
 	else scButton_zamek->ImageIndex=38;
@@ -5084,17 +5080,17 @@ void TForm1::NP_input()
 	Schema->Down=false;
 	Schema->Options->PressedColor=Layout->Options->NormalColor;
 	scGPGlyphButton_zpravy_ikona->Visible=true;
-	//příprava pro volání design element v případě jeho předchozího smazání
-//	if(pom->elementy!=NULL)
-//	{
-//		Cvektory::TElement *E=pom->elementy->dalsi;
-//		while (E!=NULL)
-//		{
-//			design_element(E);
-//			E=E->dalsi;
-//		}
-//		E=NULL; delete E;
-//	}
+	//znovu provedení designu při otevření náhledu, který není prázdný
+	if(pom->elementy!=NULL)
+	{
+		Cvektory::TElement *E=pom->elementy->dalsi;
+		while (E!=NULL)
+		{
+			design_element(E);
+			E=E->dalsi;
+		}
+		E=NULL; delete E;
+	}
 
 	Invalidate();
 	REFRESH();
