@@ -41,11 +41,11 @@ __fastcall TF_gapoTT::TF_gapoTT(TComponent* Owner)
 	clUNLOCKED = (TColor)RGB(255,128,0);
 	clBACKGROUND=(TColor)RGB(250,250,250);
   clHiddenValues = (TColor)RGB(250,250,250);//(TColor)RGB(212,212,212);
-  clEMPTYVALUE =Form1->m.clIntensive(RGB(210,210,210),30);
+  clEMPTYVALUE =Form1->m.clIntensive((TColor)RGB(210,210,210),30);
 	//nastavení barvy orámování v hlavièce tabulky + orámování checkboxù
-	C1=Form1->m.clIntensive(RGB(128,64,0),20);
-	C2=Form1->m.clIntensive(RGB(0,128,0),80);
-	C3=Form1->m.clIntensive(RGB(0,0,0),80);
+	C1=Form1->m.clIntensive((TColor)RGB(128,64,0),20);
+	C2=Form1->m.clIntensive((TColor)RGB(0,128,0),80);
+	C3=Form1->m.clIntensive((TColor)RGB(0,0,0),80);
 	//legenda NEWR
 	rHTMLLabel_legenda_titulek->FontColor=(TColor)RGB(43,87,154);
 	rHTMLLabel_legenda->FontColor=clUNLOCKED;
@@ -390,7 +390,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 		}
 		//zajistí pøepoèet daného øádku
 		calculate(j);
-    for(int sl=0;sl<=ColCount-1;sl++) //oddìlení pohonù silnìjší èarou
+    for(unsigned int sl=0;sl<=ColCount-1;sl++) //oddìlení pohonù silnìjší èarou
     {
     mGrid->Cells[sl][j].BottomBorder->Width=2;
     }
@@ -436,7 +436,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 			//mGrid->getCheck(11,j)->Visible=false;
 			//mGrid->getCheck(13,j)->Visible=false;
 			//posun na další øádek výsledné tabulky
-			for(int sl=0;sl<=ColCount-1;sl++)
+			for(unsigned int sl=0;sl<=ColCount-1;sl++)
       {
 				mGrid->Cells[sl][j].BottomBorder->Width=2;
 			}
@@ -446,7 +446,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 				double value=F->d.v.vrat_pohon(i)->Rx;
 				if(value!=floor(value))
 				{
-					double dop_Rx=Form1->m.round(value);
 					//používáme v calculate(3) vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
 					mGrid->getCheck(7,j)->Enabled=false;
 					mGrid->getCheck(9,j)->Enabled=false;
@@ -577,7 +576,6 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 					double value=F->ms.MyToDouble(O[z].pohon->Rx);
 					if(value!=floor(value))
 					{
-						double dop_Rx=Form1->m.round(F->ms.MyToDouble(O[z].pohon->Rx));
 						//používáme v calculate(3) vypis("Zmìna rozestupu palcù (Rx) není možná, jelikož rozestup není celoèíselný. Doporuèený rozestup : "+ AnsiString(dop_Rx));
 						mGrid->getCheck(7,j)->Enabled=false;
 						mGrid->getCheck(9,j)->Enabled=false;
@@ -624,7 +622,7 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
       mGrid->MergeCells(34,j-z,34,j-z+O_pocet-1);//Rx
       mGrid->MergeCells(35,j-z,35,j-z+O_pocet-1);//Rx výpoèet
       //ShowMessage(j-z);
-      for(int sl=0;sl<=ColCount-1;sl++) //silnìjší oddìlení dalšího pohonu
+      for(unsigned int sl=0;sl<=ColCount-1;sl++) //silnìjší oddìlení dalšího pohonu
       {
        mGrid->Cells[sl][j-z+O_pocet-1].BottomBorder->Width=2;
       }
@@ -633,13 +631,13 @@ void __fastcall TF_gapoTT::FormShow(TObject *Sender)
 	}
 
 	////////rozdìlení sekcí svislým orámováním////////
-	for(int i=0;i<=RowCount-1;i++)
+	for(unsigned int i=0;i<=RowCount-1;i++)
 	{
 		mGrid->Cells[14][i].RightBorder->Width=2;
   	mGrid->Cells[2][i].RightBorder->Width=2;
   }
 
-  for(int r=0;r<=RowCount-1;r++)
+  for(unsigned int r=0;r<=RowCount-1;r++)
   {
     mGrid->Cells[16][r].RightBorder->Width=mGrid->Cells[18][r].RightBorder->Width=mGrid->Cells[20][r].RightBorder->Width=mGrid->Cells[22][r].RightBorder->Width=mGrid->Cells[24][r].RightBorder->Width=mGrid->Cells[26][r].RightBorder->Width=mGrid->Cells[28][r].RightBorder->Width=mGrid->Cells[31][r].RightBorder->Width=mGrid->Cells[33][r].RightBorder->Width=mGrid->Cells[35][r].RightBorder->Width=mGrid->Cells[29][r].RightBorder->Width=2;
   }
@@ -903,7 +901,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					{
 					 //prùchod celé tabulky
 						pocitadlo=0;
-						for(int i=1;i<=mGrid->RowCount-1;i++)
+						for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 						{
 							if(objekty[i].pohon!=NULL && mGrid->Cells[2][i].Text=="Kontinuální")
 							{
@@ -948,7 +946,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					{
 						//prùchod celé tabulky
 						pocitadlo=0;
-						for(int i=1;i<=mGrid->RowCount-1;i++)
+						for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 						{
 							if(objekty[i].pohon!=NULL && mGrid->Cells[2][i].Text=="Kontinuální")
 							{
@@ -1003,7 +1001,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					{
 						//prùchod celé tabulky
 						pocitadlo=0;
-						for(int i=1;i<=mGrid->RowCount-1;i++)
+						for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 						{
 							if(objekty[i].pohon!=NULL && mGrid->Cells[2][i].Text=="Kontinuální")
 							{
@@ -1082,7 +1080,7 @@ void TF_gapoTT::OnClick(long Tag,unsigned long Col,unsigned long Row)
 				if(F->d.v.vrat_pocet_objektu_vyuzivajici_pohon(objekty[Row].pohon->n) > 1)
 				{
            slouceny_radek=0;
-					 for(int i=1;i<=mGrid->RowCount-1;i++)
+					 for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 					 {
              if(mGrid->Cells[1][i].Text!="nepøiøazen")
              {

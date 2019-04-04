@@ -149,7 +149,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->Cells[7][0].Text="- na objektech";
   mGrid->Cells[8][0].Text="";
 
-  mGrid->Cells[7][0].Align=Left;
+  mGrid->Cells[7][0].Align=mGrid->LEFT;
 
   mGrid->Cells[0][1].Text="";
 	mGrid->Cells[1][1].Text="";
@@ -338,7 +338,7 @@ void TForm_parametry_linky::nacti_pohony ()
 				mGrid->RowCount = Form1->d.v.POHONY->predchozi->n + 2;
         mGrid->Refresh();
 				data_nalezena=true; //pokud jsou ve spojaku nejaka data, nastavit na true
-				 for (int i=2;i<mGrid->RowCount;i++)
+				 for (unsigned int i=2;i<mGrid->RowCount;i++)
 				 {
 						 OBJEKTY_POUZIVAJICI_POHON=Form1->d.v.vypis_objekty_vyuzivajici_pohon(ukaz->n);
  						if(OBJEKTY_POUZIVAJICI_POHON!="")
@@ -388,7 +388,7 @@ void TForm_parametry_linky::nacti_pohony ()
              getPrirazeneObjDesign(i);
 				 }
 				 F_gapoR->pohony_zmena=new TPoint[F->d.v.POHONY->predchozi->n+1]; //alokace o jednièku vyšší, nultý index není totiž využíván
-				 for(int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
+				 for(unsigned int i=0; i<=F->d.v.POHONY->predchozi->n;i++){F_gapoR->pohony_zmena[i].X=false;F_gapoR->pohony_zmena[i].Y=false;}
 
 
          mGrid->Refresh();
@@ -437,14 +437,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 		//zobrazení formu gapoR - jediné GAPO, které je voláno zde, protože se volá až pøi stisku OK PL formu
 		bool zobrazGAPO_R=false;
-		for(int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
+		for(unsigned int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
 		{
 			if(F_gapoR->pohony_zmena[i].X) zobrazGAPO_R=true;
 			//	ShowMessage(AnsiString(i)+" "+AnsiString((short)(F_gapoR->pohony_zmena[i])));
 		}
 
 
-     int nezobrazuj=0;
                       // pokud chci budu zobrazovat gapo R, ještì si zkontroluji celý obsah tabulky, zda nejsou náhodou vráceny všude výchozí hodnoty
 //      if(zobrazGAPO_R)//pokud se hodnoty shodují, ruším zobrazení gapoR
 //     {
@@ -619,7 +618,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			Form1->d.v.vymaz_seznam_POHONY();
 			Form1->d.v.hlavicka_POHONY();
 
-			for (int i = 2; i < mGrid->RowCount; i++)
+			for (unsigned int i = 2; i < mGrid->RowCount; i++)
 			{
 				double rychlost_od;
 				double rychlost_do;
@@ -1479,18 +1478,6 @@ void TForm_parametry_linky::Roletka_roztec(int Row)
 
 		}
 
-
-
-
-
-double  TForm_parametry_linky::getRz(double i)
-{
-//	double Rz=0;
-//	if(Dmunit==M) Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i]);
-//	else          Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][i])*1000.0;
-//	return Rz;
-}
-
 double  TForm_parametry_linky::getTT()
 {
 	double TT=0;
@@ -1792,7 +1779,7 @@ void TForm_parametry_linky::OnClick(long Tag,long ID,unsigned long Col,unsigned 
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
 //	//toto problikává mGrid->Refresh();
- bool smazat=false;
+     bool smazat=false;
      if(input_state==NOTHING)
      {
         if(Col==6 && Row>=2)
@@ -1919,7 +1906,7 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 
            if(aRDunit==MIN)
            {
-               for(int i=2;i<mGrid->RowCount;i++)
+               for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
                mGrid->Cells[2][i].Text=F->ms.MyToDouble(mGrid->Cells[2][i].Text)*60.0;
                mGrid->Cells[3][i].Text=F->ms.MyToDouble(mGrid->Cells[3][i].Text)*60.0;
@@ -1928,7 +1915,7 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
            }
            else
            {
-               for(int i=2;i<mGrid->RowCount;i++)
+               for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
                mGrid->Cells[2][i].Text=F->ms.MyToDouble(mGrid->Cells[2][i].Text)/60.0;
                mGrid->Cells[3][i].Text=F->ms.MyToDouble(mGrid->Cells[3][i].Text)/60.0;
@@ -1945,14 +1932,14 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 
            if(Runit==MM)
            {
-               for(int i=2;i<mGrid->RowCount;i++)
+               for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
                 mGrid->Cells[5][i].Text=F->ms.MyToDouble(mGrid->Cells[5][i].Text)*1000.0;
                }
            }
            else
            {
-               for(int i=2;i<mGrid->RowCount;i++)
+               for(unsigned int i=2;i<mGrid->RowCount;i++)
                {
                 mGrid->Cells[5][i].Text=F->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
                }
@@ -2123,4 +2110,5 @@ void __fastcall TForm_parametry_linky::scGPEdit1KeyPress(TObject *Sender, System
 
 }
 //---------------------------------------------------------------------------
+
 

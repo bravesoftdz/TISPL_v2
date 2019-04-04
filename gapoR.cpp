@@ -211,12 +211,12 @@ void __fastcall TF_gapoR::FormShow(TObject *Sender)
 	mGrid->Cells[1][RowCount-1].RightBorder->Width=mGrid->Cells[1][1].RightBorder->Width;
 	mGrid->Cells[5][RowCount-1].RightBorder->Width=mGrid->Cells[5][1].RightBorder->Width;
 
-   for(int r=0;r<=RowCount-1;r++)
+   for(unsigned int r=0;r<=RowCount-1;r++)
    {
     mGrid->Cells[7][r].RightBorder->Width=mGrid->Cells[9][r].RightBorder->Width=mGrid->Cells[11][r].RightBorder->Width=mGrid->Cells[13][r].RightBorder->Width=mGrid->Cells[15][r].RightBorder->Width=mGrid->Cells[17][r].RightBorder->Width=mGrid->Cells[19][r].RightBorder->Width=mGrid->Cells[20][r].RightBorder->Width=2;
    }
 
-   for(int j=0;j<=ColCount-1;j++)
+   for(unsigned int j=0;j<=ColCount-1;j++)
     {
      mGrid->Cells[j][0].BottomBorder->Width=2;
     }

@@ -38,9 +38,9 @@ __fastcall TF_gapoV::TF_gapoV(TComponent* Owner)
   clHiddenValues = (TColor)RGB(212,212,212);
 
 	// nastavení barvy orámování v hlavičce tabulky + orámování checkboxů
-	C1=Form1->m.clIntensive(RGB(128,64,0),20);
-	C2=Form1->m.clIntensive(RGB(0,128,0),80);
-	C3=Form1->m.clIntensive(RGB(0,0,0),80);
+	C1=Form1->m.clIntensive((TColor)RGB(128,64,0),20);
+	C2=Form1->m.clIntensive((TColor)RGB(0,128,0),80);
+	C3=Form1->m.clIntensive((TColor)RGB(0,0,0),80);
 }
 //---------------------------------------------------------------------------
 void __fastcall TF_gapoV::FormActivate(TObject *Sender)
@@ -250,7 +250,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		//zajistí přepočet daného řádku - nových hodnot
 		calculate(j);//Rosto: musí být poslední před j++, nelze ho dát před defaultní zaškrtnutí checkboxů
 		//posun na další řádek výsledné tabulky
-     for(int sl=0;sl<=ColCount-1;sl++) //oddělení pohonů silnější čarou
+     for(unsigned int sl=0;sl<=ColCount-1;sl++) //oddělení pohonů silnější čarou
     {
     mGrid->Cells[sl][j].BottomBorder->Width=2;
     }
@@ -384,7 +384,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
       mGrid->MergeCells(31,j-z,31,j-z+O_pocet-1);//sloučení Rx
       mGrid->MergeCells(32,j-z,32,j-z+O_pocet-1);//sloučení Rx - výpočet
 
-      for(int sl=0;sl<=ColCount-1;sl++) //silnější oddělení dalšího pohonu
+      for(unsigned int sl=0;sl<=ColCount-1;sl++) //silnější oddělení dalšího pohonu
       {
        mGrid->Cells[sl][j-z+O_pocet-1].BottomBorder->Width=2;
       }
@@ -404,13 +404,13 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 
 	////////rozdělení sekcí svislým tlustějším orámováním////////
 
-    for(int i=1;i<=RowCount-1;i++)
+    for(unsigned int i=1;i<=RowCount-1;i++)
     {
      mGrid->Cells[1][i].RightBorder->Width=2;
      mGrid->Cells[11][i].RightBorder->Width=2;
     }
 
-    for(int j=0;j<=ColCount-1;j++)
+    for(unsigned int j=0;j<=ColCount-1;j++)
     {
      mGrid->Cells[j][0].BottomBorder->Width=2;
     }
@@ -454,7 +454,7 @@ void __fastcall TF_gapoV::FormShow(TObject *Sender)
 		scScrollBar_vertical->Position=0;
 	}
 
-  for(int r=0;r<=RowCount-1;r++)
+  for(unsigned int r=0;r<=RowCount-1;r++)
    {
     mGrid->Cells[13][r].RightBorder->Width=mGrid->Cells[15][r].RightBorder->Width=mGrid->Cells[17][r].RightBorder->Width=mGrid->Cells[19][r].RightBorder->Width=mGrid->Cells[21][r].RightBorder->Width=mGrid->Cells[23][r].RightBorder->Width=mGrid->Cells[25][r].RightBorder->Width=mGrid->Cells[26][r].RightBorder->Width=mGrid->Cells[28][r].RightBorder->Width=mGrid->Cells[30][r].RightBorder->Width=mGrid->Cells[32][r].RightBorder->Width=2;
    }
@@ -670,7 +670,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					{
 					 //průchod celé tabulky
 
-						for(int i=1;i<=mGrid->RowCount-1;i++)
+						for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 						{
 							if(objekty[i].pohon!=NULL &&  objekty[i].rezim==1)
 							{
@@ -715,7 +715,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					{
 						//průchod celé tabulky
 					 //	pocitadlo=0;
-						for(int i=1;i<=mGrid->RowCount-1;i++)
+						for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 						{
 							if(objekty[i].pohon!=NULL &&  objekty[i].rezim==1)
 							{
@@ -769,7 +769,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 					{
 						//průchod celé tabulky
 					 //	pocitadlo=0;
-						for(int i=1;i<=mGrid->RowCount-1;i++)
+						for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 						{
 							if(objekty[i].pohon!=NULL &&   objekty[i].rezim==1)
 							{
@@ -862,7 +862,7 @@ void TF_gapoV::OnClick(long Tag,unsigned long Col,unsigned long Row)
 				{
 
            slouceny_radek=0;
-					 for(int i=1;i<=mGrid->RowCount-1;i++)
+					 for(unsigned int i=1;i<=mGrid->RowCount-1;i++)
 					 {
              if(mGrid->Cells[0][i].Text!="nepřiřazen")
              {

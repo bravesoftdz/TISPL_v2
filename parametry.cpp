@@ -462,7 +462,7 @@ void TForm_parametry::set(Tcomponents C, Tcomponents_state S, bool move)
 					scComboBox_pohon->Enabled = false;
 			 		break;
 				case READONLY:
-					scComboBox_pohon->Enabled = false;scComboBox_pohon->Options->ShapeStyle=scgpessNone;break;
+					scComboBox_pohon->Enabled = false;scComboBox_pohon->Options->ShapeStyle=scgpcssNone;break;
 				case HIDE:
 			 		rHTMLLabel_pohon->Visible = false;
 					scComboBox_pohon->Visible = false;
@@ -1188,7 +1188,7 @@ void TForm_parametry::input_K()
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 			//	double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
+			//	double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
@@ -1261,7 +1261,6 @@ void TForm_parametry::input_P()
 //				double CT =scGPNumericEdit_CT->Value;
 				double K = scGPNumericEdit_kapacita->Value;
 				double Pozice = scGPNumericEdit_pozice->Value;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
@@ -1313,7 +1312,6 @@ void TForm_parametry::input_CT()
 				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;//správnì  - pøevedu do m/s kvùli použití v metodì
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =0;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
@@ -1376,7 +1374,6 @@ void TForm_parametry::input_DD()
 				if (RDunitT == MIN) RD=scGPNumericEdit_RD->Value/60.0;
 				double DD=scGPNumericEdit_delka_dopravniku->Value;
 				double CT =scGPNumericEdit_CT->Value;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
@@ -1637,26 +1634,6 @@ void __fastcall TForm_parametry::rHTMLLabel_RDClick(TObject *Sender)
 		F->aktualizace_combobox_pohony_v_PO(0,RDunitT);//zaktualizovat výpis + o jednotky
 		input_state = NOTHING; // už se mohou pøepoèítávat
 }
-//---------------------------------------------------------------------------
-//zrušeno užití
-double TForm_parametry::RDunitD_funkce(double RD)// podpùrná metoda výše uvedené
-{
-//		if (RDunitD == MM) // pokud je v milimetrech, tak pøepne na metry
-//		{
-//				RDunitD = M;
-//				if (RDunitT == MIN)	rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/min]</font>";// pokud je v minutách
-//				else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[m/s]</font>"; // pokud je v sekundách
-//				return RD / 1000.0;
-//		}
-//		else //pokud je v metrech, tak pøepne na milimetry
-//		{
-//				RDunitD = MM;
-//				if (RDunitT == MIN)rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/min]</font>";// pokud je v minutách
-//				else rHTMLLabel_RD->Caption = "Rychlost pohonu <font color=#2b579a>[mm/s]</font>";// pokud je v sekundách
-//				return RD * 1000.0;
-//		}
-}
-//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 // pøepínání zobrazení m vs. mm
 void __fastcall TForm_parametry::Button_metry_milimetryClick(TObject *Sender)
@@ -2250,8 +2227,8 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
            scGPNumericEdit_rozestup->Value=F->d.v.POHONY->dalsi->Rz*(1+999.0*Rzunit);
            scGPNumericEdit_rx->Value=F->d.v.POHONY->dalsi->Rx;
            scGPNumericEdit_RD->Value=F->d.v.POHONY->dalsi->aRD*(1+59.0*RDunitT);
-           CT_zamek=false;
-           DD_zamek=true;
+           CT_zamek=LOCKED;
+           DD_zamek=UNLOCKED;
            INPUT();
            input_state=RD;
            pm.input_RD(); //zavolani inpput RD, aby byla dopocitana mezera mezi jigy a podvozky
@@ -2269,8 +2246,8 @@ void __fastcall TForm_parametry::scComboBox_pohonChange(TObject *Sender)
            if(F->d.v.POHONY->dalsi!=NULL)
           {
            scGPNumericEdit_RD->Value=F->d.v.POHONY->dalsi->aRD*(1+59.0*RDunitT);
-           CT_zamek=false;
-           DD_zamek=true;
+           CT_zamek=UNLOCKED;
+           DD_zamek=LOCKED;
            INPUT();
            input_state=RD;
            pm.input_RD(); //zavolani inpput RD, aby byla dopocitana mezera mezi jigy a podvozky
@@ -2399,7 +2376,7 @@ void TForm_parametry::INPUT()
 		double RD = scGPNumericEdit_RD->Value; // RD	od uživatele
 		double DD = scGPNumericEdit_delka_dopravniku->Value; // DD od uživatele
 		double K = scGPNumericEdit_kapacita->Value; // K od uživatele
-		double Odchylka = scGPNumericEdit_odchylka->Value; // odchylka od uživatele
+	//	double Odchylka = scGPNumericEdit_odchylka->Value; // odchylka od uživatele
 		//short Nasleduje_cekani = scComboBox_cekani_palec->ItemIndex;// 0 - ne, 1 -ano, 2 - automaticky
 		//short Stop_stanice = scComboBox_stopka->ItemIndex;// 0 - ne, 1 -ano, 2 - automaticky
 		double P = scGPNumericEdit_pozice->Value; // poèet pozic
@@ -3427,7 +3404,6 @@ void TForm_parametry::Check_rozmezi_RD()
 				// nutné ošetøení pro období zadávání/psaní
 		{
 				double roztec=0;
-				double DV=Form1->m.UDV(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,scComboBox_rotace->ItemIndex);
 				double rotace=scComboBox_rotace->ItemIndex;
 				Cvektory::TPohon *P = Form1->d.v.vrat_pohon(scComboBox_pohon->ItemIndex);
 				if (P != NULL) roztec=P->roztec;  else  roztec=0;
@@ -4069,7 +4045,7 @@ void TForm_parametry::frameCorrelation(bool default_value)
 {
 	//definice barev
 	TColor nColor=clGray;//normální barva
-	TColor cColor=10114859;//focus barva (modrá), oznaèující korelaci //1871359;// - oranžová
+	TColor cColor=(TColor)10114859;//focus barva (modrá), oznaèující korelaci //1871359;// - oranžová
 
 	//default stav
 	cCT(nColor);

@@ -179,7 +179,6 @@ void TForm_definice_zakazek::uloz_Default_cestu()
 	 Cvektory::TObjekt *objekt=Form1->d.v.OBJEKTY->dalsi;//inicializace
 	 Cvektory::TZakazka *default_zakazka=Form1->d.v.vrat_temp_zakazku(1);
 	 Form1->d.v.inicializace_cesty(default_zakazka);
-	 int i=0;
 	 while(objekt!=NULL)
 	 {  //vložení defaulní cesty                        Form1->ms.MyToDouble(Form_cesty->rStringGridEd_cesty->Cells[2][++i]                                        //v tomto pøípadì zámìrnì takto protože se pøebírá vypoètená hodnota
 			Form1->d.v.vloz_segment_cesty(default_zakazka,/*sloupec poøadí se neukládá*/
@@ -259,10 +258,6 @@ void __fastcall TForm_definice_zakazek::rStringGridEd1Click(TObject *Sender)
 	//definice ukazatele na aktuálnì editovanou zakázku     //èíslo øádku kde kliku došlo
 	Cvektory::TZakazka *zakazka=Form1->d.v.vrat_temp_zakazku(rStringGridEd1->Row);
 	AnsiString prochazet;
-
-
-
-	bool Changes=false;
 
 	////////////jig form- byl klik na buòku v 5. sloupci
 	if(rStringGridEd1->Col==5)

@@ -126,13 +126,13 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	
 	//Načtení z INI
 	AnsiString T=readINI("nastaveni_nahled", "cas");
-	if(T=="")PTunit=0;else PTunit=T.ToInt();
+	if(T=="")PTunit=SEC;else PTunit=MIN;
 	T=F->readINI("nastaveni_nahled","LO");
-	if(T=="")LOunit=0;else LOunit=T.ToInt();
+	if(T=="")LOunit=M;else LOunit=MM;
 	T=F->readINI("nastaveni_nahled","Delka_otoce");
-	if(T=="")DOtocunit=0;else DOtocunit=T.ToInt();
+	if(T=="")DOtocunit=M;else DOtocunit=MM;
 	T=F->readINI("nastaveni_nahled","koty_delka");
-	if(T=="")DKunit=0;else DKunit=T.ToInt();
+	if(T=="")DKunit=M;else DKunit=MM;
 
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
@@ -140,7 +140,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	pocitadlo_doby_neaktivity=0;
 
 	antialiasing=true;
-
 	//nastavení implicitního souboru
 	duvod_k_ulozeni=false;
 	Novy_soubor();
@@ -202,8 +201,8 @@ void TForm1::DesignSettings()
 
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
-	TColor active_blue=(TColor)RGB(0,120,215);
-  TColor clDrawGridHeaderFont=m.clIntensive(RGB(43,87,154),30);
+ //	TColor active_blue=(TColor)RGB(0,120,215);
+  TColor clDrawGridHeaderFont=m.clIntensive((TColor)RGB(43,87,154),30);
 
 	PopupMenuButton->Left = 0;
 	PopupMenuButton->Visible = false;
@@ -491,6 +490,7 @@ void __fastcall TForm1::FormActivate(TObject *Sender)
 //				Timer_tr->Enabled=false;//ještě je ale z důvodu ochrany enabled=true v object inspectoru, toto je spíše na zmatení
 //				Close();
 //			}
+
 //			else
 			Timer_tr->Enabled=false;// toto zakomentovat pro spuštění TTR
 			startUP();//toto vždy odkomentované
@@ -3529,7 +3529,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 {
 	//definice barev
 	TColor clHeaderFont=clBlack;
-	TColor clBackgroundHidden=m.clIntensive(RGB(128,128,128),105);
+	TColor clBackgroundHidden=m.clIntensive((TColor)RGB(128,128,128),105);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	TColor clFontRight = (TColor)RGB(43,87,154);
 	//definice fontu a velikosti písma
@@ -3779,34 +3779,34 @@ void TForm1::redesign_element()
 	//překlopení aktuálních jednotek
 	if (zcas)
 	{
-		if (PTunit==0) {PTunit=1;}
-		else {PTunit=0;}
+		if (PTunit==SEC) {PTunit=MIN;}
+		else {PTunit=SEC;}
 	}
 	if (zLO)
 	{
-		if (LOunit==0) {LOunit=1;}
-		else {LOunit=0;}
+		if (LOunit==M) {LOunit=MM;}
+		else {LOunit=M;}
 	}
 	if (zdelka_otoce)
 	{
-		if (DOtocunit==0) {DOtocunit=1;}
-		else {DOtocunit=0;}
+		if (DOtocunit==M) {DOtocunit=MM;}
+		else {DOtocunit=M;}
 	}
 	//nastavení jednotek podle posledních nastavení
-	if (PTunit==0) cas="<a>[s]</a>";//0
+	if (PTunit==SEC) cas="<a>[s]</a>";//0
 	else cas="<a>[min]</a>";//1
-	if (LOunit==0) LO="<a>[m]</a>";//0
+	if (LOunit==M) LO="<a>[m]</a>";//0
 	else LO="<a>[mm]</a>";//1
-	if (DOtocunit==0) delka_otoce="<a>[m]</a>";//0
+	if (DOtocunit==M) delka_otoce="<a>[m]</a>";//0
 	else delka_otoce="<a>[mm]</a>";//1
 	//nastavení šířek
-	if(PTunit==0&&LOunit==0) {sirka_1=57;sirka_cisla=70;}
+	if(PTunit==SEC && LOunit==M) {sirka_1=57;sirka_cisla=70;}
 	else {sirka_1=69;sirka_cisla=100;}
 	if(PTunit==0) {sirka_0=147; sirka_2=88;sirka_4=59;sirka_cisla=70;}
 	else {sirka_0=149; sirka_2=107;sirka_4=78;sirka_cisla=100;}
-	if(DOtocunit==0&&PTunit==0) {sirka_56=76;sirka_cisla=70;}
+	if(DOtocunit==M && PTunit==SEC) {sirka_56=76;sirka_cisla=70;}
 	else {sirka_56=90;sirka_cisla=100;}
-	if(PTunit==0&&LOunit==0&&DOtocunit==0) {sirka_3=68;sirka_cisla=70;}
+	if(PTunit==SEC && LOunit==M && DOtocunit==M) {sirka_3=68;sirka_cisla=70;}
 	else {sirka_3=81;sirka_cisla=100;}
 	//procházení pomocného spojitého seznamu
 	Cvektory::TElement *E=pom_temp->elementy->dalsi;//zde lze přeskočit hlavičku
@@ -3935,8 +3935,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 //přepnutí jednotek v kótách, zapíše do globální proměnné a do INI
 void TForm1::zmenJednotekKot()
 {
-	if (DKunit==0) {DKunit=1;}
-	else {DKunit=0;}
+	if (DKunit==M) {DKunit=MM;}
+	else {DKunit=M;}
 	writeINI("nastaveni_nahled","koty_delka", DKunit);
 	REFRESH();
 }
@@ -3988,7 +3988,7 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	bmp_in->Width=DrawGrid_otoce->Width*Z;bmp_in->Height=DrawGrid_otoce->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
 
-	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+	//unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=2;
@@ -4037,7 +4037,7 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	bmp_in->Width=DrawGrid_ostatni->Width*Z;bmp_in->Height=DrawGrid_ostatni->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
 
-	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+//	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=1;
@@ -4072,7 +4072,7 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
 	bmp_in->Width=DrawGrid_poznamky->Width*Z;bmp_in->Height=DrawGrid_poznamky->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 	TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
 
-	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+ //	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 	double Zoom_back=Zoom;//záloha zoomu
 	Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 	short pocet_elementu=2;
@@ -4118,7 +4118,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		bmp_in->Width=DrawGrid_knihovna->Width*Z;bmp_in->Height=DrawGrid_knihovna->Height *Z;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 		TCanvas* C=bmp_in->Canvas;//pouze zkrácení ukazatelového zápisu/cesty
 
-		unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
+	 //	unsigned short obdelnik_okrajX=10*Z;unsigned short obdelnik_okrajY=5*Z;
 		double Zoom_back=Zoom;//záloha zoomu
 		Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 		AnsiString label1;
@@ -4323,8 +4323,8 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
-	int Col,Row;
-	Col=DrawGrid_ostatni->Col; Row=DrawGrid_ostatni->Row;
+	int Row;
+  Row=DrawGrid_ostatni->Row;
 	knihovna_id=3;
 	if(Row==0)  element_id=0;
 	SB("Kliknutím na libovolné místo umístíte vybraný element.");
@@ -4762,8 +4762,8 @@ void TForm1::NPin()
 	aktualizace_combobox_pohony_v_PO();
 	if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 	//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
-	Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
-	Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
+	Form_parametry->input_state=Form_parametry->NO;//zakázání akcí vyplývající ze změny editů
+	Form_parametry->input_clicked_edit=Form_parametry->empty_klik; //při načítání dat není kliknuto na žádný editbox
 	//název
 	Form_parametry->scGPEdit_name->Text=pom->name;
 	Form_parametry->scGPEdit_shortname->Text=pom->short_name;
@@ -4809,8 +4809,8 @@ void TForm1::NP()
 		aktualizace_combobox_pohony_v_PO();
 		if(pom->pohon!=NULL)Form_parametry->scComboBox_pohon->ItemIndex=pom->pohon->n;else Form_parametry->scComboBox_pohon->ItemIndex=0;//musí být takto separé, protože metoda se volá z více míst
 		//předání hodnoty objektů ze souboru resp. strukutry do Form_Parametry v SI jednotkách
-		Form_parametry->input_state=0;//zakázání akcí vyplývající ze změny editů
-		Form_parametry->input_clicked_edit=0; //při načítání dat není kliknuto na žádný editbox
+		Form_parametry->input_state=Form_parametry->NO;//zakázání akcí vyplývající ze změny editů
+		Form_parametry->input_clicked_edit=Form_parametry->empty_klik; //při načítání dat není kliknuto na žádný editbox
 		//název
 		Form_parametry->scGPEdit_name->Text=pom->name;
 		Form_parametry->scGPEdit_shortname->Text=pom->short_name;
@@ -5144,7 +5144,6 @@ void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
 				if(RDunitD==0){jednotky_delka_pohon=1.0;Td="m";}//tzn. m z parametru
 			}
 			UnicodeString caption_jednotky=Td+"/"+Tcas;
-
 			//plnění existujícím pohony
 			while (P!=NULL)
 			{
@@ -5440,7 +5439,8 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			FileName="Nový.tispl";
 			return 2;
 		}break;
-		default: return 2;break;
+		default: return 2;
+    break;
 	}
 }
 //---------------------------------------------------------------------------
@@ -6423,10 +6423,12 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 //		RO-=(1.5*Zoom/m2px)/20.0;
 //		REFRESH();
-		scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
-		Timer1->Enabled=!Timer1->Enabled;
-		scGPSwitch_meritko->State=!Timer1->Enabled;
-		d.v.PP.raster.show=!Timer1->Enabled;
+//		scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
+//		Timer1->Enabled=!Timer1->Enabled;
+//		scGPSwitch_meritko->State=!Timer1->Enabled;
+//		d.v.PP.raster.show=!Timer1->Enabled;
+
+Form2->ShowModal();
 
 }
 //---------------------------------------------------------------------------
