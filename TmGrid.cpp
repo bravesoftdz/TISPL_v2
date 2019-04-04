@@ -848,6 +848,8 @@ TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
 		E->OnClick=&getTagOnClick;
 		E->OnEnter=&getTagOnEnter;
 		E->OnChange=&getTagOnChange;
+		E->OnKeyDown=&getTagOnKeyDown;
+		E->OnKeyPress=&getTagOnKeyPress;
 	}
 	return E;
 }
@@ -865,6 +867,8 @@ TscGPNumericEdit *TmGrid::createNumeric(unsigned long Col,unsigned long Row)
 		N->OnClick=&getTagOnClick;
 		N->OnEnter=&getTagOnEnter;
 		N->OnChange=&getTagOnChange;
+		N->OnKeyDown=&getTagOnKeyDown;
+		N->OnKeyPress=&getTagOnKeyPress;
 	}
 	return N;
 }
@@ -1180,19 +1184,35 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender)
+void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WideChar &Key)
 {
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
-		Col=getColFromTag(((TComponent*)(Sender))->Tag);
-		Row=getRowFromTag(((TComponent*)(Sender))->Tag);  //asi zámìrnì OnChange?
-		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnChange(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnChange(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnChange(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnChange(Tag,Col,Row);
-		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnChange(Tag,Col,Row);
-    if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnChange(Tag,ID,Col,Row);//z unit1 do unitX
-    if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnChange(Tag,Col,Row);
+//		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+//		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
+//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,Col,Row,Key);
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
+{
+	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
+	{
+	//		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+	//		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+	//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,Col,Row,Key);
+	//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,Col,Row,Key);
+	//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,Col,Row,Key);
+			if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,Col,Row,Key);
+	//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
+	//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
+	//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,Col,Row,Key);
 	}
 }
 //---------------------------------------------------------------------------

@@ -54,6 +54,7 @@ public:		// User declarations
 	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+	void OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::WideChar &Key);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm2 *Form2;

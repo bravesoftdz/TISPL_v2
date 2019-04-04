@@ -77,7 +77,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 		//E1->mG->Cells[0][1].Type=E1->mG->EDIT;
 		E1->mG->Cells[0][0].Text="OOO";
-		//E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+		E1->mG->Cells[0][0].Type=E1->mG->EDIT;
 		E1->mG->Cells[0][0].Background->Color=clRed;
 			E1->mG->Cells[0][0].Font->Name="Roboto Cn";
 				E1->mG->Cells[0][0].Font->Color=clYellow;
@@ -359,6 +359,11 @@ void TForm2::OnEnter(long Tag,unsigned long Col,unsigned long Row)
 void TForm2::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
 
+}
+//---------------------------------------------------------------------------
+void TForm2::OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::WideChar &Key)
+{
+	ShowMessage(Key);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)
