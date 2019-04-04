@@ -1,0 +1,14 @@
+CO2 - S&G i KK režimy - nabídka Roboti, otoèe, stopky - stejné jako pro LAK 
+FLAME  - S&G i KK režimy - nabídka Roboti, otoèe, stopky - stejné jako pro LAK 
+ION - v knihovnì elementù - ionizaèní tyèe, design tabulek - žádný, bez zadávání PT - tzn pouze design v náhledu
+POW - 1. nejèastìjší varianta - design v elementech - kabina a poèet komor - defaultnì 4 komory, po umístìní kabiny do objektu - zobrazí
+se menu s výbìrem poètu komor, které jsou pomìrovì rozpoèítávány podle rozmìru celé kabiny POW. U pøechodù oddìlující komory jsou zobrazeny kóty
+. Jig postupuje kontinuálnì celou kabinou. Zadávací parametry - výbìr pohonu,  celkový CT je daný podle vzdálenosti. 
+Jak je to se zadáváním PT jednotlivých komor? Je využitý celý prostor komory pro PT? Pokud umožním zmìnu velikosti komor, mùže být automaticky dopoèítáván PT?
+POW - 2. cca 15% použitelnost - s dveømi, vyjužívá se podružný dopravník, který je reverzní. V urèitý okamžik dochází ke zpìtnému chodu pohonu.Pøi opouštìní komory dojde k 
+otevøení dveøí a pøesunu do další pozice, kde opìt dojde k reverzi. Nejèastìji je využíván podvìsný dopravník. 
+Skladba èasu - pøejezd od STOP, PT - aplikace odmaštìní, okap vody). Kvùli chemickému prostøední se nikdy nesmí v POW nechávat zaparkované jigy.
+
+
+
+UNO - na výbìr KK a SG roboti, nebo robot lidský. Design tabulek vychází z designu lakovacích robotù. 
