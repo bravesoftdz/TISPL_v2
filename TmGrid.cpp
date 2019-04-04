@@ -621,7 +621,8 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			C->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
 			C->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
 			C->Options->NormalColor=Cell.Background->Color;
-			C->Options->NormalColorAlpha=255;
+			C->Options->FocusedColor=Cell.Background->Color;
+//			C->Options->NormalColorAlpha=255;
 //			C->Options->FrameNormalColor=clWhite;
 //			C->Options->FrameNormalColorAlpha=255;
 			C->Font=Cell.Font;
