@@ -6387,6 +6387,7 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
+
  //S(m.mezera_mezi_voziky(1,0.325,0));
  //	ShowMessage(scListGroupNastavProjektu->TabOrder);
  //	ShowMessage(scListGroupKnihovObjektu->TabOrder);
@@ -7173,7 +7174,17 @@ void TForm1::db_connection()
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button11Click(TObject *Sender)
 {
-	//Form2->ShowModal();
+//	TscGPGlyphButton *B = new TscGPGlyphButton(this);
+//	B->Left=ClientWidth/2;
+//	B->Top=ClientHeight/2;
+//	B->GlyphOptions->Kind=scgpbgkCancel;
+//	//B->Caption="test";
+//	B->Parent=this;//musí být až na konci
+//	B=NULL;delete B;
+
+
+
+	Form2->ShowModal();
 
 
 //Memo3->Visible=true;
