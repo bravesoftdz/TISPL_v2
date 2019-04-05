@@ -1202,6 +1202,14 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState S
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 {
+	////////filtr kláves
+		if( Key == VK_BACK )
+			return;
+		if(!((Key>=L'0')&&(Key<=L'9')||(Key==L',')||(Key==L'.')))
+			Key=0;
+		if((Key==L','||Key==L'.')&&(Pos(",",F->editovany_text)>0||Pos(".",F->editovany_text)>0))
+			Key=0;
+	////////
 	if(!deleteMark)//detekce e nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
 	//		Col=getColFromTag(((TComponent*)(Sender))->Tag);

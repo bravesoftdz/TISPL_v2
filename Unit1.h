@@ -671,7 +671,7 @@ public:		// User declarations
 	int element_id;  // id vybraneho elementu z knihoven
 	AnsiString TIP;//uchovává text TIPu
 	bool editace_textu;//mimo enum akce z dùvodu zobrazování kurozù pøi editaci a pøepínání na jiné akce
-	AnsiString editovany_text;//uchovává editovanou hodnotu kót
+	UnicodeString editovany_text;//uchovává editovanou hodnotu kót
 	int index_kurzoru;
 	bool posun_dalsich_elementu;//indikuje zda je požadován posun dalších elementù
 
@@ -706,7 +706,6 @@ public:		// User declarations
 	double outDO (double outDO);
 	double inDK (double outDK);
 	double outDK (double outDK);
-	AnsiString filtr_klaves(AnsiString text/*, bool mGrid*/);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;
