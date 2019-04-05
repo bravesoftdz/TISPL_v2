@@ -262,9 +262,9 @@ void TForm1::DesignSettings()
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPLabel1->Left=22;
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
-	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
-	scGPButton_posun_dalsich_elementu->Left=scButton_zamek->Left-scGPButton_posun_dalsich_elementu->Width-12;
-	scGPButton_viditelnostKoty->Left=scGPButton_posun_dalsich_elementu->Left-scGPButton_viditelnostKoty->Width-22;
+	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
+	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
+	scGPButton_viditelnostKoty->Left=scButton_zamek->Left-scGPButton_viditelnostKoty->Width-19;
 	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
@@ -779,9 +779,9 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPLabel1->Left=22;
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
-	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
-	scGPButton_posun_dalsich_elementu->Left=scButton_zamek->Left-scGPButton_posun_dalsich_elementu->Width;
-	scGPButton_viditelnostKoty->Left=scGPButton_posun_dalsich_elementu->Left-scGPButton_viditelnostKoty->Width-22;
+	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
+	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
+	scGPButton_viditelnostKoty->Left=scButton_zamek->Left-scGPButton_viditelnostKoty->Width-19;
 	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
@@ -1625,52 +1625,18 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 	//ShowMessage(Key);
 }
 //---------------------------------------------------------------------------
-//vstupní parametr je editovaný text pomocí klávesnice, pokud je nově přidaný znak číslo či desetiná čáraka nebo tečka nic se neděje, pokud znak tyto pravidla nesplní je z řetězce odstraněn
-AnsiString TForm1::filtr_klaves(AnsiString text/*, bool mGrid*/)
-{
-	int carky=0;
-	AnsiString klavesa,klavesa2;
-	//kontrola zda se zadávané číslo nerovná pouze "," nebo "." (např. chce uživatel psát ,5 místo 0,5)
-	if(text.Length()==1&&(text==","||text=="."))
-		text=text.SubString(1,text.Length()-1);//nelze napsat jako první desetinou čárku nebo tečku
-	else
-	{
-		//separace poslední stisknuté klávesy
-		klavesa=text.SubString(text.Length(),1);
-		//procházení celého řetězce (bez posledního znaku -> klavesa) zda se v něm již nenachází čátka nebo tečka
-		if(text.Length()>=2)
-		{
-			for (int i=text.Length()-1;i>0;i--)
-				{
-					klavesa2=text.SubString(i,1);
-					if(klavesa2==","||klavesa2==".") carky++;
-				}
-		}
-		//kontrola posledního znaku zda jde o číslo nebo tečku či čárku
-		if(klavesa>=0&&klavesa<=9||klavesa==","||klavesa==".");
-		else
-			text=text.SubString(1,text.Length()-1);//když je použit nevhodný znak je z řetězce odstraněn
-		//kontrola zda nejsou 2 oddělovací znaky zadány po sobě
-		if((klavesa==","||klavesa==".")&&carky==1)
-			text=text.SubString(1,text.Length()-1);
-	}//příprava na procházení scelého spojáku z důvodu voláni z mGridu
-//	if(mGrid)
-//	{
-//		AnsiString kontrolni, text2, text3;
-//		for (int i=text.Length();i>0;i--)
-//				{
-//					kontrolni=text.SubString(i,1);
-//					if(klavesa>=0&&klavesa<=9||klavesa==","||klavesa==".")
-//					else
-//				}
-//  }
-	return text;
-}
-//---------------------------------------------------------------------------
 //odchytávání znaků pro editaci názvů
 void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 {
-	//projít řetězec for cyklem hledat "," nebo "."
+	////////filtr kláves
+	AnsiString key=Key;
+//	if(Key==VK_BACK)
+//		return;
+	if(!((Key>=L'0')&&(Key<=L'9')||(Key==L',')||(Key==L'.')))
+		key="";
+	if((Key==L','||Key==L'.')&&(Pos(",",editovany_text)>0||Pos(".",editovany_text)>0))
+		key="";
+	////////
 	if (editace_textu&&index_kurzoru==-6)
 	{
 		//switch(Key)
@@ -1694,8 +1660,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
 		else
 		{
-			editovany_text+=Key;
-			editovany_text=filtr_klaves(editovany_text/*,false*/);
+			editovany_text+=key;
 		}
 		nahled_ulozit(true);
 	}
@@ -1705,8 +1670,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
 		else
 		{
-			editovany_text+=Key;
-			editovany_text=filtr_klaves(editovany_text/*,false*/);
+			editovany_text+=key;
 		}
 		nahled_ulozit(true);
 	}
@@ -5055,7 +5019,7 @@ void TForm1::NP_input()
 
 	//nastavení tlačítek na výchozí hodnoty
 	if(pom_temp->uzamknout_nahled) scButton_zamek->ImageIndex=37; //zamčeno
-	else scButton_zamek->ImageIndex=38;
+	else scButton_zamek->ImageIndex=60;
 	if(pom_temp->zobrazit_mGrid)
 		{
 			scGPButton_viditelnostmGrid->ImageIndex=54;
@@ -7733,7 +7697,7 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
 	{
 		pom_temp->uzamknout_nahled=false;
-		scButton_zamek->ImageIndex=38;//odemčeno
+		scButton_zamek->ImageIndex=60;//odemčeno
 	}
 	else//odemčeno budu zamykat
 	{

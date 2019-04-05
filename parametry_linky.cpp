@@ -1848,8 +1848,8 @@ void TForm_parametry_linky::OnChange(long Tag,unsigned long Col,unsigned long Ro
 {
 if(Col>1 && Col<=4 && input_state==NOTHING )
     {
-     mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(mGrid->Cells[Col][Row].Text);
-     mGrid->getEdit(Col,Row)->SelStart=mGrid->getEdit(Col,Row)->Text.Length();
+//     mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(mGrid->Cells[Col][Row].Text);
+//     mGrid->getEdit(Col,Row)->SelStart=mGrid->getEdit(Col,Row)->Text.Length();
     }
 
 }

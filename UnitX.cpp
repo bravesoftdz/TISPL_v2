@@ -23,7 +23,7 @@ void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
-input_state=NOTHING;
+	input_state=NOTHING;
 }
 
 void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
@@ -43,6 +43,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		}
 		else
 		{
+			F->editovany_text=E->mGrid->Cells[Col][Row].Text;
 			switch(E->eID)
 			{
 				case 0: // stop
@@ -54,21 +55,15 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if(Col==1 && Row==1) //vstup PT -> vystup LO
 					{
 						input_state=PT; //nastaveni stavu
-						////////Zaèátek vzorového postupu pøi použití filtru kláves
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);//musí být getedit, jinak by hodnota v editu mmohla být napø. 10a, aa hodnota vrácená funkcí 10 (nezobrazí se)
 						E->PT1 = F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();//nastavení kurzoru na konec textu, pøi pøepsaní v øádku 57 se oznaèoval celý text, nutnost kurzor vždy nastavit kódem na konec textu
-						////////Konec vzorového postupu pøi použití filtru kláves
-						E->LO1 = /*F->pom_temp->pohon->aRD*/5.0 * E->PT1; //nahradit aRD                                      //vypocet
+						E->LO1 = /*F->pom_temp->pohon->aRD*/5.0 * E->PT1; //nahradit aRD
 						E->mGrid->Cells[Col][Row+1].Text = F->outLO(E->LO1); //OUTPUT
 					}
 					if(Col==1 && Row==2) //vstup LO -> vystup PT
 					{
 						input_state=LO; //nastaveni stavu
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->LO1 = F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
-						E->PT1 = E->LO1 / 5.0/*F->pom_temp->pohon->aRD*/;       //nahradit aRD             //vypocet
+						E->PT1 = E->LO1 / 5.0/*F->pom_temp->pohon->aRD*/;       //nahradit aRD
 						E->mGrid->Cells[Col][Row-1].Text = F->outPT(E->PT1);  //OUTPUT
 					}
 				} break;
@@ -81,45 +76,35 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if (Row==1)
 					{
 						input_state=PT;//vstup èas - výstup lakovací okno
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->PT1 = F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->LO1 = /*F->pom_temp->pohon->aRD*/5.0 * E->PT1; //nahradit aRD
 						E->mGrid->Cells[Col][Row+1].Text = F->outLO(E->LO1); //výstup do buòky LO
 					}
 					if (Row==2)
 					{
 						input_state=LO;
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->LO1=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->PT1=E->LO1/5.0/*F->pom_temp->pohon->aRD*/; //nahradit aRD
 						E->mGrid->Cells[Col][Row-1].Text = F->outPT(E->PT1);
 					}
 					if (Row==4)//tøetí øádek není uživatelsky upravitelný
 					{
 						input_state=DO;//delka otoèe
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->OTOC_delka=F->inDO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->PTotoc=E->OTOC_delka/5.0/*F->pom_temp->pohon->aRD*/; //nahradit aRD
 						E->mGrid->Cells[Col][Row-1].Text = F->outPT(E->PTotoc);
 					}
 					if (Row==5)
 					{
 						input_state=PT;
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->PT2=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->LO2=/*F->pom_temp->pohon->aRD*/5.0 * E->PT2; //nahradit aRD
 						E->mGrid->Cells[Col][Row+1].Text=F->outLO(E->LO2);
 					}
 					if (Row==6)
 					{
 						input_state=LO;
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->LO2=F->inLO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->PT2=E->LO2/5.0/*F->pom_temp->pohon->aRD*/; //nahradit aRD
 						E->mGrid->Cells[Col][Row-1].Text = F->outPT(E->PT2);
 					}
@@ -133,9 +118,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if (Row==1)//zde se upravuje pouze délka
 					{
 						input_state=DO;//delka otoèe
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->OTOC_delka=F->inDO(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->PTotoc=E->OTOC_delka/5.0/*F->pom_temp->pohon->aRD*/; //nahradit aRD
 						E->mGrid->Cells[Col][Row+1].Text = F->outPT(E->PTotoc);
 					}
@@ -145,9 +128,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if (Row==2)
 					{
 						input_state=PTotoc;
-            E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->PTotoc=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->OTOC_delka=/*F->pom_temp->pohon->aRD*/5.0*E->PTotoc;
 						E->mGrid->Cells[Col][Row-1].Text = F->outDO(E->OTOC_delka);
 					}
