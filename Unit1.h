@@ -298,13 +298,12 @@ __published:	// IDE-managed Components
 	TscGPComboBox *scGPComboBox_orientace;
 	TscGPButton *scGPButton_ulozit;
 	TscGPButton *scGPButton_zahodit;
-	TscGPLabel *scGPLabel2;
 	TscButton *scButton_zamek;
 	TTimer *TimerKurzor;
 	TscGPButton *Nahled;
 	TscGPButton *scGPButton_viditelnostmGrid;
 	TscGPButton *scGPButton_viditelnostKoty;
-	TscGPCheckBox *scGPCheckBox_pusun_dalsich_elementu;
+	TscGPButton *scGPButton_posun_dalsich_elementu;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -499,7 +498,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall scGPButton_viditelnostmGridClick(TObject *Sender);
 	void __fastcall scGPButton_viditelnostKotyClick(TObject *Sender);
-	void __fastcall scGPCheckBox_pusun_dalsich_elementuClick(TObject *Sender);
+	void __fastcall scGPButton_posun_dalsich_elementuClick(TObject *Sender);
 
 
 // User declarations
@@ -707,7 +706,7 @@ public:		// User declarations
 	double outDO (double outDO);
 	double inDK (double outDK);
 	double outDK (double outDK);
-	AnsiString filtr_klaves(AnsiString text);
+	AnsiString filtr_klaves(AnsiString text/*, bool mGrid*/);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

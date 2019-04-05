@@ -263,15 +263,15 @@ void TForm1::DesignSettings()
 	scGPLabel1->Left=22;
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
-	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width-12;
-	scGPButton_viditelnostKoty->Left=scGPLabel2->Left-scGPButton_viditelnostKoty->Width-22;
+	scGPButton_posun_dalsich_elementu->Left=scButton_zamek->Left-scGPButton_posun_dalsich_elementu->Width-12;
+	scGPButton_viditelnostKoty->Left=scGPButton_posun_dalsich_elementu->Left-scGPButton_viditelnostKoty->Width-22;
 	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
-	scGPLabel2->Top=scGPLabel1->Top;
+	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
 	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
@@ -780,15 +780,15 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPLabel1->Left=22;
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
 	scButton_zamek->Left=scGPPanel_bottomtoolbar->Width-scButton_zamek->Width-22;
-	scGPLabel2->Left=scButton_zamek->Left-scGPLabel2->Width;
-	scGPButton_viditelnostKoty->Left=scGPLabel2->Left-scGPButton_viditelnostKoty->Width-22;
+	scGPButton_posun_dalsich_elementu->Left=scButton_zamek->Left-scGPButton_posun_dalsich_elementu->Width;
+	scGPButton_viditelnostKoty->Left=scGPButton_posun_dalsich_elementu->Left-scGPButton_viditelnostKoty->Width-22;
 	scGPButton_viditelnostmGrid->Left=scGPButton_viditelnostKoty->Left-scGPButton_viditelnostmGrid->Width-22;
 	//svislé zarovnání prvků
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
-	scGPLabel2->Top=scGPLabel1->Top;
+	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
 	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
@@ -1626,28 +1626,44 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 }
 //---------------------------------------------------------------------------
 //vstupní parametr je editovaný text pomocí klávesnice, pokud je nově přidaný znak číslo či desetiná čáraka nebo tečka nic se neděje, pokud znak tyto pravidla nesplní je z řetězce odstraněn
-AnsiString TForm1::filtr_klaves(AnsiString text)
+AnsiString TForm1::filtr_klaves(AnsiString text/*, bool mGrid*/)
 {
 	int carky=0;
 	AnsiString klavesa,klavesa2;
-	//separace poslední stisknuté klávesy
-	klavesa=text.SubString(text.Length(),1);
-	//procházení celého řetězce (bez posledního znaku -> klavesa) zda se v něm již nenachází čátka nebo tečka
-	if(text.Length()>=2)
-	{
-		for (int i=text.Length()-1;i>0;i--)
-			{
-				klavesa2=text.SubString(i,1); 
-				if(klavesa2==","||klavesa2==".") carky++;
-			}
-	 }
-	//kontrola posledního znaku zda jde o číslo nebo tečku či čárku
-	if(klavesa>=0&&klavesa<=9||klavesa==","||klavesa==".");
+	//kontrola zda se zadávané číslo nerovná pouze "," nebo "." (např. chce uživatel psát ,5 místo 0,5)
+	if(text.Length()==1&&(text==","||text=="."))
+		text=text.SubString(1,text.Length()-1);//nelze napsat jako první desetinou čárku nebo tečku
 	else
-		text=text.SubString(1,text.Length()-1);//když je použit nevhodný znak je z řetězce odstraněn
-	//kontrola zda nejsou 2 oddělovací znaky zadány po sobě
-	if((klavesa==","||klavesa==".")&&carky==1)
-		text=text.SubString(1,text.Length()-1);
+	{
+		//separace poslední stisknuté klávesy
+		klavesa=text.SubString(text.Length(),1);
+		//procházení celého řetězce (bez posledního znaku -> klavesa) zda se v něm již nenachází čátka nebo tečka
+		if(text.Length()>=2)
+		{
+			for (int i=text.Length()-1;i>0;i--)
+				{
+					klavesa2=text.SubString(i,1);
+					if(klavesa2==","||klavesa2==".") carky++;
+				}
+		}
+		//kontrola posledního znaku zda jde o číslo nebo tečku či čárku
+		if(klavesa>=0&&klavesa<=9||klavesa==","||klavesa==".");
+		else
+			text=text.SubString(1,text.Length()-1);//když je použit nevhodný znak je z řetězce odstraněn
+		//kontrola zda nejsou 2 oddělovací znaky zadány po sobě
+		if((klavesa==","||klavesa==".")&&carky==1)
+			text=text.SubString(1,text.Length()-1);
+	}//příprava na procházení scelého spojáku z důvodu voláni z mGridu
+//	if(mGrid)
+//	{
+//		AnsiString kontrolni, text2, text3;
+//		for (int i=text.Length();i>0;i--)
+//				{
+//					kontrolni=text.SubString(i,1);
+//					if(klavesa>=0&&klavesa<=9||klavesa==","||klavesa==".")
+//					else
+//				}
+//  }
 	return text;
 }
 //---------------------------------------------------------------------------
@@ -1679,7 +1695,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else
 		{
 			editovany_text+=Key;
-			editovany_text=filtr_klaves(editovany_text);
+			editovany_text=filtr_klaves(editovany_text/*,false*/);
 		}
 		nahled_ulozit(true);
 	}
@@ -1690,7 +1706,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else
 		{
 			editovany_text+=Key;
-			editovany_text=filtr_klaves(editovany_text);
+			editovany_text=filtr_klaves(editovany_text/*,false*/);
 		}
 		nahled_ulozit(true);
 	}
@@ -5060,6 +5076,14 @@ void TForm1::NP_input()
 			scGPButton_viditelnostKoty->ImageIndex=57;
 			scGPButton_viditelnostKoty->Hint="Zobrazit kóty";
 		}
+	if(posun_dalsich_elementu)
+		{
+			scGPButton_posun_dalsich_elementu->ImageIndex=58;
+		}
+	else
+		{
+			scGPButton_posun_dalsich_elementu->ImageIndex=59;
+    }
 
 	 scGPButton_ulozit->Enabled=false;
 	 //zapnutí spodního panelu
@@ -7871,10 +7895,19 @@ void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::scGPCheckBox_pusun_dalsich_elementuClick(TObject *Sender)
+//přepínání posunu dalších elementů
+void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 {
-	if(scGPCheckBox_pusun_dalsich_elementu->Checked)posun_dalsich_elementu=true;
-	else posun_dalsich_elementu=false;
+	if(scGPButton_posun_dalsich_elementu->ImageIndex==59)//vypnuto budu zatínat
+		{
+			scGPButton_posun_dalsich_elementu->ImageIndex=58;
+			posun_dalsich_elementu=true;
+		}
+	else
+		{
+			scGPButton_posun_dalsich_elementu->ImageIndex=59;
+			posun_dalsich_elementu=false;
+		}
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
