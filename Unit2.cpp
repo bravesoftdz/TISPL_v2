@@ -363,7 +363,7 @@ void TForm2::OnChange(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void TForm2::OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::WideChar &Key)
 {
-	ShowMessage(Key);
+	//ShowMessage(Key);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)

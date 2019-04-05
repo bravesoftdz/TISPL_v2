@@ -1184,7 +1184,7 @@ void __fastcall TmGrid::getTagOnChange(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WideChar &Key)
+void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState Shift)
 {
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{

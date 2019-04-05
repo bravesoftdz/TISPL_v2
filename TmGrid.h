@@ -142,7 +142,7 @@ class TmGrid
 	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter
 	void __fastcall getTagOnChange(TObject *Sender);//vrací událost pøi OnChange
-	void __fastcall getTagOnKeyDown(TObject *Sender,WideChar &Key);//vrací událost pøi OnKeyDown
+	void __fastcall getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState Shift);//vrací událost pøi OnKeyDown
 	void __fastcall getTagOnKeyPress(TObject *Sender,System::WideChar &Key);//vrací událost pøi OnKeyPress
 	void getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouí napø. pøi události onchange popø. dálších
 
