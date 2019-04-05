@@ -1062,9 +1062,9 @@ void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
 Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 {
 	//vhodno přesunout do globálních proměnných do Cvykresli
-	short otoc_sirka=3.5;
-	short otoc_tloustka=0.8;
-	short size=7*F->Zoom;//stopka
+	float otoc_sirka=3.5;//ve skutečnosti poloměr
+	float otoc_tloustka=0.8;
+	float size=7*F->Zoom;//stopka
 	short sklon=50;//stopka
 
 	//algoritmus prochází jednotlivé elementy a porovnává vůči jejich pozici aktuální pozici kurzoru, aby se zbytečně netestovalo vše (metoda se volá neustále při každém posunu kurzoru), postupuje algoritmus maximálně větveně (šetření strojového času), tedy v případě uspěchu ihned končí, v případě neúspěchu testuje dále
@@ -1089,9 +1089,9 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 			{
 				if(E->eID==5 || E->eID==6)//OTOČE
 				{
-					if(PtInCircle(TPoint(m.L2Px(X),m.L2Px(Y)),TPoint(m.L2Px(E->X),m.L2Px(E->Y)),m.round((otoc_sirka+otoc_tloustka/2.0)*F->Zoom)))break;
+					if(m.PtInCircle(X,Y,E->X,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
 					else E=E->dalsi;
-        }
+				}
 				else
 				{
 					if(1<=E->eID && E->eID<=4)//ROBOTI
@@ -1113,12 +1113,12 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 							{
 								if(rotace==0 || rotace==180)
 								{
-									if(PtInCircle(TPoint(m.L2Px(X),m.L2Py(Y)),TPoint(m.L2Px(E->X),m.L2Py(E->Y+DoSkRB)),m.round((otoc_sirka+otoc_tloustka/2.0)*F->Zoom)))break;//ROBOTi s otočemi
+									if(m.PtInCircle(X,Y,E->X,E->Y+DoSkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;//ROBOTi s otočemi
 									else E=E->dalsi;
 								}
 								else//90°, 270°
 								{
-									if(PtInCircle(TPoint(m.L2Px(X),m.L2Py(Y)),TPoint(m.L2Px(E->X+DoSkRB),m.L2Py(E->Y)),m.round((otoc_sirka+otoc_tloustka/2.0)*F->Zoom)))break;//ROBOTi s otočemi
+									if(m.PtInCircle(X,Y,E->X+DoSkRB,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;//ROBOTi s otočemi
 									else E=E->dalsi;
                 }
 							}

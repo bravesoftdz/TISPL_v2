@@ -2781,7 +2781,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
-	short size=m.round(3.5*Z);if(stav==2)size=m.round(3.7*Z);
+	short size=m.round(3.5*Z);if(stav==2)size=m.round(3.7*Z);//ve skutečnosti poloměr
 	float width=0.8*Z;if(stav==2)width=1*Z;
 
 	TColor barva=clBlack; if(eID==6)barva=clRed;if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
