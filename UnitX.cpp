@@ -23,7 +23,7 @@ void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
-input_state=NOTHING; Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID); E->mGrid->Refresh();
+input_state=NOTHING;
 }
 
 void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
@@ -54,9 +54,11 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if(Col==1 && Row==1) //vstup PT -> vystup LO
 					{
 						input_state=PT; //nastaveni stavu
-						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
+						////////Zaèátek vzorového postupu pøi použití filtru kláves
+						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);//musí být getedit, jinak by hodnota v editu mmohla být napø. 10a, aa hodnota vrácená funkcí 10 (nezobrazí se)
 						E->PT1 = F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
-						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();//vzorový postup!!
+						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();//nastavení kurzoru na konec textu, pøi pøepsaní v øádku 57 se oznaèoval celý text, nutnost kurzor vždy nastavit kódem na konec textu
+						////////Konec vzorového postupu pøi použití filtru kláves
 						E->LO1 = /*F->pom_temp->pohon->aRD*/5.0 * E->PT1; //nahradit aRD                                      //vypocet
 						E->mGrid->Cells[Col][Row+1].Text = F->outLO(E->LO1); //OUTPUT
 					}
@@ -79,7 +81,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					if (Row==1)
 					{
 						input_state=PT;//vstup èas - výstup lakovací okno
-            E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
+						E->mGrid->getEdit(Col,Row)->Text=F->filtr_klaves(E->mGrid->Cells[Col][Row].Text);
 						E->PT1 = F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text)); //INPUT
 						E->mGrid->getEdit(Col,Row)->SelStart=E->mGrid->getEdit(Col,Row)->Text.Length();
 						E->LO1 = /*F->pom_temp->pohon->aRD*/5.0 * E->PT1; //nahradit aRD
