@@ -32,7 +32,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->ID=0;
 		E->mG->Left=50;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
-		E->mG->MovingTable=true;
+		E->mG->MovingTable=false;
 		E->mG->Border.Width=2;
 
 		unsigned long ColCount=3;//pevnı poèet slopcù
@@ -44,7 +44,9 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
 		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>";
 		E->mG->Cells[0][1].isLink->Color=clRed;
-		//E->mG->Cells[1][1].Type=E->mG->EDIT;
+		E->mG->Cells[1][1].Type=E->mG->EDIT;
+		E->mG->Cells[1][1].InputNumersOnly=true;
+		E->mG->Cells[1][2].Type=E->mG->EDIT;
 		//E->mG->Cells[1][1].Text="abc0";
 
 		//E->mG->Columns[0].Width=800;

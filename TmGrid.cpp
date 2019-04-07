@@ -85,6 +85,8 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.RightMargin=1;
 	//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouží jako pomùcka pøi vykreslování orámování slouèených bunìk
 	DefaultCell.MergeState=false;
+	//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
+	DefaultCell.InputNumersOnly=false;
 	//pozadí
 	DefaultCell.Background->Color=clWhite;
 	DefaultCell.Background->Style=bsSolid;
@@ -603,17 +605,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case COMBO:
 		{
 			//založení + tag + název
-			TscGPComboBox *C=getCombo(X,Y);//pokud již existuje,vrátí ukazatel
-			if(C==NULL)//pokud ne
-			{
-				C=new TscGPComboBox(Form);//založí
-				C->Tag=getTag(X,Y);//vratí ID tag komponenty,absolutní poøadí v pamìti
-				C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
-				//události
-				C->OnClick=&getTagOnClick;
-				C->OnEnter=&getTagOnEnter;
-				C->OnChange=&getTagOnChange;
-			}
+			TscGPComboBox *C=createCombo(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
 			C->Visible=VisibleComponents;
 			C->Top=R.Top+floor(Cell.TopBorder->Width/2.0);
@@ -925,6 +917,24 @@ TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
 }
 //---------------------------------------------------------------------------
 //dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
+TscGPComboBox *TmGrid::createCombo(unsigned long Col,unsigned long Row)
+{
+	TscGPComboBox *C=getCombo(Col,Row);//pokud již existuje
+	if(C==NULL)//pokud ne, tak založí
+	{
+		C=new TscGPComboBox(Form);//založí
+		C->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
+		C->Name="mGrid_COMBO_"+AnsiString(ID)+"_"+AnsiString(C->Tag);
+
+		//události
+		C->OnClick=&getTagOnClick;
+		C->OnEnter=&getTagOnEnter;
+		C->OnChange=&getTagOnChange;
+	}
+	return C;
+}
+//---------------------------------------------------------------------------
+//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
 {
 	TscGPCheckBox *Ch=getCheck(Col,Row);//pokud již existuje
@@ -1190,37 +1200,39 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState S
 	{
 //		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 //		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,Col,Row,Key);
-//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,Col,Row,Key);
-//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,Col,Row,Key);
-//		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,Col,Row,Key);
-//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
-//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
-//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyDown(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyDown(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyDown(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyDown(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyDown(Tag,Col,Row,Key);
+//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyDown(Tag,ID,Col,Row,Key);//z unit1 do unitX
+//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyDown(Tag,Col,Row,Key);
 	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 {
-	////////filtr kláves
-		if( Key == VK_BACK )
-			return;
-		if(!((Key>=L'0')&&(Key<=L'9')||(Key==L',')||(Key==L'.')))
-			Key=0;
-		if((Key==L','||Key==L'.')&&(Pos(",",F->editovany_text)>0||Pos(".",F->editovany_text)>0))
-			Key=0;
-	////////
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
-	//		Col=getColFromTag(((TComponent*)(Sender))->Tag);
-	//		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-	//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,Col,Row,Key);
-	//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,Col,Row,Key);
-	//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,Col,Row,Key);
+		////////filtr kláves
+		if(Cells[Col][Row].InputNumersOnly)//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
+		{
+			if( Key == VK_BACK )return;
+			if(!((Key>=L'0') && (Key<=L'9') || (Key==L',')||(Key==L'.')))Key=0;
+			//if((Key==L','||Key==L'.') && (Pos(",",F->editovany_text)>0 || Pos(".",F->editovany_text)>0))Key=0;
+			if((Key==L','||Key==L'.') && (Pos(",",Cells[Col][Row].Text)>0 || Pos(".",Cells[Col][Row].Text)>0))Key=0;
+			if(Key==0)MessageBeep(0);
+		}
+		////////
+		//		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		//		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,Col,Row,Key);
+		//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,Col,Row,Key);
+		//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,Col,Row,Key);
 			if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,Col,Row,Key);
-	//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
-	//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
-	//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,Col,Row,Key);
+		//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
+		//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
+		//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,Col,Row,Key);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1290,6 +1302,13 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							Ra->Left=Left+(Columns[ColCell_1].Left+Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-Ra->Width/2;
 							Ra=NULL;delete Ra;
 						}break;
+						case COMBO:
+						{
+							Cells[ColCell_1][RowCell_1].Align=CENTER;
+							TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
+							C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left-Cells[ColCell_2][RowCell_2].RightBorder->Width;
+							C=NULL;delete C;
+						}break;
 						case EDIT:
 						{
 							Cells[ColCell_1][RowCell_1].Align=CENTER;
@@ -1347,6 +1366,13 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							Ra->Height=Ra->OptionsChecked->ShapeSize;
 							Ra->Top=Top+(Rows[RowCell_1].Top+Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-Ra->Height/2;
 							Ra=NULL;delete Ra;
+						}break;
+						case COMBO:
+						{
+							Cells[ColCell_1][RowCell_1].Align=MIDDLE;
+							TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
+							C->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
+							C=NULL;delete C;
 						}break;
 						case EDIT:
 						{
@@ -1751,7 +1777,7 @@ void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
 		case readNUMERIC:break;
 		case BUTTON:		 	createButton(Col,Row);break;
 		case glyphBUTTON:	createGlyphButton(Col,Row);break;
-		case COMBO:break;
+		case COMBO:				createCombo(Col,Row); break;
 		case CHECK:				createCheck(Col,Row);break;
 		case RADIO:				createRadio(Col,Row);break;
 		case DRAW:break;
