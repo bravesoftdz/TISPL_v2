@@ -291,6 +291,12 @@ long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double 
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
+//funkce ovìøí, zda se bod nachází v zadaném kruhu
+bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center_Y,double radius)
+{
+	return delka(point_X,point_Y,center_X,center_Y)<=radius;
+}
+/////////////////////////////////////////////////////////////////////////////
 TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1)//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 {
 		TPointDbool RET;

@@ -2490,6 +2490,7 @@ object Form1: TForm1
       GlyphThickness = 1
       Kind = scgpgkOneGear
       TransparentBackground = True
+      ExplicitWidth = 100
     end
     object Nahled: TscGPButton
       Left = 674
@@ -3098,9 +3099,9 @@ object Form1: TForm1
   end
   object scSplitView_LEFTTOOLBAR: TscSplitView
     Left = 0
-    Top = 34
+    Top = 0
     Width = 168
-    Height = 662
+    Height = 0
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -3501,7 +3502,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button11'
     TabOrder = 29
-    Visible = False
     OnClick = Button11Click
   end
   object scGPGlyphButton_close_grafy: TscGPGlyphButton
@@ -4010,10 +4010,10 @@ object Form1: TForm1
     AllowAllUp = False
   end
   object scSplitView_OPTIONS: TscSplitView
-    Left = 1031
-    Top = 34
+    Left = -250
+    Top = 0
     Width = 250
-    Height = 662
+    Height = 0
     Anchors = [akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
@@ -4063,6 +4063,7 @@ object Form1: TForm1
     OnClosed = scSplitViewsClosed
     OnClosing = scSplitViewsClosing
     OnOpened = scSplitView_OPTIONSOpened
+    ExplicitLeft = 0
     object pravyoption_nadpis: TscGPLabel
       Left = 1
       Top = 0
@@ -4354,8 +4355,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2373
-        Top = 2536
+        Left = 2382
+        Top = 2545
         Width = 244
         Height = 31
         Align = alCustom
@@ -4444,6 +4445,8 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitLeft = 2379
+        ExplicitTop = 2542
       end
       object ComboBoxDOmin: TComboBox
         Left = 64
@@ -5890,9 +5893,9 @@ object Form1: TForm1
   end
   object scSplitView_MENU: TscSplitView
     Left = 0
-    Top = 34
+    Top = 0
     Width = 0
-    Height = 662
+    Height = 0
     Anchors = [akLeft, akTop, akBottom]
     Enabled = False
     TabOrder = 23
@@ -8024,7 +8027,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C01011800E006000710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118000807080710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9155,7 +9158,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013D009407F00730003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013D00F807F80730003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

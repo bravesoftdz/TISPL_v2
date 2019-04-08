@@ -4949,7 +4949,7 @@ void TForm1::NP_input()
 	 MOD=NAHLED;
 
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-	 pom_temp=new Cvektory::TObjekt; pom_temp->elementy=NULL;
+	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL;  pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 
@@ -5080,7 +5080,7 @@ void TForm1::NP_input()
 		E=NULL; delete E;
 	}
 
-	Invalidate();
+	//toto třeba?:Invalidate();
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -5519,8 +5519,8 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 void TForm1::vse_odstranit()
 {
 		d.v.vse_odstranit();
-		pom=NULL;delete pom;
-		pom_temp=NULL;delete pom_temp;
+		if(pom!=NULL){pom->pohon=NULL;delete pom->pohon;}pom=NULL;delete pom;
+		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		pom_element=NULL;delete pom_element;
 		proces_pom=NULL;delete proces_pom;
 		pom_element_temp=NULL; delete pom_element_temp;
@@ -6371,7 +6371,11 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
+		Sk(pom_temp->pohon->name);
+    pom_temp->pohon->name="test";
 
+
+		 //Form2->ShowModal();
  //S(m.mezera_mezi_voziky(1,0.325,0));
  //	ShowMessage(scListGroupNastavProjektu->TabOrder);
  //	ShowMessage(scListGroupKnihovObjektu->TabOrder);
@@ -6412,7 +6416,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		scGPSwitch_meritko->State=!Timer1->Enabled;
 //		d.v.PP.raster.show=!Timer1->Enabled;
 
-Form2->ShowModal();
+
 
 }
 //---------------------------------------------------------------------------
@@ -7169,9 +7173,17 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	B=NULL;delete B;
 
 
+//d.v.POHONY->dalsi->name="ano";
+//	Form2->ShowModal();
 
-	Form2->ShowModal();
-
+//Memo3->Visible=true;
+Cvektory::TPohon *P=d.v.POHONY->dalsi;
+while(P!=NULL)
+{
+	 Memo3->Lines->Add(P->name);
+	 P=P->dalsi;
+}
+P=NULL;delete P;
 
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
@@ -7231,7 +7243,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//smazání elementů - musí být napočátku, aby nebyl problik
 		pom=NULL;
 		d.v.vymaz_elementy(pom_temp,true);
-		pom_temp=NULL; delete pom_temp;
+		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
