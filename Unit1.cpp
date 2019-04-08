@@ -1865,9 +1865,9 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 							if(MOD==SCHEMA)//OBJEKT
 							{
-								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width,d.V_width,VyID);//šlo by nahradit, kruhovým regionem, což by bylo exaktnější
+								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.V_width*m2px,d.V_width*m2px,VyID);//hledá v kruhové oblasti
 								if(pom==NULL)//akcelerátor,aby se následně nehledalo znovu, pokud byla nalezena výhybka
-								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+								pom=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
 								if(pom!=NULL){Akce=MOVE;kurzor(posun_l);posun_objektu=true;minule_souradnice_kurzoru=TPoint(X,Y);}
 								else {Akce=PAN;pan_non_locked=true;}//přímo dovolení PAN pokud se neposová objekt = Rosťova prosba
 							}
@@ -1951,7 +1951,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 		default://pro SCHEMA
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
-			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
+			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
 		}break;
 	}
 	if(pom!=NULL)
@@ -2525,9 +2525,12 @@ void TForm1::onPopUP(int X, int Y)
 		default://pro SCHEMA
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
-			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width,d.O_height);
+			pom->pohon=NULL;delete pom->pohon;pom->pohon=new Cvektory::TPohon;
+			ShowMessage("smazan");
+			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
+			ShowMessage(pom->name);
 			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
-			{
+			{   ShowMessage(pom->pohon->name);
 				if(AnsiString("Nastavit "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
@@ -4947,12 +4950,10 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 MOD=NAHLED;
-
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
 	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL;  pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
-
 	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
 	 //zazálohování hodnot posunu a zoomu
 	 Posun_predchozi2=Posun_predchozi=Posun;
@@ -6371,8 +6372,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-		Sk(pom_temp->pohon->name);
-    pom_temp->pohon->name="test";
+	 Sk(pom_temp->pohon->name);
+   pom_temp->pohon->name="test";
 
 
 		 //Form2->ShowModal();
@@ -6844,7 +6845,7 @@ void __fastcall TForm1::scSplitView_MENUMouseLeave(TObject *Sender)
 
 void __fastcall TForm1::hl_spojak_zakazkyClick(TObject *Sender)
 {
-//	Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width,d.O_height);
+//	Cvektory::TObjekt *p=d.v.najdi_objekt(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,d.O_width*m2px,d.O_height*m2px);
 //
 //	Memo2->Lines->Add(AnsiString(p->name)+";"+AnsiString(p->short_name)+";"+AnsiString(p->rezim)+";"+AnsiString(p->pohon->n)+";"+AnsiString(p->delka_dopravniku)+";"+AnsiString(p->cekat_na_palce)+";"+AnsiString(p->odchylka)+";"+AnsiString(p->kapacita));
 
