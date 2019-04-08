@@ -360,12 +360,13 @@ void TForm2::OnEnter(long Tag,unsigned long Col,unsigned long Row)
 //---------------------------------------------------------------------------
 void TForm2::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
-
+	ELEMENTY->mG->Cells[1][2].Text=F->ms.MyToDouble(ELEMENTY->mG->Cells[1][1].Text)*2.0;
+	ELEMENTY->mG->Refresh();
 }
 //---------------------------------------------------------------------------
 void TForm2::OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::WideChar &Key)
 {
-	//ShowMessage(Key);
+//
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)

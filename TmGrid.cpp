@@ -1219,8 +1219,8 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 		{
 			if(Key==VK_BACK)return;
 			if(AnsiString(Key)==F->ms.get_locale_decimal()&&Cells[Col][Row].Text.Length()==0)Key=0;
-			if(!((Key>=L'0')&&(Key<=L'9')||(AnsiString(Key)==F->ms.get_locale_decimal())))Key=0;
 			if(AnsiString(Key)==F->ms.get_locale_decimal()&&Pos(F->ms.get_locale_decimal(),Cells[Col][Row].Text)>0)Key=0;
+			if(!((Key>=L'0')&&(Key<=L'9')||(AnsiString(Key)==F->ms.get_locale_decimal())))Key=0;
 			if(Key==0)MessageBeep(0);
 		}
 		////////
@@ -1229,9 +1229,9 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 		//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,Col,Row,Key);
 		//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,Col,Row,Key);
 		//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,Col,Row,Key);
-			if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,Col,Row,Key);
+		//	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,Col,Row,Key);
 		//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
-//				if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
+		//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
 		//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,Col,Row,Key);
 	}
 }
