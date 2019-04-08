@@ -4949,7 +4949,7 @@ void TForm1::NP_input()
 	 MOD=NAHLED;
 
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->elementy=NULL;
+	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL;  pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 
@@ -5519,10 +5519,8 @@ void __fastcall TForm1::Timer_backupTimer(TObject *Sender)
 void TForm1::vse_odstranit()
 {
 		d.v.vse_odstranit();
-		if(pom!=NULL){pom->pohon=NULL;delete pom->pohon;}
-		pom=NULL;delete pom;
-		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}
-		pom_temp=NULL;delete pom_temp;
+		if(pom!=NULL){pom->pohon=NULL;delete pom->pohon;}pom=NULL;delete pom;
+		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		pom_element=NULL;delete pom_element;
 		proces_pom=NULL;delete proces_pom;
 		pom_element_temp=NULL; delete pom_element_temp;
@@ -7245,7 +7243,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		//smazání elementů - musí být napočátku, aby nebyl problik
 		pom=NULL;
 		d.v.vymaz_elementy(pom_temp,true);
-		pom_temp=NULL; delete pom_temp;
+		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;

@@ -293,11 +293,11 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	//POHON
 	//if(Kopie->pohon==NULL)Kopie->pohon=new TPohon;if(Original->pohon!=NULL)*Kopie->pohon=*Original->pohon;else Kopie->pohon=NULL;
 	if(Kopie->pohon==NULL)Kopie->pohon=new TPohon;
+
 	if(Original->pohon!=NULL)
 	{
-				Kopie->pohon->n=Original->pohon->n;
-				ShowMessage(Kopie->pohon->name);
-			Kopie->pohon->name=Original->pohon->name;
+			Kopie->pohon->n=Original->pohon->n;      tttoto
+			Kopie->pohon->name=vrat_pohon(Original->pohon->n)->name;
 			Kopie->pohon->rychlost_od=Original->pohon->rychlost_od;
 			Kopie->pohon->rychlost_do=Original->pohon->rychlost_do;
 			Kopie->pohon->aRD=Original->pohon->aRD;
@@ -309,14 +309,14 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 			Kopie->pohon->predchozi=NULL;
 			Kopie->pohon->dalsi=NULL;
 		}
-//		else
-//		{
-//			 if(Original==F->pom_temp && Kopie==F->pom)//situace překopírování z pomocného do ostrého
-//			 {
-//					*Kopie->pohon=*Original->pohon;
-//			 }
-//			 else *Kopie->pohon=*Original->pohon;//ostatní situace, ověřit zda funguje správně
-//		}
+		else
+		{
+			 if(Original==F->pom_temp && Kopie==F->pom)//situace překopírování z pomocného do ostrého
+			 {
+					vrat_pohon(Original->pohon->n)->name=Original->pohon->name;//do kopie
+			 }
+			 //else *Kopie->pohon=*Original->pohon;//ostatní situace, ověřit zda funguje správně
+		}
 //	}
 //	else
 //	{
