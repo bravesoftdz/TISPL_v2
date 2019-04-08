@@ -7220,9 +7220,9 @@ object Form1: TForm1
     TabOrder = 47
   end
   object scGPPanel_bottomtoolbar: TscGPPanel
-    Left = 1
-    Top = 684
-    Width = 1202
+    Left = 164
+    Top = 687
+    Width = 1216
     Height = 45
     TabOrder = 48
     Visible = False
@@ -7258,8 +7258,8 @@ object Form1: TForm1
     Sizeable = False
     WallpaperIndex = -1
     object scGPLabel1: TscGPLabel
-      Left = 344
-      Top = 11
+      Left = 10
+      Top = 12
       Width = 134
       Height = 19
       Font.Charset = DEFAULT_CHARSET
@@ -7297,7 +7297,7 @@ object Form1: TForm1
       Caption = 'Orientace n'#225'hledu:'
     end
     object scGPComboBox_orientace: TscGPComboBox
-      Left = 484
+      Left = 150
       Top = 3
       Width = 120
       Height = 35
@@ -7423,8 +7423,8 @@ object Form1: TForm1
       OnKeyPress = FormKeyPress
     end
     object scGPButton_ulozit: TscGPButton
-      Left = 96
-      Top = 3
+      Left = 504
+      Top = 7
       Width = 100
       Height = 35
       Font.Charset = DEFAULT_CHARSET
@@ -7527,8 +7527,8 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_zahodit: TscGPButton
-      Left = 216
-      Top = 3
+      Left = 632
+      Top = 7
       Width = 100
       Height = 35
       Font.Charset = DEFAULT_CHARSET
@@ -7631,8 +7631,8 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scButton_zamek: TscButton
-      Left = 890
-      Top = 16
+      Left = 1047
+      Top = 12
       Width = 28
       Height = 29
       Margins.Left = 0
@@ -7719,8 +7719,8 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_viditelnostmGrid: TscGPButton
-      Left = 624
-      Top = 3
+      Left = 942
+      Top = 15
       Width = 25
       Height = 25
       ParentShowHint = False
@@ -7819,8 +7819,8 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_viditelnostKoty: TscGPButton
-      Left = 673
-      Top = 3
+      Left = 998
+      Top = 15
       Width = 25
       Height = 25
       BiDiMode = bdLeftToRight
@@ -7921,8 +7921,8 @@ object Form1: TForm1
       AllowAllUp = False
     end
     object scGPButton_posun_dalsich_elementu: TscGPButton
-      Left = 737
-      Top = 3
+      Left = 1086
+      Top = 15
       Width = 25
       Height = 25
       BiDiMode = bdLeftToRight

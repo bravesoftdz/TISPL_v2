@@ -43,7 +43,6 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		}
 		else
 		{
-			F->editovany_text=E->mGrid->Cells[Col][Row].Text;
 			switch(E->eID)
 			{
 				case 0: // stop

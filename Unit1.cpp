@@ -1630,12 +1630,12 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 {
 	////////filtr kláves
 	AnsiString key=Key;
-//	if(Key==VK_BACK)
-//		return;
-	if(!((Key>=L'0')&&(Key<=L'9')||(Key==L',')||(Key==L'.')))
+	if(AnsiString(Key)==ms.get_locale_decimal()&&editovany_text.Length()==0)key="";
+	if(!((Key>=L'0')&&(Key<=L'9')||(AnsiString(Key)==ms.get_locale_decimal())))
 		key="";
-	if((Key==L','||Key==L'.')&&(Pos(",",editovany_text)>0||Pos(".",editovany_text)>0))
+	if(AnsiString(Key)==ms.get_locale_decimal()&&Pos(ms.get_locale_decimal(),editovany_text)>0)
 		key="";
+	if(key=="")MessageBeep(0);
 	////////
 	if (editace_textu&&index_kurzoru==-6)
 	{
@@ -3711,6 +3711,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
 		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;
 		E->mGrid->Cells[1][i].Align=mGrid->RIGHT;
+		E->mGrid->Cells[1][i].InputNumersOnly=true;
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);
@@ -6372,8 +6373,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-	 Sk(pom_temp->pohon->name);
-   pom_temp->pohon->name="test";
+//		Sk(pom_temp->pohon->name);
+//		pom_temp->pohon->name="test";
 
 
 		 //Form2->ShowModal();
@@ -6406,7 +6407,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 	}
 		 */
 		//Zoom*=2;
-		//Form2->ShowModal();
+		Form2->ShowModal();
 
 		//Akce=MEASURE;
 
@@ -7704,26 +7705,6 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
  Timer2->Enabled=false;
 }
 //---------------------------------------------------------------------------
-//vypnutí/zapnutí zamčení náhledu
-void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
-{
-	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
-	{
-		pom_temp->uzamknout_nahled=false;
-		scButton_zamek->ImageIndex=60;//odemčeno
-	}
-	else//odemčeno budu zamykat
-	{
-		pom_temp->uzamknout_nahled=true;
-		scButton_zamek->ImageIndex=37;
-	}
-	Smaz_kurzor();
-	pom_element=NULL;
-	JID=-1;
-	DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown
-	REFRESH();
-}
-//---------------------------------------------------------------------------
 //volá metodu vykresli_kurzor při editaci textu
 void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 {
@@ -7828,6 +7809,27 @@ void TForm1::Smaz_kurzor ()
 	editace_textu=false;
 	//využívání pro uchování ukazatele při editaci kót
 	pom_element_temp=NULL; delete pom_element_temp;
+	REFRESH();
+}
+//---------------------------------------------------------------------------
+//vypnutí/zapnutí zamčení náhledu
+void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
+{
+	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
+	{
+		pom_temp->uzamknout_nahled=false;
+		scButton_zamek->ImageIndex=60;//odemčeno
+    scButton_zamek->Hint="Zamknout náhled";
+	}
+	else//odemčeno budu zamykat
+	{
+		pom_temp->uzamknout_nahled=true;
+		scButton_zamek->ImageIndex=37;
+	}
+	Smaz_kurzor();
+	pom_element=NULL;
+	JID=-1;
+	DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown
 	REFRESH();
 }
 //---------------------------------------------------------------------------
