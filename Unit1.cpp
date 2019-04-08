@@ -3711,7 +3711,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
 		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;
 		E->mGrid->Cells[1][i].Align=mGrid->RIGHT;
-		E->mGrid->Cells[1][i].InputNumersOnly=true;
+		E->mGrid->Cells[1][i].InputNumbersOnly=true;
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);
