@@ -7691,26 +7691,6 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
  Timer2->Enabled=false;
 }
 //---------------------------------------------------------------------------
-//vypnutí/zapnutí zamčení náhledu
-void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
-{
-	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
-	{
-		pom_temp->uzamknout_nahled=false;
-		scButton_zamek->ImageIndex=60;//odemčeno
-	}
-	else//odemčeno budu zamykat
-	{
-		pom_temp->uzamknout_nahled=true;
-		scButton_zamek->ImageIndex=37;
-	}
-	Smaz_kurzor();
-	pom_element=NULL;
-	JID=-1;
-	DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown
-	REFRESH();
-}
-//---------------------------------------------------------------------------
 //volá metodu vykresli_kurzor při editaci textu
 void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 {
@@ -7815,6 +7795,27 @@ void TForm1::Smaz_kurzor ()
 	editace_textu=false;
 	//využívání pro uchování ukazatele při editaci kót
 	pom_element_temp=NULL; delete pom_element_temp;
+	REFRESH();
+}
+//---------------------------------------------------------------------------
+//vypnutí/zapnutí zamčení náhledu
+void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
+{
+	if(scButton_zamek->ImageIndex==37)//zamčeno budu odemykat
+	{
+		pom_temp->uzamknout_nahled=false;
+		scButton_zamek->ImageIndex=60;//odemčeno
+    scButton_zamek->Hint="Zamknout náhled";
+	}
+	else//odemčeno budu zamykat
+	{
+		pom_temp->uzamknout_nahled=true;
+		scButton_zamek->ImageIndex=37;
+	}
+	Smaz_kurzor();
+	pom_element=NULL;
+	JID=-1;
+	DrawGrid_knihovna->SetFocus();//vrací focus na knihovnu - důležité z důvodu keydown
 	REFRESH();
 }
 //---------------------------------------------------------------------------
