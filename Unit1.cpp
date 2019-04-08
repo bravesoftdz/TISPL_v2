@@ -2526,11 +2526,11 @@ void TForm1::onPopUP(int X, int Y)
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
 			pom->pohon=NULL;delete pom->pohon;pom->pohon=new Cvektory::TPohon;
-			ShowMessage("smazan");
+			//ShowMessage("smazan");
 			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
-			ShowMessage(pom->name);
+			//ShowMessage(pom->name);
 			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
-			{   ShowMessage(pom->pohon->name);
+			{   //ShowMessage(pom->pohon->name);
 				if(AnsiString("Nastavit "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
