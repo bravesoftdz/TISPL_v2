@@ -2356,80 +2356,80 @@ void TForm1::getJobID(int X, int Y)
 			//else JID=XX+IdxRow;//řádky v dalších sloupcích - NEVYUŽITO
 		}
 	}
-	else
+	if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
 	{
-	//dále TABULKY ELEMENTŮ
-	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-	if(pom_element!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
-	{
-		int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
-		if(IdxRow==0)JID=100+0;//hlavička
-		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+		//dále TABULKY ELEMENTŮ
+		pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+		if(pom_element!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 		{
-			int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
-			if(IdxCol==0)//řádky v prvním sloupeci
+			int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
+			if(IdxRow==0)JID=100+0;//hlavička
+			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 			{
-				if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-				else JID=1000+IdxRow;
-			}
-			else JID=2000+IdxRow;//řádky v dalších sloupcích
-		}
-	}
-	else//tabulka nenalezena, takže zkouší najít ELEMENT
-	{
-		pom_element=NULL;
-		if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
-		if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
-		{
-			JID=0;
-		}
-		else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
-		{
-			//testování zda se nepřejelo myší přes OBRYS kabiny, pokud je dovoleno měnit rozměry a rozmístění kabiny
-								//roteč linií//šířka linie (polovina na každou stranu)
-			short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
-			if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
-			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
-			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
-			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
-			else
-			{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
-				d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
-				AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
-				int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
-				int Yd=m.L2Py(F->pom_temp->Yk);
-				if(Xl<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-6;//název objektu
-				else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
-				else//nejedná tj. testují se KÓTY
+				int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+				if(IdxCol==0)//řádky v prvním sloupeci
 				{
-					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+					else JID=1000+IdxRow;
+				}
+				else JID=2000+IdxRow;//řádky v dalších sloupcích
+			}
+		}
+		else//tabulka nenalezena, takže zkouší najít ELEMENT
+		{
+			pom_element=NULL;
+			if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
+			if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+			{
+				JID=0;
+			}
+			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+			{
+				//testování zda se nepřejelo myší přes OBRYS kabiny, pokud je dovoleno měnit rozměry a rozmístění kabiny
+									//roteč linií//šířka linie (polovina na každou stranu)
+				short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
+				if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
+				else
+				{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
+					d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+					AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
+					int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
+					int Yd=m.L2Py(F->pom_temp->Yk);
+					if(Xl<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-6;//název objektu
+					else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
+					else//nejedná tj. testují se KÓTY
 					{
-						short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
-						//jednotky kóty buď kabiny nebo kót elementů JID=-10
-						if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
-						else
+						if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 						{
-							//vodorovná kóta JID=-8
-							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO) //short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
+							short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
+							//jednotky kóty buď kabiny nebo kót elementů JID=-10
+							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
+							else
 							{
-								JID=-8;
-							}else
-							//svislá kóta JID=-9
-							if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
-							{
-								JID=-9;
-							}
-							else//kóty elementů RET=11-99
-							{
-								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
-								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+								//vodorovná kóta JID=-8
+								if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO) //short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
+								{
+									JID=-8;
+								}else
+								//svislá kóta JID=-9
+								if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
+								{
+									JID=-9;
+								}
+								else//kóty elementů RET=11-99
+								{
+									if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
+									if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-	}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
