@@ -3515,6 +3515,42 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 	return rotace_symbolu;
 }
 //---------------------------------------------------------------------------
+//designovaní tabulky pro pohon
+void TForm1::design_tab_pohon()
+{
+	PmG=new TmGrid(this);//vždy nutno jako první
+	
+	PmG->DefaultCell.Font->Name=aFont->Name;
+	PmG->DefaultCell.Font->Size=aFont->Size;
+	PmG->DefaultCell.isLink->Name=aFont->Name;
+	PmG->DefaultCell.isLink->Size=aFont->Size;
+	PmG->DefaultCell.Font->Color=(TColor)RGB(128,128,128);
+	PmG->DefaultCell.Align=mGrid->RIGHT;
+	
+	PmG->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+	PmG->ID=0;
+	PmG->AntiAliasing_text=true;
+	PmG->Border.Width=2;
+	PmG->MovingTable=false;
+	PmG->Create(2,5);
+	
+	PmG->Left=m.L2Px(pom->Xk+pom->rozmer_kabiny.x);
+	PmG->Top=m.L2Py(pom->Yk+1)-mGrid->RowCount*mGrid->Rows->Height;
+	
+	PmG->Cells[0][0].Text="Pohon";
+	PmG->Cells[0][1].Text="Výběr pohonu";     //rychlost, roztec, rozestup.
+	PmG->Cells[0][2].Text="Rychlost";
+	PmG->Cells[0][3].Text="Rozteč";
+	PmG->Cells[0][4].Text="Rozestup";
+
+	PmG->Cells[0][0].Font->Color=clBlack;
+	PmG->Cells[0][0].BottomBorder->Width=2;
+	PmG->Cells[0][0].Align=mGrid->CENTER;
+	PmG->Columns[0].Width=50;
+	PmG->Columns[1].Width=20;
+	PmG->MergeCells(0,0,1,0);
+}
+//---------------------------------------------------------------------------
 //nadesignuje tabulky daného elementu
 void TForm1::design_element(Cvektory::TElement *E)
 {
@@ -3705,13 +3741,12 @@ void TForm1::design_element(Cvektory::TElement *E)
 		{
 			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
 			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
-		}
+		} else E->mGrid->Cells[1][i].InputNumbersOnly=true; 
 		E->mGrid->Cells[0][i].RightMargin = 3;
 		E->mGrid->Cells[1][i].RightMargin = 3;
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
 		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;
 		E->mGrid->Cells[1][i].Align=mGrid->RIGHT;
-		E->mGrid->Cells[1][i].InputNumbersOnly=true;
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);
@@ -5081,14 +5116,13 @@ void TForm1::NP_input()
 		}
 		E=NULL; delete E;
 	}
-
 	//toto třeba?:Invalidate();
-	REFRESH();
+	REFRESH();  
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
 void TForm1::aktualizace_combobox_pohony_v_PO(short RDunitD,short RDunitT)
-{
+{       
 		Cvektory::TPohon *P=Form1->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 		Form_parametry->scComboBox_pohon->Items->Clear();//smazání původního obsahu
 		TscGPListBoxItem *t=NULL;
