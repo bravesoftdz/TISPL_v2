@@ -2325,14 +2325,32 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-10;//jednotky kóty
 //JID=-11 a více//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);
 //JID=-1 žádná
-//JID=0 - 10 rezervováno pro element
-//JID=11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
-//JID=100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
+//JID= 0 - 4 rezervováno pro element, používáno zatím jenom 0, bližší identifikace probíhá pomocí pom_element
+//JID= 5-10 nultý až poslední řádek tabulky pohonů
+//JID= 11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
+//JID= 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
 void TForm1::getJobID(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
-
-	//nejdříve TABULKA
+	//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
+	if(PmG!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)
+	{
+		int IdxRow=PmG->GetIdxRow(X,Y);
+		if(IdxRow==0)JID=5;//hlavička
+		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+		{
+			int IdxCol=PmG->GetIdxColum(X,Y);
+			if(IdxCol==0)//řádky v prvním sloupeci
+			{
+				if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=5+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+				//else JID=XX+IdxRow; - NEVYUŽITO
+			}
+			//else JID=XX+IdxRow;//řádky v dalších sloupcích - NEVYUŽITO
+		}
+	}
+	else
+	{
+	//dále TABULKY ELEMENTŮ
 	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
 	if(pom_element!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 	{
@@ -2393,7 +2411,7 @@ void TForm1::getJobID(int X, int Y)
 							{
 								JID=-9;
 							}
-							else//kóty elementů RET=10-99
+							else//kóty elementů RET=11-99
 							{
 								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
 								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
@@ -2403,6 +2421,7 @@ void TForm1::getJobID(int X, int Y)
 				}
 			}
 		}
+	}
 	}
 	//pouze na test zatížení Memo3->Visible=true;Memo3->Lines->Add(s_mazat++);
 }
