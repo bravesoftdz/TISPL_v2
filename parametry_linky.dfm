@@ -624,6 +624,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Quality = fqClearType
       ParentFont = False
       TabOrder = 2
+      Visible = False
       OnClick = scGPGlyphButton_infoClick
       Animation = True
       Caption = 'Info'
@@ -725,6 +726,7 @@ object Form_parametry_linky: TForm_parametry_linky
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
+      Visible = False
       Animation = True
       Caption = 'Info'
       CanFocused = False
@@ -1862,7 +1864,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object PopUPmenu: TscGPPanel
     Left = 850
-    Top = 8
+    Top = 30
     Width = 211
     Height = 170
     TabOrder = 16
@@ -2667,6 +2669,7 @@ object Form_parametry_linky: TForm_parametry_linky
         VertAlignment = scvtaCenter
         UseFontColorToStyleColor = True
         Caption = '  Nastavit parametry'
+        ExplicitLeft = 34
       end
       object GlyphButton_nastavit_parametry: TscGPGlyphButton
         Left = 0
@@ -2764,6 +2767,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ExplicitTop = -3
       end
     end
     object GlyphButton_close: TscGPGlyphButton
@@ -2980,7 +2984,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Top = 608
     Width = 39
     Height = 34
-    Hint = 'Smazat nepou'#382'it'#233' pohony'
+    Hint = 'Smazat nepou'#382#237'van'#233' pohony'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
     Font.Height = -11
@@ -2991,7 +2995,6 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentShowHint = False
     ShowHint = True
     TabOrder = 18
-    Visible = False
     OnClick = scLabel_smazat_nepouziteClick
     Animation = True
     Caption = 'Info'
@@ -3359,6 +3362,7 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 21
     Visible = False
     OnKeyDown = FormKeyDown
+    OnKeyPress = scGPNumericEdit_vyska_jigKeyPress
   end
   object scGPGlyphButton_TT: TscGPGlyphButton
     Left = 0
@@ -3869,9 +3873,18 @@ object Form_parametry_linky: TForm_parametry_linky
     GroupIndex = 0
     AllowAllUp = True
   end
+  object Button1: TButton
+    Left = 608
+    Top = 104
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 27
+    OnClick = Button1Click
+  end
   object scGPEdit1: TscGPEdit
-    Left = 552
-    Top = 128
+    Left = 488
+    Top = 152
     Width = 121
     Height = 23
     Options.NormalColor = clWindow
@@ -3941,8 +3954,7 @@ object Form_parametry_linky: TForm_parametry_linky
     RightButton.Width = 0
     Text = 'scGPEdit1'
     Color = clBtnFace
-    TabOrder = 27
-    OnKeyPress = scGPEdit1KeyPress
+    TabOrder = 28
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
