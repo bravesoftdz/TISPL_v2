@@ -267,7 +267,7 @@ AnsiString TMyString::UTF2Win(AnsiString Text)
 //odstraní českou diakritiku a vrátí stejný (zadaný) řetěze bez diakritiky)
 AnsiString TMyString::remove_diacritics(AnsiString text)
 {
-	 for(unsigned long i=1;i<=text.Length();i++)
+	 for(long i=1;i<=text.Length();i++)
 	 {
 		 switch((int)*text.SubString(i,1).c_str())
 		 {
@@ -525,7 +525,7 @@ AnsiString TMyString::addDecimal(double number,unsigned short precision)
 {
 	AnsiString RET=number;
 	unsigned short count_decimal=get_count_decimal(number);
-	for(unsigned i=0;count_decimal+i<precision;i++)
+	for(unsigned short i=0;count_decimal+i<precision;i++)
 	{
 		if(count_decimal==0 && i==0)RET+=get_locale_decimal();//pokud je reálná část nulová, přida ještě oddělovač desetinného místa (čárku či tečku), dle zvoleného systomvého nastavení
 		RET+="0";
@@ -541,6 +541,21 @@ bool TMyString::IsNumber(UnicodeString Text)
 	else return false;
 }
 //---------------------------------------------------------------------------
+//metoda volatelná v onkeypress dané komponenty, dovolí pouze reálné či celé číslo, separátor desetinného místa dle lokálního nastavení, ošetřuje i, aby separátor byl v textu obsažen pouze jeden a aby nebyl na prvním místě, pokud nastane chybně zadaný znak, může systemově zazvonit - poslední parametr, implicitně na true
+System::WideChar TMyString::numericFilter(AnsiString aktText,System::WideChar &Key,bool ErrorMessageBeep)
+{
+	//filtr kláves
+	if(Key!=VK_BACK)//pokud není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
+	{
+	 AnsiString Separator=get_locale_decimal();//zjištění oddělovače v aktuálním systému
+	 if(!((Key>=L'0') && (Key<=L'9') || (AnsiString(Key) == Separator)))Key=0;//pokud se nejedná o číslo nebo oddělovač
+	 if(AnsiString(Key) == Separator && aktText.Length()      == 0)Key=0;//oddělovač nemůže být na prvním místě
+	 if(AnsiString(Key) ==	Separator && aktText.Pos(Separator) > 0)Key=0;//oddělovačů nemůže být více
 
+	 if(Key==0)MessageBeep(0);//zvuková inicializace špatné klávesy - popř. odstranit
+	}
+	return Key;
+}
+//---------------------------------------------------------------------------
 
 
