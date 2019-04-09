@@ -1200,6 +1200,8 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState S
 	{
 //		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 //		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+//		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouí napø. pøi události onchange popø. dálších
+//    POZOR!!!, V PØIPADÌ UITÍ NÌKTERİCH NÍE UVEDENİCH VOLÁNÍ, PØÍPADNÌ DALŠÍCH PØIDANİCH NUTNO ODKOMENTOVAT PRVNÍ TØI VİŠE UVEDENÉ ØÁDKY
 //		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyDown(Tag,Col,Row,Key);
 //		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyDown(Tag,Col,Row,Key);
 //		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyDown(Tag,Col,Row,Key);
@@ -1214,7 +1216,7 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 {
 	if(!deleteMark)//detekce e nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
-		//adresace + nutné plnìní z Editu do pamìti
+		//adresace + nezbytné plnìní z Editu do pamìti!!!
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouí napø. pøi události onchange popø. dálších
