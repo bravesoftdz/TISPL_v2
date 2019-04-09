@@ -111,8 +111,10 @@ class TmGrid
 	TscHTMLLabel *createLabel(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	long GetIdxRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
 	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+	bool CheckPTinTable(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) zjistí, zda jsou souøadnice ve vnitø tabulky
 	TPoint CheckLink(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí zda se na dané buòce a souøadnicích nachází odkaz
+
 	//promìnné
 	long Tag;//ID formuláøe, v kterém je tabulka èi tabuky daného formuláøe volány
 	long ID;//ID konkrétní tabulky, v jednom formuláøi vhodné unikátní èíslo, mimo formuláøe totožná hodnota nevadí (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
