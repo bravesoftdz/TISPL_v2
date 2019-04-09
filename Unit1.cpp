@@ -3644,13 +3644,14 @@ void TForm1::design_tab_pohon(int index)
    		if (Rzunit==M) Rz="<a>[m]</a>";
    		else Rz="<a>[mm]</a>";
    		//přepsání jednotek
-   		PmG->Cells[0][2].Text="Rychlost "+aRD;
+			PmG->Cells[0][2].Text="Rychlost "+aRD;
    		PmG->Cells[0][3].Text="Rozteč "+R;
    		if(PmG->RowCount!=4) PmG->Cells[0][4].Text="Rozestup "+Rz;
    		//zapsání nových jednotek do INI
    		writeINI("nastaveni_nahled", "aRD", aRDunit);
    		writeINI("nastaveni_nahled", "R", Runit);
-   		writeINI("nastaveni_nahled", "Rz", Rzunit);
+			writeINI("nastaveni_nahled", "Rz", Rzunit);
+			PmG->Refresh();
    	}break;
    	case 2:
    	{
