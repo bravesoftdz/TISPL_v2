@@ -1214,25 +1214,30 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 {
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
-		////////filtr kláves
-		if(Cells[Col][Row].InputNumbersOnly)//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
+		//adresace + nutné plnìní z Editu do pamìti
+		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
+
+		//filtr kláves
+		if(Cells[Col][Row].InputNumbersOnly && Key!=VK_BACK)//pokud je nastaveno na true a není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
 		{
-			if(Key==VK_BACK)return;
-			if(AnsiString(Key)==F->ms.get_locale_decimal()&&Cells[Col][Row].Text.Length()==0)Key=0;
-			if(AnsiString(Key)==F->ms.get_locale_decimal()&&Pos(F->ms.get_locale_decimal(),Cells[Col][Row].Text)>0)Key=0;
-			if(!((Key>=L'0')&&(Key<=L'9')||(AnsiString(Key)==F->ms.get_locale_decimal())))Key=0;
-			if(Key==0)MessageBeep(0);
+			AnsiString Separator=ms.get_locale_decimal();//zjištìní oddìlovaèe v aktuálním systému
+			if(!((Key>=L'0') && (Key<=L'9') || (AnsiString(Key) == Separator)))Key=0;//pokud se nejedná o èíslo nebo oddìlovaè
+			if(AnsiString(Key) == Separator && Cells[Col][Row].Text.Length()      == 0)Key=0;//oddìlovaè nemùže být na prvním místì
+			if(AnsiString(Key) ==	Separator && Pos(Separator,Cells[Col][Row].Text) > 0)Key=0;//oddìlovaèù nemùže být více
+
+			if(Key==0)MessageBeep(0);//zvuková inicializace špatné klávesy - popø. odstranit
 		}
-		////////
-		//		Col=getColFromTag(((TComponent*)(Sender))->Tag);
-		//		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
-		//		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,Col,Row,Key);
-		//		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,Col,Row,Key);
-		//		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,Col,Row,Key);
-		//	if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,Col,Row,Key);
-		//		if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
-		//		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
-		//		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,Col,Row,Key);
+
+		//namapování dceøinných událostí - odkomentovat patøiènou + pøípadnì upravit požadované parametry
+		//if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,ID,Col,Row,Key);
+		//if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyPress(Tag,ID,Col,Row,Key);
+		//if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,ID,Col,Row,Key);
+		//if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,ID,Col,Row,Key);
+		//if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
+		//if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
+		//if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,ID,Col,Row,Key);
 	}
 }
 //---------------------------------------------------------------------------
