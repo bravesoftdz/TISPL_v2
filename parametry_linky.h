@@ -90,6 +90,7 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_ADD;
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
+  TButton *Button1;
   TscGPEdit *scGPEdit1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
@@ -146,7 +147,10 @@ __published:	// IDE-managed Components
 	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
   void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
-  void __fastcall scGPEdit1KeyPress(TObject *Sender, System::WideChar &Key);
+  void __fastcall Button1Click(TObject *Sender);
+  void __fastcall scGPNumericEdit_vyska_jigKeyPress(TObject *Sender, System::WideChar &Key);
+
+
 
 
 private:	// User declarations
@@ -180,11 +184,13 @@ public:		// User declarations
 	void show_min_Rz();
 	double getTT();
 	void VALIDACE(int ACol, int ARow);
+  int COL,ROW;
 
   	//metody volané z Tmgrid
 	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
+  void OnKeyPress (TObject *Sender, System::WideChar &Key);
   void getmGridColors();
   void getmGridWidth();
   void getDeleteButtonSettings(int Row);
