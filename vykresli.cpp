@@ -3075,6 +3075,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
+	//tabulky elementů
 	if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
 	{
 		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
@@ -3099,6 +3100,11 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 		}
 		E=NULL;delete E;
 	}
+	//tabulka pohonu
+	if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
+	{
+
+  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
