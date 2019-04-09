@@ -539,7 +539,7 @@ private:
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
 	short rotace_symbol(short trend,int X, int Y);
-  void design_tab_pohon(bool z_jednotek);
+  void design_tab_pohon(int index);
 	void design_element(Cvektory::TElement *E);//nadesignuje tabulky daného elementu
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
