@@ -5116,6 +5116,7 @@ void TForm1::NP_input()
 		}
 		E=NULL; delete E;
 	}
+	design_tab_pohon();
 	//toto třeba?:Invalidate();
 	REFRESH();  
 }
