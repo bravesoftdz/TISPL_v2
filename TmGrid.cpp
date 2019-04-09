@@ -702,7 +702,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->Left=R.Left+Cell.LeftBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)E->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
 	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
+	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus automatizace pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
 	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
@@ -1200,6 +1200,8 @@ void __fastcall TmGrid::getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState S
 	{
 //		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 //		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+//		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
+//    POZOR!!!, V PØIPADÌ UŽITÍ NÌKTERÝCH NÍŽE UVEDENÝCH VOLÁNÍ, PØÍPADNÌ DALŠÍCH PØIDANÝCH NUTNO ODKOMENTOVAT PRVNÍ TØI VÝŠE UVEDENÉ ØÁDKY
 //		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyDown(Tag,Col,Row,Key);
 //		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnKeyDown(Tag,Col,Row,Key);
 //		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyDown(Tag,Col,Row,Key);
@@ -1214,21 +1216,13 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 {
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
-		//adresace + nutné plnìní z Editu do pamìti
+		//adresace + nezbytné plnìní z Editu do pamìti!!!
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
 
 		//filtr kláves
-		if(Cells[Col][Row].InputNumbersOnly && Key!=VK_BACK)//pokud je nastaveno na true a není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
-		{
-			AnsiString Separator=ms.get_locale_decimal();//zjištìní oddìlovaèe v aktuálním systému
-			if(!((Key>=L'0') && (Key<=L'9') || (AnsiString(Key) == Separator)))Key=0;//pokud se nejedná o èíslo nebo oddìlovaè
-			if(AnsiString(Key) == Separator && Cells[Col][Row].Text.Length()      == 0)Key=0;//oddìlovaè nemùže být na prvním místì
-			if(AnsiString(Key) ==	Separator && Pos(Separator,Cells[Col][Row].Text) > 0)Key=0;//oddìlovaèù nemùže být více
-
-			if(Key==0)MessageBeep(0);//zvuková inicializace špatné klávesy - popø. odstranit
-		}
+		if(Cells[Col][Row].InputNumbersOnly)Key=ms.numericFilter(Cells[Col][Row].Text,Key);//pokud je nastaveno na true a není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
 
 		//namapování dceøinných událostí - odkomentovat patøiènou + pøípadnì upravit požadované parametry
 		//if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,ID,Col,Row,Key);
