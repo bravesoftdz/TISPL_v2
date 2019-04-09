@@ -86,7 +86,7 @@ TmGrid::TmGrid(TForm *Owner)
 	//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouží jako pomùcka pøi vykreslování orámování slouèených bunìk
 	DefaultCell.MergeState=false;
 	//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
-	DefaultCell.InputNumersOnly=false;
+	DefaultCell.InputNumbersOnly=false;
 	//pozadí
 	DefaultCell.Background->Color=clWhite;
 	DefaultCell.Background->Style=bsSolid;
@@ -1215,7 +1215,7 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
 		////////filtr kláves
-		if(Cells[Col][Row].InputNumersOnly)//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
+		if(Cells[Col][Row].InputNumbersOnly)//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
 		{
 			if(Key==VK_BACK)return;
 			if(AnsiString(Key)==F->ms.get_locale_decimal()&&Cells[Col][Row].Text.Length()==0)Key=0;

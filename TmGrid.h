@@ -49,7 +49,7 @@ class TmGrid
 		short LeftMargin;//levé odsazení textu
 		short RightMargin;//pravé odsazení textu
 		bool MergeState;//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouží jako pomùcka pøi vykreslování orámování slouèených bunìk, zatím zùstává nevyužito
-		bool InputNumersOnly;//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
+		bool InputNumbersOnly;//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
 		TFont *Font;//vlastnosti fontu v buòce
 		TPoint TextPositon;//pozice textu v buòce (levý horní roh buòky je 0,0)
 		TBrush *isEmpty;//podmínìné formátování, pozadí buòky, když je prázdná

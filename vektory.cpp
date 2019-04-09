@@ -293,35 +293,38 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	//POHON
 	//if(Kopie->pohon==NULL)Kopie->pohon=new TPohon;if(Original->pohon!=NULL)*Kopie->pohon=*Original->pohon;else Kopie->pohon=NULL;
 	if(Kopie->pohon==NULL)Kopie->pohon=new TPohon;
+	if(Original->pohon!=NULL) Kopie->pohon->name=Original->pohon->name;
 
-	if(Original->pohon!=NULL)
-	{
-			Kopie->pohon->n=Original->pohon->n;      tttoto
-			Kopie->pohon->name=vrat_pohon(Original->pohon->n)->name;
-			Kopie->pohon->rychlost_od=Original->pohon->rychlost_od;
-			Kopie->pohon->rychlost_do=Original->pohon->rychlost_do;
-			Kopie->pohon->aRD=Original->pohon->aRD;
-			Kopie->pohon->roztec=Original->pohon->roztec;
-			Kopie->pohon->Rz=Original->pohon->Rz;
-			Kopie->pohon->Rx=Original->pohon->Rx;
-		if(Original==F->pom && Kopie==F->pom_temp)//situace překopírování z ostrého do pomocného
-		{
-			Kopie->pohon->predchozi=NULL;
-			Kopie->pohon->dalsi=NULL;
-		}
-		else
-		{
-			 if(Original==F->pom_temp && Kopie==F->pom)//situace překopírování z pomocného do ostrého
-			 {
-					vrat_pohon(Original->pohon->n)->name=Original->pohon->name;//do kopie
-			 }
-			 //else *Kopie->pohon=*Original->pohon;//ostatní situace, ověřit zda funguje správně
-		}
-//	}
-//	else
+
+//	if(Original->pohon!=NULL)
 //	{
-//		Kopie->pohon=NULL;
-	}
+//			Kopie->pohon->n=Original->pohon->n;
+//			Kopie->pohon->name=vrat_pohon(Original->pohon->n)->name;
+//			Kopie->pohon->rychlost_od=Original->pohon->rychlost_od;
+//			Kopie->pohon->rychlost_do=Original->pohon->rychlost_do;
+//			Kopie->pohon->aRD=Original->pohon->aRD;
+//			Kopie->pohon->roztec=Original->pohon->roztec;
+//			Kopie->pohon->Rz=Original->pohon->Rz;
+//			Kopie->pohon->Rx=Original->pohon->Rx;
+//		if(Original==F->pom && Kopie==F->pom_temp)//situace překopírování z ostrého do pomocného
+//		{
+//			Kopie->pohon->predchozi=NULL;
+//			Kopie->pohon->dalsi=NULL;
+//		}
+//		else
+//		{
+//			 if(Original==F->pom_temp && Kopie==F->pom)//situace překopírování z pomocného do ostrého
+//			 {
+//					vrat_pohon(Original->pohon->n)->name=Original->pohon->name;//do kopie
+//			 }
+//			 //else *Kopie->pohon=*Original->pohon;//ostatní situace, ověřit zda funguje správně
+//		}
+////	}
+////	else
+////	{
+////		Kopie->pohon=NULL;
+//	}
+
 	//ELEMENTY
 	kopiruj_elementy(Original,Kopie);
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
@@ -345,22 +348,20 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
 Cvektory::TObjekt *Cvektory::najdi_objekt(double X, double Y,double offsetX, double offsetY,short typ)//hledá bod v dané oblasti
 {
-	Cvektory::TObjekt *ret=NULL;
-	Cvektory::TObjekt *p=OBJEKTY->dalsi;//přeskočí hlavičku
-	while (p!=NULL)
+	Cvektory::TObjekt *O=OBJEKTY;//->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
 	{
-		if((typ==-1 || typ==p->id) && p->id!=F->VyID)
+		if((typ==-1 || typ==(long)O->id) && (long)O->id!=F->VyID)
 		{
-			if(p->X<=X && X<=p->X+offsetX*Form1->m2px && p->Y>=Y && Y>=p->Y-offsetY*Form1->m2px){ret=p;break;}//nalezeno!
+			if(O->X<=X && X<=O->X+offsetX && O->Y>=Y && Y>=O->Y-offsetY){/*F->Memo3->Lines->Add(O->pohon->name);*/return O;}//nalezeno!
 		}
 		if(typ==F->VyID)//výhybka
 		{
-			if(p->X-offsetX*F->m2px<=X && X<=p->X+offsetX*F->m2px && p->Y+offsetY*F->m2px>=Y && Y>=p->Y-offsetY*F->m2px){ret=p;break;}//nalezeno !
+			if(m.PtInCircle(X,Y,O->X,O->Y,offsetX)){return O;}//nalezeno !
 		}
-		p=p->dalsi;//posun na další prvek
+		O=O->dalsi;//posun na další prvek
 	}
-	p=NULL;delete p;
-	return ret;
+	return O;
 }
 //---------------------------------------------------------------------------
 //vrátí ukazatel na objekt dle n objektu
@@ -464,7 +465,7 @@ void Cvektory::aktualizace_objektu(short typ)
 //				if(O->pohon!=NULL)//přiřazuje pouze pokud byl pohon již přiřazen
 //				O->pohon=vrat_pohon(O->pohon->n);
 //			}
-      break;
+//      break;
 			case 1://při změně TT změna CT a RD, K a DD zůstává
 			{
 				O->CT=PP.TT*O->kapacita;
@@ -985,7 +986,15 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
   }
 	novy->name=T+" "+novy->n;
 	//dodělat automaticky shortname
+
+	//data
 	novy->LO1=1.5;
+	novy->OTOC_delka=0.450;
+	novy->LO2=1.5;
+	novy->LO_pozice=0;
+	novy->PT1=60;
+	novy->PTotoc=20;
+	novy->PT2=60;
 
 	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
@@ -1472,7 +1481,7 @@ AnsiString Cvektory::vypis_objekty_vyuzivajici_pohon(unsigned long n,bool short_
 		if(O==F->pom && F->pom!=NULL)//pokud je voláno z editovaného PO
 		{
 			 //a pokud se jedná o stejný objekt, jako právě projížděný cyklemmusí být samostatně
-				if(Form_parametry->scComboBox_pohon->ItemIndex>0  && Form_parametry->scComboBox_pohon->ItemIndex==n)//pokud má pohon přiřazen a jedná se o stejný pohon
+				if(Form_parametry->scComboBox_pohon->ItemIndex>0  && Form_parametry->scComboBox_pohon->ItemIndex==(long)n)//pokud má pohon přiřazen a jedná se o stejný pohon
 				{
 					if(short_name)nalezen+=O->short_name+", ";
 					else nalezen+=O->name+", ";
@@ -3890,6 +3899,7 @@ AnsiString Cvektory::QUERY(AnsiString query)
 		if(command.Pos("AVG"));
 		if(command==("*"));
 	}
+	return command;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
