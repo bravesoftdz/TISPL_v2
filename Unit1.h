@@ -507,8 +507,8 @@ public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA,OFFSET_KOTY};Takce Akce;
-	enum Tm_mm{M=0,MM};Tm_mm DOtocunit,DKunit,LOunit;//pøepínaè jednotek vzdálenost
-	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec ;//pøepínaè jednotek èasu
+	enum Tm_mm{M=0,MM};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost
+	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp;
 	TPointD copyObjektRzRx;
@@ -547,7 +547,7 @@ private:
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
 	short rotace_symbol(short trend,int X, int Y);
-  void design_tab_pohon();
+  void design_tab_pohon(bool z_jednotek);
 	void design_element(Cvektory::TElement *E);//nadesignuje tabulky daného elementu
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
