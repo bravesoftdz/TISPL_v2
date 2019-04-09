@@ -1536,7 +1536,7 @@ TColor Cvykresli::set_color(TCanvas *canv, Cvektory::TObjekt *O)
 			//default:
 			default:canv->Brush->Style=bsDiagCross;canv->Pen->Color=clRed;canv->Brush->Color=clRed;break;
 		}
-		if(i==0) return 0;
+		if(i==0) return (TColor)0;
 		else return canv->Pen->Color;
 }
 //---------------------------------------------------------------------------
@@ -2966,7 +2966,7 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 	return RET;//vratí souřadnice konce osy polygonu
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,TColor Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
+void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
 {
 	canv->Pen->Width=Width;
 	canv->Pen->Color=Color;
@@ -3055,7 +3055,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
-	short C=W/2;//zajištění vycentrování
+	//short C=W/2;//zajištění vycentrování
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 	canv->Brush->Style=bsClear;
 
@@ -3075,36 +3075,52 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
-	//tabulky elementů
-	if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
+	if(F->Timer1->Enabled==false)//timer animace
 	{
-		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
-		while(E!=NULL)
+		//tabulky elementů
+		if(F->pom_temp->elementy!=NULL)
 		{
-			if(F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
+			while(E!=NULL)
 			{
-				E->mGrid->VisibleComponents=true;//stačí volat toto
-				E->mGrid->Left=m.L2Px(E->Xt);
-				E->mGrid->Top=m.L2Py(E->Yt);
-				if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
-				else E->mGrid->MovingTable=false;
-				E->mGrid->Show(canv);
+				if(F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+				{
+					E->mGrid->VisibleComponents=true;//stačí volat toto
+					E->mGrid->Left=m.L2Px(E->Xt);
+					E->mGrid->Top=m.L2Py(E->Yt);
+					if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
+					else E->mGrid->MovingTable=false;
+					E->mGrid->Show(canv);
+				}
+				else//pokud ne, je třeba skrýt komponenty
+				{
+					E->mGrid->VisibleComponents=false;
+					if(F->element_id==-1)E->mGrid->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
+					else E->mGrid->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
+				}
+				E=E->dalsi;
 			}
-			else//pokud ne, je třeba skrýt komponenty
-			{
-				E->mGrid->VisibleComponents=false;
-				if(F->element_id==-1)E->mGrid->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
-				else E->mGrid->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
-			}
-			E=E->dalsi;
+			E=NULL;delete E;
 		}
-		E=NULL;delete E;
-	}
-	//tabulka pohonu
-	if(F->pom_temp->elementy!=NULL && F->Timer1->Enabled==false)
-	{
 
-  }
+		//tabulka pohonu
+		if(F->PmG!=NULL && F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+		{
+			F->PmG->VisibleComponents=true;//stačí volat toto
+			F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
+			F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
+			if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)F->PmG->MovingTable=true;
+			else F->PmG->MovingTable=false;
+			F->PmG->Show(canv);
+		}
+//		else//pokud ne, je třeba skrýt komponenty
+//		{
+//			F->PmG->SetVisibleComponents(false);
+//			F->PmG->VisibleComponents=false;
+//			if(F->element_id==-1)F->PmG->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
+//			else F->PmG->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
+//		}
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
@@ -3445,7 +3461,7 @@ void Cvykresli::vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor
 //void Cvykresli::vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx)
 void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx)
 {
-	TColor Color=10114859;
+	TColor Color=(TColor)10114859;
 
 	short O=-8;
 	short Top=326;

@@ -75,7 +75,7 @@ class Cvykresli
 	void vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
 	void vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO,double delka_ramena,double rotace=0);
 	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace);//vykreslí polygon dle osy, umí i kónický tvar, vratí souøadnice konce osy polygonu
-	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,TColor Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
+	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
 	void vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popisek="linie",short stav=0);
 	void vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popisek="oblouky",short stav=0);

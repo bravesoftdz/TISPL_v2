@@ -1348,7 +1348,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(!antialiasing)
 			{
 				d.vykresli_vektory(Canvas);
-				if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy();
+				if(refresh_mGrid)d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				if(scGPSwitch_meritko->State==true)d.meritko(Canvas);//grafické měřítko
 			}
 			else
@@ -1362,7 +1362,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_in);//velice nutné
-				if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu
+				if(refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
@@ -3533,10 +3533,7 @@ void TForm1::design_tab_pohon()
 	PmG->Border.Width=2;
 	PmG->MovingTable=false;
 	PmG->Create(2,5);
-	
-	PmG->Left=m.L2Px(pom->Xk+pom->rozmer_kabiny.x);
-	PmG->Top=m.L2Py(pom->Yk+1)-mGrid->RowCount*mGrid->Rows->Height;
-	
+
 	PmG->Cells[0][0].Text="Pohon";
 	PmG->Cells[0][1].Text="Výběr pohonu";     //rychlost, roztec, rozestup.
 	PmG->Cells[0][2].Text="Rychlost";
