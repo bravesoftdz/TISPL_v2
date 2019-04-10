@@ -26,6 +26,7 @@
 #include "adjustace.h"
 #include "kalibrace.h"
 #include "Z_rozliseni.h"
+#include "TmGrid.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -371,13 +372,10 @@ void TForm1::aktualizace()
 void __fastcall TForm1::FormShow(TObject *Sender)
 {
   //DPI handling
-	int DPI, otherDPI = 0;
+	int DPI;
 	DPI = get_DPI();
 	if (DPI != 96)
-	{
-		otherDPI = DPI * 100 / 96;
 		Form_Z_rozliseni->ShowModal();
-	}
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
 }
 //---------------------------------------------------------------------------
@@ -1867,7 +1865,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
 								if(JID<=-11){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}
-								if(JID==7||JID==8||JID==9)design_tab_pohon(1);
+								if(JID==7||JID==8||JID==9){design_tab_pohon(1);REFRESH();}
 						}
 						else
 						{
@@ -3557,7 +3555,7 @@ void TForm1::design_tab_pohon(int index)
    		PmG=new TmGrid(this);//vždy nutno jako první
    		//nastavení jednotek podle posledních nastavení
    		if (aRDunit==SEC) aRD="<a>[m/s]</a>";
-   		else aRD="<a>[m/min]</a>";
+			else aRD="<a>[m/min]</a>";
    		if (Runit==M) R="<a>[m]</a>";
    		else R="<a>[mm]</a>";//1
    		if (Rzunit==M) Rz="<a>[m]</a>";
@@ -3581,30 +3579,36 @@ void TForm1::design_tab_pohon(int index)
    			else PmG->Create(2,4);
    		} else PmG->Create(2,6);
    		//naplnění buněk
-    		PmG->Cells[0][0].Text="Pohon";
-    		PmG->Cells[0][1].Text="Výběr pohonu";
-   		PmG->Cells[0][2].Text="Rychlost "+aRD;
-   		PmG->Cells[0][3].Text="Rozteč "+R;
-    		if(PmG->RowCount!=4)
-    		{
+			PmG->Cells[0][0].Text="Pohon";
+			PmG->Cells[0][1].Text="Výběr pohonu";
+			PmG->Cells[0][2].Text="Rychlost "+aRD;
+			PmG->Cells[0][3].Text="Rozteč "+R;
+			if(PmG->RowCount!=4)
+			{
    			PmG->Cells[0][4].Text="Rozestup "+Rz;  //nezávislé  vzdálenost mezi jig   Rz
-   			PmG->Cells[1][4].Type=PmG->EDIT;
-   			PmG->Cells[0][5].Text="RX";
-   			PmG->Cells[1][5].Type=PmG->EDIT;
-     	}
-   		//typy buněk
-    		PmG->Cells[1][1].Type=PmG->COMBO;
+				PmG->Cells[1][4].Type=PmG->EDIT;
+				PmG->Cells[0][5].Text="RX";
+				PmG->Cells[1][5].Type=PmG->EDIT;
+				if(pom->pohon->name==""){PmG->Cells[1][4].Text=outRz(0.5);PmG->Cells[1][5].Text=1.25;}
+				else {PmG->Cells[1][4].Text=outRz(pom->pohon->Rz);PmG->Cells[1][5].Text=pom->pohon->Rx;}
+			}
+			//typy buněk
+			PmG->Cells[1][1].Type=PmG->COMBO;
      	PmG->Cells[1][2].Type=PmG->EDIT;
      	PmG->Cells[1][3].Type=PmG->EDIT;
-     	//hlavička
+			//plnění daty
+			if(pom->pohon->name=="") {PmG->Cells[1][2].Text=outaRD(2);PmG->Cells[1][3].Text=outR(0.3);}
+			else {PmG->Cells[1][2].Text=outaRD(pom->pohon->aRD);PmG->Cells[1][3].Text=outR(pom->pohon->roztec);}
+			//hlavička
      	PmG->Cells[0][0].Font->Color=clBlack;
    		PmG->Cells[0][0].BottomBorder->Width=2;
    		PmG->Cells[0][0].Align=mGrid->CENTER;
    		PmG->SetColumnAutoFit(-4);
-   		PmG->Columns[0].Width=130;
+			if(aRD=="<a>[m/min]</a>")PmG->Columns[0].Width=134;
+			else PmG->Columns[0].Width=118;
    		PmG->Columns[1].Width=70;
     		//finální design
-   		for(int i=1;i<=PmG->RowCount-1;i++)
+			for(int i=1;i<=ms.MyToDouble(PmG->RowCount-1);i++)
    		{
    			if (PmG->Cells[1][i].Type==PmG->EDIT)
    				PmG->Cells[1][i].InputNumbersOnly=true;
@@ -3619,7 +3623,7 @@ void TForm1::design_tab_pohon(int index)
    	{
    		//překlopení jednotek
    		switch(JID)
-   		{
+			{
    			case 7:
    			{
    				if (aRDunit==SEC) aRDunit=MIN;
@@ -3645,8 +3649,19 @@ void TForm1::design_tab_pohon(int index)
    		else Rz="<a>[mm]</a>";
    		//přepsání jednotek
 			PmG->Cells[0][2].Text="Rychlost "+aRD;
-   		PmG->Cells[0][3].Text="Rozteč "+R;
-   		if(PmG->RowCount!=4) PmG->Cells[0][4].Text="Rozestup "+Rz;
+			PmG->Cells[0][3].Text="Rozteč "+R;
+			if(pom->pohon->name=="") {PmG->Cells[1][2].Text=outaRD(2);PmG->Cells[1][3].Text=outR(0.3);}
+			else {PmG->Cells[1][2].Text=outaRD(pom->pohon->aRD);PmG->Cells[1][3].Text=outR(pom->pohon->roztec);}
+			if(PmG->RowCount!=4)
+			{
+				PmG->Cells[0][4].Text="Rozestup "+Rz;
+				PmG->Cells[1][4].Text=outRz(pom->pohon->Rz);
+				if(pom->pohon->name=="")PmG->Cells[1][4].Text=outRz(0.5);
+				else PmG->Cells[1][4].Text=outRz(pom->pohon->Rz);
+			}
+			//změna šířky
+			if(aRD=="<a>[m/min]</a>")PmG->Columns[0].Width=134;
+			else PmG->Columns[0].Width=118;
    		//zapsání nových jednotek do INI
    		writeINI("nastaveni_nahled", "aRD", aRDunit);
    		writeINI("nastaveni_nahled", "R", Runit);
@@ -3656,7 +3671,9 @@ void TForm1::design_tab_pohon(int index)
    	case 2:
    	{
    		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-   		if((EID==1||EID==3||EID==5)&&PmG->RowCount==6)
+      if (Rzunit==M) Rz="<a>[m]</a>";
+			else Rz="<a>[mm]</a>";
+			if((EID==1||EID==3||EID==5)&&PmG->RowCount==6)
    		{
    			PmG->DeleteRow(5);
    			PmG->DeleteRow(4);
@@ -3666,10 +3683,12 @@ void TForm1::design_tab_pohon(int index)
    			PmG->AddRow();
    			PmG->AddRow();
    			PmG->Cells[0][4].Text="Rozestup "+Rz;  //nezávislé  vzdálenost mezi jig   Rz
-   			PmG->Cells[1][4].Type=PmG->EDIT;
+				PmG->Cells[1][4].Type=PmG->EDIT;
    			PmG->Cells[0][5].Text="RX";
-   			PmG->Cells[1][5].Type=PmG->EDIT;
-   			for(int i=4;i<=PmG->RowCount-1;i++)
+				PmG->Cells[1][5].Type=PmG->EDIT;
+				if(pom->pohon->name==""){PmG->Cells[1][4].Text=outRz(0.5);PmG->Cells[1][5].Text=1.25;}
+				else {PmG->Cells[1][4].Text=outRz(pom->pohon->Rz);PmG->Cells[1][5].Text=pom->pohon->Rx;}
+				for(int i=4;i<=ms.MyToDouble(PmG->RowCount-1);i++)
    			{
    			if (PmG->Cells[1][i].Type==PmG->EDIT)
    				PmG->Cells[1][i].InputNumbersOnly=true;
@@ -3866,7 +3885,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 	E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
 	E->mGrid->Cells[0][0].BottomBorder->Width=2;
 	//formátování buněk tabulky (vždy stejn=)
-	for(int i=1;i<=E->mGrid->RowCount-1;i++)
+	for(int i=1;i<=ms.MyToDouble(E->mGrid->RowCount-1);i++)
 	{
 		if (E->mGrid->Cells[1][i].Type!=E->mGrid->EDIT)
 		{
@@ -5592,7 +5611,7 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			return 2;
 		}break;
 		default: return 2;
-    break;
+		break;
 	}
 }
 //---------------------------------------------------------------------------
@@ -7859,7 +7878,42 @@ double TForm1::outDK(double outDK)
 	return DK;
 }
 //---------------------------------------------------------------------------
-
+double TForm1::inaRD(double inaRD)
+{
+	double aRD=inaRD;
+	aRD=inaRD/(1+59.0*aRDunit);
+	return aRD;
+}
+double TForm1::outaRD(double outaRD)
+{
+	double aRD=outaRD;
+	aRD=outaRD*(1+59.0*aRDunit);
+	return aRD;
+}
+double TForm1::inR(double inR)
+{
+	double R=inR;
+	R=inR/(1+999.0*Runit);
+	return R;
+}
+double TForm1::outR(double outR)
+{
+	double R=outR;
+	R=outR*(1+999.0*Runit);
+	return R;
+}
+double TForm1::inRz(double inRz)
+{
+	double Rz=inRz;
+	Rz=inRz/(1+999.0*Rzunit);
+	return Rz;
+}
+double TForm1::outRz(double outRz)
+{
+	double Rz=outRz;
+	Rz=outRz*(1+999.0*Rzunit);
+	return Rz;
+}
 void __fastcall TForm1::scGPEdit1Change(TObject *Sender)
 {
 Memo3->Lines->Add("onchange");

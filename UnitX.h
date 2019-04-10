@@ -12,7 +12,7 @@ class TFormX : public TForm
 {
 __published:	// IDE-managed Components
 private:	// User declarations
-  enum Tinput_state{NO,NOTHING,PT,LO,WT,DO,PTotoc};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+  enum Tinput_state{NO,NOTHING,PT,LO,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
   Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 
 public:		// User declarations
