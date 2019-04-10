@@ -34,7 +34,7 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
 void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	if(input_state==NOTHING&&Tag==7)
+	if(input_state==NOTHING&&ID!=9999)
 	{
 		Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
 		if(ID>100000)
@@ -142,7 +142,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		input_state=NOTHING;
 		F->nahled_ulozit(true);
 	}
-	if(input_state==NOTHING&&Tag==8)
+	if(input_state==NOTHING&&ID==9999)
 	{
 		switch(Row)
 		{
