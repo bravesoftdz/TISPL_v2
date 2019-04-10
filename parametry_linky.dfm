@@ -834,7 +834,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Images = Form1.scGPVirtualImageList1
     ImageIndex = 21
     ImageMargin = 0
-    TransparentBackground = True
+    TransparentBackground = False
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
     Options.PressedColor = 15790320
@@ -938,7 +938,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Images = Form1.scGPVirtualImageList1
     ImageIndex = 25
     ImageMargin = 0
-    TransparentBackground = True
+    TransparentBackground = False
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
     Options.PressedColor = 15790320
@@ -1052,7 +1052,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Images = Form1.scGPVirtualImageList1
     ImageIndex = 34
     ImageMargin = 0
-    TransparentBackground = True
+    TransparentBackground = False
     Options.NormalColor = clSilver
     Options.HotColor = clPurple
     Options.PressedColor = 15790320
@@ -2669,7 +2669,6 @@ object Form_parametry_linky: TForm_parametry_linky
         VertAlignment = scvtaCenter
         UseFontColorToStyleColor = True
         Caption = '  Nastavit parametry'
-        ExplicitLeft = 34
       end
       object GlyphButton_nastavit_parametry: TscGPGlyphButton
         Left = 0
@@ -2767,7 +2766,6 @@ object Form_parametry_linky: TForm_parametry_linky
         Down = False
         GroupIndex = 0
         AllowAllUp = False
-        ExplicitTop = -3
       end
     end
     object GlyphButton_close: TscGPGlyphButton
@@ -3872,89 +3870,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = True
-  end
-  object Button1: TButton
-    Left = 608
-    Top = 104
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 27
-    OnClick = Button1Click
-  end
-  object scGPEdit1: TscGPEdit
-    Left = 488
-    Top = 152
-    Width = 121
-    Height = 23
-    Options.NormalColor = clWindow
-    Options.HotColor = clWindow
-    Options.FocusedColor = clWindow
-    Options.DisabledColor = clWindow
-    Options.NormalColorAlpha = 200
-    Options.HotColorAlpha = 255
-    Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 150
-    Options.FrameNormalColor = clBtnText
-    Options.FrameHotColor = clHighlight
-    Options.FrameFocusedColor = clHighlight
-    Options.FrameDisabledColor = clBtnText
-    Options.FrameWidth = 1
-    Options.FrameNormalColorAlpha = 100
-    Options.FrameHotColorAlpha = 255
-    Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 50
-    Options.FontNormalColor = clWindowText
-    Options.FontHotColor = clWindowText
-    Options.FontFocusedColor = clWindowText
-    Options.FontDisabledColor = clGrayText
-    Options.ShapeFillGradientAngle = 90
-    Options.ShapeCornerRadius = 10
-    Options.ShapeStyle = scgpessRect
-    Options.ScaleFrameWidth = False
-    Options.StyleColors = True
-    ContentMarginLeft = 5
-    ContentMarginRight = 5
-    ContentMarginTop = 5
-    ContentMarginBottom = 5
-    HidePromptTextIfFocused = False
-    PromptTextColor = clNone
-    Transparent = True
-    LeftButton.Kind = scgpebCustom
-    LeftButton.Enabled = True
-    LeftButton.Visible = False
-    LeftButton.ImageIndex = -1
-    LeftButton.ImageHotIndex = -1
-    LeftButton.ImagePressedIndex = -1
-    LeftButton.RepeatClick = False
-    LeftButton.RepeatClickInterval = 200
-    LeftButton.ShowHint = False
-    LeftButton.GlyphColor = clWindowText
-    LeftButton.GlyphColorAlpha = 180
-    LeftButton.GlyphColorHotAlpha = 240
-    LeftButton.GlyphColorPressedAlpha = 150
-    LeftButton.GlyphThickness = 2
-    LeftButton.GlyphSize = 0
-    LeftButton.Width = 0
-    RightButton.Kind = scgpebCustom
-    RightButton.Enabled = True
-    RightButton.Visible = False
-    RightButton.ImageIndex = -1
-    RightButton.ImageHotIndex = -1
-    RightButton.ImagePressedIndex = -1
-    RightButton.RepeatClick = False
-    RightButton.RepeatClickInterval = 200
-    RightButton.ShowHint = False
-    RightButton.GlyphColor = clWindowText
-    RightButton.GlyphColorAlpha = 180
-    RightButton.GlyphColorHotAlpha = 240
-    RightButton.GlyphColorPressedAlpha = 150
-    RightButton.GlyphThickness = 2
-    RightButton.GlyphSize = 0
-    RightButton.Width = 0
-    Text = 'scGPEdit1'
-    Color = clBtnFace
-    TabOrder = 28
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET

@@ -78,6 +78,13 @@ void  TForm_parametry_vozik::NastavDesign()
 	scGPButton_vozik->Options->PressedColor=Form_parametry_vozik->Color;
 	scGPButton_vozik->Options->FramePressedColor=Form_parametry_vozik->Color;
 
+  rHTMLLabel_JIG->Font->Color=F->m.clIntensive(clBlack,50);
+  rHTMLLabel_delka_jig->Font->Color=rHTMLLabel_JIG->Font->Color;
+  rHTMLLabel_sirka_jig->Font->Color=rHTMLLabel_JIG->Font->Color;
+  rHTMLLabel_vyska_jig->Font->Color=rHTMLLabel_JIG->Font->Color;
+  rHTMLLabel_podvozek_zaves->Font->Color=rHTMLLabel_JIG->Font->Color;
+  rHTMLLabel_delka_podvozek->Font->Color=rHTMLLabel_JIG->Font->Color;
+
 	if(Form_parametry_linky->scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
 	else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
 }

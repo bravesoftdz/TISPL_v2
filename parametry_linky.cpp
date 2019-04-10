@@ -160,6 +160,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->Cells[5][1].Text="";
   mGrid->Cells[6][1].Text="";
 
+//  mGrid->Cells[2][1].InputNumbersOnly=true;
+//  mGrid->Cells[3][1].InputNumbersOnly=true;
+//  mGrid->Cells[4][1].InputNumbersOnly=true;
+//  mGrid->Cells[5][1].InputNumbersOnly=true;
 
   getmGridColors();
 
@@ -272,7 +276,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scGPButton_vozik->Options->HotColor=Form_parametry_linky->Color;
 	 scGPButton_vozik->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_vozik->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton_vozik->Options->PressedColor=Form_parametry_linky->Color;
 	 scGPButton_vozik->Options->FramePressedColor=Form_parametry_linky->Color;
 
 	 scGPButton_pohon->Options->NormalColor=Form_parametry_linky->Color;
@@ -384,11 +387,11 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[7][i].Type=mGrid->BUTTON;
           mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
-//
-//          mGrid->Cells[2][i].InputNumersOnly=true;
-//          mGrid->Cells[3][i].InputNumersOnly=true;
-//          mGrid->Cells[4][i].InputNumersOnly=true;
-//          mGrid->Cells[5][i].InputNumersOnly=true;
+
+          mGrid->Cells[2][i].InputNumbersOnly=true;
+          mGrid->Cells[3][i].InputNumbersOnly=true;
+          mGrid->Cells[4][i].InputNumbersOnly=true;
+          mGrid->Cells[5][i].InputNumbersOnly=true;
 
            mGrid->Refresh(); // kvùli prací s následných Checkboxem je nutný refresh
 
@@ -736,10 +739,10 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
    mGrid->Cells[6][i].Type=mGrid->CHECK;
    mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
-//   mGrid->Cells[2][i].InputNumersOnly=true;
-//   mGrid->Cells[3][i].InputNumersOnly=true;
-//   mGrid->Cells[4][i].InputNumersOnly=true;
-//   mGrid->Cells[5][i].InputNumersOnly=true;
+   mGrid->Cells[2][i].InputNumbersOnly=true;
+   mGrid->Cells[3][i].InputNumbersOnly=true;
+   mGrid->Cells[4][i].InputNumbersOnly=true;
+   mGrid->Cells[5][i].InputNumbersOnly=true;
 
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
@@ -1670,6 +1673,15 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
 	bool Changes_TT=false;
 	Form_TT_kalkulator->Left=Form1->ClientWidth/2-Form_TT_kalkulator->Width/2;
 	Form_TT_kalkulator->Top=Form1->ClientHeight/2-Form_TT_kalkulator->Height/2;
+  scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+  scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,8);
+  scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+  scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,8);
+  scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+  scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,8);
+
+  this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
+
 
 	 if(Form1->d.v.OBJEKTY->dalsi!=NULL || Form1->d.v.POHONY->dalsi!=NULL)
 	 {
@@ -1716,7 +1728,15 @@ void __fastcall TForm_parametry_linky::scGPGlyphButton_TTClick(TObject *Sender)
        Close();
       }
 		}
-}
+      scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
+      scGPButton_vozik->Options->PressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
+      scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
+      scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+      scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
+      scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+    	this->Color=F->m.clIntensive(this->Color,-8);//navrácení do pùvodní hodnoty
+     // scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+      }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm_parametry_linky::sc(TObject *Sender)
@@ -1725,6 +1745,15 @@ void __fastcall TForm_parametry_linky::sc(TObject *Sender)
 		bool Changes_vozik=false;
 		Form_parametry_vozik->Left=Form1->ClientWidth/2-Form_parametry_vozik->Width/2;
 		Form_parametry_vozik->Top=Form1->ClientHeight/2-Form_parametry_vozik->Height/2;
+
+      scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+      scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,8);
+      scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+      scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,8);
+      scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+      scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,8);
+
+    this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
 
 	  if(mrOk==Form_parametry_vozik->ShowModal())
 	  {
@@ -1751,6 +1780,15 @@ void __fastcall TForm_parametry_linky::sc(TObject *Sender)
        Close();
       }
 		}
+
+      scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
+      scGPButton_vozik->Options->PressedColor=F->m.clIntensive(Form_parametry_linky->Color,-8);
+      scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
+      scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+      scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
+      scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+
+    this->Color=F->m.clIntensive(this->Color,-8);//zesvìtlení spodního formu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button2Click(TObject *Sender)
@@ -1867,17 +1905,10 @@ void TForm_parametry_linky::OnEnter(long Tag,unsigned long Col,unsigned long Row
 }
 void TForm_parametry_linky::OnChange(long Tag,unsigned long Col,unsigned long Row)
 {
-if(Col>1 && Col<=4 && input_state==NOTHING )
+ if(Col>1 && Col<=4 && input_state==NOTHING )
     {
-     //  VALIDACE(Col,Row);
+       VALIDACE(Col,Row);
     }
-
-    if(Col==2 && input_state==NOTHING)
-    {
-     mGrid->Cells[Col+1][Row].Text =   F->ms.MyToDouble(mGrid->Cells[Col][Row].Text)   * 3;
-     mGrid->Refresh();
-    }
-
 }
 //---------------------------------------------------------------------------
 
@@ -2118,23 +2149,23 @@ void __fastcall TForm_parametry_linky::scGPNumericEdit_vyska_jigKeyPress(TObject
 void TForm_parametry_linky::OnKeyPress(TObject *Sender, System::WideChar &Key)
 
 {
-  if(COL>=2 && COL<=5)
- {
-   if( Key == VK_BACK )
-        return;
-
-    if( !((Key >= L'0') && (Key <= L'9') || (Key == L',')))
-    {
-        ShowMessage("Zadávejte pouze èísla");
-        Key = 0;
-    }
-    else if ((Key == L',') && (Pos(Key, mGrid->Cells[COL][ROW].Text) > 0))
-    {
-        ShowMessage("Dvì desetinné èárky!");
-        Key = 0;
-    }
-
-  }
+//  if(COL>=2 && COL<=5)
+// {
+//   if( Key == VK_BACK )
+//        return;
+//
+//    if( !((Key >= L'0') && (Key <= L'9') || (Key == L',')))
+//    {
+//        ShowMessage("Zadávejte pouze èísla");
+//        Key = 0;
+//    }
+//    else if ((Key == L',') && (Pos(Key, mGrid->Cells[COL][ROW].Text) > 0))
+//    {
+//        ShowMessage("Dvì desetinné èárky!");
+//        Key = 0;
+//    }
+//
+//  }
 
 }
 //---------------------------------------------------------------------------
