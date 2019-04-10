@@ -3104,22 +3104,22 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 		}
 
 		//tabulka pohonu
-		if(F->PmG!=NULL && F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+		if(F->PmG!=NULL)
 		{
-			F->PmG->VisibleComponents=true;//stačí volat toto
-			F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
-			F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
-			if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)F->PmG->MovingTable=true;
-			else F->PmG->MovingTable=false;
-			F->PmG->Show(canv);
+			if(F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+			{
+				F->PmG->VisibleComponents=true;//stačí volat toto
+				F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
+				F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
+				if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)F->PmG->MovingTable=true;
+				else F->PmG->MovingTable=false;
+				F->PmG->Show(canv);
+			}
+			else//pokud ne, je třeba skrýt komponenty
+			{
+				F->PmG->SetVisibleComponents(false);
+			}
 		}
-//		else//pokud ne, je třeba skrýt komponenty
-//		{
-//			F->PmG->SetVisibleComponents(false);
-//			F->PmG->VisibleComponents=false;
-//			if(F->element_id==-1)F->PmG->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
-//			else F->PmG->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
-//		}
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
