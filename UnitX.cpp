@@ -34,7 +34,7 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
 void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	if(input_state==NOTHING)
+	if(input_state==NOTHING&&Tag==7)
 	{
 		Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
 		if(ID>100000)
@@ -142,4 +142,39 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		input_state=NOTHING;
 		F->nahled_ulozit(true);
 	}
+	if(input_state==NOTHING&&Tag==8)
+	{
+		switch(Row)
+		{
+			case 1://výbìr pohonu
+			{
+      	//COMBO
+			}break;
+			case 2://aktuální rychlost, aRD
+			{
+
+			}break;
+			case 3://rozteè, R
+			{
+
+			}break;
+			case 4://rozestup, Rz
+			{          //aRD=Rz/TT
+				input_state=Rz;
+				F->pom->pohon->Rz=F->inRz(F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text));
+				F->pom->pohon->aRD=F->pom->pohon->Rz;// /TT;
+        F->PmG->Cells[1][2].Text=F->outaRD(F->pom->pohon->aRD);
+			}break;
+			case 5://Rx
+			{        //Rz=Rx*R
+				input_state=Rx;
+				F->pom->pohon->Rx=F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text);
+				F->pom->pohon->Rz=F->pom->pohon->Rx*F->pom->pohon->roztec;
+				F->PmG->Cells[1][4].Text=F->pom->pohon->Rz;
+			}break;
+		}
+		F->PmG->Refresh();
+		input_state=NOTHING;
+		F->nahled_ulozit(true);
+  }
 }
