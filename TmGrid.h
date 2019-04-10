@@ -26,12 +26,14 @@ class TmGrid
 	{
 	 unsigned short	Width;//šíøka sloupce
 	 long Left;//umístìní sloupce v px, v rámci tabulky
+	 bool Visible;//zda bude sloupec zobrazen
 	};
 
 	struct TRows//datový typ používaný pro øádky
 	{
 	 unsigned short	Height;//výška øádku
 	 long Top;//umístìní øádku v px, v rámci tabulky
+	 //není dokonèeno bool Visible;//zda bude sloupec zobrazen
 	};
 
 	struct TCells//datový typ používaný pro buòky

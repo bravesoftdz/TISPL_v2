@@ -133,10 +133,12 @@ void TmGrid::Create()
 			CreateLinkBorder(X,Y,DefaultCell);
 			////ØÁDKY
 			Rows[Y].Height=DefaultRowHeight;
+			//zatím nezprovoznìno Rows[Y].Visible=true;
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Y*DefaultRowHeight;else Rows[0].Top=0;
 		}
 		////SLOUPCE
 		Columns[X].Width=DefaultColWidth;
+		Columns[X].Visible=true;
 		if(X>0){Columns[X].Left=Columns[X-1].Left+X*DefaultColWidth;}else Columns[0].Left=0;
 	}
 	bufColCount=ColCount;bufRowCount=RowCount;//urèeno pøi další realokaci pole
@@ -313,6 +315,7 @@ void TmGrid::Draw(TCanvas *C)
 	short Zoom_b=1; if(AntiAliasing_text)Zoom_b=3;
 	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
 	{
+		if(!Columns[X].Visible || Columns[X].Width==0){Columns[X].Width=0;continue;}//skrytí sloupce, zatím ale nefunguje patøiènì orámování
 		////oblast buòky
 		TRect R;//grid
 		TRect Rt;//text
@@ -329,6 +332,7 @@ void TmGrid::Draw(TCanvas *C)
 
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
+			//není dodìláno ve vztahu s níže uvedeným if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí øádku, zatím ale nefunguje patøiènì orámování
 			////oblast buòky
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpoèet horního okraje buòky dle buòky pøedchozí
 			R.Top			=	Top+Rows[Y].Top*Zoom_g;
@@ -343,7 +347,6 @@ void TmGrid::Draw(TCanvas *C)
 			////barva pozadí buòky
 			//28.2.provizorní fix if(Cells[X][Y].Text=="")C->Brush->Color=Cells[X][Y].isEmpty->Color;else //podmínìné formátování
 			C->Brush->Color=Cells[X][Y].Background->Color;//pro aktivaci podmínìného formátování pøidat do else
-
 			C->Brush->Style=Cells[X][Y].Background->Style;
 			C->FillRect(Rb);
 
@@ -389,10 +392,12 @@ void TmGrid::DrawGrid(TCanvas *C)
 	TRect R;//grid
 	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
 	{
+		if(!Columns[X].Visible || Columns[X].Width==0){Columns[X].Width=0;continue;}//skrytí sloupce, zatím ale nefunguje patøiènì orámování
 		R.Left	=	Left+Columns[X].Left;
 		R.Right	=	Left+(Columns[X].Left+Columns[X].Width);
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
+			//není otestováno if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí øádku, zatím ale nefunguje patøiènì orámování
 			R.Top			=	Top+Rows[Y].Top;
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 			////orámování buòky
@@ -431,10 +436,12 @@ void TmGrid::SetColRow()
 
 	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
 	{
-		if(X>0)Columns[X].Left=Columns[X-1].Left+Columns[X-1].Width;else Columns[0].Left=0;//výpoèet levého okraje buòky dle buòky pøedchozí
+		if(X!=0 && (!Columns[X-1].Visible || Columns[X-1].Width==0))Columns[X-1].Left;//skrytí sloupce, pokud je pøechozí skrytý, pøevezme aktuální zpracovávaný (cyklem) pozici pøedchozího
+		else if(X>0)Columns[X].Left=Columns[X-1].Left+Columns[X-1].Width;else Columns[0].Left=0;//výpoèet levého okraje buòky dle buòky pøedchozí
 	}
 	for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 	{
+		//není dodìláno ve vztahu s níže uvedeným if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}else//skrytí øádku, zatím ale nefunguje patøiènì orámování
 		if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpoèet horního okraje buòky dle buòky pøedchozí
 	}
 
@@ -614,7 +621,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			C->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
 			C->Options->NormalColor=Cell.Background->Color;
 			C->Options->FocusedColor=Cell.Background->Color;
-//			C->Options->NormalColorAlpha=255;
+//			C->Options->NormalColorAlpha=255;       nelze stále by bylo podsouvano
 //			C->Options->FrameNormalColor=clWhite;
 //			C->Options->FrameNormalColorAlpha=255;
 			C->Font=Cell.Font;
@@ -1368,7 +1375,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 						}break;
 						case COMBO:
 						{
-							Cells[ColCell_1][RowCell_1].Align=MIDDLE;
+							Cells[ColCell_1][RowCell_1].Valign=MIDDLE;
 							TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
 							C->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
 							C=NULL;delete C;
