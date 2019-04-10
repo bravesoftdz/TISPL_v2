@@ -436,7 +436,7 @@ void TmGrid::SetColRow()
 
 	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
 	{
-		if(X!=0 && (!Columns[X-1].Visible || Columns[X-1].Width==0))Columns[X-1].Left;//skrytí sloupce, pokud je pøechozí skrytý, pøevezme aktuální zpracovávaný (cyklem) pozici pøedchozího
+		if(X!=0 && (!Columns[X-1].Visible || Columns[X-1].Width==0))Columns[X].Left=Columns[X-1].Left;//skrytí sloupce, pokud je pøechozí skrytý, pøevezme aktuální zpracovávaný (cyklem) pozici pøedchozího
 		else if(X>0)Columns[X].Left=Columns[X-1].Left+Columns[X-1].Width;else Columns[0].Left=0;//výpoèet levého okraje buòky dle buòky pøedchozí
 	}
 	for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
