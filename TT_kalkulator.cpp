@@ -71,6 +71,8 @@ void TForm_TT_kalkulator::Nastav_design()
 	 scGPButton_takt->Options->PressedColor=Form_TT_kalkulator->Color;
 	 scGPButton_takt->Options->FramePressedColor=Form_TT_kalkulator->Color;
 
+   rHTMLLabel_takt->Font->Color=F->m.clIntensive(clBlack,50);
+
 
 }
 

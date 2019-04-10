@@ -1312,6 +1312,9 @@ void Cvektory::smaz_element(TObjekt *Objekt, unsigned int n)
 //smaže element ze seznamu
 void Cvektory::smaz_element(TElement *Element)
 {
+  //nejdříve smazání tabulky Elelementu
+	Element->mGrid->Delete();
+
 	//vyřazení prvku ze seznamu a napojení prvku dalšího na prvek předchozí prku mazaného
 	if(Element->dalsi!=NULL)//ošetření proti poslednímu prvku
 	{
@@ -1347,7 +1350,6 @@ void Cvektory::smaz_element(TElement *Element)
 	}
 
 	//odstranění z pěměti
-	//if(mGridSmazat)Element->mGrid->Delete(); mGrid nemažee
 	Element=NULL;delete Element;
 }
 ////---------------------------------------------------------------------------
