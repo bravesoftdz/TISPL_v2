@@ -133,6 +133,13 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(T=="")DOtocunit=M;else DOtocunit=MM;
 	T=F->readINI("nastaveni_nahled","koty_delka");
 	if(T=="")DKunit=M;else DKunit=MM;
+	//pro pohon
+	T=F->readINI("nastaveni_nahled","aRD"); //aktuální rychlost
+	if(T=="")aRDunit=SEC;else aRDunit=MIN;
+	T=F->readINI("nastaveni_nahled","R"); //rozteč
+	if(T=="")Runit=M;else Runit=MM;
+	T=F->readINI("nastaveni_nahled","Rz"); //rozestup
+	if(T=="")Rzunit=M;else Rzunit=MM;
 
 	//povolení Automatická záloha
 	Timer_backup->Enabled=true;
@@ -1348,7 +1355,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(!antialiasing)
 			{
 				d.vykresli_vektory(Canvas);
-				if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy();
+				if(refresh_mGrid)d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				if(scGPSwitch_meritko->State==true)d.meritko(Canvas);//grafické měřítko
 			}
 			else
@@ -1362,7 +1369,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_in);//velice nutné
-				if(pom_temp->elementy!=NULL && refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu
+				if(refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
@@ -1860,6 +1867,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-9){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
 								if(JID<=-11){TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}
+								if(JID==7||JID==8||JID==9)design_tab_pohon(1);
 						}
 						else
 						{
@@ -2325,78 +2333,97 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-10;//jednotky kóty
 //JID=-11 a více//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);
 //JID=-1 žádná
-//JID=0 - 10 rezervováno pro element
-//JID=11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
-//JID=100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
+//JID= 0 - 4 rezervováno pro element, používáno zatím jenom 0, bližší identifikace probíhá pomocí pom_element
+//JID= 5-10 nultý až poslední řádek tabulky pohonů
+//JID= 11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
+//JID= 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
 void TForm1::getJobID(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
-
-	//nejdříve TABULKA
-	pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-	if(pom_element!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
+	//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
+	if(PmG!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)
 	{
-		int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
-		if(IdxRow==0)JID=100+0;//hlavička
+		int IdxRow=PmG->GetIdxRow(X,Y);
+		if(IdxRow==0)JID=5;//hlavička
 		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 		{
-			int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+			int IdxCol=PmG->GetIdxColum(X,Y);
 			if(IdxCol==0)//řádky v prvním sloupeci
 			{
-				if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-				else JID=1000+IdxRow;
+				if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=5+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+				//else JID=XX+IdxRow; - NEVYUŽITO
 			}
-			else JID=2000+IdxRow;//řádky v dalších sloupcích
+			//else JID=XX+IdxRow;//řádky v dalších sloupcích - NEVYUŽITO
 		}
 	}
-	else//tabulka nenalezena, takže zkouší najít ELEMENT
+	if(JID==-1)//pokud nebyla tabulka pohonu nalezena zkouší hledat další aktivní prvky náhledu
 	{
-		pom_element=NULL;
-		if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
-		if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+		//dále TABULKY ELEMENTŮ
+		pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
+		if(pom_element!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 		{
-			JID=0;
-		}
-		else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
-		{
-			//testování zda se nepřejelo myší přes OBRYS kabiny, pokud je dovoleno měnit rozměry a rozmístění kabiny
-								//roteč linií//šířka linie (polovina na každou stranu)
-			short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
-			if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
-			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
-			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
-			else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
-			else
-			{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
-				d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
-				AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
-				int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
-				int Yd=m.L2Py(F->pom_temp->Yk);
-				if(Xl<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-6;//název objektu
-				else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
-				else//nejedná tj. testují se KÓTY
+			int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
+			if(IdxRow==0)JID=100+0;//hlavička
+			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
+			{
+				int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+				if(IdxCol==0)//řádky v prvním sloupeci
 				{
-					if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+					else JID=1000+IdxRow;
+				}
+				else JID=2000+IdxRow;//řádky v dalších sloupcích
+			}
+		}
+		else//tabulka nenalezena, takže zkouší najít ELEMENT
+		{
+			pom_element=NULL;
+			if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
+			if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+			{
+				JID=0;
+			}
+			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
+			{
+				//testování zda se nepřejelo myší přes OBRYS kabiny, pokud je dovoleno měnit rozměry a rozmístění kabiny
+									//roteč linií//šířka linie (polovina na každou stranu)
+				short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
+				if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
+				else
+				{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
+					d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+					AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
+					int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
+					int Yd=m.L2Py(F->pom_temp->Yk);
+					if(Xl<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-6;//název objektu
+					else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
+					else//nejedná tj. testují se KÓTY
 					{
-						short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
-						//jednotky kóty buď kabiny nebo kót elementů JID=-10
-						if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
-						else
+						if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 						{
-							//vodorovná kóta JID=-8
-							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO) //short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
+							short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
+							//jednotky kóty buď kabiny nebo kót elementů JID=-10
+							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
+							else
 							{
-								JID=-8;
-							}else
-							//svislá kóta JID=-9
-							if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
-							{
-								JID=-9;
-							}
-							else//kóty elementů RET=10-99
-							{
-								if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
-								if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+								//vodorovná kóta JID=-8
+								if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO) //short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
+								{
+									JID=-8;
+								}else
+								//svislá kóta JID=-9
+								if(pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)-cO<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x+0.3)+cO && m.L2Py(F->pom_temp->Yk)<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y))
+								{
+									JID=-9;
+								}
+								else//kóty elementů RET=11-99
+								{
+									if(PtInKota_elementu==0 && pom_element!=NULL)JID=10+pom_element->n;//oblast kóty - posun kóty
+									if(PtInKota_elementu==1 && pom_element!=NULL)JID=(10+pom_element->n)*(-1);//hodnota kóty
+								}
 							}
 						}
 					}
@@ -2434,6 +2461,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){REFRESH();kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
 		if(JID>=11&&JID<=99)kurzor(zmena_d_y);
+		if(JID==7||JID==8||JID==9)kurzor(zmena_j);
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
@@ -3193,6 +3221,8 @@ void TForm1::add_element (int X, int Y)
 		design_element(E);
 		//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 		aut_pozicovani(E,X,Y);
+		//při vložení prvního robota překreslit tabulku pohonu
+		if(E->n==1)design_tab_pohon(2);
 		//až na konec:
 		E=NULL;delete E;
 		Akce=NIC;
@@ -3516,39 +3546,140 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 }
 //---------------------------------------------------------------------------
 //designovaní tabulky pro pohon
-void TForm1::design_tab_pohon()
+void TForm1::design_tab_pohon(int index)
 {
-	PmG=new TmGrid(this);//vždy nutno jako první
-	
-	PmG->DefaultCell.Font->Name=aFont->Name;
-	PmG->DefaultCell.Font->Size=aFont->Size;
-	PmG->DefaultCell.isLink->Name=aFont->Name;
-	PmG->DefaultCell.isLink->Size=aFont->Size;
-	PmG->DefaultCell.Font->Color=(TColor)RGB(128,128,128);
-	PmG->DefaultCell.Align=mGrid->RIGHT;
-	
-	PmG->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
-	PmG->ID=0;
-	PmG->AntiAliasing_text=true;
-	PmG->Border.Width=2;
-	PmG->MovingTable=false;
-	PmG->Create(2,5);
-	
-	PmG->Left=m.L2Px(pom->Xk+pom->rozmer_kabiny.x);
-	PmG->Top=m.L2Py(pom->Yk+1)-mGrid->RowCount*mGrid->Rows->Height;
-	
-	PmG->Cells[0][0].Text="Pohon";
-	PmG->Cells[0][1].Text="Výběr pohonu";     //rychlost, roztec, rozestup.
-	PmG->Cells[0][2].Text="Rychlost";
-	PmG->Cells[0][3].Text="Rozteč";
-	PmG->Cells[0][4].Text="Rozestup";
-
-	PmG->Cells[0][0].Font->Color=clBlack;
-	PmG->Cells[0][0].BottomBorder->Width=2;
-	PmG->Cells[0][0].Align=mGrid->CENTER;
-	PmG->Columns[0].Width=50;
-	PmG->Columns[1].Width=20;
-	PmG->MergeCells(0,0,1,0);
+	AnsiString aRD,R,Rz;
+	switch (index)
+	{
+   	///////////Design tabulky
+   	case 0:
+   	{
+   		PmG=new TmGrid(this);//vždy nutno jako první
+   		//nastavení jednotek podle posledních nastavení
+   		if (aRDunit==SEC) aRD="<a>[m/s]</a>";
+   		else aRD="<a>[m/min]</a>";
+   		if (Runit==M) R="<a>[m]</a>";
+   		else R="<a>[mm]</a>";//1
+   		if (Rzunit==M) Rz="<a>[m]</a>";
+   		else Rz="<a>[mm]</a>";
+   		//nastavení defaultního designu
+   		PmG->DefaultCell.Font->Name=aFont->Name;
+   		PmG->DefaultCell.Font->Size=aFont->Size;
+   		PmG->DefaultCell.isLink->Name=aFont->Name;
+   		PmG->DefaultCell.isLink->Size=aFont->Size;
+   		PmG->DefaultCell.Align=mGrid->RIGHT;
+   		PmG->AntiAliasing_text=true;
+   		PmG->MovingTable=false;
+   		PmG->Border.Width=2;
+   		PmG->ID=0;
+   		PmG->Tag=8;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+   		//vytvoření tabulky
+   		if(pom->elementy!=NULL)
+   		{
+   			int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+   			if(EID==1||EID==3) PmG->Create(2,6);
+   			else PmG->Create(2,4);
+   		} else PmG->Create(2,6);
+   		//naplnění buněk
+    		PmG->Cells[0][0].Text="Pohon";
+    		PmG->Cells[0][1].Text="Výběr pohonu";
+   		PmG->Cells[0][2].Text="Rychlost "+aRD;
+   		PmG->Cells[0][3].Text="Rozteč "+R;
+    		if(PmG->RowCount!=4)
+    		{
+   			PmG->Cells[0][4].Text="Rozestup "+Rz;  //nezávislé  vzdálenost mezi jig   Rz
+   			PmG->Cells[1][4].Type=PmG->EDIT;
+   			PmG->Cells[0][5].Text="RX";
+   			PmG->Cells[1][5].Type=PmG->EDIT;
+     	}
+   		//typy buněk
+    		PmG->Cells[1][1].Type=PmG->COMBO;
+     	PmG->Cells[1][2].Type=PmG->EDIT;
+     	PmG->Cells[1][3].Type=PmG->EDIT;
+     	//hlavička
+     	PmG->Cells[0][0].Font->Color=clBlack;
+   		PmG->Cells[0][0].BottomBorder->Width=2;
+   		PmG->Cells[0][0].Align=mGrid->CENTER;
+   		PmG->SetColumnAutoFit(-4);
+   		PmG->Columns[0].Width=130;
+   		PmG->Columns[1].Width=70;
+    		//finální design
+   		for(int i=1;i<=PmG->RowCount-1;i++)
+   		{
+   			if (PmG->Cells[1][i].Type==PmG->EDIT)
+   				PmG->Cells[1][i].InputNumbersOnly=true;
+   			else PmG->Cells[1][i].Font->Color=(TColor)RGB(128,128,128);
+   			PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
+   			PmG->Cells[0][i].RightMargin=3;
+   		}
+   		//sloučení hlavičky
+   		PmG->MergeCells(0,0,1,0);
+   	}break;
+   	case 1:///////////Změna jednotek
+   	{
+   		//překlopení jednotek
+   		switch(JID)
+   		{
+   			case 7:
+   			{
+   				if (aRDunit==SEC) aRDunit=MIN;
+   				else aRDunit=SEC;
+   			}break;
+   			case 8:
+   			{
+   				if (Runit==M) Runit=MM;
+   				else Runit=M;
+   			}break;
+   			case 9:
+   			{
+   				if (Rzunit==M) Rzunit=MM;
+   				else Rzunit=M;
+   			}break;
+   		}
+   		//nastavení jednotek podle posledních nastavení
+   		if (aRDunit==SEC) aRD="<a>[m/s]</a>";
+   		else aRD="<a>[m/min]</a>";
+   		if (Runit==M) R="<a>[m]</a>";
+   		else R="<a>[mm]</a>";//1
+   		if (Rzunit==M) Rz="<a>[m]</a>";
+   		else Rz="<a>[mm]</a>";
+   		//přepsání jednotek
+			PmG->Cells[0][2].Text="Rychlost "+aRD;
+   		PmG->Cells[0][3].Text="Rozteč "+R;
+   		if(PmG->RowCount!=4) PmG->Cells[0][4].Text="Rozestup "+Rz;
+   		//zapsání nových jednotek do INI
+   		writeINI("nastaveni_nahled", "aRD", aRDunit);
+   		writeINI("nastaveni_nahled", "R", Runit);
+			writeINI("nastaveni_nahled", "Rz", Rzunit);
+			PmG->Refresh();
+   	}break;
+   	case 2:
+   	{
+   		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+   		if((EID==1||EID==3||EID==5)&&PmG->RowCount==6)
+   		{
+   			PmG->DeleteRow(5);
+   			PmG->DeleteRow(4);
+   		}
+   		if((EID==2||EID==4||EID==6)&&PmG->RowCount==4)
+   		{
+   			PmG->AddRow();
+   			PmG->AddRow();
+   			PmG->Cells[0][4].Text="Rozestup "+Rz;  //nezávislé  vzdálenost mezi jig   Rz
+   			PmG->Cells[1][4].Type=PmG->EDIT;
+   			PmG->Cells[0][5].Text="RX";
+   			PmG->Cells[1][5].Type=PmG->EDIT;
+   			for(int i=4;i<=PmG->RowCount-1;i++)
+   			{
+   			if (PmG->Cells[1][i].Type==PmG->EDIT)
+   				PmG->Cells[1][i].InputNumbersOnly=true;
+   			else PmG->Cells[1][i].Font->Color=(TColor)RGB(128,128,128);
+   			PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
+   			PmG->Cells[0][i].RightMargin=3;
+   			}
+   		}
+   	}break;
+	}
 }
 //---------------------------------------------------------------------------
 //nadesignuje tabulky daného elementu
@@ -3741,7 +3872,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 		{
 			E->mGrid->Cells[1][i].Font->Color=clFontLeft;
 			E->mGrid->Cells[1][i].Background->Color=clBackgroundHidden;
-		} else E->mGrid->Cells[1][i].InputNumbersOnly=true; 
+		} else E->mGrid->Cells[1][i].InputNumbersOnly=true;
 		E->mGrid->Cells[0][i].RightMargin = 3;
 		E->mGrid->Cells[1][i].RightMargin = 3;
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
@@ -4351,7 +4482,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 					TShiftState Shift, int X, int Y)
 {
 	int Row;
-  Row=DrawGrid_ostatni->Row;
+	Row=DrawGrid_ostatni->Row;
 	knihovna_id=3;
 	if(Row==0)  element_id=0;
 	SB("Kliknutím na libovolné místo umístíte vybraný element.");
@@ -5116,7 +5247,7 @@ void TForm1::NP_input()
 		}
 		E=NULL; delete E;
 	}
-	design_tab_pohon();
+	design_tab_pohon(0);
 	//toto třeba?:Invalidate();
 	REFRESH();  
 }
@@ -7281,6 +7412,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		pom=NULL;
 		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
+    PmG->Delete(); PmG=NULL; delete PmG;
 
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;

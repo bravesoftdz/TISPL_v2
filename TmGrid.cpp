@@ -1818,7 +1818,7 @@ void TmGrid::DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned lon
 long TmGrid::GetIdxRow(int X,int Y)
 {
 	long RET=-1;
-	if(X>=Left && X<Left+Width && Y>=Top && Y<Top+Height)//ošetøení mimo tabulku + akcelerátor
+	if(CheckPTinTable(X,Y))//ošetøení mimo tabulku + akcelerátor
 	{
 		for (unsigned long i=0;i<RowCount;i++)
 		{
@@ -1833,7 +1833,7 @@ long TmGrid::GetIdxRow(int X,int Y)
 long TmGrid::GetIdxColum(int X,int Y)
 {
 	long RET=-1;
-	if(X>=Left && X<Left+Width && Y>=Top && Y<Top+Height)//ošetøení mimo tabulku + akcelerátor
+	if(CheckPTinTable(X,Y))//ošetøení mimo tabulku + akcelerátor
 	{
 		for (unsigned long i=0;i<ColCount;i++)
 		{
@@ -1899,7 +1899,13 @@ void TmGrid::HighlightTable(TColor Color,unsigned short Size,unsigned short Offs
 //zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
 void TmGrid::HighlightTableOnMouse(int X,int Y)
 {
-	if(Left<=X && X<=Left+Width && Y>Top && Y<Top+Height)HighlightTable();
+	if(CheckPTinTable(X,Y))HighlightTable();
+}
+//---------------------------------------------------------------------------
+//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) zjistí, zda jsou souøadnice ve vnitø tabulky
+bool TmGrid::CheckPTinTable(int X,int Y)
+{
+	return Left<=X && X<=Left+Width && Y>Top && Y<Top+Height;
 }
 //---------------------------------------------------------------------------
 //dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1

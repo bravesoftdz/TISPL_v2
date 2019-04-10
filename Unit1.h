@@ -502,22 +502,14 @@ __published:	// IDE-managed Components
 
 
 // User declarations
-	////struktury, výèty
+	////jen public struktury a výèty
 public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA,OFFSET_KOTY};Takce Akce;
-	enum Tm_mm{M=0,MM};Tm_mm DOtocunit,DKunit,LOunit;//pøepínaè jednotek vzdálenost
-	enum Tminsec{SEC=0,MIN};Tminsec PTunit;Tminsec ;//pøepínaè jednotek èasu
-	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
-	Cvektory::TElement *pom_element,*pom_element_temp;
-	TPointD copyObjektRzRx;
-	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
-	UnicodeString get_user_name();
-	//toto je na co?:DrawGridWndProc(TMessage &Message);
-	bool mazani;
-	bool zobrazeni_tabulek;
-  TmGrid *PmG;
+	enum Tm_mm{M=0,MM};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost
+	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
+
 
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
@@ -547,7 +539,7 @@ private:
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
 	short rotace_symbol(short trend,int X, int Y);
-  void design_tab_pohon();
+  void design_tab_pohon(int index);
 	void design_element(Cvektory::TElement *E);//nadesignuje tabulky daného elementu
 	void zmen_poradi_objektu(int X, int Y);//testuje zda se nejedná o zmìnu poøadí (to musí ještì uživatel potvrdit)
 	void zobraz_tip(UnicodeString text="", TCanvas* canv=NULL);//prázdným (bez paremetrù) voláním  metody se tip smaže, //pokud není parametr canvas uveden, jedná se o dlouhodobé vykreslování hodnoty TIP//pokud je parametrem pøedán Canvas vykreslí se pøímo a jednorázovì
@@ -561,6 +553,7 @@ private:
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void vse_odstranit();
 	UnicodeString get_computer_name();
+	UnicodeString get_user_name();
 	UnicodeString get_temp_dir();
 	UnicodeString get_Windows_dir();
 	int get_DPI();
@@ -598,14 +591,11 @@ private:
 	UnicodeString LICENCE;
 	short n_prihlaseni;
 	bool ortogonalizace_stav;
-  bool kalibrace_hotova;
-
-private:
+	bool kalibrace_hotova;
 	bool pan_non_locked;
 	bool stisknute_leve_tlacitko_mysi;//uchovává stav levého tlaèítka myši
 	unsigned short int funkcni_klavesa;//uchovává stav poslední stisknuté funkèní klávesy
 	unsigned short int vyska_menu;
-
 	double Zoom_predchozi,Zoom_predchozi2;
 	TPointD Posun_predchozi,Posun_predchozi2;
 	short jedno_ze_tri_otoceni_koleckem_mysi;
@@ -626,37 +616,43 @@ private:
 	bool start_ortogonalizace;
 	bool stav_kurzoru;//kurzon vykreslen/nevykreslen
 	AnsiString nazev_puvodni;// používáno pro uchovávání pùvodního názvu objektu z dùvodu zrušení editace
-
 	AnsiString Caption;
-
 	short pocitadlo_doby_neaktivity;
 	TPoint pocitadlo_zmeny_pozice;
-
 	bool FMaximized;
 	TRect FOldBoundsRect;
 
-
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
+	//instance
+	TMyString ms;
+	Cmy m;
+	Cvykresli d;
+	Cgrafy g;
+	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 
+	//uklazatele
+	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
+	Cvektory::TElement *pom_element,*pom_element_temp;
+	TmGrid *PmG;//ukazatel na mGridovou tabulku pohonu
+
+	//souøadnicové promìnné
 	TPoint akt_souradnice_kurzoru_PX;//uchová aktuální pozici kurzoru
 	TPointD akt_souradnice_kurzoru;//uchová aktuální pozici kurzoru v logických jednotkách, resp. souøadnicích
 	TPoint vychozi_souradnice_kurzoru;//uchová výchozí pozici kurzoru
 	TPoint predchozi_souradnice_kurzoru;//uchová pùvodní pozici kurzoru pøi stisku tlaèítka myši
 	TPoint minule_souradnice_kurzoru;//uchová pùvodní souøadnice pøi posunu
 
+	//promìnné
 	UnicodeString VERZE;
 	double m2px;//uchovává hodnotu prostorového rozlišení programu, nativní rozlišení 0,1 m na 1 pixel pøi zoomu 1x
 	double fps;//frames per second, èetnost snímkù za sekundu - používá se pro animace a simulace
 	double afps;//frames per second, aktuální èetnost snímkù za sekundu - používá se pro animace a simulace
-	TMyString ms;
-	Cmy m;
-	Cvykresli d;
-	Cgrafy g;
 	UnicodeString FileName;
 	TFont *aFont;//aktuální nastavený výchozí font
 	double Zoom; //promìnná uchovávajicí velikost Zoomu
 	TPointD Posun;//promìnné uchovávajicí velikost posunu obrazu (pro scrollování atp.), je to ve fyzických souøadnicích zaøízení
+	TPointD copyObjektRzRx;
 	bool grid;
 	int size_grid;
 	short prichytavat_k_mrizce;
@@ -676,7 +672,10 @@ public:		// User declarations
 	UnicodeString editovany_text;//uchovává editovanou hodnotu kót
 	int index_kurzoru;
 	bool posun_dalsich_elementu;//indikuje zda je požadován posun dalších elementù
+	bool mazani;
+	bool zobrazeni_tabulek;
 
+	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
 	void NPin();//podpùrná metoda NP(), øeší vstupní èást dat, vyseparováno, z dùvodu toho, že z GAPO aktulizauji pøípadnì spuštìné PO a nemohu volat NP, protože to v sobì obsahu ShowModal - vedlo k chybì
   void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
