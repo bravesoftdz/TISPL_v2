@@ -158,17 +158,17 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			{
 
 			}break;
-			case 4://rozestup, Rz
-			{          //aRD=Rz/TT
-				input_state=Rz;
-				F->pom->pohon->Rz=F->inRz(F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text));
-				F->pom->pohon->aRD=F->pom->pohon->Rz;// /TT;
-        F->PmG->Cells[1][2].Text=F->outaRD(F->pom->pohon->aRD);
-			}break;
+//			case 4://rozestup, Rz   NEBUDE EDITOVATELNÝ
+//			{          //aRD=Rz/TT
+//				input_state=Rz;
+//				F->pom->pohon->Rz=F->inRz(F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text));
+//				F->pom->pohon->aRD=F->pom->pohon->Rz/F->d.v.PP.TT;
+//				F->PmG->Cells[1][2].Text=F->outaRD(F->pom->pohon->aRD);
+//			}break;
 			case 5://Rx
 			{        //Rz=Rx*R
 				input_state=Rx;
-				F->pom->pohon->Rx=F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text);
+				F->pom->pohon->Rx=F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text);//POM_TEMP
 				F->pom->pohon->Rz=F->pom->pohon->Rx*F->pom->pohon->roztec;
 				F->PmG->Cells[1][4].Text=F->pom->pohon->Rz;
 			}break;
