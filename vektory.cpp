@@ -1123,7 +1123,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 				if(rotace==90 || rotace==270)sizeY/=2.0;
 				POINT body[3]={{F->m.round(m.L2Px(E->X)+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,sklon,rotace).y*sizeY)},{m.L2Px(E->X),m.L2Py(E->Y)},{F->m.round(m.L2Px(E->X)+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,360-sklon,rotace).y*sizeY)}};
 				//F->Canvas->Pen->Color=clBlue;F->Canvas->Polygon((TPoint*)body,2);  pro testovací zákres
-				if(PtInRegion(CreatePolygonRgn(body,3+1,WINDING),m.L2Px(X),m.L2Py(Y)))break;
+				if(PtInRegion(CreatePolygonRgn(body,3,WINDING),m.L2Px(X),m.L2Py(Y)))break;//pozn. CreatePolygonRgn - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
 				else E=E->dalsi;
 			}
 			else

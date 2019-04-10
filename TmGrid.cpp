@@ -333,7 +333,7 @@ void TmGrid::Draw(TCanvas *C)
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
 			//není dodìláno ve vztahu s níže uvedeným if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí øádku, zatím ale nefunguje patøiènì orámování
-			////oblast buòky
+			////oblast a umístìní buòky
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpoèet horního okraje buòky dle buòky pøedchozí
 			R.Top			=	Top+Rows[Y].Top*Zoom_g;
 			Rt.Top		=	Rows[Y].Top*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
@@ -354,33 +354,10 @@ void TmGrid::Draw(TCanvas *C)
 			SetComponents(C,Rc,Rt,X,Y,Cells[X][Y]);
 
 			////orámování buòky
-			//používám duplicitnì (k DrawGrid) zde, kvùli akceleraci v pøípadì totálnì vypnutého AA nebo totálnì zapnutého AA, v takovém pøípadì potom nebìží DrawGrid, mohl bych ho sice volat zde, ale chci si ušetøit opakovaný prùchod cykly, DrawGrid bìží jenom v momentu AntiAliasing_text=false a AntiAliasing_grid=true
+			//používám duplicitnì (k DrawGrid) zde, v pøípadì totálnì vypnutého AA nebo totálnì zapnutého AA, v takovém pøípadì potom nebìží DrawGrid, DrawGrid bìží jenom v momentu AntiAliasing_text=false a AntiAliasing_grid=true
 			if(!(AntiAliasing_grid==false && AntiAliasing_text==true))
 			{
-				//top
-				if(Cells[X][Y].TopBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
-				{
-					SetBorder(C,Cells[X][Y].TopBorder);
-					C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
-				}
-				//bottom
-				if(Y==RowCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
-				{
-					SetBorder(C,Cells[X][Y].BottomBorder);
-					C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
-				}
-				//left
-				if(Cells[X][Y].LeftBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
-				{
-					SetBorder(C,Cells[X][Y].LeftBorder);
-					C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
-				}
-				//right
-				if(X==ColCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
-				{
-					SetBorder(C,Cells[X][Y].RightBorder);
-					C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
-				}
+				DrawCellBorder(C,X,Y,R);
 			}
 		}
 	}
@@ -397,35 +374,42 @@ void TmGrid::DrawGrid(TCanvas *C)
 		R.Right	=	Left+(Columns[X].Left+Columns[X].Width);
 		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
 		{
+			////umístìní
 			//není otestováno if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí øádku, zatím ale nefunguje patøiènì orámování
 			R.Top			=	Top+Rows[Y].Top;
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 			////orámování buòky
-			//top
-			if(Cells[X][Y].TopBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
-			{
-				SetBorder(C,Cells[X][Y].TopBorder);
-				C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
-			}
-			//bottom
-			if(Y==RowCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
-			{
-				SetBorder(C,Cells[X][Y].BottomBorder);
-				C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
-			}
-			//left
-			if(Cells[X][Y].LeftBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
-			{
-				SetBorder(C,Cells[X][Y].LeftBorder);
-				C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
-			}
-			//right
-			if(X==ColCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
-			{
-				SetBorder(C,Cells[X][Y].RightBorder);
-				C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
-			}
+			DrawCellBorder(C,X,Y,R);
 		}
+	}
+}
+//---------------------------------------------------------------------------
+//zajistí vykreslení orámování jen jedné buòky
+void TmGrid::DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R)
+{
+	//top
+	if(Cells[X][Y].TopBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
+	{
+		SetBorder(C,Cells[X][Y].TopBorder);
+		C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
+	}
+	//bottom
+	if(Y==RowCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+	{
+		SetBorder(C,Cells[X][Y].BottomBorder);
+		C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
+	}
+	//left
+	if(Cells[X][Y].LeftBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
+	{
+		SetBorder(C,Cells[X][Y].LeftBorder);
+		C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
+	}
+	//right
+	if(X==ColCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
+	{
+		SetBorder(C,Cells[X][Y].RightBorder);
+		C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
 	}
 }
 //---------------------------------------------------------------------------

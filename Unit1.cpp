@@ -2332,7 +2332,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-11 a více//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);
 //JID=-1 žádná
 //JID= 0 - 4 rezervováno pro element, používáno zatím jenom 0, bližší identifikace probíhá pomocí pom_element
-//JID= 5-10 nultý až poslední řádek tabulky pohonů
+//JID= 5-10 nultý až poslední řádek tabulky pohonů (využity pouze 7,8,9)
 //JID= 11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
 //JID= 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
 void TForm1::getJobID(int X, int Y)
