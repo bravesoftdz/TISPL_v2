@@ -509,6 +509,24 @@ double Cmy::PT(double LO,double RD)
 	if(RD==0)return 0; else return LO/RD;
 }
 ////////////////////////
+//dle aktuálního RD a délky otoè vrátí PTo
+double Cmy::PTo(double Dotoc,double RD)
+{
+	if(RD==0)return 0; else return Dotoc/RD;
+}
+////////////////////////
+//dle aktuálního RD a èasu otáèení otoèe vrátí délku otáèení
+double Cmy::Dotoc(double PTo,double RD)
+{
+	return PTo*RD;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vratí RD dle délky otoèe a èasu otáèení
+double Cmy::RDo(double Dotoc,double PTo)
+{
+	if(PTo==0)return 0; else return Dotoc/PTo;
+}
+////////////////////////
 //vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 double Cmy::dopRD(double dJ,double sJ,double rotace,double R,double TT, double RD)
 {

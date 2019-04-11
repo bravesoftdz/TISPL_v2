@@ -55,6 +55,9 @@ class Cmy
 	double RD(double Rz);//vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstažnosti s TT
 	double RD(double LO,double PT);//vratí RD dle velikosti lakovacího okna a procesního èasu
 	double PT(double LO,double RD);//vrátí PT dle velikosti lakovacícho okna a aktuální rychlosti pohonu
+	double PTo(double Dotoc,double RD);//dle aktuálního RD a délky otoè vrátí PTo
+	double Dotoc(double PTo,double RD);//dle aktuálního RD a èasu otáèení otoèe vrátí délku otáèení
+	double RDo(double Dotoc,double PTo);//vratí RD dle délky otoèe a èasu otáèení
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteè (R) ovlivní Rz resp RD
 	double UDV(double dJ,double sJ,double rotace);//vratí užitnou délku vozíku
