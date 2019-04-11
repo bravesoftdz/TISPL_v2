@@ -29,6 +29,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_delka_jigClick
   end
   object rHTMLLabel_JIG: TrHTMLLabel
     Left = 70
@@ -57,6 +58,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_sirka_jigClick
   end
   object rHTMLLabel_vyska_jig: TrHTMLLabel
     Left = 323
@@ -72,6 +74,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     Font.Quality = fqClearType
     ParentFont = False
     Visible = False
+    OnClick = rHTMLLabel_vyska_jigClick
   end
   object rHTMLLabel_delka_podvozek: TrHTMLLabel
     Left = 110
@@ -86,6 +89,7 @@ object Form_parametry_vozik: TForm_parametry_vozik
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
+    OnClick = rHTMLLabel_delka_podvozekClick
   end
   object rHTMLLabel_podvozek_zaves: TrHTMLLabel
     Left = 32

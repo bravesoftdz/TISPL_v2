@@ -44,6 +44,10 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall KonecClick(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
+  void __fastcall rHTMLLabel_delka_jigClick(TObject *Sender);
+  void __fastcall rHTMLLabel_sirka_jigClick(TObject *Sender);
+  void __fastcall rHTMLLabel_vyska_jigClick(TObject *Sender);
+  void __fastcall rHTMLLabel_delka_podvozekClick(TObject *Sender);
 
 
 
