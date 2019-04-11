@@ -21,6 +21,7 @@ class Cvykresli
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
 	int CorEx(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
 	int CorEy(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
+	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky), pøevede dle aktuální rotace symbolu a uchopovacích (skuteèných) souøadnic robota
 
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	float sizeP;//velikost textù popiskù elementù v knihovnì
@@ -95,11 +96,11 @@ class Cvykresli
 	void odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p,int posunX=0, int posunY=0, COLORREF color=clBlack);
 	void odznac_oznac_objekt_novy(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);
 	void odznac_oznac_objekt_novy_posledni(TCanvas *canv, int X, int Y);
-void odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p, bool posun=false);//pøí umistivání èi posouvání vyhýbky
-void odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);//vykreslí èi odznaèí potenciální umístìní vìtve, další fáze po umístìní výhybky
+	void odznac_oznac_vyhybku(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p, bool posun=false);//pøí umistivání èi posouvání vyhýbky
+	void odznac_oznac_vetev(TCanvas *canv, int X, int Y,Cvektory::TObjekt *p);//vykreslí èi odznaèí potenciální umístìní vìtve, další fáze po umístìní výhybky
 	bool lezi_v_pasmu(TCanvas *c,long X,long Y,Cvektory::TObjekt *p, bool odecti_region=true);
 	bool lezi_v_pasmu_poslednim(TCanvas *c,long X,long Y,bool odecti_region=true);
-double trend(Cvektory::TObjekt *Objekt);//vratí trend schématu pro objekt z parametru,pro jeden prvek automaticky bude trend schématu 0°, pokud se jedná o první prvek, tak výjimka, øeší trend podle prvku následujícího, pro další se hledí na trend podle azimutu k pøedchozímu prvku
+	double trend(Cvektory::TObjekt *Objekt);//vratí trend schématu pro objekt z parametru,pro jeden prvek automaticky bude trend schématu 0°, pokud se jedná o první prvek, tak výjimka, øeší trend podle prvku následujícího, pro další se hledí na trend podle azimutu k pøedchozímu prvku
 	void sound();
 	void meritko(TCanvas *canv,long X=-1,long Y=-1);
 	void vykresli_packu(TCanvas *canv, int X1,int Y1,int X2,int Y2,TColor color=/*clBtnShadow*/(TColor)RGB(170,170,170),short Width=1,short OffsetX=-5,short OffsetY=0);//vykreslí packu jako spojnici mezi komponentami
