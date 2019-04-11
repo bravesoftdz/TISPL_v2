@@ -47,6 +47,20 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 	return m.L2Py(O->Y);
 }
 //---------------------------------------------------------------------------
+//vrátí referenční logické (v metrech) souřadnice  robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota
+TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
+{
+	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
+	switch(Element->rotace_symbolu)
+	{
+		case 0:		RET.y=Element->Y+DoSkRB;break;
+		case 90:	RET.x=Element->X+DoSkRB;break;
+		case 180:	RET.y=Element->Y-DoSkRB;break;
+		case 270:	RET.y=Element->X-DoSkRB;break;
+	}
+	return RET;
+}
+//---------------------------------------------------------------------------
 void Cvykresli::vykresli_objekty(TCanvas *canv)
 {
 	F->Z("",false);//smazání přechozích zpráv
@@ -284,7 +298,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
-	if(ukaz->id!=F->VyID)
+	if((long)ukaz->id!=F->VyID)
 	{
 		//INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
 
@@ -1561,7 +1575,7 @@ void Cvykresli::editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned shor
 //označí nebo odznačí objekt používá se při posouvání objektů
 void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int posunX, int posunY,COLORREF color)
 {
-		if(p->id!=F->VyID)
+		if((long)p->id!=F->VyID)
 		{
 			//ShowMessage(UnicodeString(p->X)+" "+UnicodeString(p->Y));
 			//nastavení pera
@@ -3034,7 +3048,7 @@ void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popi
 void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
-	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	//int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 	canv->Brush->Style=bsClear;
 	canv->Font->Color=barva;
@@ -3129,7 +3143,6 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//float O=DoSkRB*2;//odsazení sipky elementu obecne
 
 	double O=F->pom_temp->koty_elementu_offset;
-
 
 	//highlight
 	short highlight=0;
