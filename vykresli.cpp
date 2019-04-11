@@ -47,6 +47,20 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 	return m.L2Py(O->Y);
 }
 //---------------------------------------------------------------------------
+//vrátí referenční logické (v metrech) souřadnice  robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota
+TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
+{
+	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
+	switch(Element->rotace_symbolu)
+	{
+		case 0:		RET.y=Element->Y+DoSkRB;break;
+		case 90:	RET.x=Element->X+DoSkRB;break;
+		case 180:	RET.y=Element->Y-DoSkRB;break;
+		case 270:	RET.y=Element->X-DoSkRB;break;
+	}
+	return RET;
+}
+//---------------------------------------------------------------------------
 void Cvykresli::vykresli_objekty(TCanvas *canv)
 {
 	F->Z("",false);//smazání přechozích zpráv
@@ -284,7 +298,7 @@ void Cvykresli::sipka(TCanvas *canv, int X, int Y, float azimut, bool bez_vyplne
 //---------------------------------------------------------------------------
 void Cvykresli::vykresli_rectangle(TCanvas *canv,Cvektory::TObjekt *ukaz)
 {
-	if(ukaz->id!=F->VyID)
+	if((long)ukaz->id!=F->VyID)
 	{
 		//INFO: Zoom_predchozi_AA je v případě nepoužítí AA totožný jako ZOOM
 
@@ -1561,7 +1575,7 @@ void Cvykresli::editacni_okno(TCanvas *canv, TPoint LH, TPoint PD, unsigned shor
 //označí nebo odznačí objekt používá se při posouvání objektů
 void Cvykresli::odznac_oznac_objekt(TCanvas *canv, Cvektory::TObjekt *p, int posunX, int posunY,COLORREF color)
 {
-		if(p->id!=F->VyID)
+		if((long)p->id!=F->VyID)
 		{
 			//ShowMessage(UnicodeString(p->X)+" "+UnicodeString(p->Y));
 			//nastavení pera
@@ -2573,6 +2587,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double Z=F->Zoom;
 	short size=8*F->Zoom; if(stav==2)size=9*F->Zoom;
 	short sklon=50;
+	rotace=m.Rt90(rotace+180);//kvůli převrácenému symbolu
 
 	//barva výplně
 	TColor barva=clRed;
@@ -2599,7 +2614,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Brush->Style=bsSolid;
 	}
 	//rotace
-	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
+	switch((int)rotace)//tento switch pouze posun referenčního bodu kvůli bílému orámování
 	{
 		case 0: 	Y+=m.round(1*Z);break;
 		case 90: 	X-=m.round(1*Z/2.0);break;
@@ -2683,9 +2698,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	switch(eID)
 	{
 		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
-		case 2: vykresli_stopku(canv,pX,pY,"","",typ,rotace,stav);break;//robot se stopkou
+		case 2: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
 		case 3: vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
-		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,rotace,stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
 	//nastavení pera
@@ -2723,7 +2738,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double Prepona=sqrt(pow(aP,2)+pow(DkRB-DT,2));//v dokumentaci označeno jako X
 	double Alfa2=acos(Prepona/DR);
 	double Alfa=Alfa2-Alfa1;
-	double Gama=180.0-(180.0-2*Alfa2)-Alfa;//Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
+	double Gama=180.0-(180.0-2*Alfa2)-Alfa;//dokumentace: Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
 	//rotace i kloubu
 	pX=X;pY=Y-sirka_zakladny/2.0;
 	if(rotace==90){pX=X+delka_zakladny/2.0;pY=Y;}
@@ -2814,9 +2829,9 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		R=0;//nerozlišuje se zda 0 nebo 180, v těchto případech je symbol stejně orotován
 		if(typ==-1)//mód kurzor
 		{
-			//šipka
-			sipka(canv,m.round(X-size),m.round(Y+width),rotace-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
-			sipka(canv,m.round(X+size),m.round(Y-width),rotace-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			//šipka                                     //pokud bych chtěl rotovat
+			sipka(canv,m.round(X-size),m.round(Y+width),/*rotace*/R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+size),m.round(Y-width),/*rotace*/R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
 		}
 		else
 		{
@@ -3033,7 +3048,7 @@ void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popi
 void Cvykresli::vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek,short stav)
 {
 	short o=10*3;
-	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	//int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 	canv->Brush->Style=bsClear;
 	canv->Font->Color=barva;
@@ -3128,7 +3143,6 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 	//float O=DoSkRB*2;//odsazení sipky elementu obecne
 
 	double O=F->pom_temp->koty_elementu_offset;
-
 
 	//highlight
 	short highlight=0;

@@ -812,9 +812,9 @@ object Form_parametry_linky: TForm_parametry_linky
     end
   end
   object scGPButton_vozik: TscGPButton
-    Left = 8
-    Top = 131
-    Width = 147
+    Left = 0
+    Top = 123
+    Width = 100
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
@@ -1032,7 +1032,7 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPButton_obecne: TscGPButton
     Left = 0
     Top = 40
-    Width = 155
+    Width = 100
     Height = 29
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMenuBar
@@ -1659,7 +1659,6 @@ object Form_parametry_linky: TForm_parametry_linky
     RightButton.Width = 0
     BiDiMode = bdLeftToRight
     Color = clWhite
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -1755,7 +1754,6 @@ object Form_parametry_linky: TForm_parametry_linky
     RightButton.Width = 0
     BiDiMode = bdLeftToRight
     Color = clWhite
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -1848,7 +1846,6 @@ object Form_parametry_linky: TForm_parametry_linky
     RightButton.Width = 0
     BiDiMode = bdLeftToRight
     Color = clWhite
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -3253,7 +3250,6 @@ object Form_parametry_linky: TForm_parametry_linky
     RightButton.Width = 0
     BiDiMode = bdLeftToRight
     Color = clWhite
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -3346,7 +3342,6 @@ object Form_parametry_linky: TForm_parametry_linky
     RightButton.Width = 0
     BiDiMode = bdLeftToRight
     Color = clWhite
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
@@ -3363,8 +3358,8 @@ object Form_parametry_linky: TForm_parametry_linky
     OnKeyPress = scGPNumericEdit_vyska_jigKeyPress
   end
   object scGPGlyphButton_TT: TscGPGlyphButton
-    Left = 0
-    Top = 40
+    Left = 451
+    Top = 52
     Width = 31
     Height = 29
     Hint = 'nastavit TaktTime'
@@ -3378,6 +3373,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentShowHint = False
     ShowHint = True
     TabOrder = 22
+    Visible = False
     OnClick = scGPGlyphButton_TTClick
     Animation = False
     Caption = 'GlyphButton_zobrazit_parametry'
@@ -3463,8 +3459,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object scGPGlyphButton_vozik_edit: TscGPGlyphButton
-    Left = 0
-    Top = 131
+    Left = 491
+    Top = 52
     Width = 31
     Height = 29
     Hint = 'nastavit jig/podvozek'
@@ -3478,6 +3474,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentShowHint = False
     ShowHint = True
     TabOrder = 23
+    Visible = False
     OnClick = sc
     Animation = False
     Caption = 'GlyphButton_zobrazit_parametry'
