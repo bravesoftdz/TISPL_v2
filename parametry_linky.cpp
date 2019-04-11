@@ -1417,7 +1417,7 @@ else  {rHTMLLabel_podvozek_zaves->Caption="Závìs"; rHTMLLabel_podvozek_zaves->Le
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
 {
   //zapis do PL ini
-  if(aRDUnit==MIN)  F->aRDunit=F->MIN;
+  if(aRDunit==MIN)  F->aRDunit=F->MIN;
   else F->aRDunit=F->SEC;
 	Form1->writeINI("nastaveni_form_parametry_linky", "rozmery", Delkaunit);
 	Form1->writeINI("nastaveni_form_parametry_linky", "TT", Taktunit);
