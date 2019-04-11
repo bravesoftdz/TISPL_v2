@@ -213,6 +213,60 @@ void __fastcall TForm_parametry_vozik::Button_stornoClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
+void __fastcall TForm_parametry_vozik::rHTMLLabel_delka_jigClick(TObject *Sender)
+
+{
+//pøevod jednotek
+	if(Form_parametry_linky->Delkaunit==Form_parametry_linky->MM)//pokud je v MM, tak pøepne na metry
+	{
+		Form_parametry_linky->Delkaunit=Form_parametry_linky->M;
+		//delka - pøepoèítání
+
+		rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[m]</font>";
+		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value/1000.0;
 
 
+		rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[m]</font>";
+		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value/1000.0;
+
+		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
+		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value/1000.0;
+	}
+	else//metrech tak se pøepne na MM
+	{
+		Form_parametry_linky->Delkaunit=Form_parametry_linky->MM;
+
+		rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[mm]</font>";
+		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value*1000.0;
+
+
+		rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[mm]</font>";
+		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value*1000.0;
+
+		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
+		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value*1000.0;
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::rHTMLLabel_sirka_jigClick(TObject *Sender)
+
+{
+//pøevod jednotek
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::rHTMLLabel_vyska_jigClick(TObject *Sender)
+
+{
+//pøevod jednotek
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_parametry_vozik::rHTMLLabel_delka_podvozekClick(TObject *Sender)
+
+{
+//pøevod jednotek
+}
+//---------------------------------------------------------------------------
 
