@@ -42,8 +42,8 @@ class Cmy
 	TPointDbool zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1);//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 	double cekani_na_palec(double cas, double roztec_palcu, double rychlost_dopravniku,int funkce);//vrátí dobu èekání na palec v sec, zadání je u èas (výstupu vozíku z objektu) v min, rozteèe je v m resp. v m za z minu u rychlosti dopravniku
 	double mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,double mezera=0,unsigned short typ=0);//metoda vratí minimální možnou mezeru mezi vozíky (promìnná vozíku prezentuje šíøku èí délku vozíku dle aktuální rotace v objektu), za pøedpokladu, že je parametr mezera roven 0, v pøípadì nenulového parametru mezery vrací vhodnou nejmenší hodnotu této mezery vùèi rozmìrùm rozteè a rozmìr vozíku, lze parametrizovat vracený výsledek 0 (implicitnì) - kritická mezera, 1 èi 281 - mezera mezi JIG, 2 èi 282 mezera mezi PODVOZKY
-	double mezera(double dJ,double sJ,double rotace,double Rx,double R);//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace
-	double mezera(double rotace,double Rz);//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace)
+	double mezera(double dJ,double sJ,double rotace,double Rx,double R,short typ=-1);//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace, typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
+	double mezera(double rotace,double Rz,short typ=-1);//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace), typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
 	double minM(double RD1,double RD2,double R2);//rozpracovano
 	double Rz(double dV,double sV,double rotace,double M);//vrátí rozestup v metrech mezi aktivními palci, byla-li zadáná správnì mezera
 	double Rz(double RD);//vrátí rozestup v metrech mezi aktivními palci v souvstažnosti k RD (a resp. TT)
@@ -53,6 +53,8 @@ class Cmy
 	double Rx2(double Rz,double R);//vrátí rozestup v poètech palcù mezi aktivními palci z Rz a R
 	double R(double Rz,double Rx);//vrátí rozteèe dle rozestupu a poètu palcù
 	double RD(double Rz);//vrátí RD dle rozestupu v metrech mezi aktivními palci v souvstažnosti s TT
+	double RD(double LO,double PT);//vratí RD dle velikosti lakovacího okna a procesního èasu
+	double PT(double LO,double RD);//vrátí PT dle velikosti lakovacícho okna a aktuální rychlosti pohonu
 	double dopRD(double dJ,double sJ,double rotace,double R,double TT,double RD);//vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 	bool kontrola_zda_zmena_R_ovlivni_RzRD(double R_puvodni,double R_nove);//vrací true pokud nová rozteè (R) ovlivní Rz resp RD
 	double UDV(double dJ,double sJ,double rotace);//vratí užitnou délku vozíku

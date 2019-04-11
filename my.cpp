@@ -350,6 +350,7 @@ TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double 
 		return RET;
 }
 /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 double Cmy::cekani_na_palec(double cas, double roztec_palcu,double rychlost_dopravniku,int funkce)//vrátí dobu èekání na palec v sec, rozteè je v m, rychlost dopravníku v m/s
 {
 		//if(zohlednit && rezim!=1)//pokud se jedná o kontinuální režim neøeší se, pøedpokládá se, že jede na stejném dopravníku
@@ -414,16 +415,26 @@ double Cmy::mezera_mezi_voziky(double dJ,double sJ,double rotace,double roztec,d
 	else return 0;//pokud nebude známa rozteè
 }
 ////////////////////////
-//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace
-double Cmy::mezera(double dJ,double sJ,double rotace,double Rx,double R)
+//vrátí mezeru dle rozestupu v palcích a rozteèe a velikosti vozíku dle rotace, typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
+double Cmy::mezera(double dJ,double sJ,double rotace,double Rx,double R,short typ)
 {
-	return (Rx*R)-UDV(dJ,sJ,rotace);
+	switch(typ)
+	{
+		case  0: return (Rx*R)-F->d.v.PP.delka_podvozek;//mezi podvozky
+		case  1: return (Rx*R)-UDJ(dJ,sJ,rotace);//mezi JIGy
+		default: return (Rx*R)-UDV(dJ,sJ,rotace);//automaticky co je kritiètìjší
+	}
 }
 ////////////////////////
-//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace)
-double Cmy::mezera(double rotace,double Rz)
+//vrátí mezeru dle rozestupu a rotace (resp. velikosti vozíku spoèítané dle rotace), typ==-1 vrátí velikost mezery automaticky co je kritištìjší, zda podovzek èi jig, 0 - podvozek, 1 - jig
+double Cmy::mezera(double rotace,double Rz,short typ)
 {
-	return Rz-UDV(rotace);
+	switch(typ)
+	{
+		case  0: return Rz-F->d.v.PP.delka_podvozek;//mezi podvozky
+		case  1: return Rz-UDJ(rotace);//mezi JIGy
+		default: return Rz-UDV(rotace);//automaticky co je kritiètìjší
+	}
 }
 /////////////////////////////////////////////////////////////////////////////
 //vrátí velikokost minimální mezery tak, aby se stíhálo èekání na palce a vozíky se nesrazily
@@ -484,6 +495,18 @@ double Cmy::R(double Rz,double Rx)
 double Cmy::RD(double Rz)
 {
 	return Rz/Form1->d.v.PP.TT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vratí RD dle velikosti lakovacího okna a procesního èasu
+double Cmy::RD(double LO,double PT)
+{
+	if(PT==0)return 0; else return LO/PT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí PT dle velikosti lakovacícho okna a aktuální rychlosti pohonu
+double Cmy::PT(double LO,double RD)
+{
+	if(RD==0)return 0; else return LO/RD;
 }
 ////////////////////////
 //vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
@@ -571,6 +594,7 @@ double Cmy::kontrola_rychlosti_prejezdu(double CT,double MT,double PT,double WT,
 {
 	return aRD-prejezd_voziku_rychlost(CT,MT,PT,WT,DD);
 }
+/////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 //zesvìtlí nebo ztmaví barvu
 TColor Cmy::clIntensive(TColor C,short A)//+A - míra zesvìtlení,-A míra ztmavení
