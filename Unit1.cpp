@@ -2046,9 +2046,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				//--prozatim
 				//rotace dle umístění na ose Y
-				short rotace_symbolu=0;
+				short rotace_symbolu=rotace_symbol(m.Rt90(d.trend(pom)),X,Y);
 				//if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu=180;}
-				rotace_symbolu=rotace_symbol(m.Rt90(d.trend(pom)),X,Y);
 				//--
 				d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
 				minule_souradnice_kurzoru=TPoint(X,Y);
@@ -2255,7 +2254,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case ADD://přidání objekt či elementu
 			{
 				if(MOD==SCHEMA)add_objekt(X,Y);//přídání objektu v modu SCHEMA
-				else {d.vykresli_element(Canvas,X,Y,"","",element_id,-1);add_element(X,Y);}//přídání elementu v modu NAHLED
+				else {add_element(X,Y);/*d.vykresli_element(Canvas,X,Y,"","",element_id,-1,Rotace_symbolu_minula);-již není třeba, někde se refreshuje*/}//přídání elementu v modu NAHLED
 				zneplatnit_minulesouradnice();
 				kurzor(standard);
 				break;
@@ -2989,8 +2988,8 @@ void TForm1::ESC()
 			}
 			else
 			{
-				d.vykresli_element(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"","",element_id,-1);
-      }
+				d.vykresli_element(Canvas,akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,"","",element_id,-1,Rotace_symbolu_minula);
+			}
 		}break;
 		case VYH:
 		{
@@ -3014,8 +3013,8 @@ void TForm1::ESC()
 		}
 		if(index_kurzoru<=-11)editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));
 		Smaz_kurzor();
+		REFRESH();
 	}
-	REFRESH();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
