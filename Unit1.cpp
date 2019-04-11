@@ -2361,19 +2361,19 @@ void TForm1::getJobID(int X, int Y)
 	{
 		//dále TABULKY ELEMENTŮ
 		pom_element=F->d.v.najdi_tabulku(pom_temp,m.P2Lx(X),m.P2Ly(Y));
-		if(pom_element!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
+		if(pom_element!=NULL && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 		{
 			int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
-			if(IdxRow==0)JID=100+0;//hlavička
+			if(IdxRow==0 && pom_temp->uzamknout_nahled==false)JID=100+0;//hlavička
 			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 			{
 				int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
 				if(IdxCol==0)//řádky v prvním sloupeci
 				{
 					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-					else JID=1000+IdxRow;
+					else if(pom_temp->uzamknout_nahled==false)JID=1000+IdxRow;
 				}
-				else JID=2000+IdxRow;//řádky v dalších sloupcích
+				else if(pom_temp->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v dalších sloupcích
 			}
 		}
 		else//tabulka nenalezena, takže zkouší najít ELEMENT
@@ -2403,12 +2403,12 @@ void TForm1::getJobID(int X, int Y)
 					else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
 					else//nejedná tj. testují se KÓTY
 					{
-						if(pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+						if(pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
 						{
 							short PtInKota_elementu=d.v.PtInKota_elementu(pom_temp,X,Y);
 							//jednotky kóty buď kabiny nebo kót elementů JID=-10
 							if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || pom_temp->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
-							else
+							else if(pom_temp->uzamknout_nahled==false)//kóty hodnoty
 							{
 								//vodorovná kóta JID=-8
 								if(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.PtInRect(TPoint(X,Y)))//pro celou kótu if(m.L2Px(F->pom_temp->Xk)<=X && X<=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x) && m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)-cO<=Y && Y<=m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y-0.3)+cO) //short cO=m.round(1*Zoom);//pouze "bonusové" rozšíření citelné oblasti v px
