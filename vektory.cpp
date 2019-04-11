@@ -1303,6 +1303,41 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
 	}
 }
 ////---------------------------------------------------------------------------
+//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem
+double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TElement *Element)
+{
+	bool nalezeno=false;
+	double akt_rotoce_jigu=0;
+	//provizorní (průchod po objektech) do doby než budou spuštěny zakázky resp. výhybky
+	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+		TElement *E=Element->dalsi;
+		while(E!=NULL)
+		{
+			if(Element->n==E->n && Objekt->n==O->n)//pozor nelze porovnávat jen ukazatele, může docházet k porování nepřímých kopii (viz pom_temp)
+			{
+				nalezeno=true;break;//akcelerátor, skončí cyklus
+			}
+			else//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
+			{
+				if(3<=E->eID && E->eID<=6)akt_rotoce_jigu+=E->rotace_jigu;
+      }
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+		if(nalezeno)break;//akcelerátor, skončí cyklus
+		O=O->dalsi;//posun na další prvek
+	}
+	O=NULL;delete O;
+
+  //ošetření přetečení přes 360°
+	akt_rotoce_jigu=fmod(akt_rotoce_jigu,360.0);// včetně ošetření přetečení přes 360 stupňů
+	if(akt_rotoce_jigu<0){akt_rotoce_jigu+=360;}//pro záporné hodnoty
+
+	return akt_rotoce_jigu;
+}
+////---------------------------------------------------------------------------
 //smaže element ze seznamu
 void Cvektory::smaz_element(TObjekt *Objekt, unsigned int n)
 {

@@ -1960,7 +1960,7 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
 		}break;
 	}
-	if(pom!=NULL)
+	if(pom!=NULL && MOD!=NAHLED)
 	{
 		NP();//dřívější volání nastavparametry1click
 	}
@@ -2341,6 +2341,7 @@ void TForm1::getJobID(int X, int Y)
 	//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
 	if(PmG!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)
 	{
+		pom_element=NULL;
 		int IdxRow=PmG->GetIdxRow(X,Y);
 		if(IdxRow==0)JID=5;//hlavička
 		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
@@ -4178,20 +4179,20 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
     if(n==2){ label1= "aktivní"; label2=""; }
 		if(pom_temp->id==3)
 		{
-				 d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,1);
+				 d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,180,1);
 		}
-		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,0,-1);
+		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15,label1,label2,n+4,0,180,-1);
 	}
 
 	if((EID==1||EID==3))
 	{
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15,"pasivní","",1+4,0,0,1);
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15,"aktivní","",2+4,0,0,-1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15,"pasivní","",1+4,0,180,1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15,"aktivní","",2+4,0,180,-1);
 	}
 	if((EID==2||EID==4))
 	{
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15,"pasivní","",1+4,0,0,-1);
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15,"aktivní","",2+4,0,0,1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15,"pasivní","",1+4,0,180,-1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15,"aktivní","",2+4,0,180,1);
 	}
 
 	Zoom=Zoom_back;//návrácení původního zoomu
@@ -4222,8 +4223,8 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	{
 	if(pom_temp->id==3)
 	{
-					d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","");
-	} else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","",0,0,-1);
+					d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","",0,180);
+	} else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2,"STOP","",0,180,-1);
 
 
 	}
@@ -6563,6 +6564,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 
 		 //Form2->ShowModal();
+
+
  //S(m.mezera_mezi_voziky(1,0.325,0));
  //	ShowMessage(scListGroupNastavProjektu->TabOrder);
  //	ShowMessage(scListGroupKnihovObjektu->TabOrder);
@@ -6592,7 +6595,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 	}
 		 */
 		//Zoom*=2;
-		Form2->ShowModal();
+
 
 		//Akce=MEASURE;
 

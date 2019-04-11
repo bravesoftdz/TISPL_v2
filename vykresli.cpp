@@ -2573,6 +2573,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double Z=F->Zoom;
 	short size=8*F->Zoom; if(stav==2)size=9*F->Zoom;
 	short sklon=50;
+	rotace=m.Rt90(rotace+180);//kvůli převrácenému symbolu
 
 	//barva výplně
 	TColor barva=clRed;
@@ -2599,7 +2600,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Brush->Style=bsSolid;
 	}
 	//rotace
-	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
+	switch((int)rotace)//tento switch pouze posun referenčního bodu kvůli bílému orámování
 	{
 		case 0: 	Y+=m.round(1*Z);break;
 		case 90: 	X-=m.round(1*Z/2.0);break;
@@ -2683,9 +2684,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	switch(eID)
 	{
 		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
-		case 2: vykresli_stopku(canv,pX,pY,"","",typ,rotace,stav);break;//robot se stopkou
+		case 2: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
 		case 3: vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
-		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,rotace,stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
 	//nastavení pera
@@ -2723,7 +2724,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double Prepona=sqrt(pow(aP,2)+pow(DkRB-DT,2));//v dokumentaci označeno jako X
 	double Alfa2=acos(Prepona/DR);
 	double Alfa=Alfa2-Alfa1;
-	double Gama=180.0-(180.0-2*Alfa2)-Alfa;//Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
+	double Gama=180.0-(180.0-2*Alfa2)-Alfa;//dokumentace: Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
 	//rotace i kloubu
 	pX=X;pY=Y-sirka_zakladny/2.0;
 	if(rotace==90){pX=X+delka_zakladny/2.0;pY=Y;}
