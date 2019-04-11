@@ -2815,9 +2815,9 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		R=0;//nerozlišuje se zda 0 nebo 180, v těchto případech je symbol stejně orotován
 		if(typ==-1)//mód kurzor
 		{
-			//šipka
-			sipka(canv,m.round(X-size),m.round(Y+width),rotace-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
-			sipka(canv,m.round(X+size),m.round(Y-width),rotace-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			//šipka                                     //pokud bych chtěl rotovat
+			sipka(canv,m.round(X-size),m.round(Y+width),/*rotace*/R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
+			sipka(canv,m.round(X+size),m.round(Y-width),/*rotace*/R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z na negaci *Zoom v metodě šipka
 		}
 		else
 		{
