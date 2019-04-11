@@ -496,6 +496,18 @@ double Cmy::RD(double Rz)
 {
 	return Rz/Form1->d.v.PP.TT;
 }
+/////////////////////////////////////////////////////////////////////////////
+//vratí RD dle velikosti lakovacího okna a procesního èasu
+double Cmy::RD(double LO,double PT)
+{
+	if(PT==0)return 0; else return LO/PT;
+}
+/////////////////////////////////////////////////////////////////////////////
+//vrátí PT dle velikosti lakovacícho okna a aktuální rychlosti pohonu
+double Cmy::PT(double LO,double RD)
+{
+	if(RD==0)return 0; else return LO/RD;
+}
 ////////////////////////
 //vrátí doporuèenou nejbližší rychlost pohonu, k rychlosti zadané tak, aby se reflektovala rozteè mezi palci i takt
 double Cmy::dopRD(double dJ,double sJ,double rotace,double R,double TT, double RD)
