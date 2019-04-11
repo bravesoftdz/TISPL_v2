@@ -23,7 +23,7 @@ void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
-	input_state=NOTHING;
+	input_state=NOTHING; F->editace_textu=true;
 }
 
 void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
@@ -34,7 +34,7 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
 void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	if(input_state==NOTHING&&ID!=9999)
+	if(input_state==NOTHING&&ID!=9999&&F->editace_textu)
 	{
 		Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
 		if(ID>100000)
@@ -136,16 +136,18 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		}
 		E=NULL;delete E;
 	}
-	if(input_state==NOTHING&&ID==9999)
+	if(input_state==NOTHING&&ID==9999&&F->editace_textu)
 	{
 		switch(Row)
 		{
 			case 1://výbìr pohonu
 			{
+				input_state=COMBO;
 				F->tab_pohon_COMBO(1);//pøiøazení pohonu
 			}break;
 			case 2://aktuální rychlost, aRD
 			{
+				input_state=aRD;
 				////////////naètení aRD z editu////////////
 				double aRD=F->inaRD(F->ms.MyToDouble(F->PmG->Cells[1][Row].Text));
 				F->pom_temp->pohon->aRD=aRD;
@@ -173,21 +175,26 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 							case 0:break;//stop stanice
 							case 1://robor kontinuální
 							{
-								E->PT1=E->LO1/aRD;
+								E->PT1=F->m.PT(E->LO1,aRD);
 								E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
-              }
+							}
 							break;
 							case 2://robot se stop stanicí
 							{
-              	//validace
+								//validace
 								E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,aRD*60,3);
 								E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
-              }
+							}
 							break;
 							case 3://robot s pasivní otoèí
 							{
-
-              }
+								E->PT1=F->m.PT(E->LO1,aRD);
+								E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
+								E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
+								E->mGrid->Cells[1][3].Text=F->outPT(E->PTotoc);
+								E->PT2=F->m.PT(E->LO2,aRD);
+								E->mGrid->Cells[1][5].Text=F->outPT(E->PT2);
+							}
 							break;
 							case 4://robot s aktivní otoèí
 							{
@@ -197,41 +204,75 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 							}break;
 							case 5://otoè pasivní
 							{
-								E->OTOC_delka=aRD*E->PTotoc;
-								E->mGrid->Cells[1][1].Text = F->outDO(E->OTOC_delka);
+								F->m.PT(E->OTOC_delka,aRD);
+								E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
 							}break;
 							case 6://otoè aktivní
 							{
-								E->PTotoc=E->OTOC_delka/aRD;
+								E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
 								E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
 							}break;
-            }
-          }
+						}
+					}
+					E=E->dalsi;
 				}
-
-
+				E=NULL; delete E;
 			}break;
 			case 3://rozteè, R
 			{
-
+				input_state=R;
+				////////////naètení R z editu////////////
+				double R=F->inR(F->ms.MyToDouble(F->PmG->Cells[1][Row].Text));
+				////////////pøepoèet hodnot v tabulce pohonu////////////
+				if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+				{
+					F->pom_temp->pohon->aRD=F->m.RD(R);
+					F->PmG->Cells[1][2].Text=F->pom_temp->pohon->aRD;
+					F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,R);
+					F->PmG->Cells[1][4].Text=F->pom_temp->pohon->Rz;
+				}
+				else//pro tabulku v kontinuálním režimu
+				{
+        	F->pom_temp->pohon->aRD=F->m.RD(R);
+					F->PmG->Cells[1][2].Text=F->pom_temp->pohon->aRD;
+        }
+				////////////pøepoèet hodnot v elementech////////////
+        Cvektory::TElement *E=F->pom_temp->elementy;
+				while(E!=NULL)
+				{
+					if(E->n>0)
+					{
+						switch(E->eID)
+						{
+							case 2://robot se stop stanicí
+							{
+								//validace
+								E->WT=F->m.cekani_na_palec(0,R,F->pom_temp->pohon->aRD*60,3);
+								E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
+							}
+							break;
+							case 4://robot s aktivní otoèí
+							{
+								//validace
+								E->WT=F->m.cekani_na_palec(0,R,F->pom_temp->pohon->aRD*60,3);
+								E->mGrid->Cells[1][5].Text=F->outPT(E->WT);
+							}break;
+						}
+					}
+					E=E->dalsi;
+				}
+				E=NULL; delete E;
 			}break;
-//			case 4://rozestup, Rz   NEBUDE EDITOVATELNÝ
-//			{          //aRD=Rz/TT
-//				input_state=Rz;
-//				F->pom->pohon->Rz=F->inRz(F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text));
-//				F->pom->pohon->aRD=F->pom->pohon->Rz/F->d.v.PP.TT;
-//				F->PmG->Cells[1][2].Text=F->outaRD(F->pom->pohon->aRD);
-//			}break;
+			case 4://rozestup, Rz   NEBUDE EDITOVATELNÝ
+			break;
 			case 5://Rx
-			{        //Rz=Rx*R
+			{
 				input_state=Rx;
-				F->pom->pohon->Rx=F->ms.MyToDouble(F->PmG->Cells[Col][Row].Text);//POM_TEMP
-				F->pom->pohon->Rz=F->pom->pohon->Rx*F->pom->pohon->roztec;
-				F->PmG->Cells[1][4].Text=F->pom->pohon->Rz;
 			}break;
 		}
-	}
-	F->REFRESH();
+	}   F->PmG->Refresh();
+	F->editace_textu=false;
+	F->Timer2->Enabled=true;
 	input_state=NOTHING;
 	F->nahled_ulozit(true);
 }

@@ -3403,8 +3403,8 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		x=X-E->mGrid->Width/2.0;//neměnná souřadnice
 		if (1>element_id||element_id>4)//otoče a stop stanice
 		{
-			y=Y+O;//původní hodnota
-			y1=Y-d.DoSkRB*Zoom/m2px-d.Robot_sirka_zakladny/2.0*Zoom/m2px-O-E->mGrid->Height; //překlopená hodnota
+			y=Y-O-E->mGrid->Height;//původní hodnota
+			y1=Y+d.DoSkRB*Zoom/m2px+d.Robot_sirka_zakladny/2.0*Zoom/m2px+O;//-E->mGrid->Height; //překlopená hodnota
 		}
 		else//roboti
 		{
@@ -3417,8 +3417,8 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		y=Y-E->mGrid->Height/2.0;
 		if (1>element_id||element_id>4)
 		{
-			x=X-O-E->mGrid->Width;
-			x1=X+d.DoSkRB*Zoom/m2px+d.Robot_sirka_zakladny/2.0*Zoom/m2px+O;//Zarovnání tabulky nerobotu s robo tabulkami
+			x=X+O;
+			x1=X-d.DoSkRB*Zoom/m2px-d.Robot_sirka_zakladny/2.0*Zoom/m2px-O;//Zarovnání tabulky nerobotu s robo tabulkami
 		}
 		else
 		{
@@ -3431,7 +3431,7 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		x=X-E->mGrid->Width/2.0;
 		if (1>element_id||element_id>4)
 		{
-			y=Y-O-E->mGrid->Height;
+			y=Y+O;
 			y1=Y+d.DoSkRB*Zoom/m2px+d.Robot_sirka_zakladny/2.0*Zoom/m2px+O;
 		}
 		else
@@ -3445,7 +3445,7 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 		y=Y-E->mGrid->Height/2.0;
 		if (1>element_id||element_id>4)
 		{
-			 x=X+O;
+			 x=X-O-E->mGrid->Width;
 			 x1=X-d.DoSkRB*Zoom/m2px-d.Robot_sirka_zakladny/2.0*Zoom/m2px-O-E->mGrid->Width;
 		}
 		else
@@ -3711,7 +3711,7 @@ void TForm1::design_tab_pohon(int index)
 //---------------------------------------------------------------------------
 void TForm1::tab_pohon_COMBO (int index)
 {
-	TscGPComboBox *mG=PmG->getCombo(1,1);mG->ItemWordWrap=false;
+	TscGPComboBox *PCombo=PmG->getCombo(1,1);PCombo->ItemWordWrap=false;
 	Cvektory::TPohon *P=d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 	TscGPListBoxItem *t=NULL;
 	////příprava vypisovaných jednotek
@@ -3721,35 +3721,35 @@ void TForm1::tab_pohon_COMBO (int index)
 	UnicodeString caption_jednotky=Td+"/"+Tcas;
 	if(index==0)
 	{
-		mG->Items->Clear();//smazání původního obsahu
+		PCombo->Items->Clear();//smazání původního obsahu
 		if(P==NULL)//pokud neexitustuje žádný pohon
 		{
-			t=mG->Items->Add(/*tady nelze parametr*/);
+			t=PCombo->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nebyl nadefinován";
 			//nesmí tu být, způsobuje cyklení z důvodu vytoření onchange pohonu Form_parametry->scComboBox_pohon->ItemIndex=0;//pohon nedefinován
 		}
 		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 		{
 			//vytvoření položky nepřiřazen
-			t=mG->Items->Add(/*tady nelze parametr*/);
+			t=PCombo->Items->Add(/*tady nelze parametr*/);
 			t->Caption="nepřiřazen";
 			//plnění existujícím pohony
 			while (P!=NULL)
 			{
 				AnsiString dopRD="";
-				t=mG->Items->Add(/*tady nelze parametr*/);
+				t=PCombo->Items->Add(/*tady nelze parametr*/);
 				t->Caption=P->name+" - "+m.round2double(outaRD(P->aRD),3,"..")+" ("+AnsiString(m.round2double(outaRD(P->rychlost_od),2))+"-"+AnsiString(m.round2double(outaRD(P->rychlost_do),2))+") "+caption_jednotky+dopRD;
 				P=P->dalsi;//přesun na další pohon
 			}
 		}
 		//if(pom_temp->pohon!=NULL) mG->ItemIndex=pom_temp->pohon->n;
-		/*else*/ mG->ItemIndex=0;
+		/*else*/ PCombo->ItemIndex=0;
 	}
 	if(index==1)//přiřazení pohonu
 	{
-		if(mG->ItemIndex!=0)
+		if(PCombo->ItemIndex!=0)
 		{
-			for (int i=1; i<mG->ItemIndex;i++)
+			for (int i=1; i<PCombo->ItemIndex;i++)
 			{
 				P=P->dalsi;
 			}
@@ -3759,27 +3759,27 @@ void TForm1::tab_pohon_COMBO (int index)
 	}
 	if(index==2)//změna jednotek
 	{
-		int puvodni_index=mG->ItemIndex;
-		mG->Items->Clear();
-		t=mG->Items->Add(/*tady nelze parametr*/);
+		int puvodni_index=PCombo->ItemIndex;
+		PCombo->Items->Clear();
+		t=PCombo->Items->Add(/*tady nelze parametr*/);
 		t->Caption="nepřiřazen";
 		while (P!=NULL)
 		{
 			AnsiString dopRD="";
-			t=mG->Items->Add(/*tady nelze parametr*/);
+			t=PCombo->Items->Add(/*tady nelze parametr*/);
 			t->Caption=P->name+" - "+m.round2double(outaRD(P->aRD),3,"..")+" ("+AnsiString(m.round2double(outaRD(P->rychlost_od),2))+"-"+AnsiString(m.round2double(outaRD(P->rychlost_do),2))+") "+caption_jednotky+dopRD;
 			P=P->dalsi;//přesun na další pohon
 		}
-		mG->ItemIndex=puvodni_index;
+		PCombo->ItemIndex=puvodni_index;
   }
 	//podbarvení červeně pokud není vybrán žádný pohon
-	if(mG->ItemIndex==0)
-	{mG->Options->FrameWidth=2;mG->Options->FrameFocusedColor=clRed;mG->Options->FrameNormalColor=clRed;mG->Options->FrameDisabledColor=clRed;mG->Options->FrameDisabledColorAlpha=128;}
-	else {mG->Options->FrameNormalColor=clGray;mG->Options->FrameFocusedColor=clHighlight;mG->Options->FrameWidth=1;mG->Options->FrameDisabledColor=clBtnShadow;mG->Options->FrameDisabledColorAlpha=255;}
+	if(PCombo->ItemIndex==0)
+	{PCombo->Options->FrameWidth=2;PCombo->Options->FrameFocusedColor=clRed;PCombo->Options->FrameNormalColor=clRed;PCombo->Options->FrameDisabledColor=clRed;PCombo->Options->FrameDisabledColorAlpha=128;}
+	else {PCombo->Options->FrameNormalColor=clGray;PCombo->Options->FrameFocusedColor=clHighlight;PCombo->Options->FrameWidth=1;PCombo->Options->FrameDisabledColor=clBtnShadow;PCombo->Options->FrameDisabledColorAlpha=255;}
 
 	t=NULL; delete t;
 	P=NULL; delete P;
-	mG=NULL; delete mG;
+	PCombo=NULL; delete PCombo;
 }
 //nadesignuje tabulky daného elementu
 void TForm1::design_element(Cvektory::TElement *E)
@@ -4012,7 +4012,8 @@ void TForm1::redesign_element()
 		case 3:
 		{
 			if (JID==101 || JID==103 || JID==105) zcas=true;//čas
-			if (JID==102 || JID==104 || JID==106) zLO=true;//delka
+			if (JID==102 || JID==106) zLO=true;//delka
+			if (JID==104) zdelka_otoce=true;//delka otoče
 			break;
 		}
 		case 4:
