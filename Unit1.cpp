@@ -1933,36 +1933,39 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 //při double clicku volá přímo formulář parametry objektu
 void __fastcall TForm1::FormDblClick(TObject *Sender)
 {
-	dblClick=true;Akce=NIC;
-	long X=akt_souradnice_kurzoru_PX.x;long Y=akt_souradnice_kurzoru_PX.y;//pouze zkrácení zápisu
-	switch(MOD)
+	if(MOD!=NAHLED)//v náhledu je doubleclick zcela odstaven
 	{
-		case CASOVAOSA:
-		{														 //min                      //vozik
-			proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
-			if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
-			{
-				if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
+		dblClick=true;Akce=NIC;
+		long X=akt_souradnice_kurzoru_PX.x;long Y=akt_souradnice_kurzoru_PX.y;//pouze zkrácení zápisu
+		switch(MOD)
+		{
+			case CASOVAOSA:
+			{														 //min                      //vozik
+				proces_pom=d.v.najdi_proces((X+d.PosunT.x)/d.PX2MIN*60,ceil((Y+d.PosunT.y-d.KrokY/2-scGPPanel_mainmenu->Height)/(d.KrokY*1.0)));//vrací nalezen proces, proces_pom se využívá ještě dále
+				if(proces_pom!=NULL && !d.mod_vytizenost_objektu)
 				{
-					pom=proces_pom->segment_cesty->objekt;
+					if(STATUS==NAVRH)//měnit parametry na časových osách je možné pouze v návrháři/architektovi
+					{
+						pom=proces_pom->segment_cesty->objekt;
+					}
 				}
+			}break;
+			case TECHNOPROCESY:
+			{
+				pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
 			}
-		}break;
-		case TECHNOPROCESY:
-		{
-			pom=d.v.vrat_objekt_z_roma(akt_souradnice_kurzoru_PX.x-d.Xofset+d.PosunT.x);
+			break;
+			case SIMULACE:break;
+			default://pro SCHEMA
+			{
+				//povoluje nastavení položek kopírování či smazání objektu
+				pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
+			}break;
 		}
-		break;
-		case SIMULACE:break;
-		default://pro SCHEMA
+		if(pom!=NULL && MOD!=NAHLED)
 		{
-			//povoluje nastavení položek kopírování či smazání objektu
-			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
-		}break;
-	}
-	if(pom!=NULL && MOD!=NAHLED)
-	{
-		NP();//dřívější volání nastavparametry1click
+			NP();//dřívější volání nastavparametry1click
+		}
 	}
 }
 //---------------------------------------------------------------------------
