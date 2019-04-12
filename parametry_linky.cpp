@@ -1002,7 +1002,6 @@ void __fastcall TForm_parametry_linky::rEditNum_delkavozikuClick(TObject *Sender
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender)
 {
-ShowMessage(Delkaunit);
 	if(Delkaunit==MM)//pokud je v MM, tak pøepne na metry
 	{
 		Delkaunit=M;

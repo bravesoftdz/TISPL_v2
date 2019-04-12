@@ -1030,7 +1030,7 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Vypis_pohonyClick
   end
   object scGPButton_obecne: TscGPButton
-    Left = 0
+    Left = -6
     Top = 40
     Width = 100
     Height = 29
