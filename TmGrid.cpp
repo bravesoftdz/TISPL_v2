@@ -298,6 +298,26 @@ void TmGrid::Refresh()
 	 Show();
 }
 //---------------------------------------------------------------------------
+void TmGrid::Update()
+{
+	if(ColCount!=bufColCount || RowCount!=bufRowCount)//pokud dojde k požadavku na zmìnu poètu øádkù a sloupcù volá se realokace
+	{
+		realock();
+		Form->Refresh();
+	}
+
+	//nastavení šíøky sloupcù a výšky øádkù+autofit sloupcù nastaví Columns[X].ColWidth
+	SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
+
+	Graphics::TBitmap *bmp_temp=new Graphics::TBitmap;
+	bmp_temp->Width=0;bmp_temp->Height=0;
+	Draw(bmp_temp->Canvas);
+	delete (bmp_temp);
+
+	//zaloha úvodní pozice
+	preTop=Top;preLeft=Left;
+}
+//---------------------------------------------------------------------------
 //zajistí vykreslení celé tabulky vèetnì gridu, pokud
 void TmGrid::Draw(TCanvas *C)
 {
@@ -562,7 +582,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPButton *B=createButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
-			B->Visible=VisibleComponents;
+			if(!VisibleComponents || MovingTable)B->Visible=false;else B->Visible=true;//pøi posunu tabulky se skryje, zatím se místo nìj nic nevykresluje
 			B->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 			B->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 			B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
@@ -580,7 +600,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
-			gB->Visible=VisibleComponents;
+			if(!VisibleComponents || MovingTable)gB->Visible=false;else gB->Visible=true;//pøi posunu tabulky se skryje, zatím se místo nìj nic nevykresluje
 			gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 			gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 			gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
@@ -598,11 +618,19 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPComboBox *C=createCombo(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
-			C->Visible=VisibleComponents;
 			C->Top=R.Top+floor(Cell.TopBorder->Width/2.0);
 			C->Left=R.Left+floor(Cell.LeftBorder->Width/2.0);
 			C->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0);
 			C->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0);
+			if(!VisibleComponents || MovingTable)
+			{   //rozpracovano pøípadné bitmapování kompomentny pøi pøesunu obrazu
+//				TBitmap *bmp=new Graphics::TBitmap();
+//				bmp->Width=C->Width;bmp->Height=C->Height;
+//				bmp->Canvas->CopyRect(Rect(0,0,C->Width,C->Height),Form->Canvas,Rect(C->Left,C->Top,C->Left+C->Width,C->Top+C->Height));//uloží pan výøez
+//				bmp->SaveToFile("test.bmp");
+				C->Visible=false;
+			}
+			else C->Visible=true;//pøi posunu tabulky se skryje, zatím se místo nìj nic nevykresluje
 			C->Options->NormalColor=Cell.Background->Color;
 			C->Options->FocusedColor=Cell.Background->Color;
 //			C->Options->NormalColorAlpha=255;       nelze stále by bylo podsouvano
@@ -622,7 +650,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			//založení + tag + název
 			TscGPCheckBox *Ch = createCheck(X,Y);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 			//atributy
-			Ch->Visible=VisibleComponents;
+			if(!VisibleComponents || MovingTable)Ch->Visible=false;else Ch->Visible=true;//pøi posunu tabulky se skryje, zatím se místo nìj nic nevykresluje
 			switch(Cell.Align)
 			{
 				case aNO:		Ch->Left+=Left-preLeft;break;
@@ -720,7 +748,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->Font=Cell.Font;
 	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
 	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmínìné formátování
-	if(!E->Focused())//pokud není na buòce focus resp. není aktivní
+	//if(!E->Focused())//pokud není na buòce focus resp. není aktivní - provizornì odstaveno, zdá se, že nemá na nic vliv
 	E->Text=Cell.Text;
 	//vlastník
 	E->Parent=Form;//musí být až na konci
@@ -771,10 +799,8 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Font=Cell.Font;
 	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmínìné formátování
 	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmínìné formátování
-	if(!N->Focused())//pokud je na buòce focus resp. je aktivní
-	{
-		N->Value=ms.MyToDouble(Cell.Text);
-	}
+	//if(!N->Focused())//pokud je na buòce focus resp. je aktivní - provizornì odstaveno, zdá se, že nemá na nic vliv
+	N->Value=ms.MyToDouble(Cell.Text);
 	//vlastník
 	N->Parent=Form;//musí být až na konci
 }

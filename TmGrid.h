@@ -71,6 +71,7 @@ class TmGrid
 	void Delete();//odstraní tabulku, pøidružené komponenty a ukazatel na mGrid z pamìti
 	void Show(TCanvas *Canvas=NULL);//zajistí vykreslení celé tabulky
 	void Refresh();//zajistí vyvolání pøekreslení celé tabulky s pøeblikem, ale lépe používat pøímo ve v daném formuláøi FormPaint(this), což zajistí pøekreslení bez probliku
+	void Update();//zajistí vytvoøení kompoment vèetnìj napozicování bez vykreslení
 	void SetColumnAutoFit(long ColIdx=-1);//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -4 nastavení velikosti sloupce dle ruèní nastavení šíøky daného sloupce, tj. nedìlat autofit, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	int  GetRecommendedColumnWidth(long ColIdx);//vratí doporuèenou šíøku sloupce dle jeho obsahu
 	int  GetRecommendedColumnWidth(AnsiString Text);//vratí doporuèenou šíøku sloupce dle dodaného textu a aktuálního nastavení canvasu
