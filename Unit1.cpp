@@ -3563,7 +3563,8 @@ void TForm1::design_tab_pohon(int index)
    	case 0:
 		{
 			PmG=new TmGrid(this);//vždy nutno jako první
-   		//nastavení defaultního designu
+			//nastavení defaultního designu
+			PmG->Left=-500;PmG->Top=-500;//pouze aby se při prvním zobrazení nezobrazovala formou probliku vlevo nahoře
 			PmG->DefaultCell.Font->Name=aFont->Name;
 			PmG->DefaultCell.Font->Size=aFont->Size;
 			PmG->DefaultCell.isLink->Name=aFont->Name;
@@ -3595,7 +3596,7 @@ void TForm1::design_tab_pohon(int index)
 			PmG->Columns[1].Width=250;
    		//sloučení hlavičky
 			PmG->MergeCells(0,0,1,0);
-			PmG->Show(NULL);
+			PmG->Update();
 			tab_pohon_COMBO(0);
    	}break;
    	case 1:///////////Změna jednotek
