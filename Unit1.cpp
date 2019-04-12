@@ -3782,6 +3782,7 @@ void TForm1::tab_pohon_COMBO (int index)
 	P=NULL; delete P;
 	PCombo=NULL; delete PCombo;
 }
+//---------------------------------------------------------------------------
 //nadesignuje tabulky daného elementu
 void TForm1::design_element(Cvektory::TElement *E)
 {
@@ -5250,7 +5251,7 @@ void TForm1::NP_input()
 	 DrawGrid_knihovna->DefaultColWidth=80;
 	 DrawGrid_knihovna->Left=3;
 	 DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
-	 DrawGrid_knihovna->Invalidate();
+	 //přesunoto níže k refresh: DrawGrid_knihovna->Invalidate();
 
 	 DrawGrid_otoce->DefaultColWidth=80;
 
@@ -5352,7 +5353,7 @@ void TForm1::NP_input()
 		E=NULL; delete E;
 	}
 	design_tab_pohon(0);
-	//toto třeba?:Invalidate();
+	DrawGrid_knihovna->Invalidate();
 	REFRESH();  
 }
 //---------------------------------------------------------------------------
