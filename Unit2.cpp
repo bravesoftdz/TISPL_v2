@@ -317,8 +317,9 @@ void __fastcall TForm2::Button1Click(TObject *Sender)
 		//Invalidate();
 
 		//ELEMENTY->mG->Cells[1][1].LeftBorder->Color=(TColor)10114859;
-	 ELEMENTY->mG->HighlightEdit(1,1,(TColor)10114859);
-	 //	ELEMENTY->mG->Refresh();
+	 ELEMENTY->mG->Cells[1][1].Highlight=!ELEMENTY->mG->Cells[1][1].Highlight;
+	 ELEMENTY->mG->Cells[0][1].Highlight=!ELEMENTY->mG->Cells[0][1].Highlight;
+	 ELEMENTY->mG->Refresh();
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button2Click(TObject *Sender)
@@ -335,8 +336,9 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 
 
 	//mGrid->AntiAliasing_grid=!mGrid->AntiAliasing_grid;
-	 ELEMENTY->mG->Left+=10;
+	// ELEMENTY->mG->Left+=10;
 	//zmìna posunu tabulky
+   ELEMENTY->mG->unHighlightAll();
 
 	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
