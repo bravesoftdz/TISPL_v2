@@ -170,7 +170,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 				{
 					if(F->pom_temp->n!=O->n)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
 					{
-						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/,E->LO1,E->LO2);
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/,E->LO1,E->OTOC_delka,E->LO2);
 						//zde bude ještě vykreslení g_elementu
 					}
 					E=E->dalsi;//posun na další element
@@ -229,7 +229,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			E=E->dalsi;//přeskočí hlavičku
 			while(E!=NULL)
 			{
-				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->LO2);
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->OTOC_delka,E->LO2);
 				 //zde bude ještě vykreslení g_elementu
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
@@ -2567,16 +2567,16 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
-void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double LO2)
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2)
 {
   rotace=m.Rt90(rotace);
 	switch(eID)
 	{
 		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;//stopka
-		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//kontinuální robota
-		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//robot se stopkou
-		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
-		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
+		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//kontinuální robota
+		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
+		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
+		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//pasivní otoč
 		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//aktivní otoč
 	}
@@ -2660,14 +2660,14 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double LO2,double aP,float TS)
+void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double aP,float TS)
 {
 	try
 	{
 	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 
 	//vstupní parametry - budou součástí parametrů metody  robotoa
-	double LO=(LO1+LO2)*Z/F->m2px;//délka cekového lakovacího okna
+	double LO=(LO1+OTOC_delka+LO2)*Z/F->m2px;//délka cekového lakovacího okna
 	if(typ==0)LO=1.5*Z/F->m2px;//v knihovně se symbol robota zobrazuje s 1,5 m velkých lakovacím oknem vždy
 	aP; if(aP>LO/2.0)aP=LO/2.0;if(aP<-LO/2.0)aP=-LO/2.0;//Aktuální Pozice odsazení tryskového kloubu i trysky (ve svislé poloze trysky) v lakovacím okně + ochrana proti přetečení
 	TS;//Tryska Sklon stupně
@@ -2698,9 +2698,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);lX=X;lY=m.round(Y+sirka_zakladny/2.0);}
 	switch(eID)
 	{
-		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
 		case 2: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
-		case 3: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
+		case 3: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
 		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
@@ -2912,8 +2912,12 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double LO2,double delka_ramena,double rotace)
+void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double OTOC_delka,double LO2,double delka_ramena,double rotace)
 {
+	LO1=m.m2px(LO1);
+	OTOC_delka=m.m2px(OTOC_delka);
+	LO2=m.m2px(LO2);
+
 	canv->Pen->Width=1;
 	canv->Pen->Color=clGray;
 	canv->Pen->Mode=pmCopy;
@@ -2922,7 +2926,7 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 	{
 		case 0:
-		{
+		{                  //dodělat
 			line(canv,X,Y,m.round(X-LO1/2),m.round(Y-delka_ramena));
 			line(canv,X,Y,m.round(X+LO1/2),m.round(Y-delka_ramena));
 		}break;
