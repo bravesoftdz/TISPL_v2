@@ -968,7 +968,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->Y=Y;
 
 	//defaultní data
-	novy->LO1=0;
+	novy->LO1=1.5;
 	novy->OTOC_delka=0;
 	novy->LO2=0;
 	novy->LO_pozice=0;
@@ -982,9 +982,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	switch(eID)
 	{
 		case 0: T="Stop stanice"; break;//stop stanice
-		case 1: T="Robot"; 				novy->LO1=1.5;break;//kontinuální robota
+		case 1: T="Robot"; 				break;//kontinuální robota
 		case 2: T="Robot"; break; novy->PT1=60;//robot se stopkou
-		case 3: T="Robot"; 				novy->LO1=1.5;novy->OTOC_delka=0.450;novy->LO2=1.5;break;//kontinuální robot s pasivní otočí
+		case 3: T="Robot"; 				novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;break;//kontinuální robot s pasivní otočí
 		case 4: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: T="Otoč"; 				novy->OTOC_delka=0.450;break;//pasivní otoč
 		case 6: T="Otoč"; 				novy->PTotoc=20;break;//aktivní otoč
