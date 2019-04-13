@@ -940,7 +940,7 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->PT2=0;
 
 	Objekt->elementy->WT=0;
-	Objekt->elementy->WTpalec=0;
+	Objekt->elementy->WTstop=0;
 
 	Objekt->elementy->mGrid=NULL;
 
@@ -960,41 +960,38 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 
 	//ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
 	vloz_element(Objekt,novy);
-//	Objekt->elementy->predchozi->dalsi=novy;//poslednímu prvku přiřadím ukazatel na nový prvek
-//	novy->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-//	novy->dalsi=NULL;
-//	novy->sparovany=NULL;
-//	Objekt->elementy->predchozi=novy;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
-
 
 	//atributy elementu
-//	novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku již řešeno v vloz_element(Objekt,novy);
+	//novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku již řešeno v vloz_element(Objekt,novy);
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
+
+	//defaultní data
+	novy->LO1=0;
+	novy->OTOC_delka=0;
+	novy->LO2=0;
+	novy->LO_pozice=0;
+	novy->PT1=0;
+	novy->PTotoc=0;
+	novy->PT2=0;
+	novy->WT=0;//čekání na palec
+	novy->WTstop=0;//čekání na stopce
 	//název
 	AnsiString T="";
 	switch(eID)
-  {
+	{
 		case 0: T="Stop stanice"; break;//stop stanice
-		case 1: T="Robot"; break;//robot
-		case 2: T="Robot"; break;//robot
-		case 3: T="Robot"; break;//robot
-		case 4: T="Robot"; break;//robot
-		case 5: T="Otoč"; break;//otoc
-		case 6: T="Otoč"; break;//otoc
-  }
-	novy->name=T+" "+novy->n;
-	//dodělat automaticky shortname
-
-	//data
-	novy->LO1=1.5;
-	novy->OTOC_delka=0.450;
-	novy->LO2=1.5;
-	novy->LO_pozice=0;
-	novy->PT1=60;
-	novy->PTotoc=20;
-	novy->PT2=60;
+		case 1: T="Robot"; 				novy->LO1=1.5;break;//kontinuální robota
+		case 2: T="Robot"; break; novy->PT1=60;//robot se stopkou
+		case 3: T="Robot"; 				novy->LO1=1.5;novy->OTOC_delka=0.450;novy->LO2=1.5;break;//kontinuální robot s pasivní otočí
+		case 4: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
+		case 5: T="Otoč"; 				novy->OTOC_delka=0.450;break;//pasivní otoč
+		case 6: T="Otoč"; 				novy->PTotoc=20;break;//aktivní otoč
+	}
+	unsigned int nTyp=vrat_poradi_elementu(Objekt,novy->eID);
+	novy->name=T+" "+AnsiString(nTyp);
+	novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 
 	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
@@ -1042,7 +1039,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->PTotoc=Original->PTotoc;
 	Kopie->PT2=Original->PT2;
 	Kopie->WT=Original->WT;
-	Kopie->WTpalec=Original->WTpalec;
+	Kopie->WTstop=Original->WTstop;
 	//Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
@@ -1078,6 +1075,32 @@ int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 		while(E!=NULL)
 		{
 			if(1<=E->eID && E->eID<=4) RET=E->eID;
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+	}
+	return RET;
+}
+////---------------------------------------------------------------------------
+//vratí pořádí stopek, robotů a otočí, zatím pouze v elementu, bude na zvážení rozšíření na všechny objekty
+unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
+{
+	unsigned int RET=0;
+	if(Objekt->elementy!=NULL)
+	{
+		TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
+		while(E!=NULL)
+		{
+			switch(eID)
+			{
+				case 0:if(E->eID==0)RET++;break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:if(1<=E->eID && E->eID<=4)RET++;break;
+				case 5:
+				case 6:if(5<=E->eID && E->eID<=6)RET++;break;
+			}
 			E=E->dalsi;
 		}
 		E=NULL;delete E;

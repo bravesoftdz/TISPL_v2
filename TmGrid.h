@@ -88,11 +88,15 @@ class TmGrid
 	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buòky oddìlí separátorem
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
-	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=2);//zajistí zvýraznìní dané buòky
-	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù dle èísla øádku Row
-	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
 	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznìní orámování tabulky
 	void HighlightTableOnMouse(int X,int Y);//zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
+ 	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù dle èísla øádku Row
+	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
+	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1,bool Refresh=true);//zajistí zvýraznìní vnìjšího orámování buòky
+	void HighlightEdit(TscGPEdit *Edit,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznìní dané komponenty
+	void HighlightEdit(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznìní dané komponenty
+	void HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznìní dané komponenty
+	void HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznìní dané komponenty
 	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistí pøebarvení odkazu v buòce odstínem barvy odkazu
 	void SetVisibleComponents(bool state);//podle stavu state buï zobrazí nebo skryje všechny komponenty
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu

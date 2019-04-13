@@ -725,7 +725,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
-	E->Options->FrameNormalColor=Cell.Background->Color;
+	E->Options->FrameNormalColor=Cell.Background->Color;//rámeèek musí být stejnou barvou jakou buòka, protože møížka je o 1px na všechny strany roztažená
 	E->Options->FrameNormalColorAlpha=255;
 	E->Options->FrameDisabledColor=E->Options->DisabledColor;
 	E->Margins->Left=0;E->Margins->Right=0;E->Margins->Top=0;E->Margins->Bottom=0;
@@ -776,7 +776,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Hint=Cell.Text;
 	if(Cell.Text=="")N->Options->NormalColor=Cell.isEmpty->Color;else N->Options->NormalColor=Cell.Background->Color;
 	N->Options->NormalColorAlpha=255;
-	N->Options->FrameNormalColor=Cell.Background->Color;
+	N->Options->FrameNormalColor=Cell.Background->Color;//rámeèek musí být stejnou barvou jakou buòka, protože møížka je o 1px na všechny strany roztažená
 	N->Options->FrameNormalColorAlpha=255;
 	N->Options->FrameDisabledColor=N->Options->DisabledColor;
 	N->Margins->Left=0;N->Margins->Right=0;N->Margins->Top=0;N->Margins->Bottom=0;
@@ -1458,11 +1458,13 @@ void TmGrid::SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long Row
 	}
 }
 //---------------------------------------------------------------------------
-void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+//zajistí zvýraznìní vnìjšího orámování buòky
+void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width,bool Refresh)
 {
-//	switch(Cell[Col][Row])
+// pro pøípad zkonkretizovaní požadovvku odkomentovat
+//	switch(Cells[Col][Row].Type)
 //	{
-//		case EDIT:
+//		case DRAW:
 //		{
 			TBorder hlBorder;
 			hlBorder.Color=Color;
@@ -1472,8 +1474,37 @@ void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsi
 			*Cells[Col][Row].LeftBorder=hlBorder;
 			*Cells[Col][Row].RightBorder=hlBorder;
 			*Cells[Col][Row].BottomBorder=hlBorder;
+			if(Refresh)Show();
 //		}break;
+//		case EDIT:HighlightEdit(Col,Row,Color,Width);break;
+//		case NUMERIC:HighlightNumeric(Col,Row,Color,Width);break;
 //	}
+}
+//---------------------------------------------------------------------------
+//zajistí zvýraznìní dané komponenty
+void TmGrid::HighlightEdit(TscGPEdit *Edit,TColor Color,unsigned short Width)
+{
+	Edit->Options->FrameNormalColor=Color;
+	Edit->Options->FrameWidth=Width;
+}
+//---------------------------------------------------------------------------
+//zajistí zvýraznìní dané komponenty
+void TmGrid::HighlightEdit(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+{
+	HighlightEdit(getEdit(Col,Row),Color,Width);
+}
+//---------------------------------------------------------------------------
+//zajistí zvýraznìní dané komponenty
+void TmGrid::HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color,unsigned short Width)
+{
+	Numeric->Options->FrameNormalColor=Color;
+	Numeric->Options->FrameWidth=Width;
+}
+//---------------------------------------------------------------------------
+//zajistí zvýraznìní dané komponenty
+void TmGrid::HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+{
+	HighlightNumeric(getNumeric(Col,Row),Color,Width);
 }
 //---------------------------------------------------------------------------
 //zkopíruje obsah, formát a orámování z buòky na buòku (bez ukazatelového propojení)

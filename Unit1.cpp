@@ -3837,9 +3837,9 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="výběr párové STOP";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->WT);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->WTstop);
 			E->mGrid->Cells[0][3].Text="WT palec "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->WTpalec);
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->WT);
 			E->mGrid->Cells[0][4].Text="akt. počet vozíků";
 			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=6;
 			E->mGrid->Cells[0][5].Text="max. počet vozíků";
@@ -4108,8 +4108,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
 			E->mGrid->Cells[0][3].Text="WT palec "+cas;
-			E->mGrid->Cells[1][2].Text=outPT(E->WT);
-			E->mGrid->Cells[1][3].Text=outPT(E->WTpalec);
+			E->mGrid->Cells[1][2].Text=outPT(E->WTstop);
+			E->mGrid->Cells[1][3].Text=outPT(E->WT);
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -6648,7 +6648,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		pom_temp->pohon->name="test";
 
 
-		 //Form2->ShowModal();
+		 Form2->ShowModal();
 
 
  //S(m.mezera_mezi_voziky(1,0.325,0));

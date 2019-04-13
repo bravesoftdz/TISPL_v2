@@ -2572,13 +2572,13 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
   rotace=m.Rt90(rotace);
 	switch(eID)
 	{
-		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
+		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;//stopka
 		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//kontinuální robota
 		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//robot se stopkou
 		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
 		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
-		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//pasivní otoč
+		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//aktivní otoč
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
