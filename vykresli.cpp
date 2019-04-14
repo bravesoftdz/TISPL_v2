@@ -2923,27 +2923,67 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 	canv->Pen->Mode=pmCopy;
 	canv->Pen->Style=psDash;
 	//rotace
-	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
+	switch((int)rotace)
 	{
 		case 0:
-		{                  //dodělat
-			line(canv,X,Y,m.round(X-LO1/2),m.round(Y-delka_ramena));
-			line(canv,X,Y,m.round(X+LO1/2),m.round(Y-delka_ramena));
+		{
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X-LO1/2.0),m.round(Y-delka_ramena));
+				line(canv,X,Y,m.round(X+LO1/2.0),m.round(Y-delka_ramena));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y-delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y-delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y-delka_ramena));
+				line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y-delka_ramena));
+			}
 		}break;
 		case 90:
 		{
-			line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1/2));
-			line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+LO1/2));
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1/2.0));
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+LO1/2.0));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0));
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
+			}
 		}break;
 		case 180:
 		{
-			line(canv,X,Y,m.round(X-LO1/2),m.round(Y+delka_ramena));
-			line(canv,X,Y,m.round(X+LO1/2),m.round(Y+delka_ramena));
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X-LO1/2.0),m.round(Y+delka_ramena));
+				line(canv,X,Y,m.round(X+LO1/2.0),m.round(Y+delka_ramena));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y+delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y+delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y+delka_ramena));
+				line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y+delka_ramena));
+			}
 		}break;
 		case 270:
 		{
-			line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1/2));
-			line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+LO1/2));
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1/2.0));
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+LO1/2.0));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0));
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
+			}
 		}break;
 	}
 
