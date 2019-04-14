@@ -198,21 +198,35 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		}
 
 		////vykreslení obrysu OBJEKTU - kabiny
-		//pero+výplň
+		///pero+výplň
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 		canv->Pen->Color=clRed;
 		canv->Pen->Width=F->Zoom*0.2;//pův. 0.5 bez duble linie
 		if(-2>=F->JID && F->JID>=-5)canv->Pen->Width*=2;
-		//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
+		///vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
 		short Ov=F->Zoom*0.4; //ještě případné zvětšení: if(-2>=F->JID && F->JID>=-5)Ov*=2;
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)-Ov,m.L2Py(F->pom_temp->Yk)-Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)+Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)+Ov);//dvojitý rám - vnější
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)+Ov,m.L2Py(F->pom_temp->Yk)+Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)-Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)-Ov);//dvojitý rám - vnitřní
-		//název objektu
-		nastavit_text_popisu_objektu_v_nahledu(canv);
-		AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
-		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
-		//kóty
+
+		///název a zkratka
+		//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=canv->TextWidth(Tn);
+		//lomítko objektu - nastavení
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tl=+" / ";	short Wl=canv->TextWidth(Tl);
+		//zkratka objektu - nastavení
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tz=F->pom_temp->short_name.UpperCase();short Wz=canv->TextWidth(Tz);
+		//samotné vypsání názvu
+		nastavit_text_popisu_objektu_v_nahledu(canv,1);                                                                                          //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tn);
+		//samotné vypsání lomítka
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tl);
+		//samostné vypsání zkratky
+		nastavit_text_popisu_objektu_v_nahledu(canv,2);                                                                                               //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tz);
+
+		///kóty
 		if(F->pom_temp->zobrazit_koty)
 		{
 			short highlight=0;
@@ -240,13 +254,15 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 	}
 }
 //---------------------------------------------------------------------------
-void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
+//bool name, zda se jedná o zadavání name nebo short_name
+void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ)
 {
 	canv->Font->Name=F->aFont->Name;
 	canv->Font->Color=clRed;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles();
-	if(F->JID==-6)canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
