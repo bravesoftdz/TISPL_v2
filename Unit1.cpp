@@ -2531,7 +2531,6 @@ void TForm1::onPopUP(int X, int Y)
 		case SIMULACE:break;
 		case NAHLED:
 		{
-
 			pom_element_temp=pom_element;
 			mazani=true;
 			if (pom_element!=NULL)//Pokud bylo kliknuto na element
@@ -2555,12 +2554,9 @@ void TForm1::onPopUP(int X, int Y)
 		default://pro SCHEMA
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
-			pom->pohon=NULL;delete pom->pohon;pom->pohon=new Cvektory::TPohon;
-			//ShowMessage("smazan");
 			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
-			//ShowMessage(pom->name);
 			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
-			{   //ShowMessage(pom->pohon->name);
+			{
 				if(AnsiString("Nastavit "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
@@ -5224,7 +5220,7 @@ void TForm1::NP_input()
 {
 	 MOD=NAHLED;
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL;  pom_temp->elementy=NULL;
+	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->pohon=new Cvektory::TPohon; pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
@@ -6645,11 +6641,13 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-//		Sk(pom_temp->pohon->name);
-//		pom_temp->pohon->name="test";
+		Sk(pom_temp->pohon->name);//test
+		//pom_temp->pohon=d.v.POHONY->dalsi->dalsi;//ostré přírazení
+		pom_temp->pohon->name="test";//přejmenování
+		Sk(pom_temp->pohon->name);//test
 
 
-		 Form2->ShowModal();
+//		 Form2->ShowModal();
 
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
@@ -7453,13 +7451,16 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	Form2->ShowModal();
 
 //Memo3->Visible=true;
-Cvektory::TPohon *P=d.v.POHONY->dalsi;
-while(P!=NULL)
-{
-	 Memo3->Lines->Add(P->name);
-	 P=P->dalsi;
-}
-P=NULL;delete P;
+//Cvektory::TPohon *P=d.v.POHONY->dalsi;
+//while(P!=NULL)
+//{
+//	 Memo3->Lines->Add(P->name);
+//	 P=P->dalsi;
+//}
+//P=NULL;delete P;
+//
+//if(pom!=NULL)Sk(pom->pohon->name);
+Sk(d.v.OBJEKTY->dalsi->pohon->name);
 
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
@@ -7517,7 +7518,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		MOD=SCHEMA;// před zoom
 
 		//smazání elementů - musí být napočátku, aby nebyl problik
-		pom=NULL;
+		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
     PmG->Delete(); PmG=NULL; delete PmG;
@@ -7904,7 +7905,6 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
-	//Smaz_kurzor(); volá se znovu ve Stornu....
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
 //---------------------------------------------------------------------------
