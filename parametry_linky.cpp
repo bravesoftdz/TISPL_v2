@@ -712,7 +712,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
- 		   Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
+ 		   Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i-1);
 			}
 			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
  	   Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
@@ -1936,7 +1936,6 @@ ROW=Row;
                 //pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
                 zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
                 smazat=true;
-              // mGrid->getCheck(6,Row)->Checked=false;
               }
               myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
           }
