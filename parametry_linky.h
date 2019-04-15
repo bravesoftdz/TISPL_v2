@@ -146,7 +146,6 @@ __published:	// IDE-managed Components
   void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
   void __fastcall Button1Click(TObject *Sender);
-  void __fastcall scGPNumericEdit_vyska_jigKeyPress(TObject *Sender, System::WideChar &Key);
 
 
 

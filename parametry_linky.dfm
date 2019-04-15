@@ -2894,6 +2894,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentShowHint = False
     ShowHint = True
     TabOrder = 17
+    Visible = False
     OnClick = scLabel_smazat_nepouziteClick
     Animation = True
     Caption = 'Info'
@@ -3259,7 +3260,6 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 20
     Visible = False
     OnKeyDown = FormKeyDown
-    OnKeyPress = scGPNumericEdit_vyska_jigKeyPress
   end
   object scGPGlyphButton_TT: TscGPGlyphButton
     Left = 451

@@ -172,10 +172,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->Cells[5][1].Text="";
   mGrid->Cells[6][1].Text="";
 
-//  mGrid->Cells[2][1].InputNumbersOnly=true;
-//  mGrid->Cells[3][1].InputNumbersOnly=true;
-//  mGrid->Cells[4][1].InputNumbersOnly=true;
-//  mGrid->Cells[5][1].InputNumbersOnly=true;
 
   getmGridColors();
 
@@ -189,16 +185,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->MergeCells(7,0,7,1);
   mGrid->MergeCells(8,0,8,1);
 
-
- // mGrid->getEdit(0,0)->Visible=false;
-
-  //ShowMessage("ted");
- //  Taktunit=S;
-	// Runit=M;
-	// Rzunit=MM;
-	// aRDunit=S;
- //  Dmunit=M;
-  // Delkaunit=M;
 
    rHTMLLabel_InfoText->Caption="";
    rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height + 5;
@@ -370,6 +356,7 @@ void TForm_parametry_linky::nacti_pohony ()
             {
             if(OBJEKTY_POUZIVAJICI_POHON.Length()>15) mGrid->Cells[7][i].Text=OBJEKTY_POUZIVAJICI_POHON.SubString(1,20)+"...";
             else mGrid->Cells[7][i].Text=OBJEKTY_POUZIVAJICI_POHON;
+
             }
 						else mGrid->Cells[7][i].Text="";
 
@@ -392,6 +379,16 @@ void TForm_parametry_linky::nacti_pohony ()
 
          getmGridWidth();
 
+         if(Form1->d.v.pohon_je_pouzivan(ukaz->n))
+          {
+          //pokud je pohon používán, zámìrnì nenastavím o jaký typ bunìk se jedná, aby do nich nešlo vstupovat a editovat
+          // pouze povolím zmìnu pøiøazení a smazání pohonu
+          mGrid->Cells[6][i].Type=mGrid->CHECK;
+          mGrid->Cells[7][i].Type=mGrid->BUTTON;
+          mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+          }
+          else
+          {
           mGrid->Cells[1][i].Type=mGrid->EDIT;
           mGrid->Cells[2][i].Type=mGrid->EDIT;
           mGrid->Cells[3][i].Type=mGrid->EDIT;
@@ -406,8 +403,10 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[3][i].InputNumbersOnly=true;
           mGrid->Cells[4][i].InputNumbersOnly=true;
           mGrid->Cells[5][i].InputNumbersOnly=true;
+          }
 
            mGrid->Refresh(); // kvùli prací s následných Checkboxem je nutný refresh
+
 
           if(Form1->d.v.pohon_je_pouzivan(ukaz->n))
           {
@@ -421,6 +420,14 @@ void TForm_parametry_linky::nacti_pohony ()
           scGPNumericEdit_sirka_jig->Enabled=false;
           scGPNumericEdit_vyska_jig->Enabled=false;
           scGPNumericEdit_delka_podvozek->Enabled=false;
+
+         //pokud je pohon používán, nastavím mu podbarvení bunìk
+          mGrid->Cells[1][i].Background->Color=Form_parametry_linky->Color;
+          mGrid->Cells[2][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
+          mGrid->Cells[3][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
+          mGrid->Cells[4][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
+          mGrid->Cells[5][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
+          mGrid->Cells[7][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
           }
           else
           {
@@ -442,7 +449,7 @@ void TForm_parametry_linky::nacti_pohony ()
 
 
          mGrid->Refresh();
-         scGPGlyphButton_DEL_nepouzite->Visible=true;
+        //R- zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
          input_state=NOTHING;
 
 	}
@@ -790,7 +797,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
   getPrirazeneObjDesign(i);
   setADD_ButtonPosition();
   setFormHeight();
-  scGPGlyphButton_DEL_nepouzite->Visible=true;
+  //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
   input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
@@ -2075,8 +2082,6 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[3][1].Background->Color=clBACKGROUND;
   mGrid->Cells[4][1].Background->Color=clBACKGROUND;
 
-//  mGrid->Cells[6][0].RightBorder->Color=clBACKGROUND;
-//  mGrid->Cells[6][1].RightBorder->Color=clBACKGROUND;
   }
 //---------------------------------------------------------------------------
   void TForm_parametry_linky::getmGridWidth()
@@ -2171,37 +2176,10 @@ void TForm_parametry_linky::getmGridColors()
   }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_parametry_linky::scGPNumericEdit_vyska_jigKeyPress(TObject *Sender,
-          System::WideChar &Key)
-{
-//rgf
-}
-//---------------------------------------------------------------------------
 
 void TForm_parametry_linky::OnKeyPress(TObject *Sender, System::WideChar &Key)
 
 {
-//  if(COL>=2 && COL<=5)
-// {
-//   if( Key == VK_BACK )
-//        return;
-//
-//    if( !((Key >= L'0') && (Key <= L'9') || (Key == L',')))
-//    {
-//        ShowMessage("Zadávejte pouze èísla");
-//        Key = 0;
-//    }
-//    else if ((Key == L',') && (Pos(Key, mGrid->Cells[COL][ROW].Text) > 0))
-//    {
-//        ShowMessage("Dvì desetinné èárky!");
-//        Key = 0;
-//    }
-//
-//  }
 
 }
-//---------------------------------------------------------------------------
-
-
-//---------------------------------------------------------------------------
 
