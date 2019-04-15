@@ -1475,7 +1475,7 @@ void __fastcall TForm_parametry_linky::rEditNum_taktClick(TObject *Sender)
 //		 rStringGridEd_tab_dopravniky->Visible=false;
 //		 rStringGridEd_tab_dopravniky->Visible=true;
 
-		 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
+	//	 vypis("Pozor, pøi zmìnì taktu dojde pøi uložení ke zmìnì hodnot aktuální rychlosti pohonu nebo rozteèové vzdálenosti a dalších parametrù dle nastavených zámkù v tabulce pohonù. ",false);
 }
 //---------------------------------------------------------------------------
 
@@ -1573,15 +1573,15 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
             if(TNValue.text!="")
             {
-               VID=ACol;
-               if(VID==4)  VID_value=TNValue.number1*(1+59.0*aRDunit);
-               if(VID==5)  VID_value=TNValue.number1*(1+999.0*Runit);
-               if(VID==6)  VID_value=TNValue.number1*(1+999.0*Dmunit);
-               if(VID==7)  VID_value= TNValue.number1; //Rx bez pøevodù
-
-               Row_validace=ARow;
-               Col_validace=ACol;
-               vypis(TNValue.text);
+//               VID=ACol;
+//               if(VID==4)  VID_value=TNValue.number1*(1+59.0*aRDunit);
+//               if(VID==5)  VID_value=TNValue.number1*(1+999.0*Runit);
+//               if(VID==6)  VID_value=TNValue.number1*(1+999.0*Dmunit);
+//               if(VID==7)  VID_value= TNValue.number1; //Rx bez pøevodù
+//
+//               Row_validace=ARow;
+//               Col_validace=ACol;
+//               vypis(TNValue.text);
 
             } else   //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
                    {
@@ -2082,7 +2082,7 @@ void TForm_parametry_linky::getmGridColors()
   void TForm_parametry_linky::getmGridWidth()
   {
   mGrid->Columns[0].Width=30;
-  mGrid->Columns[0].Visible=true;
+  mGrid->Columns[0].Visible=false;
   mGrid->Columns[1].Width=250;
   mGrid->Columns[2].Width=100;
   mGrid->Columns[3].Width=100;
