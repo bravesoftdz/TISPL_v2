@@ -3552,6 +3552,7 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 //designovaní tabulky pro pohon
 void TForm1::design_tab_pohon(int index)
 {
+  FormX->vstoupeno_poh=false;
 	AnsiString aRD,R,Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (aRDunit==SEC) aRD="<a>[m/s]</a>";
@@ -3690,10 +3691,12 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[1][3].Type=PmG->EDIT;
 		PmG->Cells[1][3].Text=outR(pom_temp->pohon->roztec);
 		PmG->Cells[0][4].Text="Rozestup "+Rz;
-		//PmG->Cells[1][4].Type=PmG->EDIT;
+		pom_temp->pohon->Rz=m.Rz(pom_temp->pohon->aRD);
 		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+    PmG->Cells[1][4].Type=PmG->DRAW;
 		PmG->Cells[0][5].Text="RX";
 		PmG->Cells[1][5].Type=PmG->EDIT;
+		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
 		PmG->Cells[1][5].Text=pom_temp->pohon->Rx;
 	}
 	//finální desing + refresh
@@ -3752,7 +3755,10 @@ void TForm1::tab_pohon_COMBO (int index)
 	if(index==1)//přiřazení pohonu
 	{
 		if(PCombo->ItemIndex!=0)
-			pom_temp->pohon=d.v.vrat_pohon(PCombo->ItemIndex);  
+		{
+			d.v.kopiruj_pohon(d.v.vrat_pohon(PCombo->ItemIndex),pom_temp);
+			nahled_ulozit(true);
+		}
 		design_tab_pohon(2);
 		//zajistí překreslení knihoven když je přidán či odebrán pohon
 		DrawGrid_knihovna->Refresh();
@@ -3954,7 +3960,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
 			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(m.PT(E->OTOC_delka,pom_temp->pohon->aRD));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
@@ -8035,6 +8041,7 @@ Memo3->Lines->Add("onchange");
 void __fastcall TForm1::Timer2Timer(TObject *Sender)
 {
  F->REFRESH();
+ FormX->input_state=FormX->NOTHING;
  Timer2->Enabled=false;
 }
 //---------------------------------------------------------------------------

@@ -155,7 +155,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//uložení do spojáku
 				F->pom_temp->pohon->aRD=aRD;
 				//volání metody pro pøepoèty všech souvisejících bunìk
-				zmena_aRD (aRD);
+				zmena_aRD();
 			}break;
 			case 3://rozteè, R
 			{
@@ -163,85 +163,131 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//naètení R z editu
 				double R=F->inR(F->ms.MyToDouble(F->PmG->Cells[1][Row].Text));
 				//uložení do spojáku
-				F->pom_temp->pohon->roztec;
+				F->pom_temp->pohon->roztec=R;
 				//volání metody pro pøepoèty všech souvisejících bunìk
-				zmena_R (R);
+				zmena_R();
 			}break;
 			case 4://rozestup, Rz   NEBUDE EDITOVATELNÝ
 			break;
 			case 5://Rx
 			{
 				input_state=Rx;
+				//naètení Rx z editu
+				double Rx=F->ms.MyToDouble(F->PmG->Cells[1][Row].Text);
+				//uložení do spojáku
+				F->pom_temp->pohon->Rx=Rx;
+				//volání metody pro pøepoèty všech souvisejících bunìk
+				zmena_Rx();
 			}break;
 		}
 	}
 	F->Timer2->Enabled=true;
-	input_state=NOTHING;
-	if(F->editace_textu) F->nahled_ulozit(true);
+	if(vstoupeno_elm||vstoupeno_poh) F->nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rychlosti
-void TFormX::zmena_aRD (double aRD)
+void TFormX::zmena_aRD ()
 {
-	////////////propoèty v tabulce pohonu////////////
+	//propoèty v tabulce pohonu
  	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
- 	{
- 		F->m.Rx(aRD,F->pom_temp->pohon->roztec);
- 		F->PmG->Cells[1][3].Text=F->outR(F->pom_temp->pohon->roztec);
- 		F->pom_temp->pohon->Rz=F->m.Rz(aRD);
+	{
+		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->aRD);
 		F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
- 	}
- 	else//pro tabulku v kontinuálním režimu
- 	{
- 		F->m.Rx(aRD,F->pom_temp->pohon->roztec);
- 		F->PmG->Cells[1][3].Text=F->outR(F->pom_temp->pohon->roztec);
- 	}
- 	////////////propoèty v tabulkách elementù////////////
- 	Cvektory::TElement *E=F->pom_temp->elementy;
- 	while(E!=NULL)
- 	{
- 		if(E->n>0)
- 		{
- 			switch(E->eID)
+		F->pom_temp->pohon->Rx=F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec);
+		F->PmG->Cells[1][5].Text=F->pom_temp->pohon->Rx;
+	}
+	//propoèty v tabulkách elementù
+	aktualizace_tab_elementu();
+}
+//---------------------------------------------------------------------------
+//pøepoèty tabulek elementù a pohonu vyvolané zmìnou rozteèe
+void TFormX::zmena_R ()
+{
+	//pøepoèet hodnot v tabulce pohonu
+	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+	{
+    F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
+		F->PmG->Cells[1][4].Text=F->pom_temp->pohon->Rz;
+		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz); //prohozené poøadí z dùvodu, že druhý výpoèet potøebuje aktualizovaonu honotu prvního výpoètu
+		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+	}
+	else//pro tabulku v kontinuálním režimu
+	{
+		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
+		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+	}
+	//pøepoèet hodnot v elementech
+	aktualizace_tab_elementu();
+}
+//---------------------------------------------------------------------------
+//pøepoèty tabulek elementù a pohonu vyvolané zmìnou Rx
+void TFormX::zmena_Rx ()
+{
+  //pøepoèet hodnot v tabulce pohonu
+	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+	{
+		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
+		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
+		F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
+	}
+	else//pro tabulku v kontinuálním režimu
+	{
+		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
+		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+	}
+	//pøepoèet hodnot v elementech
+	aktualizace_tab_elementu();
+}
+//---------------------------------------------------------------------------
+//pøepoèet v tabulkách elementù po zmìnì parametrù v tabulce pohonu
+void TFormX::aktualizace_tab_elementu ()
+{
+	Cvektory::TElement *E=F->pom_temp->elementy;
+	while(E!=NULL)
+	{
+		if(E->n>0)
+		{
+			switch(E->eID)
  			{
  				case 0:break;//stop stanice
  				case 1://robor kontinuální
  				{
- 					E->PT1=F->m.PT(E->LO1,aRD);
+					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
  					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
  				}
- 				break;
+				break;
  				case 2://robot se stop stanicí
  				{
  					//validace
- 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,aRD*60,3);
+					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD*60,3);
  					E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
  				}
  				break;
  				case 3://robot s pasivní otoèí
  				{
- 					E->PT1=F->m.PT(E->LO1,aRD);
+					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
  					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
- 					E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
+					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
  					E->mGrid->Cells[1][3].Text=F->outPT(E->PTotoc);
- 					E->PT2=F->m.PT(E->LO2,aRD);
+					E->PT2=F->m.PT(E->LO2,F->pom_temp->pohon->aRD);
  					E->mGrid->Cells[1][5].Text=F->outPT(E->PT2);
  				}
  				break;
  				case 4://robot s aktivní otoèí
  				{
  					//validace
- 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,aRD*60,3);
- 					E->mGrid->Cells[1][5].Text=F->outPT(E->WT);
+					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD*60,3);
+ 					E->mGrid->Cells[1][4].Text=F->outPT(E->WT);
  				}break;
  				case 5://otoè pasivní
  				{
-					E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
+					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
  					E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
  				}break;
  				case 6://otoè aktivní
  				{
-					E->PTotoc=F->m.PT(E->OTOC_delka,aRD);
+					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
 					E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
  				}break;
  			}
@@ -251,53 +297,4 @@ void TFormX::zmena_aRD (double aRD)
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
-//pøepoèty tabulek elementù a pohonu vyvolané zmìnou rozteèe
-void TFormX::zmena_R (double R)
-{
-	////////////pøepoèet hodnot v tabulce pohonu////////////
-	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
-	{
-		F->pom_temp->pohon->aRD=F->m.RD(R);
-		F->PmG->Cells[1][2].Text=F->pom_temp->pohon->aRD;
-		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,R);
-		F->PmG->Cells[1][4].Text=F->pom_temp->pohon->Rz;
-	}
-	else//pro tabulku v kontinuálním režimu
-	{
-		F->pom_temp->pohon->aRD=F->m.RD(R);
-		F->PmG->Cells[1][2].Text=F->pom_temp->pohon->aRD;
-	}
-	////////////pøepoèet hodnot v elementech////////////
-	Cvektory::TElement *E=F->pom_temp->elementy;
-	while(E!=NULL)
-	{
-		if(E->n>0)
-		{
-			switch(E->eID)
-			{
-				case 2://robot se stop stanicí
-				{
-					//validace
-					E->WT=F->m.cekani_na_palec(0,R,F->pom_temp->pohon->aRD*60,3);
-					E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
-				}
-				break;
-				case 4://robot s aktivní otoèí
-				{
-					//validace
-					E->WT=F->m.cekani_na_palec(0,R,F->pom_temp->pohon->aRD*60,3);
-					E->mGrid->Cells[1][5].Text=F->outPT(E->WT);
-				}break;
-			}
-		}
-		E=E->dalsi;
-	}
-	E=NULL; delete E;
-}
-//---------------------------------------------------------------------------
-//pøepoèty tabulek elementù a pohonu vyvolané zmìnou Rx
-void TFormX::zmena_Rx (double Rx)
-{
 
-}
-//---------------------------------------------------------------------------
