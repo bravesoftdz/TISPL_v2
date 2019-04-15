@@ -32,6 +32,7 @@ TmGrid::TmGrid(TForm *Owner)
 	preRowInd=-1;
 	Decimal=3;//implicitní poèet desetinných míst u numericeditù
 	IntegerDecimalNull=false;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do poètu decimál i u celých èísel
+	clHighlight=(TColor)RGB(43,87,154);//pøednastavená barva zvýraznìní
 	//orámování - default
 	TBorder defBorder;
 	defBorder.Color=(TColor)RGB(200,200,200);
@@ -87,6 +88,8 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.MergeState=false;
 	//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
 	DefaultCell.InputNumbersOnly=false;
+	//výchozí stav zvýraznìní buòky
+	DefaultCell.Highlight=false;
 	//pozadí
 	DefaultCell.Background->Color=clWhite;
 	DefaultCell.Background->Style=bsSolid;
@@ -309,6 +312,7 @@ void TmGrid::Update()
 	//nastavení šíøky sloupcù a výšky øádkù+autofit sloupcù nastaví Columns[X].ColWidth
 	SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
 
+	//vykreslí se do Canvasu bitmapy o nulových rozmìrech, tj. nedojde k pøekreslení
 	Graphics::TBitmap *bmp_temp=new Graphics::TBitmap;
 	bmp_temp->Width=0;bmp_temp->Height=0;
 	Draw(bmp_temp->Canvas);
@@ -411,24 +415,28 @@ void TmGrid::DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R)
 	if(Cells[X][Y].TopBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
 	{
 		SetBorder(C,Cells[X][Y].TopBorder);
+		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight || Y>0 && Cells[X][Y-1].Type==DRAW && Cells[X][Y-1].Highlight)C->Pen->Color=clHighlight;//v pøípadì highlightu orámování
 		C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
 	}
 	//bottom
 	if(Y==RowCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 	{
 		SetBorder(C,Cells[X][Y].BottomBorder);
+		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight)C->Pen->Color=clHighlight;//v pøípadì highlightu orámování
 		C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 	}
 	//left
 	if(Cells[X][Y].LeftBorder->Color!=Cells[X][Y].Background->Color)//kvùli slouèeným buòkám
 	{
 		SetBorder(C,Cells[X][Y].LeftBorder);
+		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight || X>0 && Cells[X-1][Y].Type==DRAW && Cells[X-1][Y].Highlight)C->Pen->Color=clHighlight;//v pøípadì highlightu orámování
 		C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
 	}
 	//right
 	if(X==ColCount-1)//akcelerátor, aby se zbyteènì nevykreslovalo, pokud by bylo zbyteèné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z dùvodu možného pøekryvu s náplní pøedchozí buòky
 	{
 		SetBorder(C,Cells[X][Y].RightBorder);
+		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight)C->Pen->Color=clHighlight;//v pøípadì highlightu orámování
 		C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
 	}
 }
@@ -725,7 +733,8 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
-	E->Options->FrameNormalColor=Cell.Background->Color;
+	if(!Cell.Highlight)E->Options->FrameNormalColor=Cell.Background->Color;//rámeèek musí být stejnou barvou jakou buòka, protože møížka je o 1px na všechny strany roztažená
+	else E->Options->FrameNormalColor=clHighlight;
 	E->Options->FrameNormalColorAlpha=255;
 	E->Options->FrameDisabledColor=E->Options->DisabledColor;
 	E->Margins->Left=0;E->Margins->Right=0;E->Margins->Top=0;E->Margins->Bottom=0;
@@ -774,9 +783,11 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->ValueType=scvtFloat;
 	N->ShowHint=true;
 	N->Hint=Cell.Text;
-	if(Cell.Text=="")N->Options->NormalColor=Cell.isEmpty->Color;else N->Options->NormalColor=Cell.Background->Color;
+	//28.2.provizorní fix if(Cell.Text=="")N->Options->NormalColor=Cell.isEmpty->Color;else //podmínìné formátování
+	N->Options->NormalColor=Cell.Background->Color;
 	N->Options->NormalColorAlpha=255;
-	N->Options->FrameNormalColor=Cell.Background->Color;
+	if(!Cell.Highlight)N->Options->FrameNormalColor=Cell.Background->Color;//rámeèek musí být stejnou barvou jakou buòka, protože møížka je o 1px na všechny strany roztažená
+	else N->Options->FrameNormalColor=clHighlight;
 	N->Options->FrameNormalColorAlpha=255;
 	N->Options->FrameDisabledColor=N->Options->DisabledColor;
 	N->Margins->Left=0;N->Margins->Right=0;N->Margins->Top=0;N->Margins->Bottom=0;
@@ -1458,11 +1469,13 @@ void TmGrid::SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long Row
 	}
 }
 //---------------------------------------------------------------------------
-void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní vnìjšího orámování buòky
+void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width,bool Refresh)
 {
-//	switch(Cell[Col][Row])
+// pro pøípad zkonkretizovaní požadovvku odkomentovat
+//	switch(Cells[Col][Row].Type)
 //	{
-//		case EDIT:
+//		case DRAW:
 //		{
 			TBorder hlBorder;
 			hlBorder.Color=Color;
@@ -1472,8 +1485,49 @@ void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsi
 			*Cells[Col][Row].LeftBorder=hlBorder;
 			*Cells[Col][Row].RightBorder=hlBorder;
 			*Cells[Col][Row].BottomBorder=hlBorder;
+			if(Refresh)Show();
 //		}break;
+//		case EDIT:HighlightEdit(Col,Row,Color,Width);break;
+//		case NUMERIC:HighlightNumeric(Col,Row,Color,Width);break;
 //	}
+}
+//---------------------------------------------------------------------------
+//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní dané komponenty
+void TmGrid::HighlightEdit(TscGPEdit *Edit,TColor Color,unsigned short Width)
+{
+	Edit->Options->FrameNormalColor=Color;
+	Edit->Options->FrameWidth=Width;
+}
+//---------------------------------------------------------------------------
+//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní dané komponenty
+void TmGrid::HighlightEdit(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+{
+	HighlightEdit(getEdit(Col,Row),Color,Width);
+}
+//---------------------------------------------------------------------------
+//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní dané komponenty
+void TmGrid::HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color,unsigned short Width)
+{
+	Numeric->Options->FrameNormalColor=Color;
+	Numeric->Options->FrameWidth=Width;
+}
+//---------------------------------------------------------------------------
+//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní dané komponenty
+void TmGrid::HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+{
+	HighlightNumeric(getNumeric(Col,Row),Color,Width);
+}
+//---------------------------------------------------------------------------
+//odzvýrazni všechna zvýraznìní
+void TmGrid::unHighlightAll()
+{
+	for(unsigned long X=0;X<ColCount;X++)//po sloupcích
+	{
+		for(unsigned long Y=0;Y<RowCount;Y++)//po øádcích
+		{
+			Cells[X][Y].Highlight=false;
+		}
+	}
 }
 //---------------------------------------------------------------------------
 //zkopíruje obsah, formát a orámování z buòky na buòku (bez ukazatelového propojení)
@@ -1532,6 +1586,9 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.RightMargin=RefCell.RightMargin;
 	//indikátor slouèení
 	CopyCell.MergeState=RefCell.MergeState;
+	//další vlastnosti
+	CopyCell.InputNumbersOnly=RefCell.InputNumbersOnly;
+	CopyCell.Highlight=RefCell.Highlight;
 	////pozadí
 	//*CopyCell.Background=*RefCell.Background;  - asi nejede
 	CopyCell.Background->Color=RefCell.Background->Color;

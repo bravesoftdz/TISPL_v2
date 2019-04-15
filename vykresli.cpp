@@ -170,7 +170,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 				{
 					if(F->pom_temp->n!=O->n)//aktuálně nahlížený editovaný objekt se nevykresluje zde nikdy
 					{
-						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/,E->LO1,E->LO2);
+						vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,-1/*stav*/,E->LO1,E->OTOC_delka,E->LO2);
 						//zde bude ještě vykreslení g_elementu
 					}
 					E=E->dalsi;//posun na další element
@@ -198,21 +198,35 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		}
 
 		////vykreslení obrysu OBJEKTU - kabiny
-		//pero+výplň
+		///pero+výplň
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 		canv->Pen->Color=clRed;
 		canv->Pen->Width=F->Zoom*0.2;//pův. 0.5 bez duble linie
 		if(-2>=F->JID && F->JID>=-5)canv->Pen->Width*=2;
-		//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
+		///vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
 		short Ov=F->Zoom*0.4; //ještě případné zvětšení: if(-2>=F->JID && F->JID>=-5)Ov*=2;
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)-Ov,m.L2Py(F->pom_temp->Yk)-Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)+Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)+Ov);//dvojitý rám - vnější
 		canv->Rectangle(m.L2Px(F->pom_temp->Xk)+Ov,m.L2Py(F->pom_temp->Yk)+Ov,m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x)-Ov,m.L2Py(F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y)-Ov);//dvojitý rám - vnitřní
-		//název objektu
-		nastavit_text_popisu_objektu_v_nahledu(canv);
-		AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
-		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-canv->TextWidth(T)/2,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(T),T);
-		//kóty
+
+		///název a zkratka
+		//název objektu - nastavení                 //záměrně nuly, aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=canv->TextWidth(Tn);
+		//lomítko objektu - nastavení
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tl=+" / ";	short Wl=canv->TextWidth(Tl);
+		//zkratka objektu - nastavení
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);AnsiString Tz=F->pom_temp->short_name.UpperCase();short Wz=canv->TextWidth(Tz);
+		//samotné vypsání názvu
+		nastavit_text_popisu_objektu_v_nahledu(canv,1);                                                                                          //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0),m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tn);
+		//samotné vypsání lomítka
+		nastavit_text_popisu_objektu_v_nahledu(canv,0);
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0)+Wn,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tl);
+		//samostné vypsání zkratky
+		nastavit_text_popisu_objektu_v_nahledu(canv,2);                                                                                               //záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamack
+		canv->TextOutW(m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0)+Wn+Wl,m.L2Py(F->pom_temp->Yk)-canv->TextHeight(Tl),Tz);
+
+		///kóty
 		if(F->pom_temp->zobrazit_koty)
 		{
 			short highlight=0;
@@ -229,7 +243,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			E=E->dalsi;//přeskočí hlavičku
 			while(E!=NULL)
 			{
-				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->LO2);
+				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->OTOC_delka,E->LO2);
 				 //zde bude ještě vykreslení g_elementu
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
@@ -240,13 +254,15 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 	}
 }
 //---------------------------------------------------------------------------
-void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv)
+//bool name, zda se jedná o zadavání name nebo short_name
+void Cvykresli::nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv,unsigned short typ)
 {
 	canv->Font->Name=F->aFont->Name;
 	canv->Font->Color=clRed;
 	canv->Font->Size=2*3*F->Zoom;
 	canv->Font->Style = TFontStyles();
-	if(F->JID==-6)canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+	if((F->JID==-6 && typ==1) || (F->JID==-7 && typ==2))canv->Font->Style = TFontStyles()<< fsBold;//zapnutí tučného písma
+	else canv->Font->Style = TFontStyles();//vypnutí
 }
 //---------------------------------------------------------------------------
 //vykreslí barevný čtvereček jako příslušnost k dané cestě
@@ -2567,18 +2583,18 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
-void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double LO2)
+void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2)
 {
   rotace=m.Rt90(rotace);
 	switch(eID)
 	{
-		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;
-		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//kontinuální robota
-		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//robot se stopkou
-		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
-		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
-		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
-		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;
+		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;//stopka
+		case 1: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//kontinuální robota
+		case 2: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
+		case 3: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
+		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
+		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//pasivní otoč
+		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//aktivní otoč
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2660,14 +2676,14 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double LO2,double aP,float TS)
+void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double aP,float TS)
 {
 	try
 	{
 	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 
 	//vstupní parametry - budou součástí parametrů metody  robotoa
-	double LO=(LO1+LO2)*Z/F->m2px;//délka cekového lakovacího okna
+	double LO=(LO1+OTOC_delka+LO2)*Z/F->m2px;//délka cekového lakovacího okna
 	if(typ==0)LO=1.5*Z/F->m2px;//v knihovně se symbol robota zobrazuje s 1,5 m velkých lakovacím oknem vždy
 	aP; if(aP>LO/2.0)aP=LO/2.0;if(aP<-LO/2.0)aP=-LO/2.0;//Aktuální Pozice odsazení tryskového kloubu i trysky (ve svislé poloze trysky) v lakovacím okně + ochrana proti přetečení
 	TS;//Tryska Sklon stupně
@@ -2698,9 +2714,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);lX=X;lY=m.round(Y+sirka_zakladny/2.0);}
 	switch(eID)
 	{
-		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
 		case 2: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
-		case 3: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
+		case 3: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
 		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
@@ -2769,8 +2785,10 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-		if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
-		AnsiString T=short_name;if(Z>4*3){T=name;if(F->aFont->Size==12)canv->Font->Size=2*Z; else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
+		//if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
+		AnsiString T=short_name;
+		//if(Z>4*3) //short_name odstaveno
+		{T=name;if(F->aFont->Size==12)canv->Font->Size=2*Z; else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
 			canv->Font->Name=F->aFont->Name;
@@ -2879,7 +2897,7 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	{
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
-		canv->Font->Color=barva;if(eID==5 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);
+		canv->Font->Color=barva;if(eID==5 && stav!=-1 && typ==0)canv->Font->Color=m.clIntensive(barva,100);
 		canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
 		canv->Font->Name=F->aFont->Name;
 		canv->Font->Style = TFontStyles();
@@ -2910,34 +2928,78 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double LO2,double delka_ramena,double rotace)
+void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,double OTOC_delka,double LO2,double delka_ramena,double rotace)
 {
+	LO1=m.m2px(LO1);
+	OTOC_delka=m.m2px(OTOC_delka);
+	LO2=m.m2px(LO2);
+
 	canv->Pen->Width=1;
 	canv->Pen->Color=clGray;
 	canv->Pen->Mode=pmCopy;
 	canv->Pen->Style=psDash;
 	//rotace
-	switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
+	switch((int)rotace)
 	{
 		case 0:
 		{
-			line(canv,X,Y,m.round(X-LO1/2),m.round(Y-delka_ramena));
-			line(canv,X,Y,m.round(X+LO1/2),m.round(Y-delka_ramena));
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X-LO1/2.0),m.round(Y-delka_ramena));
+				line(canv,X,Y,m.round(X+LO1/2.0),m.round(Y-delka_ramena));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y-delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y-delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y-delka_ramena));
+				line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y-delka_ramena));
+			}
 		}break;
 		case 90:
 		{
-			line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1/2));
-			line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+LO1/2));
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1/2.0));
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+LO1/2.0));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0));
+				line(canv,X,Y,m.round(X+delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
+			}
 		}break;
 		case 180:
 		{
-			line(canv,X,Y,m.round(X-LO1/2),m.round(Y+delka_ramena));
-			line(canv,X,Y,m.round(X+LO1/2),m.round(Y+delka_ramena));
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X-LO1/2.0),m.round(Y+delka_ramena));
+				line(canv,X,Y,m.round(X+LO1/2.0),m.round(Y+delka_ramena));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X-LO1-OTOC_delka/2.0),m.round(Y+delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-OTOC_delka/2.0),m.round(Y+delka_ramena));
+				if(OTOC_delka)line(canv,X,Y,m.round(X+OTOC_delka/2.0),m.round(Y+delka_ramena));
+				line(canv,X,Y,m.round(X+OTOC_delka/2.0+LO2),m.round(Y+delka_ramena));
+			}
 		}break;
 		case 270:
 		{
-			line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1/2));
-			line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+LO1/2));
+			if(LO2==0)//pouze kk
+			{
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1/2.0));
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+LO1/2.0));
+			}
+			else//kk s otočí či kk s vyoseným LO
+			{
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-LO1-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y-OTOC_delka/2.0));
+				if(OTOC_delka)line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0));
+				line(canv,X,Y,m.round(X-delka_ramena),m.round(Y+OTOC_delka/2.0+LO2));
+			}
 		}break;
 	}
 

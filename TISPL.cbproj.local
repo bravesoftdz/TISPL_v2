@@ -16,8 +16,8 @@
     <Transaction>1899.12.30 00:00:00.000.030,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.792,C:\Users\rosta\Desktop\ELTEP\KOD_OK\casovaOsa_info.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\popUP_casova.h</Transaction>
     <Transaction>1899.12.30 00:00:00.000.992,C:\Users\rosta\Desktop\ELTEP\KOD_OK\gapoTT.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.832,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.660,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.832,=C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit3.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.151,C:\Users\rosta\Desktop\ELTEP\KOD_OK\Unit2.h=C:\Users\rosta\Desktop\ELTEP\KOD_OK\pl_priority.h</Transaction>
     <Transaction>1899.12.30 00:00:00.000.341,D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\parametry_math.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.738,=D:\SOFTWARE\TISPL\TISPL_sdilena\KOD_NEW_DESIGN\Unit2.cpp</Transaction>
@@ -162,17 +162,13 @@
     <File Path="adjustace.cpp"/>
     <File Path="adjustace.dfm"/>
     <File Path="adjustace.h"/>
-    <File Path="Unit3.cpp"/>
-    <File Path="Unit3.cpp"/>
-    <File Path="Unit3.dfm"/>
-    <File Path="Unit3.h"/>
-    <File Path="Unit4.cpp"/>
-    <File Path="Unit4.cpp"/>
-    <File Path="Unit4.dfm"/>
-    <File Path="Unit4.h"/>
     <File Path="Z_rozliseni.cpp"/>
     <File Path="Z_rozliseni.cpp"/>
     <File Path="Z_rozliseni.dfm"/>
     <File Path="Z_rozliseni.h"/>
+    <File Path="UnitX.cpp"/>
+    <File Path="UnitX.cpp"/>
+    <File Path="UnitX.dfm"/>
+    <File Path="UnitX.h"/>
   </ProjectSortOrder>
 </BorlandProject>

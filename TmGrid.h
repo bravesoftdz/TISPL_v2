@@ -52,6 +52,7 @@ class TmGrid
 		short RightMargin;//pravé odsazení textu
 		bool MergeState;//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouží jako pomùcka pøi vykreslování orámování slouèených bunìk, zatím zùstává nevyužito
 		bool InputNumbersOnly;//pokud je nastaveno na true, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
+		bool Highlight;//indikuje zda je buòka zvýraznìna, barva zvýraznìní odpovídá globální promìnné TColor clHighlight, výchozí stav zvýraznìní je false
 		TFont *Font;//vlastnosti fontu v buòce
 		TPoint TextPositon;//pozice textu v buòce (levý horní roh buòky je 0,0)
 		TBrush *isEmpty;//podmínìné formátování, pozadí buòky, když je prázdná
@@ -88,12 +89,17 @@ class TmGrid
 	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buòky oddìlí separátorem
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
-	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=2);//zajistí zvýraznìní dané buòky
-	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù dle èísla øádku Row
-	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí zvýraznìní øádkù, pøes který se pøejíždí myší
 	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznìní orámování tabulky
 	void HighlightTableOnMouse(int X,int Y);//zajistí zvýraznìní orámování tabulky, pokud se do ni vstoupí myší
+	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) øádkù dle èísla øádku Row
+	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) øádkù, pøes který se pøejíždí myší
+	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1,bool Refresh=true);//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní vnìjšího orámování buòky
+	void HighlightEdit(TscGPEdit *Edit,TColor Color=clRed,unsigned short Width=1);//zajistí  trvalé (jedná se spíše o nastavení)  zvýraznìní dané komponenty
+	void HighlightEdit(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní dané komponenty
+	void HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznìní trvalé (jedná se spíše o nastavení) dané komponenty
+	void HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznìní dané komponenty
 	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistí pøebarvení odkazu v buòce odstínem barvy odkazu
+	void unHighlightAll();//odzvýrazni všechna zvýraznìní
 	void SetVisibleComponents(bool state);//podle stavu state buï zobrazí nebo skryje všechny komponenty
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	TscGPNumericEdit *getNumeric(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
@@ -136,6 +142,7 @@ class TmGrid
 	bool IntegerDecimalNull;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do poètu decimál i u celých èísel
 	bool MovingTable;//pokud je nastaveno na true, komponenty se zmìní na typ DRAW tj. tak, aby došlo k posunu dané buòky
 	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
+	TColor clHighlight;//pøednastavená barva zvýraznìní
 
  //protected: - nefugovalo, jak jsme si pøedstavoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat

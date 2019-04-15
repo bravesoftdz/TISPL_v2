@@ -2322,10 +2322,10 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 }
 //---------------------------------------------------------------------------
 //vrátí do globální proměnné JID ID úlohy/funkcionality v místě kurzoru, zároveň pokud v místě tabulky či elementu nahraje ukazatel do globální proměnné pom_element
-//JID=-2;//svislá levá
-//JID=-3;//vodorovná horní
-//JID=-4;//svislá pravá
-//JID=-5;//vodorovná dolní
+//JID=-2;//svislá levá hrana objektu
+//JID=-3;//vodorovná horní hrana objektu
+//JID=-4;//svislá pravá hrana objektu
+//JID=-5;//vodorovná dolní hrana objektu
 //JID=-6;//název objektu
 //JID=-7;//zkratka objektu
 //JID=-8;//vodorovná kóta
@@ -2395,12 +2395,13 @@ void TForm1::getJobID(int X, int Y)
 				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
 				else
 				{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
-					d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
-					AnsiString T=F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase();
-					int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
-					int Yd=m.L2Py(F->pom_temp->Yk);
-					if(Xl<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-6;//název objektu
-					else if(Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / ")<=X && X<=Xl+Canvas->TextWidth(F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()) && Yd-Canvas->TextHeight(T)<=Y && Y<=Yd)JID=-7;//zkratka objektu
+					d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+					d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);AnsiString Tl=+" / ";	short Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
+					d.nastavit_text_popisu_objektu_v_nahledu(Canvas,2);AnsiString Tz=F->pom_temp->short_name.UpperCase();short Wz=Canvas->TextWidth(Tz);//zkratka objektu - nastavení
+					int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0);//levá souřadnice textové oblasti
+					int Yd=m.L2Py(F->pom_temp->Yk);//dolní souřadnice textové oblasti
+					if(Xl<=X && X<=Xl+Wn && Yd-Canvas->TextHeight(Tn)<=Y && Y<=Yd)JID=-6;//název objektu
+					else if(Xl+Wn+Wl<=X && X<=Xl+Wn+Wl+Wz && Yd-Canvas->TextHeight(Tz)<=Y && Y<=Yd)JID=-7;//zkratka objektu
 					else//nejedná tj. testují se KÓTY
 					{
 						if(pom_temp->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
@@ -3563,7 +3564,8 @@ void TForm1::design_tab_pohon(int index)
    	case 0:
 		{
 			PmG=new TmGrid(this);//vždy nutno jako první
-   		//nastavení defaultního designu
+			//nastavení defaultního designu
+			PmG->Left=-500;PmG->Top=-500;//pouze aby se při prvním zobrazení nezobrazovala formou probliku vlevo nahoře
 			PmG->DefaultCell.Font->Name=aFont->Name;
 			PmG->DefaultCell.Font->Size=aFont->Size;
 			PmG->DefaultCell.isLink->Name=aFont->Name;
@@ -3595,7 +3597,7 @@ void TForm1::design_tab_pohon(int index)
 			PmG->Columns[1].Width=250;
    		//sloučení hlavičky
 			PmG->MergeCells(0,0,1,0);
-			PmG->Show(NULL);
+			PmG->Update();
 			tab_pohon_COMBO(0);
    	}break;
    	case 1:///////////Změna jednotek
@@ -3781,6 +3783,7 @@ void TForm1::tab_pohon_COMBO (int index)
 	P=NULL; delete P;
 	PCombo=NULL; delete PCombo;
 }
+//---------------------------------------------------------------------------
 //nadesignuje tabulky daného elementu
 void TForm1::design_element(Cvektory::TElement *E)
 {
@@ -3835,9 +3838,9 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="výběr párové STOP";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->WT);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->WTstop);
 			E->mGrid->Cells[0][3].Text="WT palec "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->WTpalec);
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->WT);
 			E->mGrid->Cells[0][4].Text="akt. počet vozíků";
 			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=6;
 			E->mGrid->Cells[0][5].Text="max. počet vozíků";
@@ -4106,8 +4109,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
 			E->mGrid->Cells[0][3].Text="WT palec "+cas;
-			E->mGrid->Cells[1][2].Text=outPT(E->WT);
-			E->mGrid->Cells[1][3].Text=outPT(E->WTpalec);
+			E->mGrid->Cells[1][2].Text=outPT(E->WTstop);
+			E->mGrid->Cells[1][3].Text=outPT(E->WT);
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -5249,7 +5252,7 @@ void TForm1::NP_input()
 	 DrawGrid_knihovna->DefaultColWidth=80;
 	 DrawGrid_knihovna->Left=3;
 	 DrawGrid_knihovna->Height=DrawGrid_knihovna->DefaultRowHeight*2; // dle počtu řádků
-	 DrawGrid_knihovna->Invalidate();
+	 //přesunoto níže k refresh: DrawGrid_knihovna->Invalidate();
 
 	 DrawGrid_otoce->DefaultColWidth=80;
 
@@ -5351,7 +5354,7 @@ void TForm1::NP_input()
 		E=NULL; delete E;
 	}
 	design_tab_pohon(0);
-	//toto třeba?:Invalidate();
+	DrawGrid_knihovna->Invalidate();
 	REFRESH();  
 }
 //---------------------------------------------------------------------------
@@ -6646,7 +6649,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		pom_temp->pohon->name="test";
 
 
-		 //Form2->ShowModal();
+		 Form2->ShowModal();
 
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
@@ -8022,10 +8025,18 @@ void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 //vykresluje a maže kurzor
 void TForm1::vykresli_kurzor(int index)
 {
-	d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
-	AnsiString T=pom_temp->name.UpperCase()+" / "+pom_temp->short_name.UpperCase();
-	int Xl=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
-	int Yd=m.L2Py(pom_temp->Yk);
+//	d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
+//	AnsiString T=pom_temp->name.UpperCase()+" / "+pom_temp->short_name.UpperCase();
+//	int Xl=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
+//	int Yd=m.L2Py(pom_temp->Yk);
+
+	//nastavení rozměrů názvu a zkratky objektu
+	d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
+	d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);AnsiString Tl=+" / "; short Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
+	d.nastavit_text_popisu_objektu_v_nahledu(Canvas,2);AnsiString Tz=F->pom_temp->short_name.UpperCase();short Wz=Canvas->TextWidth(Tz);//zkratka objektu - nastavení
+	int Xl=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x/2.0)-m.round((Wn+Wl+Wz)/2.0);//levá souřadnice textové oblasti
+	int Yd=m.L2Py(F->pom_temp->Yk);//dolní souřadnice textové oblasti
+
 
 	//vykreslování kurzoru pro psaní textu
 	Canvas->Pen->Style=psSolid;
@@ -8035,19 +8046,19 @@ void TForm1::vykresli_kurzor(int index)
 
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
-		case -6:
+		case -6://název objektu
 		{
-			Canvas->MoveTo(Xl+2+Canvas->TextWidth(pom_temp->name.UpperCase()),Yd-Canvas->TextHeight(T)+3);
-			Canvas->LineTo(Xl+2+Canvas->TextWidth(pom_temp->name.UpperCase()),Yd-6);
+			Canvas->MoveTo(Xl+2+Wn,Yd-Canvas->TextHeight(Tn)+3);
+			Canvas->LineTo(Xl+2+Wn,Yd-6);
 			stav_kurzoru=!stav_kurzoru;
 		}break;
-		case -7:
+		case -7://zkratka objektu
 		{
-    	Canvas->MoveTo(Xl+2+Canvas->TextWidth(T),Yd-Canvas->TextHeight(T)+3);  //F->pom_temp->name.UpperCase()+" / "+F->pom_temp->short_name.UpperCase()
-			Canvas->LineTo(Xl+2+Canvas->TextWidth(T),Yd-6);
+			Canvas->MoveTo(Xl+2+Wn+Wl+Wz,Yd-Canvas->TextHeight(Tz)+3);
+			Canvas->LineTo(Xl+2+Wn+Wl+Wz,Yd-6);
 			stav_kurzoru=!stav_kurzoru;
 		}break;
-		case -8:
+		case -8://vodorovná kóta
 		{
 			Canvas->Pen->Color=clGray;
 			Canvas->Pen->Width=1.5;
@@ -8055,7 +8066,7 @@ void TForm1::vykresli_kurzor(int index)
 			Canvas->LineTo(pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.right+1,pom_temp->kabinaKotaX_oblastHodnotaAJednotky.rect1.bottom);
 			stav_kurzoru=!stav_kurzoru;
 		}break;
-		case -9:
+		case -9://svislá kóta
 		{
 			Canvas->Pen->Color=clGray;
 			Canvas->Pen->Width=1.5;
