@@ -1936,7 +1936,6 @@ ROW=Row;
                 //pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
                 zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
                 smazat=true;
-              // mGrid->getCheck(6,Row)->Checked=false;
               }
               myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
           }

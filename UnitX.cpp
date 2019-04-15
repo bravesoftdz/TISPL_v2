@@ -15,28 +15,26 @@ __fastcall TFormX::TFormX(TComponent* Owner)
 { //výchozí nastavení - pøi zobrazení tab.elementù je totiž vždy volán Onchange, pøi naèítání hodnot do buòek
 	// proto je nastaven input_state=NO, aby v tento moment neprobíhal žádný výpoèet v Onchange události
  input_state=NO;
- vstoupeno_poh=false;
- vstoupeno_elm=false;
 }
 //---------------------------------------------------------------------------
+
+
 void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
-	input_state=NOTHING;
+	input_state=NOTHING; F->editace_textu=true;
 }
-//---------------------------------------------------------------------------
+
 void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	//po kliku do vykreslené tabulky lze obnovit událost OnChange
-	if(ID==9999)vstoupeno_poh=true;
-	else vstoupeno_elm=true;
+//
 }
-//---------------------------------------------------------------------------
+
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
 void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	if(input_state==NOTHING&&ID!=9999&&vstoupeno_elm)
+	if(input_state==NOTHING&&ID!=9999&&F->editace_textu)
 	{
 		Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
 		if(ID>100000)
@@ -138,7 +136,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		}
 		E=NULL;delete E;
 	}
-	if(input_state==NOTHING&&ID==9999&&vstoupeno_poh)
+	if(input_state==NOTHING&&ID==9999&&F->editace_textu)
 	{
 		switch(Row)
 		{
@@ -150,7 +148,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			case 2://aktuální rychlost, aRD
 			{
 				input_state=aRD;
-				//naètení aRD z editu
+				////////////naètení aRD z editu////////////
 				double aRD=F->inaRD(F->ms.MyToDouble(F->PmG->Cells[1][Row].Text));
 				//uložení do spojáku
 				F->pom_temp->pohon->aRD=aRD;
@@ -189,7 +187,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 void TFormX::zmena_aRD ()
 {
 	//propoèty v tabulce pohonu
- 	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+				if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
 	{
 		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->aRD);
 		F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
@@ -229,7 +227,7 @@ void TFormX::zmena_Rx ()
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
 		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
 		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
+					F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
 	}
 	else//pro tabulku v kontinuálním režimu
 	{
@@ -249,45 +247,54 @@ void TFormX::aktualizace_tab_elementu ()
 		if(E->n>0)
 		{
 			switch(E->eID)
- 			{
- 				case 0:break;//stop stanice
- 				case 1://robor kontinuální
- 				{
+						{
+							case 0:break;//stop stanice
+							case 1://robor kontinuální
+							{
 					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
- 				}
+								E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
+							}
 				break;
- 				case 2://robot se stop stanicí
- 				{
- 					//validace
+							case 2://robot se stop stanicí
+							{
+								//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD*60,3);
- 					E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
- 				}
- 				break;
- 				case 3://robot s pasivní otoèí
- 				{
+								E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
+							}
+							break;
+							case 3://robot s pasivní otoèí
+							{
 					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
+								E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
 					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][3].Text=F->outPT(E->PTotoc);
+								E->mGrid->Cells[1][3].Text=F->outPT(E->PTotoc);
 					E->PT2=F->m.PT(E->LO2,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][5].Text=F->outPT(E->PT2);
- 				}
- 				break;
- 				case 4://robot s aktivní otoèí
- 				{
- 					//validace
+								E->mGrid->Cells[1][5].Text=F->outPT(E->PT2);
+							}
+							break;
+							case 4://robot s aktivní otoèí
+							{
+								//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD*60,3);
  					E->mGrid->Cells[1][4].Text=F->outPT(E->WT);
- 				}break;
- 				case 5://otoè pasivní
- 				{
+							}break;
+							case 5://otoè pasivní
+							{
 					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
- 				}break;
- 				case 6://otoè aktivní
- 				{
+								E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
+							}break;
+							case 6://otoè aktivní
+							{
 					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
+								E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
+							}break;
+						}
+					}
+					E=E->dalsi;
+				}
+				E=NULL; delete E;
+			}break;
+			case 3://rozteè, R
 					E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
  				}break;
  			}
@@ -297,4 +304,14 @@ void TFormX::aktualizace_tab_elementu ()
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
-
+				input_state=R;
+				////////////naètení R z editu////////////
+				double R=F->inR(F->ms.MyToDouble(F->PmG->Cells[1][Row].Text));
+				input_state=Rx;
+			}break;
+		}
+	}   F->PmG->Refresh();
+	F->editace_textu=false;
+	F->Timer2->Enabled=true;
+	input_state=NOTHING;
+	F->nahled_ulozit(true);

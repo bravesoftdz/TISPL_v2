@@ -291,7 +291,40 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->mezera_jig=Original->mezera_jig;
 	Kopie->mezera_podvozek=Original->mezera_podvozek;
 	//POHON
-	kopiruj_pohon(Original->pohon,Kopie);
+	//if(Kopie->pohon==NULL)Kopie->pohon=new TPohon;if(Original->pohon!=NULL)*Kopie->pohon=*Original->pohon;else Kopie->pohon=NULL;
+	if(Kopie->pohon==NULL)Kopie->pohon=new TPohon;
+	if(Original->pohon!=NULL) Kopie->pohon->name=Original->pohon->name;
+
+
+//	if(Original->pohon!=NULL)
+//	{
+//			Kopie->pohon->n=Original->pohon->n;
+//			Kopie->pohon->name=vrat_pohon(Original->pohon->n)->name;
+//			Kopie->pohon->rychlost_od=Original->pohon->rychlost_od;
+//			Kopie->pohon->rychlost_do=Original->pohon->rychlost_do;
+//			Kopie->pohon->aRD=Original->pohon->aRD;
+//			Kopie->pohon->roztec=Original->pohon->roztec;
+//			Kopie->pohon->Rz=Original->pohon->Rz;
+//			Kopie->pohon->Rx=Original->pohon->Rx;
+//		if(Original==F->pom && Kopie==F->pom_temp)//situace překopírování z ostrého do pomocného
+//		{
+//			Kopie->pohon->predchozi=NULL;
+//			Kopie->pohon->dalsi=NULL;
+//		}
+//		else
+//		{
+//			 if(Original==F->pom_temp && Kopie==F->pom)//situace překopírování z pomocného do ostrého
+//			 {
+//					vrat_pohon(Original->pohon->n)->name=Original->pohon->name;//do kopie
+//			 }
+//			 //else *Kopie->pohon=*Original->pohon;//ostatní situace, ověřit zda funguje správně
+//		}
+////	}
+////	else
+////	{
+////		Kopie->pohon=NULL;
+//	}
+
 	//ELEMENTY
 	kopiruj_elementy(Original,Kopie);
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
@@ -1453,18 +1486,6 @@ Cvektory::TPohon *Cvektory::vrat_pohon(unsigned long n)
 		else p=p->dalsi;//posun na další prvek v seznamu
 	}
 	return p;
-}
-////---------------------------------------------------------------------------
-//bez ukazatelového propojení zkopíruje atributu pohonu do pohonu požadovaného objektu, neobsahuje-li tento objekt alokovanou paměť pro pohon, naalokuje jí
-void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
-{
-	if(Pohon!=NULL)
-	{
-		if(Objekt->pohon==NULL)Objekt->pohon=new TPohon;
-		*Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů
-		if(Objekt==F->pom)*vrat_pohon(Pohon->n)=*Pohon;//situace překopírování z pomocného do ostrého, aby bylo zachováno spojové propojení seznamu pohonů i pro případ nepřiřazeno
-	}
-	else Objekt->pohon=NULL;
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv

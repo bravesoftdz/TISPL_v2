@@ -387,24 +387,23 @@ void smaz_element(TElement *Element);//smaže element ze seznamu
 		void vloz_pohon(TPohon *pohon);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		void vloz_pohon(UnicodeString name,double rychlost_od,double rychlost_do,double aRD,double R,double Rz,double Rx);//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
 		TPohon *vrat_pohon(unsigned long n);//vrátí ukazatel na pohon dle n pohonu
-		void kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt);//bez ukazatelového propojení zkopíruje atributu pohonu do pohonu požadovaného objektu, neobsahuje-li tento objekt alokovanou paměť pro pohon, naalokuje jí
 		bool pohon_je_pouzivan(unsigned long n);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv
 		TObjekt *pohon_je_pouzivan(unsigned long n,TObjekt *mimo_objekt,short rezim=-1);//dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv, ten vrátí formou ukazatale na první nalezený používáný, druhý vstupní parametr metody TObjekt mimo_objekt je ukazatel na objekt, který se bude při vyhledávání ignorovat, nenajde-li vrací NULL, třetí parametr, pokud je náchán na implicitní -1 řeší se pro všechny režim, pokud je v rozmezí 0 až 2 řeší se pro konkrétní režim
-		unsigned long vrat_pocet_nepouzivanych_pohonu();//vrátí počet nepoužívaných pohonů
+unsigned long vrat_pocet_nepouzivanych_pohonu();//vrátí počet nepoužívaných pohonů
 		double minRD(TPohon *pohon);//vrátí nejnižší možnou rychlost ze všech objektů, které jsou přiřazené k danému pohonu (využívá se pro S&G a PP, u KK musí být RD v souladu s TT)//pokud vrátí 0, znamená, že pohon není využíván
-		AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim=-1);//vypíše objekty přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD, možno nastavit režim, pro S&G + PP hodnota režim 20
-		AnsiString kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double CT=0,double MT=0,double WT=0,double aRD=0,double DD=0,short aRDunit=-1,unsigned short precision=3,AnsiString mark="..",bool add_decimal=false,AnsiString separator_aRD=" o ");//zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
+AnsiString vypis_objekty_nestihajici_prejezd(TPohon *pohon,double testRD,short rezim=-1);//vypíše objekty přiřazené k danému pohonu nestíhající přejezd při navrhovaném testRD, možno nastavit režim, pro S&G + PP hodnota režim 20
+AnsiString kontrola_rychlosti_prejezdu(TObjekt *O,short rezim,double CT=0,double MT=0,double WT=0,double aRD=0,double DD=0,short aRDunit=-1,unsigned short precision=3,AnsiString mark="..",bool add_decimal=false,AnsiString separator_aRD=" o ");//zkontroluje objekt zda daná rychlost pohonu odpovídá požadované rychlosti pohonu, pokud ne vrátí popis včetně hodnoty, lze poslat externí testovací parametry nebo nechat ověřit dle uložených ve spojáku objekty
 		TPohon *najdi_pohon_dle_RD(double RD);//ověří zda je stejná rychlost pohonu na lince používána, pokud není vratí NULL, jinak ukazatel na daný pohon
 		void zrusit_prirazeni_pohunu_k_objektum(unsigned long n);//všem objektům s n pohonem zruší přiřazení k tomuto pohonu a nahradí hodnotu ukazatele na přiřazený pohon za NULL
 		void generuj_POHONY();//vygeneruje ve statusu NÁVRH seznam doprvníků dle použitého CT objektu a zároveň tomuto objektu tento pohon přiřadí, obsahuje ošetření proti duplicitě
 		AnsiString navrhni_POHONY(AnsiString separator="</br>",short m_min=1);//navrhne pohony zobrazené v parametrech linky, vrátí řetězec oddělený seperátorem, pouze jako seznam unikátních použitých rychlostí, lze nastavit jednotky zobrazení rychlosti pohonu, implicintě m/min
 		long vymaz_seznam_POHONY();//smaže jednotlivé prvky seznamu, včetně hlavičky, pokud následuje další práce se seznamem, je nutné založit nejdříve hlavičku pomocí hlavicka_pohony()
-		//	double delka_dopravniku(Cvektory::TObjekt *ukaz);
-		TTextNumber rVALIDACE(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short aRDunit,short Runit,short Rzunit);//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr getValueOrMessage 0 (který je zároveň implicitní), vratí doporučenou hodnotu dle VID, pokud je zvoleno 1, vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku, //vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
+//	double delka_dopravniku(Cvektory::TObjekt *ukaz);
+TTextNumber rVALIDACE(short VID,unsigned long PID,double aRD,double R,double Rz,double Rx,short aRDunit,short Runit,short Rzunit);//zkontroluje aplikovatelnost uvažovaného hodnodty dle VID parametru, resp. čísla sloupce (aRD=4,R=5,Rz=6,Rx=7 na všech objektech, přiřazených k danému pohonu označeným parametrem PID, pokud je zadán parametr getValueOrMessage 0 (který je zároveň implicitní), vratí doporučenou hodnotu dle VID, pokud je zvoleno 1, vrátí text chybouvé hlášku s problémem a doporučenou hodnotou, pokud vrátí prázdné uvozovky, je vše v pořádku, //vstupy aRD,R,Rz,Rx a výstupní číselná hodnota jsou v SI jednotkách, naopak textový řetězec problému resp. doporučení, obsahuje hodnotu již převedenou dle aRDunit, Runit, Rzunit
 private:
-		TTextNumber validace_aRD(double aRD,TPohon *p);
-		TTextNumber validace_Rz(double Rz,unsigned long PID);
-		TTextNumber validace_Rx(double Rx);
+TTextNumber validace_aRD(double aRD,TPohon *p);
+TTextNumber validace_Rz(double Rz,unsigned long PID);
+TTextNumber validace_Rx(double Rx);
 
 //metody pro ZAKAZKY
 public:
