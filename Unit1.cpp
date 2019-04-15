@@ -3645,8 +3645,8 @@ void TForm1::design_tab_pohon(int index)
 			{
 				PmG->AddRow(false,false);
 				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
+//				PmG->AddRow(false,false);
+//				PmG->AddRow(false,false);
 				PmG->Show(NULL);
 			}
 			if(index==0&&PmG->RowCount!=2)
@@ -3658,12 +3658,12 @@ void TForm1::design_tab_pohon(int index)
 		case 3://úprava tabulky po přidání prvního elementu
 		{
 			int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-			if((EID==1||EID==3||EID==5)&&PmG->RowCount==6)
+			if((EID==2||EID==4||EID==6)&&PmG->RowCount==6)
 			{
 				PmG->DeleteRow(5,false);
 				PmG->DeleteRow(4,false);
 			}
-			if((EID==2||EID==4||EID==6)&&PmG->RowCount==4)
+			if((EID==1||EID==3||EID==5)&&PmG->RowCount==4)
    		{
 				PmG->AddRow();
 				PmG->AddRow();
@@ -3757,14 +3757,11 @@ void TForm1::tab_pohon_COMBO (int index)
 			d.v.kopiruj_pohon(d.v.vrat_pohon(PCombo->ItemIndex),pom_temp);
 			nahled_ulozit(true);
 		}
-			}
-			pom_temp->pohon=P;
-		}
 		design_tab_pohon(2);
 		//zajistí překreslení knihoven když je přidán či odebrán pohon
 		DrawGrid_knihovna->Refresh();
 		DrawGrid_otoce->Refresh();
-		DrawGrid_ostatni->Refresh();	
+		DrawGrid_ostatni->Refresh();
 	}
 	if(index==2)//změna jednotek
 	{
@@ -3866,7 +3863,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][1].Text=outPT(m.PT(E->LO1,pom_temp->pohon->aRD));
 			E->mGrid->Cells[0][2].Text="LO "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -3946,7 +3943,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
 			E->mGrid->Cells[0][2].Text="PT "+cas;//PT u pasivní nelze zadat
-			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+			E->mGrid->Cells[1][2].Text=outPT(m.PT(E->OTOC_delka,pom_temp->pohon->aRD));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;//Delší text
