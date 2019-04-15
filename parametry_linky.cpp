@@ -383,6 +383,7 @@ void TForm_parametry_linky::nacti_pohony ()
           {
           //pokud je pohon používán, zámìrnì nenastavím o jaký typ bunìk se jedná, aby do nich nešlo vstupovat a editovat
           // pouze povolím zmìnu pøiøazení a smazání pohonu
+          mGrid->Cells[1][i].Type=mGrid->EDIT;
           mGrid->Cells[6][i].Type=mGrid->CHECK;
           mGrid->Cells[7][i].Type=mGrid->BUTTON;
           mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
@@ -711,10 +712,10 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
- 		//   Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
+ 		   Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i);
 			}
 			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
- 	 //  Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
+ 	   Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
 //
 
 			// docasne - resim pouze rozmery Jigu neporovnamvam tedy vuci voziku
@@ -1886,6 +1887,20 @@ ROW=Row;
                 {
                  mGrid->getCheck(6,Row)->Enabled=false;
                  mGrid->Cells[7][Row].Text="";
+                 //nastavím typy bunìk èímž povolím okamžitì editaci pohonu, protože už není používán
+                 mGrid->Cells[1][Row].Type=mGrid->EDIT;
+                 mGrid->Cells[2][Row].Type=mGrid->EDIT;
+                 mGrid->Cells[3][Row].Type=mGrid->EDIT;
+                 mGrid->Cells[4][Row].Type=mGrid->EDIT;
+                 mGrid->Cells[5][Row].Type=mGrid->EDIT;
+
+                 mGrid->Cells[1][Row].Background->Color=clWhite;
+                 mGrid->Cells[2][Row].Background->Color=  mGrid->Cells[1][Row].Background->Color;
+                 mGrid->Cells[3][Row].Background->Color=  mGrid->Cells[1][Row].Background->Color;
+                 mGrid->Cells[4][Row].Background->Color=  mGrid->Cells[1][Row].Background->Color;
+                 mGrid->Cells[5][Row].Background->Color=  mGrid->Cells[1][Row].Background->Color;
+                 mGrid->Cells[7][Row].Background->Color=  mGrid->Cells[1][Row].Background->Color;
+
                  mGrid->Refresh();
                  zrusena_prirazeni_PID[getPID(Row)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
 				         smazat=true;
