@@ -53,7 +53,6 @@ __published:	// IDE-managed Components
 	TrHTMLLabel *rHTMLLabel3;
 	TrHTMLLabel *rHTMLLabel4;
 	TrHTMLLabel *rHTMLLabel_JIG;
-	TscGPNumericEdit *rEditNum_takt;
 	TscGPNumericEdit *scGPNumericEdit_delka_jig;
 	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
 	TscGPPanel *PopUPmenu;
@@ -90,6 +89,7 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton_ADD;
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
+  TscGPNumericEdit *rEditNum_takt;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -146,7 +146,6 @@ __published:	// IDE-managed Components
   void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
   void __fastcall Button1Click(TObject *Sender);
-  void __fastcall scGPNumericEdit_vyska_jigKeyPress(TObject *Sender, System::WideChar &Key);
 
 
 
