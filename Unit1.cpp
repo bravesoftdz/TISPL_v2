@@ -5218,6 +5218,7 @@ void TForm1::NP()
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
     pom=NULL;  //smazani pom z důvodu ošetření metody vypis_objekty_vyuzivajici_pohon()
+
 	}
 }
 //---------------------------------------------------------------------------
