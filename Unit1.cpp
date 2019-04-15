@@ -5217,6 +5217,7 @@ void TForm1::NP()
 			REFRESH();
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
+    pom=NULL;  //smazani pom z důvodu ošetření metody vypis_objekty_vyuzivajici_pohon()
 	}
 }
 //---------------------------------------------------------------------------
@@ -6649,7 +6650,19 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		pom_temp->pohon->name="test";
 
 
-		 Form2->ShowModal();
+			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+    if(O->pohon!=NULL)Memo3->Lines->Add(AnsiString(O->name)+" - "+AnsiString(O->pohon->name));
+		O=O->dalsi;//posun na další prvek
+	}
+  Memo3->Lines->Add("---------------");
+  Cvektory::TPohon *P=d.v.POHONY->dalsi;//přeskočí hlavičku
+	while (P!=NULL)
+	{
+    Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
+		P=P->dalsi;//posun na další prvek
+	}
 
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
