@@ -1461,34 +1461,10 @@ void Cvektory::kopiruj_pohon(TPohon *Pohon,TObjekt *Objekt)
 	if(Pohon!=NULL)
 	{
 		if(Objekt->pohon==NULL)Objekt->pohon=new TPohon;
-		Objekt->pohon->n=Pohon->n;
-		Objekt->pohon->name=Pohon->name;
-		Objekt->pohon->rychlost_od=Pohon->rychlost_od;
-		Objekt->pohon->rychlost_do=Pohon->rychlost_do;
-		Objekt->pohon->aRD=Pohon->aRD;
-		Objekt->pohon->roztec=Pohon->roztec;
-		Objekt->pohon->Rz=Pohon->Rz;
-		Objekt->pohon->Rx=Pohon->Rx;
-		if(Objekt==F->pom_temp)//situace překopírování z ostrého do pomocného
-		{
-			Objekt->pohon->predchozi=NULL;
-			Objekt->pohon->dalsi=NULL;
-		}
-		else
-		{
-			if(Objekt==F->pom)//situace překopírování z pomocného do ostrého
-			{
-				TPohon *P=vrat_pohon(Pohon->n);
-				Objekt->pohon->dalsi=P->dalsi;
-				Objekt->pohon->predchozi=P->predchozi;
-			}
-			//else *Objekt->pohon=*Original->pohon;//ostatní situace, ověřit zda funguje správně
-		}
+		*Objekt->pohon=*Pohon;//překopírování hodnot pohonů bez spojového propojení s originálem, ale i přes další a předchozí není zoohledněno propojení se daným spojovým seznamem pohonů
+		if(Objekt==F->pom)*vrat_pohon(Pohon->n)=*Pohon;//situace překopírování z pomocného do ostrého, aby bylo zachováno spojové propojení seznamu pohonů i pro případ nepřiřazeno
 	}
-	else
-	{
-		Objekt->pohon=NULL;
-	}
+	else Objekt->pohon=NULL;
 }
 ////---------------------------------------------------------------------------
 //dle n pohonu ověří zda je pohon používán nějakým objektem či nikoliv

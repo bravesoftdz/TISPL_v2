@@ -6641,8 +6641,10 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-		Sk(pom_temp->pohon->name);//test
+		//Sk(pom_temp->pohon->name);//test
 		//pom_temp->pohon=d.v.POHONY->dalsi->dalsi;//ostré přírazení
+		d.v.kopiruj_pohon(d.v.POHONY->dalsi->dalsi,pom_temp);//nepropojené přiřazení
+		Sk(pom_temp->pohon->name);
 		pom_temp->pohon->name="test";//přejmenování
 		Sk(pom_temp->pohon->name);//test
 
