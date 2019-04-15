@@ -133,7 +133,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	T=F->readINI("nastaveni_nahled","Delka_otoce");
 	if(T=="")DOtocunit=M;else DOtocunit=MM;
 	T=F->readINI("nastaveni_nahled","koty_delka");
-	if(T=="")DKunit=M;else DKunit=MM;
+	if(T==0)DKunit=M;else if(T==1) DKunit=MM; else DKunit=M;
 	//pro pohon
 	T=readINI("nastaveni_form_parametry","RDt");//aktuální rychlost
 	if(T=="")aRDunit=SEC;else aRDunit=MIN;
@@ -195,7 +195,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	refresh_mGrid=true;
 	posun_dalsich_elementu=false;
-
+			
 	DesignSettings();//nastavení designu v konstruktoru
 }
 //---------------------------------------------------------------------------
@@ -1640,7 +1640,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		key="";
 	if(AnsiString(Key)==ms.get_locale_decimal()&&Pos(ms.get_locale_decimal(),editovany_text)>0)
 		key="";
-	if(key=="")MessageBeep(0);
 	////////
 	if (editace_textu&&index_kurzoru==-6)
 	{
@@ -1655,8 +1654,9 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	{
 		if(Key==8)//pokud je stisknut backspace
 			pom_temp->short_name=pom_temp->short_name.SubString(1,pom_temp->short_name.Length()-1);
-		else
+		else if(pom_temp->short_name.Length()!=4)
 			pom_temp->short_name+=Key;
+		else MessageBeep(0);
 		nahled_ulozit(true);
 	}
 	if (editace_textu&&(index_kurzoru==-8||index_kurzoru==-9))
@@ -1668,6 +1668,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			editovany_text+=key;
 		}
 		nahled_ulozit(true);
+		if(key=="")MessageBeep(0);
 	}
 	if (editace_textu&&index_kurzoru<=-11)
 	{
@@ -1678,6 +1679,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			editovany_text+=key;
 		}
 		nahled_ulozit(true);
+		if(key=="")MessageBeep(0);
 	}
 	REFRESH();
 }
@@ -1832,7 +1834,9 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
-	Smaz_kurzor();
+	//smazání kurzoru pokud je aktivní
+	if(MOD==NAHLED&&editace_textu)
+		Smaz_kurzor();
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
 	{
 		scSplitView_MENU->Opened=false;
@@ -3195,6 +3199,8 @@ void TForm1::zmen_poradi_objektu(int X, int Y)//testuje zda se nejedná o změnu
 //---------------------------------------------------------------------------
 void TForm1::add_element (int X, int Y)
 {
+  //Zabránění volání metody OnChange při vykreslení tabulky
+	FormX->vstoupeno_elm=false;
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
 	short trend=m.Rt90(d.trend(pom));
@@ -3395,7 +3401,7 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 {
 	short O=10*3;//hodnota odsazení
 	double x=0,x1=0,y=0,y1=0;//původní a překlopené souřadnice tabulky
-	bool hor=false,ver=false,pom=true;
+	bool hor=false,ver=false;
 	int prekryti=0;//počet překrytí
 	switch(E->rotace_symbolu)
 	{
@@ -3644,8 +3650,8 @@ void TForm1::design_tab_pohon(int index)
 			{
 				PmG->AddRow(false,false);
 				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
+//				PmG->AddRow(false,false);
+//				PmG->AddRow(false,false);
 				PmG->Show(NULL);
 			}
 			if(index==0&&PmG->RowCount!=2)
@@ -3657,12 +3663,12 @@ void TForm1::design_tab_pohon(int index)
 		case 3://úprava tabulky po přidání prvního elementu
 		{
 			int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-			if((EID==1||EID==3||EID==5)&&PmG->RowCount==6)
+			if((EID==2||EID==4||EID==6)&&PmG->RowCount==6)
 			{
 				PmG->DeleteRow(5,false);
 				PmG->DeleteRow(4,false);
 			}
-			if((EID==2||EID==4||EID==6)&&PmG->RowCount==4)
+			if((EID==1||EID==3||EID==5)&&PmG->RowCount==4)
    		{
 				PmG->AddRow();
 				PmG->AddRow();
@@ -3750,14 +3756,12 @@ void TForm1::tab_pohon_COMBO (int index)
 	if(index==1)//přiřazení pohonu
 	{
 		if(PCombo->ItemIndex!=0)
-		{
-			for (int i=1; i<PCombo->ItemIndex;i++)
-			{
-				P=P->dalsi;
-			}
-			pom_temp->pohon=P;
-		}
+			pom_temp->pohon=d.v.vrat_pohon(PCombo->ItemIndex);  
 		design_tab_pohon(2);
+		//zajistí překreslení knihoven když je přidán či odebrán pohon
+		DrawGrid_knihovna->Refresh();
+		DrawGrid_otoce->Refresh();
+		DrawGrid_ostatni->Refresh();	
 	}
 	if(index==2)//změna jednotek
 	{
@@ -3859,7 +3863,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][1].Text=outPT(m.PT(E->LO1,pom_temp->pohon->aRD));
 			E->mGrid->Cells[0][2].Text="LO "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -3939,7 +3943,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
 			E->mGrid->Cells[0][2].Text="PT "+cas;//PT u pasivní nelze zadat
-			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+			E->mGrid->Cells[1][2].Text=outPT(m.PT(E->OTOC_delka,pom_temp->pohon->aRD));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;//Delší text
@@ -4261,7 +4265,7 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	{
     if(n==1){ label1= "pasivní"; label2=""; }
     if(n==2){ label1= "aktivní"; label2=""; }
-		if(pom_temp->id==3)
+		if(pom_temp->id==3&&pom_temp->pohon!=NULL)
 		{
 				 d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,1);
 		}
@@ -4306,7 +4310,7 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	short pocet_elementu=1;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-	if(pom_temp->id==3)
+	if(pom_temp->id==3&&pom_temp->pohon!=NULL)
 	{
 					d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180);
 	} else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180,-1);
@@ -4396,9 +4400,9 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 			if(n==3){ label1= "kontinuální s";  label2="pasiv. otočí"; }
 			if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
 
-			if(pom->id==3)
+			if(pom->id==3&&pom_temp->pohon!=NULL)
 			{
-				if(EID==-1)d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
+				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
 			}
 			else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
 		}
@@ -4536,16 +4540,16 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 
 	if(MOD==NAHLED)
   {
-		if(Akce=!NIC)	Smaz_kurzor();
+		if(Akce!=NIC)	Smaz_kurzor();
 		knihovna_id=1;
 		if(Row==0)element_id=Col+1;
 		if(Row==1)element_id=Col+3;
 		//kontrola v jakém je kabina režimu (stop&go, kontinuální), podle toho dovolí vkládat roboty pouze stejného režimu
 		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-		if((EID==1||EID==3)&&(element_id==1||element_id==3)||(EID==2||EID==4)&&(element_id==2||element_id==4)||EID==-1||(funkcni_klavesa==2&&DEBUG))//při stisku shift lze tuto podmínku v debugu obejít
+		if(((EID==1||EID==3)&&(element_id==1||element_id==3)||(EID==2||EID==4)&&(element_id==2||element_id==4)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
 		{
-			SB("Kliknutím na libovolné místo umístíte vybraný element.");
-			Akce=ADD;kurzor(add_o);
+				SB("Kliknutím na libovolné místo umístíte vybraný element.");
+				Akce=ADD;kurzor(add_o);
 		}
 	}
 	else//pro SCHEMA
@@ -4577,7 +4581,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 	knihovna_id=2;
 	if(Row==0) element_id=Col+5;
 	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-	if(((EID==1||EID==3)&&(element_id==5))||((EID==2||EID==4)&&(element_id==6))||EID==-1||(funkcni_klavesa==2&&DEBUG))
+	if((((EID==1||EID==3)&&(element_id==5))||((EID==2||EID==4)&&(element_id==6))||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)
 	{
 		SB("Kliknutím na libovolné místo umístíte vybraný element.");
 		Akce=ADD;kurzor(add_o);
@@ -4587,12 +4591,15 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
-	int Row;
-	Row=DrawGrid_ostatni->Row;
-	knihovna_id=3;
-	if(Row==0)  element_id=0;
-	SB("Kliknutím na libovolné místo umístíte vybraný element.");
-	Akce=ADD;kurzor(add_o);
+	if(pom_temp->pohon!=NULL)
+	{
+		int Row;
+		Row=DrawGrid_ostatni->Row;
+		knihovna_id=3;
+		if(Row==0)  element_id=0;
+		SB("Kliknutím na libovolné místo umístíte vybraný element.");
+		Akce=ADD;kurzor(add_o);
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButton Button,
@@ -5292,36 +5299,46 @@ void TForm1::NP_input()
 	 scGPLabel_roboti->ContentMarginLeft=10;
 
 	//nastavení tlačítek na výchozí hodnoty
-	if(pom_temp->uzamknout_nahled) scButton_zamek->ImageIndex=37; //zamčeno
-	else scButton_zamek->ImageIndex=60;
+	if(pom_temp->uzamknout_nahled)
+	{
+		scButton_zamek->ImageIndex=37; //zamčeno
+		scButton_zamek->Hint="Odemknout náhled";
+	}
+	else
+	{
+		scButton_zamek->ImageIndex=60;
+		scButton_zamek->Hint="Zamknout náhled";
+	}
 	if(pom_temp->zobrazit_mGrid)
-		{
-			scGPButton_viditelnostmGrid->ImageIndex=54;
-			scGPButton_viditelnostmGrid->Hint="Skrýt tabulky";
-		}
+	{
+		scGPButton_viditelnostmGrid->ImageIndex=54;
+		scGPButton_viditelnostmGrid->Hint="Skrýt tabulky";
+	}
 	else
-    {
-			scGPButton_viditelnostmGrid->ImageIndex=55;
-			scGPButton_viditelnostmGrid->Hint="Zobrazit tabulky";
-		}
+	{
+		scGPButton_viditelnostmGrid->ImageIndex=55;
+		scGPButton_viditelnostmGrid->Hint="Zobrazit tabulky";
+	}
 	if(pom_temp->zobrazit_koty)
-		{
-			scGPButton_viditelnostKoty->ImageIndex=56;
-			scGPButton_viditelnostKoty->Hint="Skrýt kóty";
-		}
+	{
+		scGPButton_viditelnostKoty->ImageIndex=56;
+		scGPButton_viditelnostKoty->Hint="Skrýt kóty";
+	}
 	else
-		{
-			scGPButton_viditelnostKoty->ImageIndex=57;
-			scGPButton_viditelnostKoty->Hint="Zobrazit kóty";
-		}
+	{
+		scGPButton_viditelnostKoty->ImageIndex=57;
+		scGPButton_viditelnostKoty->Hint="Zobrazit kóty";
+	}
 	if(posun_dalsich_elementu)
-		{
-			scGPButton_posun_dalsich_elementu->ImageIndex=58;
-		}
+	{
+		scGPButton_posun_dalsich_elementu->ImageIndex=58;
+		scGPButton_posun_dalsich_elementu->Hint="Vypnout vázaný posun robotů";
+	}
 	else
-		{
-			scGPButton_posun_dalsich_elementu->ImageIndex=59;
-    }
+	{
+		scGPButton_posun_dalsich_elementu->ImageIndex=59;
+		scGPButton_posun_dalsich_elementu->Hint="Zapnout vázaný posun robotů";
+	 }
 
 	 scGPButton_ulozit->Enabled=false;
 	 //zapnutí spodního panelu
@@ -5354,7 +5371,7 @@ void TForm1::NP_input()
 		E=NULL; delete E;
 	}
 	design_tab_pohon(0);
-	DrawGrid_knihovna->Invalidate();
+	DrawGrid_knihovna->Invalidate();  
 	REFRESH();  
 }
 //---------------------------------------------------------------------------
@@ -6894,11 +6911,15 @@ void __fastcall TForm1::Button_dopravnik_parametryClick(TObject *Sender)
 	scButton_parmlinky_defzakazek->Down=false;
 	if(scGPButton_header_projekt->ImageIndex==49)
 	{
-		ESC();//zruší případnou rozdělanou akci
-		Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
-		Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
-		Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
-		REFRESH();
+		if(MOD!=NAHLED)
+		{
+			ESC();//zruší případnou rozdělanou akci
+			Form_parametry_linky->Left=Form1->ClientWidth/2-Form_parametry_linky->Width/2;
+			Form_parametry_linky->Top=Form1->ClientHeight/2-Form_parametry_linky->Height/2;
+			Form_parametry_linky->ShowModal();//návratová hodnota se řeši v knihovně
+			REFRESH();
+		}
+		else MB("Nelze vstupovat z náhledu, nejdříve je nutné ukončit náhled.");
 	}
 	else
 	{
@@ -7514,6 +7535,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
 	{
+    Smaz_kurzor();
 		MOD=SCHEMA;// před zoom
 
 		//smazání elementů - musí být napočátku, aby nebyl problik
@@ -7574,9 +7596,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 
 
 		Schema->Down=true;
-		//REFRESH(); //- asi netřeba
 		DrawGrid_knihovna->Visible=true;
-		Smaz_kurzor();
 	}
 }
 //---------------------------------------------------------------------------
@@ -8138,12 +8158,13 @@ void __fastcall TForm1::scButton_zamekClick(TObject *Sender)
 	{
 		pom_temp->uzamknout_nahled=false;
 		scButton_zamek->ImageIndex=60;//odemčeno
-    scButton_zamek->Hint="Zamknout náhled";
+		scButton_zamek->Hint="Zamknout náhled";
 	}
 	else//odemčeno budu zamykat
 	{
 		pom_temp->uzamknout_nahled=true;
 		scButton_zamek->ImageIndex=37;
+		scButton_zamek->Hint="Odemknout náhled";
 	}
 	Smaz_kurzor();
 	pom_element=NULL;
@@ -8196,15 +8217,17 @@ void __fastcall TForm1::scGPButton_viditelnostKotyClick(TObject *Sender)
 //přepínání posunu dalších elementů
 void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 {
-	if(scGPButton_posun_dalsich_elementu->ImageIndex==59)//vypnuto budu zatínat
+	if(scGPButton_posun_dalsich_elementu->ImageIndex==59)//vypnuto budu zapínat
 		{
 			scGPButton_posun_dalsich_elementu->ImageIndex=58;
 			posun_dalsich_elementu=true;
+			scGPButton_posun_dalsich_elementu->Hint="Vypnout vázaný posun robotů";
 		}
 	else
 		{
 			scGPButton_posun_dalsich_elementu->ImageIndex=59;
 			posun_dalsich_elementu=false;
+			scGPButton_posun_dalsich_elementu->Hint="Zapnout vázaný posun robotů";
 		}
 	DrawGrid_knihovna->SetFocus();
 }
