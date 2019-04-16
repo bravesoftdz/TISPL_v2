@@ -948,7 +948,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	AnsiString T="";
 	switch(eID)
 	{
-		case 0: T="Stop stanice"; break;//stop stanice
+		case 0: T="Stop"; break;//stop stanice
 		case 1: T="Robot"; 				break;//kontinuální robota
 		case 2: T="Robot"; break; novy->PT1=60;//robot se stopkou
 		case 3: T="Robot"; 				novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;break;//kontinuální robot s pasivní otočí
@@ -1326,6 +1326,63 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 	if(akt_rotoce_jigu<0){akt_rotoce_jigu+=360;}//pro záporné hodnoty
 
 	return akt_rotoce_jigu;
+}
+////---------------------------------------------------------------------------
+//smaže combobox a naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
+void Cvektory::napln_combo_stopky(TElement *Stopka)
+{
+	if(Stopka->eID==0)//záložní ošetření, aby se opravdu jednalo o stopku
+	{
+		short selEl=-1;//označená položka comboboxu
+		bool smazat_combo=true;
+		TscGPComboBox *C=Stopka->mGrid->getCombo(1,1);//ukazatel na combobox dané stopky
+		if(C!=NULL)
+		{
+			C->Clear();//nejdříve combo vymaže
+			TscGPListBoxItem *t=NULL;t=C->Items->Add(/*tady nelze parametr*/);t->Caption="nedefinován";//předvyplní, pro případ, že nebude existovat patřičný element
+			Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+			while (O!=NULL)//prochází všechny objekty
+			{
+				bool hlavicka_vytvorena=false;
+				TElement *E=O->elementy;//nepřeskakovat hlavičku
+				if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+				while(E!=NULL)//a jejich elementy
+				{
+					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
+					if((E->eID==0 || E->eID==4 || E->eID==6) && E!=Stopka && E->n!=0)
+					{
+						if(smazat_combo){C->Clear();smazat_combo=false;/*t=C->Items->Add(/*tady nelze parametr*//*);t->Caption="nepřiřazen";v případě odkomentování zvýšit index u přidělování Itemindex u bez spárované situace*/}//nejdříve combo vymaže od popisku nedefinovan
+						if(!hlavicka_vytvorena)//pokud ještě nebyla vytvoří ji formou názvu
+						{
+							hlavicka_vytvorena=true;
+							t=C->Items->Add(/*tady nelze parametr*/);
+							if(F->pom_temp->n==O->n)t->Caption=F->pom_temp->name.UpperCase();else t->Caption=O->name.UpperCase();
+							C->Items->operator[](C->Items->Count-1)->Header=true;
+						}
+						t=C->Items->Add(/*tady nelze parametr*/);
+						t->Caption=E->name;
+					}
+					////označení spárovaného či předchozího elementu, založeno na principu, že akutlní stopka nebyla výše přidána, proto C->Items->Count-1 je předchozí stop element
+					if(selEl==-1)
+					{
+						if(Stopka->sparovany==NULL && Stopka->n==E->n && F->pom_temp->n==O->n)//pokud ještě nebyl spárovaný element vybrán a stopka je aktulně procházenou
+						{
+							if(C->Items->operator[](C->Items->Count-1)->Header!=true)selEl=C->Items->Count-1;//vrátí předchozí položku, pokud předchozí položka není hlavička
+							else if(C->Items->Count>2)selEl=C->Items->Count-2;//pokud se jedná o hlavičku, zkusí stop-element před hlavičkou, není-li element nebude vybrán
+						}
+						//else if(Stopka->sparovany->n==E->n && vrat_objekt_dleElementu(stopka->sparovany)->n==O->n)selEl=C->Items->Count-1;//pokud již existuje spárovaný, vrátí jeho itemindex
+						//samotné označí předchozí stop-element
+						C->ItemIndex=selEl;
+					}
+					E=E->dalsi;
+				}
+				E=NULL;delete E;
+				O=O->dalsi;//posun na další prvek
+			}
+			O=NULL;delete O;
+		}
+		C=NULL;delete C;
+	}
 }
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu

@@ -7470,8 +7470,11 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	B=NULL;delete B;
 
 
+	 d.v.napln_combo_stopky(pom_temp->elementy->dalsi->dalsi->dalsi);
+
+
 //d.v.POHONY->dalsi->name="ano";
-Form2->ShowModal();
+//Form2->ShowModal();
 
 //Memo3->Visible=true;
 //Cvektory::TPohon *P=d.v.POHONY->dalsi;
