@@ -343,7 +343,6 @@ void TForm_parametry_linky::nacti_pohony ()
 {
 	 data_nalezena=false;
 	 Cvektory::TPohon *ukaz=Form1->d.v.POHONY->dalsi;
-
 	 if (ukaz!=NULL)
 	 {
 				mGrid->RowCount = Form1->d.v.POHONY->predchozi->n + 2;
@@ -384,6 +383,12 @@ void TForm_parametry_linky::nacti_pohony ()
           //pokud je pohon používán, zámìrnì nenastavím o jaký typ bunìk se jedná, aby do nich nešlo vstupovat a editovat
           // pouze povolím zmìnu pøiøazení a smazání pohonu
           mGrid->Cells[1][i].Type=mGrid->EDIT;
+
+          mGrid->Cells[2][i].Type=mGrid->readEDIT;  //TEST
+          mGrid->Cells[3][i].Type=mGrid->readEDIT;
+          mGrid->Cells[4][i].Type=mGrid->readEDIT;
+          mGrid->Cells[5][i].Type=mGrid->readEDIT;
+
           mGrid->Cells[6][i].Type=mGrid->CHECK;
           mGrid->Cells[7][i].Type=mGrid->BUTTON;
           mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
@@ -769,8 +774,6 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
   mGrid->AddRow(true,false);
 
   int i = mGrid->RowCount -1 ;//poøadí øádku o jednièku nižší než poèet øádkù
-
-
 
 	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
 	mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
@@ -1880,7 +1883,7 @@ ROW=Row;
      if(input_state==NOTHING)
      {
         if(Col==6 && Row>=2)
-        {
+        {   input_state=JOB;
             if(mGrid->getCheck(6,Row)->Checked==false)
             {
                 if(mrOk==Form1->MB("Pohon je používáný, opravdu má být zrušeno pøiøazení?",MB_OKCANCEL))
@@ -1921,6 +1924,7 @@ ROW=Row;
         }
 
 
+
         if(Col==8 && Row>=2)
         {
           input_state=JOB;
@@ -1934,7 +1938,7 @@ ROW=Row;
               {
                 //Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW)); pùvodní pøímé smazání, ale nereflektovalo by pøípadné storno
                 //pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
-                zrusena_prirazeni_PID[getPID(ROW)-1]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
+                zrusena_prirazeni_PID[getPID(ROW)]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
                 smazat=true;
               }
               myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
@@ -1948,6 +1952,8 @@ ROW=Row;
          if(smazat)
           {
           Button_save->SetFocus(); //EXTREMNE DULEZITE, JINAK PAMETOVA CHYBA PRI ODSTRANOVANI ROW
+          mGrid->getCheck(6,ROW)->Checked=false;
+          mGrid->getCheck(6,ROW)->Enabled=false;
           mGrid->DeleteRow(ROW);
           //nastaveni rozmeru formu - dle poctu pohonu a nove pozice Add buttonu
           setADD_ButtonPosition();
@@ -2003,7 +2009,7 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 //			PopUPmenu->Top=mGrid->Top+mGrid->Height-PopUPmenu->Height-5;
 //			PopUPmenu->Visible=true;
 //	 }
-   if(Button==mbLeft)      //pøepnutí jednotek
+   if(Button==mbLeft && mGrid->CheckPTinTable(X,Y))      //pøepnutí jednotek
    {
 
       TPoint RET=mGrid->CheckLink(X,Y);
@@ -2054,7 +2060,7 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
            }
             mGrid->MergeCells(5,0,5,1);
       }
-       Button_save->SetFocus();
+       Button_storno->SetFocus();
        mGrid->Refresh();
    }
 }

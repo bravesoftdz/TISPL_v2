@@ -23,6 +23,9 @@ void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
+	unhighlight_tabulky();
+	if(ID==9999&&Row>=2)
+		highlight_tab_pohonu(Row);
 	input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
@@ -137,6 +140,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			}
 		}
 		E=NULL;delete E;
+		F->Timer2->Enabled=true;
 	}
 	if(input_state==NOTHING&&ID==9999&&vstoupeno_poh)
 	{
@@ -180,8 +184,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				zmena_Rx();
 			}break;
 		}
+		F->Timer2->Enabled=true;
 	}
-	F->Timer2->Enabled=true;
 	if(vstoupeno_elm||vstoupeno_poh) F->nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
@@ -189,7 +193,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 void TFormX::zmena_aRD ()
 {
 	//propoèty v tabulce pohonu
- 	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
 	{
 		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->aRD);
 		F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
@@ -212,9 +216,9 @@ void TFormX::zmena_R ()
 		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
 	}
 	else//pro tabulku v kontinuálním režimu
-	{
-		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+	{   //v kontinuálním režimu se rychlost a rozteè nijak neovlivòují
+//		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
+//		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
 	}
 	//pøepoèet hodnot v elementech
 	aktualizace_tab_elementu();
@@ -249,52 +253,149 @@ void TFormX::aktualizace_tab_elementu ()
 		if(E->n>0)
 		{
 			switch(E->eID)
- 			{
- 				case 0:break;//stop stanice
- 				case 1://robor kontinuální
- 				{
+			{
+				case 0:break;//stop stanice
+				case 1://robor kontinuální
+				{
 					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
- 				}
+					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
+				}
 				break;
- 				case 2://robot se stop stanicí
- 				{
- 					//validace
+				case 2://robot se stop stanicí
+				{
+					//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD*60,3);
- 					E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
- 				}
- 				break;
- 				case 3://robot s pasivní otoèí
- 				{
+					E->mGrid->Cells[1][2].Text=F->outPT(E->WT);
+				}
+				break;
+				case 3://robot s pasivní otoèí
+				{
 					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
+					E->mGrid->Cells[1][1].Text=F->outPT(E->PT1);
 					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][3].Text=F->outPT(E->PTotoc);
+					E->mGrid->Cells[1][3].Text=F->outPT(E->PTotoc);
 					E->PT2=F->m.PT(E->LO2,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][5].Text=F->outPT(E->PT2);
- 				}
- 				break;
- 				case 4://robot s aktivní otoèí
+					E->mGrid->Cells[1][5].Text=F->outPT(E->PT2);
+				}
+				break;
+				case 4://robot s aktivní otoèí
  				{
- 					//validace
+					//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD*60,3);
  					E->mGrid->Cells[1][4].Text=F->outPT(E->WT);
- 				}break;
+				}break;
  				case 5://otoè pasivní
- 				{
-					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
- 					E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
- 				}break;
- 				case 6://otoè aktivní
- 				{
+				{
 					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
 					E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
- 				}break;
- 			}
- 		}
- 		E=E->dalsi;
- 	}
+				}break;
+				case 6://otoè aktivní
+				{
+					E->PTotoc=F->m.PT(E->OTOC_delka,F->pom_temp->pohon->aRD);
+					E->mGrid->Cells[1][2].Text = F->outPT(E->PTotoc);
+				}break;
+			}
+		}
+		E=E->dalsi;
+	}
 	E=NULL; delete E;
+}
+//---------------------------------------------------------------------------
+//highlightovaní buòìk tabulky pohonu
+void TFormX::highlight_tab_pohonu(int Row)
+{
+	switch(Row)
+	{
+		case 2: //zmena aRD
+		{
+			if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+			{
+				F->PmG->Cells[1][4].Highlight=true; //rozestup
+				F->PmG->Cells[1][5].Highlight=true; //rx
+			}
+		}break;
+		case 3: //zmena rozteèe R
+		{
+			if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+			{
+				F->PmG->Cells[1][4].Highlight=true;  //rozestup
+				F->PmG->Cells[1][2].Highlight=true; //aRD
+			}
+		}break;
+		case 5: //zmìna Rx
+		{
+			if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+			{
+				F->PmG->Cells[1][2].Highlight=true; //aRD
+				F->PmG->Cells[1][4].Highlight=true; //rozestup Rz
+			}
+		}break;
+	}
+	F->PmG->Refresh();
+	highlight_tab_elementu();
+}
+//---------------------------------------------------------------------------
+//stará se o highlitování políèek, které souvisí s mìnìnou hodnotou (elementy)
+void TFormX::highlight_tab_elementu()
+{
+	Cvektory::TElement *E=F->pom_temp->elementy;
+	while(E!=NULL)
+	{
+		if(E->n>0)
+		{
+			switch(E->eID)
+			{
+				case 0:break;//stop stanice
+				case 1://robor kontinuální
+				{
+					E->mGrid->Cells[1][1].Highlight=true;
+				}
+				break;
+				case 2://robot se stop stanicí
+				{
+					//validace
+					E->mGrid->Cells[1][2].Highlight=true;
+				}
+				break;
+				case 3://robot s pasivní otoèí
+				{
+					E->mGrid->Cells[1][1].Highlight=true;
+					E->mGrid->Cells[1][3].Highlight=true;
+					E->mGrid->Cells[1][5].Highlight=true;
+				}
+				break;
+				case 4://robot s aktivní otoèí
+ 				{
+					//validace
+					E->mGrid->Cells[1][4].Highlight=true;
+				}break;
+ 				case 5://otoè pasivní
+				{
+					E->mGrid->Cells[1][2].Highlight=true;
+				}break;
+				case 6://otoè aktivní
+				{
+					E->mGrid->Cells[1][2].Highlight=true;
+				}break;
+			}
+			E->mGrid->Refresh();
+		}
+		E=E->dalsi;
+	}
+	E=NULL; delete E;
+}
+//---------------------------------------------------------------------------
+//odstraní highlight na všech tabulkách
+void TFormX::unhighlight_tabulky()
+{
+	F->PmG->unHighlightAll();
+	Cvektory::TElement *E=F->pom_temp->elementy;
+	while(E!=NULL)
+	{
+		if(E->n>0)
+			E->mGrid->unHighlightAll();
+		E=E->dalsi;
+	}
 }
 //---------------------------------------------------------------------------
 
