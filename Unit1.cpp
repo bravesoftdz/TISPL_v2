@@ -6643,10 +6643,16 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 {
 		//Sk(pom_temp->pohon->name);//test
 		//pom_temp->pohon=d.v.POHONY->dalsi->dalsi;//ostré přírazení
-		d.v.kopiruj_pohon(d.v.POHONY->dalsi->dalsi,pom_temp);//nepropojené přiřazení
-		Sk(pom_temp->pohon->name);
+		//d.v.kopiruj_pohon(d.v.POHONY->dalsi,pom_temp);//nepropojené přiřazení
+
+
+		//if(pom_temp->pohon==NULL)PmG->getCombo(1,1)->ItemIndex=0;else PmG->getCombo(1,1)->ItemIndex=pom_temp->pohon->n;
+		d.v.kopiruj_pohon(d.v.vrat_pohon(PmG->getCombo(1,1)->ItemIndex),pom_temp);
+		Sk(pom_temp->pohon->name);   Sk(pom_temp->pohon->aRD);  Sk(pom_temp->pohon->roztec);
 		pom_temp->pohon->name="test";//přejmenování
-		Sk(pom_temp->pohon->name);//test
+		pom_temp->pohon->aRD=10;
+		pom_temp->pohon->roztec=0.253;
+
 
 
 //		 Form2->ShowModal();
@@ -7450,7 +7456,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 
 //d.v.POHONY->dalsi->name="ano";
-//	Form2->ShowModal();
+Form2->ShowModal();
 
 //Memo3->Visible=true;
 //Cvektory::TPohon *P=d.v.POHONY->dalsi;
@@ -7462,7 +7468,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //P=NULL;delete P;
 //
 //if(pom!=NULL)Sk(pom->pohon->name);
-Sk(d.v.OBJEKTY->dalsi->pohon->name);
+//Sk(d.v.OBJEKTY->dalsi->pohon->name);
 
 //Memo3->Visible=true;
 //Cvektory::TElement *E=d.v.OBJEKTY->dalsi->elementy->dalsi;
@@ -7517,7 +7523,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
 	{
-		MOD=SCHEMA;// před zoom
+		MOD=SCHEMA;//nutné před zoom
 
 		//smazání elementů - musí být napočátku, aby nebyl problik
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém

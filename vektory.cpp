@@ -1416,7 +1416,7 @@ void Cvektory::hlavicka_POHONY()
 	POHONY=novy;
 }
 ////---------------------------------------------------------------------------
-//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id).
+//vloží jeden pohon na konec seznamu, přiřadí automaticky poslední N (id)
 void Cvektory::vloz_pohon(TPohon *pohon)
 {
 	TPohon *novy=new TPohon;
