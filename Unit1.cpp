@@ -2531,6 +2531,7 @@ void TForm1::onPopUP(int X, int Y)
 		case SIMULACE:break;
 		case NAHLED:
 		{
+
 			pom_element_temp=pom_element;
 			mazani=true;
 			if (pom_element!=NULL)//Pokud bylo kliknuto na element
@@ -2554,9 +2555,12 @@ void TForm1::onPopUP(int X, int Y)
 		default://pro SCHEMA
 		{
 			//povoluje nastavení položek kopírování či smazání objektu
+			pom->pohon=NULL;delete pom->pohon;pom->pohon=new Cvektory::TPohon;
+			//ShowMessage("smazan");
 			pom=d.v.najdi_objekt(m.P2Lx(X),m.P2Ly(Y),d.O_width*m2px,d.O_height*m2px);
+			//ShowMessage(pom->name);
 			if(pom!=NULL)// nelze volat přímo metodu najdi objekt, protože pom se používá dále
-			{
+			{   //ShowMessage(pom->pohon->name);
 				if(AnsiString("Nastavit "+pom->name).Length()>19)//pokud je více znaků, tak zalamovat manuálně, lze i automaticky pomocí proporties wordwrap, ale to se nemusí projevit např. u všech různě textově dlouhých položek stejně
 				{
 					PopUPmenu->scLabel_nastavit_parametry->Caption="  "+N+"\n  "+pom->name.UpperCase();
@@ -3546,6 +3550,7 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 //designovaní tabulky pro pohon
 void TForm1::design_tab_pohon(int index)
 {
+  FormX->vstoupeno_poh=false;
 	AnsiString aRD,R,Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (aRDunit==SEC) aRD="<a>[m/s]</a>";
@@ -3640,8 +3645,8 @@ void TForm1::design_tab_pohon(int index)
 			{
 				PmG->AddRow(false,false);
 				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
+//				PmG->AddRow(false,false);
+//				PmG->AddRow(false,false);
 				PmG->Show(NULL);
 			}
 			if(index==0&&PmG->RowCount!=2)
@@ -3653,12 +3658,12 @@ void TForm1::design_tab_pohon(int index)
 		case 3://úprava tabulky po přidání prvního elementu
 		{
 			int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-			if((EID==1||EID==3||EID==5)&&PmG->RowCount==6)
+			if((EID==2||EID==4||EID==6)&&PmG->RowCount==6)
 			{
 				PmG->DeleteRow(5,false);
 				PmG->DeleteRow(4,false);
 			}
-			if((EID==2||EID==4||EID==6)&&PmG->RowCount==4)
+			if((EID==1||EID==3||EID==5)&&PmG->RowCount==4)
    		{
 				PmG->AddRow();
 				PmG->AddRow();
@@ -3684,10 +3689,12 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[1][3].Type=PmG->EDIT;
 		PmG->Cells[1][3].Text=outR(pom_temp->pohon->roztec);
 		PmG->Cells[0][4].Text="Rozestup "+Rz;
-		//PmG->Cells[1][4].Type=PmG->EDIT;
+		pom_temp->pohon->Rz=m.Rz(pom_temp->pohon->aRD);
 		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+    PmG->Cells[1][4].Type=PmG->DRAW;
 		PmG->Cells[0][5].Text="RX";
 		PmG->Cells[1][5].Type=PmG->EDIT;
+		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
 		PmG->Cells[1][5].Text=pom_temp->pohon->Rx;
 	}
 	//finální desing + refresh
@@ -3747,13 +3754,14 @@ void TForm1::tab_pohon_COMBO (int index)
 	{
 		if(PCombo->ItemIndex!=0)
 		{
-			for (int i=1; i<PCombo->ItemIndex;i++)
-			{
-				P=P->dalsi;
-			}
-			pom_temp->pohon=P;
+			d.v.kopiruj_pohon(d.v.vrat_pohon(PCombo->ItemIndex),pom_temp);
+			nahled_ulozit(true);
 		}
 		design_tab_pohon(2);
+		//zajistí překreslení knihoven když je přidán či odebrán pohon
+		DrawGrid_knihovna->Refresh();
+		DrawGrid_otoce->Refresh();
+		DrawGrid_ostatni->Refresh();
 	}
 	if(index==2)//změna jednotek
 	{
@@ -3855,7 +3863,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
-			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
+			E->mGrid->Cells[1][1].Text=outPT(m.PT(E->LO1,pom_temp->pohon->aRD));
 			E->mGrid->Cells[0][2].Text="LO "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -3935,7 +3943,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
 			E->mGrid->Cells[0][2].Text="PT "+cas;//PT u pasivní nelze zadat
-			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+			E->mGrid->Cells[1][2].Text=outPT(m.PT(E->OTOC_delka,pom_temp->pohon->aRD));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;//Delší text
@@ -3950,7 +3958,7 @@ void TForm1::design_element(Cvektory::TElement *E)
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
 			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(m.PT(E->OTOC_delka,pom_temp->pohon->aRD));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
@@ -5213,6 +5221,8 @@ void TForm1::NP()
 			REFRESH();
 		}
 		Form_parametry->form_zobrazen=false;//detekuje zda je form aktuálně zobrazen, slouží proto aby při změně combo režim pokud si nastavil uživatel formulař jinam, aby zůstal nastaven dle uživatele
+    pom=NULL;  //smazani pom z důvodu ošetření metody vypis_objekty_vyuzivajici_pohon()
+
 	}
 }
 //---------------------------------------------------------------------------
@@ -5220,7 +5230,7 @@ void TForm1::NP_input()
 {
 	 MOD=NAHLED;
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
-	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->pohon=new Cvektory::TPohon; pom_temp->elementy=NULL;
+	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL;  pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
 	 d.v.kopiruj_objekt(pom,pom_temp);//pokud elementy existují nakopíruje je do pomocného nezávislého spojáku pomocného objektu
 	 ////řešení nového zoomu a posunu obrazu pro účely náhldeu
@@ -6641,6 +6651,8 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
+//		Sk(pom_temp->pohon->name);
+//		pom_temp->pohon->name="test";
 		//Sk(pom_temp->pohon->name);//test
 		//pom_temp->pohon=d.v.POHONY->dalsi->dalsi;//ostré přírazení
 		//d.v.kopiruj_pohon(d.v.POHONY->dalsi,pom_temp);//nepropojené přiřazení
@@ -6655,7 +6667,19 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 
 
-//		 Form2->ShowModal();
+			Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)
+	{
+    if(O->pohon!=NULL)Memo3->Lines->Add(AnsiString(O->name)+" - "+AnsiString(O->pohon->name));
+		O=O->dalsi;//posun na další prvek
+	}
+  Memo3->Lines->Add("---------------");
+  Cvektory::TPohon *P=d.v.POHONY->dalsi;//přeskočí hlavičku
+	while (P!=NULL)
+	{
+    Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
+		P=P->dalsi;//posun na další prvek
+	}
 
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
@@ -7459,6 +7483,13 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 Form2->ShowModal();
 
 //Memo3->Visible=true;
+Cvektory::TPohon *P=d.v.POHONY->dalsi;
+while(P!=NULL)
+{
+	 Memo3->Lines->Add(P->name);
+	 P=P->dalsi;
+}
+P=NULL;delete P;
 //Cvektory::TPohon *P=d.v.POHONY->dalsi;
 //while(P!=NULL)
 //{
@@ -7526,7 +7557,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		MOD=SCHEMA;//nutné před zoom
 
 		//smazání elementů - musí být napočátku, aby nebyl problik
-		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
+		pom=NULL;
 		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
     PmG->Delete(); PmG=NULL; delete PmG;
@@ -7913,6 +7944,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
+	//Smaz_kurzor(); volá se znovu ve Stornu....
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
 //---------------------------------------------------------------------------
@@ -8021,6 +8053,7 @@ Memo3->Lines->Add("onchange");
 void __fastcall TForm1::Timer2Timer(TObject *Sender)
 {
  F->REFRESH();
+ FormX->input_state=FormX->NOTHING;
  Timer2->Enabled=false;
 }
 //---------------------------------------------------------------------------
