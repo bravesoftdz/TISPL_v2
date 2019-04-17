@@ -620,8 +620,8 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->AutoSize=false;
 	E->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
 	E->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
-	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
-	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
+	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se pøímo v mergovaní, ubere pouze velikost komponenty podle šíøky orámování
+	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodìlat ubere velikost komponenty podle šíøky orámování//ubere velikost komponenty podle šíøky orámování
 	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus automatizace pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
 	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
@@ -674,8 +674,8 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->AutoSize=false;
 	N->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
 	N->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
-	if(Cell.MergeState==false)N->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
-	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
+	if(Cell.MergeState==false)N->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se pøímo v mergovaní, ubere pouze velikost komponenty podle šíøky orámování
+	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodìlat ubere velikost komponenty podle šíøky orámování
 	N->Decimal=Decimal;
 	//if(!N->Focused() && !IntegerDecimalNull && m.cele_cislo(ms.MyToDouble(Cell.Text)))N->Decimal=0;//pokud se jedná o celé èíslo, nezobrazuje "reálnou èást" celého èísla tj. poèet nul do poètu decimal, nastavuje se pouze pokud není daný NUMERIC editovaný
 	N->DisplayType=scedtNumeric;
@@ -729,10 +729,10 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//atributy
 	L->Visible=VisibleComponents;
 	L->AutoSizeHeight=false;L->AutoSizeWidth=false;
-	L->Top=R.Top+Cell.TopBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	L->Left=R.Left+Cell.LeftBorder->Width-1;//ubere velikost komponenty podle šíøky orámování
-	if(Cell.MergeState==false)L->Width=Columns[X].Width-Cell.RightBorder->Width;//ubere velikost komponenty podle šíøky orámování
-	/*if(Cell.MergeState==false)*/L->Height=Rows[Y].Height-Cell.BottomBorder->Width;//ubere velikost komponenty podle šíøky orámování
+	L->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
+	L->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
+	if(Cell.MergeState==false)L->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se pøímo v mergovaní, ubere pouze velikost komponenty podle šíøky orámování//pokud neplatí nastavuje se pøímo v mergovaní
+	/*if(Cell.MergeState==false)*/L->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodìlat ubere velikost komponenty podle šíøky orámování//dodìlat//ubere velikost komponenty podle šíøky orámování
 	L->ShowHint=false;//implicitnì u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
 	L->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
 	if(Cell.Text=="")L->Color=Cell.isEmpty->Color;else L->Color=Cell.Background->Color;
@@ -770,10 +770,10 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//atributy
 	if(!VisibleComponents || MovingTable)B->Visible=false;else B->Visible=true;//pøi posunu tabulky se skryje, zatím se místo nìj nic nevykresluje
-	B->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
-	B->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
-	B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
-	B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
+	B->Top=R.Top+ceil(Cell.TopBorder->Width/2.0)+1;
+	B->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0)+1;
+	B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
+	B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
 	//B->Options->NormalColor=Cell.Background->Color; nechat
 	B->Options->FrameNormalColor=B->Options->NormalColor;
 
@@ -819,8 +819,8 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//atributy - ty které se pøi každém refresh nastaví
 	C->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);
 	C->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);
-	C->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);
-	C->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);
+	if(Cell.MergeState==false)C->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se pøímo v mergovaní, ubere pouze velikost komponenty podle šíøky orámování
+	/*if(Cell.MergeState==false)*/C->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodìlat ubere velikost komponenty podle šíøky orámování
 	if(!VisibleComponents || MovingTable)
 	{   //rozpracovano pøípadné bitmapování kompomentny pøi pøesunu obrazu
 //		TBitmap *bmp=new Graphics::TBitmap();
@@ -1348,7 +1348,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 		////nastavení referenèní buòky kvùli orámování všech bunìk oblasti na totožnou barvu
 		TBorder B;B.Width=0;B.Style=psSolid;B.Color=Cells[ColCell_1][RowCell_1].Background->Color;
 		*Cells[ColCell_1][RowCell_1].TopBorder=*Cells[ColCell_1][RowCell_1].BottomBorder=*Cells[ColCell_1][RowCell_1].LeftBorder=*Cells[ColCell_1][RowCell_1].RightBorder=B;
-		Cells[ColCell_1][RowCell_1].MergeState=true;//oznaèí buòku jako slouèenou, slouží pro pøeskoèení vykreslování orámování, uprostøed slouèených objektù
+		Cells[ColCell_1][RowCell_1].MergeState=true;//oznaèí buòku jako slouèenou, slouží pro pøeskoèení vykreslování orámování, uprostøed slouèených objektù ale také kvùli nastavení šíøky komponent
 
 		////projde nejdøíve všechny buòky nastaví jim prvnì dle pozadí první buòky stejné pozadí a dle barvy pozadí i barvu orámování
 		SetCells(Cells[ColCell_1][RowCell_1],ColCell_1,RowCell_1,ColCell_2,RowCell_2,-1,false);
@@ -1403,14 +1403,16 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 						{
 							Cells[ColCell_1][RowCell_1].Align=CENTER;
 							TscGPComboBox *C=createCombo(ColCell_1,RowCell_1);
-							C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left-Cells[ColCell_2][RowCell_2].RightBorder->Width;
+							C->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+							C->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)C->Width-=floor(Border.Width/2.0);else C->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještì orámování
 							C=NULL;delete C;
 						}break;
 						case EDIT:
 						{
 							Cells[ColCell_1][RowCell_1].Align=CENTER;
 							TscGPEdit *E=createEdit(ColCell_1,RowCell_1);
-							E->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left-Cells[ColCell_2][RowCell_2].RightBorder->Width;
+							E->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+							E->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)E->Width-=floor(Border.Width/2.0);else E->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještì orámování
 							E->Text=RefCell.Text;
 							E=NULL;delete E;
 						}break;
@@ -1418,7 +1420,8 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 						{
 							Cells[ColCell_1][RowCell_1].Align=CENTER;
 							TscGPNumericEdit *N=createNumeric(ColCell_1,RowCell_1);
-							N->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left-Cells[ColCell_2][RowCell_2].RightBorder->Width;
+							N->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+							N->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)N->Width-=floor(Border.Width/2.0);else N->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještì orámování
 							N->Value=ms.MyToDouble(RefCell.Text);//bere až z poslední buòky sluèované oblasti
 							N=NULL;delete N;
 						}break;
@@ -1426,7 +1429,8 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 						{
 							Cells[ColCell_1][RowCell_1].Align=CENTER;
 							TscHTMLLabel *L=createLabel(ColCell_1,RowCell_1);
-							L->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left-Cells[ColCell_2][RowCell_2].RightBorder->Width-1;
+							L->Width=Columns[ColCell_2].Left+Columns[ColCell_2].Width-Columns[ColCell_1].Left;
+							L->Width-=ceil(Cells[ColCell_1][RowCell_1].LeftBorder->Width/2.0);if(ColCell_2==ColCount-1)L->Width-=floor(Border.Width/2.0);else L->Width-=floor(Cells[ColCell_2][RowCell_2].RightBorder->Width/2.0);//ještì orámování
 							L->Caption=RefCell.Text;//bere až z poslední buòky sluèované oblasti
 							L=NULL;delete L;
 						}break;
