@@ -839,6 +839,7 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	C->Options->FrameFocusedColor=clHighlight;
 	C->Options->FocusedColor=Cell.Background->Color;
 	C->Options->HotColor=Cell.Background->Color;
+  C->Options->PressedColor=Cell.Background->Color;
 
 	//font
 	C->Font=Cell.Font;
