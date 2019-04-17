@@ -520,6 +520,17 @@ double Cmy::Dotoc(double PTo,double RD)
 {
 	return PTo*RD;
 }
+////////////////////////
+//vratí hodnotu RT (reserve time), ta mùže být i záporná, WT èekání na palac si dopoèítává metoda sama, pokud WT==-1, pokud je dosazena kladná hodnota vìtší než 0, tak je ta uvažovaná jako WT, 0 hodnota znamena WT èekání na palec neuvažovat
+double Cmy::RT(double PTciWTstop,double delka_prejezdu,double RD,double R,double WT)
+{
+	if(RD==0)
+	{
+		if(WT==-1)WT=cekani_na_palec(0,R,RD,3);
+		return  F->d.v.PP.TT-(delka_prejezdu/RD+PTciWTstop+WT);
+	}
+	else return 0;
+}
 /////////////////////////////////////////////////////////////////////////////
 //vratí RD dle délky otoèe a èasu otáèení
 double Cmy::RDo(double Dotoc,double PTo)
