@@ -142,7 +142,7 @@ class TmGrid
 	bool IntegerDecimalNull;//pokud je vıše uvedené Decimal na hodnotu vyšší ne 0, toto nastavuje zda se nuly doplní do poètu decimál i u celıch èísel
 	bool MovingTable;//pokud je nastaveno na true, komponenty se zmìní na typ DRAW tj. tak, aby došlo k posunu dané buòky
 	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
-	TColor clHighlight;//pøednastavená barva zvıraznìní
+	TColor clHighlight;//pøednastavená barva zvıraznìní, slouí i pro nastavení barvy focusu komponent
 
  //protected: - nefugovalo, jak jsme si pøedstavoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
@@ -168,7 +168,12 @@ class TmGrid
 	void SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku dle typu
 	void SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na edit, pomocná metoda vıše uvedené
 	void SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na numericedit, pomocná metoda objednu vıše uvedené
-	void SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na numericedit, pomocná metoda objednu vıše uvedené
+	void SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na label, pomocná metoda objednu vıše uvedené
+	void SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na button, pomocná metoda objednu vıše uvedené
+	void SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na glyphButton, pomocná metoda objednu vıše uvedené
+	void SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na combo, pomocná metoda objednu vıše uvedené
+	void SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na check, pomocná metoda objednu vıše uvedené
+	void SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na radio, pomocná metoda objednu vıše uvedené
 	void rcc(unsigned long cc,unsigned long rc);//pouze obejití lokální promìnné, v c++ je na to nìjaké klíèové slovo, ale nevzpomenu si
 	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
 	void CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
@@ -177,6 +182,7 @@ class TmGrid
 	void DeleteTable();//odstraní pouze tabulku z pamìti
 	void DeleteComponents();//odstraní dynamicky vytoøené komponenty, nutno volat pøed Delete() // pozor odstraòovaná komponenta nesmí mít focus (jinak pamìová chyba), focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
 	void DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow);//odstraní dynamicky vytoøené komponenty do poètu sloupcù a øádkù, nutno volat pøed Delete() // pozor odstraòovaná komponenta nesmí mít focus (jinak pamìová chyba), focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
+	void MoveComponentUP(unsigned long Col,unsigned long Row);//posunu komponentu na øádku o jeden øádek níe, pouává se novì na mazání øádku
 	void executeColumnsAutoFit(TCanvas *Canv);//nastaví šíøku bunìk sloupcù dle šíøky textu dle zvoleného parametru
 	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
 	void realock();//zajistí realokaci pole Cells dle nové velikosti
