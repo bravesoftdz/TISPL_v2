@@ -24,7 +24,7 @@ void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
 	unhighlight_tabulky();
-	if(ID==9999&&Row>=2)
+	if(ID==9999&&Row>=1)
 		highlight_tab_pohonu(Row);
 	input_state=NOTHING;
 }
@@ -140,18 +140,17 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			}
 		}
 		E=NULL;delete E;
-		F->Timer2->Enabled=true;
 	}
 	if(input_state==NOTHING&&ID==9999&&vstoupeno_poh)
 	{
 		switch(Row)
 		{
-			case 1://výbìr pohonu
+			case 0://výbìr pohonu
 			{
 				input_state=COMBO;
 				F->tab_pohon_COMBO(1);//pøiøazení pohonu
 			}break;
-			case 2://aktuální rychlost, aRD
+			case 1://aktuální rychlost, aRD
 			{
 				input_state=aRD;
 				//naètení aRD z editu
@@ -161,7 +160,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_aRD();
 			}break;
-			case 3://rozteè, R
+			case 2://rozteè, R
 			{
 				input_state=R;
 				//naètení R z editu
@@ -171,9 +170,9 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_R();
 			}break;
-			case 4://rozestup, Rz   NEBUDE EDITOVATELNÝ
+			case 3://rozestup, Rz   NEBUDE EDITOVATELNÝ
 			break;
-			case 5://Rx
+			case 4://Rx
 			{
 				input_state=Rx;
 				//naètení Rx z editu
@@ -184,21 +183,23 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				zmena_Rx();
 			}break;
 		}
-		F->Timer2->Enabled=true;
 	}
+	if(F->PmG->Cells[Col][Row].Text=="")input_state=NOTHING;
+	else F->Timer2->Enabled=true;
 	if(vstoupeno_elm||vstoupeno_poh) F->nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rychlosti
 void TFormX::zmena_aRD ()
 {
+	F->aktualizace_ComboPohon();
 	//propoèty v tabulce pohonu
-	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 	{
 		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->aRD);
-		F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
+		F->PmG->Cells[1][3].Text=F->outRz(F->pom_temp->pohon->Rz);
 		F->pom_temp->pohon->Rx=F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][5].Text=F->pom_temp->pohon->Rx;
+		F->PmG->Cells[1][4].Text=F->pom_temp->pohon->Rx;
 	}
 	//propoèty v tabulkách elementù
 	aktualizace_tab_elementu();
@@ -208,19 +209,15 @@ void TFormX::zmena_aRD ()
 void TFormX::zmena_R ()
 {
 	//pøepoèet hodnot v tabulce pohonu
-	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 	{
     F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][4].Text=F->pom_temp->pohon->Rz;
+		F->PmG->Cells[1][3].Text=F->pom_temp->pohon->Rz;
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz); //prohozené poøadí z dùvodu, že druhý výpoèet potøebuje aktualizovaonu honotu prvního výpoètu
-		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
-	}
-	else//pro tabulku v kontinuálním režimu
-	{   //v kontinuálním režimu se rychlost a rozteè nijak neovlivòují
-//		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-//		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+		F->PmG->Cells[1][1].Text=F->outaRD(F->pom_temp->pohon->aRD);
 	}
 	//pøepoèet hodnot v elementech
+	F->aktualizace_ComboPohon();
 	aktualizace_tab_elementu();
 }
 //---------------------------------------------------------------------------
@@ -228,19 +225,20 @@ void TFormX::zmena_R ()
 void TFormX::zmena_Rx ()
 {
   //pøepoèet hodnot v tabulce pohonu
-	if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 	{
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+		F->PmG->Cells[1][1].Text=F->outaRD(F->pom_temp->pohon->aRD);
 		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][4].Text=F->outRz(F->pom_temp->pohon->Rz);
+		F->PmG->Cells[1][3].Text=F->outRz(F->pom_temp->pohon->Rz);
 	}
 	else//pro tabulku v kontinuálním režimu
 	{
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-		F->PmG->Cells[1][2].Text=F->outaRD(F->pom_temp->pohon->aRD);
+		F->PmG->Cells[1][1].Text=F->outaRD(F->pom_temp->pohon->aRD);
 	}
 	//pøepoèet hodnot v elementech
+  F->aktualizace_ComboPohon();
 	aktualizace_tab_elementu();
 }
 //---------------------------------------------------------------------------
@@ -306,28 +304,28 @@ void TFormX::highlight_tab_pohonu(int Row)
 {
 	switch(Row)
 	{
-		case 2: //zmena aRD
+		case 1: //zmena aRD
 		{
-			if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+			if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 			{
-				F->PmG->Cells[1][4].Highlight=true; //rozestup
-				F->PmG->Cells[1][5].Highlight=true; //rx
+				F->PmG->Cells[1][3].Highlight=true; //rozestup
+				F->PmG->Cells[1][4].Highlight=true; //rx
 			}
 		}break;
-		case 3: //zmena rozteèe R
+		case 2: //zmena rozteèe R
 		{
-			if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+			if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 			{
-				F->PmG->Cells[1][4].Highlight=true;  //rozestup
-				F->PmG->Cells[1][2].Highlight=true; //aRD
+				F->PmG->Cells[1][3].Highlight=true;  //rozestup
+				F->PmG->Cells[1][1].Highlight=true; //aRD
 			}
 		}break;
-		case 5: //zmìna Rx
+		case 4: //zmìna Rx
 		{
-			if(F->PmG->RowCount>4)//pro tabulku ve S&G režimu
+			if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 			{
-				F->PmG->Cells[1][2].Highlight=true; //aRD
-				F->PmG->Cells[1][4].Highlight=true; //rozestup Rz
+				F->PmG->Cells[1][1].Highlight=true; //aRD
+				F->PmG->Cells[1][3].Highlight=true; //rozestup Rz
 			}
 		}break;
 	}
@@ -398,5 +396,6 @@ void TFormX::unhighlight_tabulky()
 	}
 }
 //---------------------------------------------------------------------------
+
 
 

@@ -700,7 +700,8 @@ public:		// User declarations
 	void aktualizace_maro_a_roma();//aktualizace a pøepoèet hodnot volaná kvùli èasovým osám (maro) a techn.procesùm(roma)
 	void deaktivace_zamerovace();//deaktivuje zamìøovaè label a svislice a kolmice
 	void aktualizace_combobox_pohony_v_PO(short RDunitD=-1,short RDunitT=-1);//zaktualizuje ve formuláøi parametry objektù combobox na výpis pohonù vèetnì jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je naèteno nastevní jednotek z INI aplikace pro form parametry objektu, v pøípadech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
-	void tab_pohon_COMBO (int index);//0=naètení pohonù do COMBA, 1=pøiøazení pohonu kabinì, 2=zmìna jednotek
+	void tab_pohon_COMBO (int index);//0=naètení pohonù do COMBA, 1=pøiøazení pohonu kabinì
+  void aktualizace_ComboPohon ();
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
 	double inLO  (double inLO);
   double outLO (double outLO);
