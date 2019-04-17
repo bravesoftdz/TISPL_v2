@@ -377,7 +377,8 @@ class Cvektory
 		double vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TElement *Element);//zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem
 		//dodělat void zmen_poradi_Elementu(TObjekt *Objekt, TElement Element,TObjekt *zaElement);
 		//dodělat void zmen_poradi_Elementu(TObjekt *Objekt unsigned long aktualni_poradi,unsigned long nove_poradi);
-		void napln_combo_stopky(TElement *Stopka);//naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
+		void napln_comba_stopek();//obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
+		void napln_combo_stopky(TElement *Stopka);//nejdříve smaže obsah comboboxu a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
 		void smaz_element(TObjekt *Objekt, unsigned int n);//smaže element ze seznamu
 		void smaz_element(TElement *Element);//smaže element ze seznamu
 		long vymaz_elementy(TObjekt *Objekt,bool mGridSmazat=true);//vymaže všechny elementy daného objektu včetně hlavičky a vrátí počet smazaných elementů (počítáno bez hlavičky), automaticky, pokud posledním parametreme není nastaveno jinak, smaže přidružený mGrid

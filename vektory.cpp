@@ -1331,7 +1331,19 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 	return akt_rotoce_jigu;
 }
 ////---------------------------------------------------------------------------
-//smaže combobox a naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
+//obsah všech comboboxu všech stopek nejdříve smaže a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
+void Cvektory::napln_comba_stopek()
+{
+	TElement *E=F->pom_temp->elementy;//nepřeskakovat hlavičku
+	while(E!=NULL)//a jejich elementy
+	{
+    if(E->eID==0 && E->n!=0)napln_combo_stopky(E);
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
+}
+////---------------------------------------------------------------------------
+//nejdříve smaže obsah comboboxu a následně naplní combobox stopky ostatními elementy, které mohou být s danou stopkou spárované, nevypisuje danou stopku, vybere v combu stop-element spárovaný či předchozí, buď navržený nebo uživatelsky vybraný
 void Cvektory::napln_combo_stopky(TElement *Stopka)
 {
 	if(Stopka->eID==0)//záložní ošetření, aby se opravdu jednalo o stopku
