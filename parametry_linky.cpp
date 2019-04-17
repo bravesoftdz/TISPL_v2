@@ -89,6 +89,15 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     input_state=LOADING;
     COL=0; ROW=0;
 
+    //C->Items[1].operator [](C->Items->Count)->Header=true;
+   // C->Items->operator [](C->Items->Count)->Header=true;
+  // scGPComboBox2->Images->Assign(F->scGPVirtualImageList1);
+ //   scGPComboBox2->Images->AddImage(F->scGPVirtualImageList1,37);
+    scGPComboBox2->Items->operator [](1)->Header=false;
+    scGPComboBox2->Items->operator [](1)->ImageIndex=37;
+    //scGPComboBox4.Items[scGPComboBox4.ItemIndex].
+    //scGPComboBox2->Items[1].
+
   	if(Form1->readINI("nastaveni_form_parametry", "RDt") == "1")
     {  //budu pøevádìt na m/min
     aRDunit=MIN;
