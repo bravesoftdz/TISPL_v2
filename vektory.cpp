@@ -239,7 +239,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 		novy->mezera_jig=Objekt->mezera_jig;//mezera mezi jigy
 		novy->mezera_podvozek=Objekt->mezera_podvozek;//mezera mezi podvozky
 		novy->pohon=Objekt->pohon;
-		novy->elementy=Objekt->elementy;
+		kopiruj_elementy(Objekt,novy);
 		novy->min_prujezdni_profil=Objekt->min_prujezdni_profil;//výška a šířka minimálního průjezdního profilu v objektu
 		novy->rozmer_kabiny=Objekt->rozmer_kabiny;//výchozí rozměr kabiny
 		novy->koty_elementu_offset=Objekt->koty_elementu_offset;//odsazení kót elementů v metrech
@@ -908,6 +908,7 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 
 	Objekt->elementy->WT=0;
 	Objekt->elementy->WTstop=0;
+	Objekt->elementy->RT=0;
 
 	Objekt->elementy->mGrid=NULL;
 
@@ -944,6 +945,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->PT2=0;
 	novy->WT=0;//čekání na palec
 	novy->WTstop=0;//čekání na stopce
+	novy->RT=0;//reserve time
 	//název
 	AnsiString T="";
 	switch(eID)
@@ -1007,12 +1009,13 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->PT2=Original->PT2;
 	Kopie->WT=Original->WT;
 	Kopie->WTstop=Original->WTstop;
-	//Kopie->TIME=Original->TIME;//CT,PT,WT,RT,...
+	Kopie->RT=Original->RT;
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->Gelement=Original->Gelement;
 	Kopie->mGrid=Original->mGrid;
 	Kopie->poznamka=Original->poznamka;
+	//Kopie->sparovany dodělat
 }
 ////---------------------------------------------------------------------------
 void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)

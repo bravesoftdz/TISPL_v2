@@ -62,7 +62,7 @@ class Cvektory
 
 			double WT;//čekání na palec
 			double WTstop;//čekání na stopce
-			//double TIME;//CT, PT, WT, RT,...
+			double RT;//reserve time
 
 			T3Rect kota_oblast;//pouze pomocná proměnná ve fyzických souřadnicích (px), uchovávájící oblast kóty, popisku a jednotek kóty kabiny - nedovávat  do CObjekt
 
