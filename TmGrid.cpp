@@ -830,8 +830,11 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 		C->Visible=false;
 	}
 	else C->Visible=true;//pøi posunu tabulky se skryje, zatím se místo nìj nic nevykresluje
+
+	//volitelné atributy
 	if(!Cell.Highlight)C->Options->FrameNormalColor=Cell.Background->Color;//rámeèek musí být stejnou barvou jakou buòka, protože møížka je o 1px na všechny strany roztažená
 	else C->Options->FrameNormalColor=clHighlight;
+
 	C->Options->NormalColor=Cell.Background->Color;
 	C->Options->FrameFocusedColor=clHighlight;
 	C->Options->FocusedColor=Cell.Background->Color;
@@ -1009,7 +1012,7 @@ TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
 TscGPComboBox *TmGrid::createCombo(unsigned long Col,unsigned long Row)
 {
 	TscGPComboBox *C=getCombo(Col,Row);//pokud již existuje
-	if(C==NULL)//pokud ne, tak založí
+	if(C==NULL)//pokud ne, tak založí, pouze poprvé, když neexistuje
 	{
 		C=new TscGPComboBox(Form);//založí
 		C->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
@@ -2030,8 +2033,9 @@ void TmGrid::MoveComponentUP(unsigned long Col,unsigned long Row)
 		}
 		break;
 	}
-	TRect R=TRect(Left+Columns[Col].Left,Top+Rows[Row].Top,Left+Columns[Col].Left+Columns[Col].Width,Top+Rows[Row].Top+Rows[Row].Height);
-	if(Cells[Col][Row+1].Type!=DRAW)SetComponents(NULL,R,R,Col,Row,Cells[Col][Row]);//nastaví komponenty, mimo DRAW, protože se nejedná o komponentu
+  //níže uvedené asi netøeba, protože se následnì pøi refresh volá znovu
+	//TRect R=TRect(Left+Columns[Col].Left,Top+Rows[Row].Top,Left+Columns[Col].Left+Columns[Col].Width,Top+Rows[Row].Top+Rows[Row].Height);
+	//if(Cells[Col][Row+1].Type!=DRAW)SetComponents(NULL,R,R,Col,Row,Cells[Col][Row]);//nastaví komponenty, mimo DRAW, protože se nejedná o komponentu
 }
 //---------------------------------------------------------------------------
 //dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
