@@ -1376,7 +1376,6 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 {
 	if(Stopka->eID==0)//záložní ošetření, aby se opravdu jednalo o stopku
 	{
-//		short selEl=-1;//označená položka comboboxu
 		bool smazat_combo=true;
 		TscGPComboBox *C=Stopka->mGrid->getCombo(1,1);//ukazatel na combobox dané stopky
 		if(C!=NULL)
@@ -1405,21 +1404,10 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 						t=C->Items->Add(/*tady nelze parametr*/);
 						t->Caption=E->name;
 					}
-//					//označení spárovaného či předchozího elementu, založeno na principu, že akutlní stopka nebyla výše přidána, proto C->Items->Count-1 je předchozí stop element
-//					if(selEl==-1)
-//					{
-//						if(Stopka->sparovany==NULL && Stopka->n==E->n && F->pom_temp->n==O->n)//pokud ještě nebyl spárovaný element vybrán a stopka je aktulně procházenou
-//						{   již nevyužito možno brzy smazat
-//							if(C->Items->operator[](C->Items->Count-1)->Header!=true)selEl=C->Items->Count-1;//vrátí předchozí položku, pokud předchozí položka není hlavička
-//							else if(C->Items->Count>2)selEl=C->Items->Count-2;//pokud se jedná o hlavičku, zkusí stop-element před hlavičkou, není-li element nebude vybrán
-//						}
-//						else
-						if(Stopka->sparovany!=NULL)//lépe jako samostatný if
-						{
-							if(Stopka->sparovany->n==E->n && vrat_objekt(Stopka->sparovany,true)->n==O->n)C->ItemIndex=C->Items->Count-1;//pokud již existuje spárovaný, vrátí jeho itemindex   //samotné označí předchozí stop-element
-						}
-//						C->ItemIndex=selEl;
-//					}
+					if(Stopka->sparovany!=NULL)//lépe jako samostatný if
+					{
+						if(Stopka->sparovany->n==E->n && vrat_objekt(Stopka->sparovany,true)->n==O->n)C->ItemIndex=C->Items->Count-1;//pokud již existuje spárovaný, vrátí jeho itemindex   //samotné označí předchozí stop-element
+					}
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
@@ -1492,8 +1480,8 @@ Cvektory::TElement *Cvektory::vrat_predchozi_stop_element(TElement *Stopka)
 			{
 				////pokud je aktuální element stopka či robot se stopkou a nejedná se o hlavičku
 				if((E->eID==0 || E->eID==4 || E->eID==6) && E->n!=0)
-				{
-					 if(E==Stopka){konec=true;break;}//pokud se došlu až k aktuální stopce vyhledávání se ukončí a vrací se to, co je uložené v E resp. RET
+				{                  //toto je otazník
+					 if(E==Stopka && RET!=NULL){konec=true;break;}//pokud se došlu až k aktuální stopce a již byla stop element nalezen,vyhledávání se ukončí a vrací se to, co je uložené v E resp. RET
 					 else RET=E;//pokud ne, uloží
 				}
 				E=E->dalsi;
