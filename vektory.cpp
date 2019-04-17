@@ -1277,23 +1277,26 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
 double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
 {
-//	if(Element->n==1)//pro první
-//	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-//		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element->X,Element->Y);
-//	}
-//	else//více elementů
-//	{                                    pozor u robotu jinde X,Y
-//		return m.delka(Element->X,Element->Y,Element->predchozi->X,Element->predchozi->Y);
-//	}
-//provizorně jen pro vodorovnou levopravou kabinu
+	TPointD E=F->d.Rxy(Element);
 	if(Element->n==1)//pro první
-	{
-		return m.abs_d(F->pom_temp->Xk-Element->X);
+	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
+		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,E.x,E.y);//(bude nutno vylepšit s příchodem oblouků)!!!
 	}
 	else//více elementů
 	{
-		return m.abs_d(Element->X-Element->predchozi->X);
+		TPointD Ep=F->d.Rxy(Element->predchozi);
+		return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
 	}
+
+//provizorně jen pro vodorovnou levopravou kabinu  - smazat
+//	if(Element->n==1)//pro první
+//	{
+//		return m.abs_d(F->pom_temp->Xk-Element->X);
+//	}
+//	else//více elementů
+//	{
+//		return m.abs_d(F->d.Rxy(Element).x-F->d.Rxy(Element->predchozi).x);
+//	}
 }
 ////---------------------------------------------------------------------------
 //zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem
@@ -1389,6 +1392,50 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 						//samotné označí předchozí stop-element
 						C->ItemIndex=selEl;
 					}
+					E=E->dalsi;
+				}
+				E=NULL;delete E;
+				O=O->dalsi;//posun na další prvek
+			}
+			O=NULL;delete O;
+		}
+		C=NULL;delete C;
+	}
+}
+////---------------------------------------------------------------------------
+//uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
+void Cvektory::uloz_sparovany_element(TElement *Stopka)
+{
+	if(Stopka->eID==0)
+	{
+		TscGPComboBox *C=Stopka->mGrid->getCombo(1,1);
+		if(C!=NULL)
+		{
+			short selEl=-1;//aktuální zpracovávána položka virtuálního - comboboxu
+			Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+			while (O!=NULL)//prochází všechny objekty
+			{
+				bool hlavicka_vytvorena=false;
+				TElement *E=O->elementy;//nepřeskakovat hlavičku
+				if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+				while(E!=NULL)//a jejich elementy
+				{
+					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
+					if((E->eID==0 || E->eID==4 || E->eID==6) && E!=Stopka && E->n!=0)
+					{
+						if(!hlavicka_vytvorena)//pokud ještě nebyla vytvoří ji formou názvu
+						{
+							hlavicka_vytvorena=true;
+							selEl++;
+						}
+						selEl++;
+						if(selEl==C->ItemIndex)
+						{
+							Stopka->sparovany=E;
+							break;//ukončí předčasně další vyhledávání
+						}
+					}
+					if(Stopka->sparovany!=NULL)break;//pokud byl nalezen, ukončí předčasně vyhledávání
 					E=E->dalsi;
 				}
 				E=NULL;delete E;

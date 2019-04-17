@@ -21,7 +21,6 @@ class Cvykresli
 	void vykresli_Xosy(TCanvas *canv);//vykreslí statické svislice na èasové osy
 	int CorEx(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
 	int CorEy(Cvektory::TObjekt *O);//vrátí souøadnice dle typu buï støedové nebo excentrické v podobì levého horního rohu objektu
-	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky), pøevede dle aktuální rotace symbolu a uchopovacích (skuteènıch) souøadnic robota
 
 	short oY;//ofset na ose Y, 5 pouze grafická korekce
 	float sizeP;//velikost textù popiskù elementù v knihovnì
@@ -107,7 +106,9 @@ class Cvykresli
 	//void vykresli_packy_PL(TCanvas *canv,short typ,short zamek_aRD,short zamek_R,short zamek_Rz,short zamek_Rx);
 	void vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButton *zamek_R,TscGPButton *zamek_Rz,TscGPButton *zamek_Rx);
 	void vykresli_tip(TCanvas *canv);//zajišuje vykreslování-vypisování tool tipu
+	TPointD Rxy(Cvektory::TElement *Element);//vrátí referenèní logické (v metrech) souøadnice  robota (tzn. bod v místì trysky), pøevede dle aktuální rotace symbolu a uchopovacích (skuteènıch) souøadnic robota, kontroluje, zda se jedná skuteènì o Robota
 
+  //globální public promìnné
 	short O_width,O_height,V_width;//logické parametry, nezoomovat
 	float Robot_sirka_zakladny;
 	float Robot_delka_zakladny;

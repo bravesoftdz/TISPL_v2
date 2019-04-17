@@ -47,16 +47,19 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 	return m.L2Py(O->Y);
 }
 //---------------------------------------------------------------------------
-//vrátí referenční logické (v metrech) souřadnice  robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota
+//vrátí referenční logické (v metrech) souřadnice  robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota, kontroluje, zda se jedná skutečně o Robota
 TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 {
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
-	switch(Element->rotace_symbolu)
+	if(1<=Element->eID && Element->eID<=4)//ovlivní pouze roboty
 	{
-		case 0:		RET.y=Element->Y+DoSkRB;break;
-		case 90:	RET.x=Element->X+DoSkRB;break;
-		case 180:	RET.y=Element->Y-DoSkRB;break;
-		case 270:	RET.y=Element->X-DoSkRB;break;
+		switch(Element->rotace_symbolu)
+		{
+			case 0:		RET.y=Element->Y+DoSkRB;break;
+			case 90:	RET.x=Element->X+DoSkRB;break;
+			case 180:	RET.y=Element->Y-DoSkRB;break;
+			case 270:	RET.y=Element->X-DoSkRB;break;
+		}
 	}
 	return RET;
 }
