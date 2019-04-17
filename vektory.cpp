@@ -356,6 +356,27 @@ Cvektory::TObjekt *Cvektory::vrat_objekt_z_roma(int X)
 	return O;
 }
 //---------------------------------------------------------------------------
+//vrátí rodičovský Objekt daného elementu, In_pom_temp - zda bude hledat místo daného ostrého objektu v něm
+Cvektory::TObjekt *Cvektory::vrat_objekt(TElement *Element,bool In_pom_temp)
+{
+	bool RET=false;
+	Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+	while (O!=NULL)//prochází všechny objekty
+	{
+		TElement *E=E=O->elementy;//nepřeskakovat hlavičku
+		if(F->pom_temp->n==O->n && In_pom_temp)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+		while(E!=NULL)//a jejich elementy
+		{
+			if(E==Element){RET=true;break;}//ukončí předčasně další vyhledávání
+			else E=E->dalsi;
+		}
+		E=NULL;delete E;
+		if(RET)break;//ukončí předčasně další vyhledávání
+		else O=O->dalsi;//posun na další prvek
+	}
+	return O;
+}
+//---------------------------------------------------------------------------
 //smaze objekt ze seznamu
 short int Cvektory::smaz_objekt(TObjekt *Objekt)
 {
@@ -946,6 +967,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->WT=0;//čekání na palec
 	novy->WTstop=0;//čekání na stopce
 	novy->RT=0;//reserve time
+
 	//název
 	AnsiString T="";
 	switch(eID)
@@ -966,6 +988,9 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->mGrid=new TmGrid(F);
 	novy->mGrid->Tag=6;//ID formu
 	novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+
+	//ukazatel na spárovaný element
+	novy->sparovany=vrat_predchozi_stop_element(novy);//metoda již v sobě ošetřuje, že se bude jednat o stopku
 
 	//návrácení ukazatelele na element k dalšímu použití
 	return novy;
@@ -1015,7 +1040,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->Gelement=Original->Gelement;
 	Kopie->mGrid=Original->mGrid;
 	Kopie->poznamka=Original->poznamka;
-	//Kopie->sparovany dodělat
+	Kopie->sparovany=Original->sparovany;
 }
 ////---------------------------------------------------------------------------
 void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)
@@ -1340,7 +1365,7 @@ void Cvektory::napln_comba_stopek()
 	TElement *E=F->pom_temp->elementy;//nepřeskakovat hlavičku
 	while(E!=NULL)//a jejich elementy
 	{
-    if(E->eID==0 && E->n!=0)napln_combo_stopky(E);
+		if(E->eID==0 && E->n!=0)napln_combo_stopky(E);
 		E=E->dalsi;
 	}
 	E=NULL;delete E;
@@ -1351,7 +1376,7 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 {
 	if(Stopka->eID==0)//záložní ošetření, aby se opravdu jednalo o stopku
 	{
-		short selEl=-1;//označená položka comboboxu
+//		short selEl=-1;//označená položka comboboxu
 		bool smazat_combo=true;
 		TscGPComboBox *C=Stopka->mGrid->getCombo(1,1);//ukazatel na combobox dané stopky
 		if(C!=NULL)
@@ -1380,18 +1405,21 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 						t=C->Items->Add(/*tady nelze parametr*/);
 						t->Caption=E->name;
 					}
-					////označení spárovaného či předchozího elementu, založeno na principu, že akutlní stopka nebyla výše přidána, proto C->Items->Count-1 je předchozí stop element
-					if(selEl==-1)
-					{
-						if(Stopka->sparovany==NULL && Stopka->n==E->n && F->pom_temp->n==O->n)//pokud ještě nebyl spárovaný element vybrán a stopka je aktulně procházenou
+//					//označení spárovaného či předchozího elementu, založeno na principu, že akutlní stopka nebyla výše přidána, proto C->Items->Count-1 je předchozí stop element
+//					if(selEl==-1)
+//					{
+//						if(Stopka->sparovany==NULL && Stopka->n==E->n && F->pom_temp->n==O->n)//pokud ještě nebyl spárovaný element vybrán a stopka je aktulně procházenou
+//						{   již nevyužito možno brzy smazat
+//							if(C->Items->operator[](C->Items->Count-1)->Header!=true)selEl=C->Items->Count-1;//vrátí předchozí položku, pokud předchozí položka není hlavička
+//							else if(C->Items->Count>2)selEl=C->Items->Count-2;//pokud se jedná o hlavičku, zkusí stop-element před hlavičkou, není-li element nebude vybrán
+//						}
+//						else
+						if(Stopka->sparovany!=NULL)//lépe jako samostatný if
 						{
-							if(C->Items->operator[](C->Items->Count-1)->Header!=true)selEl=C->Items->Count-1;//vrátí předchozí položku, pokud předchozí položka není hlavička
-							else if(C->Items->Count>2)selEl=C->Items->Count-2;//pokud se jedná o hlavičku, zkusí stop-element před hlavičkou, není-li element nebude vybrán
+							if(Stopka->sparovany->n==E->n && vrat_objekt(Stopka->sparovany,true)->n==O->n)C->ItemIndex=C->Items->Count-1;//pokud již existuje spárovaný, vrátí jeho itemindex   //samotné označí předchozí stop-element
 						}
-						//else if(Stopka->sparovany->n==E->n && vrat_objekt_dleElementu(stopka->sparovany)->n==O->n)selEl=C->Items->Count-1;//pokud již existuje spárovaný, vrátí jeho itemindex
-						//samotné označí předchozí stop-element
-						C->ItemIndex=selEl;
-					}
+//						C->ItemIndex=selEl;
+//					}
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
@@ -1404,13 +1432,14 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 }
 ////---------------------------------------------------------------------------
 //uloží dané stopce ukazatel na sparovaný stop element, který byl vybraný v Combu dané stopky, ošetřuje zda se jedná o stopku
-void Cvektory::uloz_sparovany_element(TElement *Stopka)
+void Cvektory::uloz_sparovany_element(TElement *Stopka)//algoritmus funguje na principu simualce tvorby comboboxu (viz výše)
 {
 	if(Stopka->eID==0)
 	{
 		TscGPComboBox *C=Stopka->mGrid->getCombo(1,1);
 		if(C!=NULL)
 		{
+			Stopka->sparovany=NULL;
 			short selEl=-1;//aktuální zpracovávána položka virtuálního - comboboxu
 			Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
 			while (O!=NULL)//prochází všechny objekty
@@ -1423,7 +1452,7 @@ void Cvektory::uloz_sparovany_element(TElement *Stopka)
 					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
 					if((E->eID==0 || E->eID==4 || E->eID==6) && E!=Stopka && E->n!=0)
 					{
-						if(!hlavicka_vytvorena)//pokud ještě nebyla vytvoří ji formou názvu
+						if(!hlavicka_vytvorena)//pokud ještě nebyla, vytvoří ji formou názvu
 						{
 							hlavicka_vytvorena=true;
 							selEl++;
@@ -1435,16 +1464,47 @@ void Cvektory::uloz_sparovany_element(TElement *Stopka)
 							break;//ukončí předčasně další vyhledávání
 						}
 					}
-					if(Stopka->sparovany!=NULL)break;//pokud byl nalezen, ukončí předčasně vyhledávání
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
+				if(Stopka->sparovany!=NULL)break;//pokud byl nalezen, ukončí předčasně vyhledávání
 				O=O->dalsi;//posun na další prvek
 			}
 			O=NULL;delete O;
 		}
 		C=NULL;delete C;
 	}
+}
+////---------------------------------------------------------------------------
+//dané stopce najde předchozí stop-element na lince, je možno, že nebude reflektovat danou zakázku
+Cvektory::TElement *Cvektory::vrat_predchozi_stop_element(TElement *Stopka)
+{
+	TElement *RET=NULL;
+	if(Stopka->eID==0)
+	{
+		bool konec=false;
+		Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+		while (O!=NULL)//prochází všechny objekty
+		{
+			TElement *E=O->elementy;//nepřeskakovat hlavičku
+			if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+			while(E!=NULL)//a jejich elementy
+			{
+				////pokud je aktuální element stopka či robot se stopkou a nejedná se o hlavičku
+				if((E->eID==0 || E->eID==4 || E->eID==6) && E->n!=0)
+				{
+					 if(E==Stopka){konec=true;break;}//pokud se došlu až k aktuální stopce vyhledávání se ukončí a vrací se to, co je uložené v E resp. RET
+					 else RET=E;//pokud ne, uloží
+				}
+				E=E->dalsi;
+			}
+			E=NULL;delete E;
+			if(konec)break;
+			O=O->dalsi;//posun na další prvek
+		}
+		O=NULL;delete O;
+	}
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //smaže element ze seznamu
