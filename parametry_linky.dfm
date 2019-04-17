@@ -3864,6 +3864,304 @@ object Form_parametry_linky: TForm_parametry_linky
     TabOrder = 26
     OnKeyDown = FormKeyDown
   end
+  object scGPComboBox1: TscGPComboBox
+    Left = 528
+    Top = 132
+    Width = 247
+    Height = 30
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clActiveCaption
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Font.Quality = fqClearType
+    ParentFont = False
+    TabOrder = 27
+    ContentMargin = 0
+    AutoComplete = False
+    Animation = False
+    CheckedListMode = False
+    CheckedListWrap = True
+    Images = Form1.scGPVirtualImageList1
+    Items = <
+      item
+        Header = False
+        Enabled = True
+        Caption = 'Ahoj'
+        ImageIndex = 36
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'Nazdar'
+        ImageIndex = 37
+        Checked = False
+      end
+      item
+        Header = True
+        Enabled = True
+        Caption = 'Bazar'
+        ImageIndex = 38
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = #268'est'
+        ImageIndex = 39
+        Checked = False
+      end
+      item
+        Header = True
+        Enabled = True
+        Caption = 'Hello'
+        ImageIndex = 40
+        Checked = True
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'Kuku'
+        ImageIndex = 41
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'Huku'
+        ImageIndex = 42
+        Checked = False
+      end
+      item
+        Header = True
+        Enabled = True
+        Caption = 'ELTEP'
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'Rosta'
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'Martin'
+        Checked = False
+      end>
+    ItemIndex = -1
+    ItemWordWrap = True
+    ItemShowEllipsis = False
+    DropDownCount = 7
+    Options.NormalColor = clWhite
+    Options.HotColor = clWhite
+    Options.PressedColor = clWhite
+    Options.FocusedColor = clWhite
+    Options.DisabledColor = clBtnFace
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clBlack
+    Options.FrameHotColor = clBlack
+    Options.FramePressedColor = clBlack
+    Options.FrameFocusedColor = clBtnText
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpcssRect
+    Options.ScaleFrameWidth = False
+    Options.ArrowSize = 9
+    Options.ArrowAreaWidth = 0
+    Options.StyleColors = True
+    ShowItemImage = True
+    ShowItemText = True
+    ShowItemDetail = False
+    ListBoxHeaderFont.Charset = DEFAULT_CHARSET
+    ListBoxHeaderFont.Color = clWindowText
+    ListBoxHeaderFont.Height = -17
+    ListBoxHeaderFont.Name = 'Tahoma'
+    ListBoxHeaderFont.Style = []
+    ListBoxHeaderOptions.Color = clSkyBlue
+    ListBoxHeaderOptions.ColorAlpha = 220
+    ListBoxHeaderOptions.FillStyle = scgpsfColor
+    ListBoxHeaderOptions.GradientAngle = 90
+    ListBoxHeaderOptions.Margin = 5
+    DetailFont.Charset = DEFAULT_CHARSET
+    DetailFont.Color = clRed
+    DetailFont.Height = -16
+    DetailFont.Name = 'Tahoma'
+    DetailFont.Style = []
+    ListBoxLineColor = clWindowText
+    ListBoxWidth = 0
+    ListBoxHeight = 0
+    ListBoxShowItemDetails = False
+    ListBoxShowLines = False
+    ListBoxItemHeight = 25
+    ListBoxHeaderHeight = 28
+    ListBoxItemSpacing = 5
+    ListBoxItemMargin = 5
+    ListBoxIndentMargin = 5
+    ListBoxScrollBarOptions.BorderWidth = 0
+    ListBoxScrollBarOptions.FillColor = clSilver
+    ListBoxScrollBarOptions.FillColorAlpha = 100
+    ListBoxScrollBarOptions.ThumbColor = clWindowText
+    ListBoxScrollBarOptions.ThumbColorAlpha = 50
+    ListBoxScrollBarOptions.ThumbColorHotAlpha = 100
+    ListBoxScrollBarOptions.ThumbColorPressedAlpha = 150
+    ListBoxScrollBarOptions.ThumbRounded = False
+    ListBoxScrollBarOptions.Position = scgpsbDefault
+    ListBoxScrollBarOptions.Size = 11
+    ListBoxOptions.FillColor = clWhite
+    ListBoxOptions.FillColor2 = clOlive
+    ListBoxOptions.FillColorAlpha = 255
+    ListBoxOptions.FillColor2Alpha = 255
+    ListBoxOptions.FillGradientAngle = 90
+    ListBoxOptions.FrameColor = clWhite
+    ListBoxOptions.FrameColorAlpha = 255
+    ListBoxOptions.FrameWidth = 1
+    ListBoxOptions.FrameScaleWidth = False
+    MouseWheelSupport = True
+    Color = clYellow
+  end
+  object scGPComboBox2: TscGPComboBox
+    Left = 520
+    Top = 176
+    Width = 217
+    Height = 41
+    TabOrder = 28
+    ContentMargin = 0
+    AutoComplete = False
+    Animation = False
+    CheckedListMode = False
+    CheckedListWrap = True
+    Items = <
+      item
+        Header = False
+        Enabled = True
+        Caption = 'kuk'
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'kuku'
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'kukukukukuk'
+        Checked = False
+      end
+      item
+        Header = False
+        Enabled = True
+        Caption = 'kukukukukukukukukukuk'
+        Checked = False
+      end>
+    ItemIndex = -1
+    ItemWordWrap = True
+    ItemShowEllipsis = False
+    DropDownCount = 7
+    Options.NormalColor = clBtnFace
+    Options.HotColor = clBtnFace
+    Options.PressedColor = clBtnShadow
+    Options.FocusedColor = clBtnFace
+    Options.DisabledColor = clBtnFace
+    Options.NormalColorAlpha = 255
+    Options.HotColorAlpha = 255
+    Options.PressedColorAlpha = 255
+    Options.FocusedColorAlpha = 255
+    Options.DisabledColorAlpha = 255
+    Options.FrameNormalColor = clBtnShadow
+    Options.FrameHotColor = clHighlight
+    Options.FramePressedColor = clHighlight
+    Options.FrameFocusedColor = clHighlight
+    Options.FrameDisabledColor = clBtnShadow
+    Options.FrameWidth = 1
+    Options.FrameNormalColorAlpha = 255
+    Options.FrameHotColorAlpha = 255
+    Options.FramePressedColorAlpha = 255
+    Options.FrameFocusedColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 255
+    Options.FontNormalColor = clBtnText
+    Options.FontHotColor = clBtnText
+    Options.FontPressedColor = clBtnText
+    Options.FontFocusedColor = clBtnText
+    Options.FontDisabledColor = clBtnShadow
+    Options.ShapeFillGradientAngle = 90
+    Options.ShapeFillGradientPressedAngle = -90
+    Options.ShapeCornerRadius = 10
+    Options.ShapeStyle = scgpcssRect
+    Options.ScaleFrameWidth = False
+    Options.ArrowSize = 9
+    Options.ArrowAreaWidth = 0
+    Options.StyleColors = True
+    ShowItemImage = True
+    ShowItemText = True
+    ShowItemDetail = False
+    ListBoxHeaderFont.Charset = DEFAULT_CHARSET
+    ListBoxHeaderFont.Color = clWindowText
+    ListBoxHeaderFont.Height = -11
+    ListBoxHeaderFont.Name = 'Tahoma'
+    ListBoxHeaderFont.Style = [fsBold]
+    ListBoxHeaderOptions.Color = clBtnFace
+    ListBoxHeaderOptions.ColorAlpha = 220
+    ListBoxHeaderOptions.FillStyle = scgpsfColor
+    ListBoxHeaderOptions.GradientAngle = 90
+    ListBoxHeaderOptions.Margin = 5
+    DetailFont.Charset = DEFAULT_CHARSET
+    DetailFont.Color = clWindowText
+    DetailFont.Height = -11
+    DetailFont.Name = 'Tahoma'
+    DetailFont.Style = []
+    ListBoxLineColor = clWindowText
+    ListBoxWidth = 0
+    ListBoxHeight = 0
+    ListBoxShowItemDetails = False
+    ListBoxShowLines = False
+    ListBoxItemHeight = 30
+    ListBoxHeaderHeight = 20
+    ListBoxItemSpacing = 5
+    ListBoxItemMargin = 5
+    ListBoxIndentMargin = 10
+    ListBoxScrollBarOptions.BorderWidth = 0
+    ListBoxScrollBarOptions.FillColor = clBtnFace
+    ListBoxScrollBarOptions.FillColorAlpha = 100
+    ListBoxScrollBarOptions.ThumbColor = clWindowText
+    ListBoxScrollBarOptions.ThumbColorAlpha = 50
+    ListBoxScrollBarOptions.ThumbColorHotAlpha = 100
+    ListBoxScrollBarOptions.ThumbColorPressedAlpha = 150
+    ListBoxScrollBarOptions.ThumbRounded = False
+    ListBoxScrollBarOptions.Position = scgpsbDefault
+    ListBoxScrollBarOptions.Size = 11
+    ListBoxOptions.FillColor = clWindow
+    ListBoxOptions.FillColor2 = clWindow
+    ListBoxOptions.FillColorAlpha = 255
+    ListBoxOptions.FillColor2Alpha = 255
+    ListBoxOptions.FillGradientAngle = 90
+    ListBoxOptions.FrameColor = clBtnShadow
+    ListBoxOptions.FrameColorAlpha = 255
+    ListBoxOptions.FrameWidth = 2
+    ListBoxOptions.FrameScaleWidth = False
+    MouseWheelSupport = True
+  end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
     HintFont.Color = clActiveCaption

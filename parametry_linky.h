@@ -90,6 +90,8 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
   TscGPNumericEdit *rEditNum_takt;
+  TscGPComboBox *scGPComboBox1;
+  TscGPComboBox *scGPComboBox2;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
