@@ -1643,7 +1643,6 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	////////
 	if (editace_textu&&index_kurzoru==-6)
 	{
-		//switch(Key)
 		if(Key==8)//pokud je stisknut backspace
 			pom_temp->name=pom_temp->name.SubString(1,pom_temp->name.Length()-1);
 		else
@@ -1666,9 +1665,9 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else
 		{
 			editovany_text+=key;
+			if(key=="")MessageBeep(0);
 		}
 		nahled_ulozit(true);
-		if(key=="")MessageBeep(0);
 	}
 	if (editace_textu&&index_kurzoru<=-11)
 	{
@@ -1677,9 +1676,9 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else
 		{
 			editovany_text+=key;
+			if(key=="")MessageBeep(0);
 		}
 		nahled_ulozit(true);
-		if(key=="")MessageBeep(0);
 	}
 	REFRESH();
 }
@@ -1862,7 +1861,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==100 || 1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
 								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 								if(JID==-2||JID==-3){Akce=MOVE_KABINA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
-								if(JID==-6) {TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;}//editace názvu
+								if(JID==-6) {stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
 								if(JID==-7) {TimerKurzor->Enabled=true;stav_kurzoru=false;editace_textu=true;index_kurzoru=-7;nazev_puvodni=pom_temp->short_name;}//editace zkratky
 								if(JID==-4||JID==-5){Akce=ROZMER_KABINA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;} //editace rozměrů kabiny posuvem X=-4 a Y=-5
 								if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
@@ -2460,7 +2459,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
 		if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
-		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->HighlightLink(0,JID-100,10);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
+		if(100<JID && JID<1000){kurzor(zmena_j);/*pom_element->mGrid->HighlightLink(0,JID-100,10);*/}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
 		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
@@ -2468,7 +2467,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){REFRESH();kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
 		if(JID>=11&&JID<=99)kurzor(zmena_d_y);
-		if(JID==7||JID==8||JID==9)kurzor(zmena_j);
+		if(JID==6||JID==7||JID==8)kurzor(zmena_j);
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
@@ -2976,6 +2975,19 @@ void __fastcall TForm1::RzToolButton11Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void TForm1::ESC()
 {
+	//vrácení původního textu při ukončení editace
+	if(editace_textu)
+	{
+		switch (index_kurzoru)
+			{
+				case -6:pom_temp->name=nazev_puvodni;break;
+				case -7:pom_temp->short_name=nazev_puvodni;break;
+				case -8:editovany_text=inDK(pom_temp->rozmer_kabiny.x);break;
+				case -9:editovany_text=inDK(pom_temp->rozmer_kabiny.y);break;
+			}
+		if(index_kurzoru<=-11)editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));
+		Smaz_kurzor();
+	}
 	scSplitView_MENU->Opened=false;//zavře případně otevřené menu
 	scSplitView_OPTIONS->Opened=false;//zavře případně otevřené options
 	zneplatnit_minulesouradnice();
@@ -3006,20 +3018,6 @@ void TForm1::ESC()
 	proces_pom=NULL;
 	kurzor(standard);
 	Akce=NIC;//musí být nad refresh
-	//vrácení původního textu při ukončení editace
-	if(editace_textu)
-	{
-		switch (index_kurzoru)
-		{
-			case -6:pom_temp->name=nazev_puvodni;break;
-			case -7:pom_temp->short_name=nazev_puvodni;break;
-			case -8:editovany_text=inDK(pom_temp->rozmer_kabiny.x);break;
-			case -9:editovany_text=inDK(pom_temp->rozmer_kabiny.y);break;
-		}
-		if(index_kurzoru<=-11)editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));
-		Smaz_kurzor();
-		REFRESH();
-	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3733,14 +3731,14 @@ void TForm1::tab_pohon_COMBO (int index)
 		if(P==NULL)//pokud neexitustuje žádný pohon
 		{
 			t=PCombo->Items->Add(/*tady nelze parametr*/);
-			t->Caption="nebyl nadefinován";
+			t->Caption="Žádný pohon k výběru";
 			//nesmí tu být, způsobuje cyklení z důvodu vytoření onchange pohonu Form_parametry->scComboBox_pohon->ItemIndex=0;//pohon nedefinován
 		}
 		else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 		{
 			//vytvoření položky nepřiřazen
 			t=PCombo->Items->Add(/*tady nelze parametr*/);
-			t->Caption="nepřiřazen";
+			t->Caption="Vyberte pohon";
 			//plnění existujícím pohony
 			while (P!=NULL)
 			{
@@ -3786,13 +3784,13 @@ void TForm1::aktualizace_ComboPohon ()
 	if(P==NULL)//pokud neexitustuje žádný pohon
 	{
 		t=Combo->Items->Add(/*tady nelze parametr*/);
-		t->Caption="nebyl nadefinován";
+		t->Caption="Žádný pohon k výběru";
 	}
 	else//pokud existuje přidá na první pozici nabídku nepřiřazen dále začne plnit existujícím pohny
 	{
 		//vytvoření položky nepřiřazen
 		t=Combo->Items->Add(/*tady nelze parametr*/);
-		t->Caption="nepřiřazen";
+		t->Caption="Vyberte pohon";
 		////příprava vypisovaných jednotek
 		AnsiString Tcas="min",Td="m";
 		if(F->aRDunit==F->SEC)
@@ -3878,6 +3876,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
 		E->mGrid->Cells[0][i].Align=mGrid->RIGHT;
 		E->mGrid->Cells[1][i].Align=mGrid->RIGHT;
+		E->mGrid->Cells[1][i].Text=m.round2double(ms.MyToDouble(E->mGrid->Cells[1][i].Text),3);
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);
@@ -3933,7 +3932,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,3);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="PT "+cas;
+			E->mGrid->Cells[0][1].Text="PT "+cas;  Sv(E->PT1);
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="max WT "+cas;E->mGrid->Cells[1][2].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD*60,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][2].Text));
@@ -4776,7 +4775,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
-  if(editace_textu)	Smaz_kurzor();
+	if(editace_textu)	Smaz_kurzor();
 	FormX->unhighlight_tabulky();
 	if(pom_temp->pohon!=NULL)
 	{
@@ -6875,7 +6874,6 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	{//		Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
 //		P=P->dalsi;//posun na další prvek
 //	}
-
 
 		 Form2->ShowModal();
 
