@@ -47,16 +47,19 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 	return m.L2Py(O->Y);
 }
 //---------------------------------------------------------------------------
-//vrátí referenční logické (v metrech) souřadnice  robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota
+//vrátí referenční logické (v metrech) souřadnice  robota (tzn. bod v místě trysky), převede dle aktuální rotace symbolu a uchopovacích (skutečných) souřadnic robota, kontroluje, zda se jedná skutečně o Robota
 TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 {
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
-	switch(Element->rotace_symbolu)
+	if(1<=Element->eID && Element->eID<=4)//ovlivní pouze roboty
 	{
-		case 0:		RET.y=Element->Y+DoSkRB;break;
-		case 90:	RET.x=Element->X+DoSkRB;break;
-		case 180:	RET.y=Element->Y-DoSkRB;break;
-		case 270:	RET.y=Element->X-DoSkRB;break;
+		switch(Element->rotace_symbolu)
+		{
+			case 0:		RET.y=Element->Y+DoSkRB;break;
+			case 90:	RET.x=Element->X+DoSkRB;break;
+			case 180:	RET.y=Element->Y-DoSkRB;break;
+			case 270:	RET.y=Element->X-DoSkRB;break;
+		}
 	}
 	return RET;
 }
@@ -2908,10 +2911,10 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 			//rotace
 			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 			{
-				case 0: 	rotace_textu(canv,2700); canv->TextOutW(m.round(X+canv->TextHeight(T)/2.0),m.round(Y+size+1.3*Z),T);break;
-				case 90:	rotace_textu(canv,0);		 canv->TextOutW(m.round(X+size+2*Z),m.round(Y-canv->TextHeight(T)/2.0),T);break;
-				case 180: rotace_textu(canv,0+900);canv->TextOutW(m.round(X-canv->TextHeight(T)/2.0),m.round(Y-size-1.3*Z),T);break;
-				case 270:	rotace_textu(canv,0);	   canv->TextOutW(m.round(X-canv->TextWidth(T)-size-2*Z),m.round(Y-canv->TextHeight(T)/2.0),T);break;
+				case 0: 	rotace_textu(canv,0+900);canv->TextOutW(m.round(X-canv->TextHeight(T)/2.0),m.round(Y-size-1.3*Z),T);break;
+				case 90:	rotace_textu(canv,0);		 canv->TextOutW(m.round(X-canv->TextWidth(T)-size-2*Z),m.round(Y-canv->TextHeight(T)/2.0),T);break;
+				case 180:	rotace_textu(canv,2700); canv->TextOutW(m.round(X+canv->TextHeight(T)/2.0),m.round(Y+size+1.3*Z),T);break;
+				case 270:	rotace_textu(canv,0);	   canv->TextOutW(m.round(X+size+2*Z),m.round(Y-canv->TextHeight(T)/2.0),T);break;
 			}
 			rotace_textu(canv,0);
 

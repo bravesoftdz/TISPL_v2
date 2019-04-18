@@ -70,37 +70,59 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E1->mG->Border.Width=2;
 
 
-		ColCount=4;//pevný poèet slopcù
-		RowCount=5;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
+		ColCount=2;//pevný poèet slopcù
+		RowCount=6;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 
 		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-		E1->mG->Columns[1].Width=50;
+//		E1->mG->Columns[1].Width=50;
 		E1->mG->SetColumnAutoFit(-4);
 
-		//E1->mG->Cells[0][1].Type=E1->mG->EDIT;
-		E1->mG->Cells[0][0].Text="OOO";
-		E1->mG->Cells[0][0].Type=E1->mG->EDIT;
-		E1->mG->Cells[0][0].Background->Color=clRed;
-			E1->mG->Cells[0][0].Font->Name="Roboto Cn";
-				E1->mG->Cells[0][0].Font->Color=clYellow;
-				E1->mG->Cells[3][1].Type=E1->mG->BUTTON;
-		//E1->mG->Cells[1][1].Type=E1->mG->EDIT;
-		E1->mG->Cells[1][1].Text="abc1";
+		E1->mG->Cells[0][0].Type=E1->mG->COMBO;E1->mG->Cells[0][0].Text="hlavièka";
 
-		//E1->mG->Cells[1][2].Type=E1->mG->NUMERIC;
-		E1->mG->Cells[1][2].Text="0.333";
-		E1->mG->Cells[3][2].Type=E1->mG->BUTTON;
 
-		//E1->mG->Cells[1][3].Type=E1->mG->EDIT;
-		E1->mG->Cells[1][3].Text="abc3";
-		E1->mG->Cells[3][3].Type=E1->mG->BUTTON;
+		E1->mG->Cells[0][1].Type=E1->mG->EDIT;E1->mG->Cells[0][1].Text=1;//E1->mG->Cells[1][1].Text=1;E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+		E1->mG->Cells[0][2].Type=E1->mG->EDIT;E1->mG->Cells[0][2].Text=2;E1->mG->Cells[1][2].Text=2;E1->mG->Cells[1][2].Type=E1->mG->EDIT;
+		E1->mG->Cells[0][3].Type=E1->mG->EDIT;E1->mG->Cells[0][3].Text=3;E1->mG->Cells[1][3].Text=3;E1->mG->Cells[1][3].Type=E1->mG->EDIT;
+		E1->mG->Cells[0][4].Type=E1->mG->EDIT;E1->mG->Cells[0][4].Text=4;E1->mG->Cells[1][4].Text=4;E1->mG->Cells[1][4].Type=E1->mG->EDIT;
+		E1->mG->Cells[0][5].Type=E1->mG->EDIT;E1->mG->Cells[0][5].Text=5;E1->mG->Cells[1][5].Text=5;E1->mG->Cells[1][5].Type=E1->mG->EDIT;
 
-		//E1->mG->Cells[1][4].Type=E1->mG->EDIT;
-		E1->mG->Cells[1][4].Text="abc4";
-		E1->mG->Cells[3][4].Type=E1->mG->BUTTON;
+//		E1->mG->Update();
+//		TscGPListBoxItem *t=NULL;
+//		t=E1->mG->getCombo(1,3)->Items->Add(/*tady nelze parametr*/);
+//		t->Caption="text 1";
+//		t=E1->mG->getCombo(1,3)->Items->Add(/*tady nelze parametr*/);
+//		t->Caption="text 2";
 
-		E1->mG->MergeCells(0,0,1,0);
-		E1->mG->MergeCells(2,0,2,1);
+//		//E1->mG->Cells[0][1].Type=E1->mG->EDIT;
+//		E1->mG->Cells[0][0].Text="OOO";
+//		E1->mG->Cells[0][0].Type=E1->mG->EDIT;
+//		//E1->mG->Cells[0][0].Background->Color=clRed;
+//		//E1->mG->Cells[0][0].Font->Name="Roboto Cn";
+//		//E1->mG->Cells[0][0].Font->Color=clYellow;
+//		//E1->mG->Cells[3][1].Type=E1->mG->BUTTON;
+//		//E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+//
+//		E1->mG->Cells[1][1].Text="abc1";
+//
+//		//E1->mG->Cells[1][2].Type=E1->mG->NUMERIC;
+//		E1->mG->Cells[1][2].Text="0.333";
+//		E1->mG->Cells[3][2].Type=E1->mG->EDIT;
+//
+//		//E1->mG->Cells[1][3].Type=E1->mG->EDIT;
+//		E1->mG->Cells[1][3].Text="abc3";
+//		E1->mG->Cells[3][3].Type=E1->mG->EDIT;
+//
+//		//E1->mG->Cells[1][4].Type=E1->mG->EDIT;
+//		E1->mG->Cells[1][4].Text="abc4";
+//		E1->mG->Cells[3][4].Type=E1->mG->EDIT;
+//
+//		E1->mG->MergeCells(0,0,1,0);
+//		E1->mG->MergeCells(2,0,2,1);
+			E1->mG->MergeCells(0,0,1,0);
+			E1->mG->MergeCells(0,1,1,1);
+
+
+
 
 		E1->predchozi=NULL;
 		E1->dalsi=NULL;
@@ -266,28 +288,28 @@ void __fastcall TForm2::FormPaint(TObject *Sender)
 //	}
 //
 //
-	Cvykresli d;
-//	if(AA)
-//	{
-		Cantialising a;
-		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-		F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-		d.vykresli_robota(bmp_in->Canvas,F->m.L2Px(aktX),F->m.L2Py(aktY),"Robot 1","R1",1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+100+10)*F->Zoom,aktY*F->Zoom,"Robot 2","R2",1,1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+200+20)*F->Zoom,aktY*F->Zoom,"Robot 3","R3",2,1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+300+30)*F->Zoom,aktY*F->Zoom,"Robot 4","R4",3,1);
-//		d.vykresli_robota(bmp_in->Canvas,(aktX+400+40)*F->Zoom,aktY*F->Zoom,"Robot 5","R5",0,-1);
-//		d.vykresli_stopku(bmp_in->Canvas,F->m.L2Px(aktX)+100,F->m.L2Py(aktY),"Stop 1","S1",1,0);
-//		d.vykresli_otoc(bmp_in->Canvas,F->m.L2Px(aktX)+200,F->m.L2Py(aktY),"Otoè pasiv","O1",0,0);
-//		d.vykresli_otoc(bmp_in->Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
-		F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
-		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
-		bmp_out->Transparent=true;
-		bmp_out->TransparentColor=clWhite;
-		Canvas->Draw(0,0,bmp_out);
-		delete (bmp_out);//velice nutné
-		delete (bmp_in);//velice nutné
+//	Cvykresli d;
+////	if(AA)
+////	{
+//		Cantialising a;
+//		Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+//		bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+//		F->Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
+//		d.vykresli_robota(bmp_in->Canvas,F->m.L2Px(aktX),F->m.L2Py(aktY),"Robot 1","R1",1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+100+10)*F->Zoom,aktY*F->Zoom,"Robot 2","R2",1,1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+200+20)*F->Zoom,aktY*F->Zoom,"Robot 3","R3",2,1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+300+30)*F->Zoom,aktY*F->Zoom,"Robot 4","R4",3,1);
+////		d.vykresli_robota(bmp_in->Canvas,(aktX+400+40)*F->Zoom,aktY*F->Zoom,"Robot 5","R5",0,-1);
+////		d.vykresli_stopku(bmp_in->Canvas,F->m.L2Px(aktX)+100,F->m.L2Py(aktY),"Stop 1","S1",1,0);
+////		d.vykresli_otoc(bmp_in->Canvas,F->m.L2Px(aktX)+200,F->m.L2Py(aktY),"Otoè pasiv","O1",0,0);
+////		d.vykresli_otoc(bmp_in->Canvas,(aktX-500)*F->Zoom,aktY*F->Zoom,"Otoè aktiv","O2",1,1);
+//		F->Zoom/=3;//navrácení zoomu na pùvodní hodnotu
+//		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvùli smazání bitmapy vracené AA
+//		bmp_out->Transparent=true;
+//		bmp_out->TransparentColor=clWhite;
+//		Canvas->Draw(0,0,bmp_out);
+//		delete (bmp_out);//velice nutné
+//		delete (bmp_in);//velice nutné
 //	}
 //	else
 //	{
@@ -464,8 +486,11 @@ void __fastcall TForm2::Button4Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button3Click(TObject *Sender)
 {
-	//mGrid->DeleteRow(3);
-	ELEMENTY->dalsi->mG->DeleteRow(ELEMENTY->dalsi->mG->RowCount-1);
+	ELEMENTY->dalsi->mG->DeleteRow(3);
+	//ELEMENTY->dalsi->mG->getEdit(0,3)->Text=ELEMENTY->dalsi->mG->Cells[0][3].Text;
+	//ShowMessage(ELEMENTY->dalsi->mG->Cells[0][3].Text);
+	//ShowMessage(ELEMENTY->dalsi->mG->getEdit(0,3)->Text);
+	//ELEMENTY->dalsi->mG->DeleteRow(ELEMENTY->dalsi->mG->RowCount-1);
 	//mGrid->DeleteRow(mGrid->RowCount-1);//s problikem zpùsobuje show() v DeleteRow
 }
 //---------------------------------------------------------------------------
