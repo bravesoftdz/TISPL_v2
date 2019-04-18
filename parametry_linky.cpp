@@ -93,6 +93,13 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
    // C->Items->operator [](C->Items->Count)->Header=true;
   // scGPComboBox2->Images->Assign(F->scGPVirtualImageList1);
  //   scGPComboBox2->Images->AddImage(F->scGPVirtualImageList1,37);
+// scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1);
+// scGPComboBox2->Images->AddImages
+// scGPComboBox2->Images = Form1.scGPVirtualImageList1;
+//scGPComboBox2->Images->AddImages(F->scgpvi)
+ // scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1->SourceImageList->AddImages(F->scGPVirtualImageList1));
+
+  //  scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1->SourceImageList);
     scGPComboBox2->Items->operator [](1)->Header=false;
     scGPComboBox2->Items->operator [](1)->ImageIndex=37;
     //scGPComboBox4.Items[scGPComboBox4.ItemIndex].
@@ -264,6 +271,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		{
       mGrid->RowCount=2; //slouèená hlavièka jsou 2 øádky
       scGPGlyphButton_DEL_nepouzite->Visible=false;
+
+      mGrid->Columns[7].Width=190+30;
+      mGrid->Columns[8].Width=1;
+
 		}
 
 
@@ -436,13 +447,12 @@ void TForm_parametry_linky::nacti_pohony ()
           scGPNumericEdit_vyska_jig->Enabled=false;
           scGPNumericEdit_delka_podvozek->Enabled=false;
 
-         //pokud je pohon používán, nastavím mu podbarvení bunìk
-          mGrid->Cells[1][i].Background->Color=Form_parametry_linky->Color;
-          mGrid->Cells[2][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
-          mGrid->Cells[3][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
-          mGrid->Cells[4][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
-          mGrid->Cells[5][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
-          mGrid->Cells[7][i].Background->Color=  mGrid->Cells[1][i].Background->Color;
+         //pokud je pohon používán, nastavím mu podbarvení bunìk, krome nazvu - ten je možne vždy mìnit
+          mGrid->Cells[2][i].Background->Color= Form_parametry_linky->Color;
+          mGrid->Cells[3][i].Background->Color=  mGrid->Cells[2][i].Background->Color;
+          mGrid->Cells[4][i].Background->Color=  mGrid->Cells[2][i].Background->Color;
+          mGrid->Cells[5][i].Background->Color=  mGrid->Cells[2][i].Background->Color;
+          mGrid->Cells[7][i].Background->Color=  mGrid->Cells[2][i].Background->Color;
           }
           else
           {
@@ -811,6 +821,7 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
   setADD_ButtonPosition();
   setFormHeight();
   //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
+  vykresli_obdelnik_vpravo();
   input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
@@ -1117,16 +1128,7 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 
 
     	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
-//		Canvas->Pen->Width=2;
-//		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
-//
-////
-//		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
-//		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
-//
-//
-//   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
-//    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
+  vykresli_obdelnik_vpravo();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1961,12 +1963,12 @@ ROW=Row;
          if(smazat)
           {
           Button_save->SetFocus(); //EXTREMNE DULEZITE, JINAK PAMETOVA CHYBA PRI ODSTRANOVANI ROW
-          mGrid->getCheck(6,ROW)->Checked=false;
-          mGrid->getCheck(6,ROW)->Enabled=false;
           mGrid->DeleteRow(ROW);
           //nastaveni rozmeru formu - dle poctu pohonu a nove pozice Add buttonu
           setADD_ButtonPosition();
           setFormHeight();
+          vykresli_obdelnik_vpravo(); //workaround
+          if(mGrid->RowCount<3) {   mGrid->Columns[7].Width=190+30; mGrid->Columns[8].Width=1;mGrid->Refresh();}
           }
        input_state=NOTHING;
        }
@@ -2212,3 +2214,17 @@ void TForm_parametry_linky::OnKeyPress(TObject *Sender, System::WideChar &Key)
 
 }
 
+void TForm_parametry_linky::vykresli_obdelnik_vpravo()
+{
+     	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
+		Canvas->Pen->Width=2;
+		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
+
+//
+		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
+		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
+
+
+   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
+    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
+}

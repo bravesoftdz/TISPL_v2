@@ -184,6 +184,7 @@ public:		// User declarations
 	double getTT();
 	void VALIDACE(int ACol, int ARow);
   int COL,ROW;
+  void vykresli_obdelnik_vpravo();
 
   	//metody volané z Tmgrid
 	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);

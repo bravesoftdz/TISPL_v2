@@ -3877,6 +3877,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 27
+    Visible = False
     ContentMargin = 0
     AutoComplete = False
     Animation = False
@@ -4045,6 +4046,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 217
     Height = 41
     TabOrder = 28
+    Visible = False
     ContentMargin = 0
     AutoComplete = False
     Animation = False
@@ -4081,7 +4083,7 @@ object Form_parametry_linky: TForm_parametry_linky
     DropDownCount = 7
     Options.NormalColor = clBtnFace
     Options.HotColor = clBtnFace
-    Options.PressedColor = clBtnShadow
+    Options.PressedColor = clWhite
     Options.FocusedColor = clBtnFace
     Options.DisabledColor = clBtnFace
     Options.NormalColorAlpha = 255
@@ -4158,7 +4160,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ListBoxOptions.FillGradientAngle = 90
     ListBoxOptions.FrameColor = clBtnShadow
     ListBoxOptions.FrameColorAlpha = 255
-    ListBoxOptions.FrameWidth = 2
+    ListBoxOptions.FrameWidth = 1
     ListBoxOptions.FrameScaleWidth = False
     MouseWheelSupport = True
   end
