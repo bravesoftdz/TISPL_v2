@@ -1265,6 +1265,7 @@ void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 		//ShowMessage(AnsiString("OnEnter ")+IntToStr(((TComponent*)(Sender))->Tag));
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		bufText=Cells[Col][Row].Text;//ukládá výchozí hodnotu editboxu pøed psaním, pro pøípad stisku ESC
 		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnEnter(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnEnter(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnEnter(Tag,Col,Row);
@@ -1318,10 +1319,17 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 		//adresace + nezbytné plnìní z Editu do pamìti!!!
 		Col=getColFromTag(((TComponent*)(Sender))->Tag);
 		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		if(Key==VK_ESCAPE)//v pøípadì stisku ESC návrat pùvodního textu
+		{
+			TscGPEdit *E=getEdit(Col,Row);//->Sen //Text=bufText;//Cells[Col][Row].Text=bufText;
+			TscGPNumericEdit *N=getNumeric(Col,Row);
+			if(E!=NULL){E->Text=bufText;E->SelectAll();}E=NULL;delete E;
+			if(N!=NULL){N->Value=ms.MyToDouble(bufText);E->SelectAll();}N=NULL;delete N;
+		}
 		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouží napø. pøi události onchange popø. dálších
 
 		//filtr kláves
-		if(Cells[Col][Row].InputNumbersOnly)Key=ms.numericFilter(Cells[Col][Row].Text,Key);//pokud je nastaveno na true a není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
+		if(Cells[Col][Row].InputNumbersOnly && Key!=VK_ESCAPE)Key=ms.numericFilter(Cells[Col][Row].Text,Key);//pokud je nastaveno na true a není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než èíselnou (to vèetnì reálného èísla)
 
 		//namapování dceøinných událostí - odkomentovat patøiènou + pøípadnì upravit požadované parametry
 		//if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,ID,Col,Row,Key);

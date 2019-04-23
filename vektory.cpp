@@ -292,8 +292,6 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->mezera_podvozek=Original->mezera_podvozek;
 	//POHON
 	kopiruj_pohon(Original->pohon,Kopie);
-	//ELEMENTY
-	kopiruj_elementy(Original,Kopie);
 	Kopie->min_prujezdni_profil=Original->min_prujezdni_profil;
 	Kopie->rozmer_kabiny=Original->rozmer_kabiny;
 	Kopie->koty_elementu_offset=Original->koty_elementu_offset;
@@ -310,6 +308,8 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->zobrazit_koty=Original->zobrazit_koty;//proměnná určující, zda se budou zobrzovat kóty
 	Kopie->zobrazit_mGrid=Original->zobrazit_mGrid;//proměnná určující, zda budou zobrazeny mGridy
 	Kopie->uzamknout_nahled=Original->uzamknout_nahled;//proměnná určující, zda bude či nebude možné používat interaktivní prvky v náhledu objektu
+	//ELEMENTY - musí být ke konci
+	kopiruj_elementy(Original,Kopie);
 }
 //---------------------------------------------------------------------------
 //hledá objekt v dané oblasti                                       //pracuje v logic souradnicich tzn. již nepouživat *Zoom  použít pouze m2px
@@ -974,7 +974,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	{
 		case 0: T="Stop"; break;//stop stanice
 		case 1: T="Robot"; 				break;//kontinuální robota
-		case 2: T="Robot"; break; novy->PT1=60;//robot se stopkou
+		case 2: T="Robot"; 				novy->PT1=60;break;//robot se stopkou
 		case 3: T="Robot"; 				novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;break;//kontinuální robot s pasivní otočí
 		case 4: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: T="Otoč"; 				novy->OTOC_delka=0.450;break;//pasivní otoč
@@ -1037,7 +1037,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->RT=Original->RT;
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
-	Kopie->Gelement=Original->Gelement;
+	Kopie->geo=Original->geo;
 	Kopie->mGrid=Original->mGrid;
 	Kopie->poznamka=Original->poznamka;
 	Kopie->sparovany=Original->sparovany;
@@ -1057,7 +1057,21 @@ void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje 
 			E=E->dalsi;//posun na další element
 		}
 	}
+	else vytvor_elementarni_osu(Original,Kopie);//pokud neexistují a jedná se o kopírování z pom do pom_temp, založí hlavičku, resp. vytvoří provizorní osu pohonu
 	E=NULL;delete E;
+}
+////---------------------------------------------------------------------------
+//připraví vektor provizorní osy pohonu
+void Cvektory::vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie)
+{
+	if(Original==F->pom && Kopie==F->pom_temp)
+	{
+		hlavicka_elementy(Kopie);
+		Kopie->elementy->geo.rotace=m.Rt90(F->d.trend(F->pom));
+		Kopie->elementy->geo.typ=0;Kopie->elementy->X=0;Kopie->elementy->Y=0;Kopie->elementy->geo.delka=0;
+		if(Kopie->elementy->geo.rotace==90 || Kopie->elementy->geo.rotace==270)Kopie->elementy->Y=Kopie->Y-Kopie->rozmer_kabiny.y/2.0;//vodorovná kabina
+		else Kopie->elementy->X=Kopie->X+Kopie->rozmer_kabiny.x/2.0;//svislá
+	}
 }
 ////---------------------------------------------------------------------------
 //vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
@@ -1292,11 +1306,16 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				}
 				E=NULL;delete E;
 			}
-			// případně ještě kontrola zda se vejdou stále všechny elementy do objektu - dodělat
+			// případně ještě kontrola zda se vejdou stále všechny elementy do objektu možno použít MaVl metodu z Unit1
 			//RET=
 		}
 	}
 	return RET;
+}
+////---------------------------------------------------------------------------
+void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_poradi)
+{
+	//dodělat
 }
 ////---------------------------------------------------------------------------
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
@@ -1312,16 +1331,6 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
 		TPointD Ep=F->d.Rxy(Element->predchozi);
 		return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
 	}
-
-//provizorně jen pro vodorovnou levopravou kabinu  - smazat
-//	if(Element->n==1)//pro první
-//	{
-//		return m.abs_d(F->pom_temp->Xk-Element->X);
-//	}
-//	else//více elementů
-//	{
-//		return m.abs_d(F->d.Rxy(Element).x-F->d.Rxy(Element->predchozi).x);
-//	}
 }
 ////---------------------------------------------------------------------------
 //zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem
