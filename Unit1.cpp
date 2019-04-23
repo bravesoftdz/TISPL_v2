@@ -3545,7 +3545,7 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 //designovaní tabulky pro pohon
 void TForm1::design_tab_pohon(int index)
 {
-  FormX->vstoupeno_poh=false;
+	FormX->vstoupeno_poh=false;
 	AnsiString aRD,R,Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (aRDunit==SEC) aRD="<a>[m/s]</a>";
@@ -3557,7 +3557,7 @@ void TForm1::design_tab_pohon(int index)
 	switch (index)
 	{
    	///////////Design tabulky
-   	case 0:
+		case 0:
 		{
 			PmG=new TmGrid(this);//vždy nutno jako první
 			//nastavení defaultního designu
@@ -3634,8 +3634,19 @@ void TForm1::design_tab_pohon(int index)
 			int index=PmG->getCombo(0,0)->ItemIndex;
 			if(index!=0&&PmG->RowCount==1)
 			{
-				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
+				int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+				if(EID==2||EID==4||EID==6||EID==-1)
+				{
+					PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+				}
+				else
+				{
+        	PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+        }
 				PmG->Show(NULL);
 			}
 			if(index==0&&PmG->RowCount!=1)
@@ -3643,6 +3654,10 @@ void TForm1::design_tab_pohon(int index)
 				if(PmG->RowCount==5) {PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
 				else {PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
 				PmG->Show(NULL);
+				pom_temp->pohon=NULL;
+        DrawGrid_knihovna->Refresh();
+				DrawGrid_otoce->Refresh();
+				DrawGrid_ostatni->Refresh();
 			}
 		}break;
 		case 3://úprava tabulky po přidání prvního elementu
@@ -3712,6 +3727,7 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
 		PmG->Cells[0][i].RightMargin=3;
 	}
+	FormX->vstoupeno_poh=true;
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -4469,12 +4485,12 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,-1);
 	}
 
-	if((EID==1||EID==3))
+	if((EID==1||EID==3)&&pom_temp->pohon!=NULL)
 	{
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,1);
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,-1);
 	}
-	if((EID==2||EID==4))
+	else if((EID==2||EID==4)&&pom_temp->pohon!=NULL)
 	{
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,-1);
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,1);
@@ -4603,7 +4619,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 			}
 			else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
 		}
-		if(pom->id==3)
+		if(pom->id==3&&pom_temp->pohon!=NULL)
 		{
 			if(EID==1 || EID==3 || EID==5)
 			{
