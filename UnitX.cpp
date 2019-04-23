@@ -271,6 +271,8 @@ void TFormX::aktualizace_tab_elementu ()
 					//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3);
 					E->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(E->WT),3);
+					E->RT=F->m.RT(E->PT1,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+					E->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(E->RT),3);
 				}
 				break;
 				case 3://robot s pasivní otoèí
@@ -287,7 +289,9 @@ void TFormX::aktualizace_tab_elementu ()
  				{
 					//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3);
-					E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->WT),3);
+					E->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(E->WT),3);
+					E->RT=F->m.RT(E->PT1+E->PT2,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+					E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->RT),3);
 				}break;
  				case 5://otoè pasivní
 				{
@@ -372,7 +376,7 @@ void TFormX::highlight_tab_elementu()
 				case 4://robot s aktivní otoèí
  				{
 					//validace
-					E->mGrid->Cells[1][6].Highlight=true;
+					E->mGrid->Cells[1][5].Highlight=true;
 				}break;
  				case 5://otoè pasivní
 				{

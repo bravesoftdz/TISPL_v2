@@ -3544,7 +3544,7 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 //designovaní tabulky pro pohon
 void TForm1::design_tab_pohon(int index)
 {
-  FormX->vstoupeno_poh=false;
+	FormX->vstoupeno_poh=false;
 	AnsiString aRD,R,Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (aRDunit==SEC) aRD="<a>[m/s]</a>";
@@ -3556,7 +3556,7 @@ void TForm1::design_tab_pohon(int index)
 	switch (index)
 	{
    	///////////Design tabulky
-   	case 0:
+		case 0:
 		{
 			PmG=new TmGrid(this);//vždy nutno jako první
 			//nastavení defaultního designu
@@ -3633,8 +3633,19 @@ void TForm1::design_tab_pohon(int index)
 			int index=PmG->getCombo(0,0)->ItemIndex;
 			if(index!=0&&PmG->RowCount==1)
 			{
-				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
+				int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+				if(EID==2||EID==4||EID==6||EID==-1)
+				{
+					PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+				}
+				else
+				{
+        	PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+        }
 				PmG->Show(NULL);
 			}
 			if(index==0&&PmG->RowCount!=1)
@@ -3642,6 +3653,10 @@ void TForm1::design_tab_pohon(int index)
 				if(PmG->RowCount==5) {PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
 				else {PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
 				PmG->Show(NULL);
+				pom_temp->pohon=NULL;
+        DrawGrid_knihovna->Refresh();
+				DrawGrid_otoce->Refresh();
+				DrawGrid_ostatni->Refresh();
 			}
 		}break;
 		case 3://úprava tabulky po přidání prvního elementu
@@ -3711,6 +3726,7 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
 		PmG->Cells[0][i].RightMargin=3;
 	}
+	FormX->vstoupeno_poh=true;
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -3854,6 +3870,8 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	if(PTunit==0&&LOunit==0&&DOtocunit==0) {sirka_3=68;sirka_cisla=70;}
 	else {sirka_3=81;sirka_cisla=100;}
 	//nadesignování tabulek dle typu elementu
+	E->mGrid->Left=-1000;
+	E->mGrid->Top=-1000;
 	if(prvni_spusteni)prvni_vytvoreni_tab_elementu(E,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla,LO,cas,delka_otoce);
 	else dalsi_vytvoreni_tab_elementu(E,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla,LO,cas,delka_otoce);
 	//formátování hlavičky tabulky (vždy stejné)
@@ -3937,9 +3955,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text="max WT "+cas;
 			E->mGrid->Cells[1][3].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
-			E->mGrid->Cells[0][2].Text="RT";
-			E->mGrid->Cells[1][2].Text=m.RT(E->PT1,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT);
-			E->RT=ms.MyToDouble(E->mGrid->Cells[1][2].Text);
+			E->mGrid->Cells[0][2].Text="RT"+cas;
+			E->mGrid->Cells[1][2].Text=outPT(m.RT(E->PT1,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
+			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][2].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_2;
@@ -3981,24 +3999,21 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,7);
+			E->mGrid->Create(2,6);
 //			E->mGrid->DefaultCell.isLink->Color=clFontRight;//přiřazení barvy fontu
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="RT";
-			E->mGrid->Cells[1][2].Text=m.RT(E->PT1,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT);
-			E->RT=ms.MyToDouble(E->mGrid->Cells[1][2].Text);
-			E->mGrid->Cells[0][3].Text="PTo "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
-			E->mGrid->Cells[0][4].Text="PT2 "+cas;
-			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
-			E->mGrid->Cells[0][5].Text="RT";
-			E->mGrid->Cells[1][5].Text=m.RT(E->PT2,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT);
-			E->RT=ms.MyToDouble(E->mGrid->Cells[1][2].Text);
-			E->mGrid->Cells[0][6].Text="WT "+cas;
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
-			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
+			E->mGrid->Cells[0][2].Text="PTo "+cas;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][3].Text="PT2 "+cas;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
+			E->mGrid->Cells[0][5].Text="WT "+cas;
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
+			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][5].Text));
+			E->mGrid->Cells[0][4].Text="RT"+cas;
+			E->mGrid->Cells[1][4].Text=outPT(m.RT(E->PT1+E->PT2,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
+			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_4;
@@ -4090,7 +4105,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="RT";E->mGrid->Cells[1][2].Text=E->RT;
+			E->mGrid->Cells[0][2].Text="RT"+cas;E->mGrid->Cells[1][2].Text=outPT(E->RT);
 			E->mGrid->Cells[0][3].Text="max WT "+cas;E->mGrid->Cells[1][3].Text=outPT(E->WT);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -4130,21 +4145,20 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,5);
+			E->mGrid->Create(2,6);
 //			E->mGrid->DefaultCell.isLink->Color=clFontRight;//přiřazení barvy fontu
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="RT";
-			E->mGrid->Cells[1][2].Text=E->RT;
-			E->mGrid->Cells[0][3].Text="PTo "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
-			E->mGrid->Cells[0][4].Text="PT2 "+cas;
-			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
-			E->mGrid->Cells[0][5].Text="RT";
-			E->mGrid->Cells[1][5].Text=E->RT;
-			E->mGrid->Cells[0][6].Text="WT "+cas;
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(E->WT);
+
+			E->mGrid->Cells[0][2].Text="PTo "+cas;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][3].Text="PT2 "+cas;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
+			E->mGrid->Cells[0][4].Text="RT"+cas;
+			E->mGrid->Cells[1][4].Text=outPT(E->RT);
+			E->mGrid->Cells[0][5].Text="WT "+cas;
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(E->WT);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_4;
@@ -4308,8 +4322,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][2].Text="max. WT stop "+cas;
 			E->mGrid->Cells[0][3].Text="WT palec "+cas;
-			E->mGrid->Cells[1][2].Text=outPT(E->WTstop);
-			E->mGrid->Cells[1][3].Text=outPT(E->WT);
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->WTstop),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->WT),3);
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -4318,8 +4332,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[0][2].Text="LO "+LO;
-			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[1][2].Text=outLO(E->LO1);
+			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->PT1),3);
+			E->mGrid->Cells[1][2].Text=m.round2double(outLO(E->LO1),3);
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -4327,9 +4341,11 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		case 2://robot se stop stanicí
 		{
 			E->mGrid->Cells[0][1].Text="PT "+cas;
+			E->mGrid->Cells[0][2].Text="RT "+cas;
 			E->mGrid->Cells[0][3].Text="max WT "+cas;
-			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[1][3].Text=outPT(E->WT);
+			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->PT1),3);
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->RT),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->WT),3);
 			E->mGrid->Columns[0].Width=sirka_2;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -4342,12 +4358,12 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 			E->mGrid->Cells[0][4].Text="otoč "+delka_otoce;
 			E->mGrid->Cells[0][5].Text="PT2 "+cas;
 			E->mGrid->Cells[0][6].Text="LO2 "+LO;
-			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[1][2].Text=outLO(E->LO1);
-			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
-			E->mGrid->Cells[1][4].Text=outDO(E->OTOC_delka);
-			E->mGrid->Cells[1][5].Text=outPT(E->PT2);
-			E->mGrid->Cells[1][6].Text=outLO(E->LO2);
+			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->PT1),3);
+			E->mGrid->Cells[1][2].Text=m.round2double(outLO(E->LO1),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PTotoc),3);
+			E->mGrid->Cells[1][4].Text=m.round2double(outDO(E->OTOC_delka),3);
+			E->mGrid->Cells[1][5].Text=m.round2double(outPT(E->PT2),3);
+			E->mGrid->Cells[1][6].Text=m.round2double(outLO(E->LO2),3);
 			E->mGrid->Columns[0].Width=sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -4355,13 +4371,15 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
-			E->mGrid->Cells[0][3].Text="PTo "+cas;
-			E->mGrid->Cells[0][4].Text="PT2 "+cas;
-			E->mGrid->Cells[0][6].Text="WT "+cas;
-			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
-			E->mGrid->Cells[1][4].Text=outPT(E->PT2);
-			E->mGrid->Cells[1][6].Text=outPT(E->WT);
+			E->mGrid->Cells[0][2].Text="PTo "+cas;
+			E->mGrid->Cells[0][3].Text="PT2 "+cas;
+			E->mGrid->Cells[0][4].Text="RT "+cas;
+			E->mGrid->Cells[0][5].Text="WT "+cas;
+			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->PT1),3);
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->PTotoc),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PT2),3);
+			E->mGrid->Cells[1][4].Text=m.round2double(outPT(E->RT),3);
+			E->mGrid->Cells[1][5].Text=m.round2double(outPT(E->WT),3);
 			E->mGrid->Columns[0].Width=sirka_4;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 		break;
@@ -4370,9 +4388,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
-			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
-//			E->mGrid->getEdit(1,1)->Text=99; //test přepisování při focus na edit .. funguje takto
+			E->mGrid->Cells[1][1].Text=m.round2double(outDO(E->OTOC_delka),3);
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->PTotoc),3);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -4381,10 +4398,8 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
 			E->mGrid->Cells[0][2].Text="PT "+cas;
-//			E->mGrid->getEdit(1,1)->Text=99;
-			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
-//			E->mGrid->getEdit(1,2)->Text=99;
-			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[1][1].Text=m.round2double(outDO(E->OTOC_delka),3);
+			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->PTotoc),3);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -4468,12 +4483,12 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,-1);
 	}
 
-	if((EID==1||EID==3))
+	if((EID==1||EID==3)&&pom_temp->pohon!=NULL)
 	{
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,1);
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,-1);
 	}
-	if((EID==2||EID==4))
+	else if((EID==2||EID==4)&&pom_temp->pohon!=NULL)
 	{
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,-1);
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,1);
@@ -4602,7 +4617,7 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 			}
 			else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
 		}
-		if(pom->id==3)
+		if(pom->id==3&&pom_temp->pohon!=NULL)
 		{
 			if(EID==1 || EID==3 || EID==5)
 			{

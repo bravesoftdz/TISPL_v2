@@ -518,6 +518,45 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 		bool volat_aktualizaci=false;
 		int aktualizace_id;
 
+
+     //pøed samotným uložením, kontrola zdali jsou podstatné údaje u pohonu nastaveny
+     // pokud nìco chybí, zakážu uložení
+     int count=0;
+
+			for (unsigned int i = 2; i < mGrid->RowCount; i++)
+			{
+				if(mGrid->Cells[2][i].Text=="") count++;
+				if(mGrid->Cells[3][i].Text=="") count++;
+				if(mGrid->Cells[4][i].Text=="") count++;
+				if(mGrid->Cells[5][i].Text=="") count++;
+      }
+
+        if(count>0)
+        {
+             scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+             scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,8);
+             scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+             scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,8);
+             scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
+             scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,8);
+
+             this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
+
+            if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
+            {
+             Ulozit=false;
+
+             scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
+             scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+             scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
+             scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+             scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
+             scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
+
+             this->Color=F->m.clIntensive(this->Color,-8);
+             }
+        }
+
 		//zobrazení formu gapoR - jediné GAPO, které je voláno zde, protože se volá až pøi stisku OK PL formu
 		bool zobrazGAPO_R=false;
 		for(unsigned int i=1; i<=F->d.v.POHONY->predchozi->n;i++)
@@ -695,7 +734,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
 	 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		if(Form1->d.v.OBJEKTY->dalsi==NULL)Ulozit=true;   // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
+	 //	if(Form1->d.v.OBJEKTY->dalsi==NULL)Ulozit=true;   // pokud neexistuje zadny objekt, vzdy dovolim delat zmeny a moznost ulozit
 
 		// ukladej
 		if (Ulozit)
@@ -703,6 +742,8 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 			zrusit_prirazeni_smazanych_ci_odrazenych_pohunu_k_objektum();
 			Form1->d.v.vymaz_seznam_POHONY();
 			Form1->d.v.hlavicka_POHONY();
+
+      bool nelze_ulozit=false;
 
 			for (unsigned int i = 2; i < mGrid->RowCount; i++)
 			{
@@ -717,16 +758,16 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if (mGrid->Cells[1][i].Text=="") nazev="nový pohon";
 				else  nazev=mGrid->Cells[1][i].Text;
 
-				if (mGrid->Cells[2][i].Text=="") rychlost_od=0;
+				if (mGrid->Cells[2][i].Text=="") {rychlost_od=0; nelze_ulozit=true; }
 				else  rychlost_od=Form1->ms.MyToDouble(mGrid->Cells[2][i].Text)/(1+59.0*aRDunit);
 
-				if(mGrid->Cells[3][i].Text=="") rychlost_do=0;
+				if(mGrid->Cells[3][i].Text=="") {rychlost_do=0; nelze_ulozit=true;  }
 				else 	rychlost_do=Form1->ms.MyToDouble(mGrid->Cells[3][i].Text)/(1+59.0*aRDunit);
 
-				if(mGrid->Cells[4][i].Text=="") aRD=0;
+				if(mGrid->Cells[4][i].Text=="") {aRD=0; nelze_ulozit=true; }
 				else aRD=Form1->ms.MyToDouble(mGrid->Cells[4][i].Text)/(1+59.0*aRDunit);
 
-				if(mGrid->Cells[5][i].Text=="") roztec=0;
+				if(mGrid->Cells[5][i].Text=="") {roztec=0; nelze_ulozit=true; }
 				if(Runit==MM) roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
 				else roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text);
 
@@ -782,8 +823,11 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
    } 	Form1->DuvodUlozit(true);
 
+   if(Ulozit)
+   {
     mGrid->Delete();
 		Close();//v testu, mùže padat
+   }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
