@@ -553,7 +553,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
              scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
              scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
 
-//             this->Color=F->m.clIntensive(this->Color,-8);imnn,,,nm
+             this->Color=F->m.clIntensive(this->Color,-8);
              }
         }
 
