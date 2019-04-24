@@ -1057,7 +1057,7 @@ void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje 
 			E=E->dalsi;//posun na další element
 		}
 	}
-	else vytvor_elementarni_osu(Original,Kopie);//pokud neexistují a jedná se o kopírování z pom do pom_temp, založí hlavičku, resp. vytvoří provizorní osu pohonu
+	else vytvor_elementarni_osu(Original,Kopie);//pokud neexistují a jedná se o kopírování z pom do pom_temp, založí hlavičku, resp. v hlavičce vytvoří provizorní osu pohonu
 	E=NULL;delete E;
 }
 ////---------------------------------------------------------------------------
@@ -1088,6 +1088,7 @@ int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 		}
 		E=NULL;delete E;
 	}
+	if(RET==-1)Objekt->rezim=-1;else{if(RET>0 && RET%2==0)Objekt->rezim=0;else Objekt->rezim=1;}//rovnou nastaví režim objektu
 	return RET;
 }
 ////---------------------------------------------------------------------------

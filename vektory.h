@@ -87,14 +87,14 @@ class Cvektory
 			UnicodeString name;//celý název objektu
 			double X,Y;//umístění objektu ve schématu
 			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
-			unsigned short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP),3-stopka
+			short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven
 			double CT;//pro status návrh
 			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu
 			double delka_dopravniku;//delka dopravníku v rámci objektu
 			double kapacita;//uživatelsky zadaná kapacita
 			double kapacita_dop;//doporučená, vypočítáná
 			double pozice;//počet vozíků v kabině
-			double rotace;//rotace jigu v objektu
+			double rotace;//rotace jigu v objektu - nově spíše rotace náhledu
 			double mezera;//mezera mezi vozíky (kritická mezera)
 			double mezera_jig;//mezera mezi jigy
 			double mezera_podvozek;//mezera mezi podvozky
