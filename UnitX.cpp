@@ -156,6 +156,9 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			{
 				input_state=COMBO;
 				F->tab_pohon_COMBO(1);//pøiøazení pohonu
+				if(F->PmG->getCombo(0,0)->ItemIndex!=0)
+					aktualizace_tab_elementu();
+				//else naplnìní defaultními hodnoty
 			}break;
 			case 1://aktuální rychlost, aRD
 			{
