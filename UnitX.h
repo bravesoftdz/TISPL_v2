@@ -19,6 +19,7 @@ private:	// User declarations
 	void aktualizace_tab_elementu ();
 	void highlight_tab_pohonu(int Row);
 	void highlight_tab_elementu();
+	void validace ();
 
 public:		// User declarations
   __fastcall TFormX(TComponent* Owner);

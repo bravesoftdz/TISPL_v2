@@ -551,6 +551,7 @@ System::WideChar TMyString::numericFilter(AnsiString aktText,System::WideChar &K
 	 if(!((Key>=L'0') && (Key<=L'9') || (AnsiString(Key) == Separator)))Key=0;//pokud se nejedná o číslo nebo oddělovač
 	 if(AnsiString(Key) == Separator && aktText.Length()      == 0)Key=0;//oddělovač nemůže být na prvním místě
 	 if(AnsiString(Key) ==	Separator && aktText.Pos(Separator) > 0)Key=0;//oddělovačů nemůže být více
+	 if(Key == L'0' && aktText.Pos("0") > 0 && aktText.Length() == 1)Key=0;//nelze napsat na druhou pozici v čísle 0
 
 	 if(Key==0)MessageBeep(0);//zvuková inicializace špatné klávesy - popř. odstranit
 	}

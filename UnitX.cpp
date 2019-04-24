@@ -156,6 +156,9 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			{
 				input_state=COMBO;
 				F->tab_pohon_COMBO(1);//pøiøazení pohonu
+				if(F->PmG->getCombo(0,0)->ItemIndex!=0)
+					aktualizace_tab_elementu();
+				//else naplnìní defaultními hodnoty
 			}break;
 			case 1://aktuální rychlost, aRD
 			{
@@ -232,15 +235,10 @@ void TFormX::zmena_R ()
 void TFormX::zmena_Rx ()
 {
   //pøepoèet hodnot v tabulce pohonu
-	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
+	if(F->PmG->RowCount>3)//kontinuální režim
 	{
-		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
-		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
+    F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
 		F->PmG->Cells[1][3].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
-	}
-	else//pro tabulku v kontinuálním režimu
-	{
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
 		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
 	}
@@ -407,6 +405,57 @@ void TFormX::unhighlight_tabulky()
 	}
 }
 //---------------------------------------------------------------------------
+void TFormX::validace ()
+{
+//	if (F->pom_temp->pohon->aRD > 0)
+//				// nutné ošetøení pro období zadávání/psaní
+//	{
+//		Cvektory::TPohon *P = F->d.v.vrat_pohon(F->PmG->getCombo(0,0)->ItemIndex);
+//		if (P != NULL) roztec=P->roztec;  else  roztec=0;
+//
+//		double dopRD=Form1->m.dopRD(Form1->d.v.PP.delka_jig,Form1->d.v.PP.sirka_jig,rotace,roztec,Form1->d.v.PP.TT,RD);
+//
+//		if (RDunitT == MIN){dopRD *= 60.0; RD *= 60.0;}
+//		//if (RDunitD == MM) dopRD /= 1000.0;
+//
+//		if(mimo_rozmezi==true)
+//		{
+//			vypis("Rychlost neodpovídá rozmezí!");
+//			VID=25;
+//		}
+//		if(Form1->ms.MyToDouble(dopRD)!= Form1->ms.MyToDouble(RD) && mimo_rozmezi)
+//		{
+//			vypis("Rychlost neodpovídá rozmezí!");
+//			VID=25;
+//		}
+//		if(scComboBox_pohon->ItemIndex!=0 && roztec>0 && Form1->ms.MyToDouble(dopRD)!= Form1->ms.MyToDouble(RD) && mimo_rozmezi==false)
+//		{
+//			if(scButton_zamek_RD->Enabled) //doporuèuji rychlost, pouze tehdy pokud lze RD mìnit (pohon není jinde používán)
+//			{
+//				double doporuc_hodnota = dopRD;
+//				vypis("Zadejte doporuèenou rychlost pohonu: <u>"+AnsiString(doporuc_hodnota)+"</u>");
+//				VID=27;
+//				VID_value=doporuc_hodnota;
+//				//	AnsiString relation_id=GetCurrentProcessId();
+//				//	AnsiString strSQL = "INSERT INTO vid_validace (VID,doporuc_hodnota,username,relation_id) VALUES (\""+AnsiString(VID)+"\",\""+AnsiString(doporuc_hodnota)+"\",\""+AnsiString(F->get_user_name())+"\",\""+relation_id+"\")";
+//				//	Form1->FDConnection1->ExecSQL(strSQL);
+//				//	Form1->IBQuery1->SQL->Add(strSQL);
+//				//	Form1->IBQuery1->Open();
+//			}
+//		}
+//		if (Form1->ms.MyToDouble(dopRD)== Form1->ms.MyToDouble(RD) && mimo_rozmezi)
+//		{
+//			vypis("Rychlost neodpovídá rozmezí!");
+//			VID=25;
+//		}
+//		if (Form1->ms.MyToDouble(dopRD)== Form1->ms.MyToDouble(RD) && mimo_rozmezi==false)
+//		{
+//			vypis("");
+//		}
+//	}
+//	else vypis("Neplatná hodnota rychlosti pohonu!");
+//	}
+}
 
 
 
