@@ -3202,15 +3202,14 @@ void TForm1::add_element (int X, int Y)
 
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - provizorní pro robota
 	double DoSkRB=0;
-
 	if(1<=element_id && element_id<=4)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
 		DoSkRB=d.DoSkRB*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}
-	if(trend==90 || trend==270)Y=m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);//vodorovný pohon
-	else X=m.round(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0+DoSkRB);//svislý pohon
-	////---- konec PROVIZORNĚ
+	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;//m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);//vodorovný pohon
+	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;//m.round(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0+DoSkRB);//svislý pohon
+
 
 	//vložení elementu na dané souřadnice a do patřičného spojáku - pozor jedná se o chybu návrhu, nemělo by se vkládát do pom resp. ostrého spojáku objektů pro případ storna....
 //	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
@@ -3526,18 +3525,18 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
-//provizorně
+//dle toho, zda je umisťovaný element nad osou či pod osou pohonu je vrácena rotace symbolu
 short TForm1::rotace_symbol(short trend,int X, int Y)
 {
 	short rotace_symbolu=trend-90;
 
 	if(trend==90 || trend==270)//pohon vodorovně
 	{
-		if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu+=180;}
+		if(m.L2Py(F->pom_temp->elementy->Y)>Y)rotace_symbolu+=180;//if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu+=180;}
 	}
 	else//pohon svisle
 	{
-		if(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0<X)rotace_symbolu+=180;
+		if(m.L2Px(F->pom_temp->elementy->X)<X)rotace_symbolu+=180;//if(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0<X)rotace_symbolu+=180;
 	}
 	return rotace_symbolu;
 }
@@ -7711,7 +7710,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	B=NULL;delete B;
 
 
-	 d.v.napln_combo_stopky(pom_temp->elementy->dalsi->dalsi->dalsi);
+ShowMessage(pom_temp->elementy->name);
 
 
 //d.v.POHONY->dalsi->name="ano";

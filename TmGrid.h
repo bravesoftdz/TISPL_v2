@@ -200,6 +200,7 @@ class TmGrid
 	short SetColumnAutoFitColIdx;//typ autofit column
 	long preRowInd;//pøedchozí øádek na kterém byla myš
 	bool deleteMark;//detekce že dochází k odstraòování mGridu
+	UnicodeString bufText;//ukládá výchozí hodnotu editboxu pøed psaním, pro pøípad stisku ESC
 };
 //---------------------------------------------------------------------------
 extern TmGrid *mGrid;//ukazatel na celou knihovnu
