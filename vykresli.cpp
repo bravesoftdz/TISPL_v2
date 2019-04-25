@@ -193,7 +193,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 		{
 			long Y=m.L2Py(F->pom_temp->elementy->Y);//long Y=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0*3;//provizorní původní linie uprostřed
 			line(canv,0,Y,F->ClientWidth*3,Y);
-			if(F->pom_temp->pohon!=NULL)vykresli_retez(canv,F->pom_temp,0,F->pom_temp->elementy->Y);
+			if(F->pom_temp->pohon!=NULL)vykresli_retez(canv,F->pom_temp,0,F->pom_temp->elementy->Y,F->Poffset,true);
 		}
 		else//svisle
 		{
@@ -2268,38 +2268,38 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;
 
-	////zvýraznění animovaného dle CT
-	if(ID==ceil(Form_objekt_nahled->pom->pozice) && Form_objekt_nahled->Timer_animace->Enabled)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
-	{
-		canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
-		canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//podvozek
-		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));//jig
-		canv->Pen->Width=1/3.0*F->Zoom;
-	}
+//	////zvýraznění animovaného dle CT - zlobilo při provizorním zobrazování v náhledu, proto provizorně odstaveno, F->MOD!=F->NAHLED nepomohlo, divné
+//	if(ID==ceil(Form_objekt_nahled->pom->pozice) && Form_objekt_nahled->Timer_animace->Enabled && F->MOD!=F->NAHLED)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
+//	{
+//		canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
+//		canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//podvozek
+//		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));//jig
+//		canv->Pen->Width=1/3.0*F->Zoom;
+//	}
 
 	////podvozek
 	canv->Pen->Color=clChassis;
-	canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//vykreslení pozice podvozku
+	canv->Rectangle(m.L2Px(X-dP/2.0),m.L2Py(Y+sP),m.L2Px(X+dP/2.0),m.L2Py(Y-sP));//vykreslení pozice podvozku
 
 	////jig
 	canv->Pen->Color=clJig;
-	canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));
+	canv->Rectangle(m.L2Px(X-dJ/2.0),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2.0),m.L2Py(Y-sJ/2.0));
 
-	////text - ID vozíku
-	//framing
-	if(Form1->Zoom>10)//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost
-	{
-		canv->Font->Color=clWhite;
-		canv->Font->Style = TFontStyles()<<fsBold;//vypnutí tučného písma
-		canv->Font->Size=Form1->Zoom*(4+1); if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*(5+1);
-		canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
-	}
-	//samotný text
-	if(Form1->Zoom<=10)canv->Brush->Style=bsSolid;//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost//bez bílého pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
-	canv->Font->Color=clJig;
-	canv->Font->Style = TFontStyles();//vypnutí tučného písma
-	canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
-	canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
+//	////text - ID vozíku
+//	//framing
+//	if(Form1->Zoom>10)//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost
+//	{
+//		canv->Font->Color=clWhite;
+//		canv->Font->Style = TFontStyles()<<fsBold;//vypnutí tučného písma
+//		canv->Font->Size=Form1->Zoom*(4+1); if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*(5+1);
+//		canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
+//	}
+//	//samotný text
+//	if(Form1->Zoom<=10)canv->Brush->Style=bsSolid;//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost//bez bílého pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
+//	canv->Font->Color=clJig;
+//	canv->Font->Style = TFontStyles();//vypnutí tučného písma
+//	canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
+//	canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí vykreslení řetězz, XY -umístění L začátek (střed dopravníku) objektu v metrech, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu, za zmínění stojí lokální proměnná této metody KR, což je kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
@@ -2338,16 +2338,16 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 	////vykreslení řetězu a palců řetězu
 //	if(O->pohon!=NULL)//řetez - je-li přiřazen pohon
 //	{
-		canv->Pen->Color=clBlack;
-		canv->Pen->Width=F->Zoom*0.5;
-		canv->MoveTo(m.L2Px(X),m.L2Py(Y));
-		canv->LineTo(m.L2Px(K.x),m.L2Py(K.y));
+
+    //vykreslí samotný pohon - spojnici
+		linie(canv,m.L2Px(X),m.L2Py(Y),m.L2Px(K.x),m.L2Py(K.y),F->Zoom*0.5,clBlack);
+
 		//palce, pokud je zadaná rozteč tak se vykreslí
 		if(R>0)
-		{
+		{                     F->Memo3->Lines->Add(Poffset);
 													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
 			double startR=-(Rz)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
-			if(animace)startR=-(Rz)*ceil(O->pozice)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+			if(animace)startR=-(Rz)*20/**ceil(O->pozice)*/+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
 			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neořezávalo palce
 			for(double i=startR;i<=DD+R;i+=R)
 			{     //již využívám přemaskování bílým obdélníkem, nakonci této metody, zajišťuje lepší grafický efekt
@@ -2357,14 +2357,11 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 					{
 						if(Rezim==1)//pro kontinuální zobrazení
 						{
-							if(j%Rx==0)
+							if(j%Rx==0)//palec vyšel do rozestupu, jedná se o aktivní palec unášející vozík
 							{
 								vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);
-								float sP=0.12;//šířka podvozku, pouze stanovane
-								canv->Brush->Style=bsClear;
-								canv->Rectangle(m.L2Px((X+i)-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));
-								//vykresli_vozik(canv,j,X+i,Y,dP,dJ,sJ);
-							}//palec vyšel do rozestupu, jedná se o aktivní palec
+								vykresli_vozik(canv,j,X+i,Y,dP,dJ,sJ);//možná provizorně
+							}
 							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
 						}
 						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//u S&G jakýkoliv
@@ -2375,6 +2372,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 			}
 		}
 //	}
+
 
 	////jednotlivé pozice/vozíky
 //	unsigned int RET;
@@ -3247,7 +3245,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
-	if(F->Timer1->Enabled==false)//timer animace
+	if(F->Timer_animace->Enabled==false)//timer animace
 	{
 		//tabulky elementů
 		if(F->pom_temp->elementy!=NULL)

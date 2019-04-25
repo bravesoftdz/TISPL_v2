@@ -6825,6 +6825,7 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 {
 	Timer_animace->Enabled=!Timer_animace->Enabled;
+
 	if(Timer_animace->Enabled)
 	{
 		CheckBoxAnimovatSG->Visible=true;
@@ -6846,20 +6847,86 @@ void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
+//tlačítko na spuštění animace v náhledu kabiny
+void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
+{
+	RO-=(1.5*Zoom/m2px)/20.0;
+	Poffset=0;
+	scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
+	Timer_animace->Enabled=!Timer_animace->Enabled;
+	scGPSwitch_meritko->State=!Timer_animace->Enabled;
+	d.v.PP.raster.show=!Timer_animace->Enabled;
+	if(Timer_animace->Enabled)//běží animace
+	{
+		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPause;
+		scGPGlyphButton_PLAY->Hint="zastavit animaci";
+		scGPGlyphButton_PLAY->ShowCaption=true;
+		if(pom_temp->pohon!=NULL)Timer_animace->Interval=F->m.round(F->m.get_timePERpx(pom_temp->pohon->aRD,0));//stejná rychlost pro všechny RD
+		else Timer_animace->Interval=40;//prozatim
+		//Timer_animace->Interval=ceil(F->m.get_timePERpx(pom->RD,0,F->d.v.vrat_min_rychlost_prejezdu()));//různá rychlost dle RD, s afps se počítá dle min RD, ale nějak špatně vycházela animace ke konci (nestihl vozík vyjet)
+	}
+	else//animace zastavena
+	{
+		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
+		scGPGlyphButton_PLAY->Hint="spustit animaci";
+	}
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm1::Timer_animaceTimer(TObject *Sender)
 {
-	d.TP.DO+=d.TP.K;//konec zakazky v min
-	d.TP.OD=d.TP.DO;//od které min se proces začne vypisovat
-	if(d.TP.DO<=d.TP.KZ)
+	if(MOD==NAHLED)
 	{
+		short LO=1.5;//lakovací okno
+
+		//rameno - kýve se po šířce lakovacího okna
+		if(ROs==0)
+		{
+			if(RO>-(LO*Zoom/m2px))
+			{
+				RO-=(LO*Zoom/m2px)/20.0;
+			}
+			else ROs=1;
+		}
+		else
+		{
+			if(RO<(LO*Zoom/m2px))
+			{
+				RO+=(LO*Zoom/m2px)/20.0;
+			}
+			else ROs=0;
+		}
+
+		//tryska - jen se kýve ze strany na strany v rozmezí -30 až +30 stupňů
+		if(ROsts==0)
+		{
+			if(ROst<30)ROst+=5;
+			else ROsts=1;
+		}
+		else
+		{
+			if(ROst>-30)ROst-=5;
+			else ROsts=0;
+		}
+
+		Poffset+=1*m2px/Zoom;//zajistí posun animace o 1px (tedy nejmenší možnou grafickou jednotku), ale posouvání probíhá v metrech
+
 		REFRESH();
 	}
-	else
+	else//ROMA metoda
 	{
-		Timer_animace->Enabled=false;
-		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
-		ButtonPLAY->Hint="spustit animaci";
-		SyntezaClick(Sender);//vratí statický mod
+		d.TP.DO+=d.TP.K;//konec zakazky v min
+		d.TP.OD=d.TP.DO;//od které min se proces začne vypisovat
+		if(d.TP.DO<=d.TP.KZ)
+		{
+			REFRESH();
+		}
+		else
+		{
+			Timer_animace->Enabled=false;
+			ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+			ButtonPLAY->Hint="spustit animaci";
+			SyntezaClick(Sender);//vratí statický mod
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -8122,44 +8189,6 @@ MOD=SCHEMA;
 
 
 
-void __fastcall TForm1::Timer1Timer(TObject *Sender)
-{
-
-		short LO=1.5;//lakovací okno
-
-    //kýve se po šířce lakovacího okna
-		if(ROs==0)
-		{
-			if(RO>-(LO*Zoom/m2px))
-			{
-				RO-=(LO*Zoom/m2px)/20.0;
-			}
-			else ROs=1;
-		}
-		else
-		{
-			if(RO<(LO*Zoom/m2px))
-			{
-				RO+=(LO*Zoom/m2px)/20.0;
-			}
-			else ROs=0;
-		}
-
-		//tryska - jen se kýve ze strany na strany v rozmezí -30 až +30 stupňů
-		if(ROsts==0)
-		{
-			if(ROst<30)ROst+=5;
-			else ROsts=1;
-		}
-		else
-		{
-			if(ROst>-30)ROst-=5;
-			else ROsts=0;
-		}
-
-		REFRESH();
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
@@ -8475,17 +8504,7 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
-//tlačítko na spuštění animace
-void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
-{
-		RO-=(1.5*Zoom/m2px)/20.0;
-		scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
-		Timer1->Enabled=!Timer1->Enabled;
-		scGPSwitch_meritko->State=!Timer1->Enabled;
-		d.v.PP.raster.show=!Timer1->Enabled;
-		REFRESH();
-}
-//---------------------------------------------------------------------------
+
 
 
 

@@ -3613,6 +3613,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button11'
     TabOrder = 29
+    Visible = False
     OnClick = Button11Click
   end
   object scGPGlyphButton_close_grafy: TscGPGlyphButton
@@ -28298,13 +28299,6 @@ object Form1: TForm1
     Left = 583
     Top = 230
     Bitmap = {}
-  end
-  object Timer1: TTimer
-    Enabled = False
-    Interval = 100
-    OnTimer = Timer1Timer
-    Left = 456
-    Top = 424
   end
   object Timer2: TTimer
     Enabled = False
