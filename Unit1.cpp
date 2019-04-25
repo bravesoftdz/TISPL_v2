@@ -2390,7 +2390,11 @@ void TForm1::getJobID(int X, int Y)
 			if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
 			if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
 			{
-				JID=0;
+				/*if()
+				{
+					//zde doplnit //byl nalezen název elementu
+				}
+				else*/ JID=0; //byl nálezen element nikoliv jeho název
 			}
 			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
 			{
@@ -3058,7 +3062,7 @@ void TForm1::add_objekt(int X, int Y)
 		//uložení do paměti
 		bool spojka=false;
 		if(pom==NULL && pom_vyhybka!=NULL){pom=pom_vyhybka;spojka=true;}//druhokolové přidávání tzn. spojka
-		if(add_posledni)//vloží poslední prvek
+		if(add_posledni)//vloží za poslední prvek
 		{ //do pom_vyhybka přebírá pouze pro případné účely vyhýbky, pro ostatní objekty má význam metoda bez návratové hodnoty
 			pom_vyhybka=d.v.vloz_objekt(vybrany_objekt,souradnice.x,souradnice.y);
 		}

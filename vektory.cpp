@@ -1262,6 +1262,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 	bool RET=false;
 	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
+	//použít makro F->d.Rxy(uvažovaný element), m.delka() vrací pouze abs. hodnotu
+
 //		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
 //		{
 //			TPointD vzd;
@@ -1271,7 +1273,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //				vzd.y=Element->Y-F->pom_temp->Yk;
 //			}
 //			else//více elementů
-//			{
+//			{                     použít makro F->d.Rxy(uvažovaný element), m.delka() vrací pouze abs. hodnotu
 //				vzd.x=Element->X-Element->predchozi->X;
 //				vzd.y=Element->Y-Element->predchozi->Y;
 //			}
@@ -1282,12 +1284,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //			//kontrola zda se vejdou stále všechny elementy do objektu - dodělat
 //			//RET=
 //		}
-
+						 //dodělat MaVl
 		//provizorně jen pro vodorovnou levopravou kabinu
 		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
 		{
 			TPointD vzd;
-			if(Element->n==1)//pro první element
+			if(Element->n==1)//pro první element, od počátku kabiny
 			{
 				vzd.x=Element->X-F->pom_temp->Xk;
 			}
@@ -1317,18 +1319,18 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 ////---------------------------------------------------------------------------
 void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_poradi)
 {
-	//dodělat
+	//dodělat MaVl
 }
 ////---------------------------------------------------------------------------
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
 double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
-{
+{                  //dodělat MaVl
 	TPointD E=F->d.Rxy(Element);
-	if(Element->n==1)//pro první
+	if(Element->n==1)//pro první element od hrany kabiny
 	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,E.x,E.y);//(bude nutno vylepšit s příchodem oblouků)!!!
+		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
 	}
-	else//více elementů
+	else//mezi elementy
 	{
 		TPointD Ep=F->d.Rxy(Element->predchozi);
 		return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
