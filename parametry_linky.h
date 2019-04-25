@@ -21,6 +21,8 @@
 #include <Vcl.Mask.hpp>
 #include "PL_math.h"
 #include "rHintWindow.hpp"
+#include "scGPImages.hpp"
+#include <Vcl.Graphics.hpp>
 #include <sstream>
 #include <iomanip>
 //---------------------------------------------------------------------------
@@ -92,6 +94,8 @@ __published:	// IDE-managed Components
   TscGPNumericEdit *rEditNum_takt;
   TscGPComboBox *scGPComboBox1;
   TscGPComboBox *scGPComboBox2;
+  TButton *Button1;
+  TscGPImage *scGPImage1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
