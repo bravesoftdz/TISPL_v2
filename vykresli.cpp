@@ -2307,19 +2307,22 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP
 void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)
 {
 	////vychozí geometrické proměnné
+	//řetěz
 	double DD=100;O->delka_dopravniku;//délka objektu v metrech
-//	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
-//	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
-//	double dP=v.PP.delka_podvozek;
-//	double DV=dJ;if(dP>dJ)DV=dP;
 	//double M=O->mezera;//mezera
 	double R=O->pohon->roztec;//rozteč palců řetězu
 	double Rz=O->pohon->Rz;//rozestup
-	int Rx=F->m.round(O->pohon->Rx);//může být zaokrouhleno, protože musí vycházet celé číslo
+	int Rx=m.round(O->pohon->Rx);//může být zaokrouhleno, protože musí vycházet celé číslo
+	short Rezim=O->rezim;//podle eID prvního použitého robota je nastaven ve stejnojmenné metodě režim objektu
 	double KR=0;//kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
 	TPointD S;S.x=X;S.y=Y;//Start
 	TPointD K;K.x=X+DD;K.y=Y;//Konec
-																 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
+	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
+	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dP=v.PP.delka_podvozek;
+	double DV=dJ;if(dP>dJ)DV=dP;
+																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
 	////obrys objektu
 	//pero+výplň
 	canv->Brush->Color=clWhite;
@@ -2348,12 +2351,23 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neořezávalo palce
 			for(double i=startR;i<=DD+R;i+=R)
 			{     //již využívám přemaskování bílým obdélníkem, nakonci této metody, zajišťuje lepší grafický efekt
-				if(/*i>=0 && */Rx>0)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
+				if(/*i>=0 && */Rx>0 || Rezim!=1)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
 				{
 					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
 					{
-						if(j%Rx==0){vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);}//palec vyšel do rozestupu, jedná se o aktivní palec
-						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
+						if(Rezim==1)//pro kontinuální zobrazení
+						{
+							if(j%Rx==0)
+							{
+								vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);
+								float sP=0.12;//šířka podvozku, pouze stanovane
+								canv->Brush->Style=bsClear;
+								canv->Rectangle(m.L2Px((X+i)-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));
+								//vykresli_vozik(canv,j,X+i,Y,dP,dJ,sJ);
+							}//palec vyšel do rozestupu, jedná se o aktivní palec
+							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
+						}
+						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//u S&G jakýkoliv
 					}
 					catch(...){;}
 				}
@@ -2362,7 +2376,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 		}
 //	}
 
-//	////jednotlivé pozice/vozíky
+	////jednotlivé pozice/vozíky
 //	unsigned int RET;
 //	if(!animace)RET=vykresli_pozice(canv,ceil(O->pozice)/*bylo pro číslování od jedné: 1*/,S,K,DD,dJ,sJ,dP,M,Poffset);
 //	else RET=vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,dJ,sJ,dP,M,-(M+DV)*ceil(O->pozice)+Poffset);
@@ -3365,7 +3379,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//záměna (podsunutí editovaného) textu v případě EDITACE právě touto metodou vykreslované kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry) (protože se cyklem vykreslují všechny kóty i při platném JID)
 	if(F->editace_textu)
 	{
-		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
+		if(aktElement==NULL || F->pom_element_temp==NULL)//předpokládá se, že je to kóta kabiny, druhá čast podmínky dodaná dodatečně, spíše empirickým úsudkem (možné funkční mezery...)
 		{
 			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro vodorovnou kótu
 			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro svislou kótu

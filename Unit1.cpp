@@ -5573,6 +5573,7 @@ void TForm1::NP_input()
 	scLabel_architekt->Visible=false;
 	scGPSwitch_rezim->Visible=false;
 	scLabel_klient->Visible=false;
+	scGPGlyphButton_PLAY->Visible=true;
 	//vpravo
 	scGPGlyphButton_zpravy_ikona->Visible=false;
 	Layout->Visible=false;
@@ -6948,16 +6949,6 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 
 		//Akce=MEASURE;
-
-//		RO-=(1.5*Zoom/m2px)/20.0;
-//		REFRESH();
-//		scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
-//		Timer1->Enabled=!Timer1->Enabled;
-//		scGPSwitch_meritko->State=!Timer1->Enabled;
-//		d.v.PP.raster.show=!Timer1->Enabled;
-
-
-
 }
 //---------------------------------------------------------------------------
 
@@ -7809,6 +7800,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scLabel_klient->Visible=true;
 		scGPSwitch_rezim->Visible=true;
 		scLabel_architekt->Visible=true;
+		scGPGlyphButton_PLAY->Visible=false;
 		//vpravo
 		Nahled->Visible=false;
 		Simulace->Visible=true;
@@ -8487,4 +8479,17 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
+//tlačítko na spuštění animace
+void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
+{
+		RO-=(1.5*Zoom/m2px)/20.0;
+		scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
+		Timer1->Enabled=!Timer1->Enabled;
+		scGPSwitch_meritko->State=!Timer1->Enabled;
+		d.v.PP.raster.show=!Timer1->Enabled;
+		REFRESH();
+}
+//---------------------------------------------------------------------------
+
+
 

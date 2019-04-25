@@ -304,6 +304,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_viditelnostmGrid;
 	TscGPButton *scGPButton_viditelnostKoty;
 	TscGPButton *scGPButton_posun_dalsich_elementu;
+	TscGPGlyphButton *scGPGlyphButton_PLAY;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -499,6 +500,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_viditelnostmGridClick(TObject *Sender);
 	void __fastcall scGPButton_viditelnostKotyClick(TObject *Sender);
 	void __fastcall scGPButton_posun_dalsich_elementuClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_PLAYClick(TObject *Sender);
 
 
 // User declarations
