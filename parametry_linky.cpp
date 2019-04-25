@@ -219,6 +219,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
     //rStringGridEd_tab_dopravniky->SetFocus();
+    rEditNum_takt->SetFocus();
 		zobrazOramovani=false;
 
 		if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
@@ -1063,7 +1064,59 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	}
 	if(Key==123)//F12
 	{
-   Button_save->Enabled=true;
+  // Button_save->Enabled=true;
+   //automatické vygenerování pohonù
+  for (int i = mGrid->RowCount ; i <= 4; i++) {
+
+  input_state=JOB;
+  mGrid->AddRow(true,false);
+
+	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
+	mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i-1);
+
+   getmGridWidth();
+   mGrid->Cells[1][i].Type=mGrid->EDIT;
+   mGrid->Cells[2][i].Type=mGrid->EDIT;
+   mGrid->Cells[3][i].Type=mGrid->EDIT;
+   mGrid->Cells[4][i].Type=mGrid->EDIT;
+   mGrid->Cells[5][i].Type=mGrid->EDIT;
+   mGrid->Cells[6][i].Type=mGrid->CHECK;
+   mGrid->Cells[7][i].Type=mGrid->BUTTON;
+
+   mGrid->Cells[2][i].InputNumbersOnly=true;
+   mGrid->Cells[3][i].InputNumbersOnly=true;
+   mGrid->Cells[4][i].InputNumbersOnly=true;
+   mGrid->Cells[5][i].InputNumbersOnly=true;
+
+   if(i==2){
+    mGrid->Cells[2][i].Text="0,2";
+    mGrid->Cells[3][i].Text="5";
+    mGrid->Cells[4][i].Text="0,5";
+    mGrid->Cells[5][i].Text="250";
+    }
+
+    if(i>=3)
+    {
+    mGrid->Cells[2][i].Text=mGrid->Cells[2][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[3][i].Text=mGrid->Cells[3][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[4][i].Text=mGrid->Cells[4][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[5][i].Text=mGrid->Cells[5][i-1].Text * AnsiString(i-1);
+    }
+
+   mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+
+  mGrid->Refresh();
+  mGrid->getCheck(6,i)->Enabled=false;
+  mGrid->getCheck(6,i)->ShowHint=true; mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
+  getDeleteButtonSettings(i);
+  getPrirazeneObjDesign(i);
+  setADD_ButtonPosition();
+  setFormHeight();
+  //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
+  vykresli_obdelnik_vpravo();
+
+  }
+  input_state=NOTHING;
 	}
 }
 //---------------------------------------------------------------------------
@@ -2246,8 +2299,59 @@ void TForm_parametry_linky::getmGridColors()
 
   void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
   {
-   mGrid->Refresh();
-   mGrid->getEdit(0,3)->Visible=false;
+  //automatické vygenerování pohonù
+  for (int i = mGrid->RowCount ; i <= 4; i++) {
+
+  input_state=JOB;
+  mGrid->AddRow(true,false);
+
+	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
+	mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i-1);
+
+   getmGridWidth();
+   mGrid->Cells[1][i].Type=mGrid->EDIT;
+   mGrid->Cells[2][i].Type=mGrid->EDIT;
+   mGrid->Cells[3][i].Type=mGrid->EDIT;
+   mGrid->Cells[4][i].Type=mGrid->EDIT;
+   mGrid->Cells[5][i].Type=mGrid->EDIT;
+   mGrid->Cells[6][i].Type=mGrid->CHECK;
+   mGrid->Cells[7][i].Type=mGrid->BUTTON;
+
+   mGrid->Cells[2][i].InputNumbersOnly=true;
+   mGrid->Cells[3][i].InputNumbersOnly=true;
+   mGrid->Cells[4][i].InputNumbersOnly=true;
+   mGrid->Cells[5][i].InputNumbersOnly=true;
+
+   if(i==2){
+    mGrid->Cells[2][i].Text="0,2";
+    mGrid->Cells[3][i].Text="5";
+    mGrid->Cells[4][i].Text="0,5";
+    mGrid->Cells[5][i].Text="250";
+    }
+
+    if(i>=3)
+    {
+    mGrid->Cells[2][i].Text=mGrid->Cells[2][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[3][i].Text=mGrid->Cells[3][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[4][i].Text=mGrid->Cells[4][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[5][i].Text=mGrid->Cells[5][i-1].Text * AnsiString(i-1);
+    }
+
+   mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+
+  mGrid->Refresh();
+  mGrid->getCheck(6,i)->Enabled=false;
+  mGrid->getCheck(6,i)->ShowHint=true; mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
+  getDeleteButtonSettings(i);
+  getPrirazeneObjDesign(i);
+  setADD_ButtonPosition();
+  setFormHeight();
+  //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
+  vykresli_obdelnik_vpravo();
+
+  }
+  input_state=NOTHING;
+
   }
 //---------------------------------------------------------------------------
 

@@ -4164,6 +4164,16 @@ object Form_parametry_linky: TForm_parametry_linky
     ListBoxOptions.FrameScaleWidth = False
     MouseWheelSupport = True
   end
+  object Button1: TButton
+    Left = 137
+    Top = 294
+    Width = 88
+    Height = 25
+    Caption = 'Add pohon - test'
+    TabOrder = 29
+    Visible = False
+    OnClick = Button1Click
+  end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
     HintFont.Color = clActiveCaption
