@@ -3491,7 +3491,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.HotColor = 10114859
     Options.PressedColor = 10114859
     Options.FocusedColor = clRed
-    Options.DisabledColor = cl3DDkShadow
+    Options.DisabledColor = clSilver
     Options.NormalColor2 = clNone
     Options.HotColor2 = clNone
     Options.PressedColor2 = clNone
