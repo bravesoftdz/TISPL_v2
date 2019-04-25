@@ -156,6 +156,10 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			{
 				input_state=COMBO;
 				F->tab_pohon_COMBO(1);//pøiøazení pohonu
+				F->aktualizace_ComboPohon();
+				if(F->PmG->getCombo(0,0)->ItemIndex!=0)
+					aktualizace_tab_elementu();
+				else aktualizace_tab_elementu_pOdebran();
 			}break;
 			case 1://aktuální rychlost, aRD
 			{
@@ -209,7 +213,7 @@ void TFormX::zmena_aRD ()
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->pom_temp->pohon->Rx,3);
 	}
 	//propoèty v tabulkách elementù
-	aktualizace_tab_elementu();
+	aktualizace_tab_elementu();validace();
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rozteèe
@@ -232,15 +236,10 @@ void TFormX::zmena_R ()
 void TFormX::zmena_Rx ()
 {
   //pøepoèet hodnot v tabulce pohonu
-	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
+	if(F->PmG->RowCount>3)//kontinuální režim
 	{
-		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
-		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
+    F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
 		F->PmG->Cells[1][3].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
-	}
-	else//pro tabulku v kontinuálním režimu
-	{
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
 		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
 	}
@@ -310,6 +309,54 @@ void TFormX::aktualizace_tab_elementu ()
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
+//Naplní hodnoty které závisí na pohonu 0
+void TFormX::aktualizace_tab_elementu_pOdebran ()
+{
+	Cvektory::TElement *E=F->pom_temp->elementy;
+	while(E!=NULL)
+	{
+		if(E->n>0)
+		{
+			switch(E->eID)
+			{
+				case 0:break;//stop stanice
+				case 1://robor kontinuální
+				{
+					E->mGrid->Cells[1][1].Text=0;
+				}
+				break;
+				case 2://robot se stop stanicí
+				{
+					E->mGrid->Cells[1][3].Text=0;
+					E->mGrid->Cells[1][2].Text=0;
+				}
+				break;
+				case 3://robot s pasivní otoèí
+				{
+					E->mGrid->Cells[1][1].Text=0;
+					E->mGrid->Cells[1][3].Text=0;
+					E->mGrid->Cells[1][5].Text=0;
+				}
+				break;
+				case 4://robot s aktivní otoèí
+				{
+					E->mGrid->Cells[1][5].Text=0;
+					E->mGrid->Cells[1][4].Text=0;
+				}break;
+ 				case 5://otoè pasivní
+				{
+					E->mGrid->Cells[1][2].Text=0;
+				}break;
+				case 6://otoè aktivní
+				{
+					E->mGrid->Cells[1][2].Text=0;
+				}break;
+			}
+		}
+		E=E->dalsi;
+	}
+	E=NULL; delete E;
+}
 //highlightovaní buòìk tabulky pohonu
 void TFormX::highlight_tab_pohonu(int Row)
 {
@@ -407,6 +454,46 @@ void TFormX::unhighlight_tabulky()
 	}
 }
 //---------------------------------------------------------------------------
-
+//validace rychlosti pøi její zmìnì
+void TFormX::validace ()
+{
+	bool mimo_rozmezi=false;;
+	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
+	F->TIP="";
+	//kontrola zda je zadaná hodnota v rozmezí
+	if(F->m.between(F->pom_temp->pohon->aRD,F->pom_temp->pohon->rychlost_od,F->pom_temp->pohon->rychlost_do)) mimo_rozmezi=false;
+	else mimo_rozmezi=true;
+	// nutné ošetøení pro období zadávání/psaní
+	if (F->pom_temp->pohon->aRD > 0)
+	{
+    //výpoèet doporuèené rychosti
+		double dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->pom_temp->rotace,F->pom_temp->pohon->roztec,F->d.v.PP.TT,F->pom_temp->pohon->aRD);
+		//zadaná rychlost je mimo rozsah
+		if(mimo_rozmezi)
+		{
+			F->TIP="Rychlost neodpovídá rozmezí!";
+		}
+//		if(F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi)
+//		{
+//			F->TIP="Rychlost neodpovídá rozmezí!";
+//		}
+		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
+		if(Combo->ItemIndex!=0 && F->pom_temp->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
+		{
+				F->TIP="Zadejte doporuèenou rychlost pohonu: "+AnsiString(F->outaRD(dopRD));
+		}
+//		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi)
+//		{
+//			F->TIP="Rychlost neodpovídá rozmezí!";
+//		}
+    //vše je vpoøádku
+		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
+		{
+			F->TIP="OK";
+		}
+	}
+	else F->TIP="Neplatná hodnota rychlosti pohonu!";
+}
+//---------------------------------------------------------------------------
 
 

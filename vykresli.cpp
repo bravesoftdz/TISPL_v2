@@ -187,18 +187,22 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 	//vykreslení elementů z náhledu/tedy z provizorního spojáku, to kvůli aktuálnosti zobrazení
 	if(F->pom_temp!=NULL)//pro náhled
 	{
-		////prozatim vykreslení POHONU
-		short Trend=m.Rt90(trend(F->pom));
-		if(Trend==0 || Trend==180) //svisle
+		////vykreslení prozatimní osy POHONU
+		short Trend=short (F->pom_temp->elementy->geo.rotace);
+		if(Trend==90 || Trend==270)//vodorovně
 		{
-			long X=(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0)*3;
+			long Y=m.L2Py(F->pom_temp->elementy->Y);//long Y=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0*3;//provizorní původní linie uprostřed
+			line(canv,0,Y,F->ClientWidth*3,Y);
+			if(F->pom_temp->pohon!=NULL)vykresli_retez(canv,F->pom_temp,0,F->pom_temp->elementy->Y,F->Poffset,true);
+		}
+		else//svisle
+		{
+			long X=m.L2Px(F->pom_temp->elementy->X);//long X=(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0)*3;//provizorní linie uprostřed
 			line(canv,X,F->scLabel_titulek->Height*3,X,F->scGPPanel_statusbar->Top*3);
 		}
-		else//vodorovně
-		{
-			long Y=(F->ClientHeight-F->scGPPanel_statusbar->Height-F->scLabel_titulek->Height)/2.0*3;
-			line(canv,0,Y,F->ClientWidth*3,Y);
-		}
+
+		//vykreslení g_elementu
+		//
 
 		////vykreslení obrysu OBJEKTU - kabiny
 		///pero+výplň
@@ -247,7 +251,6 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			while(E!=NULL)
 			{
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->OTOC_delka,E->LO2);
-				 //zde bude ještě vykreslení g_elementu
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
 				 E=E->dalsi;//posun na další element
@@ -2140,7 +2143,8 @@ void Cvykresli::vykresli_layout(TCanvas *canv)
 	{
 		//vykresli_objekt(canv,O,0,50);
 		//vykresli_objekt(bmp_in->Canvas,pom,F->m.P2Lx(Ox/F->m2px),F->m.P2Ly(F->m.round((scGPPanel_hlavicka->Height+Height)*3/2.0)),Poffset,Timer_animace->Enabled);
-		O=O->dalsi;	}	O=NULL;delete O;}////------------------------------------------------------------------------------------------------------------------------------------------------------
+		O=O->dalsi;	}	O=NULL;delete O;}////------------------------------------------------------------------------------------------------------------------------------------------------------//////------------------------------------------------------------------------------------------------------------------------------------------------------
+//metoda používaná ve starém náhledu objektu - možno odstranit
 //zajistí vykreslení náhledu objektu, XY -umístění L začátek (střed dopravníku) objektu v m, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
 //za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
 unsigned int Cvykresli::vykresli_objekt(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)
@@ -2264,38 +2268,125 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP
 	//transparentní pozadí (nejenom textu ale ji podvozku a jigu) ALTERNATIVA pro font:SetBkMode(canv->Handle,TRANSPARENT);
 	canv->Brush->Style=bsClear;
 
-	////zvýraznění animovaného dle CT
-	if(ID==ceil(Form_objekt_nahled->pom->pozice) && Form_objekt_nahled->Timer_animace->Enabled)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
-	{
-		canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
-		canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//podvozek
-		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));//jig
-		canv->Pen->Width=1/3.0*F->Zoom;
-	}
+//	////zvýraznění animovaného dle CT - zlobilo při provizorním zobrazování v náhledu, proto provizorně odstaveno, F->MOD!=F->NAHLED nepomohlo, divné
+//	if(ID==ceil(Form_objekt_nahled->pom->pozice) && Form_objekt_nahled->Timer_animace->Enabled && F->MOD!=F->NAHLED)//v případě animace zvýrazní pozici, pro kterou se čítá technologický čas
+//	{
+//		canv->Pen->Width=3/3.0*F->Zoom;canv->Pen->Color=clWebOrange;//nebo lze použít: clYellow;
+//		canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//podvozek
+//		canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));//jig
+//		canv->Pen->Width=1/3.0*F->Zoom;
+//	}
 
 	////podvozek
 	canv->Pen->Color=clChassis;
-	canv->Rectangle(m.L2Px(X-dP/2),m.L2Py(Y+sP),m.L2Px(X+dP/2),m.L2Py(Y-sP));//vykreslení pozice podvozku
+	canv->Rectangle(m.L2Px(X-dP/2.0),m.L2Py(Y+sP),m.L2Px(X+dP/2.0),m.L2Py(Y-sP));//vykreslení pozice podvozku
 
 	////jig
 	canv->Pen->Color=clJig;
-	canv->Rectangle(m.L2Px(X-dJ/2),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2),m.L2Py(Y-sJ/2.0));
+	canv->Rectangle(m.L2Px(X-dJ/2.0),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2.0),m.L2Py(Y-sJ/2.0));
 
-	////text - ID vozíku
-	//framing
-	if(Form1->Zoom>10)//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost
-	{
-		canv->Font->Color=clWhite;
-		canv->Font->Style = TFontStyles()<<fsBold;//vypnutí tučného písma
-		canv->Font->Size=Form1->Zoom*(4+1); if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*(5+1);
-		canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
-	}
-	//samotný text
-	if(Form1->Zoom<=10)canv->Brush->Style=bsSolid;//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost//bez bílého pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
-	canv->Font->Color=clJig;
-	canv->Font->Style = TFontStyles();//vypnutí tučného písma
-	canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
-	canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
+//	////text - ID vozíku
+//	//framing
+//	if(Form1->Zoom>10)//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost
+//	{
+//		canv->Font->Color=clWhite;
+//		canv->Font->Style = TFontStyles()<<fsBold;//vypnutí tučného písma
+//		canv->Font->Size=Form1->Zoom*(4+1); if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*(5+1);
+//		canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
+//	}
+//	//samotný text
+//	if(Form1->Zoom<=10)canv->Brush->Style=bsSolid;//pokud je více přiblížený objekt, tak se používá pouze framing, jinak bílé pozadí, pro lepší přehlednost//bez bílého pozadí toto zrušit/zakomentovat pokud bych chtěl bílý framing, ten jsem dělal pomocí tučného písma a fontu o 1pt větší
+//	canv->Font->Color=clJig;
+//	canv->Font->Style = TFontStyles();//vypnutí tučného písma
+//	canv->Font->Size=Form1->Zoom*4; if(Form1->antialiasing)canv->Font->Size=Form1->Zoom*5;
+//	canv->TextOutW(m.L2Px(X)-canv->TextWidth(ID)/2.0,m.L2Py(Y+sJ/2.0)-canv->TextHeight(ID)/2.0,ID);//indexace pozice v rámci objektu
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//zajistí vykreslení řetězz, XY -umístění L začátek (střed dopravníku) objektu v metrech, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu, za zmínění stojí lokální proměnná této metody KR, což je kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
+//za zmínění stojí lokální proměnná KR, což je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, DV - konec,
+void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,double Y,double Poffset,bool animace)
+{
+	////vychozí geometrické proměnné
+	//řetěz
+	double DD=100;O->delka_dopravniku;//délka objektu v metrech
+	//double M=O->mezera;//mezera
+	double R=O->pohon->roztec;//rozteč palců řetězu
+	double Rz=O->pohon->Rz;//rozestup
+	int Rx=m.round(O->pohon->Rx);//může být zaokrouhleno, protože musí vycházet celé číslo
+	short Rezim=O->rezim;//podle eID prvního použitého robota je nastaven ve stejnojmenné metodě režim objektu
+	double KR=0;//kalibrace řetězu vůči podvozku např. 0 - střed, -DP/2 - začátek, DP/2 - konec, či libovolný v m od začátku podvozku
+	TPointD S;S.x=X;S.y=Y;//Start
+	TPointD K;K.x=X+DD;K.y=Y;//Konec
+	//vozíková data - v případě nevykreslení vozíku zde monžno odstranit
+	double dJ=m.UDJ(v.PP.delka_jig,v.PP.sirka_jig,O->rotace);//délka jigu
+	double sJ=m.UDJ(v.PP.sirka_jig,v.PP.delka_jig,O->rotace);//šířka jigu a tím pádem i minimální kabiny
+	double dP=v.PP.delka_podvozek;
+	double DV=dJ;if(dP>dJ)DV=dP;
+																	 //ShowMessage("R="+AnsiString(R)+"Rz="+AnsiString(Rz)+"Rx="+AnsiString(Rx));
+	////obrys objektu
+	//pero+výplň
+	canv->Brush->Color=clWhite;
+	canv->Brush->Style=bsSolid;
+//	canv->Pen->Color=clRed;        //pův. 0.5 bez duble linie
+//	canv->Pen->Width=Form1->Zoom*0.2;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.1;
+//	//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
+//	short Ov=Form1->Zoom*0.4;
+//	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+sJ/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-sJ/2)+Ov);//dvojitý rám - vnější
+//	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+sJ/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-sJ/2)-Ov);//dvojitý rám - vnitřní
+//	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jednoduché orámování
+
+	////vykreslení řetězu a palců řetězu
+//	if(O->pohon!=NULL)//řetez - je-li přiřazen pohon
+//	{
+
+    //vykreslí samotný pohon - spojnici
+		linie(canv,m.L2Px(X),m.L2Py(Y),m.L2Px(K.x),m.L2Py(K.y),F->Zoom*0.5,clBlack);
+
+		//palce, pokud je zadaná rozteč tak se vykreslí
+		if(R>0)
+		{                     F->Memo3->Lines->Add(Poffset);
+													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
+			double startR=-(Rz)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+			if(animace)startR=-(Rz)*20/**ceil(O->pozice)*/+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
+			unsigned int j=0;      //+R pouze grafická záležitost, aby na výstupu neořezávalo palce
+			for(double i=startR;i<=DD+R;i+=R)
+			{     //již využívám přemaskování bílým obdélníkem, nakonci této metody, zajišťuje lepší grafický efekt
+				if(/*i>=0 && */Rx>0 || Rezim!=1)//zobrazí se pouze ty, které jsou v objektu (řeší pro začátek, konec řeší podmínka, která je součástí for cyklu), druhá část podmínky je pouze ošetření, což paralelně řeší i výjimka
+				{
+					try//ošetření situaci při real-time nastavování parametrů, tak v situacích, kdy nebyly, ještě hodnoty od uživatele dopsány a přepočítány, Rx bylo 0
+					{
+						if(Rezim==1)//pro kontinuální zobrazení
+						{
+							if(j%Rx==0)//palec vyšel do rozestupu, jedná se o aktivní palec unášející vozík
+							{
+								vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);
+								vykresli_vozik(canv,j,X+i,Y,dP,dJ,sJ);//možná provizorně
+							}
+							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
+						}
+						else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//u S&G jakýkoliv
+					}
+					catch(...){;}
+				}
+				j++;//musí být mimo
+			}
+		}
+//	}
+
+
+	////jednotlivé pozice/vozíky
+//	unsigned int RET;
+//	if(!animace)RET=vykresli_pozice(canv,ceil(O->pozice)/*bylo pro číslování od jedné: 1*/,S,K,DD,dJ,sJ,dP,M,Poffset);
+//	else RET=vykresli_pozice(canv,ceil(O->pozice)*2/*bylo pro číslování od jedné: -O->pozice+1*/,S,K,DD,dJ,sJ,dP,M,-(M+DV)*ceil(O->pozice)+Poffset);
+
+	////maskování vstupu a výstup, řetězu, pokud budu chtít,
+	//aby byly vidět vstupující a vystupující vozíky musím přesunout před "////jednotlivé pozice/vozíky"  ,takto nyní nejsou vidět
+//	canv->Brush->Color=clWhite;
+//	canv->Brush->Style=bsSolid;      //+1 pouze rozšíření přes indexaci vozíků
+//	canv->FillRect(TRect(0,m.L2Py(Y+sJ/2+1)-Ov,m.L2Px(X)-Ov-Ov/2,m.L2Py(K.y-sJ/2)+Ov));//nalevo
+//	canv->FillRect(TRect(m.L2Px(K.x)+Ov+Ov/2,m.L2Py(Y+sJ/2+1)-Ov,Form_objekt_nahled->Width*3,m.L2Py(K.y-sJ/2)+Ov));//napravo
+
+//	return RET;//vrátí index
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2891,7 +2982,6 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		}
 	}
 
-
 	//pokud je otoč aktivní tj. se stopkou
 	if(eID==6)vykresli_stopku(canv,X,Y,"","",typ,rotace,stav);
 
@@ -3005,7 +3095,6 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 			}
 		}break;
 	}
-
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
@@ -3156,7 +3245,7 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
-	if(F->Timer1->Enabled==false)//timer animace
+	if(F->Timer_animace->Enabled==false)//timer animace
 	{
 		//tabulky elementů
 		if(F->pom_temp->elementy!=NULL)
@@ -3206,8 +3295,6 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)
 {
-	//float O=DoSkRB*2;//odsazení sipky elementu obecne
-
 	double O=F->pom_temp->koty_elementu_offset;
 
 	//highlight
@@ -3219,21 +3306,22 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvekt
 		if((F->JID+10)*(-1)==(long)Element_do->n ||  (10<F->JID && F->JID<100))highlight=1;//když se bude editovat hodnota kóty, nebo se bude kóta posouvat, kvůli následnému zaokrouhlování musí bohužel zůstat tady
 	}
 
-	//samotné vykreslení kóty -nehotové
+	//samotné vykreslení kóty -nehotové   využít makro d.Rxy
 	//if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
 	//else vykresli_kotu(canv,Element_od->X,Element_od->Y,Element_do->X,Element_do->Y,Element_do,O,highlight);//mezi elementy
 
-	//pouze pro rychlé zobrazení
-	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
-	else vykresli_kotu(canv,Element_od->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//mezi elementy
-
-	//nový fix
+	//nový fix    využít makro d.Rxy
 //	double C1=0;if(Element_od!=NULL)if(1<=Element_od->eID && Element_od->eID<=4)C1=DoSkRB;bude to chtít pořešit rotaci a dva offsety od a do
 //	double C2=0;if(Element_do!=NULL)if(1<=Element_do->eID && Element_od->eID<=4)C2=DoSkRB;
 //	if(Element_od->n==0)
 //	vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,Element_do->Y,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
 //	else
 //	vykresli_kotu(canv,Element_od->X,Element_od->Y-C1,Element_do->X,Element_do->Y-C2,Element_do,O-C2,highlight);//mezi elementy
+
+	//pouze pro rychlé zobrazení - provizorní řešení pro levopravou vodorovnou kabinu
+	if(Element_od->n==0) vykresli_kotu(canv,F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//od kabiny k prvnímu elementu + dodělat
+	else vykresli_kotu(canv,Element_od->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do->X,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,Element_do,O,highlight);//mezi elementy
+
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
@@ -3289,7 +3377,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//záměna (podsunutí editovaného) textu v případě EDITACE právě touto metodou vykreslované kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry) (protože se cyklem vykreslují všechny kóty i při platném JID)
 	if(F->editace_textu)
 	{
-		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
+		if(aktElement==NULL || F->pom_element_temp==NULL)//předpokládá se, že je to kóta kabiny, druhá čast podmínky dodaná dodatečně, spíše empirickým úsudkem (možné funkční mezery...)
 		{
 			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro vodorovnou kótu
 			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro svislou kótu

@@ -290,7 +290,6 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_adjustace;
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
   TscExPanel *scExPanel_podklad;
-	TTimer *Timer1;
 	TMemo *Memo3;
   TTimer *Timer2;
 	TscGPPanel *scGPPanel_bottomtoolbar;
@@ -304,6 +303,7 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_viditelnostmGrid;
 	TscGPButton *scGPButton_viditelnostKoty;
 	TscGPButton *scGPButton_posun_dalsich_elementu;
+	TscGPGlyphButton *scGPGlyphButton_PLAY;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -489,7 +489,6 @@ __published:	// IDE-managed Components
   void __fastcall DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
           TPoint &MousePos, bool &Handled);
   void __fastcall Button_testClick(TObject *Sender);
-	void __fastcall Timer1Timer(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
   void __fastcall Timer2Timer(TObject *Sender);
@@ -499,6 +498,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_viditelnostmGridClick(TObject *Sender);
 	void __fastcall scGPButton_viditelnostKotyClick(TObject *Sender);
 	void __fastcall scGPButton_posun_dalsich_elementuClick(TObject *Sender);
+	void __fastcall scGPGlyphButton_PLAYClick(TObject *Sender);
 
 
 // User declarations
@@ -515,8 +515,6 @@ private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
-
-  //toto je na co?:TWndMethod PreviousWndProc;
 
 	////instance
 	Graphics::TBitmap *Pan_bmp;
@@ -676,6 +674,7 @@ public:		// User declarations
 	bool posun_dalsich_elementu;//indikuje zda je požadován posun dalších elementù
 	bool mazani;
 	bool zobrazeni_tabulek;
+	double Poffset;
 
 	//metody
 	void NP();//volá form na nastevení parametrù, døívìjší nastavparametry1click
