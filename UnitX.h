@@ -17,6 +17,7 @@ private:	// User declarations
 	void zmena_R ();
 	void zmena_Rx ();
 	void aktualizace_tab_elementu ();
+	void aktualizace_tab_elementu_pOdebran ();
 	void highlight_tab_pohonu(int Row);
 	void highlight_tab_elementu();
 	void validace ();

@@ -1763,6 +1763,7 @@ void __fastcall TForm1::TimerMouseWheelTimer(TObject *Sender)
 void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
+	//if(MOD==NAHLED) Konec->SetFocus();
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -1799,6 +1800,7 @@ void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPo
 void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
+	//if(MOD==NAHLED) Konec->SetFocus();
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -3703,8 +3705,7 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][3].Text="Rozestup "+Rz;
 		pom_temp->pohon->Rz=m.Rz(pom_temp->pohon->aRD);
 		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
-		//PmG->Cells[1][3].Type=PmG->DRAW;
-		PmG->Cells[0][4].Text="RX";
+		PmG->Cells[0][4].Text="Rx";
 		PmG->Cells[1][4].Type=PmG->EDIT;
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
 		PmG->Cells[1][4].Text=pom_temp->pohon->Rx;
@@ -3808,7 +3809,8 @@ void TForm1::aktualizace_ComboPohon ()
 	{
 		//vytvoření položky nepřiřazen
 		t=Combo->Items->Add(/*tady nelze parametr*/);
-		t->Caption="Vyberte pohon";
+		if(Combo->ItemIndex==0) t->Caption="Vyberte pohon";
+		else t->Caption="Pohon nepřiřazen";
 		////příprava vypisovaných jednotek
 		AnsiString Tcas="min",Td="m";
 		if(F->aRDunit==F->SEC)
@@ -3959,7 +3961,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].Text="max WT "+cas;
 			E->mGrid->Cells[1][3].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
-			E->mGrid->Cells[0][2].Text="RT"+cas;
+			E->mGrid->Cells[0][2].Text="RT "+cas;
 			E->mGrid->Cells[1][2].Text=outPT(m.RT(E->PT1,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
 			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][2].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -4015,7 +4017,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][5].Text="WT "+cas;
 			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][5].Text));
-			E->mGrid->Cells[0][4].Text="RT"+cas;
+			E->mGrid->Cells[0][4].Text="RT "+cas;
 			E->mGrid->Cells[1][4].Text=outPT(m.RT(E->PT1+E->PT2,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
 			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
@@ -4109,7 +4111,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="RT"+cas;E->mGrid->Cells[1][2].Text=outPT(E->RT);
+			E->mGrid->Cells[0][2].Text="RT "+cas;E->mGrid->Cells[1][2].Text=outPT(E->RT);
 			E->mGrid->Cells[0][3].Text="max WT "+cas;E->mGrid->Cells[1][3].Text=outPT(E->WT);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -4159,7 +4161,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
 			E->mGrid->Cells[0][3].Text="PT2 "+cas;
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
-			E->mGrid->Cells[0][4].Text="RT"+cas;
+			E->mGrid->Cells[0][4].Text="RT "+cas;
 			E->mGrid->Cells[1][4].Text=outPT(E->RT);
 			E->mGrid->Cells[0][5].Text="WT "+cas;
 			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(E->WT);
@@ -4839,6 +4841,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftS
 					TPoint &MousePos, bool &Handled)
 {
 	//SB("down");
+	//if(MOD==NAHLED) Konec->SetFocus();
 	FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -4847,6 +4850,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftSta
 					TPoint &MousePos, bool &Handled)
 {
 	//SB("up");
+	//if(MOD==NAHLED) Konec->SetFocus();
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
