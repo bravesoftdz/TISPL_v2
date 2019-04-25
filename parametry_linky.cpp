@@ -26,6 +26,7 @@
 #pragma link "scModernControls"
 #pragma link "scGPExtControls"
 #pragma link "rHintWindow"
+#pragma link "scGPImages"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -1066,6 +1067,8 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	{
   // Button_save->Enabled=true;
    //automatické vygenerování pohonù
+   if(DEBUG)
+   {
   for (int i = mGrid->RowCount ; i <= 4; i++) {
 
   input_state=JOB;
@@ -1088,7 +1091,8 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
    mGrid->Cells[4][i].InputNumbersOnly=true;
    mGrid->Cells[5][i].InputNumbersOnly=true;
 
-   if(i==2){
+   if(i==2)
+   {
     mGrid->Cells[2][i].Text="0,2";
     mGrid->Cells[3][i].Text="5";
     mGrid->Cells[4][i].Text="0,5";
@@ -1104,8 +1108,8 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
     }
 
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+   mGrid->Update();
 
-  mGrid->Refresh();
   mGrid->getCheck(6,i)->Enabled=false;
   mGrid->getCheck(6,i)->ShowHint=true; mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
   getDeleteButtonSettings(i);
@@ -1116,8 +1120,10 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
   vykresli_obdelnik_vpravo();
 
   }
+  mGrid->Refresh();
   input_state=NOTHING;
 	}
+  }
 }
 //---------------------------------------------------------------------------
 
@@ -2376,3 +2382,4 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
    	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
     Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
 }
+
