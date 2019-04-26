@@ -69,7 +69,7 @@ class TmGrid
 		TFont *Font;//vlastnosti fontu
 		TRect NoteArea;//souøadnice oblasti, kde se poznámka nachází, ukládá citelnou oblast poznámky
 		UnicodeString Text;//samotný text poznámky
-	};TNote *Note;
+	};TNote Note;
 
 	//metody
 	TmGrid(TForm *Owner);//konstruktor

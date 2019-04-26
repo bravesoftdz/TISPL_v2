@@ -102,13 +102,12 @@ TmGrid::TmGrid(TForm *Owner)
 	*DefaultCell.RightBorder=defBorder;
 
 	//poznámka - výchozí nastavení
-	Note=new TNote;
-	Note->Font=new TFont();
-	*Note->Font=*DefaultCell.Font;
-	Note->Font->Size=11;
-	Note->Font->Color=clRed;
-	Note->NoteArea=TRect(-1,-1,-1,-1);
-	if(ID!=9999)Note->Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
+	Note.Font=new TFont();
+	*Note.Font=*DefaultCell.Font;
+	Note.Font->Size=11;
+	Note.Font->Color=clRed;
+	Note.NoteArea=TRect(-1,-1,-1,-1);
+	if(ID!=9999)Note.Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
 }
 //---------------------------------------------------------------------------
 //destruktor, probíhá pøi ukonèování programu, tj. zvážit zda není pozdì
@@ -242,7 +241,6 @@ void TmGrid::Delete()
 		//uvolnìní pamìti
 		DeleteTable();
 		DeleteCell(DefaultCell);
-		Note=NULL; delete Note;
 		mGrid=NULL; delete mGrid;
 	}
 	catch(...)
@@ -397,27 +395,27 @@ void TmGrid::Draw(TCanvas *C)
 	}
 
 	////POZNÁMKA POD ÈAROU -TmGrid - poznámka "pod èarou" resp. pod tabulkou, pøístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šíøku tabulky pokud se text nevejde zalomí na další øádek (dle poslední mezery na øádku), max zobrazí dva øádky, výchozí barva èervená a 11pt velikost písma
-	if(Note->Text!="" && ColCount>0 && RowCount>0)
+	if(Note.Text!="" && ColCount>0 && RowCount>0)
 	{
-		C->Font=Note->Font;C->Font->Size*=Zoom_b;
+		C->Font=Note.Font;C->Font->Size*=Zoom_b;
 		int W=(Columns[ColCount-1].Left+Columns[ColCount-1].Width)*Zoom_b;
-		int Wt=C->TextWidth(Note->Text);
+		int Wt=C->TextWidth(Note.Text);
 		if(W<Wt)//pokud je text poznámky delší, øeší ještì zalamování textu
 		{
-			int L=Note->Text.Length();                                   //zajistí odøádkování po poslední mezeøe na daném øádku
-			AnsiString T=Note->Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
+			int L=Note.Text.Length();                                   //zajistí odøádkování po poslední mezeøe na daném øádku
+			AnsiString T=Note.Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
 			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,T);//nelze používát Height èi getHeight
-			AnsiString T1=Note->Text.SubString(T.Length()+1,L).TrimLeft();
+			AnsiString T1=Note.Text.SubString(T.Length()+1,L).TrimLeft();
 			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T),T1);//nelze používát Height èi getHeight
-			Note->NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T)+C->TextHeight(T1));
+			Note.NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T)+C->TextHeight(T1));
 		}
 		else//jednoøádkový text
 		{
-			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,Note->Text);//nelze používát Height èi getHeight
-			Note->NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note->Text));
+			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,Note.Text);//nelze používát Height èi getHeight
+			Note.NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note.Text));
 		}
 	}
-	else Note->NoteArea=TRect(-1,-1,-1,-1);
+	else Note.NoteArea=TRect(-1,-1,-1,-1);
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení jen gridu
@@ -1220,12 +1218,11 @@ unsigned long TmGrid::getHeight()
 {
 	//pokud je aktivní poznámka pod èarou
 	short Offset_Note=0;
-	if(Note->Text!="" && ColCount>0 && RowCount>0)
+	if(Note.Text!="" && ColCount>0 && RowCount>0)
 	{
-		short Zoom_b=1; if(AntiAliasing_text)Zoom_b=3;
-		Form->Canvas->Font->Size=Note->Font->Size;
-		if(Form->Canvas->TextWidth(Note->Text)>getWidth())Offset_Note=2;else Offset_Note=1; //pokud je text delší musí se zobrazit 2 øádky, Offset_Note - jenom "zneužívám"
-		Offset_Note=Form->Canvas->TextHeight(Note->Text)*Offset_Note+Border.Width;
+		Form->Canvas->Font->Size=Note.Font->Size;
+		if(Form->Canvas->TextWidth(Note.Text)>getWidth())Offset_Note=2;else Offset_Note=1; //pokud je text delší musí se zobrazit 2 øádky, Offset_Note - jenom "zneužívám"
+		Offset_Note=Form->Canvas->TextHeight(Note.Text)*Offset_Note+Border.Width;
 	}
 	//samotné vrácení výšky tabulky
 	return Rows[RowCount-1].Top+Rows[RowCount-1].Height+Offset_Note;
