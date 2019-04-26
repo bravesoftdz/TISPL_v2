@@ -100,6 +100,15 @@ TmGrid::TmGrid(TForm *Owner)
 	*DefaultCell.BottomBorder=defBorder;
 	*DefaultCell.LeftBorder=defBorder;
 	*DefaultCell.RightBorder=defBorder;
+
+	//poznámka - výchozí nastavení
+	Note=new TNote;
+	Note->Font=new TFont();
+	*Note->Font=*DefaultCell.Font;
+	Note->Font->Size=11;
+	Note->Font->Color=clRed;
+	Note->NoteArea=TRect(-1,-1,-1,-1);
+	if(ID!=9999)Note->Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
 }
 //---------------------------------------------------------------------------
 //destruktor, probíhá pøi ukonèování programu, tj. zvážit zda není pozdì
@@ -233,6 +242,7 @@ void TmGrid::Delete()
 		//uvolnìní pamìti
 		DeleteTable();
 		DeleteCell(DefaultCell);
+		Note=NULL; delete Note;
 		mGrid=NULL; delete mGrid;
 	}
 	catch(...)
@@ -360,11 +370,11 @@ void TmGrid::Draw(TCanvas *C)
 			////oblast a umístìní buòky
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpoèet horního okraje buòky dle buòky pøedchozí
 			R.Top			=	Top+Rows[Y].Top*Zoom_g;
-			Rt.Top		=	Rows[Y].Top*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
+			Rt.Top		=	Rows[Y].Top*Zoom_b;//zde není Top celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
 			Rb.Top		=	Rows[Y].Top*Zoom_b;
 			Rc.Top		=	Top+Rows[Y].Top;
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_g;
-			Rt.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;//zde není Left celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
+			Rt.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;//zde není Top celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souøadnice v rámci tabulku, nikoliv absolutnì v celém formu
 			Rb.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
 			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
@@ -385,6 +395,29 @@ void TmGrid::Draw(TCanvas *C)
 			}
 		}
 	}
+
+	////POZNÁMKA POD ÈAROU -TmGrid - poznámka "pod èarou" resp. pod tabulkou, pøístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šíøku tabulky pokud se text nevejde zalomí na další øádek (dle poslední mezery na øádku), max zobrazí dva øádky, výchozí barva èervená a 11pt velikost písma
+	if(Note->Text!="" && ColCount>0 && RowCount>0)
+	{
+		C->Font=Note->Font;C->Font->Size*=Zoom_b;
+		int W=(Columns[ColCount-1].Left+Columns[ColCount-1].Width)*Zoom_b;
+		int Wt=C->TextWidth(Note->Text);
+		if(W<Wt)//pokud je text poznámky delší, øeší ještì zalamování textu
+		{
+			int L=Note->Text.Length();                                   //zajistí odøádkování po poslední mezeøe na daném øádku
+			AnsiString T=Note->Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
+			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,T);//nelze používát Height èi getHeight
+			AnsiString T1=Note->Text.SubString(T.Length()+1,L).TrimLeft();
+			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T),T1);//nelze používát Height èi getHeight
+			Note->NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T)+C->TextHeight(T1));
+		}
+		else//jednoøádkový text
+		{
+			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,Note->Text);//nelze používát Height èi getHeight
+			Note->NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note->Text));
+		}
+	}
+	else Note->NoteArea=TRect(-1,-1,-1,-1);
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení jen gridu
@@ -1185,7 +1218,17 @@ unsigned long TmGrid::getWidth()
 //vrátí celkovou výšku tabulky
 unsigned long TmGrid::getHeight()
 {
-	return Rows[RowCount-1].Top+Rows[RowCount-1].Height;
+	//pokud je aktivní poznámka pod èarou
+	short Offset_Note=0;
+	if(Note->Text!="" && ColCount>0 && RowCount>0)
+	{
+		short Zoom_b=1; if(AntiAliasing_text)Zoom_b=3;
+		Form->Canvas->Font->Size=Note->Font->Size;
+		if(Form->Canvas->TextWidth(Note->Text)>getWidth())Offset_Note=2;else Offset_Note=1; //pokud je text delší musí se zobrazit 2 øádky, Offset_Note - jenom "zneužívám"
+		Offset_Note=Form->Canvas->TextHeight(Note->Text)*Offset_Note+Border.Width;
+	}
+	//samotné vrácení výšky tabulky
+	return Rows[RowCount-1].Top+Rows[RowCount-1].Height+Offset_Note;
 }
 //---------------------------------------------------------------------------
 //vrátí šíøku a výšku textu buòky v pixelech

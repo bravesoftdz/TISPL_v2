@@ -16,8 +16,9 @@ public:
   AnsiString EP2(AnsiString Text,AnsiString StartElement, AnsiString StopElement, unsigned short int startoffset=0, unsigned short int stopoffset=0);//parsování textu mezi zadanými texty, popø. možno využít offsetu  - ELEMENT PARSER
 	AnsiString replace(AnsiString Text,AnsiString Insert,AnsiString Delete);//nahradí daný text
 	UnicodeString replace(UnicodeString Text,UnicodeString Insert,UnicodeString Delete);//nahradí daný text
-  unsigned int count(AnsiString Text,AnsiString Find);//vráti poèet výskytù daného øetìzce
-  unsigned int count(UnicodeString Text,UnicodeString Find);//vráti poèet výskytù daného øetìzce
+	unsigned int count(AnsiString Text,AnsiString Find);//vráti poèet výskytù daného øetìzce
+	unsigned int count(UnicodeString Text,UnicodeString Find);//vráti poèet výskytù daného øetìzce
+	unsigned int lastPos(UnicodeString Text,UnicodeString Find);//vrátí pozici posledního výskytu øetìzce
   AnsiString l2h(AnsiString l);//zmìní první písmeno na velké
   AnsiString delete_repeat(AnsiString Text, AnsiString Text_delete,unsigned int Repeat, unsigned short int Offset=0);//smaže vše po zadaný text X-krát
   UnicodeString delete_repeat_UTF(UnicodeString Text, UnicodeString Text_delete,unsigned int Repeat, unsigned short int Offset=0);

@@ -33,7 +33,7 @@ class TmGrid
 	{
 	 unsigned short	Height;//výška øádku
 	 long Top;//umístìní øádku v px, v rámci tabulky
-	 //není dokonèeno bool Visible;//zda bude sloupec zobrazen
+	 //není dokonèeno bool Visible;//zda bude øádek zobrazen
 	};
 
 	struct TCells//datový typ používaný pro buòky
@@ -63,6 +63,13 @@ class TmGrid
 		TPoint LinkCoordinateEnd;//kvùli uložení citelné oblasti pro link dané buòky
 		UnicodeString Text;//samotný text buòky
 	};
+
+	struct TNote//datový typ použitý pro poznámku "pod èarou" - pod èi okolo tabulky, TmGrid - poznámka "pod èarou" resp. pod tabulkou, pøístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šíøku tabulky pokud se text nevejde zalomí na další øádek (dle poslední mezery na øádku), max zobrazí dva øádky, výchozí barva èervená a 11pt velikost písma
+	{
+		TFont *Font;//vlastnosti fontu
+		TRect NoteArea;//souøadnice oblasti, kde se poznámka nachází, ukládá citelnou oblast poznámky
+		UnicodeString Text;//samotný text poznámky
+	};TNote *Note;
 
 	//metody
 	TmGrid(TForm *Owner);//konstruktor
