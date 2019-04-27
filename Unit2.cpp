@@ -37,10 +37,11 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 		unsigned long ColCount=3;//pevnı poèet slopcù
 		unsigned long RowCount=3;//dynamickı poèet øádkù, default 1 je pro 0-tı indexovı øádek
-
+		E->mG->DefaultCell.isZero->Color=clGreen;
+		E->mG->DefaultCell.isEmpty->Color=F->m.clIntensive(clRed,230);
 
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-		E->mG->Cells[0][0].Text="-5,555";E->mG->Cells[0][0].Type=E->mG->EDIT;
+		E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
 		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
 		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>";

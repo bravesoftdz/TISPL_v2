@@ -3573,6 +3573,8 @@ void TForm1::design_tab_pohon(int index)
 			PmG->DefaultCell.Font->Size=aFont->Size;
 			PmG->DefaultCell.isNegativeNumber->Name=aFont->Name;
 			PmG->DefaultCell.isNegativeNumber->Size=aFont->Size;
+			PmG->DefaultCell.isZero->Name=aFont->Name;
+			PmG->DefaultCell.isZero->Size=aFont->Size;
 			PmG->DefaultCell.isLink->Name=aFont->Name;
 			PmG->DefaultCell.isLink->Size=aFont->Size;
 			PmG->Note.Font->Name=aFont->Name;
@@ -3859,6 +3861,8 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	E->mGrid->DefaultCell.Font->Size=aFont->Size;
 	E->mGrid->DefaultCell.isNegativeNumber->Name=aFont->Name;
 	E->mGrid->DefaultCell.isNegativeNumber->Size=aFont->Size;
+	E->mGrid->DefaultCell.isZero->Name=aFont->Name;
+	E->mGrid->DefaultCell.isZero->Size=aFont->Size;
 	E->mGrid->DefaultCell.isLink->Name=aFont->Name;
 	E->mGrid->DefaultCell.isLink->Size=aFont->Size;
 	E->mGrid->Note.Font->Name=aFont->Name;
