@@ -54,16 +54,16 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.Font->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
 	DefaultCell.Font->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	DefaultCell.Font->Name="Arial";
+//	*DefaultCell.isNegativeNumber=*DefaultCell.Font;
 	DefaultCell.isNegativeNumber->Size=DefaultCell.Font->Size;
-	DefaultCell.isNegativeNumber->Color=(TColor)RGB(43,87,154);//(TColor)RGB(128,128,128);
+	DefaultCell.isNegativeNumber->Color=clRed;
 	DefaultCell.isNegativeNumber->Orientation=0;
 	DefaultCell.isNegativeNumber->Style=TFontStyles();
 	DefaultCell.isNegativeNumber->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejnì široké
 	DefaultCell.isNegativeNumber->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	DefaultCell.isNegativeNumber->Name=DefaultCell.Font->Name;
-	*DefaultCell.isNegativeNumber=*DefaultCell.Font;
 	*DefaultCell.isZero=*DefaultCell.Font;
-	*DefaultCell.isLink=*DefaultCell.Font;
+//	*DefaultCell.isLink=*DefaultCell.Font;
 	DefaultCell.isLink->Size=DefaultCell.Font->Size;
 	DefaultCell.isLink->Color=(TColor)RGB(43,87,154);//(TColor)RGB(128,128,128);
 	DefaultCell.isLink->Orientation=0;
@@ -107,7 +107,6 @@ TmGrid::TmGrid(TForm *Owner)
 	Note.Font->Size=11;
 	Note.Font->Color=clRed;
 	Note.NoteArea=TRect(-1,-1,-1,-1);
-	if(ID!=9999)Note.Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
 }
 //---------------------------------------------------------------------------
 //destruktor, probíhá pøi ukonèování programu, tj. zvážit zda není pozdì
@@ -519,13 +518,11 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			short Zoom=1;if(AntiAliasing_text)Zoom=3;
 			//nastavení fontu
 			Canv->Font=Cell.Font;
-			/* //28.2.provizorní fix
 			int Orientation=Cell.Font->Orientation;
-			if(F->m.null(F->ms.MyToDouble(Cell.Text))<0)Canv->Font=Cell.isNegativeNumber;//podmínìné formátování
-			Cell.isZero->Color=clYellow;
-			if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))Canv->Font=Cell.isZero;//podmínìné formátování
+			if(F->m.null(F->ms.MyToDouble(Cell.Text))<0)Canv->Font=Cell.isNegativeNumber;//podmínìné formátování záporné hodnoty
+			/*//28.2.provizorní fix
+			if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))Canv->Font=Cell.isZero;//podmínìné formátování */
 			Canv->Font->Orientation=Orientation;//musí ještì vrátit orientaci pokud byla podmínìným formátováním pøepsána
-			*/
 			Canv->Font->Size*=Zoom;
 			//SetBkMode(canv->Handle,OPAQUE);//nastavení netransparentního pozadí
 			//28.2.provizorní fix if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;else //podmínìné formátování//zde se asi nezohledòuje, spíše v drawgrid, ale otázka je jak bez AA
@@ -683,7 +680,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//text
 	E->Font=Cell.Font;
-	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
+	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
 	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmínìné formátování
 	//if(!E->Focused())//pokud není na buòce focus resp. není aktivní - provizornì odstaveno, zdá se, že nemá na nic vliv
 	E->Text=Cell.Text;

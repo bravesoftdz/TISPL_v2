@@ -40,7 +40,8 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-
+		E->mG->Cells[0][0].Text="-5,555";E->mG->Cells[0][0].Type=E->mG->EDIT;
+		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
 		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>";
 		E->mG->Cells[0][1].isLink->Color=clRed;
@@ -52,10 +53,15 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
+		E->mG->Note.Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
+
+
 		E->predchozi=NULL;
 		E->dalsi=NULL;
 
 		ELEMENTY=E;
+
+
 
 
 		////////E1

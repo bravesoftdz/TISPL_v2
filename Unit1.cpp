@@ -3571,14 +3571,17 @@ void TForm1::design_tab_pohon(int index)
 			PmG->Left=-500;PmG->Top=-500;//pouze aby se při prvním zobrazení nezobrazovala formou probliku vlevo nahoře
 			PmG->DefaultCell.Font->Name=aFont->Name;
 			PmG->DefaultCell.Font->Size=aFont->Size;
+			PmG->DefaultCell.isNegativeNumber->Name=aFont->Name;
+			PmG->DefaultCell.isNegativeNumber->Size=aFont->Size;
 			PmG->DefaultCell.isLink->Name=aFont->Name;
 			PmG->DefaultCell.isLink->Size=aFont->Size;
+			PmG->Note.Font->Name=aFont->Name;
 			PmG->AntiAliasing_text=true;
 			PmG->MovingTable=false;
-   		PmG->Border.Width=2;
+			PmG->Border.Width=2;
 			PmG->ID=9999;
 			PmG->Tag=6;//ID formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
-   		//vytvoření tabulky
+			//vytvoření tabulky
 			if(pom_temp->pohon==NULL)PmG->Create(2,1);
 			else
 			{
@@ -3594,11 +3597,11 @@ void TForm1::design_tab_pohon(int index)
 			/*if(aRD=="<a>[m/min]</a>")*/PmG->Columns[0].Width=134;
 			//else PmG->Columns[0].Width=118;
 			PmG->Columns[1].Width=118;
-   		//sloučení hlavičky
+			//sloučení hlavičky
 			PmG->MergeCells(0,0,1,0);
 			PmG->Update();
 			tab_pohon_COMBO(0);
-   	}break;
+		}break;
 		case 1:///////////Změna jednotek
    	{
    		//překlopení jednotek
@@ -3817,15 +3820,14 @@ void TForm1::aktualizace_ComboPohon ()
 		else t->Caption="Pohon nepřiřazen";
 		////příprava vypisovaných jednotek
 		AnsiString Tcas="min",Td="m";
-		if(F->aRDunit==F->SEC)
-			Tcas="s";
+		if(F->aRDunit==F->SEC)Tcas="s";
 		UnicodeString caption_jednotky=Td+"/"+Tcas;
 		//plnění existujícím pohony
 		while (P!=NULL)
 		{
 			AnsiString dopRD="";
 			t=Combo->Items->Add(/*tady nelze parametr*/);
-			if(Combo->ItemIndex==P->n)//pokud se jedná o aktuální pohon a pohon lze editovat a neprobíhá změna comboboxu a již existuje nějaký pohon
+			if(Combo->ItemIndex==(long)P->n)//pokud se jedná o aktuální pohon a pohon lze editovat a neprobíhá změna comboboxu a již existuje nějaký pohon
 			{
 				t->Caption=F->pom_temp->pohon->name+" - "+F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3,"..")+" ("+AnsiString(F->m.round2double(F->outaRD(F->pom_temp->pohon->rychlost_od),2))+"-"+AnsiString(F->m.round2double(F->outaRD(F->pom_temp->pohon->rychlost_do),2))+") "+caption_jednotky;//vypíše aktuální editovanou hodnotu
 			}
@@ -3855,8 +3857,12 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	//definice fontu a velikosti písma
 	E->mGrid->DefaultCell.Font->Name=aFont->Name;
 	E->mGrid->DefaultCell.Font->Size=aFont->Size;
+	E->mGrid->DefaultCell.isNegativeNumber->Name=aFont->Name;
+	E->mGrid->DefaultCell.isNegativeNumber->Size=aFont->Size;
 	E->mGrid->DefaultCell.isLink->Name=aFont->Name;
 	E->mGrid->DefaultCell.isLink->Size=aFont->Size;
+	E->mGrid->Note.Font->Name=aFont->Name;
+
 	//definice jednotek a šířek
 	AnsiString LO,cas,delka_otoce;
 	short sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla;//hodnoty pro základní jednotky
@@ -7779,11 +7785,11 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //	B=NULL;delete B;
 
 
-ShowMessage(pom_temp->elementy->name);
+//ShowMessage(pom_temp->elementy->name);
 
 
 //d.v.POHONY->dalsi->name="ano";
-//Form2->ShowModal();
+Form2->ShowModal();
 
 //Memo3->Visible=true;
 //Cvektory::TPohon *P=d.v.POHONY->dalsi;
