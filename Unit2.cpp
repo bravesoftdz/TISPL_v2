@@ -37,10 +37,12 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 		unsigned long ColCount=3;//pevný poèet slopcù
 		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
-
+		E->mG->DefaultCell.isZero->Color=clGreen;
+		E->mG->DefaultCell.isEmpty->Color=F->m.clIntensive(clRed,230);
 
 		E->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-
+		E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
+		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
 		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>";
 		E->mG->Cells[0][1].isLink->Color=clRed;
@@ -52,10 +54,15 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
+		E->mG->Note.Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
+
+
 		E->predchozi=NULL;
 		E->dalsi=NULL;
 
 		ELEMENTY=E;
+
+
 
 
 		////////E1

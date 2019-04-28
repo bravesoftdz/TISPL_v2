@@ -122,13 +122,25 @@ unsigned int TMyString::count(AnsiString Text,AnsiString Find)
 }
 unsigned int TMyString::count(UnicodeString Text,UnicodeString Find)
 {
-  unsigned int count=0;
-  while(Text.Pos(Find)!=0)
-  {
-    count++;
-    Text.Delete(Text.Pos(Find),Find.Length());
-  }
-  return count;
+	unsigned int count=0;
+	while(Text.Pos(Find)!=0)
+	{
+		count++;
+		Text.Delete(Text.Pos(Find),Find.Length());
+	}
+	return count;
+}
+//---------------------------------------------------------------------------
+//vrátí pozici posledního výskytu řetězce
+unsigned int TMyString::lastPos(UnicodeString Text,UnicodeString Find)
+{
+	unsigned int Pos=0;
+	while(Text.Pos(Find)!=0)
+	{
+		Pos+=Text.Pos(Find);
+		Text.Delete(1,Text.Pos(Find));
+	}
+	return Pos;
 }
 //---------------------------------------------------------------------------
 //smaže vše od počátku textu až po zadaný text X-krát dle zadání
@@ -158,7 +170,7 @@ AnsiString TMyString::delete_repeat(AnsiString Text, AnsiString Text_delete)
 {
   while(Text.Pos(Text_delete)!=0)
   {
-	Text.Delete(Text.Pos(Text_delete),Text_delete.Length());
+		Text.Delete(Text.Pos(Text_delete),Text_delete.Length());
   }
   return Text;
 }
@@ -167,35 +179,54 @@ UnicodeString TMyString::delete_repeat(UnicodeString Text, UnicodeString Text_de
 {
   while(Text.Pos(Text_delete)!=0)
   {
-	Text.Delete(Text.Pos(Text_delete),Text_delete.Length());
+		Text.Delete(Text.Pos(Text_delete),Text_delete.Length());
   }
-  return Text;
+	return Text;
 }
 //---------------------------------------------------------------------------
-//ožízne řetezec po znak, to co předchází znaku, vrátí
+//smaže vše od počátku textu až po všechny vyskyty znaku, včetně ostatního textu co předchází
+AnsiString TMyString::delete_repeat_all(AnsiString Text, AnsiString Text_delete)
+{
+	while(Text.Pos(Text_delete)!=0)
+	{
+		Text.Delete(1,Text.Pos(Text_delete)+Text_delete.Length()-1);
+	}
+	return Text;
+}
+//---------------------------------------------------------------------------
+UnicodeString TMyString::DeleteSpace(UnicodeString text)//vymaže mezeru
+{
+	while(text.Pos(" ")>0)
+	{
+		text=text.Delete(text.Pos(" "),1);
+	}
+	return text;
+}
+//---------------------------------------------------------------------------
+//ožízne řetezec po znak, to co předchází znaku, vrátí, pozor řeší od prvního výskytu řetězce
 AnsiString TMyString::TrimRightFrom(AnsiString Text, AnsiString Trim)
 {
-  unsigned int Pos=Text.Pos(Trim);
+	unsigned int Pos=Text.Pos(Trim);
 	if(Pos!=0)//pokud byla parsovací zarážka nalezena
-  {                           //tady by mělo být asi -OD jako níže
-    return Text.SubString(1,Pos-1);
-  }
+	{                           //tady by mělo být asi -OD jako níže
+		return Text.SubString(1,Pos-1);
+	}
 	else//nebyla nalezena, vrátí prázdný řetezec
 	return "";
 }
 UnicodeString  TMyString::TrimRightFrom_UTF(UnicodeString  Text, UnicodeString Trim)
 {
-  unsigned int Pos=Text.Pos(Trim);
-  if(Pos!=0)//pokud byla parsovací zarážka nalezena
+	unsigned int Pos=Text.Pos(Trim);
+	if(Pos!=0)//pokud byla parsovací zarážka nalezena
 	{                           //tady by mělo být asi -OD jako níže
-    return Text.SubString(1,Pos-1);
-  }
+		return Text.SubString(1,Pos-1);
+	}
 	else//nebyla nalezena, vrátí prázdný řetezec
 	return "";
 }
 //---------------------------------------------------------------------------
-//ožízne řetezec od znaku, to co následuje znaku, vrátí
-UnicodeString  TMyString::TrimLeftFrom_UTF(UnicodeString  Text, UnicodeString Trim)
+//ožízne řetezec od znaku, to co následuje znaku, vrátí, pozor řeší od prvního výskytu řetězce
+UnicodeString  TMyString::TrimLeftFrom_UTF(UnicodeString Text, UnicodeString Trim)
 {
 	unsigned int Pos=Text.Pos(Trim);
 	if(Pos!=0)//pokud byla parsovací zarážka nalezena
@@ -206,36 +237,17 @@ UnicodeString  TMyString::TrimLeftFrom_UTF(UnicodeString  Text, UnicodeString Tr
 	return "";
 }
 //---------------------------------------------------------------------------
-//ožízne řetezec od textu, to co následuje textu, vrátí
+//ožízne řetezec od textu, to co následuje textu, vrátí , pozor řeší od prvního výskytu řetězce
 UnicodeString TMyString::TrimLeftFromText(UnicodeString Text, UnicodeString Trim)
 {
 	unsigned int Pos=Text.Pos(Trim);
 	if(Pos!=0)//pokud byla parsovací zarážka nalezena
 	{
-	 short OD=Pos+Trim.Length();
-	 return Text.SubString(OD,Text.Length()-OD+1);
+		short OD=Pos+Trim.Length();
+		return Text.SubString(OD,Text.Length()-OD+1);
 	}
 	else//nebyla nalezena, vrátí prázdný řetezec
 	return "";
-}
-//---------------------------------------------------------------------------
-//smaže vše od počátku textu až po všechny vyskyty znaku, včetně ostatního textu co předchází
-AnsiString TMyString::delete_repeat_all(AnsiString Text, AnsiString Text_delete)
-{
-  while(Text.Pos(Text_delete)!=0)
-  {
-    Text.Delete(1,Text.Pos(Text_delete)+Text_delete.Length()-1);
-  }
-  return Text;
-}
-//---------------------------------------------------------------------------
-UnicodeString TMyString::DeleteSpace(UnicodeString text)//vymaže mezeru
-{
-       while(text.Pos(" ")>0)
-       {
-				text=text.Delete(text.Pos(" "),1);
-       }
-       return text;
 }
 //---------------------------------------------------------------------------
 //převede text v kódování WINDOWS-1250 na UTF-8
@@ -260,50 +272,49 @@ AnsiString TMyString::UTF2Win(AnsiString Text)
   return DATA;
 }
 //---------------------------------------------------------------------------
-    //kod pro remove_abc
-		//AnsiString PZ=mGrid->Cells[4][2].Text.SubString(mGrid->Cells[4][2].Text.Length(),1);//vrátí poslední znak
-		//if((int)*PZ.c_str()<48 || (int)*PZ.c_str()>57)mGrid->Cells[4][2].Text.Delete(mGrid->Cells[4][2].Text.Length(),1);//ubere poslední znak
-
+//kod pro remove_abc
+//AnsiString PZ=mGrid->Cells[4][2].Text.SubString(mGrid->Cells[4][2].Text.Length(),1);//vrátí poslední znak
+//if((int)*PZ.c_str()<48 || (int)*PZ.c_str()>57)mGrid->Cells[4][2].Text.Delete(mGrid->Cells[4][2].Text.Length(),1);//ubere poslední znak
 //odstraní českou diakritiku a vrátí stejný (zadaný) řetěze bez diakritiky)
 AnsiString TMyString::remove_diacritics(AnsiString text)
 {
-	 for(long i=1;i<=text.Length();i++)
-	 {
-		 switch((int)*text.SubString(i,1).c_str())
-		 {
-			 case -20:	text.Delete(i,1);text.Insert("e",i);break;//ě
-			 case -102:	text.Delete(i,1);text.Insert("s",i);break;//š
-			 case -24:	text.Delete(i,1);text.Insert("c",i);break;//č
-			 case -8:		text.Delete(i,1);text.Insert("r",i);break;//ř
-			 case	-98:	text.Delete(i,1);text.Insert("z",i);break;//ž
-			 case -3:		text.Delete(i,1);text.Insert("y",i);break;//ý
-			 case -31:	text.Delete(i,1);text.Insert("a",i);break;//á
-			 case -19:	text.Delete(i,1);text.Insert("i",i);break;//í
-			 case -23:	text.Delete(i,1);text.Insert("e",i);break;//é
-			 case -6:		text.Delete(i,1);text.Insert("u",i);break;//ú
-			 case -7:		text.Delete(i,1);text.Insert("u",i);break;//ů
-			 case -14:	text.Delete(i,1);text.Insert("n",i);break;//ň
-			 case -52:	text.Delete(i,1);text.Insert("E",i);break;//Ě
-			 case -118:	text.Delete(i,1);text.Insert("S",i);break;//Š
-			 case -56:	text.Delete(i,1);text.Insert("C",i);break;//Č
-			 case -40:	text.Delete(i,1);text.Insert("R",i);break;//Ř
-			 case -114:	text.Delete(i,1);text.Insert("Z",i);break;//Ž
-			 case -35:	text.Delete(i,1);text.Insert("Y",i);break;//Ý
-			 case -63:	text.Delete(i,1);text.Insert("A",i);break;//Á
-			 case -51:	text.Delete(i,1);text.Insert("I",i);break;//Í
-			 case -55:	text.Delete(i,1);text.Insert("E",i);break;//É
-			 case -38:	text.Delete(i,1);text.Insert("U",i);break;//Ú
-			 case -39:	text.Delete(i,1);text.Insert("U",i);break;//Ů
-			 case -46:	text.Delete(i,1);text.Insert("N",i);break;//Ň
-			 case -99:	text.Delete(i,1);text.Insert("t",i);break;//ť
-			 case -17:	text.Delete(i,1);text.Insert("d",i);break;//ď
-			 case -13:	text.Delete(i,1);text.Insert("o",i);break;//ó
-			 case -115:	text.Delete(i,1);text.Insert("T",i);break;//Ť
-			 case -49:	text.Delete(i,1);text.Insert("D",i);break;//Ď
-			 case -45:	text.Delete(i,1);text.Insert("O",i);break;//Ó
-		 }
-	 }
-	 return text;
+	for(long i=1;i<=text.Length();i++)
+	{
+		switch((int)*text.SubString(i,1).c_str())
+		{
+			case -20:	text.Delete(i,1);text.Insert("e",i);break;//ě
+			case -102:	text.Delete(i,1);text.Insert("s",i);break;//š
+			case -24:	text.Delete(i,1);text.Insert("c",i);break;//č
+			case -8:		text.Delete(i,1);text.Insert("r",i);break;//ř
+			case	-98:	text.Delete(i,1);text.Insert("z",i);break;//ž
+			case -3:		text.Delete(i,1);text.Insert("y",i);break;//ý
+			case -31:	text.Delete(i,1);text.Insert("a",i);break;//á
+			case -19:	text.Delete(i,1);text.Insert("i",i);break;//í
+			case -23:	text.Delete(i,1);text.Insert("e",i);break;//é
+			case -6:		text.Delete(i,1);text.Insert("u",i);break;//ú
+			case -7:		text.Delete(i,1);text.Insert("u",i);break;//ů
+			case -14:	text.Delete(i,1);text.Insert("n",i);break;//ň
+			case -52:	text.Delete(i,1);text.Insert("E",i);break;//Ě
+			case -118:	text.Delete(i,1);text.Insert("S",i);break;//Š
+			case -56:	text.Delete(i,1);text.Insert("C",i);break;//Č
+			case -40:	text.Delete(i,1);text.Insert("R",i);break;//Ř
+			case -114:	text.Delete(i,1);text.Insert("Z",i);break;//Ž
+			case -35:	text.Delete(i,1);text.Insert("Y",i);break;//Ý
+			case -63:	text.Delete(i,1);text.Insert("A",i);break;//Á
+			case -51:	text.Delete(i,1);text.Insert("I",i);break;//Í
+			case -55:	text.Delete(i,1);text.Insert("E",i);break;//É
+			case -38:	text.Delete(i,1);text.Insert("U",i);break;//Ú
+			case -39:	text.Delete(i,1);text.Insert("U",i);break;//Ů
+			case -46:	text.Delete(i,1);text.Insert("N",i);break;//Ň
+			case -99:	text.Delete(i,1);text.Insert("t",i);break;//ť
+			case -17:	text.Delete(i,1);text.Insert("d",i);break;//ď
+			case -13:	text.Delete(i,1);text.Insert("o",i);break;//ó
+			case -115:	text.Delete(i,1);text.Insert("T",i);break;//Ť
+			case -49:	text.Delete(i,1);text.Insert("D",i);break;//Ď
+			case -45:	text.Delete(i,1);text.Insert("O",i);break;//Ó
+		}
+	}
+	return text;
 }
 //---------------------------------------------------------------------------
 //převede text do double datového typu, řeší nastavení desetinná tečka vs. čárka
@@ -553,7 +564,7 @@ System::WideChar TMyString::numericFilter(AnsiString aktText,System::WideChar &K
 	 if(AnsiString(Key) ==	Separator && aktText.Pos(Separator) > 0)Key=0;//oddělovačů nemůže být více
 	 if(Key == L'0' && aktText.Pos("0") > 0 && aktText.Length() == 1)Key=0;//nelze napsat na druhou pozici v čísle 0
 
-	 if(Key==0)MessageBeep(0);//zvuková inicializace špatné klávesy - popř. odstranit
+	 if(Key==0 && ErrorMessageBeep)MessageBeep(0);//zvuková inicializace špatné klávesy pokud je požadována
 	}
 	return Key;
 }
