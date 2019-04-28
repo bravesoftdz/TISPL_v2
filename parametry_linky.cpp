@@ -35,7 +35,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 {
   input_state=NO;
 	////designové záležitosti
-	Form_parametry_linky->Color=(TColor)RGB(240,240,240); //nastavení barvy formuláøe
+ //	Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);//RGB(240,240,240); //nastavení barvy formuláøe
 
 	zobrazitFrameForm=false;
 
@@ -90,6 +90,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     input_state=LOADING;
     COL=0; ROW=0;
 
+
     //C->Items[1].operator [](C->Items->Count)->Header=true;
    // C->Items->operator [](C->Items->Count)->Header=true;
   // scGPComboBox2->Images->Assign(F->scGPVirtualImageList1);
@@ -101,8 +102,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
  // scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1->SourceImageList->AddImages(F->scGPVirtualImageList1));
 
   //  scGPComboBox2->Images->AddImages(F->scGPVirtualImageList1->SourceImageList);
-    scGPComboBox2->Items->operator [](1)->Header=false;
-    scGPComboBox2->Items->operator [](1)->ImageIndex=37;
+   // scGPComboBox2->Items->operator [](1)->Header=false;
+   // scGPComboBox2->Items->operator [](1)->ImageIndex=37;
     //scGPComboBox4.Items[scGPComboBox4.ItemIndex].
     //scGPComboBox2->Items[1].
 
@@ -129,10 +130,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     if(Form1->readINI("nastaveni_form_parametry_linky", "rozmery") == "1")
     {  //budu pøevádìt na metry - rozestup, dle nastavených jednotek mezery na PO zobrazím rozestup na PL
     Delkaunit=MM;
-    rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[mm]</font>";
-    rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[mm]</font>";
-    rHTMLLabel_vyska_jig->Caption="výška <font color=#2b579a>[mm]</font>";
-    rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
+    rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[mm]</font>";
+    rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[mm]</font>";
+    rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[mm]</font>";
+    rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[mm]</font>";
 
      //nahrání hodnot / bud v MM nebo M
 
@@ -152,7 +153,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   vypis(""); // prozmanuti vypisu - pro sicher
 	mGrid->Tag=7;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
   mGrid->ID=0;
-	mGrid->Left=2;mGrid->Top=335;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
+	mGrid->Left=scGPButton_pohon->Left;mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
   mGrid->Border.Width=1;
   mGrid->MovingTable=false;
@@ -164,7 +165,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
   mGrid->SetColumnAutoFit(-4);
 
-  Form_parametry_linky->Width=mGrid->Width + 4;
+  Form_parametry_linky->Width=scPanel_takt->Width + scPanel_vozik->Width + scPanel_takt->Left + 20;//mGrid->Width + scGPButton_pohon->Left + 30;
 
   ////////plnìní daty - hlavièka////////
 	mGrid->Cells[0][0].Text="ID";
@@ -223,8 +224,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     rEditNum_takt->SetFocus();
 		zobrazOramovani=false;
 
-		if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";   rHTMLLabel_podvozek_zaves->Left=34;  }
-		else  { rHTMLLabel_podvozek_zaves->Caption="Závìs";  rHTMLLabel_podvozek_zaves->Left=56; }
+		if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";  /* rHTMLLabel_podvozek_zaves->Left=34; */ }
+		else  { rHTMLLabel_podvozek_zaves->Caption="Závìs"; /* rHTMLLabel_podvozek_zaves->Left=56; */}
 
 
 		if(Form1->d.v.navrhni_POHONY()=="")
@@ -240,8 +241,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(Form1->STATUS==Form1->NAVRH)    //Architekt
 		{
-			scGPButton_vozik->Caption="   Vozík";
-			scGPButton_vozik->ImageIndex=21;
+			//scGPButton_vozik->Caption="   Vozík";
+			//scGPButton_vozik->ImageIndex=21;
 			//scGPButton_obecne->Caption="   Takt time";
 			rHTMLLabel_takt->Visible=true;
 			rEditNum_takt->Visible=true;
@@ -249,10 +250,10 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		}
 		else          //Klient
 		{
-			scGPButton_vozik->Caption="   Jig";
-			scGPButton_vozik->ImageIndex=19;
-			scGPButton_pohon->Caption="   Pohon";
-			rHTMLLabel_sirka_jig->Visible=false;
+			//scGPButton_vozik->Caption="   Jig";
+			//scGPButton_vozik->ImageIndex=19;
+			//scGPButton_pohon->Caption="   Pohon";
+		 //	rHTMLLabel_sirka_jig->Visible=false;
 
 			scGPButton_obecne->Visible=false;
 			rHTMLLabel_takt->Visible=false;
@@ -290,42 +291,43 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		for(unsigned int PID=0;PID<zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
 
-	 Form_parametry_linky->Color=(TColor)RGB(240,240,240);//RGB(43,87,154);
+	 Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
+
 	// rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
 
 	 scHTMLLabel_doporuc_pohony->Color=(TColor)RGB(230,230,230);
 
-	 scGPButton_vozik->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton_vozik->Options->FocusedColor=Form_parametry_linky->Color;
-	 scGPButton_vozik->Options->HotColor=Form_parametry_linky->Color;
-	 scGPButton_vozik->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton_vozik->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton_vozik->Options->FramePressedColor=Form_parametry_linky->Color;
+	 scGPButton_vozik->Options->NormalColor=Button_save->Options->NormalColor;
+	 scGPButton_vozik->Options->FocusedColor=Button_save->Options->NormalColor;
+	 scGPButton_vozik->Options->HotColor=Button_save->Options->NormalColor;
+	 scGPButton_vozik->Options->PressedColor=Button_save->Options->NormalColor;
+	 scGPButton_vozik->Options->FrameNormalColor=Button_save->Options->NormalColor;
+	 scGPButton_vozik->Options->FramePressedColor=Button_save->Options->NormalColor;
 
-	 scGPButton_pohon->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton_pohon->Options->FocusedColor=Form_parametry_linky->Color;
-	 scGPButton_pohon->Options->HotColor=Form_parametry_linky->Color;
-	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton_pohon->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton_pohon->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton_pohon->Options->FramePressedColor=Form_parametry_linky->Color;
+	 scGPButton_pohon->Options->NormalColor=Button_save->Options->NormalColor;
+	 scGPButton_pohon->Options->FocusedColor=Button_save->Options->NormalColor;
+	 scGPButton_pohon->Options->HotColor=Button_save->Options->NormalColor;
+	 scGPButton_pohon->Options->PressedColor=Button_save->Options->NormalColor;
+	 scGPButton_pohon->Options->FrameNormalColor=Button_save->Options->NormalColor;
+	 scGPButton_pohon->Options->PressedColor=Button_save->Options->NormalColor;
+	 scGPButton_pohon->Options->FramePressedColor=Button_save->Options->NormalColor;
 
 
-	 scGPButton_obecne->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton_obecne->Options->FocusedColor=Form_parametry_linky->Color;
-	 scGPButton_obecne->Options->HotColor=Form_parametry_linky->Color;
-	 scGPButton_obecne->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton_obecne->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton_obecne->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton_obecne->Options->FramePressedColor=Form_parametry_linky->Color;
+	 scGPButton_obecne->Options->NormalColor=Button_save->Options->NormalColor;
+	 scGPButton_obecne->Options->FocusedColor=Button_save->Options->NormalColor;
+	 scGPButton_obecne->Options->HotColor=Button_save->Options->NormalColor;
+	 scGPButton_obecne->Options->PressedColor=Button_save->Options->NormalColor;
+	 scGPButton_obecne->Options->FrameNormalColor=Button_save->Options->NormalColor;
+	 scGPButton_obecne->Options->PressedColor=Button_save->Options->NormalColor;
+	 scGPButton_obecne->Options->FramePressedColor=Button_save->Options->NormalColor;
 
-	 scGPButton_jig->Options->NormalColor=Form_parametry_linky->Color;
-	 scGPButton_jig->Options->FocusedColor=Form_parametry_linky->Color;
-	 scGPButton_jig->Options->HotColor=Form_parametry_linky->Color;
-	 scGPButton_jig->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton_jig->Options->FrameNormalColor=Form_parametry_linky->Color;
-	 scGPButton_jig->Options->PressedColor=Form_parametry_linky->Color;
-	 scGPButton_jig->Options->FramePressedColor=Form_parametry_linky->Color;
+	 scGPButton_jig->Options->NormalColor=Button_save->Options->NormalColor;
+	 scGPButton_jig->Options->FocusedColor=Button_save->Options->NormalColor;
+	 scGPButton_jig->Options->HotColor=Button_save->Options->NormalColor;
+	 scGPButton_jig->Options->PressedColor=Button_save->Options->NormalColor;
+	 scGPButton_jig->Options->FrameNormalColor=Button_save->Options->NormalColor;
+	 scGPButton_jig->Options->PressedColor=Button_save->Options->NormalColor;
+	 scGPButton_jig->Options->FramePressedColor=Button_save->Options->NormalColor;
 
 	// rStringGridEd_tab_dopravniky->Left=1;
  //	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
@@ -333,8 +335,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
-
-
 
 
 	 if(Form1->d.v.PP.typ_voziku==0) scGPSwitch->State=scswOff;
@@ -1118,8 +1118,9 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
   setFormHeight();
   //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
   vykresli_obdelnik_vpravo();
-
+  Form_parametry_linky->Color=F->m.clIntensive(clGray,10);
   }
+
   mGrid->Refresh();
   input_state=NOTHING;
 	}
@@ -1141,28 +1142,28 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender
 		Delkaunit=M;
 		//delka - pøepoèítání
 
-		rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[m]</font>";
+		rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[m]</font>";
 		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value/1000.0;
 
 
-		rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[m]</font>";
+		rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[m]</font>";
 		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value/1000.0;
 
-		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[m]</font>";
+		rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[m]</font>";
 		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value/1000.0;
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Delkaunit=MM;
 
-		rHTMLLabel_delka_jig->Caption="délka <font color=#2b579a>[mm]</font>";
+		rHTMLLabel_delka_jig->Caption="<font color=#2b579a>[mm]</font>";
 		scGPNumericEdit_delka_jig->Value=scGPNumericEdit_delka_jig->Value*1000.0;
 
 
-		rHTMLLabel_sirka_jig->Caption="šíøka <font color=#2b579a>[mm]</font>";
+		rHTMLLabel_sirka_jig->Caption="<font color=#2b579a>[mm]</font>";
 		scGPNumericEdit_sirka_jig->Value=scGPNumericEdit_sirka_jig->Value*1000.0;
 
-		rHTMLLabel_delka_podvozek->Caption="délka <font color=#2b579a>[mm]</font>";
+		rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[mm]</font>";
 		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value*1000.0;
 	}
 }
@@ -1222,6 +1223,9 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
  	mGrid->Show();//vykreslí tabulku
 
+//  Graphics::TBitmap *bmp=new Graphics::TBitmap;
+//  bmp->LoadFromFile("2_smaz.bmp");
+//  Canvas->Draw(0,0,bmp);
  //F->d.vykresli_packy_PL(Canvas,scGPButton_zamek_aRD,scGPButton_zamek_roztec,scGPButton_zamek_Rz,scGPButton_zamek_Rx);
 
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
@@ -2222,7 +2226,7 @@ void TForm_parametry_linky::getmGridColors()
   {
   mGrid->Columns[0].Width=30;
   mGrid->Columns[0].Visible=false;
-  mGrid->Columns[1].Width=250;
+  mGrid->Columns[1].Width=220;
   mGrid->Columns[2].Width=100;
   mGrid->Columns[3].Width=100;
   mGrid->Columns[4].Width=100;
@@ -2288,7 +2292,7 @@ void TForm_parametry_linky::getmGridColors()
 
   void TForm_parametry_linky::setADD_ButtonPosition ()
   {
-  scGPGlyphButton_ADD->Top=mGrid->Top+mGrid->Height;
+  scGPGlyphButton_ADD->Top=mGrid->Top+mGrid->Height + 1;
   scGPGlyphButton_ADD->Left=mGrid->Left;
   scGPGlyphButton_ADD->Width=26;//mGrid->Columns[0].Width+1;
   scGPGlyphButton_ADD->Height=mGrid->DefaultRowHeight;
@@ -2296,11 +2300,15 @@ void TForm_parametry_linky::getmGridColors()
 
   void TForm_parametry_linky::setFormHeight()
   {
-   Form_parametry_linky->Height=mGrid->Top + mGrid->RowCount*mGrid->DefaultRowHeight + 100;
+   Form_parametry_linky->Height=mGrid->Top + mGrid->RowCount*mGrid->DefaultRowHeight + 80;
    Button_save->Top=Form_parametry_linky->Height - 40;
    Button_storno->Top=Form_parametry_linky->Height - 40;
    scGPGlyphButton_DEL_nepouzite->Top=Button_save->Top;
    scGPGlyphButton_DEL_nepouzite->Left=mGrid->Columns[8].Left - 5; //minus kvuli oramovani buttonu, které se zobrazí pøi najetí myší
+
+  scGPGlyphButton_OPTIONS->Top=mGrid->Top + mGrid->Height ;
+  scGPGlyphButton_OPTIONS->Left=Button_save->Left + Button_save->Width + 350;
+
   }
 
   void __fastcall TForm_parametry_linky::Button1Click(TObject *Sender)
@@ -2382,4 +2390,5 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
    	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
     Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
 }
+
 
