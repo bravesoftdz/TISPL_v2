@@ -23,6 +23,9 @@
 #include "rHintWindow.hpp"
 #include "scGPImages.hpp"
 #include <Vcl.Graphics.hpp>
+#include <Vcl.Imaging.jpeg.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
+#include <Vcl.ExtCtrls.hpp>
 #include <sstream>
 #include <iomanip>
 //---------------------------------------------------------------------------
@@ -92,10 +95,13 @@ __published:	// IDE-managed Components
   TscGPGlyphButton *scGPGlyphButton1;
   TscGPGlyphButton *scGPGlyphButton_smazat_pohon;
   TscGPNumericEdit *rEditNum_takt;
-  TscGPComboBox *scGPComboBox1;
-  TscGPComboBox *scGPComboBox2;
   TButton *Button1;
-  TscGPImage *scGPImage1;
+  TscPanel *scPanel_takt;
+  TscPanel *scPanel_vozik;
+  TscImage *scImage1;
+  TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
+  TrImageEx *rImageEx1;
+  TRadioGroup *RadioGroup1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
