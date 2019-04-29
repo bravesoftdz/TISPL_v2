@@ -55,10 +55,12 @@ class TmGrid
 		bool Highlight;//indikuje zda je buòka zvýraznìna, barva zvýraznìní odpovídá globální promìnné TColor clHighlight, výchozí stav zvýraznìní je false
 		TFont *Font;//vlastnosti fontu v buòce
 		TPoint TextPositon;//pozice textu v buòce (levý horní roh buòky je 0,0)
+		//PODMÍNÌNÉ FORMÁTOVÁNÍ - Pozor pro pøípady kdy se používá jiný font, napø. v našem pøípadì Roboto Cn na mgridech v náhledu, je nutné vždy nastavovat i název fontu a velikost nejenom pro normální text, ale i pro podmínìné formátování, defualtnì je nastaveno vše na naši modrou + velikost 12 pt, kromì záporného èísla, které je ve výchozím stavu nastaveno na èervenou
 		TBrush *isEmpty;//podmínìné formátování, pozadí buòky, když je prázdná
 		TFont *isNegativeNumber;//podmínìné formátování, pokud je zaporné èíslo
 		TFont *isZero;//podmínìné formátování, pokud se jedná o nulové èíslo
 		TFont *isLink;//podmínìné formátování v pøípadì výskytu tagu <a> resp </a>
+		//--
 		TPoint LinkCoordinateStart;//kvùli uložení citelné oblasti pro link dané buòky
 		TPoint LinkCoordinateEnd;//kvùli uložení citelné oblasti pro link dané buòky
 		UnicodeString Text;//samotný text buòky

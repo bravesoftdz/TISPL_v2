@@ -422,7 +422,14 @@ void TmGrid::Draw(TCanvas *C)
 			Note.NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note.Text));
 		}
 	}
-	else Note.NoteArea=TRect(-1,-1,-1,-1);
+	else
+	{
+		if(Note.NoteArea!=TRect(-1,-1,-1,-1))
+		{
+			InvalidateRect(Form->Handle,&Note.NoteArea,true);
+			Note.NoteArea=TRect(-1,-1,-1,-1);
+		}
+	}
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení jen gridu
@@ -586,6 +593,15 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			}
 			else //bez odkazu
 			Canv->TextOut(L,T,Cell.Text);
+			//Hint - vytvoøen pomocí scg
+//			TrHTMLLabel *Hint=new TrHTMLLabel(Form);
+//			Hint->Caption="nìjaký popis";
+//			Hint->Visible=VisibleComponents;
+//			Hint->Left=R.left+10;Hint->Top=R.top-10;
+//			Hint->Color=clWhite;
+//			Hint->Transparent=true;
+//			Hint->Parent=Form;//musí být až na konci
+//			Hint=NULL;delete Hint;
 		}break;
 		case readEDIT:
 		{
@@ -1224,7 +1240,7 @@ unsigned long TmGrid::getHeight()
 	if(Note.Text!="" && ColCount>0 && RowCount>0)
 	{
 		Form->Canvas->Font->Size=Note.Font->Size;
-		if(Form->Canvas->TextWidth(Note.Text)>getWidth())Offset_Note=2;else Offset_Note=1; //pokud je text delší musí se zobrazit 2 øádky, Offset_Note - jenom "zneužívám"
+		if(Form->Canvas->TextWidth(Note.Text)>(signed)getWidth())Offset_Note=2;else Offset_Note=1; //pokud je text delší musí se zobrazit 2 øádky, Offset_Note - jenom "zneužívám"
 		Offset_Note=Form->Canvas->TextHeight(Note.Text)*Offset_Note+Border.Width;
 	}
 	//samotné vrácení výšky tabulky
