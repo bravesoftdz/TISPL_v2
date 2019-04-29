@@ -35,7 +35,7 @@ class Cmy
 	double mod_d(double number1,double number2);//možno nahradit fci fmod z math.h  - to si už tak nejsem jistý viz paramatry této funkce - ukazatel?
 	bool isFinite(double number1,double number2);
 	TColor clIntensive(TColor C,short A); //A + míra zesvìtlení,  - míra ztmaveni
-	double delka(double X1,double Y1,double X2,double Y2);
+	double delka(double X1,double Y1,double X2,double Y2);//vrátí délku mezi body v absolutní hodnotì
 	double azimut(double X1,double Y1,double X2,double Y2);
 	double uhel(double X1,double Y1,double X2,double Y2);
 	TPointD rotace(double delka, double akt_uhel, double rotace);
