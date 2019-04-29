@@ -303,6 +303,7 @@ void TFormX::aktualizace_tab_elementu ()
 					E->mGrid->Cells[1][2].Text = F->m.round2double(F->outPT(E->PTotoc),3);
 				}break;
 			}
+			E->mGrid->Refresh();
 		}
 		E=E->dalsi;
 	}
@@ -352,6 +353,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 					E->mGrid->Cells[1][2].Text=0;
 				}break;
 			}
+			E->mGrid->Refresh();
 		}
 		E=E->dalsi;
 	}

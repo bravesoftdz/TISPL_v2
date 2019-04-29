@@ -3679,6 +3679,10 @@ void TForm1::design_tab_pohon(int index)
 				PmG->Show(NULL);  //bez tohoto dělalo problémy
 			}
 		}break;
+		case 4://smazání posledního elementu
+		{
+			if(PmG->RowCount=5){PmG->DeleteRow(4);PmG->DeleteRow(3);}
+		}break;
 	}
 	//naplnění buněk
 	if(PmG->RowCount==3)
@@ -5122,6 +5126,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				DrawGrid_otoce->Refresh();
 				pom_element_temp=NULL; delete pom_element_temp;
 			}else mazani=false;
+			if(pom_temp->elementy->dalsi==NULL)design_tab_pohon(4);
 			break;
 		}
 		default:
