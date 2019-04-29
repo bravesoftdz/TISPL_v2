@@ -82,6 +82,7 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 	GlyphButton_smazat_nepouzite->Options->NormalColor=clGlyph;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColor=clWhite;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColorAlpha=200;
+  scGPGlyphButton_ADD->Options->NormalColor=(TColor)RGB(75,168,46);
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -153,7 +154,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   vypis(""); // prozmanuti vypisu - pro sicher
 	mGrid->Tag=7;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
   mGrid->ID=0;
-	mGrid->Left=scGPButton_pohon->Left;mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
+	mGrid->Left=scGPButton_pohon->Left;
+  mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height ;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
   mGrid->Border.Width=1;
   mGrid->MovingTable=false;
@@ -1230,8 +1232,8 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 
-	if(VID==-1) { scGPGlyphButton_ADD->Enabled=true; scGPGlyphButton_vozik_edit->Enabled=true; scGPGlyphButton_TT->Enabled=true;  }
-	else {       scGPGlyphButton_ADD->Enabled=false;  scGPGlyphButton_vozik_edit->Enabled=false; scGPGlyphButton_TT->Enabled=false; }
+	if(VID==-1) { scGPGlyphButton_ADD->Enabled=true; scGPGlyphButton_ADD->Visible=true; scGPGlyphButton_vozik_edit->Enabled=true; scGPGlyphButton_TT->Enabled=true;  }
+	else {       scGPGlyphButton_ADD->Enabled=false; scGPGlyphButton_ADD->Visible=false;  scGPGlyphButton_vozik_edit->Enabled=false; scGPGlyphButton_TT->Enabled=false; }
 
 
     	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
@@ -1573,6 +1575,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 				{
 						Button_save->Enabled=false;  //R - doèasné povolení ukládání pøi validaci
 						rHTMLLabel_InfoText->Font->Color = clRed;
+            rHTMLLabel_InfoText->Color=clWhite;
 				}
 				else
 				{
@@ -1582,6 +1585,7 @@ void TForm_parametry_linky::vypis(UnicodeString text,bool red,bool link)
 				rHTMLLabel_InfoText->Top = Button_storno->Top - Button_storno->Height  + 5;
 				rHTMLLabel_InfoText->Caption = text;
 				rHTMLLabel_InfoText->Visible = true;
+        rHTMLLabel_InfoText->Color=clWhite;
 		}
 		else // skryje
 		{
@@ -1682,78 +1686,12 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 {
 
     vypis("");
+    mGrid->Note.Text="";
+    mGrid->Refresh();
+ //   ShowMessage(mGrid->Note.Text);
     VID=-1;
     Row_validace=0;
     Col_validace=0;
-
-				 if(ACol==4 || ACol==5 || ACol==6 || ACol==7)
-				 {
-         double aRD=0;
-         double R=0;
-         double Rz=0;
-         double Rx=0;
-       //  double Rx= F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
-     //    if(aRDunit==S)  aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]); else aRD=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow])/(1+59.0*aRDunit);
-   //      if(Runit==M)  R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]); else   R=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow])/(1+999.0*Runit);
-      //   if(Dmunit==M)Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]); else  Rz=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow])/(1+999.0*Dmunit);
-
-
-         TTextNumber TNValue=F->d.v.rVALIDACE(ACol,getPID(ARow),aRD,R,Rz,Rx,aRDunit,Runit,Dmunit);
-
-            if(TNValue.text!="")
-            {
-//               VID=ACol;
-//               if(VID==4)  VID_value=TNValue.number1*(1+59.0*aRDunit);
-//               if(VID==5)  VID_value=TNValue.number1*(1+999.0*Runit);
-//               if(VID==6)  VID_value=TNValue.number1*(1+999.0*Dmunit);
-//               if(VID==7)  VID_value= TNValue.number1; //Rx bez pøevodù
-//
-//               Row_validace=ARow;
-//               Col_validace=ACol;
-//               vypis(TNValue.text);
-
-            } else   //pro právì vytvoøené pohony - neumí hlídat rVALIDACE
-                   {
-//									    if(Rx!=floor(Rx))
-//                     {
-//										 double dop_Rx=	Form1->m.round(Rx);
-//										 vypis("Neceloèíselná hodnota poètu palcù rozestupu!<br><b>Navržená hodnota: <u>"+ AnsiString(dop_Rx)+"</u>");
-//										 Row_validace=ARow;
-//                     Col_validace=ACol;
-//                    // Memo2->Lines->Add(dop_Rx);
-//
-//										 VID=7;
-//										 VID_value=dop_Rx;
-//                     }
-                    }
-            }
-
-//	 if(rStringGridEd_tab_dopravniky->Cells[8][ARow]!="nepoužíván")
-//						 {
-//
-//							VID=ACol;
-//              TTextNumber TNValue=F->d.v.rVALIDACE(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
-//            // double VID_value_M           =	F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
-//						  VID_value           =	Form1->m.round(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));//F->ms.MyToDouble(F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),0));
-//							AnsiString  retezec =	F->d.v.validaceR(VID,getPID(ARow),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[4][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[5][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[6][ARow]),F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]),1);
-//							Row_validace=ARow;
-//						// 	if(VID_value=!"")
-//            vypis(retezec);
-//						 }
-//						 else
-//						 {
-//									double value=F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]);
-//									if(value!=floor(value))
-//									{
-//										 double dop_Rx=	Form1->m.round(F->ms.MyToDouble(rStringGridEd_tab_dopravniky->Cells[7][ARow]));
-//										 vypis("Hodnota musí být celoèíselná, doporuèená hodnota Rx: "+ AnsiString(dop_Rx));
-//										 Row_validace=ARow;
-//										 VID=7;
-//										 VID_value=dop_Rx;
-//								}
-//
-//						}
-//				 }
 
 
  switch(ACol)
@@ -1783,7 +1721,11 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-              vypis("Nastavte správný rozsah a rychlost pohonu.");
+            //  vypis("Nastavte správný rozsah a rychlost pohonu.");
+              mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
+            //  ShowMessage(mGrid->Note.Text);
+            //  mGrid->Refresh();
+
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
@@ -1803,7 +1745,10 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-              vypis("Nastavte správný rozsah a rychlost pohonu.");
+            //  vypis("Nastavte správný rozsah a rychlost pohonu.");
+              mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
+             // ShowMessage(mGrid->Note.Text);
+            //  mGrid->Refresh();
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
@@ -1823,7 +1768,10 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-              vypis("Nastavte správný rozsah a rychlost pohonu.");
+             // vypis("Nastavte správný rozsah a rychlost pohonu.");
+              mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
+             // ShowMessage(mGrid->Note.Text);
+             // mGrid->Refresh();
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
@@ -1831,6 +1779,10 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 				}
 				break;
 	 }
+  // ShowMessage(mGrid->Note.Text);
+ //  mGrid->Refresh();
+   Invalidate();
+ //  FormPaint(this);
 
 }
 
@@ -2203,7 +2155,7 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[7][0].RightBorder->Width=0;
   mGrid->Cells[8][1].RightBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
   mGrid->Cells[8][0].TopBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
-
+//
   mGrid->Cells[0][0].Background->Color=clBACKGROUND;
   mGrid->Cells[1][0].Background->Color=clBACKGROUND;
   mGrid->Cells[2][0].Background->Color=clBACKGROUND;
