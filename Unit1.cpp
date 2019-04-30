@@ -53,6 +53,7 @@
 #pragma link "scHint"
 #pragma link "scGPExtControls"
 #pragma link "rHintWindow"
+#pragma link "rHTMLLabel"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
@@ -2356,7 +2357,7 @@ void TForm1::getJobID(int X, int Y)
 		if(IdxRow==0)JID=5;//hlavička
 		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 		{
-			int IdxCol=PmG->GetIdxColum(X,Y);
+			int IdxCol=PmG->GetIdxColumn(X,Y);
 			if(IdxCol==0)//řádky v prvním sloupeci
 			{
 				if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=5+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
@@ -2375,7 +2376,7 @@ void TForm1::getJobID(int X, int Y)
 			if(IdxRow==0 && pom_temp->uzamknout_nahled==false)JID=100+0;//hlavička
 			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 			{
-				int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+				int IdxCol=pom_element->mGrid->GetIdxColumn(X,Y);
 				if(IdxCol==0)//řádky v prvním sloupeci
 				{
 					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
@@ -6995,7 +6996,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		P=P->dalsi;//posun na další prvek
 //	}
 
-		 Form2->ShowModal();
+
+		 //Form2->ShowModal();
 
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
@@ -8522,6 +8524,9 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
+
+
+
 
 
 

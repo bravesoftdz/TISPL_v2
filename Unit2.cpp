@@ -30,7 +30,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG=new TmGrid(this);//vždy nutno jako první
 		E->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 		E->mG->ID=0;
-		E->mG->Left=50;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
+		E->mG->Left=100;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
 		E->mG->MovingTable=false;
 		E->mG->Border.Width=2;
@@ -44,7 +44,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
 		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
-		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>";
+		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>"; E->mG->Cells[0][1].Hint="test hintu";E->mG->Cells[0][1].ShowHint=true;
 		E->mG->Cells[0][1].isLink->Color=clRed;
 		E->mG->Cells[1][1].Type=E->mG->EDIT;
 		E->mG->Cells[1][1].InputNumbersOnly=true;
@@ -503,6 +503,8 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
+
+	 ELEMENTY->mG->MouseMove(X,Y);
 //	if(aktX==-50000 && aktY==-50000)
 //	{
 //		Cvykresli d;
@@ -555,4 +557,11 @@ void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 
 
 
+
+void __fastcall TForm2::Button6Click(TObject *Sender)
+{
+	ELEMENTY->mG->Note.Text="";
+	ELEMENTY->mG->Update();
+}
+//---------------------------------------------------------------------------
 

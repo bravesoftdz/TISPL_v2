@@ -5,15 +5,16 @@
 #include "scGPControls.hpp"//knihovna kvùli buttonumatp.
 #include "scGPExtControls.hpp"//knihovna kvùli editbox
 #include "scHtmlControls.hpp"//knihovna kvùli scHTMLLabel
+//#include "rHTMLLabel.hpp"//knihovna kvùli rHTMLLabel, protoe vıše uvedenı neumí pozadí
 #include "MyString.h"//kvùli parsování
 #include "my.h"
 //---------------------------------------------------------------------------
 class TmGrid
 {
  public:
-	enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,CHECK,RADIO,/*IMAGE,*/DRAW,LABEL};
-	enum Talign{aNO,LEFT,CENTER,RIGHT};
-	enum Tvalign{vNO,TOP,MIDDLE,BOTTOM};
+	 enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,CHECK,RADIO,/*IMAGE,*/DRAW,LABEL};
+	 enum Talign{aNO,LEFT,CENTER,RIGHT};
+	 enum Tvalign{vNO,TOP,MIDDLE,BOTTOM};
 
 	struct TBorder//datovı typ pouívanı pro orámování bunìk
 	{
@@ -24,17 +25,18 @@ class TmGrid
 
 	struct TColumns//datovı typ pouívanı pro sloupce
 	{
-	 unsigned short	Width;//šíøka sloupce
-	 long Left;//umístìní sloupce v px, v rámci tabulky
-	 bool Visible;//zda bude sloupec zobrazen
+		unsigned short	Width;//šíøka sloupce
+		long Left;//umístìní sloupce v px, v rámci tabulky
+		bool Visible;//zda bude sloupec zobrazen
 	};
 
 	struct TRows//datovı typ pouívanı pro øádky
 	{
-	 unsigned short	Height;//vıška øádku
-	 long Top;//umístìní øádku v px, v rámci tabulky
-	 //není dokonèeno bool Visible;//zda bude øádek zobrazen
+		unsigned short	Height;//vıška øádku
+		long Top;//umístìní øádku v px, v rámci tabulky
+		//není dokonèeno bool Visible;//zda bude øádek zobrazen
 	};
+
 
 	struct TCells//datovı typ pouívanı pro buòky
 	{
@@ -63,6 +65,8 @@ class TmGrid
 		//--
 		TPoint LinkCoordinateStart;//kvùli uloení citelné oblasti pro link dané buòky
 		TPoint LinkCoordinateEnd;//kvùli uloení citelné oblasti pro link dané buòky
+		bool ShowHint;//stav zobrazení hintu dané buòky, zda se budu zobrazovat
+		UnicodeString Hint;//text hintu buòky
 		UnicodeString Text;//samotnı text buòky
 	};
 
@@ -79,6 +83,7 @@ class TmGrid
 	void Create();//vytvoøí tabulku
 	void Create(unsigned long ColCount,unsigned long RowCount);//pøetíená metoda - vytvoøí tabulku s pøedepsanım poètem sloupcù a øádkù
 	void Delete();//odstraní tabulku, pøidruené komponenty a ukazatel na mGrid z pamìti
+	void MouseMove(int X,int Y);//metoda vhodná na umístìní do rodièovského formuláøe Form->FormMouseMove,vrací do globálních promìnnıch index aktuálního sloupce a øádku
 	void Show(TCanvas *Canvas=NULL);//zajistí vykreslení celé tabulky
 	void Refresh();//zajistí vyvolání pøekreslení celé tabulky s pøeblikem, ale lépe pouívat pøímo ve v daném formuláøi FormPaint(this), co zajistí pøekreslení bez probliku
 	void Update();//zajistí vytvoøení kompoment vèetnìj napozicování bez vykreslení
@@ -128,7 +133,7 @@ class TmGrid
 	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
 	TscHTMLLabel *createLabel(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
 	long GetIdxRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
-	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
+	long GetIdxColumn(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
 	bool CheckPTinTable(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) zjistí, zda jsou souøadnice ve vnitø tabulky
 	TPoint CheckLink(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí zda se na dané buòce a souøadnicích nachází odkaz
@@ -152,21 +157,28 @@ class TmGrid
 	bool MovingTable;//pokud je nastaveno na true, komponenty se zmìní na typ DRAW tj. tak, aby došlo k posunu dané buòky
 	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
 	TColor clHighlight;//pøednastavená barva zvıraznìní, slouí i pro nastavení barvy focusu komponent
+	int SleepHint;//zpodìní zobrazení Hintu v ms
 
  //protected: - nefugovalo, jak jsme si pøedstavoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
-	unsigned long Row,Col;//aktuální øádek a sloupec, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
+	long Row,Col;//aktuální øádek a sloupec, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
 
  private:
 	TForm *Form;
 	TMyString ms;
 	Cmy m;
 
+	//TrHTMLLabel *Hint;
+	TscHTMLLabel *Hint;//hint draw bunìk - zatím dávám do private sekce z dùvodu pøehlednosti o pouití atributu (napø. Hint->Visible=true, Hint->ShowHint, Hint->Hint, atp. nic z toho se nesmí uívat)
+	TTimer *Timer;
+
 	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
 	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter
 	void __fastcall getTagOnChange(TObject *Sender);//vrací událost pøi OnChange
 	void __fastcall getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState Shift);//vrací událost pøi OnKeyDown
 	void __fastcall getTagOnKeyPress(TObject *Sender,System::WideChar &Key);//vrací událost pøi OnKeyPress
+	void __fastcall getTagOnMouseEnter(TObject *Sender);//vrací událost pøi vstupu èi pøejetí myší pøes komponentu
+	void __fastcall OnTimer(TObject *Sender);//událost èasovaèe
 	void getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouí napø. pøi události onchange popø. dálších
 
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky vèetnì gridu
@@ -208,6 +220,7 @@ class TmGrid
 	unsigned long bufColCount,bufRowCount;//pøedchozí poèet øádkù a sloupcù
 	short SetColumnAutoFitColIdx;//typ autofit column
 	long preRowInd;//pøedchozí øádek na kterém byla myš
+	long preColInd;//pøedchozí sloupec na kterém byla myš
 	bool deleteMark;//detekce e dochází k odstraòování mGridu
 	UnicodeString bufText;//ukládá vıchozí hodnotu editboxu pøed psaním, pro pøípad stisku ESC
 };

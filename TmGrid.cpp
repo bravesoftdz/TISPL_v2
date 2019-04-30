@@ -29,7 +29,7 @@ TmGrid::TmGrid(TForm *Owner)
 	MovingTable=false;
 	VisibleComponents=true;
 	SetColumnAutoFitColIdx=-3;//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -3 = nepøizpùsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se každý sloupec individuálnì, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
-	preRowInd=-1;
+	preRowInd=-1;preColInd=-1;
 	Decimal=3;//implicitní poèet desetinných míst u numericeditù
 	IntegerDecimalNull=false;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do poètu decimál i u celých èísel
 	clHighlight=(TColor)RGB(0,120,215);//pøednastavená barva zvýraznìní, slouží i pro nastavení barvy focusu komponent, pùvodní tmavá RGB(43,87,154)
@@ -43,7 +43,6 @@ TmGrid::TmGrid(TForm *Owner)
 	////nastavení defalní BUÒKY
 	//vytvoøí novou buòku (alokuje ji pamì)
 	CreateCell(DefaultCell);
-
 	//typ
 	DefaultCell.Type = DRAW;//defaultní komponenta
 	//bìžný text
@@ -108,8 +107,16 @@ TmGrid::TmGrid(TForm *Owner)
 	*DefaultCell.BottomBorder=defBorder;
 	*DefaultCell.LeftBorder=defBorder;
 	*DefaultCell.RightBorder=defBorder;
+	//hint
+	Hint=new TscHTMLLabel(Form);//TrHTMLLabel(Form);
+	Hint->Visible=false;
+	Hint->Color=(TColor)RGB(255,255,156);
+	Hint->Font->Size=12;
+	DefaultCell.ShowHint=false;//výchozí stav zobrazení hintu dané buòky
+	Timer=new TTimer(Form);
+	SleepHint=750;//zpoždìní zobrazení Hintu v ms
 
-	//poznámka - výchozí nastavení
+	////POZNÁMKA - výchozí nastavení
 	Note.Font=new TFont();
 	*Note.Font=*DefaultCell.Font;
 	Note.Font->Size=11;
@@ -245,6 +252,8 @@ void TmGrid::Delete()
 		deleteMark=true;//detekce že dochází k odstraòování mGridu
 		//odstranìní v tabulce použitých komponent
 		DeleteComponents();
+		Hint=NULL;delete Hint;
+		Timer=NULL;delete Timer;
 		//uvolnìní pamìti
 		DeleteTable();
 		DeleteCell(DefaultCell);
@@ -268,6 +277,40 @@ void TmGrid::DeleteTable()
 	Cells=NULL; delete Cells;
 	Columns=NULL; delete Columns;
 	Rows=NULL; delete Rows;
+}
+//---------------------------------------------------------------------------
+//metoda vhodná na umístìní do rodièovského formuláøe Form->FormMouseMove,vrací do globálních promìnných index aktuálního sloupce a øádku
+void TmGrid::MouseMove(int X,int Y)
+{
+	////pøedání do globálních promìnných pro pøípadné použití
+	Col=GetIdxColumn(X,Y);Row=GetIdxRow(X,Y);
+
+	//zobrazení hintu na DRAW
+	Timer->Enabled=false;
+	if(Col>-1 && Row>-1)
+	{        //ShowMessage(AnsiString(preColInd)+"_"+AnsiString(Col)+AnsiString(preRowInd)+"_"+AnsiString(Row));
+		if(Cells[Col][Row].ShowHint && Cells[Col][Row].Type==DRAW && VisibleComponents && CheckLink(X,Y)==TPoint(-1,-1))//pokud je požadavek na zobrazení hintu na buòce typu DRAW a pokud v dané citelné oblasti není odkaz
+		{
+			if(Hint->Visible==false ||  preColInd!=Col || preRowInd!=Row)
+			{
+				Hint->Caption=Cells[Col][Row].Hint;
+				Hint->Tag=-1;
+				Hint->Name="mGrid_HINT_"+AnsiString(ID);
+				//Hint->Left=Left+Columns[X].Left+10;Hint->Top=Top+Rows[Y].Height+30;//nefunguje správnì a problikává nerozumím pøíèinì
+				Hint->Left=X+10;Hint->Top=Y+5;
+				Hint->Parent=Form;//musí být až na konci
+				//timer zajišuje volání Hint->Visible=true;
+				Timer->OnTimer=&OnTimer;
+				Timer->Enabled=true;
+				Timer->Interval=SleepHint;//zpoždìní zobrazení Hintu v ms;
+			}
+		}
+		else Hint->Visible=false;
+	}
+	else Hint->Visible=false;
+
+	////ukládání pøedchozích hodnot
+	preColInd=Col; preRowInd=Row;
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení celé tabulky
@@ -383,8 +426,8 @@ void TmGrid::Draw(TCanvas *C)
 			Rb.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
 			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 
-			////barva pozadí buòky
-			if(Cells[X][Y].Text=="")C->Brush->Color=Cells[X][Y].isEmpty->Color;//podmínìné formátování
+			////barva pozadí buòky                 //neplatí pro margované položky - zatím nedokonalé
+			if(Cells[X][Y].Text=="" && Cells[X][Y].MergeState==false)C->Brush->Color=Cells[X][Y].isEmpty->Color;//podmínìné formátování
 			else C->Brush->Color=Cells[X][Y].Background->Color;//vyplnìná buòka
 			C->Brush->Style=Cells[X][Y].Background->Style;
 			C->FillRect(Rb);
@@ -414,12 +457,12 @@ void TmGrid::Draw(TCanvas *C)
 			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,T);//nelze používát Height èi getHeight
 			AnsiString T1=Note.Text.SubString(T.Length()+1,L).TrimLeft();
 			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T),T1);//nelze používát Height èi getHeight
-			Note.NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T)+C->TextHeight(T1));
+			Note.NoteArea=TRect(Left+0,Top+0,Left+W,Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T)+C->TextHeight(T1));
 		}
 		else//jednoøádkový text
 		{
 			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,Note.Text);//nelze používát Height èi getHeight
-			Note.NoteArea=TRect(0,0,W,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note.Text));
+			Note.NoteArea=TRect(Left+0,Top+0,Left+W,Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note.Text));
 		}
 	}
 	else
@@ -593,15 +636,6 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			}
 			else //bez odkazu
 			Canv->TextOut(L,T,Cell.Text);
-			//Hint - vytvoøen pomocí scg
-//			TrHTMLLabel *Hint=new TrHTMLLabel(Form);
-//			Hint->Caption="nìjaký popis";
-//			Hint->Visible=VisibleComponents;
-//			Hint->Left=R.left+10;Hint->Top=R.top-10;
-//			Hint->Color=clWhite;
-//			Hint->Transparent=true;
-//			Hint->Parent=Form;//musí být až na konci
-//			Hint=NULL;delete Hint;
 		}break;
 		case readEDIT:
 		{
@@ -668,12 +702,13 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.Type==EDIT)E->Enabled=true;else E->Enabled=false;
 	if(!VisibleComponents || MovingTable)E->Visible=false;else E->Visible=true;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
 	E->AutoSize=false;
+	E->Transparent=false;
 	E->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
 	E->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se pøímo v mergovaní, ubere pouze velikost komponenty podle šíøky orámování
 	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodìlat ubere velikost komponenty podle šíøky orámování//ubere velikost komponenty podle šíøky orámování
 	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus automatizace pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
-	E->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
+	if(Cell.ShowHint){E->ShowHint=true;E->Hint=Cell.Hint;}
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
 	if(!Cell.Highlight)E->Options->FrameNormalColor=Cell.Background->Color;//rámeèek musí být stejnou barvou jakou buòka, protože møížka je o 1px na všechny strany roztažená
@@ -722,6 +757,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
 	if(!VisibleComponents || MovingTable)N->Visible=false;else N->Visible=true;//pøi posunu tabulky se skryje EDIT a je místo nìj DRAW
 	N->AutoSize=false;
+	N->Transparent=false;
 	N->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
 	N->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)N->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se pøímo v mergovaní, ubere pouze velikost komponenty podle šíøky orámování
@@ -730,8 +766,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//if(!N->Focused() && !IntegerDecimalNull && m.cele_cislo(ms.MyToDouble(Cell.Text)))N->Decimal=0;//pokud se jedná o celé èíslo, nezobrazuje "reálnou èást" celého èísla tj. poèet nul do poètu decimal, nastavuje se pouze pokud není daný NUMERIC editovaný
 	N->DisplayType=scedtNumeric;
 	N->ValueType=scvtFloat;
-	N->ShowHint=true;
-	N->Hint=Cell.Text;
+	if(Cell.ShowHint){N->ShowHint=true;N->Hint=Cell.Hint;}
 	//28.2.provizorní fix if(Cell.Text=="")N->Options->NormalColor=Cell.isEmpty->Color;else //podmínìné formátování
 	N->Options->NormalColor=Cell.Background->Color;
 	N->Options->NormalColorAlpha=255;
@@ -783,8 +818,7 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	L->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šíøky orámování
 	if(Cell.MergeState==false)L->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se pøímo v mergovaní, ubere pouze velikost komponenty podle šíøky orámování//pokud neplatí nastavuje se pøímo v mergovaní
 	/*if(Cell.MergeState==false)*/L->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodìlat ubere velikost komponenty podle šíøky orámování//dodìlat//ubere velikost komponenty podle šíøky orámování
-	L->ShowHint=false;//implicitnì u editu na false, pokus pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepøesné
-	L->Hint=Cell.Text;//výchozí text pro hint je hodnota z editu
+	if(Cell.ShowHint){L->ShowHint=true;L->Hint=Cell.Hint;}
 	if(Cell.Text=="")L->Color=Cell.isEmpty->Color;else L->Color=Cell.Background->Color;
 	L->Margins->Left=0;L->Margins->Right=0;L->Margins->Top=0;L->Margins->Bottom=0;
 	switch(Cell.Align)
@@ -824,8 +858,10 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	B->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0)+1;
 	B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
 	B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
-	//B->Options->NormalColor=Cell.Background->Color; nechat
+	if(Cell.ShowHint){B->ShowHint=true;B->Hint=Cell.Hint;}
+	//B->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	B->Options->FrameNormalColor=B->Options->NormalColor;
+	if(Cell.ShowHint){B->ShowHint=true;B->Hint=Cell.Hint;}
 
 	//text
 	B->Font=Cell.Font;
@@ -848,8 +884,9 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 	gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
 	gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
-	//gB->Options->NormalColor=Cell.Background->Color; nechat zakomentované
+	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	gB->Options->FrameNormalColor=gB->Options->NormalColor;
+	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
 
 	//text
 	gB->Font=Cell.Font;
@@ -896,6 +933,8 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	C->Options->FontNormalColor=Cell.Font->Color;
 	//C->ItemIndex=1;//nelze pøedoznaèní první položku
 
+	if(Cell.ShowHint){C->ShowHint=true;C->Hint=Cell.Hint;}
+
 	//vlastník
 	C->Parent=Form;//musí být až na konci
 	C=NULL;delete C;
@@ -925,8 +964,7 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	}
 	Ch->Options->NormalColor=Cell.Background->Color;
 	Ch->Options->NormalColorAlpha=255;
-	//pøesunout spíše do create Ch->Options->FrameNormalColor=(TColor)RGB(128,128,128);//Ch->Font->Color;
-	//pøesunout spíše do create Ch->Options->FrameNormalColorAlpha=255;
+	if(Cell.ShowHint){Ch->ShowHint=true;Ch->Hint=Cell.Hint;}
 
 	//text
 	Ch->Font=Cell.Font;
@@ -962,6 +1000,7 @@ void TmGrid::SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//Ra->Options->NormalColorAlpha=255;
 	//Ra->Options->FrameNormalColor=clWhite;
 	//Ra->Options->FrameNormalColorAlpha=255;
+	if(Cell.ShowHint){Ra->ShowHint=true;Ra->Hint=Cell.Hint;}
 	Ra->Font=Cell.Font;
 	Ra->Caption=Cell.Text;
 	//vlastník
@@ -985,6 +1024,7 @@ TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
 		E->OnChange=&getTagOnChange;
 		E->OnKeyDown=&getTagOnKeyDown;
 		E->OnKeyPress=&getTagOnKeyPress;
+		E->OnMouseEnter=&getTagOnMouseEnter;
 	}
 	return E;
 }
@@ -1004,6 +1044,7 @@ TscGPNumericEdit *TmGrid::createNumeric(unsigned long Col,unsigned long Row)
 		N->OnChange=&getTagOnChange;
 		N->OnKeyDown=&getTagOnKeyDown;
 		N->OnKeyPress=&getTagOnKeyPress;
+		N->OnMouseEnter=&getTagOnMouseEnter;
 	}
 	return N;
 }
@@ -1021,6 +1062,7 @@ TscHTMLLabel *TmGrid::createLabel(unsigned long Col,unsigned long Row)
 		//události
 		L->OnClick=&getTagOnClick;
 		L->OnEnter=&getTagOnEnter;
+		L->OnMouseEnter=&getTagOnMouseEnter;
 	}
 	return L;
 }
@@ -1038,6 +1080,7 @@ TscGPButton *TmGrid::createButton(unsigned long Col,unsigned long Row)
 		//události
 		B->OnClick=&getTagOnClick;
 		B->OnEnter=&getTagOnEnter;
+		B->OnMouseEnter=&getTagOnMouseEnter;
 	}
 	return B;
 }
@@ -1055,6 +1098,7 @@ TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
 		//události
 		gB->OnClick=&getTagOnClick;
 		gB->OnEnter=&getTagOnEnter;
+		gB->OnMouseEnter=&getTagOnMouseEnter;
 	}
 	return gB;
 }
@@ -1073,6 +1117,7 @@ TscGPComboBox *TmGrid::createCombo(unsigned long Col,unsigned long Row)
 		C->OnClick=&getTagOnClick;
 		C->OnEnter=&getTagOnEnter;
 		C->OnChange=&getTagOnChange;
+		C->OnMouseEnter=&getTagOnMouseEnter;
 
 		//výchozí nastavení
 		C->Options->NormalColorAlpha=255;
@@ -1097,6 +1142,7 @@ TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
 		//události
 		Ch->OnClick=&getTagOnClick;
 		Ch->OnEnter=&getTagOnEnter;
+		Ch->OnMouseEnter=&getTagOnMouseEnter;
 	}
 	return Ch;
 }
@@ -1115,6 +1161,7 @@ TscGPRadioButton *TmGrid::createRadio(unsigned long Col,unsigned long Row)
 		//události
 		Ra->OnClick=&getTagOnClick;
 		//Ra->OnEnter=&getTagOnEnter;//asi zbyteèná událost
+		Ra->OnMouseEnter=&getTagOnMouseEnter;
 	}
 	return Ra;
 }
@@ -1319,6 +1366,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagOnEnter(TObject *Sender)
 {
+  Hint->Visible=false;//asi zbyteèné
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
 		//ShowMessage(AnsiString("OnEnter ")+IntToStr(((TComponent*)(Sender))->Tag));
@@ -1399,6 +1447,19 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 		//if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
 		//if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,ID,Col,Row,Key);
 	}
+}
+//---------------------------------------------------------------------------
+//vrací událost pøi vstupu èi pøejetí myší pøes komponentu
+void __fastcall TmGrid::getTagOnMouseEnter(TObject *Sender)
+{
+  Hint->Visible=false;//zruší pøípadný Hint na DRAW
+}
+//---------------------------------------------------------------------------
+//událost èasovaèe
+void __fastcall TmGrid::OnTimer(TObject *Sender)
+{
+	Hint->Visible=true;//zobrazí timer až po uplynutí daného èasu
+	Timer->Enabled=false;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -1728,6 +1789,8 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	CopyCell.RightMargin=RefCell.RightMargin;
 	//indikátor slouèení
 	CopyCell.MergeState=RefCell.MergeState;
+	//hint
+	CopyCell.ShowHint=RefCell.ShowHint;
 	//další vlastnosti
 	CopyCell.InputNumbersOnly=RefCell.InputNumbersOnly;
 	CopyCell.Highlight=RefCell.Highlight;
@@ -2126,7 +2189,7 @@ long TmGrid::GetIdxRow(int X,int Y)
 }
 //---------------------------------------------------------------------------
 //dle souøadnic ve formuláøi,kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
-long TmGrid::GetIdxColum(int X,int Y)
+long TmGrid::GetIdxColumn(int X,int Y)
 {
 	long RET=-1;
 	if(CheckPTinTable(X,Y))//ošetøení mimo tabulku + akcelerátor
@@ -2208,7 +2271,7 @@ bool TmGrid::CheckPTinTable(int X,int Y)
 TPoint TmGrid::CheckLink(int X,int Y)
 {
 	long IndRow=GetIdxRow(X,Y);
-	long IndCol=GetIdxColum(X,Y);
+	long IndCol=GetIdxColumn(X,Y);
 	if(IndRow>=0 && IndCol>=0 && CheckLink(X,Y,IndCol,IndRow))return TPoint(IndCol,IndRow);//odkaz na daných souøadnicích nalezen
 	else return TPoint(-1,-1);
 }
@@ -2255,3 +2318,4 @@ void TmGrid::SetVisibleComponents(bool state)
 	}
 }
 //---------------------------------------------------------------------------
+
