@@ -368,7 +368,7 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 	//mGrid->AntiAliasing_grid=!mGrid->AntiAliasing_grid;
 	// ELEMENTY->mG->Left+=10;
 	//zmìna posunu tabulky
-   ELEMENTY->mG->unHighlightAll();
+	 ELEMENTY->mG->unHighlightAll();
 
 	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
@@ -377,16 +377,29 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 //test volání pøi onclick
 void TForm2::OnClick(long Tag,long ID,long Col,long Row)
 {
-	ShowMessage("UNIT2\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
-	if(Row==-2)ShowMessage("exBUTTON");
+	//ShowMessage("UNIT2\nToto vypisuje metoda OnClick\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	if(Row==-2)
+	{
+		//ShowMessage("UNIT2\nexBUTTON");
+		if(ELEMENTY->mG->Rows[1].Visible)//skrývání
+		{
+			ELEMENTY->mG->VisibleRow(1,false);
+			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+		}
+		else//zobrazování
+		{
+			ELEMENTY->mG->VisibleRow(1,true);
+			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+		}
+	}
 //	mGrid->HighlightCell(Col,Row);
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
 //	//toto problikává mGrid->Refresh();
-if(Col==3)
-{
-	ELEMENTY->dalsi->mG->DeleteRow(Row);
-}
+//if(Col==3)
+//{
+//	ELEMENTY->dalsi->mG->DeleteRow(Row);
+//}
 
 }
 //---------------------------------------------------------------------------
@@ -560,10 +573,4 @@ void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 
 
 
-void __fastcall TForm2::Button6Click(TObject *Sender)
-{
-	ELEMENTY->mG->Note.Text="";
-	ELEMENTY->mG->Update();
-}
-//---------------------------------------------------------------------------
 

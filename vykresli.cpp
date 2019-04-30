@@ -2244,7 +2244,7 @@ unsigned int Cvykresli::vykresli_pozice(TCanvas *canv,int i,TPointD OD, TPointD 
 	double POm=mezera/delka;//poměr délky mezery a délky objekty
 	while(akt_pozice<=delka)
 	{
-		//volání kompelexního vykreslení jednoho vozíku (podvozek včetně jigu)
+		//volání komplexního vykreslení jednoho vozíku (podvozek včetně jigu)
 		vykresli_vozik(canv,i,S.x,S.y,delkaP,delkaV,sirkaV);
 		//posun o další vozík
 		S.x+=(DO.x-OD.x)*PO;//posun ze začátku objektu nakonec
@@ -2327,13 +2327,6 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 	//pero+výplň
 	canv->Brush->Color=clWhite;
 	canv->Brush->Style=bsSolid;
-//	canv->Pen->Color=clRed;        //pův. 0.5 bez duble linie
-//	canv->Pen->Width=Form1->Zoom*0.2;//if(Form1->antialiasing)canv->Pen->Width=Form1->Zoom*0.1;
-//	//samotné vykreslení obrysu kabiny, dvojitou linii, ale pozor může být nepříjemné ve vykreslování celkového layoutu!!!
-//	short Ov=Form1->Zoom*0.4;
-//	canv->Rectangle(m.L2Px(X)-Ov,m.L2Py(Y+sJ/2)-Ov,m.L2Px(K.x)+Ov,m.L2Py(K.y-sJ/2)+Ov);//dvojitý rám - vnější
-//	canv->Rectangle(m.L2Px(X)+Ov,m.L2Py(Y+sJ/2)+Ov,m.L2Px(K.x)-Ov,m.L2Py(K.y-sJ/2)-Ov);//dvojitý rám - vnitřní
-//	//canv->Rectangle(m.L2Px(X),m.L2Py(Y+SV/2),m.L2Px(K.x),m.L2Py(K.y-SV/2));//jenom jednoduché orámování
 
 	////vykreslení řetězu a palců řetězu
 //	if(O->pohon!=NULL)//řetez - je-li přiřazen pohon
@@ -2655,7 +2648,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 //zajišťuje samotné vykreslení palce, parametr NEW rozlišuje nový palec a palace starý již ke smazání (to slouží pro simulaci), poslední parametr značí, zda palec označit jako aktivní
 void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACTIVE)
 {                    //pokud se jedná o aktivní palec ještě přičte jedničku
-	double size=1*Form1->Zoom;
+	double size=0.7*Form1->Zoom;
 	if(NEW)//nový palace
 	{
 		canv->Pen->Mode=pmCopy;

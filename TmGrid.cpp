@@ -183,7 +183,7 @@ void TmGrid::Create()
 			CreateLinkBorder(X,Y,DefaultCell);
 			////ŘÁDKY
 			Rows[Y].Height=DefaultRowHeight;
-			//zatím nezprovozněno Rows[Y].Visible=true;
+			Rows[Y].Visible=true;
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Y*DefaultRowHeight;else Rows[0].Top=0;
 		}
 		////SLOUPCE
@@ -330,6 +330,9 @@ void TmGrid::MouseMove(int X,int Y)
 			}
 		}
 		else Hint->Visible=false;
+
+		//test pokus převod DRAW do EDITu bez přebliknutí při přejetí přes danou buňku myší, mělo by význam při udržování komponent v draw kvůli lepšímu vzhledu
+		//if(Cells[Col][Row].Type==DRAW)SetEdit(TRect(Left+Columns[Col].Left,Top+Rows[Row].Top,Left+Columns[Col].Left+Columns[Col].Width,Top+Rows[Row].Top+Rows[Row].Height),Col,Row,Cells[Col][Row]);
 	}
 	else Hint->Visible=false;
 
@@ -374,6 +377,7 @@ void TmGrid::Show(TCanvas *Canvas)
 		//zaloha úvodní pozice
 		preTop=Top;preLeft=Left;
 	}
+
 }
 //---------------------------------------------------------------------------
 //zajistí vyvolání překreslení celé tabulky
@@ -437,8 +441,8 @@ void TmGrid::Draw(TCanvas *C)
 		Rc.Right	=	Left+(Columns[X].Left+Columns[X].Width);
 
 		for(unsigned long Y=0;Y<RowCount;Y++)//po řádcích
-		{
-			//není doděláno ve vztahu s níže uvedeným if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí řádku, zatím ale nefunguje patřičně orámování
+		{  //není doděláno ve vztahu s níže uvedeným
+			if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí řádku, zatím ale nefunguje patřičně orámování
 			////oblast a umístění buňky
 			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpočet horního okraje buňky dle buňky předchozí
 			R.Top			=	Top+Rows[Y].Top*Zoom_g;
@@ -531,7 +535,7 @@ void TmGrid::DrawGrid(TCanvas *C)
 		for(unsigned long Y=0;Y<RowCount;Y++)//po řádcích
 		{
 			////umístění
-			//není otestováno if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí řádku, zatím ale nefunguje patřičně orámování
+			if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí řádku, zatím ale nefunguje patřičně orámování
 			R.Top			=	Top+Rows[Y].Top;
 			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
 			////orámování buňky
@@ -584,8 +588,8 @@ void TmGrid::SetColRow()
 		else if(X>0)Columns[X].Left=Columns[X-1].Left+Columns[X-1].Width;else Columns[0].Left=0;//výpočet levého okraje buňky dle buňky předchozí
 	}
 	for(unsigned long Y=0;Y<RowCount;Y++)//po řádcích
-	{
-		//není doděláno ve vztahu s níže uvedeným if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}else//skrytí řádku, zatím ale nefunguje patřičně orámování
+	{ //není doděláno ve vztahu s níže uvedeným
+		if(Y!=0 && (!Rows[Y-1].Visible || Rows[Y-1].Height==0)){Rows[Y].Top=Rows[Y-1].Top;}else//skrytí řádku, zatím ale nefunguje patřičně orámování
 		if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpočet horního okraje buňky dle buňky předchozí
 	}
 
@@ -1944,6 +1948,26 @@ void TmGrid::InsertRow(unsigned long Row,bool copyComponentFromPreviousRow, bool
 		}
 	}
 	else AddRow(copyComponentFromPreviousRow,invalidate);
+}
+//---------------------------------------------------------------------------
+//skryje či zobrazí daný řádek
+void TmGrid::VisibleRow(unsigned long Row,bool visible)
+{
+	if(visible==false)//skrývání
+	{
+		AnsiString T=Note.Text;
+		if(Note.Text!=""){Note.Text="";Note.NoteArea.Offset(-Border.Width+1,0);}//kvůli překreslení orámování
+		Rows[Row].Visible=false;
+		Update();
+		Note.Text=T;
+		Refresh();
+	}
+	else//zobrazování
+	{
+		Rows[Row].Height=DefaultRowHeight;//vratí původní resp. defaultní výšku
+		Rows[Row].Visible=true;
+		Refresh();
+	}
 }
 //---------------------------------------------------------------------------
 //smaže celý řádek, pokud je invalidate na true, automaticky po přidání překreslí tabulku, někdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint přímo za voláním metody InsertRow přimo v užitém formuláři
