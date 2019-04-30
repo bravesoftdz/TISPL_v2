@@ -185,7 +185,7 @@ class TmGrid
 	void __fastcall OnTimer(TObject *Sender);//událost časovače
 	void getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí z dané komponenty text do paměťové buňky, slouží např. při události onchange popř. dálších
 
-	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky včetně gridu
+	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky včetně gridu a exBUTTONu a poznámky pod čarou
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
 	void DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R);//zajistí vykreslení orámování jen jedné buňky
 	void SetColRow();//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby

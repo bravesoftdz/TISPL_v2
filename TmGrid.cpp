@@ -404,7 +404,7 @@ void TmGrid::Update()
 	preTop=Top;preLeft=Left;
 }
 //---------------------------------------------------------------------------
-//zajistí vykreslení celé tabulky včetně gridu, pokud
+//zajistí vykreslení celé tabulky včetně gridu a exBUTTONu a poznámky pod čarou
 void TmGrid::Draw(TCanvas *C)
 {
 	//////TABULKA - orámování celé, pouze nastavuje jednotlivým buňkám jejich orámování
