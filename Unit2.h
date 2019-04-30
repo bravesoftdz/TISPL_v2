@@ -53,7 +53,7 @@ struct TElement
 	double aktX,aktY;
 public:		// User declarations
 	__fastcall TForm2(TComponent* Owner);
-	void OnClick(long Tag,long ID,unsigned long Col,unsigned long Row);
+	void OnClick(long Tag,long ID, long Col, long Row);
 	void OnEnter(long Tag,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::WideChar &Key);

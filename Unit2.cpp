@@ -34,6 +34,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->AntiAliasing_text=true;
 		E->mG->MovingTable=false;
 		E->mG->Border.Width=2;
+		E->mG->exBUTTONVisible=true;
 
 		unsigned long ColCount=3;//pevný poèet slopcù
 		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
@@ -54,7 +55,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
-		E->mG->Note.Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
+		E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a nìjaký další abcdefgeijasdfads dafs";
 
 
 		E->predchozi=NULL;
@@ -374,9 +375,10 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 //test volání pøi onclick
-void TForm2::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
+void TForm2::OnClick(long Tag,long ID,long Col,long Row)
 {
 	ShowMessage("UNIT2\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	if(Row==-2)ShowMessage("exBUTTON");
 //	mGrid->HighlightCell(Col,Row);
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku

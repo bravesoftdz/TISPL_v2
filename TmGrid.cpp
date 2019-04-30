@@ -108,13 +108,38 @@ TmGrid::TmGrid(TForm *Owner)
 	*DefaultCell.LeftBorder=defBorder;
 	*DefaultCell.RightBorder=defBorder;
 	//hint
+	DefaultCell.ShowHint=false;//výchozí stav zobrazení hintu dané buòky
+
+	////HINT
 	Hint=new TscHTMLLabel(Form);//TrHTMLLabel(Form);
+	Hint->Tag=-1;//name musí být však až pozdìji, klùli ID, které ještì  nyní neexistuje
 	Hint->Visible=false;
 	Hint->Color=(TColor)RGB(255,255,156);
 	Hint->Font->Size=12;
-	DefaultCell.ShowHint=false;//výchozí stav zobrazení hintu dané buòky
+	if(Hint->Font->Name=="Roboto Cn")Hint->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else Hint->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
 	Timer=new TTimer(Form);
+	Timer->OnTimer=&OnTimer;
 	SleepHint=750;//zpoždìní zobrazení Hintu v ms
+
+	////EXTENDED BUTTON - rozšíøené tlaèítko pro umístìní libovolné funkcionality a glyphu
+	exBUTTON= new TscGPGlyphButton(Form);
+	exBUTTON->Left=-50;exBUTTON->Top=-50;
+	exBUTTON->Width=25;exBUTTON->Height=25;
+	exBUTTON->Visible=exBUTTONVisible=false;//stav zobrazení èi skrytí exBUTTNU, nepoužívat pøímo exBUTTON->Visible, ale toto exBUTTONVisible!
+	exBUTTON->Tag=-2;//name musí být však až pozdìji, kvùli ID, které ještì  nyní neexistuje
+	exBUTTON->TransparentBackground=false;
+	exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+	exBUTTON->GlyphOptions->NormalColor=clBlack;
+	exBUTTON->GlyphOptions->NormalColorAlpha=200;
+	exBUTTON->Options->FrameNormalColor=defBorder.Color;//(TColor)RGB(43,87,154);
+	exBUTTON->Options->FrameNormalColorAlpha=255;
+	exBUTTON->Options->NormalColor=m.clIntensive((TColor)RGB(128,128,128),105);//(TColor)RGB(43,87,154);
+	exBUTTON->Options->NormalColorAlpha=255;
+	exBUTTON->Options->FrameWidth=Border.Width;//orámování stejnì široké jako orámování tabulky
+	exBUTTON->OnClick=&getTagOnClick;
+	exBUTTON->Parent=Form;
+	exBUTTONalign=RIGHT;//pozice rozšíøeného tlaèítka vùèi tabulce
+	exBUTTONvalign=BOTTOM;//pozice rozšíøeného tlaèítka vùèi tabulce
 
 	////POZNÁMKA - výchozí nastavení
 	Note.Font=new TFont();
@@ -252,8 +277,9 @@ void TmGrid::Delete()
 		deleteMark=true;//detekce že dochází k odstraòování mGridu
 		//odstranìní v tabulce použitých komponent
 		DeleteComponents();
-		Hint=NULL;delete Hint;
-		Timer=NULL;delete Timer;
+		Hint->Free();Hint=NULL;delete Hint;
+		Timer->Free();Timer=NULL;delete Timer;
+		exBUTTON->Free();exBUTTON=NULL;delete exBUTTON;
 		//uvolnìní pamìti
 		DeleteTable();
 		DeleteCell(DefaultCell);
@@ -286,7 +312,7 @@ void TmGrid::MouseMove(int X,int Y)
 	Col=GetIdxColumn(X,Y);Row=GetIdxRow(X,Y);
 
 	//zobrazení hintu na DRAW
-	Timer->Enabled=false;
+	Timer->Enabled=false;//ruší pøípadné èekání na zobrazení Hintu
 	if(Col>-1 && Row>-1)
 	{        //ShowMessage(AnsiString(preColInd)+"_"+AnsiString(Col)+AnsiString(preRowInd)+"_"+AnsiString(Row));
 		if(Cells[Col][Row].ShowHint && Cells[Col][Row].Type==DRAW && VisibleComponents && CheckLink(X,Y)==TPoint(-1,-1))//pokud je požadavek na zobrazení hintu na buòce typu DRAW a pokud v dané citelné oblasti není odkaz
@@ -294,15 +320,13 @@ void TmGrid::MouseMove(int X,int Y)
 			if(Hint->Visible==false ||  preColInd!=Col || preRowInd!=Row)
 			{
 				Hint->Caption=Cells[Col][Row].Hint;
-				Hint->Tag=-1;
 				Hint->Name="mGrid_HINT_"+AnsiString(ID);
 				//Hint->Left=Left+Columns[X].Left+10;Hint->Top=Top+Rows[Y].Height+30;//nefunguje správnì a problikává nerozumím pøíèinì
 				Hint->Left=X+10;Hint->Top=Y+5;
-				Hint->Parent=Form;//musí být až na konci
+				Hint->Parent=Form;//musí být až na konci kvùli nakreslení Hintu až nahoru
 				//timer zajišuje volání Hint->Visible=true;
-				Timer->OnTimer=&OnTimer;
-				Timer->Enabled=true;
 				Timer->Interval=SleepHint;//zpoždìní zobrazení Hintu v ms;
+				Timer->Enabled=true;
 			}
 		}
 		else Hint->Visible=false;
@@ -444,24 +468,44 @@ void TmGrid::Draw(TCanvas *C)
 		}
 	}
 
+	////exBUTTON - pozice - ještì odladit border
+	short leftOffset=0,rightOffset=0;
+	Width=getWidth();
+	if(VisibleComponents && !MovingTable && exBUTTONVisible)
+	{
+		switch(exBUTTONalign)
+		{
+			case LEFT:exBUTTON->Left=Left;leftOffset=exBUTTON->Width;break;
+			case CENTER:exBUTTON->Left=Left+(Width-exBUTTON->Width)/2;break;
+			case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);rightOffset=exBUTTON->Width;break;
+		}
+		switch(exBUTTONvalign)
+		{
+			case TOP:exBUTTON->Top=Top-exBUTTON->Height;break;
+			case MIDDLE:exBUTTON->Top=Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width-exBUTTON->Height)/2;break;
+			case BOTTOM:exBUTTON->Top=Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height)-m.round(Border.Width/2.0);break;
+		}
+		exBUTTON->Visible=true;
+	}else exBUTTON->Visible=false;
+
 	////POZNÁMKA POD ÈAROU -TmGrid - poznámka "pod èarou" resp. pod tabulkou, pøístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šíøku tabulky pokud se text nevejde zalomí na další øádek (dle poslední mezery na øádku), max zobrazí dva øádky, výchozí barva èervená a 11pt velikost písma
 	if(Note.Text!="" && ColCount>0 && RowCount>0)
 	{
 		C->Font=Note.Font;C->Font->Size*=Zoom_b;
-		int W=(Columns[ColCount-1].Left+Columns[ColCount-1].Width)*Zoom_b;
+		int W=(/*Columns[ColCount-1].Left+Columns[ColCount-1].Width*/Width-leftOffset-rightOffset)*Zoom_b;
 		int Wt=C->TextWidth(Note.Text);
 		if(W<Wt)//pokud je text poznámky delší, øeší ještì zalamování textu
 		{
 			int L=Note.Text.Length();                                   //zajistí odøádkování po poslední mezeøe na daném øádku
 			AnsiString T=Note.Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
-			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,T);//nelze používát Height èi getHeight
+			C->TextOutW(leftOffset,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,T);//nelze používát Height èi getHeight
 			AnsiString T1=Note.Text.SubString(T.Length()+1,L).TrimLeft();
-			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T),T1);//nelze používát Height èi getHeight
+			C->TextOutW(leftOffset,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T),T1);//nelze používát Height èi getHeight
 			Note.NoteArea=TRect(Left+0,Top+0,Left+W,Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T)+C->TextHeight(T1));
 		}
 		else//jednoøádkový text
 		{
-			C->TextOutW(0,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,Note.Text);//nelze používát Height èi getHeight
+			C->TextOutW(leftOffset,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,Note.Text);//nelze používát Height èi getHeight
 			Note.NoteArea=TRect(Left+0,Top+0,Left+W,Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note.Text));
 		}
 	}
@@ -737,6 +781,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//text
 	E->Font=Cell.Font;
+	if(E->Font->Name=="Roboto Cn")E->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else E->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmínìné formátování
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmínìné formátování
 	//if(!E->Focused())//pokud není na buòce focus resp. není aktivní - provizornì odstaveno, zdá se, že nemá na nic vliv
@@ -796,6 +841,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//text
 	N->Font=Cell.Font;
+	if(N->Font->Name=="Roboto Cn")N->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else N->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmínìné formátování
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmínìné formátování
 	//if(!N->Focused())//pokud je na buòce focus resp. je aktivní - provizornì odstaveno, zdá se, že nemá na nic vliv
@@ -837,8 +883,9 @@ void TmGrid::SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//text
 	L->Font=Cell.Font;
-	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))L->Font=Cell.isNegativeNumber;//podmínìné formátování
-	//28.2.provizorní fix if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))L->Font=Cell.isZero;//podmínìné formátování
+	if(L->Font->Name=="Roboto Cn")L->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else L->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
+	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))L->Font=Cell.isNegativeNumber;//podmínìné formátování
+	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))L->Font=Cell.isZero;//podmínìné formátování
 	L->Caption=Cell.Text;
 
 	//vlastník
@@ -865,6 +912,7 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//text
 	B->Font=Cell.Font;
+	if(B->Font->Name=="Roboto Cn")B->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else B->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
 	B->Caption=Cell.Text;
 
 	//vlastník
@@ -930,6 +978,7 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//font
 	C->Font=Cell.Font;
+	if(C->Font->Name=="Roboto Cn")C->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else C->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
 	C->Options->FontNormalColor=Cell.Font->Color;
 	//C->ItemIndex=1;//nelze pøedoznaèní první položku
 
@@ -968,6 +1017,7 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//text
 	Ch->Font=Cell.Font;
+	if(Ch->Font->Name=="Roboto Cn")Ch->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else Ch->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
 	Ch->Caption=Cell.Text;
 
 	//vlastník
@@ -1002,6 +1052,7 @@ void TmGrid::SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//Ra->Options->FrameNormalColorAlpha=255;
 	if(Cell.ShowHint){Ra->ShowHint=true;Ra->Hint=Cell.Hint;}
 	Ra->Font=Cell.Font;
+	if(Ra->Font->Name=="Roboto Cn")Ra->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else Ra->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor mùže dìlat problémy pøi zvìtšování písma, alternativa fqProof èi fqClearType
 	Ra->Caption=Cell.Text;
 	//vlastník
 	Ra->Parent=Form;//musí být až na konci
@@ -1351,8 +1402,15 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 	if(!deleteMark)//detekce že nedochází k odstraòování mGridu, pøitom nesmí k události docházet
 	{
 		//ShowMessage(AnsiString("OnClick ")+IntToStr(((TComponent*)(Sender))->Tag));
-		Col=getColFromTag(((TComponent*)(Sender))->Tag);
-		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		switch(((TComponent*)(Sender))->Tag)
+		{
+			case -2:Col=-2;Row=-2;break;//exBUTTON
+			case -1:break;//Hint - kdyby mìl události kliku, tu nyní nemá
+			default://komponenty v tabulce
+			Col=getColFromTag(((TComponent*)(Sender))->Tag);
+			Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+			break;
+		}
 
 		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
@@ -2316,6 +2374,7 @@ void TmGrid::SetVisibleComponents(bool state)
 			}
 		}
 	}
+	if(exBUTTONVisible)exBUTTON->Visible=state;
 }
 //---------------------------------------------------------------------------
 

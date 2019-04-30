@@ -138,7 +138,7 @@ class TmGrid
 	TPoint CheckLink(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí zda se na dané buòce a souøadnicích nachází odkaz
 
-	//promìnné
+	//promìnné a ukazatele
 	long Tag;//ID formuláøe, v kterém je tabulka èi tabuky daného formuláøe volány
 	long ID;//ID konkrétní tabulky, v jednom formuláøi vhodné unikátní èíslo, mimo formuláøe totožná hodnota nevadí (využitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
 	//long typeID;//pomocné ID tabulky, napø. pro rozlišení typu tabulky, nemusí být využito, i v rámci jednoho formuláøe mùže být totožné
@@ -152,6 +152,10 @@ class TmGrid
 	TColumns *Columns;//alokace jednorozmìrneho dynamickeho pole sloupcù
 	TRows *Rows;//alokace jednorozmìrneho dynamickeho pole øádkù
 	TCells DefaultCell;//deafultní vzorová VIRTUÁLNÍ buòka, podle ní se nastaví všechny pøi prvním naètení tabulky, pokud není pøed Show() ještì nastaveno jinak
+	TscGPGlyphButton *exBUTTON;//rozšíøené tlaèítko pro umístìní libovolné funkcionality a glyphu
+	Talign exBUTTONalign;//pozice rozšíøeného tlaèítka vùèi tabulce
+	Tvalign exBUTTONvalign;//pozice rozšíøeného tlaèítka vùèi tabulce
+	bool exBUTTONVisible;//stav zobrazení èi skrytí exBUTTNU, nepoužívat pøímo exBUTTON->Visible, ale toto exBUTTONVisible
 	short Decimal;//implicitní poèet desetinných míst u numericeditù
 	bool IntegerDecimalNull;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do poètu decimál i u celých èísel
 	bool MovingTable;//pokud je nastaveno na true, komponenty se zmìní na typ DRAW tj. tak, aby došlo k posunu dané buòky
