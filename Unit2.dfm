@@ -172,4 +172,13 @@ object Form2: TForm2
     TabOrder = 5
     OnClick = Button5Click
   end
+  object Button6: TButton
+    Left = 8
+    Top = 62
+    Width = 121
+    Height = 25
+    Caption = 'smazat pozn'#225'mku'
+    TabOrder = 6
+    OnClick = Button6Click
+  end
 end

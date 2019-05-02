@@ -985,7 +985,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 
 	//mGrid elementu
-	if(Objekt->n==F->pom_temp->n)//stačí nastavovat pouze v náhledu při vloz_element
+	if(Objekt->n==F->pom_temp->n)//stačí nastavovat pouze v náhledu při vloz_element, nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
 	{
 		novy->mGrid=new TmGrid(F);
 		novy->mGrid->Tag=6;//ID formu
@@ -1041,7 +1041,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->geo=Original->geo;
-	Kopie->mGrid=new TmGrid(F);
+	Kopie->mGrid=new TmGrid(F);//nová strategie, je mgrid, nekopírovat a používat jenom v pom_temp, zde však podmínka zda se jedná o pom_temp nebyla z nějakého důvodu možná
 	Kopie->poznamka=Original->poznamka;
 	Kopie->sparovany=Original->sparovany;
 }
