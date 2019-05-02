@@ -101,7 +101,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 73
     Height = 19
     Caption = 'podlahov'#253
-    Color = clWhite
+    Color = clBackground
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
     Font.Height = 19
@@ -118,7 +118,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Width = 67
     Height = 19
     Caption = 'podv'#283'sn'#253
-    Color = clWhite
+    Color = clBackground
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
     Font.Height = 19
@@ -3206,15 +3206,15 @@ object Form_parametry_linky: TForm_parametry_linky
     object rHTMLLabel_takt: TrHTMLLabel
       Left = 342
       Top = 50
-      Width = 55
+      Width = 47
       Height = 44
       Caption = '<font color=#2b579a>[s]</font>'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGray
       Font.Height = -35
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentFont = False
       Visible = False
       OnClick = rHTMLLabel_taktClick
@@ -3301,9 +3301,9 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -48
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentBiDiMode = False
       ParentFont = False
       ParentShowHint = False
@@ -3569,32 +3569,32 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scPanel_vozik'
     StorePaintBuffer = False
     object rHTMLLabel_delka_jig: TrHTMLLabel
-      Left = 206
+      Left = 201
       Top = 0
-      Width = 33
+      Width = 28
       Height = 21
       Caption = '<font color=#2b579a>[m]</font>'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGray
       Font.Height = 19
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentFont = False
       OnClick = rHTMLLabel_delka_jigClick
     end
     object rHTMLLabel_delka_podvozek: TrHTMLLabel
-      Left = 206
-      Top = 172
-      Width = 33
+      Left = 201
+      Top = 173
+      Width = 28
       Height = 21
       Caption = '<font color=#2b579a>[m]</font>'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGray
       Font.Height = 19
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentFont = False
       OnClick = rEditNum_delkavozikuClick
     end
@@ -3633,24 +3633,24 @@ object Form_parametry_linky: TForm_parametry_linky
     object rHTMLLabel_sirka_jig: TrHTMLLabel
       Left = 311
       Top = 100
-      Width = 33
+      Width = 28
       Height = 21
       Margins.Bottom = 0
       Caption = '<font color=#2b579a>[m]</font>'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGray
       Font.Height = 19
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentFont = False
       Visible = False
       OnClick = rHTMLLabel_sirka_jigClick
     end
     object rHTMLLabel_vyska_jig: TrHTMLLabel
-      Left = 61
-      Top = 100
-      Width = 33
+      Left = 60
+      Top = 80
+      Width = 28
       Height = 21
       Margins.Left = 0
       Margins.Top = 0
@@ -3660,9 +3660,9 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGray
       Font.Height = 19
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentFont = False
       OnClick = rHTMLLabel_sirka_jigClick
     end
@@ -3670,7 +3670,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Left = 101
       Top = 19
       Width = 141
-      Height = 156
+      Height = 158
       Align = alCustom
       Picture.Data = {
         0954574943496D61676549492A00080000001400FE0004000100000000000000
@@ -5211,13 +5211,13 @@ object Form_parametry_linky: TForm_parametry_linky
         423874746150000000004D4942386B734D460C0000000000FFFF000000000000
         320000000000}
       BoundLabel.Left = 170
-      BoundLabel.Top = 90
+      BoundLabel.Top = 91
       BoundLabel.Width = 3
       BoundLabel.Height = 13
       BoundLabel.Transparent = True
     end
     object scGPNumericEdit_delka_jig: TscGPNumericEdit
-      Left = 144
+      Left = 140
       Top = 0
       Width = 61
       Height = 21
@@ -5302,9 +5302,9 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -16
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentBiDiMode = False
       ParentFont = False
       ParentShowHint = False
@@ -5313,7 +5313,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnKeyDown = FormKeyDown
     end
     object scGPNumericEdit_delka_podvozek: TscGPNumericEdit
-      Left = 144
+      Left = 140
       Top = 172
       Width = 61
       Height = 19
@@ -5398,9 +5398,9 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -16
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentBiDiMode = False
       ParentFont = False
       ParentShowHint = False
@@ -5494,9 +5494,9 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -16
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentBiDiMode = False
       ParentFont = False
       ParentShowHint = False
@@ -5506,7 +5506,7 @@ object Form_parametry_linky: TForm_parametry_linky
     end
     object scGPNumericEdit_vyska_jig: TscGPNumericEdit
       Left = 1
-      Top = 100
+      Top = 80
       Width = 61
       Height = 21
       Margins.Left = 0
@@ -5590,9 +5590,9 @@ object Form_parametry_linky: TForm_parametry_linky
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -16
-      Font.Name = 'Tahoma'
+      Font.Name = 'Roboto'
       Font.Style = []
-      Font.Quality = fqClearType
+      Font.Quality = fqAntialiased
       ParentBiDiMode = False
       ParentFont = False
       ParentShowHint = False
@@ -5603,8 +5603,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 4778
-    Top = 7334
+    Left = 4982
+    Top = 7674
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -5629,8 +5629,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 4433
-    ExplicitTop = 6759
+    ExplicitLeft = 4787
+    ExplicitTop = 7349
   end
   object scGPSwitch: TscGPSwitch
     Left = 736
@@ -5719,7 +5719,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
+    Options.DisabledColorAlpha = 125
     Options.FrameNormalColor = clBlack
     Options.FrameHotColor = clBlack
     Options.FramePressedColor = clBlack
