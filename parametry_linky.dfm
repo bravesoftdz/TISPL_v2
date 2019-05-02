@@ -95,7 +95,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ShadowColor = clBlue
     ShadowSize = 50
   end
-  object rHTMLLabel3: TrHTMLLabel
+  object rHTMLLabel_podlahovy: TrHTMLLabel
     Left = 659
     Top = 52
     Width = 73
@@ -112,7 +112,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     OnClick = rHTMLLabel_delkavozikuClick
   end
-  object rHTMLLabel4: TrHTMLLabel
+  object rHTMLLabel_podvesny: TrHTMLLabel
     Left = 787
     Top = 52
     Width = 67
@@ -2933,7 +2933,7 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphOptions.NormalColor = clWhite
     GlyphOptions.HotColor = clWhite
     GlyphOptions.PressedColor = clBtnText
-    GlyphOptions.FocusedColor = 16744448
+    GlyphOptions.FocusedColor = clLime
     GlyphOptions.DisabledColor = 16744448
     GlyphOptions.NormalColorAlpha = 200
     GlyphOptions.HotColorAlpha = 255
@@ -5603,8 +5603,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 4982
-    Top = 7674
+    Left = 5543
+    Top = 8609
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -5629,8 +5629,6 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 4787
-    ExplicitTop = 7349
   end
   object scGPSwitch: TscGPSwitch
     Left = 736
@@ -5660,8 +5658,8 @@ object Form_parametry_linky: TForm_parametry_linky
     FramePressedColor = clWhite
     State = scswOff
     StyleKind = scswsStyled
-    ThumbColor = clBlack
-    ThumbOnColor = clBlack
+    ThumbColor = clLime
+    ThumbOnColor = clLime
     ThumbPressedColor = clBlack
     FrameColorAlpha = 255
     FrameOnColorAlpha = 255
@@ -5670,7 +5668,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ThumbOnColorAlpha = 255
     ThumbPressedColorAlpha = 255
     ThumbShadow = False
-    FrameSolid = True
+    FrameSolid = False
     FrameOnSolid = False
     FrameInside = False
     OnChangeState = scGPSwitchChangeState

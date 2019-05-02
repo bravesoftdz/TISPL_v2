@@ -82,7 +82,13 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 	GlyphButton_smazat_nepouzite->Options->NormalColor=clGlyph;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColor=clWhite;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColorAlpha=200;
-  scGPGlyphButton_ADD->Options->NormalColor=(TColor)RGB(75,168,46);
+  scGPGlyphButton_ADD->Options->NormalColor=(TColor)RGB(11,221,35);
+  scGPGlyphButton_ADD->Options->NormalColorAlpha=200;
+  //scGPSwitch->ThumbColor= scGPGlyphButton_ADD->Options->NormalColor;
+//  scGPSwitch->ThumbOnColor=scGPSwitch->ThumbColor;
+  scGPSwitch->ThumbColorAlpha= 200;//scGPGlyphButton_ADD->Options->NormalColorAlpha;
+  scGPSwitch->ThumbOnColorAlpha=200;//scGPSwitch->ThumbColorAlpha;
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -91,6 +97,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     input_state=LOADING;
     COL=0; ROW=0;
     Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
+
+   // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
     //C->Items[1].operator [](C->Items->Count)->Header=true;
    // C->Items->operator [](C->Items->Count)->Header=true;
@@ -335,6 +343,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	// rStringGridEd_tab_dopravniky->Left=1;
  //	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
 
+    rHTMLLabel_podlahovy->Color=Form_parametry_linky->Color;
+    rHTMLLabel_podvesny->Color=rHTMLLabel_podlahovy->Color;
 
 	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
@@ -2335,15 +2345,15 @@ void TForm_parametry_linky::OnKeyPress(TObject *Sender, System::WideChar &Key)
 void TForm_parametry_linky::vykresli_obdelnik_vpravo()
 {
      	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
-		Canvas->Pen->Width=3;
+		Canvas->Pen->Width=2;
 		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
 
-		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
-		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
+		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+1,mGrid->Top);
+		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-10,mGrid->Top);
 
 
-   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
-    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
+   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-10,mGrid->Top+2*mGrid->DefaultRowHeight);
+    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-10,mGrid->Top-1);
 }
 
 

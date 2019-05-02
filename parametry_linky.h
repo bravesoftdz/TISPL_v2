@@ -55,8 +55,8 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_jig;
 	TrHTMLLabel *rHTMLLabel_delka_jig;
 	TscGPSwitch *scGPSwitch;
-	TrHTMLLabel *rHTMLLabel3;
-	TrHTMLLabel *rHTMLLabel4;
+  TrHTMLLabel *rHTMLLabel_podlahovy;
+  TrHTMLLabel *rHTMLLabel_podvesny;
 	TrHTMLLabel *rHTMLLabel_JIG;
 	TscGPNumericEdit *scGPNumericEdit_delka_jig;
 	TscGPNumericEdit *scGPNumericEdit_sirka_jig;
