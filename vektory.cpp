@@ -1128,7 +1128,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 						//změna názvu v hlavičce mGridu
 	     			if(E!=Element)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 						{
-							if(E->eID==0)napln_combo_stopky(E);
+							//if(E->eID==0)napln_combo_stopky(E);
 							E->mGrid->Cells[0][0].Text=E->name;
 							E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
 							E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
