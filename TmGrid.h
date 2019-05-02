@@ -74,6 +74,7 @@ class TmGrid
 	{
 		TFont *Font;//vlastnosti fontu
 		TRect NoteArea;//souřadnice oblasti, kde se poznámka nachází, ukládá citelnou oblast poznámky
+		short margin_left,margin_right,margin_bootom,margin_top;
 		UnicodeString Text;//samotný text poznámky
 	};TNote Note;
 
@@ -138,6 +139,7 @@ class TmGrid
 	bool CheckPTinTable(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) zjistí, zda jsou souřadnice ve vnitř tabulky
 	TPoint CheckLink(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí kladné číslo sloupce a řádku pokud se na daném místě nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí zda se na dané buňce a souřadnicích nachází odkaz
+	void ShowNote(UnicodeString Text,TColor Color=clRed,short FontSize=11);//zajistí vykreslení poznámky
 
 	//proměnné a ukazatele
 	long Tag;//ID formuláře, v kterém je tabulka či tabuky daného formuláře volány
@@ -188,6 +190,7 @@ class TmGrid
 
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky včetně gridu a exBUTTONu a poznámky pod čarou
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
+	void DrawNote(TCanvas *C);//zajistí vykreslení poznámky
 	void DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R);//zajistí vykreslení orámování jen jedné buňky
 	void SetColRow();//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby
 	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na požadované parametry

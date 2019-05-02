@@ -147,6 +147,7 @@ TmGrid::TmGrid(TForm *Owner)
 	Note.Font->Size=11;
 	Note.Font->Color=clRed;
 	Note.NoteArea=TRect(-1,-1,-1,-1);
+	Note.margin_left=Note.margin_right=Note.margin_bootom=Note.margin_top=0;
 }
 //---------------------------------------------------------------------------
 //destruktor, probíhá při ukončování programu, tj. zvážit zda není pozdě
@@ -359,20 +360,25 @@ void TmGrid::Show(TCanvas *Canvas)
 
 		if(Canvas==NULL)Canvas=Form->Canvas;//pokud Canvas není definován, je předpokládáno kreslení přímo do Form, kde je mGrid zobrazován
 
-		if(AntiAliasing_grid==false && AntiAliasing_text==false)Draw(Canvas);
+		if(AntiAliasing_grid==false && AntiAliasing_text==false)
+		{
+			Draw(Canvas);
+			DrawNote(Canvas);
+		}
 		else
 		{
 			Cantialising a;
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-			bmp_in->Width=Width*3;bmp_in->Height=Height*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+			bmp_in->Width=Width*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+			bmp_in->Height=Height*3+(Note.Text!="")*(Note.NoteArea.Height());//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu  + příčítám výšku poznámky, je-li k dispozici
 			//bmp_in->Canvas->Brush->Color=clRed;
 			//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
 			Draw(bmp_in->Canvas);
+			DrawNote(bmp_in->Canvas);
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 			Canvas->Draw(Left,Top,bmp_out);
 			if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru
-			delete (bmp_out);//velice nutné
-			delete (bmp_in);//velice nutné
+			delete (bmp_out);delete (bmp_in);//velice nutné
 		}
 		//zaloha úvodní pozice
 		preTop=Top;preLeft=Left;
@@ -473,15 +479,14 @@ void TmGrid::Draw(TCanvas *C)
 	}
 
 	////exBUTTON - pozice - ještě odladit border
-	short leftOffset=0,rightOffset=0;
 	Width=getWidth();
 	if(VisibleComponents && !MovingTable && exBUTTONVisible)
 	{
 		switch(exBUTTONalign)
 		{
-			case LEFT:exBUTTON->Left=Left;leftOffset=exBUTTON->Width;break;
+			case LEFT:exBUTTON->Left=Left;break;
 			case CENTER:exBUTTON->Left=Left+(Width-exBUTTON->Width)/2;break;
-			case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);rightOffset=exBUTTON->Width;break;
+			case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);break;
 		}
 		switch(exBUTTONvalign)
 		{
@@ -491,36 +496,6 @@ void TmGrid::Draw(TCanvas *C)
 		}
 		exBUTTON->Visible=true;
 	}else exBUTTON->Visible=false;
-
-	////POZNÁMKA POD ČAROU -TmGrid - poznámka "pod čarou" resp. pod tabulkou, přístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šířku tabulky pokud se text nevejde zalomí na další řádek (dle poslední mezery na řádku), max zobrazí dva řádky, výchozí barva červená a 11pt velikost písma
-	if(Note.Text!="" && ColCount>0 && RowCount>0)
-	{
-		C->Font=Note.Font;C->Font->Size*=Zoom_b;
-		int W=(/*Columns[ColCount-1].Left+Columns[ColCount-1].Width*/Width-leftOffset-rightOffset)*Zoom_b;
-		int Wt=C->TextWidth(Note.Text);
-		if(W<Wt)//pokud je text poznámky delší, řeší ještě zalamování textu
-		{
-			int L=Note.Text.Length();                                   //zajistí odřádkování po poslední mezeře na daném řádku
-			AnsiString T=Note.Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
-			C->TextOutW(leftOffset,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,T);//nelze používát Height či getHeight
-			AnsiString T1=Note.Text.SubString(T.Length()+1,L).TrimLeft();
-			C->TextOutW(leftOffset,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T),T1);//nelze používát Height či getHeight
-			Note.NoteArea=TRect(Left+0,Top+0,Left+W,Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(T)+C->TextHeight(T1));
-		}
-		else//jednořádkový text
-		{
-			C->TextOutW(leftOffset,(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b,Note.Text);//nelze používát Height či getHeight
-			Note.NoteArea=TRect(Left+0,Top+0,Left+W,Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width)*Zoom_b+C->TextHeight(Note.Text));
-		}
-	}
-	else
-	{
-		if(Note.NoteArea!=TRect(-1,-1,-1,-1))
-		{
-			InvalidateRect(Form->Handle,&Note.NoteArea,true);
-			Note.NoteArea=TRect(-1,-1,-1,-1);
-		}
-	}
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení jen gridu
@@ -574,6 +549,85 @@ void TmGrid::DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R)
 		SetBorder(C,Cells[X][Y].RightBorder);
 		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight)C->Pen->Color=clHighlight;//v případě highlightu orámování
 		C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
+	}
+}
+//---------------------------------------------------------------------------
+//zajistí vykreslení poznámky "pod čarou" resp. pod tabulkou
+void TmGrid::DrawNote(TCanvas *C)
+{
+	////POZNÁMKA POD ČAROU -TmGrid - poznámka "pod čarou" resp. pod tabulkou, přístup mGrid->Note, možno nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šířku tabulky pokud se text nevejde zalomí na další řádek (dle poslední mezery na řádku), max zobrazí dva řádky, výchozí barva červená a 11pt velikost písma
+	if(Note.Text!=""/* && ColCount>0 && RowCount>0*/)
+	{
+		//zarovnání dle exBUTTONu
+		short leftOffset=0,rightOffset=0;
+		switch(exBUTTONalign)
+		{
+			case LEFT:exBUTTON->Left=Left;leftOffset=exBUTTON->Width;break;
+			case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);rightOffset=exBUTTON->Width;break;
+		}
+		Width=getWidth();
+		Height=getHeight();
+
+		short Zoom_b=1; if(AntiAliasing_text)Zoom_b=3;
+		short margin_left=Note.margin_left*Zoom_b,margin_right=Note.margin_right*Zoom_b,margin_bootom=Note.margin_bootom*Zoom_b,margin_top=Note.margin_top*Zoom_b;
+
+		C->Font=Note.Font;C->Font->Size*=Zoom_b;
+		int W=(Width-leftOffset-rightOffset-margin_left-margin_right)*Zoom_b;
+		int Wt=C->TextWidth(Note.Text);
+		if(W<Wt)//pokud je text poznámky delší, řeší ještě zalamování textu
+		{
+			int L=Note.Text.Length();                                   //zajistí odřádkování po poslední mezeře na daném řádku
+			AnsiString T=Note.Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
+			C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,T);//nelze používát Height či getHeight
+			AnsiString T1=Note.Text.SubString(T.Length()+1,L).TrimLeft();
+			C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+C->TextHeight(T),T1);//nelze používát Height či getHeight
+			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+C->TextHeight(T)+C->TextHeight(T1)+margin_bootom);
+		}                                                      //zpětná korekce, takže +
+		else//jednořádkový text
+		{
+			C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,Note.Text);//nelze používát Height či getHeight
+			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+C->TextHeight(Note.Text)+margin_bootom);
+		}                                                      //zpětná korekce, takže +
+	}
+	else
+	{
+		if(Note.NoteArea!=TRect(-1,-1,-1,-1))
+		{
+			InvalidateRect(Form->Handle,&Note.NoteArea,true);
+			Note.NoteArea=TRect(-1,-1,-1,-1);
+		}
+	}
+}
+//---------------------------------------------------------------------------
+//zajistí vykreslení poznámky
+void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
+{
+	if(Text!=Note.Text)//ošetření probliku
+	{
+		if(Text!="")
+		{
+			Note.Text=Text;
+			Note.Font->Size=FontSize;
+			Note.Font->Color=clRed;
+			Cantialising a;
+			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+			//DrawNote(bmp_in->Canvas);
+			bmp_in->Width=Note.NoteArea.Width();
+			bmp_in->Height=Note.NoteArea.Height();
+			//bmp_in->Canvas->Brush->Color=clRed;
+			//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
+			DrawNote(bmp_in->Canvas);
+			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+			Form->Canvas->Draw(Note.NoteArea.Left,Note.NoteArea.Top,bmp_out);
+			delete (bmp_out);delete (bmp_in);//velice nutné
+			InvalidateRect(Form->Handle,&Note.NoteArea,true);
+		}
+		else
+		{
+			Note.Text="";
+			InvalidateRect(Form->Handle,&Note.NoteArea,true);
+			Note.NoteArea=TRect(-1,-1,-1,-1);
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -1337,16 +1391,7 @@ unsigned long TmGrid::getWidth()
 //vrátí celkovou výšku tabulky
 unsigned long TmGrid::getHeight()
 {
-	//pokud je aktivní poznámka pod čarou
-	short Offset_Note=0;
-	if(Note.Text!="" && ColCount>0 && RowCount>0)
-	{
-		Form->Canvas->Font->Size=Note.Font->Size;
-		if(Form->Canvas->TextWidth(Note.Text)>(signed)getWidth())Offset_Note=2;else Offset_Note=1; //pokud je text delší musí se zobrazit 2 řádky, Offset_Note - jenom "zneužívám"
-		Offset_Note=Form->Canvas->TextHeight(Note.Text)*Offset_Note+Border.Width;
-	}
-	//samotné vrácení výšky tabulky
-	return Rows[RowCount-1].Top+Rows[RowCount-1].Height+Offset_Note;
+	return Rows[RowCount-1].Top+Rows[RowCount-1].Height;
 }
 //---------------------------------------------------------------------------
 //vrátí šířku a výšku textu buňky v pixelech

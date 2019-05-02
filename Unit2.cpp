@@ -55,8 +55,8 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
-		E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a nìjaký další abcdefgeijasdfads dafs";
-
+		//E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a nìjaký další abcdefgeijasdfads dafs";
+		E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a nìjaký další abcdefgeijasdfads dafs");
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
@@ -421,6 +421,7 @@ void TForm2::OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::Wid
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)
 {
+ELEMENTY->mG->Delete(); ELEMENTY->dalsi->mG->Delete();
 //	 mGrid->Delete();//pokud chci odstranit a nechci použít na další použití
 //	 mGrid2->Delete();
 //	 mGrid2=NULL; delete mGrid2;
@@ -576,8 +577,9 @@ void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 
 void __fastcall TForm2::Button6Click(TObject *Sender)
 {
-ELEMENTY->mG->Note.Text="";
-ELEMENTY->mG->Refresh();
+//ELEMENTY->mG->Note.Text="";
+//InvalidateRect(Form2->Handle,&ELEMENTY->mG->Note.NoteArea,true);
+	ELEMENTY->mG->ShowNote("");
 }
 //---------------------------------------------------------------------------
 
