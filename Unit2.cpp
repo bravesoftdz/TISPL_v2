@@ -574,3 +574,10 @@ void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 
 
 
+void __fastcall TForm2::Button6Click(TObject *Sender)
+{
+ELEMENTY->mG->Note.Text="";
+ELEMENTY->mG->Refresh();
+}
+//---------------------------------------------------------------------------
+

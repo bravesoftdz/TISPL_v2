@@ -82,7 +82,13 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 	GlyphButton_smazat_nepouzite->Options->NormalColor=clGlyph;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColor=clWhite;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColorAlpha=200;
-  scGPGlyphButton_ADD->Options->NormalColor=(TColor)RGB(75,168,46);
+  scGPGlyphButton_ADD->Options->NormalColor=(TColor)RGB(11,221,35);
+  scGPGlyphButton_ADD->Options->NormalColorAlpha=200;
+  //scGPSwitch->ThumbColor= scGPGlyphButton_ADD->Options->NormalColor;
+//  scGPSwitch->ThumbOnColor=scGPSwitch->ThumbColor;
+  scGPSwitch->ThumbColorAlpha= 200;//scGPGlyphButton_ADD->Options->NormalColorAlpha;
+  scGPSwitch->ThumbOnColorAlpha=200;//scGPSwitch->ThumbColorAlpha;
+
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -90,7 +96,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
     input_state=LOADING;
     COL=0; ROW=0;
+    Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
 
+   // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
     //C->Items[1].operator [](C->Items->Count)->Header=true;
    // C->Items->operator [](C->Items->Count)->Header=true;
@@ -296,8 +304,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		for(unsigned int PID=0;PID<zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
 
-	 Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
-
 	// rStringGridEd_tab_dopravniky->Columns->Items[0]->Visible=false;
 
 	 scHTMLLabel_doporuc_pohony->Color=(TColor)RGB(230,230,230);
@@ -337,6 +343,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	// rStringGridEd_tab_dopravniky->Left=1;
  //	 rStringGridEd_tab_dopravniky->Width=Form_parametry_linky->Width-2;
 
+    rHTMLLabel_podlahovy->Color=Form_parametry_linky->Color;
+    rHTMLLabel_podvesny->Color=rHTMLLabel_podlahovy->Color;
 
 	 scGPButton_doporucene->Options->NormalColor=Form_parametry_linky->Color;
 	 scGPButton_doporucene->Options->FrameNormalColor=Form_parametry_linky->Color;
@@ -346,13 +354,14 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 else  { scGPSwitch->State=scswOn; }
 	 //scRadioGroup_typVoziku->ItemIndex=Form1->d.v.PP.typ_voziku;
 
+  // rEditNum_takt->
 
 	 if(Taktunit==MIN)
 	 {
 	 rEditNum_takt->Value=Form1->d.v.PP.TT/60.0;
 	 } else {rEditNum_takt->Value=Form1->d.v.PP.TT;}
 
-    rEditNum_takt->SelStart=6; //pozice kurzoru
+    rEditNum_takt->SelStart=6;//F->ms.MyToDouble(rEditNum_takt->Value.Length());//6; //pozice kurzoru
 
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();
@@ -994,14 +1003,14 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_taktClick(TObject *Sender)
 		Taktunit=S;
 		//delka - pøepoèítání
 		rEditNum_takt->Value=rEditNum_takt->Value*60.0;
-		rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[s]</font>";
+		rHTMLLabel_takt->Caption="<font color=#2b579a>[s]</font>";
 	}
 	else//metrech tak se pøepne na MM
 	{
 		Taktunit=MIN;
 		//delka - pøepoèítání
 		rEditNum_takt->Value=rEditNum_takt->Value/60.0;
-		rHTMLLabel_takt->Caption="TaktTime <font color=#2b579a>[m]</font>";
+		rHTMLLabel_takt->Caption="<font color=#2b579a>[m]</font>";
 	}
 
 }
@@ -1158,6 +1167,9 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender
 
 		rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[m]</font>";
 		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value/1000.0;
+
+    rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[m]</font>";
+    scGPNumericEdit_vyska_jig->Value=scGPNumericEdit_vyska_jig->Value/1000.0;
 	}
 	else//metrech tak se pøepne na MM
 	{
@@ -1172,6 +1184,9 @@ void __fastcall TForm_parametry_linky::rHTMLLabel_delka_jigClick(TObject *Sender
 
 		rHTMLLabel_delka_podvozek->Caption="<font color=#2b579a>[mm]</font>";
 		scGPNumericEdit_delka_podvozek->Value=scGPNumericEdit_delka_podvozek->Value*1000.0;
+
+    rHTMLLabel_vyska_jig->Caption="<font color=#2b579a>[mm]</font>";
+    scGPNumericEdit_vyska_jig->Value=scGPNumericEdit_vyska_jig->Value*1000.0;
 	}
 }
 //---------------------------------------------------------------------------
@@ -1691,8 +1706,8 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 {
 
     vypis("");
-    mGrid->Note.Text="";
-    mGrid->Refresh();
+   // mGrid->Note.Text="";
+  //  mGrid->Refresh();   // - brzdi pøekreslování menìných hodnot
  //   ShowMessage(mGrid->Note.Text);
     VID=-1;
     Row_validace=0;
@@ -1726,11 +1741,9 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-            //  vypis("Nastavte správný rozsah a rychlost pohonu.");
-              mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
+              vypis("Nastavte správný rozsah a rychlost pohonu.");
+             // mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
             //  ShowMessage(mGrid->Note.Text);
-            //  mGrid->Refresh();
-
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
@@ -1750,10 +1763,9 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-            //  vypis("Nastavte správný rozsah a rychlost pohonu.");
-              mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
+              vypis("Nastavte správný rozsah a rychlost pohonu.");
+             // mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
              // ShowMessage(mGrid->Note.Text);
-            //  mGrid->Refresh();
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
@@ -1773,10 +1785,9 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						}
 						else
 						{
-             // vypis("Nastavte správný rozsah a rychlost pohonu.");
-              mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
+              vypis("Nastavte správný rozsah a rychlost pohonu.");
+             // mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
              // ShowMessage(mGrid->Note.Text);
-             // mGrid->Refresh();
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
@@ -1785,10 +1796,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 				break;
 	 }
   // ShowMessage(mGrid->Note.Text);
- //  mGrid->Refresh();
-   Invalidate();
- //  FormPaint(this);
-
+  // mGrid->Refresh(); // - brzdi pøekreslování menìných hodnot
 }
 
 
@@ -2170,6 +2178,7 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[6][0].Background->Color=clBACKGROUND;
   mGrid->Cells[7][0].Background->Color=clBACKGROUND;
   mGrid->Cells[8][0].Background->Color=Form_parametry_linky->Color;
+ // mGrid->Cells[8][0].
 
   mGrid->Cells[6][0].TopMargin=-11;
 
@@ -2339,14 +2348,14 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
 		Canvas->Pen->Width=2;
 		Canvas->Pen->Color=Form_parametry_linky->Color;//(TColor)RGB(240,240,240);
 
-//
-		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left,mGrid->Top);
-		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width,mGrid->Top);
+		Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+1,mGrid->Top);
+		Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-10,mGrid->Top);
 
 
-   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
-    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
+   	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-10,mGrid->Top+2*mGrid->DefaultRowHeight);
+    Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-10,mGrid->Top-1);
 }
+
 
 
 
