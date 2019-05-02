@@ -3215,7 +3215,7 @@ void TForm1::add_element (int X, int Y)
 	{
 		DoSkRB=d.DoSkRB*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
-	}
+	}                                       //netradičně v hlavičce je umístěna elementární osa pohonu!!!
 	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;//m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);//vodorovný pohon
 	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;//m.round(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0+DoSkRB);//svislý pohon
 				//zvážit nahrazení makrem Rxy
