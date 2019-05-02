@@ -947,14 +947,15 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	//alokace paměti
 	TElement *novy=new TElement;
 
-	//ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
-	vloz_element(Objekt,novy);
-
 	//atributy elementu
 	//novy->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku již řešeno v vloz_element(Objekt,novy);
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
+
+  //ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
+//	vloz_element(Objekt,novy);
+	vloz_element(Objekt,novy);
 
 	//defaultní data
 	novy->LO1=1.5;
@@ -980,9 +981,12 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 5: T="Otoč"; 				novy->OTOC_delka=0.450;break;//pasivní otoč
 		case 6: T="Otoč"; 				novy->PTotoc=20;break;//aktivní otoč
 	}
-	unsigned int nTyp=vrat_poradi_elementu(Objekt,novy->eID);
-	novy->name=T+" "+AnsiString(nTyp);
-	novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
+	if(novy->name=="")
+	{
+		unsigned int nTyp=vrat_poradi_elementu(Objekt,novy->eID);
+		novy->name=T+" "+AnsiString(nTyp);
+		novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
+	}
 
 	//mGrid elementu
 	novy->mGrid=new TmGrid(F);
@@ -997,18 +1001,146 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 }
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu
-void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
+void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element) //SEM PSÁT
 {
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);//pokud by ještě nebyla založena hlavička, tak ji založí
 
 	Element->n=Objekt->elementy->predchozi->n+1;//navýším počítadlo prvku o jedničku
 
-	//ukazatelové propojení
-	Objekt->elementy->predchozi->dalsi=Element;//poslednímu prvku přiřadím ukazatel na nový prvek
-	Element->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
-	Element->dalsi=NULL;
-	Element->sparovany=NULL;
-	Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	//kontrola zda je element vkládán za předchozí nebo mezi předchozí
+	Cvektory::TElement *p=vloz_element_za(Objekt,Element);//pokud bude vkládaný elment vložen na konec vrází NULL, pokud mezi vrátí ukazatel na předchozí element
+	if(p==NULL)//vkládám na konec
+	{
+		//ukazatelové propojení
+		Objekt->elementy->predchozi->dalsi=Element;//poslednímu prvku přiřadím ukazatel na nový prvek
+		Element->predchozi=Objekt->elementy->predchozi;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+		Element->dalsi=NULL;
+		Element->sparovany=NULL;
+		Objekt->elementy->predchozi=Element;//nový poslední prvek zápis do hlavičky,body->predchozi zápis do hlavičky odkaz na poslední prvek seznamu "predchozi" v tomto případě zavádějicí
+	}
+	else//vkládám mezi elementy
+	{
+		//ukazatelové propojení
+		Element->dalsi=p->dalsi;
+		Element->predchozi=p;//novy prvek se odkazuje na prvek predchozí (v hlavicce body byl ulozen na pozici predchozi, poslední prvek)
+		p->dalsi->predchozi=Element;
+		p->dalsi=Element;
+		//změna indexů
+		Element->n=p->n+1;
+		Cvektory::TElement *E=Element->dalsi;
+		while(E!=NULL)
+		{
+			E->n=E->predchozi->n+1;
+			E->mGrid->ID=E->n;//důležité změnit, nelze mít 2 tabulky se stejným ID
+			E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+		//změna názvů
+    uprav_popisky_elementu(Objekt,Element);
+	}
+	p=NULL; delete p;
+}
+////---------------------------------------------------------------------------
+//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy
+Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
+{
+	Cvektory::TElement *p=Objekt->elementy->dalsi;//přeskočí hlavičku
+	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdná
+	while (p!=NULL)
+	{
+		if(p->dalsi!=NULL)//aby se neřešila situace poslední-prní prvek
+		{
+			//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
+			if(TRect(F->d.Rxy(p).x,F->d.Rxy(p).y,F->d.Rxy(p->dalsi).x,F->d.Rxy(p->dalsi).y+1).PtInRect(TPoint(F->d.Rxy(Element).x,F->d.Rxy(p).y/*F->d.Rxy(Element).y*/)))
+			{
+				ret=p;//uložení elementu, který předcházi vkládanému elementu
+				break;
+			}
+		}
+		p=p->dalsi;//posun na další prvek
+	}
+	p=NULL; delete p;
+	return ret;
+}
+////---------------------------------------------------------------------------
+//pokud byl nějaký element vložen mezi ostatní a ne na konec, provede přejměnování a přeindexování elementů
+void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
+{
+	bool rename=false;//proměná sloužící k spouštění přejměnování
+	unsigned int n=vrat_poradi_elementu_do(Objekt,Element)+1;//pořadí Elementu, bude vloženo do jeho názvu
+	F->Sv(vrat_poradi_elementu_do(Objekt,Element));
+	//úprava názvu pro roboty
+	if(Element->eID<5&&Element->eID>0)
+	{
+		Cvektory::TElement *E=Element;//začíná se od elementu, který byl vložený mimo
+		while (E!=NULL)
+		{
+			//pokud je název nezměněný, můžu ho později editovat, -1 z důvodu, že elementy mají již posunuté n
+			if(E->name=="Robot "+AnsiString(E->n-1)&&E->short_name=="Rob"+AnsiString(E->n-1)||E->name=="")rename=true;else rename=false;
+ 			//změna názvu
+			if(rename)//přejmenování elementu ve spojáku + mGridu
+			{
+				E->name="Robot "+AnsiString(n);
+				E->short_name="Rob"+AnsiString(n);
+				//změna názvu v hlavičce mGridu
+				if(E!=Element)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
+				{
+					E->mGrid->Cells[0][0].Text=E->name;
+					E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+					E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+				}
+				n++;
+			}
+			E=E->dalsi;//posun na další prvek
+ 		}
+ 		E=NULL; delete E;
+	}
+	else
+	{
+//		Cvektory::TObjekt *O=Objekt;//začínám přejmenovávát už v aktuálním objektu
+//		while(O!=NULL)
+//		{
+			Cvektory::TElement *E;//element v aktuálním objektu bude jiný než v dalších
+			/*if(O==Objekt)*/E=Element;
+//			else E=O->elementy;//nepřeskakovat hlavičku
+			while(E!=NULL)
+			{
+				if(E->n>0)//ošetření hlavičky
+				{
+					//kontrola zda můžu měnit název
+					switch(E->eID)
+					{
+						case 0:if(E->name=="Stop "+AnsiString(E->n-1)&&E->short_name=="Sto"+AnsiString(E->n-1)||E->name=="")rename=true;else rename=false;break;
+						case 5:
+						case 6:if(E->name=="Otoč "+AnsiString(E->n-1)&&E->short_name=="Oto"+AnsiString(E->n-1)||E->name=="")rename=true;else rename=false;break;
+					}
+          if(rename)//přejmenování elementu ve spojáku + mGridu
+	     		{
+						switch(E->eID)
+			   		{
+							case 0:E->name="Stop "+AnsiString(n);E->short_name="Sto"+AnsiString(n);break;
+							case 5:
+							case 6:E->name="Otoč "+AnsiString(n);E->short_name="Oto"+AnsiString(n);break;
+						}
+						//změna názvu v hlavičce mGridu
+	     			if(E!=Element)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
+						{
+							if(E->eID==0)napln_combo_stopky(E);
+							E->mGrid->Cells[0][0].Text=E->name;
+							E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+							E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+						}
+	     			n++;
+					}
+				}
+				E=E->dalsi;
+			}
+			E=NULL; delete E;
+//			O=O->dalsi;
+//		} //F->Sv("Po");
+//		O=NULL; delete O;
+  }
 }
 ////---------------------------------------------------------------------------
 //zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
@@ -1116,6 +1248,59 @@ unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
 		E=NULL;delete E;
 	}
 	return RET;
+}
+////---------------------------------------------------------------------------
+//vrátí počet stejných elementů před Element, u robotů v jednom objektu, u otočí a stopek vrátí počet i z předchozích objektů
+unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element)
+{
+	unsigned int r_pocet=0,s_pocet=0,o_pocet=0;//nastavení všech počtů na nulu
+	if(Element->eID<5&&Element->eID>0)//pokud je Element robot projdi roboty v Objektu
+	{
+		Cvektory::TElement *E=Objekt->elementy->dalsi;//přeskočí hlavičku
+		while(E->n!=Element->n)
+		{
+			if(E->eID>0&&E->eID<5)r_pocet++;
+			E=E->dalsi;
+		}
+		E=NULL; delete E;
+	}
+	else//když se nejedná o robota projde všechny elementy ve všech objektech
+	{
+		//procházení předchozích objektů
+		Cvektory::TObjekt *O=OBJEKTY->dalsi;//přeskočí hlavičku
+		while(O!=NULL)
+		{
+			Cvektory::TElement *E=O->elementy;//nastaveno na hlavičku, ošetřeno níže
+			if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+			while(E!=NULL)
+			{
+        if(O->n==Objekt->n&&E==Element)break;//ukončení prohledávání když jsem na aktuálním elmentu
+				if(E->n>0)//ošetření pro hlavičku
+				{
+					if(E->eID==0)s_pocet++;
+					if(E->eID==5||E->eID==6)o_pocet++;
+				}
+				E=E->dalsi;
+			}
+			E=NULL; delete E;
+			O=O->dalsi;
+		}
+		O=NULL; delete O;
+		//procházení právě editovaného objektu
+//		Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//možno přeskočit hlavičku tato metoda je volaná poze v případě, že v kabině jsou min 2 elementy
+//		while(E!=NULL)
+//		{
+//			if(E->n==Element->n)break;//pokud jsem na elementu, do kterého zjištuji počet, přeruším cyklus
+//			if(E->eID==0)s_pocet++;
+//			if(E->eID==5||E->eID==6)o_pocet++;
+//			E=E->dalsi;
+//		}
+//		E=NULL; delete E;
+	}
+	//podle eID vrátí příslušný počet elementů
+	if(Element->eID<5&&Element->eID>0)return r_pocet;
+	else if(Element->eID==0)return s_pocet;
+	else return o_pocet;
 }
 ////---------------------------------------------------------------------------
 //orotuje všechny elementy daného objektu o danou hodnotu
