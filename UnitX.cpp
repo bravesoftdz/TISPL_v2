@@ -170,6 +170,19 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				F->pom_temp->pohon->aRD=aRD;
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_aRD();
+				//akticave a deaktivace comba pro zmìnu typu kót
+				if(aRD>0)F->scGPComboBox_prepinacKot->Enabled=true;
+				else//pokud je zadána nulová rychlost kóty musí být pøepnuty do módu délky
+				{
+					F->scGPComboBox_prepinacKot->Enabled=false;
+					if(F->scGPComboBox_prepinacKot->ItemIndex==1)
+					{                                    //F->Sv("Pøed: "+AnsiString(F->DKunit));
+						F->scGPComboBox_prepinacKot->ItemIndex=0;
+//						if(F->DKunit==F->SEKUNDY)F->DKunit=F->M;//else F->DKunit=F->M;
+//						if(F->DKunit==F->MINUTY)F->DKunit=F->MM;
+//						F->writeINI("nastaveni_nahled","koty_delka", F->DKunit); F->Sv("Po: "+AnsiString(F->DKunit));
+					}
+				}
 			}break;
 			case 2://rozteè, R
 			{

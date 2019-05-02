@@ -304,6 +304,8 @@ __published:	// IDE-managed Components
 	TscGPButton *scGPButton_viditelnostKoty;
 	TscGPButton *scGPButton_posun_dalsich_elementu;
 	TscGPGlyphButton *scGPGlyphButton_PLAY;
+	TscGPComboBox *scGPComboBox_prepinacKot;
+	TscGPLabel *scGPLabel_prepinacKot;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -499,6 +501,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_viditelnostKotyClick(TObject *Sender);
 	void __fastcall scGPButton_posun_dalsich_elementuClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_PLAYClick(TObject *Sender);
+	void __fastcall scGPComboBox_prepinacKotClick(TObject *Sender);
 
 
 // User declarations
@@ -507,7 +510,7 @@ public:
 	enum Tmod{NO=0,SCHEMA,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,NAHLED};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
 	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,MOVE_KABINA,ROZMER_KABINA,OFFSET_KOTY};Takce Akce;
-	enum Tm_mm{M=0,MM};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//přepínač jednotek vzdálenost
+	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//přepínač jednotek vzdálenost,rozšířen o SEKUNDY,MINUTY (problém při použití SEC a MIN) z důvodu časových a vzdálenostních kót
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//přepínač jednotek času
 
 
@@ -580,6 +583,7 @@ private:
 	void db_connection();  // připojení k DB serveru
 	void akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_otoce,AnsiString cas,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla);
 	bool el_vkabine(int X,int Y,int element_id);
+	bool nahled_ulozen;
 	int el_mimoKabinu ();//1-robot z leva, 2-robot z prava, 3-nerobot zl., 4-nerobot zp., 5-robot ze spoda, 6-robot z vrchu, 7-nerobot zes., 8-nerobot zvr.
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);
