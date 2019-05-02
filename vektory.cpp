@@ -1072,7 +1072,6 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 {
 	bool rename=false;//proměná sloužící k spouštění přejměnování
 	unsigned int n=vrat_poradi_elementu_do(Objekt,Element)+1;//pořadí Elementu, bude vloženo do jeho názvu
-	F->Sv(vrat_poradi_elementu_do(Objekt,Element));
 	//úprava názvu pro roboty
 	if(Element->eID<5&&Element->eID>0)
 	{
