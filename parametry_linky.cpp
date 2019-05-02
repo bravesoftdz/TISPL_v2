@@ -223,6 +223,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
     //rStringGridEd_tab_dopravniky->SetFocus();
+
+    //rEditNum_takt->
+
     rEditNum_takt->SetFocus();
 		zobrazOramovani=false;
 
@@ -347,7 +350,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 if(Taktunit==MIN)
 	 {
 	 rEditNum_takt->Value=Form1->d.v.PP.TT/60.0;
-	 } else rEditNum_takt->Value=Form1->d.v.PP.TT;
+	 } else {rEditNum_takt->Value=Form1->d.v.PP.TT;}
+
+    rEditNum_takt->SelStart=6; //pozice kurzoru
 
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();
@@ -1120,7 +1125,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
   setFormHeight();
   //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
   vykresli_obdelnik_vpravo();
-  Form_parametry_linky->Color=F->m.clIntensive(clGray,10);
+  //Form_parametry_linky->Color=F->m.clIntensive(clGray,10);
   }
 
   mGrid->Refresh();
@@ -2342,5 +2347,6 @@ void TForm_parametry_linky::vykresli_obdelnik_vpravo()
    	Canvas->MoveTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top+2*mGrid->DefaultRowHeight);
     Canvas->LineTo(mGrid->Left+mGrid->Columns[8].Left+mGrid->Left+mGrid->Columns[8].Width-1,mGrid->Top);
 }
+
 
 

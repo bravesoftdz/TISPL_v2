@@ -5603,8 +5603,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 4769
-    Top = 7319
+    Left = 4778
+    Top = 7334
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -5690,6 +5690,7 @@ object Form_parametry_linky: TForm_parametry_linky
     ParentFont = False
     TabOrder = 26
     TabStop = True
+    Visible = False
     Animation = False
     Caption = 'scGPCheckBox1'
     CanFocused = True
