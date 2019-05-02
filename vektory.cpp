@@ -989,9 +989,12 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	}
 
 	//mGrid elementu
-	novy->mGrid=new TmGrid(F);
-	novy->mGrid->Tag=6;//ID formu
-	novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	if(Objekt->n==F->pom_temp->n)//stačí nastavovat pouze v náhledu při vloz_element
+	{
+		novy->mGrid=new TmGrid(F);
+		novy->mGrid->Tag=6;//ID formu
+		novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	}
 
 	//ukazatel na spárovaný element
 	novy->sparovany=vrat_predchozi_stop_element(novy);//metoda již v sobě ošetřuje, že se bude jednat o stopku
@@ -1170,7 +1173,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->akt_pocet_voziku=Original->akt_pocet_voziku;
 	Kopie->max_pocet_voziku=Original->max_pocet_voziku;
 	Kopie->geo=Original->geo;
-	Kopie->mGrid=Original->mGrid;
+	Kopie->mGrid=new TmGrid(F);
 	Kopie->poznamka=Original->poznamka;
 	Kopie->sparovany=Original->sparovany;
 }

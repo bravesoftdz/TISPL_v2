@@ -1,213 +1,233 @@
-//---------------------------------------------------------------------------
+ï»¿//---------------------------------------------------------------------------
 #ifndef TmGridH
 #define TmGridH
 //#include <vcl.h>
-#include "scGPControls.hpp"//knihovna kvùli buttonumatp.
-#include "scGPExtControls.hpp"//knihovna kvùli editbox
-#include "scHtmlControls.hpp"//knihovna kvùli scHTMLLabel
-#include "MyString.h"//kvùli parsování
+#include "scGPControls.hpp"//knihovna kvÅ¯li buttonumatp.
+#include "scGPExtControls.hpp"//knihovna kvÅ¯li editbox
+#include "scHtmlControls.hpp"//knihovna kvÅ¯li scHTMLLabel
+//#include "rHTMLLabel.hpp"//knihovna kvÅ¯li rHTMLLabel, protoÅ¾e vÃ½Å¡e uvedenÃ½ neumÃ­ pozadÃ­
+#include "MyString.h"//kvÅ¯li parsovÃ¡nÃ­
 #include "my.h"
 //---------------------------------------------------------------------------
 class TmGrid
 {
  public:
-	enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,CHECK,RADIO,/*IMAGE,*/DRAW,LABEL};
-	enum Talign{aNO,LEFT,CENTER,RIGHT};
-	enum Tvalign{vNO,TOP,MIDDLE,BOTTOM};
+	 enum Ttype{readEDIT,EDIT,NUMERIC,readNUMERIC,BUTTON,glyphBUTTON,COMBO,CHECK,RADIO,/*IMAGE,*/DRAW,LABEL};
+	 enum Talign{aNO,LEFT,CENTER,RIGHT};
+	 enum Tvalign{vNO,TOP,MIDDLE,BOTTOM};
 
-	struct TBorder//datovı typ pouívanı pro orámování bunìk
+	struct TBorder//datovÃ½ typ pouÅ¾Ã­vanÃ½ pro orÃ¡movÃ¡nÃ­ bunÄ›k
 	{
-		TColor Color;//barva orámování
-		unsigned short Width;//šíøka orámování
-		TPenStyle Style;//styl èáry
+		TColor Color;//barva orÃ¡movÃ¡nÃ­
+		unsigned short Width;//Å¡Ã­Å™ka orÃ¡movÃ¡nÃ­
+		TPenStyle Style;//styl ÄÃ¡ry
 	};
 
-	struct TColumns//datovı typ pouívanı pro sloupce
+	struct TColumns//datovÃ½ typ pouÅ¾Ã­vanÃ½ pro sloupce
 	{
-	 unsigned short	Width;//šíøka sloupce
-	 long Left;//umístìní sloupce v px, v rámci tabulky
-	 bool Visible;//zda bude sloupec zobrazen
+		unsigned short	Width;//Å¡Ã­Å™ka sloupce
+		long Left;//umÃ­stÄ›nÃ­ sloupce v px, v rÃ¡mci tabulky
+		bool Visible;//zda bude sloupec zobrazen
 	};
 
-	struct TRows//datovı typ pouívanı pro øádky
+	struct TRows//datovÃ½ typ pouÅ¾Ã­vanÃ½ pro Å™Ã¡dky
 	{
-	 unsigned short	Height;//vıška øádku
-	 long Top;//umístìní øádku v px, v rámci tabulky
-	 //není dokonèeno bool Visible;//zda bude øádek zobrazen
+		unsigned short	Height;//vÃ½Å¡ka Å™Ã¡dku
+		long Top;//umÃ­stÄ›nÃ­ Å™Ã¡dku v px, v rÃ¡mci tabulky
+		bool Visible;//zda bude Å™Ã¡dek zobrazen
 	};
 
-	struct TCells//datovı typ pouívanı pro buòky
+
+	struct TCells//datovÃ½ typ pouÅ¾Ã­vanÃ½ pro buÅˆky
 	{
-		Ttype Type;//typ komponenty v buòce dle Ttype
-		TBorder *TopBorder;//horní orámování a jeho vlastnosti dle TBorder ukazuje na stejnı objekt jako dolní okraj buòky pøedchozí na ose Y
-		TBorder *BottomBorder;//dolní orámování a jeho vlastnosti dle TBorder ukazuje na stejnı objekt jako horní okraj buòky následující na ose Y
-		TBorder *LeftBorder;//levé orámování a jeho vlastnosti dle TBorder ukazuje na stejnı objekt jako pravı okraj buòky pøedchozí na ose X
-		TBorder *RightBorder;//pravé orámování a jeho vlastnosti dle TBorder ukazuje na stejnı objekt jako levı okraj buòky následující na ose X
-		TBrush *Background;//vlastnosti pozadí buòky
-		Talign Align;//horizontální zarovnání textu
-		Tvalign Valign;//vertikální zarovnání textu
-		short TopMargin;//horní odsazení textu
-		short BottomMargin;//dolní odsazení textu
-		short LeftMargin;//levé odsazení textu
-		short RightMargin;//pravé odsazení textu
-		bool MergeState;//pouze indikuje, zda je buòka slouèena, èi nikoliv, slouí jako pomùcka pøi vykreslování orámování slouèenıch bunìk, zatím zùstává nevyuito
-		bool InputNumbersOnly;//pokud je nastaveno na true, nelze vepsat jinou hodnotu ne èíselnou (to vèetnì reálného èísla)
-		bool Highlight;//indikuje zda je buòka zvıraznìna, barva zvıraznìní odpovídá globální promìnné TColor clHighlight, vıchozí stav zvıraznìní je false
-		TFont *Font;//vlastnosti fontu v buòce
-		TPoint TextPositon;//pozice textu v buòce (levı horní roh buòky je 0,0)
-		TBrush *isEmpty;//podmínìné formátování, pozadí buòky, kdy je prázdná
-		TFont *isNegativeNumber;//podmínìné formátování, pokud je zaporné èíslo
-		TFont *isZero;//podmínìné formátování, pokud se jedná o nulové èíslo
-		TFont *isLink;//podmínìné formátování v pøípadì vıskytu tagu <a> resp </a>
-		TPoint LinkCoordinateStart;//kvùli uloení citelné oblasti pro link dané buòky
-		TPoint LinkCoordinateEnd;//kvùli uloení citelné oblasti pro link dané buòky
-		UnicodeString Text;//samotnı text buòky
+		Ttype Type;//typ komponenty v buÅˆce dle Ttype
+		TBorder *TopBorder;//hornÃ­ orÃ¡movÃ¡nÃ­ a jeho vlastnosti dle TBorder ukazuje na stejnÃ½ objekt jako dolnÃ­ okraj buÅˆky pÅ™edchozÃ­ na ose Y
+		TBorder *BottomBorder;//dolnÃ­ orÃ¡movÃ¡nÃ­ a jeho vlastnosti dle TBorder ukazuje na stejnÃ½ objekt jako hornÃ­ okraj buÅˆky nÃ¡sledujÃ­cÃ­ na ose Y
+		TBorder *LeftBorder;//levÃ© orÃ¡movÃ¡nÃ­ a jeho vlastnosti dle TBorder ukazuje na stejnÃ½ objekt jako pravÃ½ okraj buÅˆky pÅ™edchozÃ­ na ose X
+		TBorder *RightBorder;//pravÃ© orÃ¡movÃ¡nÃ­ a jeho vlastnosti dle TBorder ukazuje na stejnÃ½ objekt jako levÃ½ okraj buÅˆky nÃ¡sledujÃ­cÃ­ na ose X
+		TBrush *Background;//vlastnosti pozadÃ­ buÅˆky
+		Talign Align;//horizontÃ¡lnÃ­ zarovnÃ¡nÃ­ textu
+		Tvalign Valign;//vertikÃ¡lnÃ­ zarovnÃ¡nÃ­ textu
+		short TopMargin;//hornÃ­ odsazenÃ­ textu
+		short BottomMargin;//dolnÃ­ odsazenÃ­ textu
+		short LeftMargin;//levÃ© odsazenÃ­ textu
+		short RightMargin;//pravÃ© odsazenÃ­ textu
+		bool MergeState;//pouze indikuje, zda je buÅˆka slouÄena, Äi nikoliv, slouÅ¾Ã­ jako pomÅ¯cka pÅ™i vykreslovÃ¡nÃ­ orÃ¡movÃ¡nÃ­ slouÄenÃ½ch bunÄ›k, zatÃ­m zÅ¯stÃ¡vÃ¡ nevyuÅ¾ito
+		bool InputNumbersOnly;//pokud je nastaveno na true, nelze vepsat jinou hodnotu neÅ¾ ÄÃ­selnou (to vÄetnÄ› reÃ¡lnÃ©ho ÄÃ­sla)
+		bool Highlight;//indikuje zda je buÅˆka zvÃ½raznÄ›na, barva zvÃ½raznÄ›nÃ­ odpovÃ­dÃ¡ globÃ¡lnÃ­ promÄ›nnÃ© TColor clHighlight, vÃ½chozÃ­ stav zvÃ½raznÄ›nÃ­ je false
+		TFont *Font;//vlastnosti fontu v buÅˆce
+		TPoint TextPositon;//pozice textu v buÅˆce (levÃ½ hornÃ­ roh buÅˆky je 0,0)
+		//PODMÃNÄšNÃ‰ FORMÃTOVÃNÃ - Pozor pro pÅ™Ã­pady kdy se pouÅ¾Ã­vÃ¡ jinÃ½ font, napÅ™. v naÅ¡em pÅ™Ã­padÄ› Roboto Cn na mgridech v nÃ¡hledu, je nutnÃ© vÅ¾dy nastavovat i nÃ¡zev fontu a velikost nejenom pro normÃ¡lnÃ­ text, ale i pro podmÃ­nÄ›nÃ© formÃ¡tovÃ¡nÃ­, defualtnÄ› je nastaveno vÅ¡e na naÅ¡i modrou + velikost 12 pt, kromÄ› zÃ¡pornÃ©ho ÄÃ­sla, kterÃ© je ve vÃ½chozÃ­m stavu nastaveno na Äervenou
+		TBrush *isEmpty;//podmÃ­nÄ›nÃ© formÃ¡tovÃ¡nÃ­, pozadÃ­ buÅˆky, kdyÅ¾ je prÃ¡zdnÃ¡
+		TFont *isNegativeNumber;//podmÃ­nÄ›nÃ© formÃ¡tovÃ¡nÃ­, pokud je zapornÃ© ÄÃ­slo
+		TFont *isZero;//podmÃ­nÄ›nÃ© formÃ¡tovÃ¡nÃ­, pokud se jednÃ¡ o nulovÃ© ÄÃ­slo
+		TFont *isLink;//podmÃ­nÄ›nÃ© formÃ¡tovÃ¡nÃ­ v pÅ™Ã­padÄ› vÃ½skytu tagu <a> resp </a>
+		//--
+		TPoint LinkCoordinateStart;//kvÅ¯li uloÅ¾enÃ­ citelnÃ© oblasti pro link danÃ© buÅˆky
+		TPoint LinkCoordinateEnd;//kvÅ¯li uloÅ¾enÃ­ citelnÃ© oblasti pro link danÃ© buÅˆky
+		bool ShowHint;//stav zobrazenÃ­ hintu danÃ© buÅˆky, zda se budu zobrazovat
+		UnicodeString Hint;//text hintu buÅˆky
+		UnicodeString Text;//samotnÃ½ text buÅˆky
 	};
 
-	struct TNote//datovı typ pouitı pro poznámku "pod èarou" - pod èi okolo tabulky, TmGrid - poznámka "pod èarou" resp. pod tabulkou, pøístup mGrid->Note, mono nastavovat hodnotu textu, font textu, ukládá si citelnou oblast, zarovnává na šíøku tabulky pokud se text nevejde zalomí na další øádek (dle poslední mezery na øádku), max zobrazí dva øádky, vıchozí barva èervená a 11pt velikost písma
+	struct TNote//datovÃ½ typ pouÅ¾itÃ½ pro poznÃ¡mku "pod Äarou" - pod Äi okolo tabulky, TmGrid - poznÃ¡mka "pod Äarou" resp. pod tabulkou, pÅ™Ã­stup mGrid->Note, moÅ¾no nastavovat hodnotu textu, font textu, uklÃ¡dÃ¡ si citelnou oblast, zarovnÃ¡vÃ¡ na Å¡Ã­Å™ku tabulky pokud se text nevejde zalomÃ­ na dalÅ¡Ã­ Å™Ã¡dek (dle poslednÃ­ mezery na Å™Ã¡dku), max zobrazÃ­ dva Å™Ã¡dky, vÃ½chozÃ­ barva ÄervenÃ¡ a 11pt velikost pÃ­sma
 	{
 		TFont *Font;//vlastnosti fontu
-		TRect NoteArea;//souøadnice oblasti, kde se poznámka nachází, ukládá citelnou oblast poznámky
-		UnicodeString Text;//samotnı text poznámky
+		TRect NoteArea;//souÅ™adnice oblasti, kde se poznÃ¡mka nachÃ¡zÃ­, uklÃ¡dÃ¡ citelnou oblast poznÃ¡mky
+		UnicodeString Text;//samotnÃ½ text poznÃ¡mky
 	};TNote Note;
 
 	//metody
 	TmGrid(TForm *Owner);//konstruktor
 	~TmGrid();//destruktor
-	void Create();//vytvoøí tabulku
-	void Create(unsigned long ColCount,unsigned long RowCount);//pøetíená metoda - vytvoøí tabulku s pøedepsanım poètem sloupcù a øádkù
-	void Delete();//odstraní tabulku, pøidruené komponenty a ukazatel na mGrid z pamìti
-	void Show(TCanvas *Canvas=NULL);//zajistí vykreslení celé tabulky
-	void Refresh();//zajistí vyvolání pøekreslení celé tabulky s pøeblikem, ale lépe pouívat pøímo ve v daném formuláøi FormPaint(this), co zajistí pøekreslení bez probliku
-	void Update();//zajistí vytvoøení kompoment vèetnìj napozicování bez vykreslení
-	void SetColumnAutoFit(long ColIdx=-1);//nastaví šíøku bunìk daného sloupce dle parametru ColIdx, -4 nastavení velikosti sloupce dle ruèní nastavení šíøky daného sloupce, tj. nedìlat autofit, -3 = nepøizpùsobuje se velikost a uije se defaultColWidth,-2 všechny sloupce stejnì podle nejširšího textu, -1 pøizpùsobuje se kadı sloupec individuálnì, 0 a více jen konkrétní sloupec uvedenı pomoc ColIdx
-	int  GetRecommendedColumnWidth(long ColIdx);//vratí doporuèenou šíøku sloupce dle jeho obsahu
-	int  GetRecommendedColumnWidth(AnsiString Text);//vratí doporuèenou šíøku sloupce dle dodaného textu a aktuálního nastavení canvasu
-	void ClearColumn(unsigned long ColIdx);//smae text v celém sloupec
-	void ClearRow(unsigned long RowIdx);//smae text v celém øádku
-	void Clear();//smae text celé tabulky
-	void AddRow(bool copyComponentFromPreviousRow=true,bool invalidate=true);//pøidá øádek za poslední øádek, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pøedchozího øádku, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody AddRow pøimo v uitém formuláøi
-	void InsertRow(unsigned long Row,bool copyComponentFromPreviousRow=true,bool invalidate=true);//pøídá øádek za øádek uvedenı dle parametru Row,, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pøedchozího øádku, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v uitém formuláøi
-	void DeleteRow(unsigned long Row,bool invalidate=true);//smae celı øádek, pokud je invalidate na true, automaticky po pøidání pøekreslí tabulku, nìkdy pokud nechci problikávat tabulku lépe nastavit na false a zavolat formpaint pøímo za voláním metody InsertRow pøimo v uitém formuláøi
-	void MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//spojí oblast bunìk do jedné buòky,text a vlastnosti pøevezmé od levé horní, zaèínat zadávat od nejvyšší a nejvíce vlevo
-	void SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,short setText=0,bool copyComponent=false);//nastaví oblast bunìk totonımi vlastnostmi dle referenèní buòky, text podle posledního parametru buï -1 -smae, 0 - zanechá pùvodní (implicitnì), 1 zkopíruje všude stejnı), zaèínat zadávat od nejvyšší a nejvíce vlevo
-	void SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//totonì ohranièí danou oblast bunìk dle referenèní buòky (zohledòuje i rozdíly horní,dolní,levé pravé orámování), zaèínat zadávat od nejvyšší a nejvíce vlevo
-	void CopyCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát a orámování z buòky na buòku (bez ukazatelového propojení)
-	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buòky oddìlí separátorem
-	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buòky na buòku (bez ukazatelového propojení)
-	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buòky na buòku (bez ukazatelového propojení)
-	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvıraznìní orámování tabulky
-	void HighlightTableOnMouse(int X,int Y);//zajistí zvıraznìní orámování tabulky, pokud se do ni vstoupí myší
-	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) øádkù dle èísla øádku Row
-	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) øádkù, pøes kterı se pøejídí myší
-	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1,bool Refresh=true);//zajistí trvalé (jedná se spíše o nastavení) zvıraznìní vnìjšího orámování buòky
-	void HighlightEdit(TscGPEdit *Edit,TColor Color=clRed,unsigned short Width=1);//zajistí  trvalé (jedná se spíše o nastavení)  zvıraznìní dané komponenty
-	void HighlightEdit(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvıraznìní dané komponenty
-	void HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color=clRed,unsigned short Width=1);//zajistí zvıraznìní trvalé (jedná se spíše o nastavení) dané komponenty
-	void HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvıraznìní dané komponenty
-	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistí pøebarvení odkazu v buòce odstínem barvy odkazu
-	void unHighlightAll();//odzvırazni všechna zvıraznìní
-	void SetVisibleComponents(bool state);//podle stavu state buï zobrazí nebo skryje všechny komponenty
-	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	TscGPNumericEdit *getNumeric(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	TscGPGlyphButton *getGlyphButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	TscGPComboBox *getCombo(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	TscGPCheckBox *getCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	TscGPRadioButton *getRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	TscHTMLLabel *getLabel(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	void createComponent(Ttype Type, unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vytvoøenou komponentu dle Type, pokud existuje, tak se nic nedìje
-	TscGPEdit *createEdit(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	TscGPNumericEdit *createNumeric(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	TscGPGlyphButton *createGlyphButton(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	TscGPComboBox *createCombo(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel na danou vytvoøenou komponentu, pokud neexistuje, tak vytvoøí
-	TscHTMLLabel *createLabel(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí ukazatel nadanou komponentu
-	long GetIdxRow(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí øádek
-	long GetIdxColum(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí sloupec
-	bool CheckPTinTable(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) zjistí, zda jsou souøadnice ve vnitø tabulky
-	TPoint CheckLink(int X,int Y);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí kladné èíslo sloupce a øádku pokud se na daném místì nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
-	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souøadnic ve formuláøi, kde je tabulka zobrazena (napø. dle myšího kurzoru) vrátí zda se na dané buòce a souøadnicích nachází odkaz
+	void Create();//vytvoÅ™Ã­ tabulku
+	void Create(unsigned long ColCount,unsigned long RowCount);//pÅ™etÃ­Å¾enÃ¡ metoda - vytvoÅ™Ã­ tabulku s pÅ™edepsanÃ½m poÄtem sloupcÅ¯ a Å™Ã¡dkÅ¯
+	void Delete();//odstranÃ­ tabulku, pÅ™idruÅ¾enÃ© komponenty a ukazatel na mGrid z pamÄ›ti
+	void MouseMove(int X,int Y);//metoda vhodnÃ¡ na umÃ­stÄ›nÃ­ do rodiÄovskÃ©ho formulÃ¡Å™e Form->FormMouseMove,vracÃ­ do globÃ¡lnÃ­ch promÄ›nnÃ½ch index aktuÃ¡lnÃ­ho sloupce a Å™Ã¡dku
+	void Show(TCanvas *Canvas=NULL);//zajistÃ­ vykreslenÃ­ celÃ© tabulky
+	void Refresh();//zajistÃ­ vyvolÃ¡nÃ­ pÅ™ekreslenÃ­ celÃ© tabulky s pÅ™eblikem, ale lÃ©pe pouÅ¾Ã­vat pÅ™Ã­mo ve v danÃ©m formulÃ¡Å™i FormPaint(this), coÅ¾ zajistÃ­ pÅ™ekreslenÃ­ bez probliku
+	void Update();//zajistÃ­ vytvoÅ™enÃ­ kompoment vÄetnÄ›j napozicovÃ¡nÃ­ bez vykreslenÃ­
+	void SetColumnAutoFit(long ColIdx=-1);//nastavÃ­ Å¡Ã­Å™ku bunÄ›k danÃ©ho sloupce dle parametru ColIdx, -4 nastavenÃ­ velikosti sloupce dle ruÄnÃ­ nastavenÃ­ Å¡Ã­Å™ky danÃ©ho sloupce, tj. nedÄ›lat autofit, -3 = nepÅ™izpÅ¯sobuje se velikost a uÅ¾ije se defaultColWidth,-2 vÅ¡echny sloupce stejnÄ› podle nejÅ¡irÅ¡Ã­ho textu, -1 pÅ™izpÅ¯sobuje se kaÅ¾dÃ½ sloupec individuÃ¡lnÄ›, 0 a vÃ­ce jen konkrÃ©tnÃ­ sloupec uvedenÃ½ pomoc ColIdx
+	int  GetRecommendedColumnWidth(long ColIdx);//vratÃ­ doporuÄenou Å¡Ã­Å™ku sloupce dle jeho obsahu
+	int  GetRecommendedColumnWidth(AnsiString Text);//vratÃ­ doporuÄenou Å¡Ã­Å™ku sloupce dle dodanÃ©ho textu a aktuÃ¡lnÃ­ho nastavenÃ­ canvasu
+	void ClearColumn(unsigned long ColIdx);//smaÅ¾e text v celÃ©m sloupec
+	void ClearRow(unsigned long RowIdx);//smaÅ¾e text v celÃ©m Å™Ã¡dku
+	void Clear();//smaÅ¾e text celÃ© tabulky
+	void AddRow(bool copyComponentFromPreviousRow=true,bool invalidate=true);//pÅ™idÃ¡ Å™Ã¡dek za poslednÃ­ Å™Ã¡dek, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pÅ™edchozÃ­ho Å™Ã¡dku, pokud je invalidate na true, automaticky po pÅ™idÃ¡nÃ­ pÅ™ekreslÃ­ tabulku, nÄ›kdy pokud nechci problikÃ¡vat tabulku lÃ©pe nastavit na false a zavolat formpaint pÅ™Ã­mo za volÃ¡nÃ­m metody AddRow pÅ™imo v uÅ¾itÃ©m formulÃ¡Å™i
+	void InsertRow(unsigned long Row,bool copyComponentFromPreviousRow=true,bool invalidate=true);//pÅ™Ã­dÃ¡ Å™Ã¡dek za Å™Ã¡dek uvedenÃ½ dle parametru Row,, pokud copyComponentFromPreviousRow je na true, zkopiruje kompomenty z pÅ™edchozÃ­ho Å™Ã¡dku, pokud je invalidate na true, automaticky po pÅ™idÃ¡nÃ­ pÅ™ekreslÃ­ tabulku, nÄ›kdy pokud nechci problikÃ¡vat tabulku lÃ©pe nastavit na false a zavolat formpaint pÅ™Ã­mo za volÃ¡nÃ­m metody InsertRow pÅ™imo v uÅ¾itÃ©m formulÃ¡Å™i
+	void VisibleRow(unsigned long Row,bool visible=true);//skryje Äi zobrazÃ­ danÃ½ Å™Ã¡dek
+	void DeleteRow(unsigned long Row,bool invalidate=true);//smaÅ¾e celÃ½ Å™Ã¡dek, pokud je invalidate na true, automaticky po pÅ™idÃ¡nÃ­ pÅ™ekreslÃ­ tabulku, nÄ›kdy pokud nechci problikÃ¡vat tabulku lÃ©pe nastavit na false a zavolat formpaint pÅ™Ã­mo za volÃ¡nÃ­m metody InsertRow pÅ™imo v uÅ¾itÃ©m formulÃ¡Å™i
+	void MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//spojÃ­ oblast bunÄ›k do jednÃ© buÅˆky,text a vlastnosti pÅ™evezmÃ© od levÃ© hornÃ­, zaÄÃ­nat zadÃ¡vat od nejvyÅ¡Å¡Ã­ a nejvÃ­ce vlevo
+	void SetCells(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,short setText=0,bool copyComponent=false);//nastavÃ­ oblast bunÄ›k totoÅ¾nÃ½mi vlastnostmi dle referenÄnÃ­ buÅˆky, text podle poslednÃ­ho parametru buÄ -1 -smaÅ¾e, 0 - zanechÃ¡ pÅ¯vodnÃ­ (implicitnÄ›), 1 zkopÃ­ruje vÅ¡ude stejnÃ½), zaÄÃ­nat zadÃ¡vat od nejvyÅ¡Å¡Ã­ a nejvÃ­ce vlevo
+	void SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2);//totoÅ¾nÄ› ohraniÄÃ­ danou oblast bunÄ›k dle referenÄnÃ­ buÅˆky (zohledÅˆuje i rozdÃ­ly hornÃ­,dolnÃ­,levÃ© pravÃ© orÃ¡movÃ¡nÃ­), zaÄÃ­nat zadÃ¡vat od nejvyÅ¡Å¡Ã­ a nejvÃ­ce vlevo
+	void CopyCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopÃ­ruje obsah, formÃ¡t a orÃ¡movÃ¡nÃ­ z buÅˆky na buÅˆku (bez ukazatelovÃ©ho propojenÃ­)
+	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopÃ­ruje danou oblast do schrÃ¡nky, buÅˆky oddÄ›lÃ­ separÃ¡torem
+	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopÃ­ruje obsah, formÃ¡t (bez orÃ¡movÃ¡nÃ­) z buÅˆky na buÅˆku (bez ukazatelovÃ©ho propojenÃ­)
+	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopÃ­ruje orÃ¡movÃ¡nÃ­ z buÅˆky na buÅˆku (bez ukazatelovÃ©ho propojenÃ­)
+	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistÃ­ zvÃ½raznÄ›nÃ­ orÃ¡movÃ¡nÃ­ tabulky
+	void HighlightTableOnMouse(int X,int Y);//zajistÃ­ zvÃ½raznÄ›nÃ­ orÃ¡movÃ¡nÃ­ tabulky, pokud se do ni vstoupÃ­ myÅ¡Ã­
+	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistÃ­ trvalÃ© (jednÃ¡ se spÃ­Å¡e o nastavenÃ­) Å™Ã¡dkÅ¯ dle ÄÃ­sla Å™Ã¡dku Row
+	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistÃ­ trvalÃ© (jednÃ¡ se spÃ­Å¡e o nastavenÃ­) Å™Ã¡dkÅ¯, pÅ™es kterÃ½ se pÅ™ejÃ­Å¾dÃ­ myÅ¡Ã­
+	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1,bool Refresh=true);//zajistÃ­ trvalÃ© (jednÃ¡ se spÃ­Å¡e o nastavenÃ­) zvÃ½raznÄ›nÃ­ vnÄ›jÅ¡Ã­ho orÃ¡movÃ¡nÃ­ buÅˆky
+	void HighlightEdit(TscGPEdit *Edit,TColor Color=clRed,unsigned short Width=1);//zajistÃ­  trvalÃ© (jednÃ¡ se spÃ­Å¡e o nastavenÃ­)  zvÃ½raznÄ›nÃ­ danÃ© komponenty
+	void HighlightEdit(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistÃ­ trvalÃ© (jednÃ¡ se spÃ­Å¡e o nastavenÃ­) zvÃ½raznÄ›nÃ­ danÃ© komponenty
+	void HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color=clRed,unsigned short Width=1);//zajistÃ­ zvÃ½raznÄ›nÃ­ trvalÃ© (jednÃ¡ se spÃ­Å¡e o nastavenÃ­) danÃ© komponenty
+	void HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistÃ­ trvalÃ© (jednÃ¡ se spÃ­Å¡e o nastavenÃ­) zvÃ½raznÄ›nÃ­ danÃ© komponenty
+	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistÃ­ pÅ™ebarvenÃ­ odkazu v buÅˆce odstÃ­nem barvy odkazu
+	void unHighlightAll();//odzvÃ½razni vÅ¡echna zvÃ½raznÄ›nÃ­
+	void SetVisibleComponents(bool state);//podle stavu state buÄ zobrazÃ­ nebo skryje vÅ¡echny komponenty
+	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	TscGPNumericEdit *getNumeric(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	TscGPGlyphButton *getGlyphButton(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	TscGPComboBox *getCombo(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	TscGPCheckBox *getCheck(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	TscGPRadioButton *getRadio(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	TscHTMLLabel *getLabel(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	void createComponent(Ttype Type, unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vytvoÅ™enou komponentu dle Type, pokud existuje, tak se nic nedÄ›je
+	TscGPEdit *createEdit(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel na danou vytvoÅ™enou komponentu, pokud neexistuje, tak vytvoÅ™Ã­
+	TscGPNumericEdit *createNumeric(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel na danou vytvoÅ™enou komponentu, pokud neexistuje, tak vytvoÅ™Ã­
+	TscGPButton *createButton(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel na danou vytvoÅ™enou komponentu, pokud neexistuje, tak vytvoÅ™Ã­
+	TscGPGlyphButton *createGlyphButton(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel na danou vytvoÅ™enou komponentu, pokud neexistuje, tak vytvoÅ™Ã­
+	TscGPComboBox *createCombo(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel na danou vytvoÅ™enou komponentu, pokud neexistuje, tak vytvoÅ™Ã­
+	TscGPCheckBox *createCheck(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel na danou vytvoÅ™enou komponentu, pokud neexistuje, tak vytvoÅ™Ã­
+	TscGPRadioButton *createRadio(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel na danou vytvoÅ™enou komponentu, pokud neexistuje, tak vytvoÅ™Ã­
+	TscHTMLLabel *createLabel(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ ukazatel nadanou komponentu
+	long GetIdxRow(int X,int Y);//dle souÅ™adnic ve formulÃ¡Å™i, kde je tabulka zobrazena (napÅ™. dle myÅ¡Ã­ho kurzoru) vrÃ¡tÃ­ Å™Ã¡dek
+	long GetIdxColumn(int X,int Y);//dle souÅ™adnic ve formulÃ¡Å™i, kde je tabulka zobrazena (napÅ™. dle myÅ¡Ã­ho kurzoru) vrÃ¡tÃ­ sloupec
+	bool CheckPTinTable(int X,int Y);//dle souÅ™adnic ve formulÃ¡Å™i, kde je tabulka zobrazena (napÅ™. dle myÅ¡Ã­ho kurzoru) zjistÃ­, zda jsou souÅ™adnice ve vnitÅ™ tabulky
+	TPoint CheckLink(int X,int Y);//dle souÅ™adnic ve formulÃ¡Å™i, kde je tabulka zobrazena (napÅ™. dle myÅ¡Ã­ho kurzoru) vrÃ¡tÃ­ kladnÃ© ÄÃ­slo sloupce a Å™Ã¡dku pokud se na danÃ©m mÃ­stÄ› nachÃ¡zÃ­ odkaz, pokud ne, vrÃ¡cenÃ© hodnoty jsou -1 a -1
+	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souÅ™adnic ve formulÃ¡Å™i, kde je tabulka zobrazena (napÅ™. dle myÅ¡Ã­ho kurzoru) vrÃ¡tÃ­ zda se na danÃ© buÅˆce a souÅ™adnicÃ­ch nachÃ¡zÃ­ odkaz
 
-	//promìnné
-	long Tag;//ID formuláøe, v kterém je tabulka èi tabuky daného formuláøe volány
-	long ID;//ID konkrétní tabulky, v jednom formuláøi vhodné unikátní èíslo, mimo formuláøe totoná hodnota nevadí (vyuitelné napø. pokud bude více tabulek, tak se bude vìdìt, v jaké došlo ke kliku)
-	//long typeID;//pomocné ID tabulky, napø. pro rozlišení typu tabulky, nemusí bıt vyuito, i v rámci jednoho formuláøe mùe bıt totoné
-	long Left,Top,preLeft,preTop;//umístìní celé komponenty
-	unsigned long ColCount,RowCount;//poèet øádkù a sloupcù
-	unsigned short DefaultColWidth,DefaultRowHeight;//vıchozí vıška a šíøka øádku
-	TBorder Border;//orámování celé tabulky
+	//promÄ›nnÃ© a ukazatele
+	long Tag;//ID formulÃ¡Å™e, v kterÃ©m je tabulka Äi tabuky danÃ©ho formulÃ¡Å™e volÃ¡ny
+	long ID;//ID konkrÃ©tnÃ­ tabulky, v jednom formulÃ¡Å™i vhodnÃ© unikÃ¡tnÃ­ ÄÃ­slo, mimo formulÃ¡Å™e totoÅ¾nÃ¡ hodnota nevadÃ­ (vyuÅ¾itelnÃ© napÅ™. pokud bude vÃ­ce tabulek, tak se bude vÄ›dÄ›t, v jakÃ© doÅ¡lo ke kliku)
+	//long typeID;//pomocnÃ© ID tabulky, napÅ™. pro rozliÅ¡enÃ­ typu tabulky, nemusÃ­ bÃ½t vyuÅ¾ito, i v rÃ¡mci jednoho formulÃ¡Å™e mÅ¯Å¾e bÃ½t totoÅ¾nÃ©
+	long Left,Top,preLeft,preTop;//umÃ­stÄ›nÃ­ celÃ© komponenty
+	unsigned long ColCount,RowCount;//poÄet Å™Ã¡dkÅ¯ a sloupcÅ¯
+	unsigned short DefaultColWidth,DefaultRowHeight;//vÃ½chozÃ­ vÃ½Å¡ka a Å¡Ã­Å™ka Å™Ã¡dku
+	TBorder Border;//orÃ¡movÃ¡nÃ­ celÃ© tabulky
 	bool AntiAliasing_grid;//ano x ne
 	bool AntiAliasing_text;//ano x ne
-	TCells **Cells;//alokace dvourozmerneho dynamickeho pole bunìk
-	TColumns *Columns;//alokace jednorozmìrneho dynamickeho pole sloupcù
-	TRows *Rows;//alokace jednorozmìrneho dynamickeho pole øádkù
-	TCells DefaultCell;//deafultní vzorová VIRTUÁLNÍ buòka, podle ní se nastaví všechny pøi prvním naètení tabulky, pokud není pøed Show() ještì nastaveno jinak
-	short Decimal;//implicitní poèet desetinnıch míst u numericeditù
-	bool IntegerDecimalNull;//pokud je vıše uvedené Decimal na hodnotu vyšší ne 0, toto nastavuje zda se nuly doplní do poètu decimál i u celıch èísel
-	bool MovingTable;//pokud je nastaveno na true, komponenty se zmìní na typ DRAW tj. tak, aby došlo k posunu dané buòky
-	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
-	TColor clHighlight;//pøednastavená barva zvıraznìní, slouí i pro nastavení barvy focusu komponent
+	TCells **Cells;//alokace dvourozmerneho dynamickeho pole bunÄ›k
+	TColumns *Columns;//alokace jednorozmÄ›rneho dynamickeho pole sloupcÅ¯
+	TRows *Rows;//alokace jednorozmÄ›rneho dynamickeho pole Å™Ã¡dkÅ¯
+	TCells DefaultCell;//deafultnÃ­ vzorovÃ¡ VIRTUÃLNÃ buÅˆka, podle nÃ­ se nastavÃ­ vÅ¡echny pÅ™i prvnÃ­m naÄtenÃ­ tabulky, pokud nenÃ­ pÅ™ed Show() jeÅ¡tÄ› nastaveno jinak
+	TscGPGlyphButton *exBUTTON;//rozÅ¡Ã­Å™enÃ© tlaÄÃ­tko pro umÃ­stÄ›nÃ­ libovolnÃ© funkcionality a glyphu, pouÅ¾Ã­vat pouze na designovÃ¡nÃ­
+	Talign exBUTTONalign;//pozice rozÅ¡Ã­Å™enÃ©ho tlaÄÃ­tka vÅ¯Äi tabulce
+	Tvalign exBUTTONvalign;//pozice rozÅ¡Ã­Å™enÃ©ho tlaÄÃ­tka vÅ¯Äi tabulce
+	bool exBUTTONVisible;//stav zobrazenÃ­ Äi skrytÃ­ exBUTTNU, nepouÅ¾Ã­vat pÅ™Ã­mo exBUTTON->Visible, ale toto exBUTTONVisible, exBUTTON pouÅ¾Ã­vat pouze na designovÃ¡nÃ­
+	short Decimal;//implicitnÃ­ poÄet desetinnÃ½ch mÃ­st u numericeditÅ¯
+	bool IntegerDecimalNull;//pokud je vÃ½Å¡e uvedenÃ© Decimal na hodnotu vyÅ¡Å¡Ã­ neÅ¾ 0, toto nastavuje zda se nuly doplnÃ­ do poÄtu decimÃ¡l i u celÃ½ch ÄÃ­sel
+	bool MovingTable;//pokud je nastaveno na true, komponenty se zmÄ›nÃ­ na typ DRAW tj. tak, aby doÅ¡lo k posunu danÃ© buÅˆky
+	bool VisibleComponents;//nastavÃ­ componenty na skrytÃ© nebo zobrazenÃ©
+	TColor clHighlight;//pÅ™ednastavenÃ¡ barva zvÃ½raznÄ›nÃ­, slouÅ¾Ã­ i pro nastavenÃ­ barvy focusu komponent
+	int SleepHint;//zpoÅ¾dÄ›nÃ­ zobrazenÃ­ Hintu v ms
 
- //protected: - nefugovalo, jak jsme si pøedstavoval
-	long Width,Height;//velikost komponenty, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
-	unsigned long Row,Col;//aktuální øádek a sloupec, jen zobrazovat mimo tøídu, nelze hodnotami nic nastavovat
+ //protected: - nefugovalo, jak jsme si pÅ™edstavoval
+	long Width,Height;//velikost komponenty, jen zobrazovat mimo tÅ™Ã­du, nelze hodnotami nic nastavovat
+	long Row,Col;//aktuÃ¡lnÃ­ Å™Ã¡dek a sloupec, jen zobrazovat mimo tÅ™Ã­du, nelze hodnotami nic nastavovat
 
  private:
 	TForm *Form;
 	TMyString ms;
 	Cmy m;
 
-	void __fastcall getTagOnClick(TObject *Sender);//vrací událost pøi OnClick
-	void __fastcall getTagOnEnter(TObject *Sender);//vrací událost pøi OnEnter
-	void __fastcall getTagOnChange(TObject *Sender);//vrací událost pøi OnChange
-	void __fastcall getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState Shift);//vrací událost pøi OnKeyDown
-	void __fastcall getTagOnKeyPress(TObject *Sender,System::WideChar &Key);//vrací událost pøi OnKeyPress
-	void getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row);//dle zadaného èísla sloupce a èísla øádku vrátí z dané komponenty text do pamìové buòky, slouí napø. pøi události onchange popø. dálších
+	//TrHTMLLabel *Hint;
+	TscHTMLLabel *Hint;//hint draw bunÄ›k - zatÃ­m dÃ¡vÃ¡m do private sekce z dÅ¯vodu pÅ™ehlednosti o pouÅ¾itÃ­ atributu (napÅ™. Hint->Visible=true, Hint->ShowHint, Hint->Hint, atp. nic z toho se nesmÃ­ uÅ¾Ã­vat)
+	TTimer *Timer;
 
-	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky vèetnì gridu
-	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
-	void DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R);//zajistí vykreslení orámování jen jedné buòky
-	void SetColRow();//nastaví velikost sloupcù a øádkù dle aktuálního nastavení a potøeby
-	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na poadované parametry
-	void SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku dle typu
-	void SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na edit, pomocná metoda vıše uvedené
-	void SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na numericedit, pomocná metoda objednu vıše uvedené
-	void SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na label, pomocná metoda objednu vıše uvedené
-	void SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na button, pomocná metoda objednu vıše uvedené
-	void SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na glyphButton, pomocná metoda objednu vıše uvedené
-	void SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na combo, pomocná metoda objednu vıše uvedené
-	void SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na check, pomocná metoda objednu vıše uvedené
-	void SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buòku na radio, pomocná metoda objednu vıše uvedené
-	void rcc(unsigned long cc,unsigned long rc);//pouze obejití lokální promìnné, v c++ je na to nìjaké klíèové slovo, ale nevzpomenu si
-	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
-	void CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell);//patøiènì prolinkuje orámování, e sousední orámování má ukazatel na totonı objekt, vzor orámvání získá dle refCell
-	void CreateCell(TCells &NewCell);//vytvoøí novou buòku (alokuje ji pamì)
-	void DeleteCell(TCells &DelCell);//smae buòku z pamìti
-	void DeleteTable();//odstraní pouze tabulku z pamìti
-	void DeleteComponents();//odstraní dynamicky vytoøené komponenty, nutno volat pøed Delete() // pozor odstraòovaná komponenta nesmí mít focus (jinak pamìová chyba), focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
-	void DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow);//odstraní dynamicky vytoøené komponenty do poètu sloupcù a øádkù, nutno volat pøed Delete() // pozor odstraòovaná komponenta nesmí mít focus (jinak pamìová chyba), focus je potøeba pøi odstraòování komponent odevzdat nìjaké komponentì, která zùstává ve formu
-	void MoveComponentUP(unsigned long Col,unsigned long Row);//posunu komponentu na øádku o jeden øádek níe, pouává se novì na mazání øádku
-	void executeColumnsAutoFit(TCanvas *Canv);//nastaví šíøku bunìk sloupcù dle šíøky textu dle zvoleného parametru
-	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastaví šíøku bunìk daného sloupce dle šíøky textu v daném sloupci
-	void realock();//zajistí realokaci pole Cells dle nové velikosti
-	void rotace_textu(long rotace);//zajistí rotaci textu
-	void selRow(long Row,TColor Color,bool newSel);//oznaèí øádek, nebo zruší oznaèení øádku dle vstupního parametru
+	void __fastcall getTagOnClick(TObject *Sender);//vracÃ­ udÃ¡lost pÅ™i OnClick
+	void __fastcall getTagOnEnter(TObject *Sender);//vracÃ­ udÃ¡lost pÅ™i OnEnter
+	void __fastcall getTagOnChange(TObject *Sender);//vracÃ­ udÃ¡lost pÅ™i OnChange
+	void __fastcall getTagOnKeyDown(TObject *Sender,WORD &Key, TShiftState Shift);//vracÃ­ udÃ¡lost pÅ™i OnKeyDown
+	void __fastcall getTagOnKeyPress(TObject *Sender,System::WideChar &Key);//vracÃ­ udÃ¡lost pÅ™i OnKeyPress
+	void __fastcall getTagOnMouseEnter(TObject *Sender);//vracÃ­ udÃ¡lost pÅ™i vstupu Äi pÅ™ejetÃ­ myÅ¡Ã­ pÅ™es komponentu
+	void __fastcall OnTimer(TObject *Sender);//udÃ¡lost ÄasovaÄe
+	void getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row);//dle zadanÃ©ho ÄÃ­sla sloupce a ÄÃ­sla Å™Ã¡dku vrÃ¡tÃ­ z danÃ© komponenty text do pamÄ›Å¥ovÃ© buÅˆky, slouÅ¾Ã­ napÅ™. pÅ™i udÃ¡losti onchange popÅ™. dÃ¡lÅ¡Ã­ch
 
-	unsigned long getWidth();//vrátí celkovou šíøku tabulky
-	unsigned long getHeight();//vrátí celkovou vıšku tabulky
-	TPoint getWidthHeightText(TCells &Cell);//vrátí šíøku a vıšku textu buòky v pixelech
-	unsigned long getTag(unsigned long Col,unsigned long Row);//vratí ID tag komponenty,absolutní poøadí v pamìti
-	unsigned long getColFromTag(unsigned long Tag);//z tagu vratí èíslo sloupce
-	unsigned long getRowFromTag(unsigned long Tag);//z tagu vratí èíslo øádku
+	void Draw(TCanvas *C);//zajistÃ­ vykreslenÃ­ celÃ© tabulky vÄetnÄ› gridu a exBUTTONu a poznÃ¡mky pod Äarou
+	void DrawGrid(TCanvas *C);//zajistÃ­ vykreslenÃ­ jen gridu
+	void DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R);//zajistÃ­ vykreslenÃ­ orÃ¡movÃ¡nÃ­ jen jednÃ© buÅˆky
+	void SetColRow();//nastavÃ­ velikost sloupcÅ¯ a Å™Ã¡dkÅ¯ dle aktuÃ¡lnÃ­ho nastavenÃ­ a potÅ™eby
+	void SetBorder(TCanvas *C,TBorder *Border);//nastavÃ­ grafickÃ© pero na poÅ¾adovanÃ© parametry
+	void SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku dle typu
+	void SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na edit, pomocnÃ¡ metoda vÃ½Å¡e uvedenÃ©
+	void SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na numericedit, pomocnÃ¡ metoda objednu vÃ½Å¡e uvedenÃ©
+	void SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na label, pomocnÃ¡ metoda objednu vÃ½Å¡e uvedenÃ©
+	void SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na button, pomocnÃ¡ metoda objednu vÃ½Å¡e uvedenÃ©
+	void SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na glyphButton, pomocnÃ¡ metoda objednu vÃ½Å¡e uvedenÃ©
+	void SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na combo, pomocnÃ¡ metoda objednu vÃ½Å¡e uvedenÃ©
+	void SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na check, pomocnÃ¡ metoda objednu vÃ½Å¡e uvedenÃ©
+	void SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastavÃ­ danou buÅˆku na radio, pomocnÃ¡ metoda objednu vÃ½Å¡e uvedenÃ©
+	void rcc(unsigned long cc,unsigned long rc);//pouze obejitÃ­ lokÃ¡lnÃ­ promÄ›nnÃ©, v c++ je na to nÄ›jakÃ© klÃ­ÄovÃ© slovo, ale nevzpomenu si
+	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patÅ™iÄnÄ› prolinkuje orÃ¡movÃ¡nÃ­, Å¾e sousednÃ­ orÃ¡movÃ¡nÃ­ mÃ¡ ukazatel na totoÅ¾nÃ½ objekt, vzor orÃ¡mvÃ¡nÃ­ zÃ­skÃ¡ dle refCell
+	void CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell);//patÅ™iÄnÄ› prolinkuje orÃ¡movÃ¡nÃ­, Å¾e sousednÃ­ orÃ¡movÃ¡nÃ­ mÃ¡ ukazatel na totoÅ¾nÃ½ objekt, vzor orÃ¡mvÃ¡nÃ­ zÃ­skÃ¡ dle refCell
+	void CreateCell(TCells &NewCell);//vytvoÅ™Ã­ novou buÅˆku (alokuje ji pamÄ›Å¥)
+	void DeleteCell(TCells &DelCell);//smaÅ¾e buÅˆku z pamÄ›ti
+	void DeleteTable();//odstranÃ­ pouze tabulku z pamÄ›ti
+	void DeleteComponents();//odstranÃ­ dynamicky vytoÅ™enÃ© komponenty, nutno volat pÅ™ed Delete() // pozor odstraÅˆovanÃ¡ komponenta nesmÃ­ mÃ­t focus (jinak pamÄ›Å¥ovÃ¡ chyba), focus je potÅ™eba pÅ™i odstraÅˆovÃ¡nÃ­ komponent odevzdat nÄ›jakÃ© komponentÄ›, kterÃ¡ zÅ¯stÃ¡vÃ¡ ve formu
+	void DeleteComponents(unsigned long sCol,unsigned long sRow,unsigned long fCol,unsigned long fRow);//odstranÃ­ dynamicky vytoÅ™enÃ© komponenty do poÄtu sloupcÅ¯ a Å™Ã¡dkÅ¯, nutno volat pÅ™ed Delete() // pozor odstraÅˆovanÃ¡ komponenta nesmÃ­ mÃ­t focus (jinak pamÄ›Å¥ovÃ¡ chyba), focus je potÅ™eba pÅ™i odstraÅˆovÃ¡nÃ­ komponent odevzdat nÄ›jakÃ© komponentÄ›, kterÃ¡ zÅ¯stÃ¡vÃ¡ ve formu
+	void MoveComponentUP(unsigned long Col,unsigned long Row);//posunu komponentu na Å™Ã¡dku o jeden Å™Ã¡dek nÃ­Å¾e, pouÅ¾Ã¡vÃ¡ se novÄ› na mazÃ¡nÃ­ Å™Ã¡dku
+	void executeColumnsAutoFit(TCanvas *Canv);//nastavÃ­ Å¡Ã­Å™ku bunÄ›k sloupcÅ¯ dle Å¡Ã­Å™ky textu dle zvolenÃ©ho parametru
+	void executeColumnAutoFit(TCanvas *Canv,long ColIdx);//nastavÃ­ Å¡Ã­Å™ku bunÄ›k danÃ©ho sloupce dle Å¡Ã­Å™ky textu v danÃ©m sloupci
+	void realock();//zajistÃ­ realokaci pole Cells dle novÃ© velikosti
+	void rotace_textu(long rotace);//zajistÃ­ rotaci textu
+	void selRow(long Row,TColor Color,bool newSel);//oznaÄÃ­ Å™Ã¡dek, nebo zruÅ¡Ã­ oznaÄenÃ­ Å™Ã¡dku dle vstupnÃ­ho parametru
 
-	unsigned long bufColCount,bufRowCount;//pøedchozí poèet øádkù a sloupcù
+	unsigned long getWidth();//vrÃ¡tÃ­ celkovou Å¡Ã­Å™ku tabulky
+	unsigned long getHeight();//vrÃ¡tÃ­ celkovou vÃ½Å¡ku tabulky
+	TPoint getWidthHeightText(TCells &Cell);//vrÃ¡tÃ­ Å¡Ã­Å™ku a vÃ½Å¡ku textu buÅˆky v pixelech
+	unsigned long getTag(unsigned long Col,unsigned long Row);//vratÃ­ ID tag komponenty,absolutnÃ­ poÅ™adÃ­ v pamÄ›ti
+	unsigned long getColFromTag(unsigned long Tag);//z tagu vratÃ­ ÄÃ­slo sloupce
+	unsigned long getRowFromTag(unsigned long Tag);//z tagu vratÃ­ ÄÃ­slo Å™Ã¡dku
+
+	unsigned long bufColCount,bufRowCount;//pÅ™edchozÃ­ poÄet Å™Ã¡dkÅ¯ a sloupcÅ¯
 	short SetColumnAutoFitColIdx;//typ autofit column
-	long preRowInd;//pøedchozí øádek na kterém byla myš
-	bool deleteMark;//detekce e dochází k odstraòování mGridu
-	UnicodeString bufText;//ukládá vıchozí hodnotu editboxu pøed psaním, pro pøípad stisku ESC
+	long preRowInd;//pÅ™edchozÃ­ Å™Ã¡dek na kterÃ©m byla myÅ¡
+	long preColInd;//pÅ™edchozÃ­ sloupec na kterÃ©m byla myÅ¡
+	bool deleteMark;//detekce Å¾e dochÃ¡zÃ­ k odstraÅˆovÃ¡nÃ­ mGridu
+	UnicodeString bufText;//uklÃ¡dÃ¡ vÃ½chozÃ­ hodnotu editboxu pÅ™ed psanÃ­m, pro pÅ™Ã­pad stisku ESC
 };
 //---------------------------------------------------------------------------
 extern TmGrid *mGrid;//ukazatel na celou knihovnu

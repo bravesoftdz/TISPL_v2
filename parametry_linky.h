@@ -101,7 +101,7 @@ __published:	// IDE-managed Components
   TscImage *scImage1;
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
   TrImageEx *rImageEx1;
-  TRadioGroup *RadioGroup1;
+  TscGPCheckBox *scGPCheckBox1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

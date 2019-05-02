@@ -53,6 +53,7 @@
 #pragma link "scHint"
 #pragma link "scGPExtControls"
 #pragma link "rHintWindow"
+#pragma link "rHTMLLabel"
 #pragma resource "*.dfm"
 TForm1 *Form1;
 TForm1 *F;//pouze zkrácený zapis
@@ -2342,7 +2343,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-11 a více//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);
 //JID=-1 žádná
 //JID= 0 - 4 rezervováno pro element, používáno zatím jenom 0, bližší identifikace probíhá pomocí pom_element
-//JID= 5-10 nultý až poslední řádek tabulky pohonů (využity pouze 7,8,9)
+//JID= 5-10 nultý až poslední řádek tabulky pohonů (využity pouze 6,7,8)
 //JID= 11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
 //JID= 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
 void TForm1::getJobID(int X, int Y)
@@ -2356,7 +2357,7 @@ void TForm1::getJobID(int X, int Y)
 		if(IdxRow==0)JID=5;//hlavička
 		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 		{
-			int IdxCol=PmG->GetIdxColum(X,Y);
+			int IdxCol=PmG->GetIdxColumn(X,Y);
 			if(IdxCol==0)//řádky v prvním sloupeci
 			{
 				if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=5+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
@@ -2375,7 +2376,7 @@ void TForm1::getJobID(int X, int Y)
 			if(IdxRow==0 && pom_temp->uzamknout_nahled==false)JID=100+0;//hlavička
 			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 			{
-				int IdxCol=pom_element->mGrid->GetIdxColum(X,Y);
+				int IdxCol=pom_element->mGrid->GetIdxColumn(X,Y);
 				if(IdxCol==0)//řádky v prvním sloupeci
 				{
 					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
@@ -3229,7 +3230,7 @@ void TForm1::add_element (int X, int Y)
 		design_element(E,true);
 		//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 		aut_pozicovani(E,X,Y);
-		E->mGrid->Show(NULL);//nutné před plněním COMBA
+		E->mGrid->Update(); //nutné před plněním COMBA
 		d.v.napln_comba_stopek();
 		//při vložení prvního robota překreslit tabulku pohonu
 		if(E->n==1)design_tab_pohon(3);
@@ -3878,6 +3879,9 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	TColor clBackgroundHidden=m.clIntensive((TColor)RGB(128,128,128),105);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	TColor clFontRight = (TColor)RGB(43,87,154);
+	//identifikátor tabulky
+	E->mGrid->Tag=6;//ID formu
+	E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 	//definice fontu a velikosti písma
 	E->mGrid->DefaultCell.Font->Name=aFont->Name;
 	E->mGrid->DefaultCell.Font->Size=aFont->Size;
@@ -3945,7 +3949,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 //vytvoření tabulek, první výpočty a zapsání do spojáku
 void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce)
 {
-	switch(element_id)
+	switch(E->eID)
 	{
 		case 0://stop stanice
 		{
@@ -4100,7 +4104,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 //další spuštěńí, pouze načítání hodnot ze spojáku
 void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce)
 {
-	switch(element_id)
+	switch(E->eID)
 	{
 		case 0://stop stanice
 		{
@@ -5511,7 +5515,6 @@ void TForm1::NP_input()
 	 //vycentrování obrazu na střed
 	 Posun.x=Centr.x/m2px-ClientWidth/2/Zoom;
 	 Posun.y=-Centr.y/m2px-(ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2/Zoom; //ClientHeight-scGPPanel_bottomtoolbar->Height
-	 on_change_zoom_change_scGPTrackBar();
 	 //vycentruje kurzor na střed monitoru - na X nefunguje přesně
 	 if(vycentrovat)Mouse->CursorPos=TPoint(m.L2Px(akt_souradnice_kurzoru.x),m.L2Py(akt_souradnice_kurzoru.y)+vyska_menu);
 	 vycentrovat=true;
@@ -5623,9 +5626,9 @@ void TForm1::NP_input()
 	Schema->Options->PressedColor=Layout->Options->NormalColor;
 	scGPGlyphButton_zpravy_ikona->Visible=true;
 	//znovu provedení designu při otevření náhledu, který není prázdný
-	if(pom->elementy!=NULL)
+	if(pom_temp->elementy!=NULL)
 	{
-		Cvektory::TElement *E=pom->elementy->dalsi;
+		Cvektory::TElement *E=pom_temp->elementy->dalsi;
 		while (E!=NULL)
 		{
 			design_element(E,false);
@@ -5635,7 +5638,8 @@ void TForm1::NP_input()
 	}
 	design_tab_pohon(0);
 	DrawGrid_knihovna->Invalidate();
-	REFRESH();  
+	REFRESH();
+	on_change_zoom_change_scGPTrackBar();//musí být po design_element
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
@@ -6992,6 +6996,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
+smazat++;
+Memo3->Visible=true;Memo3->Clear(); Memo3->Lines->Add(smazat);
+REFRESH();
 		//Sk(pom_temp->pohon->name);//test
 		//pom_temp->pohon=d.v.POHONY->dalsi->dalsi;//ostré přírazení
 		//d.v.kopiruj_pohon(d.v.POHONY->dalsi,pom_temp);//nepropojené přiřazení
@@ -7014,11 +7021,13 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;//přeskočí hlavičku
 //	while (P!=NULL)
 //
-//	{//		Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
+//	{
+//		Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
 //		P=P->dalsi;//posun na další prvek
 //	}
 
-		 Form2->ShowModal();
+
+		 //Form2->ShowModal();
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
  //	ShowMessage(scListGroupNastavProjektu->TabOrder);
@@ -7817,6 +7826,11 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 //d.v.POHONY->dalsi->name="ano";
 Form2->ShowModal();
 
+//smazat--;
+//Memo3->Visible=true; Memo3->Clear();Memo3->Lines->Add(smazat);
+//Memo3->Font->Quality = (System::Uitypes::TFontQuality)4;
+//REFRESH();
+
 //Memo3->Visible=true;
 //Cvektory::TPohon *P=d.v.POHONY->dalsi;
 //while(P!=NULL)
@@ -8544,6 +8558,10 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
+
+
+
+
 
 
 

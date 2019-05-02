@@ -30,10 +30,11 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG=new TmGrid(this);//vždy nutno jako první
 		E->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
 		E->mG->ID=0;
-		E->mG->Left=50;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
+		E->mG->Left=100;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
 		E->mG->MovingTable=false;
 		E->mG->Border.Width=2;
+		E->mG->exBUTTONVisible=true;
 
 		unsigned long ColCount=3;//pevný poèet slopcù
 		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
@@ -44,7 +45,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Cells[0][0].Text="0";E->mG->Cells[0][0].Type=E->mG->EDIT;
 		E->mG->Cells[1][0].Text="5,555";E->mG->Cells[1][0].Type=E->mG->EDIT;
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
-		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>";
+		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>"; E->mG->Cells[0][1].Hint="test hintu";E->mG->Cells[0][1].ShowHint=true;
 		E->mG->Cells[0][1].isLink->Color=clRed;
 		E->mG->Cells[1][1].Type=E->mG->EDIT;
 		E->mG->Cells[1][1].InputNumbersOnly=true;
@@ -54,7 +55,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
-		E->mG->Note.Text="Text výpisu poznámky pod èarou a nìjaký další abcdefgeijasdfads dafs";
+		E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a nìjaký další abcdefgeijasdfads dafs";
 
 
 		E->predchozi=NULL;
@@ -367,24 +368,38 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 	//mGrid->AntiAliasing_grid=!mGrid->AntiAliasing_grid;
 	// ELEMENTY->mG->Left+=10;
 	//zmìna posunu tabulky
-   ELEMENTY->mG->unHighlightAll();
+	 ELEMENTY->mG->unHighlightAll();
 
 	Invalidate();
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
 //---------------------------------------------------------------------------
 //test volání pøi onclick
-void TForm2::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
+void TForm2::OnClick(long Tag,long ID,long Col,long Row)
 {
-	ShowMessage("UNIT2\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	//ShowMessage("UNIT2\nToto vypisuje metoda OnClick\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));
+	if(Row==-2)
+	{
+		//ShowMessage("UNIT2\nexBUTTON");
+		if(ELEMENTY->mG->Rows[1].Visible)//skrývání
+		{
+			ELEMENTY->mG->VisibleRow(1,false);
+			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+		}
+		else//zobrazování
+		{
+			ELEMENTY->mG->VisibleRow(1,true);
+			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+		}
+	}
 //	mGrid->HighlightCell(Col,Row);
 //	mGrid->Cells[0][0].Text="test";
 //	FormPaint(this);//zajistí pøekreslení bez probliku
 //	//toto problikává mGrid->Refresh();
-if(Col==3)
-{
-	ELEMENTY->dalsi->mG->DeleteRow(Row);
-}
+//if(Col==3)
+//{
+//	ELEMENTY->dalsi->mG->DeleteRow(Row);
+//}
 
 }
 //---------------------------------------------------------------------------
@@ -503,6 +518,8 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
+
+	 ELEMENTY->mG->MouseMove(X,Y);
 //	if(aktX==-50000 && aktY==-50000)
 //	{
 //		Cvykresli d;
@@ -551,6 +568,7 @@ void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 	 }
 }
 //---------------------------------------------------------------------------
+
 
 
 
