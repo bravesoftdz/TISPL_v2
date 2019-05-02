@@ -1874,7 +1874,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-9){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
 								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů
-								if(JID==6||JID==7||JID==8){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
+								if(JID==6||JID==7||JID==8||JID==9||JID==10){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
 						}
 						else
 						{
@@ -2136,7 +2136,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 //				if (trend==90 || trend==270)//orientace vodorovná
 //				{
-					if(mimo==-1||mimo==-2)zobraz_tip("Nelze provést, pohon musí být v kabině.");//jde o pohon
+					if(mimo==-1||mimo==-2)zobraz_tip("Nelze provést, pohon musí být součástí objektu.");//jde o pohon
 					else zobraz_tip("Nelze provést, všichni roboti musí být v kabině.");//jde o robota
 					switch (mimo)//posune kabinu tak, aby všechny elementy byly uvnitř
 					{
@@ -2175,7 +2175,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				pom_temp->rozmer_kabiny.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			if(mimo==-2||mimo==-1)//něco mimo kabinu
 			{
-				/*if(mimo==-2||mimo==-1)*/ zobraz_tip("Nelze provést, pohon musí být v kabině.");
+				/*if(mimo==-2||mimo==-1)*/ zobraz_tip("Nelze provést, pohon musí být součástí objektu.");
 //				else zobraz_tip("Nelze provést, všichni roboti musí být v kabině.");
 				switch(mimo)//úprava rozměrů kabiny tak, aby bylo vše v kabině
 				{
@@ -2476,7 +2476,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){REFRESH();kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
 		if(JID>=11&&JID<=99)kurzor(zmena_d_y);
-		if(JID==6||JID==7||JID==8)kurzor(zmena_j);
+		if(JID==6||JID==7||JID==8||JID==9||JID==10)kurzor(zmena_j);
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
@@ -3218,7 +3218,7 @@ void TForm1::add_element (int X, int Y)
 	}                                       //netradičně v hlavičce je umístěna elementární osa pohonu!!!
 	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;//m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);//vodorovný pohon
 	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;//m.round(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0+DoSkRB);//svislý pohon
-
+				//zvážit nahrazení makrem Rxy
 
 	//vložení elementu na dané souřadnice a do patřičného spojáku - pozor jedná se o chybu návrhu, nemělo by se vkládát do pom resp. ostrého spojáku objektů pro případ storna....
 //	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
@@ -3589,15 +3589,15 @@ void TForm1::design_tab_pohon(int index)
 			else
 			{
 				int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-				if(EID==1||EID==3) PmG->Create(2,5);
-				else PmG->Create(2,3);
+				if(EID==1||EID==3) PmG->Create(2,7);
+				else PmG->Create(2,5);
 			}
 			//formátování hlavičky tabulky
 			PmG->Cells[0][0].Font->Color=clBlack;
 			//naplnění buněk
 			PmG->SetColumnAutoFit(-4);
 			PmG->Cells[0][0].Type=PmG->COMBO;
-			/*if(aRD=="<a>[m/min]</a>")*/PmG->Columns[0].Width=134;
+			/*if(aRD=="<a>[m/min]</a>")*/PmG->Columns[0].Width=200;
 			//else PmG->Columns[0].Width=118;
 			PmG->Columns[1].Width=118;
 			//sloučení hlavičky
@@ -3607,8 +3607,8 @@ void TForm1::design_tab_pohon(int index)
 		}break;
 		case 1:///////////Změna jednotek
    	{
-   		//překlopení jednotek
-   		switch(JID)
+			//překlopení jednotek
+			switch(JID)
 			{
 				case 6:
 				{
@@ -3621,9 +3621,17 @@ void TForm1::design_tab_pohon(int index)
 					else Runit=M;
 				}break;
 				case 8:
-   			{
-   				if (Rzunit==M) Rzunit=MM;
+				{
+					if (Rzunit==M) Rzunit=MM;
 					else Rzunit=M;
+				}break;
+				case 10:
+				{
+					Sv(10);
+				}break;
+				case 11:
+				{
+					Sv(11);
 				}break;
 			}
 			//nastavení jednotek po změně
@@ -3650,12 +3658,16 @@ void TForm1::design_tab_pohon(int index)
 				int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
 				if(EID==2||EID==4||EID==6||EID==-1)
 				{
+          PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
 				}
 				else
 				{
-        	PmG->AddRow(false,false);
+          PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
@@ -3664,8 +3676,8 @@ void TForm1::design_tab_pohon(int index)
 			}
 			if(index==0&&PmG->RowCount!=1)
 			{
-				if(PmG->RowCount==5) {PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
-				else {PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
+				if(PmG->RowCount==7) {PmG->DeleteRow(6,false);PmG->DeleteRow(5,false);PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
+				else {PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
 				PmG->Show(NULL);
 				pom_temp->pohon=NULL;
         DrawGrid_knihovna->Refresh();
@@ -3676,32 +3688,25 @@ void TForm1::design_tab_pohon(int index)
 		case 3://úprava tabulky po přidání prvního elementu
 		{
 			int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-			if((EID==2||EID==4||EID==6)&&PmG->RowCount==5)
+			if((EID==2||EID==4||EID==6)&&PmG->RowCount==7)
 			{
-				PmG->DeleteRow(4,false);
-				PmG->DeleteRow(3,false);
+				PmG->DeleteRow(6,false);
+				PmG->DeleteRow(5,false);
 				PmG->Show(NULL);
 			}
-			if((EID==1||EID==3||EID==5)&&PmG->RowCount==3)
+			if((EID==1||EID==3||EID==5)&&PmG->RowCount==5)
    		{
 				PmG->AddRow(false,false);
 				PmG->AddRow(false,false);
 				PmG->Show(NULL);  //bez tohoto dělalo problémy
 			}
 		}break;
+		case 4://smazání posledního elementu
+		{
+			if(PmG->RowCount=7){PmG->DeleteRow(6,false);PmG->DeleteRow(5,false);}else;
+		}break;
 	}
 	//naplnění buněk
-	if(PmG->RowCount==3)
-	{
-		PmG->Cells[0][1].Text="Rychlost "+aRD;
-		PmG->Cells[0][1].TopBorder->Width=2;
-		PmG->Cells[1][1].TopBorder->Width=2;
-		PmG->Cells[1][1].Type=PmG->EDIT;
-		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
-		PmG->Cells[0][2].Text="Rozteč "+R;
-		PmG->Cells[1][2].Type=PmG->EDIT;
-		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-	}
 	if(PmG->RowCount==5)
 	{
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
@@ -3712,30 +3717,47 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][2].Text="Rozteč "+R;
 		PmG->Cells[1][2].Type=PmG->EDIT;
 		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
+		PmG->Cells[0][3].Text="Mezera mezi JIG 0°"+R;
+		PmG->Cells[1][3].Text=0;
+		PmG->Cells[0][4].Text="Mezera mezi JIG 90°"+R;
+		PmG->Cells[1][4].Text=0;
+	}
+	if(PmG->RowCount==7)
+	{
+		PmG->Cells[0][1].Text="Rychlost "+aRD;
+		PmG->Cells[0][1].TopBorder->Width=2;
+		PmG->Cells[1][1].TopBorder->Width=2;
+		PmG->Cells[1][1].Type=PmG->EDIT;
+		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
+		PmG->Cells[0][2].Text="Rozteč "+R;
+		PmG->Cells[1][2].Type=PmG->EDIT;
+		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
 		PmG->Cells[0][3].Text="Rozestup "+Rz;
+		PmG->Cells[1][3].Type=PmG->EDIT;
 		pom_temp->pohon->Rz=m.Rz(pom_temp->pohon->aRD);
 		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[0][4].Text="Rx";
 		PmG->Cells[1][4].Type=PmG->EDIT;
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
 		PmG->Cells[1][4].Text=pom_temp->pohon->Rx;
+		PmG->Cells[0][5].Text="Mezera mezi JIG 0° "+R;
+		PmG->Cells[1][5].Text=0;
+		PmG->Cells[0][6].Text="Mezera mezi JIG 90° "+R;
+		PmG->Cells[1][6].Text=0;
 	}
 	//finální desing + refresh
 	for(int i=1;i<=ms.MyToDouble(PmG->RowCount-1);i++)
 	{
 		if (PmG->Cells[1][i].Type==PmG->EDIT)
 			PmG->Cells[1][i].InputNumbersOnly=true;
-		else if(PmG->Cells[1][i].Type!=PmG->COMBO)
+		else
 		{
 			PmG->Cells[1][i].Font->Color=(TColor)RGB(128,128,128);
 			PmG->Cells[1][i].RightMargin=5;
 			PmG->Cells[1][i].Background->Color=m.clIntensive((TColor)RGB(128,128,128),105);
 		}
-		if(i>=1)
-		{
-			PmG->Cells[0][i].Align=mGrid->RIGHT;
-			PmG->Cells[1][i].Align=mGrid->RIGHT;
-		}
+		PmG->Cells[0][i].Align=mGrid->RIGHT;
+		PmG->Cells[1][i].Align=mGrid->RIGHT;
 		PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
 		PmG->Cells[0][i].RightMargin=3;
 	}
@@ -5140,6 +5162,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				DrawGrid_otoce->Refresh();
 				pom_element_temp=NULL; delete pom_element_temp;
 			}else mazani=false;
+			if(pom_temp->elementy->dalsi==NULL)design_tab_pohon(4);
 			break;
 		}
 		default:
@@ -5574,12 +5597,12 @@ void TForm1::NP_input()
 	if(posun_dalsich_elementu)
 	{
 		scGPButton_posun_dalsich_elementu->ImageIndex=58;
-		scGPButton_posun_dalsich_elementu->Hint="Vypnout vázaný posun robotů";
+		scGPButton_posun_dalsich_elementu->Hint="Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 	}
 	else
 	{
 		scGPButton_posun_dalsich_elementu->ImageIndex=59;
-		scGPButton_posun_dalsich_elementu->Hint="Zapnout vázaný posun robotů";
+		scGPButton_posun_dalsich_elementu->Hint="Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 	 }
 
 	 scGPButton_ulozit->Enabled=false;
@@ -6998,13 +7021,13 @@ REFRESH();
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;//přeskočí hlavičku
 //	while (P!=NULL)
 //
-//	{//		Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
+//	{
+//		Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
 //		P=P->dalsi;//posun na další prvek
 //	}
 
 
 		 //Form2->ShowModal();
-
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
  //	ShowMessage(scListGroupNastavProjektu->TabOrder);
@@ -8428,7 +8451,7 @@ void TForm1::Smaz_kurzor ()
 		//pokud jsou nějaké elementy mimo kabinu provede přizpůsobení velikosti kabiny a zobrazí hlášku
 		if(mimo==-2||mimo==-1)
 		{
-			/*if(mimo==-2||mimo==-1)*/ zobraz_tip("Nelze provést, pohon musí být v kabině.");
+			/*if(mimo==-2||mimo==-1)*/ zobraz_tip("Nelze provést, pohon musí být součástí objektu");
 //			else zobraz_tip("Nelze provést, všichni roboti musí být v kabině.");
 //			do
 //			{
@@ -8524,13 +8547,13 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 		{
 			scGPButton_posun_dalsich_elementu->ImageIndex=58;
 			posun_dalsich_elementu=true;
-			scGPButton_posun_dalsich_elementu->Hint="Vypnout vázaný posun robotů";
+			scGPButton_posun_dalsich_elementu->Hint="Zakázat vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 		}
 	else
 		{
 			scGPButton_posun_dalsich_elementu->ImageIndex=59;
 			posun_dalsich_elementu=false;
-			scGPButton_posun_dalsich_elementu->Hint="Zapnout vázaný posun robotů";
+			scGPButton_posun_dalsich_elementu->Hint="Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 		}
 	DrawGrid_knihovna->SetFocus();
 }

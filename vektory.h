@@ -363,11 +363,14 @@ class Cvektory
 		void hlavicka_elementy(TObjekt *Objekt);//danému objektu vytvoří hlavičku elementů
 		TElement *vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y);//vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
 		void vloz_element(TObjekt *Objekt,TElement *Element);//vloží element do spojového seznamu elementů daného technologického objektu
+		Cvektory::TElement *vloz_element_za(TObjekt *Objekt,TElement *Element);//kontrola zda vkládaný element bude umístěn na konec nebo mezi jiné elementy, pokud bude vkládán na konec return=NULL, pokud mezi elementy return=ukazatel na předchozí element
+    void uprav_popisky_elementu(TObjekt *Objekt, TElement *Element);//upraví indexy a popisky elementů po vloženém elementu (parametr Element), pokud dostane parametrem Objekt NULL provádí změnu pouze v kabině (roboti), pokud nebude NULL provádí globální změnu (napříč objekty, STOP,..)
 		void kopiruj_element(TElement *Original, TElement *Kopie);//zkopíruje atributy elementu bez ukazatelového propojení, pouze ukazatelové propojení na mGrid je zachováno
 		void kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie);//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie);
 		void vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie);//připraví vektor provizorní osy pohonu
 		int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
 		unsigned int vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID);//vratí pořádí stopek, robotů a otočí zatím pouze v elementu, bude na zvážení rozšíření na všechny objekty
+		unsigned int vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
 		void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy daného objektu o danou hodnotu
 		TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 		TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka

@@ -2124,8 +2124,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'TISPL'
-      ExplicitLeft = 459
-      ExplicitWidth = 100
     end
     object scGPGlyphButton_zpravy_ikona: TscGPGlyphButton
       Left = 559
@@ -2258,7 +2256,6 @@ object Form1: TForm1
       FrameOnSolid = True
       FrameInside = False
       OnChangeState = scGPSwitch_rezimChangeState
-      ExplicitLeft = 343
     end
     object scLabel_klient: TscLabel
       Left = 428
@@ -2292,7 +2289,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'Ov'#283#345'ov'#225'n'#237
-      ExplicitLeft = 391
     end
     object scLabel_architekt: TscLabel
       Left = 341
@@ -2326,7 +2322,6 @@ object Form1: TForm1
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
       Caption = 'N'#225'vrh'
-      ExplicitLeft = 304
     end
     object scLabel_mezera: TscLabel
       Left = 326
@@ -2359,7 +2354,6 @@ object Form1: TForm1
       Alignment = taCenter
       VertAlignment = scvtaCenter
       UseFontColorToStyleColor = True
-      ExplicitLeft = 289
     end
     object scGPButton_header_projekt: TscGPButton
       AlignWithMargins = True
@@ -2466,7 +2460,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 242
     end
     object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
       AlignWithMargins = True
@@ -2707,9 +2700,6 @@ object Form1: TForm1
       Down = False
       GroupIndex = 0
       AllowAllUp = False
-      ExplicitLeft = 245
-      ExplicitTop = 1
-      ExplicitHeight = 33
     end
   end
   object scGPPanel_statusbar: TscGPPanel
@@ -3985,7 +3975,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button13'
     TabOrder = 36
-    Visible = False
     OnClick = Button13Click
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
@@ -4467,8 +4456,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2418
-        Top = 2581
+        Left = 2454
+        Top = 2617
         Width = 244
         Height = 31
         Align = alCustom
@@ -5827,9 +5816,9 @@ object Form1: TForm1
     ContentMarginBottom = 5
     DisabledFontColor = clNone
     FrameWidth = 0
-    FillColor = clBtnText
-    FillColorAlpha = 20
-    FillColor2 = clNone
+    FillColor = clBtnFace
+    FillColorAlpha = 255
+    FillColor2 = clBtnFace
     FillColor2Alpha = 255
     FillGradientAngle = 0
     FrameColor = clBtnText
@@ -5866,9 +5855,9 @@ object Form1: TForm1
     ContentMarginBottom = 5
     DisabledFontColor = clNone
     FrameWidth = 0
-    FillColor = clBtnText
-    FillColorAlpha = 20
-    FillColor2 = clNone
+    FillColor = clBtnFace
+    FillColorAlpha = 255
+    FillColor2 = clBtnFace
     FillColor2Alpha = 255
     FillGradientAngle = 0
     FrameColor = clBtnText
@@ -5905,9 +5894,9 @@ object Form1: TForm1
     ContentMarginBottom = 5
     DisabledFontColor = clNone
     FrameWidth = 0
-    FillColor = clBtnText
-    FillColorAlpha = 20
-    FillColor2 = clNone
+    FillColor = clBtnFace
+    FillColorAlpha = 255
+    FillColor2 = clBtnFace
     FillColor2Alpha = 255
     FillGradientAngle = 0
     FrameColor = clBtnText
@@ -5944,9 +5933,9 @@ object Form1: TForm1
     ContentMarginBottom = 5
     DisabledFontColor = clNone
     FrameWidth = 0
-    FillColor = clBtnText
-    FillColorAlpha = 20
-    FillColor2 = clNone
+    FillColor = clBtnFace
+    FillColorAlpha = 255
+    FillColor2 = clBtnFace
     FillColor2Alpha = 255
     FillGradientAngle = 0
     FrameColor = clBtnText
@@ -5983,9 +5972,9 @@ object Form1: TForm1
     ContentMarginBottom = 5
     DisabledFontColor = clNone
     FrameWidth = 0
-    FillColor = clBtnText
-    FillColorAlpha = 20
-    FillColor2 = clNone
+    FillColor = clBtnFace
+    FillColorAlpha = 255
+    FillColor2 = clBtnFace
     FillColor2Alpha = 255
     FillGradientAngle = 0
     FrameColor = clBtnText
@@ -7380,6 +7369,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      Visible = False
       DragForm = False
       DragTopForm = True
       ContentMarginLeft = 0
@@ -7419,6 +7409,7 @@ object Form1: TForm1
       Font.Style = []
       ParentFont = False
       TabOrder = 1
+      Visible = False
       ContentMargin = 0
       AutoComplete = False
       Animation = False
@@ -8140,7 +8131,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118002007200710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118002007380710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9271,7 +9262,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013D001008100830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013D001008280830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
