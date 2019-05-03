@@ -3398,6 +3398,46 @@ double TForm1::vrat_hranici(int mimo)
 			}
 			souradnice=min;
 		}break;
+		//pro potřeby vektorů, vloz_element_za()
+		case 100://max X
+		{
+			while (E!=NULL)
+			{
+				if(E->n>0)
+					if(d.Rxy(E).x>max) max=d.Rxy(E).x;
+				E=E->dalsi;
+			}
+			souradnice=max;
+		}break;
+		case 101://min X
+		{
+			while (E!=NULL)
+			{
+				if(E->n>0)
+					if(d.Rxy(E).x<min) min=d.Rxy(E).x;
+				E=E->dalsi;
+			}
+			souradnice=min;
+		}break;  case 102://max Y
+		{
+			while (E!=NULL)
+			{
+				if(E->n>0)
+					if(d.Rxy(E).y>max) max=d.Rxy(E).y;
+				E=E->dalsi;
+			}
+			souradnice=max;
+		}break;
+		case 103://min Y
+		{
+			while (E!=NULL)
+			{
+				if(E->n>0)
+					if(d.Rxy(E).y<min) min=d.Rxy(E).y;
+				E=E->dalsi;
+			}
+			souradnice=min;
+		}break;
 	}
 	E=NULL; delete E;
 	return souradnice;//vrátí souřadnici, následně použito pro úpravy rozměrů či pozice kabiny
@@ -7070,10 +7110,11 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 		 Cvektory::TElement *E=pom_temp->elementy->dalsi;
 		 while(E!=NULL)
 		 {
-			 Sv(E->n);
+			 Sv(E->name+"    n:"+AnsiString(E->n));
 			 E=E->dalsi;
 		 }
 		 E=NULL; delete E;
+
 		 //Form2->ShowModal();
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
@@ -8299,7 +8340,6 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
-	nahled_ulozen=true;
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
 //---------------------------------------------------------------------------

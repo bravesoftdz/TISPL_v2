@@ -82,13 +82,12 @@ void TForm_parametry_linky::pasiveColor()//nastaví všechny položky pop-up na pas
 	GlyphButton_smazat_nepouzite->Options->NormalColor=clGlyph;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColor=clWhite;
 	GlyphButton_smazat_nepouzite->GlyphOptions->NormalColorAlpha=200;
-  scGPGlyphButton_ADD->Options->NormalColor=(TColor)RGB(11,221,35);
-  scGPGlyphButton_ADD->Options->NormalColorAlpha=200;
+ // scGPGlyphButton_ADD->Options->NormalColor=(TColor)RGB(11,221,35);
+ // scGPGlyphButton_ADD->Options->NormalColorAlpha=200;
   //scGPSwitch->ThumbColor= scGPGlyphButton_ADD->Options->NormalColor;
 //  scGPSwitch->ThumbOnColor=scGPSwitch->ThumbColor;
   scGPSwitch->ThumbColorAlpha= 200;//scGPGlyphButton_ADD->Options->NormalColorAlpha;
   scGPSwitch->ThumbOnColorAlpha=200;//scGPSwitch->ThumbColorAlpha;
-
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -237,8 +236,16 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     rEditNum_takt->SetFocus();
 		zobrazOramovani=false;
 
-		if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";  /* rHTMLLabel_podvozek_zaves->Left=34; */ }
-		else  { rHTMLLabel_podvozek_zaves->Caption="Závìs"; /* rHTMLLabel_podvozek_zaves->Left=56; */}
+		if(scGPSwitch->State==0)
+    {
+    rImageEx_jig_podlahovy->Visible=true;
+    rImageEx_jig_podvesny->Visible=false;
+    }
+		else
+    {
+     rImageEx_jig_podvesny->Visible=true;
+     rImageEx_jig_podlahovy->Visible=false;
+     }
 
 
 		if(Form1->d.v.navrhni_POHONY()=="")
@@ -415,6 +422,16 @@ void TForm_parametry_linky::nacti_pohony ()
 
 
          getmGridWidth();
+
+          mGrid->Cells[0][i].Font->Name="Roboto";
+          mGrid->Cells[1][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+          mGrid->Cells[2][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+          mGrid->Cells[3][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+          mGrid->Cells[4][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+          mGrid->Cells[5][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+          mGrid->Cells[6][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+          mGrid->Cells[7][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+          mGrid->Cells[8][i].Font->Name=mGrid->Cells[0][i].Font->Name;
 
          if(Form1->d.v.pohon_je_pouzivan(ukaz->n))
           {
@@ -860,6 +877,14 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
 
    getmGridWidth();
+   mGrid->Cells[1][i].Font->Name="Roboto";
+   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+
    mGrid->Cells[1][i].Type=mGrid->EDIT;
    mGrid->Cells[2][i].Type=mGrid->EDIT;
    mGrid->Cells[3][i].Type=mGrid->EDIT;
@@ -1094,6 +1119,14 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i-1);
 
    getmGridWidth();
+   mGrid->Cells[1][i].Font->Name="Roboto";
+   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+
    mGrid->Cells[1][i].Type=mGrid->EDIT;
    mGrid->Cells[2][i].Type=mGrid->EDIT;
    mGrid->Cells[3][i].Type=mGrid->EDIT;
@@ -1560,8 +1593,16 @@ void __fastcall TForm_parametry_linky::scHTMLLabel_doporuc_pohonyClick(TObject *
 
 void __fastcall TForm_parametry_linky::scGPSwitchChangeState(TObject *Sender)
 {
-if(scGPSwitch->State==0) {rHTMLLabel_podvozek_zaves->Caption="Podvozek";rHTMLLabel_podvozek_zaves->Left=34;}
-else  {rHTMLLabel_podvozek_zaves->Caption="Závìs"; rHTMLLabel_podvozek_zaves->Left=56; }
+		if(scGPSwitch->State==0)
+    {
+     rImageEx_jig_podlahovy->Visible=true;
+     rImageEx_jig_podvesny->Visible=false;
+    }
+		else
+    {
+     rImageEx_jig_podvesny->Visible=true;
+     rImageEx_jig_podlahovy->Visible=false;
+    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
@@ -2150,8 +2191,22 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::getmGridColors()
   {
-  mGrid->Cells[0][0].Font->Color=F->m.clIntensive(clBlack,80);
-  mGrid->Cells[1][0].Font->Color=F->m.clIntensive(clBlack,50);
+  mGrid->Cells[0][0].Font->Name="Roboto";
+  mGrid->Cells[1][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[2][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[3][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[4][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[5][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[6][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[7][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[8][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+
+  mGrid->Cells[2][1].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[3][1].Font->Name=mGrid->Cells[0][0].Font->Name;
+  mGrid->Cells[4][1].Font->Name=mGrid->Cells[0][0].Font->Name;
+
+  mGrid->Cells[0][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,80);
+  mGrid->Cells[1][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,50);
   mGrid->Cells[2][0].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[3][0].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[4][0].Font->Color= mGrid->Cells[1][0].Font->Color;
