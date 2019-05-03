@@ -2880,7 +2880,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
 			canv->Font->Name=F->aFont->Name;
-			if(stav==2 && stav==3)canv->Font->Style = TFontStyles()<< fsBold;
+			if(stav==2 || stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu nebo přímo jeho textu
 			float zAA=1.0;if(F->antialiasing)zAA=3.0;
 			long x,y;
 			short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
