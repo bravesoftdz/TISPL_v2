@@ -14,6 +14,7 @@ object Form2: TForm2
   WindowState = wsMaximized
   OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnMouseDown = FormMouseDown
   OnMouseMove = FormMouseMove
   OnMouseUp = FormMouseUp
   OnPaint = FormPaint
@@ -180,5 +181,14 @@ object Form2: TForm2
     Caption = 'smazat pozn'#225'mku'
     TabOrder = 6
     OnClick = Button6Click
+  end
+  object Memo1: TMemo
+    Left = 832
+    Top = 304
+    Width = 185
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 7
   end
 end

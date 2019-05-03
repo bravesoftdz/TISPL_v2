@@ -55,8 +55,8 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
-		//E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a nìjaký další abcdefgeijasdfads dafs";
-		E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a nìjaký další abcdefgeijasdfads dafs");
+		//E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs";
+		E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs");
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
@@ -66,33 +66,33 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 
 
 
-		////////E1
-		TElement *E1=new TElement;
-
-		E1->mG=new TmGrid(this);//vždy nutno jako první
-		E1->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
-		E1->mG->ID=1;
-		E1->mG->Left=200;E1->mG->Top=200;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
-		E1->mG->AntiAliasing_text=true;
-		//E1->mG->MovingTable=true;
-		E1->mG->Border.Width=2;
-
-
-		ColCount=2;//pevný poèet slopcù
-		RowCount=6;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
-
-		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
-//		E1->mG->Columns[1].Width=50;
-		E1->mG->SetColumnAutoFit(-4);
-
-		E1->mG->Cells[0][0].Type=E1->mG->COMBO;E1->mG->Cells[0][0].Text="hlavièka";
-
-
-		E1->mG->Cells[0][1].Type=E1->mG->EDIT;E1->mG->Cells[0][1].Text=1;//E1->mG->Cells[1][1].Text=1;E1->mG->Cells[1][1].Type=E1->mG->EDIT;
-		E1->mG->Cells[0][2].Type=E1->mG->EDIT;E1->mG->Cells[0][2].Text=2;E1->mG->Cells[1][2].Text=2;E1->mG->Cells[1][2].Type=E1->mG->EDIT;
-		E1->mG->Cells[0][3].Type=E1->mG->EDIT;E1->mG->Cells[0][3].Text=3;E1->mG->Cells[1][3].Text=3;E1->mG->Cells[1][3].Type=E1->mG->EDIT;
-		E1->mG->Cells[0][4].Type=E1->mG->EDIT;E1->mG->Cells[0][4].Text=4;E1->mG->Cells[1][4].Text=4;E1->mG->Cells[1][4].Type=E1->mG->EDIT;
-		E1->mG->Cells[0][5].Type=E1->mG->EDIT;E1->mG->Cells[0][5].Text=5;E1->mG->Cells[1][5].Text=5;E1->mG->Cells[1][5].Type=E1->mG->EDIT;
+//		////////E1
+//		TElement *E1=new TElement;
+//
+//		E1->mG=new TmGrid(this);//vždy nutno jako první
+//		E1->mG->Tag=4;//ID tabulky,resp. formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
+//		E1->mG->ID=1;
+//		E1->mG->Left=200;E1->mG->Top=200;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
+//		E1->mG->AntiAliasing_text=true;
+//		//E1->mG->MovingTable=true;
+//		E1->mG->Border.Width=2;
+//
+//
+//		ColCount=2;//pevný poèet slopcù
+//		RowCount=6;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
+//
+//		E1->mG->Create(ColCount,RowCount);//samotné vytvoøení matice-tabulky
+////		E1->mG->Columns[1].Width=50;
+//		E1->mG->SetColumnAutoFit(-4);
+//
+//		E1->mG->Cells[0][0].Type=E1->mG->COMBO;E1->mG->Cells[0][0].Text="hlavièka";
+//
+//
+//		E1->mG->Cells[0][1].Type=E1->mG->EDIT;E1->mG->Cells[0][1].Text=1;//E1->mG->Cells[1][1].Text=1;E1->mG->Cells[1][1].Type=E1->mG->EDIT;
+//		E1->mG->Cells[0][2].Type=E1->mG->EDIT;E1->mG->Cells[0][2].Text=2;E1->mG->Cells[1][2].Text=2;E1->mG->Cells[1][2].Type=E1->mG->EDIT;
+//		E1->mG->Cells[0][3].Type=E1->mG->EDIT;E1->mG->Cells[0][3].Text=3;E1->mG->Cells[1][3].Text=3;E1->mG->Cells[1][3].Type=E1->mG->EDIT;
+//		E1->mG->Cells[0][4].Type=E1->mG->EDIT;E1->mG->Cells[0][4].Text=4;E1->mG->Cells[1][4].Text=4;E1->mG->Cells[1][4].Type=E1->mG->EDIT;
+//		E1->mG->Cells[0][5].Type=E1->mG->EDIT;E1->mG->Cells[0][5].Text=5;E1->mG->Cells[1][5].Text=5;E1->mG->Cells[1][5].Type=E1->mG->EDIT;
 
 //		E1->mG->Update();
 //		TscGPListBoxItem *t=NULL;
@@ -126,18 +126,18 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 //
 //		E1->mG->MergeCells(0,0,1,0);
 //		E1->mG->MergeCells(2,0,2,1);
-			E1->mG->MergeCells(0,0,1,0);
-			E1->mG->MergeCells(0,1,1,1);
+//			E1->mG->MergeCells(0,0,1,0);
+//			E1->mG->MergeCells(0,1,1,1);
 
 
 
 
-		E1->predchozi=NULL;
-		E1->dalsi=NULL;
+		//E1->predchozi=NULL;
+		//E1->dalsi=NULL;
 
 
 
-		ELEMENTY->dalsi=E1;
+	 //	ELEMENTY->dalsi=E1;
 
 
 
@@ -268,7 +268,12 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 void __fastcall TForm2::FormPaint(TObject *Sender)
 {
 	ELEMENTY->mG->Show();
-	ELEMENTY->dalsi->mG->Show();
+	//ELEMENTY->dalsi->mG->Show();
+
+//				Form2->Canvas->Pen->Color=clGreen;
+//			Form2->Canvas->Brush->Style=bsSolid; Form2->Canvas->Brush->Color=clGreen;
+//			Form2->Canvas->FrameRect(ELEMENTY->mG->Note.CoordinateArea);
+
 
 	//mGrid2->Show();
 	//nastaví formuláø dle velikosti tabulky, musí být až po Show
@@ -421,7 +426,7 @@ void TForm2::OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::Wid
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)
 {
-ELEMENTY->mG->Delete(); ELEMENTY->dalsi->mG->Delete();
+ELEMENTY->mG->Delete(); //ELEMENTY->dalsi->mG->Delete();
 //	 mGrid->Delete();//pokud chci odstranit a nechci použít na další použití
 //	 mGrid2->Delete();
 //	 mGrid2=NULL; delete mGrid2;
@@ -519,9 +524,12 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
+	 Memo1->Lines->Add(AnsiString(X)+" "+AnsiString(Y));
+	 ELEMENTY->mG->MouseMove(X,Y);//pro Hint a kurzor odkazu, mousemove daného formu sice možno odchytávát pøímo v mGridu, ale toto nutnost pro rozlišení tabulek
+	 //if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))Screen->Cursor=crHandPoint;else Screen->Cursor=crDefault; //funkcionalita presunuta pøímo do mGridu
+	 //ELEMENTY->mG->CheckLink(X,Y);//nyní si pøi volání automaticky nastavuje Cursor=crHandPoint;, možno zmìnit naším kurzorem
 
-	 ELEMENTY->mG->MouseMove(X,Y);
-//	if(aktX==-50000 && aktY==-50000)
+	 //	if(aktX==-50000 && aktY==-50000)
 //	{
 //		Cvykresli d;
 //		//d.vykresli_robota(Canvas,puvX,puvY,"","",3,1,0,true);
@@ -555,6 +563,17 @@ void __fastcall TForm2::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 	FormPaint(this);
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm2::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+					int X, int Y)
+{
+	 if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))
+	 {
+		ELEMENTY->mG->ShowNote("");
+
+	 }
+}
+
+//---------------------------------------------------------------------------
 
 void __fastcall TForm2::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {
@@ -582,4 +601,7 @@ void __fastcall TForm2::Button6Click(TObject *Sender)
 	ELEMENTY->mG->ShowNote("");
 }
 //---------------------------------------------------------------------------
+
+
+
 
