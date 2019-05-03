@@ -100,8 +100,9 @@ __published:	// IDE-managed Components
   TscPanel *scPanel_vozik;
   TscImage *scImage1;
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
-  TrImageEx *rImageEx1;
+  TrImageEx *rImageEx_jig_podlahovy;
   TscGPCheckBox *scGPCheckBox1;
+  TrImageEx *rImageEx_jig_podvesny;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
