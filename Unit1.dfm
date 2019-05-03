@@ -4456,8 +4456,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2454
-        Top = 2617
+        Left = 2466
+        Top = 2629
         Width = 244
         Height = 31
         Align = alCustom
@@ -8126,12 +8126,173 @@ object Form1: TForm1
       GroupIndex = 0
       AllowAllUp = False
     end
+    object scGPComboBox_prepinacKot: TscGPComboBox
+      Left = 379
+      Top = 7
+      Width = 120
+      Height = 35
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 8
+      OnClick = scGPComboBox_prepinacKotClick
+      ContentMargin = 0
+      AutoComplete = False
+      Animation = False
+      CheckedListMode = False
+      CheckedListWrap = True
+      Items = <
+        item
+          Header = False
+          Enabled = True
+          Caption = 'Vzd'#225'lenostn'#237
+          Checked = False
+        end
+        item
+          Header = False
+          Enabled = True
+          Caption = #268'asov'#233
+          Checked = False
+        end>
+      ItemIndex = 0
+      ItemWordWrap = True
+      ItemShowEllipsis = False
+      DropDownCount = 3
+      Options.NormalColor = clNone
+      Options.HotColor = clNone
+      Options.PressedColor = clNone
+      Options.FocusedColor = clNone
+      Options.DisabledColor = clNone
+      Options.NormalColorAlpha = 255
+      Options.HotColorAlpha = 255
+      Options.PressedColorAlpha = 255
+      Options.FocusedColorAlpha = 255
+      Options.DisabledColorAlpha = 255
+      Options.FrameNormalColor = clNone
+      Options.FrameHotColor = clHighlight
+      Options.FramePressedColor = clHighlight
+      Options.FrameFocusedColor = clHighlight
+      Options.FrameDisabledColor = clNone
+      Options.FrameWidth = 1
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
+      Options.FramePressedColorAlpha = 255
+      Options.FrameFocusedColorAlpha = 255
+      Options.FrameDisabledColorAlpha = 255
+      Options.FontNormalColor = clBtnText
+      Options.FontHotColor = clBtnText
+      Options.FontPressedColor = clBtnText
+      Options.FontFocusedColor = clBtnText
+      Options.FontDisabledColor = 8947848
+      Options.ShapeFillGradientAngle = 90
+      Options.ShapeFillGradientPressedAngle = -90
+      Options.ShapeCornerRadius = 10
+      Options.ShapeStyle = scgpcssRect
+      Options.ScaleFrameWidth = False
+      Options.ArrowSize = 9
+      Options.ArrowAreaWidth = 0
+      Options.StyleColors = True
+      ShowItemImage = True
+      ShowItemText = True
+      ShowItemDetail = False
+      ListBoxHeaderFont.Charset = DEFAULT_CHARSET
+      ListBoxHeaderFont.Color = clWindowText
+      ListBoxHeaderFont.Height = -11
+      ListBoxHeaderFont.Name = 'Tahoma'
+      ListBoxHeaderFont.Style = [fsBold]
+      ListBoxHeaderOptions.Color = clBtnFace
+      ListBoxHeaderOptions.ColorAlpha = 220
+      ListBoxHeaderOptions.FillStyle = scgpsfColor
+      ListBoxHeaderOptions.GradientAngle = 90
+      ListBoxHeaderOptions.Margin = 5
+      DetailFont.Charset = DEFAULT_CHARSET
+      DetailFont.Color = clWindowText
+      DetailFont.Height = -17
+      DetailFont.Name = 'Tahoma'
+      DetailFont.Style = []
+      ListBoxLineColor = clWindowText
+      ListBoxWidth = 0
+      ListBoxHeight = 0
+      ListBoxShowItemDetails = False
+      ListBoxShowLines = False
+      ListBoxItemHeight = 30
+      ListBoxHeaderHeight = 20
+      ListBoxItemSpacing = 5
+      ListBoxItemMargin = 5
+      ListBoxIndentMargin = 10
+      ListBoxScrollBarOptions.BorderWidth = 0
+      ListBoxScrollBarOptions.FillColor = clBtnFace
+      ListBoxScrollBarOptions.FillColorAlpha = 100
+      ListBoxScrollBarOptions.ThumbColor = clWindowText
+      ListBoxScrollBarOptions.ThumbColorAlpha = 50
+      ListBoxScrollBarOptions.ThumbColorHotAlpha = 100
+      ListBoxScrollBarOptions.ThumbColorPressedAlpha = 150
+      ListBoxScrollBarOptions.ThumbRounded = False
+      ListBoxScrollBarOptions.Position = scgpsbDefault
+      ListBoxScrollBarOptions.Size = 11
+      ListBoxOptions.FillColor = clWindow
+      ListBoxOptions.FillColor2 = clWindow
+      ListBoxOptions.FillColorAlpha = 255
+      ListBoxOptions.FillColor2Alpha = 255
+      ListBoxOptions.FillGradientAngle = 90
+      ListBoxOptions.FrameColor = clBtnShadow
+      ListBoxOptions.FrameColorAlpha = 255
+      ListBoxOptions.FrameWidth = 2
+      ListBoxOptions.FrameScaleWidth = False
+      MouseWheelSupport = True
+      Color = clNone
+      OnKeyDown = FormKeyDown
+      OnKeyPress = FormKeyPress
+    end
+    object scGPLabel_prepinacKot: TscGPLabel
+      Left = 239
+      Top = 23
+      Width = 139
+      Height = 19
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBtnText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 9
+      DragForm = False
+      DragTopForm = True
+      ContentMarginLeft = 0
+      ContentMarginRight = 0
+      ContentMarginTop = 0
+      ContentMarginBottom = 0
+      DisabledFontColor = clNone
+      FrameWidth = 1
+      FillColor = clNone
+      FillColorAlpha = 20
+      FillColor2 = clNone
+      FillColor2Alpha = 255
+      FillGradientAngle = 0
+      FrameColor = clNone
+      FrameColorAlpha = 40
+      FrameRadius = 5
+      GlowEffect.Enabled = False
+      GlowEffect.Color = clBtnShadow
+      GlowEffect.AlphaValue = 255
+      GlowEffect.GlowSize = 7
+      GlowEffect.Offset = 0
+      GlowEffect.Intensive = True
+      GlowEffect.StyleColors = True
+      AutoSize = True
+      Layout = tlCenter
+      Caption = 'Hodnoty na k'#243't'#225'ch:'
+    end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118002007380710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118002007400710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9262,7 +9423,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013D001008280830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013D001008300830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

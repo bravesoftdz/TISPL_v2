@@ -133,8 +133,11 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(T=="")LOunit=M;else LOunit=MM;
 	T=F->readINI("nastaveni_nahled","Delka_otoce");
 	if(T=="")DOtocunit=M;else DOtocunit=MM;
-	T=F->readINI("nastaveni_nahled","koty_delka");
-	if(T==0)DKunit=M;else if(T==1) DKunit=MM; else DKunit=M;
+	T=F->readINI("nastaveni_nahled","koty_delka");//složiteji řešené, z důvodu kót časových a zároveň délkových
+	if(T==""||T==0)DKunit=M;
+	else if(T==1)DKunit=MM;
+	else if(T==2)DKunit=SEKUNDY;
+	else DKunit=MINUTY;
 	//pro pohon
 	T=readINI("nastaveni_form_parametry","RDt");//aktuální rychlost
 	if(T==0)aRDunit=SEC;else if(T==1) aRDunit=MIN; else aRDunit=SEC;
@@ -270,7 +273,9 @@ void TForm1::DesignSettings()
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPLabel1->Left=22;
+	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
+	scGPComboBox_prepinacKot->Left=scGPComboBox_orientace->Left+6;//combobox na přepínání mezi kotami čas -- delka
 	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
 	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
 	scGPButton_viditelnostKoty->Left=scButton_zamek->Left-scGPButton_viditelnostKoty->Width-19;
@@ -279,7 +284,9 @@ void TForm1::DesignSettings()
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
+	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
+	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
@@ -784,7 +791,9 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPLabel1->Left=22;
+	scGPLabel_prepinacKot->Left=scGPLabel1->Left;
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
+	scGPComboBox_prepinacKot->Left=scGPComboBox_orientace->Left+6;
 	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
 	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
 	scGPButton_viditelnostKoty->Left=scButton_zamek->Left-scGPButton_viditelnostKoty->Width-19;
@@ -793,7 +802,9 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
+	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
+	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
@@ -2278,6 +2289,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			{
 //				if (el_vkabine(X,Y,pom_element_temp->eID))//kontrola zda se snaží uživatel vložit element do kabiny nebo mimo ni
 //				{
+          d.v.posun_element(pom_element_temp,0,false);//volání musí být před nastavením akce
 					Akce=NIC;kurzor(standard);
 					REFRESH();
 					pom_element_temp=NULL; delete pom_element_temp;
@@ -3553,7 +3565,7 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 //designovaní tabulky pro pohon
 void TForm1::design_tab_pohon(int index)
 {
-	FormX->vstoupeno_poh=false;
+//	FormX->vstoupeno_poh=false;
 	AnsiString aRD,R,Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (aRDunit==SEC) aRD="<a>[m/s]</a>";
@@ -3673,6 +3685,8 @@ void TForm1::design_tab_pohon(int index)
 					PmG->AddRow(false,false);
         }
 				PmG->Show(NULL);
+				//zprovoznění comba pro změnu kót jen, když je přiřazen pohon a rychlost je nenulová
+				if(pom_temp->pohon->aRD!=0)scGPComboBox_prepinacKot->Enabled=true;
 			}
 			if(index==0&&PmG->RowCount!=1)
 			{
@@ -3683,6 +3697,8 @@ void TForm1::design_tab_pohon(int index)
         DrawGrid_knihovna->Refresh();
 				DrawGrid_otoce->Refresh();
 				DrawGrid_ostatni->Refresh();
+				//není pohon -> combo není aktivní
+				scGPComboBox_prepinacKot->Enabled=false;
 			}
 		}break;
 		case 3://úprava tabulky po přidání prvního elementu
@@ -3761,7 +3777,7 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
 		PmG->Cells[0][i].RightMargin=3;
 	}
-	FormX->vstoupeno_poh=true;
+//	FormX->vstoupeno_poh=true;
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -4456,8 +4472,11 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 //přepnutí jednotek v kótách, zapíše do globální proměnné a do INI
 void TForm1::zmenJednotekKot()
 {
-	if (DKunit==M) {DKunit=MM;}
-	else {DKunit=M;}
+	switch(scGPComboBox_prepinacKot->ItemIndex)
+	{
+		case 0:if(DKunit==M) DKunit=MM;else DKunit=M;break;//délkové
+		case 1:if(DKunit==SEKUNDY) DKunit=MINUTY;else DKunit=SEKUNDY;break;
+	}
 	writeINI("nastaveni_nahled","koty_delka", DKunit);
 	nahled_ulozit(true);
 	REFRESH();
@@ -5496,6 +5515,8 @@ void TForm1::NP()
 void TForm1::NP_input()
 {
 	 MOD=NAHLED;
+	 //testovací poloha
+	 FormX->vstoupeno_poh=false;
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
 	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->pohon=new Cvektory::TPohon; pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
@@ -5603,7 +5624,24 @@ void TForm1::NP_input()
 	{
 		scGPButton_posun_dalsich_elementu->ImageIndex=59;
 		scGPButton_posun_dalsich_elementu->Hint="Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
-	 }
+	}
+	if(pom_temp->pohon!=NULL)//objekt má přiřazený pohon
+	{
+		if(pom_temp->pohon->aRD>0)
+		{
+			scGPComboBox_prepinacKot->Enabled=true;//zapnutí comba
+			if(DKunit==SEKUNDY||DKunit==MINUTY)scGPComboBox_prepinacKot->ItemIndex=1;//přiřazení správného itemu
+			else scGPComboBox_prepinacKot->ItemIndex=0;
+    }
+  }
+	else//objekt nemá přiřazený pohon
+	{
+		scGPComboBox_prepinacKot->Enabled=false;//vypnout možnost volby módu kót
+		scGPComboBox_prepinacKot->ItemIndex=0;//nastavit item na délkové
+		if(DKunit==SEKUNDY)DKunit=M;//pokud jsou časové jednotky přepnout na délkové a zapsat do INI
+		if(DKunit==MINUTY)DKunit=MM;
+		writeINI("nastaveni_nahled","koty_delka", DKunit);
+  }
 
 	 scGPButton_ulozit->Enabled=false;
 	 //zapnutí spodního panelu
@@ -5637,8 +5675,11 @@ void TForm1::NP_input()
 		E=NULL; delete E;
 	}
 	design_tab_pohon(0);
+	nahled_ulozen=false;//nově otevřen, není uložen
 	DrawGrid_knihovna->Invalidate();
 	REFRESH();
+	//testovací poloha
+	FormX->vstoupeno_poh=true;
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
 }
 //---------------------------------------------------------------------------
@@ -6996,9 +7037,9 @@ void __fastcall TForm1::CheckBoxVytizenost_Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::Button13Click(TObject *Sender)
 {
-smazat++;
-Memo3->Visible=true;Memo3->Clear(); Memo3->Lines->Add(smazat);
-REFRESH();
+//smazat++;
+//Memo3->Visible=true;Memo3->Clear(); Memo3->Lines->Add(smazat);
+//REFRESH();
 		//Sk(pom_temp->pohon->name);//test
 		//pom_temp->pohon=d.v.POHONY->dalsi->dalsi;//ostré přírazení
 		//d.v.kopiruj_pohon(d.v.POHONY->dalsi,pom_temp);//nepropojené přiřazení
@@ -7026,7 +7067,13 @@ REFRESH();
 //		P=P->dalsi;//posun na další prvek
 //	}
 
-
+		 Cvektory::TElement *E=pom_temp->elementy->dalsi;
+		 while(E!=NULL)
+		 {
+			 Sv(E->n);
+			 E=E->dalsi;
+		 }
+		 E=NULL; delete E;
 		 //Form2->ShowModal();
 
  //S(m.mezera_mezi_voziky(1,0.325,0));
@@ -7896,15 +7943,17 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
 	{
-    DrawGrid_knihovna->SetFocus();
+		if(!nahled_ulozen)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů
+		DrawGrid_knihovna->SetFocus();
 		Smaz_kurzor();
 		MOD=SCHEMA;//nutné před zoom
 
 		//smazání elementů - musí být napočátku, aby nebyl problik
-		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
+ 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 		d.v.vymaz_elementy(pom_temp,true);
+
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
-    PmG->Delete(); PmG=NULL; delete PmG;
+		PmG->Delete(); PmG=NULL; delete PmG;
 
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
@@ -8250,6 +8299,7 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
+	nahled_ulozen=true;
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
 }
 //---------------------------------------------------------------------------
@@ -8558,11 +8608,25 @@ void __fastcall TForm1::scGPButton_posun_dalsich_elementuClick(TObject *Sender)
 	DrawGrid_knihovna->SetFocus();
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
-
-
+//combo pro přepínání typu kót
+void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
+{
+	if(FormX->vstoupeno_poh)
+	{
+   	switch(scGPComboBox_prepinacKot->ItemIndex)
+   	{
+   		case 0://nastavena délka
+   		{
+   			if(DKunit==SEKUNDY)DKunit=M;else DKunit=MM;//překlopění základních na základní, ..
+   		}break;
+   		case 1://nastaven čas
+   		{
+   			if(DKunit==M)DKunit=SEKUNDY;else DKunit=MINUTY;//překlopění základních na základní, ..
+   		}break;
+   	}
+   	writeINI("nastaveni_nahled","koty_delka", DKunit);  Sv("padlo");
+		REFRESH();
+	}
+}
+//---------------------------------------------------------------------------
 
