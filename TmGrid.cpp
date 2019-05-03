@@ -114,7 +114,7 @@ TmGrid::TmGrid(TForm *Owner)
 
 	////HINT
 	Hint=new TscHTMLLabel(Form);//TrHTMLLabel(Form);
-	Hint->Tag=-1;//name musí být však až později, klůli ID, které ještě  nyní neexistuje
+	Hint->Tag=-1;//name musí být však až později, klvůli ID, které ještě  nyní neexistuje
 	Hint->Visible=false;
 	Hint->Color=(TColor)RGB(255,255,156);
 	Hint->Font->Size=12;
