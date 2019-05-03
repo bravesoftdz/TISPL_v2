@@ -1500,6 +1500,11 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 	}
 	d.vykresli_tip(Canvas);//vypíše TIP
+  //provizorně pro testování citelné oblasti
+	Canvas->Brush->Style=bsSolid;Canvas->Brush->Color=clYellow;
+	Canvas->Pen->Width=5;Canvas->Pen->Color=clGreen;
+	Memo3->Clear();Memo3->Visible=true;Memo3->Lines->Add(d.aktOblast.left);Memo3->Lines->Add(d.aktOblast.top);Memo3->Lines->Add(d.aktOblast.right);Memo3->Lines->Add(d.aktOblast.bottom);
+	Canvas->FrameRect(TRect(d.aktOblast));
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool mGrid)
@@ -2354,10 +2359,12 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-10;//jednotky kóty
 //JID=-11 a více//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);
 //JID=-1 žádná
-//JID= 0 - 4 rezervováno pro element, používáno zatím jenom 0, bližší identifikace probíhá pomocí pom_element
-//JID= 5-10 nultý až poslední řádek tabulky pohonů (využity pouze 6,7,8)
+//JID= 0 - 3 rezervováno pro element, 0 - element mimo název, 1 - citelná oblast název elementu, 2,3 - rezerva, bližší identifikace elementu probíhá pomocí pom_element
+//JID= 4-10 nultý až poslední řádek tabulky pohonů, 4 - hlavička nevyužito z důvodu obsazení COMBOBOXem, zanecháno jako rezerva
 //JID= 11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
-//JID= 100- a výše rezervováno pro tabuku, kde 100 znamená nultý řádek,
+//JID= 100-999 rezervováno pro odkazy tabuky, kde 100 znamená nultý řádek libovolného sloupce (ideální pro sloučenou hlavičku), u 100 se více neže o odkaz jedná o interaktivní text, který je určen k editaci formou změny na EDIT, ale definovaný odkazem pomocí tagu <a>název</a>, to zajistí naplnění citelné oblasti
+//JID= 1000-1999 rezervováno pro řádky nultého slopce tabulky (v místě, kde není odkaz), kde 1000 znamená nultý řádek tabulky nehledě na sloupec (ideální pro sloučenou hlavičku), kde není odkaz
+//JID= 2000-rezervováno pro 2 či další sloupce resp. řádky, 2000 - nevyužito,2001 - první řádek (po nultém)
 void TForm1::getJobID(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
@@ -2366,14 +2373,14 @@ void TForm1::getJobID(int X, int Y)
 	{
 		pom_element=NULL;
 		int IdxRow=PmG->GetIdxRow(X,Y);
-		if(IdxRow==0)JID=5;//hlavička
+		if(IdxRow==0)JID=4;//hlavička NEVYUŽITO, je tam COMBO, zachováno jako rezerva
 		if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 		{
 			int IdxCol=PmG->GetIdxColumn(X,Y);
 			if(IdxCol==0)//řádky v prvním sloupeci
 			{
-				if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=5+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-				//else JID=XX+IdxRow; - NEVYUŽITO
+				if(PmG->CheckLink(X,Y,IdxCol,IdxRow))JID=4+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+				//else JID=XX+IdxRow;//řádek v nultém sloupci mimo odkaz - NEVYUŽITO
 			}
 			//else JID=XX+IdxRow;//řádky v dalších sloupcích - NEVYUŽITO
 		}
@@ -2385,16 +2392,20 @@ void TForm1::getJobID(int X, int Y)
 		if(pom_element!=NULL && pom_temp->zobrazit_mGrid)//možné měnit rozmístění a rozměry a tabulka nalezena, tzn. klik či přejetí myší přes tabulku
 		{
 			int IdxRow=pom_element->mGrid->GetIdxRow(X,Y);
-			if(IdxRow==0 && pom_temp->uzamknout_nahled==false)JID=100+0;//hlavička
+			if(IdxRow==0)
+			{                                 //kvůli sloučeným buňkám
+				if(pom_element->mGrid->CheckLink(X,Y,0,0) || pom_element->mGrid->CheckLink(X,Y,1,0))JID=100+0;//text názvu (pseudointeraktivní text - formou editu a definovaný odkazem <a>název</a>) v hlavičce
+				else if(pom_temp->uzamknout_nahled==false)JID=1000+0;//hlavička - posouvat tabulku je možné pouze při odemčeném náhledu
+			}
 			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 			{
 				int IdxCol=pom_element->mGrid->GetIdxColumn(X,Y);
 				if(IdxCol==0)//řádky v prvním sloupeci
 				{
 					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
-					else if(pom_temp->uzamknout_nahled==false)JID=1000+IdxRow;
+					else if(pom_temp->uzamknout_nahled==false)JID=1000+IdxRow;//řádky bez odkazu možné posouvat tabulku je možné pouze při odemčeném náhledu
 				}
-				else if(pom_temp->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v dalších sloupcích
+				else if(pom_temp->uzamknout_nahled==false)JID=2000+IdxRow;//řádky v druhém a dalších sloupcích
 			}
 		}
 		else//tabulka nenalezena, takže zkouší najít ELEMENT
@@ -2403,11 +2414,8 @@ void TForm1::getJobID(int X, int Y)
 			if(pom_temp->uzamknout_nahled==false)pom_element=F->d.v.najdi_element(pom_temp,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
 			if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
 			{
-				/*if()
-				{
-					//zde doplnit //byl nalezen název elementu
-				}
-				else*/ JID=0; //byl nálezen element nikoliv jeho název
+				if(pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
+				else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
 			}
 			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
 			{
@@ -2468,7 +2476,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		//if(pom_element->mGrid!=NULL && pom_temp->zobrazit_mGrid)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
 		//if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
-		if(JID==0){pom_element->stav=1;}//ELEMENT
+		if(JID==0 || JID==1){pom_element->stav=1;}//ELEMENT
 	}
 	int puvJID=JID;//záloha původního JID
 	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element, možno odstranit, až se mGrid bude posílat do celkové bitmapy
@@ -2477,7 +2485,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		kurzor(standard);//umístít na začátek
 		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
-		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu
+		if(JID==0){kurzor(zmena_d_y);pom_element->stav=3;}//ELEMENT název
+		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0) || (puvJID==0 || JID==1) || (puvJID==1 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
 		if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 		if(100<JID && JID<1000){kurzor(zmena_j);/*pom_element->mGrid->HighlightLink(0,JID-100,10);*/}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
@@ -2487,8 +2496,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){REFRESH();kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
-		if(JID>=11&&JID<=99)kurzor(zmena_d_y);
-		if(JID==6||JID==7||JID==8||JID==9||JID==10)kurzor(zmena_j);
+		if(JID>=11&&JID<=99)kurzor(zmena_d_y);//interaktivní kóty
+		if(JID==6||JID==7||JID==8||JID==9||JID==10)kurzor(zmena_j);//pohonová tabulka
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
@@ -8515,8 +8524,8 @@ void TForm1::vykresli_kurzor(int index)
 	{
       Canvas->Pen->Color=clGray;
 			Canvas->Pen->Width=1.5;
-			Canvas->MoveTo(pom_element_temp->kota_oblast.rect1.right+1,pom_element_temp->kota_oblast.rect1.top);
-			Canvas->LineTo(pom_element_temp->kota_oblast.rect1.right+1,pom_element_temp->kota_oblast.rect1.bottom);
+			Canvas->MoveTo(pom_element_temp->citelna_oblast.rect1.right+1,pom_element_temp->citelna_oblast.rect1.top);
+			Canvas->LineTo(pom_element_temp->citelna_oblast.rect1.right+1,pom_element_temp->citelna_oblast.rect1.bottom);
 			stav_kurzoru=!stav_kurzoru;
   }
 }
@@ -8663,8 +8672,8 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
    		{
    			if(DKunit==M)DKunit=SEKUNDY;else DKunit=MINUTY;//překlopění základních na základní, ..
    		}break;
-   	}
-   	writeINI("nastaveni_nahled","koty_delka", DKunit);  Sv("padlo");
+		}
+		writeINI("nastaveni_nahled","koty_delka", DKunit);
 		REFRESH();
 	}
 }

@@ -1551,11 +1551,11 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 	TElement *E=Objekt->elementy;//NEPŘESKAKOVAT hlavičku!!!
 	while(E!=NULL)
 	{
-		if(E->kota_oblast.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_element=E;break;}//hodnoty kóty
+		if(E->citelna_oblast.rect1.PtInRect(TPoint(X,Y))){RET=1;F->pom_element=E;break;}//hodnoty kóty
 		else
 		{
-			if(E->kota_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
-			else if(E->kota_oblast.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_element=E;break;}//kóta celá
+			if(E->citelna_oblast.rect2.PtInRect(TPoint(X,Y))){RET=2;F->pom_element=E;break;}//jednotky kóty
+			else if(E->citelna_oblast.rect0.PtInRect(TPoint(X,Y))){RET=0;F->pom_element=E;break;}//kóta celá
 		}
 		E=E->dalsi;
 	}
