@@ -74,6 +74,8 @@ class TmGrid
 	{
 		TFont *Font;//vlastnosti fontu
 		TRect NoteArea;//souřadnice oblasti, kde se poznámka nachází, ukládá citelnou oblast poznámky
+		TRect LinkArea;//souřadnice oblasti odkazu v rámci poznámky
+		short margin_left,margin_right,margin_bootom,margin_top;
 		UnicodeString Text;//samotný text poznámky
 	};TNote Note;
 
@@ -138,6 +140,7 @@ class TmGrid
 	bool CheckPTinTable(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) zjistí, zda jsou souřadnice ve vnitř tabulky
 	TPoint CheckLink(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí kladné číslo sloupce a řádku pokud se na daném místě nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí zda se na dané buňce a souřadnicích nachází odkaz
+	void ShowNote(UnicodeString Text,TColor Color=clRed,short FontSize=11);//zajistí přímé vykreslení poznámky bez refreshe popř. smázání doszením prázdných uvozovek, nově poznámka má také možnost nastavování margin pomocí Note.margin_left,margin_right,margin_bootom,margin_top;
 
 	//proměnné a ukazatele
 	long Tag;//ID formuláře, v kterém je tabulka či tabuky daného formuláře volány
@@ -184,10 +187,13 @@ class TmGrid
 	void __fastcall getTagOnKeyPress(TObject *Sender,System::WideChar &Key);//vrací událost při OnKeyPress
 	void __fastcall getTagOnMouseEnter(TObject *Sender);//vrací událost při vstupu či přejetí myší přes komponentu
 	void __fastcall OnTimer(TObject *Sender);//událost časovače
+	void __fastcall OnMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);//metoda voláná z rodičovského formuláře, pozor u více tabulek ve formuláři beru to poslední
 	void getTextFromComponentToMemoryCell(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí z dané komponenty text do paměťové buňky, slouží např. při události onchange popř. dálších
 
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky včetně gridu a exBUTTONu a poznámky pod čarou
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
+	void DrawNote(TCanvas *C);//zajistí vykreslení poznámky
+	TRect DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiString Text,TFont *FontText,TFont *FontLink);//vykreslí text s odkazem, odkaz aktivní modrou, vrací zpět oblast, kde se nachazí odkaz
 	void DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R);//zajistí vykreslení orámování jen jedné buňky
 	void SetColRow();//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby
 	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na požadované parametry
