@@ -2485,10 +2485,11 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		kurzor(standard);//umístít na začátek
 		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
-		if(JID==0){kurzor(zmena_d_y);pom_element->stav=3;}//ELEMENT název
+		if(JID==1){kurzor(edit_text);pom_element->stav=3;}//ELEMENT název
 		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0) || (puvJID==0 || JID==1) || (puvJID==1 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
 		if(10<JID && JID<1000){REFRESH();}//hodnota kóty
-		if(JID==100 || 1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
+		if(JID==100){kurzor(edit_text);/*zde asi doplnit indikaci změny na edit*/}//název elementu v hlavičce tabulky
+		if(1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
 		if(100<JID && JID<1000){kurzor(zmena_j);/*pom_element->mGrid->HighlightLink(0,JID-100,10);*/}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
 		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu

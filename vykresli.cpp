@@ -2753,7 +2753,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 				case 180:	rotace_textu(canv,2700); canv->TextOutW(m.round(X+canv->TextHeight(T)/2),m.round(Y+size-2*Z),T);break;
 				case 270:	rotace_textu(canv,0);	   canv->TextOutW(m.round(X-canv->TextWidth(T)-size+2*Z),m.round(Y-canv->TextHeight(T)/2),T);break;
 			}
-			rotace_textu(canv,0);
+			rotace_textu(canv,0);//vrací nastavení do původního stavu
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{
@@ -2880,7 +2880,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
 			canv->Font->Name=F->aFont->Name;
-			if(stav==2 || stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu nebo přímo jeho textu
+			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
 			float zAA=1.0;if(F->antialiasing)zAA=3.0;
 			long x,y;
 			short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
