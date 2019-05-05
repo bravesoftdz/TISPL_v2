@@ -1464,14 +1464,14 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 				if(rotace==90 || rotace==270)sizeY/=2.0;
 				POINT body[3]={{F->m.round(m.L2Px(E->X)+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,sklon,rotace).y*sizeY)},{m.L2Px(E->X),m.L2Py(E->Y)},{F->m.round(m.L2Px(E->X)+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(m.L2Py(E->Y)+m.rotace(1,360-sklon,rotace).y*sizeY)}};
 				//F->Canvas->Pen->Color=clBlue;F->Canvas->Polygon((TPoint*)body,2);//pro testovací zákres
-				if(PtInRegion(CreatePolygonRgn(body,3,WINDING),m.L2Px(X),m.L2Py(Y)))break;//pozn. CreatePolygonRgn - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
+				if(PtInRegion(CreatePolygonRgn(body,3,WINDING),m.L2Px(X),m.L2Py(Y)) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;//testování symbolu včetně popisku,pozn. CreatePolygonRgn i PtInRect - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
 				else E=E->dalsi;
 			}
 			else
 			{
 				if(E->eID==5 || E->eID==6)//OTOČE
 				{
-					if(m.PtInCircle(X,Y,E->X,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))break;
+					if(m.PtInCircle(X,Y,E->X,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;//testování symbolu včetně popisku,pozn.
 					else E=E->dalsi;
 				}
 				else
