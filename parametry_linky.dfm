@@ -3179,10 +3179,10 @@ object Form_parametry_linky: TForm_parametry_linky
     OnClick = Button1Click
   end
   object scPanel_takt: TscPanel
-    Left = 10
-    Top = 77
+    Left = 14
+    Top = 83
     Width = 430
-    Height = 161
+    Height = 164
     TabOrder = 21
     CustomImageIndex = -1
     DragForm = False
@@ -3220,8 +3220,8 @@ object Form_parametry_linky: TForm_parametry_linky
       OnClick = rHTMLLabel_taktClick
     end
     object rEditNum_takt: TscGPNumericEdit
-      Left = 172
-      Top = 36
+      Left = 169
+      Top = 35
       Width = 173
       Height = 68
       Options.NormalColor = clWhite
@@ -3545,9 +3545,9 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scPanel_vozik: TscPanel
     Left = 450
-    Top = 77
+    Top = 79
     Width = 430
-    Height = 192
+    Height = 193
     TabOrder = 23
     CustomImageIndex = -1
     DragForm = False
@@ -3648,7 +3648,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnClick = rHTMLLabel_sirka_jigClick
     end
     object rHTMLLabel_vyska_jig: TrHTMLLabel
-      Left = 60
+      Left = 62
       Top = 80
       Width = 28
       Height = 21
@@ -7244,8 +7244,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 5726
-    Top = 8914
+    Left = 5744
+    Top = 8944
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7270,8 +7270,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 5723
-    ExplicitTop = 8909
+    ExplicitLeft = 5735
+    ExplicitTop = 8929
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -7330,6 +7330,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 26
+    Visible = False
     Animation = False
     Caption = 'scGPCheckBox1'
     CanFocused = False
@@ -7358,7 +7359,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
-    Options.DisabledColorAlpha = 10
+    Options.DisabledColorAlpha = 125
     Options.FrameNormalColor = clBlue
     Options.FrameHotColor = clBlack
     Options.FramePressedColor = clBlack

@@ -1660,7 +1660,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	if(Key==L'0'&&Pos(0,editovany_text)>0&&editovany_text.Length()==1)
 		key="";
 	////////
-	if (editace_textu&&index_kurzoru==-6)//editace nadpisu
+	if (editace_textu&&index_kurzoru==-6)//editace nadpisu kabiny
 	{
 		if(Key==8)//pokud je stisknut backspace
 			pom_temp->name=pom_temp->name.SubString(1,pom_temp->name.Length()-1);
@@ -1668,7 +1668,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			pom_temp->name+=Key;
 		nahled_ulozit(true);
 	}
-	if (editace_textu&&index_kurzoru==-7)//editace short nadpisu
+	if (editace_textu&&index_kurzoru==-7)//editace short nadpisu kabiny
 	{
 		if(Key==8)//pokud je stisknut backspace
 			pom_temp->short_name=pom_temp->short_name.SubString(1,pom_temp->short_name.Length()-1);
@@ -1677,7 +1677,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		else MessageBeep(0);
 		nahled_ulozit(true);
 	}
-	if (editace_textu&&(index_kurzoru==-8||index_kurzoru==-9))//editace textu kót
+	if (editace_textu&&(index_kurzoru==-8||index_kurzoru==-9))//editace textu kót kabiny
 	{
 		if(Key==8)//pokud je stisknut backspace
 			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
@@ -1888,7 +1888,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót
 								if(JID==-8){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-8;editovany_text=inDK(pom_temp->rozmer_kabiny.x);}//editace kót kabiny
 								if(JID==-9){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
-								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));}//editace kót elementu
+								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));/*if(scGPComboBox_orientace->ItemIndex!=0)editovany_text=editovany_text/pom_temp->pohon->aRD;*/}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů
 								if(JID==6||JID==7||JID==8||JID==9||JID==10){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
 						}
@@ -4080,6 +4080,11 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][2].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][3].ShowHint=true;
 			break;
 		}
 
@@ -4098,6 +4103,11 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[1][2].ShowHint=true;
 			break;
 		}
 		case 2://robot se stop stanicí
@@ -4117,6 +4127,13 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_2;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="Rest time?";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][3].ShowHint=true;
 			break;
 		}
 		case 3://robot s pasivní otočí
@@ -4149,6 +4166,19 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[1][4].Hint="délka otoče";
+			E->mGrid->Cells[1][4].ShowHint=true;
+			E->mGrid->Cells[1][5].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][5].ShowHint=true;
+			E->mGrid->Cells[1][6].Hint="délka lakovácího okna";
+			E->mGrid->Cells[1][6].ShowHint=true;
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
@@ -4173,6 +4203,17 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_4;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[1][4].Hint="Rest time?";
+			E->mGrid->Cells[1][4].ShowHint=true;
+			E->mGrid->Cells[1][5].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][5].ShowHint=true;
 			break;
 		}
 		case 5://otoč pasivní
@@ -4189,6 +4230,11 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;//Delší text
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="délka otoče";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][2].ShowHint=true;
 			break;
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
@@ -4205,6 +4251,11 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="délka otoče";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][2].ShowHint=true;
 			break;
 		}
 	}
@@ -4234,6 +4285,11 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][2].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][3].ShowHint=true;
 			break;
 		}
 
@@ -4251,6 +4307,11 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[1][2].ShowHint=true;
 			break;
 		}
 		case 2://robot se stop stanicí
@@ -4266,6 +4327,13 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_2;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="Rest time?";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][3].ShowHint=true;
 			break;
 		}
 		case 3://robot s pasivní otočí
@@ -4295,6 +4363,19 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[1][4].Hint="délka otoče";
+			E->mGrid->Cells[1][4].ShowHint=true;
+			E->mGrid->Cells[1][5].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][5].ShowHint=true;
+			E->mGrid->Cells[1][6].Hint="délka lakovácího okna";
+			E->mGrid->Cells[1][6].ShowHint=true;
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
@@ -4318,6 +4399,17 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_4;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[1][3].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[1][4].Hint="Rest time?";
+			E->mGrid->Cells[1][4].ShowHint=true;
+			E->mGrid->Cells[1][5].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[1][5].ShowHint=true;
 			break;
 		}
 		case 5://otoč pasivní
@@ -4333,6 +4425,11 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;//Delší text
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="délka otoče";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][2].ShowHint=true;
 			break;
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
@@ -4348,6 +4445,11 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
+			//nastavení hintů
+			E->mGrid->Cells[1][1].Hint="délka otoče";
+			E->mGrid->Cells[1][1].ShowHint=true;
+			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[1][2].ShowHint=true;
 			break;
 		}
 	}

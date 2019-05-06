@@ -102,7 +102,7 @@ __published:	// IDE-managed Components
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
   TrImageEx *rImageEx_jig_podlahovy;
   TscGPCheckBox *scGPCheckBox1;
-  TrImageEx *rImageEx_jig_podvesny;
+	TrImageEx *rImageEx_jig_podvesny;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);
@@ -182,7 +182,9 @@ private:	// User declarations
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
 	void Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_edit E);
- 	TColor clBACKGROUND;
+	TColor clBACKGROUND;
+	void nastav_edity ();//metoda vymìní edit pro délku podvozku a délku jigu podle typu vozíku podlahový/podvìsný
+	void vozik_zmena_jednotek();
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 	int getROW(int PID);//vrátí èíslo øádku dle pohon ID, pokud nenajde vrátí -1
