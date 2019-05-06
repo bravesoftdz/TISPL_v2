@@ -502,19 +502,19 @@ C=NULL;delete C;
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button5Click(TObject *Sender)
 {
-	ELEMENTY->dalsi->mG->AddRow();
+	ELEMENTY->mG->AddRow();
 	//test pouze pøidání textu:
 	//mGrid->Cells[1][mGrid->RowCount-1].Text=mGrid->RowCount-1;FormPaint(this);//nutno kvùli aktualizaci textu
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button4Click(TObject *Sender)
 {
-	ELEMENTY->dalsi->mG->InsertRow(3);//s problikem zpùsobuje show() v InsertRow
+	ELEMENTY->mG->InsertRow(3);//s problikem zpùsobuje show() v InsertRow
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::Button3Click(TObject *Sender)
 {
-	ELEMENTY->dalsi->mG->DeleteRow(3);
+	ELEMENTY->mG->DeleteRow(3);
 	//ELEMENTY->dalsi->mG->getEdit(0,3)->Text=ELEMENTY->dalsi->mG->Cells[0][3].Text;
 	//ShowMessage(ELEMENTY->dalsi->mG->Cells[0][3].Text);
 	//ShowMessage(ELEMENTY->dalsi->mG->getEdit(0,3)->Text);
