@@ -166,7 +166,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->Border.Width=1;
   mGrid->MovingTable=false;
   //mGrid->DefaultCell.Font->Size=14;
-  //mGrid->DefaultCell.Font->Name="Roboto Cn";
+  mGrid->DefaultCell.Font->Name="Roboto";
   mGrid->Create(9,2);//samotné vytvoøení matice-tabulky
 
   getmGridWidth();
@@ -228,9 +228,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		scExPanel_doporuc_pohony->Visible=false;
 		PopUPmenu->Visible=false;
-    //rStringGridEd_tab_dopravniky->SetFocus();
 
-    //rEditNum_takt->
+
 
     rEditNum_takt->SetFocus();
 		zobrazOramovani=false;
@@ -379,6 +378,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
    setADD_ButtonPosition();
 
+  mGrid->Note.margin_left=5;
+  mGrid->Note.margin_right=0;
+  mGrid->Note.margin_bootom=4;
+  mGrid->Note.margin_top=1;
+
 	 Storno=false;
 	 //vycentrování formuláøe, musí bý na konci!
 	 Form_parametry_linky->Left=Monitor->Width/2-Form_parametry_linky->Width/2;
@@ -458,15 +462,15 @@ void TForm_parametry_linky::nacti_pohony ()
 
          getmGridWidth();
 
-          mGrid->Cells[0][i].Font->Name="Roboto";
-          mGrid->Cells[1][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-          mGrid->Cells[2][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-          mGrid->Cells[3][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-          mGrid->Cells[4][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-          mGrid->Cells[5][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-          mGrid->Cells[6][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-          mGrid->Cells[7][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-          mGrid->Cells[8][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[0][i].Font->Name="Roboto";
+//          mGrid->Cells[1][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[2][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[3][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[4][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[5][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[6][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[7][i].Font->Name=mGrid->Cells[0][i].Font->Name;
+//          mGrid->Cells[8][i].Font->Name=mGrid->Cells[0][i].Font->Name;
 
          if(Form1->d.v.pohon_je_pouzivan(ukaz->n))
           {
@@ -912,13 +916,13 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
 
    getmGridWidth();
-   mGrid->Cells[1][i].Font->Name="Roboto";
-   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[1][i].Font->Name="Roboto";
+//   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
 
    mGrid->Cells[1][i].Type=mGrid->EDIT;
    mGrid->Cells[2][i].Type=mGrid->EDIT;
@@ -1154,13 +1158,13 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i-1);
 
    getmGridWidth();
-   mGrid->Cells[1][i].Font->Name="Roboto";
-   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[1][i].Font->Name="Roboto";
+//   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
+//   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
 
    mGrid->Cells[1][i].Type=mGrid->EDIT;
    mGrid->Cells[2][i].Type=mGrid->EDIT;
@@ -1313,18 +1317,12 @@ void __fastcall TForm_parametry_linky::FormPaint(TObject *Sender)
 {
  	mGrid->Show();//vykreslí tabulku
 
-//  Graphics::TBitmap *bmp=new Graphics::TBitmap;
-//  bmp->LoadFromFile("2_smaz.bmp");
-//  Canvas->Draw(0,0,bmp);
- //F->d.vykresli_packy_PL(Canvas,scGPButton_zamek_aRD,scGPButton_zamek_roztec,scGPButton_zamek_Rz,scGPButton_zamek_Rx);
-
 	if(zobrazitFrameForm)Form1->m.frameForm(Form_parametry_linky,clWebOrange,1);
 
-	if(VID==-1) { scGPGlyphButton_ADD->Enabled=true; scGPGlyphButton_ADD->Visible=true; scGPGlyphButton_vozik_edit->Enabled=true; scGPGlyphButton_TT->Enabled=true;  }
-	else {       scGPGlyphButton_ADD->Enabled=false; scGPGlyphButton_ADD->Visible=false;  scGPGlyphButton_vozik_edit->Enabled=false; scGPGlyphButton_TT->Enabled=false; }
+	if(VID==-1) { /*scGPGlyphButton_ADD->Enabled=true;*/ /*scGPGlyphButton_ADD->Visible=true;*/ scGPGlyphButton_vozik_edit->Enabled=true; scGPGlyphButton_TT->Enabled=true;  }
+	else {       /*scGPGlyphButton_ADD->Enabled=false;*/ /*scGPGlyphButton_ADD->Visible=false;*/  scGPGlyphButton_vozik_edit->Enabled=false; scGPGlyphButton_TT->Enabled=false; }
 
-
-    	 //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
+  //	workaround - zrušení orámování okolo nepoužitých vnìjších bunìk
   vykresli_obdelnik_vpravo();
 }
 //---------------------------------------------------------------------------
@@ -1788,10 +1786,7 @@ double  TForm_parametry_linky::getTT()
 void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 {
 
-    vypis("");
-   // mGrid->Note.Text="";
-  //  mGrid->Refresh();   // - brzdi pøekreslování menìných hodnot
- //   ShowMessage(mGrid->Note.Text);
+    //vypis("");
     VID=-1;
     Row_validace=0;
     Col_validace=0;
@@ -1799,19 +1794,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
  switch(ACol)
 	 {
-//		///////////////////////////////////////////////////////////////////////
-//			case 1:     //NAZEV
-//				{
-//				if(rStringGridEd_tab_dopravniky->Cells[1][ARow]=="")
-//						{
-//						vypis("Název pohonu nesmí být prázdný!");
-//						VID=1;
-//						Row_validace=ARow;
-//            Col_validace=ACol;
-//						}
-//
-//				}
-//				break;
+
 				case 2:     //OD - RD
 				{
         double RD   = F->ms.MyToDouble(mGrid->Cells[4][ARow].Text)/(1+59.0*aRDunit);
@@ -1820,16 +1803,17 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 					if(Form1->m.between(RD,P_od,P_do))
 						{
-             ;
+            mGrid->ShowNote("");
+            scGPGlyphButton_ADD->Visible=true;
 						}
 						else
 						{
-              vypis("Nastavte správný rozsah a rychlost pohonu.");
-             // mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
-            //  ShowMessage(mGrid->Note.Text);
+              //vypis("Nastavte správný rozsah a rychlost pohonu.");
+             mGrid->ShowNote("Nastavte správný rozsah a rychlost pohonu.",clRed,13);
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
+              scGPGlyphButton_ADD->Visible=false;
 						}
 				}
 				break;
@@ -1842,20 +1826,21 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 					if(Form1->m.between(RD,P_od,P_do))
 						{
-             ;
+             mGrid->ShowNote("");
+             scGPGlyphButton_ADD->Visible=true;
 						}
 						else
 						{
-              vypis("Nastavte správný rozsah a rychlost pohonu.");
-             // mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
-             // ShowMessage(mGrid->Note.Text);
+             // vypis("Nastavte správný rozsah a rychlost pohonu.");
+              mGrid->ShowNote("Nastavte správný rozsah a rychlost pohonu.",clRed,13);
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
+              scGPGlyphButton_ADD->Visible=false;
 						}
 				}
 				break;
-//
+
         case 4:     //aRD - RD
 				{
         double RD   = F->ms.MyToDouble(mGrid->Cells[4][ARow].Text)/(1+59.0*aRDunit);
@@ -1864,22 +1849,21 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 
 					if(Form1->m.between(RD,P_od,P_do))
 						{
-            ;
+            mGrid->ShowNote("");
+            scGPGlyphButton_ADD->Visible=true;
 						}
 						else
 						{
-              vypis("Nastavte správný rozsah a rychlost pohonu.");
-             // mGrid->Note.Text="Nastavte správný rozsah a rychlost pohonu.";
-             // ShowMessage(mGrid->Note.Text);
+              //vypis("Nastavte správný rozsah a rychlost pohonu.");
+              mGrid->ShowNote("Nastavte správný rozsah a rychlost pohonu.",clRed,13);
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
+              scGPGlyphButton_ADD->Visible=false;
 						}
 				}
 				break;
 	 }
-  // ShowMessage(mGrid->Note.Text);
-  // mGrid->Refresh(); // - brzdi pøekreslování menìných hodnot
 }
 
 
@@ -2233,19 +2217,19 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::getmGridColors()
   {
-  mGrid->Cells[0][0].Font->Name="Roboto";
-  mGrid->Cells[1][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[2][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[3][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[4][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[5][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[6][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[7][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[8][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-
-  mGrid->Cells[2][1].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[3][1].Font->Name=mGrid->Cells[0][0].Font->Name;
-  mGrid->Cells[4][1].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[0][0].Font->Name="Roboto";
+//  mGrid->Cells[1][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[2][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[3][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[4][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[5][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[6][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[7][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[8][0].Font->Name=mGrid->Cells[0][0].Font->Name;
+//
+//  mGrid->Cells[2][1].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[3][1].Font->Name=mGrid->Cells[0][0].Font->Name;
+//  mGrid->Cells[4][1].Font->Name=mGrid->Cells[0][0].Font->Name;
 
   mGrid->Cells[0][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,80);
   mGrid->Cells[1][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,50);
@@ -2261,8 +2245,8 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[3][1].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[4][1].Font->Color= mGrid->Cells[1][0].Font->Color;
 
-  mGrid->Cells[8][0].RightBorder->Color=clBlack;
-  mGrid->Cells[7][0].RightBorder->Width=0;
+  mGrid->Cells[8][0].RightBorder->Color=Form_parametry_linky->Color;
+  mGrid->Cells[7][0].RightBorder->Width=1;
   mGrid->Cells[8][1].RightBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
   mGrid->Cells[8][0].TopBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
 //
@@ -2312,6 +2296,7 @@ void TForm_parametry_linky::getmGridColors()
   H->Width=scGPGlyphButton_smazat_pohon->Width;
   H->Height=scGPGlyphButton_smazat_pohon->Height;
   H->Options->ShapeStyle=scgpRect;
+  H->Width=30;
   H->Hint="Smazat tento pohon";
   H->ShowHint=true;
 

@@ -1501,10 +1501,10 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 	d.vykresli_tip(Canvas);//vypíše TIP
   //provizorně pro testování citelné oblasti
-	Canvas->Brush->Style=bsSolid;Canvas->Brush->Color=clYellow;
-	Canvas->Pen->Width=5;Canvas->Pen->Color=clGreen;
-	Memo3->Clear();Memo3->Visible=true;Memo3->Lines->Add(d.aktOblast.left);Memo3->Lines->Add(d.aktOblast.top);Memo3->Lines->Add(d.aktOblast.right);Memo3->Lines->Add(d.aktOblast.bottom);
-	Canvas->FrameRect(TRect(d.aktOblast));
+//	Canvas->Brush->Style=bsSolid;Canvas->Brush->Color=clYellow;
+//	Canvas->Pen->Width=5;Canvas->Pen->Color=clGreen;
+//	Memo3->Clear();Memo3->Visible=true;Memo3->Lines->Add(d.aktOblast.left);Memo3->Lines->Add(d.aktOblast.top);Memo3->Lines->Add(d.aktOblast.right);Memo3->Lines->Add(d.aktOblast.bottom);
+//	Canvas->FrameRect(TRect(d.aktOblast));
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool mGrid)
