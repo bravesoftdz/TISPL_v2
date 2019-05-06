@@ -38,6 +38,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			F->PmG->VisibleRow(4,true);
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 		}
+		F->REFRESH();
 	}
 	input_state=NOTHING;
 }
