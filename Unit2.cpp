@@ -379,7 +379,7 @@ void __fastcall TForm2::Button2Click(TObject *Sender)
 	FormPaint(this);//volání po Invalidate zajistí, že nedochází k probliku komponent, nemùže být samotné
 }
 //---------------------------------------------------------------------------
-//test volání pøi onclick
+//test volání pøi onclick          //pozor metody musí mít i znamenkové longové Col, Row, kvùli -2 exBUTTOn
 void TForm2::OnClick(long Tag,long ID,long Col,long Row)
 {
 	//ShowMessage("UNIT2\nToto vypisuje metoda OnClick\nDošlo ke kliku v tabulce tag formu: "+AnsiString(Tag)+", ID tabulky: "+AnsiString(ID)+", na buòce: "+AnsiString(Col)+","+AnsiString(Row));

@@ -251,6 +251,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv) ////vykreslí vektory objektu, t
 			while(E!=NULL)
 			{
 				 vykresli_element(canv,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->rotace_symbolu,E->stav,E->LO1,E->OTOC_delka,E->LO2);
+         E->citelna_oblast.rect3=aktOblast;//uložení citelné oblasti pro další použití
 				 //vykreslení kót
 				 if(F->pom_temp->zobrazit_koty)vykresli_kotu(canv,E->predchozi,E);//mezi elementy
 				 E=E->dalsi;//posun na další element
@@ -2672,7 +2673,7 @@ void Cvykresli::vykresli_palec(TCanvas *canv,double X,double Y,bool NEW,bool ACT
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
 void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2)
 {
-  rotace=m.Rt90(rotace);
+	rotace=m.Rt90(rotace);
 	switch(eID)
 	{
 		case 0: vykresli_stopku(canv,X,Y,name,short_name,typ,rotace,stav);break;//stopka
@@ -2740,19 +2741,24 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Font->Style = TFontStyles();
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
-		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
+		AnsiString T1="STOP";//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
+		AnsiString T2=name.SubString(T1.Length()+1,name.Length());//pouze index stopky, +1 je mezera
 		if(typ==1)//normální zobrazení typ==1
 		{
-			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
+			if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
+			short h=0,w=canv->TextWidth(T2);
+			canv->Font->Style = TFontStyles();h=canv->TextHeight(T1);w+=canv->TextWidth(T1+" ");//pro náze normální písmo
+			float zAA=1.0;if(F->antialiasing)zAA=3.0;
+			long x,y;
 			//rotace
 			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
-			{
-				case 0: 	rotace_textu(canv,0+900);canv->TextOutW(m.round(X-canv->TextHeight(T)/2),m.round(Y-size+2*Z),T);break;
-				case 90:	rotace_textu(canv,0);		 canv->TextOutW(m.round(X+size-2*Z),m.round(Y-canv->TextHeight(T)/2),T);break;
-				case 180:	rotace_textu(canv,2700); canv->TextOutW(m.round(X+canv->TextHeight(T)/2),m.round(Y+size-2*Z),T);break;
-				case 270:	rotace_textu(canv,0);	   canv->TextOutW(m.round(X-canv->TextWidth(T)-size+2*Z),m.round(Y-canv->TextHeight(T)/2),T);break;
+			{                                                                                                                                                                             //nechat duplicitně        //vypsání indexu stopky, v případě editace i tučně
+				case 0: 	rotace_textu(canv,0+900); x=m.round(X-h/2.0);   		y=m.round(Y-size+2*Z);	aktOblast=TRect(m.round(x/zAA),m.round((y-w)/zAA),m.round((x+h)/zAA),m.round(y/zAA)); canv->TextOutW(x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,0+900);}canv->TextOutW(x,y-canv->TextWidth(T1+" "),T2);break;
+				case 90:	rotace_textu(canv,0);		  x=m.round(X+size-2*Z);		y=m.round(Y-h/2);     	aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA)); canv->TextOutW(x,y,T1+" ");if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;canv->TextOutW(x+canv->TextWidth(T1+" "),y,T2);break;
+				case 180:	rotace_textu(canv,2700);  x=m.round(X+h/2.0);   		y=m.round(Y+size-2*Z);	aktOblast=TRect(m.round((x-h)/zAA),m.round(y/zAA),m.round(x/zAA),m.round((y+w)/zAA)); canv->TextOutW(x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,2700);}canv->TextOutW(x,y+canv->TextWidth(T1+" "),T2);break;
+				case 270:	rotace_textu(canv,0);	    x=m.round(X-w-size+2.0*Z);y=m.round(Y-h/2); 			aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA)); canv->TextOutW(x,y,T1+" ");if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;canv->TextOutW(x+canv->TextWidth(T1+" "),y,T2);break;
 			}
-			rotace_textu(canv,0);
+			rotace_textu(canv,0);//vrací nastavení do původního stavu
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{
@@ -2808,7 +2814,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}
 
 	//nastavení pera
-	if(typ==-1)//stav kurzor
+	if(typ==-1)//typ kurzor
 	{
 		canv->Pen->Mode=pmNotXor;
 		canv->Pen->Style=psDot;
@@ -2879,14 +2885,24 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		if(typ==1)//pokud se jedná o standardní zobrazení
 		{
 			canv->Font->Name=F->aFont->Name;
-			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
-			if(rotace==0 || rotace==180)drawRectText(canv,zakladna,T); //nefunguje správně při rotaci //pro po orototován9 o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
+			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
+			float zAA=1.0;if(F->antialiasing)zAA=3.0;
+			long x,y;
+			short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
+			if(rotace==0 || rotace==180)//lze používat i drawRectText(canv,zakladna,T);//nefunguje správně při rotaci //pro po orototování o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
+			{
+				x=m.round(X-w/2.0);
+				y=m.round(Y-h/2.0);
+				aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));//souřadnice pro citelnou oblast
+			}
 			else
 			{
 				rotace_textu(canv,-rotace*10);
-				if(rotace==90)canv->TextOutW(m.round(X+canv->TextHeight(T)/2.0),m.round(Y-canv->TextWidth(T)/2.0),name);
-				if(rotace==270)canv->TextOutW(m.round(X-canv->TextHeight(T)/2.0),m.round(Y+canv->TextWidth(T)/2.0),name);
+				if(rotace==90){x=m.round(X+h/2.0);y=m.round(Y-w/2.0);}
+				if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y+w/2.0);}
+				aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
 			}
+			canv->TextOutW(x,y,name);//samotný vypis
 		}
 		else//ikona
 		{
@@ -2990,20 +3006,20 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,long X,long Y,AnsiString name,AnsiSt
 		AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
 		if(typ==1)//normální zobrazení
 		{
-			if(stav==2)canv->Font->Style = TFontStyles()<< fsBold;
+			if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
+			short h=canv->TextHeight(T),w=canv->TextWidth(T);
+			float zAA=1.0;if(F->antialiasing)zAA=3.0;
+			long x,y;
 			//rotace
 			switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 			{
-				case 0: 	rotace_textu(canv,0+900);canv->TextOutW(m.round(X-canv->TextHeight(T)/2.0),m.round(Y-size-1.3*Z),T);break;
-				case 90:	rotace_textu(canv,0);		 canv->TextOutW(m.round(X-canv->TextWidth(T)-size-2*Z),m.round(Y-canv->TextHeight(T)/2.0),T);break;
-				case 180:	rotace_textu(canv,2700); canv->TextOutW(m.round(X+canv->TextHeight(T)/2.0),m.round(Y+size+1.3*Z),T);break;
-				case 270:	rotace_textu(canv,0);	   canv->TextOutW(m.round(X+size+2*Z),m.round(Y-canv->TextHeight(T)/2.0),T);break;
+				case 0: 	rotace_textu(canv,2700);	x=m.round(X+h/2.0);   	 	 y=m.round(Y+size+1.4*Z); aktOblast=TRect(m.round((x-h)/zAA),m.round(y/zAA),m.round(x/zAA),m.round((y+w)/zAA));break;
+				case 90:	rotace_textu(canv,0);		 	x=m.round(X-w-size-1.4*Z); y=m.round(Y-h/2.0); 			aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));break;
+				case 180:	rotace_textu(canv,0+900); x=m.round(X-h/2.0);   	 	 y=m.round(Y-size-1.4*Z);	aktOblast=TRect(m.round(x/zAA),m.round((y-w)/zAA),m.round((x+h)/zAA),m.round(y/zAA)); break;
+				case 270:	rotace_textu(canv,0);	   	x=m.round(X+size+1.4*Z);	 y=m.round(Y-h/2.0); 			aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));break;
 			}
-			rotace_textu(canv,0);
-
-			///
-			//canv->TextOutW(X+size+width+width,Y-canv->TextHeight(T)/2,T);
-			rotace_textu(canv,0);
+			canv->TextOutW(x,y,T);
+			rotace_textu(canv,0);//navrácení do původního stavu
 		}
 		else//ikona
 		{
@@ -3446,9 +3462,9 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		}
 		else//kóty mezi elementy
 		{
-			aktElement->kota_oblast.rect0=R0;//oblast kóty
-			aktElement->kota_oblast.rect1=R.rect1;//hodnoty
-			aktElement->kota_oblast.rect2=R.rect2;//jednotky
+			aktElement->citelna_oblast.rect0=R0;//oblast kóty
+			aktElement->citelna_oblast.rect1=R.rect1;//hodnoty
+			aktElement->citelna_oblast.rect2=R.rect2;//jednotky
 		}
 	}
 }

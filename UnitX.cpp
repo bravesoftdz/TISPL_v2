@@ -19,13 +19,26 @@ __fastcall TFormX::TFormX(TComponent* Owner)
  vstoupeno_elm=false;
 }
 //---------------------------------------------------------------------------
-void TFormX::OnClick(long Tag,long ID,unsigned long Col,unsigned long Row)
+void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 {
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
+	input_state=NO;
 	unhighlight_tabulky();
 	if(ID==9999&&Row>=1)
 		highlight_tab_pohonu(Row);
+	if(ID==9999&&Row==-2)
+	{
+		if(F->PmG->Rows[4].Visible)
+		{
+			F->PmG->VisibleRow(4,false);
+			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+		}else
+		{
+			F->PmG->VisibleRow(4,true);
+			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+		}
+	}
 	input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
@@ -158,7 +171,35 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				F->tab_pohon_COMBO(1);//pøiøazení pohonu
 				F->aktualizace_ComboPohon();
 				if(F->PmG->getCombo(0,0)->ItemIndex!=0)
+				{
 					aktualizace_tab_elementu();
+          F->aktualizace_ComboPohon();
+					//aktualizace tabulky
+					if(F->PmG->RowCount>3)//pro tabulku v kontinuálním režimu
+					{
+						F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+						F->PmG->Cells[1][2].Text=F->m.round2double(F->outR(F->pom_temp->pohon->roztec),3);
+						F->PmG->Cells[1][3].Text=F->m.round2double(F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec),3);
+						F->pom_temp->pohon->Rx;
+						F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->m.Rz(F->pom_temp->pohon->aRD)),3);
+						F->pom_temp->pohon->Rz;
+					}
+					else
+					{
+          	F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+						F->PmG->Cells[1][2].Text=F->m.round2double(F->outR(F->pom_temp->pohon->roztec),3);
+					}
+					if(F->PmG->RowCount==7)
+        	{
+        		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
+        		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
+        	}
+        	if(F->PmG->RowCount==6)
+        	{
+        		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
+					}
+					F->PmG->Refresh();
+				}
 				else aktualizace_tab_elementu_pOdebran();
 			}break;
 			case 1://aktuální rychlost, aRD
@@ -175,13 +216,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				else//pokud je zadána nulová rychlost kóty musí být pøepnuty do módu délky
 				{
 					F->scGPComboBox_prepinacKot->Enabled=false;
-					if(F->scGPComboBox_prepinacKot->ItemIndex==1)
-					{                                    //F->Sv("Pøed: "+AnsiString(F->DKunit));
-						F->scGPComboBox_prepinacKot->ItemIndex=0;
-//						if(F->DKunit==F->SEKUNDY)F->DKunit=F->M;//else F->DKunit=F->M;
-//						if(F->DKunit==F->MINUTY)F->DKunit=F->MM;
-//						F->writeINI("nastaveni_nahled","koty_delka", F->DKunit); F->Sv("Po: "+AnsiString(F->DKunit));
-					}
+					if(F->scGPComboBox_prepinacKot->ItemIndex==1)F->scGPComboBox_prepinacKot->ItemIndex=0;
 				}
 			}break;
 			case 2://rozteè, R
@@ -194,9 +229,9 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				//volání metody pro pøepoèty všech souvisejících bunìk
 				zmena_R();
 			}break;
-			case 3://rozestup, Rz   NEBUDE EDITOVATELNÝ
+			case 4://rozestup, Rz   NEBUDE EDITOVATELNÝ
 			break;
-			case 4://Rx
+			case 3://Rx
 			{
 				input_state=Rx;
 				//naètení Rx z editu
@@ -221,9 +256,18 @@ void TFormX::zmena_aRD ()
 	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 	{
 		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->aRD);
-		F->PmG->Cells[1][3].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
+		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->Rx=F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][4].Text=F->m.round2double(F->pom_temp->pohon->Rx,3);
+		F->PmG->Cells[1][3].Text=F->m.round2double(F->pom_temp->pohon->Rx,3);
+	}
+	if(F->PmG->RowCount==7)
+	{
+		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
+		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
+	}
+	if(F->PmG->RowCount==6)
+	{
+		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
 	}
 	//propoèty v tabulkách elementù
 	aktualizace_tab_elementu();validace();
@@ -236,9 +280,18 @@ void TFormX::zmena_R ()
 	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 	{
     F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][3].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
+		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz); //prohozené poøadí z dùvodu, že druhý výpoèet potøebuje aktualizovaonu honotu prvního výpoètu
 		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+	}
+	if(F->PmG->RowCount==7)
+	{
+		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
+		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
+	}
+	if(F->PmG->RowCount==6)
+	{
+		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
 	}
 	//pøepoèet hodnot v elementech
 	F->aktualizace_ComboPohon();
@@ -252,9 +305,18 @@ void TFormX::zmena_Rx ()
 	if(F->PmG->RowCount>3)//kontinuální režim
 	{
     F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][3].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
+		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
 		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+	}
+	if(F->PmG->RowCount==7)
+	{
+		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
+		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
+	}
+	if(F->PmG->RowCount==6)
+	{
+		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
 	}
 	//pøepoèet hodnot v elementech
   F->aktualizace_ComboPohon();
@@ -381,26 +443,35 @@ void TFormX::highlight_tab_pohonu(int Row)
 		{
 			if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 			{
-				F->PmG->Cells[1][3].Highlight=true; //rozestup
-				F->PmG->Cells[1][4].Highlight=true; //rx
+				F->PmG->Cells[1][4].Highlight=true; //rozestup
+				F->PmG->Cells[1][3].Highlight=true; //rx
 			}
 		}break;
 		case 2: //zmena rozteèe R
 		{
 			if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 			{
-				F->PmG->Cells[1][3].Highlight=true;  //rozestup
+				F->PmG->Cells[1][4].Highlight=true;  //rozestup
 				F->PmG->Cells[1][1].Highlight=true; //aRD
 			}
 		}break;
-		case 4: //zmìna Rx
+		case 3: //zmìna Rx
 		{
 			if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
 			{
 				F->PmG->Cells[1][1].Highlight=true; //aRD
-				F->PmG->Cells[1][3].Highlight=true; //rozestup Rz
+				F->PmG->Cells[1][4].Highlight=true; //rozestup Rz
 			}
 		}break;
+	}
+	if(F->PmG->RowCount==7)
+	{
+		F->PmG->Cells[1][5].Highlight=true;
+		F->PmG->Cells[1][6].Highlight=true;
+	}
+	if(F->PmG->RowCount==6)
+	{
+		F->PmG->Cells[1][5].Highlight=true;
 	}
 	F->PmG->Refresh();
 	highlight_tab_elementu();

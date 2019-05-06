@@ -587,7 +587,6 @@ private:
 	int el_mimoKabinu ();//1-robot z leva, 2-robot z prava, 3-nerobot zl., 4-nerobot zp., 5-robot ze spoda, 6-robot z vrchu, 7-nerobot zes., 8-nerobot zvr.
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);
-	double vrat_hranici(int mimo);
 	void zmenJednotekKot();
 
 	////proměnné
@@ -706,6 +705,7 @@ public:		// User declarations
 	void tab_pohon_COMBO (int index);//0=načtení pohonů do COMBA, 1=přiřazení pohonu kabině
   void aktualizace_ComboPohon ();
 	short RO; short ROs; short ROst;short ROsts;short Rotace_symbolu_minula;
+	double vrat_hranici(int mimo);//vrací max či min hodnoty x a y souřadnic elementů v kabině
 	double inLO  (double inLO);
   double outLO (double outLO);
   double inPT  (double inPT);

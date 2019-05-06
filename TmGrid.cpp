@@ -768,7 +768,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			}
 			TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
 			Cell.LinkCoordinateStart.x=Rect.left;Cell.LinkCoordinateStart.y=Rect.top;Cell.LinkCoordinateEnd.x=Rect.right;Cell.LinkCoordinateEnd.y=Rect.bottom;
-			/*unsigned int Pos=Cell.Text.Pos("<a>");//pozice html tagu
+			/*unsigned int Pos=Cell.Text.Pos("<a>");//pozice html tagu  - nahrazeno výše uvedeným zatím nechávám dokud nebude otestováno
 			if(Pos>0)//parsování HTML
 			{
 				AnsiString T1=ms.TrimRightFrom(Cell.Text,"<a>");
@@ -891,6 +891,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//text
 	E->Font=Cell.Font;
+	//if(F->ms.IsNumber(Cell.Text) && E->Font->Name=="Roboto Cn"){E->Font->Size--; E->Font->Name="Arial";E->Font->Quality=System::Uitypes::TFontQuality::fqDefault;}else //pro čísla v případě robota cn nastavuje jen Arial - nevyužito
 	if(E->Font->Name=="Roboto Cn")E->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else E->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmíněné formátování
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmíněné formátování
@@ -1512,7 +1513,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 			Row=getRowFromTag(((TComponent*)(Sender))->Tag);
 			break;
 		}
-
+																					 //pozor metody musí mít i znamenkové longové Col, Row , kvůli -2 exBUTTON
 		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);
 		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);
