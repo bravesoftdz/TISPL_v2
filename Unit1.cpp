@@ -1500,7 +1500,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 	}
 	}
 	d.vykresli_tip(Canvas);//vypíše TIP
-  //provizorně pro testování citelné oblasti
+	//provizorně pro testování citelné oblasti
 //	Canvas->Brush->Style=bsSolid;Canvas->Brush->Color=clYellow;
 //	Canvas->Pen->Width=5;Canvas->Pen->Color=clGreen;
 //	Memo3->Clear();Memo3->Visible=true;Memo3->Lines->Add(d.aktOblast.left);Memo3->Lines->Add(d.aktOblast.top);Memo3->Lines->Add(d.aktOblast.right);Memo3->Lines->Add(d.aktOblast.bottom);
@@ -2362,7 +2362,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID= 0 - 3 rezervováno pro element, 0 - element mimo název, 1 - citelná oblast název elementu, 2,3 - rezerva, bližší identifikace elementu probíhá pomocí pom_element
 //JID= 4-10 nultý až poslední řádek tabulky pohonů, 4 - hlavička nevyužito z důvodu obsazení COMBOBOXem, zanecháno jako rezerva
 //JID= 11 - 99 - interaktivní text kóty, 10+pom_element->n - oblast kóty/posun kóty a n elementu
-//JID= 100-999 rezervováno pro odkazy tabuky, kde 100 znamená nultý řádek libovolného sloupce (ideální pro sloučenou hlavičku), u 100 se více neže o odkaz jedná o interaktivní text, který je určen k editaci formou změny na EDIT, ale definovaný odkazem pomocí tagu <a>název</a>, to zajistí naplnění citelné oblasti
+//JID= 100-999 rezervováno pro odkazy v tabulce, kde 100 znamená nultý řádek libovolného sloupce (ideální pro sloučenou hlavičku), u 100 se více neže o odkaz jedná o interaktivní text, který je určen k editaci formou změny na EDIT, ale definovaný odkazem pomocí tagu <a>název</a>, to zajistí naplnění citelné oblasti
 //JID= 1000-1999 rezervováno pro řádky nultého slopce tabulky (v místě, kde není odkaz), kde 1000 znamená nultý řádek tabulky nehledě na sloupec (ideální pro sloučenou hlavičku), kde není odkaz
 //JID= 2000-rezervováno pro 2 či další sloupce resp. řádky, 2000 - nevyužito,2001 - první řádek (po nultém)
 void TForm1::getJobID(int X, int Y)

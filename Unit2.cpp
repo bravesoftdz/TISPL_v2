@@ -35,6 +35,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->MovingTable=false;
 		E->mG->Border.Width=2;
 		E->mG->exBUTTONVisible=true;
+		E->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 
 		unsigned long ColCount=3;//pevný poèet slopcù
 		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
@@ -47,16 +48,16 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
 		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>"; E->mG->Cells[0][1].Hint="test hintu";E->mG->Cells[0][1].ShowHint=true;
 		E->mG->Cells[0][1].isLink->Color=clRed;
-		E->mG->Cells[1][1].Type=E->mG->EDIT;
+		//E->mG->Cells[1][1].Type=E->mG->EDIT;
 		E->mG->Cells[1][1].InputNumbersOnly=true;
 		E->mG->Cells[1][2].Type=E->mG->EDIT;
-		//E->mG->Cells[1][1].Text="abc0";
+		//E->mG->Cells[1][3].Text="abc0";
 
 		//E->mG->Columns[0].Width=800;
 		//E->mG->SetColumnAutoFit(0);
 
 		//E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs";
-		E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs");
+		//E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs");
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;
@@ -426,6 +427,7 @@ void TForm2::OnKeyPress(long Tag,unsigned long Col,unsigned long Row,System::Wid
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)
 {
+Button1->SetFocus();//odevzdání focusu na neutrální komponentu
 ELEMENTY->mG->Delete(); //ELEMENTY->dalsi->mG->Delete();
 //	 mGrid->Delete();//pokud chci odstranit a nechci použít na další použití
 //	 mGrid2->Delete();

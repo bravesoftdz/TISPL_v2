@@ -282,7 +282,7 @@ void TmGrid::Delete()
 		DeleteComponents();
 		Hint->Free();Hint=NULL;delete Hint;
 		Timer->Free();Timer=NULL;delete Timer;
-		exBUTTON->Free();exBUTTON=NULL;delete exBUTTON;
+		exBUTTON->Free();exBUTTON=NULL;delete exBUTTON;//pozor nesmí mít při ukončování formu focus
 		//uvolnění paměti
 		DeleteTable();
 		DeleteCell(DefaultCell);
@@ -1453,7 +1453,7 @@ TPoint TmGrid::getWidthHeightText(TCells &Cell)
 	TPoint RET;
 	Form->Canvas->Font=Cell.Font;//nastavení fontu
 	AnsiString T=Cell.Text;
-	if(Cell.Text.Pos("<a>"))//pokud obsahuje odkaz, tak vyseparovat
+	if(Cell.Text.Pos("<a>"))//pokud obsahuje odkaz, tak vyseparovat tagy
 	T=ms.delete_repeat(ms.delete_repeat(T,"<a>"),"</a>");
 
 	if(Cell.Font->Orientation==900 || Cell.Font->Orientation==2700)
@@ -1723,7 +1723,7 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							L->Caption=RefCell.Text;//bere až z poslední buňky slučované oblasti
 							L=NULL;delete L;
 						}break;
-						default: Cells[ColCell_2][RowCell_2].TextPositon.X=(Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width)/2-W/2;
+						default: Cells[ColCell_2][RowCell_2].TextPositon.X=m.round((Columns[ColCell_1].Left-Columns[ColCell_2].Left+Columns[ColCell_2].Width+Cells[ColCell_1][RowCell_1].LeftBorder->Width-Cells[ColCell_2][RowCell_2].RightBorder->Width)/2.0-W/2.0);break;
 				 }
 			 }break;
 			 case RIGHT:
@@ -1785,8 +1785,9 @@ void TmGrid::MergeCells(unsigned long ColCell_1,unsigned long RowCell_1,unsigned
 							L->Height=Rows[ColCell_2].Top+Rows[ColCell_2].Height-Rows[ColCell_1].Top-Cells[ColCell_2][RowCell_2].BottomBorder->Width;
 							L=NULL;delete L;
 						}break;
-
-						default: Cells[ColCell_2][RowCell_2].TextPositon.Y=(Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height)/2-H/2;
+						default:
+						short o=0;//if(RefCell.Font->Size==14 && RefCell.Font->Name=="Roboto Cn")o=1;/*+(1-RefCell.Font->Size%2)/2.0*/// pouze grafická korekce pro fonty se sudou velikostí
+						Cells[ColCell_2][RowCell_2].TextPositon.Y=m.round((Rows[RowCell_1].Top-Rows[RowCell_2].Top+Rows[RowCell_2].Height-Cells[ColCell_1][RowCell_1].TopBorder->Width-Cells[ColCell_2][RowCell_2].BottomBorder->Width)/2.0-H/2.0+o/2.0);break;
 				 }
 			 }
 			 break;
@@ -2048,16 +2049,16 @@ void TmGrid::InsertRow(unsigned long Row,bool copyComponentFromPreviousRow, bool
 	else AddRow(copyComponentFromPreviousRow,invalidate);
 }
 //---------------------------------------------------------------------------
-//skryje či zobrazí daný řádek
+//skryje či zobrazí daný řádek - pozor ještě optimálně nefunguje orámování pokud je na skrývaném řádku Editbox a následujícím také- převezme se této buňce šířka orámování původního editboxu
 void TmGrid::VisibleRow(unsigned long Row,bool visible)
 {
 	if(visible==false)//skrývání
 	{
 		AnsiString T=Note.Text;
-		if(Note.Text!=""){Note.Text="";Note.NoteArea.Offset(-Border.Width+1,0);}//kvůli překreslení orámování
+		if(Note.Text!="")ShowNote("");//kvůli posunu poznámky
 		Rows[Row].Visible=false;
-		Update();
-		Note.Text=T;
+		if(T!="")ShowNote(T);
+		InvalidateRect(Form->Handle,&TRect(Left-Cells[0][Row].LeftBorder->Width,Top+Height-Rows[Row].Height-Cells[0][Row].TopBorder->Width,Left+Width+Cells[ColCount-1][Row].RightBorder->Width,Top+Height+Cells[0][Row].TopBorder->Width),true);
 		Refresh();
 	}
 	else//zobrazování
