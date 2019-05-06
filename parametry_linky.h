@@ -182,7 +182,8 @@ private:	// User declarations
 	bool existuji_nepouzivane_pohony();//testuje zda existují nepoužíté pohony, pokud ano,vrací true jinak false
 	void nacti_pohony();
 	void Nastav_zamky(Tinput_clicked_icon I,Tinput_clicked_edit E);
- 	TColor clBACKGROUND;
+	TColor clBACKGROUND;
+	void vymen_edity ();//metoda vymìní edit pro délku podvozku a délku jigu podle typu vozíku podlahový/podvìsný
 public:		// User declarations
 	__fastcall TForm_parametry_linky(TComponent* Owner);
 	int getROW(int PID);//vrátí èíslo øádku dle pohon ID, pokud nenajde vrátí -1

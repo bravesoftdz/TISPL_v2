@@ -33,7 +33,7 @@ TForm_parametry_linky *Form_parametry_linky;
 __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	: TForm(Owner)
 {
-  input_state=NO;
+	input_state=NO;
 	////designové záležitosti
  //	Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);//RGB(240,240,240); //nastavení barvy formuláøe
 
@@ -49,7 +49,6 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	clAcGlyph=(TColor)RGB(0,128,255);//active
 	PopUPmenu->Color=clBg;//nastavení pozadí barvy formuláøe
 	pasiveColor();//nastaví všechny položky na pasivní resp. default barvu
-
 
 }
 //---------------------------------------------------------------------------
@@ -95,7 +94,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 {
     input_state=LOADING;
     COL=0; ROW=0;
-    Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
+		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
 
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
@@ -172,11 +171,11 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
   getmGridWidth();
 
-  mGrid->SetColumnAutoFit(-4);
+	mGrid->SetColumnAutoFit(-4);
 
-  Form_parametry_linky->Width=scPanel_takt->Width + scPanel_vozik->Width + scPanel_takt->Left + 20;//mGrid->Width + scGPButton_pohon->Left + 30;
+//	Form_parametry_linky->Width=scPanel_takt->Width + scPanel_vozik->Width + scPanel_takt->Left + 20;//mGrid->Width + scGPButton_pohon->Left + 30;
 
-  ////////plnìní daty - hlavièka////////
+	////////plnìní daty - hlavièka////////
 	mGrid->Cells[0][0].Text="ID";
  	mGrid->Cells[1][0].Text="Název";
  if(aRDunit==MIN)	mGrid->Cells[2][0].Text="Rozmezí a rychlost pohonu <a>[m/min]</a>";
@@ -238,7 +237,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		if(scGPSwitch->State==0)
     {
-    rImageEx_jig_podlahovy->Visible=true;
+		rImageEx_jig_podlahovy->Visible=true;
     rImageEx_jig_podvesny->Visible=false;
     }
 		else
@@ -246,7 +245,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
      rImageEx_jig_podvesny->Visible=true;
      rImageEx_jig_podlahovy->Visible=false;
      }
-
+    vymen_edity();//nastaví edity
 
 		if(Form1->d.v.navrhni_POHONY()=="")
 		{
@@ -381,6 +380,42 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
    setADD_ButtonPosition();
 
 	 Storno=false;
+	 //vycentrování formuláøe, musí bý na konci!
+	 Form_parametry_linky->Left=Monitor->Width/2-Form_parametry_linky->Width/2;
+	 Form_parametry_linky->Top=Monitor->Height/2-Form_parametry_linky->Height/2;
+	 //nastavení rozložení komponent
+	 int odsazeni=Form_parametry_linky->Height-Button_save->Top-Button_save->Height;
+	 //LEFT
+	 scGPButton_obecne->Left=odsazeni;
+	 scPanel_takt->Left=odsazeni;
+	 scGPButton_pohon->Left=odsazeni;
+	 mGrid->Left=odsazeni;
+	 scGPGlyphButton_ADD->Left=odsazeni;
+	 scGPButton_vozik->Left=scPanel_takt->Left+scPanel_takt->Width+odsazeni;
+	 scPanel_vozik->Left=scGPButton_vozik->Left;
+	 Form_parametry_linky->Width=odsazeni+mGrid->Width+odsazeni+1;//musí se ruènì pøidat jeden pixel!
+	 //TOP
+	 scGPButton_obecne->Top=scGPPanel2->Height+odsazeni;
+	 scPanel_takt->Top=scGPButton_obecne->Top+scGPButton_obecne->Height;
+	 scGPButton_pohon->Top=scPanel_takt->Top+scPanel_takt->Height+odsazeni;
+	 mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height;
+	 scGPGlyphButton_ADD->Top=mGrid->Top+mGrid->Height;
+	 scGPButton_vozik->Top=scGPButton_obecne->Top;
+	 scPanel_vozik->Top=scPanel_takt->Top;
+	 rHTMLLabel_podlahovy->Top=scGPButton_vozik->Top+scGPButton_vozik->Height/2-rHTMLLabel_podlahovy->Height/2;
+	 scGPSwitch->Top=rHTMLLabel_podlahovy->Top;
+	 rHTMLLabel_podvesny->Top=rHTMLLabel_podlahovy->Top;
+	 //TOP uvnitø
+	 scImage1->Top=scPanel_takt->Height/2-scImage1->Height/2;
+	 rEditNum_takt->Top=scPanel_takt->Height/2-rEditNum_takt->Height/2+1;
+	 rHTMLLabel_takt->Top=scPanel_takt->Height/2-rHTMLLabel_takt->Height/2+1;
+	 //Left uvnitø
+	 scImage1->Left=40+6;//scImage1->Left=40 nelze použít scImage1->Left proto zmìøeno a pøidáno ruènì 40
+	 rEditNum_takt->Left=rEditNum_takt->Left+6;
+	 rHTMLLabel_takt->Left=rHTMLLabel_takt->Left+6;
+	 //musí být znova
+	 Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
+	 Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 }
 //---------------------------------------------------------------------------
 //
@@ -1595,14 +1630,21 @@ void __fastcall TForm_parametry_linky::scGPSwitchChangeState(TObject *Sender)
 {
 		if(scGPSwitch->State==0)
     {
-     rImageEx_jig_podlahovy->Visible=true;
-     rImageEx_jig_podvesny->Visible=false;
+		 rImageEx_jig_podlahovy->Visible=true;//bude podlahový
+		 rImageEx_jig_podvesny->Visible=false;
     }
 		else
     {
-     rImageEx_jig_podvesny->Visible=true;
+		 rImageEx_jig_podvesny->Visible=true;//bude podvìsný
      rImageEx_jig_podlahovy->Visible=false;
-    }
+		}
+		vymen_edity();
+}
+//---------------------------------------------------------------------------
+//metoda vymìní edit pro délku podvozku a délku jigu podle typu vozíku podlahový/podvìsný
+void TForm_parametry_linky::vymen_edity ()
+{
+
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
