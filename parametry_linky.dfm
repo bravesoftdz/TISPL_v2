@@ -7244,8 +7244,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 5690
-    Top = 8854
+    Left = 5726
+    Top = 8914
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7270,8 +7270,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 5681
-    ExplicitTop = 8839
+    ExplicitLeft = 5723
+    ExplicitTop = 8909
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -7323,18 +7323,16 @@ object Form_parametry_linky: TForm_parametry_linky
     Height = 39
     Enabled = False
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
+    Font.Color = clGreen
     Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     Font.Quality = fqClearType
     ParentFont = False
     TabOrder = 26
-    TabStop = True
-    Visible = False
     Animation = False
     Caption = 'scGPCheckBox1'
-    CanFocused = True
+    CanFocused = False
     Spacing = 1
     Layout = blGlyphLeft
     ImageIndex = -1
@@ -7353,15 +7351,15 @@ object Form_parametry_linky: TForm_parametry_linky
     GlowEffect.States = [scsHot, scsPressed, scsFocused]
     ImageGlow = True
     DisabledFontColor = clWhite
-    Options.NormalColor = clBlack
+    Options.NormalColor = clWhite
     Options.HotColor = clBlack
     Options.PressedColor = clBlack
     Options.DisabledColor = clWhite
     Options.NormalColorAlpha = 255
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
-    Options.DisabledColorAlpha = 125
-    Options.FrameNormalColor = clBlack
+    Options.DisabledColorAlpha = 10
+    Options.FrameNormalColor = clBlue
     Options.FrameHotColor = clBlack
     Options.FramePressedColor = clBlack
     Options.FrameDisabledColor = clBlack
@@ -7379,7 +7377,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.CheckMarkPressedColorAlpha = 255
     Options.CheckMarkDisabledColorAlpha = 125
     Options.ShapeSize = 20
-    Options.CheckMarkThickness = 2
+    Options.CheckMarkThickness = 1
     Options.StyleColors = True
     OptionsChecked.NormalColor = clBlack
     OptionsChecked.HotColor = clWindow
@@ -7410,10 +7408,11 @@ object Form_parametry_linky: TForm_parametry_linky
     OptionsChecked.CheckMarkThickness = 2
     OptionsChecked.StyleColors = True
     Checked = False
+    AllowGrayed = True
     ScaleFrameWidth = True
     ScaleCheckMarkThickness = True
     ShowFocusRect = True
-    UseFontColorToStyleColor = False
+    UseFontColorToStyleColor = True
   end
   object rHTMLHint1: TrHTMLHint
     HintFont.Charset = DEFAULT_CHARSET
