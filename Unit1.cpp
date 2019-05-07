@@ -1879,7 +1879,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
 								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;if(el_vkabine(X,Y,pom_element->eID))mazani=true;else mazani=false;pom_element_temp=pom_element;}//ELEMENT posun
-								if(JID==100 || 1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
+								if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
 								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 								if(JID==-2||JID==-3){Akce=MOVE_KABINA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
 								if(JID==-6) {DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
@@ -1891,6 +1891,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));/*if(scGPComboBox_orientace->ItemIndex!=0)editovany_text=editovany_text/pom_temp->pohon->aRD;*/}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů
 								if(JID>=4&&JID<=10){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
+								if(JID==100)//změna názvu
 						}
 						else
 						{
@@ -3886,7 +3887,7 @@ void TForm1::design_tab_pohon(int index)
 		{
 			PmG->Cells[1][i].Font->Color=(TColor)RGB(128,128,128);
 			PmG->Cells[1][i].RightMargin=5;
-			PmG->Cells[1][i].Background->Color=m.clIntensive((TColor)RGB(128,128,128),105);
+			PmG->Cells[1][i].Background->Color=m.clIntensive((TColor)RGB(128,128,128),115);
 		}
 		PmG->Cells[0][i].Align=mGrid->RIGHT;
 		PmG->Cells[1][i].Align=mGrid->RIGHT;
@@ -4025,7 +4026,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 {
 	//definice barev
 	TColor clHeaderFont=clBlack;
-	TColor clBackgroundHidden=m.clIntensive((TColor)RGB(128,128,128),105);
+	TColor clBackgroundHidden=m.clIntensive((TColor)RGB(128,128,128),115);//105
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	TColor clFontRight = (TColor)RGB(43,87,154);
 	//identifikátor tabulky
@@ -4071,8 +4072,9 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	else dalsi_vytvoreni_tab_elementu(E,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla,LO,cas,delka_otoce);
 	//formátování hlavičky tabulky (vždy stejné)
 	E->mGrid->Border.Width=2;
-	E->mGrid->Cells[0][0].Text=E->name;
-	E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
+	E->mGrid->Cells[0][0].Text="<a>"+E->name+"</a>";//nasazení linku
+	E->mGrid->Cells[0][0].isLink->Color=clHeaderFont;
+//	E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
 	E->mGrid->Cells[0][0].BottomBorder->Width=2;
 	//formátování buněk tabulky (vždy stejn=)
 	for(int i=1;i<=ms.MyToDouble(E->mGrid->RowCount-1);i++)
