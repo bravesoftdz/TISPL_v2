@@ -1891,7 +1891,24 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));/*if(scGPComboBox_orientace->ItemIndex!=0)editovany_text=editovany_text/pom_temp->pohon->aRD;*/}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů
 								if(JID>=4&&JID<=10){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
-								if(JID==100);//změna názvu
+								if(JID==100)//změna názvu
+								{
+									//index_kurzoru=JID;
+									pom_element_temp=pom_element;
+									pom_element->mGrid->Cells[0][0].Type=pom_element->mGrid->EDIT;
+									pom_element->mGrid->Cells[0][0].Text=pom_element->name;
+									pom_element->mGrid->Cells[0][0].Font->Color=clBlack;
+									pom_element->mGrid->MergeCells(0,0,1,0);
+									pom_element->mGrid->Update();
+									TscGPEdit *edit=pom_element->mGrid->getEdit(0,0);//->SetFocus();
+									edit->Options->FrameFocusedColor=pom_element->mGrid->Cells[1][0].Background->Color;
+									edit->Options->FrameHotColor=pom_element->mGrid->Cells[1][0].Background->Color;
+									edit->Options->FrameNormalColor=pom_element->mGrid->Cells[1][0].Background->Color;
+									edit->Transparent=true;
+									edit->SetFocus();
+									edit->SelStart=pom_element->name.Length();
+									edit=NULL; delete edit;
+								}
 						}
 						else
 						{
@@ -2130,8 +2147,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(pom_element->eID==2||pom_element->eID==4)//pokud se jedná o roboty ve S&G režimu
 			{
 				pom_element->RT=m.RT(pom_element->PT1,d.v.vzdalenost_od_predchoziho_elementu(pom_element),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
-				if(pom_element->eID==2)pom_element->mGrid->Cells[1][2].Text=outPT(pom_element->RT);
-				if(pom_element->eID==4)pom_element->mGrid->Cells[1][4].Text=outPT(pom_element->RT);
+				if(pom_element->eID==2)pom_element->mGrid->Cells[1][2].Text=m.round2double(outPT(pom_element->RT),3);
+				if(pom_element->eID==4)pom_element->mGrid->Cells[1][4].Text=m.round2double(outPT(pom_element->RT),3);
       }
 			nahled_ulozit(true);
 			break;
@@ -3057,6 +3074,14 @@ void TForm1::ESC()
 	proces_pom=NULL;
 	kurzor(standard);
 	Akce=NIC;//musí být nad refresh
+	if(MOD==NAHLED)
+	{
+		TscGPEdit *E=pom_element_temp->mGrid->getEdit(0,0);E->Free();E=NULL;delete E;
+		pom_element_temp->mGrid->Cells[0][0].Type=pom_element_temp->mGrid->DRAW;
+		pom_element_temp->mGrid->Cells[0][0].Text=pom_element_temp->name;
+		pom_element_temp->mGrid->MergeCells(0,0,1,0);
+		pom_element_temp=NULL; delete pom_element_temp;
+	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

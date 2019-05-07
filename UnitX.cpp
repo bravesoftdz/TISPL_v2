@@ -216,7 +216,6 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				F->aktualizace_ComboPohon();
 				if(F->PmG->getCombo(0,0)->ItemIndex!=0)
 				{
-					aktualizace_tab_elementu();
           F->aktualizace_ComboPohon();
 					//aktualizace tabulky
 					if(F->PmG->RowCount>3)//pro tabulku v kontinuálním režimu
@@ -243,6 +242,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
         		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
 					}
 					F->PmG->Refresh();
+					aktualizace_tab_elementu();
 				}
 				else aktualizace_tab_elementu_pOdebran();
 			}break;
