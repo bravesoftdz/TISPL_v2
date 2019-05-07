@@ -48,7 +48,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Cells[0][1].Type=E->mG->DRAW;
 		E->mG->Cells[0][1].Text="zaèátek <a>[m]</a>"; E->mG->Cells[0][1].Hint="test hintu";E->mG->Cells[0][1].ShowHint=true;
 		E->mG->Cells[0][1].isLink->Color=clRed;
-		//E->mG->Cells[1][1].Type=E->mG->EDIT;
+		E->mG->Cells[1][1].Type=E->mG->EDIT;
 		E->mG->Cells[1][1].InputNumbersOnly=true;
 		E->mG->Cells[1][2].Type=E->mG->EDIT;
 		//E->mG->Cells[1][3].Text="abc0";
@@ -57,7 +57,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		//E->mG->SetColumnAutoFit(0);
 
 		//E->mG->Note.Text="Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs";
-		//E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs");
+		E->mG->ShowNote("Text výpisu poznámky pod èi nad èarou a <a>link</a> nìjaký další abcdefgeijasdfads dafs");
 
 		E->predchozi=NULL;
 		E->dalsi=NULL;

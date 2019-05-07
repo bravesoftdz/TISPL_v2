@@ -118,6 +118,7 @@ class TmGrid
 	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistí přebarvení odkazu v buňce odstínem barvy odkazu
 	void unHighlightAll();//odzvýrazni všechna zvýraznění
 	void SetVisibleComponents(bool state);//podle stavu state buď zobrazí nebo skryje všechny komponenty
+	void SetVisibleComponent(unsigned long Col,unsigned long Row,bool state);//podle stavu state buď zobrazí nebo skryje komponentu neurčitého typu v dané buňce
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPNumericEdit *getNumeric(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
