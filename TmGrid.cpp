@@ -2050,7 +2050,7 @@ void TmGrid::InsertRow(unsigned long Row,bool copyComponentFromPreviousRow, bool
 }
 //---------------------------------------------------------------------------
 //skryje či zobrazí daný řádek - pozor ještě optimálně nefunguje orámování pokud je na skrývaném řádku Editbox a následujícím také- převezme se této buňce šířka orámování původního editboxu
-void TmGrid::VisibleRow(unsigned long Row,bool visible)
+void TmGrid::VisibleRow(unsigned long Row,bool visible,bool invalidate)
 {
 	if(visible==false)//skrývání
 	{
@@ -2058,14 +2058,14 @@ void TmGrid::VisibleRow(unsigned long Row,bool visible)
 		if(Note.Text!="")ShowNote("");//kvůli posunu poznámky
 		Rows[Row].Visible=false;
 		if(T!="")ShowNote(T);
-		InvalidateRect(Form->Handle,&TRect(Left-Cells[0][Row].LeftBorder->Width,Top+Height-Rows[Row].Height-Cells[0][Row].TopBorder->Width,Left+Width+Cells[ColCount-1][Row].RightBorder->Width,Top+Height+Cells[0][Row].TopBorder->Width),true);
-		Refresh();
+		if(invalidate)InvalidateRect(Form->Handle,&TRect(Left-Cells[0][Row].LeftBorder->Width,Top+Height-Rows[Row].Height-Cells[0][Row].TopBorder->Width,Left+Width+Cells[ColCount-1][Row].RightBorder->Width,Top+Height+Cells[0][Row].TopBorder->Width),true);
+		if(invalidate)Refresh();
 	}
 	else//zobrazování
 	{
 		Rows[Row].Height=DefaultRowHeight;//vratí původní resp. defaultní výšku
 		Rows[Row].Visible=true;
-		Refresh();
+		if(invalidate)Refresh();
 	}
 }
 //---------------------------------------------------------------------------

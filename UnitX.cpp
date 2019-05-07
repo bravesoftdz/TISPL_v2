@@ -24,21 +24,21 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
 	input_state=NO;
-	unhighlight_tabulky();
-	if(ID==9999&&Row>=1)
-		highlight_tab_pohonu(Row);
+	unhighlight_tabulky();//nejedná se o unhighlightování tabulky ale o zrušení korelací
+	if(ID==9999&&Row>=1)highlight_tab_pohonu(Row);//nejedná se o highlightování tabulky ale o korelace
 	if(ID==9999&&Row==-2)
 	{
 		if(F->PmG->Rows[4].Visible)
 		{
-			F->PmG->VisibleRow(4,false);
+			F->PmG->VisibleRow(4,false,false);//nepøekreslovat
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 		}else
 		{
-			F->PmG->VisibleRow(4,true);
+			F->PmG->VisibleRow(4,true,false);//nepøekreslovat
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 		}
-		F->REFRESH();
+		F->PmG->Update();
+		F->REFRESH();//musí být opravdu REFRESH celého formu nikoliv jen mGridu
 	}
 	input_state=NOTHING;
 }
