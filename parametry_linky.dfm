@@ -820,8 +820,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object scGPButton_pohon: TscGPButton
-    Left = 10
-    Top = 250
+    Left = 8
+    Top = 283
     Width = 200
     Height = 29
     Font.Charset = DEFAULT_CHARSET
@@ -3182,7 +3182,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Left = 14
     Top = 83
     Width = 430
-    Height = 164
+    Height = 194
     TabOrder = 21
     CustomImageIndex = -1
     DragForm = False
@@ -6874,7 +6874,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Options.HotColorAlpha = 255
       Options.FocusedColorAlpha = 255
       Options.DisabledColorAlpha = 150
-      Options.FrameNormalColor = clRed
+      Options.FrameNormalColor = clWhite
       Options.FrameHotColor = clWhite
       Options.FrameFocusedColor = clWhite
       Options.FrameDisabledColor = clWhite
@@ -7244,8 +7244,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 5795
-    Top = 9029
+    Left = 5810
+    Top = 9054
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7270,8 +7270,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 5753
-    ExplicitTop = 8959
+    ExplicitLeft = 5804
+    ExplicitTop = 9044
   end
   object scGPSwitch: TscGPSwitch
     Left = 762

@@ -1686,31 +1686,17 @@ void __fastcall TForm_parametry_linky::scGPSwitchChangeState(TObject *Sender)
 //metoda vymìní edit pro délku podvozku a délku jigu podle typu vozíku podlahový/podvìsný
 void TForm_parametry_linky::nastav_edity ()
 {
-	int y=0;
-	if(rImageEx_jig_podlahovy->Visible&&scGPNumericEdit_delka_jig->Top>scGPNumericEdit_delka_podvozek->Top||rImageEx_jig_podvesny->Visible&&scGPNumericEdit_delka_jig->Top<scGPNumericEdit_delka_podvozek->Top)//podlahový vozík a zároveò špatné edity
-	{
-		y=scGPNumericEdit_delka_jig->Top;
-		scGPNumericEdit_delka_jig->Top=scGPNumericEdit_delka_podvozek->Top;
-		scGPNumericEdit_delka_podvozek->Top=y;
-	}
+	int y=0,x=0;
+
 	if(rImageEx_jig_podlahovy->Visible)
 	{
 		scGPNumericEdit_sirka_jig->Top=100;
 		rHTMLLabel_sirka_jig->Top=100;
 		scGPNumericEdit_vyska_jig->Top=82;
 		rHTMLLabel_vyska_jig->Top=82;
-//
-//		scGPNumericEdit_delka_jig->Left=194;
-//		rHTMLLabel_delka_jig->Left=255;
-//		scGPNumericEdit_vyska_jig->Left=45;
-//		rHTMLLabel_vyska_jig->Left=106;
-//		scGPNumericEdit_delka_podvozek->Left=184;
-//		rHTMLLabel_delka_podvozek->Left=245;
 
-//		scGPNumericEdit_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left+20;
-//		rHTMLLabel_vyska_jig->Left=rHTMLLabel_vyska_jig->Left+20;
-		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
-		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+		scGPNumericEdit_delka_jig->Left=194; //194
+		scGPNumericEdit_delka_podvozek->Left=184;
 	}
 	if(rImageEx_jig_podvesny->Visible)
 	{
@@ -1719,18 +1705,28 @@ void TForm_parametry_linky::nastav_edity ()
 		scGPNumericEdit_vyska_jig->Top=98;
 		rHTMLLabel_vyska_jig->Top=98;
 
-//    scGPNumericEdit_delka_jig->Left=194;
-//		rHTMLLabel_delka_jig->Left=255;
-//		scGPNumericEdit_vyska_jig->Left=45;
-//		rHTMLLabel_vyska_jig->Left=106;
-//		scGPNumericEdit_delka_podvozek->Left=184;
-//		rHTMLLabel_delka_podvozek->Left=245;
-
-//		scGPNumericEdit_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left-20;
-//		rHTMLLabel_vyska_jig->Left=rHTMLLabel_vyska_jig->Left-20;
-		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
-		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+		scGPNumericEdit_delka_jig->Left=189;//189
+		scGPNumericEdit_delka_podvozek->Left=181;
 	}
+	if(rImageEx_jig_podlahovy->Visible&&scGPNumericEdit_delka_jig->Top>scGPNumericEdit_delka_podvozek->Top||rImageEx_jig_podvesny->Visible&&scGPNumericEdit_delka_jig->Top<scGPNumericEdit_delka_podvozek->Top)//podlahový vozík a zároveò špatné edity
+	{
+		y=scGPNumericEdit_delka_jig->Top;
+		x=scGPNumericEdit_delka_jig->Left;
+		scGPNumericEdit_delka_jig->Top=scGPNumericEdit_delka_podvozek->Top;
+		scGPNumericEdit_delka_podvozek->Top=y;
+		scGPNumericEdit_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left;
+		scGPNumericEdit_delka_podvozek->Left=x;
+	}
+  if(rImageEx_jig_podlahovy->Visible)
+	{
+  	rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+	}
+	else
+	{
+  	rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+  }
 	rHTMLLabel_sirka_jig->Left=scGPNumericEdit_sirka_jig->Left+scGPNumericEdit_sirka_jig->Width+2;
 }
 //---------------------------------------------------------------------------

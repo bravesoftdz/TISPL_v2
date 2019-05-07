@@ -3842,7 +3842,7 @@ void TForm1::design_tab_pohon(int index)
 		{PmG->AddRow(false,false);}//řadek pro mezeru mezi jig
 		PmG->Update();//nutné!
 		//skyrytí rozestupu
-		PmG->VisibleRow(4,false);//,false přidat
+		PmG->VisibleRow(4,false,false);//,false přidat
 	}
 	if(PmG->RowCount==6)
 	{
