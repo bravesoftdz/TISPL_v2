@@ -24,22 +24,32 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
 	input_state=NO;
-	unhighlight_tabulky();
+
 	if(ID==9999&&Row>=1)//pokud je kliknuto do tabulky pohonu, podle buòky vyznèí buòky, které budou zmìnou ovlivnìné
 		korelace_tab_pohonu(Row);
 	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
+
+	//funkcionalita exBUTTONu
 	{
+		AnsiString Hint=F->PmG->exBUTTON->Hint;F->PmG->exBUTTON->Hint="";//zabráni probliku Hintu, toto sloužilo pro tlaèítko, ale nebylo plnì uèinné: int T=F->PmG->exBUTTON->Top;
 		if(F->PmG->Rows[4].Visible)
 		{
-			F->PmG->VisibleRow(4,false);
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+			F->PmG->VisibleRow(4,false,false);//nepøekreslovat
+
 		}else
 		{
-			F->PmG->VisibleRow(4,true);
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
+			F->PmG->VisibleRow(4,true,false);//nepøekreslovat
 		}
-		F->REFRESH();//musí být jinak dochází k špatnému zobrazení tabulky
+		F->PmG->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
+		F->PmG->Update();
+		F->PmG->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
+		F->REFRESH();//musí být opravdu REFRESH celého formu nikoliv jen mGridu
+		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 	}
+
+	//uvolnìní inputu
 	input_state=NOTHING;
 }
 //---------------------------------------------------------------------------
