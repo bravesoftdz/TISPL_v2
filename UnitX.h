@@ -18,8 +18,8 @@ private:	// User declarations
 	void zmena_Rx ();
 	void aktualizace_tab_elementu ();
 	void aktualizace_tab_elementu_pOdebran ();
-	void highlight_tab_pohonu(int Row);
-	void highlight_tab_elementu();
+	void korelace_tab_pohonu(int Row);
+	void korelace_tab_elementu();
 	void validace ();
 
 public:		// User declarations
@@ -30,7 +30,7 @@ public:		// User declarations
 	void unhighlight_tabulky();
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
-  enum Tinput_state{NO,NOTHING,PT,LO,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
+  enum Tinput_state{NO,NOTHING,PT,PT2,LO,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
 	bool vstoupeno_poh, vstoupeno_elm;
 };

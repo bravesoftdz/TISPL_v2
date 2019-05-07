@@ -3569,7 +3569,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Caption = 'scPanel_vozik'
     StorePaintBuffer = False
     object rHTMLLabel_delka_jig: TrHTMLLabel
-      Left = 201
+      Left = 255
       Top = 0
       Width = 28
       Height = 21
@@ -3584,7 +3584,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnClick = rHTMLLabel_delka_jigClick
     end
     object rHTMLLabel_delka_podvozek: TrHTMLLabel
-      Left = 201
+      Left = 245
       Top = 173
       Width = 28
       Height = 21
@@ -3631,7 +3631,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnClick = rHTMLLabel_delkavozikuClick
     end
     object rHTMLLabel_sirka_jig: TrHTMLLabel
-      Left = 311
+      Left = 355
       Top = 100
       Width = 28
       Height = 21
@@ -3648,7 +3648,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnClick = rHTMLLabel_sirka_jigClick
     end
     object rHTMLLabel_vyska_jig: TrHTMLLabel
-      Left = 62
+      Left = 106
       Top = 80
       Width = 28
       Height = 21
@@ -3667,7 +3667,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnClick = rHTMLLabel_sirka_jigClick
     end
     object rImageEx_jig_podlahovy: TrImageEx
-      Left = 101
+      Left = 145
       Top = 19
       Width = 141
       Height = 158
@@ -5210,14 +5210,14 @@ object Form_parametry_linky: TForm_parametry_linky
         00004D4942386B734D4C0E0000000000FFFF0000000000003200800000004D49
         423874746150000000004D4942386B734D460C0000000000FFFF000000000000
         320000000000}
-      BoundLabel.Left = 170
+      BoundLabel.Left = 214
       BoundLabel.Top = 91
       BoundLabel.Width = 3
       BoundLabel.Height = 13
       BoundLabel.Transparent = True
     end
     object rImageEx_jig_podvesny: TrImageEx
-      Left = 96
+      Left = 140
       Top = 17
       Width = 150
       Height = 158
@@ -6851,14 +6851,14 @@ object Form_parametry_linky: TForm_parametry_linky
         A7FF01FEF2FCFF01DCD3FEFFECFF81FFECFF81FFECFF4D4942386B734D4C0E00
         00000000FFFF0000000000003200800000004D49423874746150000000004D49
         42386B734D460C0000000000FFFF000000000000320000000000}
-      BoundLabel.Left = 169
+      BoundLabel.Left = 213
       BoundLabel.Top = 89
       BoundLabel.Width = 3
       BoundLabel.Height = 13
       BoundLabel.Transparent = True
     end
     object scGPNumericEdit_delka_jig: TscGPNumericEdit
-      Left = 140
+      Left = 194
       Top = 0
       Width = 61
       Height = 21
@@ -6874,7 +6874,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Options.HotColorAlpha = 255
       Options.FocusedColorAlpha = 255
       Options.DisabledColorAlpha = 150
-      Options.FrameNormalColor = clWhite
+      Options.FrameNormalColor = clRed
       Options.FrameHotColor = clWhite
       Options.FrameFocusedColor = clWhite
       Options.FrameDisabledColor = clWhite
@@ -6954,7 +6954,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnKeyDown = FormKeyDown
     end
     object scGPNumericEdit_delka_podvozek: TscGPNumericEdit
-      Left = 140
+      Left = 184
       Top = 172
       Width = 61
       Height = 19
@@ -7050,7 +7050,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnKeyDown = FormKeyDown
     end
     object scGPNumericEdit_sirka_jig: TscGPNumericEdit
-      Left = 248
+      Left = 292
       Top = 100
       Width = 61
       Height = 21
@@ -7146,7 +7146,7 @@ object Form_parametry_linky: TForm_parametry_linky
       OnKeyDown = FormKeyDown
     end
     object scGPNumericEdit_vyska_jig: TscGPNumericEdit
-      Left = 1
+      Left = 45
       Top = 80
       Width = 61
       Height = 21
@@ -7244,8 +7244,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 5744
-    Top = 8944
+    Left = 5795
+    Top = 9029
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7270,8 +7270,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 5735
-    ExplicitTop = 8929
+    ExplicitLeft = 5753
+    ExplicitTop = 8959
   end
   object scGPSwitch: TscGPSwitch
     Left = 762

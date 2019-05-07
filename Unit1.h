@@ -588,6 +588,7 @@ private:
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);
 	void zmenJednotekKot();
+	int pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt, int eID);//prohledá elementy v objektu, vrátí počet výskytů elementu podle poslaného eID
 
 	////proměnné
 	TDateTime TIME;

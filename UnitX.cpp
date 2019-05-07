@@ -25,9 +25,9 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
 	input_state=NO;
 	unhighlight_tabulky();
-	if(ID==9999&&Row>=1)
-		highlight_tab_pohonu(Row);
-	if(ID==9999&&Row==-2)
+	if(ID==9999&&Row>=1)//pokud je kliknuto do tabulky pohonu, podle buòky vyznèí buòky, které budou zmìnou ovlivnìné
+		korelace_tab_pohonu(Row);
+	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
 	{
 		if(F->PmG->Rows[4].Visible)
 		{
@@ -38,7 +38,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 			F->PmG->VisibleRow(4,true);
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 		}
-		F->REFRESH();
+		F->REFRESH();//musí být jinak dochází k špatnému zobrazení tabulky
 	}
 	input_state=NOTHING;
 }
@@ -92,7 +92,20 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				} break;
 				case 2: //robot se stop stanicí
 				{
-					//obsahuje 2 èasové údaje jeden zadávaný uživatelm druhý získávaný z pohonu (wt)
+					if(Row==1)//zmìna PT
+					{
+						input_state=PT;
+						E->PT1=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//naètení z mgridu
+						E->RT=F->m.RT(E->PT1,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+						E->mGrid->Cells[Col][2].Text=F->m.round2double(F->outPT(E->RT),3);//výpis do mGridu
+					}
+					if(Row==3)//zmìna WT
+					{
+						input_state=WT;
+						E->WT=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//naètení z mgridu
+						E->RT=F->m.RT(E->PT1,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+						E->mGrid->Cells[Col][3].Text=F->m.round2double(F->outPT(E->RT),3);//výpis do mGridu
+					}
 				} break;
 				case 3: //robot s pasivní otoèí
 				{
@@ -134,7 +147,27 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				} break;
 				case 4://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
 				{
-					//obsahuje pouze èasové buòky + wt
+					if(Row==1)//zmìna PT1
+					{
+						input_state=PT;
+						E->PT1=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//naètení z mgridu
+						E->RT=F->m.RT(E->PT1+E->PT2,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+						E->mGrid->Cells[Col][4].Text=F->m.round2double(F->outPT(E->RT),3);//výpis do mGridu
+					}
+					if(Row==3)//zmìna PT2
+					{
+						input_state=PT2;
+						E->PT2=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//naètení z mgridu
+						E->RT=F->m.RT(E->PT1+E->PT2,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+						E->mGrid->Cells[Col][4].Text=F->m.round2double(F->outPT(E->RT),3);//výpis do mGridu
+					}
+					if(Row==5)//zmìna WT
+					{
+						input_state=WT;
+						E->WT=F->inPT(F->ms.MyToDouble(E->mGrid->Cells[Col][Row].Text));//naètení z mgridu
+						E->RT=F->m.RT(E->PT1,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+						E->mGrid->Cells[Col][4].Text=F->m.round2double(F->outPT(E->RT),3);//výpis do mGridu
+					}
 				} break;
 				case 5://otoè pasivní
 				{
@@ -334,7 +367,13 @@ void TFormX::aktualizace_tab_elementu ()
 		{
 			switch(E->eID)
 			{
-				case 0:break;//stop stanice
+				case 0:
+				{
+        	E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3);
+					E->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(E->WT),3);
+					E->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(E->WT),3);
+				}
+				break;//stop stanice
 				case 1://robor kontinuální
 				{
 					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
@@ -436,7 +475,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 	E=NULL; delete E;
 }
 //highlightovaní buòìk tabulky pohonu
-void TFormX::highlight_tab_pohonu(int Row)
+void TFormX::korelace_tab_pohonu(int Row)
 {
 	switch(Row)
 	{
@@ -475,11 +514,11 @@ void TFormX::highlight_tab_pohonu(int Row)
 		F->PmG->Cells[1][5].Highlight=true;
 	}
 	F->PmG->Refresh();
-	highlight_tab_elementu();
+	korelace_tab_elementu();
 }
 //---------------------------------------------------------------------------
 //stará se o highlitování políèek, které souvisí s mìnìnou hodnotou (elementy)
-void TFormX::highlight_tab_elementu()
+void TFormX::korelace_tab_elementu()
 {
 	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
