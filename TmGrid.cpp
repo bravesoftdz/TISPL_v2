@@ -459,32 +459,35 @@ void TmGrid::Draw(TCanvas *C)
 
 		for(unsigned long Y=0;Y<RowCount;Y++)//po řádcích
 		{  //není doděláno ve vztahu s níže uvedeným
-			if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;continue;}//skrytí řádku, zatím ale nefunguje patřičně orámování
-			////oblast a umístění buňky
-			if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpočet horního okraje buňky dle buňky předchozí
-			R.Top			=	Top+Rows[Y].Top*Zoom_g;
-			Rt.Top		=	Rows[Y].Top*Zoom_b;//zde není Top celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souřadnice v rámci tabulku, nikoliv absolutně v celém formu
-			Rb.Top		=	Rows[Y].Top*Zoom_b;
-			Rc.Top		=	Top+Rows[Y].Top;
-			R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_g;
-			Rt.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;//zde není Top celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souřadnice v rámci tabulku, nikoliv absolutně v celém formu
-			Rb.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
-			Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
-
-			////barva pozadí buňky                 //neplatí pro margované položky - zatím nedokonalé
-			if(Cells[X][Y].Text=="" && Cells[X][Y].MergeState==false)C->Brush->Color=Cells[X][Y].isEmpty->Color;//podmíněné formátování
-			else C->Brush->Color=Cells[X][Y].Background->Color;//vyplněná buňka
-			C->Brush->Style=Cells[X][Y].Background->Style;
-			C->FillRect(Rb);
-
-			////komponenta v buňce
-			SetComponents(C,Rc,Rt,X,Y,Cells[X][Y]);
-
-			////orámování buňky
-			//používám duplicitně (k DrawGrid) zde, v případě totálně vypnutého AA nebo totálně zapnutého AA, v takovém případě potom neběží DrawGrid, DrawGrid běží jenom v momentu AntiAliasing_text=false a AntiAliasing_grid=true
-			if(!(AntiAliasing_grid==false && AntiAliasing_text==true))
+			if(!Rows[Y].Visible || Rows[Y].Height==0){Rows[Y].Height=0;SetVisibleComponent(X,Y,false);}//skrytí řádku, zatím ale možná nefunguje patřičně orámování
+			else//zobrazený řádek
 			{
-				DrawCellBorder(C,X,Y,R);
+				////oblast a umístění buňky
+				if(Y>0)Rows[Y].Top=Rows[Y-1].Top+Rows[Y-1].Height;else Rows[0].Top=0;//výpočet horního okraje buňky dle buňky předchozí
+				R.Top			=	Top+Rows[Y].Top*Zoom_g;
+				Rt.Top		=	Rows[Y].Top*Zoom_b;//zde není Top celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souřadnice v rámci tabulku, nikoliv absolutně v celém formu
+				Rb.Top		=	Rows[Y].Top*Zoom_b;
+				Rc.Top		=	Top+Rows[Y].Top;
+				R.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height)*Zoom_g;
+				Rt.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;//zde není Top celé tabulky, protože se pozicije na pozici levého horního rohu tabulky celá bmp, takže zde musí být pouze souřadnice v rámci tabulku, nikoliv absolutně v celém formu
+				Rb.Bottom	=	(Rows[Y].Top+Rows[Y].Height)*Zoom_b;
+				Rc.Bottom	=	Top+(Rows[Y].Top+Rows[Y].Height);
+
+				////barva pozadí buňky                 //neplatí pro margované položky - zatím nedokonalé
+				if(Cells[X][Y].Text=="" && Cells[X][Y].MergeState==false)C->Brush->Color=Cells[X][Y].isEmpty->Color;//podmíněné formátování
+				else C->Brush->Color=Cells[X][Y].Background->Color;//vyplněná buňka
+				C->Brush->Style=Cells[X][Y].Background->Style;
+				C->FillRect(Rb);
+
+				////komponenta v buňce
+				SetComponents(C,Rc,Rt,X,Y,Cells[X][Y]);
+
+				////orámování buňky
+				//používám duplicitně (k DrawGrid) zde, v případě totálně vypnutého AA nebo totálně zapnutého AA, v takovém případě potom neběží DrawGrid, DrawGrid běží jenom v momentu AntiAliasing_text=false a AntiAliasing_grid=true
+				if(!(AntiAliasing_grid==false && AntiAliasing_text==true))
+				{
+					DrawCellBorder(C,X,Y,R);
+				}
 			}
 		}
 	}
@@ -2503,21 +2506,26 @@ void TmGrid::SetVisibleComponents(bool state)
 	{
 		for(unsigned long Y=0;Y<=RowCount-1;Y++)//po sloupcích
 		{
-			switch(Cells[X][Y].Type)
-			{
-				case readEDIT: 		getEdit(X,Y)->Visible=state;break;
-				case EDIT: 		 		getEdit(X,Y)->Visible=state;break;
-				case NUMERIC:  		getNumeric(X,Y)->Visible=state;break;
-				case readNUMERIC: getNumeric(X,Y)->Visible=state;break;
-				case BUTTON: 			getButton(X,Y)->Visible=state;break;
-				case COMBO: 			getCombo(X,Y)->Visible=state;break;
-				case CHECK:       getCheck(X,Y)->Visible=state;break;
-				case RADIO:				getRadio(X,Y)->Visible=state;break;
-				case glyphBUTTON:	getGlyphButton(X,Y)->Visible=state;break;
-			}
+			SetVisibleComponent(Col,Row,state);//skryje komponentu na dané pozici
 		}
 	}
 	if(exBUTTONVisible)exBUTTON->Visible=state;
 }
 //---------------------------------------------------------------------------
-
+//podle stavu state buď zobrazí nebo skryje komponentu neurčitého typu v dané buňce
+void TmGrid::SetVisibleComponent(unsigned long Col,unsigned long Row,bool state)
+{
+	switch(Cells[Col][Row].Type)
+	{
+		case readEDIT: 		getEdit(Col,Row)->Visible=state;break;
+		case EDIT: 		 		getEdit(Col,Row)->Visible=state;break;
+		case NUMERIC:  		getNumeric(Col,Row)->Visible=state;break;
+		case readNUMERIC: getNumeric(Col,Row)->Visible=state;break;
+		case BUTTON: 			getButton(Col,Row)->Visible=state;break;
+		case COMBO: 			getCombo(Col,Row)->Visible=state;break;
+		case CHECK:       getCheck(Col,Row)->Visible=state;break;
+		case RADIO:				getRadio(Col,Row)->Visible=state;break;
+		case glyphBUTTON:	getGlyphButton(Col,Row)->Visible=state;break;
+	}
+}
+//---------------------------------------------------------------------------
