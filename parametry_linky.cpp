@@ -153,7 +153,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     //  ShowMessage(scGPNumericEdit_delka_jig->Value);
 
 
-    clBACKGROUND=(TColor)RGB(250,250,250);
+		clBACKGROUND=F->m.clIntensive((TColor)RGB(128,128,128),100);//(250,250,250);
 
    	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první
@@ -415,6 +415,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scImage1->Left=40+6;//scImage1->Left=40 nelze použít scImage1->Left proto zmìøeno a pøidáno ruènì 40
 	 rEditNum_takt->Left=rEditNum_takt->Left+6;
 	 rHTMLLabel_takt->Left=rHTMLLabel_takt->Left+6;
+	 //obrázky
+	 rImageEx_jig_podlahovy->Left=scPanel_vozik->Width/2-rImageEx_jig_podlahovy->Width/2;
+	 rImageEx_jig_podvesny->Left=scPanel_vozik->Width/2-rImageEx_jig_podvesny->Width/2;
 	 //musí být znova
 	 Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	 Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
@@ -904,7 +907,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
    {
     mGrid->Delete();
 		Close();//v testu, mùže padat
-   }
+	 }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
@@ -1274,29 +1277,34 @@ void TForm_parametry_linky::vozik_zmena_jednotek()
 {
 	if(Delkaunit==M)
 	{
-		scGPNumericEdit_sirka_jig->Width=scGPNumericEdit_sirka_jig->Width-27;//34;
-		rHTMLLabel_sirka_jig->Left=rHTMLLabel_sirka_jig->Left-27;//284;
-		scGPNumericEdit_delka_jig->Width=scGPNumericEdit_delka_jig->Width-27;
-		rHTMLLabel_delka_jig->Left=rHTMLLabel_delka_jig->Left-27;
-		scGPNumericEdit_delka_podvozek->Width=scGPNumericEdit_delka_podvozek->Width-27;
-		rHTMLLabel_delka_podvozek->Left=rHTMLLabel_delka_podvozek->Left-27;
-		scGPNumericEdit_vyska_jig->Width=scGPNumericEdit_vyska_jig->Width-27;
-		scGPNumericEdit_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left+41;
-		rHTMLLabel_vyska_jig->Left=rHTMLLabel_vyska_jig->Left+14;
+		scGPNumericEdit_sirka_jig->Width=34;//scGPNumericEdit_sirka_jig->Width-27;//61 default
+		scGPNumericEdit_delka_jig->Width=34;//scGPNumericEdit_delka_jig->Width-27;
+		scGPNumericEdit_delka_podvozek->Width=34;//scGPNumericEdit_delka_podvozek->Width-27;
+		scGPNumericEdit_vyska_jig->Width=34;//scGPNumericEdit_vyska_jig->Width-27;
+		scGPNumericEdit_vyska_jig->Left=78;//default 45, posun 41
 
 	}
 	else
 	{
-		scGPNumericEdit_sirka_jig->Width=scGPNumericEdit_sirka_jig->Width+27;//61;
-		rHTMLLabel_sirka_jig->Left=rHTMLLabel_sirka_jig->Left+27;//311;
-		scGPNumericEdit_delka_jig->Width=scGPNumericEdit_delka_jig->Width+27;
-		rHTMLLabel_delka_jig->Left=rHTMLLabel_delka_jig->Left+27;
-		scGPNumericEdit_delka_podvozek->Width=scGPNumericEdit_delka_podvozek->Width+27;
-		rHTMLLabel_delka_podvozek->Left=rHTMLLabel_delka_podvozek->Left+27;
-		scGPNumericEdit_vyska_jig->Width=scGPNumericEdit_vyska_jig->Width+27;
-		scGPNumericEdit_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left-41;
-		rHTMLLabel_vyska_jig->Left=rHTMLLabel_vyska_jig->Left-14;
+		scGPNumericEdit_sirka_jig->Width=61;//scGPNumericEdit_sirka_jig->Width+27;
+		scGPNumericEdit_delka_jig->Width=61;//scGPNumericEdit_delka_jig->Width+27;
+		scGPNumericEdit_delka_podvozek->Width=61;//scGPNumericEdit_delka_podvozek->Width+27;
+		scGPNumericEdit_vyska_jig->Width=61;//scGPNumericEdit_vyska_jig->Width+27;
+		scGPNumericEdit_vyska_jig->Left=37;
 	}
+	//nastavování odkazù
+	if(rImageEx_jig_podlahovy->Visible)
+	{
+		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+	}
+	else
+	{
+		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
+	}
+	rHTMLLabel_sirka_jig->Left=scGPNumericEdit_sirka_jig->Left+scGPNumericEdit_sirka_jig->Width+2;
+	rHTMLLabel_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left+scGPNumericEdit_vyska_jig->Width+2;
 }
 void __fastcall TForm_parametry_linky::rHTMLLabel_delka_vozikuClick(TObject *Sender)
 {
@@ -1691,8 +1699,18 @@ void TForm_parametry_linky::nastav_edity ()
 		rHTMLLabel_sirka_jig->Top=100;
 		scGPNumericEdit_vyska_jig->Top=82;
 		rHTMLLabel_vyska_jig->Top=82;
+//
+//		scGPNumericEdit_delka_jig->Left=194;
+//		rHTMLLabel_delka_jig->Left=255;
+//		scGPNumericEdit_vyska_jig->Left=45;
+//		rHTMLLabel_vyska_jig->Left=106;
+//		scGPNumericEdit_delka_podvozek->Left=184;
+//		rHTMLLabel_delka_podvozek->Left=245;
+
 //		scGPNumericEdit_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left+20;
 //		rHTMLLabel_vyska_jig->Left=rHTMLLabel_vyska_jig->Left+20;
+		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
 	}
 	if(rImageEx_jig_podvesny->Visible)
 	{
@@ -1700,9 +1718,20 @@ void TForm_parametry_linky::nastav_edity ()
 		rHTMLLabel_sirka_jig->Top=148;
 		scGPNumericEdit_vyska_jig->Top=98;
 		rHTMLLabel_vyska_jig->Top=98;
+
+//    scGPNumericEdit_delka_jig->Left=194;
+//		rHTMLLabel_delka_jig->Left=255;
+//		scGPNumericEdit_vyska_jig->Left=45;
+//		rHTMLLabel_vyska_jig->Left=106;
+//		scGPNumericEdit_delka_podvozek->Left=184;
+//		rHTMLLabel_delka_podvozek->Left=245;
+
 //		scGPNumericEdit_vyska_jig->Left=scGPNumericEdit_vyska_jig->Left-20;
 //		rHTMLLabel_vyska_jig->Left=rHTMLLabel_vyska_jig->Left-20;
+		rHTMLLabel_delka_podvozek->Left=scGPNumericEdit_delka_jig->Left+scGPNumericEdit_delka_jig->Width+2;
+		rHTMLLabel_delka_jig->Left=scGPNumericEdit_delka_podvozek->Left+scGPNumericEdit_delka_podvozek->Width+2;
 	}
+	rHTMLLabel_sirka_jig->Left=scGPNumericEdit_sirka_jig->Left+scGPNumericEdit_sirka_jig->Width+2;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_parametry_linky::FormClose(TObject *Sender, TCloseAction &Action)
