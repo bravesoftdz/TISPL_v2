@@ -1891,7 +1891,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));/*if(scGPComboBox_orientace->ItemIndex!=0)editovany_text=editovany_text/pom_temp->pohon->aRD;*/}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů
 								if(JID>=4&&JID<=10){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
-								if(JID==100)//změna názvu
+								if(JID==100);//změna názvu
 						}
 						else
 						{
