@@ -160,6 +160,7 @@ class TmGrid
 	Talign exBUTTONalign;//pozice rozšířeného tlačítka vůči tabulce
 	Tvalign exBUTTONvalign;//pozice rozšířeného tlačítka vůči tabulce
 	bool exBUTTONVisible;//stav zobrazení či skrytí exBUTTNU, nepoužívat přímo exBUTTON->Visible, ale toto exBUTTONVisible, exBUTTON používat pouze na designování
+	bool exBUTTONLockPosition;//uzamkne pozici exButtonu (použito při updatu)
 	short Decimal;//implicitní počet desetinných míst u numericeditů
 	bool IntegerDecimalNull;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do počtu decimál i u celých čísel
 	bool MovingTable;//pokud je nastaveno na true, komponenty se změní na typ DRAW tj. tak, aby došlo k posunu dané buňky

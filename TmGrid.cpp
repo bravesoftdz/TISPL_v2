@@ -142,6 +142,7 @@ TmGrid::TmGrid(TForm *Owner)
 	exBUTTON->Parent=Form;
 	exBUTTONalign=RIGHT;//pozice rozšířeného tlačítka vůči tabulce
 	exBUTTONvalign=BOTTOM;//pozice rozšířeného tlačítka vůči tabulce
+	exBUTTONLockPosition=false;//uzamkne pozici exButtonu (použito při updatu)
 
 	////POZNÁMKA - výchozí nastavení
 	Note.Font=new TFont();
@@ -492,17 +493,20 @@ void TmGrid::Draw(TCanvas *C)
 	Width=getWidth();
 	if(VisibleComponents && !MovingTable && exBUTTONVisible)
 	{
-		switch(exBUTTONalign)
+		if(!exBUTTONLockPosition)
 		{
-			case LEFT:exBUTTON->Left=Left;break;
-			case CENTER:exBUTTON->Left=Left+(Width-exBUTTON->Width)/2;break;
-			case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);break;
-		}
-		switch(exBUTTONvalign)
-		{
-			case TOP:exBUTTON->Top=Top-exBUTTON->Height;break;
-			case MIDDLE:exBUTTON->Top=Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width-exBUTTON->Height)/2;break;
-			case BOTTOM:exBUTTON->Top=Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height)-m.round(Border.Width/2.0);break;
+			switch(exBUTTONalign)
+			{
+				case LEFT:exBUTTON->Left=Left;break;
+				case CENTER:exBUTTON->Left=Left+(Width-exBUTTON->Width)/2;break;
+				case RIGHT:exBUTTON->Left=Left+Width-exBUTTON->Width+m.round(Border.Width/2.0);break;
+			}
+			switch(exBUTTONvalign)
+			{
+				case TOP:exBUTTON->Top=Top-exBUTTON->Height;break;
+				case MIDDLE:exBUTTON->Top=Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height+Border.Width-exBUTTON->Height)/2;break;
+				case BOTTOM:exBUTTON->Top=Top+(Rows[RowCount-1].Top+Rows[RowCount-1].Height)-m.round(Border.Width/2.0);break;
+			}
 		}
 		exBUTTON->Visible=true;
 	}else exBUTTON->Visible=false;
