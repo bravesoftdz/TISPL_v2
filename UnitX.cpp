@@ -80,7 +80,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					{
 						input_state=COMBO;
 						F->d.v.uloz_sparovany_element(E);
-          }
+					}
 					//Stop stanice má pouze èasové údaje, které spolu nesouviseji ?? (wt)
 				} break;
 				case 1: //robot (kontinuální)
@@ -233,7 +233,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						F->PmG->Cells[1][2].Text=F->m.round2double(F->outR(F->pom_temp->pohon->roztec),3);
 					}
 					if(F->PmG->RowCount==7)
-        	{
+					{
         		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
         		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
         	}
@@ -290,6 +290,40 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		else F->Timer2->Enabled=true;
 	}
 	if(vstoupeno_elm||vstoupeno_poh) F->nahled_ulozit(true);
+}
+//---------------------------------------------------------------------------
+void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key)
+{
+	if(Row==0&&Col==0&&ID!=9999)//nutné ošetøení aby sem nepadaly vìci z øešené v OnChange
+	{
+   	if((Key==VK_ESCAPE||Key==VK_RETURN)&&F->pom_element_temp!=NULL)//stisknutí ESC nebo ENTER
+		{    //pøi esc zrušit oznaèení textu
+			if(Key==VK_ESCAPE)
+			{
+				F->pom_element_temp->name=F->pom_element_temp->mGrid->Cells[0][0].Text;//pokud je stisknuto ESC, vrátí pùvodní název
+				F->pom_element_temp->mGrid->getEdit(0,0)->SelStart=F->pom_element_temp->mGrid->Cells[0][0].Text.Length();//zamezí selectování celého textu pøi stisku ESC
+			}
+			F->index_kurzoru=9999;//musí být pøítomno, zabraòuje smazání editu hned po vytvoøení, timer volán i z OnChange
+   		F->Timer2->Enabled=true;//smaže edit a uloží název (pùvodní nebo zmìnìný),edit musí být smazán se spoždením, jinak pamìová chyba
+   	}
+   	else
+   	{
+   		//øešeno takto z dùvodu, že v okamziku stisknutí klávesy je v editu text bez pøiètené klávesy, muselo by být implementováno do OnChange, aby fungovalo normálnì
+   		if(Key==VK_BACK)//stisknuto backspace
+   			F->pom_element_temp->name=F->pom_element_temp->name.SubString(1,F->pom_element_temp->name.Length()-1);
+   		else//ostatní klávesy
+   			F->pom_element_temp->name=F->pom_element_temp->mGrid->Cells[0][0].Text+AnsiString(Key);
+   		//pokud se jendá o stopku, je možné editovat pouze koneèné èíslo
+   		if(F->pom_element_temp->eID==0&&F->pom_element_temp->name.Length()<=4)
+			{
+				Key=0;//nutné! OnKeyPress je volána 2x
+				F->pom_element_temp->mGrid->Cells[0][0].Text="Stop ";//nahrazení toho co je v editu
+				F->pom_element_temp->mGrid->getEdit(0,0)->SelStart=5;//nastavení kurzoru na konec editu
+				MessageBeep(0);//oznámení uživateli
+			}
+   		F->REFRESH();
+   	}
+	}
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rychlosti

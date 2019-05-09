@@ -1611,7 +1611,7 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 		//if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnKeyPress(Tag,ID,Col,Row,Key);
 		//if(AnsiString(Tag).SubString(1,1)=="4")Form2->OnKeyPress(Tag,ID,Col,Row,Key);
 		//if(AnsiString(Tag).SubString(1,1)=="5")Form_poznamky->OnKeyPress(Tag,Col,Row,Key);
-		//if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
+		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnKeyPress(Tag,ID,Col,Row,Key);//z unit1 do unitX
 		//if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnKeyPress(Tag,ID,Col,Row,Key);
 	}
 }
