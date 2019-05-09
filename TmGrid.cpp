@@ -1115,18 +1115,29 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//atributy
 	if(!VisibleComponents || MovingTable)Ch->Visible=false;else Ch->Visible=true;//při posunu tabulky se skryje, zatím se místo něj nic nevykresluje
+
+	//nastvavení velikosti checkboxu
+	//zde Rosta dolní zjištění velikost Ch viz tabule HW
+	//m.round((Cells[X][Y].TopBorder+Cells[X][Y].BottomBorder)/2.0);
+
+	//pozice checkboxu v buňce
+	//zde Rosta pouze nastaví pozici Ch v buňce
 	switch(Cell.Align)
 	{
 		case aNO:		Ch->Left+=Left-preLeft;break;
 		case LEFT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;break;
-		case CENTER:Ch->Width=Ch->OptionsChecked->ShapeSize;Ch->Left=R.Left+Columns[X].Width/2-Ch->Width/2;break;
+		case CENTER:Ch->Width=Ch->OptionsChecked->ShapeSize;/*Ch->OptionsChecked->ShapeSize=Ch->Checked->ShapeSize;*/Ch->Left=R.Left+Columns[X].Width/2-Ch->Width/2;break;
 		case RIGHT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;Ch->BiDiMode=bdRightToLeft;break;
 	}
 	switch(Cell.Valign)
 	{
 		case aNO:		Ch->Top+=Top-preTop;break;
-		case TOP:		Ch->Top=R.Top+1;Ch->Height=Ch->OptionsChecked->ShapeSize;break;
-		case MIDDLE:Ch->Top=R.Top+1;Ch->Height=Rows[Y].Height-2;break;
+		case TOP:		Ch->Top=R.Top+1;Ch->Height=Ch->OptionsChecked->ShapeSize;break;                               //toto tu původně byl
+		case MIDDLE:Ch->Top=R.Top+1;Ch->Height=Ch->OptionsChecked->ShapeSize;/*Ch->Width=Ch->Height;Ch->Height=Ch->Options->ShapeSize;Ch->Options->ShapeSize=Rows[Y].Height-2;*/
+		//doplnit /*Ch->OptionsChecked->ShapeSize=Ch->Checked->ShapeSize;*/
+		//toto nahrazuje -2 m.round((Cells[X][Y].TopBorder+Cells[X][Y].BottomBorder)/2.0);
+
+		break;
 		case BOTTOM:Ch->Height=Ch->OptionsChecked->ShapeSize;Ch->Top=R.Top+Rows[Y].Height-Ch->Height;break;
 	}
 	Ch->Options->NormalColor=Cell.Background->Color;
