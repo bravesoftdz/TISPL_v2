@@ -153,7 +153,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     //  ShowMessage(scGPNumericEdit_delka_jig->Value);
 
 
-		clBACKGROUND=F->m.clIntensive((TColor)RGB(128,128,128),115);//(250,250,250);
+		clBACKGROUND=(TColor)RGB(240,240,240);//F->m.clIntensive((TColor)RGB(128,128,128),115);//(250,250,250);
 
    	////////definice tabulky////////
 	mGrid=new TmGrid(this);//vždy nutno jako první

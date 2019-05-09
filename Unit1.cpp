@@ -253,6 +253,20 @@ void TForm1::DesignSettings()
 	Simulace->Options->PressedColor=light_gray;
 	Nahled->Options->PressedColor=light_gray;
 
+	//nastavení barvy pro knihovnu
+	scGPLabel_roboti->FillColor=light_gray;
+	scGPLabel_roboti->FillColor2=light_gray;
+	scGPLabel_otoce->FillColor=light_gray;
+	scGPLabel_otoce->FillColor2=light_gray;
+	scGPLabel_stop->FillColor=light_gray;
+	scGPLabel_stop->FillColor2=light_gray;
+	scGPLabel_geometrie->FillColor=light_gray;
+	scGPLabel_geometrie->FillColor2=light_gray;
+	scGPLabel_poznamky->FillColor=light_gray;
+	scGPLabel_poznamky->FillColor2=light_gray;
+	scSplitView_LEFTTOOLBAR->ShadowBorderColor=light_gray;
+	scGPPanel_bottomtoolbar->FrameColor=light_gray;
+
 	scExPanel_ostatni->Top=72+27;
 
 	if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
@@ -3923,7 +3937,7 @@ void TForm1::design_tab_pohon(int index)
 		{
 			PmG->Cells[1][i].Font->Color=(TColor)RGB(128,128,128);
 			PmG->Cells[1][i].RightMargin=5;
-			PmG->Cells[1][i].Background->Color=m.clIntensive((TColor)RGB(128,128,128),115);
+			PmG->Cells[1][i].Background->Color=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 		}
 		PmG->Cells[0][i].Align=mGrid->RIGHT;
 		PmG->Cells[1][i].Align=mGrid->RIGHT;
@@ -4062,7 +4076,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 {
 	//definice barev
 	TColor clHeaderFont=clBlack;
-	TColor clBackgroundHidden=m.clIntensive((TColor)RGB(128,128,128),115);//105
+	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	TColor clFontRight = (TColor)RGB(43,87,154);
 	//identifikátor tabulky
