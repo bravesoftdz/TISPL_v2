@@ -2733,7 +2733,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	canv->Polygon((TPoint*)body,2);
 
 	//text
-	if(typ!=-1)//v módu kurzor se název nezobrazuje
+	if(typ!=-1 && name!="")//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
 	{
 		canv->Font->Color=barva;
 		canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);

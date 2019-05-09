@@ -721,7 +721,7 @@ public:		// User declarations
 	double outR(double outR);
 	double inRz(double inRz);
 	double outRz(double outRz);
-	short smazat;
+	void Memo(AnsiString Text,bool clear=false);//urychlení vypsání do Mema
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

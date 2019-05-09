@@ -2090,11 +2090,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 			if(MOD==NAHLED)
 			{
-				//--prozatim
-				//rotace dle umístění na ose Y
 				short rotace_symbolu=rotace_symbol(m.Rt90(d.trend(pom)),X,Y);
-				//if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu=180;}
-				//--
 				d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
 				minule_souradnice_kurzoru=TPoint(X,Y);
 				d.vykresli_element(Canvas,X,Y,"","",element_id,-1,rotace_symbolu);
@@ -3260,22 +3256,23 @@ void TForm1::add_element (int X, int Y)
 {
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
-	short trend=m.Rt90(d.trend(pom));
-	short rotace_symbolu=rotace_symbol(trend,X,Y);
+	short trend=m.Rt90(d.trend(pom)); 						Memo(trend);
+	short rotace_symbolu=rotace_symbol(trend,X,Y);Memo(rotace_symbolu);
 	bool vkabine=el_vkabine(X,Y,element_id);
 
-	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - provizorní pro robota
+	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
 	double DoSkRB=0;
 	if(1<=element_id && element_id<=4)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
 		DoSkRB=d.DoSkRB*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}                                       //netradičně v hlavičce je umístěna elementární osa pohonu!!!
-	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;//m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);//vodorovný pohon
-	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;//m.round(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0+DoSkRB);//svislý pohon
-				//zvážit nahrazení makrem Rxy
+	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;
+	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;
 
-	//vložení elementu na dané souřadnice a do patřičného spojáku - pozor jedná se o chybu návrhu, nemělo by se vkládát do pom resp. ostrého spojáku objektů pro případ storna....
+
+
+	//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
 //	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
 //	{
 		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y));
@@ -3634,16 +3631,16 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 short TForm1::rotace_symbol(short trend,int X, int Y)
 {
 	short rotace_symbolu=trend-90;
-
-	if(trend==90 || trend==270)//pohon vodorovně
+	switch(trend)
 	{
-		if(m.L2Py(F->pom_temp->elementy->Y)>Y)rotace_symbolu+=180;//if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu+=180;}
+		//pohon vodorovně
+		case 90:	if(m.L2Py(F->pom_temp->elementy->Y)>Y)rotace_symbolu+=180;break;
+		case 270:	if(m.L2Py(F->pom_temp->elementy->Y)<Y)rotace_symbolu+=180;break;
+		//pohon svisle
+		case 180: if(m.L2Px(F->pom_temp->elementy->X)<X)rotace_symbolu+=180;break;
+		case 0: if(m.L2Px(F->pom_temp->elementy->X)>X)rotace_symbolu+=180; break;
 	}
-	else//pohon svisle
-	{
-		if(m.L2Px(F->pom_temp->elementy->X)<X)rotace_symbolu+=180;//if(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0<X)rotace_symbolu+=180;
-	}
-	return rotace_symbolu;
+	return m.Rt90(rotace_symbolu);
 }
 //---------------------------------------------------------------------------
 //designovaní tabulky pro pohon
@@ -8892,4 +8889,11 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
+//urychlení vypsání do Mema
+void TForm1::Memo(AnsiString Text, bool clear)
+{
+	if(clear)Memo3->Clear();
+	Memo3->Visible=true;
+	Memo3->Lines->Add(Text);
+}
+//---------------------------------------------------------------------------

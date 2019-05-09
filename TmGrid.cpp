@@ -2517,7 +2517,7 @@ void TmGrid::SetVisibleComponents(bool state)
 	{
 		for(unsigned long Y=0;Y<=RowCount-1;Y++)//po sloupcích
 		{
-			SetVisibleComponent(Col,Row,state);//skryje komponentu na dané pozici
+			SetVisibleComponent(X,Y,state);//skryje komponentu na dané pozici
 		}
 	}
 	if(exBUTTONVisible)exBUTTON->Visible=state;
