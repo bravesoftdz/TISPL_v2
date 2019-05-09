@@ -181,7 +181,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 	d.v.nacti_CSV_retezy("řetězy.csv");
 
-	//načtení aktuálního Fontu
+	//načtení aktuálního Fontu - aFont dále v kódu neměnit!!!
 	aFont=new TFont();//aktuální nastavený výchozí font
 	aFont->Name="Arial";aFont->Size=12;aFont->Color=clBlack;
 	if(FileExists(get_Windows_dir()+"\\Fonts\\Roboto-Condensed.ttf")){aFont->Name="Roboto Cn";aFont->Size=14;}//pokud je k dispozici Roboto Cn, tak ho nastaví
@@ -1380,7 +1380,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			{
 				d.vykresli_vektory(Canvas);
 				if(refresh_mGrid)d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				if(scGPSwitch_meritko->State==true)d.meritko(Canvas);//grafické měřítko
+				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);//grafické měřítko
 			}
 			else
 			{
@@ -1394,7 +1394,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_in);//velice nutné
 				if(refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
+				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
@@ -1429,7 +1429,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
+				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
@@ -1464,7 +1464,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//grafické měřítko
-			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
+			if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);
 		}
 		break;
 //		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
@@ -1507,7 +1507,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 			delete (bmp_in);//velice nutné
 			//grafické měřítko
-			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
+			if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);
 		}
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
