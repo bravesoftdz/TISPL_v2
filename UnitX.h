@@ -27,6 +27,7 @@ public:		// User declarations
 	void OnClick(long Tag,long ID,long Col,long Row);
 	void OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
+	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
 	void unhighlight_tabulky();
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek

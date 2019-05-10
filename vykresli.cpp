@@ -2733,7 +2733,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	canv->Polygon((TPoint*)body,2);
 
 	//text
-	if(typ!=-1)//v módu kurzor se název nezobrazuje
+	if(typ!=-1 && name!="")//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
 	{
 		canv->Font->Color=barva;
 		canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
@@ -3415,9 +3415,9 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//popisek
 	canv->Font->Pitch = TFontPitch::fpVariable;//každé písmeno fontu stejně široké
 	canv->Font->Pitch = System::Uitypes::TFontPitch::fpVariable;
-	canv->Font->Name="Arial";
+	canv->Font->Name=F->aFont->Name;
 	canv->Font->Color=color;
-	canv->Font->Size=m.round(width*12);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
+	canv->Font->Size=m.round(width*F->aFont->Size);//už se nenásobí *Zoom, protože width se již násobí v úvodu metody
 	if(highlight)
 	{                                                                 //v případě, že není požadován posun dalších elementů, zvýrazní i kótu následujícího elementu, že se bude také měnit
 		if(aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->n || !F->posun_dalsich_elementu && aktElement!=NULL && (F->JID+10)*(-1)==(long)aktElement->predchozi->n || F->JID==-8 || F->JID==-9)canv->Font->Style = TFontStyles()<< fsBold;//pouze když se mění hodnota kóty

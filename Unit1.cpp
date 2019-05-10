@@ -181,7 +181,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	SetCurrentDirectory(ExtractFilePath(Application->ExeName).c_str());
 	d.v.nacti_CSV_retezy("řetězy.csv");
 
-	//načtení aktuálního Fontu
+	//načtení aktuálního Fontu - aFont dále v kódu neměnit!!!
 	aFont=new TFont();//aktuální nastavený výchozí font
 	aFont->Name="Arial";aFont->Size=12;aFont->Color=clBlack;
 	if(FileExists(get_Windows_dir()+"\\Fonts\\Roboto-Condensed.ttf")){aFont->Name="Roboto Cn";aFont->Size=14;}//pokud je k dispozici Roboto Cn, tak ho nastaví
@@ -253,6 +253,20 @@ void TForm1::DesignSettings()
 	Simulace->Options->PressedColor=light_gray;
 	Nahled->Options->PressedColor=light_gray;
 
+	//nastavení barvy pro knihovnu
+	scGPLabel_roboti->FillColor=light_gray;
+	scGPLabel_roboti->FillColor2=light_gray;
+	scGPLabel_otoce->FillColor=light_gray;
+	scGPLabel_otoce->FillColor2=light_gray;
+	scGPLabel_stop->FillColor=light_gray;
+	scGPLabel_stop->FillColor2=light_gray;
+	scGPLabel_geometrie->FillColor=light_gray;
+	scGPLabel_geometrie->FillColor2=light_gray;
+	scGPLabel_poznamky->FillColor=light_gray;
+	scGPLabel_poznamky->FillColor2=light_gray;
+	scSplitView_LEFTTOOLBAR->ShadowBorderColor=light_gray;
+	scGPPanel_bottomtoolbar->FrameColor=light_gray;
+
 	scExPanel_ostatni->Top=72+27;
 
 	if(MOD==SCHEMA) //zobrazeni labelu - je hezci, v hlavicce drawgrid knihovny
@@ -275,7 +289,7 @@ void TForm1::DesignSettings()
 	scGPLabel1->Left=22;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
-	scGPComboBox_prepinacKot->Left=scGPComboBox_orientace->Left+6;//combobox na přepínání mezi kotami čas -- delka
+	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
 	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
 	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
 	scGPButton_viditelnostKoty->Left=scButton_zamek->Left-scGPButton_viditelnostKoty->Width-19;
@@ -793,7 +807,7 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPLabel1->Left=22;
 	scGPLabel_prepinacKot->Left=scGPLabel1->Left;
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
-	scGPComboBox_prepinacKot->Left=scGPComboBox_orientace->Left+6;
+	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;
 	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
 	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
 	scGPButton_viditelnostKoty->Left=scButton_zamek->Left-scGPButton_viditelnostKoty->Width-19;
@@ -1366,7 +1380,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			{
 				d.vykresli_vektory(Canvas);
 				if(refresh_mGrid)d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				if(scGPSwitch_meritko->State==true)d.meritko(Canvas);//grafické měřítko
+				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);//grafické měřítko
 			}
 			else
 			{
@@ -1380,7 +1394,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_in);//velice nutné
 				if(refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
+				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
@@ -1415,7 +1429,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				if(scGPSwitch_meritko->State==true)d.meritko(bmp_out->Canvas);//grafické měřítko
+				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
@@ -1450,7 +1464,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//grafické měřítko
-			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
+			if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);
 		}
 		break;
 //		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
@@ -1493,7 +1507,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 			delete (bmp_in);//velice nutné
 			//grafické měřítko
-			if(scGPSwitch_meritko->State==true)d.meritko(Canvas);
+			if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);
 		}
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
@@ -1518,7 +1532,7 @@ void TForm1::REFRESH(bool mGrid)
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-{ //ShowMessage(Key);
+{
 	funkcni_klavesa=0;
 	int HG=0; if(scGPGlyphButton_close_grafy->GlyphOptions->Kind==scgpbgkDownArrow)HG=Chart2->Height;//o výšku grafu
 	int PXM=50;int D=Form1->m.round(d.v.PP.delka_jig*PXM);int S=Form1->m.round(d.v.PP.sirka_jig*PXM);short Yofset=D;if(S>D)Yofset=S;//pro posun obrazu v technologických procesech
@@ -1702,6 +1716,40 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
+//vytvoří edit na místě hlavičky tabulky, slouží ke změně názvu elementu
+void TForm1::vytvor_edit()
+{
+	index_kurzoru=JID;
+	pom_element_temp=pom_element;//uloží ukazatel na element, při editaci může uživatel odjet kurzorem z editovaného elementu, proto je nutné si jej uložit
+	pom_element_temp->mGrid->Cells[0][0].Type=pom_element_temp->mGrid->EDIT;
+	pom_element_temp->mGrid->Cells[0][0].Text=pom_element_temp->name;
+	pom_element_temp->mGrid->Cells[0][0].Font->Color=clBlack;
+	pom_element_temp->mGrid->MergeCells(0,0,1,0);//nutné provést znova MergeCells skrze správné zobrazení
+	pom_element_temp->mGrid->Update();
+	TscGPEdit *edit=pom_element_temp->mGrid->getEdit(0,0);//vytvoření ukazatele na edit, z důvodu vícenásobného přistupování
+	//nastavení designu editu
+	edit->Options->FrameFocusedColor=pom_element->mGrid->Cells[1][0].Background->Color;
+	edit->Options->FrameHotColor=pom_element->mGrid->Cells[1][0].Background->Color;
+	edit->Options->FrameNormalColor=pom_element->mGrid->Cells[1][0].Background->Color;
+	edit->Transparent=true;
+	edit->SetFocus();
+	edit->SelStart=pom_element->name.Length();//předání focusu a nastavení kurzoru na konec textu
+	edit=NULL; delete edit;
+}
+//---------------------------------------------------------------------------
+//smaže edit, který sloužil pro změnu názvu elementu a nový název zapíše do elementu, defaultně provede refresh, pokud není předáno parametrem jinak
+void TForm1::smaz_edit(bool refresh)
+{
+	Konec->SetFocus();//před smazáním komponenty je důležité odstranit fosus!
+	TscGPEdit *E=pom_element_temp->mGrid->getEdit(0,0);E->Free();E=NULL;delete E;//smazání
+	pom_element_temp->mGrid->Cells[0][0].Type=pom_element_temp->mGrid->DRAW;
+	pom_element_temp->mGrid->Cells[0][0].Text="<a>"+pom_element_temp->name+"</a>";//vytvoření linku, pro opětovnou možnost editace
+	pom_element_temp->mGrid->MergeCells(0,0,1,0);//nutné provést znova Merge
+	pom_element_temp=NULL; delete pom_element_temp;
+	index_kurzoru=0;
+	if(refresh)REFRESH();
+}
+//---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 {
 	if(funkcni_klavesa==0)
@@ -1854,6 +1902,8 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
+  if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
+		smaz_edit(false);//smaže edit a neprovede refresh
 	if(editace_textu)
 		Smaz_kurzor();
 	if(MOD==NAHLED)
@@ -1891,24 +1941,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));/*if(scGPComboBox_orientace->ItemIndex!=0)editovany_text=editovany_text/pom_temp->pohon->aRD;*/}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů
 								if(JID>=4&&JID<=10){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
-								if(JID==100)//změna názvu
-								{
-									//index_kurzoru=JID;
-									pom_element_temp=pom_element;
-									pom_element->mGrid->Cells[0][0].Type=pom_element->mGrid->EDIT;
-									pom_element->mGrid->Cells[0][0].Text=pom_element->name;
-									pom_element->mGrid->Cells[0][0].Font->Color=clBlack;
-									pom_element->mGrid->MergeCells(0,0,1,0);
-									pom_element->mGrid->Update();
-									TscGPEdit *edit=pom_element->mGrid->getEdit(0,0);//->SetFocus();
-									edit->Options->FrameFocusedColor=pom_element->mGrid->Cells[1][0].Background->Color;
-									edit->Options->FrameHotColor=pom_element->mGrid->Cells[1][0].Background->Color;
-									edit->Options->FrameNormalColor=pom_element->mGrid->Cells[1][0].Background->Color;
-									edit->Transparent=true;
-									edit->SetFocus();
-									edit->SelStart=pom_element->name.Length();
-									edit=NULL; delete edit;
-								}
+								if(JID==100)vytvor_edit();//změna názvu elementu
 						}
 						else
 						{
@@ -2090,11 +2123,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			}
 			if(MOD==NAHLED)
 			{
-				//--prozatim
-				//rotace dle umístění na ose Y
 				short rotace_symbolu=rotace_symbol(m.Rt90(d.trend(pom)),X,Y);
-				//if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu=180;}
-				//--
 				d.vykresli_element(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
 				minule_souradnice_kurzoru=TPoint(X,Y);
 				d.vykresli_element(Canvas,X,Y,"","",element_id,-1,rotace_symbolu);
@@ -3074,14 +3103,6 @@ void TForm1::ESC()
 	proces_pom=NULL;
 	kurzor(standard);
 	Akce=NIC;//musí být nad refresh
-	if(MOD==NAHLED)
-	{
-		TscGPEdit *E=pom_element_temp->mGrid->getEdit(0,0);E->Free();E=NULL;delete E;
-		pom_element_temp->mGrid->Cells[0][0].Type=pom_element_temp->mGrid->DRAW;
-		pom_element_temp->mGrid->Cells[0][0].Text=pom_element_temp->name;
-		pom_element_temp->mGrid->MergeCells(0,0,1,0);
-		pom_element_temp=NULL; delete pom_element_temp;
-	}
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -3260,22 +3281,23 @@ void TForm1::add_element (int X, int Y)
 {
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
-	short trend=m.Rt90(d.trend(pom));
-	short rotace_symbolu=rotace_symbol(trend,X,Y);
+	short trend=m.Rt90(d.trend(pom)); 						Memo(trend);
+	short rotace_symbolu=rotace_symbol(trend,X,Y);Memo(rotace_symbolu);
 	bool vkabine=el_vkabine(X,Y,element_id);
 
-	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - provizorní pro robota
+	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
 	double DoSkRB=0;
 	if(1<=element_id && element_id<=4)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
 		DoSkRB=d.DoSkRB*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
 	}                                       //netradičně v hlavičce je umístěna elementární osa pohonu!!!
-	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;//m.round((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0+DoSkRB);//vodorovný pohon
-	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;//m.round(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0+DoSkRB);//svislý pohon
-				//zvážit nahrazení makrem Rxy
+	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;
+	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;
 
-	//vložení elementu na dané souřadnice a do patřičného spojáku - pozor jedná se o chybu návrhu, nemělo by se vkládát do pom resp. ostrého spojáku objektů pro případ storna....
+
+
+	//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
 //	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
 //	{
 		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y));
@@ -3634,16 +3656,16 @@ void TForm1::aut_pozicovani(Cvektory::TElement *E, int X, int Y)
 short TForm1::rotace_symbol(short trend,int X, int Y)
 {
 	short rotace_symbolu=trend-90;
-
-	if(trend==90 || trend==270)//pohon vodorovně
+	switch(trend)
 	{
-		if(m.L2Py(F->pom_temp->elementy->Y)>Y)rotace_symbolu+=180;//if((ClientHeight-scGPPanel_statusbar->Height-scLabel_titulek->Height)/2.0>Y){rotace_symbolu+=180;}
+		//pohon vodorovně
+		case 90:	if(m.L2Py(F->pom_temp->elementy->Y)>Y)rotace_symbolu+=180;break;
+		case 270:	if(m.L2Py(F->pom_temp->elementy->Y)<Y)rotace_symbolu+=180;break;
+		//pohon svisle
+		case 180: if(m.L2Px(F->pom_temp->elementy->X)<X)rotace_symbolu+=180;break;
+		case 0: if(m.L2Px(F->pom_temp->elementy->X)>X)rotace_symbolu+=180; break;
 	}
-	else//pohon svisle
-	{
-		if(m.L2Px(F->pom_temp->elementy->X)<X)rotace_symbolu+=180;//if(F->scSplitView_LEFTTOOLBAR->Width+(F->ClientWidth-F->scSplitView_LEFTTOOLBAR->Width)/2.0<X)rotace_symbolu+=180;
-	}
-	return rotace_symbolu;
+	return m.Rt90(rotace_symbolu);
 }
 //---------------------------------------------------------------------------
 //designovaní tabulky pro pohon
@@ -3912,7 +3934,7 @@ void TForm1::design_tab_pohon(int index)
 		{
 			PmG->Cells[1][i].Font->Color=(TColor)RGB(128,128,128);
 			PmG->Cells[1][i].RightMargin=5;
-			PmG->Cells[1][i].Background->Color=m.clIntensive((TColor)RGB(128,128,128),115);
+			PmG->Cells[1][i].Background->Color=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 		}
 		PmG->Cells[0][i].Align=mGrid->RIGHT;
 		PmG->Cells[1][i].Align=mGrid->RIGHT;
@@ -4051,7 +4073,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 {
 	//definice barev
 	TColor clHeaderFont=clBlack;
-	TColor clBackgroundHidden=m.clIntensive((TColor)RGB(128,128,128),115);//105
+	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	TColor clFontRight = (TColor)RGB(43,87,154);
 	//identifikátor tabulky
@@ -8208,6 +8230,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
 	{
 		if(!nahled_ulozen)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů
+    if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
+		smaz_edit(false);//smaže edit a neprovede refresh
 		DrawGrid_knihovna->SetFocus();
 		Smaz_kurzor();
 		MOD=SCHEMA;//nutné před zoom
@@ -8670,8 +8694,15 @@ Memo3->Lines->Add("onchange");
 
 void __fastcall TForm1::Timer2Timer(TObject *Sender)
 {
- F->REFRESH();
- FormX->input_state=FormX->NOTHING;
+ if(pom_element_temp!=NULL&&index_kurzoru==9999)//pro smazání editu při editaci názvu elementu skrze tabulku
+ {
+	 smaz_edit();
+ }
+ else//pro posun refresh při změně tabulky elementů
+ {
+	 F->REFRESH();
+	 FormX->input_state=FormX->NOTHING;
+ }
  Timer2->Enabled=false;
 }
 //---------------------------------------------------------------------------
@@ -8892,4 +8923,11 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 	}
 }
 //---------------------------------------------------------------------------
-
+//urychlení vypsání do Mema
+void TForm1::Memo(AnsiString Text, bool clear)
+{
+	if(clear)Memo3->Clear();
+	Memo3->Visible=true;
+	Memo3->Lines->Add(Text);
+}
+//---------------------------------------------------------------------------
