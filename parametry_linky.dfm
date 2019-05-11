@@ -3180,7 +3180,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scPanel_takt: TscPanel
     Left = 14
-    Top = 83
+    Top = 79
     Width = 430
     Height = 194
     TabOrder = 21
@@ -3547,7 +3547,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Left = 450
     Top = 79
     Width = 430
-    Height = 193
+    Height = 194
     TabOrder = 23
     CustomImageIndex = -1
     DragForm = False
@@ -7244,8 +7244,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 5810
-    Top = 9054
+    Left = 5828
+    Top = 9084
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7270,8 +7270,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 5804
-    ExplicitTop = 9044
+    ExplicitLeft = 5819
+    ExplicitTop = 9069
   end
   object scGPSwitch: TscGPSwitch
     Left = 762

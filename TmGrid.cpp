@@ -1081,7 +1081,6 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
 	gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
-	gB->Options->FrameNormalColor=gB->Options->NormalColor;
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
 
 	//text
@@ -1146,28 +1145,21 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	//atributy
 	if(!VisibleComponents || MovingTable)Ch->Visible=false;else Ch->Visible=true;//při posunu tabulky se skryje, zatím se místo něj nic nevykresluje
 
-	//nastvavení velikosti checkboxu
-	//zde Rosta dolní zjištění velikost Ch viz tabule HW
-	//m.round((Cells[X][Y].TopBorder+Cells[X][Y].BottomBorder)/2.0);
+	//nastavení velikosti checkboxu - přesunuto do create
 
-	//pozice checkboxu v buňce
-	//zde Rosta pouze nastaví pozici Ch v buňce
+	//pozice checkboxu v buňce //upraveno - odstaveno nastavování velikosti Checkboxu v CENTER+MIDDLE, ostatní ponechány původní
 	switch(Cell.Align)
 	{
 		case aNO:		Ch->Left+=Left-preLeft;break;
 		case LEFT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;break;
-		case CENTER:Ch->Width=Ch->OptionsChecked->ShapeSize;/*Ch->OptionsChecked->ShapeSize=Ch->Checked->ShapeSize;*/Ch->Left=R.Left+Columns[X].Width/2-Ch->Width/2;break;
+		case CENTER:Ch->Left=R.Left+Columns[X].Width/2-Ch->Width/2;break;
 		case RIGHT:	Ch->Width=Columns[X].Width-2;Ch->Left=R.Left+1;Ch->BiDiMode=bdRightToLeft;break;
 	}
 	switch(Cell.Valign)
 	{
 		case aNO:		Ch->Top+=Top-preTop;break;
-		case TOP:		Ch->Top=R.Top+1;Ch->Height=Ch->OptionsChecked->ShapeSize;break;                               //toto tu původně byl
-		case MIDDLE:Ch->Top=R.Top+1;Ch->Height=Ch->OptionsChecked->ShapeSize;/*Ch->Width=Ch->Height;Ch->Height=Ch->Options->ShapeSize;Ch->Options->ShapeSize=Rows[Y].Height-2;*/
-		//doplnit /*Ch->OptionsChecked->ShapeSize=Ch->Checked->ShapeSize;*/
-		//toto nahrazuje -2 m.round((Cells[X][Y].TopBorder+Cells[X][Y].BottomBorder)/2.0);
-
-		break;
+		case TOP:		Ch->Top=R.Top+1;break;
+	 	case MIDDLE:Ch->Top=R.Top+m.round(Rows[Y].Height/2.0-Ch->Height/2.0);break;
 		case BOTTOM:Ch->Height=Ch->OptionsChecked->ShapeSize;Ch->Top=R.Top+Rows[Y].Height-Ch->Height;break;
 	}
 	Ch->Options->NormalColor=Cell.Background->Color;
@@ -1305,6 +1297,13 @@ TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
 		gB->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		gB->Name="mGrid_GlyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);
 
+    gB->Options->FrameNormalColorAlpha=255;
+    gB->Options->FrameFocusedColor=255;
+    gB->Options->FramePressedColor=255;
+	  gB->Options->FrameNormalColor=gB->Options->NormalColor;
+    gB->Options->FrameFocusedColor=gB->Options->NormalColor;
+    gB->Options->FramePressedColor=gB->Options->NormalColor;
+
 		//události
 		gB->OnClick=&getTagOnClick;
 		gB->OnEnter=&getTagOnEnter;
@@ -1348,6 +1347,10 @@ TscGPCheckBox *TmGrid::createCheck(unsigned long Col,unsigned long Row)
 		Ch->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		//Cell.Text=Ch->Tag; ShowMessage(Ch->Tag);
 		Ch->Name="mGrid_CHECK_"+AnsiString(ID)+"_"+AnsiString(Ch->Tag);
+    Ch->Options->ShapeSize=20;
+    Ch->OptionsChecked->ShapeSize=Ch->Options->ShapeSize;
+    Ch->Height=Ch->Options->ShapeSize;
+    Ch->Width=Ch->Options->ShapeSize;
 
 		//události
 		Ch->OnClick=&getTagOnClick;
