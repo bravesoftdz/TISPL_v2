@@ -27,7 +27,6 @@
 #include "kalibrace.h"
 #include "Z_rozliseni.h"
 #include "TmGrid.h"
-
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "RzPanel"
@@ -2310,6 +2309,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
 					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
 					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
+					//pokud bych odstavil výše uvedený timer takto toto zprovoznit setJobIDOnMouseMove(X,Y);
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -2343,7 +2343,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 			case MOVE:move_objekt(X,Y);break;//posun objektu
-			case MOVE_TABLE:Akce=NIC;kurzor(standard);/*REFRESH();*/break;//posun tabulky elementu
+			case MOVE_TABLE:Akce=NIC;kurzor(standard);REFRESH();break;//posun tabulky elementu  - REFRESH() byl 10.5.19 odkementován, nevím proč byl zakomentovaný, zposobilo nepřekreslení spojnice mezi tabulkou a elementem po uvolnění myši
 			case MOVE_ELEMENT:
 			{
 //				if (el_vkabine(X,Y,pom_element_temp->eID))//kontrola zda se snaží uživatel vložit element do kabiny nebo mimo ni
@@ -2526,33 +2526,39 @@ void TForm1::getJobID(int X, int Y)
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
 {                                                  //pom_element->mGrid->Cells[0][0].Font->Style=TFontStyles()<< fsBold; - nefunguje něco to přenastavuje jinak
-	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí buď tabulky, elementu či odkazu
+	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí elementu či tabulky
 	{
-		//if(pom_element->mGrid!=NULL && pom_temp->zobrazit_mGrid)pom_element->mGrid->HighlightTable((TColor)RGB(200,200,200),2,0);//TABULKA
-		//if(pom_element->mGrid!=NULL && 100<JID && JID<1000)pom_element->mGrid->HighlightLink(0,JID-100,0);//ODKAZ v TABULCE
 		if(JID==0 || JID==1){pom_element->stav=1;}//ELEMENT
+		pom_element->mGrid->Highlight=false;//tabulka zrušení highlightnutí
+
 	}
 	int puvJID=JID;//záloha původního JID
-	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element, možno odstranit, až se mGrid bude posílat do celkové bitmapy
+	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
 	getJobID(X,Y);//zjištění aktuálního JID
-	if(puvJID!=JID)
+	if(puvJID!=JID)//pokud došlo ke změně JID, jinak nemá smysl řešit
 	{
 		kurzor(standard);//umístít na začátek
+		if(JID==-1)//není již job ID
+		{
+			if(pom_element_puv!=NULL)pom_element_puv->mGrid->CheckLink(X,Y);//najistotu zrušení highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
+			if(puvJID>=4 && puvJID<=10)PmG->CheckLink(X,Y);//najistotu zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
+		}
 		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
 		if(JID==1){kurzor(edit_text);pom_element->stav=3;}//ELEMENT název
-		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0) || (puvJID==0 || JID==1) || (puvJID==1 || JID==0)){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
+		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
 		if(10<JID && JID<1000){REFRESH();}//hodnota kóty
-		if(JID==100){kurzor(edit_text);/*zde asi doplnit indikaci změny na edit*/}//název elementu v hlavičce tabulky
-		if(1000<=JID && JID<2000){kurzor(posun_ind);if(pom_element->mGrid!=NULL)pom_element->mGrid->HighlightTable(m.clIntensive(pom_element->mGrid->Border.Color,-50),2,0);}//indikace posunutí TABULKY
-		if(100<JID && JID<1000){kurzor(zmena_j);/*pom_element->mGrid->HighlightLink(0,JID-100,10);*/}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ
+		if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
+		if(JID==1000)pom_element->mGrid->CheckLink(X,Y);//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
+		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);}//indikace posunutí TABULKY, jeji highlignutí probíhá výše
+		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
 		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
 		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
 		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){REFRESH();kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
-		if(JID>=11&&JID<=99)kurzor(zmena_d_y);//interaktivní kóty
-		if(JID>=4&&JID<=10)kurzor(zmena_j);//pohonová tabulka
+		if(JID>=11 && JID<=99)kurzor(zmena_d_y);//interaktivní kóty elementů
+		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
@@ -3281,8 +3287,8 @@ void TForm1::add_element (int X, int Y)
 {
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
-	short trend=m.Rt90(d.trend(pom)); 						Memo(trend);
-	short rotace_symbolu=rotace_symbol(trend,X,Y);Memo(rotace_symbolu);
+	short trend=m.Rt90(d.trend(pom));
+	short rotace_symbolu=rotace_symbol(trend,X,Y);
 	bool vkabine=el_vkabine(X,Y,element_id);
 
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
@@ -3696,6 +3702,8 @@ void TForm1::design_tab_pohon(int index)
 			PmG->DefaultCell.isZero->Size=aFont->Size;
 			PmG->DefaultCell.isLink->Name=aFont->Name;
 			PmG->DefaultCell.isLink->Size=aFont->Size;
+			PmG->DefaultCell.isActiveLink->Name=aFont->Name;
+			PmG->DefaultCell.isActiveLink->Size=aFont->Size;
 			PmG->Note.Font->Name=aFont->Name;
 			PmG->AntiAliasing_text=true;
 			PmG->MovingTable=false;
@@ -4088,6 +4096,8 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	E->mGrid->DefaultCell.isZero->Size=aFont->Size;
 	E->mGrid->DefaultCell.isLink->Name=aFont->Name;
 	E->mGrid->DefaultCell.isLink->Size=aFont->Size;
+	E->mGrid->DefaultCell.isActiveLink->Name=aFont->Name;
+	E->mGrid->DefaultCell.isActiveLink->Size=aFont->Size;
 	E->mGrid->Note.Font->Name=aFont->Name;
 
 	//definice jednotek a šířek
@@ -4121,6 +4131,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	E->mGrid->Border.Width=2;
 	E->mGrid->Cells[0][0].Text="<a>"+E->name+"</a>";//nasazení linku
 	E->mGrid->Cells[0][0].isLink->Color=clHeaderFont;
+	E->mGrid->Cells[0][0].isActiveLink->Color=clHeaderFont;
 //	E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
 	E->mGrid->Cells[0][0].BottomBorder->Width=2;
 	//formátování buněk tabulky (vždy stejn=)

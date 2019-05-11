@@ -2,6 +2,7 @@
 #pragma hdrstop
 #include "TmGrid.h"
 #include "antialiasing.h"
+#include "vykresli.h"
 #include <Clipbrd.hpp>
 #include "gapoTT.h"
 #include "gapoV.h"
@@ -41,6 +42,7 @@ TmGrid::TmGrid(TForm *Owner)
 	defBorder.Width=1;
 	defBorder.Style=psSolid;
 	Border=defBorder;Border.Width=2;
+	Highlight=false;
 
 	////nastavení defalní BUŇKY
 	//vytvoří novou buňku (alokuje ji paměť)
@@ -79,6 +81,14 @@ TmGrid::TmGrid(TForm *Owner)
 	DefaultCell.isLink->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejně široké
 	DefaultCell.isLink->Pitch=System::Uitypes::TFontPitch::fpVariable;
 	DefaultCell.isLink->Name=DefaultCell.Font->Name;
+	//aktivní odkaz
+	DefaultCell.isActiveLink->Size=DefaultCell.isLink->Size;
+	DefaultCell.isActiveLink->Color=DefaultCell.isLink->Color;
+	DefaultCell.isActiveLink->Orientation=DefaultCell.isLink->Orientation;
+	DefaultCell.isActiveLink->Style=TFontStyles()<<fsBold;
+	DefaultCell.isActiveLink->Pitch=TFontPitch::fpVariable;//každé písmeno fontu stejně široké
+	DefaultCell.isActiveLink->Pitch=System::Uitypes::TFontPitch::fpVariable;
+	DefaultCell.isActiveLink->Name=DefaultCell.isLink->Name;
 	//pozice případného linku
 	DefaultCell.LinkCoordinateStart=TPoint(-1,-1);//kvůli uložení citelné oblasti pro link dané buňky
 	DefaultCell.LinkCoordinateEnd=TPoint(-1,-1);//kvůli uložení citelné oblasti pro link dané buňky
@@ -181,6 +191,7 @@ void TmGrid::Create()
 			Cells[X][Y].isNegativeNumber=new TFont();
 			Cells[X][Y].isZero=new TFont();
 			Cells[X][Y].isLink=new TFont();
+			Cells[X][Y].isActiveLink=new TFont();
 			Cells[X][Y].isEmpty=new TBrush();
 			CopyAreaCell(DefaultCell,Cells[X][Y],true);//kopie vlastností, bez orámování
 			////orámování buněk ukazatelem
@@ -203,14 +214,8 @@ void TmGrid::Create()
 //přetížená metoda - vytvoří tabulku s předepsaným počtem sloupců a řádků
 void TmGrid::Create(unsigned long ColCount,unsigned long RowCount)
 {
-	rcc(ColCount,RowCount);//pouze obejití lokální proměnné, v c++ je na to nějaké klíčové slovo, ale nevzpomenu si
+	TmGrid::ColCount=ColCount;TmGrid::RowCount=RowCount;//předání do globální proměnné
 	Create();
-}
-//---------------------------------------------------------------------------
-//pouze obejití lokální proměnné, v c++ je na to nějaké klíčové slovo, ale nevzpomenu si
-void TmGrid::rcc(unsigned long cc,unsigned long rc)
-{
-	ColCount=cc;RowCount=rc;
 }
 //---------------------------------------------------------------------------
 //patřičně prolinkuje orámování, že sousední orámování má ukazatel na totožný objekt, vzor orámvání získá dle refCell
@@ -255,6 +260,7 @@ void TmGrid::CreateCell(TCells &NewCell)
 	NewCell.isNegativeNumber=new TFont();
 	NewCell.isZero=new TFont();
 	NewCell.isLink=new TFont();
+	NewCell.isActiveLink=new TFont();
 	NewCell.Background=new TBrush();
 	NewCell.isEmpty=new TBrush();
 	NewCell.TopBorder=new TBorder;
@@ -314,10 +320,7 @@ void TmGrid::MouseMove(int X, int Y)
 {
 	////předání do globálních proměnných pro případné použití
 	Col=GetIdxColumn(X,Y);Row=GetIdxRow(X,Y);
-
-	//nastaví kurzor, pokud se v daném místě nachází odkaz - musí být mimo if(Col>-1 && Row>-1)
-	CheckLink(X,Y);//pouze kvůli změně kurzou při přejetí myší, možná zbytečný luxus
-
+	TmGrid::X=X;TmGrid::Y=Y;//předání do globální proměnné
 	//zobrazení hintu na DRAW
 	Timer->Enabled=false;//ruší případné čekání na zobrazení Hintu
 	if(Col>-1 && Row>-1)
@@ -349,7 +352,7 @@ void TmGrid::MouseMove(int X, int Y)
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::OnMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
-	 //v konstruktoru odstaveno  propojení Form->OnMouseMove=&OnMouseMove;, bralo poslední tabulku
+	 //v konstruktoru odstaveno  propojení Form->OnMouseMove=&OnMouseMove;, bralo pouze poslední tabulku
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení celé tabulky
@@ -387,6 +390,7 @@ void TmGrid::Show(TCanvas *Canvas)
 			Draw(bmp_in->Canvas);
 			DrawNote(bmp_in->Canvas);
 			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+//tady udělat akcelerátor			bmp_out->SaveToFile("test.bmp");
 			Canvas->Draw(Left,Top,bmp_out);
 			if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru
 			delete (bmp_out);delete (bmp_in);//velice nutné
@@ -395,6 +399,8 @@ void TmGrid::Show(TCanvas *Canvas)
 		preTop=Top;preLeft=Left;
 	}
 
+	////HIGHLIGHT TABULKY - musí být tady, protože je mimo vykreslovanou oblast tabulky
+	if(Highlight)HighlightTable(Canvas,Border.Color,Border.Width,2);
 }
 //---------------------------------------------------------------------------
 //zajistí vyvolání překreslení celé tabulky
@@ -587,7 +593,8 @@ void TmGrid::DrawNote(TCanvas *C)
 		short Zoom_b=1; if(AntiAliasing_text)Zoom_b=3;
 		short margin_left=Note.margin_left*Zoom_b,margin_right=Note.margin_right*Zoom_b,margin_bootom=Note.margin_bootom*Zoom_b,margin_top=Note.margin_top*Zoom_b;
 		C->Font=Note.Font;C->Font->Size*=Zoom_b;
-		TFont *FontLink=new TFont();FontLink->Name=Note.Font->Name;FontLink->Size=Note.Font->Size;FontLink->Color=(TColor)RGB(0,120,215);FontLink->Style = TFontStyles()<< fsUnderline;
+		TFont *FontLink=new TFont();FontLink->Name=Note.Font->Name;FontLink->Size=Note.Font->Size;FontLink->Color=DefaultCell.isLink->Color;FontLink->Style = TFontStyles()<<fsUnderline;
+		TFont *FontActiveLink=new TFont();FontActiveLink->Name=Note.Font->Name;FontActiveLink->Size=Note.Font->Size;FontActiveLink->Color=FontLink->Color;FontActiveLink->Style = TFontStyles()<<fsBold<<fsUnderline;
 		int W=(Width-leftOffset-rightOffset-margin_left-margin_right)*Zoom_b;
 		int Wt=C->TextWidth(Note.Text);
 		if(W<Wt)//pokud je text poznámky delší, řeší ještě zalamování textu
@@ -595,21 +602,21 @@ void TmGrid::DrawNote(TCanvas *C)
 			int L=Note.Text.Length();                                   //zajistí odřádkování po poslední mezeře na daném řádku
 			AnsiString T=Note.Text.SubString(1,floor(W/(Wt/(L*1.0)))-1);T=T.SubString(1,ms.lastPos(T," ")-1);
 			//C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,T);
-			TRect R_temp=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,T,Note.Font,FontLink);
+			TRect R_temp=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,T,Note.Font,FontLink,FontActiveLink);
 			if(R_temp!=TRect(-1,-1,-1,-1))Note.LinkArea=R_temp;
 			AnsiString T1=Note.Text.SubString(T.Length()+1,L).TrimLeft();
 			//C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+C->TextHeight(T),T1);
-			R_temp=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+C->TextHeight(T),T1,Note.Font,FontLink);
+			R_temp=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top+C->TextHeight(T),T1,Note.Font,FontLink,FontActiveLink);
 			if(R_temp!=TRect(-1,-1,-1,-1))Note.LinkArea=R_temp;
 			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+C->TextHeight(T)+C->TextHeight(T1)+margin_bootom);
 		}                                                      //zpětná korekce, takže +
 		else//jednořádkový text
 		{
 			//C->TextOutW(leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,Note.Text);
-			Note.LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,Note.Text,Note.Font,FontLink);
+			Note.LinkArea=DrawTextLink(C,leftOffset+margin_left,(Height+Border.Width)*Zoom_b+margin_top,Note.Text,Note.Font,FontLink,FontActiveLink);
 			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+C->TextHeight(Note.Text)+margin_bootom);
 		}                                                      //zpětná korekce, takže +
-		FontLink=NULL;delete FontLink;
+		FontLink=NULL;delete FontLink;FontActiveLink=NULL;delete FontActiveLink;
 	}
 	else
 	{
@@ -654,28 +661,51 @@ void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
 }
 //---------------------------------------------------------------------------
 //vykreslí text s odkazem, odkaz aktivní modrou, vrací zpět oblast, kde se nachazí odkaz
-TRect TmGrid::DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiString Text,TFont *FontText,TFont *FontLink)
+TRect TmGrid::DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiString Text,TFont *FontText,TFont *FontLink,TFont *FontActiveLink)
 {
 	TRect RET;
 	short Zoom=1;if(AntiAliasing_text)Zoom=3;
 	unsigned int Pos=Text.Pos("<a>");//pozice html tagu
 	if(Pos>0)//parsování HTML
 	{
+//		AnsiString T1=ms.TrimRightFrom(Text,"<a>");
+//		AnsiString Link=ms.EP(Text,"<a>","</a>");
+//		AnsiString T2=ms.TrimLeftFromText(Text,"</a>");
+//		C->Font=FontText;
+//		C->Font->Size*=Zoom;
+//		C->TextOut(left,top,T1);
+//		short w=C->TextWidth(T1);
+//		C->Font=FontLink;
+//		C->Font->Size*=Zoom;
+//		C->TextOut(left+w,top,Link);
+//		RET.left=Left+left/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
+//		RET.top=Top+top/Zoom;//kvůli citelné oblasti pro link dané buňky
+//		RET.bottom=Top+top/Zoom+C->TextHeight(Link)/Zoom;//kvůli citelné oblasti pro link dané buňky
+//		w+=C->TextWidth(Link);
+//		RET.right=Left+left/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
+//		C->Font=FontText;
+//		C->Font->Size*=Zoom;
+//		C->TextOut(left+w,top,T2);
 		AnsiString T1=ms.TrimRightFrom(Text,"<a>");
 		AnsiString Link=ms.EP(Text,"<a>","</a>");
 		AnsiString T2=ms.TrimLeftFromText(Text,"</a>");
+		//text před odkazem
 		C->Font=FontText;
 		C->Font->Size*=Zoom;
 		C->TextOut(left,top,T1);
-		short w=C->TextWidth(T1);
+		//odkaz
 		C->Font=FontLink;
 		C->Font->Size*=Zoom;
+		short w=C->TextWidth(T1);
+		RET.left=m.round(Left+left/Zoom+w/Zoom);//kvůli citelné oblasti pro link dané buňky
+		RET.top=m.round(Top+top/Zoom);//kvůli citelné oblasti pro link dané buňky
+		RET.bottom=m.round(Top+top/Zoom+C->TextHeight(Link)/Zoom);//kvůli citelné oblasti pro link dané buňky
+		RET.right=m.round(Left+left/Zoom+(w+C->TextWidth(Link))/Zoom);//kvůli citelné oblasti pro link dané buňky
+		if(RET.PtInRect(TPoint(X,Y))){C->Font=FontActiveLink;C->Font->Size*=Zoom;}//aktivní odkaz (je přes něj myš)
+//Form2->Memo1->Lines->Add(AnsiString(X)+";"+AnsiString(Y));
 		C->TextOut(left+w,top,Link);
-		RET.left=Left+left/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
-		RET.top=Top+top/Zoom;//kvůli citelné oblasti pro link dané buňky
-		RET.bottom=Top+top/Zoom+C->TextHeight(Link)/Zoom;//kvůli citelné oblasti pro link dané buňky
+		//text za odkazem
 		w+=C->TextWidth(Link);
-		RET.right=Left+left/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
 		C->Font=FontText;
 		C->Font->Size*=Zoom;
 		C->TextOut(left+w,top,T2);
@@ -773,7 +803,7 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 				case MIDDLE:T=m.round((Rt.Top+Rt.Bottom)/2.0-H/2.0);break;
 				case BOTTOM:T=m.round(Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2.0*Zoom);break;
 			}
-			TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
+			TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink,Cell.isActiveLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
 			Cell.LinkCoordinateStart.x=Rect.left;Cell.LinkCoordinateStart.y=Rect.top;Cell.LinkCoordinateEnd.x=Rect.right;Cell.LinkCoordinateEnd.y=Rect.bottom;
 			/*unsigned int Pos=Cell.Text.Pos("<a>");//pozice html tagu  - nahrazeno výše uvedeným zatím nechávám dokud nebude otestováno
 			if(Pos>0)//parsování HTML
@@ -1955,6 +1985,7 @@ void TmGrid::CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent)
 	*CopyCell.isNegativeNumber=*RefCell.isNegativeNumber;
 	*CopyCell.isZero=*RefCell.isZero;
 	*CopyCell.isLink=*RefCell.isLink;
+	*CopyCell.isActiveLink=*RefCell.isActiveLink;
 	CopyCell.TextPositon.X=RefCell.TextPositon.X;
 	CopyCell.TextPositon.Y=RefCell.TextPositon.Y;
 	CopyCell.Text=RefCell.Text;
@@ -2444,48 +2475,62 @@ void TmGrid::selRow(long Row,TColor Color,bool newSel)
 }
 //---------------------------------------------------------------------------
 //zajistí zvýraznění orámování tabulky
-void TmGrid::HighlightTable(TColor Color,unsigned short Size,unsigned short Offset,TPenMode PenMode)
+void TmGrid::HighlightTable(TCanvas *Canvas,TColor Color,unsigned short Size,unsigned short Offset,TPenMode PenMode)
 {
-	Form->Canvas->Pen->Width=Size;
-	Form->Canvas->Pen->Color=Color;
-	Form->Canvas->Brush->Style=bsClear;
-	Form->Canvas->Pen->Mode=PenMode;
-	short o=0;if(Size>1)o=1;//pouze grafické odsazení
-	Form->Canvas->Rectangle(Left-Offset,Top-Offset,Left+Width+Offset+o,Top+Height+Offset+o);
+	Cvykresli d; d.set_pen(Canvas,Color,Size,PS_ENDCAP_SQUARE);
+	Canvas->Brush->Style=bsClear;
+	Canvas->Rectangle(Left-Offset,Top-Offset,Left+Width+Offset,Top+Height+Offset);
 }
 //---------------------------------------------------------------------------
 //zajistí zvýraznění orámování tabulky, pokud se do ni vstoupí myší
-void TmGrid::HighlightTableOnMouse(int X,int Y)
+void TmGrid::HighlightTableOnMouse(int X,int Y,TCanvas *Canvas)
 {
-	if(CheckPTinTable(X,Y))HighlightTable();
+	if(CheckPTinTable(X,Y))
+	{
+		if(Canvas==NULL)HighlightTable(Form->Canvas);
+		else HighlightTable(Canvas);
+	}
 }
 //---------------------------------------------------------------------------
 //dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) zjistí, zda jsou souřadnice ve vnitř tabulky
 bool TmGrid::CheckPTinTable(int X,int Y)
-{     Form2->Memo1->Lines->Add(AnsiString(X)+" "+AnsiString(Y)+" "+AnsiString(Left)+" "+AnsiString(Width)+" "+AnsiString(Top)+" "+AnsiString(Height));
+{
 	return Left<=X && X<=Left+Width && Y>Top && Y<Top+Height;
 }
 //---------------------------------------------------------------------------
 //dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí kladné číslo sloupce a řádku pokud se na daném místě nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
-TPoint TmGrid::CheckLink(int X,int Y)
+TPoint TmGrid::CheckLink(int X,int Y,bool invalidate)
 {
+	TmGrid::X=X;TmGrid::Y=Y;//předání do globální proměnné
 	if(Note.LinkArea.PtInRect(TPoint(X,Y)) && Note.LinkArea!=TRect(-1,-1,-1,-1))//odkaz v poznámce
 	{
-		Form->Cursor=crHandPoint;
+		if(invalidate)
+		{
+			Form->Cursor=crHandPoint;
+			Refresh();
+    }
 		return TPoint(-2,-2);
 	}
 	else//většina odkazů v tabulkách
 	{
-		long IndRow=GetIdxRow(X,Y);
-		long IndCol=GetIdxColumn(X,Y);
-		if(IndRow>=0 && IndCol>=0 && CheckLink(X,Y,IndCol,IndRow))
+		Row=GetIdxRow(X,Y);
+		Col=GetIdxColumn(X,Y);
+		if(Row>=0 && Col>=0 && CheckLink(X,Y,Col,Row))
 		{
-			Form->Cursor=crHandPoint;
-			return TPoint(IndCol,IndRow);//odkaz na daných souřadnicích nalezen
+			if(invalidate)
+			{
+				Form->Cursor=crHandPoint;
+				Refresh();
+			}
+			return TPoint(Col,Row);//odkaz na daných souřadnicích nalezen
 		}
 		else
 		{
-			Form->Cursor=crDefault;
+			if(invalidate)
+			{
+				Form->Cursor=crDefault;
+				Refresh();
+			}
 			return TPoint(-1,-1);
 		}
 	}
@@ -2498,16 +2543,6 @@ bool TmGrid::CheckLink(int X,int Y,unsigned long Col,unsigned long Row)
 	&& Cells[Col][Row].LinkCoordinateStart.y<=Y && Y<=Cells[Col][Row].LinkCoordinateEnd.y)
 	return true;
 	else return false;
-}
-//---------------------------------------------------------------------------
-//zajistí přebarvení odkazu v buňce danou barvou
-void TmGrid::HighlightLink(unsigned long Col,unsigned long Row,short Intensive)
-{
-	Form->Canvas->Font=Cells[Col][Row].isLink;
-	Form->Canvas->Font->Color=m.clIntensive(Cells[Col][Row].Font->Color,Intensive);
-	Form->Canvas->Brush->Style=bsClear;
-	Form->Canvas->Brush->Color=clWhite;
-	Form->Canvas->TextOutW(Cells[Col][Row].LinkCoordinateStart.x,Cells[Col][Row].LinkCoordinateStart.y,ms.EP(Cells[Col][Row].Text,"<a>","</a>"));
 }
 //---------------------------------------------------------------------------
 //podle stavu state buď zobrazí nebo skryje všechny komponenty

@@ -526,11 +526,12 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
-	 Memo1->Lines->Add(AnsiString(X)+" "+AnsiString(Y));
+	 //Memo1->Lines->Add(AnsiString(X)+" "+AnsiString(Y));
 	 ELEMENTY->mG->MouseMove(X,Y);//pro Hint a kurzor odkazu, mousemove daného formu sice možno odchytávát pøímo v mGridu, ale toto nutnost pro rozlišení tabulek
+	 ELEMENTY->mG->CheckLink(X,Y,true);
 	 //if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))Screen->Cursor=crHandPoint;else Screen->Cursor=crDefault; //funkcionalita presunuta pøímo do mGridu
 	 //ELEMENTY->mG->CheckLink(X,Y);//nyní si pøi volání automaticky nastavuje Cursor=crHandPoint;, možno zmìnit naším kurzorem
-
+   //FormPaint(this);
 	 //	if(aktX==-50000 && aktY==-50000)
 //	{
 //		Cvykresli d;

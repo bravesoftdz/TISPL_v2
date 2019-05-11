@@ -2338,7 +2338,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 
 		//palce, pokud je zadaná rozteč tak se vykreslí
 		if(R>0)
-		{                     F->Memo3->Lines->Add(Poffset);
+		{                    // F->Memo3->Lines->Add(Poffset);
 													 //*O->pozice - používát jen v animaci, kvůli tomu, aby byl řetěz dostatečně dlouhý
 			double startR=-(Rz)+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu, DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu
 			if(animace)startR=-(Rz)*20/**ceil(O->pozice)*/+KR+Poffset;//start je Rz=M+DV (tj. minulý vozík teoreticky mimo objekt, aby se vykreslily i palce před prvním vozíkem v objekt) a K je kalibrace posunutí řetězu, kalibrace řetězu vůči vozíku např. DV/2.0 - střed, 0 - začátek, či jiné v m vůči počátku jigu DV - konec, Poffset - poziční poloha, výchozí poloha prvního vozíku/pozice v objektu (a vůči tomuto objektu),může sloužit na animaci či návaznost v případě layoutu

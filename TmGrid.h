@@ -62,6 +62,7 @@ class TmGrid
 		TFont *isNegativeNumber;//podmíněné formátování, pokud je zaporné číslo
 		TFont *isZero;//podmíněné formátování, pokud se jedná o nulové číslo
 		TFont *isLink;//podmíněné formátování v případě výskytu tagu <a> resp </a>
+		TFont *isActiveLink;//podmíněné formátování v případě aktivního výskytu tagu <a> resp </a>, přes který se přejelo myší
 		//--
 		TPoint LinkCoordinateStart;//kvůli uložení citelné oblasti pro link dané buňky
 		TPoint LinkCoordinateEnd;//kvůli uložení citelné oblasti pro link dané buňky
@@ -106,8 +107,8 @@ class TmGrid
 	void CopyCells2Clipboard(unsigned long ColCell_1,unsigned long RowCell_1,unsigned long ColCell_2,unsigned long RowCell_2,UnicodeString Separator="\t");//zkopíruje danou oblast do schránky, buňky oddělí separátorem
 	void CopyAreaCell(TCells &RefCell,TCells &CopyCell,bool copyComponent=false);//zkopíruje obsah, formát (bez orámování) z buňky na buňku (bez ukazatelového propojení)
 	void CopyBordesCell(TCells &RefCell,TCells &CopyCell);//zkopíruje orámování z buňky na buňku (bez ukazatelového propojení)
-	void HighlightTable(TColor Color=(TColor)RGB(43,87,154),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznění orámování tabulky
-	void HighlightTableOnMouse(int X,int Y);//zajistí zvýraznění orámování tabulky, pokud se do ni vstoupí myší
+	void HighlightTable(TCanvas *Canvas,TColor Color=(TColor)RGB(0,120,215),unsigned short Size=2,unsigned short Offset=0,TPenMode PenMode=pmCopy);//zajistí zvýraznění orámování tabulky
+	void HighlightTableOnMouse(int X,int Y,TCanvas *Canvas=NULL);//zajistí zvýraznění orámování tabulky, pokud se do ni vstoupí myší
 	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) řádků dle čísla řádku Row
 	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) řádků, přes který se přejíždí myší
 	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1,bool Refresh=true);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění vnějšího orámování buňky
@@ -115,7 +116,6 @@ class TmGrid
 	void HighlightEdit(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
 	void HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznění trvalé (jedná se spíše o nastavení) dané komponenty
 	void HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
-	void HighlightLink(unsigned long Col,unsigned long Row,short Intensive=-50);//zajistí přebarvení odkazu v buňce odstínem barvy odkazu
 	void unHighlightAll();//odzvýrazni všechna zvýraznění
 	void SetVisibleComponents(bool state);//podle stavu state buď zobrazí nebo skryje všechny komponenty
 	void SetVisibleComponent(unsigned long Col,unsigned long Row,bool state);//podle stavu state buď zobrazí nebo skryje komponentu neurčitého typu v dané buňce
@@ -139,7 +139,7 @@ class TmGrid
 	long GetIdxRow(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí řádek
 	long GetIdxColumn(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí sloupec
 	bool CheckPTinTable(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) zjistí, zda jsou souřadnice ve vnitř tabulky
-	TPoint CheckLink(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí kladné číslo sloupce a řádku pokud se na daném místě nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
+	TPoint CheckLink(int X,int Y,bool invalidate=false);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí kladné číslo sloupce a řádku pokud se na daném místě nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí zda se na dané buňce a souřadnicích nachází odkaz
 	void ShowNote(UnicodeString Text,TColor Color=clRed,short FontSize=11);//zajistí přímé vykreslení poznámky bez refreshe popř. smázání doszením prázdných uvozovek, nově poznámka má také možnost nastavování margin pomocí Note.margin_left,margin_right,margin_bootom,margin_top;
 
@@ -168,10 +168,12 @@ class TmGrid
 	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
 	TColor clHighlight;//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent
 	int SleepHint;//zpoždění zobrazení Hintu v ms
+  bool Highlight;
 
  //protected: - nefugovalo, jak jsme si představoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo třídu, nelze hodnotami nic nastavovat
 	long Row,Col;//aktuální řádek a sloupec, jen zobrazovat mimo třídu, nelze hodnotami nic nastavovat
+	int X,Y;//aktuální hodnoty souřadnic myši, jen zobrazovat mimo třídu, nelze hodnotami nic nastavovat
 
  private:
 	TForm *Form;
@@ -195,7 +197,7 @@ class TmGrid
 	void Draw(TCanvas *C);//zajistí vykreslení celé tabulky včetně gridu a exBUTTONu a poznámky pod čarou
 	void DrawGrid(TCanvas *C);//zajistí vykreslení jen gridu
 	void DrawNote(TCanvas *C);//zajistí vykreslení poznámky
-	TRect DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiString Text,TFont *FontText,TFont *FontLink);//vykreslí text s odkazem, odkaz aktivní modrou, vrací zpět oblast, kde se nachazí odkaz
+	TRect DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiString Text,TFont *FontText,TFont *FontLink,TFont *FontActiveLink);//vykreslí text s odkazem, odkaz aktivní modrou, vrací zpět oblast, kde se nachazí odkaz
 	void DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R);//zajistí vykreslení orámování jen jedné buňky
 	void SetColRow();//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby
 	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na požadované parametry
@@ -208,7 +210,6 @@ class TmGrid
 	void SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na combo, pomocná metoda objednu výše uvedené
 	void SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na check, pomocná metoda objednu výše uvedené
 	void SetRadio(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na radio, pomocná metoda objednu výše uvedené
-	void rcc(unsigned long cc,unsigned long rc);//pouze obejití lokální proměnné, v c++ je na to nějaké klíčové slovo, ale nevzpomenu si
 	void CreateLinkBorder(unsigned long X,unsigned long Y,TCells &refCell);//patřičně prolinkuje orámování, že sousední orámování má ukazatel na totožný objekt, vzor orámvání získá dle refCell
 	void CreateLinkBorder2(unsigned long X,unsigned long Y,TCells &refCell);//patřičně prolinkuje orámování, že sousední orámování má ukazatel na totožný objekt, vzor orámvání získá dle refCell
 	void CreateCell(TCells &NewCell);//vytvoří novou buňku (alokuje ji paměť)
