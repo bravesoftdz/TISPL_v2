@@ -48,7 +48,7 @@ class Cvektory
 			double X, Y;//umístění v logických (metrických) souřadnicích
 			double Xt,Yt;//umístění tabulky, resp. mGridu v logických (metrických) souřadnicích
 			short rotace_symbolu;//v jaké orientaci je element na obrazovce vykreslen 0,90,180,270
-			double rotace_jigu;//úhel rotace jigu vůči podvozku
+			double rotace_jig;//úhel o který element orotuje jig vzhledem k jeho aktuální rotaci jigu vůči podvozku, např. rotace_jig=90°, aktuální rotace jigu 90°, výsledek 180°
 			short stav;
 
 			double LO1;
