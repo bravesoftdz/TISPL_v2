@@ -164,7 +164,6 @@ class TmGrid
 	bool exBUTTONLockPosition;//uzamkne pozici exButtonu (použito při updatu)
 	short Decimal;//implicitní počet desetinných míst u numericeditů
 	bool IntegerDecimalNull;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do počtu decimál i u celých čísel
-	bool MovingTable;//pokud je nastaveno na true, komponenty se změní na typ DRAW tj. tak, aby došlo k posunu dané buňky
 	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
 	TColor clHighlight;//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent
 	int SleepHint;//zpoždění zobrazení Hintu v ms
@@ -237,6 +236,8 @@ class TmGrid
 	long preColInd;//předchozí sloupec na kterém byla myš
 	bool deleteMark;//detekce že dochází k odstraňování mGridu
 	UnicodeString bufText;//ukládá výchozí hodnotu editboxu před psaním, pro případ stisku ESC
+	bool updating;
+	Graphics::TBitmap *bmp_out;
 };
 //---------------------------------------------------------------------------
 extern TmGrid *mGrid;//ukazatel na celou knihovnu

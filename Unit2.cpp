@@ -32,7 +32,6 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->ID=0;
 		E->mG->Left=100;E->mG->Top=50;//hodné jako druhé (popø. by bylo nutné pøekreslovat)
 		E->mG->AntiAliasing_text=true;
-		E->mG->MovingTable=false;
 		E->mG->Border.Width=2;
 		E->mG->exBUTTONVisible=true;
 		E->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;

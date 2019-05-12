@@ -663,6 +663,7 @@ public:		// User declarations
 	int size_grid;
 	short prichytavat_k_mrizce;
 	bool zobrazit_barvy_casovych_rezerv;
+	bool zobrazit_meritko;
 	bool antialiasing;
 	double Zoom_predchozi_AA;//při antialiasingu
 	bool nahled_objektu;//uchovává stav, zda se jedná o náhled objekt či regulerní zobrazení ve form1

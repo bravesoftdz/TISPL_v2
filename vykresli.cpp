@@ -3254,44 +3254,38 @@ void Cvykresli::vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popise
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_mGridy(TCanvas *canv)
 {
-	if(F->Timer_animace->Enabled==false)//timer animace
+	if(F->Timer_animace->Enabled==false)//při timeru aplikace se nezobrazí
 	{
-		//tabulky elementů
+		////tabulky elementů
 		if(F->pom_temp->elementy!=NULL)
 		{
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-				if(F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+				if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
-					E->mGrid->VisibleComponents=true;//stačí volat toto
+					E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 					E->mGrid->Left=m.L2Px(E->Xt);
 					E->mGrid->Top=m.L2Py(E->Yt);
-					if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)E->mGrid->MovingTable=true;
-					else E->mGrid->MovingTable=false;
 					E->mGrid->Show(canv);
 				}
 				else//pokud ne, je třeba skrýt komponenty
 				{
-					E->mGrid->VisibleComponents=false;
-					if(F->element_id==-1)E->mGrid->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
-					else E->mGrid->Update();//nahrazeno za E->mGrid->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
+					E->mGrid->SetVisibleComponents(false);
 				}
 				E=E->dalsi;
 			}
 			E=NULL;delete E;
 		}
 
-		//tabulka pohonu
+		////tabulka pohonu
 		if(F->PmG!=NULL)
 		{
-			if(F->pom_temp->zobrazit_mGrid)//pokud je mGrid zobrazen
+			if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 			{
-				F->PmG->VisibleComponents=true;//stačí volat toto
+				F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 				F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
 				F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
-				if(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE)F->PmG->MovingTable=true;
-				else F->PmG->MovingTable=false;
 				F->PmG->Show(canv);
 			}
 			else//pokud ne, je třeba skrýt komponenty

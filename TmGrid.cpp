@@ -29,7 +29,6 @@ TmGrid::TmGrid(TForm *Owner)
 	Row=0;Col=0;//aktuální řádek a sloupec
 	AntiAliasing_grid=false;
 	AntiAliasing_text=true;
-	MovingTable=false;
 	VisibleComponents=true;
 	SetColumnAutoFitColIdx=-3;//nastaví šířku buněk daného sloupce dle parametru ColIdx, -3 = nepřizpůsobuje se velikost a užije se defaultColWidth,-2 všechny sloupce stejně podle nejširšího textu, -1 přizpůsobuje se každý sloupec individuálně, 0 a více jen konkrétní sloupec uvedený pomoc ColIdx
 	preRowInd=-1;preColInd=-1;
@@ -161,6 +160,10 @@ TmGrid::TmGrid(TForm *Owner)
 	Note.Font->Color=clRed;
 	Note.NoteArea=TRect(-1,-1,-1,-1);
 	Note.margin_left=Note.margin_right=Note.margin_bootom=Note.margin_top=0;
+
+
+	updating=true;
+	bmp_out=NULL;
 }
 //---------------------------------------------------------------------------
 //destruktor, probíhá při ukončování programu, tj. zvážit zda není pozdě
@@ -381,19 +384,25 @@ void TmGrid::Show(TCanvas *Canvas)
 		}
 		else
 		{
-			Cantialising a;
-			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-			bmp_in->Width=Width*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
-			bmp_in->Height=Height*3+(Note.Text!="")*(Note.NoteArea.Height());//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu  + příčítám výšku poznámky, je-li k dispozici
-			//bmp_in->Canvas->Brush->Color=clRed;
-			//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
-			Draw(bmp_in->Canvas);
-			DrawNote(bmp_in->Canvas);
-			Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-//tady udělat akcelerátor			bmp_out->SaveToFile("test.bmp");
-			Canvas->Draw(Left,Top,bmp_out);
+			////vykreslení pozadí, komponent a textu buněk
+			//if(updating || bmp_out==NULL)
+			{
+				Cantialising a;
+				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
+				bmp_in->Width=Width*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+				bmp_in->Height=Height*3+(Note.Text!="")*(Note.NoteArea.Height());//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu  + příčítám výšku poznámky, je-li k dispozici
+				//bmp_in->Canvas->Brush->Color=clRed;
+				//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
+				Draw(bmp_in->Canvas);
+				DrawNote(bmp_in->Canvas);
+				bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				Canvas->Draw(Left,Top,bmp_out);
+				delete (bmp_in);//velice nutné
+				delete (bmp_out);
+				updating=false;
+			}
+			////vykreslení gridu
 			if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru
-			delete (bmp_out);delete (bmp_in);//velice nutné
 		}
 		//zaloha úvodní pozice
 		preTop=Top;preLeft=Left;
@@ -407,6 +416,7 @@ void TmGrid::Show(TCanvas *Canvas)
 void TmGrid::Refresh()
 {
 	 //Form->Repaint();// s přeblikem, ale lépe používat přímo ve v daném formuláři FormPaint(this), což zajistí překreslení bez probliku
+	 updating=true;
 	 Show();
 }
 //---------------------------------------------------------------------------
@@ -500,7 +510,7 @@ void TmGrid::Draw(TCanvas *C)
 
 	////exBUTTON - pozice - ještě odladit border
 	Width=getWidth();
-	if(VisibleComponents && !MovingTable && exBUTTONVisible)
+	if(VisibleComponents && exBUTTONVisible)
 	{
 		if(!exBUTTONLockPosition)
 		{
@@ -805,28 +815,6 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 			}
 			TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink,Cell.isActiveLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
 			Cell.LinkCoordinateStart.x=Rect.left;Cell.LinkCoordinateStart.y=Rect.top;Cell.LinkCoordinateEnd.x=Rect.right;Cell.LinkCoordinateEnd.y=Rect.bottom;
-			/*unsigned int Pos=Cell.Text.Pos("<a>");//pozice html tagu  - nahrazeno výše uvedeným zatím nechávám dokud nebude otestováno
-			if(Pos>0)//parsování HTML
-			{
-				AnsiString T1=ms.TrimRightFrom(Cell.Text,"<a>");
-				AnsiString Link=ms.EP(Cell.Text,"<a>","</a>");
-				AnsiString T2=ms.TrimLeftFromText(Cell.Text,"</a>");
-				Canv->TextOut(L,T,T1);
-				short w=Canv->TextWidth(T1);
-				Canv->Font=Cell.isLink;
-				Canv->Font->Size*=Zoom;
-				Canv->TextOut(L+w,T,Link);
-				Cell.LinkCoordinateStart.x=Left+L/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
-				Cell.LinkCoordinateStart.y=Top+T/Zoom;//kvůli citelné oblasti pro link dané buňky
-				Cell.LinkCoordinateEnd.y=Top+T/Zoom+Canv->TextHeight(Link)/Zoom;//kvůli citelné oblasti pro link dané buňky
-				w+=Canv->TextWidth(Link);
-				Cell.LinkCoordinateEnd.x=Left+L/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
-				Canv->Font=Cell.Font;
-				Canv->Font->Size*=Zoom;
-				Canv->TextOut(L+w,T,T2);
-			}
-			else //bez odkazu
-			Canv->TextOut(L,T,Cell.Text);*/
 		}break;
 		case readEDIT:
 		{
@@ -835,12 +823,6 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case EDIT:
 		{
 			SetEdit(R,X,Y,Cell);
-			if(MovingTable)
-			{
-				Ttype TypeTemp=Cell.Type;Cell.Type=DRAW;//nastaví jiný typ, ale jen provizorně
-				SetComponents(Canv,R,Rt,X,Y,Cell);
-				Cell.Type=TypeTemp;//navrácení předchozího typu
-			}
 		}break;
 		case readNUMERIC:
 		{
@@ -849,12 +831,6 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 		case NUMERIC:
 		{
 			SetNumeric(R,X,Y,Cell);
-			if(MovingTable)
-			{
-				Ttype TypeTemp=Cell.Type;Cell.Type=DRAW;//nastaví jiný typ, ale jen provizorně
-				SetComponents(Canv,R,Rt,X,Y,Cell);
-				Cell.Type=TypeTemp;//navrácení předchozího typu
-			}
 		}break;
 		case LABEL:
 		{
@@ -891,13 +867,13 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//atributy
 	if(Cell.Type==EDIT)E->Enabled=true;else E->Enabled=false;
-	if(!VisibleComponents || MovingTable)E->Visible=false;else E->Visible=true;//při posunu tabulky se skryje EDIT a je místo něj DRAW
-	E->AutoSize=false;
-	E->Transparent=false;
+	E->AutoSize=false;//nutnost
+	E->Transparent=false;//nutnost
 	E->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
 	E->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
 	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
+	if(!VisibleComponents)E->Visible=false;else E->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//E->ShowHint=false;//toto by bylo vždy u editu na false, pokus automatizace pro dlouhý textif(Cell.Text.Length()>E->Width/(Cell.Font->Size-2))E->ShowHint=true;else //asi nepřesné
 	if(Cell.ShowHint){E->ShowHint=true;E->Hint=Cell.Hint;}
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
@@ -948,13 +924,13 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 
 	//atributy
 	if(Cell.Type==NUMERIC)N->Enabled=true;else N->Enabled=false;
-	if(!VisibleComponents || MovingTable)N->Visible=false;else N->Visible=true;//při posunu tabulky se skryje EDIT a je místo něj DRAW
 	N->AutoSize=false;
 	N->Transparent=false;
 	N->Top=R.Top+ceil(Cell.TopBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
 	N->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
 	if(Cell.MergeState==false)N->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);	 //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
+	if(!VisibleComponents)N->Visible=false;else N->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	N->Decimal=Decimal;
 	//if(!N->Focused() && !IntegerDecimalNull && m.cele_cislo(ms.MyToDouble(Cell.Text)))N->Decimal=0;//pokud se jedná o celé číslo, nezobrazuje "reálnou část" celého čísla tj. počet nul do počtu decimal, nastavuje se pouze pokud není daný NUMERIC editovaný
 	N->DisplayType=scedtNumeric;
@@ -1048,11 +1024,11 @@ void TmGrid::SetButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPButton *B=createButton(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 
 	//atributy
-	if(!VisibleComponents || MovingTable)B->Visible=false;else B->Visible=true;//při posunu tabulky se skryje, zatím se místo něj nic nevykresluje
 	B->Top=R.Top+ceil(Cell.TopBorder->Width/2.0)+1;
 	B->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0)+1;
 	B->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0)-1;
 	B->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0)-1;
+	if(!VisibleComponents)B->Visible=false;else B->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	if(Cell.ShowHint){B->ShowHint=true;B->Hint=Cell.Hint;}
 	//B->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	B->Options->FrameNormalColor=B->Options->NormalColor;
@@ -1075,11 +1051,11 @@ void TmGrid::SetGlyphButton(TRect R,unsigned long X,unsigned long Y,TCells &Cell
 	TscGPGlyphButton *gB=createGlyphButton(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 
 	//atributy
-	if(!VisibleComponents || MovingTable)gB->Visible=false;else gB->Visible=true;//při posunu tabulky se skryje, zatím se místo něj nic nevykresluje
 	gB->Top=R.Top+floor(Cell.TopBorder->Width/2.0)+1;
 	gB->Left=R.Left+floor(Cell.LeftBorder->Width/2.0)+1;
 	gB->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-floor(Cell.LeftBorder->Width/2.0)-1;
 	gB->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-floor(Cell.TopBorder->Width/2.0)-1;
+	if(!VisibleComponents)gB->Visible=false;else gB->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	//gB->Options->NormalColor=Cell.Background->Color; zde nenastavovat!
 	if(Cell.ShowHint){gB->ShowHint=true;gB->Hint=Cell.Hint;}
 
@@ -1103,15 +1079,7 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	C->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);
 	if(Cell.MergeState==false)C->Width=Columns[X].Width-floor(Cell.RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
 	/*if(Cell.MergeState==false)*/C->Height=Rows[Y].Height-floor(Cell.BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování
-	if(!VisibleComponents || MovingTable)
-	{   //rozpracovano případné bitmapování kompomentny při přesunu obrazu
-//		TBitmap *bmp=new Graphics::TBitmap();
-//		bmp->Width=C->Width;bmp->Height=C->Height;
-//		bmp->Canvas->CopyRect(Rect(0,0,C->Width,C->Height),Form->Canvas,Rect(C->Left,C->Top,C->Left+C->Width,C->Top+C->Height));//uloží pan výřez
-//		bmp->SaveToFile("test.bmp");
-		C->Visible=false;
-	}
-	else C->Visible=true;//při posunu tabulky se skryje, zatím se místo něj nic nevykresluje
+	if(!VisibleComponents)C->Visible=false;else C->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 
 	//volitelné atributy
 	if(!Cell.Highlight)C->Options->FrameNormalColor=Cell.Background->Color;//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
@@ -1143,10 +1111,7 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	TscGPCheckBox *Ch = createCheck(X,Y);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel na danou vytvořenou komponentu, pokud neexistuje, tak vytvoří
 
 	//atributy
-	if(!VisibleComponents || MovingTable)Ch->Visible=false;else Ch->Visible=true;//při posunu tabulky se skryje, zatím se místo něj nic nevykresluje
-
 	//nastavení velikosti checkboxu - přesunuto do create
-
 	//pozice checkboxu v buňce //upraveno - odstaveno nastavování velikosti Checkboxu v CENTER+MIDDLE, ostatní ponechány původní
 	switch(Cell.Align)
 	{
@@ -1162,6 +1127,7 @@ void TmGrid::SetCheck(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	 	case MIDDLE:Ch->Top=R.Top+m.round(Rows[Y].Height/2.0-Ch->Height/2.0);break;
 		case BOTTOM:Ch->Height=Ch->OptionsChecked->ShapeSize;Ch->Top=R.Top+Rows[Y].Height-Ch->Height;break;
 	}
+	if(!VisibleComponents)Ch->Visible=false;else Ch->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
 	Ch->Options->NormalColor=Cell.Background->Color;
 	Ch->Options->NormalColorAlpha=255;
 	if(Cell.ShowHint){Ch->ShowHint=true;Ch->Hint=Cell.Hint;}
@@ -1298,8 +1264,8 @@ TscGPGlyphButton *TmGrid::createGlyphButton(unsigned long Col,unsigned long Row)
 		gB->Name="mGrid_GlyphBUTTON_"+AnsiString(ID)+"_"+AnsiString(gB->Tag);
 
     gB->Options->FrameNormalColorAlpha=255;
-    gB->Options->FrameFocusedColor=255;
-    gB->Options->FramePressedColor=255;
+		gB->Options->FrameFocusedColorAlpha=255;
+		gB->Options->FramePressedColorAlpha=255;
 	  gB->Options->FrameNormalColor=gB->Options->NormalColor;
     gB->Options->FrameFocusedColor=gB->Options->NormalColor;
     gB->Options->FramePressedColor=gB->Options->NormalColor;
@@ -2205,80 +2171,6 @@ void TmGrid::realock()
 	bufColCount=ColCount;bufRowCount=RowCount;//určeno při další realokaci pole
 }
 //---------------------------------------------------------------------------
-////zajistí realokaci pole Cells dle nové velikosti
-//void TmGrid::realock()
-//{              //ShowMessage("0");
-//	//kopie do záložního pole a smazání
-//	TCells **bufCells = new TCells*[bufColCount];//vytvoří dynamické pole ukazatelu typu TCells dle počtu požadovaných sloupců
-//	for(unsigned long X=0;X<bufColCount;X++)
-//	{
-//		bufCells[X] = new TCells[bufRowCount];//pruchod po sloupcich, slupcům dynamamického pole alokuje pamět pro jednotlivé řádky- cyklus musí být samostatně
-//		//bufCells[X] = Cells[X];//zkopírování původních hodnot do zálohy //takto asi nevhodné kopírovat (zůstane ukazatel), s hvězdickou sice hodnoty ale je potřeba přidělit pamět pomocí new pro TBrush TFont a TBorders
-//		for(unsigned long Y=0;Y<bufRowCount;Y++)
-//		{
-//			//toto tu bylo:CreateCell(bufCells[X][Y]);
-//			//toto tu bylo:CopyCell(Cells[X][Y],bufCells[X][Y],true);
-////			//totu tu nebylo:
-////			CopyAreaCell(Cells[X][Y],bufCells[X][Y],true);
-////			////orámování
-////			if(Y==0){bufCells[X][Y].TopBorder=new TBorder;*bufCells[X][Y].TopBorder=*Cells[X][Y].TopBorder;}
-////			else bufCells[X][Y].TopBorder=Cells[X][Y-1].BottomBorder;//pokud ne, odkazuje na společné ohraničení, jedná se o jeden objekt
-////			//botom
-////			bufCells[X][Y].BottomBorder=new TBorder;*bufCells[X][Y].BottomBorder=*Cells[X][Y].BottomBorder;
-////			//left (přebírá, propojuje se s levým, nejedná-li se o první)
-////			if(X==0){bufCells[X][Y].LeftBorder=new TBorder;*bufCells[X][Y].LeftBorder=*Cells[X][Y].LeftBorder;}
-////			else bufCells[X][Y].LeftBorder=Cells[X-1][Y].RightBorder;//pokud ne, odkazuje na společné ohraničení, jedná se o jeden objekt
-////			//right
-////			bufCells[X][Y].RightBorder=new TBorder;*bufCells[X][Y].RightBorder=*Cells[X][Y].RightBorder;
-//		}
-//	}
-//	 //ShowMessage("1");
-//	//smazání původních hodnot
-//	unsigned long bufColCount2=ColCount;unsigned long bufRowCount2=RowCount;
-//	ColCount=bufColCount;RowCount=bufRowCount;
-//	//DeleteComponents();//toto bylo odkomentováno a níže zakomentováno DeleteComponents
-//	//pokud bych původní chtěl komponenty zachovat, ale nefunguje zcela správně
-//	DeleteComponents(bufColCount2,bufRowCount2,ColCount-1,RowCount-1);//nová oblast až stará oblast, není potřeba ošetřovat IFem pro případ přidávání (pohlídají si cykly ve vnitř algoritmu)
-//	ColCount=bufColCount2;RowCount=bufRowCount2;
-//	//DeleteTable();
-//								//ShowMessage("2");
-//	//vytvoření nového realokovaného pole
-//	bufColCount2=bufColCount;bufRowCount2=bufRowCount;//určeno při další realokaci pole, create totiž přepisuje buf hodnoty
-//	Create(ColCount,RowCount);
-//
-//	//zkopírování původních hodnot zpět
-//	if(bufColCount2>ColCount)bufColCount=ColCount;else bufColCount=bufColCount2;//podle toho, co je menší
-//	if(bufRowCount2>RowCount)bufRowCount=RowCount;else bufRowCount=bufRowCount2;//podle toho, co je menší
-//
-//	for(unsigned long Y=0;Y<bufRowCount;Y++)
-//	{        ShowMessage(bufCells[0][Y].TopBorder->Width);
-//		for(unsigned long X=0;X<bufColCount;X++)
-//		{
-//			//nelze celý ukazatel
-//			Cells[X][Y] = bufCells[X][Y];
-//			////typ
-//			Cells[X][Y].Font=new TFont();
-//			Cells[X][Y].Background=new TBrush();//alokace paměti
-//			CopyAreaCell(bufCells[X][Y],Cells[X][Y],true);//kopie vlastností, bez orámování
-//			////orámování
-//			CreateLinkBorder2(X,Y,bufCells[X][Y]);
-//		}
-//	}
-//												//	ShowMessage("4");
-//	//smazání původního bufCells
-//	for(unsigned long X=0;X<bufColCount2;X++)
-//	{
-//		for(unsigned long Y=0;Y<bufRowCount2;Y++)//po řádcích
-//		{
-//			DeleteCell(bufCells[X][Y]);
-//		}
-//		bufCells[X]=NULL; delete bufCells[X];
-//	}
-//	bufCells=NULL; delete bufCells;
-//	bufColCount=ColCount;bufRowCount=RowCount;//určeno při další realokaci pole
-//}
-
-//---------------------------------------------------------------------------
 //dle zadaného čísla sloupce a čísla řádku vytvořenou komponentu dle Type, pokud existuje, tak se nic neděje
 void TmGrid::createComponent(Ttype Type, unsigned long Col,unsigned long Row)
 {
@@ -2564,17 +2456,17 @@ void TmGrid::SetVisibleComponents(bool state)
 //podle stavu state buď zobrazí nebo skryje komponentu neurčitého typu v dané buňce
 void TmGrid::SetVisibleComponent(unsigned long Col,unsigned long Row,bool state)
 {
-	switch(Cells[Col][Row].Type)
+	switch(Cells[Col][Row].Type) //- musí se zároveń ověřovat, zda není NULL, nutné při znovuotevření náhledu
 	{
-		case readEDIT: 		getEdit(Col,Row)->Visible=state;break;
-		case EDIT: 		 		getEdit(Col,Row)->Visible=state;break;
-		case NUMERIC:  		getNumeric(Col,Row)->Visible=state;break;
-		case readNUMERIC: getNumeric(Col,Row)->Visible=state;break;
-		case BUTTON: 			getButton(Col,Row)->Visible=state;break;
-		case COMBO: 			getCombo(Col,Row)->Visible=state;break;
-		case CHECK:       getCheck(Col,Row)->Visible=state;break;
-		case RADIO:				getRadio(Col,Row)->Visible=state;break;
-		case glyphBUTTON:	getGlyphButton(Col,Row)->Visible=state;break;
+		case readEDIT: 		{TscGPEdit *E=getEdit(Col,Row);if(E!=NULL)E->Visible=state;E=NULL;delete E;}break;
+		case EDIT: 		 		{TscGPEdit *E=getEdit(Col,Row);if(E!=NULL)E->Visible=state;E=NULL;delete E;}break;
+		case NUMERIC:  		{TscGPNumericEdit *N=getNumeric(Col,Row);if(N!=NULL)N->Visible=state;N=NULL;delete N;}break;
+		case readNUMERIC:	{TscGPNumericEdit *N=getNumeric(Col,Row);if(N!=NULL)N->Visible=state;N=NULL;delete N;}break;
+		case BUTTON: 			{TscGPButton *B=getButton(Col,Row);if(B!=NULL)B->Visible=state;B=NULL;delete B;}break;
+		case COMBO:	 			{TscGPComboBox *C=getCombo(Col,Row);if(C!=NULL)C->Visible=state;C=NULL;delete C;}break;
+		case CHECK:				{TscGPCheckBox *CH=getCheck(Col,Row);if(CH!=NULL)CH->Visible=state;CH=NULL;delete CH;}break;
+		case RADIO:				{TscGPRadioButton *R=getRadio(Col,Row);if(R!=NULL)R->Visible=state;R=NULL;delete R;}break;
+		case glyphBUTTON:	{TscGPGlyphButton *gB=getGlyphButton(Col,Row);if(gB!=NULL)gB->Visible=state;gB=NULL;delete gB;}break;
 	}
 }
 //---------------------------------------------------------------------------

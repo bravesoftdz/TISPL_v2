@@ -915,7 +915,7 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 	Objekt->elementy->Xt=0;
 	Objekt->elementy->Yt=0;
 	Objekt->elementy->rotace_symbolu=0;
-	Objekt->elementy->rotace_jigu=0;
+	Objekt->elementy->rotace_jig=0;
 	Objekt->elementy->stav=true;
 
 	Objekt->elementy->LO1=0;
@@ -1289,7 +1289,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 	Kopie->Xt=Original->Xt;
 	Kopie->Yt=Original->Yt;
 	Kopie->rotace_symbolu=Original->rotace_symbolu;
-	Kopie->rotace_jigu=Original->rotace_jigu;
+	Kopie->rotace_jig=Original->rotace_jig;
 	Kopie->stav=Original->stav;
 	Kopie->LO1=Original->LO1;
 	Kopie->OTOC_delka=Original->OTOC_delka;
@@ -1605,7 +1605,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			else//více elementů
 			{
 				vzd.x=Element->X-Element->predchozi->X;
-			}F->Sv(vzd.x);
+			}//odstavil MaKr F->Sv(vzd.x);
 			if(vzd.x!=0)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 
 			//v případě požadavku na posun i následujících elementů
@@ -1706,7 +1706,7 @@ double Cvektory::vrat_rotaci_jigu_po_predchazejicim_elementu(TObjekt *Objekt,TEl
 			}
 			else//stále předcházející elementy, ty mě pro návrátovou hodnotu zajímají, rotace aktuálního elementu se nezohledňuje
 			{
-				if(3<=E->eID && E->eID<=6)akt_rotoce_jigu+=E->rotace_jigu;
+				if(3<=E->eID && E->eID<=6)akt_rotoce_jigu+=E->rotace_jig;
       }
 			E=E->dalsi;
 		}

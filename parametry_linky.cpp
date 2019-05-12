@@ -164,7 +164,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height ;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
   mGrid->Border.Width=1;
-  mGrid->MovingTable=false;
   //mGrid->DefaultCell.Font->Size=14;
   mGrid->DefaultCell.Font->Name="Roboto";
   mGrid->Create(9,2);//samotné vytvoøení matice-tabulky

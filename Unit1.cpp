@@ -198,6 +198,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 
 	refresh_mGrid=true;
 	posun_dalsich_elementu=false;
+	zobrazit_meritko=true;
 
 	DesignSettings();//nastavení designu v konstruktoru
 }
@@ -1379,7 +1380,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			{
 				d.vykresli_vektory(Canvas);
 				if(refresh_mGrid)d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);//grafické měřítko
+				if(zobrazit_meritko)d.meritko(Canvas);//grafické měřítko
 			}
 			else
 			{
@@ -1393,7 +1394,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_in);//velice nutné
 				if(refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(bmp_out->Canvas);//grafické měřítko
+				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
@@ -1428,7 +1429,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(bmp_out->Canvas);//grafické měřítko
+				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
 					bmp_out->Transparent=true;
@@ -1463,7 +1464,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				delete (bmp_in);//velice nutné
 			}
 			//grafické měřítko
-			if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);
+			if(zobrazit_meritko)d.meritko(Canvas);
 		}
 		break;
 //		case REZERVY: d.vykresli_graf_rezervy(Canvas);break;//vykreslení grafu rezerv
@@ -1506,7 +1507,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			Canvas->Draw(0,scGPPanel_mainmenu->Height,bmp_in);
 			delete (bmp_in);//velice nutné
 			//grafické měřítko
-			if(scGPSwitch_meritko->State==true && !(F->Akce==F->Takce::PAN || F->Akce==F->Takce::PAN_MOVE))d.meritko(Canvas);
+			if(zobrazit_meritko)d.meritko(Canvas);
 		}
 		break;
 //		//	case SIMULACE:d.vykresli_simulaci(Canvas);break; - probíhá už pomocí timeru, na tomto to navíc se chovalo divně
@@ -1957,12 +1958,10 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					}
 
 					if(funkcni_klavesa==1 || Akce==ZOOM_W_MENU)Akce=ZOOM_W;
-					///Akce=PAN; pouze pokud bych nechtěl pomocí mezerníku aktivovat PAN
 					switch(Akce)
 					{
 						case PAN:
 						{
-							if(pom_temp!=NULL)if(pom_temp->zobrazit_mGrid)d.vykresli_mGridy();//slouží k aktualizaci gridu při přesouvání obrazu
 							kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
 							int W=scSplitView_LEFTTOOLBAR->Width;
 							if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
@@ -2306,10 +2305,11 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			if(MOD==NAHLED && pom_temp!=NULL)
 			{
-					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
-					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
-					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci getJobID(X,Y);
-					//pokud bych odstavil výše uvedený timer takto toto zprovoznit setJobIDOnMouseMove(X,Y);
+//					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
+//					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
+//					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci setJobIDOnMouseMove(X,Y);
+//					//pokud bych odstavil výše uvedený timer takto toto zprovoznit:
+					setJobIDOnMouseMove(X,Y);
 			}
 			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
 			break;
@@ -2530,7 +2530,6 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	{
 		if(JID==0 || JID==1){pom_element->stav=1;}//ELEMENT
 		pom_element->mGrid->Highlight=false;//tabulka zrušení highlightnutí
-
 	}
 	int puvJID=JID;//záloha původního JID
 	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
@@ -2538,15 +2537,15 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	if(puvJID!=JID)//pokud došlo ke změně JID, jinak nemá smysl řešit
 	{
 		kurzor(standard);//umístít na začátek
-		if(JID==-1)//není již job ID
+		if(JID==-1 || pom_element==NULL)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
 		{
 			if(pom_element_puv!=NULL)pom_element_puv->mGrid->CheckLink(X,Y);//najistotu zrušení highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
 			if(puvJID>=4 && puvJID<=10)PmG->CheckLink(X,Y);//najistotu zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 		}
 		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
 		if(JID==1){kurzor(edit_text);pom_element->stav=3;}//ELEMENT název
-		if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
-		if(10<JID && JID<1000){REFRESH();}//hodnota kóty
+		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
+		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
 		if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
 		if(JID==1000)pom_element->mGrid->CheckLink(X,Y);//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
 		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);}//indikace posunutí TABULKY, jeji highlignutí probíhá výše
@@ -2555,10 +2554,11 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
 		if(JID==-5)kurzor(zmena_d_y);//kurzor pro zmenu velikosti kabiny
-		if(-6>=JID||JID>=-9){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
-		if(JID==-10){REFRESH();kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
+		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
+		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
 		if(JID>=11 && JID<=99)kurzor(zmena_d_y);//interaktivní kóty elementů
 		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
+		REFRESH();
 	}
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
@@ -2940,15 +2940,18 @@ void TForm1::LEFT()//smer doleva
 //Posouvá výřez mapy při stisknutém mezerníku a L-myši
 void TForm1::pan_map(TCanvas * canv, int X, int Y)
 {
-	 canv->Brush->Color=clWhite/*clDkGray*/;canv->Brush->Style=bsSolid;
-	 //maže při posouvání obrazu starý obraz
-	 canv->FillRect(TRect(0,0,/*X-kurzor_souradnice_puvodni.x+Pan_bmp->Width*/ClientWidth,Y-vychozi_souradnice_kurzoru.y));//horní okraj
-	 canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height));//levy okraj
-	 canv->FillRect(TRect(X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,Y-vychozi_souradnice_kurzoru.y,ClientWidth,ClientHeight));//pravy okraj
-	 canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
-   //samotné posouvání Pan_bmp
-	 canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);
-	 //canv->Brush->Color=clWhite;canv->Brush->Style=bsSolid;
+	////zajištění skrytí komponent, vedlejší produkt metody d.vykresli_mGridy();
+	if(pom_temp!=NULL)if(pom_temp->zobrazit_mGrid)d.vykresli_mGridy();
+
+	////vykreslení aktuální pan_bmp
+	canv->Brush->Color=clWhite/*clLtGray*/;canv->Brush->Style=bsSolid;
+	//maže při posouvání obrazu starý obraz
+	canv->FillRect(TRect(0,0,/*X-kurzor_souradnice_puvodni.x+Pan_bmp->Width*/ClientWidth,Y-vychozi_souradnice_kurzoru.y));//horní okraj
+	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y,X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height));//levy okraj
+	canv->FillRect(TRect(X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,Y-vychozi_souradnice_kurzoru.y,ClientWidth,ClientHeight));//pravy okraj
+	canv->FillRect(TRect(0,Y-vychozi_souradnice_kurzoru.y+Pan_bmp->Height,X-vychozi_souradnice_kurzoru.x+Pan_bmp->Width,ClientHeight));//dolní okraj
+	//samotné posouvání Pan_bmp
+	canv->Draw(X-vychozi_souradnice_kurzoru.x,Y-vychozi_souradnice_kurzoru.y,Pan_bmp);
 }
 //---------------------------------------------------------------------------
 //realizuje posunutí obrazu
@@ -2986,7 +2989,7 @@ void __fastcall TForm1::Posouvat2Click(TObject *Sender)
 void __fastcall TForm1::Posunout2Click(TObject *Sender)
 {
 	Akce=PAN;
-  kurzor(pan);
+	kurzor(pan);
 	pan_non_locked=true;
 	zobraz_tip("TIP: Posun obrazu lze také vykonat pomocí stisknutého mezerníku a posunem myši při stisknutém levém tlačítku.");
 }
@@ -3706,7 +3709,6 @@ void TForm1::design_tab_pohon(int index)
 			PmG->DefaultCell.isActiveLink->Size=aFont->Size;
 			PmG->Note.Font->Name=aFont->Name;
 			PmG->AntiAliasing_text=true;
-			PmG->MovingTable=false;
 			PmG->Border.Width=2;
 			PmG->ID=9999;
 			PmG->Tag=6;//ID formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
@@ -7236,7 +7238,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	Poffset=0;
 	scGPButton_viditelnostmGridClick(Sender);//zakáže mgridy
 	Timer_animace->Enabled=!Timer_animace->Enabled;
-	scGPSwitch_meritko->State=!Timer_animace->Enabled;
+	zobrazit_meritko=!Timer_animace->Enabled;
 	d.v.PP.raster.show=!Timer_animace->Enabled;
 	if(Timer_animace->Enabled)//běží animace
 	{
@@ -7251,6 +7253,7 @@ void __fastcall TForm1::scGPGlyphButton_PLAYClick(TObject *Sender)
 	{
 		scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
 		scGPGlyphButton_PLAY->Hint="spustit animaci";
+		zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 	}
 }
 //---------------------------------------------------------------------------
@@ -7817,6 +7820,7 @@ void __fastcall TForm1::scGPCheckBox_ortogonClick(TObject *Sender)
 void __fastcall TForm1::scGPSwitch_meritkoChangeState(TObject *Sender)
 {
 	 scSplitView_MENU->Opened=false;
+	 zobrazit_meritko=scGPSwitch_meritko->State;
 	 REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -8238,19 +8242,17 @@ Form2->ShowModal();
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
-	if(MOD==NAHLED)  //navrácení původní knihovny do módu schema
+	if(MOD==NAHLED)  //navrácení do módu schéma
 	{
 		if(!nahled_ulozen)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů
     if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
 		DrawGrid_knihovna->SetFocus();
-		Smaz_kurzor();
-		MOD=SCHEMA;//nutné před zoom
-
+		if(TimerKurzor->Enabled)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
+		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání elementů - musí být napočátku, aby nebyl problik
- 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
+		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 		d.v.vymaz_elementy(pom_temp,true);
-
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
 
@@ -8278,7 +8280,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPGlyphButton_zpravy_ikona->Align=alRight;
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
-		on_change_zoom_change_scGPTrackBar();
+		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh
 		Posun.x=Posun_predchozi2.x;
 		Posun.y=Posun_predchozi2.y;
 
@@ -8305,9 +8307,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPLabel_roboti->Caption="Technolog. objekty";
 		scGPLabel_roboti->ContentMarginLeft=4;
 
-
 		Schema->Down=true;
-		//REFRESH(); //- asi netřeba
+		//REFRESH(); //- asi netřeba  asi vyvolává výše uvedený on_change_zoom_change_scGPTrackBar()
 		DrawGrid_knihovna->Visible=true;
 	}
 }
@@ -8711,7 +8712,7 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
  }
  else//pro posun refresh při změně tabulky elementů
  {
-	 F->REFRESH();
+	 REFRESH();
 	 FormX->input_state=FormX->NOTHING;
  }
  Timer2->Enabled=false;
@@ -8786,7 +8787,7 @@ void TForm1::vykresli_kurzor(int index)
   }
 }
 //smaže kurzor pokud je stále vykreslený i po vypnutí editace textu
-void TForm1::Smaz_kurzor ()
+void TForm1::Smaz_kurzor()
 {
 	TIP="";
 	if(editace_textu)//ukončí editaci textu
