@@ -3275,7 +3275,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 				{
 					E->mGrid->VisibleComponents=false;
 					if(F->element_id==-1)E->mGrid->SetVisibleComponents(false);//rozdistribuje na jednotlivé komponenty, REFRESH nelze, proto nelze použít pouze horní konstrukci, při když je element_id>-1 (přidání elementu při skrytých tabulkách, akce ADD je již tou dobou znegovaná kvůli refreh) se metoda nevolá, není třeba + došlo by k paměťové chybě
-					else E->mGrid->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
+					else E->mGrid->Update();//nahrazeno za E->mGrid->Show();//nutné jinak paměťová chyba (asi kvůli setcomponents), ale zase způsobuje krátký problik skryté tabulky, vhodné dolatit
 				}
 				E=E->dalsi;
 			}
