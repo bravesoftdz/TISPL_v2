@@ -27,6 +27,7 @@
 #pragma link "scGPExtControls"
 #pragma link "rHintWindow"
 #pragma link "scGPImages"
+#pragma link "scStyledForm"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -49,6 +50,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	clAcGlyph=(TColor)RGB(0,128,255);//active
 	PopUPmenu->Color=clBg;//nastavení pozadí barvy formuláøe
 	pasiveColor();//nastaví všechny položky na pasivní resp. default barvu
+
 
 }
 //---------------------------------------------------------------------------
@@ -95,6 +97,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     input_state=LOADING;
     COL=0; ROW=0;
 		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
+    F->scStyledForm1->ShowClientInActiveEffect();
 
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
@@ -569,6 +572,7 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
   mGrid->Delete();
 	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
+   F->scStyledForm1->HideClientInActiveEffect();
 	Storno=true;
 }
 //---------------------------------------------------------------------------
@@ -612,27 +616,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
         if(count>0)
         {
-             scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,8);
 
-             this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
+             scStyledForm1->ShowClientInActiveEffect();
 
             if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
             {
              Ulozit=false;
-
-             scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-
-             this->Color=F->m.clIntensive(this->Color,-8);
+             scStyledForm1->HideClientInActiveEffect();
              }
         }
 
@@ -905,6 +895,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
    if(Ulozit)
    {
     mGrid->Delete();
+    F->scStyledForm1->HideClientInActiveEffect();
 		Close();//v testu, mùže padat
 	 }
 }
@@ -1195,12 +1186,20 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
     mGrid->Cells[5][i].Text="250";
     }
 
-    if(i>=3)
+    if(i==3)
     {
-    mGrid->Cells[2][i].Text=mGrid->Cells[2][i-1].Text * AnsiString(i-1);
-    mGrid->Cells[3][i].Text=mGrid->Cells[3][i-1].Text * AnsiString(i-1);
-    mGrid->Cells[4][i].Text=mGrid->Cells[4][i-1].Text * AnsiString(i-1);
-    mGrid->Cells[5][i].Text=mGrid->Cells[5][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[2][i].Text="1";
+    mGrid->Cells[3][i].Text="3";
+    mGrid->Cells[4][i].Text="2,2";
+    mGrid->Cells[5][i].Text="450";
+    }
+
+    if(i==4)
+    {
+    mGrid->Cells[2][i].Text="1,5";
+    mGrid->Cells[3][i].Text="5";
+    mGrid->Cells[4][i].Text="4";
+    mGrid->Cells[5][i].Text="1230";
     }
 
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;

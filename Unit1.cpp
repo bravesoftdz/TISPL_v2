@@ -211,6 +211,8 @@ void TForm1::DesignSettings()
 	Form1->Height=Screen->WorkAreaHeight;
 	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 
+  scStyledForm1->InActiveClientBlurAmount=1; //nastaveni hodnoty rozmazani pozadi
+
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
  //	TColor active_blue=(TColor)RGB(0,120,215);

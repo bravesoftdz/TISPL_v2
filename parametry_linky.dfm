@@ -7241,11 +7241,42 @@ object Form_parametry_linky: TForm_parametry_linky
       TabOrder = 3
       OnKeyDown = FormKeyDown
     end
+    object scHTMLLabel_jig_info: TscHTMLLabel
+      Left = 2
+      Top = 178
+      Width = 145
+      Height = 13
+      Margins.Left = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clActiveCaption
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      TabOrder = 4
+      AutoSizeHeight = True
+      AutoSizeWidth = True
+      AutoExecuteURL = True
+      Caption = '* pohled na Jig p'#345'i nav'#283#353'ov'#225'n'#237
+      LinkFontNormal.Charset = DEFAULT_CHARSET
+      LinkFontNormal.Color = clHighlight
+      LinkFontNormal.Height = -11
+      LinkFontNormal.Name = 'Tahoma'
+      LinkFontNormal.Style = []
+      LinkFontHover.Charset = DEFAULT_CHARSET
+      LinkFontHover.Color = clHighlight
+      LinkFontHover.Height = -11
+      LinkFontHover.Name = 'Tahoma'
+      LinkFontHover.Style = [fsUnderline]
+      MaxWidth = 0
+      TextAlignment = taLeftJustify
+    end
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 5828
-    Top = 9084
+    Left = 6062
+    Top = 9474
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7270,8 +7301,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 5819
-    ExplicitTop = 9069
+    ExplicitLeft = 5837
+    ExplicitTop = 9099
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -7424,5 +7455,52 @@ object Form_parametry_linky: TForm_parametry_linky
     HintFont.Quality = fqClearType
     Left = 920
     Top = 336
+  end
+  object scStyledForm1: TscStyledForm
+    DWMClientShadow = False
+    DWMClientShadowHitTest = False
+    DropDownForm = False
+    DropDownAnimation = False
+    DropDownBorderColor = clBtnShadow
+    StylesMenuSorted = False
+    ShowStylesMenu = False
+    StylesMenuCaption = 'Styles'
+    ClientWidth = 0
+    ClientHeight = 0
+    ShowHints = True
+    Buttons = <>
+    ButtonFont.Charset = DEFAULT_CHARSET
+    ButtonFont.Color = clWindowText
+    ButtonFont.Height = -11
+    ButtonFont.Name = 'Tahoma'
+    ButtonFont.Style = []
+    CaptionFont.Charset = DEFAULT_CHARSET
+    CaptionFont.Color = clWindowText
+    CaptionFont.Height = -11
+    CaptionFont.Name = 'Tahoma'
+    CaptionFont.Style = [fsBold]
+    CaptionAlignment = taLeftJustify
+    InActiveClientColor = clWindow
+    InActiveClientColorAlpha = 100
+    InActiveClientBlurAmount = 1
+    Tabs = <>
+    TabFont.Charset = DEFAULT_CHARSET
+    TabFont.Color = clWindowText
+    TabFont.Height = -11
+    TabFont.Name = 'Tahoma'
+    TabFont.Style = []
+    ShowButtons = True
+    ShowTabs = True
+    TabIndex = 0
+    TabsPosition = sctpLeft
+    ShowInactiveTab = True
+    CaptionWallpaperIndex = -1
+    CaptionWallpaperInActiveIndex = -1
+    CaptionWallpaperLeftMargin = 1
+    CaptionWallpaperTopMargin = 1
+    CaptionWallpaperRightMargin = 1
+    CaptionWallpaperBottomMargin = 1
+    Left = 567
+    Top = 296
   end
 end
