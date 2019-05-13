@@ -4457,8 +4457,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2478
-        Top = 2641
+        Left = 2484
+        Top = 2647
         Width = 244
         Height = 31
         Align = alCustom
@@ -8155,13 +8155,13 @@ object Form1: TForm1
         item
           Header = False
           Enabled = True
-          Caption = 'Vzd'#225'lenostn'#237
+          Caption = 'Vzd'#225'lenost'
           Checked = False
         end
         item
           Header = False
           Enabled = True
-          Caption = #268'asov'#233
+          Caption = #268'as'
           Checked = False
         end>
       ItemIndex = 0
@@ -8255,9 +8255,9 @@ object Form1: TForm1
       OnKeyPress = FormKeyPress
     end
     object scGPLabel_prepinacKot: TscGPLabel
-      Left = 239
-      Top = 23
-      Width = 139
+      Left = 276
+      Top = 15
+      Width = 93
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBtnText
@@ -8291,14 +8291,14 @@ object Form1: TForm1
       GlowEffect.StyleColors = True
       AutoSize = True
       Layout = tlCenter
-      Caption = 'Hodnoty na k'#243't'#225'ch:'
+      Caption = 'Hodnoty k'#243't:'
     end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004807480710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101180048074C0710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9429,7 +9429,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013D003808380830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013D0038083C0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
