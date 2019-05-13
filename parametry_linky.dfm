@@ -2862,8 +2862,8 @@ object Form_parametry_linky: TForm_parametry_linky
   object scGPGlyphButton_ADD: TscGPGlyphButton
     Left = 2
     Top = 474
-    Width = 30
-    Height = 29
+    Width = 25
+    Height = 25
     Hint = 'p'#345'idat nov'#253' pohon'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clNone
@@ -2884,8 +2884,8 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = False
     ColorValue = clRed
     Options.NormalColor = clLime
-    Options.HotColor = 10114859
-    Options.PressedColor = 10114859
+    Options.HotColor = clLime
+    Options.PressedColor = clLime
     Options.FocusedColor = clRed
     Options.DisabledColor = clSilver
     Options.NormalColor2 = clNone
@@ -2894,18 +2894,18 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.FocusedColor2 = clNone
     Options.DisabledColor2 = clNone
     Options.NormalColorAlpha = 220
-    Options.HotColorAlpha = 200
+    Options.HotColorAlpha = 150
     Options.PressedColorAlpha = 200
     Options.FocusedColorAlpha = 255
     Options.DisabledColorAlpha = 200
     Options.NormalColor2Alpha = 255
     Options.HotColor2Alpha = 255
-    Options.PressedColor2Alpha = 255
+    Options.PressedColor2Alpha = 150
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
     Options.FrameNormalColor = clBtnText
     Options.FrameHotColor = clBtnText
-    Options.FramePressedColor = 10114859
+    Options.FramePressedColor = clLime
     Options.FrameFocusedColor = clBtnText
     Options.FrameDisabledColor = clBlack
     Options.FrameWidth = 2
@@ -7275,8 +7275,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6062
-    Top = 9474
+    Left = 6125
+    Top = 9579
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7301,8 +7301,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 5837
-    ExplicitTop = 9099
+    ExplicitLeft = 6071
+    ExplicitTop = 9489
   end
   object scGPSwitch: TscGPSwitch
     Left = 762

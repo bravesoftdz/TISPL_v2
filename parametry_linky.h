@@ -27,6 +27,7 @@
 #include <Vcl.Imaging.pngimage.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include "scStyledForm.hpp"
+#include "scImageCollection.hpp"
 #include <sstream>
 #include <iomanip>
 //---------------------------------------------------------------------------
