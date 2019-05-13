@@ -211,8 +211,6 @@ void TForm1::DesignSettings()
 	Form1->Height=Screen->WorkAreaHeight;
 	FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 
-  scStyledForm1->InActiveClientBlurAmount=1; //nastaveni hodnoty rozmazani pozadi
-
 	//nastavení globálních barev
 	TColor light_gray=(TColor)RGB(240,240,240);
  //	TColor active_blue=(TColor)RGB(0,120,215);
@@ -2576,7 +2574,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
 		//d.nabuffrovat_mGridy(pom_element->mGrid);
 		refresh_mGrid=true;
-		if(!refresh_mGrid)Memo("false");else Memo("true");
+		//if(!refresh_mGrid)Memo("false");else Memo("true");
 		REFRESH();
 
 	}

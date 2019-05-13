@@ -3268,10 +3268,10 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 					E->mGrid->SetVisibleComponents(false);
 					E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
 					E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Show(canv);  F->Memo(0);
+					E->mGrid->Show(canv); // F->Memo(0);
 				}
 				else
-				{      F->Memo(1);
+				{    //  F->Memo(1);
 					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 					{
 						E->mGrid->Redraw=true;
@@ -3292,7 +3292,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 			E=NULL;delete E;
 		}
-          F->Memo("--------------------");
+				 // F->Memo("--------------------");
 		////tabulka pohonu
 		if(F->PmG!=NULL)
 		{
