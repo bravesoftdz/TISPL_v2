@@ -3262,38 +3262,85 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-				if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+				if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 				{
-					E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
-					E->mGrid->Left=m.L2Px(E->Xt);
-					E->mGrid->Top=m.L2Py(E->Yt);
-					E->mGrid->Show(canv);
-				}
-				else//pokud ne, je třeba skrýt komponenty
-				{
+					E->mGrid->Redraw=false;
 					E->mGrid->SetVisibleComponents(false);
+					E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+					E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+					E->mGrid->Show(canv);  F->Memo(0);
+				}
+				else
+				{      F->Memo(1);
+					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+					{
+						E->mGrid->Redraw=true;
+						//E->mGrid->Buffer(false);
+						E->mGrid->buffer=true;//změna filozofie
+						//možná zde ještě update pokud byla komponenta skyta
+						E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+						E->mGrid->Left=m.L2Px(E->Xt);
+						E->mGrid->Top=m.L2Py(E->Yt);
+						E->mGrid->Show(canv);
+					}
+					else//pokud ne, je třeba skrýt komponenty
+					{
+						E->mGrid->SetVisibleComponents(false);
+					}
 				}
 				E=E->dalsi;
 			}
 			E=NULL;delete E;
 		}
-
+          F->Memo("--------------------");
 		////tabulka pohonu
 		if(F->PmG!=NULL)
 		{
-			if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
-				F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
-				F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
-				F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
+				F->PmG->Redraw=false;
+				F->PmG->SetVisibleComponents(false);
 				F->PmG->Show(canv);
 			}
-			else//pokud ne, je třeba skrýt komponenty
+			else
 			{
-				F->PmG->SetVisibleComponents(false);
+				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+				{
+					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+					F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
+					F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
+					F->PmG->Show(canv);
+				}
+				else//pokud ne, je třeba skrýt komponenty
+				{
+					F->PmG->SetVisibleComponents(false);
+				}
 			}
 		}
 	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//pomocná metoda vytvářející rastrové obrazy mGridů, pokud je buffer na NULL, buffrují se všechny tabulky, pokud ne, tak pouze ta z parametru
+void Cvykresli::nabuffrovat_mGridy(TmGrid *mGrid)
+{
+	if(mGrid==NULL)
+	{
+		if(F->pom_temp->elementy!=NULL)
+		{
+			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
+			while(E!=NULL)
+			{
+				E->mGrid->Buffer(true);
+				E=E->dalsi;
+			}
+			E=NULL;delete E;
+		}
+		if(F->PmG!=NULL)
+		{
+			F->PmG->Buffer(true);
+		}
+	}
+	else mGrid->Buffer(true);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do)

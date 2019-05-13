@@ -520,7 +520,6 @@ private:
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
 
 	////instance
-	Graphics::TBitmap *Pan_bmp;
 	Cvektory::TProces *proces_pom;
 
 	////metody
@@ -533,6 +532,7 @@ private:
 	void on_change_zoom_change_scGPTrackBar();
 	void zneplatnit_minulesouradnice();
 	void kurzor(TKurzory typ_kurzor);
+	void pan_create();//vytvoří výřez pro pan_move
 	void pan_map(TCanvas * canv, int X, int Y);
 	void pan_move_map();
 	void add_objekt(int X, int Y);
@@ -614,7 +614,6 @@ private:
 	bool upozornovat_na_zmenu_TT_parametru;
 	bool scSplitViews_closing_on_AA;
 	bool SplitViewOpen;
-	bool refresh_mGrid;
 	bool duvod_k_ulozeni;
 	bool duvod_ulozit_nahled;
 	bool stisknuto_storno;
@@ -636,6 +635,7 @@ public:		// User declarations
 	Cvykresli d;
 	Cgrafy g;
 	TPO_math pm;//INSTANCE NA VÝPOČETNÍ ČÁST PO tj. PO_math
+	Graphics::TBitmap *Pan_bmp;//kvůli mGridu jinak stačí private
 
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
@@ -682,6 +682,8 @@ public:		// User declarations
 	bool mazani;
 	bool zobrazeni_tabulek;
 	double Poffset;
+	bool refresh_mGrid;//nevykresluje se z buffru ale přímo
+	bool nabuffrovano;//udržuje, zda je buffer mgridových rastrů aktuální
 
 	//metody
 	void NP();//volá form na nastevení parametrů, dřívější nastavparametry1click
@@ -689,7 +691,7 @@ public:		// User declarations
   void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
 	void ZOOM_IN();//přiblížení
 	void ZOOM_OUT();//oddálení
-	void REFRESH(bool mGrid=true); //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do větve else
+	void REFRESH(); //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do větve else
 	void DuvodUlozit(bool stav);
 	void nahled_ulozit(bool duvod_ulozit);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
@@ -698,7 +700,7 @@ public:		// User declarations
 	void Sv(UnicodeString Text="",AnsiString umisteni="neuvedeno");//usnadňuje přístup k ShowMessage - MaVl
 	void Z(UnicodeString Text="",bool add=false,TColor color=clRed);//usnadňuje přístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitně), vymaže zpravu, parametr add rozhoduje, zda bude nový text předen k předešlému textu či nikoliv, pokud zpráva obsahuje nějaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
 	int MB(long left,long top,UnicodeString text,UnicodeString caption_text="",int mbTYPE=MB_OK,bool centrovat_text=true,bool checkbox_zobrazit=false,int width=366,bool default_button_caption=true);
-	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true);
+	int MB(UnicodeString text,int mbTYPE=MB_OK,bool centrovat_text=true,int width=366,bool default_button_caption=true,bool blurForm1=true);//pokud je blurForm1 na true - Form1 v době zobrazení MB rozmlží/udělá bluer efekt
 	void writeINI(AnsiString Section,AnsiString Ident,AnsiString Value);//zajišťuje zápis do INI aplikace
 	AnsiString readINI(AnsiString Section,AnsiString Ident);//zajišťuje čtení z INI aplikace
 	void kopirovat_objekt();//pokud je označený objekt, zajistí jeho zkopírování, připočítá index 1,2,3

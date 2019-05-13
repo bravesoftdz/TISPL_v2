@@ -196,7 +196,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	element_id=99;
 	duvod_ulozit_nahled=false;
 
-	refresh_mGrid=true;
+	refresh_mGrid=true;//nevykresluje se z buffru ale přímo
 	posun_dalsich_elementu=false;
 	zobrazit_meritko=true;
 
@@ -1279,9 +1279,16 @@ int TForm1::MB(long left,long top,UnicodeString text,UnicodeString caption_text,
 {
 	return myMessageBox->Show(left,top,text,caption_text,mbTYPE,centrovat_text,checkbox_zobrazit,width,default_button_caption);
 }
-int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption)
+int TForm1::MB(UnicodeString text,int mbTYPE,bool centrovat_text,int width,bool default_button_caption,bool blurForm1)
 {
-	return myMessageBox->Show(text,mbTYPE,centrovat_text,width,default_button_caption);
+	if(blurForm1)
+	{
+		scStyledForm1->InActiveClientBlurAmount=1;
+		scStyledForm1->ShowClientInActiveEffect();
+	}
+	int RET=myMessageBox->Show(text,mbTYPE,centrovat_text,width,default_button_caption);
+	if(blurForm1)scStyledForm1->HideClientInActiveEffect();
+	return RET;
 }
 //---------------------------------------------------------------------------
 //usnadňuje přístup ke zprávám, pokud jsou jen prázdné uvozovky (a druhý paremetry na false - což je implicitně), vymaže zpravu, parametr add rozhoduje, zda bude nový text předen k předešlému textu či nikoliv, pokud zpráva obsahuje nějaký text, je zobrazena ikona zprávy, poslední parametr je barva ikony zprávy
@@ -1379,7 +1386,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(!antialiasing)
 			{
 				d.vykresli_vektory(Canvas);
-				if(refresh_mGrid)d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
+				d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				if(zobrazit_meritko)d.meritko(Canvas);//grafické měřítko
 			}
 			else
@@ -1393,7 +1400,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_in);//velice nutné
-				if(refresh_mGrid)d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
+				d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
@@ -1521,11 +1528,9 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //	Canvas->FrameRect(TRect(d.aktOblast));
 }
 //---------------------------------------------------------------------------
-void TForm1::REFRESH(bool mGrid)
+void TForm1::REFRESH()
 {
-	if(mGrid)refresh_mGrid=true;else refresh_mGrid=false;
 	FormPaint(this);
-	refresh_mGrid=true;//vrátí do původního stavu
 	if(Label_wip->Visible)Label_wip->Invalidate();//}//pokude je zapntutý antialiasing neproblikne, ale jen se "přeplácne" bitmapou nedojde k probliknutí
 	RM();//korekce chyby oskakování pravého menu
 }
@@ -1605,7 +1610,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F1 - volání nápovědy
 		case 112:break;
 		//F2
-		case 113:break;
+		case 113:Memo3->CopyToClipboard();Memo3->Clear();break;
 		//F3 - pohled celé schéma
 		case 114:RzToolButton11Click(Sender);break;
 		//F4
@@ -1621,7 +1626,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//F9
 		case 120:Button11->Visible!=Button11->Visible;break;
 		//F10
-		case 121: Invalidate();break;
+		case 121:Invalidate();break;
 		//F11
 		case 122:ortogonalizace_on_off();break;//přepíná stav automatické ortogonalizace
 		//F12
@@ -1929,7 +1934,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						{
 								if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
 								if(JID==0){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;if(el_vkabine(X,Y,pom_element->eID))mazani=true;else mazani=false;pom_element_temp=pom_element;}//ELEMENT posun
-								if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//TABULKA posun
+								if(1000<=JID && JID<2000){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();}//TABULKA posun
 								if(100<JID && JID<1000){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 								if(JID==-2||JID==-3){Akce=MOVE_KABINA;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//posun lakovny
 								if(JID==-6) {DrawGrid_knihovna->SetFocus();stav_kurzoru=false;editace_textu=true;index_kurzoru=-6;nazev_puvodni=pom_temp->name;TimerKurzor->Enabled=true;}//editace názvu
@@ -1963,13 +1968,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						case PAN:
 						{
 							kurzor(pan_move);Akce=PAN_MOVE;//přepne z PAN na PAN_MOVE
-							int W=scSplitView_LEFTTOOLBAR->Width;
-							if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
-							short H=scGPPanel_mainmenu->Height;// zmena designu RzToolbar1->Height;
-							int Gh=vrat_max_vysku_grafu();if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
-							Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy, bylo to ještě +10
-							Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
-							//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
+							pan_create();//vytvoří výřez pro pan_move
 							break;
 						}
 						case ZOOM_W:
@@ -2144,6 +2143,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			pom_element->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
 			pom_element->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
+			pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
 			REFRESH();
 			//vykreslení spojnice tabulky a elementu
 			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
@@ -2304,7 +2304,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
 			if(MOD==NAHLED && pom_temp!=NULL)
-			{
+			{    //testování odstaveno
 //					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
 //					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
 //					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci setJobIDOnMouseMove(X,Y);
@@ -2343,7 +2343,14 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case VYH:Akce=ADD;add_objekt(X,Y);zneplatnit_minulesouradnice();break;//přidání objekt
 			case MOVE:move_objekt(X,Y);break;//posun objektu
-			case MOVE_TABLE:Akce=NIC;kurzor(standard);REFRESH();break;//posun tabulky elementu  - REFRESH() byl 10.5.19 odkementován, nevím proč byl zakomentovaný, zposobilo nepřekreslení spojnice mezi tabulkou a elementem po uvolnění myši
+			case MOVE_TABLE:
+			{
+				pom_element->mGrid->Update();//pouze WA, aby se před zobrazením komponenty zobrazily na správné pozici a nedošlo k probliku
+				refresh_mGrid=true;//navrácení stavu
+				JID=-1;setJobIDOnMouseMove(X,Y);kurzor(posun_l);//kvůli rychlé aktualizaci po přesunu včetně Highlightu
+				Akce=NIC;kurzor(standard);//REFRESH();znovu zakomentován, protože je volán v setJobIDOnMouseMove
+				break;//posun tabulky elementu  - REFRESH() byl 10.5.19 odkomentován, nevím proč byl zakomentovaný (asi z důvodu špatné domněnky, že se i refreshuje průběžně při přesouvání,což je sice pravda, ale není to dostatečné), zposobilo nepřekreslení spojnice mezi tabulkou a elementem po uvolnění myši
+			}
 			case MOVE_ELEMENT:
 			{
 //				if (el_vkabine(X,Y,pom_element_temp->eID))//kontrola zda se snaží uživatel vložit element do kabiny nebo mimo ni
@@ -2525,7 +2532,7 @@ void TForm1::getJobID(int X, int Y)
 //---------------------------------------------------------------------------
 //dle místa kurzoru a vrácené JID (job id) nastaví úlohu
 void TForm1::setJobIDOnMouseMove(int X, int Y)
-{                                                  //pom_element->mGrid->Cells[0][0].Font->Style=TFontStyles()<< fsBold; - nefunguje něco to přenastavuje jinak
+{
 	if(pom_element!=NULL)//ODSTRANĚNÍ předchozí případného highlightnutí elementu či tabulky
 	{
 		if(JID==0 || JID==1){pom_element->stav=1;}//ELEMENT
@@ -2534,22 +2541,26 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	int puvJID=JID;//záloha původního JID
 	Cvektory::TElement *pom_element_puv=pom_element;//pouze ošetření, aby neproblikával mGrid elementu, při přejíždění přes element
 	getJobID(X,Y);//zjištění aktuálního JID
-	if(puvJID!=JID)//pokud došlo ke změně JID, jinak nemá smysl řešit
+	if(puvJID!=JID || pom_element_puv!=pom_element)//pokud došlo ke změně JID, nebo změně elementu bez změny JID (např. situace dva roboti vedle sebe nebo rychlý přesun), jinak nemá smysl řešit
 	{
+		refresh_mGrid=false;//ruší zbytečné vypočítávání tabulek
+		//výchozí nastavení
 		kurzor(standard);//umístít na začátek
-		if(JID==-1 || pom_element==NULL)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
+
+		////volání akce dle JID            //toto bez otestovaní
+		if(JID==-1 || pom_element==NULL || pom_element_puv!=pom_element)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
 		{
-			if(pom_element_puv!=NULL)pom_element_puv->mGrid->CheckLink(X,Y);//najistotu zrušení highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
-			if(puvJID>=4 && puvJID<=10)PmG->CheckLink(X,Y);//najistotu zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
+			if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
+			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 		}
 		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
 		if(JID==1){kurzor(edit_text);pom_element->stav=3;}//ELEMENT název
 		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
 		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
-		if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
-		if(JID==1000)pom_element->mGrid->CheckLink(X,Y);//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
-		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);}//indikace posunutí TABULKY, jeji highlignutí probíhá výše
-		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
+		if(JID==100){kurzor(edit_text);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//název elementu v hlavičce tabulky - aktivace dodáním pouze aktuálních souřadnic
+		if(JID==1000){pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//pouze pro přechod název hlavička, aby název nezůstal tučně - aktivace dodáním pouze aktuálních souřadnic
+		if(1000<=JID && JID<2000){kurzor(posun_ind);pom_element->mGrid->Highlight=true;pom_element->mGrid->MouseMove(X,Y);refresh_mGrid=true;}//indikace posunutí TABULKY, jeji highlignutí probíhá výše a případné volání HINTu
+		if(100<JID && JID<1000){kurzor(zmena_j);pom_element->mGrid->CheckLink(X,Y);refresh_mGrid=true;}//první sloupec tabulky, libovolný řádek, v místě, kde je ODKAZ  - aktivace dodáním pouze aktuálních souřadnic
 		if(JID==-2||JID==-3){kurzor(posun_ind);}//kurzor posun kabiny
 		if((JID==-6||JID==-7||JID==-8||JID==-9||JID<=-11)&&!editace_textu)kurzor(edit_text);//kurzor pro editaci textu
 		if(JID==-4)kurzor(zmena_d_x);//kurzor pro zmenu velikosti kabiny
@@ -2557,9 +2568,17 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
 		if(JID>=11 && JID<=99)kurzor(zmena_d_y);//interaktivní kóty elementů
-		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
+		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));PmG->Refresh();refresh_mGrid=true;}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
+
+		////inteligentní REFRESH
+		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
+		//d.nabuffrovat_mGridy(pom_element->mGrid);
+		refresh_mGrid=true;
+		if(!refresh_mGrid)Memo("false");else Memo("true");
 		REFRESH();
+
 	}
+	//refresh_mGrid=true;
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
 }
 //---------------------------------------------------------------------------
@@ -2937,10 +2956,23 @@ void TForm1::LEFT()//smer doleva
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+//vytvoří výřez pro pan_move
+void TForm1::pan_create()
+{
+	int W=scSplitView_LEFTTOOLBAR->Width;
+	if(MOD==CASOVAOSA || MOD==TECHNOPROCESY)W=0;//zajistí, že se posová i číslování vozíků resp.celá oblast
+	short H=scGPPanel_mainmenu->Height;
+	int Gh=vrat_max_vysku_grafu();if(scGPPanel_bottomtoolbar->Visible)Gh=scGPPanel_bottomtoolbar->Height;
+	Gh-=6;//WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
+	Pan_bmp->Width=ClientWidth;Pan_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
+	Pan_bmp->Canvas->CopyRect(Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Canvas,Rect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
+	//Pan_bmp->SaveToFile("test.bmp");  //pro testovací účely
+}
+//---------------------------------------------------------------------------
 //Posouvá výřez mapy při stisknutém mezerníku a L-myši
 void TForm1::pan_map(TCanvas * canv, int X, int Y)
 {
-	////zajištění skrytí komponent, vedlejší produkt metody d.vykresli_mGridy();
+	////zajištění skrytí komponent, vedlejší produkt metody d.vykresli_mGridy();, protože má v sobě podmínky při pan_move
 	if(pom_temp!=NULL)if(pom_temp->zobrazit_mGrid)d.vykresli_mGridy();
 
 	////vykreslení aktuální pan_bmp
@@ -8337,7 +8369,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   REFRESH();
 
 	zobraz_tip("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu.");
-  if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít přímo do nastavení?",MB_OKCANCEL))
+	if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít přímo do nastavení?",MB_OKCANCEL))
   {
   //scGPGlyphButton_OPTIONSClick(Sender);  //tohle nesežral
   scSplitView_OPTIONS->Opened=true;
@@ -8941,5 +8973,7 @@ void TForm1::Memo(AnsiString Text, bool clear)
 	if(clear)Memo3->Clear();
 	Memo3->Visible=true;
 	Memo3->Lines->Add(Text);
+	Memo3->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
+
