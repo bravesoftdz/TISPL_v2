@@ -34,7 +34,7 @@ TmGrid::TmGrid(TForm *Owner)
 	preRowInd=-1;preColInd=-1;
 	Decimal=3;//implicitní počet desetinných míst u numericeditů
 	IntegerDecimalNull=false;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do počtu decimál i u celých čísel
-	clHighlight=(TColor)RGB(0,120,215);//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent, původní tmavá RGB(43,87,154)
+	clHighlight=(TColor)RGB(225,128,0);//(TColor)RGB(226,122,21);//(TColor)RGB(0,120,215);//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent, původní tmavá RGB(43,87,154)
 	//orámování - default
 	TBorder defBorder;
 	defBorder.Color=(TColor)RGB(200,200,200);
@@ -161,9 +161,9 @@ TmGrid::TmGrid(TForm *Owner)
 	Note.NoteArea=TRect(-1,-1,-1,-1);
 	Note.margin_left=Note.margin_right=Note.margin_bootom=Note.margin_top=0;
 
-
-	updating=true;
-	bmp_out=NULL;
+	////BUFFERování tabulky
+	Redraw=true;buffer=false;
+	Raster=new Graphics::TBitmap;
 }
 //---------------------------------------------------------------------------
 //destruktor, probíhá při ukončování programu, tj. zvážit zda není pozdě
@@ -290,6 +290,7 @@ void TmGrid::Delete()
 		deleteMark=true;//detekce že dochází k odstraňování mGridu
 		//odstranění v tabulce použitých komponent
 		DeleteComponents();
+		delete (Raster);
 		Hint->Free();Hint=NULL;delete Hint;
 		Timer->Free();Timer=NULL;delete Timer;
 		exBUTTON->Free();exBUTTON=NULL;delete exBUTTON;//pozor nesmí mít při ukončování formu focus
@@ -375,8 +376,10 @@ void TmGrid::Show(TCanvas *Canvas)
 		//ošetření proti situaci AntiAliasing_text=true; a AntiAliasing_grid=false, která nemůže nastat resp. byla by zbytečná
 		if(AntiAliasing_text==false)AntiAliasing_grid=false;
 
-		if(Canvas==NULL)Canvas=Form->Canvas;//pokud Canvas není definován, je předpokládáno kreslení přímo do Form, kde je mGrid zobrazován
+		//pokud Canvas není definován, je předpokládáno kreslení přímo do Form, kde je mGrid zobrazován
+		if(Canvas==NULL)Canvas=Form->Canvas;
 
+		//samotné vykreslení
 		if(AntiAliasing_grid==false && AntiAliasing_text==false)
 		{
 			Draw(Canvas);
@@ -384,9 +387,10 @@ void TmGrid::Show(TCanvas *Canvas)
 		}
 		else
 		{
-			////vykreslení pozadí, komponent a textu buněk
-			//if(updating || bmp_out==NULL)
+			short O=Border.Width-1;//pozor na dvou místech, zvětšení oblasti o orámování, nepřidávat +(short)Highlight
+			if(Redraw/* || !buffer*/)//pokud je požadováno vykreslení nebo není dovoleno buffrování
 			{
+				////vykreslení pozadí, komponent a textu buněk
 				Cantialising a;
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 				bmp_in->Width=Width*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
@@ -395,14 +399,17 @@ void TmGrid::Show(TCanvas *Canvas)
 				//bmp_in->Canvas->FillRect(TRect(0,0,bmp_in->Width,bmp_in->Height));
 				Draw(bmp_in->Canvas);
 				DrawNote(bmp_in->Canvas);
-				bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				Canvas->Draw(Left,Top,bmp_out);
-				delete (bmp_in);//velice nutné
-				delete (bmp_out);
-				updating=false;
+				delete (bmp_in);delete (bmp_out);//velice nutné
+
+				////vykreslení gridu
+				if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru, nekreslím do bmp_in, aby neprošlo přes AA, a nekreslím do bmp_out, protože má šírší okraj
+				//MessageBeep(0);
+				////uložení tabulky (doposud vykresleného) do bufferu resp. rasteru
+				Buffer(buffer);
 			}
-			////vykreslení gridu
-			if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru
+			else Canvas->Draw(Left-O,Top-O,Raster);//vykreslení tabulky z bufferu
 		}
 		//zaloha úvodní pozice
 		preTop=Top;preLeft=Left;
@@ -412,11 +419,35 @@ void TmGrid::Show(TCanvas *Canvas)
 	if(Highlight)HighlightTable(Canvas,Border.Color,Border.Width,2);
 }
 //---------------------------------------------------------------------------
+//zda se bude tabulka ukladat do rastrového bufferu, pro urychlení vykreslování
+void TmGrid::Buffer(bool status)
+{
+	if(status)
+	{
+		buffer=true;
+		if(buffer)
+		{
+			short O=Border.Width-1;//pozor na dvou místech
+			//AE-aktiv area, pracovní plocha bez komponent - předělat do univerzálna //zde provizorně ztráta univerzality mGridu, kvůli tomu, aby se nevykresloval do posun komponenty ze statusbarů
+			//int W=F->scSplitView_LEFTTOOLBAR->Width;short H=F->scGPPanel_mainmenu->Height;short Gh=F->scGPPanel_bottomtoolbar->Height-6;//-6=WA, z nějaké důvodu to chce odebrat, aby byla posouváná plocha kompletní
+			//int CW=F->ClientWidth;int CH=F->ClientHeight;
+			//Graphics::TBitmap *AE_bmp=new Graphics::TBitmap;
+			//AE_bmp->Width=ClientWidth;AE_bmp->Height=ClientHeight-H-Gh;//velikost pan plochy
+			//AE_bmp->Canvas->CopyRect(TRect(0+W,0+H,ClientWidth,ClientHeight-H-Gh),Form->Canvas,TRect(0+W,0+H,ClientWidth,ClientHeight-H-Gh));//uloží pan výřez
+			//Raster
+			Raster->Width=Width+O*2;Raster->Height=Height+O*2;//+O*2 kvůli většímu orámování než je bmp
+			Raster->Canvas->CopyRect(TRect(0,0,Raster->Width,Raster->Height),Form->Canvas,TRect(Left-O,Top-O,Left+Raster->Width-O,Top+Raster->Height-O));
+			//Raster->Canvas->CopyRect(TRect(0,0,Raster->Width,Raster->Height),AE_bmp->Canvas,TRect(Left-O,Top-O,Left+Raster->Width-O,Top+Raster->Height-O));
+			//delete (AE_bmp);
+		}
+	}
+	else buffer=false;
+}
+//---------------------------------------------------------------------------
 //zajistí vyvolání překreslení celé tabulky
 void TmGrid::Refresh()
 {
-	 //Form->Repaint();// s přeblikem, ale lépe používat přímo ve v daném formuláři FormPaint(this), což zajistí překreslení bez probliku
-	 updating=true;
+	 Redraw=true;
 	 Show();
 }
 //---------------------------------------------------------------------------
@@ -559,28 +590,24 @@ void TmGrid::DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R)
 	if(Cells[X][Y].TopBorder->Color!=Cells[X][Y].Background->Color)//kvůli sloučeným buňkám
 	{
 		SetBorder(C,Cells[X][Y].TopBorder);
-		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight || Y>0 && Cells[X][Y-1].Type==DRAW && Cells[X][Y-1].Highlight)C->Pen->Color=clHighlight;//v případě highlightu orámování
 		C->MoveTo(R.Left,R.Top);C->LineTo(R.Right,R.Top);
 	}
 	//bottom
 	if(Y==RowCount-1)//akcelerátor, aby se zbytečně nevykreslovalo, pokud by bylo zbytečné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z důvodu možného překryvu s náplní předchozí buňky
 	{
 		SetBorder(C,Cells[X][Y].BottomBorder);
-		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight)C->Pen->Color=clHighlight;//v případě highlightu orámování
 		C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 	}
 	//left
 	if(Cells[X][Y].LeftBorder->Color!=Cells[X][Y].Background->Color)//kvůli sloučeným buňkám
 	{
 		SetBorder(C,Cells[X][Y].LeftBorder);
-		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight || X>0 && Cells[X-1][Y].Type==DRAW && Cells[X-1][Y].Highlight)C->Pen->Color=clHighlight;//v případě highlightu orámování
 		C->MoveTo(R.Left,R.Top);C->LineTo(R.Left,R.Bottom);
 	}
 	//right
 	if(X==ColCount-1)//akcelerátor, aby se zbytečně nevykreslovalo, pokud by bylo zbytečné, vykreslí jenom poslední, invertní filozofie než ukazování na stejné orámování, ale zde z důvodu možného překryvu s náplní předchozí buňky
 	{
 		SetBorder(C,Cells[X][Y].RightBorder);
-		if(Cells[X][Y].Type==DRAW && Cells[X][Y].Highlight)C->Pen->Color=clHighlight;//v případě highlightu orámování
 		C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
 	}
 }
@@ -771,50 +798,8 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 	switch(Cell.Type)
 	{
 		case DRAW:
-		{   //Cell.Text=getTag(X,Y);//provizorní výpis pokud chci očíslovat jednotlivé buňky
-			short Zoom=1;if(AntiAliasing_text)Zoom=3;
-			//nastavení fontu
-			Canv->Font=Cell.Font;
-			int Orientation=Cell.Font->Orientation;
-			if(F->m.null(F->ms.MyToDouble(Cell.Text))<0)Canv->Font=Cell.isNegativeNumber;//podmíněné formátování záporné hodnoty
-			if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))Canv->Font=Cell.isZero;//podmíněné formátování nulové hodnoty
-			Canv->Font->Orientation=Orientation;//musí ještě vrátit orientaci pokud byla podmíněným formátováním přepsána
-			Canv->Font->Size*=Zoom;
-			//SetBkMode(canv->Handle,OPAQUE);//nastavení netransparentního pozadí
-			if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;//podmíněné formátování//zde se asi nezohledňuje, spíše v drawgrid, ale otázka je jak bez AA
-			else Canv->Brush->Color=Cell.Background->Color;//vyplněná buňka
-			Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
-			Canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké - TEST
-			Canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;//asi nepřináší zcela přínos - TEST
-			//zarovnání
-			//samotný výpis
-			long L=Rt.Left,T=Rt.Top;
-			int W=getWidthHeightText(Cell).X*Zoom;
-			int H=getWidthHeightText(Cell).Y*Zoom;
-			//short Rot=1;//slouží jako pomůcka rotace
-			if(Cell.Font->Orientation==900){/*Rot=-1;*/H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
-			if(Cell.Font->Orientation==2700){/*Rot=-1;*/W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
-			switch(Cell.Align)
-			{
-				case aNO:   L=m.round(Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
-				case LEFT:	L=m.round(Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
-				case CENTER:L=m.round((Rt.Left+Rt.Right)/2.0-W/2.0);break;
-				case RIGHT:	L=m.round(Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2.0*Zoom);if(Cell.Font->Orientation==2700)L-=H;break;
-			}
-			switch(Cell.Valign)
-			{
-				case vNO:
-				{
-					T=Rt.Top+Cell.TextPositon.Y*Zoom;
-					if(Cell.Font->Orientation==0)T+=m.round(Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);
-					else T-=m.round(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2.0*Zoom);
-				}break;
-				case TOP:		T=m.round(Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);break;
-				case MIDDLE:T=m.round((Rt.Top+Rt.Bottom)/2.0-H/2.0);break;
-				case BOTTOM:T=m.round(Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2.0*Zoom);break;
-			}
-			TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink,Cell.isActiveLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
-			Cell.LinkCoordinateStart.x=Rect.left;Cell.LinkCoordinateStart.y=Rect.top;Cell.LinkCoordinateEnd.x=Rect.right;Cell.LinkCoordinateEnd.y=Rect.bottom;
+		{
+			SetDraw(Canv,Rt,X,Y,Cell);
 		}break;
 		case readEDIT:
 		{
@@ -859,6 +844,56 @@ void TmGrid::SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsign
 	}
 }
 //---------------------------------------------------------------------------
+//nastaví danou buňku na draw, pomocná metoda výše uvedené
+void TmGrid::SetDraw(TCanvas *Canv,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell)
+{
+	//Cell.Text=getTag(X,Y);//provizorní výpis pokud chci očíslovat jednotlivé buňky
+	short Zoom=1;if(AntiAliasing_text)Zoom=3;
+	//nastavení fontu
+	Canv->Font=Cell.Font;
+	int Orientation=Cell.Font->Orientation;
+	if(F->m.null(F->ms.MyToDouble(Cell.Text))<0)Canv->Font=Cell.isNegativeNumber;//podmíněné formátování záporné hodnoty
+	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))Canv->Font=Cell.isZero;//podmíněné formátování nulové hodnoty
+	if(Cell.Highlight)Canv->Font->Color=clHighlight;//highlignutí formou změny barvy textu
+	Canv->Font->Orientation=Orientation;//musí ještě vrátit orientaci pokud byla podmíněným formátováním přepsána
+	Canv->Font->Size*=Zoom;
+	Canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké - TEST
+	Canv->Font->Pitch = System::Uitypes::TFontPitch::fpFixed;//asi nepřináší zcela přínos - TEST
+	//SetBkMode(canv->Handle,OPAQUE);//nastavení netransparentního pozadí
+	if(Cell.Text=="")Canv->Brush->Color=Cell.isEmpty->Color;//podmíněné formátování//zde se asi nezohledňuje, spíše v drawgrid, ale otázka je jak bez AA
+	else Canv->Brush->Color=Cell.Background->Color;//vyplněná buňka
+	Canv->Brush->Style=bsClear;//nastvení netransparentního pozadí
+	//zarovnání
+	//samotný výpis
+	long L=Rt.Left,T=Rt.Top;
+	int W=getWidthHeightText(Cell).X*Zoom;
+	int H=getWidthHeightText(Cell).Y*Zoom;
+	//short Rot=1;//slouží jako pomůcka rotace
+	if(Cell.Font->Orientation==900){/*Rot=-1;*/H=0;if(Cell.Valign==MIDDLE)H=-getWidthHeightText(Cell).Y;}
+	if(Cell.Font->Orientation==2700){/*Rot=-1;*/W=0;if(Cell.Align==LEFT || Cell.Align==CENTER)W=-W;H=0;if(Cell.Valign==MIDDLE)H=getWidthHeightText(Cell).Y;}
+	switch(Cell.Align)
+	{
+		case aNO:   L=m.round(Rt.Left+Cell.TextPositon.X*Zoom+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
+		case LEFT:	L=m.round(Rt.Left+Cell.LeftMargin*Zoom+Cells[X][Y].LeftBorder->Width/2.0*Zoom);break;
+		case CENTER:L=m.round((Rt.Left+Rt.Right)/2.0-W/2.0);break;
+		case RIGHT:	L=m.round(Rt.Right-W-Cell.RightMargin*Zoom-Cells[X][Y].RightBorder->Width/2.0*Zoom);if(Cell.Font->Orientation==2700)L-=H;break;
+	}
+	switch(Cell.Valign)
+	{
+		case vNO:
+		{
+			T=Rt.Top+Cell.TextPositon.Y*Zoom;
+			if(Cell.Font->Orientation==0)T+=m.round(Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);
+			else T-=m.round(Cell.BottomMargin*Zoom+Cells[X][Y].BottomBorder->Width/2.0*Zoom);
+		}break;
+		case TOP:		T=m.round(Rt.Top+Cell.TopMargin*Zoom+Cells[X][Y].TopBorder->Width/2.0*Zoom);break;
+		case MIDDLE:T=m.round((Rt.Top+Rt.Bottom)/2.0-H/2.0);break;
+		case BOTTOM:T=m.round(Rt.Bottom-H-Cell.BottomMargin*Zoom-Cells[X][Y].BottomBorder->Width/2.0*Zoom);break;
+	}
+	TRect Rect=DrawTextLink(Canv,L,T,Cell.Text,Cell.Font,Cell.isLink,Cell.isActiveLink);//vykreslí text včetně odkazu a vrátí citelnou oblast odkazu
+	Cell.LinkCoordinateStart.x=Rect.left;Cell.LinkCoordinateStart.y=Rect.top;Cell.LinkCoordinateEnd.x=Rect.right;Cell.LinkCoordinateEnd.y=Rect.bottom;
+}
+//---------------------------------------------------------------------------
 //nastaví danou buňku na edit, pomocná metoda výše uvedené
 void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 {
@@ -878,8 +913,8 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(Cell.ShowHint){E->ShowHint=true;E->Hint=Cell.Hint;}
 	if(Cell.Text=="")E->Options->NormalColor=Cell.isEmpty->Color;else E->Options->NormalColor=Cell.Background->Color;
 	E->Options->NormalColorAlpha=255;
-	if(!Cell.Highlight)E->Options->FrameNormalColor=Cell.Background->Color;//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
-	else E->Options->FrameNormalColor=clHighlight;
+	//zrušeno if(Cell.Highlight)E->Options->FrameNormalColor=clHighlight;else//rámeček musí být stejnou barvou jakou buňka, protože mřížka je o 1px na všechny strany roztažená
+	E->Options->FrameNormalColor=Cell.Background->Color;
 	E->Options->FrameNormalColorAlpha=255;
 	E->Options->FrameFocusedColor=clHighlight;
 	E->Options->FrameFocusedColorAlpha=255;
@@ -908,6 +943,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(E->Font->Name=="Roboto Cn")E->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else E->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmíněné formátování
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmíněné formátování
+	if(Cell.Highlight || E->Focused())E->Font->Color=clHighlight;//highlignutí formou změny barvy textu
 	//if(!E->Focused())//pokud není na buňce focus resp. není aktivní - provizorně odstaveno, zdá se, že nemá na nic vliv
 	E->Text=Cell.Text;
 
@@ -968,6 +1004,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(N->Font->Name=="Roboto Cn")N->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else N->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmíněné formátování
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmíněné formátování
+	if(Cell.Highlight || N->Focused())N->Font->Color=clHighlight;//highlignutí formou změny barvy textu
 	//if(!N->Focused())//pokud je na buňce focus resp. je aktivní - provizorně odstaveno, zdá se, že nemá na nic vliv
 	N->Value=ms.MyToDouble(Cell.Text);
 
@@ -1096,6 +1133,7 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(C->Font->Name=="Roboto Cn")C->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else C->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
 	C->Options->FontNormalColor=Cell.Font->Color;
 	//C->ItemIndex=1;//nelze předoznační první položku
+	if(Cell.Highlight || C->Focused())C->Font->Color=clHighlight;//highlignutí formou změny barvy textu
 
 	if(Cell.ShowHint){C->ShowHint=true;C->Hint=Cell.Hint;}
 
@@ -1185,6 +1223,11 @@ TscGPEdit *TmGrid::createEdit(unsigned long Col,unsigned long Row)
 		E = new TscGPEdit(Form);
 		E->Tag=getTag(Col,Row);//vratí ID tag komponenty,absolutní pořadí v paměti
 		E->Name="mGrid_EDIT_"+AnsiString(ID)+"_"+AnsiString(E->Tag);
+
+		//výchozí atributy
+		E->Options->FrameNormalColor=clHighlight;
+		E->Options->FrameNormalColorAlpha=255;
+		E->Options->FrameWidth=2;
 
 		//události
 		E->OnClick=&getTagOnClick;
@@ -1850,55 +1893,59 @@ void TmGrid::SetRegion(TCells &RefCell,unsigned long ColCell_1,unsigned long Row
 	}
 }
 //---------------------------------------------------------------------------
-//zajistí trvalé (jedná se spíše o nastavení) zvýraznění vnějšího orámování buňky
-void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width,bool Refresh)
-{
-// pro případ zkonkretizovaní požadovvku odkomentovat
-//	switch(Cells[Col][Row].Type)
-//	{
-//		case DRAW:
-//		{
-			TBorder hlBorder;
-			hlBorder.Color=Color;
-			hlBorder.Width=Width;
-			hlBorder.Style=psSolid;
-			*Cells[Col][Row].TopBorder=hlBorder;
-			*Cells[Col][Row].LeftBorder=hlBorder;
-			*Cells[Col][Row].RightBorder=hlBorder;
-			*Cells[Col][Row].BottomBorder=hlBorder;
-			if(Refresh)Show();
-//		}break;
-//		case EDIT:HighlightEdit(Col,Row,Color,Width);break;
-//		case NUMERIC:HighlightNumeric(Col,Row,Color,Width);break;
-//	}
-}
-//---------------------------------------------------------------------------
-//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
-void TmGrid::HighlightEdit(TscGPEdit *Edit,TColor Color,unsigned short Width)
-{
-	Edit->Options->FrameNormalColor=Color;
-	Edit->Options->FrameWidth=Width;
-}
-//---------------------------------------------------------------------------
-//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
-void TmGrid::HighlightEdit(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
-{
-	HighlightEdit(getEdit(Col,Row),Color,Width);
-}
-//---------------------------------------------------------------------------
-//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
-void TmGrid::HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color,unsigned short Width)
-{
-	Numeric->Options->FrameNormalColor=Color;
-	Numeric->Options->FrameWidth=Width;
-}
-//---------------------------------------------------------------------------
-//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
-void TmGrid::HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
-{
-	HighlightNumeric(getNumeric(Col,Row),Color,Width);
-}
-//---------------------------------------------------------------------------
+////zajistí trvalé (jedná se spíše o nastavení) zvýraznění vnějšího orámování buňky
+//void TmGrid::HighlightCell(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width,bool Refresh)
+//{
+//// pro případ zkonkretizovaní požadovvku odkomentovat
+////	switch(Cells[Col][Row].Type)
+////	{
+////		case DRAW:
+////		{
+////			TBorder hlBorder;
+////			hlBorder.Color=Color;
+////			hlBorder.Width=Width;
+////			hlBorder.Style=psSolid;
+////			*Cells[Col][Row].TopBorder=hlBorder;
+////			*Cells[Col][Row].LeftBorder=hlBorder;
+////			*Cells[Col][Row].RightBorder=hlBorder;
+////			*Cells[Col][Row].BottomBorder=hlBorder;
+////if(Refresh)Refresh();
+//
+//			Cells[Col][Row].Font->Color=(TColor)RGB(225,128,0);
+//			if(Refresh)TmGrid::Refresh();
+//
+////		}break;
+////		case EDIT:HighlightEdit(Col,Row,Color,Width);break;
+////		case NUMERIC:HighlightNumeric(Col,Row,Color,Width);break;
+////	}
+//}
+////---------------------------------------------------------------------------
+////zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
+//void TmGrid::HighlightEdit(TscGPEdit *Edit,TColor Color,unsigned short Width)
+//{
+//	Edit->Options->FrameNormalColor=Color;
+//	Edit->Options->FrameWidth=Width;
+//}
+////---------------------------------------------------------------------------
+////zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
+//void TmGrid::HighlightEdit(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+//{
+//	HighlightEdit(getEdit(Col,Row),Color,Width);
+//}
+////---------------------------------------------------------------------------
+////zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
+//void TmGrid::HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color,unsigned short Width)
+//{
+//	Numeric->Options->FrameNormalColor=Color;
+//	Numeric->Options->FrameWidth=Width;
+//}
+////---------------------------------------------------------------------------
+////zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
+//void TmGrid::HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color,unsigned short Width)
+//{
+//	HighlightNumeric(getNumeric(Col,Row),Color,Width);
+//}
+////---------------------------------------------------------------------------
 //odzvýrazni všechna zvýraznění
 void TmGrid::unHighlightAll()
 {

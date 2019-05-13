@@ -111,11 +111,11 @@ class TmGrid
 	void HighlightTableOnMouse(int X,int Y,TCanvas *Canvas=NULL);//zajistí zvýraznění orámování tabulky, pokud se do ni vstoupí myší
 	void HighlightRow(long Row,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) řádků dle čísla řádku Row
 	void HighlightRowOnMouse(int X,int Y,TColor Color=clYellow,bool SelFirstRow=false,bool unHighlightPrevRow=true);//zajistí trvalé (jedná se spíše o nastavení) řádků, přes který se přejíždí myší
-	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1,bool Refresh=true);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění vnějšího orámování buňky
-	void HighlightEdit(TscGPEdit *Edit,TColor Color=clRed,unsigned short Width=1);//zajistí  trvalé (jedná se spíše o nastavení)  zvýraznění dané komponenty
-	void HighlightEdit(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
-	void HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznění trvalé (jedná se spíše o nastavení) dané komponenty
-	void HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
+//	void HighlightCell(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1,bool Refresh=true);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění vnějšího orámování buňky
+//	void HighlightEdit(TscGPEdit *Edit,TColor Color=clRed,unsigned short Width=1);//zajistí  trvalé (jedná se spíše o nastavení)  zvýraznění dané komponenty
+//	void HighlightEdit(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
+//	void HighlightNumeric(TscGPNumericEdit *Numeric,TColor Color=clRed,unsigned short Width=1);//zajistí zvýraznění trvalé (jedná se spíše o nastavení) dané komponenty
+//	void HighlightNumeric(unsigned long Col,unsigned long Row,TColor Color=clRed,unsigned short Width=1);//zajistí trvalé (jedná se spíše o nastavení) zvýraznění dané komponenty
 	void unHighlightAll();//odzvýrazni všechna zvýraznění
 	void SetVisibleComponents(bool state);//podle stavu state buď zobrazí nebo skryje všechny komponenty
 	void SetVisibleComponent(unsigned long Col,unsigned long Row,bool state);//podle stavu state buď zobrazí nebo skryje komponentu neurčitého typu v dané buňce
@@ -142,6 +142,8 @@ class TmGrid
 	TPoint CheckLink(int X,int Y,bool invalidate=false);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí kladné číslo sloupce a řádku pokud se na daném místě nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí zda se na dané buňce a souřadnicích nachází odkaz
 	void ShowNote(UnicodeString Text,TColor Color=clRed,short FontSize=11);//zajistí přímé vykreslení poznámky bez refreshe popř. smázání doszením prázdných uvozovek, nově poznámka má také možnost nastavování margin pomocí Note.margin_left,margin_right,margin_bootom,margin_top;
+	void Buffer(bool status=false);//zda se bude tabulka ukladat do rastrového bufferu, pro urychlení vykreslování
+	bool buffer;//zda se bude tabulka ukladat do rastrového bufferu při Show, resp. Refresh, pro urychlení vykreslování
 
 	//proměnné a ukazatele
 	long Tag;//ID formuláře, v kterém je tabulka či tabuky daného formuláře volány
@@ -167,7 +169,9 @@ class TmGrid
 	bool VisibleComponents;//nastaví componenty na skryté nebo zobrazené
 	TColor clHighlight;//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent
 	int SleepHint;//zpoždění zobrazení Hintu v ms
-  bool Highlight;
+	bool Highlight;//zda bude orámování tabulky zvýrazněna nebo nikoliv
+	bool Redraw;//zda se bude tabulka nanovo překreslovat
+	Graphics::TBitmap *Raster;//buffrovací a případně exportní raster
 
  //protected: - nefugovalo, jak jsme si představoval
 	long Width,Height;//velikost komponenty, jen zobrazovat mimo třídu, nelze hodnotami nic nastavovat
@@ -201,6 +205,7 @@ class TmGrid
 	void SetColRow();//nastaví velikost sloupců a řádků dle aktuálního nastavení a potřeby
 	void SetBorder(TCanvas *C,TBorder *Border);//nastaví grafické pero na požadované parametry
 	void SetComponents(TCanvas *Canv,TRect R,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku dle typu
+	void SetDraw(TCanvas *Canv,TRect Rt,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na draw, pomocná metoda výše uvedené
 	void SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na edit, pomocná metoda výše uvedené
 	void SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na numericedit, pomocná metoda objednu výše uvedené
 	void SetLabel(TRect R,unsigned long X,unsigned long Y,TCells &Cell);//nastaví danou buňku na label, pomocná metoda objednu výše uvedené
@@ -236,8 +241,6 @@ class TmGrid
 	long preColInd;//předchozí sloupec na kterém byla myš
 	bool deleteMark;//detekce že dochází k odstraňování mGridu
 	UnicodeString bufText;//ukládá výchozí hodnotu editboxu před psaním, pro případ stisku ESC
-	bool updating;
-	Graphics::TBitmap *bmp_out;
 };
 //---------------------------------------------------------------------------
 extern TmGrid *mGrid;//ukazatel na celou knihovnu
