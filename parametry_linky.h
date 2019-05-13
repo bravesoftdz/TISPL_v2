@@ -26,6 +26,8 @@
 #include <Vcl.Imaging.jpeg.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include "scStyledForm.hpp"
+#include "scImageCollection.hpp"
 #include <sstream>
 #include <iomanip>
 //---------------------------------------------------------------------------
@@ -103,6 +105,8 @@ __published:	// IDE-managed Components
   TrImageEx *rImageEx_jig_podlahovy;
   TscGPCheckBox *scGPCheckBox1;
 	TrImageEx *rImageEx_jig_podvesny;
+  TscHTMLLabel *scHTMLLabel_jig_info;
+  TscStyledForm *scStyledForm1;
 	void __fastcall FormShow(TObject *Sender);
 	void __fastcall Button_stornoClick(TObject *Sender);
 	void __fastcall KonecClick(TObject *Sender);

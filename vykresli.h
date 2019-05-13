@@ -83,6 +83,7 @@ class Cvykresli
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_mGridy(TCanvas *canv=NULL);
+	void nabuffrovat_mGridy(TmGrid *mGrid=NULL);//pomocná metoda vytváøející rastrové obrazy mGridù, pokud je buffer na NULL, buffrují se všechny tabulky, pokud ne, tak pouze ta z parametru
 	void vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_od,Cvektory::TElement *Element_do);
 	void vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement * aktElement=NULL,double Offset=0,short highlight=0,float width=0.2,TColor color=clGray);//v metrických jednotkách kromì width, zde v px + automaticky dopoèítává délku a dosazuje aktuálnì nastavené jednotky highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, že je to kóta kabiny
 	void vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement=NULL,int Offset=0,short highlight=0,float width=0.2,TColor color=clGray);//v px + dosazuje aktuálnì nastavené jednotky, highlight: 0-ne,1-ano,2-ano+vystoupení kóty i poziènì, aktElement pokud bude NULL, pøedpokládá se, že je to kóta kabiny

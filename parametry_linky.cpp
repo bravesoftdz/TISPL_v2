@@ -27,6 +27,8 @@
 #pragma link "scGPExtControls"
 #pragma link "rHintWindow"
 #pragma link "scGPImages"
+#pragma link "scStyledForm"
+#pragma link "scImageCollection"
 #pragma resource "*.dfm"
 TForm_parametry_linky *Form_parametry_linky;
 //---------------------------------------------------------------------------
@@ -49,6 +51,7 @@ __fastcall TForm_parametry_linky::TForm_parametry_linky(TComponent* Owner)
 	clAcGlyph=(TColor)RGB(0,128,255);//active
 	PopUPmenu->Color=clBg;//nastavení pozadí barvy formuláøe
 	pasiveColor();//nastaví všechny položky na pasivní resp. default barvu
+
 
 }
 //---------------------------------------------------------------------------
@@ -95,6 +98,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     input_state=LOADING;
     COL=0; ROW=0;
 		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
+    F->scStyledForm1->ShowClientInActiveEffect();
 
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
@@ -229,8 +233,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 		PopUPmenu->Visible=false;
 
 
-
-    rEditNum_takt->SetFocus();
+    if(rEditNum_takt->Enabled) rEditNum_takt->SetFocus();
+    else Button_save->SetFocus();
 		zobrazOramovani=false;
 
 		if(scGPSwitch->State==0)
@@ -400,7 +404,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 scPanel_takt->Top=scGPButton_obecne->Top+scGPButton_obecne->Height;
 	 scGPButton_pohon->Top=scPanel_takt->Top+scPanel_takt->Height+odsazeni;
 	 mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height;
-	 scGPGlyphButton_ADD->Top=mGrid->Top+mGrid->Height;
+	 scGPGlyphButton_ADD->Top=mGrid->Top+mGrid->Height + 1;
 	 scGPButton_vozik->Top=scGPButton_obecne->Top;
 	 scPanel_vozik->Top=scPanel_takt->Top;
 	 rHTMLLabel_podlahovy->Top=scGPButton_vozik->Top+scGPButton_vozik->Height/2-rHTMLLabel_podlahovy->Height/2;
@@ -467,16 +471,6 @@ void TForm_parametry_linky::nacti_pohony ()
 
          getmGridWidth();
 
-//          mGrid->Cells[0][i].Font->Name="Roboto";
-//          mGrid->Cells[1][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-//          mGrid->Cells[2][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-//          mGrid->Cells[3][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-//          mGrid->Cells[4][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-//          mGrid->Cells[5][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-//          mGrid->Cells[6][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-//          mGrid->Cells[7][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-//          mGrid->Cells[8][i].Font->Name=mGrid->Cells[0][i].Font->Name;
-
          if(Form1->d.v.pohon_je_pouzivan(ukaz->n))
           {
           //pokud je pohon používán, zámìrnì nenastavím o jaký typ bunìk se jedná, aby do nich nešlo vstupovat a editovat
@@ -532,6 +526,11 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[4][i].Background->Color=  mGrid->Cells[2][i].Background->Color;
           mGrid->Cells[5][i].Background->Color=  mGrid->Cells[2][i].Background->Color;
           mGrid->Cells[7][i].Background->Color=  mGrid->Cells[2][i].Background->Color;
+//          mGrid->getButton(7,i)->Options->FramePressedColor=clWhite;
+//          mGrid->getButton(7,i)->Options->FrameNormalColor=clWhite;
+//          mGrid->getButton(7,i)->Options->FrameFocusedColor=clWhite;
+         // mGrid->getButton(7,i)->Enabled=false;
+
           }
           else
           {
@@ -569,6 +568,7 @@ void __fastcall TForm_parametry_linky::Button_stornoClick(TObject *Sender)
   mGrid->Delete();
 	//M toto tu nesmí být:Form_parametry_linky->Close();
 	zrusena_prirazeni_PID=NULL;delete zrusena_prirazeni_PID;
+   F->scStyledForm1->HideClientInActiveEffect();
 	Storno=true;
 }
 //---------------------------------------------------------------------------
@@ -612,27 +612,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 
         if(count>0)
         {
-             scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,8);
-             scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,8);
 
-             this->Color=F->m.clIntensive(this->Color,8);//zesvìtlení spodního formu
+             scStyledForm1->ShowClientInActiveEffect();
 
             if(mrOk==Form1->MB("Nelze uložit, vyplòte všechny údaje o pohonu",MB_OK))
             {
              Ulozit=false;
-
-             scGPButton_vozik->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_vozik->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_obecne->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_obecne->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_pohon->Options->FramePressedColor=F->m.clIntensive(this->Color,-8);
-             scGPButton_pohon->Options->PressedColor=F->m.clIntensive(this->Color,-8);
-
-             this->Color=F->m.clIntensive(this->Color,-8);
+             scStyledForm1->HideClientInActiveEffect();
              }
         }
 
@@ -905,6 +891,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
    if(Ulozit)
    {
     mGrid->Delete();
+    F->scStyledForm1->HideClientInActiveEffect();
 		Close();//v testu, mùže padat
 	 }
 }
@@ -921,13 +908,6 @@ void __fastcall TForm_parametry_linky::Button_ADD_Click(TObject *Sender)
 	mGrid->Cells[1][i].Text = "nový pohon ";//rStringGridEd_tab_dopravniky->Cells[1][i - 1];
 
    getmGridWidth();
-//   mGrid->Cells[1][i].Font->Name="Roboto";
-//   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
 
    mGrid->Cells[1][i].Type=mGrid->EDIT;
    mGrid->Cells[2][i].Type=mGrid->EDIT;
@@ -1195,12 +1175,20 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
     mGrid->Cells[5][i].Text="250";
     }
 
-    if(i>=3)
+    if(i==3)
     {
-    mGrid->Cells[2][i].Text=mGrid->Cells[2][i-1].Text * AnsiString(i-1);
-    mGrid->Cells[3][i].Text=mGrid->Cells[3][i-1].Text * AnsiString(i-1);
-    mGrid->Cells[4][i].Text=mGrid->Cells[4][i-1].Text * AnsiString(i-1);
-    mGrid->Cells[5][i].Text=mGrid->Cells[5][i-1].Text * AnsiString(i-1);
+    mGrid->Cells[2][i].Text="1";
+    mGrid->Cells[3][i].Text="3";
+    mGrid->Cells[4][i].Text="2,2";
+    mGrid->Cells[5][i].Text="450";
+    }
+
+    if(i==4)
+    {
+    mGrid->Cells[2][i].Text="1,5";
+    mGrid->Cells[3][i].Text="5";
+    mGrid->Cells[4][i].Text="4";
+    mGrid->Cells[5][i].Text="1230";
     }
 
    mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
@@ -2301,20 +2289,6 @@ void __fastcall TForm_parametry_linky::FormMouseDown(TObject *Sender, TMouseButt
 //---------------------------------------------------------------------------
 void TForm_parametry_linky::getmGridColors()
   {
-//  mGrid->Cells[0][0].Font->Name="Roboto";
-//  mGrid->Cells[1][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[2][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[3][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[4][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[5][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[6][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[7][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[8][0].Font->Name=mGrid->Cells[0][0].Font->Name;
-//
-//  mGrid->Cells[2][1].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[3][1].Font->Name=mGrid->Cells[0][0].Font->Name;
-//  mGrid->Cells[4][1].Font->Name=mGrid->Cells[0][0].Font->Name;
-
   mGrid->Cells[0][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,80);
   mGrid->Cells[1][0].Font->Color=clBlack;//F->m.clIntensive(clBlack,50);
   mGrid->Cells[2][0].Font->Color= mGrid->Cells[1][0].Font->Color;

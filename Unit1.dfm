@@ -3975,6 +3975,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button13'
     TabOrder = 36
+    Visible = False
     OnClick = Button13Click
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
@@ -4456,8 +4457,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2466
-        Top = 2629
+        Left = 2478
+        Top = 2641
         Width = 244
         Height = 31
         Align = alCustom
@@ -5802,9 +5803,10 @@ object Form1: TForm1
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
-    Font.Height = -15
-    Font.Name = 'Verdana'
+    Font.Height = -16
+    Font.Name = 'Roboto'
     Font.Style = [fsBold]
+    Font.Quality = fqAntialiased
     ParentFont = False
     TabOrder = 41
     Visible = False
@@ -5841,9 +5843,10 @@ object Form1: TForm1
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
-    Font.Height = -15
-    Font.Name = 'Verdana'
+    Font.Height = -16
+    Font.Name = 'Roboto'
     Font.Style = [fsBold]
+    Font.Quality = fqAntialiased
     ParentFont = False
     TabOrder = 42
     Visible = False
@@ -5880,9 +5883,10 @@ object Form1: TForm1
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
-    Font.Height = -15
-    Font.Name = 'Verdana'
+    Font.Height = -16
+    Font.Name = 'Roboto'
     Font.Style = [fsBold]
+    Font.Quality = fqAntialiased
     ParentFont = False
     TabOrder = 43
     Visible = False
@@ -5919,9 +5923,10 @@ object Form1: TForm1
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
-    Font.Height = -15
-    Font.Name = 'Verdana'
+    Font.Height = -16
+    Font.Name = 'Roboto'
     Font.Style = [fsBold]
+    Font.Quality = fqAntialiased
     ParentFont = False
     TabOrder = 44
     Visible = False
@@ -5958,9 +5963,10 @@ object Form1: TForm1
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
     Font.Color = 10114859
-    Font.Height = -15
-    Font.Name = 'Verdana'
+    Font.Height = -16
+    Font.Name = 'Roboto'
     Font.Style = []
+    Font.Quality = fqAntialiased
     ParentFont = False
     TabOrder = 46
     Visible = False
@@ -7310,10 +7316,10 @@ object Form1: TForm1
     end
   end
   object Memo3: TMemo
-    Left = 644
-    Top = 383
+    Left = 825
+    Top = 50
     Width = 185
-    Height = 56
+    Height = 224
     Lines.Strings = (
       'Memo3')
     TabOrder = 47
@@ -8292,7 +8298,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118002007400710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004807480710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9423,7 +9429,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013D001008300830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013D003808380830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
