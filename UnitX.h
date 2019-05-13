@@ -12,6 +12,7 @@
 class TFormX : public TForm
 {
 __published:	// IDE-managed Components
+
 private:	// User declarations
 	void zmena_aRD ();
 	void zmena_R ();
@@ -28,7 +29,7 @@ public:		// User declarations
 	void OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
-	void unhighlight_tabulky();
+	void odstranit_korelaci();
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)

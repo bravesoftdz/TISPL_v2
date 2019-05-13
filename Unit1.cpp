@@ -805,9 +805,9 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_zahodit->Left=scGPPanel_bottomtoolbar->Width/2+11-68;
 	scGPButton_ulozit->Left=scGPButton_zahodit->Left-scGPButton_zahodit->Width-22;
 	scGPLabel1->Left=22;
-	scGPLabel_prepinacKot->Left=scGPLabel1->Left;
+	scGPLabel_prepinacKot->Left=scGPLabel1->Left;//label k přepínači kót
 	scGPComboBox_orientace->Left=scGPLabel1->Left+scGPLabel1->Width;
-	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;
+	scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//combobox na přepínání mezi kotami čas -- delka
 	scGPButton_posun_dalsich_elementu->Left=scGPPanel_bottomtoolbar->Width-scGPButton_posun_dalsich_elementu->Width-25;
 	scButton_zamek->Left=scGPButton_posun_dalsich_elementu->Left-scButton_zamek->Width-18;
 	scGPButton_viditelnostKoty->Left=scButton_zamek->Left-scGPButton_viditelnostKoty->Width-19;
@@ -816,13 +816,16 @@ void __fastcall TForm1::FormResize(TObject *Sender)
 	scGPButton_ulozit->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_ulozit->Height)/2;
 	scGPButton_zahodit->Top=scGPButton_ulozit->Top;
 	scGPComboBox_orientace->Top=(scGPPanel_bottomtoolbar->Height-scGPComboBox_orientace->Height)/2;
-	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;
+	scGPComboBox_prepinacKot->Top=scGPComboBox_orientace->Top;//combobox na přepínání mezi kotami čas -- delka
 	scGPLabel1->Top=(scGPPanel_bottomtoolbar->Height-scGPLabel1->Height)/2;
 	scGPLabel_prepinacKot->Top=scGPLabel1->Top;
 	scGPButton_posun_dalsich_elementu->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_posun_dalsich_elementu->Height)/2;
 	scButton_zamek->Top=(scGPPanel_bottomtoolbar->Height-scButton_zamek->Height)/2;
 	scGPButton_viditelnostKoty->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostKoty->Height)/2;
 	scGPButton_viditelnostmGrid->Top=(scGPPanel_bottomtoolbar->Height-scGPButton_viditelnostmGrid->Height)/2;
+	//horní lišta
+	if(MOD==NAHLED)scGPGlyphButton_zpravy_ikona->Left=Nahled->Left-scGPGlyphButton_zpravy_ikona->Width;
+	else scGPGlyphButton_zpravy_ikona->Left=Schema->Left-scGPGlyphButton_zpravy_ikona->Width;
 	if(/*MOD==REZERVY ||*/ MOD==CASOVAOSA)Invalidate();
 	else REFRESH();
 }
@@ -1907,7 +1910,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 	if(editace_textu)
 		Smaz_kurzor();
 	if(MOD==NAHLED)
-		FormX->unhighlight_tabulky();
+		FormX->odstranit_korelaci();
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
 	{
 		scSplitView_MENU->Opened=false;
@@ -2175,7 +2178,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				pom_element->RT=m.RT(pom_element->PT1,d.v.vzdalenost_od_predchoziho_elementu(pom_element),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
 				if(pom_element->eID==2)pom_element->mGrid->Cells[1][2].Text=m.round2double(outPT(pom_element->RT),3);
-				if(pom_element->eID==4)pom_element->mGrid->Cells[1][4].Text=m.round2double(outPT(pom_element->RT),3);
+				if(pom_element->eID==4)pom_element->mGrid->Cells[1][5].Text=m.round2double(outPT(pom_element->RT),3);
       }
 			nahled_ulozit(true);
 			break;
@@ -3290,6 +3293,7 @@ void TForm1::add_element (int X, int Y)
 {
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
+	FormX->input_state=FormX->NO;//blokace událostí při vkládání elementu
 	short trend=m.Rt90(d.trend(pom));
 	short rotace_symbolu=rotace_symbol(trend,X,Y);
 	bool vkabine=el_vkabine(X,Y,element_id);
@@ -3337,6 +3341,7 @@ void TForm1::add_element (int X, int Y)
 
   //Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 	nahled_ulozit(true);//důvod k uložení náhledu
+	FormX->input_state=FormX->NOTHING;//blokace událostí při vkládání elementu
 }
 //---------------------------------------------------------------------------
 //vrací zda se element nachází v lakovací kabině
@@ -3799,7 +3804,7 @@ void TForm1::design_tab_pohon(int index)
 				}
 				else
 				{
-          PmG->AddRow(false,false);
+					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
 					PmG->AddRow(false,false);
@@ -3910,9 +3915,10 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][2].Text="Rozteč "+R;
 		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
 		PmG->Cells[0][4].Text="Rozestup "+Rz;
+		PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);
 		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
 		////kvuli změně jednotek
-		PmG->Cells[0][5].Text="Mezera mezi JIG "+AnsiString(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi))+"° "+Rz;//při této verzi tabulky bude vždy min 1 element
+		PmG->Cells[0][5].Text="Mezera mezi jigy "+AnsiString(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi))+"° "+Rz;//při této verzi tabulky bude vždy min 1 element
 		PmG->Cells[1][5].Text=outRz(m.mezera(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi),pom_temp->pohon->Rz,1));
 	}
 	if(PmG->RowCount==7)
@@ -3923,11 +3929,12 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][2].Text="Rozteč "+R;
 		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
 		PmG->Cells[0][4].Text="Rozestup "+Rz;
+		PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);
 		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
 		////kvuli změně jednotek
-		PmG->Cells[0][5].Text="Mezera mezi JIG 0° "+Rz;
+		PmG->Cells[0][5].Text="Mezera mezi jigy 0° "+Rz;
 		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
-		PmG->Cells[0][6].Text="Mezera mezi JIG 90°"+Rz;
+		PmG->Cells[0][6].Text="Mezera mezi jigy 90°"+Rz;
 		PmG->Cells[1][6].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
 	}
 	//zobrazování a skrývání exButton
@@ -4183,10 +4190,15 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][2].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="čas uzavřené STOP stanice";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//nastavení exButtonu, skrývání řádku max.WT Stop
+			E->mGrid->exBUTTONVisible=true;
+			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+			E->mGrid->exBUTTON->ShowHint=true;E->mGrid->exBUTTON->Hint="Rozšířené položky";
+			E->mGrid->VisibleRow(2,false,false);
 			break;
 		}
 
@@ -4206,10 +4218,10 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
-			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[0][2].ShowHint=true;
 			break;
 		}
 		case 2://robot se stop stanicí
@@ -4230,18 +4242,18 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_2;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="časová rezerva";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="časová rezerva";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[0][3].ShowHint=true;
 			break;
 		}
 		case 3://robot s pasivní otočí
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,7);
+			E->mGrid->Create(2,8);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(m.PT(E->LO1,pom_temp->pohon->aRD));
@@ -4250,114 +4262,207 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
-			E->mGrid->Cells[0][3].Text="otoč "+cas;
-			E->mGrid->Cells[1][3].Text=outPT(m.PTo(E->OTOC_delka,pom_temp->pohon->aRD));
-			E->PTotoc=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
-			E->mGrid->Cells[0][4].Text="otoč "+delka_otoce;
-			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outDO(E->OTOC_delka);
-			E->mGrid->Cells[0][4].BottomBorder->Width=2;
-			E->mGrid->Cells[1][4].BottomBorder->Width=2;
-			E->mGrid->Cells[0][5].Text="PT2 "+cas;
-			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(m.PT(E->LO2,pom_temp->pohon->aRD));
-			E->PT2=inPT(ms.MyToDouble(E->mGrid->Cells[1][5].Text));
-			E->mGrid->Cells[0][6].Text="LO2 "+LO;
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outLO(E->LO2);
-			E->mGrid->Cells[0][6].BottomBorder->Width=2;
-			E->mGrid->Cells[1][6].BottomBorder->Width=2;
+			E->mGrid->Cells[0][3].Text="úhel [°]";
+			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][4].Text="otoč "+cas;
+			E->mGrid->Cells[1][4].Text=outPT(m.PTo(E->OTOC_delka,pom_temp->pohon->aRD));
+			E->PTotoc=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
+			E->mGrid->Cells[0][5].Text="otoč "+delka_otoce;
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outDO(E->OTOC_delka);
+			E->mGrid->Cells[0][5].BottomBorder->Width=2;
+			E->mGrid->Cells[1][5].BottomBorder->Width=2;
+			E->mGrid->Cells[0][6].Text="PT2 "+cas;
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(m.PT(E->LO2,pom_temp->pohon->aRD));
+			E->PT2=inPT(ms.MyToDouble(E->mGrid->Cells[1][6].Text));
+			E->mGrid->Cells[0][7].Text="LO2 "+LO;
+			E->mGrid->Cells[1][7].Type=E->mGrid->EDIT;E->mGrid->Cells[1][7].Text=outLO(E->LO2);
+			E->mGrid->Cells[0][7].BottomBorder->Width=2;
+			E->mGrid->Cells[1][7].BottomBorder->Width=2;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][3].ShowHint=true;
-			E->mGrid->Cells[1][4].Hint="délka otoče";
-			E->mGrid->Cells[1][4].ShowHint=true;
-			E->mGrid->Cells[1][5].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][5].ShowHint=true;
-			E->mGrid->Cells[1][6].Hint="délka lakovácího okna";
-			E->mGrid->Cells[1][6].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="délka otoče";
+			E->mGrid->Cells[0][5].ShowHint=true;
+			E->mGrid->Cells[0][6].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][6].ShowHint=true;
+			E->mGrid->Cells[0][7].Hint="délka lakovácího okna";
+			E->mGrid->Cells[0][7].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,3);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+      I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
+			C=NULL;delete C;
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,6);
+			E->mGrid->Create(2,7);
 //			E->mGrid->DefaultCell.isLink->Color=clFontRight;//přiřazení barvy fontu
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="PTo "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
-			E->mGrid->Cells[0][3].Text="PT2 "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
-			E->mGrid->Cells[0][5].Text="WT "+cas;
-			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
-			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][5].Text));
-			E->mGrid->Cells[0][4].Text="RT "+cas;
-			E->mGrid->Cells[1][4].Text=outPT(m.RT(E->PT1+E->PT2,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
-			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][4].Text));
+			E->mGrid->Cells[0][2].Text="úhel [°]";
+			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][3].Text="PTo "+cas;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][4].Text="PT2 "+cas;
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(E->PT2);
+			E->mGrid->Cells[0][6].Text="WT "+cas;
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
+			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][6].Text));
+			E->mGrid->Cells[0][5].Text="RT "+cas;
+			E->mGrid->Cells[1][5].Text=outPT(m.RT(E->PT1+E->PT2+E->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
+			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][5].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_4;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][3].ShowHint=true;
-			E->mGrid->Cells[1][4].Hint="časová rezerva";
-			E->mGrid->Cells[1][4].ShowHint=true;
-			E->mGrid->Cells[1][5].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][5].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			E->mGrid->Cells[0][4].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="časová rezerva";
+			E->mGrid->Cells[0][5].ShowHint=true;
+			E->mGrid->Cells[0][6].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[0][6].ShowHint=true;
+			//nastavení hintů
+			E->mGrid->Cells[0][2].Hint="délka otoče";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,2);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+      I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
+			C=NULL;delete C;
 			break;
 		}
 		case 5://otoč pasivní
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,3);
+			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
-			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
-			E->mGrid->Cells[0][2].Text="PT "+cas;//PT u pasivní nelze zadat
-			E->mGrid->Cells[1][2].Text=outPT(m.PTo(E->OTOC_delka,pom_temp->pohon->aRD));
-			E->PTotoc=inPT(ms.MyToDouble(E->mGrid->Cells[1][2].Text));
+			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outDO(E->OTOC_delka);
+			E->mGrid->Cells[0][3].Text="PT "+cas;//PT u pasivní nelze zadat
+			E->mGrid->Cells[1][3].Text=outPT(m.PTo(E->OTOC_delka,pom_temp->pohon->aRD));
+			E->PTotoc=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;//Delší text
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="délka otoče";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka otoče";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,1);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+      I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
+			C=NULL;delete C;
 			break;
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,3);
+			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
-			E->mGrid->Cells[1][1].Text=outDO(m.Dotoc(E->PTotoc,pom_temp->pohon->aRD));//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
-			E->OTOC_delka=inDO(ms.MyToDouble(E->mGrid->Cells[1][1].Text));
-			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;//D u aktivní nelze zadat
+			E->mGrid->Cells[1][2].Text=outDO(m.Dotoc(E->PTotoc,pom_temp->pohon->aRD));//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+			E->OTOC_delka=inDO(ms.MyToDouble(E->mGrid->Cells[1][2].Text));
+			E->mGrid->Cells[0][3].Text="PT "+cas;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="délka otoče";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka otoče";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,1);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+      I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
+			C=NULL;delete C;
 			break;
 		}
 	}
@@ -4388,10 +4493,15 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_0;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][2].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="čas uzavřené STOP stanice";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//nastavení exButtonu, skrývání řádku max.WT Stop
+			E->mGrid->exBUTTONVisible=true;
+			E->mGrid->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+			E->mGrid->exBUTTON->ShowHint=true;E->mGrid->exBUTTON->Hint="Rozšířené položky";
+			E->mGrid->VisibleRow(2,false,false);
 			break;
 		}
 
@@ -4410,10 +4520,10 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
-			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[0][2].ShowHint=true;
 			break;
 		}
 		case 2://robot se stop stanicí
@@ -4430,18 +4540,18 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Columns[0].Width=sirka_2;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="časová rezerva";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][3].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="časová rezerva";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[0][3].ShowHint=true;
 			break;
 		}
 		case 3://robot s pasivní otočí
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,7);
+			E->mGrid->Create(2,8);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
@@ -4449,109 +4559,198 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
-			E->mGrid->Cells[0][3].Text="otoč "+cas;
-			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
-			E->mGrid->Cells[0][4].Text="otoč "+delka_otoce;
-			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outDO(E->OTOC_delka);
-			E->mGrid->Cells[0][4].BottomBorder->Width=2;
-			E->mGrid->Cells[1][4].BottomBorder->Width=2;
-			E->mGrid->Cells[0][5].Text="PT2 "+cas;
-			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(E->PT2);
-			E->mGrid->Cells[0][6].Text="LO2 "+LO;
-			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outLO(E->LO2);
-			E->mGrid->Cells[0][6].BottomBorder->Width=2;
-			E->mGrid->Cells[1][6].BottomBorder->Width=2;
+			E->mGrid->Cells[0][3].Text="úhel [°]";
+			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][4].Text="otoč "+cas;
+			E->mGrid->Cells[1][4].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][5].Text="otoč "+delka_otoce;
+			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outDO(E->OTOC_delka);
+			E->mGrid->Cells[0][5].BottomBorder->Width=2;
+			E->mGrid->Cells[1][5].BottomBorder->Width=2;
+			E->mGrid->Cells[0][6].Text="PT2 "+cas;
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(E->PT2);
+			E->mGrid->Cells[0][7].Text="LO2 "+LO;
+			E->mGrid->Cells[1][7].Type=E->mGrid->EDIT;E->mGrid->Cells[1][7].Text=outLO(E->LO2);
+			E->mGrid->Cells[0][7].BottomBorder->Width=2;
+			E->mGrid->Cells[1][7].BottomBorder->Width=2;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="délka lakovácího okna";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][3].ShowHint=true;
-			E->mGrid->Cells[1][4].Hint="délka otoče";
-			E->mGrid->Cells[1][4].ShowHint=true;
-			E->mGrid->Cells[1][5].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][5].ShowHint=true;
-			E->mGrid->Cells[1][6].Hint="délka lakovácího okna";
-			E->mGrid->Cells[1][6].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][4].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="délka otoče";
+			E->mGrid->Cells[0][5].ShowHint=true;
+			E->mGrid->Cells[0][6].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][6].ShowHint=true;
+			E->mGrid->Cells[0][7].Hint="délka lakovácího okna";
+			E->mGrid->Cells[0][7].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,3);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+      I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
+			C=NULL;delete C;
 			break;
 		}
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,6);
+			E->mGrid->Create(2,7);
 //			E->mGrid->DefaultCell.isLink->Color=clFontRight;//přiřazení barvy fontu
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-
-			E->mGrid->Cells[0][2].Text="PTo "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
-			E->mGrid->Cells[0][3].Text="PT2 "+cas;
-			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PT2);
-			E->mGrid->Cells[0][4].Text="RT "+cas;
-			E->mGrid->Cells[1][4].Text=outPT(E->RT);
-			E->mGrid->Cells[0][5].Text="WT "+cas;
-			E->mGrid->Cells[1][5].Type=E->mGrid->EDIT;E->mGrid->Cells[1][5].Text=outPT(E->WT);
+			E->mGrid->Cells[0][2].Text="úhel [°]";
+			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][3].Text="PTo "+cas;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][4].Text="PT2 "+cas;
+			E->mGrid->Cells[1][4].Type=E->mGrid->EDIT;E->mGrid->Cells[1][4].Text=outPT(E->PT2);
+			E->mGrid->Cells[0][5].Text="RT "+cas;
+			E->mGrid->Cells[1][5].Text=outPT(E->RT);
+			E->mGrid->Cells[0][6].Text="WT "+cas;
+			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(E->WT);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_4;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][2].ShowHint=true;
-			E->mGrid->Cells[1][3].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
-			E->mGrid->Cells[1][3].ShowHint=true;
-			E->mGrid->Cells[1][4].Hint="časová rezerva";
-			E->mGrid->Cells[1][4].ShowHint=true;
-			E->mGrid->Cells[1][5].Hint="maximální možná doba čekání na palec";
-			E->mGrid->Cells[1][5].ShowHint=true;
+			E->mGrid->Cells[0][1].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][1].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			E->mGrid->Cells[0][4].Hint="celkový čas procesu, který je složen z dílčích časů (přesun robota, aretace, lakování, číštění pistole,...)";
+			E->mGrid->Cells[0][4].ShowHint=true;
+			E->mGrid->Cells[0][5].Hint="časová rezerva";
+			E->mGrid->Cells[0][5].ShowHint=true;
+			E->mGrid->Cells[0][6].Hint="maximální možná doba čekání na palec";
+			E->mGrid->Cells[0][6].ShowHint=true;
+			//nastavení hintů
+			E->mGrid->Cells[0][2].Hint="délka otoče";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,2);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+      I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
 			break;
 		}
 		case 5://otoč pasivní
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,3);
+			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
-			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);
-			E->mGrid->Cells[0][2].Text="PT "+cas;//PT u pasivní nelze zadat
-			E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;
+			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outDO(E->OTOC_delka);
+			E->mGrid->Cells[0][3].Text="PT "+cas;//PT u pasivní nelze zadat
+			E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;//Delší text
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="délka otoče";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka otoče";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,1);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+			I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
 			break;
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,3);
+			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
-			E->mGrid->Cells[1][1].Text=outDO(E->OTOC_delka);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
-			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outPT(E->PTotoc);
+			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
+			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;//D u aktivní nelze zadat
+			E->mGrid->Cells[1][2].Text=outDO(E->OTOC_delka);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
+			E->mGrid->Cells[0][3].Text="PT "+cas;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			//nastavení hintů
-			E->mGrid->Cells[1][1].Hint="délka otoče";
-			E->mGrid->Cells[1][1].ShowHint=true;
-			E->mGrid->Cells[1][2].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[1][2].ShowHint=true;
+			E->mGrid->Cells[0][2].Hint="délka otoče";
+			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
+			E->mGrid->Cells[0][3].ShowHint=true;
+			//vytvoření comba COMBA
+			E->mGrid->Update();
+			TscGPComboBox *C=E->mGrid->getCombo(1,1);
+			C->Font->Color=(TColor)RGB(43,87,154);
+			TscGPListBoxItem *I;
+			I=C->Items->Add();
+			I->Caption=-180;
+			I=C->Items->Add();
+			I->Caption=-90;
+			I=C->Items->Add();
+			I->Caption=90;
+			I=C->Items->Add();
+			I->Caption=180;
+			I=NULL;delete I;
+			//přiřazení COMBA
+			if(E->rotace_jig==-180)C->ItemIndex=0;
+			if(E->rotace_jig==-90)C->ItemIndex=1;
+			if(E->rotace_jig==90)C->ItemIndex=2;
+			if(E->rotace_jig==180)C->ItemIndex=3;
 			break;
 		}
 	}
@@ -4586,8 +4785,8 @@ void TForm1::redesign_element()
 		}
 		case 3:
 		{
-			if (JID==101 || JID==103 || JID==105) zcas=true;//čas
-			if (JID==102 || JID==106) zLO=true;//delka
+			if (JID==101 || JID==104 || JID==106) zcas=true;//čas
+			if (JID==102 || JID==107) zLO=true;//delka
 			if (JID==104) zdelka_otoce=true;//delka otoče
 			break;
 		}
@@ -4598,14 +4797,14 @@ void TForm1::redesign_element()
 		}
 		case 5:
 		{
-			if (JID==101) zdelka_otoce=true;//délka
-			if (JID==102) zcas=true;//čas
+			if (JID==102) zdelka_otoce=true;//délka
+			if (JID==103) zcas=true;//čas
 			break;
 		}
 		case 6:
 		{
-			if (JID==101) zdelka_otoce=true;//délka
-			if (JID==102) zcas=true;//čas
+			if (JID==102) zdelka_otoce=true;//délka
+			if (JID==103) zcas=true;//čas
 			break;
 		}
 	}
@@ -4713,16 +4912,16 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[0][2].Text="LO1 "+LO;
-			E->mGrid->Cells[0][3].Text="otoč "+cas;
-			E->mGrid->Cells[0][4].Text="otoč "+delka_otoce;
-			E->mGrid->Cells[0][5].Text="PT2 "+cas;
-			E->mGrid->Cells[0][6].Text="LO2 "+LO;
+			E->mGrid->Cells[0][4].Text="otoč "+cas;
+			E->mGrid->Cells[0][5].Text="otoč "+delka_otoce;
+			E->mGrid->Cells[0][6].Text="PT2 "+cas;
+			E->mGrid->Cells[0][7].Text="LO2 "+LO;
 			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->PT1),3);
 			E->mGrid->Cells[1][2].Text=m.round2double(outLO(E->LO1),3);
-			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PTotoc),3);
-			E->mGrid->Cells[1][4].Text=m.round2double(outDO(E->OTOC_delka),3);
-			E->mGrid->Cells[1][5].Text=m.round2double(outPT(E->PT2),3);
-			E->mGrid->Cells[1][6].Text=m.round2double(outLO(E->LO2),3);
+			E->mGrid->Cells[1][4].Text=m.round2double(outPT(E->PTotoc),3);
+			E->mGrid->Cells[1][5].Text=m.round2double(outDO(E->OTOC_delka),3);
+			E->mGrid->Cells[1][6].Text=m.round2double(outPT(E->PT2),3);
+			E->mGrid->Cells[1][7].Text=m.round2double(outLO(E->LO2),3);
 			E->mGrid->Columns[0].Width=sirka_3;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -4730,35 +4929,35 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
-			E->mGrid->Cells[0][2].Text="PTo "+cas;
-			E->mGrid->Cells[0][3].Text="PT2 "+cas;
-			E->mGrid->Cells[0][4].Text="RT "+cas;
-			E->mGrid->Cells[0][5].Text="WT "+cas;
+			E->mGrid->Cells[0][3].Text="PTo "+cas;
+			E->mGrid->Cells[0][4].Text="PT2 "+cas;
+			E->mGrid->Cells[0][5].Text="RT "+cas;
+			E->mGrid->Cells[0][6].Text="WT "+cas;
 			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->PT1),3);
-			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->PTotoc),3);
-			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PT2),3);
-			E->mGrid->Cells[1][4].Text=m.round2double(outPT(E->RT),3);
-			E->mGrid->Cells[1][5].Text=m.round2double(outPT(E->WT),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PTotoc),3);
+			E->mGrid->Cells[1][4].Text=m.round2double(outPT(E->PT2),3);
+			E->mGrid->Cells[1][5].Text=m.round2double(outPT(E->RT),3);
+			E->mGrid->Cells[1][6].Text=m.round2double(outPT(E->WT),3);
 			E->mGrid->Columns[0].Width=sirka_4;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 		break;
 		}
 		case 5://otoč pasivní
 		{
-			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;
-			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][1].Text=m.round2double(outDO(E->OTOC_delka),3);
-			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->PTotoc),3);
+			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;
+			E->mGrid->Cells[0][3].Text="PT "+cas;
+			E->mGrid->Cells[1][2].Text=m.round2double(outDO(E->OTOC_delka),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PTotoc),3);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
 		}
 		case 6://otoč aktivní (resp. otoč se stop stanicí)
 		{
-			E->mGrid->Cells[0][1].Text="délka "+delka_otoce;//D u aktivní nelze zadat
-			E->mGrid->Cells[0][2].Text="PT "+cas;
-			E->mGrid->Cells[1][1].Text=m.round2double(outDO(E->OTOC_delka),3);
-			E->mGrid->Cells[1][2].Text=m.round2double(outPT(E->PTotoc),3);
+			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;//D u aktivní nelze zadat
+			E->mGrid->Cells[0][3].Text="PT "+cas;
+			E->mGrid->Cells[1][2].Text=m.round2double(outDO(E->OTOC_delka),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outPT(E->PTotoc),3);
 			E->mGrid->Columns[0].Width=sirka_56;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -5114,7 +5313,7 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	if(MOD==NAHLED)
   {
 		if(editace_textu)	Smaz_kurzor();
-		FormX->unhighlight_tabulky();
+		FormX->odstranit_korelaci();
 		knihovna_id=1;
 		if(Row==0)element_id=Col+1;
 		if(Row==1)element_id=Col+3;
@@ -5151,7 +5350,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 					TShiftState Shift, int X, int Y)
 {
 	if(editace_textu)	Smaz_kurzor();
-	FormX->unhighlight_tabulky();
+	FormX->odstranit_korelaci();
 	int Col,Row;
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
 	knihovna_id=2;
@@ -5168,7 +5367,7 @@ void __fastcall TForm1::DrawGrid_ostatniMouseDown(TObject *Sender, TMouseButton 
 					TShiftState Shift, int X, int Y)
 {
 	if(editace_textu)	Smaz_kurzor();
-	FormX->unhighlight_tabulky();
+	FormX->odstranit_korelaci();
 	if(pom_temp->pohon!=NULL)
 	{
 		int Row;
@@ -5939,7 +6138,12 @@ void TForm1::NP_input()
 		if(DKunit==SEKUNDY)DKunit=M;//pokud jsou časové jednotky přepnout na délkové a zapsat do INI
 		if(DKunit==MINUTY)DKunit=MM;
 		writeINI("nastaveni_nahled","koty_delka", DKunit);
-  }
+	}
+  //nastavení tlačítka pro spouštění animace za podmínky přiřazení pohonu
+	if(pom_temp->pohon!=NULL)
+		scGPGlyphButton_PLAY->Enabled=true;
+	else
+		scGPGlyphButton_PLAY->Enabled=false;
 
 	 scGPButton_ulozit->Enabled=false;
 	 //zapnutí spodního panelu
@@ -5961,6 +6165,7 @@ void TForm1::NP_input()
 	Schema->Down=false;
 	Schema->Options->PressedColor=Layout->Options->NormalColor;
 	scGPGlyphButton_zpravy_ikona->Visible=true;
+	scGPGlyphButton_zpravy_ikona->Left=Nahled->Left-scGPGlyphButton_zpravy_ikona->Width;
 	//znovu provedení designu při otevření náhledu, který není prázdný
 	if(pom_temp->elementy!=NULL)
 	{
@@ -6174,7 +6379,7 @@ void __fastcall TForm1::UlozitClick(TObject *Sender)
 		d.v.kopiruj_objekt(pom_temp,pom);
 		DuvodUlozit(true);
 		nahled_ulozit(false);
-		Smaz_kurzor();
+		if(editace_textu)Smaz_kurzor();
 	}
 	if(FileName=="Nový.tispl" || FileName.Pos(".tisplTemp"))UlozitjakoClick(this);
 	else
@@ -8248,7 +8453,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
     if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
 		DrawGrid_knihovna->SetFocus();
-		if(TimerKurzor->Enabled)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
+		if(editace_textu)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání elementů - musí být napočátku, aby nebyl problik
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
@@ -8269,15 +8474,48 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scLabel_architekt->Visible=true;
 		scGPGlyphButton_PLAY->Visible=false;
 		//vpravo
-		Nahled->Visible=false;
+		Nahled->Visible=false;//musí být vypnuto
+    //vypnutí všech tlačítek před zarovnáním, zabraňuje viditelnému přerovnání
+		Simulace->Visible=false;
+		Synteza->Visible=false;
+		Analyza->Visible=false;
+		Layout->Visible=false;
+		Schema->Visible=false;
+		scGPGlyphButton_zpravy_ikona->Visible=false;
+		//vypnutí zarovnání
+		Konec->Align=alNone;
+		MaxButton->Align=alNone;
+		MinButton->Align=alNone;
+		scGPGlyphButton15->Align=alNone;
+		scGPGlyphButton_OPTIONS->Align=alNone;
+		Simulace->Align=alNone;
+		Synteza->Align=alNone;
+		Analyza->Align=alNone;
+		Layout->Align=alNone;
+		Schema->Align=alNone;
+		scGPGlyphButton_zpravy_ikona->Align=alNone;
+		//znovu nastavení zarovnání
+		Konec->Align=alRight;
+		MaxButton->Align=alRight;
+		MinButton->Align=alRight;
+		scGPGlyphButton15->Align=alRight;
+		scGPGlyphButton_OPTIONS->Align=alRight;
+		Simulace->Align=alRight;
+		Synteza->Align=alRight;
+		Analyza->Align=alRight;
+		Layout->Align=alRight;
+		Schema->Align=alRight;
+		//zapnutí viditelnosti - zarovnání dokončeno
 		Simulace->Visible=true;
 		Synteza->Visible=true;
 		Analyza->Visible=true;
 		Layout->Visible=true;
 		Schema->Visible=true;
-		Schema->Align=alRight;
+		scGPGlyphButton_zpravy_ikona->Left=Schema->Left-scGPGlyphButton_zpravy_ikona->Width;
 		scGPGlyphButton_zpravy_ikona->Visible=true;
-		scGPGlyphButton_zpravy_ikona->Align=alRight;
+		//////
+//		scGPGlyphButton_zpravy_ikona->Visible=true;
+//		scGPGlyphButton_zpravy_ikona->Align=alRight;
 		//navrácení zoomu a posunu do původních hodnt
 		Zoom=Zoom_predchozi2;
 		on_change_zoom_change_scGPTrackBar();//pozor asi volá refresh
@@ -8943,3 +9181,4 @@ void TForm1::Memo(AnsiString Text, bool clear)
 	Memo3->Lines->Add(Text);
 }
 //---------------------------------------------------------------------------
+
