@@ -405,7 +405,7 @@ void TmGrid::Show(TCanvas *Canvas)
 
 				////vykreslení gridu
 				if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru, nekreslím do bmp_in, aby neprošlo přes AA, a nekreslím do bmp_out, protože má šírší okraj
-				MessageBeep(0);
+				//MessageBeep(0);
 				////uložení tabulky (doposud vykresleného) do bufferu resp. rasteru
 				Buffer(buffer);
 			}
