@@ -24,8 +24,10 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 // pøi kliku do nìjaké buòky nastavím input_state=NOTHING, pokud udìlám zmìnu buòky je v OnChange události switch, který zajistí
 // výpoèet konkrétní buòky dle pøedávaných parametrù v události
 	input_state=NO;
-	if(ID==9999&&Row>=1)//pokud je kliknuto do tabulky pohonu, podle buòky vyznèí buòky, které budou zmìnou ovlivnìné
-		korelace_tab_pohonu(Row);
+	if(ID==9999&&Row>=1&&F->PmG->Rows[3].Visible)//pokud je kliknuto do tabulky pohonu, podle buòky vyznèí buòky, které budou zmìnou ovlivnìné
+		korelace_tab_pohonu(Row);//spuštìno pouze v pøípadì KK tabulky
+	else if(ID==9999&&Row>=1)
+		korelace_tab_pohonu_elementy();//pøi S&G režimu je stále nutné zobrazit korelaci v elementech
 	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
 	//funkcionalita exBUTTONu v tabulce pohonu
 	{
@@ -34,11 +36,13 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		{
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 			F->PmG->VisibleRow(4,false,false);//nepøekreslovat
+			F->PmG->VisibleRow(5,false,false);
 
 		}else
 		{
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 			F->PmG->VisibleRow(4,true,false);//nepøekreslovat
+			F->PmG->VisibleRow(5,true,false);
 		}
 		F->PmG->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
 		F->PmG->Update();
@@ -68,6 +72,8 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL; delete E;
 	}
+	if(ID!=9999)//korelace v tabulkách elementù
+		korelace_v_elementech(ID,Row);
 	//uvolnìní inputu
 	input_state=NOTHING;
 }
@@ -288,31 +294,32 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				F->aktualizace_ComboPohon();
 				if(F->PmG->getCombo(0,0)->ItemIndex!=0)
 				{
-					F->aktualizace_ComboPohon();
 					F->scGPGlyphButton_PLAY->Enabled=true;//zapnutí tlaèítka animace
 					//aktualizace tabulky
-					if(F->PmG->RowCount>3)//pro tabulku v kontinuálním režimu
+					if(F->PmG->Rows[3].Visible)//pro tabulku v kontinuálním režimu
 					{
 						F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
 						F->PmG->Cells[1][2].Text=F->m.round2double(F->outR(F->pom_temp->pohon->roztec),3);
-						F->PmG->Cells[1][3].Text=F->m.round2double(F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec),3);
-						F->pom_temp->pohon->Rx;
-						F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->m.Rz(F->pom_temp->pohon->aRD)),3);
-						F->pom_temp->pohon->Rz;
+						F->pom_temp->pohon->Rx=F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec);
+						F->PmG->Cells[1][3].Text=F->m.round2double(F->pom_temp->pohon->Rx,0);
+						F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->aRD);
+						F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
+						//místo pro mezeru mezi podvozky
+						if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
+						{
+							F->PmG->Cells[1][6].Text=F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1));
+							F->PmG->Cells[1][7].Text=F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1));
+						}
+						else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
+						{
+							double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+							F->PmG->Cells[1][6].Text=F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1));
+						}
 					}
 					else
 					{
-          	F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+						F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
 						F->PmG->Cells[1][2].Text=F->m.round2double(F->outR(F->pom_temp->pohon->roztec),3);
-					}
-					if(F->PmG->RowCount==7)
-					{
-        		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
-        		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
-        	}
-        	if(F->PmG->RowCount==6)
-        	{
-        		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
 					}
 					F->PmG->Refresh();
 					aktualizace_tab_elementu();
@@ -408,48 +415,50 @@ void TFormX::zmena_aRD ()
 {
 	F->aktualizace_ComboPohon();
 	//propoèty v tabulce pohonu
-	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
+	if(F->PmG->Rows[3].Visible)//pro tabulku v KK režimu
 	{
 		F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->aRD);
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->Rx=F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec);
-		F->PmG->Cells[1][3].Text=F->m.round2double(F->pom_temp->pohon->Rx,3);
-	}
-	if(F->PmG->RowCount==7)
-	{
-		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
-		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
-	}
-	if(F->PmG->RowCount==6)
-	{
-		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
+		F->PmG->Cells[1][3].Text=F->m.round2double(F->pom_temp->pohon->Rx,0);
+		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
+		{
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
+			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
+		}
+		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
+		{
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
+		}
 	}
 	//propoèty v tabulkách elementù
-	aktualizace_tab_elementu();//validace();
+	aktualizace_tab_elementu();validace();
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rozteèe
 void TFormX::zmena_R ()
 {
 	//pøepoèet hodnot v tabulce pohonu
-	if(F->PmG->RowCount>3)//pro tabulku ve S&G režimu
+	if(F->PmG->Rows[3].Visible)//pro tabulku v KK režimu
 	{
     F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz); //prohozené poøadí z dùvodu, že druhý výpoèet potøebuje aktualizovaonu honotu prvního výpoètu
 		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
-	}
-	if(F->PmG->RowCount==7)
-	{
-		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
-		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
-	}
-	if(F->PmG->RowCount==6)
-	{
-		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
+		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
+		{
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
+			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
+		}
+		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
+		{
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
+		}
 	}
 	//pøepoèet hodnot v elementech
-	F->aktualizace_ComboPohon();
+	F->aktualizace_ComboPohon();//zmìna rychlosti, rychlost je zobrazená v Combo pohonù
 	aktualizace_tab_elementu();
 }
 //---------------------------------------------------------------------------
@@ -457,24 +466,25 @@ void TFormX::zmena_R ()
 void TFormX::zmena_Rx ()
 {
   //pøepoèet hodnot v tabulce pohonu
-	if(F->PmG->RowCount>3)//kontinuální režim
+	if(F->PmG->Rows[3].Visible)//kontinuální režim
 	{
     F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
 		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
-	}
-	if(F->PmG->RowCount==7)
-	{
-		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
-		F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
-	}
-	if(F->PmG->RowCount==6)
-	{
-		F->PmG->Cells[1][5].Text=F->m.round2double(F->outRz(F->m.mezera(F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi),F->pom_temp->pohon->Rz,1)),3);
+		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
+		{
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
+			F->PmG->Cells[1][7].Text=F->m.round2double(F->outRz(F->m.mezera(90,F->pom_temp->pohon->Rz,1)),3);
+		}
+		else if(F->PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
+		{
+			double uhel=F->d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(F->pom_temp,F->pom_temp->elementy->dalsi);
+			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(uhel,F->pom_temp->pohon->Rz,1)),3);
+		}
 	}
 	//pøepoèet hodnot v elementech
-  F->aktualizace_ComboPohon();
+  F->aktualizace_ComboPohon();//zmìna rychlosti, rychlost je zobrazená v Combo pohonù
 	aktualizace_tab_elementu();
 }
 //---------------------------------------------------------------------------
@@ -612,6 +622,8 @@ void TFormX::korelace_tab_pohonu(int Row)
 			{
 				F->PmG->Cells[1][4].Highlight=true; //rozestup
 				F->PmG->Cells[1][3].Highlight=true; //rx
+				F->PmG->Cells[1][6].Highlight=true; //mezera mezi jigy
+				F->PmG->Cells[1][7].Highlight=true;
 			}
 		}break;
 		case 2: //zmena rozteèe R
@@ -620,6 +632,8 @@ void TFormX::korelace_tab_pohonu(int Row)
 			{
 				F->PmG->Cells[1][4].Highlight=true;  //rozestup
 				F->PmG->Cells[1][1].Highlight=true; //aRD
+				F->PmG->Cells[1][6].Highlight=true; //mezera mezi jigy
+				F->PmG->Cells[1][7].Highlight=true;
 			}
 		}break;
 		case 3: //zmìna Rx
@@ -628,24 +642,17 @@ void TFormX::korelace_tab_pohonu(int Row)
 			{
 				F->PmG->Cells[1][1].Highlight=true; //aRD
 				F->PmG->Cells[1][4].Highlight=true; //rozestup Rz
+				F->PmG->Cells[1][6].Highlight=true; //mezera mezi jigy
+				F->PmG->Cells[1][7].Highlight=true;
 			}
 		}break;
 	}
-	if(F->PmG->RowCount==7)
-	{
-		F->PmG->Cells[1][5].Highlight=true;
-		F->PmG->Cells[1][6].Highlight=true;
-	}
-	if(F->PmG->RowCount==6)
-	{
-		F->PmG->Cells[1][5].Highlight=true;
-	}
 	F->PmG->Refresh();
-	korelace_tab_elementu();
+	korelace_tab_pohonu_elementy();
 }
 //---------------------------------------------------------------------------
 //stará se o highlitování políèek, které souvisí s mìnìnou hodnotou (elementy)
-void TFormX::korelace_tab_elementu()
+void TFormX::korelace_tab_pohonu_elementy()
 {
 	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
@@ -700,9 +707,53 @@ void TFormX::korelace_tab_elementu()
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
+//korelace uvnitø elementù
+void TFormX::korelace_v_elementech(long ID,long Row)
+{
+	Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
+	switch(E->eID)
+	{
+		case 0:break;//stopka
+		case 1: //robot (kontinuální)
+		{
+			if(Row==1)E->mGrid->Cells[1][Row+1].Highlight=true;
+			if(Row==2)E->mGrid->Cells[1][Row-1].Highlight=true;
+		} break;
+		case 2: //robot se stop stanicí
+		{
+			if(Row==1)E->mGrid->Cells[1][2].Highlight=true;
+		} break;
+		case 3: //robot s pasivní otoèí
+		{
+			if (Row==1)E->mGrid->Cells[1][Row+1].Highlight=true;
+			if (Row==2)E->mGrid->Cells[1][Row-1].Highlight=true;
+			if (Row==5)E->mGrid->Cells[1][Row-1].Highlight=true;
+			if (Row==6)E->mGrid->Cells[1][Row+1].Highlight=true;
+			if (Row==7)E->mGrid->Cells[1][Row-1].Highlight=true;
+		} break;
+    case 4://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
+		{
+			if(Row==1)E->mGrid->Cells[1][5].Highlight=true;
+			if(Row==3)E->mGrid->Cells[1][5].Highlight=true;
+			if(Row==4)E->mGrid->Cells[1][5].Highlight=true;
+			if(Row==6)E->mGrid->Cells[1][5].Highlight=true;
+		} break;
+    case 5://otoè pasivní
+		{
+			if (Row==2)E->mGrid->Cells[1][Row+1].Highlight=true;
+		} break;
+		case 6://otoè aktivní (resp. otoè se stop stanicí)
+		{
+			if (Row==3)E->mGrid->Cells[1][Row-1].Highlight=true;
+		} break;
+	}
+	E->mGrid->Refresh();
+	E=NULL; delete E;
+}
 //odstraní highlight na všech tabulkách
 void TFormX::odstranit_korelaci()
 {
+	F->DrawGrid_knihovna->SetFocus();//po kliku mimo zùstával focus poøád na editu
 	F->PmG->unHighlightAll();
 	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
@@ -718,39 +769,39 @@ void TFormX::validace()
 {
 	bool mimo_rozmezi=false;;
 	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
-	F->TIP="";
+	double dopRD=0;
 	//kontrola zda je zadaná hodnota v rozmezí
 	if(F->m.between(F->pom_temp->pohon->aRD,F->pom_temp->pohon->rychlost_od,F->pom_temp->pohon->rychlost_do)) mimo_rozmezi=false;
 	else mimo_rozmezi=true;
 	// nutné ošetøení pro období zadávání/psaní
 	if (F->pom_temp->pohon->aRD > 0)
 	{
-    //výpoèet doporuèené rychosti
-		double dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->pom_temp->rotace,F->pom_temp->pohon->roztec,F->d.v.PP.TT,F->pom_temp->pohon->aRD);
+		//výpoèet doporuèené rychosti
+		if(F->PmG->Rows[7].Visible)//v kabinì jsou 2 rùzné rotace
+		{
+			double dopRD1=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,0,F->pom_temp->pohon->roztec,F->d.v.PP.TT,F->pom_temp->pohon->aRD);
+			double dopRD2=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,90,F->pom_temp->pohon->roztec,F->d.v.PP.TT,F->pom_temp->pohon->aRD);
+			if(dopRD1>dopRD2)dopRD=dopRD1;//vypíše vìtší hodnotu
+			else dopRD=dopRD2;
+		}
+		else
+			dopRD=F->m.dopRD(F->d.v.PP.delka_jig,F->d.v.PP.sirka_jig,F->pom_temp->rotace,F->pom_temp->pohon->roztec,F->d.v.PP.TT,F->pom_temp->pohon->aRD);
 		//zadaná rychlost je mimo rozsah
 		if(mimo_rozmezi)
 		{
-			F->TIP="Rychlost neodpovídá rozmezí!";
+			F->PmG->ShowNote("Rychlost neodpovídá rozmezí!",clRed,14);
 		}
-//		if(F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi)
-//		{
-//			F->TIP="Rychlost neodpovídá rozmezí!";
-//		}
 		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 		if(Combo->ItemIndex!=0 && F->pom_temp->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
-				F->TIP="Zadejte doporuèenou rychlost pohonu: "+AnsiString(F->outaRD(dopRD));
+				F->PmG->ShowNote("Zadejte doporuèenou rychlost pohonu: <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a>",clRed,14);
 		}
-//		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi)
-//		{
-//			F->TIP="Rychlost neodpovídá rozmezí!";
-//		}
-    //vše je vpoøádku
+		//vše je vpoøádku
 		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
-			F->TIP="";
+			F->PmG->ShowNote("");
 		}
 	}
-	else F->TIP="Neplatná hodnota rychlosti pohonu!";
+	else F->PmG->ShowNote("Neplatná hodnota rychlosti pohonu!",clRed,14);
 }
 //---------------------------------------------------------------------------

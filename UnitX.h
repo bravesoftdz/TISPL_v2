@@ -20,8 +20,8 @@ private:	// User declarations
 	void aktualizace_tab_elementu ();
 	void aktualizace_tab_elementu_pOdebran ();
 	void korelace_tab_pohonu(int Row);
-	void korelace_tab_elementu();
-	void validace ();
+	void korelace_tab_pohonu_elementy();
+	void korelace_v_elementech(long ID,long Row);
 
 public:		// User declarations
   __fastcall TFormX(TComponent* Owner);
@@ -30,6 +30,7 @@ public:		// User declarations
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
 	void odstranit_korelaci();
+	void validace ();
 
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)

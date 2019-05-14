@@ -1948,7 +1948,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 								if(JID==-9){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=-9;editovany_text=inDK(pom_temp->rozmer_kabiny.y);}//editace kót kabiny
 								if(JID<=-11){DrawGrid_knihovna->SetFocus();TimerKurzor->Enabled=true;editace_textu=true;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;editovany_text=inDK(d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp));/*if(scGPComboBox_orientace->ItemIndex!=0)editovany_text=editovany_text/pom_temp->pohon->aRD;*/}//editace kót elementu
 								if(JID>=11&&JID<=99){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}//změna offsetu kót elementů
-								if(JID>=4&&JID<=10){design_tab_pohon(1);REFRESH();}//změna jednotek v tabulce pohonů
+								if(JID>=4&&JID<=10)zmena_jednotek_tab_pohon();//změna jednotek v tabulce pohonů
 								if(JID==100)vytvor_edit();//změna názvu elementu
 						}
 						else
@@ -3355,8 +3355,7 @@ void TForm1::add_element (int X, int Y)
 		E->mGrid->Update(); //nutné před plněním COMBA
 		d.v.napln_comba_stopek();
 		//při vložení prvního robota překreslit tabulku pohonu
-		if(PmG->RowCount==3)design_tab_pohon(3);//vložení prvního elementu
-		if(E->n!=1&&E->eID==5||E->n!=1&&E->eID==3)design_tab_pohon(6);//vložení otoče, ne první element
+		pridani_elementu_tab_pohon(E);
 		//až na konec:
 		E=NULL;delete E;
 		Akce=NIC;
@@ -3714,10 +3713,9 @@ short TForm1::rotace_symbol(short trend,int X, int Y)
 	return m.Rt90(rotace_symbolu);
 }
 //---------------------------------------------------------------------------
-//designovaní tabulky pro pohon
-void TForm1::design_tab_pohon(int index)
+//vytvoří tabulku pohonu
+void TForm1::vytvoreni_tab_pohon()
 {
-//	FormX->vstoupeno_poh=false;
 	AnsiString aRD,R,Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (aRDunit==SEC) aRD="<a>[m/s]</a>";
@@ -3726,199 +3724,39 @@ void TForm1::design_tab_pohon(int index)
 	else R="<a>[mm]</a>";//1
 	if (Rzunit==M) Rz="<a>[m]</a>";
 	else Rz="<a>[mm]</a>";
-	switch (index)
-	{
-   	///////////Design tabulky
-		case 0:
-		{
-			PmG=new TmGrid(this);//vždy nutno jako první
-			//nastavení defaultního designu
-			PmG->Left=-500;PmG->Top=-500;//pouze aby se při prvním zobrazení nezobrazovala formou probliku vlevo nahoře
-			PmG->DefaultCell.Font->Name=aFont->Name;
-			PmG->DefaultCell.Font->Size=aFont->Size;
-			PmG->DefaultCell.isNegativeNumber->Name=aFont->Name;
-			PmG->DefaultCell.isNegativeNumber->Size=aFont->Size;
-			PmG->DefaultCell.isZero->Name=aFont->Name;
-			PmG->DefaultCell.isZero->Size=aFont->Size;
-			PmG->DefaultCell.isLink->Name=aFont->Name;
-			PmG->DefaultCell.isLink->Size=aFont->Size;
-			PmG->DefaultCell.isActiveLink->Name=aFont->Name;
-			PmG->DefaultCell.isActiveLink->Size=aFont->Size;
-			PmG->Note.Font->Name=aFont->Name;
-			PmG->AntiAliasing_text=true;
-			PmG->Border.Width=2;
-			PmG->ID=9999;
-			PmG->Tag=6;//ID formu //1...-gapoTT, 2... - gapoV, 3... - gapoR
-			//vytvoření tabulky
-			if(pom_temp->pohon==NULL)PmG->Create(2,1);
-			else
-			{
-				int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-				if(EID==1||EID==3) PmG->Create(2,5);
-				else PmG->Create(2,3);
-			}
-			//formátování hlavičky tabulky
-			PmG->Cells[0][0].Font->Color=clBlack;
-			//naplnění buněk
-			PmG->SetColumnAutoFit(-4);
-			PmG->Cells[0][0].Type=PmG->COMBO;
-			/*if(aRD=="<a>[m/min]</a>")*/PmG->Columns[0].Width=200;
-			//else PmG->Columns[0].Width=118;
-			PmG->Columns[1].Width=118;
-			//sloučení hlavičky
-			PmG->MergeCells(0,0,1,0);
-			PmG->Update();
-			tab_pohon_COMBO(0);
-		}break;
-		case 1:///////////Změna jednotek
-   	{
-			//překlopení jednotek
-			switch(JID)
-			{
-				case 5:
-				{
-					if (aRDunit==SEC) aRDunit=MIN;
-					else aRDunit=SEC;
-				}break;
-				case 6:
-				{
-					if (Runit==M) Runit=MM;
-					else Runit=M;
-				}break;
-				case 7:
-				{
-
-				}break;
-				case 8:
-				{
-					if (Rzunit==M) Rzunit=MM;
-					else Rzunit=M;
-				}break;
-				case 9: //mezera mezi jig
-				{
-        	if (Rzunit==M) Rzunit=MM;
-					else Rzunit=M;
-				}break;
-				case 10: //mezera mezi jig
-				{
-        	if (Rzunit==M) Rzunit=MM;
-					else Rzunit=M;
-				}break;
-			}
-			//nastavení jednotek po změně
-			if (aRDunit==SEC) aRD="<a>[m/s]</a>";
-			else aRD="<a>[m/min]</a>";
-			if (Runit==M) R="<a>[m]</a>";
-			else R="<a>[mm]</a>";//1
-			if (Rzunit==M) Rz="<a>[m]</a>";
-			else Rz="<a>[mm]</a>";
-			//změna šířky  odstavenu kvůli COMBO
-//			if(aRD=="<a>[m/min]</a>")PmG->Columns[0].Width=134;
-//			else PmG->Columns[0].Width=118;
-   		//zapsání nových jednotek do INI
-			writeINI("nastaveni_form_parametry","RDt", aRDunit);
-			writeINI("nastaveni_nahled","R", Runit);
-			writeINI("nastaveni_nahled","Rz", Rzunit);
-			aktualizace_ComboPohon();
-		}break;
-		case 2://vybrání či odebrání pohonu
-		{
-			int index=PmG->getCombo(0,0)->ItemIndex;
-			if(index!=0&&PmG->RowCount==1)
-			{
-				int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-				if(EID==2||EID==4||EID==6||EID==-1)
-				{
-          PmG->AddRow(false,false);
-					PmG->AddRow(false,false);
-//					PmG->AddRow(false,false);
-//					PmG->AddRow(false,false);
-				}
-				else
-				{
-					PmG->AddRow(false,false);
-					PmG->AddRow(false,false);
-					PmG->AddRow(false,false);
-					PmG->AddRow(false,false);
-//					PmG->AddRow(false,false);
-//					PmG->AddRow(false,false);
-        }
-				PmG->Update();
-				//zprovoznění comba pro změnu kót jen, když je přiřazen pohon a rychlost je nenulová
-				if(pom_temp->pohon->aRD!=0)scGPComboBox_prepinacKot->Enabled=true;
-			}
-			if(index==0&&PmG->RowCount!=1)
-			{
-				if(PmG->RowCount==7) {PmG->DeleteRow(6,false);PmG->DeleteRow(5,false);PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
-				if(PmG->RowCount==6) {PmG->DeleteRow(5,false);PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
-				if(PmG->RowCount==5) {PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
-				if(PmG->RowCount==3) {PmG->DeleteRow(2,false);PmG->DeleteRow(1,false);}
-				PmG->Show(NULL);
-				pom_temp->pohon=NULL;
-        DrawGrid_knihovna->Refresh();
-				DrawGrid_otoce->Refresh();
-				DrawGrid_ostatni->Refresh();
-				//není pohon -> combo není aktivní
-				scGPComboBox_prepinacKot->Enabled=false;
-			}
-		}break;
-		case 3://úprava tabulky po přidání prvního elementu nebo přidání otoče
-		{
-			int EID=pom_temp->elementy->predchozi->eID;//můžu, při volání tohoto case musí být jeden element v objektu
-			if((EID==2||EID==4||EID==6)&&PmG->RowCount!=3)//první přidání
-			{
-				if(PmG->RowCount==7) {PmG->DeleteRow(6,false);PmG->DeleteRow(5,false);PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);}
-				if(PmG->RowCount==6) {PmG->DeleteRow(5,false);PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);}
-				PmG->Update();
-			}
-			if((EID==1||EID==3||EID==5)&&PmG->RowCount==3)//první přidání
-			{
-				PmG->AddRow(false,false);
-				PmG->AddRow(false,false);
-				PmG->Update();  //bez tohoto dělalo problémy
-			}
-		}break;
-		case 4://smazání posledního elementu
-		{
-			if(PmG->RowCount==7) {PmG->DeleteRow(6,false);PmG->DeleteRow(5,false);PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);}
-			if(PmG->RowCount==6) {PmG->DeleteRow(5,false);PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);}
-			if(PmG->RowCount==5) {PmG->DeleteRow(4,false);PmG->DeleteRow(3,false);}
-			PmG->Update();
-		}break;
-		case 5://smazání otoče
-		{
-			if(d.v.vrat_poradi_elementu(pom_temp,5)==0&&PmG->RowCount==7)//pokud už není žádná otoč + tabulka pohonu obsahuje 2x mezeru na jig
-			{
-				PmG->DeleteRow(6,false);//smazat 1 řadek otoče
-				//nahradit druhý
-				PmG->Cells[0][5].Text="Mezera mezi JIG "+AnsiString(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi))+"°";//při této verzi tabulky bude vždy min 1 element
-				PmG->Cells[1][5].Text=0;
-			}
-			PmG->Update();
-		}break;
-		case 6:
-		{
-			//může být pouze RowCount=6
-			PmG->DeleteRow(5,false);
-		}break;
-	}
+	PmG=new TmGrid(this);//vždy nutno jako první
+	//nastavení defaultního designu
+	PmG->Left=-500;PmG->Top=-500;//pouze aby se při prvním zobrazení nezobrazovala formou probliku vlevo nahoře
+	PmG->DefaultCell.Font->Name=aFont->Name;
+	PmG->DefaultCell.Font->Size=aFont->Size;
+	PmG->DefaultCell.isNegativeNumber->Name=aFont->Name;
+	PmG->DefaultCell.isNegativeNumber->Size=aFont->Size;
+	PmG->DefaultCell.isZero->Name=aFont->Name;
+	PmG->DefaultCell.isZero->Size=aFont->Size;
+	PmG->DefaultCell.isLink->Name=aFont->Name;
+	PmG->DefaultCell.isLink->Size=aFont->Size;
+	PmG->DefaultCell.isActiveLink->Name=aFont->Name;
+	PmG->DefaultCell.isActiveLink->Size=aFont->Size;
+	PmG->Note.Font->Name=aFont->Name;
+	PmG->AntiAliasing_text=true;
+	PmG->Border.Width=2;
+	PmG->ID=9999;
+	PmG->Tag=6;//ID formu
+	//vytvoření konkrétní tabulky podle režimu kabiny
+	PmG->Create(2,8);//vytvoření celé tabulky najednou
+	//formátování hlavičky tabulky
+	PmG->Cells[0][0].Font->Color=clBlack;
 	//naplnění buněk
-	if(PmG->RowCount==3)
+	PmG->SetColumnAutoFit(-4);
+	PmG->Cells[0][0].Type=PmG->COMBO;
+	PmG->Columns[0].Width=220;
+	PmG->Columns[1].Width=118;
+	//sloučení hlavičky
+	PmG->MergeCells(0,0,1,0);
+	//naplnění Comba daty
+	if(pom_temp->pohon!=NULL)
 	{
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
-		PmG->Cells[0][1].TopBorder->Width=2;
-		PmG->Cells[1][1].TopBorder->Width=2;
-		PmG->Cells[1][1].Type=PmG->EDIT;
-		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
-		PmG->Cells[0][2].Text="Rozteč "+R;
-		PmG->Cells[1][2].Type=PmG->EDIT;
-		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-	}
-	if(PmG->RowCount==5)
-	{
-		PmG->Cells[0][1].Text="Rychlost "+aRD;
-		PmG->Cells[0][1].TopBorder->Width=2;
-		PmG->Cells[1][1].TopBorder->Width=2;
 		PmG->Cells[1][1].Type=PmG->EDIT;
 		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
 		PmG->Cells[0][2].Text="Rozteč "+R;
@@ -3927,54 +3765,96 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][3].Text="Násobek rozteče palců";
 		PmG->Cells[1][3].Type=PmG->EDIT;
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-		PmG->Cells[1][3].Text=pom_temp->pohon->Rx;
+		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
 		PmG->Cells[0][4].Text="Rozestup "+Rz;
-		pom_temp->pohon->Rz=m.Rz(pom_temp->pohon->aRD);
+		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
-		if(d.v.vrat_poradi_elementu(pom_temp,5)>0||pocet_vyskytu_elementu(pom_temp,3)>0)//pokud je v kabině otoč přidá 2 řádky na mezeru mezi jig
-		{PmG->AddRow(false,false);PmG->AddRow(false,false);PmG->VisibleRow(4,true);}//řádky pro mezery mezi jig, visible z důvodu, když smažu řádek 5 který byl skrytý a vytvořím ho znova zůstane skrytý
-		else
-		{PmG->AddRow(false,false);}//řadek pro mezeru mezi jig
-		PmG->Update();//nutné!
-		//skyrytí rozestupu
-		PmG->VisibleRow(4,false,false);//,false přidat
+		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
+		PmG->Cells[1][5].Text=1*1;
+		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
+		PmG->Cells[1][6].Type=PmG->EDIT;
+		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
+		PmG->Cells[1][7].Type=PmG->EDIT;
+		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
 	}
-	if(PmG->RowCount==6)
+	else//žádný pohon není přířazen, nelze vypočítávat hodnoty
 	{
-		////kvuli změně jednotek
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
-		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
+		PmG->Cells[1][1].Type=PmG->EDIT;
+		PmG->Cells[1][1].Text=0;
 		PmG->Cells[0][2].Text="Rozteč "+R;
-		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
+		PmG->Cells[1][2].Type=PmG->EDIT;
+		PmG->Cells[1][2].Text=0;
+		PmG->Cells[0][3].Text="Násobek rozteče palců";
+		PmG->Cells[1][3].Text=0;
 		PmG->Cells[0][4].Text="Rozestup "+Rz;
-		PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);
-		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
-		////kvuli změně jednotek
-		PmG->Cells[0][5].Text="Mezera mezi jigy "+AnsiString(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi))+"° "+Rz;//při této verzi tabulky bude vždy min 1 element
-		PmG->Cells[1][5].Text=outRz(m.mezera(d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi),pom_temp->pohon->Rz,1));
-	}
-	if(PmG->RowCount==7)
+		PmG->Cells[1][4].Text=0;
+		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
+		PmG->Cells[1][5].Text=0;
+		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
+		PmG->Cells[1][6].Type=PmG->EDIT;
+		PmG->Cells[1][6].Text=0;
+		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
+		PmG->Cells[1][7].Type=PmG->EDIT;
+		PmG->Cells[1][7].Text=0;
+  }
+	if(pom_temp->pohon==NULL)//pokud není přiřazen pohon zobrazí se pouze COMBO
 	{
-		////kvuli změně jednotek
-		PmG->Cells[0][1].Text="Rychlost "+aRD;
-		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
-		PmG->Cells[0][2].Text="Rozteč "+R;
-		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-		PmG->Cells[0][4].Text="Rozestup "+Rz;
-		PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);
-		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
-		////kvuli změně jednotek
-		PmG->Cells[0][5].Text="Mezera mezi jigy 0° "+Rz;
-		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
-		PmG->Cells[0][6].Text="Mezera mezi jigy 90°"+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+		PmG->VisibleRow(1,false,false);
+		PmG->VisibleRow(2,false,false);
+		PmG->VisibleRow(3,false,false);
+		PmG->VisibleRow(4,false,false);
+		PmG->VisibleRow(5,false,false);
+		PmG->VisibleRow(6,false,false);
+		PmG->VisibleRow(7,false,false);
 	}
-	//zobrazování a skrývání exButton
-	PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
-	if(PmG->RowCount==3||PmG->RowCount==1)PmG->exBUTTONVisible=false;
-	else PmG->exBUTTONVisible=true;
-	PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
-	//finální desing + refresh
+	else
+	{
+   	switch(pom_temp->rezim)//tabulka má 7 řádků
+   	{
+   		case -1://nic, stejné jako S&G
+   		case 0://S&G, tři řádky
+			{
+				PmG->VisibleRow(3,false,false);
+				PmG->VisibleRow(4,false,false);
+   			PmG->VisibleRow(5,false,false);
+				PmG->VisibleRow(6,false,false);
+				PmG->VisibleRow(7,false,false);
+   		}break;
+   		case 1://kontinuální režim, zde jsou možné další 2 možnosti, 6 nebo 7 řádků
+   		{
+   			if(pocet_vyskytu_elementu(pom_temp,3)>0||pocet_vyskytu_elementu(pom_temp,5)>0);
+   				//vyskytl se element s otočí -> 2 mezery mezi jigy, neskrývám nic
+   			else
+					PmG->VisibleRow(7,false,false);//pouze elementy bez otočí, jen jedna mezera mezi jigy
+   			//exButton bude v obou těchto případech zobrazen
+				PmG->exBUTTONVisible=true;
+				PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+				PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
+				//vypnutí zobrazení 4ho a 5tého řádku, defaultně v KK nezobrazen
+				PmG->VisibleRow(4,false,false);
+				PmG->VisibleRow(5,false,false);
+   		}break;//kontinuální,počítá se s jednou mezerou mezi jigy
+		}
+	}
+	//vypnutí zobrazení 4ho řádku, defaultně nezobrazen
+	if(PmG->Rows[7].Visible)//budou zde obě mezeri mezi jigy
+	{
+		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
+		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
+		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+  }
+	else if(PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
+	{
+		double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
+		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
+		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+	}
+	//finální desing
+	PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);//řádky zobrazované po rozšíření, zvýraznění aby je uživatel nepřehlédnul
+	PmG->Cells[0][5].Background->Color=(TColor)RGB(240,240,240);
 	for(int i=1;i<=ms.MyToDouble(PmG->RowCount-1);i++)
 	{
 		if (PmG->Cells[1][i].Type==PmG->EDIT)
@@ -3990,8 +3870,240 @@ void TForm1::design_tab_pohon(int index)
 		PmG->Cells[0][i].Font->Color=(TColor)RGB(128,128,128);
 		PmG->Cells[0][i].RightMargin=3;
 	}
-//	FormX->vstoupeno_poh=true;
-	REFRESH();
+  //naplnění comba hodnotami 
+	tab_pohon_COMBO(0);
+}
+//---------------------------------------------------------------------------
+//předesignování tabulky po přidání každého elementu
+void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
+{
+	AnsiString Rz;
+	//nastavení jednotek podle posledních nastavení
+	if (Rzunit==M) Rz="<a>[m]</a>";
+	else Rz="<a>[mm]</a>";
+	if(!PmG->Rows[3].Visible&&(E->eID==1||E->eID==3))//změny pouze při přidání kontinuálního robota, vytvoření KK tabulky
+	{
+		//popřidání prvního elementu nutno spočítat!! a zapsat do buňěk
+		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
+		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
+		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
+		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+		//samotné skrývání a zobrazování buňěk
+		PmG->VisibleRow(3,true,false);
+		PmG->VisibleRow(4,false,false);
+		PmG->VisibleRow(5,false,false);
+		PmG->VisibleRow(6,true,false);
+		//zapnutí/vypnutí posledního řádku a naplnění hodnotami
+		if(E->eID==3)
+		{
+			PmG->VisibleRow(7,true,false);
+			PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
+			PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+			PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
+			PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+		}
+		else
+		{
+			PmG->VisibleRow(7,false,false);
+      double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
+			PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
+			PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+		}
+		PmG->exBUTTONVisible=true;
+		PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+		PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
+	}
+	if((E->eID==3||E->eID==5)&&!PmG->Rows[7].Visible&&PmG->Rows[6].Visible)//přidání elementu s otočí do kabiny s vytvořenou KK tabulkou, která má pouze 6 řádků
+	{
+		PmG->VisibleRow(7,true,false);
+    PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
+		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
+		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+	}
+}
+//volána po přiřazení pohonu
+void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
+{        
+	AnsiString Rz;
+	//nastavení jednotek podle posledních nastavení
+	if (Rzunit==M) Rz="<a>[m]</a>";
+	else Rz="<a>[mm]</a>";
+	if(index_pohonu!=0)//pokud je přiřazen nějaký pohon
+	{
+   	switch(pom_temp->rezim)//tabulka má 7 řádků
+   	{
+   		case -1://nic, stejné jako S&G
+   		case 0://S&G, tři řádky
+   		{
+   			PmG->VisibleRow(1,true,false);
+   			PmG->VisibleRow(2,true,false);
+   			PmG->VisibleRow(3,false,false);
+   			PmG->VisibleRow(4,false,false);
+   			PmG->VisibleRow(5,false,false);
+   			PmG->VisibleRow(6,false,false);
+   			PmG->VisibleRow(7,false,false);
+   		}break;
+   		case 1://kontinuální režim, zde jsou možné další 2 možnosti, 6 nebo 7 řádků
+   		{
+   			PmG->VisibleRow(1,true,false);
+   			PmG->VisibleRow(2,true,false);
+   			PmG->VisibleRow(3,true,false);
+   			PmG->VisibleRow(4,false,false);
+   			PmG->VisibleRow(5,false,false);
+   			PmG->VisibleRow(6,true,false);
+   			if(pocet_vyskytu_elementu(pom_temp,3)>0||pocet_vyskytu_elementu(pom_temp,5)>0)
+   				PmG->VisibleRow(7,true,false);//vyskytl se element s otočí -> 2 mezery mezi jigy, neskrývám nic
+   			else
+   				PmG->VisibleRow(7,false,false);//pouze elementy bez otočí, jen jedna mezera mezi jigy
+   			//exButton bude v obou těchto případech zobrazen
+   			PmG->exBUTTONVisible=true;
+   			PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
+   			PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
+   		}break;//kontinuální,počítá se s jednou mezerou mezi jigy
+   	}
+   	//vypočty buněk, asi není potřeba obstarání v UnitX při přiřazení pohonu
+//   	PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
+//   	PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
+//   	pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
+//		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
+//   	PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+//   	PmG->Cells[1][5].Text=1*1;
+//   	if(PmG->Rows[7].Visible)//budou zde obě mezeri mezi jigy
+//   	{
+//   		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
+//   		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+//   		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
+//   		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+//   	}
+//   	else if(PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
+//   	{
+//   		double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
+//   		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
+//   		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+//		}
+	}
+	else//pohon byl odebrán
+		odstraneni_elementu_tab_pohon(0);
+	//měl by následovat refresh, nefunguje správně ... porada
+}
+//---------------------------------------------------------------------------
+//metoda volaná při odstranění elementu a při odebrání pohonu
+void TForm1::odstraneni_elementu_tab_pohon(int operace)
+{
+	//0 = odebrání pohonu
+	switch(operace)
+	{
+		case 0://odstranění pohonu, vše skryto zůstane pouze Combo
+		{      
+			PmG->VisibleRow(1,false,false);
+			PmG->VisibleRow(2,false,false);
+			PmG->VisibleRow(3,false,false);
+			PmG->VisibleRow(4,false,false);
+			PmG->VisibleRow(5,false,false);
+			PmG->VisibleRow(6,false,false);
+			PmG->VisibleRow(7,false,false);
+		}break;
+		case 1://smazání elementu
+		{
+			if(pom_temp->elementy==NULL)//smazání všech elementů, tabulka se nastavý do základního rozpoložení, tj. S&G tabulka
+			{
+				PmG->VisibleRow(3,false,false);
+				PmG->VisibleRow(4,false,false);
+				PmG->VisibleRow(5,false,false);
+				PmG->VisibleRow(6,false,false);
+				PmG->VisibleRow(7,false,false);
+			}                                       //odebrán poslední element s otočí, ale zobrazeny obě mezery mezi jig
+			else if(pocet_vyskytu_elementu(pom_temp,3)==0&&pocet_vyskytu_elementu(pom_temp,5)==0&&PmG->Rows[7].Visible)
+			{
+				AnsiString Rz;
+				if (Rzunit==M) Rz="<a>[m]</a>";
+				else Rz="<a>[mm]</a>";
+				double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
+				PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
+				PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+				PmG->VisibleRow(7,false,false);	
+			}
+    }break;
+	}
+}
+//---------------------------------------------------------------------------
+//provede změnu jednotek v tabulce pohonu
+void TForm1::zmena_jednotek_tab_pohon()
+{
+	//překlopení jednotek
+	switch(JID)
+	{
+		case 5:
+		{
+			if (aRDunit==SEC) aRDunit=MIN;
+			else aRDunit=SEC;
+		}break;
+		case 6:
+		{
+			if (Runit==M) Runit=MM;
+			else Runit=M;
+		}break;
+		case 7:
+		{
+
+		}break;
+		case 8:
+		{
+			if (Rzunit==M) Rzunit=MM;
+			else Rzunit=M;
+		}break;
+		case 9://mezera mezi podvozky
+		{
+			if (Rzunit==M) Rzunit=MM;
+			else Rzunit=M;
+		}break;
+		case 10: //mezera mezi jig
+		{
+			if (Rzunit==M) Rzunit=MM;
+			else Rzunit=M;
+		}break;
+		case 11: //mezera mezi jig
+		{
+    	if (Rzunit==M) Rzunit=MM;
+			else Rzunit=M;
+		}break;
+	}
+	//nastavení jednotek po změně
+	AnsiString aRD,R,Rz;
+	if (aRDunit==SEC) aRD="<a>[m/s]</a>";
+	else aRD="<a>[m/min]</a>";
+	if (Runit==M) R="<a>[m]</a>";
+	else R="<a>[mm]</a>";//1
+	if (Rzunit==M) Rz="<a>[m]</a>";
+	else Rz="<a>[mm]</a>";
+	//zapsání nových jednotek do INI
+	writeINI("nastaveni_form_parametry","RDt", aRDunit);
+	writeINI("nastaveni_nahled","R", Runit);
+	writeINI("nastaveni_nahled","Rz", Rzunit);
+	//změna v tabulce
+	PmG->Cells[0][1].Text="Rychlost "+aRD;
+	PmG->Cells[1][1].Text=m.round2double(outaRD(pom_temp->pohon->aRD),3);//rychlost raději zaokrouhlovat
+	PmG->Cells[0][2].Text="Rozteč "+R;
+	PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
+	PmG->Cells[0][4].Text="Rozestup "+Rz;
+	PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+	PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;  
+//	PmG->Cells[1][5].Text=1*1;
+	if(PmG->Rows[7].Visible)
+	{
+		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
+		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
+		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+	}
+	else if(PmG->Rows[6].Visible)
+	{
+  	double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
+		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
+		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+	}	      
+	aktualizace_ComboPohon();//v combo jsou vypsány jednotky, proto nutné aktualizovat	
 }
 //---------------------------------------------------------------------------
 //prohledá elementy v objektu, vrátí počet výskytů elementu podle poslaného eID
@@ -4049,12 +4161,13 @@ void TForm1::tab_pohon_COMBO (int index)
 	}
 	if(index==1)//přiřazení pohonu
 	{
-		if(PCombo->ItemIndex!=0)
+		int pohon=PCombo->ItemIndex;
+		if(pohon!=0)
 		{
 			d.v.kopiruj_pohon(d.v.vrat_pohon(PCombo->ItemIndex),pom_temp);
 			nahled_ulozit(true);
-		}
-		design_tab_pohon(2);
+		}    
+		prirazeni_pohonu_tab_pohon(pohon);
 		//zajistí překreslení knihoven když je přidán či odebrán pohon
 		DrawGrid_knihovna->Refresh();
 		DrawGrid_otoce->Refresh();
@@ -4331,11 +4444,12 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,3);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
 			I->Caption=-180;
       I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="-90";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -5707,9 +5821,8 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				nahled_ulozit(true);
 				DrawGrid_knihovna->Refresh();
 				DrawGrid_otoce->Refresh();
-				if((pom_element_temp->eID==5||pom_element_temp->eID==3)&&pom_temp->elementy->dalsi!=NULL)design_tab_pohon(5);//pokud byla smazána otoč, ale není posledním elementem v kabině
 				pom_element_temp=NULL; delete pom_element_temp;
-				if(pom_temp->elementy->dalsi==NULL)design_tab_pohon(4);//pokud byl smazán poslední element v kabině
+				odstraneni_elementu_tab_pohon(1);//přenastavení tabulky pohonu po odstranění elementu
 			}else mazani=false;
 			break;
 		}
@@ -6209,7 +6322,7 @@ void TForm1::NP_input()
 		}
 		E=NULL; delete E;
 	}
-	design_tab_pohon(0);
+	vytvoreni_tab_pohon();
 	nahled_ulozen=false;//nově otevřen, není uložen
 	DrawGrid_knihovna->Invalidate();
 	REFRESH();

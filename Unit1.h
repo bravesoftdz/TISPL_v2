@@ -540,7 +540,11 @@ private:
 	void move_objekt(int X, int Y);
 	void add_element(int X, int Y);
 	short rotace_symbol(short trend,int X, int Y);
-	void design_tab_pohon(int index);//0=design tabulek po otevření náhledu, 1=změna jednotek, 2=vybraní, či odebrání pohonu, 3=úprava tabulky podle vloženého elementu (kontunuální vs. S&G)
+	void vytvoreni_tab_pohon();//vytvoření tabulky pohonu
+	void pridani_elementu_tab_pohon(Cvektory::TElement *E);
+  void odstraneni_elementu_tab_pohon(int operace);
+	void prirazeni_pohonu_tab_pohon(int index_pohonu);//předesignuje tabulku pohonu po přidání elementu, nebo pohonu
+  void zmena_jednotek_tab_pohon();
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni);//nadesignuje tabulky daného elementu
 	void prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
 	void dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,short sirka_1,short sirka_2,short sirka_3,short sirka_4,short sirka_56,short sirka_cisla,AnsiString LO,AnsiString cas,AnsiString delka_otoce);
