@@ -2549,6 +2549,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		//výchozí nastavení
 		refresh_mGrid=false;//ruší zbytečné vypočítávání tabulek
 		kurzor(standard);//umístít na začátek
+		PmGCheckLink=false;
 
 		////volání akce dle JID            //toto bez otestovaní
 		if(JID==-1 || pom_element==NULL || pom_element_puv!=pom_element)//není již job ID nebo ukazatel na pohon (může nastat situace přechod tabulka citelná oblast kót či nadpisu kabiny a nic by se bez tohoto nestalo
@@ -2579,9 +2580,18 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		//if(!refresh_mGrid)Memo("false");else Memo("true");
 		refresh_mGrid=true;//provizorně
 		REFRESH();
+		//refresh_mGrid=true;
 	}
-	//refresh_mGrid=true;
-	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
+
+	////oblasti poznámek pod čarou - NOTE, nejdou přes JID
+	if(JID==-1)
+	{                                                       //zajištuje unhighlight odkazu
+		if(PmG!=NULL)if(PmG->CheckLink(X,Y)==TPoint(-2,-2) || PmGCheckLink){PmGCheckLink=true;refresh_mGrid=true;REFRESH();}
+		//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný element
+	}
+
+	////vynulování a odstranění pomocného ukazatele na element
+	pom_element_puv=NULL;delete pom_element_puv;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
