@@ -408,6 +408,14 @@ void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,Sys
    		F->REFRESH();
    	}
 	}
+	if(Row==3&&ID==9999)//slouží pro nepovolení zapsání desetiné èárky do editu Rx
+	{
+		if(AnsiString(Key)==F->ms.get_locale_decimal())
+		{
+      Key=0;
+			MessageBeep(0);
+		}
+  }
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rychlosti
@@ -535,7 +543,7 @@ void TFormX::aktualizace_tab_elementu ()
 					//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3);
 					E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->WT),3);
-					E->RT=F->m.RT(E->PT1+E->PT2,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
+					E->RT=F->m.RT(E->PT1+E->PT2+E->PTotoc,F->d.v.vzdalenost_od_predchoziho_elementu(E),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,E->WT);
 					E->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(E->RT),3);
 				}break;
  				case 5://otoè pasivní
@@ -769,7 +777,7 @@ void TFormX::validace()
 {
 	bool mimo_rozmezi=false;;
 	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
-	double dopRD=0;
+	dopRD=0;
 	//kontrola zda je zadaná hodnota v rozmezí
 	if(F->m.between(F->pom_temp->pohon->aRD,F->pom_temp->pohon->rychlost_od,F->pom_temp->pohon->rychlost_do)) mimo_rozmezi=false;
 	else mimo_rozmezi=true;
@@ -803,5 +811,11 @@ void TFormX::validace()
 		}
 	}
 	else F->PmG->ShowNote("Neplatná hodnota rychlosti pohonu!",clRed,14);
+}
+//---------------------------------------------------------------------------
+//voláno po kliku na link v poznámce, naplní edit aRD doporuèenou rychlostí
+void TFormX::naplneni_dopRD()
+{
+	F->PmG->Cells[1][1].Text=F->outaRD(dopRD);
 }
 //---------------------------------------------------------------------------
