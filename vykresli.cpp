@@ -2280,11 +2280,14 @@ void Cvykresli::vykresli_vozik(TCanvas *canv,int ID, double X,double Y,double dP
 
 	////podvozek
 	canv->Pen->Color=clChassis;
+	canv->Pen->Width=m.round(1/3.0*F->Zoom);
 	canv->Rectangle(m.L2Px(X-dP/2.0),m.L2Py(Y+sP),m.L2Px(X+dP/2.0),m.L2Py(Y-sP));//vykreslení pozice podvozku
 
 	////jig
 	canv->Pen->Color=clJig;
-	canv->Rectangle(m.L2Px(X-dJ/2.0),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2.0),m.L2Py(Y-sJ/2.0));
+	canv->Pen->Width=m.round(2/3.0*F->Zoom);
+	if(rotaceJ==90 || rotaceJ==270) canv->Rectangle(m.L2Px(X-sJ/2.0),m.L2Py(Y+dJ/2.0),m.L2Px(X+sJ/2.0),m.L2Py(Y-dJ/2.0));
+	else canv->Rectangle(m.L2Px(X-dJ/2.0),m.L2Py(Y+sJ/2.0),m.L2Px(X+dJ/2.0),m.L2Py(Y-sJ/2.0));
 
 //	////text - ID vozíku
 //	//framing
@@ -2354,7 +2357,20 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 							if(j%Rx==0)//palec vyšel do rozestupu, jedná se o aktivní palec unášející vozík
 							{
 								vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,true);
-								vykresli_vozik(canv,j,X+i,Y,dP,dJ,sJ);//možná provizorně
+								/////////////////////provizorně zjištění aktuální rotace
+								int rotace=0;
+								Cvektory::TElement *E=O->elementy;//nastaveno na hlavičku, ošetřeno níže
+								while(E!=NULL)
+								{
+									if(3<=E->eID && E->eID<=6 && E->X<=X+i)//jedná se o roto element a je před aktuálně vykreslovaným vozíkem
+									{
+										 rotace+=E->rotace_jig;
+									}
+									E=E->dalsi;
+								}
+								E=NULL; delete E;
+								/////////////////////
+								vykresli_vozik(canv,j,X+i,Y,dP,dJ,sJ,0,m.Rt90(rotace));//provizorně
 							}
 							else vykresli_palec(canv,m.L2Px(X+i),m.L2Py(Y),true,false);//jinak pasivní
 						}
@@ -3268,15 +3284,15 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 					E->mGrid->SetVisibleComponents(false);
 					E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
 					E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Show(canv); // F->Memo(0);
+					E->mGrid->Show(canv);    //F->Memo(0);
 				}
 				else
-				{    //  F->Memo(1);
+				{     //F->Memo(1);
 					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 					{
 						E->mGrid->Redraw=true;
-						//E->mGrid->Buffer(false);
-						E->mGrid->buffer=true;//změna filozofie
+						E->mGrid->Buffer(false);
+						//E->mGrid->buffer=true;//změna filozofie
 						//možná zde ještě update pokud byla komponenta skyta
 						E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 						E->mGrid->Left=m.L2Px(E->Xt);
@@ -3292,13 +3308,15 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			}
 			E=NULL;delete E;
 		}
-				 // F->Memo("--------------------");
+				 //	F->Memo("--------------------");
 		////tabulka pohonu
 		if(F->PmG!=NULL)
 		{
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
 				F->PmG->Redraw=false;
+			//F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
+			//F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
 				F->PmG->SetVisibleComponents(false);
 				F->PmG->Show(canv);
 			}
@@ -3306,6 +3324,9 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			{
 				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
+				//F->PmG->Redraw=true;
+				//F->PmG->Buffer(false);
+				//F->PmG->buffer=true;//změna filozofie
 					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 					F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
 					F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;

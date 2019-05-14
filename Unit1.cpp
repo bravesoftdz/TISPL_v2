@@ -2543,8 +2543,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	getJobID(X,Y);//zjištění aktuálního JID
 	if(puvJID!=JID || pom_element_puv!=pom_element)//pokud došlo ke změně JID, nebo změně elementu bez změny JID (např. situace dva roboti vedle sebe nebo rychlý přesun), jinak nemá smysl řešit
 	{
-		refresh_mGrid=false;//ruší zbytečné vypočítávání tabulek
 		//výchozí nastavení
+		refresh_mGrid=false;//ruší zbytečné vypočítávání tabulek
 		kurzor(standard);//umístít na začátek
 
 		////volání akce dle JID            //toto bez otestovaní
@@ -2568,15 +2568,14 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
 		if(JID>=11 && JID<=99)kurzor(zmena_d_y);//interaktivní kóty elementů
-		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));PmG->Refresh();refresh_mGrid=true;}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
+		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
 
 		////inteligentní REFRESH
 		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
 		//d.nabuffrovat_mGridy(pom_element->mGrid);
-		refresh_mGrid=true;
 		//if(!refresh_mGrid)Memo("false");else Memo("true");
+		refresh_mGrid=true;//provizorně
 		REFRESH();
-
 	}
 	//refresh_mGrid=true;
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
@@ -5511,6 +5510,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				if((pom_element_temp->eID==5||pom_element_temp->eID==3)&&pom_temp->elementy->dalsi!=NULL)design_tab_pohon(5);//pokud byla smazána otoč, ale není posledním elementem v kabině
 				pom_element_temp=NULL; delete pom_element_temp;
 				if(pom_temp->elementy->dalsi==NULL)design_tab_pohon(4);//pokud byl smazán poslední element v kabině
+				pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 			}else mazani=false;
 			break;
 		}
@@ -8976,4 +8976,5 @@ void TForm1::Memo(AnsiString Text, bool clear)
 	Memo3->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
+
 

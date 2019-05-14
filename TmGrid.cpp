@@ -405,7 +405,7 @@ void TmGrid::Show(TCanvas *Canvas)
 
 				////vykreslení gridu
 				if(AntiAliasing_grid==false && AntiAliasing_text==true)DrawGrid(Canvas);//kreslí se až nahoru, nekreslím do bmp_in, aby neprošlo přes AA, a nekreslím do bmp_out, protože má šírší okraj
-				//MessageBeep(0);
+				MessageBeep(0);
 				////uložení tabulky (doposud vykresleného) do bufferu resp. rasteru
 				Buffer(buffer);
 			}
@@ -1133,7 +1133,6 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(C->Font->Name=="Roboto Cn")C->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else C->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
 	C->Options->FontNormalColor=Cell.Font->Color;
 	//C->ItemIndex=1;//nelze předoznační první položku
-	if(Cell.Highlight || C->Focused())C->Font->Color=clHighlight;//highlignutí formou změny barvy textu
 
 	if(Cell.ShowHint){C->ShowHint=true;C->Hint=Cell.Hint;}
 

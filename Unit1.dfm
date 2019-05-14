@@ -2619,7 +2619,6 @@ object Form1: TForm1
       Visible = False
       OnClick = scGPGlyphButton_PLAYClick
       Animation = False
-      Caption = '0 [sec]'
       CanFocused = True
       CustomDropDown = False
       Layout = blGlyphLeft
@@ -4457,8 +4456,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2478
-        Top = 2641
+        Left = 2484
+        Top = 2647
         Width = 244
         Height = 31
         Align = alCustom
@@ -8298,7 +8297,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118004807480710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118004C074C0710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9400,8 +9399,8 @@ object Form1: TForm1
     CaptionFont.Style = [fsBold]
     CaptionAlignment = taLeftJustify
     InActiveClientColor = clWindow
-    InActiveClientColorAlpha = 100
-    InActiveClientBlurAmount = 5
+    InActiveClientColorAlpha = 70
+    InActiveClientBlurAmount = 1
     Tabs = <>
     TabFont.Charset = DEFAULT_CHARSET
     TabFont.Color = clWindowText
@@ -9429,7 +9428,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013D003808380830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013D003C083C0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
