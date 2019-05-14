@@ -3315,8 +3315,8 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
 			{
 				F->PmG->Redraw=false;
-			//F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
-			//F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
+			F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
+			F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;
 				F->PmG->SetVisibleComponents(false);
 				F->PmG->Show(canv);
 			}
@@ -3324,8 +3324,8 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			{
 				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
-				//F->PmG->Redraw=true;
-				//F->PmG->Buffer(false);
+				F->PmG->Redraw=true;
+				F->PmG->Buffer(false);
 				//F->PmG->buffer=true;//změna filozofie
 					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 					F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);

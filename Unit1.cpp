@@ -6172,10 +6172,8 @@ void TForm1::NP_input()
 		writeINI("nastaveni_nahled","koty_delka", DKunit);
 	}
   //nastavení tlačítka pro spouštění animace za podmínky přiřazení pohonu
-	if(pom_temp->pohon!=NULL)
-		scGPGlyphButton_PLAY->Enabled=true;
-	else
-		scGPGlyphButton_PLAY->Enabled=false;
+	if(pom_temp->pohon!=NULL)scGPGlyphButton_PLAY->Enabled=true;
+	else scGPGlyphButton_PLAY->Enabled=false;
 
 	 scGPButton_ulozit->Enabled=false;
 	 //zapnutí spodního panelu
@@ -6186,6 +6184,8 @@ void TForm1::NP_input()
 	scGPSwitch_rezim->Visible=false;
 	scLabel_klient->Visible=false;
 	scGPGlyphButton_PLAY->Visible=true;
+	scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
+	scGPGlyphButton_PLAY->Hint="spustit animaci";
 	//vpravo
 	scGPGlyphButton_zpravy_ikona->Visible=false;
 	Layout->Visible=false;
@@ -8494,7 +8494,10 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		PmG->Delete(); PmG=NULL; delete PmG;
 
     //v případě animace vypnutí a nastavení do výchozího stavu
-		if(Timer_animace->Enabled)scGPGlyphButton_PLAYClick(Sender);
+		Timer_animace->Enabled=false;
+		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+		ButtonPLAY->Hint="spustit animaci";
+		zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
 		//změna horní lišty
@@ -8860,11 +8863,6 @@ MOD=SCHEMA;
 
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
 	d.v.vymaz_elementy(pom,true);

@@ -2624,8 +2624,8 @@ object Form1: TForm1
       Layout = blGlyphLeft
       TransparentBackground = True
       ColorValue = clRed
-      Options.NormalColor = clBtnText
-      Options.HotColor = clBtnText
+      Options.NormalColor = clWhite
+      Options.HotColor = clWhite
       Options.PressedColor = clBtnText
       Options.FocusedColor = 10114859
       Options.DisabledColor = clBtnText
@@ -2634,8 +2634,8 @@ object Form1: TForm1
       Options.PressedColor2 = clNone
       Options.FocusedColor2 = clNone
       Options.DisabledColor2 = clNone
-      Options.NormalColorAlpha = 10
-      Options.HotColorAlpha = 20
+      Options.NormalColorAlpha = 0
+      Options.HotColorAlpha = 30
       Options.PressedColorAlpha = 30
       Options.FocusedColorAlpha = 255
       Options.DisabledColorAlpha = 5
@@ -2648,13 +2648,13 @@ object Form1: TForm1
       Options.FrameHotColor = 10114859
       Options.FramePressedColor = clBtnText
       Options.FrameFocusedColor = 10114859
-      Options.FrameDisabledColor = clBtnText
+      Options.FrameDisabledColor = 10114859
       Options.FrameWidth = 1
-      Options.FrameNormalColorAlpha = 70
-      Options.FrameHotColorAlpha = 100
+      Options.FrameNormalColorAlpha = 255
+      Options.FrameHotColorAlpha = 255
       Options.FramePressedColorAlpha = 150
       Options.FrameFocusedColorAlpha = 255
-      Options.FrameDisabledColorAlpha = 30
+      Options.FrameDisabledColorAlpha = 255
       Options.FontNormalColor = 33023
       Options.FontHotColor = 33023
       Options.FontPressedColor = 33023
@@ -2675,12 +2675,12 @@ object Form1: TForm1
       GlyphOptions.HotColor = 33023
       GlyphOptions.PressedColor = clWhite
       GlyphOptions.FocusedColor = clWhite
-      GlyphOptions.DisabledColor = clBtnText
+      GlyphOptions.DisabledColor = 11184810
       GlyphOptions.NormalColorAlpha = 200
       GlyphOptions.HotColorAlpha = 255
       GlyphOptions.PressedColorAlpha = 255
       GlyphOptions.FocusedColorAlpha = 255
-      GlyphOptions.DisabledColorAlpha = 100
+      GlyphOptions.DisabledColorAlpha = 255
       GlyphOptions.Kind = scgpbgkPlay
       GlyphOptions.Thickness = 2
       GlyphOptions.ThicknessScaled = False
@@ -3974,7 +3974,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button13'
     TabOrder = 36
-    Visible = False
     OnClick = Button13Click
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
@@ -4456,8 +4455,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2484
-        Top = 2647
+        Left = 2490
+        Top = 2653
         Width = 244
         Height = 31
         Align = alCustom
@@ -8297,7 +8296,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C0101180048074C0710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118005007500710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9428,7 +9427,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013D0038083C0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013D004008400830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
