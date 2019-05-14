@@ -2546,8 +2546,8 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	getJobID(X,Y);//zjištění aktuálního JID
 	if(puvJID!=JID || pom_element_puv!=pom_element)//pokud došlo ke změně JID, nebo změně elementu bez změny JID (např. situace dva roboti vedle sebe nebo rychlý přesun), jinak nemá smysl řešit
 	{
-		refresh_mGrid=false;//ruší zbytečné vypočítávání tabulek
 		//výchozí nastavení
+		refresh_mGrid=false;//ruší zbytečné vypočítávání tabulek
 		kurzor(standard);//umístít na začátek
 
 		////volání akce dle JID            //toto bez otestovaní
@@ -2571,15 +2571,14 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 		//použit závěrečný REFRESH if(-9<=JID && JID<=-6){REFRESH();}//refresh při akci s nadpisem či kótou kabiny
 		if(JID==-10){/*REFRESH();*/kurzor(zmena_j);}//indikace možnosti změnit jednotky na kótách
 		if(JID>=11 && JID<=99)kurzor(zmena_d_y);//interaktivní kóty elementů
-		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));PmG->Refresh();refresh_mGrid=true;}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
+		if(JID>=4 && JID<=10){kurzor(zmena_j);if(PmG->CheckLink(X,Y)!=TPoint(-1,-1));refresh_mGrid=true;PmG->Refresh();}//pohonová tabulka odkazy - aktivace dodáním pouze aktuálních souřadnic
 
 		////inteligentní REFRESH
 		//if(!refresh_mGrid/* && !nabuffrovano*/){d.nabuffrovat_mGridy();nabuffrovano=true;}
 		//d.nabuffrovat_mGridy(pom_element->mGrid);
-		refresh_mGrid=true;
 		//if(!refresh_mGrid)Memo("false");else Memo("true");
+		refresh_mGrid=true;//provizorně
 		REFRESH();
-
 	}
 	//refresh_mGrid=true;
 	pom_element_puv=NULL;delete pom_element_puv;//vynulování a odstranění pomocného ukazatele na element
@@ -5823,6 +5822,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 				DrawGrid_otoce->Refresh();
 				pom_element_temp=NULL; delete pom_element_temp;
 				odstraneni_elementu_tab_pohon(1);//přenastavení tabulky pohonu po odstranění elementu
+				pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 			}else mazani=false;
 			break;
 		}
@@ -6285,10 +6285,8 @@ void TForm1::NP_input()
 		writeINI("nastaveni_nahled","koty_delka", DKunit);
 	}
   //nastavení tlačítka pro spouštění animace za podmínky přiřazení pohonu
-	if(pom_temp->pohon!=NULL)
-		scGPGlyphButton_PLAY->Enabled=true;
-	else
-		scGPGlyphButton_PLAY->Enabled=false;
+	if(pom_temp->pohon!=NULL)scGPGlyphButton_PLAY->Enabled=true;
+	else scGPGlyphButton_PLAY->Enabled=false;
 
 	 scGPButton_ulozit->Enabled=false;
 	 //zapnutí spodního panelu
@@ -6299,6 +6297,8 @@ void TForm1::NP_input()
 	scGPSwitch_rezim->Visible=false;
 	scLabel_klient->Visible=false;
 	scGPGlyphButton_PLAY->Visible=true;
+	scGPGlyphButton_PLAY->GlyphOptions->Kind=scgpbgkPlay;
+	scGPGlyphButton_PLAY->Hint="spustit animaci";
 	//vpravo
 	scGPGlyphButton_zpravy_ikona->Visible=false;
 	Layout->Visible=false;
@@ -8606,6 +8606,11 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
 
+    //v případě animace vypnutí a nastavení do výchozího stavu
+		Timer_animace->Enabled=false;
+		ButtonPLAY->GlyphOptions->Kind=scgpbgkPlay;
+		ButtonPLAY->Hint="spustit animaci";
+		zobrazit_meritko=scGPSwitch_meritko->State;//navrácení do původního stavu
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
 		//změna horní lišty
@@ -8971,11 +8976,6 @@ MOD=SCHEMA;
 
 }
 //---------------------------------------------------------------------------
-
-
-
-
-
 void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 {
 	d.v.vymaz_elementy(pom,true);
@@ -9327,4 +9327,5 @@ void TForm1::Memo(AnsiString Text, bool clear)
 	Memo3->CopyToClipboard();
 }
 //---------------------------------------------------------------------------
+
 
