@@ -2587,7 +2587,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 	if(JID==-1)
 	{                                                       //zajištuje unhighlight odkazu
 		if(PmG!=NULL)if(PmG->CheckLink(X,Y)==TPoint(-2,-2) || PmGCheckLink){PmGCheckLink=true;refresh_mGrid=true;REFRESH();}
-		//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný element
+		//pokud budu chtít ještě získat CheckLink z tabulek elementů budu muset rozšířit testování oblasti tabulky a aby vrátila platný ukazatel na element resp. jeho mgrid
 	}
 
 	////vynulování a odstranění pomocného ukazatele na element
