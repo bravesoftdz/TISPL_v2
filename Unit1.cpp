@@ -8493,6 +8493,8 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
 
+    //v případě animace vypnutí a nastavení do výchozího stavu
+		if(Timer_animace->Enabled)scGPGlyphButton_PLAYClick(Sender);
 		//vypnutí spodního panelu
 		scGPPanel_bottomtoolbar->Visible=false;
 		//změna horní lišty
