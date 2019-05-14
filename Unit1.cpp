@@ -1910,7 +1910,8 @@ void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, T
 void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
 					int X, int Y)
 {
-  if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
+	if(MOD==NAHLED)if(PmG->CheckLink(X,Y)==TPoint(-2,-2))FormX->naplneni_dopRD();//pokud je mod náhled a bylo kliknuto na dopRD vrátí tuto rychlost do tabulky pohonu
+	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
 	if(editace_textu)
 		Smaz_kurzor();
@@ -2174,11 +2175,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				if(pom_element->Y>pom_temp->Yk||pom_element->Y<pom_temp->Yk-pom_temp->rozmer_kabiny.y)
 					Smazat1Click(this);
 			//přepočítávání RT
-			if(pom_element->eID==2||pom_element->eID==4)//pokud se jedná o roboty ve S&G režimu
+			if(pom_element->eID==2)//pokud se jedná o roboty ve S&G režimu
 			{
 				pom_element->RT=m.RT(pom_element->PT1,d.v.vzdalenost_od_predchoziho_elementu(pom_element),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
-				if(pom_element->eID==2)pom_element->mGrid->Cells[1][2].Text=m.round2double(outPT(pom_element->RT),3);
-				if(pom_element->eID==4)pom_element->mGrid->Cells[1][5].Text=m.round2double(outPT(pom_element->RT),3);
+				pom_element->mGrid->Cells[1][2].Text=m.round2double(outPT(pom_element->RT),3);
+			}
+			if(pom_element->eID==4)
+			{
+				pom_element->RT=m.RT(pom_element->PT1+pom_element->PT2+pom_element->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(pom_element),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
+				pom_element->mGrid->Cells[1][5].Text=m.round2double(outPT(pom_element->RT),3);
       }
 			nahled_ulozit(true);
 			break;
@@ -3786,6 +3791,7 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[1][2].Type=PmG->EDIT;
 		PmG->Cells[1][2].Text=0;
 		PmG->Cells[0][3].Text="Násobek rozteče palců";
+		PmG->Cells[1][3].Type=PmG->EDIT;
 		PmG->Cells[1][3].Text=0;
 		PmG->Cells[0][4].Text="Rozestup "+Rz;
 		PmG->Cells[1][4].Text=0;
@@ -4406,7 +4412,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
-			E->mGrid->Cells[0][3].Text="úhel [°]";
+			E->mGrid->Cells[0][3].Text="rotace [°]";
 			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][4].Text="otoč "+cas;
 			E->mGrid->Cells[1][4].Text=outPT(m.PTo(E->OTOC_delka,pom_temp->pohon->aRD));
@@ -4529,7 +4535,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[0][1].Text="rotace [°]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outDO(E->OTOC_delka);
@@ -4572,7 +4578,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[0][1].Text="rotace [°]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;//D u aktivní nelze zadat
 			E->mGrid->Cells[1][2].Text=outDO(m.Dotoc(E->PTotoc,pom_temp->pohon->aRD));//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
@@ -4704,7 +4710,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
 			E->mGrid->Cells[0][2].BottomBorder->Width=2;
 			E->mGrid->Cells[1][2].BottomBorder->Width=2;
-			E->mGrid->Cells[0][3].Text="úhel [°]";
+			E->mGrid->Cells[0][3].Text="rotace [°]";
 			E->mGrid->Cells[1][3].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][4].Text="otoč "+cas;
 			E->mGrid->Cells[1][4].Text=outPT(E->PTotoc);
@@ -4765,7 +4771,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="úhel [°]";
+			E->mGrid->Cells[0][2].Text="rotace [°]";
 			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][3].Text="PTo "+cas;
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
@@ -4821,7 +4827,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[0][1].Text="rotace [°]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outDO(E->OTOC_delka);
@@ -4862,7 +4868,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//samotné vytvoření matice-tabulky
 			E->mGrid->Create(2,4);
 			//definice buněk
-			E->mGrid->Cells[0][1].Text="úhel [°]";
+			E->mGrid->Cells[0][1].Text="rotace [°]";
 			E->mGrid->Cells[1][1].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][2].Text="délka "+delka_otoce;//D u aktivní nelze zadat
 			E->mGrid->Cells[1][2].Text=outDO(E->OTOC_delka);//původně EDIT, ale background lze nastavit pouze pro text, EDIT se jen slabě orámuje
@@ -5189,15 +5195,15 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 		else d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P - 15-odsazeni,label1,label2,n+4,0,180,-1);
 	}
 
-	if((EID==1||EID==3)&&pom_temp->pohon!=NULL)
+	if(/*(EID==1||EID==3)&&*/pom_temp->pohon!=NULL)
 	{
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,1);
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,-1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,1);
 	}
-	else if((EID==2||EID==4)&&pom_temp->pohon!=NULL)
+	else /*if((EID==2||EID==4)&&pom_temp->pohon!=NULL)*/
 	{
 		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((2)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P - 15-odsazeni,"pasivní","",1+4,0,180,-1);
-		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,1);
+		d.vykresli_otoc(C,(Rect.Right*Z-Rect.Left*Z)/2+((3)%2)*W-odsazeniX,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P - 15-odsazeni,"aktivní","",2+4,0,180,-1);
 	}
 
 	Zoom=Zoom_back;//návrácení původního zoomu
@@ -5501,7 +5507,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 	knihovna_id=2;
 	if(Row==0) element_id=Col+5;
 	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-	if((((EID==1||EID==3)&&(element_id==5))||((EID==2||EID==4)&&(element_id==6))||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)
+	if(pom_temp->pohon!=NULL)
 	{
 		SB("Kliknutím na libovolné místo umístíte vybraný element.");
 		Akce=ADD;kurzor(add_o);
