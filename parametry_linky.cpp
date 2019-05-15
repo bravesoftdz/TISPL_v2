@@ -175,6 +175,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   getmGridWidth();
 
 	mGrid->SetColumnAutoFit(-4);
+  scHTMLLabel_jig_info->Font->Color=F->m.clIntensive(clBlack,50);
 
 //	Form_parametry_linky->Width=scPanel_takt->Width + scPanel_vozik->Width + scPanel_takt->Left + 20;//mGrid->Width + scGPButton_pohon->Left + 30;
 

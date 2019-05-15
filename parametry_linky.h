@@ -103,7 +103,6 @@ __published:	// IDE-managed Components
   TscImage *scImage1;
   TscGPGearActivityIndicator *scGPGlyphButton_OPTIONS;
   TrImageEx *rImageEx_jig_podlahovy;
-  TscGPCheckBox *scGPCheckBox1;
 	TrImageEx *rImageEx_jig_podvesny;
   TscHTMLLabel *scHTMLLabel_jig_info;
   TscStyledForm *scStyledForm1;
