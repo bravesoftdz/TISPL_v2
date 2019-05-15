@@ -386,14 +386,14 @@ void TForm2::OnClick(long Tag,long ID,long Col,long Row)
 	if(Row==-2)
 	{
 		//ShowMessage("UNIT2\nexBUTTON");
-		if(ELEMENTY->mG->Rows[1].Visible)//skrývání
+		if(ELEMENTY->mG->Rows[2].Visible)//skrývání
 		{
-			ELEMENTY->mG->VisibleRow(1,false);
+			ELEMENTY->mG->VisibleRow(2,false);
 			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 		}
 		else//zobrazování
 		{
-			ELEMENTY->mG->VisibleRow(1,true);
+			ELEMENTY->mG->VisibleRow(2,true);
 			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 		}
 	}
@@ -526,8 +526,9 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
 	 //Memo1->Lines->Add(AnsiString(X)+" "+AnsiString(Y));
-	 ELEMENTY->mG->MouseMove(X,Y);//pro Hint a kurzor odkazu, mousemove daného formu sice možno odchytávát pøímo v mGridu, ale toto nutnost pro rozlišení tabulek
-	 ELEMENTY->mG->CheckLink(X,Y,true);
+	 //ELEMENTY->mG->MouseMove(X,Y);//pro Hint a kurzor odkazu, mousemove daného formu sice možno odchytávát pøímo v mGridu, ale toto nutnost pro rozlišení tabulek
+	 ELEMENTY->mG->CheckLink(X,Y,true);//mimo unit2 nepoužívat poslední parametr true, není-li to nutné
+
 	 //if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))Screen->Cursor=crHandPoint;else Screen->Cursor=crDefault; //funkcionalita presunuta pøímo do mGridu
 	 //ELEMENTY->mG->CheckLink(X,Y);//nyní si pøi volání automaticky nastavuje Cursor=crHandPoint;, možno zmìnit naším kurzorem
    //FormPaint(this);
@@ -570,8 +571,7 @@ void __fastcall TForm2::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 {
 	 if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))
 	 {
-		ELEMENTY->mG->ShowNote("");
-
+			ELEMENTY->mG->ShowNote("");
 	 }
 }
 

@@ -630,6 +630,7 @@ private:
 	TPoint pocitadlo_zmeny_pozice;
 	bool FMaximized;
 	TRect FOldBoundsRect;
+	bool PmGCheckLink;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
