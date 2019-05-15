@@ -1609,7 +1609,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			{
 				vzd.x=Element->X-Element->predchozi->X;
 			}//odstavil MaKr F->Sv(vzd.x);
-			if(vzd.x!=0)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+			if(vzd.x!=0){Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);posuv_aktualizace_RT(Element);}//při změně vzdálenosti je nutno dopočítat znova RT
 
 			//v případě požadavku na posun i následujících elementů
 			if(pusun_dalsich_elementu)
@@ -1632,6 +1632,25 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 	return RET;
 }
 ////---------------------------------------------------------------------------
+//posunem elementu tj. změnou vzdálenosti od předchozího se ovlivní hodnota RT, nutno přepočítat
+void Cvektory::posuv_aktualizace_RT(TElement *Element)
+{
+	switch(Element->eID)
+	{
+		case 2:
+		{
+			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
+			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+		}break;
+		case 4:
+		{
+			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
+			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
+		}break;
+	}
+}
+////---------------------------------------------------------------------------
+//řeší změnu pořadí při posuvu elementů, dojde k novému ukazatelovému propojení, přejmenování a přeindexování elementů
 void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_poradi)
 {
 	TElement *ukaz_ap=aktualni_poradi;
@@ -1677,18 +1696,42 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 }
 ////---------------------------------------------------------------------------
 //vratí vzdálenost od předchozího elementu, pracuje zatím pouze v orotogonalizovaném prostoru (bude nutno vylepšit s příchodem oblouků), pokud se jedná o první element, uvažuje se jako vzdálenost od počátku kabiny (nutno vylepšit ještě pro různé orientace kabiny)
-double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element)
+double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouzeSG)
 {                  //dodělat MaVl
-	TPointD E=F->d.Rxy(Element);
-	if(Element->n==1)//pro první element od hrany kabiny
-	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
-	}
-	else//mezi elementy
+	if(pouzeSG)//vzdálenost od předchozího SG elementu, slouží k výpočtům RT, zatím provizorně, v budoucnu nutno rozšířit na předchozí kabiny + vyhybky!!!!
 	{
-		TPointD Ep=F->d.Rxy(Element->predchozi);
-		return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
+		double celkem=0;
+		//pokud je element první v kabině
+		if(Element->n==1)return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+		else//pokud je v kabině více elementů
+		{
+	  	//procházení objektu a hledání předchozího SG elementu
+	  	Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//provizorně může být použito pom_temp, volání metody pouze když je pom_temp naplněné
+	  	while(E->n!=Element->n&&E!=NULL)
+	  	{
+				//procházím kabinu od začátku, pokud je element SG uložím jeho vzdálenost k elementu pro kterého hledám vzdálenost k předchozímu
+				if(E->eID==0||E->eID==2||E->eID==4||E->eID==6)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
+	  		E=E->dalsi;
+			}
+			//pokud byla nalezena alespoň jedna vzdálenost
+			if(celkem!=0)return celkem;
+	  	else return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+	  	E=NULL; delete E;
+		}
 	}
+	else//////Původní funkce
+	{
+  	TPointD E=F->d.Rxy(Element);
+  	if(Element->n==1)//pro první element od hrany kabiny
+  	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
+  		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
+  	}
+  	else//mezi elementy
+  	{
+  		TPointD Ep=F->d.Rxy(Element->predchozi);
+  		return m.delka(E.x,E.y,Ep.x,Ep.y); //(bude nutno vylepšit s příchodem oblouků)!!!
+		}
+  }
 }
 ////---------------------------------------------------------------------------
 //zadávám aktuální element, je zjištěna rotace před tímto zadávaným elementem

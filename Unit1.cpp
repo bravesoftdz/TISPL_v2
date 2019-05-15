@@ -2177,12 +2177,12 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//přepočítávání RT
 			if(pom_element->eID==2)//pokud se jedná o roboty ve S&G režimu
 			{
-				pom_element->RT=m.RT(pom_element->PT1,d.v.vzdalenost_od_predchoziho_elementu(pom_element),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
+				pom_element->RT=m.RT(pom_element->PT1,d.v.vzdalenost_od_predchoziho_elementu(pom_element,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
 				pom_element->mGrid->Cells[1][2].Text=m.round2double(outPT(pom_element->RT),3);
 			}
 			if(pom_element->eID==4)
 			{
-				pom_element->RT=m.RT(pom_element->PT1+pom_element->PT2+pom_element->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(pom_element),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
+				pom_element->RT=m.RT(pom_element->PT1+pom_element->PT2+pom_element->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(pom_element,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
 				pom_element->mGrid->Cells[1][5].Text=m.round2double(outPT(pom_element->RT),3);
       }
 			nahled_ulozit(true);
@@ -4019,6 +4019,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 			PmG->VisibleRow(6,false,false);
 			PmG->VisibleRow(7,false,false);
 			PmG->exBUTTONVisible=false;
+			PmG->ShowNote("",clRed,14);
 		}break;
 		case 1://smazání elementu
 		{
@@ -4030,6 +4031,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 				PmG->VisibleRow(6,false,false);
 				PmG->VisibleRow(7,false,false);
 				PmG->exBUTTONVisible=false;
+				PmG->ShowNote("",clRed,14);
 			}                                       //odebrán poslední element s otočí, ale zobrazeny obě mezery mezi jig
 			else if(pocet_vyskytu_elementu(pom_temp,3)==0&&pocet_vyskytu_elementu(pom_temp,5)==0&&PmG->Rows[7].Visible)
 			{
@@ -4409,7 +4411,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][3].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][3].Text));
 			E->mGrid->Cells[0][2].Text="RT "+cas;
-			E->mGrid->Cells[1][2].Text=outPT(m.RT(E->PT1,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
+			E->mGrid->Cells[1][2].Text=outPT(m.RT(E->PT1,d.v.vzdalenost_od_predchoziho_elementu(E,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
 			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][2].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -4500,7 +4502,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT1 "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;E->mGrid->Cells[1][1].Text=outPT(E->PT1);
-			E->mGrid->Cells[0][2].Text="úhel [°]";
+			E->mGrid->Cells[0][2].Text="rotace [°]";
 			E->mGrid->Cells[1][2].Type=E->mGrid->COMBO;
 			E->mGrid->Cells[0][3].Text="PTo "+cas;
 			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outPT(E->PTotoc);
@@ -4510,7 +4512,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[1][6].Type=E->mGrid->EDIT;E->mGrid->Cells[1][6].Text=outPT(m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3));
 			E->WT=inPT(ms.MyToDouble(E->mGrid->Cells[1][6].Text));
 			E->mGrid->Cells[0][5].Text="RT "+cas;
-			E->mGrid->Cells[1][5].Text=outPT(m.RT(E->PT1+E->PT2+E->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(E),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
+			E->mGrid->Cells[1][5].Text=outPT(m.RT(E->PT1+E->PT2+E->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(E,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,E->WT));
 			E->RT=inPT(ms.MyToDouble(E->mGrid->Cells[1][5].Text));
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
@@ -4527,11 +4529,6 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][5].ShowHint=true;
 			E->mGrid->Cells[0][6].Hint="maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][6].ShowHint=true;
-			//nastavení hintů
-			E->mGrid->Cells[0][2].Hint="délka otoče";
-			E->mGrid->Cells[0][2].ShowHint=true;
-			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[0][3].ShowHint=true;
 			//vytvoření comba COMBA
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,2);
@@ -4824,11 +4821,6 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][5].ShowHint=true;
 			E->mGrid->Cells[0][6].Hint="maximální možná doba čekání na palec";
 			E->mGrid->Cells[0][6].ShowHint=true;
-			//nastavení hintů
-			E->mGrid->Cells[0][2].Hint="délka otoče";
-			E->mGrid->Cells[0][2].ShowHint=true;
-			E->mGrid->Cells[0][3].Hint="celkový čas procesu otoče";
-			E->mGrid->Cells[0][3].ShowHint=true;
 			//vytvoření comba COMBA
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,2);
@@ -9224,7 +9216,7 @@ void TForm1::Smaz_kurzor()
 		//zapisuje editované hodnoty do rozměrů kabiny
 		if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=outDK(ms.MyToDouble(editovany_text));
 		if(index_kurzoru==-9)pom_temp->rozmer_kabiny.y=outDK(ms.MyToDouble(editovany_text));
-		if(index_kurzoru<=-11)d.v.posun_element(pom_element_temp,outDK(ms.MyToDouble(editovany_text)),posun_dalsich_elementu);
+		if(index_kurzoru<=-11)d.v.posun_element(pom_element_temp,outDK(ms.MyToDouble(editovany_text)),posun_dalsich_elementu);//realizace samotného posunu
 		//kontrola zda jsou všechny elementy po editaci v kabině
 		int mimo=el_mimoKabinu();
 		//ukončí editaci
