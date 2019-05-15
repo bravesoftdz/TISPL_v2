@@ -175,8 +175,8 @@ object Form2: TForm2
   end
   object Button6: TButton
     Left = 8
-    Top = 62
-    Width = 121
+    Top = 102
+    Width = 57
     Height = 25
     Caption = 'smazat pozn'#225'mku'
     TabOrder = 6

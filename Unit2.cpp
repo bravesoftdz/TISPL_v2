@@ -37,7 +37,7 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 
 		unsigned long ColCount=3;//pevný poèet slopcù
-		unsigned long RowCount=3;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
+		unsigned long RowCount=6;//dynamický poèet øádkù, default 1 je pro 0-tý indexový øádek
 		E->mG->DefaultCell.isZero->Color=clGreen;
 		E->mG->DefaultCell.isEmpty->Color=F->m.clIntensive(clRed,230);
 
@@ -50,6 +50,10 @@ void __fastcall TForm2::FormShow(TObject *Sender)
 		E->mG->Cells[1][1].Type=E->mG->EDIT;
 		E->mG->Cells[1][1].InputNumbersOnly=true;
 		E->mG->Cells[1][2].Type=E->mG->EDIT;
+		E->mG->Cells[0][2].Text="2";E->mG->Cells[0][2].Type=E->mG->EDIT;
+		E->mG->Cells[0][3].Text="3";E->mG->Cells[0][3].Type=E->mG->EDIT;
+		E->mG->Cells[0][4].Text="4";E->mG->Cells[0][4].Type=E->mG->EDIT;
+		E->mG->Cells[0][5].Text="5";E->mG->Cells[0][5].Type=E->mG->EDIT;
 		//E->mG->Cells[1][3].Text="abc0";
 
 		//E->mG->Columns[0].Width=800;
@@ -389,11 +393,17 @@ void TForm2::OnClick(long Tag,long ID,long Col,long Row)
 		if(ELEMENTY->mG->Rows[2].Visible)//skrývání
 		{
 			ELEMENTY->mG->VisibleRow(2,false);
+			ELEMENTY->mG->VisibleRow(3,false);
+			ELEMENTY->mG->VisibleRow(4,false);
+			ELEMENTY->mG->VisibleRow(5,false);
 			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 		}
 		else//zobrazování
 		{
 			ELEMENTY->mG->VisibleRow(2,true);
+			ELEMENTY->mG->VisibleRow(3,true);
+			ELEMENTY->mG->VisibleRow(4,true);
+			ELEMENTY->mG->VisibleRow(5,true);
 			ELEMENTY->mG->exBUTTON->GlyphOptions->Kind=scgpbgkUpArrow;
 		}
 	}
@@ -526,8 +536,8 @@ void __fastcall TForm2::Button3Click(TObject *Sender)
 void __fastcall TForm2::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
 	 //Memo1->Lines->Add(AnsiString(X)+" "+AnsiString(Y));
-	 //ELEMENTY->mG->MouseMove(X,Y);//pro Hint a kurzor odkazu, mousemove daného formu sice možno odchytávát pøímo v mGridu, ale toto nutnost pro rozlišení tabulek
-	 ELEMENTY->mG->CheckLink(X,Y,true);//mimo unit2 nepoužívat poslední parametr true, není-li to nutné
+	 ELEMENTY->mG->MouseMove(X,Y);//pro Hint a kurzor odkazu, mousemove daného formu sice možno odchytávát pøímo v mGridu, ale toto nutnost pro rozlišení tabulek
+	 //ELEMENTY->mG->CheckLink(X,Y,true);//mimo unit2 nepoužívat poslední parametr true, není-li to nutné
 
 	 //if(ELEMENTY->mG->CheckLink(X,Y)==TPoint(-2,-2))Screen->Cursor=crHandPoint;else Screen->Cursor=crDefault; //funkcionalita presunuta pøímo do mGridu
 	 //ELEMENTY->mG->CheckLink(X,Y);//nyní si pøi volání automaticky nastavuje Cursor=crHandPoint;, možno zmìnit naším kurzorem

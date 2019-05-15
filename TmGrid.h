@@ -227,6 +227,7 @@ class TmGrid
 	void realock();//zajistí realokaci pole Cells dle nové velikosti
 	void rotace_textu(long rotace);//zajistí rotaci textu
 	void selRow(long Row,TColor Color,bool newSel);//označí řádek, nebo zruší označení řádku dle vstupního parametru
+	int getCountNextVisibleRow(int Row);//vráti počet skrytých řádků po aktuálním řádku následujích až po první zobrazený
 
 	unsigned long getWidth();//vrátí celkovou šířku tabulky
 	unsigned long getHeight();//vrátí celkovou výšku tabulky

@@ -22,7 +22,8 @@ TmGrid::TmGrid(TForm *Owner)
 	//přidělené události
 	//Form->OnMouseMove=&OnMouseMove;//odstaveno
 	////nastavení TABULKY
-	Tag=0;//ID komponenty (využitelné např. pokud bude více tabulek, tak se bude vědět, v jaké došlo ke kliku)
+	Tag=0;//ID formuláře, v kterém je tabulka či tabuky daného formuláře volány
+	ID=0;//ID konkrétní tabulky, v jednom formuláři vhodné unikátní číslo, mimo formuláře totožná hodnota nevadí (využitelné např. pokud bude více tabulek, tak se bude vědět, v jaké došlo ke kliku)
 	Left=0;Top=0;//umístění celé komponenty
 	RowCount=0;ColCount=0;//počet řádků a sloupců
 	DefaultColWidth=90,DefaultRowHeight=25;//výchozí výška a šířka řádku
@@ -595,14 +596,14 @@ void TmGrid::DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R)
 	}
 
 	//bottom
-	if(Y==RowCount-1)//akcelerátor, aby se zbytečně nevykreslovalo, vykreslí jenom poslední!!!, invertní filozofie než ukazování na stejné orámování, ale zde z důvodu možného překryvu s náplní předchozí buňky
+	if(Y==RowCount-1 && Rows[Y].Visible==true)//akcelerátor, aby se zbytečně nevykreslovalo, vykreslí jenom poslední!!!, invertní filozofie než ukazování na stejné orámování, ale zde z důvodu možného překryvu s náplní předchozí buňky
 	{
 		SetBorder(C,Cells[X][Y].BottomBorder);
 		C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 	}
-	if(Y==RowCount-2 && (!Rows[RowCount-1].Visible || Rows[RowCount-1].Height==0))//pokud je poslední řádek skryt, převezme jeho spodní orámování předposlední, u jiné situace netřeba
+	if(Y+1<=RowCount-1 && Rows[Y].Visible==true && Rows[Y+1].Visible==false)//pokud bude následující řádek skrytý a nejedná se o poslední řádek aktuální také nebude skrytý
 	{
-		SetBorder(C,Cells[X][Y+1].BottomBorder);
+		SetBorder(C,Cells[X][Y+getCountNextVisibleRow(Y)].BottomBorder);
 		C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 	}
 
@@ -620,11 +621,19 @@ void TmGrid::DrawCellBorder(TCanvas *C,unsigned long X,unsigned long Y,TRect R)
 		C->MoveTo(R.Right,R.Top);C->LineTo(R.Right,R.Bottom);
 	}
 	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))//pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
-	{
+	{ //podmínka chce dodělat jako pro skrývání řádků výše
 		SetBorder(C,Cells[X+1][Y].RightBorder);
 		C->MoveTo(R.Left,R.Bottom);C->LineTo(R.Right,R.Bottom);
 	}
 
+}
+//---------------------------------------------------------------------------
+//vráti počet skrytých řádků po aktuálním řádku následujích až po první zobrazený
+int TmGrid::getCountNextVisibleRow(int Row)
+{
+	int Count=0;
+	while(Row+1<RowCount && !Rows[++Row].Visible)Count++;
+	return Count;
 }
 //---------------------------------------------------------------------------
 //zajistí vykreslení poznámky "pod čarou" resp. pod tabulkou
@@ -720,24 +729,6 @@ TRect TmGrid::DrawTextLink(TCanvas *C,unsigned long left,unsigned long top,AnsiS
 	unsigned int Pos=Text.Pos("<a>");//pozice html tagu
 	if(Pos>0)//parsování HTML
 	{
-//		AnsiString T1=ms.TrimRightFrom(Text,"<a>");
-//		AnsiString Link=ms.EP(Text,"<a>","</a>");
-//		AnsiString T2=ms.TrimLeftFromText(Text,"</a>");
-//		C->Font=FontText;
-//		C->Font->Size*=Zoom;
-//		C->TextOut(left,top,T1);
-//		short w=C->TextWidth(T1);
-//		C->Font=FontLink;
-//		C->Font->Size*=Zoom;
-//		C->TextOut(left+w,top,Link);
-//		RET.left=Left+left/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
-//		RET.top=Top+top/Zoom;//kvůli citelné oblasti pro link dané buňky
-//		RET.bottom=Top+top/Zoom+C->TextHeight(Link)/Zoom;//kvůli citelné oblasti pro link dané buňky
-//		w+=C->TextWidth(Link);
-//		RET.right=Left+left/Zoom+w/Zoom;//kvůli citelné oblasti pro link dané buňky
-//		C->Font=FontText;
-//		C->Font->Size*=Zoom;
-//		C->TextOut(left+w,top,T2);
 		AnsiString T1=ms.TrimRightFrom(Text,"<a>");
 		AnsiString Link=ms.EP(Text,"<a>","</a>");
 		AnsiString T2=ms.TrimLeftFromText(Text,"</a>");
@@ -920,10 +911,12 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	E->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
 
 	//velikost
-	short o=0;
-	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
-	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
-	if(Y==RowCount-2 && (!Rows[RowCount-1].Visible || Rows[RowCount-1].Height==0))o=1;else o=0;//pokud je poslední řádek skryt, převezme jeho spodní orámování předposlední, u jiné situace netřeba
+	int o=0;
+	//šířka
+	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//dodělat podle výšky!!! pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
+	if(Cell.MergeState==false)E->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
+	//výška
+	if(Y+1<=RowCount-1 && Rows[Y].Visible==true && Rows[Y+1].Visible==false)o=getCountNextVisibleRow(Y);else o=0;//pokud bude následující řádek skrytý a nejedná se o poslední řádek aktuální také nebude skrytý, převezme jeho spodní orámování předposlední, u jiné situace netřeba
 	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
 
 	//atributy
@@ -985,10 +978,12 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	N->Left=R.Left+ceil(Cell.LeftBorder->Width/2.0);//ubere velikost komponenty podle šířky orámování
 
 	//velikost
-	short o=0;
-	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
-	if(Cell.MergeState==false)N->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);   //pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
-	if(Y==RowCount-2 && (!Rows[RowCount-1].Visible || Rows[RowCount-1].Height==0))o=1;else o=0;//pokud je poslední řádek skryt, převezme jeho spodní orámování předposlední, u jiné situace netřeba
+	int o=0;
+	//šířka
+	if(Y==ColCount-2 && (!Columns[ColCount-1].Visible || Columns[ColCount-1].Width==0))o=1;else o=0;//dodělat podle výšky!!! pokud je poslední sloupe skryt, převezme jeho pravé orámování předposlední, u jiné situace netřeba
+	if(Cell.MergeState==false)N->Width=Columns[X].Width-floor(Cells[X+o][Y].RightBorder->Width/2.0)-ceil(Cell.LeftBorder->Width/2.0);//pokud neplatí nastavuje se přímo v mergovaní, ubere pouze velikost komponenty podle šířky orámování
+	//výška
+	if(Y+1<=RowCount-1 && Rows[Y].Visible==true && Rows[Y+1].Visible==false)o=getCountNextVisibleRow(Y);else o=0;//pokud bude následující řádek skrytý a nejedná se o poslední řádek aktuální také nebude skrytý, převezme jeho spodní orámování předposlední, u jiné situace netřeba
 	/*if(Cell.MergeState==false)*/N->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
 
 	//atributy
@@ -1162,7 +1157,7 @@ void TmGrid::SetCombo(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	C->Options->FrameFocusedColor=clHighlight;
 	C->Options->FocusedColor=Cell.Background->Color;
 	C->Options->HotColor=Cell.Background->Color;
-  C->Options->PressedColor=Cell.Background->Color;
+	C->Options->PressedColor=Cell.Background->Color;
 
 	//font
 	C->Font=Cell.Font;
