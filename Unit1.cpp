@@ -4254,9 +4254,9 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	TColor clFontRight = (TColor)RGB(43,87,154);
-	//identifikátor tabulky
+	//identifikátor tabulky, odstaveno, je již nastaveno při přidávání elementu ve vektorech
 	E->mGrid->Tag=6;//ID formu
-	E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+//	E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 	//definice fontu a velikosti písma
 	E->mGrid->DefaultCell.Font->Name=aFont->Name;
 	E->mGrid->DefaultCell.Font->Size=aFont->Size;
@@ -7738,8 +7738,14 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		 }
 //		 E=NULL; delete E;
 
-		 Form2->ShowModal();
-
+//		 Form2->ShowModal();
+Cvektory::TElement *E=pom_temp->elementy->dalsi;
+while(E!=NULL)
+{
+	Memo(E->mGrid->ID);
+	E=E->dalsi;
+}
+E=NULL;delete E;
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
 //		pom_temp->elementy->dalsi->dalsi->n=1; //druhý

@@ -943,7 +943,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 {
 	//pokud by ještě nebyla založena hlavička, tak ji založí
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);
-
+	int cislo_mGrid=Objekt->elementy->predchozi->n+1;
 	//alokace paměti
 	TElement *novy=new TElement;
 
@@ -994,8 +994,8 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	{
 		novy->mGrid=new TmGrid(F);
 		novy->mGrid->Tag=6;//ID formu
-		novy->mGrid->ID=novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
-	}
+		novy->mGrid->ID=cislo_mGrid;//novy->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
+	}                  //číslování mGridů zvlášť!!! z důvodu přehazování elementů
 
 	//ukazatel na spárovaný element
 	novy->sparovany=vrat_predchozi_stop_element(novy);//metoda již v sobě ošetřuje, že se bude jednat o stopku
@@ -1035,11 +1035,11 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		while(E!=NULL)
 		{
 			E->n=n;
-			if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
-			{
-				E->mGrid->ID=E->n;//F->Sv(E->name);
-				E->mGrid->Show(NULL);//musí zde být Show, Update() dělal problémy
-			}
+//			if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
+//			{
+//				E->mGrid->ID=E->n;//F->Sv(E->name);
+//				E->mGrid->Show(NULL);//musí zde být Show, Update() dělal problémy
+//			}
 			n++;
 			E=E->dalsi;
 		}
@@ -1120,11 +1120,11 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			while(E!=NULL)
 			{
 				E->n=n;
-				if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
-				{
-					E->mGrid->ID=E->n;
-					E->mGrid->Update();//musí zde být
-				}
+//				if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
+//				{
+//					E->mGrid->ID=E->n;
+//					E->mGrid->Update();//musí zde být
+//				}
 				n++;
 				E=E->dalsi;
 			}
@@ -1681,11 +1681,11 @@ void Cvektory::zmen_poradi_elementu(TElement *aktualni_poradi,TElement *nove_por
 	while (E!=NULL)
 	{
 		E->n=n;
-		if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
-		{
-			E->mGrid->ID=E->n;//F->Sv(E->name);
-			E->mGrid->Show(NULL);//musí zde být Show, Update() dělal problémy
-		}
+//		if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
+//		{
+//			E->mGrid->ID=E->n;//F->Sv(E->name);
+//			E->mGrid->Show(NULL);//musí zde být Show, Update() dělal problémy
+//		}
 		n++;
 		E=E->dalsi;
 	}
