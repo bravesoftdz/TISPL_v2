@@ -17,6 +17,7 @@ __fastcall TFormX::TFormX(TComponent* Owner)
  input_state=NO;
  vstoupeno_poh=false;
  vstoupeno_elm=false;
+ validace_true=false;
 }
 //---------------------------------------------------------------------------
 void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
@@ -26,8 +27,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	input_state=NO;
 	if(ID==9999&&Row>=1&&F->PmG->Rows[3].Visible)//pokud je kliknuto do tabulky pohonu, podle buòky vyznèí buòky, které budou zmìnou ovlivnìné
 		korelace_tab_pohonu(Row);//spuštìno pouze v pøípadì KK tabulky
-	else if(ID==9999&&Row>=1)
-		korelace_tab_pohonu_elementy();//pøi S&G režimu je stále nutné zobrazit korelaci v elementech
+	if(ID==9999&&Row>=1)korelace_tab_pohonu_elementy();//pøi S&G režimu je stále nutné zobrazit korelaci v elementech
 	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
 	//funkcionalita exBUTTONu v tabulce pohonu
 	{
@@ -80,6 +80,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 //---------------------------------------------------------------------------
 void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
+  if(ID==9999&&Row==1)validace_true=true;//spuštìní validace až po kliku
 	//po kliku do vykreslené tabulky lze obnovit událost OnChange
 	if(ID==9999)vstoupeno_poh=true;
 	else vstoupeno_elm=true;
@@ -290,10 +291,12 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			case 0://výbìr pohonu
 			{
 				input_state=COMBO;
+				vstoupeno_poh=false;//blokace událostí pøi vkládání elementu
 				F->tab_pohon_COMBO(1);//pøiøazení pohonu
 				F->aktualizace_ComboPohon();
 				if(F->PmG->getCombo(0,0)->ItemIndex!=0)
 				{
+					if(aRD>0)F->scGPComboBox_prepinacKot->Enabled=true;
 					F->scGPGlyphButton_PLAY->Enabled=true;//zapnutí tlaèítka animace
 					//aktualizace tabulky
 					if(F->PmG->Rows[3].Visible)//pro tabulku v kontinuálním režimu
@@ -327,6 +330,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				else
 				{
 					aktualizace_tab_elementu_pOdebran();
+					F->scGPComboBox_prepinacKot->Enabled=false;
 					F->scGPGlyphButton_PLAY->Enabled=false;//vypnutí tlaèítka animace
 				}
 			}break;
@@ -370,6 +374,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				zmena_Rx();
 			}break;
 		}
+		FormX->vstoupeno_poh=true;//blokace událostí pøi vkládání elementu
 		if(F->PmG->Cells[Col][Row].Text=="")input_state=NOTHING;
 		else F->Timer2->Enabled=true;
 	}
@@ -429,6 +434,7 @@ void TFormX::zmena_aRD ()
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->Rx=F->m.Rx(F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec);
 		F->PmG->Cells[1][3].Text=F->m.round2double(F->pom_temp->pohon->Rx,0);
+		F->PmG->Cells[1][5].Text=F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,0));
 		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
 		{
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
@@ -441,7 +447,8 @@ void TFormX::zmena_aRD ()
 		}
 	}
 	//propoèty v tabulkách elementù
-	aktualizace_tab_elementu();validace();
+	aktualizace_tab_elementu();
+	if(validace_true&&F->PmG->Rows[3].Visible)validace();
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou rozteèe
@@ -454,6 +461,7 @@ void TFormX::zmena_R ()
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
 		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz); //prohozené poøadí z dùvodu, že druhý výpoèet potøebuje aktualizovaonu honotu prvního výpoètu
 		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+		F->PmG->Cells[1][5].Text=F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,0));
 		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
 		{
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
@@ -473,13 +481,17 @@ void TFormX::zmena_R ()
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou Rx
 void TFormX::zmena_Rx ()
 {
-  //pøepoèet hodnot v tabulce pohonu
+	//pøepoèet hodnot v tabulce pohonu
 	if(F->PmG->Rows[3].Visible)//kontinuální režim
 	{
     F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
-		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+		if(!validace_true)
+		{
+			F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
+			F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
+		}
+		F->PmG->Cells[1][5].Text=F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,0));
 		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
 		{
 			F->PmG->Cells[1][6].Text=F->m.round2double(F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,1)),3);
@@ -770,6 +782,7 @@ void TFormX::odstranit_korelaci()
 			E->mGrid->unHighlightAll();
 		E=E->dalsi;
 	}
+	validace_true=false;//tato metoda se volá pøi kliku mimo formuláø, pøíhodné vypnout validaci
 }
 //---------------------------------------------------------------------------
 //validace rychlosti pøi její zmìnì
@@ -807,7 +820,7 @@ void TFormX::validace()
 		//vše je vpoøádku
 		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
-			F->PmG->ShowNote("");
+			F->PmG->ShowNote("",clRed,14);
 		}
 	}
 	else F->PmG->ShowNote("Neplatná hodnota rychlosti pohonu!",clRed,14);
@@ -817,5 +830,7 @@ void TFormX::validace()
 void TFormX::naplneni_dopRD()
 {
 	F->PmG->Cells[1][1].Text=F->outaRD(dopRD);
+	F->PmG->ShowNote("",clRed,14);
+	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
 }
 //---------------------------------------------------------------------------

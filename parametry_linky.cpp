@@ -98,8 +98,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     input_state=LOADING;
     COL=0; ROW=0;
 		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
-    F->scStyledForm1->ShowClientInActiveEffect();
-
+    //F->scStyledForm1->ShowClientInActiveEffect();
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
     //C->Items[1].operator [](C->Items->Count)->Header=true;
@@ -175,6 +174,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
   getmGridWidth();
 
 	mGrid->SetColumnAutoFit(-4);
+  scHTMLLabel_jig_info->Font->Color=F->m.clIntensive(clBlack,50);
 
 //	Form_parametry_linky->Width=scPanel_takt->Width + scPanel_vozik->Width + scPanel_takt->Left + 20;//mGrid->Width + scGPButton_pohon->Left + 30;
 

@@ -1055,14 +1055,10 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 {
 	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdn
 	bool pred1=false,zaposlednim=false;//proměnné pro 2 speciální případy které budou řešeny kompletně v této metodě
-	//vrat_hranici vrací min a max souřadnice napříč všemi elementy, důležité pro kontrolu zda je něco vloženo na začátek nebo na konec
-	//100 = max X, 101 = min X
-	//102 = max Y, 103 = min Y
-	if(F->Akce==F->ADD||F->Akce==F->MOVE_ELEMENT)//ošetření proti spouštění při zavírání a otvírání náhledu
+	if((F->Akce==F->ADD||F->Akce==F->MOVE_ELEMENT)&&Objekt->elementy->dalsi!=NULL)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
-   	double maxX=F->vrat_hranici(100),minX=F->vrat_hranici(101),maxY=F->vrat_hranici(102),minY=F->vrat_hranici(103);
    	Cvektory::TElement *p=Objekt->elementy->dalsi;//přeskočí hlavičku
-   	while (p!=NULL&&maxX!=-9999999)
+		while (p!=NULL)
    	{
 			if(p->dalsi!=NULL)//aby se neřešila situace poslední-prní prvek,řešeno separátně
 			{     //F->Sv("první: "+AnsiString(F->d.Rxy(p).x)+" element: "+AnsiString(F->d.Rxy(Element).x)+" poslední: "+AnsiString(F->d.Rxy(p->dalsi).x));
@@ -1071,9 +1067,9 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 				if(TRect(F->d.Rxy(p).x,F->d.Rxy(p).y-3,F->d.Rxy(p->dalsi).x,F->d.Rxy(p->dalsi).y+3).PtInRect(TPoint(F->d.Rxy(Element).x,F->d.Rxy(Element).y)))
 				{
    				ret=p;//uložení elementu, který předcházi vkládanému elementu
-   				break;
+					break;
 				}
-   		}
+			}
 			p=p->dalsi;//posun na další prvek
 		}
 		p=NULL; delete p;
@@ -1081,10 +1077,10 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 		//a to z důvodu rozdílné funkcionality
 		//řešeno přes minimální a maximální souřadnice elementů v kabině, při použití podobného hledání jako u hledání v oblasti problém
 		//s řazením elementů, pokud nejsou v řadě za sebou, což v tuto chvíli nejsou nedává hledání reálné výsledky
-		if(ret==NULL&&maxX!=-9999999)//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
+		if(ret==NULL)//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
 		{
-			if(F->d.Rxy(Element).x<=minX&&F->d.Rxy(Element).y<=minY&&Element->n!=1)pred1=true;
-			if(F->d.Rxy(Element).x>=maxX&&F->d.Rxy(Element).y>=maxY&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
+			if(F->d.Rxy(Element).x<=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;
+			if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->predchozi).x&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
 		}
 		if(pred1||zaposlednim)//výjmutí ze spojáku, pro oba případy stejné
 		{
@@ -1126,8 +1122,8 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 				E->n=n;
 				if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
 				{
-					E->mGrid->ID=E->n;//F->Sv(E->name);
-					E->mGrid->Show(NULL);//musí zde být Show, Update() dělal problémy
+					E->mGrid->ID=E->n;
+					E->mGrid->Update();//musí zde být
 				}
 				n++;
 				E=E->dalsi;

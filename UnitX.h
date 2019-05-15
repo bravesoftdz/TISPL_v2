@@ -39,7 +39,7 @@ public:		// User declarations
 	//promìnné pro vyøazení OnChange metody pøi vykreslování tabulek
   enum Tinput_state{NO,NOTHING,PT,PT2,LO,WT,DO,PTotoc,COMBO,aRD,R,Rz,Rx};//uchovává výbìr input hodnoty (aby se formuláøe necyklyly)
 	Tinput_state input_state;//stav vstupu PT,LO,DelkaOtoce...
-	bool vstoupeno_poh, vstoupeno_elm;
+	bool vstoupeno_poh, vstoupeno_elm,validace_true;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormX *FormX;
