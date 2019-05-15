@@ -3339,7 +3339,7 @@ void TForm1::add_element (int X, int Y)
 {
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
-	FormX->input_state=FormX->NO;//blokace událostí při vkládání elementu
+	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	short trend=m.Rt90(d.trend(pom));
 	short rotace_symbolu=rotace_symbol(trend,X,Y);
 	bool vkabine=el_vkabine(X,Y,element_id);
@@ -3386,7 +3386,7 @@ void TForm1::add_element (int X, int Y)
 
   //Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 	nahled_ulozit(true);//důvod k uložení náhledu
-	FormX->input_state=FormX->NOTHING;//blokace událostí při vkládání elementu
+	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
 }
 //---------------------------------------------------------------------------
 //vrací zda se element nachází v lakovací kabině
@@ -3784,12 +3784,10 @@ void TForm1::vytvoreni_tab_pohon()
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
-		PmG->Cells[1][5].Text=1*1;
+		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
-		PmG->Cells[1][6].Type=PmG->EDIT;
 		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
 		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
-		PmG->Cells[1][7].Type=PmG->EDIT;
 		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
 	}
 	else//žádný pohon není přířazen, nelze vypočítávat hodnoty
@@ -3808,10 +3806,8 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
 		PmG->Cells[1][5].Text=0;
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
-		PmG->Cells[1][6].Type=PmG->EDIT;
 		PmG->Cells[1][6].Text=0;
 		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
-		PmG->Cells[1][7].Type=PmG->EDIT;
 		PmG->Cells[1][7].Text=0;
   }
 	if(pom_temp->pohon==NULL)//pokud není přiřazen pohon zobrazí se pouze COMBO
@@ -3903,6 +3899,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
 		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
 		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 		//samotné skrývání a zobrazování buňěk
 		PmG->VisibleRow(3,true,false);
 		PmG->VisibleRow(4,false,false);
@@ -3940,6 +3937,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 //volána po přiřazení pohonu
 void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 {        
+	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	AnsiString Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (Rzunit==M) Rz="<a>[m]</a>";
@@ -4000,12 +3998,14 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 	}
 	else//pohon byl odebrán
 		odstraneni_elementu_tab_pohon(0);
-	//měl by následovat refresh, nefunguje správně ... porada
+	//po této metodě v OncChange UnitX padá do Timer2 -> refresh, zde není nutné mít refresh
+	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
 }
 //---------------------------------------------------------------------------
 //metoda volaná při odstranění elementu a při odebrání pohonu
 void TForm1::odstraneni_elementu_tab_pohon(int operace)
 {
+	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	//0 = odebrání pohonu
 	switch(operace)
 	{
@@ -4018,16 +4018,18 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 			PmG->VisibleRow(5,false,false);
 			PmG->VisibleRow(6,false,false);
 			PmG->VisibleRow(7,false,false);
+			PmG->exBUTTONVisible=false;
 		}break;
 		case 1://smazání elementu
 		{
-			if(pom_temp->elementy==NULL)//smazání všech elementů, tabulka se nastavý do základního rozpoložení, tj. S&G tabulka
+			if(pom_temp->elementy->dalsi==NULL)//smazání všech elementů, tabulka se nastavý do základního rozpoložení, tj. S&G tabulka
 			{
 				PmG->VisibleRow(3,false,false);
 				PmG->VisibleRow(4,false,false);
 				PmG->VisibleRow(5,false,false);
 				PmG->VisibleRow(6,false,false);
 				PmG->VisibleRow(7,false,false);
+				PmG->exBUTTONVisible=false;
 			}                                       //odebrán poslední element s otočí, ale zobrazeny obě mezery mezi jig
 			else if(pocet_vyskytu_elementu(pom_temp,3)==0&&pocet_vyskytu_elementu(pom_temp,5)==0&&PmG->Rows[7].Visible)
 			{
@@ -4037,15 +4039,17 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 				double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
 				PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
 				PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
-				PmG->VisibleRow(7,false,false);	
+				PmG->VisibleRow(7,false,false);
 			}
     }break;
 	}
+	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
 }
 //---------------------------------------------------------------------------
 //provede změnu jednotek v tabulce pohonu
 void TForm1::zmena_jednotek_tab_pohon()
 {
+	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
 	//překlopení jednotek
 	switch(JID)
 	{
@@ -4103,7 +4107,8 @@ void TForm1::zmena_jednotek_tab_pohon()
 	PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
 	PmG->Cells[0][4].Text="Rozestup "+Rz;
 	PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
-	PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;  
+	PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
+	PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 //	PmG->Cells[1][5].Text=1*1;
 	if(PmG->Rows[7].Visible)
 	{
@@ -4118,7 +4123,8 @@ void TForm1::zmena_jednotek_tab_pohon()
 		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
 		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
 	}	      
-	aktualizace_ComboPohon();//v combo jsou vypsány jednotky, proto nutné aktualizovat	
+	aktualizace_ComboPohon();//v combo jsou vypsány jednotky, proto nutné aktualizovat
+	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
 }
 //---------------------------------------------------------------------------
 //prohledá elementy v objektu, vrátí počet výskytů elementu podle poslaného eID
@@ -4140,6 +4146,7 @@ int TForm1::pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt,int eID)
 //---------------------------------------------------------------------------
 void TForm1::tab_pohon_COMBO (int index)
 {
+	FormX->input_state=FormX->NO;//ošetření aby se nespouštělo OnChange
 	TscGPComboBox *PCombo=PmG->getCombo(0,0);
 	Cvektory::TPohon *P=d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 	TscGPListBoxItem *t=NULL;
@@ -4181,7 +4188,11 @@ void TForm1::tab_pohon_COMBO (int index)
 		{
 			d.v.kopiruj_pohon(d.v.vrat_pohon(PCombo->ItemIndex),pom_temp);
 			nahled_ulozit(true);
-		}    
+		}
+		else
+		{
+			pom_temp->pohon=NULL;
+    }
 		prirazeni_pohonu_tab_pohon(pohon);
 		//zajistí překreslení knihoven když je přidán či odebrán pohon
 		DrawGrid_knihovna->Refresh();
@@ -4197,11 +4208,13 @@ void TForm1::tab_pohon_COMBO (int index)
 	P=NULL; delete P;
 	PCombo=NULL; delete PCombo;
 	DrawGrid_knihovna->SetFocus();
+	FormX->input_state=FormX->NOTHING;//ošetření aby se nespouštělo OnChange
 }
 //---------------------------------------------------------------------------
 //aktualizuje combo při změně jednotek nebo při změně rychlosti
 void TForm1::aktualizace_ComboPohon ()
 {
+	FormX->input_state=FormX->NO;//ošetření aby se nespouštělo OnChange
 	Cvektory::TPohon *P=F->d.v.POHONY->dalsi;//ukazatel na pohony, přeskakuje hlavičku, která je již vytvořena
 	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
 	Combo->Items->Clear();//smazání původního obsahu
@@ -4243,6 +4256,7 @@ void TForm1::aktualizace_ComboPohon ()
 	P=NULL; delete P;
 	Combo=NULL; delete Combo;
 	t=NULL; delete t;
+	FormX->input_state=FormX->NOTHING;//ošetření aby se nespouštělo OnChange
 }
 //---------------------------------------------------------------------------
 //nadesignuje tabulky daného elementu
@@ -4462,9 +4476,9 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
-      I=C->Items->Add();
-			I->Caption="-90";
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+			I=C->Items->Add();
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -4522,11 +4536,12 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,2);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
-      I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+			I=C->Items->Add();
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -4565,11 +4580,12 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,1);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
-      I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+			I=C->Items->Add();
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -4608,11 +4624,12 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,1);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
-      I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+			I=C->Items->Add();
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -4755,11 +4772,12 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,3);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
-      I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+			I=C->Items->Add();
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -4815,11 +4833,12 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,2);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
-      I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
+			I=C->Items->Add();
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -4856,11 +4875,12 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,1);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
 			I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -4897,11 +4917,12 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Update();
 			TscGPComboBox *C=E->mGrid->getCombo(1,1);
 			C->Font->Color=(TColor)RGB(43,87,154);
+			C->BiDiMode=bdRightToLeft;
 			TscGPListBoxItem *I;
 			I=C->Items->Add();
-			I->Caption=-180;
+			I->Caption="180-";//kvůli opačnému zarovnání musí být číslo zapsáno jako řetězec se znaménkem na konci!
 			I=C->Items->Add();
-			I->Caption=-90;
+			I->Caption="90-";
 			I=C->Items->Add();
 			I->Caption=90;
 			I=C->Items->Add();
@@ -7742,6 +7763,11 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 
 		 Form2->ShowModal();
 
+//		pom_temp->elementy->dalsi->n=2;  //první
+//		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
+//		pom_temp->elementy->dalsi->dalsi->n=1; //druhý
+//		pom_temp->elementy->dalsi->dalsi->mGrid->ID=1; 	pom_temp->elementy->dalsi->dalsi->mGrid->Update();
+
  //S(m.mezera_mezi_voziky(1,0.325,0));
  //	ShowMessage(scListGroupNastavProjektu->TabOrder);
  //	ShowMessage(scListGroupKnihovObjektu->TabOrder);
@@ -9318,7 +9344,7 @@ void __fastcall TForm1::scGPComboBox_prepinacKotClick(TObject *Sender)
 {
 	if(FormX->vstoupeno_poh)
 	{
-   	switch(scGPComboBox_prepinacKot->ItemIndex)
+		switch(scGPComboBox_prepinacKot->ItemIndex)
    	{
    		case 0://nastavena délka
    		{
