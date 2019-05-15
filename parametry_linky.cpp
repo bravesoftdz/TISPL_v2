@@ -98,8 +98,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
     input_state=LOADING;
     COL=0; ROW=0;
 		Form_parametry_linky->Color=F->m.clIntensive((TColor)RGB(43,87,154),10);
-    F->scStyledForm1->ShowClientInActiveEffect();
-
+    //F->scStyledForm1->ShowClientInActiveEffect();
    // scHTMLLabel1->Caption="Ahojky - <bgcolor =clWhite>[mm]</bgcolor>";
 
     //C->Items[1].operator [](C->Items->Count)->Header=true;
