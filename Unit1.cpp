@@ -3369,25 +3369,21 @@ void TForm1::add_element (int X, int Y)
 		aut_pozicovani(E,X,Y);
 		E->mGrid->Update(); //nutné před plněním COMBA
 		d.v.napln_comba_stopek();
+		if(E->n==1)d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);//voláno z důvodu naplnění režimu objektu!!!!!
 		//při vložení prvního robota překreslit tabulku pohonu
-		pridani_elementu_tab_pohon(E);
+		if(E->n==1||((E->eID==1||E->eID==3||E->eID==5||E->eID==6)&&(!PmG->Rows[6].Visible||!PmG->Rows[7].Visible)))
+			pridani_elementu_tab_pohon(E); //spouštění pouze v případě kdy je třeba
 		//až na konec:
 		E=NULL;delete E;
 		Akce=NIC;
-		REFRESH();
 		element_id=-1;//new kvůli skrývání komponent v mGridech, využívá metoda d.vykresli_mGridy(TCanvas *canv)
 		DrawGrid_knihovna->Invalidate();
-		DuvodUlozit(true); //"Chcete opravdu smazat \""+pom_element->name.UpperCase()+"\"?"
-//	}
-//	else
-//	{
-//		REFRESH();
-//		zobraz_tip("Nelze vložit robota mimo kabinu!");
-//	}
+		DuvodUlozit(true);
 
   //Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
 	nahled_ulozit(true);//důvod k uložení náhledu
 	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //vrací zda se element nachází v lakovací kabině
@@ -3884,6 +3880,7 @@ void TForm1::vytvoreni_tab_pohon()
 	}
   //naplnění comba hodnotami 
 	tab_pohon_COMBO(0);
+	PmG->Refresh();
 }
 //---------------------------------------------------------------------------
 //předesignování tabulky po přidání každého elementu
@@ -3934,6 +3931,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
 		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
 	}
+	PmG->Update();
 }
 //volána po přiřazení pohonu
 void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
@@ -3975,32 +3973,14 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
    			PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
    			PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
    		}break;//kontinuální,počítá se s jednou mezerou mezi jigy
-   	}
-   	//vypočty buněk, asi není potřeba obstarání v UnitX při přiřazení pohonu
-//   	PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
-//   	PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-//   	pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-//		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
-//   	PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
-//   	PmG->Cells[1][5].Text=1*1;
-//   	if(PmG->Rows[7].Visible)//budou zde obě mezeri mezi jigy
-//   	{
-//   		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
-//   		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
-//   		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
-//   		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
-//   	}
-//   	else if(PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
-//   	{
-//   		double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
-//   		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
-//   		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
-//		}
+		}
 	}
 	else//pohon byl odebrán
 		odstraneni_elementu_tab_pohon(0);
 	//po této metodě v OncChange UnitX padá do Timer2 -> refresh, zde není nutné mít refresh
 	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
+	PmG->Update();
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //metoda volaná při odstranění elementu a při odebrání pohonu
@@ -4021,6 +4001,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 			PmG->VisibleRow(7,false,false);
 			PmG->exBUTTONVisible=false;
 			PmG->ShowNote("",clRed,14);
+			PmG->Refresh();
 		}break;
 		case 1://smazání elementu
 		{
@@ -4033,6 +4014,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 				PmG->VisibleRow(7,false,false);
 				PmG->exBUTTONVisible=false;
 				PmG->ShowNote("",clRed,14);
+				PmG->Refresh();
 			}                                       //odebrán poslední element s otočí, ale zobrazeny obě mezery mezi jig
 			else if(pocet_vyskytu_elementu(pom_temp,3)==0&&pocet_vyskytu_elementu(pom_temp,5)==0&&PmG->Rows[7].Visible)
 			{
@@ -4043,6 +4025,8 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 				PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
 				PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
 				PmG->VisibleRow(7,false,false);
+				PmG->Refresh();
+				REFRESH();//pouze v tomto případě musí dojít k přepozicování
 			}
     }break;
 	}
@@ -6355,7 +6339,7 @@ void TForm1::NP_input()
 	vytvoreni_tab_pohon();
 	nahled_ulozen=false;//nově otevřen, není uložen
 	DrawGrid_knihovna->Invalidate();
-	REFRESH();
+	PmG->Update();
 	//testovací poloha
 	FormX->vstoupeno_poh=true;
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
