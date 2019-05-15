@@ -2423,8 +2423,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 //JID=-5;//vodorovná dolní hrana objektu
 //JID=-6;//název objektu
 //JID=-7;//zkratka objektu
-//JID=-8;//vodorovná kóta
-//JID=-9;//svislá kóta
+//JID=-8;//vodorovná kóta kabiny
+//JID=-9;//svislá kóta kabiny
 //JID=-10;//jednotky kóty
 //JID=-11 a více//hodnota kóty konkrétně a n elementu (10+pom_element->n)*(-1);
 //JID=-1 žádná
@@ -2437,6 +2437,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 void TForm1::getJobID(int X, int Y)
 {
 	JID=-1;//výchozí stav, nic nenalezeno
+
 	//nejdříve se zkouší hledat souřadnice myši v TABULCE POHONů
 	if(PmG!=NULL && pom_temp->uzamknout_nahled==false && pom_temp->zobrazit_mGrid)
 	{
