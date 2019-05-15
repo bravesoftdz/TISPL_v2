@@ -25,6 +25,7 @@ private:	// User declarations
 
 	//promìnné pro UnitX
 	double dopRD;
+	bool editace_pohonu;
 
 public:		// User declarations
   __fastcall TFormX(TComponent* Owner);

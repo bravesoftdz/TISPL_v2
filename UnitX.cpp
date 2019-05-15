@@ -18,6 +18,7 @@ __fastcall TFormX::TFormX(TComponent* Owner)
  vstoupeno_poh=false;
  vstoupeno_elm=false;
  validace_true=false;
+ editace_pohonu=false;
 }
 //---------------------------------------------------------------------------
 void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
@@ -84,12 +85,14 @@ void TFormX::OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row)
 	//po kliku do vykreslené tabulky lze obnovit událost OnChange
 	if(ID==9999)vstoupeno_poh=true;
 	else vstoupeno_elm=true;
+	if(ID==9999)editace_pohonu=true;
+	else editace_pohonu=false;
 }
 //---------------------------------------------------------------------------
 //zpracování onchange události - INPUT, výpoèet a OUTPUT zpìt do ovlivnìné buòky
 void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
-	if(input_state==NOTHING&&ID!=9999&&vstoupeno_elm)
+	if(input_state==NOTHING&&ID!=9999&&vstoupeno_elm&&!editace_pohonu)
 	{
 		Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
 		if(ID>100000)
@@ -511,7 +514,7 @@ void TFormX::zmena_Rx ()
 //pøepoèet v tabulkách elementù po zmìnì parametrù v tabulce pohonu
 void TFormX::aktualizace_tab_elementu ()
 {
-	Cvektory::TElement *E=F->pom_temp->elementy; //F->Memo("Pøed: "+AnsiString(E->PT1));
+	Cvektory::TElement *E=F->pom_temp->elementy;
 	while(E!=NULL)
 	{
 		if(E->n>0)
@@ -572,7 +575,7 @@ void TFormX::aktualizace_tab_elementu ()
 			E->mGrid->Refresh();
 		}
 		E=E->dalsi;
-	} //F->Memo("Za: "+AnsiString(E->PT1));
+	}
 	E=NULL; delete E;
 }
 //---------------------------------------------------------------------------
