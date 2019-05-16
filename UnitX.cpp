@@ -479,6 +479,9 @@ void TFormX::zmena_R ()
 	//pøepoèet hodnot v elementech
 	F->aktualizace_ComboPohon();//zmìna rychlosti, rychlost je zobrazená v Combo pohonù
 	aktualizace_tab_elementu();
+	//////test validace rozteèe                                                                                                                            //0 = základní jednotky
+	TTextNumber cislo=F->d.v.rVALIDACE(5,F->pom_temp->pohon->n,F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,F->pom_temp->pohon->Rz,F->pom_temp->pohon->Rx,0,0,0);//F->aRDunit,F->Runit,F->Rzunit);
+	F->PmG->ShowNote(cislo.text);
 }
 //---------------------------------------------------------------------------
 //pøepoèty tabulek elementù a pohonu vyvolané zmìnou Rx
@@ -489,11 +492,8 @@ void TFormX::zmena_Rx ()
 	{
     F->pom_temp->pohon->Rz=F->m.Rz(F->pom_temp->pohon->Rx,F->pom_temp->pohon->roztec);
 		F->PmG->Cells[1][4].Text=F->m.round2double(F->outRz(F->pom_temp->pohon->Rz),3);
-		if(!validace_true)
-		{
-			F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
-			F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
-		}
+		F->pom_temp->pohon->aRD=F->m.RD(F->pom_temp->pohon->Rz);
+		F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
 		F->PmG->Cells[1][5].Text=F->outRz(F->m.mezera(0,F->pom_temp->pohon->Rz,0));
 		if(F->PmG->Rows[7].Visible)//budou zde obì mezeri mezi jigy
 		{
@@ -754,14 +754,14 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 			if (Row==6)E->mGrid->Cells[1][Row+1].Highlight=true;
 			if (Row==7)E->mGrid->Cells[1][Row-1].Highlight=true;
 		} break;
-    case 4://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
+		case 4://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
 		{
 			if(Row==1)E->mGrid->Cells[1][5].Highlight=true;
 			if(Row==3)E->mGrid->Cells[1][5].Highlight=true;
 			if(Row==4)E->mGrid->Cells[1][5].Highlight=true;
 			if(Row==6)E->mGrid->Cells[1][5].Highlight=true;
 		} break;
-    case 5://otoè pasivní
+		case 5://otoè pasivní
 		{
 			if (Row==2)E->mGrid->Cells[1][Row+1].Highlight=true;
 		} break;
@@ -834,6 +834,18 @@ void TFormX::naplneni_dopRD()
 {
 	F->PmG->Cells[1][1].Text=F->outaRD(dopRD);
 	F->PmG->ShowNote("",clRed,14);
+	if(F->scButton_zamek->ImageIndex==37)F->scButton_zamekClick(this);
 	//odstranit_korelaci();//pro jistotu zùstavala aktivní po kliku na link
 }
 //---------------------------------------------------------------------------
+void TFormX::zakaz_vseho(bool povolit)
+{
+	if(povolit)//budu vše povolovat
+	{
+		if(F->scButton_zamek->ImageIndex==37)F->scButton_zamekClick(this);
+	}
+	else//budu vše dieblovat
+	{
+		if(F->scButton_zamek->ImageIndex==60)F->scButton_zamekClick(this);
+	}
+}

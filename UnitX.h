@@ -22,6 +22,7 @@ private:	// User declarations
 	void korelace_tab_pohonu(int Row);
 	void korelace_tab_pohonu_elementy();
 	void korelace_v_elementech(long ID,long Row);
+	void zakaz_vseho(bool povolit);
 
 	//promìnné pro UnitX
 	double dopRD;
