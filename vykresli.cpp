@@ -2705,7 +2705,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav)
 {
 	double Z=F->Zoom;
-	short size=8*F->Zoom; if(stav==2)size=9*F->Zoom;
+	short size=m.round(8*F->Zoom); if(stav==2)size=m.round(9*F->Zoom);
 	short sklon=50;
 	rotace=m.Rt90(rotace+180);//kvůli převrácenému symbolu
 

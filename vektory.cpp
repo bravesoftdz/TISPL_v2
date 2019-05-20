@@ -1315,6 +1315,7 @@ void  Cvektory::kopiruj_element(TElement *Original, TElement *Kopie)
 void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje elementy a jejich atributy bez ukazatelového propojení z objektu do objektu, pouze ukazatelové propojení na mGrid je zachováno spojuje dvě metody vloz_element(TObjekt *Objekt,TElement *Element) a kopiruj_element(TElement *Original, TElement *Kopie)
 {
 	TElement *E=Original->elementy;
+	vytvor_elementarni_osu(Original,Kopie);//asi spíše provizorně
 	if(E!=NULL)//pokud elementy existují nakopíruje je do pomocného spojáku pomocného objektu
 	{
 		E=E->dalsi;//přeskočí hlavičku
@@ -1326,7 +1327,7 @@ void Cvektory::kopiruj_elementy(TObjekt *Original, TObjekt  *Kopie)//zkopíruje 
 			E=E->dalsi;//posun na další element
 		}
 	}
-	else vytvor_elementarni_osu(Original,Kopie);//pokud neexistují a jedná se o kopírování z pom do pom_temp, založí hlavičku, resp. v hlavičce vytvoří provizorní osu pohonu
+	//else vytvor_elementarni_osu(Original,Kopie);//pokud neexistují a jedná se o kopírování z pom do pom_temp, založí hlavičku, resp. v hlavičce vytvoří provizorní osu pohonu
 	E=NULL;delete E;
 }
 ////---------------------------------------------------------------------------
