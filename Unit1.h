@@ -595,6 +595,7 @@ private:
 	int pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt, int eID);//prohledá elementy v objektu, vrátí počet výskytů elementu podle poslaného eID
 	void vytvor_edit();//vytvoří edit na místě hlavičky tabulky, slouží ke změně názvu elementu
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro změnu názvu elementu a nový název zapíše do elementu, defaultně provede refresh, pokud není předáno parametrem jinak
+  void vykresli_spojinici_EmGrid(Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
 
 	////proměnné
 	TDateTime TIME;

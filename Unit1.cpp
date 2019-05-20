@@ -1862,7 +1862,6 @@ void __fastcall TForm1::TimerMouseWheelTimer(TObject *Sender)
 void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
-	//if(MOD==NAHLED) Konec->SetFocus();
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -1899,7 +1898,6 @@ void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPo
 void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
-	//if(MOD==NAHLED) Konec->SetFocus();
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -2177,7 +2175,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
 			REFRESH();
 			//vykreslení spojnice tabulky a elementu
-			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
+			vykresli_spojinici_EmGrid(pom_element);
+//			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
 			nahled_ulozit(true);
 			break;
 		}
@@ -2192,8 +2191,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			//když nejsou viditelné tabulky elementu -> nevykresli spojnici mezi elementem a tabulkou
-			if(pom_temp->zobrazit_mGrid)
-				d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
+			if(pom_temp->zobrazit_mGrid)vykresli_spojinici_EmGrid(pom_element);
 			//kontrola zda robot nepřekročil hranice kabiny, pokud ano je volaná metoda mazání elementu
 			if(mazani&&(trend==90||trend==270)&&(1<=pom_element->eID && pom_element->eID<=4))
 				if(pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x)
@@ -2351,6 +2349,24 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		default: break;
 	}
+}
+//---------------------------------------------------------------------------
+//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
+void TForm1::vykresli_spojinici_EmGrid(Cvektory::TElement *E)
+{
+	double levyhorni,pravyhorni,levydolni,pravydolni;
+	//výpočet vzdáleností od každého rohu tabulky ke středu elementu
+	levyhorni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt));//ok
+	pravyhorni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt));//ok
+	levydolni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height);//ok
+	pravydolni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height);//ok
+	//stanovení nejmenší vzdálenosti
+	double delka=Min(Min(levyhorni,pravyhorni),Min(levydolni,pravydolni));
+	//vykreslí spojinici v nejmenší délce
+	if(delka==levyhorni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
+	if(delka==pravyhorni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
+	if(delka==levydolni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
+	if(delka==pravydolni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -2590,7 +2606,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
 			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 		}
-		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
+		if(JID==0){if(pom_element->rotace_symbolu==0||pom_element->rotace_symbolu==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;}//posun ELEMENT
 		if(JID==1){kurzor(edit_text);pom_element->stav=3;}//ELEMENT název
 		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
 		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
@@ -3798,16 +3814,16 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
 		PmG->Cells[1][1].Type=PmG->EDIT;
 		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
-		PmG->Cells[0][2].Text="Rozteč "+R;
+		PmG->Cells[0][2].Text="Rozteč palce "+R;
 		PmG->Cells[1][2].Type=PmG->EDIT;
 		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-		PmG->Cells[0][3].Text="Násobek rozteče palců";
-		PmG->Cells[1][3].Type=PmG->EDIT;
+		PmG->Cells[0][4].Text="Násobek rozteče palců";
+		PmG->Cells[1][4].Type=PmG->EDIT;
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
-		PmG->Cells[0][4].Text="Rozestup "+Rz;
+		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,0);
+		PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
-		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
 		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
@@ -3820,14 +3836,14 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
 		PmG->Cells[1][1].Type=PmG->EDIT;
 		PmG->Cells[1][1].Text=0;
-		PmG->Cells[0][2].Text="Rozteč "+R;
+		PmG->Cells[0][2].Text="Rozteč palce "+R;
 		PmG->Cells[1][2].Type=PmG->EDIT;
 		PmG->Cells[1][2].Text=0;
-		PmG->Cells[0][3].Text="Násobek rozteče palců";
-		PmG->Cells[1][3].Type=PmG->EDIT;
-		PmG->Cells[1][3].Text=0;
-		PmG->Cells[0][4].Text="Rozestup "+Rz;
+		PmG->Cells[0][4].Text="Násobek rozteče palců";
+		PmG->Cells[1][4].Type=PmG->EDIT;
 		PmG->Cells[1][4].Text=0;
+		PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
+		PmG->Cells[1][3].Text=0;
 		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
 		PmG->Cells[1][5].Text=0;
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
@@ -3869,12 +3885,11 @@ void TForm1::vytvoreni_tab_pohon()
 				PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 				PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
 				//vypnutí zobrazení 4ho a 5tého řádku, defaultně v KK nezobrazen
-				PmG->VisibleRow(4,false,false);
+//				PmG->VisibleRow(4,false,false);
 				PmG->VisibleRow(5,false,false);
    		}break;//kontinuální,počítá se s jednou mezerou mezi jigy
 		}
 	}
-	//vypnutí zobrazení 4ho řádku, defaultně nezobrazen
 	if(PmG->Rows[7].Visible)//budou zde obě mezeri mezi jigy
 	{
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
@@ -3889,7 +3904,7 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
 	}
 	//finální desing
-	PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);//řádky zobrazované po rozšíření, zvýraznění aby je uživatel nepřehlédnul
+//	PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);//řádky zobrazované po rozšíření, zvýraznění aby je uživatel nepřehlédnul
 	PmG->Cells[0][5].Background->Color=(TColor)RGB(240,240,240);
 	for(int i=1;i<=ms.MyToDouble(PmG->RowCount-1);i++)
 	{
@@ -3923,12 +3938,12 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		//popřidání prvního elementu nutno spočítat!! a zapsat do buňěk
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
-		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,0);
+		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 		//samotné skrývání a zobrazování buňěk
 		PmG->VisibleRow(3,true,false);
-		PmG->VisibleRow(4,false,false);
+		PmG->VisibleRow(4,true,false);
 		PmG->VisibleRow(5,false,false);
 		PmG->VisibleRow(6,true,false);
 		//zapnutí/vypnutí posledního řádku a naplnění hodnotami
@@ -3989,7 +4004,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
    			PmG->VisibleRow(1,true,false);
    			PmG->VisibleRow(2,true,false);
    			PmG->VisibleRow(3,true,false);
-   			PmG->VisibleRow(4,false,false);
+				PmG->VisibleRow(4,true,false);
    			PmG->VisibleRow(5,false,false);
    			PmG->VisibleRow(6,true,false);
    			if(pocet_vyskytu_elementu(pom_temp,3)>0||pocet_vyskytu_elementu(pom_temp,5)>0)
@@ -4079,12 +4094,12 @@ void TForm1::zmena_jednotek_tab_pohon()
 		}break;
 		case 7:
 		{
-
+    	if (Rzunit==M) Rzunit=MM;
+			else Rzunit=M;
 		}break;
 		case 8:
 		{
-			if (Rzunit==M) Rzunit=MM;
-			else Rzunit=M;
+
 		}break;
 		case 9://mezera mezi podvozky
 		{
@@ -4117,10 +4132,10 @@ void TForm1::zmena_jednotek_tab_pohon()
 	//změna v tabulce
 	PmG->Cells[0][1].Text="Rychlost "+aRD;
 	PmG->Cells[1][1].Text=m.round2double(outaRD(pom_temp->pohon->aRD),3);//rychlost raději zaokrouhlovat
-	PmG->Cells[0][2].Text="Rozteč "+R;
+	PmG->Cells[0][2].Text="Rozteč palce "+R;
 	PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-	PmG->Cells[0][4].Text="Rozestup "+Rz;
-	PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+	PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
+	PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 	PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
 	PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 //	PmG->Cells[1][5].Text=1*1;
@@ -5292,6 +5307,7 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
           TRect &Rect, TGridDrawState State)
 {
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	int odsazeni=8;
 	int W=DrawGrid_poznamky->DefaultColWidth  *Z;
 	int H=DrawGrid_poznamky->DefaultRowHeight  *Z;
 	int P=-1*DrawGrid_poznamky->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
@@ -5313,14 +5329,14 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
     {
      label1= "text";
      label2="";
-     d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+		 d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
    //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
      }
     if(n==2)
     {
      label1= "šipka";
      label2="";
-     d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+		 d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
      }
 
 	}
@@ -5586,7 +5602,6 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftS
 					TPoint &MousePos, bool &Handled)
 {
 	//SB("down");
-	//if(MOD==NAHLED) Konec->SetFocus();
 	FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -5595,7 +5610,6 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftSta
 					TPoint &MousePos, bool &Handled)
 {
 	//SB("up");
-	//if(MOD==NAHLED) Konec->SetFocus();
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -7769,14 +7783,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		 }
 //		 E=NULL; delete E;
 
-//		 Form2->ShowModal();
-Cvektory::TElement *E=pom_temp->elementy->dalsi;
-while(E!=NULL)
-{
-	Memo(E->mGrid->ID);
-	E=E->dalsi;
-}
-E=NULL;delete E;
+		 Form2->ShowModal();
+
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
 //		pom_temp->elementy->dalsi->dalsi->n=1; //druhý
@@ -8650,15 +8658,16 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	if(MOD==NAHLED)  //navrácení do módu schéma
 	{
-		if(!nahled_ulozen)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů
-    if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
+		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
 		DrawGrid_knihovna->SetFocus();
 		if(editace_textu)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání elementů - musí být napočátku, aby nebyl problik
+		d.v.vymaz_elementy(pom_temp,true);   //&&pom_temp->elementy->dalsi!=NULL)
+		if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
-		d.v.vymaz_elementy(pom_temp,true);
+//		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
 
@@ -9038,7 +9047,10 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
+	mazani=true;//použití proměnné, která se v tomto čase nevyužívá, slouží k rozpoznání zda bylo stisknuto dříve storno či uližit
+	//a to z důvodu volání uprav_popisky_elementu(přejmenování změn po stisku storno)
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
+  mazani=false;
 }
 //---------------------------------------------------------------------------
 
