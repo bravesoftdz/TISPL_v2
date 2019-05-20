@@ -191,4 +191,13 @@ object Form2: TForm2
       'Memo1')
     TabOrder = 7
   end
+  object Button7: TButton
+    Left = 8
+    Top = 133
+    Width = 57
+    Height = 25
+    Caption = 'smazat pozn'#225'mku'
+    TabOrder = 8
+    OnClick = Button7Click
+  end
 end

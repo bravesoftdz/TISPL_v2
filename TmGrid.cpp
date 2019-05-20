@@ -920,7 +920,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	/*if(Cell.MergeState==false)*/E->Height=Rows[Y].Height-floor(Cells[X][Y+o].BottomBorder->Width/2.0)-ceil(Cell.TopBorder->Width/2.0);//dodělat ubere velikost komponenty podle šířky orámování//ubere velikost komponenty podle šířky orámování
 
 	//atributy
-	if(Cell.Type==EDIT)E->Enabled=true;else E->Enabled=false;
+	if(Cell.Type==readEDIT)E->Enabled=false;
 	E->AutoSize=false;//nutnost
 	E->Transparent=false;//nutnost
 	if(!VisibleComponents)E->Visible=false;else E->Visible=true;//musí být až za nastavováním pozice kvůli posunu obrazu!!!
@@ -2544,6 +2544,36 @@ void TmGrid::SetVisibleComponent(unsigned long Col,unsigned long Row,bool state)
 		case CHECK:				{TscGPCheckBox *CH=getCheck(Col,Row);if(CH!=NULL)CH->Visible=state;CH=NULL;delete CH;}break;
 		case RADIO:				{TscGPRadioButton *R=getRadio(Col,Row);if(R!=NULL)R->Visible=state;R=NULL;delete R;}break;
 		case glyphBUTTON:	{TscGPGlyphButton *gB=getGlyphButton(Col,Row);if(gB!=NULL)gB->Visible=state;gB=NULL;delete gB;}break;
+	}
+}
+//---------------------------------------------------------------------------
+//podle stavu state buď povolí či zakáže všechny komponenty
+void TmGrid::SetEnabledComponents(bool state)
+{
+	for(unsigned long X=0;X<=ColCount-1;X++)//po řádcích
+	{
+		for(unsigned long Y=0;Y<=RowCount-1;Y++)//po sloupcích
+		{
+			SetEnabledComponent(X,Y,state);//skryje komponentu na dané pozici
+		}
+	}
+	//if(exBUTTONEnabled)exBUTTON->Enabled=state;
+}
+//---------------------------------------------------------------------------
+//podle stavu state buď povolí či zakáže komponentu neurčitého typu v dané buňce
+void TmGrid::SetEnabledComponent(unsigned long Col,unsigned long Row,bool state)
+{
+	switch(Cells[Col][Row].Type) //- musí se zároveń ověřovat, zda není NULL, nutné při znovuotevření náhledu
+	{
+		case readEDIT: 		{TscGPEdit *E=getEdit(Col,Row);if(E!=NULL)E->Enabled=state;E=NULL;delete E;}break;
+		case EDIT: 		 		{TscGPEdit *E=getEdit(Col,Row);if(E!=NULL)E->Enabled=state;E=NULL;delete E;}break;
+		case NUMERIC:  		{TscGPNumericEdit *N=getNumeric(Col,Row);if(N!=NULL)N->Enabled=state;N=NULL;delete N;}break;
+		case readNUMERIC:	{TscGPNumericEdit *N=getNumeric(Col,Row);if(N!=NULL)N->Enabled=false;N=NULL;delete N;}break;
+		case BUTTON: 			{TscGPButton *B=getButton(Col,Row);if(B!=NULL)B->Enabled=state;B=NULL;delete B;}break;
+		case COMBO:	 			{TscGPComboBox *C=getCombo(Col,Row);if(C!=NULL)C->Enabled=state;C=NULL;delete C;}break;
+		case CHECK:				{TscGPCheckBox *CH=getCheck(Col,Row);if(CH!=NULL)CH->Enabled=state;CH=NULL;delete CH;}break;
+		case RADIO:				{TscGPRadioButton *R=getRadio(Col,Row);if(R!=NULL)R->Enabled=state;R=NULL;delete R;}break;
+		case glyphBUTTON:	{TscGPGlyphButton *gB=getGlyphButton(Col,Row);if(gB!=NULL)gB->Enabled=state;gB=NULL;delete gB;}break;
 	}
 }
 //---------------------------------------------------------------------------

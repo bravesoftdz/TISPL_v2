@@ -24,6 +24,7 @@ __published:	// IDE-managed Components
 	TButton *Button5;
 	TButton *Button6;
 	TMemo *Memo1;
+	TButton *Button7;
 	void __fastcall FormPaint(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall Button2Click(TObject *Sender);
@@ -39,6 +40,7 @@ __published:	// IDE-managed Components
 	void __fastcall Button6Click(TObject *Sender);
 	void __fastcall FormMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+	void __fastcall Button7Click(TObject *Sender);
 
 
 private:	// User declarations

@@ -119,6 +119,8 @@ class TmGrid
 	void unHighlightAll();//odzvýrazni všechna zvýraznění
 	void SetVisibleComponents(bool state);//podle stavu state buď zobrazí nebo skryje všechny komponenty
 	void SetVisibleComponent(unsigned long Col,unsigned long Row,bool state);//podle stavu state buď zobrazí nebo skryje komponentu neurčitého typu v dané buňce
+	void SetEnabledComponents(bool state);//podle stavu state buď povolí či zakáže všechny komponenty
+	void SetEnabledComponent(unsigned long Col,unsigned long Row,bool state);//podle stavu state buď povolí či zakáže komponentu neurčitého typu v dané buňce
 	TscGPEdit *getEdit(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPNumericEdit *getNumeric(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu
 	TscGPButton *getButton(unsigned long Col,unsigned long Row);//dle zadaného čísla sloupce a čísla řádku vrátí ukazatel nadanou komponentu

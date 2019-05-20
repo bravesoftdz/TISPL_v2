@@ -611,9 +611,16 @@ void __fastcall TForm2::Button6Click(TObject *Sender)
 //ELEMENTY->mG->Note.Text="";
 //InvalidateRect(Form2->Handle,&ELEMENTY->mG->Note.NoteArea,true);
 	ELEMENTY->mG->ShowNote("");
+	ELEMENTY->mG->SetEnabledComponents(false);
 }
 //---------------------------------------------------------------------------
 
 
 
+
+void __fastcall TForm2::Button7Click(TObject *Sender)
+{
+  ELEMENTY->mG->SetEnabledComponents(true);
+}
+//---------------------------------------------------------------------------
 
