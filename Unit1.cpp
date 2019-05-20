@@ -3814,16 +3814,16 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
 		PmG->Cells[1][1].Type=PmG->EDIT;
 		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
-		PmG->Cells[0][2].Text="Rozteč "+R;
+		PmG->Cells[0][2].Text="Rozteč palce "+R;
 		PmG->Cells[1][2].Type=PmG->EDIT;
 		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-		PmG->Cells[0][3].Text="Násobek rozteče palců";
-		PmG->Cells[1][3].Type=PmG->EDIT;
+		PmG->Cells[0][4].Text="Násobek rozteče palců";
+		PmG->Cells[1][4].Type=PmG->EDIT;
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
-		PmG->Cells[0][4].Text="Rozestup "+Rz;
+		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,0);
+		PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
-		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
 		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
@@ -3836,14 +3836,14 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
 		PmG->Cells[1][1].Type=PmG->EDIT;
 		PmG->Cells[1][1].Text=0;
-		PmG->Cells[0][2].Text="Rozteč "+R;
+		PmG->Cells[0][2].Text="Rozteč palce "+R;
 		PmG->Cells[1][2].Type=PmG->EDIT;
 		PmG->Cells[1][2].Text=0;
-		PmG->Cells[0][3].Text="Násobek rozteče palců";
-		PmG->Cells[1][3].Type=PmG->EDIT;
-		PmG->Cells[1][3].Text=0;
-		PmG->Cells[0][4].Text="Rozestup "+Rz;
+		PmG->Cells[0][4].Text="Násobek rozteče palců";
+		PmG->Cells[1][4].Type=PmG->EDIT;
 		PmG->Cells[1][4].Text=0;
+		PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
+		PmG->Cells[1][3].Text=0;
 		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
 		PmG->Cells[1][5].Text=0;
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
@@ -3885,12 +3885,11 @@ void TForm1::vytvoreni_tab_pohon()
 				PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 				PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
 				//vypnutí zobrazení 4ho a 5tého řádku, defaultně v KK nezobrazen
-				PmG->VisibleRow(4,false,false);
+//				PmG->VisibleRow(4,false,false);
 				PmG->VisibleRow(5,false,false);
    		}break;//kontinuální,počítá se s jednou mezerou mezi jigy
 		}
 	}
-	//vypnutí zobrazení 4ho řádku, defaultně nezobrazen
 	if(PmG->Rows[7].Visible)//budou zde obě mezeri mezi jigy
 	{
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
@@ -3905,7 +3904,7 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
 	}
 	//finální desing
-	PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);//řádky zobrazované po rozšíření, zvýraznění aby je uživatel nepřehlédnul
+//	PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);//řádky zobrazované po rozšíření, zvýraznění aby je uživatel nepřehlédnul
 	PmG->Cells[0][5].Background->Color=(TColor)RGB(240,240,240);
 	for(int i=1;i<=ms.MyToDouble(PmG->RowCount-1);i++)
 	{
@@ -3939,12 +3938,12 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		//popřidání prvního elementu nutno spočítat!! a zapsat do buňěk
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-		PmG->Cells[1][3].Text=m.round2double(pom_temp->pohon->Rx,0);
-		PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,0);
+		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 		//samotné skrývání a zobrazování buňěk
 		PmG->VisibleRow(3,true,false);
-		PmG->VisibleRow(4,false,false);
+		PmG->VisibleRow(4,true,false);
 		PmG->VisibleRow(5,false,false);
 		PmG->VisibleRow(6,true,false);
 		//zapnutí/vypnutí posledního řádku a naplnění hodnotami
@@ -4005,7 +4004,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
    			PmG->VisibleRow(1,true,false);
    			PmG->VisibleRow(2,true,false);
    			PmG->VisibleRow(3,true,false);
-   			PmG->VisibleRow(4,false,false);
+				PmG->VisibleRow(4,true,false);
    			PmG->VisibleRow(5,false,false);
    			PmG->VisibleRow(6,true,false);
    			if(pocet_vyskytu_elementu(pom_temp,3)>0||pocet_vyskytu_elementu(pom_temp,5)>0)
@@ -4095,12 +4094,12 @@ void TForm1::zmena_jednotek_tab_pohon()
 		}break;
 		case 7:
 		{
-
+    	if (Rzunit==M) Rzunit=MM;
+			else Rzunit=M;
 		}break;
 		case 8:
 		{
-			if (Rzunit==M) Rzunit=MM;
-			else Rzunit=M;
+
 		}break;
 		case 9://mezera mezi podvozky
 		{
@@ -4133,10 +4132,10 @@ void TForm1::zmena_jednotek_tab_pohon()
 	//změna v tabulce
 	PmG->Cells[0][1].Text="Rychlost "+aRD;
 	PmG->Cells[1][1].Text=m.round2double(outaRD(pom_temp->pohon->aRD),3);//rychlost raději zaokrouhlovat
-	PmG->Cells[0][2].Text="Rozteč "+R;
+	PmG->Cells[0][2].Text="Rozteč palce "+R;
 	PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
-	PmG->Cells[0][4].Text="Rozestup "+Rz;
-	PmG->Cells[1][4].Text=outRz(pom_temp->pohon->Rz);
+	PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
+	PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 	PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
 	PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 //	PmG->Cells[1][5].Text=1*1;
@@ -8659,15 +8658,16 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 {
 	if(MOD==NAHLED)  //navrácení do módu schéma
 	{
-		if(!nahled_ulozen)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů
-    if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
+		if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
 		smaz_edit(false);//smaže edit a neprovede refresh
 		DrawGrid_knihovna->SetFocus();
 		if(editace_textu)Smaz_kurzor();//také volá Refresh//smaz_kurzor se zavolá, pouze pokud je to třeba odstraňuje zbytečný problik, dodělal MaKr
 		MOD=SCHEMA;//nutné před zoom, ale za smaz kurzor
 		//smazání elementů - musí být napočátku, aby nebyl problik
+		d.v.vymaz_elementy(pom_temp,true);   //&&pom_temp->elementy->dalsi!=NULL)
+		if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(pom,NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
-		d.v.vymaz_elementy(pom_temp,true);
+//		d.v.vymaz_elementy(pom_temp,true);
 		if(pom_temp!=NULL){pom_temp->pohon=NULL;delete pom_temp->pohon;}pom_temp=NULL;delete pom_temp;
 		PmG->Delete(); PmG=NULL; delete PmG;
 
@@ -9047,7 +9047,10 @@ void __fastcall TForm1::scGPButton_OKClick(TObject *Sender)
 	d.v.kopiruj_objekt(pom_temp,pom);
 	DuvodUlozit(true);
 	nahled_ulozit(false);
+	mazani=true;//použití proměnné, která se v tomto čase nevyužívá, slouží k rozpoznání zda bylo stisknuto dříve storno či uližit
+	//a to z důvodu volání uprav_popisky_elementu(přejmenování změn po stisku storno)
 	scGPButton_stornoClick(Sender);//další funkcionalita je již stejná jako ve stornu, včetně vymazání ukazatele pom_temp včetně jeho elementů
+  mazani=false;
 }
 //---------------------------------------------------------------------------
 

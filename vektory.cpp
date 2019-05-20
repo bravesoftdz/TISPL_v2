@@ -1178,7 +1178,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 		 			Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
 		 			if(O->n==Objekt->n)E=F->pom_temp->elementy;//při procházení aktuálního objektu nahradit pom_temp
 		 			while(E!=NULL)
-		 			{
+					{
 		 				if(E->n>0)//přeskočí hlavičku
 						{
 		 					//kontrola zda můžu název změnit
@@ -1191,27 +1191,27 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 								case 4:rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
 								case 5:
 								case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
-		 					}
+							}
 		 					//nezměněn nebo nemá název -> mohu změnit
 		 					if(rename)
 							{
-		 						int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
-		 						//změna názvu v mGridu
-		 						if(E->name!="")
+								int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
+								//změna názvu v mGridu
+								if(E->name!=""&&O->n==Objekt->n)//nelze přistupovat k mGridu v případech nového elementu (nemá vytvořený), v neaktivní kabině (elementy nemají vytvořene mGridy)
 								{
 									if(E->eID==0)E->mGrid->Cells[0][0].Text="<a>Stop "+AnsiString(n)+"</a>";
 									else E->mGrid->Cells[0][0].Text="<a>Otoč "+AnsiString(n)+"</a>";
 									E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
 		 							E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
-		   						E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+									E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
 //	   							if(E->eID==0)napln_combo_stopky(E);//pro budoucí použití
 		 						}
 		   					//změna názvu
 		 						switch(E->eID)
 		 						{
-		 							case 0:E->name="Stop "+AnsiString(n);E->short_name="Sto"+AnsiString(n);break;
+									case 0:E->name="Stop "+AnsiString(n);E->short_name="Sto"+AnsiString(n);break;
 		 							case 5:
-		 							case 6:E->name="Otoč "+AnsiString(n);E->short_name="Oto"+AnsiString(n);break;
+									case 6:E->name="Otoč "+AnsiString(n);E->short_name="Oto"+AnsiString(n);break;
 								}
 							}
 						}
@@ -1226,56 +1226,58 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 	}  //storno funkcionalitu nutno podrobit dalším testům
 	else//spuštěno při stisku tlačítka storno, musí dojít k přejmenování na původní, mění se název i pořadová čísla
 	{
-//		Cvektory::TObjekt *O=OBJEKTY->dalsi;
-//		while(O!=NULL)
-//		{
-//			if(O->n<Objekt->n)continue;//přeskakování objektů před aktuálním
-//			Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
-//			if(O->n==Objekt->n)E=F->pom->elementy;//když se jedná o aktuální objekt sáhnout do ostrého spojáku
-//			int n_spojak=1;//hodnota n pro seznam (element)
-//			while(E!=NULL)
-//			{
-//				if(E->n>0)
-//				{
-//					//kontrola zda má element původní název
-//					switch(E->eID)
-//					{
-//						case 0:if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=6)rename=true;else rename=false;break;
-//						case 1:
-//						case 2:
-//						case 3:
-//						case 4:if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7)rename=true;else rename=false;break;
-//						case 5:
-//						case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=6)rename=true;else rename=false;break;
-//					}
-//					//pokud má původní název -> přejmenovat
-//					if(rename)
-//					{
-//						int n_nazev=0;//n sloužící pro název, kolikáty element
-//						if(O->n==Objekt->n)n_nazev=vrat_poradi_elementu_do(Objekt,E)+1;
-//						else n_nazev=vrat_poradi_elementu_do(O,E)+1;//předávání ukazatele na plný objekt
-//						//změna názvu
-//						switch(E->eID)
-//						{
-//							case 0:E->name="Stop "+AnsiString(n_nazev);break;
-//							case 1:
-//							case 2:
-//							case 3:
-//							case 4:E->name="Robot "+AnsiString(n_nazev);break;
-//							case 5:
-//							case 6:E->name="Otoč "+AnsiString(n_nazev);break;
-//						}
-//					}
-//					//změna n ve spojáku
-//					E->n=n_spojak;
-//					n_spojak++;
-//				}
-//				E=E->dalsi;
-//			}
-//			E=NULL; delete E;
-//			O=O->dalsi;
-//		}
-//		O=NULL; delete O;
+		Cvektory::TObjekt *O=OBJEKTY->dalsi;
+		while(O!=NULL)
+		{
+			if(O->n>=Objekt->n)//přeskakování objektů před aktuálním
+			{
+				Cvektory::TElement *E=O->elementy;//nepřeskakovat hlavičku
+				if(O->n==Objekt->n)E=F->pom->elementy;//když se jedná o aktuální objekt sáhnout do ostrého spojáku
+	   		int n_spojak=1;//hodnota n pro seznam (element)
+	   		while(E!=NULL)
+	   		{
+					if(E->n>0)
+					{
+						//kontrola zda má element původní název
+	   				switch(E->eID)
+	   				{
+	   					case 0:if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=6)rename=true;else rename=false;break;
+	   					case 1:
+							case 2:
+	   					case 3:
+	   					case 4:if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7)rename=true;else rename=false;break;
+	   					case 5:
+	   					case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=6)rename=true;else rename=false;break;
+	   				}
+						//pokud má původní název -> přejmenovat
+						if(rename)
+						{
+							int n_nazev=0;//n sloužící pro název, kolikáty element
+							if(O->n==Objekt->n)n_nazev=vrat_poradi_elementu_do(Objekt,E)+1;
+							else n_nazev=vrat_poradi_elementu_do(O,E)+1;//předávání ukazatele na plný objekt
+							//změna názvu
+							switch(E->eID)
+							{
+	   						case 0:E->name="Stop "+AnsiString(n_nazev);break;
+								case 1:
+								case 2:
+								case 3:
+	   						case 4:E->name="Robot "+AnsiString(n_nazev);break;
+								case 5:
+								case 6:E->name="Otoč "+AnsiString(n_nazev);break;
+	   					}
+						}
+						//změna n ve spojáku
+						E->n=n_spojak;
+						n_spojak++;
+					}
+					E=E->dalsi;
+	   		}
+				E=NULL; delete E;
+			}
+			O=O->dalsi;
+		}
+		O=NULL; delete O;
 	}
 }
 ////---------------------------------------------------------------------------
@@ -1407,10 +1409,10 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 		while(O!=NULL)
 		{
 			Cvektory::TElement *E=O->elementy;//nastaveno na hlavičku, ošetřeno níže
-			if(F->pom_temp->n==O->n)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
+			if(F->pom_temp->n==O->n)if(F->pom_temp!=NULL)E=F->pom_temp->elementy;//pokud se prochází objekt aktuálně editovaný, tak se vezme z pom_temp, kde jsou aktuální hodnoty
 			while(E!=NULL)
 			{
-        if(O->n==Objekt->n&&E==Element)break;//ukončení prohledávání když jsem na aktuálním elmentu
+				if(O->n==Objekt->n&&E==Element)break;//ukončení prohledávání když jsem na aktuálním elmentu
 				if(E->n>0)//ošetření pro hlavičku
 				{
 					if(E->eID==0)s_pocet++;
@@ -1419,6 +1421,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 				E=E->dalsi;
 			}
 			E=NULL; delete E;
+			if(O->n==Objekt->n)break;
 			O=O->dalsi;
 		}
 		O=NULL; delete O;

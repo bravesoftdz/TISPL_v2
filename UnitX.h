@@ -34,7 +34,7 @@ public:		// User declarations
 	void OnEnter(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnChange(long Tag,long ID,unsigned long Col,unsigned long Row);
 	void OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,System::WideChar &Key);
-	void odstranit_korelaci();
+	void odstranit_korelaci(bool predat_focus=true);
 	void validace();
 	void naplneni_dopRD();
 
