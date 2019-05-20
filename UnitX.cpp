@@ -791,7 +791,10 @@ void TFormX::odstranit_korelaci()
 //validace rychlosti pøi její zmìnì
 void TFormX::validace()
 {
-	bool mimo_rozmezi=false;;
+	AnsiString jednotky;
+	if(F->aRDunit==0)jednotky="[m/s]";
+	else jednotky="[m/min]";
+	bool mimo_rozmezi=false;
 	TscGPComboBox *Combo=F->PmG->getCombo(0,0);
 	dopRD=0;
 	//kontrola zda je zadaná hodnota v rozmezí
@@ -818,7 +821,7 @@ void TFormX::validace()
 		//je zvolen pohon, jeho aktuální rychlost se nerovná doporuèené
 		if(Combo->ItemIndex!=0 && F->pom_temp->pohon->roztec>0 && F->ms.MyToDouble(dopRD)!= F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)
 		{
-				F->PmG->ShowNote("Zadejte doporuèenou rychlost pohonu: <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a>",clRed,14);
+				F->PmG->ShowNote("Zadejte doporuèenou rychlost pohonu: <a>"+AnsiString(F->m.round2double(F->outaRD(dopRD),3))+"</a> "+jednotky,clRed,14);
 		}
 		//vše je vpoøádku
 		if (F->ms.MyToDouble(dopRD)== F->ms.MyToDouble(F->pom_temp->pohon->aRD) && mimo_rozmezi==false)

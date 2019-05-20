@@ -1862,7 +1862,6 @@ void __fastcall TForm1::TimerMouseWheelTimer(TObject *Sender)
 void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
-	//if(MOD==NAHLED) Konec->SetFocus();
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -1899,7 +1898,6 @@ void __fastcall TForm1::FormMouseWheelUp(TObject *Sender, TShiftState Shift, TPo
 void __fastcall TForm1::FormMouseWheelDown(TObject *Sender, TShiftState Shift, TPoint &MousePos,
 					bool &Handled)
 {
-	//if(MOD==NAHLED) Konec->SetFocus();
 	if(jedno_ze_tri_otoceni_koleckem_mysi==1)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detukuje každé druhou událost FormMouseWheel
 	{
 			switch(funkcni_klavesa)//Velice nutná konstrukce kvůli špatně fungujicí funkci OnMouseWheel, detekuje stisk kláves ctrl, shift, ctrl+shift
@@ -2177,7 +2175,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
 			REFRESH();
 			//vykreslení spojnice tabulky a elementu
-			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
+			vykresli_spojinici_EmGrid(pom_element);
+//			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
 			nahled_ulozit(true);
 			break;
 		}
@@ -2192,8 +2191,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			//když nejsou viditelné tabulky elementu -> nevykresli spojnici mezi elementem a tabulkou
-			if(pom_temp->zobrazit_mGrid)
-				d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
+			if(pom_temp->zobrazit_mGrid)vykresli_spojinici_EmGrid(pom_element);
 			//kontrola zda robot nepřekročil hranice kabiny, pokud ano je volaná metoda mazání elementu
 			if(mazani&&(trend==90||trend==270)&&(1<=pom_element->eID && pom_element->eID<=4))
 				if(pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x)
@@ -2351,6 +2349,24 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		default: break;
 	}
+}
+//---------------------------------------------------------------------------
+//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
+void TForm1::vykresli_spojinici_EmGrid(Cvektory::TElement *E)
+{
+	double levyhorni,pravyhorni,levydolni,pravydolni;
+	//výpočet vzdáleností od každého rohu tabulky ke středu elementu
+	levyhorni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt));//ok
+	pravyhorni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt));//ok
+	levydolni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height);//ok
+	pravydolni=m.delka(m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height);//ok
+	//stanovení nejmenší vzdálenosti
+	double delka=Min(Min(levyhorni,pravyhorni),Min(levydolni,pravydolni));
+	//vykreslí spojinici v nejmenší délce
+	if(delka==levyhorni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
+	if(delka==pravyhorni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
+	if(delka==levydolni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
+	if(delka==pravydolni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -2590,7 +2606,7 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			if(pom_element_puv!=NULL)pom_element_puv->mGrid->MouseMove(X,Y);//najistotu zrušení hintů a highlignutí odkazu normálních tabulek dodáním pouze aktuálních souřadnic
 			if(puvJID>=4 && puvJID<=10)PmG->MouseMove(X,Y);//najistotu hintů a zrušení highlignutí tabulky pohonu dodáním pouze aktuálních souřadnic
 		}
-		if(JID==0){kurzor(posun_ind);pom_element->stav=2;}//ELEMENT
+		if(JID==0){if(pom_element->rotace_symbolu==0||pom_element->rotace_symbolu==180)kurzor(zmena_d_x);else kurzor(zmena_d_y);pom_element->stav=2;}//posun ELEMENT
 		if(JID==1){kurzor(edit_text);pom_element->stav=3;}//ELEMENT název
 		//použit závěrečný REFRESH if(pom_element!=pom_element_puv && (puvJID==0 || JID==0)/* || (puvJID==0 && JID==1) || (puvJID==1 && JID==0)*/){REFRESH();}//důvod k REFRESH, pouze v případě změny elementu či přechodu z názvu na celý element a opačně
 		//použit závěrečný REFRESH if(10<JID && JID<1000){REFRESH();}//hodnota kóty
@@ -5292,6 +5308,7 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
           TRect &Rect, TGridDrawState State)
 {
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
+	int odsazeni=8;
 	int W=DrawGrid_poznamky->DefaultColWidth  *Z;
 	int H=DrawGrid_poznamky->DefaultRowHeight  *Z;
 	int P=-1*DrawGrid_poznamky->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
@@ -5313,14 +5330,14 @@ void __fastcall TForm1::DrawGrid_poznamkyDrawCell(TObject *Sender, int ACol, int
     {
      label1= "text";
      label2="";
-     d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+		 d.vykresli_ikonu_textu(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
    //	d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 30,label1,label2,n);
      }
     if(n==2)
     {
      label1= "šipka";
      label2="";
-     d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
+		 d.vykresli_ikonu_sipky(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W+odsazeni,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 20,label1);
      }
 
 	}
@@ -5586,7 +5603,6 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftS
 					TPoint &MousePos, bool &Handled)
 {
 	//SB("down");
-	//if(MOD==NAHLED) Konec->SetFocus();
 	FormMouseWheelDown(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -5595,7 +5611,6 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftSta
 					TPoint &MousePos, bool &Handled)
 {
 	//SB("up");
-	//if(MOD==NAHLED) Konec->SetFocus();
 	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
 }
 //---------------------------------------------------------------------------
@@ -7769,14 +7784,8 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		 }
 //		 E=NULL; delete E;
 
-//		 Form2->ShowModal();
-Cvektory::TElement *E=pom_temp->elementy->dalsi;
-while(E!=NULL)
-{
-	Memo(E->mGrid->ID);
-	E=E->dalsi;
-}
-E=NULL;delete E;
+		 Form2->ShowModal();
+
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
 //		pom_temp->elementy->dalsi->dalsi->n=1; //druhý

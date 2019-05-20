@@ -3181,11 +3181,12 @@ void Cvykresli::vykresli_ikonu_linie(TCanvas *canv,int X,int Y,AnsiString Popise
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	int odsazeni=6;//vycentrování linie mezi hlavičkou a textem
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//vykreslení linie
 	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
-	line(canv,X-W+8,Y-W/2,X+W-8,Y-W/2);
+	line(canv,X-W+8,Y-W/2+odsazeni,X+W-8,Y-W/2+odsazeni);
 
 	//popisek
 	canv->Brush->Style=bsClear;
@@ -3203,12 +3204,13 @@ void Cvykresli::vykresli_ikonu_oblouku(TCanvas *canv,int X,int Y,AnsiString Popi
 {
 	short o=10*3;
 	int W=F->DrawGrid_knihovna->DefaultColWidth*3/2-o;
+	int odsazeni=3;//vycentrování linie mezi hlavičkou a textem
 	short C=W/2;//zajištění vycentrování
 	TColor barva=clBlack; if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//vykreslení oblouku
 	set_pen(canv,barva,1*10,PS_ENDCAP_FLAT);
-	canv->Arc(X-W-C,Y-W,X+W-C,Y+W,X+W-C,Y,X-C,Y-W);//směr proti hodinovým ručičkám
+	canv->Arc(X-W-C,Y-W+odsazeni,X+W-C,Y+W+odsazeni,X+W-C,Y+odsazeni,X-C,Y-W+odsazeni);//směr proti hodinovým ručičkám
 
 	//popisek
 	canv->Brush->Style=bsClear;

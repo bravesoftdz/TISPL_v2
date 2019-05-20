@@ -1061,12 +1061,11 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 		while (p!=NULL)
    	{
 			if(p->dalsi!=NULL)//aby se neřešila situace poslední-prní prvek,řešeno separátně
-			{     //F->Sv("první: "+AnsiString(F->d.Rxy(p).x)+" element: "+AnsiString(F->d.Rxy(Element).x)+" poslední: "+AnsiString(F->d.Rxy(p->dalsi).x));
-						//F->Sv("první: "+AnsiString(F->d.Rxy(p).y)+" element: "+AnsiString(F->d.Rxy(Element).y)+" poslední: "+AnsiString(F->d.Rxy(p->dalsi).y));
+			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(TRect(F->d.Rxy(p).x,F->d.Rxy(p).y-3,F->d.Rxy(p->dalsi).x,F->d.Rxy(p->dalsi).y+3).PtInRect(TPoint(F->d.Rxy(Element).x,F->d.Rxy(Element).y)))
+				if(F->m.PtInRectangle(p->X,p->Y,p->dalsi->X,p->dalsi->Y,Element->X,Element->Y))
 				{
-   				ret=p;//uložení elementu, který předcházi vkládanému elementu
+					ret=p;//uložení elementu, který předcházi vkládanému elementu
 					break;
 				}
 			}
@@ -1598,7 +1597,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //		}
 						 //dodělat MaVl
 		//provizorně jen pro vodorovnou levopravou kabinu
-		if(F->pom_temp->elementy->dalsi!=NULL)//musí existovat alespoň jeden element
+		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=NULL)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			TPointD vzd;
 			if(Element->n==1)//pro první element, od počátku kabiny

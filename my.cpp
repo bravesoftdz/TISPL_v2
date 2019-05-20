@@ -299,6 +299,12 @@ bool Cmy::PtInCircle(double point_X,double point_Y,double center_X,double center
 	return delka(point_X,point_Y,center_X,center_Y)<=radius;
 }
 /////////////////////////////////////////////////////////////////////////////
+//funkce ovìøí, zda se bod nachází v obdelníku
+bool Cmy::PtInRectangle(double X1,double Y1,double X2,double Y2,double Xkontrolovane,double Ykontrolovane)
+{
+	return (X1<=Xkontrolovane&&Xkontrolovane<=X2&&Y1<=Ykontrolovane&&Ykontrolovane<=Y2);
+}
+/////////////////////////////////////////////////////////////////////////////
 TPointDbool Cmy::zkratit_polygon_na_roztec(double d, double r,double xp, double yp, double x0, double y0, double x1, double y1)//d - delka linky,r - roztec palcuxp, yp - souradnice oznaceneho bodu x0, y0, x1, y1- souradnice sousedu k oznacenemu bodu
 {
 		TPointDbool RET;
