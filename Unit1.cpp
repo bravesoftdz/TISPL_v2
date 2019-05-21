@@ -2076,7 +2076,6 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
-
 	if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
 	{ //nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (if zde nebyl)
 		if(Label_zamerovac->Visible)d.vykresli_svislici_na_casove_osy(Canvas,minule_souradnice_kurzoru.X,minule_souradnice_kurzoru.Y);
@@ -2767,8 +2766,8 @@ void TForm1::onPopUP(int X, int Y)
 	PopUPmenu->Item_smazat->FillColor=(TColor)RGB(240,240,240);
 	PopUPmenu->Item_cely_pohled->FillColor=(TColor)RGB(240,240,240);
 	//umístění popup menu
-	PopUPmenu->Left=akt_souradnice_kurzoru_PX.x;
-	PopUPmenu->Top=akt_souradnice_kurzoru_PX.y;
+	PopUPmenu->Left=Form1->Left+akt_souradnice_kurzoru_PX.x; //musí být top a left formu, z důvodu více obrazovek
+	PopUPmenu->Top=Form1->Top+akt_souradnice_kurzoru_PX.y;
 	//volání vlastního popup menu + ošetření, pokud je mimo obrazovku
 	PopUPmenu->Show();
 }
@@ -3411,7 +3410,7 @@ void TForm1::add_element (int X, int Y)
 		design_element(E,true);
 		//automatické výchozí umístění mGridové tabulky dle rotace elementu a nadesignováné tabulky (jejích rozměrů) - proto musí být až za nastevením designu
 		aut_pozicovani(E,X,Y);
-		E->mGrid->Update(); //nutné před plněním COMBA
+		//dřívě přítomen Update(), nutné před plněním COMBA, Update() se nyní vyskytuje v metodě design_element;
 		d.v.napln_comba_stopek();
 		if(E->n==1)d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);//voláno z důvodu naplnění režimu objektu!!!!!
 		//při vložení prvního robota překreslit tabulku pohonu
@@ -3820,7 +3819,7 @@ void TForm1::vytvoreni_tab_pohon()
 		PmG->Cells[0][4].Text="Násobek rozteče palců";
 		PmG->Cells[1][4].Type=PmG->EDIT;
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,0);
+		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,3);
 		PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
@@ -3923,6 +3922,13 @@ void TForm1::vytvoreni_tab_pohon()
 	}
   //naplnění comba hodnotami 
 	tab_pohon_COMBO(0);
+	if(pom_temp->pohon!=NULL)
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	{
+		PmG->Update();//musí být přítomný !!!!
+		PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
+		PmG->SetEnabledComponent(0,0,true);//aktivace Comba pro výběr pohonu, bude vždy aktvní
+	}
 	PmG->Refresh();
 }
 //---------------------------------------------------------------------------
@@ -3938,7 +3944,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		//popřidání prvního elementu nutno spočítat!! a zapsat do buňěk
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
-		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,0);
+		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,3);
 		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
 		//samotné skrývání a zobrazování buňěk
@@ -3954,6 +3960,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		PmG->exBUTTONVisible=true;
 		PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;
 		PmG->exBUTTON->ShowHint=true;PmG->exBUTTON->Hint="Rozšířené položky";
+		FormX->validace();//spištění validace po předesignu tabulky pohonu na kontinuální režim
 	}
 	if((E->eID==3||E->eID==5)&&!PmG->Rows[7].Visible&&PmG->Rows[6].Visible)//přidání elementu s otočí do kabiny s vytvořenou KK tabulkou, která má pouze 6 řádků
 	{
@@ -3975,6 +3982,12 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
 	}
 	PmG->Update();
+	//není nutná kontrola zda je přiřaznný pohon, tato metoda s spouští jedině v případ, že objekt má přiřazený pohon
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+	{
+		//Update musí být přítomný před!!!!
+		PmG->SetEnabledComponent(1,4,false);//komponenta do této chvíle ještě neexistovala
+	}
 }
 //volána po přiřazení pohonu
 void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
@@ -4023,6 +4036,33 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 	//po této metodě v OncChange UnitX padá do Timer2 -> refresh, zde není nutné mít refresh
 	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
 	PmG->Update();
+	if(pom_temp->pohon!=NULL)
+	{
+		bool temp;//pomocná proměnná, použití u průcohdu elementů, uchovává zda mají být komponenty aktivní či ne
+		if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//kontrola zda je pohon používán v jiném objektu, nutné posílat pom místo pom_temp do parametru mimo_objetk!!!!!
+		{
+			//Update musí být přítomný před!!!!
+			PmG->SetEnabledComponents(false);//nastavení celé tabulky do neaktivního stavu
+			PmG->SetEnabledComponent(0,0,true);//aktivace Comba pro výběr pohonu, bude vždy aktvní
+			temp=false;
+		}
+		else {PmG->SetEnabledComponents(true);temp=true;}//pokud není pohon přiřazen aktivace
+		//pokud existují nějaké elementy je nutné jim povolit či zakázat PT
+		if(pom_temp->elementy->dalsi!=NULL)
+		{
+			Cvektory::TElement *E=pom_temp->elementy->dalsi;//můžu přeskočit hlavičku
+			while(E!=NULL)
+			{
+				switch(E->eID)
+				{
+					case 1:E->mGrid->SetEnabledComponent(1,1,temp);break;
+					case 3:{E->mGrid->SetEnabledComponent(1,1,temp);E->mGrid->SetEnabledComponent(1,6,temp);}break;
+				}
+				E=E->dalsi;
+			}
+			E=NULL;delete E;
+		}
+	}
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -4206,7 +4246,7 @@ void TForm1::tab_pohon_COMBO (int index)
 				P=P->dalsi;//přesun na další pohon
 			}
 		}
-		if(pom_temp->pohon!=NULL) PCombo->ItemIndex=pom_temp->pohon->n;
+		if(pom_temp->pohon!=NULL){PCombo->ItemIndex=pom_temp->pohon->n;}
 		else {PCombo->ItemIndex=0;/*PmG->Cells[0][0].Highlight=true;*/}
 	}
 	if(index==1)//přiřazení pohonu
@@ -4366,6 +4406,16 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);
+	E->mGrid->Update();//musí být přítomen před zakazováním komponent
+	if(pom_temp->pohon!=NULL)//pokud má objekt přiřazený pohon
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//pokud je tento pohon používán mimo objekt, jako parametr mimo_objekt musí být pom!!!!!
+	{
+		switch(E->eID)
+		{
+			case 1:E->mGrid->SetEnabledComponent(1,1,false);break;
+			case 3:{E->mGrid->SetEnabledComponent(1,1,false);E->mGrid->SetEnabledComponent(1,6,false);}break;
+		}
+  }
 }
 //---------------------------------------------------------------------------
 //vytvoření tabulek, první výpočty a zapsání do spojáku
@@ -7603,16 +7653,17 @@ void __fastcall TForm1::Button2Click(TObject *Sender)
 //skryje v době neaktivity (po 50 sec) svislice na myši v modu časové osy (kvůli spořiči obrazovky)
 void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 {
-		if(MOD==CASOVAOSA && ++pocitadlo_doby_neaktivity==2)
-		{
-			Timer_neaktivity->Enabled=false;
-			d.zobrazit_label_zamerovac(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-		}
-		if(MOD==NAHLED && ++pocitadlo_doby_neaktivity==2)
-		{
-			Timer_neaktivity->Enabled=false;
-			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
-		}
+//		if(MOD==CASOVAOSA && ++pocitadlo_doby_neaktivity==2)
+//		{
+//			Timer_neaktivity->Enabled=false;
+//			d.zobrazit_label_zamerovac(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+//		}
+//		if(MOD==NAHLED && ++pocitadlo_doby_neaktivity==2)
+//		{
+//			Timer_neaktivity->Enabled=false;
+//			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
+//		}
+		REFRESH();Memo("ted");Timer_neaktivity->Enabled=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)

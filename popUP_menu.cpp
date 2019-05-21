@@ -28,13 +28,15 @@ __fastcall TPopUPmenu::TPopUPmenu(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TPopUPmenu::FormShow(TObject *Sender)
 {
+	//nutné znova nastavit, problém pøi více obrazovkách
+	PopUPmenu->Left=Form1->Left+F->akt_souradnice_kurzoru_PX.x;
+	PopUPmenu->Top=Form1->Top+F->akt_souradnice_kurzoru_PX.y;
 	//ošetøení, pokud je mimo obrazovku + 5 px okraj
-	if(PopUPmenu->Left>=Form1->ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
-	PopUPmenu->Left=Form1->ClientWidth-PopUPmenu->Width-5;
-	if(PopUPmenu->Top>=Form1->ClientHeight-PopUPmenu->Height)
-	PopUPmenu->Top=Form1->ClientHeight-PopUPmenu->Height-5;
-
-	//ošetøení pokud je zobrazeno jenom dolní panel, tak se nezobrazí rozdìlovací linka - frame
+	if(PopUPmenu->Left>=Form1->Left+Form1->ClientWidth-PopUPmenu->Width)//nastala situace že je mimo obraz (nebo èásteènì)
+	PopUPmenu->Left=Form1->Left+Form1->ClientWidth-PopUPmenu->Width-5;
+	if(PopUPmenu->Top>=Form1->Top+Form1->ClientHeight-PopUPmenu->Height)
+	PopUPmenu->Top=Form1->Top+Form1->ClientHeight-PopUPmenu->Height-5;
+ 	//ošetøení pokud je zobrazeno jenom dolní panel, tak se nezobrazí rozdìlovací linka - frame
 	if(Panel_DOWN->Top==0)Panel_DOWN->FrameWidth=0;
 	else Panel_DOWN->FrameWidth=1;
 

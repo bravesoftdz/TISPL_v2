@@ -426,8 +426,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	 Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 	 //vycentrování formuláøe, musí bý na konci!
-	 Form_parametry_linky->Left=Monitor->Width/2-Form_parametry_linky->Width/2;
-	 Form_parametry_linky->Top=Monitor->Height/2-Form_parametry_linky->Height/2;
+	 Form_parametry_linky->Left=Form1->Left+Form1->Width/2-Form_parametry_linky->Width/2;
+	 Form_parametry_linky->Top=Form1->Top+Form1->Height/2-Form_parametry_linky->Height/2;
 	 //nastavení jednotek v panelu vozík
 	 vozik_zmena_jednotek();
 }
