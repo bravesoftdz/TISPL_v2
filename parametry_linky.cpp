@@ -1135,6 +1135,12 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
    //automatické vygenerování pohonù
    if(DEBUG)
 	 {
+
+   scGPNumericEdit_delka_podvozek->Value=300;
+   scGPNumericEdit_sirka_jig->Value=400;
+   scGPNumericEdit_delka_jig->Value=1200;
+   scGPNumericEdit_vyska_jig->Value=800;
+
   for (int i = mGrid->RowCount ; i <= 4; i++) {
 
   input_state=JOB;
@@ -1144,14 +1150,6 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 	mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i-1);
 
    getmGridWidth();
-//   mGrid->Cells[1][i].Font->Name="Roboto";
-//   mGrid->Cells[2][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[3][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[4][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[5][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[6][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-//   mGrid->Cells[7][i].Font->Name=mGrid->Cells[1][i].Font->Name;
-
    mGrid->Cells[1][i].Type=mGrid->EDIT;
    mGrid->Cells[2][i].Type=mGrid->EDIT;
    mGrid->Cells[3][i].Type=mGrid->EDIT;
