@@ -837,7 +837,7 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if(Runit==MM) roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
 				else roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text);
 
-				if(mGrid->getButton(7,i)->Caption==""){Rz=0;Rx=0;}//pokud není pohon pøiøazen nuluj
+				if(mGrid->getButton(7,i)->Caption==""){Rz=0.0;Rx=0.0;}//pokud není pohon pøiøazen nuluj
 
 				//uložení pohonu do spojáku
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
@@ -1197,12 +1197,12 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
   setADD_ButtonPosition();
   setFormHeight();
 	//R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
-  vykresli_obdelnik_vpravo();
   //Form_parametry_linky->Color=F->m.clIntensive(clGray,10);
   }
 
   mGrid->Refresh();
 	input_state=NOTHING;
+	vykresli_obdelnik_vpravo();
 	}
   }
 }
@@ -2329,7 +2329,7 @@ void TForm_parametry_linky::getmGridColors()
 	mGrid->Cells[5][0].Font->Color= mGrid->Cells[1][0].Font->Color;mGrid->Cells[5][1].Font->Color= mGrid->Cells[1][0].Font->Color;
 	mGrid->Cells[6][0].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[7][0].Font->Color= mGrid->Cells[1][0].Font->Color;
-  mGrid->Cells[8][0].Font->Color= mGrid->Cells[1][0].Font->Color;
+	mGrid->Cells[8][0].Font->Color= mGrid->Cells[1][0].Font->Color;
 
   mGrid->Cells[2][1].Font->Color= mGrid->Cells[1][0].Font->Color;
   mGrid->Cells[3][1].Font->Color= mGrid->Cells[1][0].Font->Color;
@@ -2338,8 +2338,8 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[8][0].RightBorder->Color=Form_parametry_linky->Color;
   mGrid->Cells[7][0].RightBorder->Width=1;
   mGrid->Cells[8][1].RightBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
-  mGrid->Cells[8][0].TopBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
-//
+	mGrid->Cells[8][0].TopBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
+
   mGrid->Cells[0][0].Background->Color=clBACKGROUND;
   mGrid->Cells[1][0].Background->Color=clBACKGROUND;
   mGrid->Cells[2][0].Background->Color=clBACKGROUND;
@@ -2490,7 +2490,7 @@ void TForm_parametry_linky::getmGridColors()
     mGrid->Cells[5][i].Text=mGrid->Cells[5][i-1].Text * AnsiString(i-1);
     }
 
-   mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
+	 mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
   mGrid->Refresh();
   mGrid->getCheck(6,i)->Enabled=false;
@@ -2500,10 +2500,10 @@ void TForm_parametry_linky::getmGridColors()
   setADD_ButtonPosition();
   setFormHeight();
   //R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
-  vykresli_obdelnik_vpravo();
 
   }
-  input_state=NOTHING;
+	input_state=NOTHING;
+	vykresli_obdelnik_vpravo();
 
   }
 //---------------------------------------------------------------------------
