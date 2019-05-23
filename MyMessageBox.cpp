@@ -22,10 +22,10 @@ __fastcall TmyMessageBox::TmyMessageBox(TComponent* Owner)
 void __fastcall TmyMessageBox::FormShow(TObject *Sender)
 {
 	//ošetøení, pokud je mimo obrazovku + 5 px okraj
-	if(myMessageBox->Left>=Form1->ClientWidth-myMessageBox->Width)//nastala situace že je mimo obraz (nebo èásteènì)
-	myMessageBox->Left=Form1->ClientWidth-myMessageBox->Width-5;
-	if(myMessageBox->Top>=Form1->ClientHeight-myMessageBox->Height)
-	myMessageBox->Top=Form1->ClientHeight-myMessageBox->Height-5;
+	if(myMessageBox->Left>=Form1->Left+Form1->ClientWidth-myMessageBox->Width)//nastala situace že je mimo obraz (nebo èásteènì)
+	myMessageBox->Left=Form1->Left+Form1->ClientWidth-myMessageBox->Width-5;
+	if(myMessageBox->Top>=Form1->Top+Form1->ClientHeight-myMessageBox->Height)
+	myMessageBox->Top=Form1->Top+Form1->ClientHeight-myMessageBox->Height-5;
 }
 //---------------------------------------------------------------------------
 //pøetížená metoda

@@ -95,6 +95,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 {
 	if(input_state==NOTHING&&ID!=9999&&vstoupeno_elm&&!editace_pohonu)
 	{
+		F->Timer_neaktivity->Enabled=false;
 		Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
 		if(ID>100000)
 		{
@@ -294,9 +295,9 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				} break;
 			}
 		}
-//		E->mGrid->Update();
-		if(E->mGrid->Cells[Col][Row].Text=="")input_state=NOTHING;
-		else F->Timer2->Enabled=true;
+		E->mGrid->Refresh();
+//		if(E->mGrid->Cells[Col][Row].Text=="")input_state=NOTHING;
+//		else F->Timer2->Enabled=true;
 		E=NULL;delete E;
 //		input_state=NOTHING;
 	}
@@ -340,7 +341,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						F->PmG->Cells[1][1].Text=F->m.round2double(F->outaRD(F->pom_temp->pohon->aRD),3);
 						F->PmG->Cells[1][2].Text=F->m.round2double(F->outR(F->pom_temp->pohon->roztec),3);
 					}
-					F->PmG->Refresh();
+//					F->PmG->Refresh();
 					aktualizace_tab_elementu();
 				}
 				else
@@ -391,9 +392,10 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			}break;
 		}
 		FormX->vstoupeno_poh=true;//blokace událostí pøi vkládání elementu
-		if(F->PmG->Cells[Col][Row].Text=="")input_state=NOTHING;
-		else F->Timer2->Enabled=true;
+//		if(F->PmG->Cells[Col][Row].Text=="")input_state=NOTHING;
+//		else F->Timer2->Enabled=true;
 	}
+	F->PmG->Refresh();input_state=NOTHING;F->Timer_neaktivity->Enabled=true;
 	if(vstoupeno_elm||vstoupeno_poh) F->nahled_ulozit(true);
 }
 //---------------------------------------------------------------------------
