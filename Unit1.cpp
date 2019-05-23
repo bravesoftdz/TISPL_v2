@@ -2533,12 +2533,11 @@ void TForm1::getJobID(int X, int Y)
 			else //ani element nenalezen, hledá tedy interaktivní text, obrys a kóty atp.
 			{
 				//testování zda se nepřejelo myší přes OBRYS kabiny, pokud je dovoleno měnit rozměry a rozmístění kabiny
-									//roteč linií//šířka linie (polovina na každou stranu)
-				short Ov=Zoom*(0.4+0.2/2.0*2);//dodatečné "*2" kvůli rozšíření citelné oblasti
-				if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
-				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
-				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)+Ov>=Y)JID=-3;//vodorovná horní
-				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)-Ov<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
+				short Ov=m.m2px(pom_temp->sirka_steny);//šířka stěny kabiny z metrů převedená do pixelů
+				if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk) && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-2;//svislá levá
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x)+Ov && m.L2Py(pom_temp->Yk)-Ov<=Y && Y<=m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov)JID=-4;//svislá pravá
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk)-Ov<=Y && m.L2Py(pom_temp->Yk)>=Y)JID=-3;//vodorovná horní
+				else if(pom_temp->uzamknout_nahled==false && m.L2Px(pom_temp->Xk)-Ov<=X && X<=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x) && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)<=Y && m.L2Py(pom_temp->Yk-pom_temp->rozmer_kabiny.y)+Ov>=Y)JID=-5;//vodorovná dolní
 				else
 				{ //testování zda se nejedná o NÁZEV či ZKRATKA objektu, ZATÍM NEREFLEKTUJE ORIENTACI NÁHLEDU
 					d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
