@@ -1682,6 +1682,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	if(Key==L'0'&&Pos(0,editovany_text)>0&&editovany_text.Length()==1)
 		key="";
 	////////
+	//key = pouze čísla, Key = všechny znaky
 	if (editace_textu&&index_kurzoru==-6)//editace nadpisu kabiny
 	{
 		if(Key==8)//pokud je stisknut backspace
@@ -1724,14 +1725,14 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	if (editace_textu&&index_kurzoru==1)//editace názvu elementu skrze popisek elementu
 	{
 		//2 rozdílné přistupy, u robotu a u totočí jiné
-		if(pom_element_temp->eID>0&&pom_element_temp->eID<5)//roboti
+		if(pom_element_temp->eID!=0)//roboti+otoče
 		{
     	if(Key==8)//pokud je stisknut backspace
 				pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
 			else
-				pom_element_temp->name+=key;
+				pom_element_temp->name+=Key;//nutné Key s velkým K, toto Key neprochází numerickým filtrem
 		}
-		else//otoče a stopka
+		else//stopka
 		{
 			if(Key==8)//pokud je stisknut backspace
 			{
@@ -1740,7 +1741,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 				else MessageBeep(0);
       }
 			else
-				pom_element_temp->name+=key;
+				pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
 		}
 		nahled_ulozit(true);
 		//propsání nového názvu do mGridu
@@ -4409,7 +4410,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 //	E->mGrid->Update();//musí být přítomen před zakazováním komponent
 //	if(pom_temp->pohon!=NULL)//pokud má objekt přiřazený pohon
 //	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//pokud je tento pohon používán mimo objekt, jako parametr mimo_objekt musí být pom!!!!!
-//	{
+//	{   Memo("padlo");
 //		switch(E->eID)
 //		{
 //			case 1:E->mGrid->SetEnabledComponent(1,1,false);break;
@@ -7836,7 +7837,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		 }
 //		 E=NULL; delete E;
 
-		 Form2->ShowModal();
+//		 Form2->ShowModal();
 
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();

@@ -476,14 +476,14 @@ void TForm_parametry_linky::nacti_pohony ()
           {
           //pokud je pohon používán, zámìrnì nenastavím o jaký typ bunìk se jedná, aby do nich nešlo vstupovat a editovat
           // pouze povolím zmìnu pøiøazení a smazání pohonu
-          mGrid->Cells[1][i].Type=mGrid->EDIT;
+					mGrid->Cells[1][i].Type=mGrid->EDIT;
 
           mGrid->Cells[2][i].Type=mGrid->readEDIT;  //TEST
           mGrid->Cells[3][i].Type=mGrid->readEDIT;
           mGrid->Cells[4][i].Type=mGrid->readEDIT;
           mGrid->Cells[5][i].Type=mGrid->readEDIT;
 
-          mGrid->Cells[6][i].Type=mGrid->CHECK;
+					mGrid->Cells[6][i].Type=mGrid->CHECK;
           mGrid->Cells[7][i].Type=mGrid->BUTTON;
           mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
           }
@@ -495,7 +495,7 @@ void TForm_parametry_linky::nacti_pohony ()
           mGrid->Cells[4][i].Type=mGrid->EDIT;
           mGrid->Cells[5][i].Type=mGrid->EDIT;
 					/*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;
-          mGrid->Cells[7][i].Type=mGrid->BUTTON;
+					mGrid->Cells[7][i].Type=mGrid->BUTTON;
 					mGrid->Cells[8][i].Type=mGrid->glyphBUTTON;
 
 
@@ -837,13 +837,13 @@ void __fastcall TForm_parametry_linky::Button_saveClick(TObject *Sender)
 				if(Runit==MM) roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text)/1000.0;
 				else roztec=Form1->ms.MyToDouble(mGrid->Cells[5][i].Text);
 
-        Rz=0;Rx=0;
+				if(mGrid->getButton(7,i)->Caption==""){Rz=0;Rx=0;}//pokud není pohon pøiøazen nuluj
 
 				//uložení pohonu do spojáku
 				Form1->d.v.vloz_pohon (nazev,rychlost_od,rychlost_do,aRD,roztec,Rz,Rx);
 
 				//všem objektùm, které mìly pøiøazen pohon s oldN(oldID), pøiøadí pohon s newN(newID), podle toho, jak jsou ukládány novì do spojáku, dùležité, pokud dojde k narušení poøadí ID resp n pohonù a poøadí jednotlivých øádkù ve stringridu, napø. kopirováním, smazáním, zmìnou poøadí øádkù atp., øeší i pro pøípad napø. 2->3,3->4 pomocí atributu objektu probehla_aktualizace_prirazeni_pohonu (aby prvnì nebyl pøiøezn pohon s id 2 na 3 a potom všechny pohony s id 3 na pohon 4, protože mìly být pøiøazený jen nìkteré...)
- 		   Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i-1);
+			 Form1->d.v.aktualizace_prirazeni_pohonu_k_objektum(getPID(i),i-1);
 			}
 			//po dokonèení aktualizace pøiøazení pohonu (pøi ukládání pohonu na PL) vrátí atribut probehla_aktualizace_prirazeni_pohonu všech objektù na false, aby bylo pøipraveno k dalšímu opìtovnému užítí, nepøímo spolupracuje s metodou výše uvedenou aktualizace_prirazeni_pohonu_k_objektum
  	   Form1->d.v.aktualizace_prirazeni_pohonu_dokoncena();
@@ -2183,7 +2183,7 @@ ROW=Row;
 				{
           input_state=JOB;
           int ROW=Row;
-          smazat=false;
+					smazat=false;
           if(Form1->d.v.pohon_je_pouzivan(getPID(ROW)))//pohon je používaný
           {
               AnsiString objekty=Form1->d.v.vypis_objekty_vyuzivajici_pohon(getPID(ROW),true);
@@ -2192,21 +2192,21 @@ ROW=Row;
               {
                 //Form1->d.v.zrusit_prirazeni_pohunu_k_objektum(getPID(ROW)); pùvodní pøímé smazání, ale nereflektovalo by pøípadné storno
                 //pozor není pøipraveno na situaci, pokud by bylo možné pøímo v PL pøiøazovan pohony a potom zase odpøiøazovat (muselo by se navýšit pole zrusena_prirazeni_PID)
-                zrusena_prirazeni_PID[getPID(ROW)]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
-                smazat=true;
+								zrusena_prirazeni_PID[getPID(ROW-1)]=true;//nahrazeno novou filozofii, z dùvodu možného storna formu
+								smazat=true;
               }
               myMessageBox->zobrazitFrameForm=false;//zajistí odorámování MB - kvùli dalšímu použití
           }
           else//pohon není používaný a mùžeme tedy smazat rovnou
           {
-            smazat=true;
+						smazat=true;
           }
 
       //samotné smazání øádku + zajistí snížení poètu øádkù + nesmí se pøeindexovávat!!! kvùli metodám, které sahají do spojáku POHONY
          if(smazat)
           {
-          Button_save->SetFocus(); //EXTREMNE DULEZITE, JINAK PAMETOVA CHYBA PRI ODSTRANOVANI ROW
-          mGrid->DeleteRow(ROW);
+					Button_save->SetFocus(); //EXTREMNE DULEZITE, JINAK PAMETOVA CHYBA PRI ODSTRANOVANI ROW
+					mGrid->DeleteRow(ROW);
           //nastaveni rozmeru formu - dle poctu pohonu a nove pozice Add buttonu
           setADD_ButtonPosition();
           setFormHeight();
