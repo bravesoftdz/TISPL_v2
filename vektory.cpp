@@ -27,6 +27,7 @@ void Cvektory::hlavicka_OBJEKTY()
 	novy->Y=0;
 	novy->Xk=0;
 	novy->Yk=0;
+	novy->sirka_steny=0;
 	novy->short_name="";//krátký název
 	novy->name="";//celý název objektu
 	novy->rezim=0;
@@ -79,6 +80,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y)
 	novy->Y=Y;//přiřadím Y osu,pozice objektu
 	novy->Xk=X;//výchozí pozice kabiny
 	novy->Yk=Y;//výchozí pozice kabiny
+	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
@@ -130,6 +132,7 @@ Cvektory::TObjekt *Cvektory::vloz_objekt(unsigned int id, double X, double Y,TOb
 	novy->Y=Y;//přiřadím Y osu
 	novy->Xk=X;//výchozí pozice kabiny
 	novy->Yk=Y;//výchozí pozice kabiny
+	novy->sirka_steny=0.12;//šířka stěny kabiny objektu v metrech
 	novy->CT=PP.TT;//pro status návrh
 	novy->RD=m.UDV(0)/novy->CT;//pro status návrh
 	novy->delka_dopravniku=m.UDV(0);//delka dopravníku v rámci objektu
@@ -228,6 +231,7 @@ Cvektory::TObjekt *Cvektory::kopiruj_objekt(TObjekt *Objekt,short offsetX,short 
 	else//vkládání mezi objekty
 	{
 		novy->rezim=Objekt->rezim;
+		novy->sirka_steny=Objekt->sirka_steny;//šířka stěny kabiny objektu v metrech
 		novy->CT=Objekt->CT;//pro status návrh převezme původní hodnoty
 		novy->RD=Objekt->RD;//pro status návrh převezme původní hodnoty
 		novy->delka_dopravniku=Objekt->delka_dopravniku;
@@ -279,6 +283,7 @@ void Cvektory::kopiruj_objekt(TObjekt *Original,TObjekt *Kopie)
 	Kopie->Y=Original->Y;
 	Kopie->Xk=Original->Xk;
 	Kopie->Yk=Original->Yk;
+	Kopie->sirka_steny=Original->sirka_steny;
 	Kopie->rezim=Original->rezim;
 	Kopie->CT=Original->CT;
 	Kopie->RD=Original->RD;
@@ -1716,10 +1721,10 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 				if(E->eID==0||E->eID==2||E->eID==4||E->eID==6)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
 	  		E=E->dalsi;
 			}
+			E=NULL; delete E;
 			//pokud byla nalezena alespoň jedna vzdálenost
 			if(celkem!=0)return celkem;
-	  	else return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
-	  	E=NULL; delete E;
+			else return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
 		}
 	}
 	else//////Původní funkce

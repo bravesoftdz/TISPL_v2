@@ -87,6 +87,7 @@ class Cvektory
 			UnicodeString name;//celý název objektu
 			double X,Y;//umístění objektu ve schématu
 			double Xk,Yk;//umístění levého horního rohu kabiny v layoutu a náhledu kabiny - NEW + dodat do CObjekt!!!!
+			double sirka_steny;//šířka stěny kabiny objektu v metrech  - NEW + dodat do CObjekt!!!!
 			short rezim;//rezim objektu 0-S&G,1-Kontin.(line tracking)KK,2-Postprocesní (PP), -1 nenastaven
 			double CT;//pro status návrh
 			double RD;//pro status návrh v m/s, jenom pomocná proměnná získaná jako DD/CT, stežejní je většinou aRD (aktuální rychlost), která se váže přímo (i datově) k pohonu

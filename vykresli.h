@@ -43,11 +43,13 @@ class Cvykresli
 		bool A;//animace true nebo false
 	};TTP TP;//nastavení modu technologické procesy
 
-	void vykresli_vektory(TCanvas *canv);
 	void vykresli_objekty(TCanvas *canv);
 	void vykresli_rectangle(TCanvas *canv, Cvektory::TObjekt *ukaz);
 	void vykresli_kruh(TCanvas *canv, Cvektory::TObjekt *O);
 	void prislusnost_cesty(TCanvas *canv,TColor Color,int X,int Y,float A,short N);
+	void vykresli_vektory(TCanvas *canv);
+	void vykresli_kabinu(TCanvas *canv);//zajišuje kompletní vykreslení s voláním následující metody
+	void vykresli_kabinu(TCanvas *canv,unsigned int TID,long X1,long Y1,long X2,long Y2, short pocet_komor,short rotace,short sirka_steny_px);//zajišuje vykreslení pouze obrysu dle typu objektu
 	void vykresli_grid(TCanvas *canv,int size_grid=10);
 	void vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka=false);//v pøípadì mìøení vzdálenosti vykreslí spojnici a popø. vypisuje hodnotu vzdálenosti
 	//	void vykresli_graf_rezervy(TCanvas *canv);//mód graf rezerv
