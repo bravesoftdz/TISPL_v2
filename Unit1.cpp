@@ -4406,16 +4406,16 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	}
 	//sloučení buněk hlavičky
 	E->mGrid->MergeCells(0,0,1,0);//update na tomto místě působí potíže, přesunout do add element asi a do NP_input
-//	E->mGrid->Update();//musí být přítomen před zakazováním komponent
-//	if(pom_temp->pohon!=NULL)//pokud má objekt přiřazený pohon
-//	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//pokud je tento pohon používán mimo objekt, jako parametr mimo_objekt musí být pom!!!!!
-//	{   Memo("padlo");
-//		switch(E->eID)
-//		{
-//			case 1:E->mGrid->SetEnabledComponent(1,1,false);break;
-//			case 3:{E->mGrid->SetEnabledComponent(1,1,false);E->mGrid->SetEnabledComponent(1,6,false);}break;
-//		}
-//	}
+	E->mGrid->Update();//musí být přítomen před zakazováním komponent, před Update tabulka ještě neexistuje
+	if(pom_temp->pohon!=NULL)//pokud má objekt přiřazený pohon
+	if(d.v.pohon_je_pouzivan(pom_temp->pohon->n,pom)!=NULL)//pokud je tento pohon používán mimo objekt, jako parametr mimo_objekt musí být pom!!!!!
+	{
+		switch(E->eID)
+		{
+			case 1:E->mGrid->SetEnabledComponent(1,1,false);break;
+			case 3:{E->mGrid->SetEnabledComponent(1,1,false);E->mGrid->SetEnabledComponent(1,6,false);}break;
+		}
+	}
 }
 //---------------------------------------------------------------------------
 //vytvoření tabulek, první výpočty a zapsání do spojáku
@@ -6421,6 +6421,10 @@ void TForm1::NP_input()
 	Schema->Options->PressedColor=Layout->Options->NormalColor;
 	scGPGlyphButton_zpravy_ikona->Visible=true;
 	scGPGlyphButton_zpravy_ikona->Left=Nahled->Left-scGPGlyphButton_zpravy_ikona->Width;
+	vytvoreni_tab_pohon();
+	nahled_ulozen=false;//nově otevřen, není uložen
+	DrawGrid_knihovna->Invalidate();
+	PmG->Update();
 	//znovu provedení designu při otevření náhledu, který není prázdný
 	if(pom_temp->elementy!=NULL)
 	{
@@ -6432,10 +6436,6 @@ void TForm1::NP_input()
 		}
 		E=NULL; delete E;
 	}
-	vytvoreni_tab_pohon();
-	nahled_ulozen=false;//nově otevřen, není uložen
-	DrawGrid_knihovna->Invalidate();
-	PmG->Update();
 	//testovací poloha
 	FormX->vstoupeno_poh=true;
 	FormX->input_state=FormX->NOTHING;
@@ -7835,9 +7835,11 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //			 E=E->dalsi;
 //		 }
 //		 E=NULL; delete E;
-
 //		 Form2->ShowModal();
-
+		 Sv(pom_temp->pohon->Rz);                      //OK - rychlost_od,rychlost_do,aRD,roztec,Rx
+																									 //zamrzne - Rz,
+			 pom_temp->pohon->Rz=DOUBLE_MAX;
+		 Sv(pom_temp->pohon->Rz);
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
 //		pom_temp->elementy->dalsi->dalsi->n=1; //druhý
