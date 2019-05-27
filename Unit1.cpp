@@ -3384,10 +3384,10 @@ void TForm1::add_element (int X, int Y)
 	////ČÁSTEČNĚ PROVIZORNĚ
 	//rotace dle umístění na ose Y či X dle trendu
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
+	FormX->vstoupeno_elm=false;
 	short trend=m.Rt90(d.trend(pom));
 	short rotace_symbolu=rotace_symbol(trend,X,Y);
 	bool vkabine=el_vkabine(X,Y,element_id);
-
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
 	double DoSkRB=0;
 	if(1<=element_id && element_id<=4)//pro roboty, které mají uchopovací bod jinde než referenční
@@ -3397,12 +3397,10 @@ void TForm1::add_element (int X, int Y)
 	}                                       //netradičně v hlavičce je umístěna elementární osa pohonu!!!
 	if(trend==90 || trend==270)Y=m.L2Py(pom_temp->elementy->Y)+DoSkRB;
 	else X=m.L2Px(pom_temp->elementy->X)+DoSkRB;
-
-
-
 	//vložení elementu na dané souřadnice a do patřičného pomocného spojáku, pro případ storna
-//	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
-//	{
+	if (vkabine)//příprava na kontrolu zda vkládám element do kabiny
+	{
+		TIP="";//smazání tipu, pro jistotu
 		Cvektory::TElement *E=d.v.vloz_element(pom_temp,element_id,m.P2Lx(X),m.P2Ly(Y));
 		//navrácení rotace dle umístění v objektu
 		E->rotace_symbolu=rotace_symbolu;
@@ -3422,10 +3420,10 @@ void TForm1::add_element (int X, int Y)
 		element_id=-1;//new kvůli skrývání komponent v mGridech, využívá metoda d.vykresli_mGridy(TCanvas *canv)
 		DrawGrid_knihovna->Invalidate();
 		DuvodUlozit(true);
-
-  //Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
-	nahled_ulozit(true);//důvod k uložení náhledu
-	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
+		//Zde vložit podmínku pro kontrolu jaký element byl vložen, na základě toho znemožnit klik na roboty opačné funkcionality
+		nahled_ulozit(true);//důvod k uložení náhledu
+	}
+	else TIP="Nelze vložit robota mimo kabinu!";//hláška uživateli
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -3611,8 +3609,9 @@ double TForm1::vrat_hranici(int mimo)
 //metoda pro sledování zda je nutné náhled uložit
 void TForm1::nahled_ulozit (bool duvod_ulozit)
 {
-	if(duvod_ulozit) {scGPButton_ulozit->Enabled=true;duvod_ulozit_nahled=true;}
-	else {scGPButton_ulozit->Enabled=false;duvod_ulozit_nahled=false;}
+  //aby mohlo být tlačítko aktivované musí k tomu vzniknout důvod (přidání robota, editace hodnot, ...), ale zároveň nesmí být chybná hodnota rychlosti (validace)
+	if(duvod_ulozit&&PmG->Note.Text=="") {scGPButton_ulozit->Enabled=true;duvod_ulozit_nahled=true;}
+	if(!duvod_ulozit) {scGPButton_ulozit->Enabled=false;duvod_ulozit_nahled=false;}
 
 }
 //---------------------------------------------------------------------------
@@ -3812,10 +3811,10 @@ void TForm1::vytvoreni_tab_pohon()
 	{
 		PmG->Cells[0][1].Text="Rychlost "+aRD;
 		PmG->Cells[1][1].Type=PmG->EDIT;
-		PmG->Cells[1][1].Text=outaRD(pom_temp->pohon->aRD);
+		PmG->Cells[1][1].Text=m.round2double(outaRD(pom_temp->pohon->aRD),3);
 		PmG->Cells[0][2].Text="Rozteč palce "+R;
 		PmG->Cells[1][2].Type=PmG->EDIT;
-		PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
+		PmG->Cells[1][2].Text=m.round2double(outR(pom_temp->pohon->roztec),3);
 		PmG->Cells[0][4].Text="Násobek rozteče palců";
 		PmG->Cells[1][4].Type=PmG->EDIT;
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
@@ -3824,11 +3823,11 @@ void TForm1::vytvoreni_tab_pohon()
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
 		PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
-		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
+		PmG->Cells[1][5].Text=m.round2double(outRz(m.mezera(0,pom_temp->pohon->Rz,0)),3);
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(0,pom_temp->pohon->Rz,1)),3);
 		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
-		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][7].Text=m.round2double(outRz(m.mezera(90,pom_temp->pohon->Rz,1)),3);
 	}
 	else//žádný pohon není přířazen, nelze vypočítávat hodnoty
 	{
@@ -3892,15 +3891,15 @@ void TForm1::vytvoreni_tab_pohon()
 	if(PmG->Rows[7].Visible)//budou zde obě mezeri mezi jigy
 	{
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(0,pom_temp->pohon->Rz,1)),3);
 		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
-		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][7].Text=m.round2double(outRz(m.mezera(90,pom_temp->pohon->Rz,1)),3);
 	}
 	else if(PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 	{
 		double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
 		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(uhel,pom_temp->pohon->Rz,1)),3);
 	}
 	//finální desing
 //	PmG->Cells[0][4].Background->Color=(TColor)RGB(240,240,240);//řádky zobrazované po rozšíření, zvýraznění aby je uživatel nepřehlédnul
@@ -3945,8 +3944,8 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 		pom_temp->pohon->Rz=m.Rz(F->pom_temp->pohon->aRD);
 		pom_temp->pohon->Rx=m.Rx(pom_temp->pohon->aRD,pom_temp->pohon->roztec);
 		PmG->Cells[1][4].Text=m.round2double(pom_temp->pohon->Rx,3);
-		PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
-		PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
+		PmG->Cells[1][3].Text=m.round2double(outRz(pom_temp->pohon->Rz),3);
+		PmG->Cells[1][5].Text=m.round2double(outRz(m.mezera(0,pom_temp->pohon->Rz,0)),3);
 		//samotné skrývání a zobrazování buňěk
 		PmG->VisibleRow(3,true,false);
 		PmG->VisibleRow(4,true,false);
@@ -3971,15 +3970,15 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 	if(PmG->Rows[7].Visible)//budou zde obě mezeri mezi jigy
 	{
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(0,pom_temp->pohon->Rz,1)),3);
 		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
-		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][7].Text=m.round2double(outRz(m.mezera(90,pom_temp->pohon->Rz,1)),3);
 	}
 	else if(PmG->Rows[6].Visible)//pouze jedna mezera mezi jig, nutná další kontrola, padaly by sem všechny varianty
 	{
 		double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
 		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(uhel,pom_temp->pohon->Rz,1)),3);
 	}
 	PmG->Update();
 	//není nutná kontrola zda je přiřaznný pohon, tato metoda s spouští jedině v případ, že objekt má přiřazený pohon
@@ -3993,6 +3992,7 @@ void TForm1::pridani_elementu_tab_pohon(Cvektory::TElement *E)
 void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 {        
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
+	FormX->vstoupeno_elm=false;
 	AnsiString Rz;
 	//nastavení jednotek podle posledních nastavení
 	if (Rzunit==M) Rz="<a>[m]</a>";
@@ -4070,6 +4070,7 @@ void TForm1::prirazeni_pohonu_tab_pohon(int index_pohonu)
 void TForm1::odstraneni_elementu_tab_pohon(int operace)
 {
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
+	FormX->vstoupeno_elm=false;
 	//0 = odebrání pohonu
 	switch(operace)
 	{
@@ -4105,7 +4106,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 				else Rz="<a>[mm]</a>";
 				double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
 				PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
-				PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+				PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(uhel,pom_temp->pohon->Rz,1)),3);
 				PmG->VisibleRow(7,false,false);
 			}
 		}break;
@@ -4119,6 +4120,7 @@ void TForm1::odstraneni_elementu_tab_pohon(int operace)
 void TForm1::zmena_jednotek_tab_pohon()
 {
 	FormX->vstoupeno_poh=false;//blokace událostí při vkládání elementu
+	FormX->vstoupeno_elm=false;
 	//překlopení jednotek
 	switch(JID)
 	{
@@ -4173,24 +4175,24 @@ void TForm1::zmena_jednotek_tab_pohon()
 	PmG->Cells[0][1].Text="Rychlost "+aRD;
 	PmG->Cells[1][1].Text=m.round2double(outaRD(pom_temp->pohon->aRD),3);//rychlost raději zaokrouhlovat
 	PmG->Cells[0][2].Text="Rozteč palce "+R;
-	PmG->Cells[1][2].Text=outR(pom_temp->pohon->roztec);
+	PmG->Cells[1][2].Text=m.round2double(outR(pom_temp->pohon->roztec),3);
 	PmG->Cells[0][3].Text="Rozteč jigů "+Rz;
-	PmG->Cells[1][3].Text=outRz(pom_temp->pohon->Rz);
+	PmG->Cells[1][3].Text=m.round2double(outRz(pom_temp->pohon->Rz),3);
 	PmG->Cells[0][5].Text="Mezera mezi podvozky "+Rz;
-	PmG->Cells[1][5].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,0));
+	PmG->Cells[1][5].Text=m.round2double(outRz(m.mezera(0,pom_temp->pohon->Rz,0)),3);
 //	PmG->Cells[1][5].Text=1*1;
 	if(PmG->Rows[7].Visible)
 	{
 		PmG->Cells[0][6].Text="Mezera mezi jigy 0° "+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(0,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(0,pom_temp->pohon->Rz,1)),3);
 		PmG->Cells[0][7].Text="Mezera mezi jigy 90°"+Rz;
-		PmG->Cells[1][7].Text=outRz(m.mezera(90,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][7].Text=m.round2double(outRz(m.mezera(90,pom_temp->pohon->Rz,1)),3);
 	}
 	else if(PmG->Rows[6].Visible)
 	{
   	double uhel=d.v.vrat_rotaci_jigu_po_predchazejicim_elementu(pom_temp,pom_temp->elementy->dalsi);
 		PmG->Cells[0][6].Text="Mezera mezi jigy "+AnsiString(uhel)+"° "+Rz;
-		PmG->Cells[1][6].Text=outRz(m.mezera(uhel,pom_temp->pohon->Rz,1));
+		PmG->Cells[1][6].Text=m.round2double(outRz(m.mezera(uhel,pom_temp->pohon->Rz,1)),3);
 	}	      
 	aktualizace_ComboPohon();//v combo jsou vypsány jednotky, proto nutné aktualizovat
 	FormX->vstoupeno_poh=true;//blokace událostí při vkládání elementu
@@ -6265,10 +6267,11 @@ void TForm1::NP()
 //---------------------------------------------------------------------------
 void TForm1::NP_input()
 {
-	 MOD=NAHLED;
-	 //testovací poloha
+	 //zablokování OnChange tabulek
 	 FormX->input_state=FormX->NO;
 	 FormX->vstoupeno_poh=false;
+	 FormX->vstoupeno_elm=false;
+	 MOD=NAHLED;
 	 //založení pomocného tempového ukazatele pro akutálně editovaný objekt a překopírování jeho atributů
 	 pom_temp=new Cvektory::TObjekt; pom_temp->pohon=NULL; pom_temp->pohon=new Cvektory::TPohon; pom_temp->elementy=NULL;
 	 //zkopíruje atributy objektu bez ukazatelového propojení, kopírování proběhne včetně spojového seznamu elemementu opět bez ukazatelového propojení s originálem, pouze mGrid je propojen
@@ -6436,10 +6439,10 @@ void TForm1::NP_input()
 		}
 		E=NULL; delete E;
 	}
-	//testovací poloha
-	FormX->vstoupeno_poh=true;
-	FormX->input_state=FormX->NOTHING;
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
+	//testovací poloha
+//	FormX->vstoupeno_poh=true;
+	FormX->input_state=FormX->NOTHING;
 }
 //---------------------------------------------------------------------------
 //zaktualizuje ve formuláři parametry objektů combobox na výpis pohonů včetně jednotek uvedeného rozmezí rychlostí, pokud jsou zanechané implicitní parametry short RDunitD=-1,short RDunitT=-1, je načteno nastevní jednotek z INI aplikace pro form parametry objektu, v případech, kdy uvedené parametry nejsou dané hodnotou -1, tak se uvažují jednotky dle S==0,MIN==1 pro RDunitT, resp. M==0,MM==1 pro RDunitD
