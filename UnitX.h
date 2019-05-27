@@ -28,7 +28,8 @@ private:	// User declarations
 	//promìnné pro UnitX
 	double dopRD;
 	bool editace_pohonu;
-
+	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;
+	//     aRD       R,roztec          Rx          Rz,rozestup
 public:		// User declarations
   __fastcall TFormX(TComponent* Owner);
 	void OnClick(long Tag,long ID,long Col,long Row);

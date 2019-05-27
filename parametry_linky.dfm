@@ -131,7 +131,7 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object Button_save: TscGPButton
     Left = 214
-    Top = 573
+    Top = 580
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -157,9 +157,9 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clGreen
-    Options.FocusedColor = clRed
-    Options.DisabledColor = clPurple
+    Options.PressedColor = clLime
+    Options.FocusedColor = 33023
+    Options.DisabledColor = clRed
     Options.NormalColor2 = clNone
     Options.HotColor2 = clNone
     Options.PressedColor2 = clNone
@@ -169,28 +169,28 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
+    Options.DisabledColorAlpha = 100
     Options.NormalColor2Alpha = 255
     Options.HotColor2Alpha = 255
     Options.PressedColor2Alpha = 255
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = 1871359
+    Options.FrameNormalColor = 33023
     Options.FrameHotColor = 1871359
-    Options.FramePressedColor = 1871359
-    Options.FrameFocusedColor = 1871359
-    Options.FrameDisabledColor = clBtnShadow
+    Options.FramePressedColor = 33023
+    Options.FrameFocusedColor = 33023
+    Options.FrameDisabledColor = 33023
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
     Options.FrameHotColorAlpha = 255
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 100
     Options.FontNormalColor = clWhite
     Options.FontHotColor = clWhite
     Options.FontPressedColor = clWhite
     Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clAqua
+    Options.FontDisabledColor = clWhite
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeFillGradientColorOffset = 25
@@ -238,8 +238,8 @@ object Form_parametry_linky: TForm_parametry_linky
     AllowAllUp = False
   end
   object Button_storno: TscGPButton
-    Left = 352
-    Top = 573
+    Left = 356
+    Top = 580
     Width = 100
     Height = 35
     Font.Charset = DEFAULT_CHARSET
@@ -265,9 +265,9 @@ object Form_parametry_linky: TForm_parametry_linky
     TransparentBackground = True
     Options.NormalColor = 33023
     Options.HotColor = 1871359
-    Options.PressedColor = clBlack
+    Options.PressedColor = clRed
     Options.FocusedColor = 33023
-    Options.DisabledColor = clPurple
+    Options.DisabledColor = 33023
     Options.NormalColor2 = clNone
     Options.HotColor2 = clNone
     Options.PressedColor2 = clNone
@@ -277,28 +277,28 @@ object Form_parametry_linky: TForm_parametry_linky
     Options.HotColorAlpha = 255
     Options.PressedColorAlpha = 255
     Options.FocusedColorAlpha = 255
-    Options.DisabledColorAlpha = 255
+    Options.DisabledColorAlpha = 100
     Options.NormalColor2Alpha = 255
     Options.HotColor2Alpha = 255
     Options.PressedColor2Alpha = 255
     Options.FocusedColor2Alpha = 255
     Options.DisabledColor2Alpha = 255
-    Options.FrameNormalColor = 1871359
+    Options.FrameNormalColor = 33023
     Options.FrameHotColor = 1871359
-    Options.FramePressedColor = 1871359
-    Options.FrameFocusedColor = 1871359
-    Options.FrameDisabledColor = clBtnShadow
+    Options.FramePressedColor = 33023
+    Options.FrameFocusedColor = 33023
+    Options.FrameDisabledColor = 33023
     Options.FrameWidth = 1
     Options.FrameNormalColorAlpha = 255
     Options.FrameHotColorAlpha = 255
     Options.FramePressedColorAlpha = 255
     Options.FrameFocusedColorAlpha = 255
-    Options.FrameDisabledColorAlpha = 255
+    Options.FrameDisabledColorAlpha = 100
     Options.FontNormalColor = clWhite
     Options.FontHotColor = clWhite
     Options.FontPressedColor = clWhite
     Options.FontFocusedColor = clWhite
-    Options.FontDisabledColor = clAqua
+    Options.FontDisabledColor = clWhite
     Options.ShapeFillGradientAngle = 90
     Options.ShapeFillGradientPressedAngle = -90
     Options.ShapeFillGradientColorOffset = 25
@@ -7275,8 +7275,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6215
-    Top = 9729
+    Left = 6251
+    Top = 9789
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7301,6 +7301,9 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
+    ExplicitLeft = 6245
+    ExplicitTop = 9779
+    ExplicitWidth = 100
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
