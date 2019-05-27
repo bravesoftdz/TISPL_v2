@@ -620,7 +620,6 @@ private:
 	bool scSplitViews_closing_on_AA;
 	bool SplitViewOpen;
 	bool duvod_k_ulozeni;
-	bool duvod_ulozit_nahled;
 	bool stisknuto_storno;
 	bool volat_parametry_linky;//použito při soubor nový
 	bool start_ortogonalizace;
@@ -690,6 +689,7 @@ public:		// User declarations
 	double Poffset;
 	bool refresh_mGrid;//nevykresluje se z buffru ale přímo
 	bool nabuffrovano;//udržuje, zda je buffer mgridových rastrů aktuální
+	bool duvod_ulozit_nahled;//uchovává v sobě důvod k uložení náhledu
 
 	//metody
 	void NP();//volá form na nastevení parametrů, dřívější nastavparametry1click

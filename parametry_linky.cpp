@@ -166,9 +166,9 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	mGrid->Left=scGPButton_pohon->Left;
   mGrid->Top=scGPButton_pohon->Top+scGPButton_pohon->Height ;//vhodné jako druhé (popø. by bylo nutné pøekreslovat)
 	mGrid->AntiAliasing_text=true;
-  mGrid->Border.Width=1;
-  //mGrid->DefaultCell.Font->Size=14;
-  mGrid->DefaultCell.Font->Name="Roboto";
+	mGrid->Border.Width=1;
+	//mGrid->DefaultCell.Font->Size=14;
+	mGrid->DefaultCell.Font->Name="Roboto";
   mGrid->Create(9,2);//samotné vytvoøení matice-tabulky
 
   getmGridWidth();
@@ -308,7 +308,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 
 		//pro vytvoøení zálohy zrušených pøíøazení - vyfikundace z dùvodu možného storna
 		//musí být umístìno až za nacti_pohony
-	  zrusena_prirazeni_PID_size=mGrid->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
+		zrusena_prirazeni_PID_size=mGrid->RowCount-1;//velikost staèí jako poèet øádkù/pohonu po naètení, více jich být pøiøazeno do nového naètení formu být nemùže
 		zrusena_prirazeni_PID=new bool[zrusena_prirazeni_PID_size];
 		for(unsigned int PID=0;PID<zrusena_prirazeni_PID_size;PID++)zrusena_prirazeni_PID[PID]=false;
 
@@ -375,11 +375,6 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //pozice info tlaèítka - asi je tlaèítko stejnì provizorní
 	 pozice_scGPGlyphButton_hint();
 
-	Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
-	Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
-
-
-
    setADD_ButtonPosition();
 
   mGrid->Note.margin_left=5;
@@ -422,7 +417,7 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 //obrázky
 	 rImageEx_jig_podlahovy->Left=scPanel_vozik->Width/2-rImageEx_jig_podlahovy->Width/2;
 	 rImageEx_jig_podvesny->Left=scPanel_vozik->Width/2-rImageEx_jig_podvesny->Width/2;
-	 //musí být znova
+	 //design tlaèítek
 	 Form1->m.designButton(Button_save,Form_parametry_linky,1,2);
 	 Form1->m.designButton(Button_storno,Form_parametry_linky,2,2);
 	 //vycentrování formuláøe, musí bý na konci!
@@ -430,6 +425,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender)
 	 Form_parametry_linky->Top=Form1->Top+Form1->Height/2-Form_parametry_linky->Height/2;
 	 //nastavení jednotek v panelu vozík
 	 vozik_zmena_jednotek();
+	 //zapnutí tlaèítka add, v pøípadì chybné validace (tlaèítko skryto) a následnému stisku storno a znovu otevøení PL, zùstal button skryt
+	 scGPGlyphButton_ADD->Visible=true;
 }
 //---------------------------------------------------------------------------
 //
@@ -1136,15 +1133,15 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
    if(DEBUG)
 	 {
 
-   scGPNumericEdit_delka_podvozek->Value=300;
-   scGPNumericEdit_sirka_jig->Value=400;
+	 scGPNumericEdit_delka_podvozek->Value=300;
+	 scGPNumericEdit_sirka_jig->Value=400;
    scGPNumericEdit_delka_jig->Value=1200;
    scGPNumericEdit_vyska_jig->Value=800;
 
   for (int i = mGrid->RowCount ; i <= 4; i++) {
 
   input_state=JOB;
-  mGrid->AddRow(true,false);
+	mGrid->AddRow(true,false);
 
 	mGrid->Cells[0][i].Text = getMaxPID()+1;//mGrid->RowCount - 2;
 	mGrid->Cells[1][i].Text = "nový pohon " + AnsiString(i-1);
@@ -1155,12 +1152,12 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
    mGrid->Cells[3][i].Type=mGrid->EDIT;
    mGrid->Cells[4][i].Type=mGrid->EDIT;
    mGrid->Cells[5][i].Type=mGrid->EDIT;
-	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/mGrid->Cells[6][i].RightBorder->Color=clWhite;
+	 /*mGrid->Cells[6][i].Type=mGrid->CHECK;*/ mGrid->Cells[6][i].RightBorder->Color=clWhite;
 	 mGrid->Cells[7][i].Type=mGrid->BUTTON;
 
    mGrid->Cells[2][i].InputNumbersOnly=true;
    mGrid->Cells[3][i].InputNumbersOnly=true;
-   mGrid->Cells[4][i].InputNumbersOnly=true;
+	 mGrid->Cells[4][i].InputNumbersOnly=true;
    mGrid->Cells[5][i].InputNumbersOnly=true;
 
    if(i==2)
@@ -1193,7 +1190,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key, T
 //  mGrid->getCheck(6,i)->Enabled=false;
 //	mGrid->getCheck(6,i)->ShowHint=true; mGrid->getCheck(6,i)->Hint="Zrušit pøiøazení k objektùm";
   getDeleteButtonSettings(i);
-  getPrirazeneObjDesign(i);
+	getPrirazeneObjDesign(i);
   setADD_ButtonPosition();
   setFormHeight();
 	//R - zakoment scGPGlyphButton_DEL_nepouzite->Visible=true;
@@ -1870,6 +1867,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 						{
 						mGrid->ShowNote("");
 						scGPGlyphButton_ADD->Visible=true;
+						Button_save->Enabled=true;
 						}
 						else
 						{
@@ -1879,6 +1877,7 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 							Row_validace=ARow;
 							Col_validace=ACol;
 							scGPGlyphButton_ADD->Visible=false;
+							Button_save->Enabled=false;
 						}
 					if(mGrid->Cells[3][ARow].Text!="")
 					{                        //do = 4 spodní nesmí být menší než 1
@@ -1891,11 +1890,13 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 							Row_validace=ARow;
 							Col_validace=ACol;
 							scGPGlyphButton_ADD->Visible=false;
+							Button_save->Enabled=false;
 						}
 						else
 						{
             	mGrid->ShowNote("");
 							scGPGlyphButton_ADD->Visible=true;
+							Button_save->Enabled=true;
             }
 					}
 				}
@@ -1910,7 +1911,8 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 					if(Form1->m.between(RD,P_od,P_do))
 						{
              mGrid->ShowNote("");
-             scGPGlyphButton_ADD->Visible=true;
+						 scGPGlyphButton_ADD->Visible=true;
+						 Button_save->Enabled=true;
 						}
 						else
 						{
@@ -1919,7 +1921,8 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
-              scGPGlyphButton_ADD->Visible=false;
+							scGPGlyphButton_ADD->Visible=false;
+							Button_save->Enabled=false;
 						}
 					if(mGrid->Cells[2][ARow].Text!="")
 					{                        //do = 4 spodní nesmí být menší než 1
@@ -1932,11 +1935,13 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 							Row_validace=ARow;
 							Col_validace=ACol;
 							scGPGlyphButton_ADD->Visible=false;
+							Button_save->Enabled=false;
 						}
 						else
 						{
             	mGrid->ShowNote("");
 							scGPGlyphButton_ADD->Visible=true;
+							Button_save->Enabled=true;
             }
 					}
 				}
@@ -1951,7 +1956,8 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
 					if(Form1->m.between(RD,P_od,P_do))
 						{
             mGrid->ShowNote("");
-            scGPGlyphButton_ADD->Visible=true;
+						scGPGlyphButton_ADD->Visible=true;
+						Button_save->Enabled=true;
 						}
 						else
 						{
@@ -1960,7 +1966,8 @@ void TForm_parametry_linky::VALIDACE(int ACol,int ARow)
               VID=23;
               Row_validace=ARow;
               Col_validace=ACol;
-              scGPGlyphButton_ADD->Visible=false;
+							scGPGlyphButton_ADD->Visible=false;
+							Button_save->Enabled=false;
 						}
 				}
 				break;
@@ -2340,7 +2347,7 @@ void TForm_parametry_linky::getmGridColors()
   mGrid->Cells[8][1].RightBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
 	mGrid->Cells[8][0].TopBorder->Color=mGrid->Cells[8][0].RightBorder->Color;
 
-  mGrid->Cells[0][0].Background->Color=clBACKGROUND;
+	mGrid->Cells[0][0].Background->Color=clBACKGROUND;
   mGrid->Cells[1][0].Background->Color=clBACKGROUND;
   mGrid->Cells[2][0].Background->Color=clBACKGROUND;
   mGrid->Cells[3][0].Background->Color=clBACKGROUND;
