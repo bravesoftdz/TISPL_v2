@@ -697,7 +697,7 @@ void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
 		if(Text!="")
 		{
 			Note.Text=Text;
-			Note.Font->Size=FontSize;
+			if(FontSize!=0)Note.Font->Size=FontSize;
 			Note.Font->Color=clRed;
 			Cantialising a;
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
