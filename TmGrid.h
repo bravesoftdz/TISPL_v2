@@ -1,11 +1,9 @@
 ﻿//---------------------------------------------------------------------------
 #ifndef TmGridH
 #define TmGridH
-//#include <vcl.h>
 #include "scGPControls.hpp"//knihovna kvůli buttonumatp.
 #include "scGPExtControls.hpp"//knihovna kvůli editbox
 #include "scHtmlControls.hpp"//knihovna kvůli scHTMLLabel
-//#include "rHTMLLabel.hpp"//knihovna kvůli rHTMLLabel, protože výše uvedený neumí pozadí
 #include "MyString.h"//kvůli parsování
 #include "my.h"
 //---------------------------------------------------------------------------
@@ -143,7 +141,7 @@ class TmGrid
 	bool CheckPTinTable(int X,int Y);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) zjistí, zda jsou souřadnice ve vnitř tabulky
 	TPoint CheckLink(int X,int Y,bool invalidate=false);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí kladné číslo sloupce a řádku pokud se na daném místě nachází odkaz, pokud ne, vrácené hodnoty jsou -1 a -1
 	bool CheckLink(int X,int Y,unsigned long Col,unsigned long Row);//dle souřadnic ve formuláři, kde je tabulka zobrazena (např. dle myšího kurzoru) vrátí zda se na dané buňce a souřadnicích nachází odkaz
-	void ShowNote(UnicodeString Text,TColor Color=clRed,short FontSize=11);//zajistí přímé vykreslení poznámky bez refreshe popř. smázání doszením prázdných uvozovek, nově poznámka má také možnost nastavování margin pomocí Note.margin_left,margin_right,margin_bootom,margin_top;
+	void ShowNote(UnicodeString Text,TColor Color=clRed,short FontSize=0);//zajistí přímé vykreslení poznámky bez refreshe popř. smázání doszením prázdných uvozovek, nově poznámka má také možnost nastavování margin pomocí Note.margin_left,margin_right,margin_bootom,margin_top;
 	void Buffer(bool status=false);//zda se bude tabulka ukladat do rastrového bufferu, pro urychlení vykreslování
 	bool buffer;//zda se bude tabulka ukladat do rastrového bufferu při Show, resp. Refresh, pro urychlení vykreslování
 
