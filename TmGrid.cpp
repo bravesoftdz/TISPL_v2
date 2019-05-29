@@ -35,7 +35,7 @@ TmGrid::TmGrid(TForm *Owner)
 	preRowInd=-1;preColInd=-1;
 	Decimal=3;//implicitní počet desetinných míst u numericeditů
 	IntegerDecimalNull=false;//pokud je výše uvedené Decimal na hodnotu vyšší než 0, toto nastavuje zda se nuly doplní do počtu decimál i u celých čísel
-	clHighlight=(TColor)RGB(226,122,21)//(TColor)RGB(225,128,0);//(TColor)RGB(226,122,21);//(TColor)RGB(0,120,215);//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent, původní tmavá RGB(43,87,154)
+	clHighlight=(TColor)RGB(226,122,21);//(TColor)RGB(225,128,0);//(TColor)RGB(226,122,21);//(TColor)RGB(0,120,215);//přednastavená barva zvýraznění, slouží i pro nastavení barvy focusu komponent, původní tmavá RGB(43,87,154)
 	//orámování - default
 	TBorder defBorder;
 	defBorder.Color=(TColor)RGB(200,200,200);
@@ -697,7 +697,7 @@ void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
 		if(Text!="")
 		{
 			Note.Text=Text;
-			Note.Font->Size=FontSize;
+			if(FontSize!=0)Note.Font->Size=FontSize;
 			Note.Font->Color=clRed;
 			Cantialising a;
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
@@ -860,7 +860,7 @@ void TmGrid::SetDraw(TCanvas *Canv,TRect Rt,unsigned long X,unsigned long Y,TCel
 	int Orientation=Cell.Font->Orientation;
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))<0)Canv->Font=Cell.isNegativeNumber;//podmíněné formátování záporné hodnoty
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))Canv->Font=Cell.isZero;//podmíněné formátování nulové hodnoty
-	if(Cell.Highlight)Canv->Font->Color=clHighlight;//highlignutí formou změny barvy textu
+  if(Cell.Highlight)Canv->Font->Color=clHighlight;//highlignutí formou změny barvy textu
 	Canv->Font->Orientation=Orientation;//musí ještě vrátit orientaci pokud byla podmíněným formátováním přepsána
 	Canv->Font->Size*=Zoom;
 	Canv->Font->Pitch = TFontPitch::fpFixed;//každé písmeno fontu stejně široké - TEST
@@ -958,7 +958,7 @@ void TmGrid::SetEdit(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(E->Font->Name=="Roboto Cn")E->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else E->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))E->Font=Cell.isNegativeNumber;//podmíněné formátování
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))E->Font=Cell.isZero;//podmíněné formátování
-	if(Cell.Highlight || E->Focused()){E->Font->Color=clHighlight;/*E->Font= TFontStyles()<< fsBold;*/}//highlignutí formou změny barvy textu
+	if(Cell.Highlight || E->Focused()){E->Font->Color=clHighlight;E->Font->Style = TFontStyles()<< fsBold;}//highlignutí formou změny barvy textu
 	//if(!E->Focused())//pokud není na buňce focus resp. není aktivní - provizorně odstaveno, zdá se, že nemá na nic vliv
 	E->Text=Cell.Text;
 
@@ -1028,7 +1028,7 @@ void TmGrid::SetNumeric(TRect R,unsigned long X,unsigned long Y,TCells &Cell)
 	if(N->Font->Name=="Roboto Cn")N->Font->Quality=System::Uitypes::TFontQuality::fqAntialiased;else N->Font->Quality=System::Uitypes::TFontQuality::fqDefault;//zapíná AA, pozor může dělat problémy při zvětšování písma, alternativa fqProof či fqClearType
 	if(F->m.null(F->ms.MyToDouble(Cell.Text)<0))N->Font=Cell.isNegativeNumber;//podmíněné formátování
 	if(F->m.null(F->ms.MyToDouble(Cell.Text))==0 && F->ms.IsNumber(Cell.Text))N->Font=Cell.isZero;//podmíněné formátování
-	if(Cell.Highlight || N->Focused())N->Font->Color=clHighlight;//highlignutí formou změny barvy textu
+	if(Cell.Highlight || N->Focused()){N->Font->Color=clHighlight;N->Font->Style = TFontStyles()<< fsBold;}//highlignutí formou změny barvy textu
 	//if(!N->Focused())//pokud je na buňce focus resp. je aktivní - provizorně odstaveno, zdá se, že nemá na nic vliv
 	N->Value=ms.MyToDouble(Cell.Text);
 
