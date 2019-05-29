@@ -5008,22 +5008,23 @@ void TForm1::redesign_element()
 		akt_tabulek(E,LO,delka_otoce,cas,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
 		E=E->dalsi;
 	}
-	E=NULL; delete E;
+	E=NULL; delete E; ;
+	//////////////Odstaveno, testovat a poté smazat. Odstaveno z důvodu procházení ostrého spojáku a přístup k tabulkám, které v ostrem spojáku neexistují (paměťové chyby)
 	//procházení ostrého spojitého seznamu
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while (O!=NULL)
-	{
-		Cvektory::TElement *E=O->elementy;//////////tady se nesmí přeskakovat hlavička
-		while (E!=NULL)
-		{
-			if(E->n>0)//přeskočí funkčně hlavičku
-			akt_tabulek(E,LO,delka_otoce,cas,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
-			E=E->dalsi;
-		}
-		E=NULL; delete E;
-		O=O->dalsi;
-	}
-	O=NULL; delete O;
+//	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+//	while (O!=NULL)
+//	{
+//		Cvektory::TElement *E=O->elementy;//////////tady se nesmí přeskakovat hlavička
+//		while (E!=NULL)
+//		{
+//			if(E->n>0)//přeskočí funkčně hlavičku
+//			akt_tabulek(E,LO,delka_otoce,cas,sirka_0,sirka_1,sirka_2,sirka_3,sirka_4,sirka_56,sirka_cisla);
+//			E=E->dalsi;
+//		}
+//		E=NULL; delete E;
+//		O=O->dalsi;
+//	}
+//	O=NULL; delete O;
   //zápis změn do INI
 	writeINI("nastaveni_nahled", "cas", PTunit);
 	writeINI("nastaveni_nahled", "LO", LOunit);
