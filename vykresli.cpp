@@ -3760,7 +3760,7 @@ void Cvykresli::vykresli_packy_PL(TCanvas *canv,TscGPButton *zamek_aRD,TscGPButt
 void Cvykresli::vykresli_tip(TCanvas *canv)
 {
 	canv->Font->Color=m.clIntensive(clRed,100);
-	//SetBkMode(Canvas->Handle,TRANSPARENT);//nastvení netransparentního pozadí
+	//SetBkMode(canv->Handle,TRANSPARENT);//nastvení netransparentního pozadí
 	canv->Font->Size=14;
 	canv->Font->Name="Arial";
 	canv->Brush->Color=clWhite;

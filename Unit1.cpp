@@ -1357,24 +1357,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		FMaximized=false;MaxButtonClick(this);//aby bylo připraveno minimalizační tlačítko
 	}
 
-	//načtení rastru
-	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
-	{
-		if(FileExists(d.v.PP.raster.filename))
-		{
-			if(d.v.PP.raster.resolution==0)d.v.PP.raster.resolution=m2px;//v případě nového vstupu bez zadaného rozlišení defaultně je m2px
-			Graphics::TBitmap *bmp=new Graphics::TBitmap;
-			bmp->LoadFromFile(d.v.PP.raster.filename);
-			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem
-			Canvas->Pen->Color=clWhite;Canvas->Brush->Color=clWhite;
-			Canvas->Rectangle(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,Width,Height);
-			//vykreslení strečovaného rastru dle zadaného rozlišení
-			Canvas->StretchDraw(TRect(m.L2Px(d.v.PP.raster.X),m.L2Py(d.v.PP.raster.Y),m.round(m.L2Px(d.v.PP.raster.X)+bmp->Width*Zoom*d.v.PP.raster.resolution/m2px),m.round(m.L2Py(d.v.PP.raster.Y)+bmp->Height*Zoom*d.v.PP.raster.resolution/m2px)),bmp);
-			delete(bmp);
-		}
-		else d.v.PP.raster.show=false;
-	}
-
 	if(!nahled_objektu)
 	{
 	//vykreslení gridu
@@ -1388,6 +1370,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		{
 			if(!antialiasing)
 			{
+				nacti_podklad(Canvas);
 				d.vykresli_vektory(Canvas);
 				d.vykresli_mGridy();//přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				if(zobrazit_meritko)d.meritko(Canvas);//grafické měřítko
@@ -1401,16 +1384,26 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_vektory(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				//rastr
+				Graphics::TBitmap *bmp_out=new Graphics::TBitmap;bmp_out->Width=ClientWidth;bmp_out->Height=ClientHeight;
+				if(d.v.PP.raster.show)nacti_podklad(bmp_out->Canvas);
+				//vektory po AA
+				bmp_out->Canvas->Draw(0,0,a.antialiasing(bmp_in,d.v.PP.raster.show)); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				/*//spojnice EmGrid
+				bmp_in->FreeImage();
+				Graphics::TBitmap *bmp_out2;
+				if(Akce==MOVE_TABLE || Akce==MOVE_ELEMENT && pom_temp->zobrazit_mGrid)
+				{   zatím neužito,nedoladěné
+					vykresli_spojinici_EmGrid(bmp_in->Canvas,pom_element);
+					bmp_out2=a.antialiasing(bmp_in);//do samostatné, aby se kreslilo přes tabulky
+				} */
 				delete (bmp_in);//velice nutné
-				d.vykresli_mGridy(bmp_out->Canvas);//vykreslování mGridu //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
-				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);//grafické měřítko
-				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
-				{
-					bmp_out->Transparent=true;
-					bmp_out->TransparentColor=clWhite;
-				}
-				else bmp_out->Transparent=false;
+				//vykreslování mGridu
+				d.vykresli_mGridy(bmp_out->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
+				//if(Akce==MOVE_TABLE || Akce==MOVE_ELEMENT && pom_temp->zobrazit_mGrid)bmp_out->Canvas->Draw(0,0,bmp_out2);delete (bmp_out2);zatím neužito,nedoladěné
+				//grafické měřítko
+				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);
+				//finální předání bmp_out do Canvasu
 				Canvas->Draw(0,0,bmp_out);//finální vykreslení do Canvasu Formu1
 				delete (bmp_out);//velice nutné
 			}
@@ -1420,10 +1413,12 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		{
 			if(!antialiasing)
 			{
+				nacti_podklad(Canvas);
 				d.vykresli_objekty(Canvas);
 			}
 			else
 			{
+				nacti_podklad(Canvas);//provizorně, nahradit výše uvedenou konstrukcí u náhledu
 				Cantialising a;
 				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;
 				bmp_grid->Width=0;bmp_grid->Height=0;
@@ -1438,7 +1433,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				Graphics::TBitmap *bmp_out=a.antialiasing2(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);//grafické měřítko
 				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
 				{
@@ -1456,9 +1451,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		}
 		case LAYOUT:
 		{
-			if(!antialiasing)d.vykresli_layout(Canvas);
+			if(!antialiasing)
+			{
+        nacti_podklad(Canvas);
+				d.vykresli_layout(Canvas);
+			}
 			else
 			{
+				nacti_podklad(Canvas);//provizorně, nahradit výše uvedenou konstrukcí u náhledu
 				Cantialising a;
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;bmp_grid->Width=0;bmp_grid->Height=0;//je nutné mít založeno, ač nemá v tomto případě význam
@@ -1467,7 +1467,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_layout(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				Graphics::TBitmap *bmp_out=a.antialiasing2(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				Canvas->Draw(0,0,bmp_out);
 				delete (bmp_out);//velice nutné
 				delete (bmp_grid);//velice nutné
@@ -1529,6 +1529,27 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //	Canvas->Pen->Width=5;Canvas->Pen->Color=clGreen;
 //	Memo3->Clear();Memo3->Visible=true;Memo3->Lines->Add(d.aktOblast.left);Memo3->Lines->Add(d.aktOblast.top);Memo3->Lines->Add(d.aktOblast.right);Memo3->Lines->Add(d.aktOblast.bottom);
 //	Canvas->FrameRect(TRect(d.aktOblast));
+}
+//---------------------------------------------------------------------------
+void TForm1::nacti_podklad(TCanvas *Canv)
+{
+	//načtení rastru
+	if(d.v.PP.raster.filename!="" &&  d.v.PP.raster.show)
+	{
+		if(FileExists(d.v.PP.raster.filename))
+		{
+			if(d.v.PP.raster.resolution==0)d.v.PP.raster.resolution=m2px;//v případě nového vstupu bez zadaného rozlišení defaultně je m2px
+			Graphics::TBitmap *bmp=new Graphics::TBitmap;
+			bmp->LoadFromFile(d.v.PP.raster.filename);
+			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem
+//			Canv->Pen->Color=clWhite;Canvas->Brush->Color=clWhite;
+//			Canv->Rectangle(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,Width,Height);
+			//vykreslení strečovaného rastru dle zadaného rozlišení
+			Canv->StretchDraw(TRect(m.L2Px(d.v.PP.raster.X),m.L2Py(d.v.PP.raster.Y),m.round(m.L2Px(d.v.PP.raster.X)+bmp->Width*Zoom*d.v.PP.raster.resolution/m2px),m.round(m.L2Py(d.v.PP.raster.Y)+bmp->Height*Zoom*d.v.PP.raster.resolution/m2px)),bmp);
+			delete(bmp);
+		}
+		else d.v.PP.raster.show=false;
+	}
 }
 //---------------------------------------------------------------------------
 void TForm1::REFRESH()
@@ -2175,8 +2196,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
 			REFRESH();
 			//vykreslení spojnice tabulky a elementu
-			vykresli_spojinici_EmGrid(pom_element);
-//			d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));//vykreslí provizorní spojovací linii mezi elementem a tabulkou při posouvání, kvůli znázornění příslušnosti
+			vykresli_spojinici_EmGrid(Canvas,pom_element);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2191,7 +2211,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			REFRESH();
 			//když nejsou viditelné tabulky elementu -> nevykresli spojnici mezi elementem a tabulkou
-			if(pom_temp->zobrazit_mGrid)vykresli_spojinici_EmGrid(pom_element);
+			if(pom_temp->zobrazit_mGrid)vykresli_spojinici_EmGrid(Canvas,pom_element);
 			//kontrola zda robot nepřekročil hranice kabiny, pokud ano je volaná metoda mazání elementu
 			if(mazani&&(trend==90||trend==270)&&(1<=pom_element->eID && pom_element->eID<=4))
 				if(pom_element->X<pom_temp->Xk||pom_element->X>pom_temp->Xk+pom_temp->rozmer_kabiny.x)
@@ -2312,22 +2332,26 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}
 		case MEASURE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
 		{
-			if(stisknute_leve_tlacitko_mysi)
+			//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+			zobraz_tip("Tažením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi těmito body.",Canvas);
+				if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y);
 			}
 		}break;
 		case KALIBRACE:
-		{   //zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-    	zobraz_tip("Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu.");
+		{
+			//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+			zobraz_tip("Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu.",Canvas);
 			if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y,true);
 			}
 		}break;
 		case ADJUSTACE:
-		{ //zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-      zobraz_tip("Tažením myši z výchozího bodu směřujte do cílového bodu podkladu, po puštění myši zadejte skutečnou vzdálenost mezi body v metrech či milimetrech.");
+		{
+			//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+			zobraz_tip("Tažením myši z výchozího bodu směřujte do cílového bodu podkladu, po puštění myši zadejte skutečnou vzdálenost mezi body v metrech či milimetrech.",Canvas);
 			if(stisknute_leve_tlacitko_mysi)
 			{
 				d.vykresli_meridlo(Canvas,X,Y);
@@ -2352,7 +2376,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 }
 //---------------------------------------------------------------------------
 //vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
-void TForm1::vykresli_spojinici_EmGrid(Cvektory::TElement *E)
+void TForm1::vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E)
 {
 	double levyhorni,pravyhorni,levydolni,pravydolni;
 	//výpočet vzdáleností od každého rohu tabulky ke středu elementu
@@ -2363,10 +2387,10 @@ void TForm1::vykresli_spojinici_EmGrid(Cvektory::TElement *E)
 	//stanovení nejmenší vzdálenosti
 	double delka=Min(Min(levyhorni,pravyhorni),Min(levydolni,pravydolni));
 	//vykreslí spojinici v nejmenší délce
-	if(delka==levyhorni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
-	if(delka==pravyhorni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
-	if(delka==levydolni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
-	if(delka==pravydolni)d.linie(Canvas,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
+	if(delka==levyhorni)d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
+	if(delka==pravyhorni)d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt),2,(TColor)RGB(200,200,200));
+	if(delka==levydolni)d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt),m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
+	if(delka==pravydolni)d.linie(Canv,m.L2Px(pom_element->X),m.L2Py(pom_element->Y),m.L2Px(pom_element->Xt)+pom_element->mGrid->Width,m.L2Py(pom_element->Yt)+pom_element->mGrid->Height,2,(TColor)RGB(200,200,200));
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
@@ -2421,7 +2445,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
 				MB(AnsiString(delka)+" [metrů]");
 				Akce=NIC;kurzor(standard);
-				Invalidate();
+				zobraz_tip("");//nahrazuje zároveň Refresh
 				break;
 			}
 			case KALIBRACE:
@@ -2429,24 +2453,23 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				d.v.PP.raster.X=m.P2Lx(X)+d.v.PP.raster.X-m.P2Lx(vychozi_souradnice_kurzoru.X);
 				d.v.PP.raster.Y=m.P2Ly(Y)+d.v.PP.raster.Y-m.P2Ly(vychozi_souradnice_kurzoru.Y);
 				Akce=NIC;kurzor(standard);
-				Invalidate();
+				zobraz_tip("");//nahrazuje zároveň Refresh
 				break;
 			}
 			case ADJUSTACE:
 			{
-       if(Form_adjustace->ShowModal()==mrOk)//MB "Zadejte vzdálenost v metrech"
-		    {
-
-				 double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value/(1+999.0*Form_adjustace->Delkaunit);
+				if(Form_adjustace->ShowModal()==mrOk)//MB "Zadejte vzdálenost v metrech"
+				{
+					double vzdalenost=Form_adjustace->scGPNumericEdit_vzdalenost->Value/(1+999.0*Form_adjustace->Delkaunit);
 					d.v.PP.raster.resolution=m.getResolution(vychozi_souradnice_kurzoru.X,vychozi_souradnice_kurzoru.Y,X,Y,vzdalenost);
-       }
-       else
-       {
-				 d.v.PP.raster.show=false;
-         d.v.PP.raster.filename="";
-       }
+				}
+				else
+				{
+					d.v.PP.raster.show=false;
+					d.v.PP.raster.filename="";
+				}
 				Akce=NIC;kurzor(standard);
-				Invalidate();
+				zobraz_tip("");//nahrazuje zároveň Refresh
 				break;
 			}
 			default: break;
@@ -7038,9 +7061,7 @@ void __fastcall TForm1::Export1Click(TObject *Sender)
 					d.vykresli_objekty(bmp_in->Canvas);
 					Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 					Cantialising a;
-					Graphics::TBitmap *bmp_grid=new Graphics::TBitmap; //grid zasílám nulovou bitmapu jako parametr, na NULL ač bylo ošetřené tak padalo
-					Bitmap=a.antialiasing(bmp_grid,bmp_in);
-					delete (bmp_grid);bmp_grid=NULL;//velice nutné
+					Bitmap=a.antialiasing(bmp_in);
 					delete (bmp_in);bmp_in=NULL;//velice nutné
 				}
 				break;
