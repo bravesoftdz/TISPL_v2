@@ -8866,25 +8866,14 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   REFRESH();
 
 	zobraz_tip("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu.");
-	if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít přímo do nastavení?",MB_OKCANCEL))
-  {
-  //scGPGlyphButton_OPTIONSClick(Sender);  //tohle nesežral
-  scSplitView_OPTIONS->Opened=true;
-
   scGPCheckBox_zobraz_podklad->Enabled=true;
   scGPCheckBox_stupne_sedi->Enabled=true;
   scGPTrackBar_svetelnost_posuvka->Enabled=true;
   scLabel1_svetelnost->Enabled=true;
   scGPButton_kalibrace->Enabled=true;
   scGPButton_adjustace->Enabled=true;
-  }
-  else
-  {
-  scGPGlyphButton_OPTIONS->Active=true;
-  //scGPGlyphButton_OPTIONS->GlyphColor= (TColor)RGB(255, 128, 0);
-  //scGPGlyphButton_OPTIONS->GlyphThickness=2;
   scGPGlyphButton_OPTIONS->ShowHint=true;
-  }
+
 
 }
  //--------------------------------------------------------------
