@@ -1565,7 +1565,7 @@ void TForm1::REFRESH()
 //---------------------------------------------------------------------------
 void TForm1::REFRESH(bool refreshovat_mGridy)
 {
-	if(refreshovat_mGridy)refresh_mGrid=refreshovat_mGridy;
+	refresh_mGrid=refreshovat_mGridy;
   REFRESH();
 }
 //---------------------------------------------------------------------------
