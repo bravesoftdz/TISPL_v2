@@ -306,6 +306,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_PLAY;
 	TscGPComboBox *scGPComboBox_prepinacKot;
 	TscGPLabel *scGPLabel_prepinacKot;
+	TscGPImage *scGPImage_mereni_vzdalenost;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -502,6 +503,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPButton_posun_dalsich_elementuClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_PLAYClick(TObject *Sender);
 	void __fastcall scGPComboBox_prepinacKotClick(TObject *Sender);
+	void __fastcall scGPImage_mereni_vzdalenostClick(TObject *Sender);
 
 
 // User declarations
@@ -592,7 +594,7 @@ private:
 	void Smaz_kurzor ();
 	void vykresli_kurzor(int index);
 	void zmenJednotekKot();
-	int pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt, int eID);//prohledá elementy v objektu, vrátí počet výskytů elementu podle poslaného eID
+	int pocet_vyskytu_elementu(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je přítomno více rotací
 	void vytvor_edit();//vytvoří edit na místě hlavičky tabulky, slouží ke změně názvu elementu
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro změnu názvu elementu a nový název zapíše do elementu, defaultně provede refresh, pokud není předáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
@@ -698,7 +700,8 @@ public:		// User declarations
   void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
 	void ZOOM_IN();//přiblížení
 	void ZOOM_OUT();//oddálení
-	void REFRESH(); //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do větve else
+	void REFRESH();
+	void REFRESH(bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
 	void nahled_ulozit(bool duvod_ulozit);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5
