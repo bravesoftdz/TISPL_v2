@@ -700,7 +700,8 @@ public:		// User declarations
   void NP_input(); // volá zobrazení PO - nahrazuje NP a NPin
 	void ZOOM_IN();//přiblížení
 	void ZOOM_OUT();//oddálení
-	void REFRESH(); //vybere buď Invalidate nebo FormPaint(this) dle if(!antialiasing a dle Invalidate=true), tedy když bude zapnutý antialising jde vždy do větve else
+	void REFRESH();
+	void REFRESH(bool refreshovat_mGridy);
 	void DuvodUlozit(bool stav);
 	void nahled_ulozit(bool duvod_ulozit);
 	void SB(UnicodeString Text, unsigned short Pane=4);//domnívám se, že zde má být hodnota 5

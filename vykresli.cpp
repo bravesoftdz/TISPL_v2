@@ -2729,13 +2729,13 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav)
 {
-	double Z=F->Zoom;
+	double Z=Form1->Zoom;
 	short size=m.round(8*F->Zoom); if(stav==2)size=m.round(9*F->Zoom);
 	short sklon=50;
 	rotace=m.Rt90(rotace+180);//kvůli převrácenému symbolu
 
 	//barva výplně
-	TColor barva=clRed;
+	TColor barva=clRed;if(stav==0)barva=(TColor)RGB(60,179,113);//zelená světlejší(TColor)RGB(50,205,50);
 	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
 
 	//typ zobrazení
@@ -2788,7 +2788,7 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		{
 			if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
 			short h=0,w=canv->TextWidth(T2);
-			canv->Font->Style = TFontStyles();h=canv->TextHeight(T1);if(T1=="")h=canv->TextHeight("NIC");w+=canv->TextWidth(T1+" ");//pro náze normální písmo
+			canv->Font->Style = TFontStyles();h=canv->TextHeight(T1);w+=canv->TextWidth(T1+" ");//pro náze normální písmo
 			float zAA=1.0;if(F->antialiasing)zAA=3.0;
 			long x,y;
 			//rotace
@@ -2825,7 +2825,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	//konstanty
 	double pLOvC=1/2.0;//část z LO v delší části (většinou v polovina),bude sloužit na vyosení LO mimo osu robota
 	double DkRB=1.2*Z/F->m2px;//délka k referenčnímu bodu od středu prvního kloubu ramena, respektive odsazení robota od linky
-	float tloustka_linie=1.05/3.0;//vykreslovací linie robota
+	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie robota
 	float zaobleni=4*Z;//míra zaoblení základny
 	float sirka_zakladny=Robot_sirka_zakladny*Z/F->m2px;
 	float delka_zakladny=Robot_delka_zakladny*Z/F->m2px;
@@ -2834,10 +2834,17 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	float TW=sirka_ramena;//tryska šířka před zúžením, v místě z kloubu
 	float TZ=TW/2.0;//tryska ve zúžení
 	double DR=sqrt(pow(LO*pLOvC,2)+pow(DkRB-DT,2));//délka ruky/ramene obou částí (paže i předloktí) ///old model (tryska v extremní poloze stejný úhel jako rameno): double DR=(DkRB-DT)/cos(atan((LO*pLOvC)/DkRB));
-	TColor barva=clBlack;
-	if(stav==-1)barva=m.clIntensive(barva,180);//pokud je aktivní nebo neaktivní
-	if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn
 
+	//nastavení barev
+	TColor barva=clBlack; TColor clOzeh=(TColor)RGB(255,165,0);TColor clIon=(TColor)RGB(135,206,250);
+	if(stav==-1)//pokud je aktivní nebo neaktivní
+	{
+		barva=m.clIntensive(barva,180);
+		clOzeh=m.clIntensive(clOzeh,180);
+		clIon=m.clIntensive(clIon,180);
+	}
+
+  //rotace základny
 	if(rotace==90 || rotace==270){float temp=delka_zakladny;delka_zakladny=sirka_zakladny;sirka_zakladny=temp;}
 
 	//přidružené elementy
@@ -2848,10 +2855,10 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);lX=X;lY=m.round(Y+sirka_zakladny/2.0);}
 	switch(eID)
 	{
-		case 1: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
-		case 2: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
-		case 3: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
-		case 4: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+		case 1: case 7: case 11: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 2: case 8: case 12: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
+		case 3: case 9: case 13: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
+		case 4: case 10: case 14: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
 	//nastavení pera
@@ -2882,7 +2889,10 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==90){cX=m.round(X+delka_zakladny/2.0+DkRB-DT);cY=Y-aP;}
 	if(rotace==270){cX=m.round(X-delka_zakladny/2.0-DkRB+DT);cY=Y+aP;}
 	if(rotace==180){cX=X+aP;cY=m.round(Y+sirka_zakladny/2.0+DkRB-DT);}
-	polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace);//zde bude TS pro animaci či parametrizování
+	//typ trysky dle typu robota 														//zde bude TS (tryska sklon) pro animaci či parametrizování
+	if(1<=eID && eID<=4)polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace,false,barva,clWhite);//lakovací
+	if(7<=eID && eID<=10){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,false,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,false,clWhite,clIon);}//ion
+	if(11<=eID && eID<=14){if(stav>0 && typ!=-1)polygonDleOsy(canv,cX,cY,DT,TW,TZ*6,270+TS,rotace,false,clWhite,clOzeh);polygonDleOsy(canv,cX,cY,DT/2,TW,TZ*4,270+TS,rotace,false,barva,clWhite);}//ožeh
 
 	////ramena
 	double Alfa1=atan((aP)/(DkRB-DT));
@@ -2896,9 +2906,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==270){pX=X-delka_zakladny/2.0;pY=Y;}
 	if(rotace==180){pY=Y+sirka_zakladny/2.0;}
 	//první část - od základny
-	TPoint S=polygonDleOsy(canv,m.round(pX),m.round(pY),DR/2,sirka_ramena,sirka_ramena,270+m.ToDeg(Alfa),rotace);//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
+	TPoint S=polygonDleOsy(canv,m.round(pX),m.round(pY),DR/2,sirka_ramena,sirka_ramena,270+m.ToDeg(Alfa),rotace,false,barva,clWhite);//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
 	//druhá část k trysce (kresleno směrem od trysky)
-	polygonDleOsy(canv,cX,cY,DR/2,sirka_ramena,sirka_ramena,270+180-m.ToDeg(Gama),rotace);
+	polygonDleOsy(canv,cX,cY,DR/2,sirka_ramena,sirka_ramena,270+180-m.ToDeg(Gama),rotace,false,barva,clWhite);
 
 	////klouby
 	//první kloub mezi prvním ramenem a základnou
@@ -2929,7 +2939,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 			if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
 			float zAA=1.0;if(F->antialiasing)zAA=3.0;
 			long x,y;
-			short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
+			short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
 			if(rotace==0 || rotace==180)//lze používat i drawRectText(canv,zakladna,T);//nefunguje správně při rotaci //pro po orototování o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
 			{
 				x=m.round(X-w/2.0);
@@ -3148,7 +3158,7 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
-TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace)
+TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,bool transparent,TColor clFillOut,TColor clFillIn)
 {
 	//polovina od osy
 	sirka1/=2.0;
@@ -3173,8 +3183,26 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 	//zpět nahoru do P[0]
 	P[4]=P[0];
 
+	//záloha nastavení pera
+	TColor clBuffPen=canv->Pen->Color;
+	TColor clBuffBrush=canv->Brush->Color;
+	TPenStyle psBuffPen=canv->Pen->Style;
+	TBrushStyle bsBuffBrush=canv->Brush->Style;
+
+	//nastavení pera
+	canv->Pen->Color=clFillOut;
+	canv->Brush->Color=clFillIn;
+	if(transparent)canv->Brush->Style=bsClear;else canv->Brush->Style=bsSolid;
+	if(clFillOut==clWhite)canv->Pen->Style=psClear;//pokud je nastaveno bílé orámování je bráno, že se nemá orámování vykreslovat
+
 	//samotné vykreslení
-	canv->Polyline(P,4);
+	canv->Polygon(P,4);//bylo tady polyline pro průhlednou variantu
+
+	//navrácení původních hodnot pera
+	canv->Pen->Color=clBuffPen;
+	canv->Brush->Color=clBuffBrush;
+	canv->Pen->Style=psBuffPen;
+	canv->Brush->Style=bsBuffBrush;
 
 	//vratí souřadnice konce osy polygonu
 	TPoint RET;
@@ -3318,8 +3346,8 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 					{
 						E->mGrid->Redraw=true;
-						E->mGrid->Buffer(false);
-						//E->mGrid->buffer=true;//změna filozofie
+						//E->mGrid->Buffer(false);
+						E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
 						//možná zde ještě update pokud byla komponenta skyta
 						E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 						E->mGrid->Left=m.L2Px(E->Xt);
@@ -3351,9 +3379,9 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			{
 				if(F->pom_temp->zobrazit_mGrid &&  F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 				{
-				F->PmG->Redraw=true;
-				F->PmG->Buffer(false);
-				//F->PmG->buffer=true;//změna filozofie
+					F->PmG->Redraw=true;
+					//F->PmG->Buffer(false);
+					F->PmG->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
 					F->PmG->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
 					F->PmG->Left=m.L2Px(F->pom_temp->Xk+F->pom_temp->rozmer_kabiny.x);
 					F->PmG->Top=m.L2Py(F->pom_temp->Yk+0.5)-F->PmG->Height;

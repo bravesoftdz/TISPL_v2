@@ -1563,6 +1563,12 @@ void TForm1::REFRESH()
 	RM();//korekce chyby oskakování pravého menu
 }
 //---------------------------------------------------------------------------
+void TForm1::REFRESH(bool refreshovat_mGridy)
+{
+	if(refreshovat_mGridy)refresh_mGrid=refreshovat_mGridy;
+  REFRESH();
+}
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
 {

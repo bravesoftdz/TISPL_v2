@@ -438,6 +438,7 @@ void TmGrid::Buffer(bool status)
 			//Raster
 			Raster->Width=Width+O*2;Raster->Height=Height+O*2;//+O*2 kvůli většímu orámování než je bmp
 			Raster->Canvas->CopyRect(TRect(0,0,Raster->Width,Raster->Height),Form->Canvas,TRect(Left-O,Top-O,Left+Raster->Width-O,Top+Raster->Height-O));
+			Raster->Canvas->Font->Size=20;Raster->Canvas->Font->Color=clRed;Raster->Canvas->TextOutW(0,0,"toto je raster");//smazat pouze pro test
 			//Raster->Canvas->CopyRect(TRect(0,0,Raster->Width,Raster->Height),AE_bmp->Canvas,TRect(Left-O,Top-O,Left+Raster->Width-O,Top+Raster->Height-O));
 			//delete (AE_bmp);
 		}
