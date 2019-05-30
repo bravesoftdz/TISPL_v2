@@ -1065,7 +1065,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
    	Cvektory::TElement *p=Objekt->elementy->dalsi;//přeskočí hlavičku
 		while (p!=NULL)
    	{
-			if(p->dalsi!=NULL)//aby se neřešila situace poslední-prní prvek,řešeno separátně
+			if(p->dalsi!=NULL&&p->n!=Element->n&&p->dalsi->n!=Element->n)//aby se neřešila situace poslední-prní prvek,řešeno separátně
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
 				if(F->m.PtInRectangle(p->X,p->Y,p->dalsi->X,p->dalsi->Y,Element->X,Element->Y))
@@ -1606,7 +1606,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 //		}
 						 //dodělat MaVl
 		//provizorně jen pro vodorovnou levopravou kabinu
-		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=NULL)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
+		if(F->pom_temp->elementy->dalsi!=NULL&&vzdalenost!=0)//musí existovat alespoň jeden element&&nesmí být vzdálenost rovna nule
 		{
 			TPointD vzd;
 			if(Element->n==1)//pro první element, od počátku kabiny
