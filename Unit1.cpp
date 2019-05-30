@@ -2432,13 +2432,14 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			}
 			case MOVE_ELEMENT:
 			{
-//				if (el_vkabine(X,Y,pom_element_temp->eID))//kontrola zda se snaží uživatel vložit element do kabiny nebo mimo ni
-//				{
+				if (el_vkabine(X,Y,pom_element_temp->eID))//kontrola zda se snaží uživatel vložit element do kabiny nebo mimo ni
+				{
+					TIP="";
 					d.v.posun_element(pom_element_temp,0,false);//volání musí být před nastavením akce
 					Akce=NIC;kurzor(standard);
 					REFRESH();
 					pom_element_temp=NULL; delete pom_element_temp;
-//				} else zobraz_tip("Nelze vložit robota mimo kabinu!");
+				} else TIP="Nelze vložit robota mimo kabinu!";
 				break;//posun elementu
 			}
 			case MOVE_KABINA:Akce=NIC;kurzor(standard);REFRESH();break;//konec posunu lakovny
