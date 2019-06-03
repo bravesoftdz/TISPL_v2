@@ -979,17 +979,17 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	switch(eID)
 	{
 		case 0: T="Stop"; break;//stop stanice
-		case 1: T="Robot"; 				break;//kontinuální robota
-		case 2: T="Robot"; 				novy->PT1=60;break;//robot se stopkou
-		case 3: T="Robot"; 				novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
-		case 4: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
-		case 5: T="Otoč"; 				novy->OTOC_delka=0.450;novy->rotace_jig=90;break;//pasivní otoč
-		case 6: T="Otoč"; 				novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
+		case 1:case 7:case 11:case 15:case 101:case 105:  T="Robot"; 				break;//kontinuální robota
+		case 2:case 8:case 12:case 16:case 102:case 106:  T="Robot"; 				novy->PT1=60;break;//robot se stopkou
+		case 3:case 9:case 13:case 17:case 103:case 107:  T="Robot"; 				novy->OTOC_delka=0.450;novy->LO1=(1.5-novy->OTOC_delka)/2.0;novy->LO2=novy->LO1;novy->rotace_jig=180;break;//kontinuální robot s pasivní otočí
+		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
+		case 5: T="Otoč"; 																									novy->OTOC_delka=0.450;novy->rotace_jig=90;break;//pasivní otoč
+		case 6: T="Otoč"; 																									novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
 	}
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
-		unsigned int nTyp=vrat_poradi_elementu(Objekt,novy->eID);//pokud se jedná o roboty
-		if(eID==0||eID==5||eID==6)nTyp=vrat_poradi_elementu_do(Objekt,novy)+1;//pro stopky a otoče, název je globální
+		unsigned int nTyp=vrat_poradi_elementu_do(Objekt,novy)+1;//pokud se jedná o roboty
+//		if(eID==0||eID==5||eID==6)nTyp=vrat_poradi_elementu_do(Objekt,novy)+1;//pro stopky a otoče, název je globální
 		novy->name=T+" "+AnsiString(nTyp);
 		novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
@@ -1359,7 +1359,7 @@ int Cvektory::vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt)
 		TElement *E=Objekt->elementy->dalsi;//přeskočí rovnou hlavičku
 		while(E!=NULL)
 		{
-			if(1<=E->eID && E->eID<=4) RET=E->eID;
+			if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108) RET=E->eID;
 			E=E->dalsi;
 		}
 		E=NULL;delete E;
@@ -1398,12 +1398,12 @@ unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
 unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element)
 {
 	unsigned int r_pocet=0,s_pocet=0,o_pocet=0;//nastavení všech počtů na nulu
-	if(Element->eID<5&&Element->eID>0)//pokud je Element robot projdi roboty v Objektu
+	if(Element->eID!=6&&Element->eID!=5&&Element->eID!=0)//pokud je Element robot projdi roboty v Objektu
 	{
 		Cvektory::TElement *E=Objekt->elementy->dalsi;//přeskočí hlavičku
 		while(E->n!=Element->n)
 		{
-			if(E->eID>0&&E->eID<5)r_pocet++;
+			if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)r_pocet++;
 			E=E->dalsi;
 		}
 		E=NULL; delete E;
@@ -1433,7 +1433,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 		O=NULL; delete O;
 	}
 	//podle eID vrátí příslušný počet elementů
-	if(Element->eID<5&&Element->eID>0)return r_pocet;
+	if(Element->eID!=6&&Element->eID!=5&&Element->eID!=0)return r_pocet;
 	else if(Element->eID==0)return s_pocet;
 	else return o_pocet;
 }
