@@ -1778,8 +1778,9 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		//propsání nového názvu do mGridu
 		pom_element_temp->mGrid->Cells[0][0].Text="<a>"+pom_element_temp->name+"</a>";
 		pom_element_temp->mGrid->MergeCells(0,0,1,0);
+		//pom_element_temp->mGrid->Refresh(); //možná bude potřeba zatím nelze testovat dokud se zobrazuje testovací text u buffrovaní
   }
-	REFRESH();
+	REFRESH(false);
 }
 //---------------------------------------------------------------------------
 //vytvoří edit na místě hlavičky tabulky, slouží ke změně názvu elementu
@@ -2204,7 +2205,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			pom_element->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
-			REFRESH();
+			REFRESH(false);
 			//vykreslení spojnice tabulky a elementu
 			vykresli_spojinici_EmGrid(Canvas,pom_element);
 			nahled_ulozit(true);
@@ -2219,7 +2220,6 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			else
 				pom_element->Y+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
 			//když nejsou viditelné tabulky elementu -> nevykresli spojnici mezi elementem a tabulkou
 			if(pom_temp->zobrazit_mGrid)vykresli_spojinici_EmGrid(Canvas,pom_element);
 			//kontrola zda robot nepřekročil hranice kabiny, pokud ano je volaná metoda mazání elementu
@@ -2234,12 +2234,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				pom_element->RT=m.RT(pom_element->PT1,d.v.vzdalenost_od_predchoziho_elementu(pom_element,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
 				pom_element->mGrid->Cells[1][2].Text=m.round2double(outPT(pom_element->RT),3);
+				pom_element->mGrid->Refresh();
 			}
 			if(pom_element->eID==4)
 			{
 				pom_element->RT=m.RT(pom_element->PT1+pom_element->PT2+pom_element->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(pom_element,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
 				pom_element->mGrid->Cells[1][5].Text=m.round2double(outPT(pom_element->RT),3);
-      }
+				pom_element->mGrid->Refresh();
+			}
+			REFRESH(false);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2253,15 +2256,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//posun pokud mimo==0 -> vše je v kabině
 			if ((mimo==0&&(trend==90||trend==270))||(mimo==0&&(trend!=90||trend!=270)))
 			{
-			if(mimo!=-1&&mimo!=-2)
-			{
-				if (trend==90 || trend==270)
-					pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				else
-					pom_temp->Xk+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				minule_souradnice_kurzoru=TPoint(X,Y);
-				REFRESH();
-			}
+		  	if(mimo!=-1&&mimo!=-2)
+		  	{
+		  		if (trend==90 || trend==270)
+		  			pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+					else
+		  			pom_temp->Xk+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+		  		minule_souradnice_kurzoru=TPoint(X,Y);
+		  		REFRESH(false);
+				}
 			}
 			else//něco je mimo kabinu
 			{
@@ -2292,7 +2295,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					}
 //				}
 				Akce=NIC;
-				REFRESH();
+				REFRESH(false);
 			}
 			nahled_ulozit(true);
 			break;
@@ -2321,7 +2324,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				Akce=NIC;
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
+			REFRESH(false);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2329,7 +2332,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
+			REFRESH(false);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2443,7 +2446,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					TIP="";
 					d.v.posun_element(pom_element_temp,0,false);//volání musí být před nastavením akce
 					Akce=NIC;kurzor(standard);
-					REFRESH();
+//					REFRESH(false);  //odstaveno smazat po testech
 					pom_element_temp=NULL; delete pom_element_temp;
 				} else TIP="Nelze vložit robota mimo kabinu!";
 				break;//posun elementu
@@ -7578,7 +7581,8 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //			Timer_neaktivity->Enabled=false;
 //			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 //		}
-		REFRESH();Timer_neaktivity->Enabled=false;
+		REFRESH(false); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
+		Timer_neaktivity->Enabled=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
@@ -7749,7 +7753,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		 }
 //		 E=NULL; delete E;
 //		 Form2->ShowModal();
-                Memo(pom_temp->rezim);
+                REFRESH(false);
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
 //		pom_temp->elementy->dalsi->dalsi->n=1; //druhý
@@ -9117,7 +9121,7 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
  }
  else//pro posun refresh při změně tabulky elementů
  {
-	 REFRESH();
+	 REFRESH(false);
 	 FormX->input_state=FormX->NOTHING;
  }
  Timer2->Enabled=false;
@@ -9263,9 +9267,10 @@ void TForm1::Smaz_kurzor()
 	if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
 	TimerKurzor->Enabled=false;
 	editace_textu=false;
+	if(index_kurzoru<=-11&&(pom_element_temp->eID==2||pom_element_temp->eID==4))pom_element_temp->mGrid->Refresh();//musí se refreshovat z důvodu přepočtu RT u S&G
 	//využívání pro uchování ukazatele při editaci kót
 	pom_element_temp=NULL; delete pom_element_temp;
-	REFRESH();
+	REFRESH(false);
 }
 //---------------------------------------------------------------------------
 //vypnutí/zapnutí zamčení náhledu
