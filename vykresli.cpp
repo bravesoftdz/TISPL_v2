@@ -2724,6 +2724,18 @@ void Cvykresli::vykresli_element(TCanvas *canv,long X,long Y,AnsiString name,Ans
 		case 4: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//pasivní otoč
 		case 6: vykresli_otoc(canv,X,Y,name,short_name,eID,typ,rotace,stav);break;//aktivní otoč
+		case 7: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//kontinuální robota
+		case 8: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
+		case 9: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
+		case 10: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
+		case 11: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//kontinuální robota
+		case 12: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
+		case 13: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
+		case 14: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
+		case 15: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//kontinuální robota
+		case 16: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot se stopkou
+		case 17: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,OTOC_delka,LO2,F->RO,F->ROst);break;//robot s pasivní otočí
+		case 18: vykresli_robota(canv,X,Y,name,short_name,eID,typ,rotace,stav,LO1,0,0,F->RO,F->ROst);break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2836,7 +2848,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	double DR=sqrt(pow(LO*pLOvC,2)+pow(DkRB-DT,2));//délka ruky/ramene obou částí (paže i předloktí) ///old model (tryska v extremní poloze stejný úhel jako rameno): double DR=(DkRB-DT)/cos(atan((LO*pLOvC)/DkRB));
 
 	//nastavení barev
-	TColor barva=clBlack; TColor clOzeh=(TColor)RGB(255,165,0);TColor clIon=(TColor)RGB(135,206,250);
+	TColor barva=clBlack; TColor clOzeh=(TColor)RGB(255,165,0);TColor clIon=(TColor)RGB(7,107,171);TColor clCO2=(TColor)RGB(135,206,250);
 	if(stav==-1)//pokud je aktivní nebo neaktivní
 	{
 		barva=m.clIntensive(barva,180);
@@ -2855,10 +2867,10 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);lX=X;lY=m.round(Y+sirka_zakladny/2.0);}
 	switch(eID)
 	{
-		case 1: case 7: case 11: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
-		case 2: case 8: case 12: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
-		case 3: case 9: case 13: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
-		case 4: case 10: case 14: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+		case 1: case 7: case 11: case 15: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+		case 2: case 8: case 12: case 16: vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
+		case 3: case 9: case 13: case 17: if(typ==1)vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace);vykresli_otoc(canv,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
+		case 4: case 10: case 14:case 18: vykresli_otoc(canv,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
 	}
 
 	//nastavení pera
@@ -2891,8 +2903,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==180){cX=X+aP;cY=m.round(Y+sirka_zakladny/2.0+DkRB-DT);}
 	//typ trysky dle typu robota 														//zde bude TS (tryska sklon) pro animaci či parametrizování
 	if(1<=eID && eID<=4)polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace,false,barva,clWhite);//lakovací
-	if(7<=eID && eID<=10){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,false,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,false,clWhite,clIon);}//ion
-	if(11<=eID && eID<=14){if(stav>0 && typ!=-1)polygonDleOsy(canv,cX,cY,DT,TW,TZ*6,270+TS,rotace,false,clWhite,clOzeh);polygonDleOsy(canv,cX,cY,DT/2,TW,TZ*4,270+TS,rotace,false,barva,clWhite);}//ožeh
+	if(7<=eID && eID<=10){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,false,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,true,clWhite,clIon);}//ion
+	if(11<=eID && eID<=14){if(stav>0 && typ!=-1)polygonDleOsy(canv,cX,cY,DT,TW,TZ*6,270+TS,rotace,true,clWhite,clOzeh);polygonDleOsy(canv,cX,cY,DT/2,TW,TZ*4,270+TS,rotace,false,barva,clWhite);}//ožeh
+	if(15<=eID && eID<=18){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,false,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,true,clWhite,clCO2);}//CO2
 
 	////ramena
 	double Alfa1=atan((aP)/(DkRB-DT));
@@ -3165,7 +3178,7 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 	sirka2/=2.0;
 
 	//vytvoření pole pro vykreslení celého polygonu
-	TPoint *P=new TPoint[5];//vytovoří pole pro polyline
+	TPoint *P=new TPoint[5];//vytvoří pole pro polyline
 	//nahoru ze skutečného referenčního bodu
 	TPointD K=m.rotace(sirka1,0+sklon,rotace);
 	P[0].x=m.round(X+K.x);P[0].y=m.round(Y+K.y);
@@ -3192,7 +3205,7 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 	//nastavení pera
 	canv->Pen->Color=clFillOut;
 	canv->Brush->Color=clFillIn;
-	if(transparent)canv->Brush->Style=bsClear;else canv->Brush->Style=bsSolid;
+	if(transparent)canv->Pen->Mode=pmMask;else canv->Pen->Mode=pmCopy;
 	if(clFillOut==clWhite)canv->Pen->Style=psClear;//pokud je nastaveno bílé orámování je bráno, že se nemá orámování vykreslovat
 
 	//samotné vykreslení

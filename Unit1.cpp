@@ -1967,12 +1967,9 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					int X, int Y)
 {
 	if(MOD==NAHLED)if(PmG->CheckLink(X,Y)==TPoint(-2,-2))FormX->naplneni_dopRD();//pokud je mod náhled a bylo kliknuto na dopRD vrátí tuto rychlost do tabulky pohonu
-	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)
-		smaz_edit(false);//smaže edit a neprovede refresh
-	if(editace_textu)
-		Smaz_kurzor();
-	if(MOD==NAHLED)if(PmG->Rows[3].Visible)
-		FormX->odstranit_korelaci();
+	if(MOD==NAHLED&&index_kurzoru==9999||index_kurzoru==100)smaz_edit(false);//smaže edit a neprovede refresh
+	if(editace_textu)Smaz_kurzor();
+	if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
 	if(scSplitView_OPTIONS->Opened || scSplitView_MENU->Opened)//pokud je oteřeno hamburger menu a klikne se do plochy tak se nejdříve zavře
 	{
 		scSplitView_MENU->Opened=false;
