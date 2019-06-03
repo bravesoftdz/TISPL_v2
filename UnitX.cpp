@@ -51,7 +51,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		F->PmG->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
 		F->PmG->Update();
 		F->PmG->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
-		F->REFRESH();//musí být opravdu REFRESH celého formu nikoliv jen mGridu
+		F->REFRESH();//musí být opravdu REFRESH() celého formu + mGridu
 		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 	}
 	if(ID!=9999&&Row==-2)
@@ -72,7 +72,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		E->mGrid->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
 		E->mGrid->Update();
 		E->mGrid->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
-		F->REFRESH();//musí být opravdu REFRESH celého formu nikoliv jen mGridu
+		F->REFRESH();//musí být opravdu REFRESH celého formu + mGridu
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL; delete E;
 	}
@@ -115,7 +115,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				}
 				//dodìlat plnìní pamìti pøi editaci bunìk
 			} break;
-			case 1: //robot (kontinuální)
+			case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
 			{
 				if(Row==1)// editace PT
 				{
@@ -139,7 +139,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PT1),3); //OUTPUT
 				}
 			} break;
-			case 2: //robot se stop stanicí
+			case 2:case 8:case 12:case 16:case 102:case 106: //robot se stop stanicí
 			{
 				if(Row==1)//editace PT
 				{
@@ -149,7 +149,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->mGrid->Cells[Col][2].Text=F->m.round2double(F->outPT(E->RT),3);//OUTPUT
 				}
 			} break;
-			case 3: //robot s pasivní otoèí
+			case 3:case 9:case 13:case 17:case 103:case 107: //robot s pasivní otoèí
 			{
 				if (Row==1)//editace PT1
 				{
@@ -224,7 +224,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 					E->mGrid->Cells[Col][Row-1].Text = F->m.round2double(F->outPT(E->PT2),3);//OUTPUT
 				}
 			} break;
-			case 4://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
+			case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
 			{
 				if(Row==1)//zmìna PT1
 				{
@@ -437,7 +437,7 @@ void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,Sys
 				F->pom_element_temp->mGrid->getEdit(0,0)->SelStart=5;//nastavení kurzoru na konec editu
 				MessageBeep(0);//oznámení uživateli
 			}
-   		F->REFRESH();
+			F->REFRESH(false);
    	}
 	}
 	if(Row==3&&ID==9999)//slouží pro nepovolení zapsání desetiné èárky do editu Rx
@@ -554,13 +554,13 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(E->WT),3);
 				}
 				break;//stop stanice
-				case 1://robor kontinuální
+				case 1:case 7:case 11:case 15:case 101:case 105://robor kontinuální
 				{
 					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
 					E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->PT1),3);
 				}
 				break;
-				case 2://robot se stop stanicí
+				case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí
 				{
 					//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3);
@@ -569,7 +569,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(E->RT),3);
 				}
 				break;
-				case 3://robot s pasivní otoèí
+				case 3:case 9:case 13:case 17:case 103:case 107://robot s pasivní otoèí
 				{
 					E->PT1=F->m.PT(E->LO1,F->pom_temp->pohon->aRD);
 					E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->PT1),3);
@@ -579,7 +579,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 					E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->PT2),3);
 				}
 				break;
-				case 4://robot s aktivní otoèí
+				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
  				{
 					//validace
 					E->WT=F->m.cekani_na_palec(0,F->pom_temp->pohon->roztec,F->pom_temp->pohon->aRD,3);
@@ -620,26 +620,26 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 					E->mGrid->Cells[1][3].Text=0;
 				}
 				break;//stop stanice
-				case 1://robor kontinuální
+				case 1:case 7:case 11:case 15:case 101:case 105://robor kontinuální
 				{
 					E->mGrid->Cells[1][1].Text=0;
 				}
 				break;
-				case 2://robot se stop stanicí
+				case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí
 				{
 					//validace
 					E->mGrid->Cells[1][2].Text=0;
 					E->mGrid->Cells[1][3].Text=0;
 				}
 				break;
-				case 3://robot s pasivní otoèí
+				case 3:case 9:case 13:case 17:case 103:case 107://robot s pasivní otoèí
 				{
 					E->mGrid->Cells[1][1].Text=0;
 					E->mGrid->Cells[1][4].Text=0;
 					E->mGrid->Cells[1][6].Text=0;
 				}
 				break;
-				case 4://robot s aktivní otoèí
+				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
 				{
 					//validace
 					E->mGrid->Cells[1][5].Text=0;
@@ -720,26 +720,26 @@ void TFormX::korelace_tab_pohonu_elementy(Cvektory::TElement *mimo_element)
 					E->mGrid->Cells[1][3].Highlight=true;
 				}
 				break;//stop stanice
-				case 1://robor kontinuální
+				case 1:case 7:case 11:case 15:case 101:case 105://robor kontinuální
 				{
 					E->mGrid->Cells[1][1].Highlight=true;
 				}
 				break;
-				case 2://robot se stop stanicí
+				case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí
 				{
 					//validace
 					E->mGrid->Cells[1][2].Highlight=true;
 					E->mGrid->Cells[1][3].Highlight=true;
 				}
 				break;
-				case 3://robot s pasivní otoèí
+				case 3:case 9:case 13:case 17:case 103:case 107://robot s pasivní otoèí
 				{
 					E->mGrid->Cells[1][1].Highlight=true;
 					E->mGrid->Cells[1][4].Highlight=true;
 					E->mGrid->Cells[1][6].Highlight=true;
 				}
 				break;
-				case 4://robot s aktivní otoèí
+				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
 				{
 					//validace
 					E->mGrid->Cells[1][5].Highlight=true;
@@ -768,17 +768,17 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 	switch(E->eID)
 	{
 		case 0:break;//stopka
-		case 1: //robot (kontinuální)
+		case 1:case 7:case 11:case 15:case 101:case 105: //robot (kontinuální)
 		{
 			if(Row==1){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
 			if(Row==2)E->mGrid->Cells[1][Row-1].Highlight=true;
 			F->PmG->Refresh();//voláno samostatnì, jen ve dvou case
 		} break;
-		case 2: //robot se stop stanicí
+		case 2:case 8:case 12:case 16:case 102:case 106: //robot se stop stanicí
 		{
 			if(Row==1)E->mGrid->Cells[1][2].Highlight=true;
 		} break;
-		case 3: //robot s pasivní otoèí
+		case 3:case 9:case 13:case 17:case 103:case 107: //robot s pasivní otoèí
 		{
 			if (Row==1){F->PmG->Cells[1][rychlost].Highlight=true;korelace_tab_pohonu(rychlost);korelace_tab_pohonu_elementy();}//E->mGrid->Cells[1][Row+1].Highlight=true;
 			if (Row==2)E->mGrid->Cells[1][Row-1].Highlight=true;
@@ -787,7 +787,7 @@ void TFormX::korelace_v_elementech(long ID,long Row)
 			if (Row==7)E->mGrid->Cells[1][Row-1].Highlight=true;
 			F->PmG->Refresh();
 		} break;
-		case 4://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
+		case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí (resp. s otoèí a stop stanicí)
 		{
 			if(Row==1)E->mGrid->Cells[1][5].Highlight=true;
 			if(Row==3)E->mGrid->Cells[1][5].Highlight=true;

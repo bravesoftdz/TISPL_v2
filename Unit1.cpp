@@ -1778,8 +1778,9 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		//propsání nového názvu do mGridu
 		pom_element_temp->mGrid->Cells[0][0].Text="<a>"+pom_element_temp->name+"</a>";
 		pom_element_temp->mGrid->MergeCells(0,0,1,0);
+		//pom_element_temp->mGrid->Refresh(); //možná bude potřeba zatím nelze testovat dokud se zobrazuje testovací text u buffrovaní
   }
-	REFRESH();
+	REFRESH(false);
 }
 //---------------------------------------------------------------------------
 //vytvoří edit na místě hlavičky tabulky, slouží ke změně názvu elementu
@@ -2201,7 +2202,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			pom_element->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
 			pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
-			REFRESH();
+			REFRESH(false);
 			//vykreslení spojnice tabulky a elementu
 			vykresli_spojinici_EmGrid(Canvas,pom_element);
 			nahled_ulozit(true);
@@ -2216,7 +2217,6 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			else
 				pom_element->Y+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
 			//když nejsou viditelné tabulky elementu -> nevykresli spojnici mezi elementem a tabulkou
 			if(pom_temp->zobrazit_mGrid)vykresli_spojinici_EmGrid(Canvas,pom_element);
 			//kontrola zda robot nepřekročil hranice kabiny, pokud ano je volaná metoda mazání elementu
@@ -2231,12 +2231,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			{
 				pom_element->RT=m.RT(pom_element->PT1,d.v.vzdalenost_od_predchoziho_elementu(pom_element,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
 				pom_element->mGrid->Cells[1][2].Text=m.round2double(outPT(pom_element->RT),3);
+				pom_element->mGrid->Refresh();
 			}
 			if(pom_element->eID==4)
 			{
 				pom_element->RT=m.RT(pom_element->PT1+pom_element->PT2+pom_element->PTotoc,d.v.vzdalenost_od_predchoziho_elementu(pom_element,true),pom_temp->pohon->aRD,pom_temp->pohon->roztec,pom_element->WT);
 				pom_element->mGrid->Cells[1][5].Text=m.round2double(outPT(pom_element->RT),3);
-      }
+				pom_element->mGrid->Refresh();
+			}
+			REFRESH(false);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2250,15 +2253,15 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 			//posun pokud mimo==0 -> vše je v kabině
 			if ((mimo==0&&(trend==90||trend==270))||(mimo==0&&(trend!=90||trend!=270)))
 			{
-			if(mimo!=-1&&mimo!=-2)
-			{
-				if (trend==90 || trend==270)
-					pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				else
-					pom_temp->Xk+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				minule_souradnice_kurzoru=TPoint(X,Y);
-				REFRESH();
-			}
+		  	if(mimo!=-1&&mimo!=-2)
+		  	{
+		  		if (trend==90 || trend==270)
+		  			pom_temp->Yk+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+					else
+		  			pom_temp->Xk+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+		  		minule_souradnice_kurzoru=TPoint(X,Y);
+		  		REFRESH(false);
+				}
 			}
 			else//něco je mimo kabinu
 			{
@@ -2289,7 +2292,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					}
 //				}
 				Akce=NIC;
-				REFRESH();
+				REFRESH(false);
 			}
 			nahled_ulozit(true);
 			break;
@@ -2318,7 +2321,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				Akce=NIC;
 			}
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
+			REFRESH(false);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2326,7 +2329,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		{
 			pom_temp->koty_elementu_offset-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
 			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
+			REFRESH(false);
 			nahled_ulozit(true);
 			break;
 		}
@@ -2440,7 +2443,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					TIP="";
 					d.v.posun_element(pom_element_temp,0,false);//volání musí být před nastavením akce
 					Akce=NIC;kurzor(standard);
-					REFRESH();
+//					REFRESH(false);  //odstaveno smazat po testech
 					pom_element_temp=NULL; delete pom_element_temp;
 				} else TIP="Nelze vložit robota mimo kabinu!";
 				break;//posun elementu
@@ -3421,7 +3424,7 @@ void TForm1::add_element (int X, int Y)
 	bool vkabine=el_vkabine(X,Y,element_id);//pokud se jedná o robota kontrolovat zda je vložen do kabiny
 	//ovlivňování souřadnic, aby element byl umístěn přímo na osou - nelze použít makro Rxy
 	double DoSkRB=0;
-	if(1<=element_id && element_id<=4)//pro roboty, které mají uchopovací bod jinde než referenční
+	if(1<=element_id && element_id<=4 || 7<=element_id && element_id<=18 || 101<=element_id && element_id<=108)//pro roboty, které mají uchopovací bod jinde než referenční
 	{
 		DoSkRB=d.DoSkRB*Zoom/m2px;//délka od středu (uchopovacího bodu) k referenčnímu bodu, doplnit konstanty
 		if(rotace_symbolu==90 || rotace_symbolu==180)DoSkRB*=-1;
@@ -3445,15 +3448,27 @@ void TForm1::add_element (int X, int Y)
 		switch(E->eID)
 		{
 			case 0://po přidání stop nebo otoče režim žádny
-	  	case 5:
+			case 5:
 			case 6:/*nic*/;break;
 			case 1://po přidání KK režim 1
+			case 7:case 9:case 11:case 13:case 15:case 17:case 101:case 103:case 105:case 107:
 			case 3:pom_temp->rezim=1;break;
 			case 2://po přidání S&G režim 0
+			case 8:case 10:case 12:case 14:case 16:case 18:case 102:case 104:case 106:case 108:
 			case 4:pom_temp->rezim=0;break;
+			default:break;
 		}
 		//volání přenastavení tabulky pohonu, pouze v případech, kdy je to nutné
-		if((!PmG->Rows[3].Visible&&(E->eID==1||E->eID==3))||(PmG->Rows[3].Visible&&!PmG->Rows[7].Visible&&(E->eID==3||E->eID==5||E->eID==6)))
+		int KK1,KK2;//princip je stejný podle režimu mění se pouze eID v různých kabinách
+		switch(pom_temp->id)
+		{
+			case 0:KK1=101;KK2=103;break;//navěšování + svěšování
+			case 1:KK1=15;KK2=17;break;//CO2
+			case 4:KK1=11;KK2=13;break;//test ožehu
+			case 2:if(scGPSwitch_robot_clovek->State==0){KK1=7;KK2=9;}else {KK1=105;KK2=107;}break;//ionizce
+			case 3:KK1=1;KK2=3;break;//lakovna
+		}
+		if((!PmG->Rows[3].Visible&&(E->eID==KK1||E->eID==KK2))||(PmG->Rows[3].Visible&&!PmG->Rows[7].Visible&&(E->eID==KK1||E->eID==KK2||E->eID==6)))
 			pridani_elementu_tab_pohon(E);
 		//až na konec:
 		E=NULL;delete E;
@@ -4379,9 +4394,6 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	TColor clBackgroundHidden=(TColor)RGB(240,240,240);//m.clIntensive((TColor)RGB(128,128,128),115);
 	TColor clFontLeft = (TColor)RGB(128,128,128);
 	TColor clFontRight = (TColor)RGB(43,87,154);
-	//identifikátor tabulky, odstaveno, je již nastaveno při přidávání elementu ve vektorech
-//	E->mGrid->Tag=6;//ID formu
-//	E->mGrid->ID=E->n;//ID tabulky tzn. i ID komponenty, musí být v rámci jednoho formu/resp. objektu unikátní, tzn. použijeme n resp. ID elementu
 	//definice fontu a velikosti písma
 	E->mGrid->DefaultCell.Font->Name=aFont->Name;
 	E->mGrid->DefaultCell.Font->Size=aFont->Size;
@@ -4427,7 +4439,6 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	E->mGrid->Cells[0][0].Text="<a>"+E->name+"</a>";//nasazení linku
 	E->mGrid->Cells[0][0].isLink->Color=clHeaderFont;
 	E->mGrid->Cells[0][0].isActiveLink->Color=clHeaderFont;
-//	E->mGrid->Cells[0][0].Font->Color=clHeaderFont;
 	E->mGrid->Cells[0][0].BottomBorder->Width=2;
 	//formátování buněk tabulky (vždy stejn=)
 	for(int i=1;i<=ms.MyToDouble(E->mGrid->RowCount-1);i++)
@@ -4528,7 +4539,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->VisibleRow(2,false,false);
 			break;
 		}
-
+		case 7:case 11:case 15:case 101:case 105:
 		case 1://robot (kontinuální)
 		{
 			//samotné vytvoření matice-tabulky
@@ -4551,6 +4562,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][2].ShowHint=true;
 			break;
 		}
+		case 8:case 12:case 16:case 102:case 106:
 		case 2://robot se stop stanicí
 		{
 			//samotné vytvoření matice-tabulky
@@ -4577,6 +4589,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].ShowHint=true;
 			break;
 		}
+		case 9:case 13:case 17:case 103:case 107:
 		case 3://robot s pasivní otočí
 		{
 			//samotné vytvoření matice-tabulky
@@ -4624,6 +4637,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][7].ShowHint=true;
 			break;
 		}
+		case 10:case 14:case 18:case 104:case 108:
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
@@ -4746,7 +4760,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->VisibleRow(2,false,false);
 			break;
 		}
-
+		case 7:case 11:case 15:case 101:case 105:
 		case 1://robot (kontinuální)
 		{
 			//samotné vytvoření matice-tabulky
@@ -4768,6 +4782,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][2].ShowHint=true;
 			break;
 		}
+		case 8:case 12:case 16:case 102:case 106:
 		case 2://robot se stop stanicí
 		{
 			//samotné vytvoření matice-tabulky
@@ -4790,6 +4805,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][3].ShowHint=true;
 			break;
 		}
+		case 9:case 13:case 17:case 103:case 107:
 		case 3://robot s pasivní otočí
 		{
 			//samotné vytvoření matice-tabulky
@@ -4834,6 +4850,7 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][7].ShowHint=true;
 			break;
 		}
+		case 10:case 14:case 18:case 104:case 108:
 		case 4://robot s aktivní otočí (resp. s otočí a stop stanicí)
 		{
 			//samotné vytvoření matice-tabulky
@@ -5248,7 +5265,7 @@ void __fastcall TForm1::DrawGrid_ostatniDrawCell(TObject *Sender, int ACol, int 
 	short pocet_elementu=1;
 	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
-	if(pom_temp->id==3&&pom_temp->pohon!=NULL)
+	if(/*pom_temp->id==3&&*/pom_temp->pohon!=NULL)
 	{
 					d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180);
 	} else  d.vykresli_stopku(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P + 2-odsazeni,"STOP","",0,180,-1);
@@ -5329,42 +5346,185 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		double Zoom_back=Zoom;//záloha zoomu
 		Zoom=10;//nastavení dle potřeb, aby se robot zobrazil knihovně vždy stejně veliký
 		AnsiString label1;
-		AnsiString label2;
+		AnsiString label2,label_pom;
 		short pocet_elementu=4;
 		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
-		for(unsigned short n=1;n<=pocet_elementu;n++)
+		switch(pom_temp->id)
 		{
-			if(n==1){ label1= "kontinuální"; label2="lakování"; }
-			if(n==2){ label1= "S&G"; label2="lakování"; }
-			if(n==3){ label1= "kontinuální s";  label2="pasiv. otočí"; }
-			if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
+      case 0://objekt navěšování + svěšování
+			{
+				//prvotní vykreslení všech robotů
+				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
+				if(pom_temp->id==0)label_pom="navěšování";else label_pom="svěšování";//nastavování zda se jedná o navěšování či svěšování
+				for(unsigned short n=101;n<=104;n++)
+				{
+					//nastavení názvů
+					if(n==101){ label1= "kontinuální"; label2=label_pom; }
+					if(n==102){ label1= "S&G"; label2=label_pom; }
+					if(n==103){ label1= "kontinuální s";  label2="pasiv. otočí"; }
+					if(n==104){ label1= "S&G s";  label2="akt. otočí"; }
+					if(pom_temp->pohon!=NULL)
+					{
+						d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
+					}
+					else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
+					i++;
+				}
+				//změna vykreslení robotů v případě vložení elementu
+				if(EID==101 || EID==103 || EID==5)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",104,0,0,-1);
+				}
+				else if (EID==102 || EID==104 || EID==6)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální",label_pom,101,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G",label_pom,102);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",103,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",104);
+				}
+			}break;
+			case 1://objekt CO2
+			{
+				//prvotní vykreslení všech robotů
+				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
+				if(pom_temp->id==0)label_pom="navěšování";else label_pom="svěšování";//nastavování zda se jedná o navěšování či svěšování
+				for(unsigned short n=15;n<=18;n++)
+				{
+					//nastavení názvů
+					if(n==15){ label1= "kontinuální"; label2="CO2"; }
+					if(n==16){ label1= "S&G"; label2="CO2"; }
+					if(n==17){ label1= "kontinuální s";  label2="pasiv. otočí"; }
+					if(n==18){ label1= "S&G s";  label2="akt. otočí"; }
+					if(pom_temp->pohon!=NULL)
+					{
+						d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
+					}
+					else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
+					i++;
+				}
+				//změna vykreslení robotů v případě vložení elementu
+				if(EID==15 || EID==17 || EID==5)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","CO2",15);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",17);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",18,0,0,-1);
+				}
+				else if (EID==16 || EID==18 || EID==6)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","CO2",15,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","CO2",16);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",17,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",18);
+				}
+			}break;
+			case 4://objekt ožeh, TEST
+			{
+				//prvotní vykreslení všech robotů
+				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
+				for(unsigned short n=11;n<=14;n++)
+				{
+					//nastavení názvů
+					if(n==11){ label1= "kontinuální"; label2="ožeh"; }
+					if(n==12){ label1= "S&G"; label2="ožeh"; }
+					if(n==13){ label1= "kontinuální s";  label2="pasiv. otočí"; }
+					if(n==14){ label1= "S&G s";  label2="akt. otočí"; }
+					if(pom_temp->pohon!=NULL)
+					{
+						d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
+					}
+					else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
+					i++;
+				}
+				//změna vykreslení robotů v případě vložení elementu
+				if(EID==11 || EID==13 || EID==5)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ožeh",11);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ožeh",12,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",13);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",14,0,0,-1);
+				}
+				else if (EID==12 || EID==14 || EID==6)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ožeh",11,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ožeh",12);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",13,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",14);
+				}
+			}break;
+			case 2://objekt ionizace
+			{
+				//prvotní vykreslení všech robotů
+				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
+				//funkce přepínání mezi roboty  lidskými roboty
+				unsigned short n_od,n_do,rob1,rob2,rob3,rob4;
+				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;rob1=7;rob2=8;rob3=9;rob4=10;}
+				else{n_od=105;n_do=108;rob1=105;rob2=106;rob3=107;rob4=108;}
+				for(unsigned short n=n_od;n<=n_do;n++)
+				{
+					//nastavení názvů
+					if(n==7||n==105){ label1= "kontinuální"; label2="ionizace"; }
+					if(n==8||n==106){ label1= "S&G"; label2="ionizace"; }
+					if(n==9||n==107){ label1= "kontinuální s";  label2="pasiv. otočí"; }
+					if(n==10||n==108){ label1= "S&G s";  label2="akt. otočí"; }
+					if(pom_temp->pohon!=NULL)
+					{
+						d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
+					}
+					else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
+					i++;
+				}
+				if(EID==rob1 || EID==rob3 || EID==5)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",rob4,0,0,-1);
+				}
+				else if (EID==rob2 || EID==rob4 || EID==6)
+				{
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3,0,0,-1);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",rob4);
+				}
+			}break;
+			case 3://objekt lakování
+			{
+				//prvotní vykreslení všech robotů
+				for(unsigned short n=1;n<=pocet_elementu;n++)
+				{
+	    		if(n==1){ label1= "kontinuální"; label2="lakování"; }
+					if(n==2){ label1= "S&G"; label2="lakování"; }
+					if(n==3){ label1= "kontinuální s";  label2="pasiv. otočí"; }
+					if(n==4){ label1= "S&G s";  label2="akt. otočí"; }
 
-			if(pom->id==3&&pom_temp->pohon!=NULL)
-			{
-				if(EID==-1)d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
-			}
-			else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
+					if(pom_temp->pohon!=NULL)
+					{
+	    			if(EID==-1)d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n);
+	    		}
+					else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((n+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(n/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
+				}
+				//změna vykreslení robotů v případě vložení elementu
+        if(EID==1 || EID==3 || EID==5)
+		  	{
+		  		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","lakování",1);
+		  		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","lakování",2,0,0,-1);
+		  		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",3);
+					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",4,0,0,-1);
+		  	}
+		  	else if (EID==2 || EID==4 || EID==6)
+		  	{
+		  		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","lakování",1,0,0,-1);
+		  		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","lakování",2);
+		  		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",3,0,0,-1);
+		  		d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",4);
+				}
+			}break;
 		}
-		if(pom->id==3&&pom_temp->pohon!=NULL)
-		{
-			if(EID==1 || EID==3 || EID==5)
-			{
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","lakování",1);
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","lakování",2,0,0,-1);
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",3);
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",4,0,0,-1);
-				DrawGrid_otoce->Refresh();
-			}
-			else if (EID==2 || EID==4 || EID==6)
-			{
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","lakování",1,0,0,-1);
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","lakování",2);
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",3,0,0,-1);
-				d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",4);
-				DrawGrid_otoce->Refresh();
-			}
-		}
-
 		Zoom=Zoom_back;//návrácení původního zoomu
 		Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 		DrawGrid_knihovna->Canvas->Draw(0,0,bmp_out);
@@ -5476,21 +5636,72 @@ void __fastcall TForm1::DrawGrid_knihovnaMouseDown(TObject *Sender, TMouseButton
 	int Col,Row;
 	//DrawGrid_knihovna->MouseToCell(X,Y,Col,Row);
 	Col=DrawGrid_knihovna->Col; Row=DrawGrid_knihovna->Row;
-
 	if(MOD==NAHLED)
   {
-		if(editace_textu)	Smaz_kurzor();
-		if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();
+		bool pridani=false;
+		if(editace_textu)	Smaz_kurzor();//pokud se vykresluje kurzor a je kluknuto do knihovny ... smazat kurzor
+		if(MOD==NAHLED)if(PmG->Rows[3].Visible)FormX->odstranit_korelaci();//pokud je tabulka pohonu v režimu KK je možnost, že je Highlightovaná ... odstranit highlight (korelaci)
 		knihovna_id=1;
-		if(Row==0)element_id=Col+1;
-		if(Row==1)element_id=Col+3;
-		//kontrola v jakém je kabina režimu (stop&go, kontinuální), podle toho dovolí vkládat roboty pouze stejného režimu
-		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);                                                                    //Screen->Cursor=(TCursor)
-		if(((EID==1||EID==3)&&(element_id==1||element_id==3)||(EID==2||EID==4)&&(element_id==2||element_id==4)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+		int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);//kontrola v jakém je kabina režimu (stop&go, kontinuální), podle toho dovolí vkládat roboty pouze stejného režimu
+    //pro každý objekt jiná podmínka přidání a jiný způsob přiřazení eID
+		switch(pom_temp->id)
+		{
+			case 0://navěšování + svěšování
+			{
+				if(Row==0)element_id=Col+101;
+				if(Row==1)element_id=Col+103;
+				if(((EID==101||EID==103)&&(element_id==101||element_id==103)||(EID==102||EID==104)&&(element_id==102||element_id==104)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+					pridani=true;
+			}break;
+			case 1://CO2
+			{
+				if(Row==0)element_id=Col+15;
+				if(Row==1)element_id=Col+17;
+				if(((EID==15||EID==17)&&(element_id==15||element_id==17)||(EID==16||EID==18)&&(element_id==16||element_id==18)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+					pridani=true;
+			}break;
+			case 4://test ožeh
+			{
+				if(Row==0)element_id=Col+11;
+				if(Row==1)element_id=Col+13;
+				if(((EID==11||EID==13)&&(element_id==11||element_id==13)||(EID==12||EID==14)&&(element_id==12||element_id==14)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+					pridani=true;
+			}break;
+			case 2://objekt ionizace
+			{
+				if(scGPSwitch_robot_clovek->State==0)//robot
+				{
+					if(Row==0)element_id=Col+7;
+					if(Row==1)element_id=Col+9;
+					if(((EID==7||EID==9)&&(element_id==7||element_id==9)||(EID==8||EID==10)&&(element_id==8||element_id==10)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+						pridani=true;
+				}
+				else//člověk
+				{
+					if(Row==0)element_id=Col+105;
+					if(Row==1)element_id=Col+107;
+					if(((EID==105||EID==107)&&(element_id==105||element_id==107)||(EID==106||EID==108)&&(element_id==106||element_id==108)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+						pridani=true;
+				}
+			}break;
+			case 3://objekt lakovna
+			{
+				if(Row==0)element_id=Col+1;
+				if(Row==1)element_id=Col+3;
+				if(((EID==1||EID==3)&&(element_id==1||element_id==3)||(EID==2||EID==4)&&(element_id==2||element_id==4)||EID==-1||(funkcni_klavesa==2&&DEBUG))&&pom_temp->pohon!=NULL)//při stisku shift lze tuto podmínku v debugu obejít
+					pridani=true;
+			}break;
+		}
+    //pokud byly splněné podmínky pro přidání, zapne událost ADD (vystrčeno mimo z důvodu množení kódu)
+		if(pridani)
 		{
 			SB("Kliknutím na libovolné místo umístíte vybraný element.");
 			Akce=ADD;kurzor(add_o);
 		}
+		else//pokud bude při již spuštěné akci kliknuto na element, který být přidanný nesmí, je nutné akci vypnout
+		{
+			Akce=NIC;kurzor(standard);
+    }
 	}
 	else//pro SCHEMA
 	{
@@ -6247,6 +6458,7 @@ void TForm1::NP_input()
 	 scGPLabel_roboti->Visible=true;
 	 scGPLabel_roboti->Caption="Roboti";
 	 scGPLabel_roboti->ContentMarginLeft=10;
+	 if(pom_temp->id==2)scGPSwitch_robot_clovek->Visible=true;
 
 	//nastavení tlačítek na výchozí hodnoty
 	if(pom_temp->uzamknout_nahled)
@@ -6340,17 +6552,16 @@ void TForm1::NP_input()
 	//znovu provedení designu při otevření náhledu, který není prázdný
 	if(pom_temp->elementy!=NULL)
 	{
-		Cvektory::TElement *E=pom_temp->elementy->dalsi;
+		Cvektory::TElement *E=pom_temp->elementy;
 		while (E!=NULL)
 		{
-			design_element(E,false);
+			if(E->n>0)
+				design_element(E,false);
 			E=E->dalsi;
 		}
 		E=NULL; delete E;
 	}
 	on_change_zoom_change_scGPTrackBar();//musí být po design_element
-	//testovací poloha
-//	FormX->vstoupeno_poh=true;
 	FormX->input_state=FormX->NOTHING;
 }
 //---------------------------------------------------------------------------
@@ -7575,7 +7786,8 @@ void __fastcall TForm1::Timer_neaktivityTimer(TObject *Sender)
 //			Timer_neaktivity->Enabled=false;
 //			setJobIDOnMouseMove(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y);
 //		}
-		REFRESH();Timer_neaktivity->Enabled=false;
+		REFRESH(false); //nedocází k refresh tabulek, tabulky jsou v tuto chvíli naplněny aktuálními hodnotami
+		Timer_neaktivity->Enabled=false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::ButtonPLAY_OClick(TObject *Sender)
@@ -7746,7 +7958,7 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		 }
 //		 E=NULL; delete E;
 //		 Form2->ShowModal();
-                Memo(pom_temp->rezim);
+					 Memo(pom_temp->elementy->dalsi->eID);				Memo(d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp));
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
 //		pom_temp->elementy->dalsi->dalsi->n=1; //druhý
@@ -8721,6 +8933,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		scGPLabel_roboti->Visible=true;
 		scGPLabel_roboti->Caption="Technolog. objekty";
 		scGPLabel_roboti->ContentMarginLeft=4;
+		scGPSwitch_robot_clovek->Visible=false;
 
 		Schema->Down=true;
 		//REFRESH(); //- asi netřeba  asi vyvolává výše uvedený on_change_zoom_change_scGPTrackBar()
@@ -8752,25 +8965,14 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   REFRESH();
 
 	zobraz_tip("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu.");
-	if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít přímo do nastavení?",MB_OKCANCEL))
-  {
-  //scGPGlyphButton_OPTIONSClick(Sender);  //tohle nesežral
-  scSplitView_OPTIONS->Opened=true;
-
   scGPCheckBox_zobraz_podklad->Enabled=true;
   scGPCheckBox_stupne_sedi->Enabled=true;
   scGPTrackBar_svetelnost_posuvka->Enabled=true;
   scLabel1_svetelnost->Enabled=true;
   scGPButton_kalibrace->Enabled=true;
   scGPButton_adjustace->Enabled=true;
-  }
-  else
-  {
-  scGPGlyphButton_OPTIONS->Active=true;
-  //scGPGlyphButton_OPTIONS->GlyphColor= (TColor)RGB(255, 128, 0);
-  //scGPGlyphButton_OPTIONS->GlyphThickness=2;
   scGPGlyphButton_OPTIONS->ShowHint=true;
-  }
+
 
 }
  //--------------------------------------------------------------
@@ -9125,7 +9327,7 @@ void __fastcall TForm1::Timer2Timer(TObject *Sender)
  }
  else//pro posun refresh při změně tabulky elementů
  {
-	 REFRESH();
+	 REFRESH(false);
 	 FormX->input_state=FormX->NOTHING;
  }
  Timer2->Enabled=false;
@@ -9271,9 +9473,10 @@ void TForm1::Smaz_kurzor()
 	if (stav_kurzoru) vykresli_kurzor(index_kurzoru);
 	TimerKurzor->Enabled=false;
 	editace_textu=false;
+	if(index_kurzoru<=-11&&(pom_element_temp->eID==2||pom_element_temp->eID==4))pom_element_temp->mGrid->Refresh();//musí se refreshovat z důvodu přepočtu RT u S&G
 	//využívání pro uchování ukazatele při editaci kót
 	pom_element_temp=NULL; delete pom_element_temp;
-	REFRESH();
+	REFRESH(false);
 }
 //---------------------------------------------------------------------------
 //vypnutí/zapnutí zamčení náhledu
@@ -9400,6 +9603,13 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		Akce=NIC;
 		kurzor(standard);
 	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
+{
+	DrawGrid_knihovna->Refresh();
 }
 //---------------------------------------------------------------------------
 

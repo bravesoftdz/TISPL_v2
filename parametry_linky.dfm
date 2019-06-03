@@ -110,10 +110,9 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentColor = False
     ParentFont = False
-    OnClick = rHTMLLabel_delkavozikuClick
   end
   object rHTMLLabel_podvesny: TrHTMLLabel
-    Left = 813
+    Left = 811
     Top = 55
     Width = 68
     Height = 18
@@ -127,7 +126,6 @@ object Form_parametry_linky: TForm_parametry_linky
     Font.Quality = fqClearType
     ParentColor = False
     ParentFont = False
-    OnClick = rHTMLLabel_delkavozikuClick
   end
   object Button_save: TscGPButton
     Left = 214
@@ -7275,8 +7273,8 @@ object Form_parametry_linky: TForm_parametry_linky
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 6251
-    Top = 9789
+    Left = 6263
+    Top = 9809
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -7301,9 +7299,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
-    ExplicitLeft = 6245
-    ExplicitTop = 9779
-    ExplicitWidth = 100
+    ExplicitLeft = 6260
+    ExplicitTop = 9804
   end
   object scGPSwitch: TscGPSwitch
     Left = 762

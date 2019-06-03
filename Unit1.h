@@ -307,6 +307,7 @@ __published:	// IDE-managed Components
 	TscGPComboBox *scGPComboBox_prepinacKot;
 	TscGPLabel *scGPLabel_prepinacKot;
 	TscGPImage *scGPImage_mereni_vzdalenost;
+	TscGPSwitch *scGPSwitch_robot_clovek;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -504,6 +505,7 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_PLAYClick(TObject *Sender);
 	void __fastcall scGPComboBox_prepinacKotClick(TObject *Sender);
 	void __fastcall scGPImage_mereni_vzdalenostClick(TObject *Sender);
+	void __fastcall scGPSwitch_robot_clovekChangeState(TObject *Sender);
 
 
 // User declarations

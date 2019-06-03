@@ -3282,7 +3282,7 @@ object Form1: TForm1
       TransparentBackground = False
       object DrawGrid_knihovna: TDrawGrid
         Left = 17
-        Top = 32
+        Top = 36
         Width = 160
         Height = 350
         ParentCustomHint = False
@@ -4456,8 +4456,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2520
-        Top = 2683
+        Left = 2526
+        Top = 2689
         Width = 244
         Height = 31
         Align = alCustom
@@ -8350,11 +8350,52 @@ object Form1: TForm1
       Transparent = True
     end
   end
+  object scGPSwitch_robot_clovek: TscGPSwitch
+    Left = 121
+    Top = 40
+    Width = 40
+    Height = 20
+    Margins.Left = 1
+    Margins.Top = 1
+    Margins.Right = 1
+    Margins.Bottom = 1
+    BiDiMode = bdLeftToRight
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentBiDiMode = False
+    ParentFont = False
+    TabOrder = 49
+    Visible = False
+    Animation = True
+    Color = clBtnFace
+    FrameColor = 10114859
+    FrameOnColor = 10114859
+    FramePressedColor = clNone
+    State = scswOff
+    StyleKind = scswsStyled
+    ThumbColor = 10114859
+    ThumbOnColor = 10114859
+    ThumbPressedColor = 10114859
+    FrameColorAlpha = 255
+    FrameOnColorAlpha = 255
+    FramePressedColorAlpha = 255
+    ThumbColorAlpha = 255
+    ThumbOnColorAlpha = 255
+    ThumbPressedColorAlpha = 255
+    ThumbShadow = False
+    FrameSolid = False
+    FrameOnSolid = False
+    FrameInside = False
+    OnChangeState = scGPSwitch_robot_clovekChangeState
+  end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118005C07640710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118005C07680710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9485,7 +9526,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013E004C08CC0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013E004C08D00830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
