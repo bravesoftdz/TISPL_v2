@@ -2874,9 +2874,10 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}
 
 	//nastavení pera
+	TPenMode PenMode=pmCopy;
 	if(typ==-1)//typ kurzor
 	{
-		canv->Pen->Mode=pmNotXor;
+		PenMode=pmNotXor;
 		canv->Pen->Style=psDot;
 		canv->Pen->Color=barva;
 		canv->Pen->Width=1;
@@ -2884,11 +2885,11 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	}
 	else
 	{
-		canv->Pen->Mode=pmCopy;
 		canv->Pen->Style=psSolid;
 		canv->Pen->Width=F->m.round(tloustka_linie*Z);
 		canv->Brush->Style=bsSolid;
 	}
+	canv->Pen->Mode=PenMode;
 	canv->Pen->Color=barva;
 	canv->Brush->Color=clWhite;
 
@@ -2902,10 +2903,10 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==270){cX=m.round(X-delka_zakladny/2.0-DkRB+DT);cY=Y+aP;}
 	if(rotace==180){cX=X+aP;cY=m.round(Y+sirka_zakladny/2.0+DkRB-DT);}
 	//typ trysky dle typu robota 														//zde bude TS (tryska sklon) pro animaci či parametrizování
-	if(1<=eID && eID<=4)polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace,false,barva,clWhite);//lakovací
-	if(7<=eID && eID<=10){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,false,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,true,clWhite,clIon);}//ion
-	if(11<=eID && eID<=14){if(stav>0 && typ!=-1)polygonDleOsy(canv,cX,cY,DT,TW,TZ*6,270+TS,rotace,true,clWhite,clOzeh);polygonDleOsy(canv,cX,cY,DT/2,TW,TZ*4,270+TS,rotace,false,barva,clWhite);}//ožeh
-	if(15<=eID && eID<=18){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,false,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,true,clWhite,clCO2);}//CO2
+	if(1<=eID && eID<=4)polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);//lakovací
+	if(7<=eID && eID<=10){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,pmMask,clWhite,clIon);}//ion
+	if(11<=eID && eID<=14){if(stav>0 && typ!=-1)polygonDleOsy(canv,cX,cY,DT,TW,TZ*6,270+TS,rotace,pmMask,clWhite,clOzeh);polygonDleOsy(canv,cX,cY,DT/2,TW,TZ*4,270+TS,rotace,PenMode,barva,clWhite);}//ožeh
+	if(15<=eID && eID<=18){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,rotace,pmMask,clWhite,clCO2);}//CO2
 
 	////ramena
 	double Alfa1=atan((aP)/(DkRB-DT));
@@ -2919,9 +2920,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 	if(rotace==270){pX=X-delka_zakladny/2.0;pY=Y;}
 	if(rotace==180){pY=Y+sirka_zakladny/2.0;}
 	//první část - od základny
-	TPoint S=polygonDleOsy(canv,m.round(pX),m.round(pY),DR/2,sirka_ramena,sirka_ramena,270+m.ToDeg(Alfa),rotace,false,barva,clWhite);//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
+	TPoint S=polygonDleOsy(canv,m.round(pX),m.round(pY),DR/2,sirka_ramena,sirka_ramena,270+m.ToDeg(Alfa),rotace,PenMode,barva,clWhite);//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
 	//druhá část k trysce (kresleno směrem od trysky)
-	polygonDleOsy(canv,cX,cY,DR/2,sirka_ramena,sirka_ramena,270+180-m.ToDeg(Gama),rotace,false,barva,clWhite);
+	polygonDleOsy(canv,cX,cY,DR/2,sirka_ramena,sirka_ramena,270+180-m.ToDeg(Gama),rotace,PenMode,barva,clWhite);
 
 	////klouby
 	//první kloub mezi prvním ramenem a základnou
@@ -3171,7 +3172,7 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
-TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,bool transparent,TColor clFillOut,TColor clFillIn)
+TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode,TColor clFillOut,TColor clFillIn)
 {
 	//polovina od osy
 	sirka1/=2.0;
@@ -3205,7 +3206,8 @@ TPoint Cvykresli::polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float s
 	//nastavení pera
 	canv->Pen->Color=clFillOut;
 	canv->Brush->Color=clFillIn;
-	if(transparent)canv->Pen->Mode=pmMask;else canv->Pen->Mode=pmCopy;
+	canv->Pen->Mode=pmMode;
+	//if(transparent)canv->Pen->Mode=pmMask;else canv->Pen->Mode=pmCopy;
 	if(clFillOut==clWhite)canv->Pen->Style=psClear;//pokud je nastaveno bílé orámování je bráno, že se nemá orámování vykreslovat
 
 	//samotné vykreslení
