@@ -1148,14 +1148,14 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny
 	{
 		//úprava názvu pro roboty
-		if(Element->eID<5&&Element->eID>0)
+		if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)
 		{
 			Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
  			while (E!=NULL)
 			{
 				if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;
 				//změna názvu
- 				if(rename)//přejmenování elementu ve spojáku + mGridu
+				if(rename)//přejmenování elementu ve spojáku + mGridu
 				{
 					int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
 					//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
@@ -1190,10 +1190,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							switch(E->eID)
 		 					{
 		 						case 0:if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
-								case 1:
-								case 2:
-								case 3:
-								case 4:rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
+								default :rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
 								case 5:
 								case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
 							}
@@ -1489,7 +1486,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 				}
 				else
 				{
-					if(1<=E->eID && E->eID<=4)//ROBOTI
+					if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)//ROBOTI
 					{
 						//hledání, zda leží v regionu, region se liší dle rotace
 						HRGN hreg;
@@ -1504,7 +1501,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 						if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))break;
 						else//pokud nenalezeno, testuje ještě případně otoče robotů
 						{
-							if(E->eID==3 || E->eID==4)
+							if(E->eID==3 || E->eID==4 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18 || E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108)
 							{
 								if(rotace==0 || rotace==180)
 								{
@@ -1645,12 +1642,12 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 {
 	switch(Element->eID)
 	{
-		case 2:
+		case 2:case 8:case 12:case 16:case 102:case 106:
 		{
 			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
 		}break;
-		case 4:
+		case 4:case 10:case 14:case 18:case 104:case 108:
 		{
 			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
@@ -1716,9 +1713,9 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 	  	//procházení objektu a hledání předchozího SG elementu
 	  	Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//provizorně může být použito pom_temp, volání metody pouze když je pom_temp naplněné
 	  	while(E->n!=Element->n&&E!=NULL)
-	  	{
+			{
 				//procházím kabinu od začátku, pokud je element SG uložím jeho vzdálenost k elementu pro kterého hledám vzdálenost k předchozímu
-				if(E->eID==0||E->eID==2||E->eID==4||E->eID==6)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
+				if(E->eID==0||E->eID%2==0)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
 	  		E=E->dalsi;
 			}
 			E=NULL; delete E;
