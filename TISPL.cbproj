@@ -51,8 +51,6 @@
         <Multithreaded>true</Multithreaded>
         <AllPackageLibs>rtl.lib;vcl.lib;RaizeComponentsVcl.lib;vclx.lib;vclimg.lib;Tee.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;dbrtl.lib;vclFireDAC.lib;FireDAC.lib;FireDACSqliteDriver.lib;FireDACCommonDriver.lib;FireDACCommon.lib;xmlrtl.lib;vcldb.lib;FireDACMySQLDriver.lib;dbexpress.lib;DbxCommonDriver.lib;DBXMySQLDriver.lib;RosiComp_CX100.lib;stylecontrols_cbx10Seattle.lib;vclactnband.lib;vclie.lib;vclwinx.lib</AllPackageLibs>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
-        <IncludePath>$(IncludePath)</IncludePath>
-        <ILINK_LibraryPath>$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <_TCHARMapping>wchar_t</_TCHARMapping>
         <ProjectType>CppVCLApplication</ProjectType>
         <SanitizedProjectName>TISPL</SanitizedProjectName>
@@ -82,7 +80,6 @@
         <PackageImports>adortl;appanalytics;bindcomp;bindcompdbx;bindcompfmx;bindcompvcl;bindengine;CloudService;CustomIPTransport;dbexpress;dbrtl;dbxcds;DbxClientDriver;DbxCommonDriver;DBXInterBaseDriver;DBXMySQLDriver;DBXSqliteDriver;dsnap;dsnapcon;dsnapxml;FireDAC;FireDACADSDriver;FireDACASADriver;FireDACCommon;FireDACCommonDriver;FireDACIBDriver;FireDACMSAccDriver;FireDACMySQLDriver;FireDACODBCDriver;FireDACPgDriver;FireDACSqliteDriver;fmx;fmxase;fmxdae;fmxFireDAC;fmxobj;FMXTee;FmxTeeUI;ibmonitor;ibxbindings;ibxpress;IndyCore;IndyIPClient;IndyIPCommon;IndyIPServer;IndyProtocols;IndySystem;inet;inetdb;inetdbxpress;Intraweb;RaizeComponentsVcl;RaizeComponentsVclDb;RESTBackendComponents;RESTComponents;rtl;soapmidas;soaprtl;soapserver;Tee;TeeDB;TeeUI;tethering;vcl;vclactnband;vcldb;vcldsnap;vclFireDAC;vclib;vclie;vclimg;VCLRESTComponents;vclribbon;VclSmp;vcltouch;vclwinx;vclx;xmlrtl;$(PackageImports)</PackageImports>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
-        <IncludePath></IncludePath>
         <VerInfo_Keys>CompanyName=Eltep s.r.o.;FileDescription=;FileVersion=1.0.0.0;InternalName=TISPL;LegalCopyright=© ELTEP, s.r.o. 2016;LegalTrademarks=© ELTEP, s.r.o. 2016;OriginalFilename=;ProductName=Eltep - TISPl;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <BCC_OptimizeForSpeed>false</BCC_OptimizeForSpeed>
         <BCC_DisableOptimizations>true</BCC_DisableOptimizations>
@@ -102,19 +99,12 @@
         <BCC_DisableFramePtrElimOpt>true</BCC_DisableFramePtrElimOpt>
         <BCC_DisableSpellChecking>true</BCC_DisableSpellChecking>
         <CLANG_UnwindTables>true</CLANG_UnwindTables>
-        <ILINK_LibraryPath></ILINK_LibraryPath>
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <LinkPackageStatics>RosiComp_CX100.lib;stylecontrols_cbx10Seattle.lib</LinkPackageStatics>
-        <ILINK_LibraryPath></ILINK_LibraryPath>
-        <IncludePath></IncludePath>
-        <Debugger_CWD></Debugger_CWD>
-        <Debugger_DebugSourcePath>$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
-        <BRCC_IncludePath>$(BRCC_IncludePath)</BRCC_IncludePath>
-        <BCC_IncludePath></BCC_IncludePath>
         <LinkPackageImports>rtl.bpi;vcl.bpi;RaizeComponentsVcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;dbrtl.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACSqliteDriver.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vcldb.bpi;FireDACMySQLDriver.bpi;dbexpress.bpi;DbxCommonDriver.bpi;DBXMySQLDriver.bpi;vclactnband.bpi;vclie.bpi;vclwinx.bpi</LinkPackageImports>
         <VerInfo_Build>15</VerInfo_Build>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
@@ -348,29 +338,29 @@
         </CppCompile>
         <FormResources Include="report.dfm"/>
         <FormResources Include="superform.dfm"/>
-        <FormResources Include="parametry_vozik.dfm"/>
-        <FormResources Include="pl_priority.dfm"/>
         <FormResources Include="poznamky.dfm"/>
+        <FormResources Include="parametry_vozik.dfm"/>
         <FormResources Include="popUP_menu.dfm"/>
+        <FormResources Include="pl_priority.dfm"/>
         <FormResources Include="uvod.dfm"/>
         <FormResources Include="Z_rozliseni.dfm"/>
+        <FormResources Include="UnitX.dfm"/>
         <FormResources Include="TT_kalkulator.dfm"/>
-        <FormResources Include="Unit1.dfm"/>
         <FormResources Include="Unit2.dfm"/>
+        <FormResources Include="Unit1.dfm"/>
+        <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="gapoR.dfm"/>
         <FormResources Include="eDesigner.dfm"/>
-        <FormResources Include="gapoTT.dfm"/>
         <FormResources Include="gapoV.dfm"/>
+        <FormResources Include="gapoTT.dfm"/>
         <FormResources Include="adjustace.dfm"/>
-        <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="cesty.dfm"/>
+        <FormResources Include="casovaOsa_info.dfm"/>
         <FormResources Include="MyMessageBox.dfm"/>
-        <FormResources Include="parametry_linky.dfm"/>
         <FormResources Include="parametry.dfm"/>
         <FormResources Include="kabina_schema.dfm"/>
         <FormResources Include="jig.dfm"/>
         <FormResources Include="kalendar.dfm"/>
-        <FormResources Include="UnitX.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
