@@ -1489,7 +1489,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 				}
 				else
 				{
-					if(1<=E->eID && E->eID<=4)//ROBOTI
+					if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)//ROBOTI
 					{
 						//hledání, zda leží v regionu, region se liší dle rotace
 						HRGN hreg;
@@ -1504,7 +1504,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 						if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))break;
 						else//pokud nenalezeno, testuje ještě případně otoče robotů
 						{
-							if(E->eID==3 || E->eID==4)
+							if(E->eID==3 || E->eID==4 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18 || E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108)
 							{
 								if(rotace==0 || rotace==180)
 								{

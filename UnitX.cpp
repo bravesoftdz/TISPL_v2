@@ -51,7 +51,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		F->PmG->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
 		F->PmG->Update();
 		F->PmG->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
-		F->REFRESH();//musí být opravdu REFRESH() celého formu + mGridu
+		F->REFRESH(true);//musí být opravdu REFRESH() celého formu + mGridu
 		F->PmG->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 	}
 	if(ID!=9999&&Row==-2)
@@ -72,7 +72,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		E->mGrid->exBUTTONLockPosition=true;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt
 		E->mGrid->Update();
 		E->mGrid->exBUTTONLockPosition=false;//uzamkne pozici exButtonu, aby se nepøepozival bìhem updatu tam a zpìt, toto nestaèilo: F->PmG->exBUTTON->Top=T;//zajistí, že se tlaèítko nepøepozicuje
-		F->REFRESH();//musí být opravdu REFRESH celého formu + mGridu
+		F->REFRESH(true);//musí být opravdu REFRESH celého formu + mGridu
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL; delete E;
 	}
@@ -437,7 +437,7 @@ void TFormX::OnKeyPress(long Tag,long ID,unsigned long Col,unsigned long Row,Sys
 				F->pom_element_temp->mGrid->getEdit(0,0)->SelStart=5;//nastavení kurzoru na konec editu
 				MessageBeep(0);//oznámení uživateli
 			}
-			F->REFRESH(false);
+			F->REFRESH(true);
    	}
 	}
 	if(Row==3&&ID==9999)//slouží pro nepovolení zapsání desetiné èárky do editu Rx

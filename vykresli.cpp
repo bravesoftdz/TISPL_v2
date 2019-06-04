@@ -2387,7 +2387,7 @@ void Cvykresli::vykresli_retez(TCanvas *canv,Cvektory::TObjekt *O,double X,doubl
 								Cvektory::TElement *E=O->elementy;//nastaveno na hlavičku, ošetřeno níže
 								while(E!=NULL)
 								{
-									if(3<=E->eID && E->eID<=6 && E->X<=X+i)//jedná se o roto element a je před aktuálně vykreslovaným vozíkem
+									if((E->eID==3 || E->eID==4 || E->eID==9 || E->eID==10 || E->eID==13 || E->eID==14 || E->eID==17 || E->eID==18 || E->eID==103 || E->eID==104 || E->eID==107 || E->eID==108) && E->X<=X+i)//jedná se o roto element a je před aktuálně vykreslovaným vozíkem
 									{
 										 rotace+=E->rotace_jig;
 									}
@@ -3534,7 +3534,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro vodorovnou kótu
 			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro svislou kótu
 		}
-		else//ostatní kóty
+		else if(F->index_kurzoru==-11)//ostatní kóty
 		{
 			if(F->pom_element_temp!=NULL)//nutné ošetření z pohledu paměťové chyby, toto nemůže být znegované výše, protože by při přepisování kóty kabiny se přepisovaly i kóty elementů
 			if(aktElement->n==F->pom_element_temp->n)//aktuální vykreslováná kota
