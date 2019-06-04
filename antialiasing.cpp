@@ -84,7 +84,7 @@ void Cantialising::antialiasing(Graphics::TBitmap *bmp_in,Graphics::TBitmap *bmp
 }
 //---------------------------------------------------------------------------
 //vrátí bitmapu pøesamplovanou pomocí algoritmu antialiasingu
-Graphics::TBitmap *Cantialising::antialiasing2(Graphics::TBitmap *bmp_grid,Graphics::TBitmap *bmp_in)
+Graphics::TBitmap *Cantialising::antialiasing2(Graphics::TBitmap *bmp_grid,Graphics::TBitmap *bmp_in,bool transparent)
 {
 	//zoom
 	short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
@@ -98,7 +98,7 @@ Graphics::TBitmap *Cantialising::antialiasing2(Graphics::TBitmap *bmp_grid,Graph
 	bmp_out->PixelFormat=pf24bit;//nutné!!!
 	bmp_out->Width=bmp_in->Width/Z;bmp_out->Height=bmp_in->Height/Z;//tøetinová velikost výsledné bitmapy
 
-	//if(grid){bmp_out->Transparent=true;bmp_out->TransparentColor=clWhite;bmp_out->TransparentMode = tmAuto;}//již se nevyužívá, ale nechávám pro pøípadné další použití
+	if(transparent){bmp_out->Transparent=true;bmp_out->TransparentColor=clWhite;bmp_out->TransparentMode = tmAuto;}
 
 	for(int Y=0;Y<=bmp_out->Height-1;Y++)// pro všechny øadky
 	{

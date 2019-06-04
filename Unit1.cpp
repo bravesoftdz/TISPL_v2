@@ -1389,10 +1389,11 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				d.vykresli_vektory(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				//rastr
-				Graphics::TBitmap *bmp_out=new Graphics::TBitmap;bmp_out->Width=ClientWidth;bmp_out->Height=ClientHeight;
-				if(d.v.PP.raster.show)nacti_podklad(bmp_out->Canvas);
+				Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
+				if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
 				//vektory po AA
-				bmp_out->Canvas->Draw(0,0,a.antialiasing(bmp_in,d.v.PP.raster.show)); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,d.v.PP.raster.show);//nutné a.antialiasing nahrát výsledek do bmp_out a ne přímo do Canvas->Draw kvůli možnosti uvolnění paměti bmp_out přímo z (v) metody(ě) a.antialiasing
+				bmp_total->Canvas->Draw(0,0,bmp_out); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				/*//spojnice EmGrid
 				bmp_in->FreeImage();
 				Graphics::TBitmap *bmp_out2;
@@ -1401,15 +1402,15 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 					vykresli_spojinici_EmGrid(bmp_in->Canvas,pom_element);
 					bmp_out2=a.antialiasing(bmp_in);//do samostatné, aby se kreslilo přes tabulky
 				} */
-				delete (bmp_in);//velice nutné
+				delete(bmp_in);delete(bmp_out);//velice nutné
 				//vykreslování mGridu
-				d.vykresli_mGridy(bmp_out->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
+				d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				//if(Akce==MOVE_TABLE || Akce==MOVE_ELEMENT && pom_temp->zobrazit_mGrid)bmp_out->Canvas->Draw(0,0,bmp_out2);delete (bmp_out2);zatím neužito,nedoladěné
 				//grafické měřítko
-				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);
+				if(zobrazit_meritko)d.meritko(bmp_total->Canvas);
 				//finální předání bmp_out do Canvasu
-				Canvas->Draw(0,0,bmp_out);//finální vykreslení do Canvasu Formu1
-				delete (bmp_out);//velice nutné
+				Canvas->Draw(0,0,bmp_total);//finální vykreslení do Canvasu Formu1
+				delete (bmp_total);//velice nutné
 			}
 			break;
     }
@@ -1422,11 +1423,13 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			}
 			else
 			{
-				nacti_podklad(Canvas);//provizorně, nahradit výše uvedenou konstrukcí u náhledu
+				//rastr
+				Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
+				if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
 				Cantialising a;
 				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;
 				bmp_grid->Width=0;bmp_grid->Height=0;
-				if(grid && Zoom_predchozi_AA>0.5)//je-li grid zobrazen
+				if(grid && Zoom_predchozi_AA>0.5)//je-li grid zobrazen - již by se asi dalo nahradit konstrukcí s načtením gridu nad podklad
 				{
 					bmp_grid->Width=ClientWidth;bmp_grid->Height=ClientHeight;
 					d.vykresli_grid(bmp_grid->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
@@ -1437,19 +1440,13 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Graphics::TBitmap *bmp_out=a.antialiasing2(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				if(zobrazit_meritko)d.meritko(bmp_out->Canvas);//grafické měřítko
-				if(d.v.PP.raster.show)//z důvodu toho, aby pod bmp_out byl vidět rastrový podklad
-				{
-					bmp_out->Transparent=true;
-					bmp_out->TransparentColor=clWhite;
-				}
-				else bmp_out->Transparent=false;
-
-				Canvas->Draw(0,0,bmp_out);
+				Graphics::TBitmap *bmp_out=a.antialiasing2(bmp_grid,bmp_in,true); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				delete (bmp_in);delete (bmp_grid);//velice nutné
+				bmp_total->Canvas->Draw(0,0,bmp_out); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				delete (bmp_out);//velice nutné
-				delete (bmp_grid);//velice nutné
-				delete (bmp_in);//velice nutné
+				if(zobrazit_meritko)d.meritko(bmp_total->Canvas);//grafické měřítko
+				Canvas->Draw(0,0,bmp_total);
+				delete (bmp_total);//velice nutné
 			}
 			break;
 		}
@@ -1457,12 +1454,12 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		{
 			if(!antialiasing)
 			{
-        nacti_podklad(Canvas);
+        //nacti_podklad(Canvas);
 				d.vykresli_layout(Canvas);
 			}
 			else
 			{
-				nacti_podklad(Canvas);//provizorně, nahradit výše uvedenou konstrukcí u náhledu
+				//nacti_podklad(Canvas);//provizorně, nahradit výše uvedenou konstrukcí u náhledu
 				Cantialising a;
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;bmp_grid->Width=0;bmp_grid->Height=0;//je nutné mít založeno, ač nemá v tomto případě význam
@@ -1545,7 +1542,7 @@ void TForm1::nacti_podklad(TCanvas *Canv)
 			if(d.v.PP.raster.resolution==0)d.v.PP.raster.resolution=m2px;//v případě nového vstupu bez zadaného rozlišení defaultně je m2px
 			Graphics::TBitmap *bmp=new Graphics::TBitmap;
 			bmp->LoadFromFile(d.v.PP.raster.filename);
-			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem
+			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem pokud není voláno součástí bmp_out
 //			Canv->Pen->Color=clWhite;Canvas->Brush->Color=clWhite;
 //			Canv->Rectangle(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,Width,Height);
 			//vykreslení strečovaného rastru dle zadaného rozlišení
