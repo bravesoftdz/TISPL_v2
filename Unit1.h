@@ -545,7 +545,6 @@ private:
 	void add_element(int X, int Y);
 	short rotace_symbol(short trend,int X, int Y);
 	void vytvoreni_tab_pohon();//vytvoření tabulky pohonu
-	void pridani_elementu_tab_pohon(Cvektory::TElement *E);
   void odstraneni_elementu_tab_pohon(int operace);
 	void prirazeni_pohonu_tab_pohon(int index_pohonu);//předesignuje tabulku pohonu po přidání elementu, nebo pohonu
   void zmena_jednotek_tab_pohon();
@@ -739,6 +738,7 @@ public:		// User declarations
 	double inRz(double inRz);
 	double outRz(double outRz);
 	void Memo(AnsiString Text,bool clear=false);//urychlení vypsání do Mema
+	void pridani_elementu_tab_pohon(Cvektory::TElement *E);//předesign tabulky pohonu po přidání elementu
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm1 *Form1;

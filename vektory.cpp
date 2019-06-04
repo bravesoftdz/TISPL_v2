@@ -1148,14 +1148,14 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny
 	{
 		//úprava názvu pro roboty
-		if(Element->eID<5&&Element->eID>0)
+		if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)
 		{
 			Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
  			while (E!=NULL)
 			{
 				if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;
 				//změna názvu
- 				if(rename)//přejmenování elementu ve spojáku + mGridu
+				if(rename)//přejmenování elementu ve spojáku + mGridu
 				{
 					int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
 					//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
@@ -1190,10 +1190,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							switch(E->eID)
 		 					{
 		 						case 0:if(E->name.SubString(1,5)=="Stop "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
-								case 1:
-								case 2:
-								case 3:
-								case 4:rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
+								default :rename=false;break;//musí zde být, jinak nějakým způsobem je pro robot rename nastaveno na true
 								case 5:
 								case 6:if(E->name.SubString(1,5)=="Otoč "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;break;
 							}
