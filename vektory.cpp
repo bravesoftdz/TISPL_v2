@@ -1642,12 +1642,12 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 {
 	switch(Element->eID)
 	{
-		case 2:
+		case 2:case 8:case 12:case 16:case 102:case 106:
 		{
 			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
 		}break;
-		case 4:
+		case 4:case 10:case 14:case 18:case 104:case 108:
 		{
 			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
@@ -1713,9 +1713,9 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 	  	//procházení objektu a hledání předchozího SG elementu
 	  	Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//provizorně může být použito pom_temp, volání metody pouze když je pom_temp naplněné
 	  	while(E->n!=Element->n&&E!=NULL)
-	  	{
+			{
 				//procházím kabinu od začátku, pokud je element SG uložím jeho vzdálenost k elementu pro kterého hledám vzdálenost k předchozímu
-				if(E->eID==0||E->eID==2||E->eID==4||E->eID==6)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
+				if(E->eID==0||E->eID%2==0)celkem=m.delka(F->d.Rxy(Element).x,F->d.Rxy(Element).y,F->d.Rxy(E).x,F->d.Rxy(E).y);
 	  		E=E->dalsi;
 			}
 			E=NULL; delete E;

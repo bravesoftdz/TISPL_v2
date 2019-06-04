@@ -3534,7 +3534,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			if(F->index_kurzoru==-8 && Y1==Y2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro vodorovnou kótu
 			if(F->index_kurzoru==-9 && X1==X2)if(F->editovany_text=="")Text="";else Text=F->editovany_text;//pro svislou kótu
 		}
-		else if(F->index_kurzoru==-11)//ostatní kóty
+		else if(F->index_kurzoru<=-11)//ostatní kóty
 		{
 			if(F->pom_element_temp!=NULL)//nutné ošetření z pohledu paměťové chyby, toto nemůže být znegované výše, protože by při přepisování kóty kabiny se přepisovaly i kóty elementů
 			if(aktElement->n==F->pom_element_temp->n)//aktuální vykreslováná kota

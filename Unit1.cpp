@@ -5218,7 +5218,7 @@ void __fastcall TForm1::DrawGrid_otoceDrawCell(TObject *Sender, int ACol, int AR
 	short pocet_elementu=2;
   AnsiString label1;
   AnsiString label2;
-	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+//	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
  	for(unsigned short n=1;n<=pocet_elementu;n++)
 	{
     if(n==1){ label1= "pasivní"; label2=""; }
@@ -5463,8 +5463,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 				int i=1;//použití z důvodu kopírování algoritmu z lakovny, kde tuto funkci zastává n z for cyklu
 				//funkce přepínání mezi roboty  lidskými roboty
 				unsigned short n_od,n_do,rob1,rob2,rob3,rob4;
-				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;rob1=7;rob2=8;rob3=9;rob4=10;}
-				else{n_od=105;n_do=108;rob1=105;rob2=106;rob3=107;rob4=108;}
+				if(scGPSwitch_robot_clovek->State==0){n_od=7;n_do=10;}
+				else{n_od=105;n_do=108;}
 				for(unsigned short n=n_od;n<=n_do;n++)
 				{
 					//nastavení názvů
@@ -5479,14 +5479,14 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 					else d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((i+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(i/2.0)-1)*H+P+30-odsazeni,label1,label2,n,0,0,-1);
 					i++;
 				}
-				if((EID==rob1 || EID==rob3 || EID==5) && pom_temp->pohon!=NULL)
+				if((EID==7 || EID==9 || EID==105 || EID==107 || EID==5) && pom_temp->pohon!=NULL)
 				{
 					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1);
 					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2,0,0,-1);
 					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((3+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(3/2.0)-1)*H+P+30-odsazeni,"kontinuální s","pasiv. otočí",rob3);
 					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((4+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(4/2.0)-1)*H+P+30-odsazeni,"S&G s","akt. otočí",rob4,0,0,-1);
 				}
-				else if ((EID==rob2 || EID==rob4 || EID==6) && pom_temp->pohon!=NULL)
+				else if ((EID==8 || EID==10 || EID==106 || EID==108 || EID==6) && pom_temp->pohon!=NULL)
 				{
 					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((1+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(1/2.0)-1)*H+P+30-odsazeni,"kontinuální","ionizace",rob1,0,0,-1);
 					d.vykresli_robota(C,(Rect.Right*Z-Rect.Left*Z)/2+((2+1)%2)*W,(Rect.Bottom*Z-Rect.Top*Z)/2+(ceil(2/2.0)-1)*H+P+30-odsazeni,"S&G","ionizace",rob2);
@@ -5735,7 +5735,7 @@ void __fastcall TForm1::DrawGrid_otoceMouseDown(TObject *Sender, TMouseButton Bu
 	Col=DrawGrid_otoce->Col; Row=DrawGrid_otoce->Row;
 	knihovna_id=2;
 	if(Row==0) element_id=Col+5;
-	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
+//	int EID=d.v.vrat_eID_prvniho_pouziteho_robota(pom_temp);
 	if(pom_temp->pohon!=NULL)
 	{
 		SB("Kliknutím na libovolné místo umístíte vybraný element.");
@@ -9345,11 +9345,6 @@ void __fastcall TForm1::TimerKurzorTimer(TObject *Sender)
 //vykresluje a maže kurzor
 void TForm1::vykresli_kurzor(int index)
 {
-//	d.nastavit_text_popisu_objektu_v_nahledu(Canvas);
-//	AnsiString T=pom_temp->name.UpperCase()+" / "+pom_temp->short_name.UpperCase();
-//	int Xl=m.L2Px(pom_temp->Xk+pom_temp->rozmer_kabiny.x/2.0)-Canvas->TextWidth(T)/2;
-//	int Yd=m.L2Py(pom_temp->Yk);
-
 	//nastavení rozměrů názvu a zkratky objektu
 	d.nastavit_text_popisu_objektu_v_nahledu(Canvas,1);AnsiString Tn=F->pom_temp->name.UpperCase();short Wn=Canvas->TextWidth(Tn);//název objektu - nastavení
 	d.nastavit_text_popisu_objektu_v_nahledu(Canvas,0);AnsiString Tl=+" / "; short Wl=Canvas->TextWidth(Tl);//lomítko objektu - nastavení
@@ -9366,11 +9361,11 @@ void TForm1::vykresli_kurzor(int index)
 
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
-		case 1:
+		case 1://editace názvu elementu
 		{
 			Canvas->Pen->Color=clBlack;
 			Canvas->Pen->Width=1;
-			if(pom_element_temp->eID>0&&pom_element_temp->eID<5)//roboti mají vykreslován kurzor vodorovně
+			if(pom_element_temp->eID!=0&&pom_element_temp->eID!=5&&pom_element_temp->eID!=6)//roboti mají vykreslován kurzor vodorovně
 			{
 				Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.top-2);
 				Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.bottom+2);
@@ -9413,7 +9408,7 @@ void TForm1::vykresli_kurzor(int index)
 			stav_kurzoru=!stav_kurzoru;
 		}break;
 	}
-	if(index<=-11)
+	if(index<=-11)//kóty elementů
 	{
       Canvas->Pen->Color=clGray;
 			Canvas->Pen->Width=1.5;

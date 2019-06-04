@@ -188,7 +188,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						case 2:E->rotace_jig=90;break;
 						case 3:E->rotace_jig=180;break;
 					}
-					F->pridani_elementu_tab_pohon(E);
+					F->pridani_elementu_tab_pohon(E);//pouze v KK režimu
 				}
 				//Row = 4 není uživatelsky upravitelný
 				if (Row==5)//editace délky otoèe
@@ -244,7 +244,6 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						case 2:E->rotace_jig=90;break;
 						case 3:E->rotace_jig=180;break;
 					}
-					F->pridani_elementu_tab_pohon(E);
 				}
 				if(Row==3)//zmìna PTo
 				{
@@ -280,7 +279,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						case 2:E->rotace_jig=90;break;
 						case 3:E->rotace_jig=180;break;
 					}
-					F->pridani_elementu_tab_pohon(E);
+					if(F->pom_temp->rezim==1)F->pridani_elementu_tab_pohon(E);//pouze v KK režimu, pasivní otoè mùže být i ve S&G lakovnì
 				}
 				if (Row==2)//zde se upravuje pouze délka
 				{
@@ -302,7 +301,6 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						case 2:E->rotace_jig=90;break;
 						case 3:E->rotace_jig=180;break;
 					}
-					F->pridani_elementu_tab_pohon(E);
 				}
 				if (Row==3)
 				{
