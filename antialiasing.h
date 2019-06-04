@@ -12,7 +12,7 @@ class Cantialising
 	public:
 	Graphics::TBitmap *antialiasing(Graphics::TBitmap *bmp_in,bool transparent=false);//vrátí bitmapu pøesampovanou pomocí algoritmu antialiasingu
 	void antialiasing(Graphics::TBitmap *bmp_in,Graphics::TBitmap *bmp_out);//uloží bitmapu pøesampovanou pomocí algoritmu antialiasingu
-	Graphics::TBitmap *antialiasing2(Graphics::TBitmap *bmp_grid, Graphics::TBitmap *bmp_in,bool transparent=false);//vrátí bitmapu pøesampovanou pomocí algoritmu antialiasingu
+	//Graphics::TBitmap *antialiasing2(Graphics::TBitmap *bmp_grid, Graphics::TBitmap *bmp_in,bool transparent=false);//vrátí bitmapu pøesampovanou pomocí algoritmu antialiasingu
 	protected:
 };
 #endif

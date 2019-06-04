@@ -1383,16 +1383,15 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			{
 				Cantialising a;
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-				//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
-				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu  //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_vektory(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
 				//rastr
 				Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
 				if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
-				//vektory po AA
-				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,d.v.PP.raster.show);//nutné a.antialiasing nahrát výsledek do bmp_out a ne přímo do Canvas->Draw kvůli možnosti uvolnění paměti bmp_out přímo z (v) metody(ě) a.antialiasing
+				//vektory
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,d.v.PP.raster.show);delete(bmp_in);//nutné a.antialiasing nahrát výsledek do bmp_out a ne přímo do Canvas->Draw kvůli možnosti uvolnění paměti bmp_out přímo z (v) metody(ě) a.antialiasing
 				bmp_total->Canvas->Draw(0,0,bmp_out); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				/*//spojnice EmGrid
 				bmp_in->FreeImage();
@@ -1402,7 +1401,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 					vykresli_spojinici_EmGrid(bmp_in->Canvas,pom_element);
 					bmp_out2=a.antialiasing(bmp_in);//do samostatné, aby se kreslilo přes tabulky
 				} */
-				delete(bmp_in);delete(bmp_out);//velice nutné
+				delete(bmp_out);//velice nutné
 				//vykreslování mGridu
 				d.vykresli_mGridy(bmp_total->Canvas); //přesunuto do vnitř metody: pom_temp->elementy!=NULL kvůli pohonům
 				//if(Akce==MOVE_TABLE || Akce==MOVE_ELEMENT && pom_temp->zobrazit_mGrid)bmp_out->Canvas->Draw(0,0,bmp_out2);delete (bmp_out2);zatím neužito,nedoladěné
@@ -1426,25 +1425,19 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				//rastr
 				Graphics::TBitmap *bmp_total=new Graphics::TBitmap;bmp_total->Width=ClientWidth;bmp_total->Height=ClientHeight;
 				if(d.v.PP.raster.show)nacti_podklad(bmp_total->Canvas);
-				Cantialising a;
-				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;
-				bmp_grid->Width=0;bmp_grid->Height=0;
-				if(grid && Zoom_predchozi_AA>0.5)//je-li grid zobrazen - již by se asi dalo nahradit konstrukcí s načtením gridu nad podklad
-				{
-					bmp_grid->Width=ClientWidth;bmp_grid->Height=ClientHeight;
-					d.vykresli_grid(bmp_grid->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
-				}
+				if(grid && Zoom_predchozi_AA>0.5)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
+				//vektory
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-				//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
-				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
+				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu //zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_objekty(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Graphics::TBitmap *bmp_out=a.antialiasing2(bmp_grid,bmp_in,true); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				delete (bmp_in);delete (bmp_grid);//velice nutné
-				bmp_total->Canvas->Draw(0,0,bmp_out); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
-				delete (bmp_out);//velice nutné
-				if(zobrazit_meritko)d.meritko(bmp_total->Canvas);//grafické měřítko
+				Cantialising a;
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in,true);delete(bmp_in);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				bmp_total->Canvas->Draw(0,0,bmp_out);delete (bmp_out);//velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				//grafické měřítko
+				if(zobrazit_meritko)d.meritko(bmp_total->Canvas);
+				//finální předání bmp_out do Canvasu
 				Canvas->Draw(0,0,bmp_total);
 				delete (bmp_total);//velice nutné
 			}
@@ -1462,16 +1455,14 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 				//nacti_podklad(Canvas);//provizorně, nahradit výše uvedenou konstrukcí u náhledu
 				Cantialising a;
 				Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
-				Graphics::TBitmap *bmp_grid=new Graphics::TBitmap;bmp_grid->Width=0;bmp_grid->Height=0;//je nutné mít založeno, ač nemá v tomto případě význam
 				//zkoušel jsem nastavit plochu antialiasingu bez ovládacích prvků LeftToolbar a menu, ale kopírování do jiné BMP to zpomalovalo více neooptimalizovaná oblast pro 3xbmp
 				bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
 				Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
 				d.vykresli_layout(bmp_in->Canvas);
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
-				Graphics::TBitmap *bmp_out=a.antialiasing2(bmp_grid,bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
+				Graphics::TBitmap *bmp_out=a.antialiasing(bmp_in); //velice nutné do samostatné bmp, kvůli smazání bitmapy vracené AA
 				Canvas->Draw(0,0,bmp_out);
 				delete (bmp_out);//velice nutné
-				delete (bmp_grid);//velice nutné
 				delete (bmp_in);//velice nutné
 			}
 			//grafické měřítko
@@ -1542,7 +1533,7 @@ void TForm1::nacti_podklad(TCanvas *Canv)
 			if(d.v.PP.raster.resolution==0)d.v.PP.raster.resolution=m2px;//v případě nového vstupu bez zadaného rozlišení defaultně je m2px
 			Graphics::TBitmap *bmp=new Graphics::TBitmap;
 			bmp->LoadFromFile(d.v.PP.raster.filename);
-			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem pokud není voláno součástí bmp_out
+			//bílé smazání pozadí nutné v případě AA vektorů a podním načítaným rastrem pokud není voláno součástí bmp_out,pokud není voláno součástí bmp_out
 //			Canv->Pen->Color=clWhite;Canvas->Brush->Color=clWhite;
 //			Canv->Rectangle(scSplitView_LEFTTOOLBAR->Width,scGPPanel_mainmenu->Height,Width,Height);
 			//vykreslení strečovaného rastru dle zadaného rozlišení
