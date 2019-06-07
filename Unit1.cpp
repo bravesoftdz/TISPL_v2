@@ -217,7 +217,6 @@ void TForm1::DesignSettings()
 	TColor light_gray=(TColor)RGB(240,240,240);
  //	TColor active_blue=(TColor)RGB(0,120,215);
   TColor clDrawGridHeaderFont=m.clIntensive((TColor)RGB(43,87,154),30);
-
 	PopupMenuButton->Left = 0;
 	PopupMenuButton->Visible = false;
 	DetailsButton->Left = 0;
@@ -880,7 +879,7 @@ void __fastcall TForm1::schemaClick(TObject *Sender)
   scGPCheckBox_zobraz_podklad->Left=5;
   scGPCheckBox_stupne_sedi->Align=alTop;
   scGPCheckBox_stupne_sedi->Left=scGPCheckBox_zobraz_podklad->Left;
-  scLabel1_svetelnost->Top=scGPCheckBox_stupne_sedi->Top + pravyoption_nadpis->Height + 14;  //pár px navíc kvůli vzdušnosti
+  scLabel1_svetelnost->Top=scGPCheckBox_stupne_sedi->Top +  44;  //pár px navíc kvůli vzdušnosti
   scGPTrackBar_svetelnost_posuvka->Top=scLabel1_svetelnost->Top;
 
   scGPButton_kalibrace->Left = 3;
@@ -8957,16 +8956,21 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
   scGPCheckBox_zobraz_podklad->Checked=true;
   scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
   REFRESH();
-
+  auto_settings_open=false;
 	zobraz_tip("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu.");
+//  if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít do nastavení?",MB_OKCANCEL))
+//  {
+  auto_settings_open=true;
+ // scGPGlyphButton_OPTIONSClick();  //tohle nesežral
+  scSplitView_OPTIONS->Opened=true;
   scGPCheckBox_zobraz_podklad->Enabled=true;
   scGPCheckBox_stupne_sedi->Enabled=true;
-  scGPTrackBar_svetelnost_posuvka->Enabled=true;
-  scLabel1_svetelnost->Enabled=true;
+  scGPTrackBar_svetelnost_posuvka->Enabled=false; //prozatim zakazano
+  scLabel1_svetelnost->Enabled=false;        // prozatim zakazano
   scGPButton_kalibrace->Enabled=true;
   scGPButton_adjustace->Enabled=true;
-  scGPGlyphButton_OPTIONS->ShowHint=true;
-
+  //scGPGlyphButton_OPTIONS->ShowHint=true;
+ // }
 
 }
  //--------------------------------------------------------------
@@ -9017,6 +9021,9 @@ void __fastcall TForm1::DrawGrid_geometrieDrawCell(TObject *Sender, int ACol, in
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 {
+
+ if(auto_settings_open==false)
+ {
 	if(!scGPCheckBox_zobraz_podklad->Checked && scSplitView_OPTIONS->Opened)
 	{
 		d.v.PP.raster.show=false;
@@ -9033,6 +9040,7 @@ void __fastcall TForm1::scGPCheckBox_zobraz_podkladClick(TObject *Sender)
 		DuvodUlozit(true);
 	}
 	REFRESH();
+  }
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm1::scGPButton_kalibraceClick(TObject *Sender)
@@ -9066,7 +9074,7 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
     {
    // ShowMessage(d.v.PP.raster.dim);
     scGPCheckBox_zobraz_podklad->Checked=true;
-    scGPTrackBar_svetelnost_posuvka->Value=d.v.PP.raster.dim;
+   // scGPTrackBar_svetelnost_posuvka->Value=d.v.PP.raster.dim;   zatím zakázáno
     if(d.v.PP.raster.grayscale) scGPCheckBox_stupne_sedi->Checked=true;
     }
   }
@@ -9086,8 +9094,8 @@ void __fastcall TForm1::scGPGlyphButton_OPTIONSClick(TObject *Sender)
   {
   scGPCheckBox_zobraz_podklad->Enabled=true;
   scGPCheckBox_stupne_sedi->Enabled=true;
-  scGPTrackBar_svetelnost_posuvka->Enabled=true;
-  scLabel1_svetelnost->Enabled=true;
+  scGPTrackBar_svetelnost_posuvka->Enabled=false;   //zatím zakázáno
+  scLabel1_svetelnost->Enabled=false; // zatím zakázáno
   scGPButton_adjustace->Enabled=true;
   scGPButton_kalibrace->Enabled=true;
   scLabel1_svetelnost->Enabled=true;
