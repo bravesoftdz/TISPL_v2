@@ -3282,7 +3282,7 @@ object Form1: TForm1
       TransparentBackground = False
       object DrawGrid_knihovna: TDrawGrid
         Left = 17
-        Top = 36
+        Top = 33
         Width = 160
         Height = 450
         ParentCustomHint = False
@@ -3346,7 +3346,7 @@ object Form1: TForm1
       TransparentBackground = False
       object DrawGrid_ostatni: TDrawGrid
         Left = 3
-        Top = 39
+        Top = 32
         Width = 160
         Height = 70
         ParentCustomHint = False
@@ -3535,7 +3535,7 @@ object Form1: TForm1
       TransparentBackground = False
       object DrawGrid_poznamky: TDrawGrid
         Left = 3
-        Top = 28
+        Top = 32
         Width = 160
         Height = 70
         ParentCustomHint = False
@@ -3974,7 +3974,6 @@ object Form1: TForm1
     Height = 25
     Caption = 'Button13'
     TabOrder = 36
-    Visible = False
     OnClick = Button13Click
   end
   object CheckBox_pouzit_zadane_kapacity_OLD: TCheckBox
@@ -4456,8 +4455,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2544
-        Top = 2707
+        Left = 2556
+        Top = 2719
         Width = 244
         Height = 31
         Align = alCustom
@@ -5917,7 +5916,7 @@ object Form1: TForm1
   end
   object scGPLabel_poznamky: TscGPLabel
     Left = 0
-    Top = 542
+    Top = 540
     Width = 168
     Height = 32
     Font.Charset = EASTEUROPE_CHARSET
@@ -8350,46 +8349,85 @@ object Form1: TForm1
       Transparent = True
     end
   end
-  object scGPSwitch_robot_clovek: TscGPSwitch
-    Left = 62
+  object scGPPanel_pomocn_proSwitch: TscGPPanel
+    Left = 61
     Top = 40
-    Width = 40
-    Height = 20
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    ParentShowHint = False
-    ShowHint = False
+    Width = 42
+    Height = 22
     TabOrder = 49
     Visible = False
-    Animation = True
-    FrameColor = 10114859
-    FrameOnColor = 10114859
-    FramePressedColor = clNone
-    ParentColor = True
-    State = scswOff
-    StyleKind = scswsStyled
-    ThumbColor = 10114859
-    ThumbOnColor = 10114859
-    ThumbPressedColor = 10114859
+    BlurBackground = False
+    BlurBackgroundAmount = 5
+    CustomImageIndex = -1
+    DragForm = False
+    DragTopForm = True
+    FillGradientAngle = 0
+    FillGradientBeginAlpha = 0
+    FillGradientEndAlpha = 0
+    FillGradientBeginColorOffset = 0
+    FillGradientEndColorOffset = 0
+    FrameWidth = 0
+    FillColor = clBtnFace
+    FillColorAlpha = 255
+    FillColor2 = clBtnFace
+    FrameColor = clBtnFace
     FrameColorAlpha = 255
-    FrameOnColorAlpha = 255
-    FramePressedColorAlpha = 255
-    ThumbColorAlpha = 255
-    ThumbOnColorAlpha = 255
-    ThumbPressedColorAlpha = 255
-    ThumbShadow = False
-    FrameSolid = False
-    FrameOnSolid = False
-    FrameInside = False
-    OnChangeState = scGPSwitch_robot_clovekChangeState
+    FrameRadius = 0
+    ShowCaption = False
+    CaptionGlowEffect.Enabled = False
+    CaptionGlowEffect.Color = clBtnShadow
+    CaptionGlowEffect.AlphaValue = 255
+    CaptionGlowEffect.GlowSize = 7
+    CaptionGlowEffect.Offset = 0
+    CaptionGlowEffect.Intensive = True
+    CaptionGlowEffect.StyleColors = True
+    Color = clBtnFace
+    Caption = 'scGPPanel_pomocn_proSwitch'
+    TransparentBackground = True
+    StorePaintBuffer = True
+    Sizeable = False
+    WallpaperIndex = -1
+    object scGPSwitch_robot_clovek: TscGPSwitch
+      Left = 0
+      Top = 0
+      Width = 40
+      Height = 20
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 0
+      Visible = False
+      Animation = True
+      FrameColor = 10114859
+      FrameOnColor = 10114859
+      FramePressedColor = clNone
+      ParentColor = True
+      State = scswOff
+      StyleKind = scswsStyled
+      ThumbColor = 10114859
+      ThumbOnColor = 10114859
+      ThumbPressedColor = 10114859
+      FrameColorAlpha = 255
+      FrameOnColorAlpha = 255
+      FramePressedColorAlpha = 255
+      ThumbColorAlpha = 255
+      ThumbOnColorAlpha = 255
+      ThumbPressedColorAlpha = 255
+      ThumbShadow = False
+      FrameSolid = False
+      FrameOnSolid = False
+      FrameInside = False
+      OnChangeState = scGPSwitch_robot_clovekChangeState
+    end
   end
   object ImageList1: TImageList
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118005C07740710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118005C077C0710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9520,7 +9558,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013E004C08DC0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013E004C08E40830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

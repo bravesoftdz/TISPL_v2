@@ -973,6 +973,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->WT=0;//čekání na palec
 	novy->WTstop=0;//čekání na stopce
 	novy->RT=0;//reserve time
+	novy->stav=1;
 
 	//název
 	AnsiString T="";
@@ -985,11 +986,11 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		case 4:case 10:case 14:case 18:case 104:case 108: T="Robot";				novy->PT1=60;novy->PTotoc=20;novy->PT2=60;novy->rotace_jig=180; break;//robot s aktivní otočí (tj. s otočí a se stopkou)
 		case 5: T="Otoč"; 																									novy->OTOC_delka=0.450;novy->rotace_jig=90;break;//pasivní otoč
 		case 6: T="Otoč"; 																									novy->PTotoc=20;novy->rotace_jig=90;break;//aktivní otoč
+		case 100: T="ION. tyč";
 	}
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
 		unsigned int nTyp=vrat_poradi_elementu_do(Objekt,novy)+1;//pokud se jedná o roboty
-//		if(eID==0||eID==5||eID==6)nTyp=vrat_poradi_elementu_do(Objekt,novy)+1;//pro stopky a otoče, název je globální
 		novy->name=T+" "+AnsiString(nTyp);
 		novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
@@ -1040,11 +1041,6 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element)
 		while(E!=NULL)
 		{
 			E->n=n;
-//			if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
-//			{
-//				E->mGrid->ID=E->n;//F->Sv(E->name);
-//				E->mGrid->Show(NULL);//musí zde být Show, Update() dělal problémy
-//			}
 			n++;
 			E=E->dalsi;
 		}
@@ -1124,11 +1120,6 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			while(E!=NULL)
 			{
 				E->n=n;
-//				if(E->name!="")//nutné, přeindexovává se i první element, který nemá vytvořený mGrid
-//				{
-//					E->mGrid->ID=E->n;
-//					E->mGrid->Update();//musí zde být
-//				}
 				n++;
 				E=E->dalsi;
 			}
@@ -1159,7 +1150,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 				{
 					int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
 					//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
-					if(E->name!="")//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
+					if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 					{
 						E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
 						E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
@@ -1199,7 +1190,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 							{
 								int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
 								//změna názvu v mGridu
-								if(E->name!=""&&O->n==Objekt->n)//nelze přistupovat k mGridu v případech nového elementu (nemá vytvořený), v neaktivní kabině (elementy nemají vytvořene mGridy)
+								if(E->name!=""&&O->n==Objekt->n&&E->mGrid!=NULL)//nelze přistupovat k mGridu v případech nového elementu (nemá vytvořený), v neaktivní kabině (elementy nemají vytvořene mGridy)
 								{
 									if(E->eID==0)E->mGrid->Cells[0][0].Text="<a>Stop "+AnsiString(n)+"</a>";
 									else E->mGrid->Cells[0][0].Text="<a>Otoč "+AnsiString(n)+"</a>";
@@ -1377,10 +1368,10 @@ unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
 			switch(eID)
 			{
 				case 0:if(E->eID==0)RET++;break;
-				case 1:
-				case 2:
-				case 3:
-				case 4:if(1<=E->eID && E->eID<=4)RET++;break;
+				case 1:case 7:case 11:case 15:case 101:case 105:
+				case 2:case 8:case 12:case 16:case 102:case 106:
+				case 3:case 9:case 13:case 17:case 103:case 107:
+				case 4:case 10:case 14:case 18:case 104:case 108:if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)RET++;break;
 				case 5:
 				case 6:if(5<=E->eID && E->eID<=6)RET++;break;
 			}
@@ -1394,13 +1385,14 @@ unsigned int Cvektory::vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID)
 //vrátí počet stejných elementů před Element, u robotů v jednom objektu, u otočí a stopek vrátí počet i z předchozích objektů
 unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element)
 {
-	unsigned int r_pocet=0,s_pocet=0,o_pocet=0;//nastavení všech počtů na nulu
+	unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0;//nastavení všech počtů na nulu
 	if(Element->eID!=6&&Element->eID!=5&&Element->eID!=0)//pokud je Element robot projdi roboty v Objektu
 	{
 		Cvektory::TElement *E=Objekt->elementy->dalsi;//přeskočí hlavičku
 		while(E->n!=Element->n)
 		{
 			if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)r_pocet++;
+			if(E->eID==100)t_pocet++;
 			E=E->dalsi;
 		}
 		E=NULL; delete E;
@@ -1430,9 +1422,13 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 		O=NULL; delete O;
 	}
 	//podle eID vrátí příslušný počet elementů
-	if(Element->eID!=6&&Element->eID!=5&&Element->eID!=0)return r_pocet;
-	else if(Element->eID==0)return s_pocet;
-	else return o_pocet;
+	switch(Element->eID)
+	{
+		case 0: return s_pocet;break;
+		case 5: case 6: return o_pocet;break;
+		case 100: return t_pocet;break;
+		default: return r_pocet;break;
+  }
 }
 ////---------------------------------------------------------------------------
 //orotuje všechny elementy daného objektu o danou hodnotu
@@ -1574,10 +1570,10 @@ short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 }
 ////---------------------------------------------------------------------------
 //posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována)
-bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu)
+bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu,bool posun_kurzorem)
 { //!!!!!!po nasazení geometrie nutno zdokonalit, nebude se pracovát pouze se vzdálenosti na linii buď vodorvné či svislé, ale i v oblouku
 	bool RET=false;
-	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL&&F->Akce!=F->MOVE_ELEMENT)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
+	if(F->pom_temp!=NULL && F->pom_temp->elementy!=NULL/*&&F->Akce!=F->MOVE_ELEMENT*/)//raději ošetření, ač by se metoda měla volat jen v případě existence pom_temp
 	{
 	//použít makro F->d.Rxy(uvažovaný element), m.delka() vrací pouze abs. hodnotu
 
@@ -1614,7 +1610,18 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			{
 				vzd.x=Element->X-Element->predchozi->X;
 			}//odstavil MaKr F->Sv(vzd.x);
-			if(vzd.x!=0){Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);posuv_aktualizace_RT(Element);}//při změně vzdálenosti je nutno dopočítat znova RT
+			if(vzd.x!=0&&!posun_kurzorem)//posun z kót
+			{
+				Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+				if(Element->dalsi!=NULL){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+				else posuv_aktualizace_RT(Element);
+			}
+			else if(posun_kurzorem)//posun kurozem
+			{
+				Element->X=Element->X+vzdalenost;
+				if(Element->dalsi!=NULL){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+				else posuv_aktualizace_RT(Element);
+			}
 
 			//v případě požadavku na posun i následujících elementů
 			if(pusun_dalsich_elementu)
@@ -1622,7 +1629,8 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				TElement *E=Element->dalsi;
 				while(E!=NULL)
 				{
-					if(vzd.x!=0)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+					if(vzd.x!=0&&!posun_kurzorem)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
+					else if(posun_kurzorem)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
@@ -1646,11 +1654,13 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 		{
 			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Refresh();
 		}break;
 		case 4:case 10:case 14:case 18:case 104:case 108:
 		{
 			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Refresh();
 		}break;
 	}
 }

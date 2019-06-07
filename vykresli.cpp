@@ -51,7 +51,7 @@ int Cvykresli::CorEy(Cvektory::TObjekt *O)
 TPointD Cvykresli::Rxy(Cvektory::TElement *Element)
 {
 	TPointD RET; RET.x=Element->X; RET.y=Element->Y;
-	if(1<=Element->eID && Element->eID<=4)//ovlivní pouze roboty
+	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)//ovlivní pouze roboty
 	{
 		switch(Element->rotace_symbolu)
 		{
@@ -3205,9 +3205,10 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		}
 		else//ikona v knihovně elementů je text pod elementem
 		{
+			int odsazeni=55;//odsazení z důvodu správného zobrazení v knihovně
 			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
-			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+vzdalenost+polomer),name); //1 pouze korekce
-			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+vzdalenost+polomer+1*Z+canv->TextHeight(name)),short_name);
+			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+vzdalenost+polomer-odsazeni),name); //1 pouze korekce
+			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+vzdalenost+polomer+1*Z+canv->TextHeight(name)-odsazeni),short_name);
 		}
 	}
 }
@@ -3465,32 +3466,32 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 			Cvektory::TElement *E=F->pom_temp->elementy->dalsi;//přeskočí rovnou hlavičku
 			while(E!=NULL)
 			{
-				if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
-				{
-					E->mGrid->Redraw=false;
-					E->mGrid->SetVisibleComponents(false);
-					E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
-					E->mGrid->Show(canv);    //F->Memo(0);
-				}
-				else
-				{     //F->Memo(1);
-					if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
-					{
-						E->mGrid->Redraw=true;
-						//E->mGrid->Buffer(false);
-						E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
-						//možná zde ještě update pokud byla komponenta skyta
-						E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
-						E->mGrid->Left=m.L2Px(E->Xt);
-						E->mGrid->Top=m.L2Py(E->Yt);
-						E->mGrid->Show(canv);
+			  	if(F->refresh_mGrid==false)//zajistí načtení mGridu pouze z bufferu
+			  	{
+			  		E->mGrid->Redraw=false;
+			  		E->mGrid->SetVisibleComponents(false);
+			  		E->mGrid->Left=m.L2Px(E->Xt);//kvůli případnému přesouvání tabulky
+			  		E->mGrid->Top=m.L2Py(E->Yt);//kvůli případnému přesouvání tabulky
+			  		E->mGrid->Show(canv);    //F->Memo(0);
+			  	}
+			  	else
+			  	{     //F->Memo(1);
+			  		if(F->pom_temp->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
+			  		{
+			  			E->mGrid->Redraw=true;
+			  			//E->mGrid->Buffer(false);
+			  			E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování
+			  			//možná zde ještě update pokud byla komponenta skyta
+			  			E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show cyklem všechny komponenty
+			  			E->mGrid->Left=m.L2Px(E->Xt);
+							E->mGrid->Top=m.L2Py(E->Yt);
+			  			E->mGrid->Show(canv);
+			  		}
+			  		else//pokud ne, je třeba skrýt komponenty
+			  		{
+			  			E->mGrid->SetVisibleComponents(false);
+			  		}
 					}
-					else//pokud ne, je třeba skrýt komponenty
-					{
-						E->mGrid->SetVisibleComponents(false);
-					}
-				}
 				E=E->dalsi;
 			}
 			E=NULL;delete E;

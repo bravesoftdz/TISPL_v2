@@ -362,6 +362,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 				{
 					aktualizace_tab_elementu_pOdebran();//pøiøadí všem polokám v elementech závislıch na hodnotách pohonu 0
 					F->scGPComboBox_prepinacKot->Enabled=false;//vypne zmìnu reimu kót
+          F->scGPComboBox_prepinacKot->ItemIndex=0;
 					F->scGPGlyphButton_PLAY->Enabled=false;//vypnutí tlaèítka animace
 				}
 			}break;
