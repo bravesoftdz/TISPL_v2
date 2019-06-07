@@ -1354,7 +1354,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 //	}
 
   //při změně rozlišení nebo obrazovky dojde k maximalizaci okna programu 	Problém při ruční minimalizaci!
-	if(ClientHeight!=Monitor->Height&&FMaximized)
+	if(ClientWidth!=Monitor->Width&&FMaximized)
 	{
 		//maximalizace formuláře jinak to s novým designem nejde
 		Form1->Width=Screen->WorkAreaWidth;
