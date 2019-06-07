@@ -695,6 +695,7 @@ public:		// User declarations
 	bool refresh_mGrid;//nevykresluje se z buffru ale přímo
 	bool nabuffrovano;//udržuje, zda je buffer mgridových rastrů aktuální
 	bool duvod_ulozit_nahled;//uchovává v sobě důvod k uložení náhledu
+  bool auto_settings_open;
 
 	//metody
 	void NP();//volá form na nastevení parametrů, dřívější nastavparametry1click

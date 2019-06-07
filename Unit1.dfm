@@ -4168,7 +4168,7 @@ object Form1: TForm1
       Left = 1
       Top = 0
       Width = 249
-      Height = 119
+      Height = 40
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = DEFAULT_CHARSET
@@ -4206,7 +4206,7 @@ object Form1: TForm1
     end
     object scExPanel_ostatni: TscExPanel
       Left = 1
-      Top = 119
+      Top = 40
       Width = 249
       Height = 88
       Margins.Left = 5
@@ -4242,6 +4242,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Obecn'#233
+      ExplicitTop = 119
       object ComboBoxCekani: TscComboBox
         Left = 3
         Top = 56
@@ -5249,11 +5250,11 @@ object Form1: TForm1
       end
     end
     object scExPanel_vrstvy: TscExPanel
-      Left = 3
-      Top = 508
+      Left = 1
+      Top = 361
       Width = 249
       Height = 30
-      Align = alCustom
+      Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
       Font.Height = -15
@@ -5286,6 +5287,8 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Vrstvy'
+      ExplicitLeft = 3
+      ExplicitTop = 508
       object scLabel4: TscLabel
         Left = 3
         Top = 39
@@ -5308,9 +5311,9 @@ object Form1: TForm1
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
-      Top = 207
+      Top = 128
       Width = 249
-      Height = 334
+      Height = 233
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -5554,11 +5557,12 @@ object Form1: TForm1
         AllowAllUp = False
       end
       object scGPCheckBox_stupne_sedi: TscGPCheckBox
+        AlignWithMargins = True
         Left = 3
-        Top = 69
-        Width = 225
-        Height = 36
-        Align = alCustom
+        Top = 75
+        Width = 243
+        Height = 33
+        Align = alTop
         TabOrder = 2
         TabStop = True
         OnClick = scGPCheckBox_stupne_sediClick
@@ -5644,13 +5648,15 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitTop = 78
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
+        AlignWithMargins = True
         Left = 3
-        Top = 41
-        Width = 246
+        Top = 33
+        Width = 243
         Height = 36
-        Align = alCustom
+        Align = alTop
         TabOrder = 3
         TabStop = True
         OnClick = scGPCheckBox_zobraz_podkladClick
@@ -5736,6 +5742,8 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
+        ExplicitTop = 41
+        ExplicitWidth = 246
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
         Left = 163
