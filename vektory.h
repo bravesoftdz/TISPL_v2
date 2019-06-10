@@ -372,6 +372,7 @@ class Cvektory
 		int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
 		unsigned int vrat_poradi_elementu(TObjekt *Objekt,unsigned int eID);//vratí pořádí stopek, robotů a otočí zatím pouze v elementu, bude na zvážení rozšíření na všechny objekty
 		unsigned int vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Element);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
+		unsigned int vrat_nejvetsi_ID_tabulek (TObjekt *Objekt);//vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
 		void rotace_elementu(TObjekt *Objekt,short rotace);//orotuje všechny elementy daného objektu o danou hodnotu
 		TElement *najdi_element(TObjekt *Objekt, double X, double Y);//hledá element v místě kurzoru pracuje v logických/metrických souradnicích
 		TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka

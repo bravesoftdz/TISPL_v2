@@ -948,7 +948,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 {
 	//pokud by ještě nebyla založena hlavička, tak ji založí
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);
-	int cislo_mGrid=Objekt->elementy->predchozi->n+1;
+	int cislo_mGrid=vrat_nejvetsi_ID_tabulek(Objekt)+1;
 	//alokace paměti
 	TElement *novy=new TElement;
 
@@ -1139,8 +1139,8 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 	if(Element!=NULL)//funkčnost při vložení elementu mezi ostatní, pouze název pořadové čísla byly již změněny
 	{
 		//úprava názvu pro roboty
-		if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)
-		{
+//		if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)
+//		{
 			Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
  			while (E!=NULL)
 			{
@@ -1163,9 +1163,9 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
   			E=E->dalsi;//posun na další prvek
  			}
 			E=NULL; delete E;
-  	}
-		else
-		{
+//  	}
+//		else
+//		{
 			Cvektory::TObjekt *O=OBJEKTY->dalsi;//prěskočí hlavičku
 			while(O!=NULL)//!!!!!!!!!!!!!dochází k zacyklení při přidání druhé stopky před první v druhé kabině!!!!!!!!!!!!!
 			{
@@ -1215,7 +1215,7 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 				O=O->dalsi;
 			}
 			O=NULL; delete O;
-		}
+//		}
 	}  //storno funkcionalitu nutno podrobit dalším testům
 	else//spuštěno při stisku tlačítka storno, musí dojít k přejmenování na původní, mění se název i pořadová čísla
 	{
@@ -1428,7 +1428,27 @@ unsigned int Cvektory::vrat_poradi_elementu_do (TObjekt *Objekt, TElement *Eleme
 		case 5: case 6: return o_pocet;break;
 		case 100: return t_pocet;break;
 		default: return r_pocet;break;
+	}
+}
+////---------------------------------------------------------------------------
+//vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
+unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
+{
+	unsigned int ret=0;
+	if(Objekt->elementy!=NULL)
+	{
+		TElement *E=Objekt->elementy;
+		while(E!=NULL)
+		{
+			if(E->n>0&&E->eID!=100)//přeskočení hlavičky a elementu bez tabulky
+			{
+				if(ret<E->mGrid->ID)ret=E->mGrid->ID;
+      }
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
   }
+	return ret;
 }
 ////---------------------------------------------------------------------------
 //orotuje všechny elementy daného objektu o danou hodnotu
@@ -1613,13 +1633,13 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			if(vzd.x!=0&&!posun_kurzorem)//posun z kót
 			{
 				Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
-				if(Element->dalsi!=NULL){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
 			else if(posun_kurzorem)//posun kurozem
 			{
 				Element->X=Element->X+vzdalenost;
-				if(Element->dalsi!=NULL){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
+				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
 
@@ -1650,16 +1670,28 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 {
 	switch(Element->eID)
 	{
-		case 2:case 8:case 12:case 16:case 102:case 106:
+		case 2:case 8:case 12:case 16:case 102:case 106://roboti se stop stanicí
 		{
 			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Refresh();
 		}break;
-		case 4:case 10:case 14:case 18:case 104:case 108:
+		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
 		{
 			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Refresh();
+		}break;
+		case 6://aktivní otoč
+		{
+			Element->RT=m.RT(Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
+      Element->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Refresh();
+		}break;
+		case 0://stop stanice
+		{
+			Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT+Element->WTstop);
+			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
 			Element->mGrid->Refresh();
 		}break;
 	}
@@ -1816,7 +1848,7 @@ void Cvektory::napln_combo_stopky(TElement *Stopka)
 				while(E!=NULL)//a jejich elementy
 				{
 					////pokud je aktuální element stopka či robot se stopkou a zároveň nejedná se o danou stopku předávanou parametreme metody a nejedná se o hlavičku, naplní se do comba
-					if((E->eID==0 || E->eID==4 || E->eID==6) && E!=Stopka && E->n!=0)
+					if((E->eID%2==0) && E!=Stopka && E->n!=0)
 					{
 						if(smazat_combo){C->Clear();smazat_combo=false;/*t=C->Items->Add(/*tady nelze parametr*//*);t->Caption="nepřiřazen";v případě odkomentování zvýšit index u přidělování Itemindex u bez spárované situace*/}//nejdříve combo vymaže od popisku nedefinovan
 						if(!hlavicka_vytvorena)//pokud ještě nebyla vytvoří ji formou názvu
