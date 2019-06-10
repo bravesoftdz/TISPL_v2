@@ -57,7 +57,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	if(ID!=9999&&Row==-2)
 	//funkcionalita exBUTTONu v tabulkách elementù
 	{
-		Cvektory::TElement *E=F->d.v.vrat_element(F->pom_temp,ID);
+		Cvektory::TElement *E=vrat_element_z_tabulky(ID);
 		AnsiString Hint=E->mGrid->exBUTTON->Hint;F->PmG->exBUTTON->Hint="";//zabráni probliku Hintu, toto sloužilo pro tlaèítko, ale nebylo plnì uèinné: int T=F->PmG->exBUTTON->Top;
 		if(E->mGrid->Rows[3].Visible)
 		{

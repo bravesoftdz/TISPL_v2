@@ -1064,7 +1064,7 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 			if(p->dalsi!=NULL&&p->n!=Element->n&&p->dalsi->n!=Element->n)//aby se neřešila situace poslední-prní prvek,řešeno separátně
 			{
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(F->m.PtInRectangle(p->X,p->Y,p->dalsi->X,p->dalsi->Y,Element->X,Element->Y))
+				if(F->m.PtInRectangle(p->X,0/*p->Y*/,p->dalsi->X,0/*p->dalsi->Y*/,Element->X,0/*Element->Y*/))
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
 					break;
@@ -1144,23 +1144,26 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
  			while (E!=NULL)
 			{
-				if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;
-				//změna názvu
-				if(rename)//přejmenování elementu ve spojáku + mGridu
+				if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)
 				{
-					int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
-					//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
-					if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
+					if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;
+			  	//změna názvu
+			  	if(rename)//přejmenování elementu ve spojáku + mGridu
 					{
-						E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
-						E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
-						E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
-						E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+			  		int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
+			  		//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
+			  		if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
+			  		{
+			  			E->mGrid->Cells[0][0].Text="<a>Robot "+AnsiString(n)+"</a>";
+			  			E->mGrid->Cells[0][0].Font->Color=clBlack;//z důvodu nasazení odkazu, po přejmenování se text vrátil do modré barvy
+			  			E->mGrid->MergeCells(0,0,1,0);//nutné kvůli správnému zobrazení hlavičky
+			  			E->mGrid->Update();//musí zde být ošetření proti paměťové chybě
+			  		}
+			  		E->name="Robot "+AnsiString(n);
+			  		E->short_name="Rob"+AnsiString(n);
 					}
-					E->name="Robot "+AnsiString(n);
-					E->short_name="Rob"+AnsiString(n);
- 				}
-  			E=E->dalsi;//posun na další prvek
+				}
+				E=E->dalsi;//posun na další prvek
  			}
 			E=NULL; delete E;
 //  	}
