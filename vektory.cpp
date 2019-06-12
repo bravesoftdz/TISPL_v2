@@ -944,7 +944,7 @@ void Cvektory::hlavicka_elementy(TObjekt *Objekt)
 }
 ////---------------------------------------------------------------------------
 //vloží element do spojového seznamu elementů daného technologického objektu a zároveň na něj vrátí ukazatel
-Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y)
+Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, double X, double Y,short rotace_symbolu)
 {
 	//pokud by ještě nebyla založena hlavička, tak ji založí
 	if(Objekt->elementy==NULL)hlavicka_elementy(Objekt);
@@ -957,6 +957,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	novy->eID=eID;
 	novy->X=X;
 	novy->Y=Y;
+	novy->rotace_symbolu=rotace_symbolu;//důležité pro volání makra m.Rxy, bez tohoto by makro vracelo chybné hodnoty
 
   //ukazatelové propojení - bylo původně poslední, ale nemohlo fungovat správně
 //	vloz_element(Objekt,novy);
@@ -1058,13 +1059,13 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 	bool pred1=false,zaposlednim=false;//proměnné pro 2 speciální případy které budou řešeny kompletně v této metodě
 	if((F->Akce==F->ADD||F->Akce==F->MOVE_ELEMENT)&&Objekt->elementy->dalsi!=NULL)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
-   	Cvektory::TElement *p=Objekt->elementy->dalsi;//přeskočí hlavičku
+		Cvektory::TElement *p=Objekt->elementy->dalsi;//přeskočí hlavičku
 		while (p!=NULL)
-   	{
+		{
 			if(p->dalsi!=NULL&&p->n!=Element->n&&p->dalsi->n!=Element->n)//aby se neřešila situace poslední-prní prvek,řešeno separátně
-			{
+			{   
 				//kontrola zda vkládaný element neleží mezi prvním a druhým elementem, druhým až n
-				if(F->m.PtInRectangle(p->X,0/*p->Y*/,p->dalsi->X,0/*p->dalsi->Y*/,Element->X,0/*Element->Y*/))
+				if(F->m.PtInRectangle(F->d.Rxy(p).x,F->d.Rxy(p).y,F->d.Rxy(p->dalsi).x,F->d.Rxy(p->dalsi).y,F->d.Rxy(Element).x,F->d.Rxy(Element).y))
 				{
 					ret=p;//uložení elementu, který předcházi vkládanému elementu
 					break;
@@ -1077,10 +1078,15 @@ Cvektory::TElement *Cvektory::vloz_element_za(TObjekt *Objekt,TElement *Element)
 		//a to z důvodu rozdílné funkcionality
 		//řešeno přes minimální a maximální souřadnice elementů v kabině, při použití podobného hledání jako u hledání v oblasti problém
 		//s řazením elementů, pokud nejsou v řadě za sebou, což v tuto chvíli nejsou nedává hledání reálné výsledky
-		if(ret==NULL)//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
+		if(ret==NULL&&(Element->rotace_symbolu==0||Element->rotace_symbolu==180))//mezi 2 elementy nic nenalezeno = kontrola před prvním a za posledním
 		{
 			if(F->d.Rxy(Element).x<=F->d.Rxy(Objekt->elementy->dalsi).x&&Element->n!=1)pred1=true;
 			if(F->d.Rxy(Element).x>=F->d.Rxy(Objekt->elementy->predchozi).x&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
+		}
+		else if(ret==NULL)
+    {
+			if(F->d.Rxy(Element).y>=F->d.Rxy(Objekt->elementy->dalsi).y&&Element->n!=1)pred1=true;
+			if(F->d.Rxy(Element).y<=F->d.Rxy(Objekt->elementy->predchozi).y&&Element->n!=Objekt->elementy->predchozi->n&&Element->name!="")zaposlednim=true;
 		}
 		if(pred1||zaposlednim)//výjmutí ze spojáku, pro oba případy stejné
 		{
@@ -1144,13 +1150,13 @@ void	Cvektory::uprav_popisky_elementu(TObjekt *Objekt, TElement *Element)
 			Cvektory::TElement *E=Objekt->elementy->dalsi;//začíná se od začátku, někdy je potřeba ovlivnit i předchozí elementy
  			while (E!=NULL)
 			{
-				if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18 || 101<=Element->eID && Element->eID<=108)
+				if(1<=E->eID && E->eID<=4 || 7<=E->eID && E->eID<=18 || 101<=E->eID && E->eID<=108)
 				{
-					if(E->name.SubString(1,6)=="Robot "&&E->name.Length()<=7||E->name=="")rename=true;else rename=false;
-			  	//změna názvu
+					if(E->name.SubString(1,6)=="Robot "/*&&E->name.Length()<=7*/||E->name=="")rename=true;else rename=false;
+					//změna názvu
 			  	if(rename)//přejmenování elementu ve spojáku + mGridu
 					{
-			  		int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
+						int n=vrat_poradi_elementu_do(Objekt,E)+1;//zjistí pořadové číslo elementu
 			  		//změna názvu v hlavičce mGridu, jako první z důvodu podmínky prázdného názvu
 			  		if(E->name!=""&&E->mGrid!=NULL)//nutné, přejmenovávám i první element, který nemá vytvořený mGrid
 			  		{
@@ -1498,7 +1504,7 @@ Cvektory::TElement *Cvektory::najdi_element(TObjekt *Objekt, double X, double Y)
 			}
 			else
 			{
-				if(E->eID==5 || E->eID==6)//OTOČE
+				if(E->eID==5 || E->eID==6 || E->eID==100 )//OTOČE + temp ionizační tyč
 				{
 					if(m.PtInCircle(X,Y,E->X,E->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px) || E->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))break;//testování symbolu včetně popisku,pozn.
 					else E=E->dalsi;
@@ -1627,21 +1633,25 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			TPointD vzd;
 			if(Element->n==1)//pro první element, od počátku kabiny
 			{
-				vzd.x=Element->X-F->pom_temp->Xk;
+				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)vzd.x=Element->X-F->pom_temp->Xk;
+				else vzd.x=Element->Y-F->pom_temp->Yk;
 			}
 			else//více elementů
 			{
-				vzd.x=Element->X-Element->predchozi->X;
+				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)vzd.x=Element->X-Element->predchozi->X;
+				else	vzd.x=Element->Y-Element->predchozi->Y;
 			}//odstavil MaKr F->Sv(vzd.x);
 			if(vzd.x!=0&&!posun_kurzorem)//posun z kót
 			{
-				Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)Element->X=Element->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+				else Element->Y=Element->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
 			else if(posun_kurzorem)//posun kurozem
 			{
-				Element->X=Element->X+vzdalenost;
+				if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)Element->X=Element->X+vzdalenost;
+				else	Element->Y=Element->Y+vzdalenost;
 				if(Element->dalsi!=NULL&&!pusun_dalsich_elementu){posuv_aktualizace_RT(Element);posuv_aktualizace_RT(Element->dalsi);}//při změně vzdálenosti je nutno dopočítat znova RT, pokud je za robotem další robot jeho RT musí být také přepočítáno
 				else posuv_aktualizace_RT(Element);
 			}
@@ -1652,8 +1662,16 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				TElement *E=Element->dalsi;
 				while(E!=NULL)
 				{
-					if(vzd.x!=0&&!posun_kurzorem)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
-					else if(posun_kurzorem)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
+					if(vzd.x!=0&&!posun_kurzorem)
+					{
+						if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)E->X=E->X-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);//výpočet pro posuv z kót
+						else E->Y=E->Y-(vzd.x/m.abs_d(vzd.x))*(m.abs_d(vzd.x)-vzdalenost);
+					}
+					if(posun_kurzorem)
+					{
+						if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)E->X=E->X+vzdalenost;//výpočet pro posun kurzorem
+						else E->Y=E->Y+vzdalenost;
+					}
 					E=E->dalsi;
 				}
 				E=NULL;delete E;
@@ -1677,24 +1695,28 @@ void Cvektory::posuv_aktualizace_RT(TElement *Element)
 		{
 			Element->RT=F->m.RT(Element->PT1,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Cells[1][2].Highlight=true;
 			Element->mGrid->Refresh();
 		}break;
 		case 4:case 10:case 14:case 18:case 104:case 108://roboti s aktivní otočí
 		{
 			Element->RT=m.RT(Element->PT1+Element->PT2+Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
 			Element->mGrid->Cells[1][5].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Cells[1][5].Highlight=true;
 			Element->mGrid->Refresh();
 		}break;
 		case 6://aktivní otoč
 		{
 			Element->RT=m.RT(Element->PTotoc,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT);
-      Element->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Cells[1][4].Highlight=true;
 			Element->mGrid->Refresh();
 		}break;
 		case 0://stop stanice
 		{
 			Element->RT=m.RT(0,vzdalenost_od_predchoziho_elementu(Element,true),F->pom_temp->pohon->aRD,F->pom_temp->pohon->roztec,Element->WT+Element->WTstop);
 			Element->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(Element->RT),3);
+			Element->mGrid->Cells[1][2].Highlight=true;
 			Element->mGrid->Refresh();
 		}break;
 	}
@@ -1752,7 +1774,11 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
 	{
 		double celkem=0;
 		//pokud je element první v kabině
-		if(Element->n==1)return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+		if(Element->n==1)
+		{
+			if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)return m.delka(F->pom_temp->Xk,F->pom_temp->elementy->Y,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+			else return m.delka(F->pom_temp->elementy->X,F->pom_temp->Yk,F->d.Rxy(Element).x,F->d.Rxy(Element).y);
+		}
 		else//pokud je v kabině více elementů
 		{
 	  	//procházení objektu a hledání předchozího SG elementu
@@ -1774,7 +1800,10 @@ double Cvektory::vzdalenost_od_predchoziho_elementu(TElement *Element,bool pouze
   	TPointD E=F->d.Rxy(Element);
   	if(Element->n==1)//pro první element od hrany kabiny
   	{                ///ještě vylepšít, provizorně jen pro vodorovnou levopravou kabinu
-  		return m.delka(F->pom_temp->Xk,F->pom_temp->Yk-F->pom_temp->rozmer_kabiny.y/2.0,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
+			if(Element->rotace_symbolu==0||Element->rotace_symbolu==180)
+				return m.delka(F->pom_temp->Xk,F->pom_temp->elementy->Y,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
+			else
+				return m.delka(F->pom_temp->elementy->X,F->pom_temp->Yk,E.x,E.y);//(bude nutno ještě vylepšit s příchodem oblouků)!!!
   	}
   	else//mezi elementy
   	{

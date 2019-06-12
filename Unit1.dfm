@@ -4242,7 +4242,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Obecn'#233
-      ExplicitTop = 119
       object ComboBoxCekani: TscComboBox
         Left = 3
         Top = 56
@@ -4456,8 +4455,8 @@ object Form1: TForm1
       end
       object scGPCheckBox_ortogon: TscGPCheckBox
         AlignWithMargins = True
-        Left = 2556
-        Top = 2719
+        Left = 2592
+        Top = 2755
         Width = 244
         Height = 31
         Align = alCustom
@@ -5287,8 +5286,6 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = 'Vrstvy'
-      ExplicitLeft = 3
-      ExplicitTop = 508
       object scLabel4: TscLabel
         Left = 3
         Top = 39
@@ -5648,7 +5645,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 78
       end
       object scGPCheckBox_zobraz_podklad: TscGPCheckBox
         AlignWithMargins = True
@@ -5742,8 +5738,6 @@ object Form1: TForm1
         ScaleCheckMarkThickness = True
         ShowFocusRect = True
         UseFontColorToStyleColor = False
-        ExplicitTop = 41
-        ExplicitWidth = 246
       end
       object scGPTrackBar_svetelnost_posuvka: TscGPTrackBar
         Left = 163
@@ -8148,7 +8142,7 @@ object Form1: TForm1
     object scGPComboBox_prepinacKot: TscGPComboBox
       Left = 379
       Top = 7
-      Width = 120
+      Width = 155
       Height = 35
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
@@ -8168,13 +8162,13 @@ object Form1: TForm1
         item
           Header = False
           Enabled = True
-          Caption = 'Vzd'#225'lenost'
+          Caption = 'Vzd'#225'lenost [mm]'
           Checked = False
         end
         item
           Header = False
           Enabled = True
-          Caption = #268'as'
+          Caption = #268'as [s]'
           Checked = False
         end>
       ItemIndex = 0
@@ -8435,7 +8429,7 @@ object Form1: TForm1
     Left = 216
     Top = 40
     Bitmap = {
-      494C010118005C077C0710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010118005C07940710001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000007000000001002000000000000070
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -9566,7 +9560,7 @@ object Form1: TForm1
     Left = 511
     Top = 230
     Bitmap = {
-      494C01013E004C08E40830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013E004C08FC0830003000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000C00000000003000001002000000000000000
       0900000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

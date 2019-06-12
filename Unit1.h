@@ -636,6 +636,7 @@ private:
 	bool FMaximized;
 	TRect FOldBoundsRect;
 	bool PmGCheckLink;
+	bool offset_spolus_rozmerem;//uchovává v sobě, zda má být při změně rozmerů kabiny změně i offset kót elementů
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
