@@ -3219,7 +3219,7 @@ void Cvykresli::vykresli_lakovaci_okno(TCanvas *canv,long X,long Y,double LO1,do
 	LO2=m.m2px(LO2);
 
 	canv->Pen->Width=1;
-	canv->Pen->Color=clGray;
+	canv->Pen->Color=clBlack;
 	canv->Pen->Mode=pmCopy;
 	canv->Pen->Style=psDash;
 	//rotace
