@@ -133,10 +133,10 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	T=F->readINI("nastaveni_nahled","Delka_otoce");
 	if(T=="")DOtocunit=M;else if(T==1)DOtocunit=MM;else DOtocunit=M;
 	T=F->readINI("nastaveni_nahled","koty_delka");//složiteji řešené, z důvodu kót časových a zároveň délkových
-	if(T==""||T==0)DKunit=M;
-	else if(T==1)DKunit=MM;
-	else if(T==2)DKunit=SEKUNDY;
-	else DKunit=MINUTY;
+//	if(T=="")DKunit=MM;
+//	else if(T==1)DKunit=MM;
+//	else if(T==2)DKunit=SEKUNDY;
+	/*else*/ DKunit=MM;
 	//pro pohon
 	T=readINI("nastaveni_form_parametry","RDt");//aktuální rychlost
 	if(T==0)aRDunit=SEC;else if(T==1) aRDunit=MIN; else aRDunit=SEC;
@@ -2457,7 +2457,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			case MEASURE:
 			{
 				double delka=m.delka(m.P2Lx(vychozi_souradnice_kurzoru.X),m.P2Ly(vychozi_souradnice_kurzoru.Y),m.P2Lx(X),m.P2Ly(Y));
-				MB(AnsiString(delka)+" [metrů]");
+				if(pom_temp->pohon==NULL) MB(AnsiString(m.round2double((delka*1000.0),3))+" [mm]");
+				else MB(AnsiString(m.round2double((delka*1000.0),3))+" [mm] "+AnsiString(m.round2double((delka/pom_temp->pohon->aRD),3))+" [s]");
 				Akce=NIC;kurzor(standard);
 				zobraz_tip("");//nahrazuje zároveň Refresh
 				break;
@@ -3996,7 +3997,7 @@ void TForm1::vytvoreni_tab_pohon()
 	for(int i=1;i<=ms.MyToDouble(PmG->RowCount-1);i++)
 	{
 		if (PmG->Cells[1][i].Type==PmG->EDIT)
-			PmG->Cells[1][i].InputNumbersOnly=true;
+			PmG->Cells[1][i].InputNumbersOnly=2;
 		else
 		{
 			PmG->Cells[1][i].Font->Color=(TColor)RGB(128,128,128);
@@ -4454,8 +4455,8 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	if (DOtocunit==0) delka_otoce="<a>[m]</a>";//0
 	else delka_otoce="<a>[mm]</a>";//1
 	//nastavení šířek
-	if(PTunit==0&&LOunit==0) {sirka_1=57+20;sirka_cisla=70;}//+20 dočasně na rozšíření
-	else {sirka_1=69;sirka_cisla=100;}
+	if(PTunit==0&&LOunit==0) {sirka_1=57+33;sirka_cisla=70;}//+20 dočasně na rozšíření
+	else {sirka_1=105;sirka_cisla=100;}
 	if(PTunit==0) {sirka_0=147; sirka_2=88;sirka_4=59;sirka_cisla=70;}
 	else {sirka_0=149; sirka_2=107;sirka_4=78;sirka_cisla=100;}
 	if(DOtocunit==0&&PTunit==0) {sirka_56=76;sirka_cisla=70;}
@@ -4477,7 +4478,7 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
 	//formátování buněk tabulky (vždy stejn=)
 	for(int i=1;i<=ms.MyToDouble(E->mGrid->RowCount-1);i++)
 	{
-		if (E->mGrid->Cells[1][i].Type==E->mGrid->EDIT)E->mGrid->Cells[1][i].InputNumbersOnly=true;
+		if (E->mGrid->Cells[1][i].Type==E->mGrid->EDIT)E->mGrid->Cells[1][i].InputNumbersOnly=2;
 		E->mGrid->Cells[0][i].RightMargin = 3;
 		E->mGrid->Cells[1][i].RightMargin = 3;
 		E->mGrid->Cells[0][i].Font->Color=clFontLeft;
@@ -4535,6 +4536,8 @@ void TForm1::design_element(Cvektory::TElement *E,bool prvni_spusteni)
   		}
 		}
 	}
+	//////dočasně
+	if(E->eID==1||E->eID==7||E->eID==11||E->eID==15||E->eID==101||E->eID==105)E->mGrid->Cells[1][3].InputNumbersOnly=1;
 }
 //---------------------------------------------------------------------------
 //vytvoření tabulek, první výpočty a zapsání do spojáku
@@ -4583,7 +4586,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 1://robot (kontinuální)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,3);
+			E->mGrid->Create(2,4);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
@@ -4591,6 +4594,8 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->PT1=inPT(ms.MyToDouble(E->mGrid->Cells[1][1].Text));
 			E->mGrid->Cells[0][2].Text="LO "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
+			E->mGrid->Cells[0][3].Text="vyosení "+LO;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=0;
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
@@ -4600,6 +4605,8 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="vyosení lakovácího okna";
+			E->mGrid->Cells[0][3].ShowHint=true;
 			break;
 		}
 		case 8:case 12:case 16:case 102:case 106:
@@ -4820,13 +4827,15 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 		case 1://robot (kontinuální)
 		{
 			//samotné vytvoření matice-tabulky
-			E->mGrid->Create(2,3);
+			E->mGrid->Create(2,4);
 			//definice buněk
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[1][1].Type=E->mGrid->EDIT;
 			E->mGrid->Cells[1][1].Text=outPT(E->PT1);
 			E->mGrid->Cells[0][2].Text="LO "+LO;
 			E->mGrid->Cells[1][2].Type=E->mGrid->EDIT;E->mGrid->Cells[1][2].Text=outLO(E->LO1);
+			E->mGrid->Cells[0][3].Text="vyosení "+LO;
+			E->mGrid->Cells[1][3].Type=E->mGrid->EDIT;E->mGrid->Cells[1][3].Text=outLO(E->LO_pozice);
 			//automatické nastavení sířky sloupců podle použitých jednotek
 			E->mGrid->SetColumnAutoFit(-4);
 			E->mGrid->Columns[0].Width=sirka_1;
@@ -4836,6 +4845,8 @@ void TForm1::dalsi_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[0][1].ShowHint=true;
 			E->mGrid->Cells[0][2].Hint="délka lakovácího okna";
 			E->mGrid->Cells[0][2].ShowHint=true;
+			E->mGrid->Cells[0][3].Hint="vyosení lakovácího okna";
+			E->mGrid->Cells[0][3].ShowHint=true;
 			break;
 		}
 		case 8:case 12:case 16:case 102:case 106:
@@ -5023,7 +5034,7 @@ void TForm1::redesign_element()
 		case 1:case 7:case 11:case 15:case 101:case 105:
 		{
 			if (JID==101) zcas=true;//časové buňky
-			if (JID==102) zLO=true;//délkové buňky
+			if (JID==102 || JID==103) zLO=true;//délkové buňky
 			break;
 		}
 		case 2:case 8:case 12:case 16:case 102:case 106:
@@ -5080,8 +5091,8 @@ void TForm1::redesign_element()
 	if (DOtocunit==M) delka_otoce="<a>[m]</a>";//0
 	else delka_otoce="<a>[mm]</a>";//1
 	//nastavení šířek
-	if(PTunit==SEC && LOunit==M) {sirka_1=57;sirka_cisla=70;}
-	else {sirka_1=69;sirka_cisla=100;}
+	if(PTunit==SEC && LOunit==M) {sirka_1=90;sirka_cisla=70;}
+	else {sirka_1=105;sirka_cisla=100;}
 	if(PTunit==0) {sirka_0=147; sirka_2=88;sirka_4=59;sirka_cisla=70;}
 	else {sirka_0=149; sirka_2=107;sirka_4=78;sirka_cisla=100;}
 	if(DOtocunit==M && PTunit==SEC) {sirka_56=76;sirka_cisla=70;}
@@ -5125,8 +5136,10 @@ void TForm1::akt_tabulek (Cvektory::TElement *E,AnsiString LO,AnsiString delka_o
 		{
 			E->mGrid->Cells[0][1].Text="PT "+cas;
 			E->mGrid->Cells[0][2].Text="LO "+LO;
+			E->mGrid->Cells[0][3].Text="vyosení "+LO;
 			E->mGrid->Cells[1][1].Text=m.round2double(outPT(E->PT1),3);
 			E->mGrid->Cells[1][2].Text=m.round2double(outLO(E->LO1),3);
+			E->mGrid->Cells[1][3].Text=m.round2double(outLO(E->LO_pozice),3);
 			E->mGrid->Columns[0].Width=sirka_1;
 			E->mGrid->Columns[1].Width=sirka_cisla;
 			break;
@@ -6600,6 +6613,8 @@ void TForm1::NP_input()
 		scGPButton_posun_dalsich_elementu->ImageIndex=59;
 		scGPButton_posun_dalsich_elementu->Hint="Povolit vázaný posun robotů, stop stanic a otočí v editovaném objektu";
 	}
+	if(scGPComboBox_prepinacKot->ItemIndex==0)DKunit=1;
+	else DKunit=2;
 	//nastavení tlačítka pro spouštění animace za podmínky přiřazení pohonu
 	if(pom_temp->pohon!=NULL)scGPGlyphButton_PLAY->Enabled=true;
 	else scGPGlyphButton_PLAY->Enabled=false;
@@ -9560,8 +9575,8 @@ void TForm1::Smaz_kurzor()
 	if(editace_textu)//ukončí editaci textu
 	{
 		//pokud bylo zadáno nic přepíše nic původními hodnotamy
-		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-8)editovany_text=inDK(pom_temp->rozmer_kabiny.x);
-		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-9)editovany_text=inDK(pom_temp->rozmer_kabiny.y);
+		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-8)if(DKunit==2)editovany_text=pom_temp->rozmer_kabiny.x/pom_temp->pohon->aRD;else editovany_text=outDK(pom_temp->rozmer_kabiny.x);
+		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru==-9)if(DKunit==2)editovany_text=pom_temp->rozmer_kabiny.y/pom_temp->pohon->aRD;else editovany_text=outDK(pom_temp->rozmer_kabiny.y);
 		if((editovany_text==""||ms.MyToDouble(editovany_text)==0)&&index_kurzoru<=-11){editovany_text=d.v.vzdalenost_od_predchoziho_elementu(pom_element_temp);if(DKunit==2||DKunit==3)editovany_text=editovany_text/pom_temp->pohon->aRD;}
 		switch(index_kurzoru)
 		{
@@ -9578,8 +9593,8 @@ void TForm1::Smaz_kurzor()
 		if(index_kurzoru==-8||index_kurzoru==-9)//zapisuje editované hodnoty do rozměrů kabiny
 		{
 			//převedení na základní jednotky
-			if(index_kurzoru==-8)editovany_text=inDK(ms.MyToDouble(editovany_text));
-			else editovany_text=inDK(ms.MyToDouble(editovany_text));
+//			if(index_kurzoru==-8)editovany_text=inDK(ms.MyToDouble(editovany_text));
+			/*else*/ editovany_text=inDK(ms.MyToDouble(editovany_text));
 			if(DKunit==2||DKunit==3)editovany_text=editovany_text*pom_temp->pohon->aRD;//pokud jsou kóty v časovém režimu, převede na vzdálenost
 			//zapsání vzdáleností
 			if(index_kurzoru==-8)pom_temp->rozmer_kabiny.x=ms.MyToDouble(editovany_text);

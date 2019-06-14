@@ -1686,8 +1686,8 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 		}
 		getTextFromComponentToMemoryCell(Col,Row);//dle zadaného čísla sloupce a čísla řádku vrátí z dané komponenty text do paměťové buňky, slouží např. při události onchange popř. dálších
 
-		//filtr kláves
-		if(Cells[Col][Row].InputNumbersOnly && Key!=VK_ESCAPE)Key=ms.numericFilter(Cells[Col][Row].Text,Key);//pokud je nastaveno na true a není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
+		//filtr kláves          přepsat 0 bez omezení 1 R 2 pouze kladná
+		if(Cells[Col][Row].InputNumbersOnly!=0 && Key!=VK_ESCAPE)Key=ms.numericFilter(Cells[Col][Row].Text,Key,true,Cells[Col][Row].InputNumbersOnly);//pokud je nastaveno na true a není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
 
 		//namapování dceřinných událostí - odkomentovat patřičnou + případně upravit požadované parametry
 		//if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnKeyPress(Tag,ID,Col,Row,Key);
