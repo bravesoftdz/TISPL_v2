@@ -5398,11 +5398,12 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 	if(MOD==NAHLED)
 	{
 		scListGroupKnihovObjektu->Caption="Roboti";
+    DrawGrid_knihovna->RowCount=2;  //nastaveni poctu radku, aby nedochazelo k posunu gridu pri scrollovani
 //		DrawGrid_knihovna->Left=3;
 		short Z=3;//*3 vyplývá z logiky algoritmu antialiasingu
 		int W=DrawGrid_knihovna->DefaultColWidth  *Z;
 		int H=DrawGrid_knihovna->DefaultRowHeight  *Z;
-		int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
+	 	int P=-1*DrawGrid_knihovna->TopRow*H;//posun při scrollování, drawgridu nebo při zmenšení okna a scrollování
 		int odsazeni=19;
 
 		Cantialising a;
@@ -5633,6 +5634,8 @@ void __fastcall TForm1::DrawGrid_knihovnaDrawCell(TObject *Sender, int ACol, int
 		////////////////////neAA verze
 		scListGroupKnihovObjektu->Caption="Technolog.objekty";
 		DrawGrid_knihovna->Left=14;
+    if(pocet_objektu_knihovny%2!=0)DrawGrid_knihovna->RowCount=(pocet_objektu_knihovny+1)/2,0;//pokud je počet objektu lichý
+	  else DrawGrid_knihovna->RowCount=m.round2double(pocet_objektu_knihovny/2,0);//sudý počet objektů
 		TCanvas* C=DrawGrid_knihovna->Canvas;
 		int W=DrawGrid_knihovna->DefaultColWidth;
 		int H=DrawGrid_knihovna->DefaultRowHeight;
@@ -8857,7 +8860,7 @@ void __fastcall TForm1::Button11Click(TObject *Sender)
 
 
 //d.v.POHONY->dalsi->name="ano";
-Form2->ShowModal();
+//Form2->ShowModal();
 
 //smazat--;
 //Memo3->Visible=true; Memo3->Clear();Memo3->Lines->Add(smazat);
