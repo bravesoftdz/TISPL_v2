@@ -203,6 +203,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	zobrazit_meritko=true;
 
 	DesignSettings();//nastavení designu v konstruktoru
+  language=MN;  //příprava na jazyk mutace
 }
 //---------------------------------------------------------------------------
 //záležitost s novým designem
@@ -399,8 +400,7 @@ void __fastcall TForm1::FormShow(TObject *Sender)
   //DPI handling
 	int DPI;
 	DPI = get_DPI();
-	if (DPI != 96)
-		Form_Z_rozliseni->ShowModal();
+	if (DPI != 96) Form_Z_rozliseni->ShowModal();
 	// startUP() - pokud byl zde, dělalo to "chybu v paměti" při spuštění release verze	startUP();//při aktivaci formuláře startující záležitosti, pro zpřehlednění ko
 }
 //---------------------------------------------------------------------------
@@ -629,6 +629,8 @@ bool TForm1::ttr(UnicodeString Text)
 //při aktivaci formuláře startující záležitosti, pro zpřehlednění kodu
 void TForm1::startUP()
 {
+  //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
+   //load_language(language);   //aktivovani jazyk mutaci
 	//////otevrení posledního souboru
 	log2web("start");
 	nastaveni.posledni_file=true;/////////////////provizorní než budu načítat z ini z filu nastavení zda otevírat či neotevírat poslední sobor
@@ -8029,13 +8031,14 @@ void __fastcall TForm1::Button13Click(TObject *Sender)
 //		Memo3->Lines->Add(AnsiString(P->n)+"-"+P->name+":"+d.v.vypis_objekty_vyuzivajici_pohon(P->n));
 //		P=P->dalsi;//posun na další prvek
 //	}
+  Form_definice_zakazek->ShowModal();
 
 //		 Form2->ShowModal();
-	Canvas->Pen->Style=psSolid;
-	Canvas->Pen->Mode=pmNotXor;
-	Canvas->Pen->Color=clRed;
-	Canvas->Pen->Width=2; Memo(pom_temp->elementy->X); Memo(pom_temp->elementy->Y);
-	Canvas->MoveTo(m.L2Px(pom_temp->Xk),m.L2Py(pom_temp->elementy->Y)); Canvas->LineTo(m.L2Px(pom_temp->Xk+1),m.L2Py(pom_temp->elementy->Y));
+//	Canvas->Pen->Style=psSolid;
+//	Canvas->Pen->Mode=pmNotXor;
+//	Canvas->Pen->Color=clRed;
+//	Canvas->Pen->Width=2; Memo(pom_temp->elementy->X); Memo(pom_temp->elementy->Y);
+//	Canvas->MoveTo(m.L2Px(pom_temp->Xk),m.L2Py(pom_temp->elementy->Y)); Canvas->LineTo(m.L2Px(pom_temp->Xk+1),m.L2Py(pom_temp->elementy->Y));
 //		pom_temp->elementy->dalsi->n=2;  //první
 //		pom_temp->elementy->dalsi->mGrid->ID=2;  pom_temp->elementy->dalsi->mGrid->Update();
 //		pom_temp->elementy->dalsi->dalsi->n=1; //druhý
@@ -9756,12 +9759,59 @@ void __fastcall TForm1::scGPSwitch_robot_clovekChangeState(TObject *Sender)
 	DrawGrid_knihovna->Refresh();
 }
 //---------------------------------------------------------------------------
+//načte zvolený jazyk
+unsigned short TForm1::load_language(Tlanguage language)
+{
+   //nastavení adresáře k místě aplikace
+  ChDir(ExtractFilePath(Application->ExeName));    //přesune k EXE
+  UnicodeString File_language= "MK.language"; //cache_dir+"MK.language" už nenačítám v tempu aplikace
 
+  /*if(!FileExists(File_language)) //pokud bych chtěl jazyk stahovat
+  {
+	try
+	{
+		URLDownloadToFile(0,AnsiString("http://www.omapy.cz/files/CSIS/"+File_language).c_str(),File_language.c_str(),0,0);//pokud nebyl nalezen jazykový slovník, zkusí stáhnout
+	}
+	catch(...){;}
+  }*/
+  ls=new TStringList;
+  for(unsigned short i=0;i<=114;i++)ls->Insert(i,"");//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
 
+    if(FileExists(File_language))//znovu kontrola po případném stažení souboru
+  {
+	//načtení jazykového slovníku do string listu
+  ShowMessage(language);
+	ls->LoadFromFile(File_language);
 
-
-
-
-
-
+	//vypársování daného jazyka a navrácení do string listu již jen vypársovaného
+	for(unsigned int i=0;i<ls->Count;i++)
+	{
+		switch(language)
+		{
+			case EN:ls->Strings[i]=ls->Strings[i].SubString(0,ls->Strings[i].Pos(";")-1);Jazyk=EN; /*anglictina1->Checked=true;mongolstina1->Checked=false;cestina1->Checked=false;*/break;
+			case MN:ls->Strings[i]=ls->Strings[i].Delete(1,ls->Strings[i].Pos(";"));ls->Strings[i]=ls->Strings[i].SubString(0,ls->Strings[i].Pos(";")-1);Jazyk=MN;/*anglictina1->Checked=false;mongolstina1->Checked=true;cestina1->Checked=false;*/break;
+			case CS:ls->Strings[i]=ls->Strings[i].Delete(1,ls->Strings[i].Pos(";"));ls->Strings[i]=ls->Strings[i].SubString(ls->Strings[i].Pos(";")+1,ls->Strings[i].Length());Jazyk=CS;/*anglictina1->Checked=false;mongolstina1->Checked=false;cestina1->Checked=true;*/break;
+			default:EN:ls->Strings[i]=ls->Strings[i].SubString(0,ls->Strings[i].Pos(";")-1);Jazyk=EN;/*anglictina1->Checked=true;mongolstina1->Checked=false;cestina1->Checked=false;*/break;
+		}
+	}
+											   //pokud se nejedná o angličtinu
+	scLabel_titulek->Caption=ls->Strings[0];if(language>1)scLabel_titulek->Caption+=" (Language)";
+	scLabel_titulek->Caption=ls->Strings[3];scLabel_titulek->Caption+=" (EN)";
+	scLabel_titulek->Caption=ls->Strings[2];scLabel_titulek->Caption+=" (MN)";
+	scLabel_titulek->Caption=ls->Strings[1];scLabel_titulek->Caption+=" (CS)";
+	//-----------------------
+  //Example
+  Form_parametry_linky->scGPButton_pohon->Caption =  	ls->Strings[8];
+  Layout->Caption =  	ls->Strings[9];
+  //Canvas->TextOutW(500,500,ls->Strings[9]); //OK
+	return 1;
+  }
+  else //pokud není nalezen jazykový slovník
+  {
+	//defaultní hlášky Form1
+//	unsigned short ui=36;
+//	ls->Insert(ui++,"Repeat or press ENTER or double click when finished | press ESC to cancel");
+	return 0; //načte defaultní jazykové nastavení tzn. AJ
+  }
+}
 

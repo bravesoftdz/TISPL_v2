@@ -1,0 +1,115 @@
+﻿Language;хэл;Jazyk
+Czech;чех;čeština
+Mongolian;монгол;mongolština
+English;англи;angličtina
+File;файл;Soubor
+Exit;гарах;Konec
+View;харуулах;Zobrazit
+Zoom in;томруулах;Přiblížit
+Zoom out;холдуулах;Oddálit
+Pan locked;гүйлгэх;Posouvat
+Pan;гүйлгэх;Posunout
+Zoom;томруулан харуулах;Úroveň zobrazení
+Window;хулганаар дөрвөлжин татаад сонголт хийх;Vybrat oknem
+Search location;байршлийг хайх;Hledat lokaci…
+Previous;өмнөх;Předchozí
+Move to GPS;GPS рүү орох;Přejít na GPS
+Redraw;Шинээр зурах;Překreslit
+Reload map;Гэрэл зургийг дахин ачаалах;Načíst znovu mapu
+Transparent areas;тунгалаг талбай;Průhledné plochy
+Hatch Areas;зураасаар тэмдэглэсэн талбай;Šrafované plochy
+GPS;GPS;GPS
+On;Асаах;Zapnout
+Off;Унтраах;Vypnout
+Settings;Тохиргоо;Nastavení
+Settings;Тохиргоо;Nastavení
+Clear maps cache;Газрын зургийг кэйшэд устгах;Vymazat mapy z mezipaměti
+Window stay on top;Цонхыг үргэлж дээр байрлуулах;Okno vždy nahoře
+Add point;цэгийг нэмэх;Přidat bod
+Delete point;цэгийг устгах;Vymazat bod
+New polygon's points;Полигоны шинэ цэгүүд;Nové body polygonu
+Zoom in;томруулан харуулах;Přiblížit
+Zoom out;Холдуулан харуулах;Oddálit
+Pan locked;гүйлгэх;Pousouvat
+Pan;гүйлгэх;Posunout
+Window;хулганаар дөрвөлжин татаад сонголт хийх;Vybrat oknem
+Identify;тодорхойлох;Identifikace
+NO GPS;NO GPS;NO GPS
+Repeat or press ENTER or double click when finished | press ESC to cancel;Үйлдлийг дуусгахын тулд давтах, ENTER дарах эсвэл хоёр дарах | орхихын тулд ESC дарах;Opakovat nebo stisknout ENTER či dvojité kliknutí pro dokonční | stisknout ESC ke zrušení
+The operation timed out. Check your network connection and try again!;Үйлдэл хийх цаг өнгөрсөн. Та интернетэд холбогдсон эсэхийг шалгаад үйлдлийг давтана уу.;Čas operace vypršel. Zkontrolujte připojení k internetu a zkuste znovu!
+Map error!;Газрын зургийн алдаа!;Chyba mapy!
+GPS connected;GPS холбогдсон байна;GPS připojena
+Off;Унтраасан байна;Vypnuto
+On;Асаасан байна;Zapnuto
+GPS off;GPS-ийг унтраах;GPS vypnuta
+Make sure the GPS and bluetooth enabled.\nDo you want to set GPS?;GPS болон Bluetooth зөвшөөрөгдсөн эсэхийг шалгана уу. \nGPS-ийг тохируулмаар байна уу?;Ujistěte se, že GPS a bluetooth je povoleno.\nChcete nastavit GPS?
+GPS disconnected!;GPS салгагдсан байна!;GPS odpojena!
+Click to add the new point of the polygon or double click when finished;Полигонд шинэ цэгийг нэмэхийн тулд дарна уу;Klikněte pro přidání nového bodu polygonu či dvojité kliknutí pro dokonční
+Click to add the new point;Шинэ цэгийг нэмэхийн тулд дарна уу;Klikněte pro přidání nového bodu či dvojité kliknutí pro dokonční
+move,add,delete points | move the polygon (SHIFT+drag&drop) | create a new polygon;цэгийн байршлыг өөрчлөх, цэгийг нэмэх, устгах | полигоны байршлыг өөрчлөх (SHIFT+(táhni&pusť) | шинэ полигон үүсгэх;posunout,přidat,smazat body|posunout polygon (SHIFT+(táhni&pusť) | vytvořit nový polygon
+Click to change the position;Байршлийг өөрчлөхийн тулд дарна уу;Klikněte pro změnu pozice
+Click to add the new point of the polygon;Полигоны шинэ цэгийг нэмэхийн тулд дарна уу;Klikněte pro přidání nového bodu polygonu
+Location not found!;Байршил олдсонгүй!;Lokalita nenalezena!
+Invalid request!;Алдаатай хүсэлт!;Chybný požadavek!
+Internet connection not available!;Интернетэд холбогдох боломжгүй байна!;Internetové připojení není dostupné!
+Outside the area of interest!;Сонирхлын бүсээс гадна байна!;Mimo oblast zájmu!
+about;ойролцоо;cca
+Zoom;томруулан харуулах;Zoom
+Zone;бүс;Zóna
+contributors;интернетийн үйлчилгээ үзүүлэгч компаниуд;přispěvatelé
+Do you want to close the window of the map?;Та газрын зургийн цонхыг хаамаар байна уу?;Chcete zavřít okno mapy?
+Area size;газар нутгийн талбайн хэмжээ;Plocha
+Perimeter;периметр;Obvod
+km;км;km
+GPS settings;GPS-ийн тохиргоо;Nastavení GPS
+Set automatically;автоматаар тохируулах;Nastavit automaticky
+COM port;COM порт;COM port
+Find GPS;GPS хайх;Hledat GPS
+Set manually;гараар тохируулах;Nastavit manuálně
+Port:;Порт:;Port:
+Interval:;Интервал:;Interval:
+Test GPS;GPS-ийн туршилт;Test GPS
+GPS;GPS;GPS
+Latitude:;Өргөрөг:;Šířka:
+Longitude:;Уртраг:;Délka:
+Altitude:;өндөр:;Výška:
+Auto scroll (moving map);Газрын зургийг автоматаар гүйлгэх;Automaticky posouvat mapu
+Move window to GPS;цонхыг GPS рүү шилжүүлэх;Přesunout okno na GPS
+OK;OK;OK
+Cancel;Болих;Storno
+COM;COM;COM
+Search next;дараагийн хайлт;Hledat další
+testing;туршилт;testování
+GPS not found!;GPS олдсонгүй!;GPS nenalezena!
+not found;олдсонгүй;nenalezen
+m a.s.l.;далайн түвшингээс дээш м;m n. m.
+E;Д;E
+W;Ө;W
+N;Х;N
+S;У;S
+GPS found;GPS олдсон байна;GPS nalezena
+Search again;дахин хайх;Hledat znovu
+port found, GPS not found;порт олдсон байна, GPS олдсонгүй;port nalezen, GPS nenalezena
+not tested!;туршигдаагүй!;neotestován!
+Search;хайх;Hledat
+Layers;үе давхарга;Vrstvy
+Documentation points;баримтжуулалтын цэгүүд;Dokumentační body
+Contaminated sites;Бохирдсон газар;Kontaminovaná místa
+Indications;шинж тэмдэг;Indicie
+Sectors;секторууд;Sektory
+Regions;аймаг;Kraje
+Districts;сум;Okresy
+Background map;Суурь зураг;Podkladová mapa
+Google maps (static);Google-н газрын зураг (Статик газрын зураг);Google mapy (statické)
+roadmap;стандарт;standardní
+satellite;Хиймэл дагуулын;satelitní
+hybrid;холимог;hybridní
+terrain;хээрийн;terénní
+Google maps (tiles);Google-н газрын зураг (хавтан);Google mapy (dlaždice)
+Yandex maps;Yandex-н газрын зураг (Статик газрын зураг);Yandex mapy
+OpenStreetMap;OpenStreet-газрын зураг;OpenStreetMapy
+Full identify;бүрэн хэмжээний тодорхойлт;Plná identifikace
+Offline. The map may be not displayed!;Офф-лайн. Газрын зураг гарч ирэхгүй байж болзошгүй;Offline. Mapa nemusí být zobrazena!
+Select a location;Байршлыг сонгоно уу.;Zvolte lokalitu
+Confirm coordinates WGS-84;WGS-84 координатуудыг дахин баталгаажуулах;Potvrdit souřadnice WGS-84
+Snap to;Холбох;Přichyti k

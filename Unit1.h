@@ -523,9 +523,10 @@ private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y};
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
-
+  enum Tlanguage{EN,MN,CS};Tlanguage language;
 	////instance
 	Cvektory::TProces *proces_pom;
+  TStringList *ls;
 
 	////metody
 	void aut_pozicovani(Cvektory::TElement *E, int X, int Y);
@@ -601,6 +602,7 @@ private:
 	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro změnu názvu elementu a nový název zapíše do elementu, defaultně provede refresh, pokud není předáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
+  unsigned short load_language(Tlanguage language);
 
 	////proměnné
 	TDateTime TIME;
@@ -637,6 +639,7 @@ private:
 	TRect FOldBoundsRect;
 	bool PmGCheckLink;
 	bool offset_spolus_rozmerem;//uchovává v sobě, zda má být při změně rozmerů kabiny změně i offset kót elementů
+  UnicodeString Jazyk;
 
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
@@ -647,7 +650,6 @@ public:		// User declarations
 	Cgrafy g;
 	TPO_math pm;//INSTANCE NA VÝPOČETNÍ ČÁST PO tj. PO_math
 	Graphics::TBitmap *Pan_bmp;//kvůli mGridu jinak stačí private
-
 	//uklazatele
 	Cvektory::TObjekt *pom,*pom_vyhybka,*pom_temp,*copyObjekt;
 	Cvektory::TElement *pom_element,*pom_element_temp;
