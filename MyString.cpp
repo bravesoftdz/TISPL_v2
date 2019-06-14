@@ -553,15 +553,18 @@ bool TMyString::IsNumber(UnicodeString Text)
 }
 //---------------------------------------------------------------------------
 //metoda volatelná v onkeypress dané komponenty, dovolí pouze reálné či celé číslo, separátor desetinného místa dle lokálního nastavení, ošetřuje i, aby separátor byl v textu obsažen pouze jeden a aby nebyl na prvním místě, pokud nastane chybně zadaný znak, může systemově zazvonit - poslední parametr, implicitně na true
-System::WideChar TMyString::numericFilter(AnsiString aktText,System::WideChar &Key,bool ErrorMessageBeep)
+System::WideChar TMyString::numericFilter(AnsiString aktText,System::WideChar &Key,bool ErrorMessageBeep,short typ)
 {
 	//filtr kláves
+	AnsiString Separator=get_locale_decimal();//zjištění oddělovače v aktuálním systému
+	AnsiString Mark;
+	if(typ==1)Mark="-";else Mark=Separator;
 	if(Key!=VK_BACK)//pokud není stisknuta klávesa backspace, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
 	{
-	 AnsiString Separator=get_locale_decimal();//zjištění oddělovače v aktuálním systému
-	 if(!((Key>=L'0') && (Key<=L'9') || (AnsiString(Key) == Separator)))Key=0;//pokud se nejedná o číslo nebo oddělovač
+	 if(!((Key>=L'0') && (Key<=L'9') || (AnsiString(Key) == Separator) || (AnsiString(Key) == Mark)))Key=0;//pokud se nejedná o číslo nebo oddělovač
 	 if(AnsiString(Key) == Separator && aktText.Length()      == 0)Key=0;//oddělovač nemůže být na prvním místě
-	 if(AnsiString(Key) ==	Separator && aktText.Pos(Separator) > 0)Key=0;//oddělovačů nemůže být více
+	 if(AnsiString(Key) == Mark && Mark == "-" && aktText.Length()      != 0)Key=0;//znaménko může být jen na prvním místě
+	 if(AnsiString(Key) == Separator && aktText.Pos(Separator) > 0)Key=0;//oddělovačů nemůže být více
 	 if(Key == L'0' && aktText.Pos("0") > 0 && aktText.Length() == 1)Key=0;//nelze napsat na druhou pozici v čísle 0
 
 	 if(Key==0 && ErrorMessageBeep)MessageBeep(0);//zvuková inicializace špatné klávesy pokud je požadována

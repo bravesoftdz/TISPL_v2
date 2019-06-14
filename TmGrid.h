@@ -51,7 +51,7 @@ class TmGrid
 		short LeftMargin;//levé odsazení textu
 		short RightMargin;//pravé odsazení textu
 		bool MergeState;//pouze indikuje, zda je buňka sloučena, či nikoliv, slouží jako pomůcka při vykreslování orámování sloučených buněk, zatím zůstává nevyužito
-		bool InputNumbersOnly;//pokud je nastaveno na true, nelze vepsat jinou hodnotu než číselnou (to včetně reálného čísla)
+		short InputNumbersOnly;//pokud je nastaveno na 0 lze do buňky vepsat cokoliv, 1 lze zapsat pouze reálná čísla, 2 pouze kladná reálná čísla
 		bool Highlight;//indikuje zda je buňka zvýrazněna, barva zvýraznění odpovídá globální proměnné TColor clHighlight, výchozí stav zvýraznění je false
 		TFont *Font;//vlastnosti fontu v buňce
 		TPoint TextPositon;//pozice textu v buňce (levý horní roh buňky je 0,0)
